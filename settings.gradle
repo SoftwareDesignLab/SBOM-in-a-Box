@@ -1,0 +1,5 @@
+rootProject.name = 'svip'
+include 'core'
+include 'core'
+include 'api'
+
