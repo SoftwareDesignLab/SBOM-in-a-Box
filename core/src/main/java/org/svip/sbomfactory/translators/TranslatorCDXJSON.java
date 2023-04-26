@@ -4,6 +4,7 @@ import org.cyclonedx.exception.ParseException;
 import org.cyclonedx.model.*;
 import org.cyclonedx.parsers.JsonParser;
 import org.svip.sbom.model.*;
+import org.svip.sbom.model.Component;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -66,7 +67,7 @@ public class TranslatorCDXJSON {
             org.cyclonedx.model.Component top_component_meta = json_sbom.getMetadata().getComponent();
 
             // Create top component and add it to SBOM object
-            top_component = new org.nvip.plugfest.tooling.sbom.Component(
+            top_component = new Component(
                     top_component_meta.getName(),
                     top_component_meta.getPublisher(),
                     top_component_meta.getVersion(),

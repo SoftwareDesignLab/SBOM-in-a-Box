@@ -120,7 +120,7 @@ public class VEXFactory {
             } catch (HttpException e) {
                 //if we get a 500 try other things. Otherwise, assume something is wrong on our end and give up
                 if(e.getMessage().contains("500")){
-                    System.err.println("500 error occurred while looking up vulnerabilities for " + component.getCPE());
+                    System.err.println("500 error occurred while looking up vulnerabilities for " + component.getCpes());
                     System.err.println("Skipping this component");
                 } else {
                     throw e;
@@ -166,12 +166,12 @@ public class VEXFactory {
      */
     public void applyVexToComponentWithExceptions(Component component) throws HttpException {
         ArrayList<VEX> vulnerabilities;
-        if(component.getCPE() == null)
+        if(component.getCpes() == null)
             // TODO alert the user that no CPE could be found, but that does not mean there are no vulnerabilities
             // throwing an error here down the road would be useful and we can catch it and transmit it to the frontend
             return; //nothing to do if no CPEs
 
-        for (String id : component.getCPE()) {
+        for (String id : component.getCpes()) {
             try {
                 vulnerabilities = lookupSingleId(id);
             } catch (HttpException e) {
