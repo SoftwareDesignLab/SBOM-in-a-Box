@@ -2,6 +2,7 @@ package org.svip;
 
 import org.svip.sbomanalysis.comparison.Merger;
 import org.svip.sbomfactory.translators.Translator;
+import org.svip.sbomvex.VEXFactory;
 import org.svip.sbomvex.VEXFactory.*;
 import org.svip.sbomfactory.osi.OSI;
 import org.svip.sbom.model.SBOM;
