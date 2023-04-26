@@ -27,6 +27,9 @@ import java.util.ArrayList;
  * @author Matt London
  * @author Ian Dunn
  */
+
+@RestController
+@RequestMapping("/svip")
 public class SVIPApiController {
     /**
      * NVIP Login Credentials username

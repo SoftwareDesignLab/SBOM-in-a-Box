@@ -23,6 +23,7 @@ import java.util.List;
 * @author Juan Francisco Patino, Asa Horn
 */
 @RestController
+@RequestMapping("/plugfest")
 public class plugFestApiController {
 
     /**
