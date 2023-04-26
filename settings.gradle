@@ -1,5 +1,4 @@
-rootProject.name = 'svip'
-include 'core'
-include 'core'
+rootProject.name = 'SVIP'
 include 'api'
-
+include 'core'
+include 'application'
