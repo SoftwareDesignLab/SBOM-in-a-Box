@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author Tina Dilorenzo
  */
 @SpringBootApplication
-public class SVIPApplicationm {
+public class SVIPApplication {
     public static void main(String[] args) {
         SpringApplication.run(SVIPApplication.class, args);
     }
