@@ -9,6 +9,7 @@ import org.svip.sbom.model.SBOM;
 import org.svip.sbomanalysis.comparison.Comparison;
 import org.svip.sbomanalysis.qualityattributes.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.QualityReport;
+import org.svip.sbomfactory.translators.TranslatorPlugFest;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -53,8 +54,7 @@ public class plugFestApiController {
             // Get contents of the file
             String contents = new String(file.getBytes(), StandardCharsets.UTF_8);
 
-            //sboms.add(TranslatorPlugFest.translateContents(contents, file.getOriginalFilename()));
-            SBOM sbom = new SBOM();
+            sboms.add(TranslatorPlugFest.translateContents(contents, file.getOriginalFilename()));
         }
 
         if(sboms.size() < 2){
@@ -90,8 +90,8 @@ public class plugFestApiController {
         catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        //SBOM sbom = TranslatorPlugFest.translateContents(contents, bom.getOriginalFilename()); //commented out until translator is ported todo
-        SBOM sbom = new SBOM();
+        SBOM sbom = TranslatorPlugFest.translateContents(contents, bom.getOriginalFilename());
+
         //run the QA
         QualityReport report = pipeline.process(sbom);
 
