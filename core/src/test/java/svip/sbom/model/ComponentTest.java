@@ -255,7 +255,7 @@ public class ComponentTest {
 
     @Test
     public void getPurls_test() {
-        assertEquals(new HashSet<>(List.of(new String[]{"pkg:generic/python@3.11.2"})), test_component.getPurls());
+        assertEquals(new HashSet<>(List.of(new PURL[]{new PURL("pkg:generic/python@3.11.2")})), test_component.getPurls());
     }
 
     @Test
@@ -330,6 +330,6 @@ public class ComponentTest {
 
     @Test
     public void toString_test() {
-        assertEquals("Component{name='python'}", test_component.toString());
+        assertEquals("Test Tester <test@test.org> python:3.11.2", test_component.toString());
     }
 }
