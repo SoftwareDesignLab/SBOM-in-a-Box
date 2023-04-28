@@ -1,0 +1,346 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.4.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4",
+  "serialNumber": "urn:uuid:fdc35e68-2f87-482c-8424-c392eb869a96",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2023-02-02T18:48:13.260399+00:00",
+    "tools": [
+      {
+        "vendor": "CycloneDX",
+        "name": "cyclonedx-bom",
+        "version": "3.10.1"
+      },
+      {
+        "vendor": "CycloneDX",
+        "name": "cyclonedx-python-lib",
+        "version": "3.1.5",
+        "externalReferences": [
+          {
+            "url": "https://github.com/CycloneDX/cyclonedx-python-lib/actions",
+            "type": "build-system"
+          },
+          {
+            "url": "https://pypi.org/project/cyclonedx-python-lib/",
+            "type": "distribution"
+          },
+          {
+            "url": "https://cyclonedx.github.io/cyclonedx-python-lib/",
+            "type": "documentation"
+          },
+          {
+            "url": "https://github.com/CycloneDX/cyclonedx-python-lib/issues",
+            "type": "issue-tracker"
+          },
+          {
+            "url": "https://github.com/CycloneDX/cyclonedx-python-lib/blob/main/LICENSE",
+            "type": "license"
+          },
+          {
+            "url": "https://github.com/CycloneDX/cyclonedx-python-lib/blob/main/CHANGELOG.md",
+            "type": "release-notes"
+          },
+          {
+            "url": "https://github.com/CycloneDX/cyclonedx-python-lib",
+            "type": "vcs"
+          },
+          {
+            "url": "https://cyclonedx.org",
+            "type": "website"
+          }
+        ]
+      }
+    ]
+  },
+  "components": [
+    {
+      "type": "library",
+      "bom-ref": "41f394b3-ca54-479e-877c-3f53707a3e09",
+      "name": "PyPDF2",
+      "version": "3.0.1",
+      "purl": "pkg:pypi/pypdf2@3.0.1"
+    },
+    {
+      "type": "library",
+      "bom-ref": "88ea0651-b286-43cc-b0c2-3870ebe69109",
+      "name": "auto-py-to-exe",
+      "version": "2.28.0",
+      "purl": "pkg:pypi/auto-py-to-exe@2.28.0"
+    },
+    {
+      "type": "library",
+      "bom-ref": "bcfa15eb-db1b-49b4-a811-1140288042f6",
+      "name": "beautifulsoup4",
+      "version": "4.11.1",
+      "purl": "pkg:pypi/beautifulsoup4@4.11.1"
+    },
+    {
+      "type": "library",
+      "bom-ref": "12507172-c1b7-4266-b88f-4fcd9618aae7",
+      "name": "customtkinter",
+      "version": "5.0.5",
+      "purl": "pkg:pypi/customtkinter@5.0.5"
+    },
+    {
+      "type": "library",
+      "bom-ref": "80a41079-3f4b-4255-b9b7-d7e050382fcd",
+      "name": "django",
+      "version": "4.1.6",
+      "purl": "pkg:pypi/django@4.1.6"
+    },
+    {
+      "type": "library",
+      "bom-ref": "75d2c165-3d68-4e81-9c2a-dc243e69b61b",
+      "name": "fastapi",
+      "version": "0.89.1",
+      "purl": "pkg:pypi/fastapi@0.89.1"
+    },
+    {
+      "type": "library",
+      "bom-ref": "5066b9b6-c3ab-40de-afb0-880866b22504",
+      "name": "flask",
+      "version": "2.2.2",
+      "purl": "pkg:pypi/flask@2.2.2"
+    },
+    {
+      "type": "library",
+      "bom-ref": "c90b9bfd-42ca-4425-91db-89394a5ebed5",
+      "name": "matplotlib",
+      "version": "3.6.3",
+      "purl": "pkg:pypi/matplotlib@3.6.3"
+    },
+    {
+      "type": "library",
+      "bom-ref": "c9a900f4-cd66-4df4-b0c7-465bd7682e8f",
+      "name": "mutagen",
+      "version": "1.46.0",
+      "purl": "pkg:pypi/mutagen@1.46.0"
+    },
+    {
+      "type": "library",
+      "bom-ref": "0107c4b1-4349-4265-84d4-ea22b3c2b533",
+      "name": "numpy",
+      "version": "1.24.1",
+      "purl": "pkg:pypi/numpy@1.24.1"
+    },
+    {
+      "type": "library",
+      "bom-ref": "49a90ca0-dab9-41b7-91ff-68aeafda666a",
+      "name": "opencv-python",
+      "version": "4.7.0.68",
+      "purl": "pkg:pypi/opencv-python@4.7.0.68"
+    },
+    {
+      "type": "library",
+      "bom-ref": "90c795ff-ed26-40b2-aafd-bfe1e226eab7",
+      "name": "pillow",
+      "version": "9.0.1",
+      "purl": "pkg:pypi/pillow@9.0.1"
+    },
+    {
+      "type": "library",
+      "bom-ref": "8c8221ae-4068-4a4d-8326-d2e12044a62d",
+      "name": "pyautogui",
+      "version": "0.9.53",
+      "purl": "pkg:pypi/pyautogui@0.9.53"
+    },
+    {
+      "type": "library",
+      "bom-ref": "3c08209f-208f-439d-822f-c919d09974fd",
+      "name": "pygame",
+      "version": "2.1.2",
+      "purl": "pkg:pypi/pygame@2.1.2"
+    },
+    {
+      "type": "library",
+      "bom-ref": "f88bb3e3-a4be-4671-b6e5-ced6add2c842",
+      "name": "pygit2",
+      "version": "1.11.1",
+      "purl": "pkg:pypi/pygit2@1.11.1"
+    },
+    {
+      "type": "library",
+      "bom-ref": "8468956a-0b9a-498b-aa5a-05e63399c7eb",
+      "name": "pyinstaller",
+      "version": "5.7.0",
+      "purl": "pkg:pypi/pyinstaller@5.7.0"
+    },
+    {
+      "type": "library",
+      "bom-ref": "b7614698-0b42-4aab-b1c9-b93bc4cc7ac1",
+      "name": "pyperclip",
+      "version": "1.8.2",
+      "purl": "pkg:pypi/pyperclip@1.8.2"
+    },
+    {
+      "type": "library",
+      "bom-ref": "335ac490-401d-4edb-a399-8aa39cb26410",
+      "name": "pystray",
+      "version": "0.19.4",
+      "purl": "pkg:pypi/pystray@0.19.4"
+    },
+    {
+      "type": "library",
+      "bom-ref": "b1968820-6080-4611-bbd9-4f00fcfb7247",
+      "name": "pytesseract",
+      "version": "0.3.10",
+      "purl": "pkg:pypi/pytesseract@0.3.10"
+    },
+    {
+      "type": "library",
+      "bom-ref": "dde24e79-79c0-4ea3-8ff0-b3d614495526",
+      "name": "python-dateutil",
+      "version": "2.8.1",
+      "purl": "pkg:pypi/python-dateutil@2.8.1"
+    },
+    {
+      "type": "library",
+      "bom-ref": "3e659b3d-582e-4899-a27b-d1fe3be5463a",
+      "name": "qrcode",
+      "version": "7.4",
+      "purl": "pkg:pypi/qrcode@7.4"
+    },
+    {
+      "type": "library",
+      "bom-ref": "3663ef2f-971a-43ec-8892-0d66c16210d7",
+      "name": "requests",
+      "version": "2.25.1",
+      "purl": "pkg:pypi/requests@2.25.1"
+    },
+    {
+      "type": "library",
+      "bom-ref": "02b0eb32-2264-4de7-9da7-76951cee6190",
+      "name": "stagger",
+      "version": "1.0.0",
+      "purl": "pkg:pypi/stagger@1.0.0"
+    },
+    {
+      "type": "library",
+      "bom-ref": "50c4bae7-b040-4ee4-8863-393dfc279750",
+      "name": "tkcap",
+      "version": "0.0.3",
+      "purl": "pkg:pypi/tkcap@0.0.3"
+    },
+    {
+      "type": "library",
+      "bom-ref": "eb320e92-8bb2-4016-a140-dbecda153882",
+      "name": "ttkbootstrap",
+      "version": "1.10.1",
+      "purl": "pkg:pypi/ttkbootstrap@1.10.1"
+    },
+    {
+      "type": "library",
+      "bom-ref": "914bedd7-bd67-456a-8daa-55f552bc86a5",
+      "name": "uvicorn",
+      "version": "0.20.0",
+      "purl": "pkg:pypi/uvicorn@0.20.0"
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "41f394b3-ca54-479e-877c-3f53707a3e09",
+      "dependsOn": []
+    },
+    {
+      "ref": "88ea0651-b286-43cc-b0c2-3870ebe69109",
+      "dependsOn": []
+    },
+    {
+      "ref": "bcfa15eb-db1b-49b4-a811-1140288042f6",
+      "dependsOn": []
+    },
+    {
+      "ref": "12507172-c1b7-4266-b88f-4fcd9618aae7",
+      "dependsOn": []
+    },
+    {
+      "ref": "80a41079-3f4b-4255-b9b7-d7e050382fcd",
+      "dependsOn": []
+    },
+    {
+      "ref": "75d2c165-3d68-4e81-9c2a-dc243e69b61b",
+      "dependsOn": []
+    },
+    {
+      "ref": "5066b9b6-c3ab-40de-afb0-880866b22504",
+      "dependsOn": []
+    },
+    {
+      "ref": "c90b9bfd-42ca-4425-91db-89394a5ebed5",
+      "dependsOn": []
+    },
+    {
+      "ref": "c9a900f4-cd66-4df4-b0c7-465bd7682e8f",
+      "dependsOn": []
+    },
+    {
+      "ref": "0107c4b1-4349-4265-84d4-ea22b3c2b533",
+      "dependsOn": []
+    },
+    {
+      "ref": "49a90ca0-dab9-41b7-91ff-68aeafda666a",
+      "dependsOn": []
+    },
+    {
+      "ref": "90c795ff-ed26-40b2-aafd-bfe1e226eab7",
+      "dependsOn": []
+    },
+    {
+      "ref": "8c8221ae-4068-4a4d-8326-d2e12044a62d",
+      "dependsOn": []
+    },
+    {
+      "ref": "3c08209f-208f-439d-822f-c919d09974fd",
+      "dependsOn": []
+    },
+    {
+      "ref": "f88bb3e3-a4be-4671-b6e5-ced6add2c842",
+      "dependsOn": []
+    },
+    {
+      "ref": "8468956a-0b9a-498b-aa5a-05e63399c7eb",
+      "dependsOn": []
+    },
+    {
+      "ref": "b7614698-0b42-4aab-b1c9-b93bc4cc7ac1",
+      "dependsOn": []
+    },
+    {
+      "ref": "335ac490-401d-4edb-a399-8aa39cb26410",
+      "dependsOn": []
+    },
+    {
+      "ref": "b1968820-6080-4611-bbd9-4f00fcfb7247",
+      "dependsOn": []
+    },
+    {
+      "ref": "dde24e79-79c0-4ea3-8ff0-b3d614495526",
+      "dependsOn": []
+    },
+    {
+      "ref": "3e659b3d-582e-4899-a27b-d1fe3be5463a",
+      "dependsOn": []
+    },
+    {
+      "ref": "3663ef2f-971a-43ec-8892-0d66c16210d7",
+      "dependsOn": []
+    },
+    {
+      "ref": "02b0eb32-2264-4de7-9da7-76951cee6190",
+      "dependsOn": []
+    },
+    {
+      "ref": "50c4bae7-b040-4ee4-8863-393dfc279750",
+      "dependsOn": []
+    },
+    {
+      "ref": "eb320e92-8bb2-4016-a140-dbecda153882",
+      "dependsOn": []
+    },
+    {
+      "ref": "914bedd7-bd67-456a-8daa-55f552bc86a5",
+      "dependsOn": []
+    }
+  ]
+}
