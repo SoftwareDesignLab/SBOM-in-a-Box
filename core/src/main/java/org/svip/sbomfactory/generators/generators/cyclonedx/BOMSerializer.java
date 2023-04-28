@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.generators.generators.cyclonedx;
 
+import org.svip.sbom.model.PURL;
 import org.svip.sbomfactory.generators.generators.utils.License;
 import org.svip.sbomfactory.generators.generators.utils.Tool;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -145,7 +146,7 @@ public class BOMSerializer extends StdSerializer<BOM> {
         // External identifiers
         //
 
-        writeFieldIfExists(jsonGenerator, "purl", String.join(", ", component.getPURL()));
+        writeFieldIfExists(jsonGenerator, "purl", String.join(", ", component.getPURL().stream().map(PURL::toString).toList()));
         // TODO Add CPEs and SWIDs
 
         //

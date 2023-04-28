@@ -1,11 +1,8 @@
 package org.svip.sbomfactory.generators.utils;
 
+import org.svip.sbom.model.PURL;
 import org.svip.sbomfactory.generators.generators.utils.License;
 import org.svip.sbomfactory.generators.generators.utils.LicenseManager;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.sbom.model.Component;
 
 import java.util.HashSet;
@@ -65,9 +62,19 @@ public class ParserComponent extends Component {
     private String alias;                   // Used name, ie 'import foo as bar'; name = foo, alias = bar
     private String file;                    // The file that this component is parsed from
     private Set<License> resolvedLicenses;
-    // TODO we are no longer writing directly to a depfile - is this needed solely for the toString?
-    private static final ObjectMapper OM = new ObjectMapper(new JsonFactory()); // Object Mapper Initialization
-    static { OM.setSerializationInclusion(JsonInclude.Include.NON_NULL); } // Object Mapper Configuration
+    /**
+     * Unique identifiers of the component (ex: CDX uses purl and/or cpe)
+     */
+    private Set<String> CPE;
+    private Set<PURL> PURL;
+    private Set<String> SWID;
+    /**
+     * Unique identifier for SPDX component
+     */
+    private String SPDXid;
+//    // TODO we are no longer writing directly to a depfile - is this needed solely for the toString?
+//    private static final ObjectMapper OM = new ObjectMapper(new JsonFactory()); // Object Mapper Initialization
+//    static { OM.setSerializationInclusion(JsonInclude.Include.NON_NULL); } // Object Mapper Configuration
 
     //#endregion
 
@@ -96,9 +103,15 @@ public class ParserComponent extends Component {
     public String getAlias() { return this.alias; }
     public String getFile() { return this.file; }
 
-    public Set<License> getResolvedLicenses() {
-        return resolvedLicenses;
-    }
+    public Set<License> getResolvedLicenses() { return resolvedLicenses; }
+    public Set<String> getCPE() { return CPE; }
+    public Set<PURL> getPURL() { return PURL; }
+    public String getSPDXID() { return SPDXid; }
+    public Set<String> getSWID() { return SWID; }
+    public void setCPE(Set<String> cpe) { this.CPE = cpe; }
+    public void addCPE(String cpe) { this.CPE.add(cpe); }
+    public void addPURL(PURL purl) { this.PURL.add(purl); }
+    public void addSWID(String swid) { this.SWID.add(swid); }
 
     //#endregion
 
@@ -107,6 +120,10 @@ public class ParserComponent extends Component {
     public void setType(Type type) { this.type = type; }
     public void setDepth(int depth) { this.depth = depth; }
     public void setAlias(String alias) { this.alias = alias; }
+    public void setPURL(Set<PURL> PURL) { this.PURL = PURL; }
+    public void setSWID(Set<String> swid) { this.SWID = swid; }
+    public void setSPDXID(String spdxid) { this.SPDXid = spdxid; }
+
     public void setFile(String file) {
         this.file = file;
         if(this.type.equals(Type.UNKNOWN)) {
@@ -203,17 +220,17 @@ public class ParserComponent extends Component {
         return uuid;
     }
 
-    /**
-     * Returns a string representation of this Component including parent
-     * and children Component references.
-     *
-     * @return a Full String representation of this Component
-     */
-    @Override
-    public String toString() {
-        try { return ParserComponent.OM.writerWithDefaultPrettyPrinter().writeValueAsString(this); }
-        catch (JsonProcessingException e) { return "Component[" + this.hashCode() + "]"; }
-    }
+//    /**
+//     * Returns a string representation of this Component including parent
+//     * and children Component references.
+//     *
+//     * @return a Full String representation of this Component
+//     */
+//    @Override
+//    public String toString() {
+//        try { return ParserComponent.OM.writerWithDefaultPrettyPrinter().writeValueAsString(this); }
+//        catch (JsonProcessingException e) { return "Component[" + this.hashCode() + "]"; }
+//    }
 
     @Override
     public boolean equals(Object o) {
