@@ -1,7 +1,7 @@
 package org.svip.sbomfactory.generators.utils;
 
-import org.svip.sbomfactory.generators.generators.License;
-import org.svip.sbomfactory.generators.generators.LicenseManager;
+import org.svip.sbomfactory.generators.generators.utils.License;
+import org.svip.sbomfactory.generators.generators.utils.LicenseManager;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;

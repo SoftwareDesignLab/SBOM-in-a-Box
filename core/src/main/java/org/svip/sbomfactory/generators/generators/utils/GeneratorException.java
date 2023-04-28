@@ -1,4 +1,4 @@
-package org.svip.sbomfactory.generators.generators;
+package org.svip.sbomfactory.generators.generators.utils;
 
 /**
  * An exception to be thrown if there is an error processing data in one of the classes belonging to the

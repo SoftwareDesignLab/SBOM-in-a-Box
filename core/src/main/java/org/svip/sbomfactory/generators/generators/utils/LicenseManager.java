@@ -1,4 +1,4 @@
-package org.svip.sbomfactory.generators.generators;
+package org.svip.sbomfactory.generators.generators.utils;
 
 import org.svip.sbomfactory.generators.utils.QueryWorker;
 import org.svip.sbomfactory.generators.utils.SPDXLicenseQueryWorker;

@@ -1,6 +1,8 @@
 package org.svip.sbomfactory.generators.generators;
 
 import org.svip.sbomfactory.generators.generators.spdx.Document;
+import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
+import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbom.model.Component;

@@ -1,4 +1,4 @@
-package org.svip.sbomfactory.generators.generators;
+package org.svip.sbomfactory.generators.generators.utils;
 
 
 import com.fasterxml.jackson.core.JsonFactory;
@@ -9,6 +9,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.svip.sbom.model.SBOM;
+import org.svip.sbomfactory.generators.generators.CycloneDXGenerator;
+import org.svip.sbomfactory.generators.generators.SBOMGenerator;
+import org.svip.sbomfactory.generators.generators.SPDXGenerator;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;

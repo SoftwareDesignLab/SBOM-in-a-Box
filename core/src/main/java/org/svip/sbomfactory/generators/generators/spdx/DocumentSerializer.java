@@ -1,6 +1,6 @@
 package org.svip.sbomfactory.generators.generators.spdx;
 
-import org.svip.sbomfactory.generators.generators.License;
+import org.svip.sbomfactory.generators.generators.utils.License;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;

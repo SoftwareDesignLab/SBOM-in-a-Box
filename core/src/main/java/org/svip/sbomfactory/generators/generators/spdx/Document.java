@@ -2,6 +2,9 @@ package org.svip.sbomfactory.generators.generators.spdx;
 
 import org.svip.sbomfactory.generators.generators.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
+import org.svip.sbomfactory.generators.generators.utils.License;
+import org.svip.sbomfactory.generators.generators.utils.Tool;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 

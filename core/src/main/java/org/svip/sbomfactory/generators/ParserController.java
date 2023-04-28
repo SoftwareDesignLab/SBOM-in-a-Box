@@ -1,6 +1,6 @@
 package org.svip.sbomfactory.generators;
 
-import org.svip.sbomfactory.generators.generators.GeneratorSchema;
+import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.parsers.languages.*;
 import org.svip.sbomfactory.generators.parsers.packagemanagers.*;
