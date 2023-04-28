@@ -1,6 +1,7 @@
 package org.svip.sbom.model;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -132,6 +133,16 @@ public class SBOM {
         this(from.getOriginFormat(), from.getSpecVersion(), from.getSbomVersion(), from.getSupplier(), from.getSerialNumber(), from.getTimestamp(), from.getSignature(), null);
     }
 
+    // TODO: Docstring
+    public SBOM(String projectName) {
+        // Creates an empty SBOM Object with a new DependencyTree for ParserController
+        this((String) null, null, null, null, null, null, null, new DependencyTree());
+
+        // TODO: Used to be new ParserComponent, may not initialize everything correctly
+        // Creates a head component for the dependencies to exist in
+        this.dependencyTree.addComponent(null, new Component(projectName));
+    }
+
     /**
      * Get a set of all components in the project
      *
@@ -150,6 +161,17 @@ public class SBOM {
      */
     public UUID addComponent(UUID parent, Component toAdd) {
         return dependencyTree.addComponent(parent, toAdd);
+    }
+
+    /**
+     * Add multiple components into the dependency tree
+     *
+     * @param parent Parent UUID (null for root component)
+     * @param toAdd  Components to add into the tree
+     * @return UUID of added component (null if failed)
+     */
+    public void addComponents(UUID parent, List<? extends Component> toAdd) {
+        dependencyTree.addComponents(parent, toAdd);
     }
 
     /**

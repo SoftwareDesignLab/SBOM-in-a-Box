@@ -1,9 +1,6 @@
 package org.svip.sbom.model;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * File: DependencyTree.java
@@ -74,6 +71,15 @@ public class DependencyTree {
         if (toAdd != null) { toAdd.setUUID(componentUUID); }
 
         return componentUUID;
+    }
+
+    // TODO: Docstring
+    public void addComponents(UUID parent, List<? extends Component> toAdd) {
+        for (Component c : toAdd) {
+            UUID added = this.addComponent(parent, c);
+            // TODO: Use logging system?
+//            if(added != null) log(Debug.LOG_TYPE.INFO, "New Component: " + ((ParserComponent) c).toReadableString());
+        }
     }
 
     /**

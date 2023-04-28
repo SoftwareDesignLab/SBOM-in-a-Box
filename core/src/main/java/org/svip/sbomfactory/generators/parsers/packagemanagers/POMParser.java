@@ -3,6 +3,7 @@ package org.svip.sbomfactory.generators.parsers.packagemanagers;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.QueryWorker;
+import org.svip.sbom.model.PURL;
 
 import java.util.*;
 import java.util.regex.MatchResult;
@@ -76,11 +77,11 @@ public class POMParser extends PackageManagerParser {
             PURLData.put("name", artifactId);
             if(groupId != null) PURLData.put("namespace", groupId);
             if(version != null) PURLData.put("version", version);
-            String PURL = PackageManagerParser.buildPURL(PURLData);
+            String PURLString = PackageManagerParser.buildPURL(PURLData);
 
             // Add built PURL
-            c.addPURL(PURL); // TODO: Use PURL class y/n?
-            log(LOG_TYPE.DEBUG, String.format("Dependency Found with PURL: %s", PURL));
+            c.addPURL(new PURL(PURLString)); // TODO: Use PURL class y/n?
+            log(LOG_TYPE.DEBUG, String.format("Dependency Found with PURL: %s", PURLString));
 
             // Build URL and worker object
             if(groupId != null) {

@@ -153,6 +153,11 @@ public class Component {
         this.swids = SWID;
     }
 
+    // TODO: Docstring
+    public Component(String name) {
+        this(name, null);
+    }
+
     /**
      * Copy a component's attributes to this component
      *
@@ -307,6 +312,24 @@ public class Component {
 
     public Set<VEX> getVulnerabilities() {
         return vulnerabilities;
+    }
+
+    // TODO: Docstring
+    public UUID generateUUID() {
+        // Return this.uuid if one is already assigned
+        if(this.uuid != null) return this.uuid;
+
+        // Convert unique Component identifiers to byte representation
+        byte[] uuidBytes = (this.getName() + this.getVersion()).getBytes();
+
+        // Generate UUID
+        final UUID uuid = UUID.nameUUIDFromBytes(uuidBytes);
+
+        // Set generated UUID
+        this.setUUID(uuid);
+
+        // Return generated UUID
+        return uuid;
     }
 
     ///
