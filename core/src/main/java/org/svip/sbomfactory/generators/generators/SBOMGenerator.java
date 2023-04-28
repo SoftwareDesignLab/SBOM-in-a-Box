@@ -78,7 +78,7 @@ public class SBOMGenerator {
         this.internalSBOM = internalSBOM;
         this.schema = schema;
 
-        String hash = getHash();
+        String hash = DigestUtils.sha256Hex(this.toString());
 
         /*
             Non-SBOM specific settings
@@ -143,32 +143,6 @@ public class SBOMGenerator {
 
     //#endregion
 
-    //#region Getters
-
-    protected Tool getTool() {
-        return tool;
-    }
-
-    /**
-     * Generate a unique hash for this generator instance based on unique fields such as the internal SBOM and its
-     * filetype, origin format, and specification version.
-     *
-     * @return A SHA256 hash represented as a string.
-     */
-    protected String getHash() {
-        return DigestUtils.sha256Hex(this.toString());
-    }
-
-    /**
-     * Gets the project name, which is defined as the name of the head component of the internal DependencyTree by the
-     * parser.
-     *
-     * @return The name of the project.
-     */
-    public String getProjectName() { return internalSBOM.getComponent(internalSBOM.getHeadUUID()).getName(); }
-
-    //#endregion
-
     //#region Utility Methods
 
     private BOMStore buildBOMStore() {
@@ -183,7 +157,7 @@ public class SBOMGenerator {
             bomStore = new CycloneDXStore(serialNumber, 1, headComponent);
         }
 
-        bomStore.addTool(this.getTool()); // Add our tool as info
+        bomStore.addTool(tool); // Add our tool as info
 
         // Add all depth 0 components as packages
         final Set<Component> componentSet = internalSBOM
@@ -241,8 +215,8 @@ public class SBOMGenerator {
         if(os.contains("win")) path.append('\\');
         if(os.contains("mac") || os.contains("nix") || os.contains("nux") || os.contains("aix")) path.append('/');
 
-
-        path.append(getProjectName()) // Append project name
+        String projectName = internalSBOM.getComponent(internalSBOM.getHeadUUID()).getName();
+        path.append(projectName) // Append project name
                 .append("_").append(this.schema) // Append origin format for transparency
                 .append('.').append(format.getExtension()); // Append file extension
 
