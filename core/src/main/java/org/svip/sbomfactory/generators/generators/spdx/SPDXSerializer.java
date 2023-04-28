@@ -281,7 +281,7 @@ public class SPDXSerializer extends StdSerializer<SPDXStore> {
         writeFieldIfExists(jsonGenerator, "versionInfo", pkg.getVersion()); // Version info of the package
 
         // Supplier of the package
-        if(pkg.getPublisher() != null && pkg.getPublisher().length() > 0)
+        if(pkg.getPublisher() != null && pkg.getPublisher().length() > 0 && !pkg.getPublisher().equals("Unknown"))
             jsonGenerator.writeStringField("supplier", "Organization: " + pkg.getPublisher());
 
         jsonGenerator.writeEndObject(); // }
