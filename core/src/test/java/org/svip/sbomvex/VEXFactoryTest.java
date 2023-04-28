@@ -42,7 +42,7 @@ public class VEXFactoryTest {
         Component c2 = new Component("product", "publisher", "0.0.0");
         c2.setCpes(new HashSet<>(List.of(new String[]{"thisisacpe"})));
 
-        SBOM sbom = new SBOM("SBOM", "1.0", "1.0", "someSupplier", "1", "2021-01-01", null, null);
+        SBOM sbom = new SBOM("SBOM", "1.0", "1.0", "someSupplier", "1", "2021-01-01", null, new DependencyTree());
         sbom.addComponent(null, c1);
         sbom.addComponent(null, c2);
 

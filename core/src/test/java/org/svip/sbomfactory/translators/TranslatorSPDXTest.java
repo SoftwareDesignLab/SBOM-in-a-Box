@@ -23,17 +23,17 @@ public class TranslatorSPDXTest {
      * Test Constants
      */
 
-    private static final String TEST_SPDX_v2_3_SBOM = "src/test/java/org/nvip/plugfest/tooling/sample_boms/sbom.alpine.2-3.spdx";
+    private static final String TEST_SPDX_v2_3_SBOM = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.alpine.2-3.spdx";
 
-    private static final String TEST_SPDX_v2_2_SBOM = "src/test/java/org/nvip/plugfest/tooling/sample_boms/sbom.docker.2-2.spdx";
+    private static final String TEST_SPDX_v2_2_SBOM = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.docker.2-2.spdx";
 
-    private static final String TEST_SPDX_LARGE_v2_3_SBOM = "src/test/java/org/nvip/plugfest/tooling/sample_boms/sbom.python.2-3.spdx";
+    private static final String TEST_SPDX_LARGE_v2_3_SBOM = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.python.2-3.spdx";
 
-    private static final String TEST_SBOM_DOESNT_EXIST = "src/test/java/org/nvip/plugfest/tooling/sample_boms/sbom.idontexist.spdx";
+    private static final String TEST_SBOM_DOESNT_EXIST = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.idontexist.spdx";
 
-    private static final String TEST_SBOM_SPDX_NO_COMPONENTS = "src/test/java/org/nvip/plugfest/tooling/sample_boms/sbom.nocomponents.2-3.spdx";
+    private static final String TEST_SBOM_SPDX_NO_COMPONENTS = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.nocomponents.2-3.spdx";
 
-    private static final String TEST_SBOM_SPDX_EMPTY = "src/test/java/org/nvip/plugfest/tooling/sample_boms/sbom.empty.2-3.spdx";
+    private static final String TEST_SBOM_SPDX_EMPTY = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.empty.2-3.spdx";
 
     /**
      * Tests

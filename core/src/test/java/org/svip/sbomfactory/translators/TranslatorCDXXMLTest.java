@@ -27,10 +27,10 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class TranslatorCDXXMLTest {
 
-    public static final String test_small_cdx = "src/test/java/org/nvip/plugfest/tooling/sample_boms/sbom.alpine.xml";
-    public static final String test_large_cdx = "src/test/java/org/nvip/plugfest/tooling/sample_boms/sbom.python.xml";
-    public static final String test_no_metadata_cdx = "src/test/java/org/nvip/plugfest/tooling/sample_boms/sbom.nometadata.xml";
-    public static final String test_no_components_cdx = "src/test/java/org/nvip/plugfest/tooling/sample_boms/sbom.nocomponents.xml";
+    public static final String test_small_cdx = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.alpine.xml";
+    public static final String test_large_cdx = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.python.xml";
+    public static final String test_no_metadata_cdx = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.nometadata.xml";
+    public static final String test_no_components_cdx = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.nocomponents.xml";
 
 
     @Test

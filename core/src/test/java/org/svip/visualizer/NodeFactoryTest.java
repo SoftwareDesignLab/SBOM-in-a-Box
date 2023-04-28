@@ -60,6 +60,7 @@ public class NodeFactoryTest {
                 "\"sbomId\":\""+ headNodeId + "\"," +
                 "\"version\":\"1.1\"," +
                 "\"vulnerabilities\":[]," +
+                "\"conflicts\":[]," +
                 "\"children\":[]"+
                 "}";
 
@@ -83,6 +84,7 @@ public class NodeFactoryTest {
                 "\"sbomId\":\""+ depthTwoNode + "\"," +
                 "\"version\":\"2\"," +
                 "\"vulnerabilities\":[]," +
+                "\"conflicts\":[]," +
                 "\"children\":[]"+
                 "}";
 
@@ -91,6 +93,7 @@ public class NodeFactoryTest {
                 "\"sbomId\":\""+ depthOneNode + "\"," +
                 "\"version\":\"1\"," +
                 "\"vulnerabilities\":[]," +
+                "\"conflicts\":[]," +
                 "\"children\":[" + depthTwoString + "]"+
                 "}";
 
@@ -99,6 +102,7 @@ public class NodeFactoryTest {
                 "\"sbomId\":\""+ depthZeroNode + "\"," +
                 "\"version\":\"0\"," +
                 "\"vulnerabilities\":[]," +
+                "\"conflicts\":[]," +
                 "\"children\":[" + depthOneString + "]"+
                 "}";
 
@@ -125,6 +129,7 @@ public class NodeFactoryTest {
                 "\"sbomId\":\""+ depthTwoANode + "\"," +
                 "\"version\":\"2\"," +
                 "\"vulnerabilities\":[]," +
+                "\"conflicts\":[]," +
                 "\"children\":[]"+
                 "}";
 
@@ -133,6 +138,7 @@ public class NodeFactoryTest {
                 "\"sbomId\":\""+ depthTwoBNode + "\"," +
                 "\"version\":\"2\"," +
                 "\"vulnerabilities\":[]," +
+                "\"conflicts\":[]," +
                 "\"children\":[]"+
                 "}";
 
@@ -141,6 +147,7 @@ public class NodeFactoryTest {
                 "\"sbomId\":\""+ depthOneANode + "\"," +
                 "\"version\":\"1\"," +
                 "\"vulnerabilities\":[]," +
+                "\"conflicts\":[]," +
                 "\"children\":[" + depthTwoAString + "]"+
                 "}";
 
@@ -149,6 +156,7 @@ public class NodeFactoryTest {
                 "\"sbomId\":\""+ depthOneBNode + "\"," +
                 "\"version\":\"1\"," +
                 "\"vulnerabilities\":[]," +
+                "\"conflicts\":[]," +
                 "\"children\":[" + depthTwoBString + "]"+
                 "}";
 
@@ -157,6 +165,7 @@ public class NodeFactoryTest {
                 "\"sbomId\":\""+ depthZeroNode + "\"," +
                 "\"version\":\"0\"," +
                 "\"vulnerabilities\":[]," +
+                "\"conflicts\":[]," +
                 "\"children\":[" + depthOneAString + "," + depthOneBString + "]"+
                 "}";
 
@@ -165,9 +174,12 @@ public class NodeFactoryTest {
                 "\"sbomId\":\""+ depthZeroNode + "\"," +
                 "\"version\":\"0\"," +
                 "\"vulnerabilities\":[]," +
+                "\"conflicts\":[]," +
                 "\"children\":[" + depthOneBString + "," + depthOneAString + "]"+
                 "}";
 
-        assertTrue(expectedString.equals(nodeFactory.CreateNodeGraphJSON(sbom)) || expectedStringAltOrder.equals(nodeFactory.CreateNodeGraphJSON(sbom)));
+        String createdString = nodeFactory.CreateNodeGraphJSON(sbom);
+
+        assertTrue(expectedString.equals(createdString) || expectedStringAltOrder.equals(createdString));
     }
 }

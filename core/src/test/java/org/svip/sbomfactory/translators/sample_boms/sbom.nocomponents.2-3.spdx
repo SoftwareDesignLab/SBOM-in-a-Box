@@ -1,0 +1,13 @@
+SPDXVersion: SPDX-2.3
+DataLicense: CC0-1.0
+SPDXID: SPDXRef-DOCUMENT
+DocumentName: /bound_dir/code
+DocumentNamespace: https://anchore.com/syft/dir/bound_dir/code-f5ca45a7-b601-4578-961e-f456a3b55f5b
+LicenseListVersion: 3.19
+Creator: Organization: Anchore, Inc
+Creator: Tool: syft-0.72.0
+Created: 2023-02-20T13:54:58Z
+
+##### Relationships
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-DOCUMENT

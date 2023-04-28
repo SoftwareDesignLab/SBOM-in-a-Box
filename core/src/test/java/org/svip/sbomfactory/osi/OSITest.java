@@ -21,8 +21,8 @@ public class OSITest {
     */
     @Test
     public void generateSBOMsEmptyTest() {
-        OSI osi = new OSI("src/main/java/com/svip/osi/core/bound_dir" , "/src/main/java/com/svip/osi/core/Dockerfile");
-        assert osi.generateSBOMs(System.getProperty("user.dir") + "/src/test/java/com/svip/osi/core/sampleProjectEmpty") == 1;
+        OSI osi = new OSI("/src/main/java/org/svip/sbomfactory/osi/bound_dir" , "/src/main/java/org/svip/sbomfactory/osi/Dockerfile");
+        assert osi.generateSBOMs(System.getProperty("user.dir") + "/src/test/java/org/svip/sbomfactory/osi/sampleProjectEmpty") == 1;
     }
 
     /**
@@ -30,8 +30,8 @@ public class OSITest {
     */
     @Test
     public void generateSBOMsTest() {
-        OSI osi = new OSI("src/main/java/com/svip/osi/core/bound_dir" , "/src/main/java/com/svip/osi/core/Dockerfile");
-        assert osi.generateSBOMs(System.getProperty("user.dir") + "/src/test/java/com/svip/osi/core/sampleProject") == 0;
+        OSI osi = new OSI("/src/main/java/org/svip/sbomfactory/osi/bound_dir" , "/src/main/java/org/svip/sbomfactory/osi/Dockerfile");
+        assert osi.generateSBOMs(System.getProperty("user.dir") + "/src/test/java/org/svip/sbomfactory/osi/sampleProject") == 0;
     }
 
 }
