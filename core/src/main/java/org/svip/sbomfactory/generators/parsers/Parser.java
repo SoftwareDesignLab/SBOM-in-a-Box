@@ -1,4 +1,4 @@
-package parsers;
+package org.svip.sbomfactory.generators.parsers;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 

@@ -2,7 +2,7 @@ package org.svip.sbomfactory.generators.parsers.contexts;
 
 // Declares Imports
 import java.util.*;
-import parsers.Parser;
+import org.svip.sbomfactory.generators.parsers.Parser;
 
 /**
  * file: ContextParser.java
