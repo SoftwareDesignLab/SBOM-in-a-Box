@@ -41,8 +41,6 @@ public class ParserController {
     private final SBOM SBOM;
     private final AtomicInteger dirCount;
     private final AtomicInteger fileCount;
-    // TODO: Remove outputFileType
-//    private SBOMGenerator.FORMAT outputFileType; // Output file type
     private static final ObjectMapper OM = new ObjectMapper(new JsonFactory()); // ObjectMapper Initialization
     static { OM.setSerializationInclusion(JsonInclude.Include.NON_NULL); } // ObjectMapper Configuration
     private static final HashMap<String, Parser> EXTENSION_MAP = new HashMap<>() {{
@@ -90,7 +88,7 @@ public class ParserController {
      *
      * @param PWD a Path to the present working directory
      */
-    public ParserController(Path PWD/*, SBOMGenerator.FORMAT outputFileType*/) { // TODO: Remove outputFileType
+    public ParserController(Path PWD) {
         // Set attributes
         this.projectName = PWD.getFileName().toString();
         this.PWD = PWD;
@@ -114,8 +112,6 @@ public class ParserController {
     public int getDirCount() { return this.dirCount.intValue(); }
     public int getFileCount() { return this.fileCount.intValue(); }
     public int getDepCount() { return this.SBOM.getAllComponents().size(); } // TODO: Direct method in SBOM to count
-    // TODO: Remove outputFileType
-//    public SBOMGenerator.FORMAT getOutputFileType() { return outputFileType; }
     public SBOM getSBOM() { return this.SBOM; }
 
     //#endregion

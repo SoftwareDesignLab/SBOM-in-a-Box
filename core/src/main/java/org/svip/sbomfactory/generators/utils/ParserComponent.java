@@ -66,9 +66,6 @@ public class ParserComponent extends Component {
      * Unique identifier for SPDX component
      */
     private String SPDXid;
-//    // TODO we are no longer writing directly to a depfile - is this needed solely for the toString?
-//    private static final ObjectMapper OM = new ObjectMapper(new JsonFactory()); // Object Mapper Initialization
-//    static { OM.setSerializationInclusion(JsonInclude.Include.NON_NULL); } // Object Mapper Configuration
 
     //#endregion
 
@@ -76,9 +73,9 @@ public class ParserComponent extends Component {
 
     public ParserComponent(String name) {
         super(name, null);
-        this.setUnpackaged(true); // TODO Set unpackaged until we assume otherwise
+        this.setUnpackaged(true);
         this.file = null;
-        this.type = Type.UNKNOWN; // TODO Set UNKNOWN until we assume otherwise
+        this.type = Type.UNKNOWN;
         this.resolvedLicenses = new HashSet<>();
     }
 
