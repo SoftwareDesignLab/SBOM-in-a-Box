@@ -93,6 +93,7 @@ public class Component {
         this.cpes = new HashSet<>();
         this.purls = new HashSet<>();
         this.swids = new HashSet<>();
+        this.licenses = new HashSet<>();
         this.componentConflicts = new HashSet<>();
         this.unpackaged = false;
     }

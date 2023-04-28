@@ -100,7 +100,8 @@ public class ParserController {
 //        this.outputFileType = outputFileType;
 
         // Create new SBOM Object
-        this.SBOM = new SBOM(this.projectName);
+        ParserComponent headComponent = new ParserComponent(this.projectName);
+        this.SBOM = new SBOM(headComponent);
     }
 
     //#endregion

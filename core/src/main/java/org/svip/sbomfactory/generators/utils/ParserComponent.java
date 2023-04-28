@@ -63,12 +63,6 @@ public class ParserComponent extends Component {
     private String file;                    // The file that this component is parsed from
     private Set<License> resolvedLicenses;
     /**
-     * Unique identifiers of the component (ex: CDX uses purl and/or cpe)
-     */
-    private Set<String> CPE;
-    private Set<PURL> PURL;
-    private Set<String> SWID;
-    /**
      * Unique identifier for SPDX component
      */
     private String SPDXid;
@@ -104,14 +98,7 @@ public class ParserComponent extends Component {
     public String getFile() { return this.file; }
 
     public Set<License> getResolvedLicenses() { return resolvedLicenses; }
-    public Set<String> getCPE() { return CPE; }
-    public Set<PURL> getPURL() { return PURL; }
     public String getSPDXID() { return SPDXid; }
-    public Set<String> getSWID() { return SWID; }
-    public void setCPE(Set<String> cpe) { this.CPE = cpe; }
-    public void addCPE(String cpe) { this.CPE.add(cpe); }
-    public void addPURL(PURL purl) { this.PURL.add(purl); }
-    public void addSWID(String swid) { this.SWID.add(swid); }
 
     //#endregion
 
@@ -120,8 +107,6 @@ public class ParserComponent extends Component {
     public void setType(Type type) { this.type = type; }
     public void setDepth(int depth) { this.depth = depth; }
     public void setAlias(String alias) { this.alias = alias; }
-    public void setPURL(Set<PURL> PURL) { this.PURL = PURL; }
-    public void setSWID(Set<String> swid) { this.SWID = swid; }
     public void setSPDXID(String spdxid) { this.SPDXid = spdxid; }
 
     public void setFile(String file) {

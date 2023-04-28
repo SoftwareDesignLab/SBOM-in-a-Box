@@ -134,13 +134,12 @@ public class SBOM {
     }
 
     // TODO: Docstring
-    public SBOM(String projectName) {
+    public SBOM(Component headComponent) {
         // Creates an empty SBOM Object with a new DependencyTree for ParserController
         this((String) null, null, null, null, null, null, null, new DependencyTree());
 
-        // TODO: Used to be new ParserComponent, may not initialize everything correctly
         // Creates a head component for the dependencies to exist in
-        this.dependencyTree.addComponent(null, new Component(projectName));
+        this.dependencyTree.addComponent(null, headComponent);
     }
 
     /**

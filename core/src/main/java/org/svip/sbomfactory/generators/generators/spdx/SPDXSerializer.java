@@ -219,7 +219,7 @@ public class SPDXSerializer extends StdSerializer<SPDXStore> {
         //
 
         // If any external identifiers exist, write all types into one array
-        if(pkg.getCPE().size() + pkg.getPURL().size() + pkg.getSWID().size() > 0) {
+        if(pkg.getCpes().size() + pkg.getPurls().size() + pkg.getSwids().size() > 0) {
             jsonGenerator.writeFieldName("externalRefs");
             jsonGenerator.writeStartArray(); // [
 
@@ -228,8 +228,8 @@ public class SPDXSerializer extends StdSerializer<SPDXStore> {
             //
 
             // If any PURLs exist
-            if(pkg.getPURL().size() > 0) { // TODO Do this for CPEs and SWIDs once we support them
-                for(PURL purl : pkg.getPURL())
+            if(pkg.getPurls().size() > 0) { // TODO Do this for CPEs and SWIDs once we support them
+                for(PURL purl : pkg.getPurls())
                     // Write the external reference data of the PURL to an object
                     writeExternalRef(jsonGenerator, REFERENCE_CATEGORY.SECURITY, "purl", purl.toString());
             }
