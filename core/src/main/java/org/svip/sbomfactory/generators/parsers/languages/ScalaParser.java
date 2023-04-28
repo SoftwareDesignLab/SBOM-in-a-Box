@@ -1,6 +1,6 @@
-package parsers.languages;
+package org.svip.sbomfactory.generators.parsers.languages;
 
-import utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,8 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static utils.Debug.LOG_TYPE;
-import static utils.Debug.log;
+import static org.svip.sbomfactory.generators.utils.Debug.*;
 
 /**
  * file: ScalaParser.java

@@ -1,7 +1,7 @@
-package parsers.packagemanagers;
+package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
 import com.fasterxml.jackson.core.JsonFactory;
-import utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
 import java.util.Arrays;

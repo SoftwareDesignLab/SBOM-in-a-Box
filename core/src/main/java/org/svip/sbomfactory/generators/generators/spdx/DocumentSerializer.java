@@ -1,10 +1,10 @@
-package generators.spdx;
+package org.svip.sbomfactory.generators.generators.spdx;
 
-import generators.License;
+import org.svip.sbomfactory.generators.generators.License;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.IOException;
 import java.util.Map;

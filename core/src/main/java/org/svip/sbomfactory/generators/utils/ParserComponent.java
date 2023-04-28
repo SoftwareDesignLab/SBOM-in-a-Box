@@ -1,12 +1,12 @@
-package utils;
+package org.svip.sbomfactory.generators.utils;
 
-import generators.License;
-import generators.LicenseManager;
+import org.svip.sbomfactory.generators.generators.License;
+import org.svip.sbomfactory.generators.generators.LicenseManager;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import utils.SBOM.Component;
+import org.svip.sbom.model.Component;
 
 import java.util.HashSet;
 import java.util.Objects;

@@ -1,15 +1,15 @@
-package generators;
+package org.svip.sbomfactory.generators.generators;
 
-import utils.QueryWorker;
-import utils.SPDXLicenseQueryWorker;
-import utils.Debug;
+import org.svip.sbomfactory.generators.utils.QueryWorker;
+import org.svip.sbomfactory.generators.utils.SPDXLicenseQueryWorker;
+import org.svip.sbomfactory.generators.utils.Debug;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static utils.Debug.log;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
  * File: LicenseManager.java

@@ -1,6 +1,6 @@
-package generators;
+package org.svip.sbomfactory.generators.generators;
 
-import utils.Debug;
+import org.svip.sbomfactory.generators.utils.Debug;
 
 /**
  * File: License.java

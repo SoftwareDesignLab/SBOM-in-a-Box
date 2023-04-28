@@ -1,5 +1,7 @@
-import generators.GeneratorSchema;
-import utils.Debug;
+package org.svip.sbomfactory.generators;
+
+import org.svip.sbomfactory.generators.generators.GeneratorSchema;
+import org.svip.sbomfactory.generators.utils.Debug;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
@@ -11,17 +13,16 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
-import static utils.Debug.LOG_TYPE;
-import static utils.Debug.log;
+import static org.svip.sbomfactory.generators.utils.Debug.*;
 
 /**
- * file: Main.java
- * Description: Entry for BenchmarkParser code
+ * file: GeneratorsTestMain.java
+ * Description: Entry for Generators code
  *
  * @author Dylan Mulligan
  * @author Derek Garcia
  */
-public class Main {
+public class GeneratorsTestMain {
 
     //#region Exceptions
 

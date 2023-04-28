@@ -1,4 +1,4 @@
-package utils;
+package org.svip.sbomfactory.generators.utils;
 
 import java.util.Map;
 import java.util.regex.Matcher;

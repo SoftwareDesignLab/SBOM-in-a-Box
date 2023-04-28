@@ -1,4 +1,4 @@
-package utils;
+package org.svip.sbomfactory.generators.utils;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

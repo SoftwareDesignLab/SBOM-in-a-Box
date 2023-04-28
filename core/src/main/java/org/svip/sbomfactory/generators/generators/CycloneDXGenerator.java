@@ -1,17 +1,17 @@
-package generators;
+package org.svip.sbomfactory.generators.generators;
 
-import generators.cyclonedx.BOM;
-import utils.Debug;
-import utils.ParserComponent;
-import utils.SBOM.Component;
-import utils.SBOM.SBOM;
-import utils.SBOM.SBOMType;
+import org.svip.sbomfactory.generators.generators.cyclonedx.BOM;
+import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.SBOMType;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
-import static utils.Debug.log;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
  * File: CDXGenerator.java

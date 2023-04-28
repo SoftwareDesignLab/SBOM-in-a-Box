@@ -1,14 +1,16 @@
-import generators.GeneratorSchema;
-import generators.SBOMGenerator;
-import parsers.languages.*;
-import parsers.packagemanagers.*;
-import parsers.contexts.*;
+package org.svip.sbomfactory.generators;
+
+import org.svip.sbomfactory.generators.generators.GeneratorSchema;
+import org.svip.sbomfactory.generators.generators.SBOMGenerator;
+import org.svip.sbomfactory.generators.parsers.languages.*;
+import org.svip.sbomfactory.generators.parsers.packagemanagers.*;
+import org.svip.sbomfactory.generators.parsers.contexts.*;
 import parsers.Parser;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import utils.ParserComponent;
-import utils.SBOM.SBOM;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbom.model.SBOM;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,8 +21,8 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static utils.Debug.LOG_TYPE;
-import static utils.Debug.log;
+import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
  * <b>File</b>: ParserController.java<br>

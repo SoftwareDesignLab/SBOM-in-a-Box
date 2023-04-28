@@ -1,4 +1,4 @@
-package generators.spdx;
+package org.svip.sbomfactory.generators.generators.spdx;
 
 /**
  * Dataclass to store a relationship between two SPDX IDs

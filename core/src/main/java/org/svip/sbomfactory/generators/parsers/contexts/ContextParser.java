@@ -1,4 +1,4 @@
-package parsers.contexts;
+package org.svip.sbomfactory.generators.parsers.contexts;
 
 // Declares Imports
 import java.util.*;

@@ -1,15 +1,15 @@
-package parsers.packagemanagers;
+package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
-import utils.ParserComponent;
-import utils.QueryWorker;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.QueryWorker;
 
 import java.util.*;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static utils.Debug.*;
+import static org.svip.sbomfactory.generators.utils.Debug.*;
 
 /**
  * file: POMParser.java
@@ -79,7 +79,7 @@ public class POMParser extends PackageManagerParser {
             String PURL = PackageManagerParser.buildPURL(PURLData);
 
             // Add built PURL
-            c.addPURL(PURL);
+            c.addPURL(PURL); // TODO: Use PURL class y/n?
             log(LOG_TYPE.DEBUG, String.format("Dependency Found with PURL: %s", PURL));
 
             // Build URL and worker object

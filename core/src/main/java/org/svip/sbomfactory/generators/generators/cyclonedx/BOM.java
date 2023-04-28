@@ -1,18 +1,15 @@
 package org.svip.sbomfactory.generators.generators.cyclonedx;
 
-import generators.CycloneDXGenerator;
-import generators.GeneratorException;
-import generators.License;
-import generators.Tool;
+import org.svip.sbomfactory.generators.generators.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import utils.Debug;
-import utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbom.model.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static utils.Debug.log;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
  * File: BOM.java

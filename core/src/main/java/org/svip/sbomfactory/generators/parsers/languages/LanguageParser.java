@@ -1,14 +1,14 @@
-package parsers.languages;
+package org.svip.sbomfactory.generators.parsers.languages;
 
 import parsers.Parser;
-import utils.Debug;
-import utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static utils.Debug.log;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
  * <b>File</b>: LanguageParser.java<br>

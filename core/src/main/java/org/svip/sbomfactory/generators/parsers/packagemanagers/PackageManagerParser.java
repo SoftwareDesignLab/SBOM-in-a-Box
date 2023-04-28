@@ -1,11 +1,11 @@
-package parsers.packagemanagers;
+package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
-import utils.QueryWorker;
+import org.svip.sbomfactory.generators.utils.QueryWorker;
 import parsers.Parser;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,8 +15,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static utils.Debug.LOG_TYPE;
-import static utils.Debug.log;
+import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
  * <b>File</b>: PackageManagerParser.java<br>

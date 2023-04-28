@@ -1,8 +1,8 @@
-package parsers.packagemanagers;
+package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
-import utils.ParserComponent;
-import utils.QueryWorker;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.QueryWorker;
 
 import java.util.*;
 

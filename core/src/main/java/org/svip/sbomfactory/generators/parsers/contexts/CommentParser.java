@@ -1,8 +1,8 @@
-package parsers.contexts;
+package org.svip.sbomfactory.generators.parsers.contexts;
 
 // Declares Imports
 import org.apache.commons.lang3.StringUtils;
-import utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 import java.util.ArrayList;
 
 /**

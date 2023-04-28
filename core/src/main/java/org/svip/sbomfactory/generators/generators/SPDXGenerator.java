@@ -1,18 +1,18 @@
-package generators;
+package org.svip.sbomfactory.generators.generators;
 
-import generators.spdx.Document;
-import utils.Debug;
-import utils.ParserComponent;
-import utils.SBOM.Component;
-import utils.SBOM.SBOM;
-import utils.SBOM.SBOMType;
+import org.svip.sbomfactory.generators.generators.spdx.Document;
+import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.SBOMType;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
-import static utils.Debug.log;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
  * File: SPDXGenerator.java
@@ -125,7 +125,7 @@ public class SPDXGenerator extends SBOMGenerator {
             ArrayList<ParserComponent> children = new ArrayList<>();
 
             // Loop through and recursively convert children
-            for (utils.SBOM.Component internal :
+            for (Component internal :
                     getInternalSBOM().getComponentChildren(component.getUUID())) {
                 // Add child to store as well as internal list so we can add dependencies recursively
                 children.add(this.addPackage(document, (ParserComponent) internal, true));

@@ -1,13 +1,13 @@
-package generators;
+package org.svip.sbomfactory.generators.generators;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import utils.Debug;
-import utils.SBOM.SBOM;
-import utils.SBOM.SBOMType;
+import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.SBOMType;
 
 import java.util.UUID;
 
-import static utils.Debug.log;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
  * File: SBOMGenerator.java

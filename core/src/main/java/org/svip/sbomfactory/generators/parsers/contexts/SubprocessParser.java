@@ -1,15 +1,15 @@
-package parsers.contexts;
+package org.svip.sbomfactory.generators.parsers.contexts;
 
 // Declares Imports
 import org.apache.commons.lang3.StringUtils;
-import utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import static utils.Debug.*;
+import static org.svip.sbomfactory.generators.utils.Debug.*;
 
 /**
  * file: SubprocessParser.java

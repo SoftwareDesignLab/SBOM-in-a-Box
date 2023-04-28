@@ -1,14 +1,14 @@
-package generators.spdx;
+package org.svip.sbomfactory.generators.generators.spdx;
 
-import generators.*;
+import org.svip.sbomfactory.generators.generators.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import utils.Debug;
-import utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static utils.Debug.log;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
  * File: Document.java

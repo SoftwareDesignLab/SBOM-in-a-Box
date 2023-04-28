@@ -1,4 +1,4 @@
-package generators;
+package org.svip.sbomfactory.generators.generators;
 
 import java.text.SimpleDateFormat;
 import java.util.*;

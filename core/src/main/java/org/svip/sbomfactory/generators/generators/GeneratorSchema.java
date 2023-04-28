@@ -1,4 +1,4 @@
-package generators;
+package org.svip.sbomfactory.generators.generators;
 
 
 import com.fasterxml.jackson.core.JsonFactory;
@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import utils.SBOM.SBOM;
+import org.svip.sbom.model.SBOM;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;

@@ -1,7 +1,7 @@
-package parsers.packagemanagers;
+package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
-import utils.ParserComponent;
-import utils.QueryWorker;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.QueryWorker;
 
 import java.util.ArrayList;
 import java.util.HashMap;

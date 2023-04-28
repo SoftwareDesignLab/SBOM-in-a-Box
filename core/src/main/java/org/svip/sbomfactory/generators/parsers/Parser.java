@@ -1,6 +1,6 @@
 package parsers;
 
-import utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -9,8 +9,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-import static utils.Debug.LOG_TYPE;
-import static utils.Debug.log;
+import static org.svip.sbomfactory.generators.utils.Debug.*;
 
 /**
  * <b>File</b>: Parser.java<br>

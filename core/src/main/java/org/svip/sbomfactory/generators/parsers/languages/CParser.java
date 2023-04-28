@@ -1,6 +1,6 @@
-package parsers.languages;
+package org.svip.sbomfactory.generators.parsers.languages;
 
-import utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.Arrays;
 import java.util.HashSet;
