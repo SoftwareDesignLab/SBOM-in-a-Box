@@ -1,8 +1,8 @@
-package parsers.languages;
+package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;

@@ -1,8 +1,8 @@
-package parsers.languages;
+package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -10,21 +10,21 @@ import java.util.regex.Matcher;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * file: RubyParserRegexTest.java
- * Description: Testing for Ruby, extends ParseRegexTestCore
+ * file: JavaParserRegexTest.java
+ * Description: Testing for Java import regex edge cases, extends ParseRegexTestCore
  *
  * @author Dylan Mulligan
  */
-public class RubyParserRegexTest extends ParseRegexTestCore {
+public class JavaParserRegexTest extends ParseRegexTestCore {
     /**
      * Constructor initializes a given parser and assigns both the
      * regex to test it against and the source directory to test on.
      *
      */
-    public RubyParserRegexTest() {
-        super(new RubyParser(),
-                "^(?:(?!#).)*(?:require [ '\\\"]*([\\w\\.\\/]+)[ '\\\"]*|load [ '\\\"]*([\\w\\.\\/]+)[ '\\\"]*)(?![^\\=]*\\=end)",
-                "TestData/Ruby");
+    public JavaParserRegexTest() {
+        super(new JavaParser(),
+                "^(?:(?!//).)*import(?: static)?(.*?)([\\w\\*]*);(?![^\\/\\*]*\\*\\/)",
+                "TestData/Java");
     }
 
     ///
@@ -32,9 +32,9 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
     ///
 
     @Test
-    @DisplayName("require fee")
-    void requireBasic() {
-        Matcher m = getMatcher("require fee");
+    @DisplayName("import bar;")
+    void importBasic() {
+        Matcher m = getMatcher("import bar;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
         ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
@@ -43,7 +43,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
 
         // Test resulting component
         ParserComponent c = results.get(0);
-        assertEquals("fee", c.getName());
+        assertEquals("bar", c.getName());
         assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
         assertNull(c.getVersion());
         assertEquals(0, c.getDepth());
@@ -53,9 +53,9 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
     }
 
     @Test
-    @DisplayName("load fee")
-    void loadBasic() {
-        Matcher m = getMatcher("load fee");
+    @DisplayName("import foo.bar;")
+    void importMultipart() {
+        Matcher m = getMatcher("import foo.bar;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
         ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
@@ -64,7 +64,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
 
         // Test resulting component
         ParserComponent c = results.get(0);
-        assertEquals("fee", c.getName());
+        assertEquals("foo/bar", c.getName());
         assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
         assertNull(c.getVersion());
         assertEquals(0, c.getDepth());
@@ -74,9 +74,9 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
     }
 
     @Test
-    @DisplayName("autoload fee")
-    void loadAuto() {
-        Matcher m = getMatcher("autoload fee");
+    @DisplayName("import foo.bar.baz.fee.fye;")
+    void importLongMultipart() {
+        Matcher m = getMatcher("import foo.bar.baz.fee.fye;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
         ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
@@ -85,7 +85,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
 
         // Test resulting component
         ParserComponent c = results.get(0);
-        assertEquals("fee", c.getName());
+        assertEquals("foo/bar/baz/fee/fye", c.getName());
         assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
         assertNull(c.getVersion());
         assertEquals(0, c.getDepth());
@@ -95,9 +95,9 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
     }
 
     @Test
-    @DisplayName("require bar/fee")
-    void requireMultipart() {
-        Matcher m = getMatcher("require bar/fee");
+    @DisplayName("import foo.bar.*;")
+    void importStar() {
+        Matcher m = getMatcher("import foo.bar.*;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
         ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
@@ -106,19 +106,19 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
 
         // Test resulting component
         ParserComponent c = results.get(0);
-        assertEquals("fee", c.getName());
+        assertEquals("*", c.getName());
         assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
         assertNull(c.getVersion());
         assertEquals(0, c.getDepth());
-        assertEquals("bar", c.getGroup());
+        assertEquals("foo/bar", c.getGroup());
         assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
     @Test
-    @DisplayName("require bar/foo/fee")
-    void requireLongMultipart() {
-        Matcher m = getMatcher("require bar/foo/fee");
+    @DisplayName("import foo.bar.A*;")
+    void importAlphaStar() {
+        Matcher m = getMatcher("import foo.bar.A*;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
         ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
@@ -127,19 +127,19 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
 
         // Test resulting component
         ParserComponent c = results.get(0);
-        assertEquals("fee", c.getName());
+        assertEquals("A*", c.getName());
         assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
         assertNull(c.getVersion());
         assertEquals(0, c.getDepth());
-        assertEquals("bar/foo", c.getGroup());
+        assertEquals("foo/bar", c.getGroup());
         assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
     @Test
-    @DisplayName("require 'bar/fee'")
-    void requireSingleQuotes() {
-        Matcher m = getMatcher("require 'bar/fee'");
+    @DisplayName("import static foo.bar;")
+    void importStatic() {
+        Matcher m = getMatcher("import static foo.bar;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
         ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
@@ -148,19 +148,19 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
 
         // Test resulting component
         ParserComponent c = results.get(0);
-        assertEquals("fee", c.getName());
+        assertEquals("foo/bar", c.getName());
         assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
         assertNull(c.getVersion());
         assertEquals(0, c.getDepth());
-        assertEquals("bar", c.getGroup());
+        assertNull(c.getGroup());
         assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
     @Test
-    @DisplayName("require \"bar/fee\"")
-    void requireDoubleQuotes() {
-        Matcher m = getMatcher("require \"bar/fee\"");
+    @DisplayName("import foo.Baz;")
+    void importClass() {
+        Matcher m = getMatcher("import foo.Baz;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
         ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
@@ -169,11 +169,32 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
 
         // Test resulting component
         ParserComponent c = results.get(0);
-        assertEquals("fee", c.getName());
+        assertEquals("Baz", c.getName());
         assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
         assertNull(c.getVersion());
         assertEquals(0, c.getDepth());
-        assertEquals("bar", c.getGroup());
+        assertEquals("foo", c.getGroup());
+        assertNull(c.getAlias());
+        // assertNull(c.getChildren());
+    }
+
+    @Test
+    @DisplayName("import foo.bar.fee.Baz;")
+    void importLongClass() {
+        Matcher m = getMatcher("import foo.bar.fee.Baz;");
+        assertTrue(m.find());   // Should be a match
+        ArrayList<ParserComponent> results = new ArrayList<>();
+        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+
+        assertEquals(1, results.size());    // should only be 1 match
+
+        // Test resulting component
+        ParserComponent c = results.get(0);
+        assertEquals("Baz", c.getName());
+        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertNull(c.getVersion());
+        assertEquals(0, c.getDepth());
+        assertEquals("foo/bar/fee", c.getGroup());
         assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
@@ -183,9 +204,9 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
     ///
 
     @Test
-    @DisplayName("require lib/bar")
-    void requireInternal() {
-        Matcher m = getMatcher("require lib/bar");
+    @DisplayName("import Java.lib.Foo;")
+    void importInternal() {
+        Matcher m = getMatcher("import Java.lib.Foo;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
         ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
@@ -194,53 +215,11 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
 
         // Test resulting component
         ParserComponent c = results.get(0);
-        assertEquals("bar", c.getName());
+        assertEquals("Foo", c.getName());
         assertEquals(ParserComponent.Type.INTERNAL, c.getType());
         assertNull(c.getVersion());
         assertEquals(0, c.getDepth());
-        assertEquals("lib", c.getGroup());
-        assertNull(c.getAlias());
-        // assertNull(c.getChildren());
-    }
-
-    @Test
-    @DisplayName("require './bar'")
-    void requireInternalSingleQuotes() {
-        Matcher m = getMatcher("require './bar'");
-        assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
-
-        assertEquals(1, results.size());    // should only be 1 match
-
-        // Test resulting component
-        ParserComponent c = results.get(0);
-        assertEquals("bar", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
-        assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
-        assertNull(c.getGroup());
-        assertNull(c.getAlias());
-        // assertNull(c.getChildren());
-    }
-
-    @Test
-    @DisplayName("require \"lib/bar\"")
-    void requireInternalDoubleQuotes() {
-        Matcher m = getMatcher("require \"lib/bar\"");
-        assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
-
-        assertEquals(1, results.size());    // should only be 1 match
-
-        // Test resulting component
-        ParserComponent c = results.get(0);
-        assertEquals("bar", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
-        assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
-        assertEquals("lib", c.getGroup());
+        assertEquals("Java/lib", c.getGroup());
         assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
@@ -250,9 +229,9 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
     ///
 
     @Test
-    @DisplayName("require cgi/session")
-    void requireLanguage() {
-        Matcher m = getMatcher("require cgi/session");
+    @DisplayName("import java.awt.color;")
+    void importLanguagePackage() {
+        Matcher m = getMatcher("import java.awt.color;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
         ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
@@ -261,11 +240,32 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
 
         // Test resulting component
         ParserComponent c = results.get(0);
-        assertEquals("session", c.getName());
+        assertEquals("java/awt/color", c.getName());
         assertEquals(ParserComponent.Type.LANGUAGE, c.getType());
         assertNull(c.getVersion());
         assertEquals(0, c.getDepth());
-        assertEquals("cgi", c.getGroup());
+        assertNull(c.getGroup());
+        assertNull(c.getAlias());
+        // assertNull(c.getChildren());
+    }
+
+    @Test
+    @DisplayName("import java.awt.color.ColorSpace;")
+    void importLanguageClass() {
+        Matcher m = getMatcher("import java.awt.color.ColorSpace;");
+        assertTrue(m.find());   // Should be a match
+        ArrayList<ParserComponent> results = new ArrayList<>();
+        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+
+        assertEquals(1, results.size());    // should only be 1 match
+
+        // Test resulting component
+        ParserComponent c = results.get(0);
+        assertEquals("ColorSpace", c.getName());
+        assertEquals(ParserComponent.Type.LANGUAGE, c.getType());
+        assertNull(c.getVersion());
+        assertEquals(0, c.getDepth());
+        assertEquals("java/awt/color", c.getGroup());
         assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
@@ -275,33 +275,25 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
     ///
 
     @Test
-    @DisplayName("# require bar/foo")
-    void requireHashtag() {
-        Matcher m = getMatcher("# require bar/foo");
+    @DisplayName("// import bar;")
+    void importDoubleSlash() {
+        Matcher m = getMatcher("// import bar;");
 
         assertFalse(m.find());   // Should not be a match
     }
 
     @Test
-    @DisplayName("=begin\nrequire \"bar\"\n=end")
-    void requireBlockComment() {
-        Matcher m = getMatcher("=begin\nrequire \"bar\"\n=end");
+    @DisplayName("/*\nimport bar;\n*/")
+    void importBlockComment() {
+        Matcher m = getMatcher("/*\nimport bar;\n*/");
 
         assertFalse(m.find());   // Should not be a match
     }
 
     @Test
-    @DisplayName("=begin\nload \"bar\"\n=end")
-    void loadBlockComment() {
-        Matcher m = getMatcher("=begin\nload \"bar\"\n=end");
-
-        assertFalse(m.find());   // Should not be a match
-    }
-
-    @Test
-    @DisplayName("=begin=end require bar/fee =begin=end")
-    void requireBetweenBlockComments() {
-        Matcher m = getMatcher("=begin=end require bar/fee =begin=end");
+    @DisplayName("/**/ import bar; /**/")
+    void importBetweenBlockComments() {
+        Matcher m = getMatcher("/**/ import bar; /**/");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
         ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
@@ -310,19 +302,19 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
 
         // Test resulting component
         ParserComponent c = results.get(0);
-        assertEquals("fee", c.getName());
+        assertEquals("bar", c.getName());
         assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
         assertNull(c.getVersion());
         assertEquals(0, c.getDepth());
-        assertEquals("bar", c.getGroup());
+        assertNull(c.getGroup());
         assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
     @Test
-    @DisplayName("=begin=end load bar/fee =begin=end")
-    void loadBetweenBlockComments() {
-        Matcher m = getMatcher("=begin=end load bar/fee =begin=end");
+    @DisplayName("import bar; // this imports bar")
+    void importBeforeDoubleSlash() {
+        Matcher m = getMatcher("import bar; // this imports bar");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
         ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
@@ -331,54 +323,13 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
 
         // Test resulting component
         ParserComponent c = results.get(0);
-        assertEquals("fee", c.getName());
+        assertEquals("bar", c.getName());
         assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
         assertNull(c.getVersion());
         assertEquals(0, c.getDepth());
-        assertEquals("bar", c.getGroup());
+        assertNull(c.getGroup());
         assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
-    @Test
-    @DisplayName("require bar/fee # this imports fee")
-    void requireBeforeHashtag() {
-        Matcher m = getMatcher("require bar/fee # this imports fee");
-        assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
-
-        assertEquals(1, results.size());    // should only be 1 match
-
-        // Test resulting component
-        ParserComponent c = results.get(0);
-        assertEquals("fee", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
-        assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
-        assertEquals("bar", c.getGroup());
-        assertNull(c.getAlias());
-        // assertNull(c.getChildren());
-    }
-
-    @Test
-    @DisplayName("load bar/fee # this imports fee")
-    void loadBeforeHashtag() {
-        Matcher m = getMatcher("load bar/fee # this imports fee");
-        assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
-
-        assertEquals(1, results.size());    // should only be 1 match
-
-        // Test resulting component
-        ParserComponent c = results.get(0);
-        assertEquals("fee", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
-        assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
-        assertEquals("bar", c.getGroup());
-        assertNull(c.getAlias());
-        // assertNull(c.getChildren());
-    }
 }

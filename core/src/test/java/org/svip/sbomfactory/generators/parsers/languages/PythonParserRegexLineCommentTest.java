@@ -1,4 +1,4 @@
-package parsers.languages;
+package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

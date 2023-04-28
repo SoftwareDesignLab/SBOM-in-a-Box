@@ -1,21 +1,21 @@
-package parsers.packagemanagers;
+package org.svip.sbomfactory.generators.parsers.contexts;
 
-import parsers.Parser;
-import parsers.ParserTestCore;
-import utils.ParserComponent;
+import org.svip.sbomfactory.generators.parsers.Parser;
+import org.svip.sbomfactory.generators.parsers.ParserTestCore;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
 
 /**
- * <b>File</b>: ParseDepFileTestCore.java<br>
- * <b>Description</b>: Abstract test core for testing the parsing of generated
- * dependency files.
+ * <b>File</b>: ParseContextTestCore.java<br>
+ * <b>Description</b>: Abstract test core for testing the parsing of file contexts.
  *
  * @author Dylan Mulligan
  */
-public abstract class ParseDepFileTestCore extends ParserTestCore {
+public abstract class ParseContextTestCore extends ParserTestCore {
     // Stores the ParserComponents to be tested
     protected final ArrayList<ParserComponent> components;
+
     /**
      * Constructor calls super with parser and src, and parses the given
      * fileContents to test against.
@@ -24,7 +24,7 @@ public abstract class ParseDepFileTestCore extends ParserTestCore {
      * @param fileContents fileContents to test against
      * @param src Relative path to dummy directory
      */
-    protected ParseDepFileTestCore(Parser parser, String fileContents, String src) {
+    protected ParseContextTestCore(Parser parser, String fileContents, String src) {
         // Call super
         super(parser, src);
 

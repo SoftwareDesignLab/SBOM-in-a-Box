@@ -1,3 +1,5 @@
+package org.svip.sbomfactory.generators;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +31,7 @@ public class ParserControllerTest {
     void srcCommentTest() {
         argv[0] = "TestData/Java";
         controller.setPWD(Paths.get(argv[0]));
-        Main.main(argv);
+        GeneratorsTestMain.main(argv);
     }
 
 
@@ -39,7 +41,7 @@ public class ParserControllerTest {
         argv[0] = "TestData/subprocess.py";
         argv[1] = "-d";
         try {
-            Main.main(argv);
+            GeneratorsTestMain.main(argv);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -74,7 +76,7 @@ public class ParserControllerTest {
         //pliu System.out.println("controller.getOutputFileType() : " + controller.getOutputFileType());
         System.out.println("controller.getSBOM() : " + controller.getSBOM());
         System.out.println("Parser Controller Java test/argv : " + Arrays.toString(argv));
-        Main.main(argv);
+        GeneratorsTestMain.main(argv);
 
 
         String type = "json";
@@ -107,7 +109,7 @@ public class ParserControllerTest {
         argv[0] = "/home/pliu/githubissues/170/Issue170Example:Issue170Example";
         argv[1] = "-a=/home/pliu/NetBeansProjects/SBOM_WorkingGroup/BenchmarkParser/TestData/Java";
         System.out.println("argv:" + Arrays.toString(argv) );
-        Main.main(argv);
+        GeneratorsTestMain.main(argv);
     }
 
     @Test

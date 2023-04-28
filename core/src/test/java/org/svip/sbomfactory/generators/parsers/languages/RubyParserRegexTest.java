@@ -1,8 +1,8 @@
-package parsers.languages;
+package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -10,21 +10,21 @@ import java.util.regex.Matcher;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * file: JSTSParserRegexTest.java
- * Description: Testing for JS/TS import regex edge cases, extends ParseRegexTestCore
+ * file: RubyParserRegexTest.java
+ * Description: Testing for Ruby, extends ParseRegexTestCore
  *
  * @author Dylan Mulligan
  */
-public class JSTSParserRegexTest extends ParseRegexTestCore {
+public class RubyParserRegexTest extends ParseRegexTestCore {
     /**
      * Constructor initializes a given parser and assigns both the
      * regex to test it against and the source directory to test on.
      *
      */
-    public JSTSParserRegexTest() {
-        super(new JSTSParser(),
-                "^(?:(?!//).)*(?:import (?:(?:(?=.*\\{\\n?)([\\S\\s]*?\\})|(.*))\\s*from [ '\\\"]*([\\w\\.\\/]+)[ '\\\"]*|[ '\\\"]*([\\w\\.\\/]+)[ '\\\"]*)|require[ \\('\\\"]*([\\w\\.\\/]+)[ \\)'\\\"]*)(?![^\\/\\*]*\\*\\/)",
-                "TestData/JS");
+    public RubyParserRegexTest() {
+        super(new RubyParser(),
+                "^(?:(?!#).)*(?:require [ '\\\"]*([\\w\\.\\/]+)[ '\\\"]*|load [ '\\\"]*([\\w\\.\\/]+)[ '\\\"]*)(?![^\\=]*\\=end)",
+                "TestData/Ruby");
     }
 
     ///
@@ -32,284 +32,9 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     ///
 
     @Test
-    @DisplayName("import bar")
-    void importBasic() {
-        Matcher m = getMatcher("import bar");
-        assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
-
-        assertEquals(1, results.size());    // should only be 1 match
-
-        // Test resulting component
-        ParserComponent c = results.get(0);
-        assertEquals("bar", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
-        assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
-        assertNull(c.getGroup());
-        assertNull(c.getAlias());
-        // assertNull(c.getChildren());
-    }
-
-    @Test
-    @DisplayName("import 'bar'")
-    void importSingleQuotes() {
-        Matcher m = getMatcher("import 'bar'");
-        assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
-
-        assertEquals(1, results.size());    // should only be 1 match
-
-        // Test resulting component
-        ParserComponent c = results.get(0);
-        assertEquals("bar", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
-        assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
-        assertNull(c.getGroup());
-        assertNull(c.getAlias());
-        // assertNull(c.getChildren());
-    }
-
-    @Test
-    @DisplayName("\"import \"bar\"")
-    void importDoubleQuotes() {
-        Matcher m = getMatcher("import \"bar\"");
-        assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
-
-        assertEquals(1, results.size());    // should only be 1 match
-
-        // Test resulting component
-        ParserComponent c = results.get(0);
-        assertEquals("bar", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
-        assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
-        assertNull(c.getGroup());
-        assertNull(c.getAlias());
-        // assertNull(c.getChildren());
-    }
-
-    @Test
-    @DisplayName("import foo from bar")
-    void importFrom() {
-        Matcher m = getMatcher("import foo from bar");
-        assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
-
-        assertEquals(1, results.size());    // should only be 1 match
-
-        // Test resulting component
-        ParserComponent c = results.get(0);
-        assertEquals("foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
-        assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
-        assertEquals("bar", c.getGroup());
-        assertNull(c.getAlias());
-        // assertNull(c.getChildren());
-    }
-
-    @Test
-    @DisplayName("import foo, fee from bar")
-    void importMultipleFrom() {
-        Matcher m = getMatcher("import foo, fee from bar");
-        assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
-
-        assertEquals(2, results.size());    // should be 2 matches
-
-        // Test resulting components
-        ParserComponent c = results.get(0); // first match
-
-        assertEquals("foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
-        assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
-        assertEquals("bar", c.getGroup());
-        assertNull(c.getAlias());
-        // assertNull(c.getChildren());
-
-        c = results.get(1); // second match
-
-        assertEquals("fee", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
-        assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
-        assertEquals("bar", c.getGroup());
-        assertNull(c.getAlias());
-        // assertNull(c.getChildren());
-    }
-
-    @Test
-    @DisplayName("import foo as f from bar")
-    void importAsAliasFrom() {
-        Matcher m = getMatcher("import foo as f from bar");
-        assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
-
-        assertEquals(1, results.size());    // should only be 1 match
-
-        // Test resulting component
-        ParserComponent c = results.get(0);
-        assertEquals("foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
-        assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
-        assertEquals("bar", c.getGroup());
-        assertEquals("f", c.getAlias());
-        // assertNull(c.getChildren());
-    }
-
-    @Test
-    @DisplayName("import foo as f, fee from bar")
-    void importMultipleAsAliasFrom() {
-        Matcher m = getMatcher("import foo as f, fee from bar");
-        assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
-
-        assertEquals(2, results.size());    // should be 2 matches
-
-        // Test resulting components
-        ParserComponent c = results.get(0); // first match
-
-        assertEquals("foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
-        assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
-        assertEquals("bar", c.getGroup());
-        assertEquals("f", c.getAlias());
-        // assertNull(c.getChildren());
-
-        c = results.get(1); // second match
-
-        assertEquals("fee", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
-        assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
-        assertEquals("bar", c.getGroup());
-        assertNull(c.getAlias());
-        // assertNull(c.getChildren());
-    }
-
-    @Test
-    @DisplayName("import { foo } from bar")
-    void importBracesFrom() {
-        Matcher m = getMatcher("import { foo } from bar");
-        assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
-
-        assertEquals(1, results.size());    // should only be 1 match
-
-        // Test resulting component
-        ParserComponent c = results.get(0);
-        assertEquals("foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
-        assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
-        assertEquals("bar", c.getGroup());
-        assertNull(c.getAlias());
-        // assertNull(c.getChildren());
-    }
-
-    @Test
-    @DisplayName("import { foo as f } from bar")
-    void importBracesAsAliasFrom() {
-        Matcher m = getMatcher("import { foo as f } from bar");
-        assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
-
-        assertEquals(1, results.size());    // should only be 1 match
-
-        // Test resulting component
-        ParserComponent c = results.get(0);
-        assertEquals("foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
-        assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
-        assertEquals("bar", c.getGroup());
-        assertEquals("f", c.getAlias());
-        // assertNull(c.getChildren());
-    }
-
-    @Test
-    @DisplayName("import { foo as f, fee } from bar")
-    void importBracesMultipleAsAliasFrom() {
-        Matcher m = getMatcher("import { foo as f, fee } from bar");
-        assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
-
-        assertEquals(2, results.size());    // should be 2 matches
-
-        // Test resulting component
-        ParserComponent c = results.get(0); // first match
-
-        assertEquals("foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
-        assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
-        assertEquals("bar", c.getGroup());
-        assertEquals("f", c.getAlias());
-        // assertNull(c.getChildren());
-
-        c = results.get(1); // second match
-
-        assertEquals("fee", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
-        assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
-        assertEquals("bar", c.getGroup());
-        assertNull(c.getAlias());
-        // assertNull(c.getChildren());
-    }
-
-    @Test
-    @DisplayName("import foo as f, { goo as g } from bar")
-    void importBracesSomeAsAliasFrom() {
-        Matcher m = getMatcher("import foo as f, { goo as g } from bar");
-        assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
-
-        assertEquals(2, results.size());    // should be 2 matches
-
-        // Test resulting component
-        ParserComponent c = results.get(0); // first match
-
-        assertEquals("foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
-        assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
-        assertEquals("bar", c.getGroup());
-        assertEquals("f", c.getAlias());
-        // assertNull(c.getChildren());
-
-        c = results.get(1); // second match
-
-        assertEquals("goo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
-        assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
-        assertEquals("bar", c.getGroup());
-        assertEquals("g", c.getAlias());
-        // assertNull(c.getChildren());
-    }
-
-    @Test
-    @DisplayName("require(bar)")
+    @DisplayName("require fee")
     void requireBasic() {
-        Matcher m = getMatcher("require(bar)");
+        Matcher m = getMatcher("require fee");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
         ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
@@ -318,7 +43,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
 
         // Test resulting component
         ParserComponent c = results.get(0);
-        assertEquals("bar", c.getName());
+        assertEquals("fee", c.getName());
         assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
         assertNull(c.getVersion());
         assertEquals(0, c.getDepth());
@@ -328,9 +53,93 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     }
 
     @Test
-    @DisplayName("require('bar')")
+    @DisplayName("load fee")
+    void loadBasic() {
+        Matcher m = getMatcher("load fee");
+        assertTrue(m.find());   // Should be a match
+        ArrayList<ParserComponent> results = new ArrayList<>();
+        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+
+        assertEquals(1, results.size());    // should only be 1 match
+
+        // Test resulting component
+        ParserComponent c = results.get(0);
+        assertEquals("fee", c.getName());
+        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertNull(c.getVersion());
+        assertEquals(0, c.getDepth());
+        assertNull(c.getGroup());
+        assertNull(c.getAlias());
+        // assertNull(c.getChildren());
+    }
+
+    @Test
+    @DisplayName("autoload fee")
+    void loadAuto() {
+        Matcher m = getMatcher("autoload fee");
+        assertTrue(m.find());   // Should be a match
+        ArrayList<ParserComponent> results = new ArrayList<>();
+        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+
+        assertEquals(1, results.size());    // should only be 1 match
+
+        // Test resulting component
+        ParserComponent c = results.get(0);
+        assertEquals("fee", c.getName());
+        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertNull(c.getVersion());
+        assertEquals(0, c.getDepth());
+        assertNull(c.getGroup());
+        assertNull(c.getAlias());
+        // assertNull(c.getChildren());
+    }
+
+    @Test
+    @DisplayName("require bar/fee")
+    void requireMultipart() {
+        Matcher m = getMatcher("require bar/fee");
+        assertTrue(m.find());   // Should be a match
+        ArrayList<ParserComponent> results = new ArrayList<>();
+        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+
+        assertEquals(1, results.size());    // should only be 1 match
+
+        // Test resulting component
+        ParserComponent c = results.get(0);
+        assertEquals("fee", c.getName());
+        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertNull(c.getVersion());
+        assertEquals(0, c.getDepth());
+        assertEquals("bar", c.getGroup());
+        assertNull(c.getAlias());
+        // assertNull(c.getChildren());
+    }
+
+    @Test
+    @DisplayName("require bar/foo/fee")
+    void requireLongMultipart() {
+        Matcher m = getMatcher("require bar/foo/fee");
+        assertTrue(m.find());   // Should be a match
+        ArrayList<ParserComponent> results = new ArrayList<>();
+        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+
+        assertEquals(1, results.size());    // should only be 1 match
+
+        // Test resulting component
+        ParserComponent c = results.get(0);
+        assertEquals("fee", c.getName());
+        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertNull(c.getVersion());
+        assertEquals(0, c.getDepth());
+        assertEquals("bar/foo", c.getGroup());
+        assertNull(c.getAlias());
+        // assertNull(c.getChildren());
+    }
+
+    @Test
+    @DisplayName("require 'bar/fee'")
     void requireSingleQuotes() {
-        Matcher m = getMatcher("require('bar')");
+        Matcher m = getMatcher("require 'bar/fee'");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
         ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
@@ -339,19 +148,19 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
 
         // Test resulting component
         ParserComponent c = results.get(0);
-        assertEquals("bar", c.getName());
+        assertEquals("fee", c.getName());
         assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
         assertNull(c.getVersion());
         assertEquals(0, c.getDepth());
-        assertNull(c.getGroup());
+        assertEquals("bar", c.getGroup());
         assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
     @Test
-    @DisplayName("require(\"bar\")")
+    @DisplayName("require \"bar/fee\"")
     void requireDoubleQuotes() {
-        Matcher m = getMatcher("require(\"bar\")");
+        Matcher m = getMatcher("require \"bar/fee\"");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
         ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
@@ -360,11 +169,11 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
 
         // Test resulting component
         ParserComponent c = results.get(0);
-        assertEquals("bar", c.getName());
+        assertEquals("fee", c.getName());
         assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
         assertNull(c.getVersion());
         assertEquals(0, c.getDepth());
-        assertNull(c.getGroup());
+        assertEquals("bar", c.getGroup());
         assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
@@ -374,9 +183,9 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     ///
 
     @Test
-    @DisplayName("import './lib/bar.js'")
-    void importInternal() {
-        Matcher m = getMatcher("import './lib/bar.js'");
+    @DisplayName("require lib/bar")
+    void requireInternal() {
+        Matcher m = getMatcher("require lib/bar");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
         ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
@@ -385,19 +194,19 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
 
         // Test resulting component
         ParserComponent c = results.get(0);
-        assertEquals("./lib/bar.js", c.getName());
+        assertEquals("bar", c.getName());
         assertEquals(ParserComponent.Type.INTERNAL, c.getType());
         assertNull(c.getVersion());
         assertEquals(0, c.getDepth());
-        assertEquals("./lib/bar.js", c.getGroup());
+        assertEquals("lib", c.getGroup());
         assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
     @Test
-    @DisplayName("import foo from './lib/bar.js'")
-    void importInternalFrom() {
-        Matcher m = getMatcher("import foo from './lib/bar.js'");
+    @DisplayName("require './bar'")
+    void requireInternalSingleQuotes() {
+        Matcher m = getMatcher("require './bar'");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
         ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
@@ -406,11 +215,32 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
 
         // Test resulting component
         ParserComponent c = results.get(0);
-        assertEquals("foo", c.getName());
+        assertEquals("bar", c.getName());
         assertEquals(ParserComponent.Type.INTERNAL, c.getType());
         assertNull(c.getVersion());
         assertEquals(0, c.getDepth());
-        assertEquals("./lib/bar.js", c.getGroup());
+        assertNull(c.getGroup());
+        assertNull(c.getAlias());
+        // assertNull(c.getChildren());
+    }
+
+    @Test
+    @DisplayName("require \"lib/bar\"")
+    void requireInternalDoubleQuotes() {
+        Matcher m = getMatcher("require \"lib/bar\"");
+        assertTrue(m.find());   // Should be a match
+        ArrayList<ParserComponent> results = new ArrayList<>();
+        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+
+        assertEquals(1, results.size());    // should only be 1 match
+
+        // Test resulting component
+        ParserComponent c = results.get(0);
+        assertEquals("bar", c.getName());
+        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertNull(c.getVersion());
+        assertEquals(0, c.getDepth());
+        assertEquals("lib", c.getGroup());
         assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
@@ -419,44 +249,59 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     /// LANGUAGE
     ///
 
-    // No language tests, as JS has no language components
+    @Test
+    @DisplayName("require cgi/session")
+    void requireLanguage() {
+        Matcher m = getMatcher("require cgi/session");
+        assertTrue(m.find());   // Should be a match
+        ArrayList<ParserComponent> results = new ArrayList<>();
+        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+
+        assertEquals(1, results.size());    // should only be 1 match
+
+        // Test resulting component
+        ParserComponent c = results.get(0);
+        assertEquals("session", c.getName());
+        assertEquals(ParserComponent.Type.LANGUAGE, c.getType());
+        assertNull(c.getVersion());
+        assertEquals(0, c.getDepth());
+        assertEquals("cgi", c.getGroup());
+        assertNull(c.getAlias());
+        // assertNull(c.getChildren());
+    }
 
     ///
     /// Comments
     ///
 
     @Test
-    @DisplayName("// import bar")
-    void importDoubleSlash() {
-        Matcher m = getMatcher("// import bar");
+    @DisplayName("# require bar/foo")
+    void requireHashtag() {
+        Matcher m = getMatcher("# require bar/foo");
 
         assertFalse(m.find());   // Should not be a match
     }
 
     @Test
-    @DisplayName("/*\nimport bar\n*/")
-    void importBlockComment() {
-        Matcher m = getMatcher("/*\nimport bar\n*/");
+    @DisplayName("=begin\nrequire \"bar\"\n=end")
+    void requireBlockComment() {
+        Matcher m = getMatcher("=begin\nrequire \"bar\"\n=end");
 
         assertFalse(m.find());   // Should not be a match
     }
 
     @Test
-    @DisplayName("import {fee, /*...*/ } from bar")
-    void importInlineBlockComment() {
-        Matcher m = getMatcher("import {fee, /*...*/ } from bar");
+    @DisplayName("=begin\nload \"bar\"\n=end")
+    void loadBlockComment() {
+        Matcher m = getMatcher("=begin\nload \"bar\"\n=end");
 
-        assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
-
-        assertEquals(1, results.size()); // should only find fee
+        assertFalse(m.find());   // Should not be a match
     }
 
     @Test
-    @DisplayName("/**/ import bar /**/")
-    void importBetweenBlockComments() {
-        Matcher m = getMatcher("/**/ import bar /**/");
+    @DisplayName("=begin=end require bar/fee =begin=end")
+    void requireBetweenBlockComments() {
+        Matcher m = getMatcher("=begin=end require bar/fee =begin=end");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
         ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
@@ -465,19 +310,19 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
 
         // Test resulting component
         ParserComponent c = results.get(0);
-        assertEquals("bar", c.getName());
+        assertEquals("fee", c.getName());
         assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
         assertNull(c.getVersion());
         assertEquals(0, c.getDepth());
-        assertNull(c.getGroup());
+        assertEquals("bar", c.getGroup());
         assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
     @Test
-    @DisplayName("import bar // this imports bar")
-    void importBeforeDoubleSlash() {
-        Matcher m = getMatcher("import bar // this imports bar");
+    @DisplayName("=begin=end load bar/fee =begin=end")
+    void loadBetweenBlockComments() {
+        Matcher m = getMatcher("=begin=end load bar/fee =begin=end");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
         ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
@@ -486,13 +331,54 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
 
         // Test resulting component
         ParserComponent c = results.get(0);
-        assertEquals("bar", c.getName());
+        assertEquals("fee", c.getName());
         assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
         assertNull(c.getVersion());
         assertEquals(0, c.getDepth());
-        assertNull(c.getGroup());
+        assertEquals("bar", c.getGroup());
         assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
+    @Test
+    @DisplayName("require bar/fee # this imports fee")
+    void requireBeforeHashtag() {
+        Matcher m = getMatcher("require bar/fee # this imports fee");
+        assertTrue(m.find());   // Should be a match
+        ArrayList<ParserComponent> results = new ArrayList<>();
+        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+
+        assertEquals(1, results.size());    // should only be 1 match
+
+        // Test resulting component
+        ParserComponent c = results.get(0);
+        assertEquals("fee", c.getName());
+        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertNull(c.getVersion());
+        assertEquals(0, c.getDepth());
+        assertEquals("bar", c.getGroup());
+        assertNull(c.getAlias());
+        // assertNull(c.getChildren());
+    }
+
+    @Test
+    @DisplayName("load bar/fee # this imports fee")
+    void loadBeforeHashtag() {
+        Matcher m = getMatcher("load bar/fee # this imports fee");
+        assertTrue(m.find());   // Should be a match
+        ArrayList<ParserComponent> results = new ArrayList<>();
+        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+
+        assertEquals(1, results.size());    // should only be 1 match
+
+        // Test resulting component
+        ParserComponent c = results.get(0);
+        assertEquals("fee", c.getName());
+        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertNull(c.getVersion());
+        assertEquals(0, c.getDepth());
+        assertEquals("bar", c.getGroup());
+        assertNull(c.getAlias());
+        // assertNull(c.getChildren());
+    }
 }

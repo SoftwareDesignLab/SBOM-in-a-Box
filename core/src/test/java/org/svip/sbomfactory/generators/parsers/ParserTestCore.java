@@ -1,4 +1,4 @@
-package parsers;
+package org.svip.sbomfactory.generators.parsers;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

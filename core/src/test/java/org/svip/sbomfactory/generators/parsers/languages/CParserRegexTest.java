@@ -1,8 +1,8 @@
-package parsers.languages;
+package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -10,21 +10,22 @@ import java.util.regex.Matcher;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Testing for C++
+ * Testing for C
  *
  * @author Derek Garcia
  */
-class CppParserRegexTest extends ParseRegexTestCore {
+class CParserRegexTest extends ParseRegexTestCore {
     /**
      * Constructor initializes a given parser and assigns both the
      * regex to test it against and the source directory to test on.
      *
      */
-    public CppParserRegexTest() {
-        super(new CppParser(),
+    public CParserRegexTest() {
+        super(new CParser(),
                 "(?=//).*|(?=/\\*)[\\S\\s]*?\\*/|#include.*(?:(?=<.*>)<(.*)>|(?=\".*\")\"(.*)\")",
-                "TestData/CPlusPlus");
+                "TestData/C");
     }
+
     //
     // Basic
     //
@@ -78,28 +79,6 @@ class CppParserRegexTest extends ParseRegexTestCore {
     ///
 
     @Test
-    @DisplayName("#include <ios>")
-    void includeLanguage() {
-        Matcher m = getMatcher("#include <ios>");
-
-        assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
-
-        assertEquals(1, results.size());
-
-        // Test resulting component
-        ParserComponent c = results.get(0);
-        assertEquals("ios", c.getName());
-        assertEquals(ParserComponent.Type.LANGUAGE, c.getType());
-        assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
-        assertNull(c.getGroup());
-        assertNull(c.getAlias());
-        // assertNull(c.getChildren());
-    }
-
-    @Test
     @DisplayName("#include <ctype.h>")
     void includeCLib() {
         Matcher m = getMatcher("#include <ctype.h>");
@@ -113,6 +92,28 @@ class CppParserRegexTest extends ParseRegexTestCore {
         // Test resulting component
         ParserComponent c = results.get(0);
         assertEquals("ctype.h", c.getName());
+        assertEquals(ParserComponent.Type.LANGUAGE, c.getType());
+        assertNull(c.getVersion());
+        assertEquals(0, c.getDepth());
+        assertNull(c.getGroup());
+        assertNull(c.getAlias());
+        // assertNull(c.getChildren());
+    }
+
+    @Test
+    @DisplayName("#include <iso646.h>")
+    void includeCLib2() {
+        Matcher m = getMatcher("#include <iso646.h>");
+
+        assertTrue(m.find());   // Should be a match
+        ArrayList<ParserComponent> results = new ArrayList<>();
+        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+
+        assertEquals(1, results.size());
+
+        // Test resulting component
+        ParserComponent c = results.get(0);
+        assertEquals("iso646.h", c.getName());
         assertEquals(ParserComponent.Type.LANGUAGE, c.getType());
         assertNull(c.getVersion());
         assertEquals(0, c.getDepth());

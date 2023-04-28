@@ -1,3 +1,4 @@
+package org.svip.sbomfactory.generators;
 
 import org.junit.jupiter.api.*;
 
@@ -96,7 +97,7 @@ public class MainTest {
         InputStream is = new ByteArrayInputStream(in.getBytes());
         System.setIn(is);
         System.out.println("No argv/argv: " + Arrays.toString(argv) + " with answering to the prompt: " + in);
-        Main.main(argv);
+        GeneratorsTestMain.main(argv);
         System.setIn(stdin);
     }
 
@@ -109,7 +110,7 @@ public class MainTest {
         //-h
         argv[0] = "-h";
         System.out.println("Help Flag(-h)/argv: " + Arrays.toString(argv));
-        Main.main(argv);
+        GeneratorsTestMain.main(argv);
         assertTrue(flag);
     }
 
@@ -119,7 +120,7 @@ public class MainTest {
         //-s
         argv[0] = "-s";
         System.out.println("Summary Flag(-s)/argv: " + Arrays.toString(argv));
-        Main.main(argv);
+        GeneratorsTestMain.main(argv);
     }
 
     @Test
@@ -128,7 +129,7 @@ public class MainTest {
         //-d
         argv[0] = "-d";
         System.out.println("Debug Flag(-d)/argv: " + Arrays.toString(argv));
-        Main.main(argv);
+        GeneratorsTestMain.main(argv);
     }
 
     @Test
@@ -153,7 +154,7 @@ public class MainTest {
     void processProjectTest() {
         argv[0] = "src";
         System.out.println("Normal process project/argv: " + Arrays.toString(argv));
-        Main.main(argv);
+        GeneratorsTestMain.main(argv);
     }
 
     @Test
@@ -166,7 +167,7 @@ public class MainTest {
         InputStream is = new ByteArrayInputStream(in.getBytes());
         System.setIn(is);
         System.out.println("Non existing project directory project/argv: " + Arrays.toString(argv) + " with answering to the prompt: " + in);
-        Main.main(argv);
+        GeneratorsTestMain.main(argv);
         System.setIn(stdin);
     }
 
@@ -177,7 +178,7 @@ public class MainTest {
         //Exception thrown = assertThrows(Exception.class, () -> {
         argv[0] = "-o=yaml";
         System.out.println("Output YAML/argv: " + Arrays.toString(argv));
-        Main.main(argv);
+        GeneratorsTestMain.main(argv);
         //});
         //System.out.println(thrown.getMessage());
         //assertEquals(null, parseInt(thrown.getMessage()));
@@ -210,7 +211,7 @@ public class MainTest {
         argv[0] = "-f=l";
         argv[1] = "src";
         System.out.println("Filter Language/argv: " + Arrays.toString(argv));
-        Main.main(argv);
+        GeneratorsTestMain.main(argv);
     }
 
     @Test
@@ -219,7 +220,7 @@ public class MainTest {
         argv[0] = "-f=i";
         argv[1] = "src";
         System.out.println("Filter Internal/argv: " + Arrays.toString(argv));
-        Main.main(argv);
+        GeneratorsTestMain.main(argv);
     }
 
     @Test
@@ -228,7 +229,7 @@ public class MainTest {
         argv[0] = "-f=l,i";
         argv[1] = "src";
         System.out.println("Filter Language & Internal/argv: " + Arrays.toString(argv));
-        Main.main(argv);
+        GeneratorsTestMain.main(argv);
     }
 
 
@@ -240,7 +241,7 @@ public class MainTest {
         argv[0] = "-a=i";
         argv[1] = "targetPath:componentName";
         System.out.println("Append TEST/argv: " + Arrays.toString(argv));
-        Main.main(argv);
+        GeneratorsTestMain.main(argv);
     }
 
 
@@ -249,7 +250,7 @@ public class MainTest {
     void maxAttemptOnErrorArgumentListTest() {
         String[] argv = {"-o=pliu", "-o=pl", "f=json", "-d", "-h", "-s", "TestData/Datadir"};
         System.out.println("Max attempt TEST/argv: " + Arrays.toString(argv));
-        Main.main(argv);
+        GeneratorsTestMain.main(argv);
     }
 
     @Test
