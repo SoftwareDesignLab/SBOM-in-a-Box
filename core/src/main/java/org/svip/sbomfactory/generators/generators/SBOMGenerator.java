@@ -1,6 +1,10 @@
 package org.svip.sbomfactory.generators.generators;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
+import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
+import org.svip.sbomfactory.generators.generators.utils.License;
+import org.svip.sbomfactory.generators.generators.utils.Tool;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbom.model.SBOMType;

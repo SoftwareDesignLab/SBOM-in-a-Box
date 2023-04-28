@@ -1,7 +1,7 @@
 package org.svip.sbomfactory.generators.generators.cyclonedx;
 
-import org.svip.sbomfactory.generators.generators.License;
-import org.svip.sbomfactory.generators.generators.Tool;
+import org.svip.sbomfactory.generators.generators.utils.License;
+import org.svip.sbomfactory.generators.generators.utils.Tool;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
