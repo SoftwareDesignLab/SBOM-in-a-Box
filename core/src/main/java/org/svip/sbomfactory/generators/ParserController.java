@@ -242,8 +242,8 @@ public class ParserController {
         if(outDir.mkdirs())
             log(LOG_TYPE.SUMMARY, "New Output Directory created [ " + outPath + " ]");
 
-        // Select generator based on schema
-        final SBOMGenerator generator = outSchema.newGenerator(this.SBOM);
+        // Create generator based on schema
+        final SBOMGenerator generator = new SBOMGenerator(this.SBOM, outSchema);
 
         // Write SBOM to file according to schema and file format
         generator.writeFile(outPath, outFormat);

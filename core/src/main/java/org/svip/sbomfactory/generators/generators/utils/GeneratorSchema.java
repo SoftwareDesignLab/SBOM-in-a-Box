@@ -9,9 +9,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.svip.sbom.model.SBOM;
-import org.svip.sbomfactory.generators.generators.CycloneDXGenerator;
+import org.svip.sbom.model.SBOMType;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
-import org.svip.sbomfactory.generators.generators.SPDXGenerator;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -27,9 +26,11 @@ import java.util.LinkedHashSet;
 public enum GeneratorSchema {
     // This mapping ensures that any schema has a set of valid formats to compare
     // against and/or choose from.
-    CycloneDX(new LinkedHashSet<>(Arrays.asList(GeneratorFormat.JSON, GeneratorFormat.XML))),
-    SPDX(new LinkedHashSet<>(Arrays.asList(GeneratorFormat.JSON,/* GeneratorFormat.SPDX,*/ GeneratorFormat.YAML, GeneratorFormat.XML)));
+    CycloneDX("1.4", SBOMType.CYCLONE_DX, new LinkedHashSet<>(Arrays.asList(GeneratorFormat.JSON, GeneratorFormat.XML))),
+    SPDX("2.3", SBOMType.SPDX, new LinkedHashSet<>(Arrays.asList(GeneratorFormat.JSON,/* GeneratorFormat.SPDX,*/ GeneratorFormat.YAML, GeneratorFormat.XML)));
 
+    private final String version;
+    private final SBOMType internalType;
     // Internal HashSet to store valid formats
     private final LinkedHashSet<GeneratorFormat> validFormats;
 
@@ -40,7 +41,9 @@ public enum GeneratorSchema {
      * @param validFormats a HashSet of valid file formats that the schema can
      *        be written to
      */
-    GeneratorSchema(LinkedHashSet<GeneratorFormat> validFormats) {
+    GeneratorSchema(String version, SBOMType internalType, LinkedHashSet<GeneratorFormat> validFormats) {
+        this.version = version;
+        this.internalType = internalType;
         this.validFormats = validFormats;
     }
 
@@ -87,6 +90,14 @@ public enum GeneratorSchema {
         }
     }
 
+    public String getVersion() {
+        return this.version;
+    }
+
+    public SBOMType getInternalType() {
+        return internalType;
+    }
+
     /**
      * Determines whether or not the provided format matches this schema.
      *
@@ -101,21 +112,6 @@ public enum GeneratorSchema {
      * @return the first/default supported format for this schema
      */
     public GeneratorFormat getDefaultFormat() { return this.validFormats.toArray(new GeneratorFormat[0])[0]; }
-
-    /**
-     * Instantiates and returns a new generator based on this enum's value.
-     * @param sbom an SBOM Object to be written to file
-     * @return a new SBOMGenerator implementation based on this enum's value,
-     *         defaults to CycloneDXGenerator
-     */
-    public SBOMGenerator newGenerator(SBOM sbom) {
-        switch (this) {
-            case CycloneDX -> { return new CycloneDXGenerator(sbom); }
-            case SPDX -> { return new SPDXGenerator(sbom); }
-            // Default to CycloneDX if outSchema is not valid
-            default -> { return new CycloneDXGenerator(sbom); }
-        }
-    }
 
     public static GeneratorSchema valueOfArgument(String argument) {
         // Ensure argument is not null, throw an exception if it is

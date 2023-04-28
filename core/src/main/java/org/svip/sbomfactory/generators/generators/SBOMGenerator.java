@@ -1,6 +1,9 @@
 package org.svip.sbomfactory.generators.generators;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.svip.sbom.model.Component;
+import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXStore;
+import org.svip.sbomfactory.generators.generators.spdx.SPDXStore;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.generators.utils.License;
@@ -8,12 +11,16 @@ import org.svip.sbomfactory.generators.generators.utils.Tool;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbom.model.SBOMType;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.svip.sbomfactory.generators.utils.Debug.log;
 
-/**
+/** TODO update docstring
  * File: SBOMGenerator.java
  * <p>
  * An abstract class to be extended by specific generators such as CDX and SPDX that implement origin format specific
@@ -21,7 +28,7 @@ import static org.svip.sbomfactory.generators.utils.Debug.log;
  * </p>
  * @author Ian Dunn
  */
-public abstract class SBOMGenerator {
+public class SBOMGenerator {
 
     //#region Constants
 
@@ -56,15 +63,7 @@ public abstract class SBOMGenerator {
 
     private final Tool tool;
 
-    /**
-     * The format of the SBOM to be generated.
-     */
-    private final SBOMType originFormat;
-
-    /**
-     * The specification version of the SBOM to be generated.
-     */
-    private final String specVersion;
+    private final GeneratorSchema schema;
 
     //#endregion
 
@@ -75,10 +74,9 @@ public abstract class SBOMGenerator {
      *
      * @param internalSBOM an internal SBOM representation with a completed DependencyTree.
      */
-    protected SBOMGenerator(SBOM internalSBOM, SBOMType originFormat, String specVersion) {
+    public SBOMGenerator(SBOM internalSBOM, GeneratorSchema schema) {
         this.internalSBOM = internalSBOM;
-        this.originFormat = originFormat;
-        this.specVersion = specVersion;
+        this.schema = schema;
 
         String hash = getHash();
 
@@ -102,13 +100,14 @@ public abstract class SBOMGenerator {
         /*
             SBOM specific settings
          */
-        internalSBOM.setOriginFormat(originFormat);
-        internalSBOM.setSpecVersion(specVersion);
+
+        internalSBOM.setOriginFormat(schema.getInternalType());
+        internalSBOM.setSpecVersion(schema.getVersion());
     }
 
     //#endregion
 
-    //#region Abstract Methods
+    //#region Core Methods
 
     /**
      * Write an SBOM to a specified filepath and file format.
@@ -116,13 +115,35 @@ public abstract class SBOMGenerator {
      * @param directory The path of the SBOM file including the file name and type to write to.
      * @param format The file format to write to the file.
      */
-    public abstract void writeFile(String directory, GeneratorSchema.GeneratorFormat format);
+    public void writeFile(String directory, GeneratorSchema.GeneratorFormat format) {
+        String path = generatePathToSBOM(directory, format);
+
+        log(Debug.LOG_TYPE.DEBUG, "Building " + schema.name() + " SBOM object");
+        try {
+            // Build model
+            BOMStore bomStore = buildBOMStore();
+
+            // Serialize
+            log(Debug.LOG_TYPE.DEBUG, "Attempting to write to " + path);
+
+            // Get the correct OM from the format and write the file to it
+            if(schema == GeneratorSchema.SPDX) { // TODO is there a better way to do this?
+                format.getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File(path), (SPDXStore) bomStore);
+            } else {
+                format.getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File(path), (CycloneDXStore) bomStore);
+
+            }
+
+            log(Debug.LOG_TYPE.SUMMARY, schema.name() + " SBOM saved to: " + path);
+        } catch (IOException e) {
+            log(Debug.LOG_TYPE.EXCEPTION, e);
+            log(Debug.LOG_TYPE.ERROR, "Error writing to file " + path);
+        }
+    };
 
     //#endregion
 
     //#region Getters
-
-    protected SBOM getInternalSBOM() { return internalSBOM; }
 
     protected Tool getTool() {
         return tool;
@@ -150,6 +171,59 @@ public abstract class SBOMGenerator {
 
     //#region Utility Methods
 
+    private BOMStore buildBOMStore() {
+        ParserComponent headComponent = (ParserComponent) internalSBOM.getComponent(internalSBOM.getHeadUUID());
+        String serialNumber = internalSBOM.getSerialNumber();
+        int version = 1; // TODO should we have to increment this?
+
+        BOMStore bomStore;
+        if(schema == GeneratorSchema.SPDX) {
+            bomStore = new SPDXStore(serialNumber, 1, headComponent);
+        } else {
+            bomStore = new CycloneDXStore(serialNumber, 1, headComponent);
+        }
+
+        bomStore.addTool(this.getTool()); // Add our tool as info
+
+        // Add all depth 0 components as packages
+        final Set<Component> componentSet = internalSBOM
+                .getComponentChildren(internalSBOM.getHeadUUID()); // Get all depth 0 dependencies
+
+        for(Component c : componentSet) { // Loop through and add all packages
+            this.addComponent(bomStore, (ParserComponent) c, true);
+        }
+
+        return bomStore;
+    }
+
+    private void addComponent(BOMStore bomStore, ParserComponent component, boolean recursive) {
+        bomStore.addComponent(component);
+
+        if(recursive) {
+            // Note: We can't make addComponent recursive because the specific BOMStore may not want the component added
+            // to the top-level list
+            addChildren(bomStore, component);
+        }
+
+    }
+
+    private void addChildren(BOMStore bomStore, ParserComponent component) {
+        // Get set of all children from the internal SBOM
+        Set<ParserComponent> children = (Set<ParserComponent>) (Set<?>) internalSBOM
+                .getComponentChildren(component.getUUID());
+
+        // Loop through children and add the child and its children recursively to the CycloneDXStore
+        for (ParserComponent internal : children) {
+            try {
+                bomStore.addChild(component, internal);
+            } catch(GeneratorException e) {
+                Debug.log(Debug.LOG_TYPE.WARN, "BOMStore: " + e.getMessage());
+            }
+
+            addChildren(bomStore, internal);
+        }
+    }
+
     /**
      * Utility method to generate a filepath to output including a file name and type to based on a given directory
      * and format.
@@ -169,7 +243,7 @@ public abstract class SBOMGenerator {
 
 
         path.append(getProjectName()) // Append project name
-                .append("_").append(this.originFormat) // Append origin format for transparency
+                .append("_").append(this.schema) // Append origin format for transparency
                 .append('.').append(format.getExtension()); // Append file extension
 
         return path.toString();
@@ -189,8 +263,8 @@ public abstract class SBOMGenerator {
     public String toString() {
         return "SBOMGenerator{" +
                 "internalSBOM=" + internalSBOM +
-                ", originFormat=" + originFormat +
-                ", specVersion='" + specVersion + '\'' +
+                ", originFormat=" + schema +
+                ", specVersion='" + internalSBOM.getSpecVersion() + '\'' +
                 '}';
     }
 
