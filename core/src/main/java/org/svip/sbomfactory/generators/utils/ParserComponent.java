@@ -143,7 +143,7 @@ public class ParserComponent extends Component {
     // TODO docstring
     public void resolveLicenses() {
         for(String licenseName : getLicenses()) {
-            Debug.log(Debug.LOG_TYPE.DEBUG, String.format("Document: License found in component %s: \"%s\"",
+            Debug.log(Debug.LOG_TYPE.DEBUG, String.format("SPDXStore: License found in component %s: \"%s\"",
                     this.getName(), licenseName));
 
             resolvedLicenses.add(new License(licenseName));

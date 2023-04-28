@@ -3,8 +3,8 @@ package org.svip.sbomfactory.generators.generators.cyclonedx;
 import org.svip.sbomfactory.generators.generators.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
+import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.generators.utils.License;
-import org.svip.sbomfactory.generators.generators.utils.Tool;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbom.model.Component;
@@ -15,58 +15,19 @@ import java.util.stream.Collectors;
 import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
- * File: BOM.java
+ * File: CycloneDXStore.java
  * <p>
  * Dataclass to store all attributes and components (including nested components) relevant to a CDX document.
  * </p>
  * @author Ian Dunn
  */
-@JsonSerialize(using = BOMSerializer.class)
-public class BOM {
-
-    //#region Constants
-
-    /**
-     * The format of the BOM - always CycloneDX.
-     */
-    protected static final String BOM_FORMAT = "CycloneDX";
-
-    /**
-     * The specification version of the BOM.
-     */
-    protected static final String SPEC_VERSION = CycloneDXGenerator.SPEC_VERSION;
-
-    //#endregion
+@JsonSerialize(using = CycloneDXSerializer.class)
+public class CycloneDXStore extends BOMStore {
 
     //#region Attributes
 
     /**
-     * The head component of the SBOM. This is the component that the CDX BOM is generated from.
-     */
-    private final ParserComponent headComponent;
-
-    /**
-     * The unique serial number of the BOM.
-     */
-    private final String serialNumber;
-
-    /**
-     * The version of the BOM - 1 if the first one generated, n if the nth one generated.
-     */
-    private final int version;
-
-    /**
-     * The timestamp when the BOM was generated.
-     */
-    private final String timestamp;
-
-    /**
-     * List of tools used to generate the BOM.
-     */
-    private final ArrayList<Tool> tools;
-
-    /**
-     * The TOP-LEVEL components of the BOM only.
+     * The TOP-LEVEL components of the CycloneDXStore only.
      */
     private final ArrayList<ParserComponent> components;
 
@@ -79,20 +40,16 @@ public class BOM {
 
     //#region Constructors
 
-    /**
-     * The default constructor to create a new instance of a BOM.
+    /** TODO Update docstring
+     * The default constructor to create a new instance of a CycloneDXStore.
      *
-     * @param headComponent The head component of the SBOM. This is the component that the CDX BOM is generated from.
-     * @param serialNumber The unique serial number of the BOM.
-     * @param version The version of the BOM - 1 if the first one generated, n if the nth one generated.
+     * @param headComponent The head component of the SBOM. This is the component that the CDX CycloneDXStore is generated from.
+     * @param serialNumber The unique serial number of the CycloneDXStore.
+     * @param bomVersion The version of the CycloneDXStore - 1 if the first one generated, n if the nth one generated.
      */
-    public BOM(ParserComponent headComponent, String serialNumber, int version) {
-        this.headComponent = headComponent;
-        this.serialNumber = serialNumber;
-        this.version = version;
-        this.timestamp = Tool.createTimestamp();
+    public CycloneDXStore(String serialNumber, int bomVersion, ParserComponent headComponent) {
+        super(GeneratorSchema.CycloneDX, "1.4", serialNumber, bomVersion, headComponent);
 
-        this.tools = new ArrayList<>();
         this.components = new ArrayList<>();
         this.children = new HashMap<>();
     }
@@ -100,26 +57,6 @@ public class BOM {
     //#endregion
 
     //#region Getters
-
-    public ParserComponent getHeadComponent() {
-        return headComponent;
-    }
-
-    public String getSerialNumber() {
-        return serialNumber;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public ArrayList<Tool> getTools() {
-        return tools;
-    }
 
     public ArrayList<ParserComponent> getComponents() {
         return components;
@@ -140,20 +77,11 @@ public class BOM {
     //#region Core Methods
 
     /**
-     * Add a tool that was used to generate this BOM.
-     *
-     * @param tool The tool that was used to generate this BOM.
-     */
-    public void addTool(Tool tool) {
-        tools.add(tool);
-        tool.getLicenses().forEach(headComponent::addResolvedLicense); // Add license to head component
-    }
-
-    /**
-     * Adds a component to this BOM instance.
+     * Adds a component to this CycloneDXStore instance.
      *
      * @param component The ParserComponent storing all necessary component data.
      */
+    @Override
     public void addComponent(ParserComponent component) {
         // Go through all found licenses and resolve them
         component.resolveLicenses();
@@ -163,17 +91,20 @@ public class BOM {
         }
 
         components.add(component);
-        log(Debug.LOG_TYPE.DEBUG, String.format("BOM: Added component \"%s\". UUID: %s",
+        log(Debug.LOG_TYPE.DEBUG, String.format("CycloneDXStore: Added component \"%s\". UUID: %s",
                 component.getName(), component.getUUID()));
     }
 
     /**
-     * Adds a child to a component in this BOM instance.
+     * Adds a child to an existing component in this CycloneDXStore instance.
      *
      * @param parent The parent UUID that the child depends on.
-     * @param child The child ParserComponent storing all necessary component data.
+     * @param child  The child ParserComponent storing all necessary component data.
      */
-    public void addChild(UUID parent, ParserComponent child) throws GeneratorException {
+    @Override
+    public void addChild(ParserComponent parent, ParserComponent child) throws GeneratorException {
+        UUID parentUUID = parent.getUUID();
+
         // Get all possible parent component UUIDs
         Set<UUID> parents = components.stream().map(Component::getUUID).collect(Collectors.toSet());
         children.values().forEach(list -> {
@@ -181,18 +112,18 @@ public class BOM {
             parents.addAll(list.stream().map(ParserComponent::getUUID).collect(Collectors.toSet()));
         });
 
-        if(!parents.contains(parent))
+        if(!parents.contains(parentUUID))
             throw new GeneratorException("Parent UUID " + parent + " does not exist in components.");
 
         // Go through all found licenses and resolve them
         child.resolveLicenses();
 
         // If the parent UUID doesnt exist as a key, initialize the arraylist before adding a child
-        children.computeIfAbsent(parent, k -> new ArrayList<>());
-        children.get(parent).add(child);
+        children.computeIfAbsent(parentUUID, k -> new ArrayList<>());
+        children.get(parentUUID).add(child);
 
-        log(Debug.LOG_TYPE.DEBUG, String.format("BOM: Added child component \"%s\" that depends on parent UUID %s",
-                child.getName(), parent));
+        log(Debug.LOG_TYPE.DEBUG, String.format("CycloneDXStore: Added child component \"%s\" that depends on parent UUID %s",
+                child.getName(), parentUUID));
     }
 
     //#endregion

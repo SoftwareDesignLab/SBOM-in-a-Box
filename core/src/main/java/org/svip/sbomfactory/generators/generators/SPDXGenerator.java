@@ -1,6 +1,6 @@
 package org.svip.sbomfactory.generators.generators;
 
-import org.svip.sbomfactory.generators.generators.spdx.Document;
+import org.svip.sbomfactory.generators.generators.spdx.SPDXStore;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.utils.Debug;
@@ -65,17 +65,17 @@ public class SPDXGenerator extends SBOMGenerator {
         log(Debug.LOG_TYPE.DEBUG, "Building SPDX SBOM object");
         try {
             // Build model
-            Document document = buildDocument(); // TODO make generic method that returns Object, cast BOM/Document
+            SPDXStore SPDXStore = buildDocument(); // TODO make generic method that returns Object, cast CycloneDXStore/SPDXStore
 
             // Serialize
             log(Debug.LOG_TYPE.DEBUG, "Attempting to write to " + path);
 
             // Get the correct OM from the format and write the file to it
-            format.getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File(path), document);
+            format.getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File(path), SPDXStore);
 
             log(Debug.LOG_TYPE.SUMMARY, "SPDX SBOM saved to: " + path);
         } catch (GeneratorException e) {
-            log(Debug.LOG_TYPE.ERROR, "Document: " + e.getMessage());
+            log(Debug.LOG_TYPE.ERROR, "SPDXStore: " + e.getMessage());
         } catch (IOException e) {
             log(Debug.LOG_TYPE.EXCEPTION, e);
             log(Debug.LOG_TYPE.ERROR, "Error writing to file " + path);
@@ -85,43 +85,45 @@ public class SPDXGenerator extends SBOMGenerator {
     //#endregion
 
     /**
-     * Builds an SPDX document from the internal SBOM returned in an Document that can be serialized to a file.
+     * Builds an SPDX document from the internal SBOM returned in an SPDXStore that can be serialized to a file.
      *
-     * @return An <code>Document</code> containing the data for a complete SPDX document.
+     * @return An <code>SPDXStore</code> containing the data for a complete SPDX document.
      */
-    private Document buildDocument() throws GeneratorException {
+    private SPDXStore buildDocument() throws GeneratorException {
         SBOM intSBOM = getInternalSBOM();
 
-        // Prepare required fields for the Document
-        String name = "SPDX Document: " + this.getProjectName();
+        // Prepare required fields for the SPDXStore
+        ParserComponent headComponent = (ParserComponent) intSBOM.getComponent(intSBOM.getHeadUUID());
+        String name = "SPDX SPDXStore: " + this.getProjectName();
         String documentUri = getInternalSBOM().getSerialNumber();
 
-        // Create new Document with the required fields
-        Document document = new Document(name, documentUri, this.getTool());
+        // Create new SPDXStore with the required fields
+        SPDXStore SPDXStore = new SPDXStore(documentUri, 1, headComponent);
+        SPDXStore.addTool(this.getTool()); // Add our tool as info
 
         // Add all depth 0 components as packages
         final Set<Component> componentSet = intSBOM
                 .getComponentChildren(intSBOM.getHeadUUID()); // Get all depth 0 dependencies
 
         for(Component c : componentSet) { // Loop through and add all packages
-            this.addPackage(document, (ParserComponent) c, true);
+            this.addPackage(SPDXStore, (ParserComponent) c, true);
         }
 
-        return document;
+        return SPDXStore;
     }
 
     /**
      * Private helper method to add a single package represented as a ParserComponent and its children (if specified)
-     * to a provided Document.
+     * to a provided SPDXStore.
      *
-     * @param document The Document to add the package to.
-     * @param component The ParserComponent to add to the Document.
-     * @param recursive Whether to recursively add children of the package to the Document and mark as dependent on
+     * @param SPDXStore The SPDXStore to add the package to.
+     * @param component The ParserComponent to add to the SPDXStore.
+     * @param recursive Whether to recursively add children of the package to the SPDXStore and mark as dependent on
      *                  the package one level above.
-     * @return The ParserComponent that was added to the Document.
+     * @return The ParserComponent that was added to the SPDXStore.
      */
-    private ParserComponent addPackage(Document document, ParserComponent component, boolean recursive) throws GeneratorException {
-        document.addPackage(component);
+    private ParserComponent addPackage(SPDXStore SPDXStore, ParserComponent component, boolean recursive) throws GeneratorException {
+        SPDXStore.addComponent(component);
 
         if(recursive) {
             ArrayList<ParserComponent> children = new ArrayList<>();
@@ -130,11 +132,12 @@ public class SPDXGenerator extends SBOMGenerator {
             for (Component internal :
                     getInternalSBOM().getComponentChildren(component.getUUID())) {
                 // Add child to store as well as internal list so we can add dependencies recursively
-                children.add(this.addPackage(document, (ParserComponent) internal, true));
+                children.add(this.addPackage(SPDXStore, (ParserComponent) internal, true));
 
                 // Add all dependencies to this component
                 for(ParserComponent dependency : children) {
-                    document.addDependency(dependency.getSPDXID(), component.getSPDXID());
+                    SPDXStore.addChild(dependency, component); // TODO make sure this is tested
+//                    SPDXStore.addDependency(dependency.getSPDXID(), component.getSPDXID());
                 }
             }
         }

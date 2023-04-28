@@ -1,6 +1,6 @@
 package org.svip.sbomfactory.generators.generators;
 
-import org.svip.sbomfactory.generators.generators.cyclonedx.BOM;
+import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXStore;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.utils.Debug;
@@ -64,13 +64,13 @@ public class CycloneDXGenerator extends SBOMGenerator {
         log(Debug.LOG_TYPE.DEBUG, "Building CDX SBOM object");
         try {
             // Build model
-            BOM bom = buildCDXBOM();
+            CycloneDXStore cycloneDXStore = buildCDXBOM();
 
             // Serialize
             log(Debug.LOG_TYPE.DEBUG, "Attempting to write to " + path);
 
             // Get the correct OM from the format and write the file to it
-            format.getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File(path), bom);
+            format.getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File(path), cycloneDXStore);
 
             log(Debug.LOG_TYPE.SUMMARY, "CycloneDX SBOM saved to: " + path);
         } catch (IOException e) {
@@ -82,11 +82,11 @@ public class CycloneDXGenerator extends SBOMGenerator {
     //#endregion
 
     /**
-     * Builds a CDX document from the internal SBOM returned in a BOM that can be serialized to a file.
+     * Builds a CDX document from the internal SBOM returned in a CycloneDXStore that can be serialized to a file.
      *
-     * @return A <code>BOM</code> containing the data for a complete CDX document.
+     * @return A <code>CycloneDXStore</code> containing the data for a complete CDX document.
      */
-    private BOM buildCDXBOM() {
+    private CycloneDXStore buildCDXBOM() {
         // Get internal SBOM Object
         final SBOM intSBOM = getInternalSBOM();
 
@@ -94,62 +94,62 @@ public class CycloneDXGenerator extends SBOMGenerator {
         String serialNumber = intSBOM.getSerialNumber();
         int version = 1; // TODO should we have to increment this?
 
-        // Construct bom for output
-        final BOM bom = new BOM(headComponent, serialNumber, version);
-        bom.addTool(this.getTool()); // Add our tool as info
+        // Construct cycloneDXStore for output
+        final CycloneDXStore cycloneDXStore = new CycloneDXStore(serialNumber, version, headComponent);
+        cycloneDXStore.addTool(this.getTool()); // Add our tool as info
 
         // Add all depth 0 components as packages
         final Set<Component> componentSet = intSBOM
                 .getComponentChildren(intSBOM.getHeadUUID()); // Get all depth 0 dependencies
 
         for(Component c : componentSet) { // Loop through and add all packages
-            this.addComponent(bom, (ParserComponent) c, true);
+            this.addComponent(cycloneDXStore, (ParserComponent) c, true);
         }
 
-        return bom;
+        return cycloneDXStore;
     }
 
 
     /**
      * Private helper method to add a single package represented as a ParserComponent and its children (if specified)
-     * to a provided Document.
+     * to a provided SPDXStore.
      *
-     * @param bom The BOM to add the component to.
-     * @param component The ParserComponent to add to the BOM.
-     * @param recursive Whether to recursively add children of the package to the BOM and mark as dependent on
+     * @param cycloneDXStore The CycloneDXStore to add the component to.
+     * @param component The ParserComponent to add to the CycloneDXStore.
+     * @param recursive Whether to recursively add children of the package to the CycloneDXStore and mark as dependent on
      *                  the package one level above.
      */
-    private void addComponent(BOM bom, ParserComponent component, boolean recursive) {
-        bom.addComponent(component);
+    private void addComponent(CycloneDXStore cycloneDXStore, ParserComponent component, boolean recursive) {
+        cycloneDXStore.addComponent(component);
 
         if(recursive) {
             // Loop through and recursively convert children
-            addChildren(bom, component);
+            addChildren(cycloneDXStore, component);
         }
     }
 
     /**
-     * Recursive private helper method to add children of top level components to the BOM provided. Since they are not
+     * Recursive private helper method to add children of top level components to the CycloneDXStore provided. Since they are not
      * directly added to the top-level list of packages, this needs to be a separate method to add all children of
      * children.
      *
-     * @param bom The BOM to add the component child to.
-     * @param component The ParserComponent to add to the BOM.
+     * @param cycloneDXStore The CycloneDXStore to add the component child to.
+     * @param component The ParserComponent to add to the CycloneDXStore.
      */
-    private void addChildren(BOM bom, ParserComponent component) {
+    private void addChildren(CycloneDXStore cycloneDXStore, ParserComponent component) {
         // Get set of all children from the internal SBOM
         Set<ParserComponent> children = (Set<ParserComponent>) (Set<?>) getInternalSBOM()
                 .getComponentChildren(component.getUUID());
 
-        // Loop through children and add the child and its children recursively to the BOM
+        // Loop through children and add the child and its children recursively to the CycloneDXStore
         for (ParserComponent internal : children) {
             try {
-                bom.addChild(component.getUUID(), internal);
+                cycloneDXStore.addChild(component, internal);
             } catch(GeneratorException e) {
-                Debug.log(Debug.LOG_TYPE.WARN, "BOM: " + e.getMessage());
+                Debug.log(Debug.LOG_TYPE.WARN, "CycloneDXStore: " + e.getMessage());
             }
 
-            addChildren(bom, internal);
+            addChildren(cycloneDXStore, internal);
         }
     }
 }

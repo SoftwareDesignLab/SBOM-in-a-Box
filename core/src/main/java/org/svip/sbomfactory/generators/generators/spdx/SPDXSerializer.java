@@ -5,22 +5,25 @@ import org.svip.sbomfactory.generators.generators.utils.License;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import org.svip.sbomfactory.generators.generators.utils.Tool;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * File: DocumentSerializer.java
+ * File: SPDXSerializer.java
  * <p>
- * A custom serializer for the <code>Document</code> class extended from the Jackson library's <code>STDSerializer</code>
- * class to convert the data of <code>Document</code> to an SPDX v2.3 document.
+ * A custom serializer for the <code>SPDXStore</code> class extended from the Jackson library's <code>STDSerializer</code>
+ * class to convert the data of <code>SPDXStore</code> to an SPDX v2.3 document.
  * </p>
  * @author Ian Dunn
  */
-public class DocumentSerializer extends StdSerializer<Document> {
+public class SPDXSerializer extends StdSerializer<SPDXStore> {
 
     //#region Enums
 
@@ -41,16 +44,16 @@ public class DocumentSerializer extends StdSerializer<Document> {
     //#region Constructors
 
     /**
-     * The default serializer constructor that takes in no arguments and serializes a null Document class.
+     * The default serializer constructor that takes in no arguments and serializes a null SPDXStore class.
      */
-    protected DocumentSerializer() { super((Class<Document>) null); }
+    protected SPDXSerializer() { super((Class<SPDXStore>) null); }
 
     /**
-     * A serializer constructor that takes in an Document class to serialize.
+     * A serializer constructor that takes in an SPDXStore class to serialize.
      *
-     * @param t The Document class object.
+     * @param t The SPDXStore class object.
      */
-    protected DocumentSerializer(Class<Document> t) {
+    protected SPDXSerializer(Class<SPDXStore> t) {
         super(t);
     }
 
@@ -59,46 +62,49 @@ public class DocumentSerializer extends StdSerializer<Document> {
     //#region Overrides
 
     /**
-     * The default serialize method called by Jackson ObjectMappers to serialize the Document class to an SPDX
-     * document.
+     * The default serialize method called by Jackson ObjectMappers to serialize the spdxStore class to an SPDX
+     * spdxStore.
      *
-     * @param document The Document instance with the document data.
+     * @param spdxStore The spdxStore instance with the spdxStore data.
      * @param jsonGenerator The JsonGenerator used by Jackson to serialize to a file.
      * @param serializerProvider The SerializerProvider used by Jackson to serialize to a file.
      * @throws IOException If an error writing to the file occurs.
      */
     @Override
-    public void serialize(Document document, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
+    public void serialize(SPDXStore spdxStore, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
             throws IOException {
 
         jsonGenerator.writeStartObject(); // {
 
         //
-        // Document Creation Info (ID, SPDX version, and creator info)
+        // spdxStore Creation Info (ID, SPDX version, and creator info)
         //
 
-        jsonGenerator.writeStringField("SPDXID", Document.SPDXID);
-        jsonGenerator.writeStringField("spdxVersion", document.getVersion());
+        jsonGenerator.writeStringField("SPDXID", spdxStore.getDocumentId());
+        jsonGenerator.writeStringField("spdxVersion", spdxStore.getSpecVersion());
 
         /* Creator info */
         jsonGenerator.writeFieldName("creationInfo");
 
         jsonGenerator.writeStartObject(); // {
-        jsonGenerator.writeStringField("created", document.getCreationDate()); // Creation date
+        jsonGenerator.writeStringField("created", spdxStore.getTimestamp()); // Creation date
 
         jsonGenerator.writeFieldName("creators");
-        // Write all creators as an array representation
-        jsonGenerator.writeArray(document.getCreators().toArray(new String[0]), 0,
-                document.getCreators().size());
-
+        // Write all creator strings as an array representation
+        List<String> creators = spdxStore.getTools().stream().map(Tool::getToolInfo).toList();
+        jsonGenerator.writeArray(creators.toArray(new String[0]), 0, creators.size());
         jsonGenerator.writeEndObject(); // }
 
         //
-        // Internal document info (name and license)
+        // Internal spdxStore info (name and license)
         //
 
-        jsonGenerator.writeStringField("name", document.getName());
-        jsonGenerator.writeStringField("dataLicense", document.getDataLicense());
+        jsonGenerator.writeStringField("name", spdxStore.getHeadComponent().getName());
+
+
+        // Get all licenses from tools
+        List<String> toolLicenses = spdxStore.getToolLicenses().stream().map(License::toString).toList();
+        jsonGenerator.writeStringField("dataLicense", String.join(" AND ", toolLicenses));
 
         //
         // Extracted licensing info (invalid licenses)
@@ -107,35 +113,35 @@ public class DocumentSerializer extends StdSerializer<Document> {
         jsonGenerator.writeFieldName("hasExtractedLicensingInfos");
         jsonGenerator.writeStartArray();
 
-        for(License license : document.getExternalLicenses()) {
+        for(License license : spdxStore.getExternalLicenses()) {
             writeExtractedLicensingInfo(jsonGenerator, license);
         }
 
         jsonGenerator.writeEndArray();
 
         //
-        // List of SPDX identifiers that the document describes
+        // List of SPDX identifiers that the spdxStore describes
         //
 
         jsonGenerator.writeFieldName("documentDescribes");
-        jsonGenerator.writeArray(document.getDocumentDescribes().toArray(new String[0]), 0,
-                document.getDocumentDescribes().size());
+        jsonGenerator.writeArray(spdxStore.getDocumentDescribes().toArray(new String[0]), 0,
+                spdxStore.getDocumentDescribes().size());
 
         //
-        // Unique document URI
+        // Unique spdxStore URI
         //
 
-        jsonGenerator.writeStringField("documentNamespace", document.getDocumentNamespace());
+        jsonGenerator.writeStringField("documentNamespace", spdxStore.getSerialNumber());
 
         //
-        // List of ALL packages from the Document as an array of objects
+        // List of ALL packages from the spdxStore as an array of objects
         //
 
         jsonGenerator.writeFieldName("packages");
         jsonGenerator.writeStartArray(); // [
 
-        for(ParserComponent pkg : document.getPackages())
-            writePackage(jsonGenerator, document, pkg); // For each package in the Document, write its data as an object
+        for(ParserComponent pkg : spdxStore.getPackages())
+            writePackage(jsonGenerator, spdxStore, pkg); // For each package in the spdxStore, write its data as an object
 
         jsonGenerator.writeEndArray(); // ]
 
@@ -143,11 +149,11 @@ public class DocumentSerializer extends StdSerializer<Document> {
         // Files
         //
 
-        if(document.getFiles().size() > 0) {
+        if(spdxStore.getFiles().size() > 0) {
             jsonGenerator.writeFieldName("files");
             jsonGenerator.writeStartArray();
 
-            for(Map.Entry<String, String> entry : document.getFiles().entrySet()) {
+            for(Map.Entry<String, String> entry : spdxStore.getFiles().entrySet()) {
                 jsonGenerator.writeStartObject();
 
                 jsonGenerator.writeStringField("SPDXID", entry.getValue());
@@ -168,12 +174,12 @@ public class DocumentSerializer extends StdSerializer<Document> {
         // Relationships that exist between packages (if any)
         //
 
-        if(document.getRelationships().size() > 0) { // If at least one Relationship exists, write this field
+        if(spdxStore.getRelationships().size() > 0) { // If at least one Relationship exists, write this field
             jsonGenerator.writeFieldName("relationships");
             jsonGenerator.writeStartArray(); // [
 
             // Loop through all SPDXRelationships and write each as an object
-            for(Relationship relationship : document.getRelationships())
+            for(Relationship relationship : spdxStore.getRelationships())
                 writeRelationship(jsonGenerator, relationship);
 
             jsonGenerator.writeEndArray(); // ]
@@ -193,7 +199,7 @@ public class DocumentSerializer extends StdSerializer<Document> {
      * @param pkg The package represented as a ParserComponent.
      * @throws IOException If an error writing to the file occurs.
      */
-    private void writePackage(JsonGenerator jsonGenerator, Document document, ParserComponent pkg) throws IOException {
+    private void writePackage(JsonGenerator jsonGenerator, SPDXStore spdxStore, ParserComponent pkg) throws IOException {
         jsonGenerator.writeStartObject(); // {
 
         //
@@ -242,7 +248,7 @@ public class DocumentSerializer extends StdSerializer<Document> {
 
             // TODO we can have multiple file references in here
             // Write current package file reference ID (files will be generated after packages)
-            jsonGenerator.writeString(document.getFiles().get(pkg.getFile()));
+            jsonGenerator.writeString(spdxStore.getFiles().get(pkg.getFile()));
 
             jsonGenerator.writeEndArray();
         } else {
@@ -326,7 +332,8 @@ public class DocumentSerializer extends StdSerializer<Document> {
      * @param refLocator The locator, or URI of the reference.
      * @throws IOException If an error writing to the file occurs.
      */
-    private void writeExternalRef(JsonGenerator jsonGenerator, REFERENCE_CATEGORY category, String refType, String refLocator) throws IOException {
+    private void writeExternalRef(JsonGenerator jsonGenerator, REFERENCE_CATEGORY category, String refType,
+                                  String refLocator) throws IOException {
         jsonGenerator.writeStartObject(); // {
         jsonGenerator.writeStringField("referenceCategory", category.name());
         jsonGenerator.writeStringField("referenceLocator", refLocator);

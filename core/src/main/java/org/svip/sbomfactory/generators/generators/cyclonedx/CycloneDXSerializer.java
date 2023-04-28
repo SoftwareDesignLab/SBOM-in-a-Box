@@ -15,28 +15,28 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * File: BOMSerializer.java
+ * File: CycloneDXSerializer.java
  * <p>
- * A custom serializer for the <code>BOM</code> class extended from the Jackson library's <code>STDSerializer</code>
- * class to convert the data of <code>BOM</code> to an CDX v1.4 bill of materials.
+ * A custom serializer for the <code>CycloneDXStore</code> class extended from the Jackson library's <code>STDSerializer</code>
+ * class to convert the data of <code>CycloneDXStore</code> to an CDX v1.4 bill of materials.
  * </p>
  * @author Ian Dunn
  */
-public class BOMSerializer extends StdSerializer<BOM> {
+public class CycloneDXSerializer extends StdSerializer<CycloneDXStore> {
 
     //#region Constructors
 
     /**
-     * The default serializer constructor that takes in no arguments and serializes a null BOM class.
+     * The default serializer constructor that takes in no arguments and serializes a null CycloneDXStore class.
      */
-    protected BOMSerializer() { super((Class<BOM>) null); }
+    protected CycloneDXSerializer() { super((Class<CycloneDXStore>) null); }
 
     /**
-     * A serializer constructor that takes in a BOM class to serialize.
+     * A serializer constructor that takes in a CycloneDXStore class to serialize.
      *
-     * @param t The BOM class object.
+     * @param t The CycloneDXStore class object.
      */
-    protected BOMSerializer(Class<BOM> t) {
+    protected CycloneDXSerializer(Class<CycloneDXStore> t) {
         super(t);
     }
 
@@ -45,46 +45,46 @@ public class BOMSerializer extends StdSerializer<BOM> {
     //#region Overrides
 
     /**
-     * The default serialize method called by Jackson ObjectMappers to serialize the BOM class to a CDX
+     * The default serialize method called by Jackson ObjectMappers to serialize the CycloneDXStore class to a CDX
      * bill of materials.
      *
-     * @param bom The BOM instance with the bill of materials data.
+     * @param cycloneDXStore The CycloneDXStore instance with the bill of materials data.
      * @param jsonGenerator The JsonGenerator used by Jackson to serialize to a file.
      * @param serializerProvider The SerializerProvider used by Jackson to serialize to a file.
      * @throws IOException If an error writing to the file occurs.
      */
     @Override
-    public void serialize(BOM bom, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
+    public void serialize(CycloneDXStore cycloneDXStore, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
             throws IOException {
 
         jsonGenerator.writeStartObject(); // {
 
         //
-        // BOM information
+        // CycloneDXStore information
         //
 
-        jsonGenerator.writeStringField("bomFormat", BOM.BOM_FORMAT);
-        jsonGenerator.writeStringField("specVersion", BOM.SPEC_VERSION);
-        jsonGenerator.writeStringField("serialNumber", bom.getSerialNumber());
-        jsonGenerator.writeNumberField("version", bom.getVersion());
+        jsonGenerator.writeStringField("bomFormat", cycloneDXStore.getBomFormat());
+        jsonGenerator.writeStringField("specVersion", cycloneDXStore.getSpecVersion());
+        jsonGenerator.writeStringField("serialNumber", cycloneDXStore.getSerialNumber());
+        jsonGenerator.writeNumberField("version", cycloneDXStore.getBOMVersion());
 
         //
-        // BOM metadata
+        // CycloneDXStore metadata
         //
         jsonGenerator.writeFieldName("metadata");
         jsonGenerator.writeStartObject(); // {
 
         /* Timestamp */
-        jsonGenerator.writeStringField("timestamp", bom.getTimestamp());
+        jsonGenerator.writeStringField("timestamp", cycloneDXStore.getTimestamp());
 
         /* Tools */
-        ArrayList<Tool> tools = bom.getTools();
+        List<Tool> tools = cycloneDXStore.getTools();
 
         if(tools.size() > 0) {
             jsonGenerator.writeFieldName("tools");
             jsonGenerator.writeStartArray(); // [
 
-            for(Tool tool : bom.getTools())
+            for(Tool tool : cycloneDXStore.getTools())
                 writeTool(jsonGenerator, tool);
 
             jsonGenerator.writeEndArray(); // ]
@@ -92,7 +92,7 @@ public class BOMSerializer extends StdSerializer<BOM> {
 
         /* Head Component */
         jsonGenerator.writeFieldName("component");
-        writeComponent(jsonGenerator, bom, bom.getHeadComponent());
+        writeComponent(jsonGenerator, cycloneDXStore, cycloneDXStore.getHeadComponent());
         jsonGenerator.writeEndObject(); // }
 
         //
@@ -101,8 +101,8 @@ public class BOMSerializer extends StdSerializer<BOM> {
         jsonGenerator.writeFieldName("components");
         jsonGenerator.writeStartArray(); // [
 
-        for(ParserComponent c : bom.getComponents()) {
-            writeComponent(jsonGenerator, bom, c);
+        for(ParserComponent c : cycloneDXStore.getComponents()) {
+            writeComponent(jsonGenerator, cycloneDXStore, c);
         }
 
         jsonGenerator.writeEndArray(); // ]
@@ -118,11 +118,11 @@ public class BOMSerializer extends StdSerializer<BOM> {
      * Private helper method to wite the data of a single component as an object using the provided JsonGenerator.
      *
      * @param jsonGenerator The JsonGenerator to use to write the package to the file.
-     * @param bom The BOM that this component belongs to (used to get any component children).
+     * @param cycloneDXStore The CycloneDXStore that this component belongs to (used to get any component children).
      * @param component The component represented as a ParserComponent.
      * @throws IOException If an error writing to the file occurs.
      */
-    private void writeComponent(JsonGenerator jsonGenerator, BOM bom, ParserComponent component) throws IOException {
+    private void writeComponent(JsonGenerator jsonGenerator, CycloneDXStore cycloneDXStore, ParserComponent component) throws IOException {
         jsonGenerator.writeStartObject(); // {
 
         //
@@ -160,13 +160,13 @@ public class BOMSerializer extends StdSerializer<BOM> {
         //
 
         // Write children
-        List<ParserComponent> children = bom.getChildren(component.getUUID());
+        List<ParserComponent> children = cycloneDXStore.getChildren(component.getUUID());
         if(children.size() > 0) {
             jsonGenerator.writeFieldName("components");
             jsonGenerator.writeStartArray();
 
             for(ParserComponent child : children) {
-                writeComponent(jsonGenerator, bom, child);
+                writeComponent(jsonGenerator, cycloneDXStore, child);
             }
 
             jsonGenerator.writeEndArray();
@@ -176,11 +176,11 @@ public class BOMSerializer extends StdSerializer<BOM> {
     }
 
     /**
-     * Private helper method to write the data of a tool used to create the BOM as an object using the provided
+     * Private helper method to write the data of a tool used to create the CycloneDXStore as an object using the provided
      * JsonGenerator.
      *
      * @param jsonGenerator The JsonGenerator to use to write the tool to the file.
-     * @param tool The tool used to create the BOM.
+     * @param tool The tool used to create the CycloneDXStore.
      * @throws IOException If an error writing to the file occurs.
      */
     private void writeTool(JsonGenerator jsonGenerator, Tool tool) throws IOException {

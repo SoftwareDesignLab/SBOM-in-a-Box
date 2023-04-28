@@ -1,69 +1,33 @@
 package org.svip.sbomfactory.generators.generators.spdx;
 
-import org.svip.sbomfactory.generators.generators.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.svip.sbomfactory.generators.generators.BOMStore;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
+import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.generators.utils.License;
-import org.svip.sbomfactory.generators.generators.utils.Tool;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
- * File: Document.java
+ * File: SPDXStore.java
  * <p>
  * Dataclass to store all attributes, packages, and relationships relevant to an SPDX document.
  * </p>
  * @author Ian Dunn
  */
-@JsonSerialize(using = DocumentSerializer.class)
-public class Document {
-
-    //#region Constants
-
-    /**
-     * The reference ID of the generated SPDX document.
-     */
-    public final static String SPDXID = "SPDXRef-DOCUMENT";
-
-    /**
-     * The SPDX version of the document.
-     */
-    private static final String SPDX_VERSION = "SPDX-" + SPDXGenerator.SPEC_VERSION;
-
-    //#endregion
+@JsonSerialize(using = SPDXSerializer.class)
+public class SPDXStore extends BOMStore {
 
     //#region Attributes
 
     /**
-     * The creation date of the document. This is automatically generated when the store is initialized, since the store
-     * is a temporary class to hold information when the document is serialized.
+     * The reference ID of the generated SPDX document.
      */
-    private final String creationDate;
-
-    /**
-     * A list of creators of the document. Must be prefixed with "Person: ", "Organization: ", or "Tool: ".
-     */
-    private final ArrayList<String> creators;
-
-    /**
-     * The name of the generated SPDX document.
-     */
-    private final String name;
-
-    /**
-     * The URI of the document.
-     */
-    private final String documentNamespace;
-
-    /**
-     * The license STRING of the tool used to create the document.
-     */
-    private final String dataLicense;
+    private final String documentId;
 
     /**
      * A list of ALL packages in the document, regardless of depth.
@@ -92,97 +56,45 @@ public class Document {
      */
     private int nextId;
 
+    /**
+     * A variable holding the next free ID to be used for license identifiers.
+     */
     private int nextLicenseId;
 
     //#endregion
 
     //#region Constructors
 
-    /**
-     * The default constructor to create a new instance of an Document.
+    /** TODO update dosctring
+     * The default constructor to create a new instance of an SPDXStore.
      *
-     * @param name The document name.
-     * @param documentUri The unique URI of the document.
-     * @param tool The tool used to generate the document.
      */
-    public Document(String name, String documentUri, Tool tool) {
-        this.creationDate = Tool.createTimestamp();
+    public SPDXStore(String serialNumber, int bomVersion, ParserComponent headComponent) {
+        super(GeneratorSchema.SPDX, "2.3", serialNumber, bomVersion, headComponent);
 
-        this.name = name;
-        this.creators = new ArrayList<>();
-        this.creators.add(tool.getToolInfo());
-        this.documentNamespace = documentUri;
-        this.dataLicense = String.join(" AND ", tool.getLicenses().stream().map(License::toString)
-                .collect(Collectors.toSet()));
+        documentId = "SPDXRef-DOCUMENT";
 
         this.packages = new ArrayList<>();
         this.documentDescribes = new ArrayList<>();
         this.relationships = new ArrayList<>();
         this.files = new HashMap<>();
         this.externalLicenses = new HashSet<>();
+
         this.nextId = 0;
         this.nextLicenseId = 0;
     }
 
     //#endregion
 
-    //#region Getters
-
-    public String getCreationDate() {
-        return creationDate;
-    }
-
-    public ArrayList<String> getCreators() {
-        return creators;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getVersion() {
-        return SPDX_VERSION;
-    }
-
-    public String getDocumentNamespace() {
-        return documentNamespace;
-    }
-
-    public String getDataLicense() {
-        return dataLicense;
-    }
-
-    protected ArrayList<ParserComponent> getPackages() {
-        return packages;
-    }
-
-    protected ArrayList<String> getDocumentDescribes() {
-        return documentDescribes;
-    };
-
-    public ArrayList<Relationship> getRelationships() {
-        return relationships;
-    }
-
-    public Map<String, String> getFiles() {
-        return files;
-    }
-
-    public Set<License> getExternalLicenses() {
-        return externalLicenses;
-    }
-
-    //#endregion
-
-    //#region Core Methods
+    //#region Override Methods
 
     /**
-     * Adds a package to the SPDX document, generates a unique ID for it, and adds that ID to the list of SPDX
-     * identifiers that the document describes.
+     * Adds a component to this CycloneDXStore instance.
      *
-     * @param component The ParserComponent storing all necessary package data.
+     * @param component The ParserComponent storing all necessary component data.
      */
-    public void addPackage(ParserComponent component) {
+    @Override
+    public void addComponent(ParserComponent component) {
         String spdxId = getNextId(); // Get the reference ID for the component
 
         //
@@ -208,23 +120,29 @@ public class Document {
         }
 
         //
-        // Document manipulation
+        // SPDXStore manipulation
         //
 
         documentDescribes.add(spdxId); // Add reference ID to the document
 
         // Add package and log
         packages.add(component);
-        log(Debug.LOG_TYPE.DEBUG, "Document: Added component " + component.getName() + " with SPDX ID " + spdxId);
+        log(Debug.LOG_TYPE.DEBUG, "SPDXStore: Added component " + component.getName() + " with SPDX ID " + spdxId);
     }
 
     /**
-     * Adds a dependency to the SPDX document showing that one package depends on another.
+     * Adds a child to an existing component in this CycloneDXStore instance.
      *
-     * @param dependencyId The SPDX identifier of the package that is dependent.
-     * @param dependsOnId The SPDX identifier of the package that the dependencyId depends on.
+     * @param parent The parent UUID that the child depends on.
+     * @param child  The child ParserComponent storing all necessary component data.
      */
-    public void addDependency(String dependencyId, String dependsOnId) throws GeneratorException {
+    @Override
+    public void addChild(ParserComponent parent, ParserComponent child) throws GeneratorException {
+        addComponent(child);
+
+        String dependencyId = parent.getSPDXID();
+        String dependsOnId = child.getSPDXID();
+
         Relationship relationship = new Relationship(dependencyId, dependsOnId, Relationship.RELATIONSHIP_TYPE.DEPENDS_ON);
 
         List<String> spdxIds = packages.stream().map(ParserComponent::getSPDXID).toList();
@@ -238,8 +156,40 @@ public class Document {
 
 
         relationships.add(relationship);
-        log(Debug.LOG_TYPE.DEBUG, "Document: Added relationship " + relationship);
+        log(Debug.LOG_TYPE.DEBUG, "SPDXStore: Added relationship " + relationship);
     }
+
+    //#endregion
+
+    //#region Getters
+
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    protected ArrayList<ParserComponent> getPackages() {
+        return packages;
+    }
+
+    protected ArrayList<String> getDocumentDescribes() {
+        return documentDescribes;
+    };
+
+    public ArrayList<Relationship> getRelationships() {
+        return relationships;
+    }
+
+    public Map<String, String> getFiles() {
+        return files;
+    }
+
+    public Set<License> getExternalLicenses() {
+        return externalLicenses;
+    }
+
+    //#endregion
+
+    //#region Helper Methods
 
     /**
      * Private helper method to get the next available ID for the SPDX document descriptions.
@@ -256,8 +206,13 @@ public class Document {
         return prefix;
     }
 
+    /**
+     * Private helper method to get the next available ID for an SPDX license identifer.
+     *
+     * @return An SPDX license reference ID in the format of SPDXRef-License-XX.
+     */
     private String getNextLicenseId() {
-        String prefix = "SPDXLicenseRef-";
+        String prefix = "SPDXRef-License-";
         if(nextLicenseId < 10)
             prefix += "0";
 
