@@ -78,7 +78,7 @@ public class JSTSParser extends LanguageParser {
         (?:import (?:(?:(?=.*\\{\\n?)([\\S\\s]*?\\})|(.*))\\s*from [ '\\"]*([\\w\\.\\/]+)[ '\\"]*|[ '\\"]*([\\w\\.\\/]+)[ '\\"]*)
         Checks if import statement, and then looks ahead to see if it's a multi-line statement.\s
 
-        If so it groups all functions and waits for a ‘}’ and then “from” keyword and records the package
+        If so it groups all functions and waits for a ‘}’ and then "from" keyword and records the package
         Otherwise it just groups the package
 
         |require[ \\('\\"]*([\\w\\.\\/]+)[ \\)'\\"]*)
