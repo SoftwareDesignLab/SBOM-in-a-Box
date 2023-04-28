@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.generators.generators.spdx;
 
+import org.svip.sbom.model.PURL;
 import org.svip.sbomfactory.generators.generators.utils.License;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -222,9 +223,9 @@ public class DocumentSerializer extends StdSerializer<Document> {
 
             // If any PURLs exist
             if(pkg.getPURL().size() > 0) { // TODO Do this for CPEs and SWIDs once we support them
-                for(String purl : pkg.getPURL())
+                for(PURL purl : pkg.getPURL())
                     // Write the external reference data of the PURL to an object
-                    writeExternalRef(jsonGenerator, REFERENCE_CATEGORY.SECURITY, "purl", purl);
+                    writeExternalRef(jsonGenerator, REFERENCE_CATEGORY.SECURITY, "purl", purl.toString());
             }
 
             jsonGenerator.writeEndArray(); // ]
