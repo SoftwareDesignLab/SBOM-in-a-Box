@@ -188,7 +188,7 @@ public class ParserController {
 
             // TODO: Add all files
 //            c.addAllFiles()
-            components.forEach(c -> c.setFile(filepath.toString().replace("\\\\", "\\")));
+            components.forEach(c -> c.addFile(filepath.toString()));
 
             // If file being parsed is a language file
             if(parser instanceof LanguageParser) // Execute all added ContextParsers

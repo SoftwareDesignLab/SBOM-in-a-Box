@@ -241,14 +241,15 @@ public class SPDXSerializer extends StdSerializer<SPDXStore> {
         // File analysis
         //
 
-        if(pkg.getFile() != null) {
+        if(pkg.getFiles().size() > 0) {
             jsonGenerator.writeBooleanField("filesAnalyzed", true);
             jsonGenerator.writeFieldName("hasFiles");
             jsonGenerator.writeStartArray();
 
-            // TODO we can have multiple file references in here
             // Write current package file reference ID (files will be generated after packages)
-            jsonGenerator.writeString(spdxStore.getFiles().get(pkg.getFile()));
+            for(String file : pkg.getFiles()) {
+                jsonGenerator.writeString(spdxStore.getFiles().get(file));
+            }
 
             jsonGenerator.writeEndArray();
         } else {

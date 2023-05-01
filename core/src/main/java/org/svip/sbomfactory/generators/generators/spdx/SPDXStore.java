@@ -115,8 +115,10 @@ public class SPDXStore extends BOMStore {
         // Check for files
         //
 
-        if(component.getFile() != null && !files.containsKey(component.getFile())) {
-            files.put(component.getFile(), getNextId());
+        if(component.getFiles().size() > 0) {
+            component.getFiles().forEach(filename -> {
+                if(!files.containsKey(filename)) files.put(filename, getNextId());
+            });
         }
 
         //

@@ -130,9 +130,6 @@ public class CycloneDXSerializer extends StdSerializer<CycloneDXStore> {
         //
 
         jsonGenerator.writeStringField("name", component.getName());
-        if(component.getFile() != null) { // TODO put in CDX properties field
-            writeFieldIfExists(jsonGenerator, "description", "File Analyzed: " + component.getFile());
-        }
         writeFieldIfExists(jsonGenerator,"group", component.getGroup());
         writeFieldIfExists(jsonGenerator,"version", component.getVersion());
 
@@ -154,6 +151,27 @@ public class CycloneDXSerializer extends StdSerializer<CycloneDXStore> {
         //
 
         jsonGenerator.writeStringField("type", getCDXType(component.getType()));
+
+        //
+        // Properties (files analyzed)
+        //
+
+        if(component.getFiles().size() > 0) {
+            jsonGenerator.writeFieldName("properties");
+            jsonGenerator.writeStartArray();
+
+            for(String file : component.getFiles()) {
+                jsonGenerator.writeStartObject();
+
+                // https://cyclonedx.org/docs/1.4/json/#components_items_properties_items_name
+                // The value must be a string, but duplicate names with different values are explicitly allowed
+                writeFieldIfExists(jsonGenerator, "fileAnalyzed", file);
+
+                jsonGenerator.writeEndObject();
+            }
+
+            jsonGenerator.writeEndArray();
+        }
 
         //
         // Nested child components
