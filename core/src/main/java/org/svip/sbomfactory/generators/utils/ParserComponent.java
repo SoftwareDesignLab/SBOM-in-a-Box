@@ -1,14 +1,12 @@
 package org.svip.sbomfactory.generators.utils;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.svip.sbom.model.PURL;
 import org.svip.sbomfactory.generators.generators.utils.License;
 import org.svip.sbomfactory.generators.generators.utils.LicenseManager;
 import org.svip.sbom.model.Component;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * <b>File</b>: Component.java<br>
@@ -60,7 +58,7 @@ public class ParserComponent extends Component {
     private Type type;                      // see above; default to EXTERNAL
     private int depth = 0;                  // set component depth, 0 by default
     private String alias;                   // Used name, ie 'import foo as bar'; name = foo, alias = bar
-    private String file;                    // The file that this component is parsed from
+    private List<String> files;                    // A list of files that this component is parsed from
     private Set<License> resolvedLicenses;
     /**
      * Unique identifier for SPDX component
@@ -74,7 +72,7 @@ public class ParserComponent extends Component {
     public ParserComponent(String name) {
         super(name, null);
         this.setUnpackaged(true);
-        this.file = null;
+        this.files = new ArrayList<>();
         this.type = Type.UNKNOWN;
         this.resolvedLicenses = new HashSet<>();
     }
@@ -92,7 +90,7 @@ public class ParserComponent extends Component {
     public Type getType() { return this.type; }
     public int getDepth() { return this.depth; }
     public String getAlias() { return this.alias; }
-    public String getFile() { return this.file; }
+    public List<String> getFiles() { return this.files; }
 
     public Set<License> getResolvedLicenses() { return resolvedLicenses; }
     public String getSPDXID() { return SPDXid; }
@@ -106,8 +104,8 @@ public class ParserComponent extends Component {
     public void setAlias(String alias) { this.alias = alias; }
     public void setSPDXID(String spdxid) { this.SPDXid = spdxid; }
 
-    public void setFile(String file) {
-        this.file = file;
+    public void addFile(String file) {
+        this.files.add(file);
         if(this.type.equals(Type.UNKNOWN)) {
             setType(Type.INTERNAL); // If type has not been assumed, this is internal
         }
@@ -182,15 +180,28 @@ public class ParserComponent extends Component {
         return out;
     }
 
+    /**
+     * Generate a SHA-256 of the current ParserComponent, including all data stored within.
+     *
+     * @return A String representation of a SHA-256 hash.
+     */
+    public String generateHash() {
+        return DigestUtils.sha256Hex(this.toString()); // Hash the unique toString of this method
+    }
+
     //#endregion
 
     //#region Overridden Methods
 
-    // TODO: Update with all unique ParserComponent identifiers and add Docstring
+    /**
+     * Generate a unique UUID based on the hash of this Component.
+     *
+     * @return A UUID unique to this Component.
+     */
     @Override
     public UUID generateUUID() {
         // Convert unique Component identifiers to byte representation
-        byte[] uuidBytes = (this.getName() + this.getVersion()).getBytes();
+        byte[] uuidBytes = (generateHash()).getBytes();
 
         // Generate UUID
         final UUID uuid = UUID.nameUUIDFromBytes(uuidBytes);
@@ -213,6 +224,17 @@ public class ParserComponent extends Component {
 //        try { return ParserComponent.OM.writerWithDefaultPrettyPrinter().writeValueAsString(this); }
 //        catch (JsonProcessingException e) { return "Component[" + this.hashCode() + "]"; }
 //    }
+
+    @Override
+    public String toString() {
+        return "ParserComponent{" +
+                "ComponentString=" + super.toString() +
+                "type=" + type +
+                ", depth=" + depth +
+                ", alias='" + alias + '\'' +
+                ", resolvedLicenses=" + resolvedLicenses +
+                '}';
+    }
 
     @Override
     public boolean equals(Object o) {
