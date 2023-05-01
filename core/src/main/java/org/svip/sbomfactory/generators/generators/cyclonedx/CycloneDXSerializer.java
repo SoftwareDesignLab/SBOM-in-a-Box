@@ -134,6 +134,20 @@ public class CycloneDXSerializer extends StdSerializer<CycloneDXStore> {
         writeFieldIfExists(jsonGenerator,"version", component.getVersion());
 
         //
+        // Package Hash
+        //
+
+        jsonGenerator.writeFieldName("hashes");
+        jsonGenerator.writeStartArray();
+        jsonGenerator.writeStartObject();
+
+        jsonGenerator.writeStringField("alg", "SHA-256"); // ParserComponent only returns SHA-256 hashes
+        jsonGenerator.writeStringField("content", component.generateHash());
+
+        jsonGenerator.writeEndObject();
+        jsonGenerator.writeEndArray();
+
+        //
         // Licenses
         //
 

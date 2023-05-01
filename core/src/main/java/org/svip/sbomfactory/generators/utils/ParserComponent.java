@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.generators.utils;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.svip.sbom.model.PURL;
 import org.svip.sbomfactory.generators.generators.utils.License;
 import org.svip.sbomfactory.generators.generators.utils.LicenseManager;
@@ -179,15 +180,28 @@ public class ParserComponent extends Component {
         return out;
     }
 
+    /**
+     * Generate a SHA-256 of the current ParserComponent, including all data stored within.
+     *
+     * @return A String representation of a SHA-256 hash.
+     */
+    public String generateHash() {
+        return DigestUtils.sha256Hex(this.toString()); // Hash the unique toString of this method
+    }
+
     //#endregion
 
     //#region Overridden Methods
 
-    // TODO: Update with all unique ParserComponent identifiers and add Docstring
+    /**
+     * Generate a unique UUID based on the hash of this Component.
+     *
+     * @return A UUID unique to this Component.
+     */
     @Override
     public UUID generateUUID() {
         // Convert unique Component identifiers to byte representation
-        byte[] uuidBytes = (this.getName() + this.getVersion()).getBytes();
+        byte[] uuidBytes = (generateHash()).getBytes();
 
         // Generate UUID
         final UUID uuid = UUID.nameUUIDFromBytes(uuidBytes);
@@ -210,6 +224,17 @@ public class ParserComponent extends Component {
 //        try { return ParserComponent.OM.writerWithDefaultPrettyPrinter().writeValueAsString(this); }
 //        catch (JsonProcessingException e) { return "Component[" + this.hashCode() + "]"; }
 //    }
+
+    @Override
+    public String toString() {
+        return "ParserComponent{" +
+                "ComponentString=" + super.toString() +
+                "type=" + type +
+                ", depth=" + depth +
+                ", alias='" + alias + '\'' +
+                ", resolvedLicenses=" + resolvedLicenses +
+                '}';
+    }
 
     @Override
     public boolean equals(Object o) {

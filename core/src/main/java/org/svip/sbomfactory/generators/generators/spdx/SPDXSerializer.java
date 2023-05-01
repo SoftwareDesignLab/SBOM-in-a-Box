@@ -257,6 +257,20 @@ public class SPDXSerializer extends StdSerializer<SPDXStore> {
         }
 
         //
+        // Checksums
+        //
+
+        jsonGenerator.writeFieldName("checksums");
+        jsonGenerator.writeStartArray();
+        jsonGenerator.writeStartObject();
+
+        jsonGenerator.writeStringField("algorithm", "SHA256");
+        jsonGenerator.writeStringField("checksumValue", pkg.generateHash());
+
+        jsonGenerator.writeEndObject();
+        jsonGenerator.writeEndArray();
+
+        //
         // Licenses
         //
 
