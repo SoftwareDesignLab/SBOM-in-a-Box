@@ -120,7 +120,10 @@ public class ParserComponent extends Component {
 
     //#region Core Methods
 
-    // TODO docstring
+    /**
+     * Resolve all String licenses added to this ParserComponent during parsing to a {@code License} that converts the
+     * license string to a short SPDX identifier.
+     */
     public void resolveLicenses() {
         for(String licenseName : getLicenses()) {
             Debug.log(Debug.LOG_TYPE.DEBUG, String.format("SPDXStore: License found in component %s: \"%s\"",
@@ -130,6 +133,11 @@ public class ParserComponent extends Component {
         }
     }
 
+    /**
+     * Get a set of all licenses that could not be resolved to an SPDX identifier.
+     *
+     * @return A set of all licenses that could not be resolved to an SPDX identifier.
+     */
     public Set<License> getUnresolvedLicenses() {
         Set<License> unresolvedLicenses = new HashSet<>();
         for(License l : resolvedLicenses) {
@@ -139,10 +147,23 @@ public class ParserComponent extends Component {
         return unresolvedLicenses;
     }
 
+    /**
+     * Add a NEW, already-resolved license to this ParserComponent.
+     *
+     * @param resolved The {@code License} to add to this ParserComponent.
+     */
     public void addResolvedLicense(License resolved) {
         resolvedLicenses.add(resolved);
     }
 
+    /**
+     * Attempt to resolve a current {@code License} to a custom identifier; this should be used when there is not a
+     * valid SPDX identifier for a license string.
+     *
+     * @param license The license (must already be resolved to a {@code License} in this ParserComponent).
+     * @param identifier The custom identifier to set the license to.
+     * @return The License instance that contains the license and new custom identifier.
+     */
     public License resolveLicense(String license, String identifier) {
         License toUpdate = resolvedLicenses.stream()
                 .filter(currentLicense -> currentLicense.getLicenseName().equals(license)).findFirst()
@@ -213,24 +234,18 @@ public class ParserComponent extends Component {
         return uuid;
     }
 
-//    /**
-//     * Returns a string representation of this Component including parent
-//     * and children Component references.
-//     *
-//     * @return a Full String representation of this Component
-//     */
-//    @Override
-//    public String toString() {
-//        try { return ParserComponent.OM.writerWithDefaultPrettyPrinter().writeValueAsString(this); }
-//        catch (JsonProcessingException e) { return "Component[" + this.hashCode() + "]"; }
-//    }
-
+    /**
+     * Returns a string representation of this ParserComponent including base Component information.
+     *
+     * @return a Full String representation of this ParserComponent.
+     */
     @Override
     public String toString() {
         return "ParserComponent{" +
                 "ComponentString=" + super.toString() +
                 "type=" + type +
                 ", depth=" + depth +
+                ", group=" + group +
                 ", alias='" + alias + '\'' +
                 ", resolvedLicenses=" + resolvedLicenses +
                 '}';

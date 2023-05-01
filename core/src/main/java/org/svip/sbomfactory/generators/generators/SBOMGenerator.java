@@ -20,11 +20,11 @@ import java.util.UUID;
 
 import static org.svip.sbomfactory.generators.utils.Debug.log;
 
-/** TODO update docstring
+/**
  * File: SBOMGenerator.java
  * <p>
- * An abstract class to be extended by specific generators such as CDX and SPDX that implement origin format specific
- * methods.
+ * A class to write our internal {@code SBOM} object to a file by transforming all relevant data into one of our
+ * schema-specific store classes and then serializing it to multiple possible file formats.
  * </p>
  * @author Ian Dunn
  */
@@ -73,6 +73,7 @@ public class SBOMGenerator {
      * Default constructor to instantiate a new SBOMGenerator.
      *
      * @param internalSBOM an internal SBOM representation with a completed DependencyTree.
+     * @param schema The schema of the output of this generator.
      */
     public SBOMGenerator(SBOM internalSBOM, GeneratorSchema schema) {
         this.internalSBOM = internalSBOM;
@@ -145,6 +146,12 @@ public class SBOMGenerator {
 
     //#region Utility Methods
 
+    /**
+     * This uses the internal SBOM object passed into the SBOMGenerator and converts it into a store (depending on the
+     * schema) that extends the BOMStore abstract class.
+     *
+     * @return A BOMStore containing all transformed data of the SBOM.
+     */
     private BOMStore buildBOMStore() {
         ParserComponent headComponent = (ParserComponent) internalSBOM.getComponent(internalSBOM.getHeadUUID());
         String serialNumber = internalSBOM.getSerialNumber();
@@ -170,6 +177,13 @@ public class SBOMGenerator {
         return bomStore;
     }
 
+    /**
+     * This adds a ParserComponent to a given BOMStore, with the option to recursively add its children.
+     *
+     * @param bomStore The BOMStore to add the component to.
+     * @param component The component that will be added to the BOMStore.
+     * @param recursive Whether to recursively add children of {@code component} to the BOMStore.
+     */
     private void addComponent(BOMStore bomStore, ParserComponent component, boolean recursive) {
         bomStore.addComponent(component);
 
@@ -181,6 +195,13 @@ public class SBOMGenerator {
 
     }
 
+    /**
+     * A private helper method to recursively add children of a specified component to a BOMStore without adding it to
+     * the top-level list of components.
+     *
+     * @param bomStore The BOMStore to add the component to.
+     * @param component The component whose children will be added to the BOMStore.
+     */
     private void addChildren(BOMStore bomStore, ParserComponent component) {
         // Get set of all children from the internal SBOM
         Set<ParserComponent> children = (Set<ParserComponent>) (Set<?>) internalSBOM
@@ -237,6 +258,7 @@ public class SBOMGenerator {
     public String toString() {
         return "SBOMGenerator{" +
                 "internalSBOM=" + internalSBOM +
+                "tool=" + tool +
                 ", originFormat=" + schema +
                 ", specVersion='" + internalSBOM.getSpecVersion() + '\'' +
                 '}';
