@@ -19,8 +19,8 @@ public class POMParserParseTest extends ParseDepFileTestCore {
      */
     protected POMParserParseTest() throws IOException {
         super(new POMParser(),
-                Files.readString(Paths.get("TestData/Java/pom.xml")),
-                "TestData/Java");
+                Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/generators/TestData/Java/pom.xml")),
+                "src/test/java/org/svip/sbomfactory/generators/TestData/Java");
     }
 
     @Test

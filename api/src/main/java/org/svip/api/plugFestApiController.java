@@ -103,4 +103,12 @@ public class plugFestApiController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    /** TODO Docstring
+     * USAGE. Send POST request to /generator with
+     */
+    @RequestMapping(value="generator", method=RequestMethod.POST)
+    public ResponseEntity<QualityReport> generator() {
+        return null;
+    }
 }

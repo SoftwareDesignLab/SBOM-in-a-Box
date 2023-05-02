@@ -53,7 +53,7 @@ public class MainTest {
         }
     }
 
-    static String[] argv = {"-h", "TestData/Datadir"};
+    static String[] argv = {"-h", "src/test/java/org/svip/sbomfactory/generators/TestData/Datadir"};
 
     @Disabled
     @BeforeEach
@@ -76,7 +76,6 @@ public class MainTest {
             catch (Exception e) {
                 System.err.println("Exception received!");
                 e.printStackTrace();
-                System.exit(1);
             }
         }
         else
@@ -92,7 +91,7 @@ public class MainTest {
     void noArgvTest() {
 
         String[] argv = new String[0];
-        String in = "TestData/Datadir";
+        String in = "src/test/java/org/svip/sbomfactory/generators/TestData/Datadir";
         InputStream stdin = System.in;
         InputStream is = new ByteArrayInputStream(in.getBytes());
         System.setIn(is);
@@ -137,7 +136,7 @@ public class MainTest {
     void minusUnsupportedTest() throws IOException, InterruptedException {
         //-y
         int retcode = -5;
-        String[] argv = {"java", "-jar", "target/parser.jar", "-y", "TestData/Datadir"};
+        String[] argv = {"java", "-jar", "target/parser.jar", "-y", "src/test/java/org/svip/sbomfactory/generators/TestData/Datadir"};
         System.out.println("Unsupported (-y) test/argv: " + Arrays.toString(argv));
         try {
             retcode = JavaProcess.exec(argv, null);
@@ -162,7 +161,7 @@ public class MainTest {
     void processNonExistingProjectTest() {
         argv[0] = "src_notthere";
         argv[1] = "-h";
-        String in = "TestData/Datadir";
+        String in = "src/test/java/org/svip/sbomfactory/generators/TestData/Datadir";
         InputStream stdin = System.in;
         InputStream is = new ByteArrayInputStream(in.getBytes());
         System.setIn(is);
@@ -193,7 +192,7 @@ public class MainTest {
     void outputUnsupportedTypeTest() {
 
         int retcode = -5;
-        String[] argv = {"java", "-jar", "target/parser.jar", "-o", "TestData/Datadir"};
+        String[] argv = {"java", "-jar", "target/parser.jar", "-o", "src/test/java/org/svip/sbomfactory/generators/TestData/Datadir"};
         System.out.println("Output unsupported type/argv: " + Arrays.toString(argv));
         try {
             retcode = JavaProcess.exec(argv, null);
@@ -248,7 +247,7 @@ public class MainTest {
     //@Test
     @DisplayName("Max attempt on error argument list Test")
     void maxAttemptOnErrorArgumentListTest() {
-        String[] argv = {"-o=pliu", "-o=pl", "f=json", "-d", "-h", "-s", "TestData/Datadir"};
+        String[] argv = {"-o=pliu", "-o=pl", "f=json", "-d", "-h", "-s", "src/test/java/org/svip/sbomfactory/generators/TestData/Datadir"};
         System.out.println("Max attempt TEST/argv: " + Arrays.toString(argv));
         GeneratorsTestMain.main(argv);
     }
@@ -258,7 +257,7 @@ public class MainTest {
     void incorrectArgumentFormTest() {
 
         int retcode = -5;
-        String[] argv = {"java", "-jar", "target/parser.jar", "TestData/Datadir", "-a=1"};
+        String[] argv = {"java", "-jar", "target/parser.jar", "src/test/java/org/svip/sbomfactory/generators/TestData/Datadir", "-a=1"};
         System.out.println("Output unsupported type/argv: " + Arrays.toString(argv));
         try {
             retcode = JavaProcess.exec(argv, "\n");

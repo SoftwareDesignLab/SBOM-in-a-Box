@@ -24,7 +24,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     public RustParserRegexTest() {
         super(new RustParser(),
                 "^(?:(?!//).)*(?:use ([ '\\\"\\w:*]*)(?:::([\\w* ]+)|(?:(?=.*\\{\\n?)(?:\\{([\\S\\s]*?))\\};))|(?:extern ([\\w ]*)|mod ([\\w:]*));)(?![^\\/\\*]*\\*\\/)",
-                "TestData/Rust");
+                "src/test/java/org/svip/sbomfactory/generators/TestData/Rust");
     }
 
     ///
