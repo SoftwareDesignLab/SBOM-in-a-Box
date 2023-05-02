@@ -38,7 +38,7 @@ public class ParserControllerTest {
     @Test
     @DisplayName("Sub Process Test")
     void subProcessTest() throws XMLStreamException, FileNotFoundException {
-        argv[0] = "TestData/subprocess.py";
+        argv[0] = "src/test/java/org/svip/sbomfactory/generators/TestData/subprocess.py";
         argv[1] = "-d";
         try {
             GeneratorsTestMain.main(argv);
@@ -93,7 +93,7 @@ public class ParserControllerTest {
     @DisplayName("parse() Test")
     void parseTest() throws IOException {
         //create a temp file with an unknown file extension
-        String fn = "TestData/Java/afile.ext";
+        String fn = "src/test/java/org/svip/sbomfactory/generators/TestData/Java/afile.ext";
         Path path = Paths.get(fn); //creates Path instance
         BufferedWriter writer = new BufferedWriter(new FileWriter(fn));
         writer.close();
