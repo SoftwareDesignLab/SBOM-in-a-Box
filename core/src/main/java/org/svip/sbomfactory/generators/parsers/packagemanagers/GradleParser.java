@@ -2,6 +2,7 @@ package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.QueryWorker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +11,9 @@ import java.util.LinkedHashMap;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import static org.svip.sbomfactory.generators.utils.Debug.*;
 
 /**
  * file: GradleParser.java
@@ -18,6 +22,13 @@ import java.util.regex.Pattern;
  * @author Dylan Mulligan
  */
 public class GradleParser extends PackageManagerParser {
+    //#region Attributes
+
+    // "properties" field of a POM file
+    protected HashMap<String, String> properties;
+
+    //#endregion
+
     //#region Constructors
 
     public GradleParser() { super("https://docs.gradle.org/current/javadoc/", new JsonFactory()); }
@@ -31,6 +42,18 @@ public class GradleParser extends PackageManagerParser {
         // Init dependencies list
         final ArrayList<String> dependencies =
                 (ArrayList<String>) data.get("dependencies");
+
+        // Get properties
+        final ArrayList<String> ext =
+                (ArrayList<String>) data.get("ext");
+
+        // Store properties
+        this.properties = (HashMap<String, String>) ext
+                .stream().collect(
+                        Collectors.toMap(
+                                e -> e.substring(0, e.indexOf('=')).trim(),
+                                e -> e.substring(e.indexOf('=') + 1).trim())
+                );
 
         // Iterate over dependencies
         for (final String dep : dependencies) {
@@ -49,16 +72,17 @@ public class GradleParser extends PackageManagerParser {
             // TODO: Add more info
 //            c.setType();
 
-//            String url = "";
-//            this.queryWorkers.add(new QueryWorker(c, url) {
-//                @Override
-//                public void run() {
-//
-//                }
-//            });
+            String url = "";
+            this.queryWorkers.add(new QueryWorker(c, url) {
+                @Override
+                public void run() {
+
+                }
+            });
 
             // Add ParserComponent to components
             components.add(c);
+            log(LOG_TYPE.DEBUG, String.format("New Component: %s", c.toReadableString()));
         }
     }
 
