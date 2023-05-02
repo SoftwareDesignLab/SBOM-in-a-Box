@@ -3,15 +3,20 @@ package org.svip.sbomfactory.generators;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.svip.sbomfactory.generators.generators.SBOMGenerator;
+import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.*;
 import java.nio.file.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 
 import java.util.Calendar;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -144,17 +149,35 @@ public class ParserControllerTest {
         String[] os = System.getProperty("os.name").split(" ");
         if(os[0].equals("Windows"))  sepchar = "\\";    //System.out.println("Windows found");
 
-        String adir = "src/test/java/org/svip/sbomfactory/generators/TestData/pliu";
-        System.out.println("controller.toFile(" + adir + ");");
-        // pliu controller.toFile(adir);
-        File[] files = new File(adir).listFiles();
+        String adir = "src/test/java/org/svip/sbomfactory/generators/TestData/Java";
+        String outdir = "src/test/java/org/svip/sbomfactory/generators/SBOMOut";
 
-        //remove all files in the variable adir inclusively
-        for (File file : files) {
-            System.out.println("delete " + file.getName());
-            Files.delete(Paths.get(adir+ sepchar +file.getName()));
+        List<String> expectedFileNames = new ArrayList<>();
+
+        for(GeneratorSchema schema : GeneratorSchema.values()) {
+            for(GeneratorSchema.GeneratorFormat format : GeneratorSchema.GeneratorFormat.values()) {
+                if(!schema.supportsFormat(format)) continue;
+                System.out.printf("controller.toFile(%s, %s, %s)%n", outdir, schema, format);
+                controller.toFile(outdir, schema, format);
+                expectedFileNames.add("Java_" + schema + "." + format.getExtension());
+            }
         }
-        System.out.println("Files.delete(Paths.get(" + adir + ");");
-        Files.delete(Paths.get(adir));
+
+        List<File> files = Arrays.stream(new File(outdir).listFiles()).toList();
+        List<String> fileNames = files.stream().map(File::getName).toList();
+
+        for(String fileName : expectedFileNames) {
+            assertTrue(fileNames.contains(fileName));
+            System.out.println(fileName + " correctly generated.");
+            // TODO test file contents?
+        }
+
+        //remove all files in the variable outdir inclusively
+        for (File file : files) {
+            System.out.println("Files.delete(Paths.get(" + outdir + sepchar + file.getName() + ");");
+            Files.delete(Paths.get(outdir + sepchar + file.getName()));
+        }
+        System.out.println("Files.delete(Paths.get(" + outdir + ");");
+        Files.delete(Paths.get(outdir));
     }
 }
