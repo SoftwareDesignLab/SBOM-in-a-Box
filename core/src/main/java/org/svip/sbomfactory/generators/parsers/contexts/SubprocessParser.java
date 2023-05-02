@@ -99,9 +99,9 @@ public class SubprocessParser extends ContextParser {
 
         for (final String subprocessCall : this.context) {
             // Create ParserComponent
-            // TODO: Better way to handle this? Currently the entire call is stored as name and type is set to UNKNOWN
+            // TODO: Better way to handle this? Currently the entire call is stored as name and type is set to EXTERNAL
             final ParserComponent c = new ParserComponent(subprocessCall);
-            c.setType(ParserComponent.Type.UNKNOWN);
+            c.setType(ParserComponent.Type.EXTERNAL);
 
             // Add ParserComponent to components
             components.add(c);

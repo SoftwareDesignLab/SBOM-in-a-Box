@@ -30,8 +30,7 @@ public class ParserComponent extends Component {
     public enum Type {
         LANGUAGE,
         INTERNAL,
-        EXTERNAL,
-        UNKNOWN;
+        EXTERNAL;
 
         /**
          * Returns the enum constant of this type with the specified short value.
@@ -73,7 +72,7 @@ public class ParserComponent extends Component {
         super(name, null);
         this.setUnpackaged(true);
         this.files = new ArrayList<>();
-        this.type = Type.UNKNOWN;
+        this.type = Type.EXTERNAL;
         this.resolvedLicenses = new HashSet<>();
     }
 
@@ -106,9 +105,6 @@ public class ParserComponent extends Component {
 
     public void addFile(String file) {
         this.files.add(file);
-        if(this.type.equals(Type.UNKNOWN)) {
-            setType(Type.INTERNAL); // If type has not been assumed, this is internal
-        }
     }
 
     public void setPackaged() {
