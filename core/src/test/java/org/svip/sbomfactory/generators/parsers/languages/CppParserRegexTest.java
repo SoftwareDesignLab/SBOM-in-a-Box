@@ -23,7 +23,7 @@ class CppParserRegexTest extends ParseRegexTestCore {
     public CppParserRegexTest() {
         super(new CppParser(),
                 "(?=//).*|(?=/\\*)[\\S\\s]*?\\*/|#include.*(?:(?=<.*>)<(.*)>|(?=\".*\")\"(.*)\")",
-                "TestData/CPlusPlus");
+                "src/test/java/org/svip/sbomfactory/generators/TestData/CPlusPlus");
     }
     //
     // Basic

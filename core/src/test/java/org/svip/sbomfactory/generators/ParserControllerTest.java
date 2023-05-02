@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class ParserControllerTest {
 
-    static String[] argv = {"TestData/Java", "-s"};
+    static String[] argv = {"src/test/java/org/svip/sbomfactory/generators/TestData/Java", "-s"};
 
     //assertTrue(flag);
 
@@ -29,7 +29,7 @@ public class ParserControllerTest {
     @Test
     @DisplayName("Source Code Comment Test")
     void srcCommentTest() {
-        argv[0] = "TestData/Java";
+        argv[0] = "src/test/java/org/svip/sbomfactory/generators/TestData/Java";
         controller.setPWD(Paths.get(argv[0]));
         GeneratorsTestMain.main(argv);
     }
@@ -52,7 +52,7 @@ public class ParserControllerTest {
     @Test
     @DisplayName("XML Comment Test")
     void xmlCommentTest() throws XMLStreamException, FileNotFoundException {
-        //argv[0] = "TestData/Java";
+        //argv[0] = "src/test/java/org/svip/sbomfactory/generators/TestData/Java";
         //controller.setPWD(Paths.get(argv[0]));
         try {
             //Main.xmlComment();
@@ -67,7 +67,7 @@ public class ParserControllerTest {
     @Test
     @DisplayName("Parser Controller Java Test")
     void javaTest() {
-        argv[0] = "TestData/Java";
+        argv[0] = "src/test/java/org/svip/sbomfactory/generators/TestData/Java";
         controller.setPWD(Paths.get(argv[0]));
 
         System.out.println("controller.getProjectName() : " + controller.getProjectName());
@@ -98,7 +98,7 @@ public class ParserControllerTest {
         BufferedWriter writer = new BufferedWriter(new FileWriter(fn));
         writer.close();
         System.out.println("parseTest(null, null)" );
-        controller.parse(null, Paths.get("TestData/Java"));
+        controller.parse(null, Paths.get("src/test/java/org/svip/sbomfactory/generators/TestData/Java"));
         Files.delete(path);
 
     }
@@ -115,7 +115,7 @@ public class ParserControllerTest {
     @Test
     @DisplayName("getExcepParent() Test")
     void getParentExcepTest() {
-        String fn = "TestData/Java";
+        String fn = "src/test/java/org/svip/sbomfactory/generators/TestData/Java";
         System.out.println("getParent(" + fn + ")" );
         //pliu controller.getParent(fn);
     }
@@ -144,7 +144,7 @@ public class ParserControllerTest {
         String[] os = System.getProperty("os.name").split(" ");
         if(os[0].equals("Windows"))  sepchar = "\\";    //System.out.println("Windows found");
 
-        String adir = "TestData/pliu";
+        String adir = "src/test/java/org/svip/sbomfactory/generators/TestData/pliu";
         System.out.println("controller.toFile(" + adir + ");");
         // pliu controller.toFile(adir);
         File[] files = new File(adir).listFiles();

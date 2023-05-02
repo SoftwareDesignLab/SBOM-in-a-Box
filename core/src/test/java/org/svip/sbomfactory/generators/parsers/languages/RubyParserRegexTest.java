@@ -24,7 +24,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
     public RubyParserRegexTest() {
         super(new RubyParser(),
                 "^(?:(?!#).)*(?:require [ '\\\"]*([\\w\\.\\/]+)[ '\\\"]*|load [ '\\\"]*([\\w\\.\\/]+)[ '\\\"]*)(?![^\\=]*\\=end)",
-                "TestData/Ruby");
+                "src/test/java/org/svip/sbomfactory/generators/TestData/Ruby");
     }
 
     ///
