@@ -10,7 +10,11 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbom.model.SBOMType;
+import org.svip.sbomfactory.generators.generators.BOMStore;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
+import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXStore;
+import org.svip.sbomfactory.generators.generators.spdx.SPDXSerializer;
+import org.svip.sbomfactory.generators.generators.spdx.SPDXStore;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -26,11 +30,15 @@ import java.util.LinkedHashSet;
 public enum GeneratorSchema {
     // This mapping ensures that any schema has a set of valid formats to compare
     // against and/or choose from.
-    CycloneDX("1.4", SBOMType.CYCLONE_DX, new LinkedHashSet<>(Arrays.asList(GeneratorFormat.JSON, GeneratorFormat.XML))),
-    SPDX("2.3", SBOMType.SPDX, new LinkedHashSet<>(Arrays.asList(GeneratorFormat.JSON,/* GeneratorFormat.SPDX,*/ GeneratorFormat.YAML, GeneratorFormat.XML)));
+    CycloneDX("1.4", SBOMType.CYCLONE_DX, CycloneDXStore.class,
+            new LinkedHashSet<>(Arrays.asList(GeneratorFormat.JSON, GeneratorFormat.XML))),
+    SPDX("2.3", SBOMType.SPDX, SPDXStore.class,
+            new LinkedHashSet<>(Arrays.asList(GeneratorFormat.JSON,/* GeneratorFormat.SPDX,*/ GeneratorFormat.YAML, GeneratorFormat.XML)));
 
     private final String version;
     private final SBOMType internalType;
+
+    private final Class<? extends BOMStore> bomStoreType;
     // Internal HashSet to store valid formats
     private final LinkedHashSet<GeneratorFormat> validFormats;
 
@@ -41,9 +49,11 @@ public enum GeneratorSchema {
      * @param validFormats a HashSet of valid file formats that the schema can
      *        be written to
      */
-    GeneratorSchema(String version, SBOMType internalType, LinkedHashSet<GeneratorFormat> validFormats) {
+    GeneratorSchema(String version, SBOMType internalType, Class<? extends BOMStore> bomStoreType,
+                    LinkedHashSet<GeneratorFormat> validFormats) {
         this.version = version;
         this.internalType = internalType;
+        this.bomStoreType = bomStoreType;
         this.validFormats = validFormats;
     }
 
@@ -96,6 +106,10 @@ public enum GeneratorSchema {
 
     public SBOMType getInternalType() {
         return internalType;
+    }
+
+    public Class<? extends BOMStore> getBomStoreType() {
+        return bomStoreType;
     }
 
     /**

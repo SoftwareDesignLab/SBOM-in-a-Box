@@ -15,6 +15,8 @@ import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 
@@ -139,6 +141,8 @@ public class SBOMGenerator {
         } catch (IOException e) {
             log(Debug.LOG_TYPE.EXCEPTION, e);
             log(Debug.LOG_TYPE.ERROR, "Error writing to file " + path);
+        } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
     };
 
@@ -152,17 +156,14 @@ public class SBOMGenerator {
      *
      * @return A BOMStore containing all transformed data of the SBOM.
      */
-    private BOMStore buildBOMStore() {
+    private BOMStore buildBOMStore() throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         ParserComponent headComponent = (ParserComponent) internalSBOM.getComponent(internalSBOM.getHeadUUID());
         String serialNumber = internalSBOM.getSerialNumber();
         int version = 1; // TODO should we have to increment this?
 
-        BOMStore bomStore;
-        if(schema == GeneratorSchema.SPDX) {
-            bomStore = new SPDXStore(serialNumber, 1, headComponent);
-        } else {
-            bomStore = new CycloneDXStore(serialNumber, 1, headComponent);
-        }
+        Object[] parameters = {serialNumber, version, headComponent};
+        Class<?>[] parameterTypes = Arrays.stream(parameters).map(Object::getClass).toArray(Class<?>[]::new);
+        BOMStore bomStore = schema.getBomStoreType().getDeclaredConstructor(parameterTypes).newInstance(parameters);
 
         bomStore.addTool(tool); // Add our tool as info
 

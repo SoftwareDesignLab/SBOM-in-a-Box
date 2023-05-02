@@ -72,7 +72,7 @@ public class SPDXStore extends BOMStore {
      * @param bomVersion The version of the SBOM - 1 if the first one generated, n if the nth one generated.
      * @param headComponent The head component of the SBOM. This is the component that stores the SBOM name, licenses, etc
      */
-    public SPDXStore(String serialNumber, int bomVersion, ParserComponent headComponent) {
+    public SPDXStore(String serialNumber, Integer bomVersion, ParserComponent headComponent) {
         super(GeneratorSchema.SPDX, "2.3", serialNumber, bomVersion, headComponent);
 
         documentId = "SPDXRef-DOCUMENT";

@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     `LicenseManager` Class.
   - Replaced storage via strings in all stores, serializers, and `Tool`.
 - Refactored common functionality from `SPDXStore` & `CycloneDXStore` into a `BOMStore` Class.
-- Add `version` & `internalType` fields to `GeneratorSchema` Class.
+- Add `version`, `internalType`, & `bomStoreType` fields to `GeneratorSchema` Class.
   - This allows us to construct an `SBOMGenerator` with only an SBOM object and GeneratorSchema.
 
 ### Changed
