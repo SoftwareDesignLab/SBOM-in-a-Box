@@ -85,7 +85,7 @@ public class POMParser extends PackageManagerParser {
             log(LOG_TYPE.DEBUG, String.format("Dependency Found with PURL: %s", PURLString));
 
             // Build CPE
-            CPE cpe = new CPE(artifactId, groupId, version);
+            CPE cpe = new CPE("maven", artifactId, version);
             String cpeFormatString = cpe.bindToFS();
             c.addCPE(cpeFormatString);
             log(LOG_TYPE.DEBUG, String.format("Dependency Found with CPE: %s", cpeFormatString));
