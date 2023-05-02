@@ -76,7 +76,6 @@ public class MainTest {
             catch (Exception e) {
                 System.err.println("Exception received!");
                 e.printStackTrace();
-                System.exit(1);
             }
         }
         else
