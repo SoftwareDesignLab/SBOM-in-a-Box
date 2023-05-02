@@ -173,7 +173,7 @@ public class GeneratorsTestMain {
      * @param e    Exception to determine what type of input is needed
      * @param args Existing arguments to use if needed
      */
-    private static void getArgs(Exception e, ArrayList<String> args) {
+    private static boolean getArgs(Exception e, ArrayList<String> args) {
         // Init scanner
         Scanner scanner = new Scanner(System.in);
 
@@ -194,9 +194,10 @@ public class GeneratorsTestMain {
             if (args.get(0).equals("")) {
                 // If so, terminate program
                 System.err.println("No Input Given; terminating. . .");
-                System.exit(0);
+                return false;
             }
         }
+        return true;
     }
 
     /**
@@ -251,7 +252,7 @@ public class GeneratorsTestMain {
      * @param reqArgs a list of required arguments
      * @param optArgs a map of optional arguments to their values
      */
-    private static void verifyArgs(ArrayList<String> reqArgs, HashMap<String, String> optArgs) {
+    private static boolean verifyArgs(ArrayList<String> reqArgs, HashMap<String, String> optArgs) {
         // Attempt get valid arguments until exceed max attempts
         int attempt = 0;
 
@@ -260,7 +261,7 @@ public class GeneratorsTestMain {
             // Break if exceed allow attempts
             if (attempt > MAX_ALLOWED_ATTEMPTS) {
                 System.err.println("Exceeded Max Attempts; terminating. . .");
-                System.exit(0);
+                return false;
             }
 
             // Try to validate the arguments
@@ -275,15 +276,16 @@ public class GeneratorsTestMain {
                 // Print error message and get new arguments
                 System.err.println("Error: " + e.getMessage());
                 System.err.println("Arguments: <path/to/target>");
-                getArgs(e, reqArgs);
+                return getArgs(e, reqArgs);
             } // If parsing optional args fails, inform user and end program
             catch (IllegalArgumentException e) {
                 System.err.println("Error: " + e.getMessage());
-                System.exit(0);
+                return false;
             } finally {
                 attempt++;  // Increment attempt count
             }
         }
+        return true;
     }
 
     /**
@@ -327,12 +329,15 @@ public class GeneratorsTestMain {
         //  Each value (Object) can be verified and possibly modified (e.x. string -> enum)
         //  This would mean each value has a key and is either ready for use or null.
         // Verify args
-        verifyArgs(reqArgs, optArgs);
+        if (!verifyArgs(reqArgs, optArgs)) {
+            // If verification fails, exit program
+            return;
+        }
 
         // Show Usages if -h is on the cli and exit program
         if(showUsages) {
             displayUsages("");
-            System.exit(0);
+            return;
         }
 
         // Path
