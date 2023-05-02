@@ -157,8 +157,10 @@ public class CycloneDXSerializer extends StdSerializer<CycloneDXStore> {
         // External identifiers
         //
 
-        writeFieldIfExists(jsonGenerator, "purl", String.join(", ", component.getPurls().stream().map(PURL::toString).toList()));
-        // TODO Add CPEs and SWIDs
+        writeFieldIfExists(jsonGenerator, "purl",
+                String.join(", ", component.getPurls().stream().map(PURL::toString).toList()));
+        writeFieldIfExists(jsonGenerator, "cpe", String.join(", ", component.getCpes()));
+        // TODO Do this for SWIDs once we support them
 
         //
         // Type

@@ -46,6 +46,8 @@ public class RequirementsParser extends PackageManagerParser {
                             this.component.addLicense(m.group(1).trim());
                         }
                     }
+
+                    // TODO Add CPEs and PURLS
                 });
             }
 

@@ -77,7 +77,7 @@ public abstract class BOMStore {
 
         this.specVersion = "";
         if(schema == GeneratorSchema.SPDX)
-            specVersion += "SPDX-";
+            this.specVersion += "SPDX-";
         this.specVersion += specVersion;
         this.serialNumber = serialNumber;
         this.bomVersion = bomVersion;
