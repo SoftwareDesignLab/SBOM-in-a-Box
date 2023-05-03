@@ -95,7 +95,7 @@ public class GoParser extends LanguageParser {
         Ignores matches in multi-line comments
         EXCEPT for comments that have an ‘*’ in them
 
-        Regex101: https://regex101.com/r/ZlJJeu/1
+        Regex101: https://regex101.com/r/ZlJJeu/9
          */
         return Pattern.compile("^(?:(?!//).)*(?:import (?:(?=.*\\(\\n?)\\(([\\S\\s]*?)\\)|([\\w.]* ?\\\"[\\S]*)))(?![^\\*]*\\*\\/)", Pattern.MULTILINE);
     }
