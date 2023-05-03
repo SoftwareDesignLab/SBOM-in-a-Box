@@ -126,46 +126,34 @@ public class GoParser extends LanguageParser {
 
         // Clean string
         match = match
-                .replace("\r", "")  // rm carriage return
-                .replace("\"", "")  // rm quotes
-                .replace("\t", "")  // rm tab
-                .replace("\n", ";") // replace newline with ";"
-                .trim();                            // trim whitespace
+                .trim()                               // trim whitespace
+                .replace("\r", "")   // rm carriage return
+                .replace("\"", "")   // rm quotes
+                .replace("\t", "")   // rm tab
+                .replace("\n", ";"); // replace newline with ";"
 
-        // Single-line imports contain one import
-        if (matcher.group(2) != null) {
+        // Tokenize multi-import statements on ";"
+        final String[] tokens = match.split(";");
+
+        // Find all components from tokens
+        for (String token : tokens) {
+            if(token.trim().equals("")) continue; // Skip any empty tokens
             // Tokenize on "/" and store last token as match and all but last token as from
-            final String[] tokens = match.split("/");
+            final String[] parts = token.split("/");
             // If there is more than one token
-            if(tokens.length > 1) {
+            if(parts.length > 0) {
                 // Check for alias
-                if(tokens[0].contains(" ")) {
+                if(parts[0].trim().contains(" ")) {
                     // Split on space (there will always be at least 2 tokens here)
-                    final String[] innerTokens = tokens[0].split(" ");
+                    final String[] innerTokens = parts[0].trim().split(" ");
                     // Remove alias from first token
-                    tokens[0] = innerTokens[1];
+                    parts[0] = innerTokens[1];
                     // Prepend alias to last token
-                    tokens[tokens.length - 1] = innerTokens[0] + " " + tokens[tokens.length - 1];
+                    parts[parts.length - 1] = innerTokens[0] + " " + parts[parts.length - 1];
                 }
                 // Mapped in the form of:  "component_name":"from"
-                matches.put(tokens[tokens.length - 1], String.join("/", Arrays.copyOfRange(tokens, 0, tokens.length - 1)).trim());
+                matches.put(parts[parts.length - 1], String.join("/", Arrays.copyOfRange(parts, 0, parts.length - 1)).trim());
             } else matches.put(match.trim(), null); // Otherwise, from is null
-        }
-        // Multiline imports may contain multiple components
-        else if (matcher.group(1) != null) {
-            // Tokenize on ";"
-            final String[] tokens = match.split(";");
-            // Find all components
-            for (String token : tokens) {
-                if(token.trim().equals("")) continue; // Skip any empty tokens
-
-                // Tokenize on "/" and store last token as match and all but last token as from
-                final String[] parts = token.split("/");
-                // If there is more than one part
-                if(parts.length > 1) {
-                    matches.put(parts[parts.length - 1], String.join("/", Arrays.copyOfRange(parts, 0, parts.length - 1)).trim());
-                } else matches.put(token.trim(), null); // Otherwise, from is null
-            }
         }
 
         // Format, build, and add all matches to components
