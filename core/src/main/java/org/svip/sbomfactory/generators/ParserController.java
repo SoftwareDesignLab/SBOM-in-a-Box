@@ -216,7 +216,7 @@ public class ParserController {
      *
      * @param outPath Path to write file to
      */
-    public void toFile(String outPath, GeneratorSchema outSchema, GeneratorSchema.GeneratorFormat outFormat) {
+    public String toFile(String outPath, GeneratorSchema outSchema, GeneratorSchema.GeneratorFormat outFormat) {
         // If format is not supported by schema
         if(!outSchema.supportsFormat(outFormat)) {
             // Acquire default format from schema
@@ -233,16 +233,21 @@ public class ParserController {
             outFormat = defaultFormat;
         }
 
-        // Make new out directory if none exist
-        final File outDir = new File(outPath);
-        if(outDir.mkdirs())
-            log(LOG_TYPE.SUMMARY, "New Output Directory created [ " + outPath + " ]");
-
         // Create generator based on schema
         final SBOMGenerator generator = new SBOMGenerator(this.SBOM, outSchema);
 
-        // Write SBOM to file according to schema and file format
-        generator.writeFile(outPath, outFormat);
+        if(outPath != null) {
+            // Make new out directory if none exist
+            final File outDir = new File(outPath);
+            if(outDir.mkdirs())
+                log(LOG_TYPE.SUMMARY, "New Output Directory created [ " + outPath + " ]");
+
+            // Write SBOM to file according to schema and file format
+            generator.writeFile(outPath, outFormat);
+        } else {
+            // TODO: Return stringified SBOM
+        }
+        return null;
     }
 
     //#endregion
