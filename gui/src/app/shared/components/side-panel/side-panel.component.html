@@ -1,0 +1,6 @@
+<div class="side-panel" [ngStyle]="{'maxWidth': collapsed ? '0px' : '100%'}">
+    <ng-content/>
+    <div class="tab flex center" (click)="collapsed = !collapsed">
+        <div class="text">{{tabText}}</div>
+    </div>
+</div>
