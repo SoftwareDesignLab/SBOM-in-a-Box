@@ -39,6 +39,17 @@ import . "p10a" // Treat as "*" (imports all methods)
 import _ "pBAD1a" // Make sure to exclude (unused if "_" as alias)
 import "p11a"
 
+import (
+	"fmt"
+	. "math"
+	_ "os"
+	_ "example.com/main/SubFolder/FolderImported"
+	F "example.com/main/SubFolder/FolderUsed"
+	foo "example.com/main/library"
+	_ "github.com/markcheno/go-quote"
+	q "rsc.io/quote"
+)
+
 import pBAD2a // Invalid import
 
 // Single-line Comment
