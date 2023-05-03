@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,38 +49,31 @@ public class GradleParserParseTest extends ParseDepFileTestCore {
     @Test
     @DisplayName("Test Dependencies")
     void testDependencies() {
-        // Get dependencies from PARSER
-        final ArrayList<LinkedHashMap<String, String>> dep = this.PARSER.dependencies;
+
+        // Rebuild list of deps as map, with artifactId as key
+        final HashMap<String, LinkedHashMap<String, String>> deps =
+                (HashMap<String, LinkedHashMap<String, String>>) this.PARSER.dependencies
+                        .stream().collect(
+                                Collectors.toMap(
+                                        d -> d.get("artifactId"),
+                                        d -> d
+                                ));
 
         // Test correct count is found
-        final int entrycount = 4;
-        int runningcount = 0;
-        assertEquals(entrycount, dep.size());
+        assertEquals(4, deps.size());
 
-        String[] keywords = {"implementation", "natives"};
-        for (LinkedHashMap<String, String> ent : dep) {
-            String[] values =  ent.get("artifactId").trim().split(" ");
-            //validate a line comment line
-            if(Pattern.matches("[\\s]*//.*", values[0])) {
-                runningcount++;
-            }
-            for(String kw : keywords) {
-                if (values[0].contains(kw)) {
-                    assertTrue(values[0].contains(kw));
-                    runningcount++;
-                    break;
-                }
-            }
-        }
+        // create valueSet for the values
+        final Set<String> valueSet = new HashSet<>();
+        deps.values().forEach(v->{valueSet.add(v.get("artifactId"));});
+//        valueSet.add("com.esri.arcgisruntime:arcgis-java:200.1.0");
+//        valueSet.add("com.esri.arcgisruntime:arcgis-java-jnilibs:200.1.0");
+//        valueSet.add("com.esri.arcgisruntime:arcgis-java-resources:200.1.0");
+//        valueSet.add("org.slf4j:slf4j-nop:2.0.5");
 
-        //fail if any has not keyword
-        if (runningcount != entrycount) {
-            //fail this test
-            fail();
-        }
+        assertTrue(valueSet.contains("com.esri.arcgisruntime:arcgis-java:200.1.0"));
+        assertTrue(valueSet.contains("com.esri.arcgisruntime:arcgis-java-jnilibs:200.1.0"));
+        assertTrue(valueSet.contains("com.esri.arcgisruntime:arcgis-java-resources:200.1.0"));
+        assertTrue(valueSet.contains("org.slf4j:slf4j-nop:2.0.5"));
 
-//        // Check values
-//        assertEquals("1.8", props.get("maven.compiler.source"));
-//        // TODO: More complex variable cases
     }
 }
