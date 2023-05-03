@@ -22,13 +22,6 @@ import static org.svip.sbomfactory.generators.utils.Debug.*;
  * @author Dylan Mulligan
  */
 public class GradleParser extends PackageManagerParser {
-    //#region Attributes
-
-    // "properties" field of a POM file
-    protected HashMap<String, String> properties;
-
-    //#endregion
-
     //#region Constructors
 
     public GradleParser() { super("https://docs.gradle.org/current/javadoc/", new JsonFactory()); }
@@ -40,23 +33,30 @@ public class GradleParser extends PackageManagerParser {
     @Override
     protected void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data) {
         // Init dependencies list
-        final ArrayList<String> dependencies =
-                (ArrayList<String>) data.get("dependencies");
+        this.dependencies = new ArrayList<>(((ArrayList<String>) data.get("dependencies"))
+                .stream().map(d -> {
+                    final LinkedHashMap<String, String> lhm = new LinkedHashMap<>();
+                    lhm.put("artifactId", d);
+                    return lhm;
+                }).toList());
 
         // Get properties
         final ArrayList<String> ext =
                 (ArrayList<String>) data.get("ext");
 
         // Store properties
-        this.properties = (HashMap<String, String>) ext
+        this.properties =  (HashMap<String, String>) ext
                 .stream().collect(
-                        Collectors.toMap(
-                                e -> e.substring(0, e.indexOf('=')).trim(),
-                                e -> e.substring(e.indexOf('=') + 1).trim())
-                );
+                            Collectors.toMap(
+                                    e -> e.substring(0, e.indexOf('=')).trim(),
+                                    e -> e.substring(e.indexOf('=') + 1).trim())
+                    );
 
         // Iterate over dependencies
-        for (final String dep : dependencies) {
+        for (final LinkedHashMap<String, String> d : this.dependencies) {
+            // Get dep
+            final String dep = d.get("artifactId");
+
             // Ignore comments
             if(dep.startsWith("//")) continue;
 

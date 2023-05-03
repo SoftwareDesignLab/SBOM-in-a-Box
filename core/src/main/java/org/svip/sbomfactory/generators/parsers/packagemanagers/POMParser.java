@@ -20,13 +20,6 @@ import static org.svip.sbomfactory.generators.utils.Debug.*;
  * @author Dylan Mulligan
  */
 public class POMParser extends PackageManagerParser {
-    //#region Attributes
-
-    // "properties" field of a POM file
-    protected LinkedHashMap<String, String> properties;
-
-    //#endregion
-
     //#region Constructors
 
     public POMParser() { super("https://central.sonatype.com/artifact/", new XmlFactory()); }
@@ -44,8 +37,8 @@ public class POMParser extends PackageManagerParser {
 //        this.resolveProperties(); // TODO: Finish recursive resolution
 
         // Get dependencies from data
-        final ArrayList<LinkedHashMap<String, String>> deps =
-                ((LinkedHashMap<String, ArrayList<LinkedHashMap<String, String>>>) data.get("dependencies")).get("dependency");
+        this.dependencies = ((LinkedHashMap<String, ArrayList<LinkedHashMap<String, String>>>)
+                data.get("dependencies")).get("dependency");
 
         final LinkedHashMap build = (LinkedHashMap) data.get("build");
 
@@ -54,7 +47,7 @@ public class POMParser extends PackageManagerParser {
                 ((LinkedHashMap<String, ArrayList<LinkedHashMap<String, String>>>) build.get("plugins")).get("plugin");
 
         // Iterate and build URLs
-        for (LinkedHashMap<String, String> d : deps) {
+        for (final LinkedHashMap<String, String> d : this.dependencies) {
             // Format all property keys -> values
             final String groupId = this.formatVariableNames(d.get("groupId"));
             final String artifactId = this.formatVariableNames(d.get("artifactId"));

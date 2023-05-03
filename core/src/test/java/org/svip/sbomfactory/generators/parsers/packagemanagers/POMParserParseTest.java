@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
@@ -26,7 +27,9 @@ public class POMParserParseTest extends ParseDepFileTestCore {
     @Test
     @DisplayName("Test Properties")
     void testProperties() {
-        final LinkedHashMap<String, String> props = ((POMParser) this.PARSER).properties;
+        // Get properties from PARSER
+        final HashMap<String, String> props = ((PackageManagerParser) this.PARSER).properties;
+
         // Test correct count is found
         assertEquals(69, props.size());
 

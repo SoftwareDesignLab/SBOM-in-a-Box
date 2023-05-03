@@ -10,6 +10,7 @@ import org.svip.sbomfactory.generators.utils.ParserComponent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,6 +36,8 @@ public abstract class PackageManagerParser extends Parser {
     protected final ObjectMapper OM;
 
     protected final ArrayList<QueryWorker> queryWorkers;
+    protected HashMap<String, String> properties;
+    protected ArrayList<LinkedHashMap<String, String>> dependencies;
 
     //#endregion
 
