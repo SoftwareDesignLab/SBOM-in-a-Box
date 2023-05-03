@@ -53,8 +53,8 @@ public class QAFromAPITest {
         try {
             String contents = new String(Files.readAllBytes(Paths.get(pythonSBOM)));
 
-            ResponseEntity<QualityReport> qa = ctrl.qa(contents, pythonSBOM); //todo refactor parameters,
-            assertEquals(qa.getStatusCode(), HttpStatus.OK);                    // or add signature inn PlugFestApiController
+            ResponseEntity<QualityReport> qa = ctrl.qa(contents, pythonSBOM);
+            assertEquals(qa.getStatusCode(), HttpStatus.OK);
             assertNotEquals(qa.getBody().getPassedComponents(), 0);
         }
         catch (Exception e) {

@@ -64,9 +64,9 @@ public class CompareFromAPITest {
 
         String fileNamesString = objectMapper.writeValueAsString(fileNamesArray);
 
-        ResponseEntity<Comparison> report = ctrl.compare(contentsString, fileNamesString); //todo refactor parameters,
-        assertEquals(report.getStatusCode(), HttpStatus.OK);                                // or add compare w different signature
-        assertEquals(report.getBody().getDiffReports().size(), 2);                      // in PlugFestApiController
+        ResponseEntity<Comparison> report = ctrl.compare(contentsString, fileNamesString);
+        assertEquals(report.getStatusCode(), HttpStatus.OK);
+        assertEquals(report.getBody().getDiffReports().size(), 2);
         assertNotEquals(report.getBody().getComparisons().size(),0);
     }
 
