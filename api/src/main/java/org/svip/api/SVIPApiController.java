@@ -67,7 +67,7 @@ public class SVIPApiController {
     /**
      * Default path to where dockerfile is located
      */
-    private static String dockerPath = "/src/main/java/com/svip/osi/core/Dockerfile";
+    private static String dockerPath = "/core/src/main/java/org/svip/sbomfactory/osi/Dockerfile";
 
     /**
      * buildOSI runs on startup to build the OSI container independent of the front-end.
