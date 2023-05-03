@@ -1,6 +1,7 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
+import org.svip.sbom.model.CPE;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.QueryWorker;
 import org.svip.sbom.model.PURL;
@@ -83,6 +84,12 @@ public class POMParser extends PackageManagerParser {
             c.addPURL(new PURL(PURLString)); // TODO: Use PURL class y/n?
             log(LOG_TYPE.DEBUG, String.format("Dependency Found with PURL: %s", PURLString));
 
+            // Build CPE
+            CPE cpe = new CPE("maven", artifactId, version);
+            String cpeFormatString = cpe.bindToFS();
+            c.addCPE(cpeFormatString);
+            log(LOG_TYPE.DEBUG, String.format("Dependency Found with CPE: %s", cpeFormatString));
+
             // Build URL and worker object
             if(groupId != null) {
                 String url = this.STD_LIB_URL;
@@ -107,10 +114,6 @@ public class POMParser extends PackageManagerParser {
                     }
                 });
             }
-
-            // TODO Find out how to use NVID API to query CPEs
-            // QueryWorkers are generic and children should have no issue executing together
-//            this.queryWorkers.add(new CPEQueryWorker());
 
             // Add ParserComponent to components
             components.add(c);

@@ -17,7 +17,7 @@ import static org.svip.sbomfactory.generators.utils.Debug.log;
 /**
  * File: CycloneDXStore.java
  * <p>
- * Dataclass to store all attributes and components (including nested components) relevant to a CDX document.
+ * Dataclass to store all attributes and components (including nested components) relevant to a CycloneDX BOM.
  * </p>
  * @author Ian Dunn
  */
@@ -27,7 +27,7 @@ public class CycloneDXStore extends BOMStore {
     //#region Attributes
 
     /**
-     * The TOP-LEVEL components of the CycloneDXStore only.
+     * The TOP-LEVEL components of the CycloneDX BOM only.
      */
     private final ArrayList<ParserComponent> components;
 
@@ -40,14 +40,14 @@ public class CycloneDXStore extends BOMStore {
 
     //#region Constructors
 
-    /** TODO Update docstring
-     * The default constructor to create a new instance of a CycloneDXStore.
+    /**
+     * The default constructor to create a new instance of a CycloneDXStore to store all CycloneDX-specific data.
      *
-     * @param headComponent The head component of the SBOM. This is the component that the CDX CycloneDXStore is generated from.
-     * @param serialNumber The unique serial number of the CycloneDXStore.
-     * @param bomVersion The version of the CycloneDXStore - 1 if the first one generated, n if the nth one generated.
+     * @param serialNumber The unique serial number of the SBOM.
+     * @param bomVersion The version of the SBOM - 1 if the first one generated, n if the nth one generated.
+     * @param headComponent The head component of the SBOM. This is the component that stores the SBOM name, licenses, etc
      */
-    public CycloneDXStore(String serialNumber, int bomVersion, ParserComponent headComponent) {
+    public CycloneDXStore(String serialNumber, Integer bomVersion, ParserComponent headComponent) {
         super(GeneratorSchema.CycloneDX, "1.4", serialNumber, bomVersion, headComponent);
 
         this.components = new ArrayList<>();
@@ -77,7 +77,7 @@ public class CycloneDXStore extends BOMStore {
     //#region Core Methods
 
     /**
-     * Adds a component to this CycloneDXStore instance.
+     * Adds a component to this CycloneDX BOM.
      *
      * @param component The ParserComponent storing all necessary component data.
      */
@@ -96,7 +96,7 @@ public class CycloneDXStore extends BOMStore {
     }
 
     /**
-     * Adds a child to an existing component in this CycloneDXStore instance.
+     * Adds a child to an existing component in this CycloneDX BOM.
      *
      * @param parent The parent UUID that the child depends on.
      * @param child  The child ParserComponent storing all necessary component data.

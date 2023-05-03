@@ -65,11 +65,14 @@ public class SPDXStore extends BOMStore {
 
     //#region Constructors
 
-    /** TODO update dosctring
-     * The default constructor to create a new instance of an SPDXStore.
+    /**
+     * The default constructor to create a new instance of a SPDXStore to store all SPDX-specific data.
      *
+     * @param serialNumber The unique serial number of the SBOM.
+     * @param bomVersion The version of the SBOM - 1 if the first one generated, n if the nth one generated.
+     * @param headComponent The head component of the SBOM. This is the component that stores the SBOM name, licenses, etc
      */
-    public SPDXStore(String serialNumber, int bomVersion, ParserComponent headComponent) {
+    public SPDXStore(String serialNumber, Integer bomVersion, ParserComponent headComponent) {
         super(GeneratorSchema.SPDX, "2.3", serialNumber, bomVersion, headComponent);
 
         documentId = "SPDXRef-DOCUMENT";
@@ -89,7 +92,7 @@ public class SPDXStore extends BOMStore {
     //#region Override Methods
 
     /**
-     * Adds a component to this CycloneDXStore instance.
+     * Adds a component as a package to this SPDX document.
      *
      * @param component The ParserComponent storing all necessary component data.
      */
@@ -115,8 +118,10 @@ public class SPDXStore extends BOMStore {
         // Check for files
         //
 
-        if(component.getFile() != null && !files.containsKey(component.getFile())) {
-            files.put(component.getFile(), getNextId());
+        if(component.getFiles().size() > 0) {
+            component.getFiles().forEach(filename -> {
+                if(!files.containsKey(filename)) files.put(filename, getNextId());
+            });
         }
 
         //
@@ -131,7 +136,7 @@ public class SPDXStore extends BOMStore {
     }
 
     /**
-     * Adds a child to an existing component in this CycloneDXStore instance.
+     * Adds a child to an existing package in this SPDX document.
      *
      * @param parent The parent UUID that the child depends on.
      * @param child  The child ParserComponent storing all necessary component data.

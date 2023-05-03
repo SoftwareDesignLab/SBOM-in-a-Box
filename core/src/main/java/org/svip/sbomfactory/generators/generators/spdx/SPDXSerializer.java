@@ -223,15 +223,18 @@ public class SPDXSerializer extends StdSerializer<SPDXStore> {
             jsonGenerator.writeFieldName("externalRefs");
             jsonGenerator.writeStartArray(); // [
 
-            //
-            // Add PURLs
-            //
-
             // If any PURLs exist
-            if(pkg.getPurls().size() > 0) { // TODO Do this for CPEs and SWIDs once we support them
+            if(pkg.getPurls().size() > 0) { // TODO Do this for SWIDs once we support them
                 for(PURL purl : pkg.getPurls())
                     // Write the external reference data of the PURL to an object
                     writeExternalRef(jsonGenerator, REFERENCE_CATEGORY.SECURITY, "purl", purl.toString());
+            }
+
+            // If any CPEs exist
+            if(pkg.getCpes().size() > 0) {
+                for(String cpe : pkg.getCpes())
+                    // Write the external reference data of the PURL to an object
+                    writeExternalRef(jsonGenerator, REFERENCE_CATEGORY.SECURITY, "cpe", cpe);
             }
 
             jsonGenerator.writeEndArray(); // ]
@@ -241,19 +244,34 @@ public class SPDXSerializer extends StdSerializer<SPDXStore> {
         // File analysis
         //
 
-        if(pkg.getFile() != null) {
+        if(pkg.getFiles().size() > 0) {
             jsonGenerator.writeBooleanField("filesAnalyzed", true);
             jsonGenerator.writeFieldName("hasFiles");
             jsonGenerator.writeStartArray();
 
-            // TODO we can have multiple file references in here
             // Write current package file reference ID (files will be generated after packages)
-            jsonGenerator.writeString(spdxStore.getFiles().get(pkg.getFile()));
+            for(String file : pkg.getFiles()) {
+                jsonGenerator.writeString(spdxStore.getFiles().get(file));
+            }
 
             jsonGenerator.writeEndArray();
         } else {
             jsonGenerator.writeBooleanField("filesAnalyzed", false);
         }
+
+        //
+        // Checksums
+        //
+
+        jsonGenerator.writeFieldName("checksums");
+        jsonGenerator.writeStartArray();
+        jsonGenerator.writeStartObject();
+
+        jsonGenerator.writeStringField("algorithm", "SHA256");
+        jsonGenerator.writeStringField("checksumValue", pkg.generateHash());
+
+        jsonGenerator.writeEndObject();
+        jsonGenerator.writeEndArray();
 
         //
         // Licenses

@@ -9,6 +9,21 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+            exclude '**/sbomfactory/generators/TestData**'
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src/test/java']
+            exclude '**/sbomfactory/generators/TestData**'
+        }
+    }
+}
+
 dependencies {
     implementation 'com.github.docker-java:docker-java:3.2.14'
     implementation 'org.springframework.boot:spring-boot-starter-web:3.0.2'

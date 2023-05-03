@@ -6,6 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomanalysis.comparison.Comparison;
 import org.svip.sbomanalysis.qualityattributes.QAPipeline;
@@ -13,6 +16,7 @@ import org.svip.sbomanalysis.qualityattributes.QualityReport;
 import org.svip.sbomfactory.translators.TranslatorPlugFest;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,27 +110,4 @@ public class PlugFestApiController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    /**
-     * Send post request to /parse and it will convert the file contents to an SBOM object, returns null if failed to parse
-     *
-     * @param contents File contents of the SBOM file to parse
-     * @param fileName Name of the file that the SBOM contents came from
-     * @return SBOM object, null if failed to parse
-     */
-    @PostMapping("parse")
-    public ResponseEntity<SBOM> parse(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
-        SBOM sbom = TranslatorPlugFest.translateContents(contents, fileName);
-
-        try {
-            // Explicitly return null if failed
-            if (sbom == null) {
-                return new ResponseEntity<>(null, HttpStatus.OK);
-            }
-            return new ResponseEntity<>(sbom, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
 }

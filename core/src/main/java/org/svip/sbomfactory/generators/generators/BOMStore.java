@@ -63,13 +63,13 @@ public abstract class BOMStore {
     //#region Constructors
 
     /**
-     * Constructor to store all non-CycloneDXStore-specific data in the attributes of this class.
+     * Constructor to store all non-SBOM-specific data in the attributes of this class.
      *
-     * @param schema The schema/specification of the CycloneDXStore.
-     * @param specVersion The version of the CycloneDXStore specification.
-     * @param serialNumber The unique serial number of the CycloneDXStore.
-     * @param bomVersion The version of the CycloneDXStore - 1 if the first one generated, n if the nth one generated.
-     * @param headComponent The head component of the CycloneDXStore. This is the component that stores the CycloneDXStore name, licenses, etc
+     * @param schema The schema/specification of the SBOM.
+     * @param specVersion The version of the SBOM specification.
+     * @param serialNumber The unique serial number of the SBOM.
+     * @param bomVersion The version of the SBOM - 1 if the first one generated, n if the nth one generated.
+     * @param headComponent The head component of the SBOM. This is the component that stores the SBOM name, licenses, etc
      */
     public BOMStore(GeneratorSchema schema, String specVersion, String serialNumber, int bomVersion,
                     ParserComponent headComponent) {
@@ -77,7 +77,7 @@ public abstract class BOMStore {
 
         this.specVersion = "";
         if(schema == GeneratorSchema.SPDX)
-            specVersion += "SPDX-";
+            this.specVersion += "SPDX-";
         this.specVersion += specVersion;
         this.serialNumber = serialNumber;
         this.bomVersion = bomVersion;
@@ -92,14 +92,14 @@ public abstract class BOMStore {
     //#region Abstract Methods
 
     /**
-     * Adds a component to this CycloneDXStore instance.
+     * Adds a component to this SBOM.
      *
      * @param component The ParserComponent storing all necessary component data.
      */
     public abstract void addComponent(ParserComponent component);
 
     /**
-     * Adds a child to an existing component in this CycloneDXStore instance.
+     * Adds a child to an existing component in this SBOM.
      *
      * @param parent The parent UUID that the child depends on.
      * @param child The child ParserComponent storing all necessary component data.
@@ -111,9 +111,9 @@ public abstract class BOMStore {
     //#region Core Methods
 
     /**
-     * Add a tool that was used to generate this CycloneDXStore.
+     * Add a tool that was used to generate this SBOM.
      *
-     * @param tool The tool that was used to generate this CycloneDXStore.
+     * @param tool The tool that was used to generate this SBOM.
      */
     public void addTool(Tool tool) {
         tools.add(tool);

@@ -24,7 +24,7 @@ public class JavaParserRegexTest extends ParseRegexTestCore {
     public JavaParserRegexTest() {
         super(new JavaParser(),
                 "^(?:(?!//).)*import(?: static)?(.*?)([\\w\\*]*);(?![^\\/\\*]*\\*\\/)",
-                "TestData/Java");
+                "src/test/java/org/svip/sbomfactory/generators/TestData/Java");
     }
 
     ///
