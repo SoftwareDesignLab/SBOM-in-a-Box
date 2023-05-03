@@ -24,7 +24,7 @@ import java.util.List;
 */
 @RestController
 @RequestMapping("/plugfest")
-public class plugFestApiController {
+public class PlugFestApiController {
 
     /**
      *  Hold a pipeline object for QAReports
@@ -34,7 +34,7 @@ public class plugFestApiController {
     /**
      * default constructor. Makes a QAPipeline
      */
-    public plugFestApiController() {
+    public PlugFestApiController() {
         pipeline = new QAPipeline();
     }
 

@@ -12,8 +12,8 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
  * @author Asa Horn
  */
 @SpringBootApplication
-public class unifiedApplication extends SpringBootServletInitializer {
+public class UnifiedApplication extends SpringBootServletInitializer {
     public static void main(String[] args) {
-        SpringApplication.run(unifiedApplication.class, args);
+        SpringApplication.run(UnifiedApplication.class, args);
     }
 }
