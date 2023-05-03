@@ -25,10 +25,10 @@ public class POMParserParseTest extends ParseDepFileTestCore {
 
     @Test
     @DisplayName("Test Properties")
-    void testProperties() { // TODO: Split into individual tests
+    void testProperties() {
         final LinkedHashMap<String, String> props = ((POMParser) this.PARSER).properties;
         // Test correct count is found
-        assertEquals(69, props.size()); // TODO: Manually count and verify this number
+        assertEquals(69, props.size());
 
         // Get keySet
         final Set<String> keySet = props.keySet();
@@ -42,5 +42,26 @@ public class POMParserParseTest extends ParseDepFileTestCore {
         // Check values
         assertEquals("1.8", props.get("maven.compiler.source"));
         // TODO: More complex variable cases
+    }
+
+    @Test
+    @DisplayName("Test Dependencies")
+    void testDependencies() { // TODO: Split into individual tests
+//        final LinkedHashMap<String, String> props = ((POMParser) this.PARSER).properties;
+//        // Test correct count is found
+//        assertEquals(69, props.size()); // TODO: Manually count and verify this number
+//
+//        // Get keySet
+//        final Set<String> keySet = props.keySet();
+//
+//        // Check for correct element insertion
+//        assertTrue(keySet.contains("gatling-maven-plugin.version"));
+//        assertTrue(keySet.contains("sonar.issue.ignore.multicriteria.BoldAndItalicTagsCheck.resourceKey"));
+//        assertTrue(keySet.contains("maven.compiler.source"));
+//        assertTrue(keySet.contains("argLine"));
+//
+//        // Check values
+//        assertEquals("1.8", props.get("maven.compiler.source"));
+//        // TODO: More complex variable cases
     }
 }
