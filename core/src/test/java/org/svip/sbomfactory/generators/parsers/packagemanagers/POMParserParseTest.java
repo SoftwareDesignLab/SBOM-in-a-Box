@@ -51,7 +51,7 @@ public class POMParserParseTest extends ParseDepFileTestCore {
 
     @Test
     @DisplayName("Test Dependencies")
-    void testDependencies() { // TODO: Split into individual tests
+    void testDependencies() {
         // Rebuild list of deps as map, with artifactId as key
         final HashMap<String, LinkedHashMap<String, String>> deps =
                 (HashMap<String, LinkedHashMap<String, String>>) this.PARSER.dependencies

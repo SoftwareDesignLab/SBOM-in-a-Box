@@ -40,7 +40,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components
     }
 
@@ -51,7 +51,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -62,7 +62,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -73,7 +73,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -84,7 +84,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -95,7 +95,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -106,7 +106,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -131,7 +131,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -142,7 +142,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -156,7 +156,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -167,7 +167,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -178,7 +178,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -189,7 +189,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -201,7 +201,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -212,7 +212,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -224,7 +224,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -235,7 +235,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -246,7 +246,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -265,7 +265,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -276,7 +276,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -287,7 +287,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -298,7 +298,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -309,7 +309,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -327,7 +327,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -338,7 +338,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -349,7 +349,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -360,7 +360,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -371,7 +371,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
@@ -388,7 +388,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 

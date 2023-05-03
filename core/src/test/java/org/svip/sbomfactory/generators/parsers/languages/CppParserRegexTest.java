@@ -36,7 +36,7 @@ class CppParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -58,7 +58,7 @@ class CppParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -84,7 +84,7 @@ class CppParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
@@ -106,7 +106,7 @@ class CppParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
@@ -132,7 +132,7 @@ class CppParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
@@ -154,7 +154,7 @@ class CppParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
@@ -176,7 +176,7 @@ class CppParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
@@ -198,7 +198,7 @@ class CppParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
@@ -244,7 +244,7 @@ class CppParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());
     }
@@ -256,7 +256,7 @@ class CppParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());
     }

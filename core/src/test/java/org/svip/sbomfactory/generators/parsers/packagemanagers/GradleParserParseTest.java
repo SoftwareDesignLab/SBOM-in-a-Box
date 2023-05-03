@@ -9,15 +9,14 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class GRADLEParserParseTest extends ParseDepFileTestCore {
+public class GradleParserParseTest extends ParseDepFileTestCore {
     /**
      * Constructor initializes the respective parser and assigns both the
      * fileContents to test it against and the source directory to test on.
      */
-    protected GRADLEParserParseTest() throws IOException {
+    protected GradleParserParseTest() throws IOException {
         super(new GradleParser(),
                 Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/generators/TestData/Java/gradle.build")),
                 "src/test/java/org/svip/sbomfactory/generators/TestData/Java");
@@ -26,9 +25,8 @@ public class GRADLEParserParseTest extends ParseDepFileTestCore {
     @Test
     @DisplayName("Test Properties")
     void testProperties() {
-
         // Get properties from PARSER
-        final HashMap<String, String> props = ((PackageManagerParser) this.PARSER).properties;
+        final HashMap<String, String> props = this.PARSER.properties;
 
         // Test correct count is found
         assertEquals(4, props.size());
@@ -43,18 +41,19 @@ public class GRADLEParserParseTest extends ParseDepFileTestCore {
         assertTrue(keySet.contains("testPath"));
 
         // Check values
-        //assertEquals("1.8", props.get("maven.compiler.source"));
+        assertEquals("1.8", props.get("maven.compiler.source"));
         // TODO: More complex variable cases
     }
 
     @Test
     @DisplayName("Test Dependencies")
-    void testDependencies() { // TODO: Split into individual tests
-
-        final ArrayList<LinkedHashMap<String, String>> dep = ((PackageManagerParser) this.PARSER).dependencies;
+    void testDependencies() {
+        // Get dependencies from PARSER
+        final ArrayList<LinkedHashMap<String, String>> dep = this.PARSER.dependencies;
 
         // Test correct count is found
-        int entrycount = 5, runningcount = 0;
+        final int entrycount = 4;
+        int runningcount = 0;
         assertEquals(entrycount, dep.size());
 
         String[] keywords = {"implementation", "natives"};
@@ -76,7 +75,7 @@ public class GRADLEParserParseTest extends ParseDepFileTestCore {
         //fail if any has not keyword
         if (runningcount != entrycount) {
             //fail this test
-            assertTrue(false);
+            fail();
         }
 
 //        // Check values

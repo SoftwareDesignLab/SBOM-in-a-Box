@@ -39,7 +39,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use fee::fye;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -60,7 +60,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use fee::fye::fo::Fum;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -81,7 +81,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use fee::fye as f;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -102,7 +102,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use ::fee::fye;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -123,7 +123,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use fee::fye::{fo};");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -144,7 +144,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use fee::fye::{fo, fum, fair};");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(3, results.size());    // should be 3 matches
 
@@ -185,7 +185,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use fee::fye::{fo as f, fum::fro,\nfum::{grow as g, Grew},\n\r fair};");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(5, results.size());    // should be 5 matches
 
@@ -248,7 +248,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("mod fee;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -269,7 +269,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("mod fee::fye;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -294,7 +294,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use self::fee::fye;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -315,7 +315,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use self::fee;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -336,7 +336,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use self::fee::fye::Fo::fum;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -357,7 +357,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("mod self_fee;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -379,7 +379,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not match
     }
@@ -390,7 +390,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use fee::fye::{self};");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -415,7 +415,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use lib::bar;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -436,7 +436,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("extern lib far;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -457,7 +457,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("mod tar;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -482,7 +482,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use std::fmt::{Result, Debug, Arguments, Alignment, Display, format};");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(6, results.size());    // should be 6 matches
 
@@ -625,7 +625,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("/**/ use fee::fye; /**/");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -646,7 +646,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("/**/ mod fee::fye; /**/");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -667,7 +667,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("/**/ extern fee fye; /**/");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -688,7 +688,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use fee::fye // this imports fye");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 

@@ -37,7 +37,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -59,7 +59,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -81,7 +81,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -103,7 +103,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -125,7 +125,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -147,7 +147,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -169,7 +169,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should 2 matches
 
@@ -201,7 +201,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -223,7 +223,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(3, results.size());    // should 3 matches
 
@@ -270,7 +270,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(3, results.size());    // should 3 matches
 
@@ -312,7 +312,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -337,7 +337,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -358,7 +358,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -381,7 +381,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -403,7 +403,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -425,7 +425,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -448,7 +448,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -471,7 +471,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -494,7 +494,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(3, results.size());    // should 3 matches
 
@@ -536,7 +536,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(3, results.size());    // should 3 matches
 
@@ -578,7 +578,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(3, results.size());    // should 3 matches
 
@@ -620,7 +620,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(3, results.size());    // should 3 matches
 
@@ -662,7 +662,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -684,7 +684,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -706,7 +706,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -728,7 +728,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should 3 matches
 
@@ -760,7 +760,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should be 2 matches
 
@@ -792,7 +792,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -814,7 +814,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -836,7 +836,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -858,7 +858,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should 3 matches
 
@@ -890,7 +890,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should 3 matches
 

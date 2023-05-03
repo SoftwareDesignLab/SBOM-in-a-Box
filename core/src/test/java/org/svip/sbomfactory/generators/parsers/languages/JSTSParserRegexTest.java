@@ -37,7 +37,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import bar");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -58,7 +58,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import 'bar'");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -79,7 +79,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import \"bar\"");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -100,7 +100,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import foo from bar");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -121,7 +121,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import foo, fee from bar");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should be 2 matches
 
@@ -153,7 +153,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import foo as f from bar");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -174,7 +174,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import foo as f, fee from bar");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should be 2 matches
 
@@ -206,7 +206,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import { foo } from bar");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -227,7 +227,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import { foo as f } from bar");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -248,7 +248,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import { foo as f, fee } from bar");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should be 2 matches
 
@@ -280,7 +280,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import foo as f, { goo as g } from bar");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should be 2 matches
 
@@ -312,7 +312,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("require(bar)");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -333,7 +333,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("require('bar')");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -354,7 +354,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("require(\"bar\")");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -379,7 +379,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import './lib/bar.js'");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -400,7 +400,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import foo from './lib/bar.js'");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -448,7 +448,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size()); // should only find fee
     }
@@ -459,7 +459,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("/**/ import bar /**/");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -480,7 +480,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import bar // this imports bar");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 

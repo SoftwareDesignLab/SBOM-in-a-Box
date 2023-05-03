@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  *
  * @author Dylan Mulligan
  */
-public abstract class ParseRegexTestCore extends ParserTestCore {
+public abstract class ParseRegexTestCore extends ParserTestCore<LanguageParser> {
     // Stores the regex Pattern to test PARSER against
     protected Pattern REGEX;
 

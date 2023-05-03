@@ -13,7 +13,7 @@ import java.util.ArrayList;
  *
  * @author Dylan Mulligan
  */
-public abstract class ParseDepFileTestCore extends ParserTestCore {
+public abstract class ParseDepFileTestCore extends ParserTestCore<PackageManagerParser> {
     // Stores the ParserComponents to be tested
     protected final ArrayList<ParserComponent> components;
     /**
@@ -24,7 +24,7 @@ public abstract class ParseDepFileTestCore extends ParserTestCore {
      * @param fileContents fileContents to test against
      * @param src Relative path to dummy directory
      */
-    protected ParseDepFileTestCore(Parser parser, String fileContents, String src) {
+    protected ParseDepFileTestCore(PackageManagerParser parser, String fileContents, String src) {
         // Call super
         super(parser, src);
 

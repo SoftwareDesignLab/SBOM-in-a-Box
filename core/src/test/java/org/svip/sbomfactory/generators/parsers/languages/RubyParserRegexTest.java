@@ -37,7 +37,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("require fee");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -58,7 +58,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("load fee");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -79,7 +79,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("autoload fee");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -100,7 +100,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("require bar/fee");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -121,7 +121,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("require bar/foo/fee");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -142,7 +142,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("require 'bar/fee'");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -163,7 +163,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("require \"bar/fee\"");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -188,7 +188,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("require lib/bar");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -209,7 +209,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("require './bar'");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -230,7 +230,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("require \"lib/bar\"");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -255,7 +255,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("require cgi/session");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -304,7 +304,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("=begin=end require bar/fee =begin=end");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -325,7 +325,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("=begin=end load bar/fee =begin=end");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -346,7 +346,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("require bar/fee # this imports fee");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -367,7 +367,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("load bar/fee # this imports fee");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 

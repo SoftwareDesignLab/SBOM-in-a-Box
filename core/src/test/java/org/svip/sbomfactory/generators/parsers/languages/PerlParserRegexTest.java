@@ -37,7 +37,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use foo;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -58,7 +58,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use bar::foo;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -79,7 +79,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use if $var < 5.008, \"foo\";");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -100,7 +100,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use package::alias 'Fbbq' => 'Foo::Barista::Bazoo::Qux';");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -121,7 +121,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use aliased 'Foo::Barista::Bazoo::Qux' => 'Fbbq';");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -142,7 +142,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use namespace::alias 'Foo::Barista::Bazoo::Qux' => 'Fbbq';");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -164,7 +164,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not find any matches
     }
@@ -176,7 +176,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not find any matches
     }
@@ -187,7 +187,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("BEGIN { require foo}");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -208,7 +208,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("BEGIN { require foo; foo->VERSION(v12.34) }");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -229,7 +229,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("BEGIN { require foo; foo->import( free ); }");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -250,7 +250,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("require bar::foo;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -271,7 +271,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("require $var;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -293,7 +293,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not find any matches
     }
@@ -305,7 +305,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not find any matches
     }
@@ -337,7 +337,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not find any matches
     }
@@ -349,7 +349,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not find any matches
     }
@@ -361,7 +361,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not find any matches
     }
@@ -373,7 +373,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not find any matches
     }
@@ -385,7 +385,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         assertTrue(m.find());   // Should be a match
 
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not find any matches
     }
@@ -400,7 +400,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use lib::bar;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -421,7 +421,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("require lib::bar;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -442,7 +442,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("require \"lib/fee.pm\";");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -467,7 +467,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use autodie::exception::system;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -516,7 +516,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("=a\nuse foo ();\n=cut;\nuse foo;\n=begin\nuse foo;=cut;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -537,7 +537,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use foo; // this imports foo");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 

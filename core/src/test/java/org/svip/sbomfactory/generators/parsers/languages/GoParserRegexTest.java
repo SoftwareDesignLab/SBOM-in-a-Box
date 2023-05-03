@@ -36,7 +36,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import \"fee\"");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -57,7 +57,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import \"bar/fee\"");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -78,7 +78,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import \"bar/foo/fee\"");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -99,7 +99,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import \"github.com/gopherguides/greet\"");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -120,7 +120,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import f \"fee\"");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -141,7 +141,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import f \"fee/fye\"");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -162,7 +162,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import . \"fee\"");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -183,7 +183,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import _ \"fee\"");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not be a match
     }
@@ -194,7 +194,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import (\n\t\"bar\"\n\t\"fee\"\n)");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should only be 1 match
 
@@ -225,7 +225,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import (\n\t\"bar\"\n\t\"fee/fye/fo\"\n)");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should only be 1 match
 
@@ -256,7 +256,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import (\n\tb \"bar\"\n\tf \"fee\"\n)");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should only be 1 match
 
@@ -287,7 +287,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import (\"bar\"; \"fee\")");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should only be 1 match
 
@@ -318,7 +318,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import (b \"bar\"; \"fee\")");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should only be 1 match
 
@@ -353,7 +353,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import \"Go/lib/int2\"");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -378,7 +378,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import \"fmt\"");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -399,7 +399,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import \"math/big\"");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -420,7 +420,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import . \"regexp\"");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -477,7 +477,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("/**/ import \"fee\" /**/");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -498,7 +498,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("/**/ import \"fee/fye\" /**/");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -519,7 +519,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import \"bar/fee\" // this imports fee");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 

@@ -37,7 +37,7 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import bar.foo");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -58,7 +58,7 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import bar.foo;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -79,7 +79,7 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import bar.*");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -100,7 +100,7 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import bar._");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -121,7 +121,7 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import bar.A*");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -142,7 +142,7 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import bar.foo as barfoo");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -163,7 +163,7 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import bar.{foo, fee}");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should only be 1 match
 
@@ -194,7 +194,7 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import bar.{foo as f, fee => free}");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should only be 1 match
 
@@ -229,7 +229,7 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import Scala.lib.Bar");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -250,7 +250,7 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import Scala.lib.Bar as Baz");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -275,7 +275,7 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import scala.collection.parallel.immutable");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -296,7 +296,7 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import scala.collection.parallel.immutable.*");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -317,7 +317,7 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import scala.collection.parallel.immutable.ParHashMap");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -338,7 +338,7 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import scala.collection.parallel.immutable.ParHashMap as phm;");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -379,7 +379,7 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("/**/ import bar.foo /**/");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
@@ -400,7 +400,7 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import bar.foo // this imports bar");
         assertTrue(m.find());   // Should be a match
         ArrayList<ParserComponent> results = new ArrayList<>();
-        ((LanguageParser) this.PARSER).parseRegexMatch(results, m);
+        this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
