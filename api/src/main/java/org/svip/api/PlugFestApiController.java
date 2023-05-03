@@ -6,9 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomanalysis.comparison.Comparison;
 import org.svip.sbomanalysis.qualityattributes.QAPipeline;
@@ -16,7 +14,6 @@ import org.svip.sbomanalysis.qualityattributes.QualityReport;
 import org.svip.sbomfactory.translators.TranslatorPlugFest;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
