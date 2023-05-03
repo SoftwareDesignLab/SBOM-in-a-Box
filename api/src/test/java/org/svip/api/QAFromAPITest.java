@@ -1,11 +1,9 @@
 package org.svip.api;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.mock.web.MockMultipartFile;
 import org.svip.sbomanalysis.qualityattributes.QualityReport;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -28,17 +26,17 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 public class QAFromAPITest {
 
     private final String smallDockerSBOM = System.getProperty("user.dir")
-            + "/src/test/java/org/svip/api/sample_sboms/sbom.docker.2-2_small.spdx";
+            + "/src/test/java/org/nvip/plugfest/tooling/sample_sboms/sbom.docker.2-2_small.spdx";
     private final String pythonSBOM = System.getProperty("user.dir")
-            + "/src/test/java/org/svip/api/sample_sboms/sbom.python.2-3.spdx";
-    private plugFestApiController ctrl;
+            + "/src/test/java/org/nvip/plugfest/tooling/sample_sboms/sbom.python.2-3.spdx";
+    private PlugFestApiController ctrl;
 
     @Test
     public void qaTest() {
         try {
-            MultipartFile testfile = new MockMultipartFile("sbom.docker.2-2_small.spdx", "sbom.docker.2-2_small.spdx", null, Files.readAllBytes(Paths.get(smallDockerSBOM)));
+            String contents = new String(Files.readAllBytes(Paths.get(smallDockerSBOM)));
 
-            ResponseEntity<QualityReport> qa = ctrl.qa(testfile);
+            ResponseEntity<QualityReport> qa = ctrl.qa(contents, smallDockerSBOM);
             assertEquals(qa.getStatusCode(), HttpStatus.OK);
             assertNotEquals(qa.getBody().getPassedComponents(), 0);
         }
@@ -51,9 +49,9 @@ public class QAFromAPITest {
     @Test
     public void qaFastTest() {
         try {
-            MultipartFile testfile = new MockMultipartFile("sbom.python.2-3.spdx", "sbom.python.2-3.spdx", null, Files.readAllBytes(Paths.get(pythonSBOM)));
+            String contents = new String(Files.readAllBytes(Paths.get(pythonSBOM)));
 
-            ResponseEntity<QualityReport> qa = ctrl.qa(testfile);
+            ResponseEntity<QualityReport> qa = ctrl.qa(contents, pythonSBOM);
             assertEquals(qa.getStatusCode(), HttpStatus.OK);
             assertNotEquals(qa.getBody().getPassedComponents(), 0);
         }
@@ -66,7 +64,7 @@ public class QAFromAPITest {
     @BeforeEach
     public void setup(){
 
-        ctrl = new plugFestApiController();
+        ctrl = new PlugFestApiController();
 
     }
 
