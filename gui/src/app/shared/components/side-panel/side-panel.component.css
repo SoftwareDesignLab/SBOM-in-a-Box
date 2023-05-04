@@ -1,0 +1,28 @@
+.side-panel {
+    height: 100%;
+    width: 450px;
+    margin-right: auto;
+    background-color: var(--primary);
+    position: relative;
+    color: white;
+    transition-duration: .35s;
+}
+
+.tab {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translate(25px, -50%);
+    height: 50%;
+    width: 25px;
+    background-color: var(--accent);
+    border-radius: 0px 16px 16px 0px;
+    cursor: pointer;
+}
+
+.tab > .text {
+    transform: rotate(-90deg);
+    width: 100%;
+    min-width: 100px;
+}
+

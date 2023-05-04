@@ -1,0 +1,41 @@
+{
+  "bomFormat" : "CycloneDX",
+  "specVersion" : "1.4",
+  "serialNumber" : "urn:uuid:347463e3-816c-3823-a6be-2bda75791a5c",
+  "version" : 1,
+  "metadata" : {
+    "timestamp" : "2023-05-04T15:57:41Z",
+    "tools" : [
+      {
+        "vendor" : "SVIP",
+        "name" : "BenchmarkGenerator",
+        "version" : "v4.1.0-alpha",
+        "hashes" : [
+          {
+            "alg" : "SHA-256",
+            "content" : "37845c65494fb9d758550acce421da0888cccc7d7f01b32cdf46ec307ec56a78"
+          }
+        ]
+      }
+    ],
+    "component" : {
+      "name" : "Datadir",
+      "hashes" : [
+        {
+          "alg" : "SHA-256",
+          "content" : "a33bd70ffea0a98a95d283ca124bd3f1016aec909d37871d12664082f589deac"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "MIT-0",
+            "url" : "https://opensource.org/license/mit/"
+          }
+        }
+      ],
+      "type" : "library"
+    }
+  },
+  "components" : [ ]
+}
