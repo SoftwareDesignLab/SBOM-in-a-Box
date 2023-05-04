@@ -199,6 +199,46 @@ public class SBOMGeneratorTest {
     }
 
     @Test
+    @DisplayName("addChildren()")
+    void addChildrenTest() throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+        ParserComponent headComponent = new ParserComponent("Test Head");
+        ParserComponent testComponent = new ParserComponent("Test");
+        ParserComponent testChild = new ParserComponent("Child");
+        ParserComponent testChild2 = new ParserComponent("Child2");
+        SBOM sbom = new SBOM();
+        sbom.addComponent(null, headComponent);
+        System.out.println("sbom.addComponent(null, headComponent);");
+        sbom.addComponent(headComponent.getUUID(), testComponent);
+        System.out.println("sbom.addComponent(headComponent.getUUID(), testComponent);");
+        sbom.addComponent(testComponent.getUUID(), testChild);
+        System.out.println("sbom.addComponent(testComponent.getUUID(), testChild);");
+        sbom.addComponent(testComponent.getUUID(), testChild2);
+        System.out.println("sbom.addComponent(testComponent.getUUID(), testChild2);\n");
+
+        BOMStore bomStore = new CycloneDXStore("serialNumber", 1, headComponent);
+        SBOMGenerator generator = new SBOMGenerator(sbom, GeneratorSchema.CycloneDX);
+        generator.addComponent(bomStore, testComponent, false);
+        System.out.println("generator.addComponent(bomStore, testComponent, false);");
+        assertEquals(1, bomStore.getAllComponents().size());
+
+        generator.addChildren(bomStore, testComponent);
+        System.out.println("generator.addChildren(bomStore, testComponent);");
+        assertEquals(3, bomStore.getAllComponents().size());
+    }
+
+    @Test
+    @DisplayName("addChildren() with Invalid Parent")
+    void addChildrenInvalidParentTest() throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+
+        BOMStore bomStore = new CycloneDXStore("serialNumber", 1, headComponent);
+        SBOMGenerator generator = new SBOMGenerator(sbom, GeneratorSchema.CycloneDX);
+
+        generator.addChildren(bomStore, testComponent);
+        System.out.println("generator.addChildren(bomStore, testComponent);");
+        assertEquals(0, bomStore.getAllComponents().size());
+    }
+
+    @Test
     @DisplayName("generatePathToSBOM()")
     void generatePathToSBOMTest() {
         String sbomName = internalSBOM.getComponent(internalSBOM.getHeadUUID()).getName();
