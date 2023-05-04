@@ -42,14 +42,14 @@ public class GradleParserParseTest extends ParseDepFileTestCore {
         assertTrue(keySet.contains("testPath"));
 
         // Check values
-        assertEquals("1.8", props.get("maven.compiler.source"));
-        // TODO: More complex variable cases
+        assertEquals("200.1.0", props.get("arcgisVersion"));
+        assertEquals("this/is/a/path", props.get("rootPath"));
+        assertEquals("this/is/a/path/test", props.get("testPath"));
     }
 
     @Test
     @DisplayName("Test Dependencies")
     void testDependencies() {
-
         // Rebuild list of deps as map, with artifactId as key
         final HashMap<String, LinkedHashMap<String, String>> deps =
                 (HashMap<String, LinkedHashMap<String, String>>) this.PARSER.dependencies
@@ -64,11 +64,7 @@ public class GradleParserParseTest extends ParseDepFileTestCore {
 
         // create valueSet for the values
         final Set<String> valueSet = new HashSet<>();
-        deps.values().forEach(v->{valueSet.add(v.get("artifactId"));});
-//        valueSet.add("com.esri.arcgisruntime:arcgis-java:200.1.0");
-//        valueSet.add("com.esri.arcgisruntime:arcgis-java-jnilibs:200.1.0");
-//        valueSet.add("com.esri.arcgisruntime:arcgis-java-resources:200.1.0");
-//        valueSet.add("org.slf4j:slf4j-nop:2.0.5");
+        deps.values().forEach(v-> valueSet.add(v.get("artifactId")));
 
         assertTrue(valueSet.contains("com.esri.arcgisruntime:arcgis-java:200.1.0"));
         assertTrue(valueSet.contains("com.esri.arcgisruntime:arcgis-java-jnilibs:200.1.0"));
