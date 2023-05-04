@@ -156,7 +156,7 @@ public class SBOMGenerator {
      *
      * @return A BOMStore containing all transformed data of the SBOM.
      */
-    private BOMStore buildBOMStore() throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    protected BOMStore buildBOMStore() throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         ParserComponent headComponent = (ParserComponent) internalSBOM.getComponent(internalSBOM.getHeadUUID());
         String serialNumber = internalSBOM.getSerialNumber();
         int version = 1; // TODO should we have to increment this?
@@ -185,7 +185,7 @@ public class SBOMGenerator {
      * @param component The component that will be added to the BOMStore.
      * @param recursive Whether to recursively add children of {@code component} to the BOMStore.
      */
-    private void addComponent(BOMStore bomStore, ParserComponent component, boolean recursive) {
+    protected void addComponent(BOMStore bomStore, ParserComponent component, boolean recursive) {
         bomStore.addComponent(component);
 
         if(recursive) {
@@ -203,7 +203,7 @@ public class SBOMGenerator {
      * @param bomStore The BOMStore to add the component to.
      * @param component The component whose children will be added to the BOMStore.
      */
-    private void addChildren(BOMStore bomStore, ParserComponent component) {
+    protected void addChildren(BOMStore bomStore, ParserComponent component) {
         // Get set of all children from the internal SBOM
         Set<ParserComponent> children = (Set<ParserComponent>) (Set<?>) internalSBOM
                 .getComponentChildren(component.getUUID());
@@ -244,6 +244,23 @@ public class SBOMGenerator {
 
         return path.toString();
     }
+
+    //#endregion
+
+    //#region Getters
+
+    public SBOM getInternalSBOM() {
+        return internalSBOM;
+    }
+
+    public Tool getTool() {
+        return tool;
+    }
+
+    public GeneratorSchema getSchema() {
+        return schema;
+    }
+
 
     //#endregion
 
