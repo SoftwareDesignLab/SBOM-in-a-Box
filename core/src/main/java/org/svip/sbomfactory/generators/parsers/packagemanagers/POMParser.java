@@ -177,9 +177,9 @@ public class POMParser extends PackageManagerParser {
                     else {
                         // TODO: Do this for all values
                         final String resolvedValue =
-                                value.substring(0, result.start(1) - 2) +
+                                value.substring(0, result.start()) +
                                 varValue +
-                                value.substring(result.end(1) + 1);
+                                value.substring(result.end());
                         resolveProperty(key, resolvedValue, props, p);
                     }
                 }
