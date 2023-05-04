@@ -140,7 +140,7 @@ public class SBOMGeneratorTest {
     void buildBOMStoreComponentTest() throws InvocationTargetException, InstantiationException, IllegalAccessException,
             NoSuchMethodException {
 
-        for(SBOMGenerator generator : generators) {
+        for(SBOMGenerator generator : generators) { // TODO do we need to do for each type of generator?
             BOMStore bomStore = generator.buildBOMStore();
             String bomStoreType = bomStore.getClass().getSimpleName();
             Set<String> bomStoreComponentNames = bomStore.getAllComponents().stream().map(ParserComponent::getName)
@@ -156,20 +156,47 @@ public class SBOMGeneratorTest {
         }
     }
 
-//    @Test
-//    @DisplayName("addComponent() Non-Recursive")
-//    void addComponentNonRecursiveTest() throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
-//        ParserComponent headComponent = new ParserComponent("Test Head");
-//        ParserComponent testComponent = new ParserComponent("Test");
-//
-//        for(SBOMGenerator generator : generators) {
-//            Object[] parameters = {"serialNumber", 1, headComponent};
-//            Class<?>[] parameterTypes = Arrays.stream(parameters).map(Object::getClass).toArray(Class<?>[]::new);
-//            BOMStore bomStore = generator.getSchema().getBomStoreType().getDeclaredConstructor(parameterTypes).newInstance(parameters);
-//
-//            generator.addComponent(bomStore, testComponent, false);
-//        }
-//    }
+    @Test
+    @DisplayName("addComponent() Non-Recursive")
+    void addComponentNonRecursiveTest() throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+        ParserComponent headComponent = new ParserComponent("Test Head");
+        ParserComponent testComponent = new ParserComponent("Test");
+        ParserComponent testChild = new ParserComponent("Child");
+        SBOM sbom = new SBOM();
+        sbom.addComponent(null, headComponent);
+        System.out.println("sbom.addComponent(null, headComponent);");
+        sbom.addComponent(headComponent.getUUID(), testComponent);
+        System.out.println("sbom.addComponent(headComponent.getUUID(), testComponent);");
+        sbom.addComponent(testComponent.getUUID(), testChild);
+        System.out.println("sbom.addComponent(testComponent.getUUID(), testChild);\n");
+
+        BOMStore bomStore = new CycloneDXStore("serialNumber", 1, headComponent);
+        SBOMGenerator generator = new SBOMGenerator(sbom, GeneratorSchema.CycloneDX);
+        generator.addComponent(bomStore, testComponent, false);
+        System.out.println("generator.addComponent(bomStore, testComponent, false);");
+        assertEquals(1, bomStore.getAllComponents().size());
+    }
+
+    @Test
+    @DisplayName("addComponent() Recursive")
+    void addComponentRecursiveTest() throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+        ParserComponent headComponent = new ParserComponent("Test Head");
+        ParserComponent testComponent = new ParserComponent("Test");
+        ParserComponent testChild = new ParserComponent("Child");
+        SBOM sbom = new SBOM();
+        sbom.addComponent(null, headComponent);
+        System.out.println("sbom.addComponent(null, headComponent);");
+        sbom.addComponent(headComponent.getUUID(), testComponent);
+        System.out.println("sbom.addComponent(headComponent.getUUID(), testComponent);");
+        sbom.addComponent(testComponent.getUUID(), testChild);
+        System.out.println("sbom.addComponent(testComponent.getUUID(), testChild);\n");
+
+        BOMStore bomStore = new CycloneDXStore("serialNumber", 1, headComponent);
+        SBOMGenerator generator = new SBOMGenerator(sbom, GeneratorSchema.CycloneDX);
+        generator.addComponent(bomStore, testComponent, true);
+        System.out.println("generator.addComponent(bomStore, testComponent, true);");
+        assertEquals(2, bomStore.getAllComponents().size());
+    }
 
     @Test
     @DisplayName("generatePathToSBOM()")
