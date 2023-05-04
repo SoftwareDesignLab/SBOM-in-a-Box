@@ -45,8 +45,10 @@ public class POMParserParseTest extends ParseDepFileTestCore {
         assertTrue(keySet.contains("argLine"));
 
         // Check values
-        assertEquals("1.8", props.get("maven.compiler.source"));
-        // TODO: More complex variable cases
+        assertEquals("jdt_apt", props.get("m2e.apt.activation"));
+        assertEquals("${project.src.directory}/build", props.get("project.build.directory"));
+        assertEquals("${project.src.directory}/build/test-results", props.get("project.testresult.directory"));
+        assertEquals("src/main/webapp/content/**/*.*, src/main/webapp/bower_components/**/*.*, src/main/webapp/i18n/*.js, target/www/**/*.*", props.get("sonar.exclusions"));
     }
 
     @Test

@@ -138,6 +138,16 @@ public class GradleParser extends PackageManagerParser {
     }
 
     @Override
+    protected void resolveProperties(HashMap<String, String> props) {
+
+    }
+
+    @Override
+    protected void resolveProperty(String key, String value, HashMap<String, String> props, Pattern p) {
+
+    }
+
+    @Override
     public void parse(ArrayList<ParserComponent> components, String fileContents) {
         // Init main data structure
         final LinkedHashMap<String, Object> data = new LinkedHashMap<>();
@@ -152,9 +162,6 @@ public class GradleParser extends PackageManagerParser {
             // Get key and value of match ("dependencies", "...")
             final String key = mr.group(1).trim();
             final String value = mr.group(2).trim().replace("\r", "");
-
-            // Declare values list
-            ArrayList<String> values;
 
             // Dependencies will need to be parsed further, so pass raw string
             if (key.equals("dependencies")) data.put(key, value);

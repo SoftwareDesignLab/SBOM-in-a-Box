@@ -5,6 +5,7 @@ import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.QueryWorker;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * file: CSProjParser.java
@@ -68,6 +69,17 @@ public class CSProjParser extends PackageManagerParser {
             // Query all found URLs and store any relevant data
             queryURLs(this.queryWorkers);
         }
+    }
+
+    // TODO?
+    @Override
+    protected void resolveProperties(HashMap<String, String> props) {
+
+    }
+
+    @Override
+    protected void resolveProperty(String key, String value, HashMap<String, String> props, Pattern p) {
+
     }
 
     /**

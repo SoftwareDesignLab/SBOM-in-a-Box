@@ -30,11 +30,11 @@ public class POMParser extends PackageManagerParser {
 
     @Override
     protected void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data) {
-        // Get properties from data
-        this.properties = (LinkedHashMap<String, String>) data.get("properties");
+        // Init properties
+        this.properties = new HashMap<>();
 
         // Resolve nested properties (e.x. "<maven.compiler.source>${java.version}</maven.compiler.source>")
-//        this.resolveProperties(); // TODO: Finish recursive resolution
+        this.resolveProperties((LinkedHashMap<String, String>) data.get("properties"));
 
         // Get dependencies from data
         this.dependencies = ((LinkedHashMap<String, ArrayList<LinkedHashMap<String, String>>>)
@@ -142,56 +142,51 @@ public class POMParser extends PackageManagerParser {
 
 
     // TODO: Complete this, currently it is broken
-
-    private void resolveProperties() {
+    @Override
+    protected void resolveProperties(HashMap<String, String> props) {
         // Regex101: https://regex101.com/r/gIluSW/1
         // Regex first matches ALL intances of "${...}"
         final Pattern p = Pattern.compile("\\$\\{([^}]*)\\}", Pattern.MULTILINE);
 
-        final LinkedHashMap<String, String> resolvedMap = new LinkedHashMap<>();
-
-        // Resolve this.properties with a copy of its keySet
-        // Iterate over keySet
-        this.properties.keySet().forEach(key -> {
-            // Get value for respective key
-            String value = this.properties.get(key);
-
-            // Get variable matcher
-            final Matcher m = p.matcher(value);
-
-            // Resolve matches
-            resolvedMap.put(key, this.resolveProperty(value, p, m.results().toList(), m));
-//            this.resolveProperty(key, resolvedMap, p, m.results().toList(), m);
+        // Iterate over keys
+        props.keySet().forEach(key -> {
+            // Resolve property
+            resolveProperty(key, props.get(key), props, p);
         });
-
-        this.properties.putAll(resolvedMap);
     }
 
-    private String resolveProperty(String propertyValue, Pattern p, List<MatchResult> results, Matcher m) {
-        for (MatchResult result : results) {
-            // Get value from this.properties
-            String varValue = this.properties.get(result.group(1).trim());
+    protected void resolveProperty(String key, String value, HashMap<String, String> props, Pattern p) {
+        // Get results
+        final List<MatchResult> results =  p.matcher(value).results().toList();
 
-            // If varValue is null, skip this result
-            if(varValue == null)
-                return m.replaceFirst(propertyValue.replace("$", "\\$"));
+        // If none found, this property does not contain a variable
+        if(results.size() == 0) this.properties.put(key, props.get(key));
+        else { // Otherwise, there is one or more variables that need to be resolved
+            // Iterate over match results
+            for (MatchResult result : results) {
+                final String varKey = result.group(1).trim();
+                // Get value from this.properties
+                String varValue = this.properties.get(varKey);
 
-            // If varValue still contains a variable, update it
-            final Matcher cMatcher = p.matcher(varValue);
-            final List<MatchResult> cResults = cMatcher.results().toList();
-            for (final MatchResult cResult : cResults) {
-                final String cVarValue = this.properties.get(cResult.group(1).trim());
-                if(cVarValue == null) {
-                    return m.replaceFirst(varValue.replace("$", "\\$"));
+                // If no corresponding value, get value from props
+                if(varValue == null || p.matcher(varValue).find()) {
+                    varValue = props.get(varKey);
+                    // If value is null, this property cannot be resolved, store original value
+                    if(varValue == null) this.properties.put(key, value);
+                    // Otherwise, recurse resolution
+                    else {
+                        // TODO: Do this for all values
+                        final String resolvedValue =
+                                value.substring(0, result.start(1) - 2) +
+                                varValue +
+                                value.substring(result.end(1) + 1);
+                        resolveProperty(key, resolvedValue, props, p);
+                    }
                 }
-//                varValue = cMatcher.replaceFirst(cVarValue);
-                resolveProperty(propertyValue, p, cResults, cMatcher);
+                // Otherwise, this property can be resolved
+                else this.properties.put(key, varValue);
             }
-
-            // Update this.properties
-            propertyValue = m.replaceFirst(varValue);
         }
-        return propertyValue;
     }
 
     //#endregion

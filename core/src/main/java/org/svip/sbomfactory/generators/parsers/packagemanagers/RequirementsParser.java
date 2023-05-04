@@ -59,6 +59,17 @@ public class RequirementsParser extends PackageManagerParser {
         queryURLs(this.queryWorkers);
     }
 
+    // TODO?
+    @Override
+    protected void resolveProperties(HashMap<String, String> props) {
+
+    }
+
+    @Override
+    protected void resolveProperty(String key, String value, HashMap<String, String> props, Pattern p) {
+
+    }
+
     @Override
     public void parse(ArrayList<ParserComponent> components, String fileContents) {
         // Init main data structure

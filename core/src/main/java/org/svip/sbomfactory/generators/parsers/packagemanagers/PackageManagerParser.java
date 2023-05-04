@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
 import static org.svip.sbomfactory.generators.utils.Debug.log;
@@ -167,6 +168,11 @@ public abstract class PackageManagerParser extends Parser {
      * @param data map of data to be parsed
      */
     protected abstract void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data);
+
+    // TODO: Docstring
+    protected abstract void resolveProperties(HashMap<String, String> props);
+    // TODO: Docstring
+    protected abstract void resolveProperty(String key, String value, HashMap<String, String> props, Pattern p);
 
     /**
      * Parses a package manager dependency file and stores found Components
