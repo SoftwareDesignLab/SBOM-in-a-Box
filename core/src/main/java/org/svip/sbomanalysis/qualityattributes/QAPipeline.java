@@ -41,6 +41,9 @@ public class QAPipeline {
              qr.append(p.process(sbom));
          }
 
+        // Remove all empty tests
+        qr.removeEmpty();
+
          // Return Master QR
          return qr;
     }
