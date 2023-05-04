@@ -118,7 +118,7 @@ public class SBOMGenerator {
      * @param directory The path of the SBOM file including the file name and type to write to.
      * @param format The file format to write to the file.
      */
-    public void writeFile(String directory, GeneratorSchema.GeneratorFormat format) {
+    public void writeFile(String directory, GeneratorSchema.GeneratorFormat format) throws IOException {
         String path = generatePathToSBOM(directory, format);
 
         log(Debug.LOG_TYPE.DEBUG, "Building " + schema.name() + " SBOM object");
@@ -138,9 +138,6 @@ public class SBOMGenerator {
             }
 
             log(Debug.LOG_TYPE.SUMMARY, schema.name() + " SBOM saved to: " + path);
-        } catch (IOException e) {
-            log(Debug.LOG_TYPE.EXCEPTION, e);
-            log(Debug.LOG_TYPE.ERROR, "Error writing to file " + path);
         } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }

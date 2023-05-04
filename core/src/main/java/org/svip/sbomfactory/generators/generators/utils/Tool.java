@@ -137,4 +137,15 @@ public class Tool {
 
     //#endregion
 
+
+    @Override
+    public String toString() {
+        return "Tool{" +
+                "vendor='" + vendor + '\'' +
+                ", name='" + name + '\'' +
+                ", version='" + version + '\'' +
+                ", licenses=" + licenses +
+                ", hashes=" + hashes +
+                '}';
+    }
 }

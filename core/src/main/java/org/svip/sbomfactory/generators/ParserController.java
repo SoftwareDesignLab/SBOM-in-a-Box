@@ -216,7 +216,7 @@ public class ParserController {
      *
      * @param outPath Path to write file to
      */
-    public String toFile(String outPath, GeneratorSchema outSchema, GeneratorSchema.GeneratorFormat outFormat) {
+    public String toFile(String outPath, GeneratorSchema outSchema, GeneratorSchema.GeneratorFormat outFormat) throws IOException {
         // If format is not supported by schema
         if(!outSchema.supportsFormat(outFormat)) {
             // Acquire default format from schema
