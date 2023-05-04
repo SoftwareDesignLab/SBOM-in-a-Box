@@ -59,16 +59,16 @@ public class GradleParser extends PackageManagerParser {
             } // Group 2 format: "group: 'org.springframework', name: 'spring-core', version: '2.5'"
             else if(depResult.group(2) != null) {
                 final String[] depValues = depResult.group(2).split(",");
-                final HashMap<String, String> properties = new HashMap<>(depValues.length);
+                final HashMap<String, String> props = new HashMap<>(depValues.length);
                 Arrays.stream(depValues).forEach(d -> {
                     d = d.replace("'", "").replace("\"", "");
-                    final String dKey = d.substring(0, d.indexOf(":"));
+                    final String dKey = d.substring(0, d.indexOf(":")).trim();
                     final String dValue = d.substring(d.indexOf(":") + 1).trim();
-                    properties.put(dKey, dValue);
+                    props.put(dKey, dValue);
                 });
-                if(properties.containsKey("group")) dep.put("groupId", properties.get("group"));
-                if(properties.containsKey("name")) dep.put("artifactId", properties.get("name"));
-                if(properties.containsKey("version")) dep.put("version", properties.get("version"));
+                if(props.containsKey("group")) dep.put("groupId", props.get("group"));
+                if(props.containsKey("name")) dep.put("artifactId", props.get("name"));
+                if(props.containsKey("version")) dep.put("version", props.get("version"));
             } // Group 3 format for file(s)/dir(s): "'hibernate.jar', 'libs/spring.jar'"
             else if(depResult.group(3) != null) {
                 // Extract values from dep string
@@ -80,9 +80,12 @@ public class GradleParser extends PackageManagerParser {
                 // If one file is found, add its data to dep
                 if (depValues.length == 1) dep.put("artifactId", depValues[0].trim());
                 // If more than one file is found, create and add a new LHM for each one
-                else this.dependencies.add(new LinkedHashMap<>() {{
-                    put("artifactId", depValues[0].trim());
-                }});
+                else {
+                    this.dependencies.add(new LinkedHashMap<>() {{
+                        put("artifactId", depValues[0].trim());
+                    }});
+                    continue;
+                }
             }
 
             // Add any values found in group 4, if present
@@ -93,7 +96,7 @@ public class GradleParser extends PackageManagerParser {
             }
 
             // Insert value
-            this.dependencies.add(dep);
+            this.dependencies.add(dep); // TODO: Uniqueness? Tests fail on non-unique artifactIds
         }
 
         // Get properties
