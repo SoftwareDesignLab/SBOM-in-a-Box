@@ -29,11 +29,11 @@ public class CompareFromAPITest {
      *  Example SBOMs to use for testing
      */
     private final String alpineSBOM = System.getProperty("user.dir")
-            + "/src/test/java/org/nvip/plugfest/tooling/sample_sboms/sbom.alpine-compare.2-3.spdx";
+            + "/src/test/java/org/svip/api/sample_sboms/sbom.alpine-compare.2-3.spdx";
     private final String pythonSBOM = System.getProperty("user.dir")
-            + "/src/test/java/org/nvip/plugfest/tooling/sample_sboms/sbom.python.2-3.spdx";
+            + "/src/test/java/org/svip/api/sample_sboms/sbom.python.2-3.spdx";
     private final String dockerSBOM = System.getProperty("user.dir")
-            + "/src/test/java/org/nvip/plugfest/tooling/sample_sboms/sbom.docker.2-2.spdx";
+            + "/src/test/java/org/svip/api/sample_sboms/sbom.docker.2-2.spdx";
 
     /**
      * Controller to test

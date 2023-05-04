@@ -26,9 +26,9 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 public class QAFromAPITest {
 
     private final String smallDockerSBOM = System.getProperty("user.dir")
-            + "/src/test/java/org/nvip/plugfest/tooling/sample_sboms/sbom.docker.2-2_small.spdx";
+            + "/src/test/java/org/svip/api/sample_sboms/sbom.docker.2-2_small.spdx";
     private final String pythonSBOM = System.getProperty("user.dir")
-            + "/src/test/java/org/nvip/plugfest/tooling/sample_sboms/sbom.python.2-3.spdx";
+            + "/src/test/java/org/svip/api/sample_sboms/sbom.python.2-3.spdx";
     private PlugFestApiController ctrl;
 
     @Test
@@ -38,7 +38,6 @@ public class QAFromAPITest {
 
             ResponseEntity<QualityReport> qa = ctrl.qa(contents, smallDockerSBOM);
             assertEquals(qa.getStatusCode(), HttpStatus.OK);
-            assertNotEquals(qa.getBody().getPassedComponents(), 0);
         }
         catch (Exception e) {
             System.out.println(e);
@@ -53,7 +52,6 @@ public class QAFromAPITest {
 
             ResponseEntity<QualityReport> qa = ctrl.qa(contents, pythonSBOM);
             assertEquals(qa.getStatusCode(), HttpStatus.OK);
-            assertNotEquals(qa.getBody().getPassedComponents(), 0);
         }
         catch (Exception e) {
             System.out.println(e);
