@@ -33,52 +33,100 @@ public class GradleParser extends PackageManagerParser {
     @Override
     protected void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data) {
         // Init dependencies list
-        this.dependencies = new ArrayList<>(((ArrayList<String>) data.get("dependencies"))
-                .stream().map(d -> {
-                    final LinkedHashMap<String, String> lhm = new LinkedHashMap<>();
-                    lhm.put("artifactId", d);
-                    return lhm;
-                }).toList());
+        this.dependencies = new ArrayList<>();
+
+        // Get raw data
+        final String rawDependencies = data.get("dependencies").toString();
+
+        // Init dependency Pattern
+        // Regex101: https://regex101.com/r/cFnCpF/12
+        final Pattern dependenciesPattern =
+                Pattern.compile("^\\s*\\w* ?\\(?\\[?(?:(?:(?:[\\\"'](.*:.*)[\\\"'])|(?:(group: [^\\n{]*, name: [^\\n{]*, version: [^\\n{)\\]]*)\\)?\\[?))|file.*\\((.*)?\\))(?:(?=.*\\{\\n?).*\\{([\\S\\s]*?)^\\t?(?: {4})?\\})?", Pattern.MULTILINE);
+
+        // Init dependency matcher
+        final Matcher depMatcher = dependenciesPattern.matcher(rawDependencies);
+
+        // Iterate over results
+        for (final MatchResult depResult : depMatcher.results().toList()) {
+            final LinkedHashMap<String, String> dep = new LinkedHashMap<>();
+            // Group 1 format: "org.springframework:spring-api:3.6"
+            if(depResult.group(1) != null) {
+                // Extract values from dep string
+                final String[] depValues = depResult.group(1).split(":");
+                dep.put("groupId", depValues[0]);
+                if(depValues.length > 1) dep.put("artifactId", depValues[1]);
+                if(depValues.length > 2) dep.put("version", depValues[2]);
+            } // Group 2 format: "group: 'org.springframework', name: 'spring-core', version: '2.5'"
+            else if(depResult.group(2) != null) {
+                final String[] depValues = depResult.group(2).split(",");
+                final HashMap<String, String> properties = new HashMap<>(depValues.length);
+                Arrays.stream(depValues).forEach(d -> {
+                    d = d.replace("'", "").replace("\"", "");
+                    final String dKey = d.substring(0, d.indexOf(":"));
+                    final String dValue = d.substring(d.indexOf(":") + 1).trim();
+                    properties.put(dKey, dValue);
+                });
+                if(properties.containsKey("group")) dep.put("groupId", properties.get("group"));
+                if(properties.containsKey("name")) dep.put("artifactId", properties.get("name"));
+                if(properties.containsKey("version")) dep.put("version", properties.get("version"));
+            } // Group 3 format for file(s)/dir(s): "'hibernate.jar', 'libs/spring.jar'"
+            else if(depResult.group(3) != null) {
+                // Extract values from dep string
+                final String[] depValues =  depResult.group(3)
+                        .replace("'", "")
+                        .replace("\"", "")
+                        .split(",");
+
+                // If one file is found, add its data to dep
+                if (depValues.length == 1) dep.put("artifactId", depValues[0].trim());
+                // If more than one file is found, create and add a new LHM for each one
+                else this.dependencies.add(new LinkedHashMap<>() {{
+                    put("artifactId", depValues[0].trim());
+                }});
+            }
+
+            // Add any values found in group 4, if present
+            // This can only occur when group 1 or 2 != null
+            if(depResult.group(4) != null) {
+                // TODO: Process group 4 values
+                //  Group 4 captures
+            }
+
+            // Insert value
+            this.dependencies.add(dep);
+        }
 
         // Get properties
         final ArrayList<String> ext =
                 (ArrayList<String>) data.get("ext");
 
         // Store properties
-        this.properties =  (HashMap<String, String>) ext
+        this.properties = (HashMap<String, String>) ext
                 .stream().collect(
-                            Collectors.toMap(
-                                    e -> e.substring(0, e.indexOf('=')).trim(),
-                                    e -> e.substring(e.indexOf('=') + 1).trim())
-                    );
+                        Collectors.toMap(
+                                e -> e.substring(0, e.indexOf('=')).trim(),
+                                e -> e.substring(e.indexOf('=') + 1).trim())
+                );
 
         // Iterate over dependencies
         for (final LinkedHashMap<String, String> d : this.dependencies) {
-            // Get dep
-            final String dep = d.get("artifactId");
-
-            // Ignore comments
-            if(dep.startsWith("//")) continue;
-
-            // Split on space to separate name and type
-            final int spaceIndex = dep.indexOf(' ');
-            String name = dep.substring(spaceIndex + 1);
-            if(name.startsWith("'") || name.startsWith("\""))
-                name = name.replace("\"", "").replace("'", "");
-            final String type = dep.substring(0, spaceIndex);
-
             // Create ParserComponent from dep info
-            final ParserComponent c = new ParserComponent(name);
-            // TODO: Add more info
-//            c.setType();
+            final ParserComponent c = new ParserComponent(d.get("artifactId"));
+            c.setGroup(d.get("group"));
+            if(d.containsKey("type")) {
+                final String type = d.get("type");
+                if(type.equals("file")) c.setType(ParserComponent.Type.INTERNAL);
+            }
+            if(d.containsKey("version")) c.setVersion(d.get("version"));
 
-            String url = "";
-            this.queryWorkers.add(new QueryWorker(c, url) {
-                @Override
-                public void run() {
-
-                }
-            });
+            // TODO: Query
+//            String url = "";
+//            this.queryWorkers.add(new QueryWorker(c, url) {
+//                @Override
+//                public void run() {
+//
+//                }
+//            });
 
             // Add ParserComponent to components
             components.add(c);
@@ -91,20 +139,24 @@ public class GradleParser extends PackageManagerParser {
         // Init main data structure
         final LinkedHashMap<String, Object> data = new LinkedHashMap<>();
 
-        // Init dependencies list
-        final ArrayList<LinkedHashMap<String, String>> dependencies = new ArrayList<>();
-
-        // Init Matcher
-        // Regex101: https://regex101.com/r/a3rIlp/1
-        final Matcher m = Pattern.compile("^(.*) \\{([^}]*)\\}", Pattern.MULTILINE)
+        // Init main Matcher
+        // Regex101: https://regex101.com/r/a3rIlp/3
+        final Matcher m = Pattern.compile("^(.*) \\{([\\s\\S]*?)^\\}", Pattern.MULTILINE)
                         .matcher(fileContents);
 
         // Store results in data
         for (final MatchResult mr : m.results().toList()) {
+            // Get key and value of match ("dependencies", "...")
+            final String key = mr.group(1).trim();
             final String value = mr.group(2).trim().replace("\r", "");
-            final ArrayList<String> values =
-                    new ArrayList<>(Arrays.stream(value.split("\n")).map(String::trim).toList());
-            data.put(mr.group(1), values);
+
+            // Declare values list
+            ArrayList<String> values;
+
+            // Dependencies will need to be parsed further, so pass raw string
+            if (key.equals("dependencies")) data.put(key, value);
+            // Other collected data can be split on "\n"
+            else data.put(key, new ArrayList<>(Arrays.stream(value.split("\n")).map(String::trim).toList()));
         }
 
         // Parse data
