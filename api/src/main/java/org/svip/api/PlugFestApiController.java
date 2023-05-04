@@ -1,10 +1,12 @@
 package org.svip.api;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomanalysis.comparison.Comparison;
 import org.svip.sbomanalysis.qualityattributes.QAPipeline;
@@ -12,18 +14,17 @@ import org.svip.sbomanalysis.qualityattributes.QualityReport;
 import org.svip.sbomfactory.translators.TranslatorPlugFest;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
-* File: APIController.java
-* REST API Controller for SBOM Comparison and QA
-*
-* @author Juan Francisco Patino, Asa Horn
-*/
+ * File: APIController.java
+ * REST API Controller for SBOM Comparison and QA
+ *
+ * @author Juan Francisco Patino, Asa Horn, Justin Jantzi
+ */
 @RestController
-@RequestMapping("/plugfest")
+@RequestMapping("plugfest")
 public class PlugFestApiController {
 
     /**
@@ -39,23 +40,27 @@ public class PlugFestApiController {
     }
 
     /**
-     * USAGE. Send POST request to /compare with a multipart/form-data body containing two+ SBOM files.
+     * USAGE. Send POST request to /compare with two+ SBOM files.
      * The first SBOM will be the baseline, and the rest will be compared to it.
      * The API will respond with an HTTP 200 and a serialized DiffReport object.
      *
-     * @param boms List of files to compare
+     * @param contentArray Array of SBOM file contents (the actual cyclonedx/spdx files) as a JSON string
+     * @param fileArray Array of file names as a JSON string
      * @return Wrapped Comparison object
      */
-    @RequestMapping(value="compare", method=RequestMethod.POST)
-    public ResponseEntity<Comparison> compare(@RequestBody List<MultipartFile> boms) throws IOException {
+    @PostMapping("compare")
+    public ResponseEntity<Comparison> compare(@RequestParam("contents") String contentArray, @RequestParam("fileNames") String fileArray) throws IOException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<String> contents = objectMapper.readValue(contentArray, new TypeReference<List<String>>(){});
+        List<String> fileNames = objectMapper.readValue(fileArray, new TypeReference<List<String>>(){});
+
         // Convert the SBOMs to SBOM objects
         ArrayList<SBOM> sboms = new ArrayList<>();
 
-        for (MultipartFile file: boms) {
+        for (int i = 0; i < contents.size(); i++) {
             // Get contents of the file
-            String contents = new String(file.getBytes(), StandardCharsets.UTF_8);
-
-            sboms.add(TranslatorPlugFest.translateContents(contents, file.getOriginalFilename()));
+            sboms.add(TranslatorPlugFest.translateContents(contents.get(i), fileNames.get(i)));
         }
 
         if(sboms.size() < 2){
@@ -75,23 +80,22 @@ public class PlugFestApiController {
     }
 
     /**
-     * USAGE. Send POST request to /qa with a single sbom file in plain text in the body.
+     * USAGE. Send POST request to /qa with a single sbom file
      * The API will respond with an HTTP 200 and a serialized report in the body.
      *
-     * @param bom - SBOM to run metrics on
-     * @return - wrapped QualityReport object
+     * @param contents - File content of the SBOM to run metrics on
+     * @param fileName - Name of the SBOM file
+     * @return - wrapped QualityReport object, null if failed
      */
-    @RequestMapping(value="qa", method=RequestMethod.POST)
-    public ResponseEntity<QualityReport> qa(@RequestBody MultipartFile bom) {
-        // Get file contents into a string
-        String contents;
-        try {
-            contents = new String(bom.getBytes(), StandardCharsets.UTF_8);
+    @PostMapping("qa")
+    public ResponseEntity<QualityReport> qa(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
+
+        SBOM sbom = TranslatorPlugFest.translateContents(contents, fileName);
+
+        // Check if the sbom is null
+        if (sbom == null) {
+            return new ResponseEntity<>(null, HttpStatus.OK);
         }
-        catch (IOException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        SBOM sbom = TranslatorPlugFest.translateContents(contents, bom.getOriginalFilename());
 
         //run the QA
         QualityReport report = pipeline.process(sbom);
@@ -102,13 +106,5 @@ public class PlugFestApiController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    /** TODO Docstring
-     * USAGE. Send POST request to /generator with
-     */
-    @RequestMapping(value="generator", method=RequestMethod.POST)
-    public ResponseEntity<QualityReport> generator() {
-        return null;
     }
 }

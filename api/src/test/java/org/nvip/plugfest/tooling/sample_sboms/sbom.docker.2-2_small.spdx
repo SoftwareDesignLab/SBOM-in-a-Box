@@ -1,0 +1,842 @@
+SPDXVersion: SPDX-2.2
+DataLicense: CC0-1.0
+SPDXID: SPDXRef-DOCUMENT
+DocumentName: github.com/docker/compose/v2
+DocumentNamespace: http://spdx.org/spdxpackages/github.com/docker/compose/v2-67e4dc27-e3a7-41eb-aadb-42e27f2af010
+Creator: Tool: spdx-sbom-generator-source-code
+Created: 2023-03-10T18:48:20Z
+
+
+##### Package representing the github.com/docker/compose/v2
+
+PackageName: github.com/docker/compose/v2
+SPDXID: SPDXRef-Package-github.com.docker.compose.v2
+PackageVersion: 6a0398d
+PackageSupplier: Organization: github.com/docker/compose/v2
+PackageDownloadLocation: git+https://github.com/docker/compose.git
+FilesAnalyzed: false
+PackageChecksum: SHA256: e293c0f1f273e185cb17d784d7b0fbc035837c7d01ef8131e14c96fd272d6c92
+PackageHomePage: https://github.com/docker/compose/v2
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/docker/cli
+
+PackageName: github.com/docker/cli
+SPDXID: SPDXRef-Package-github.com.docker.cli-v23.0.1+incompatible
+PackageVersion: v23.0.1+incompatible
+PackageSupplier: Organization: github.com/docker/cli
+PackageDownloadLocation: https://github.com/docker/cli/releases/tag/v23.0.1+incompatible
+FilesAnalyzed: false
+PackageChecksum: SHA256: 2a2c7ea44f16857ed5b4a2769b80f6bd8e339fda16893ebbe9faab147a8fcf58
+PackageHomePage: https://github.com/docker/cli
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/docker/docker-credential-helpers
+
+PackageName: github.com/docker/docker-credential-helpers
+SPDXID: SPDXRef-Package-github.com.docker.docker-credential-helpers-v0.7.0
+PackageVersion: v0.7.0
+PackageSupplier: Organization: github.com/docker/docker-credential-helpers
+PackageDownloadLocation: https://github.com/docker/docker-credential-helpers/releases/tag/v0.7.0
+FilesAnalyzed: false
+PackageChecksum: SHA256: 5fe5aa358c0195f6a74cd921c61fabea4283de5b6bdaf05700a7622f541f621e
+PackageHomePage: https://github.com/docker/docker-credential-helpers
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the golang.org/x/sys
+
+PackageName: golang.org/x/sys
+SPDXID: SPDXRef-Package-golang.org.x.sys-v0.5.0
+PackageVersion: v0.5.0
+PackageSupplier: Organization: golang.org/x/sys
+PackageDownloadLocation: https://golang.org/x/sys
+FilesAnalyzed: false
+PackageChecksum: SHA256: bee169f13a026f2c719c2d510f2ed017cc4c0a4abe4e7e2f5de576d905f13718
+PackageHomePage: https://golang.org/x/sys
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/pkg/errors
+
+PackageName: github.com/pkg/errors
+SPDXID: SPDXRef-Package-github.com.pkg.errors-v0.9.1
+PackageVersion: v0.9.1
+PackageSupplier: Organization: github.com/pkg/errors
+PackageDownloadLocation: https://github.com/pkg/errors/releases/tag/v0.9.1
+FilesAnalyzed: false
+PackageChecksum: SHA256: 75607576a90e9a908d10513ef23603f2009b01887c0451f1a4a0d0b4e50552e6
+PackageHomePage: https://github.com/pkg/errors
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/sirupsen/logrus
+
+PackageName: github.com/sirupsen/logrus
+SPDXID: SPDXRef-Package-github.com.sirupsen.logrus-v1.9.0
+PackageVersion: v1.9.0
+PackageSupplier: Organization: github.com/sirupsen/logrus
+PackageDownloadLocation: https://github.com/sirupsen/logrus/releases/tag/v1.9.0
+FilesAnalyzed: false
+PackageChecksum: SHA256: 4fcf8974314cdcf3ed0ebac009ed8e54b38b64b2c62d1d5362e612a66c1b2de0
+PackageHomePage: https://github.com/sirupsen/logrus
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/docker/docker
+
+PackageName: github.com/docker/docker
+SPDXID: SPDXRef-Package-github.com.docker.docker-v23.0.1+incompatible
+PackageVersion: v23.0.1+incompatible
+PackageSupplier: Organization: github.com/docker/docker
+PackageDownloadLocation: https://github.com/docker/docker/releases/tag/v23.0.1+incompatible
+FilesAnalyzed: false
+PackageChecksum: SHA256: c067dc84ab50d578eadcd25445633bea7a4941c41e4937e9299506f14e29a94a
+PackageHomePage: https://github.com/docker/docker
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/fvbommel/sortorder
+
+PackageName: github.com/fvbommel/sortorder
+SPDXID: SPDXRef-Package-github.com.fvbommel.sortorder-v1.0.2
+PackageVersion: v1.0.2
+PackageSupplier: Organization: github.com/fvbommel/sortorder
+PackageDownloadLocation: https://github.com/fvbommel/sortorder/releases/tag/v1.0.2
+FilesAnalyzed: false
+PackageChecksum: SHA256: b7f7a9636a2130da2259cbaae4c83ab8f5662332805b355d3c77601d8ab0a693
+PackageHomePage: https://github.com/fvbommel/sortorder
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/opencontainers/go-digest
+
+PackageName: github.com/opencontainers/go-digest
+SPDXID: SPDXRef-Package-github.com.opencontainers.go-digest-v1.0.0
+PackageVersion: v1.0.0
+PackageSupplier: Organization: github.com/opencontainers/go-digest
+PackageDownloadLocation: https://github.com/opencontainers/go-digest/releases/tag/v1.0.0
+FilesAnalyzed: false
+PackageChecksum: SHA256: a61e4e187a467524fe9099d542310d07c6cf8a4dd0b4ed9cc2b2dc0547a50ad5
+PackageHomePage: https://github.com/opencontainers/go-digest
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/docker/distribution
+
+PackageName: github.com/docker/distribution
+SPDXID: SPDXRef-Package-github.com.docker.distribution-v2.8.1+incompatible
+PackageVersion: v2.8.1+incompatible
+PackageSupplier: Organization: github.com/docker/distribution
+PackageDownloadLocation: https://github.com/docker/distribution/releases/tag/v2.8.1+incompatible
+FilesAnalyzed: false
+PackageChecksum: SHA256: 7b1846217e011729cfce5645747669c0a25d64a5e6c52524f3cc165dbbfc62a5
+PackageHomePage: https://github.com/docker/distribution
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/docker/go-connections
+
+PackageName: github.com/docker/go-connections
+SPDXID: SPDXRef-Package-github.com.docker.go-connections-v0.4.0
+PackageVersion: v0.4.0
+PackageSupplier: Organization: github.com/docker/go-connections
+PackageDownloadLocation: https://github.com/docker/go-connections/releases/tag/v0.4.0
+FilesAnalyzed: false
+PackageChecksum: SHA256: 13970675c14b0b8df995d981975dcda3a833f7e10bf142453e153efaf1f5fe85
+PackageHomePage: https://github.com/docker/go-connections
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/docker/go-units
+
+PackageName: github.com/docker/go-units
+SPDXID: SPDXRef-Package-github.com.docker.go-units-v0.5.0
+PackageVersion: v0.5.0
+PackageSupplier: Organization: github.com/docker/go-units
+PackageDownloadLocation: https://github.com/docker/go-units/releases/tag/v0.5.0
+FilesAnalyzed: false
+PackageChecksum: SHA256: 9e7cc502759f748b0b9a11f54d140f6e2a9a74c52c050c41f4e59a2b88ebbd68
+PackageHomePage: https://github.com/docker/go-units
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/opencontainers/image-spec
+
+PackageName: github.com/opencontainers/image-spec
+SPDXID: SPDXRef-Package-github.com.opencontainers.image-spec-v1.1.0-rc2
+PackageVersion: v1.1.0-rc2
+PackageSupplier: Organization: github.com/opencontainers/image-spec
+PackageDownloadLocation: https://github.com/opencontainers/image-spec/releases/tag/v1.1.0-rc2
+FilesAnalyzed: false
+PackageChecksum: SHA256: 272f73f8620bf81bdc46c711ff5156d1ab758273203558b154761372ae4b56b7
+PackageHomePage: https://github.com/opencontainers/image-spec
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/gogo/protobuf
+
+PackageName: github.com/gogo/protobuf
+SPDXID: SPDXRef-Package-github.com.gogo.protobuf-v1.3.2
+PackageVersion: v1.3.2
+PackageSupplier: Organization: github.com/gogo/protobuf
+PackageDownloadLocation: https://github.com/gogo/protobuf/releases/tag/v1.3.2
+FilesAnalyzed: false
+PackageChecksum: SHA256: f29b6ff8d29f7d419f967c977b3559cec4fd5f602fc20927366548c0ad4d5efa
+PackageHomePage: https://github.com/gogo/protobuf
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the golang.org/x/net
+
+PackageName: golang.org/x/net
+SPDXID: SPDXRef-Package-golang.org.x.net-v0.7.0
+PackageVersion: v0.7.0
+PackageSupplier: Organization: golang.org/x/net
+PackageDownloadLocation: https://golang.org/x/net
+FilesAnalyzed: false
+PackageChecksum: SHA256: 913e7908ef96a57600a604ee63ec2d35a13a938573989a90b9ebaead49aefa42
+PackageHomePage: https://golang.org/x/net
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/spf13/pflag
+
+PackageName: github.com/spf13/pflag
+SPDXID: SPDXRef-Package-github.com.spf13.pflag-v1.0.5
+PackageVersion: v1.0.5
+PackageSupplier: Organization: github.com/spf13/pflag
+PackageDownloadLocation: https://github.com/spf13/pflag/releases/tag/v1.0.5
+FilesAnalyzed: false
+PackageChecksum: SHA256: b644333cae37fe4ba3e07056daa4d3a0b4ab328bb8474a322191875074a0ed37
+PackageHomePage: https://github.com/spf13/pflag
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/gorilla/mux
+
+PackageName: github.com/gorilla/mux
+SPDXID: SPDXRef-Package-github.com.gorilla.mux-v1.8.0
+PackageVersion: v1.8.0
+PackageSupplier: Organization: github.com/gorilla/mux
+PackageDownloadLocation: https://github.com/gorilla/mux/releases/tag/v1.8.0
+FilesAnalyzed: false
+PackageChecksum: SHA256: 271f883b4f395b12bb9c58a2c189c8790cde9d092665663710b0f8434b2be109
+PackageHomePage: https://github.com/gorilla/mux
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/beorn7/perks
+
+PackageName: github.com/beorn7/perks
+SPDXID: SPDXRef-Package-github.com.beorn7.perks-v1.0.1
+PackageVersion: v1.0.1
+PackageSupplier: Organization: github.com/beorn7/perks
+PackageDownloadLocation: https://github.com/beorn7/perks/releases/tag/v1.0.1
+FilesAnalyzed: false
+PackageChecksum: SHA256: 9b89a52a6544f885132023a1bdfb15f094b93c9328c8ff0b55dcbcf12ae09bdd
+PackageHomePage: https://github.com/beorn7/perks
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/cespare/xxhash/v2
+
+PackageName: github.com/cespare/xxhash/v2
+SPDXID: SPDXRef-Package-github.com.cespare.xxhash.v2-v2.1.2
+PackageVersion: v2.1.2
+PackageSupplier: Organization: github.com/cespare/xxhash/v2
+PackageDownloadLocation: https://github.com/cespare/xxhash/v2/releases/tag/v2.1.2
+FilesAnalyzed: false
+PackageChecksum: SHA256: 2994addd9420597dc8acab1666994b547b41b3036457eb4bccc8e13175092416
+PackageHomePage: https://github.com/cespare/xxhash/v2
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the google.golang.org/protobuf
+
+PackageName: google.golang.org/protobuf
+SPDXID: SPDXRef-Package-google.golang.org.protobuf-v1.28.1
+PackageVersion: v1.28.1
+PackageSupplier: Organization: google.golang.org/protobuf
+PackageDownloadLocation: https://google.golang.org/protobuf
+FilesAnalyzed: false
+PackageChecksum: SHA256: 3175fd1882181f12f369046dd6e3c4c7472180d4c3287242277db52ce8cbd4b1
+PackageHomePage: https://google.golang.org/protobuf
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/golang/protobuf
+
+PackageName: github.com/golang/protobuf
+SPDXID: SPDXRef-Package-github.com.golang.protobuf-v1.5.2
+PackageVersion: v1.5.2
+PackageSupplier: Organization: github.com/golang/protobuf
+PackageDownloadLocation: https://github.com/golang/protobuf/releases/tag/v1.5.2
+FilesAnalyzed: false
+PackageChecksum: SHA256: b6bf06c6e4eea611e2d8674914332c3a330fcfaa572e50fe53d9dbc90797bc22
+PackageHomePage: https://github.com/golang/protobuf
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/prometheus/client_model
+
+PackageName: github.com/prometheus/client_model
+SPDXID: SPDXRef-Package-github.com.prometheus.client-model-v0.3.0
+PackageVersion: v0.3.0
+PackageSupplier: Organization: github.com/prometheus/client_model
+PackageDownloadLocation: https://github.com/prometheus/client_model/releases/tag/v0.3.0
+FilesAnalyzed: false
+PackageChecksum: SHA256: 6b3f7debc0114d39c62fac01ae18232b523d6c28653e08714beeda431b31c096
+PackageHomePage: https://github.com/prometheus/client_model
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/prometheus/common
+
+PackageName: github.com/prometheus/common
+SPDXID: SPDXRef-Package-github.com.prometheus.common-v0.37.0
+PackageVersion: v0.37.0
+PackageSupplier: Organization: github.com/prometheus/common
+PackageDownloadLocation: https://github.com/prometheus/common/releases/tag/v0.37.0
+FilesAnalyzed: false
+PackageChecksum: SHA256: 8fa4e8dbca2c955ed1d33c6713f7839a0170a0225de4cba9d5bf4ac0f9ee51f0
+PackageHomePage: https://github.com/prometheus/common
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/prometheus/client_golang
+
+PackageName: github.com/prometheus/client_golang
+SPDXID: SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0
+PackageVersion: v1.14.0
+PackageSupplier: Organization: github.com/prometheus/client_golang
+PackageDownloadLocation: https://github.com/prometheus/client_golang/releases/tag/v1.14.0
+FilesAnalyzed: false
+PackageChecksum: SHA256: 0197c0e821cb71453f2313db79d3467b7a5ff3a0b2072f20cd2b877488f97a3d
+PackageHomePage: https://github.com/prometheus/client_golang
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/matttproud/golang_protobuf_extensions
+
+PackageName: github.com/matttproud/golang_protobuf_extensions
+SPDXID: SPDXRef-Package-github.com.matttproud.golang-protobuf-extensions-v1.0.4
+PackageVersion: v1.0.4
+PackageSupplier: Organization: github.com/matttproud/golang_protobuf_extensions
+PackageDownloadLocation: https://github.com/matttproud/golang_protobuf_extensions/releases/tag/v1.0.4
+FilesAnalyzed: false
+PackageChecksum: SHA256: 57b9a124838bed49c308da21b59630f432a1409950abd34c29d2644af420e046
+PackageHomePage: https://github.com/matttproud/golang_protobuf_extensions
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/prometheus/procfs
+
+PackageName: github.com/prometheus/procfs
+SPDXID: SPDXRef-Package-github.com.prometheus.procfs-v0.8.0
+PackageVersion: v0.8.0
+PackageSupplier: Organization: github.com/prometheus/procfs
+PackageDownloadLocation: https://github.com/prometheus/procfs/releases/tag/v0.8.0
+FilesAnalyzed: false
+PackageChecksum: SHA256: 0864dfd532da162d8817b0b2dd0bcb03e935e16e39ee31c5917cccd0efa98d86
+PackageHomePage: https://github.com/prometheus/procfs
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/docker/go-metrics
+
+PackageName: github.com/docker/go-metrics
+SPDXID: SPDXRef-Package-github.com.docker.go-metrics-v0.0.1
+PackageVersion: v0.0.1
+PackageSupplier: Organization: github.com/docker/go-metrics
+PackageDownloadLocation: https://github.com/docker/go-metrics/releases/tag/v0.0.1
+FilesAnalyzed: false
+PackageChecksum: SHA256: ee55ef322549e69c29aef94c6a17b2ebf0750d5f696926a2e8329227a2d173f1
+PackageHomePage: https://github.com/docker/go-metrics
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+##### Package representing the github.com/moby/term
+
+PackageName: github.com/moby/term
+SPDXID: SPDXRef-Package-github.com.moby.term-v0.0.0-20221205130635-1aeaba878587
+PackageVersion: v0.0.0-20221205130635-1aeaba878587
+PackageSupplier: Organization: github.com/moby/term
+PackageDownloadLocation: https://github.com/moby/term/releases/tag/v0.0.0-20221205130635-1aeaba878587
+FilesAnalyzed: false
+PackageChecksum: SHA256: 915cf33e190b87541a1f6cbf321a49411998fb2565cb928eceb88b970ca12fdb
+PackageHomePage: https://github.com/moby/term
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageLicenseComments: NOASSERTION
+PackageComment: NOASSERTION
+
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-github.com.docker.compose.v2
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.serialx.hashring-v0.0.0-20190422032157-8b2912629002
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-gotest.tools.v3-v3.4.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-k8s.io.api-v0.24.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.containerd.containerd-v1.6.19
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.mattn.go-isatty-v0.0.17
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.modern-go.concurrent-v0.0.0-20180306012644-bacd9c7ef1dd
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.opencontainers.go-digest-v1.0.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.spf13.pflag-v1.0.5
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.contrib.instrumentation.net.http.otelhttp-v0.29.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-golang.org.x.sys-v0.5.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.jonboulle.clockwork-v0.3.1-0.20230117163003-a89700cec744
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.moby.sys.symlink-v0.2.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.otel.trace-v1.14.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-gopkg.in.yaml.v2-v2.4.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.aws.aws-sdk-go-v2.service.sso-v1.11.4
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.hashicorp.errwrap-v1.1.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.go-logr.stdr-v1.2.2
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.grpc-ecosystem.grpc-gateway-v1.16.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.klauspost.compress-v1.15.12
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.pmezard.go-difflib-v1.0.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.aws.smithy-go-v1.11.2
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.go-logr.logr-v1.2.3
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-k8s.io.utils-v0.0.0-20220210201930-3a6ce19ff2f9
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.moby.sys.signal-v0.7.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.opencontainers.image-spec-v1.1.0-rc2
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.prometheus.client-model-v0.3.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.spf13.cobra-v1.6.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.otel.internal.metric-v0.27.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.containerd.ttrpc-v1.1.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.matttproud.golang-protobuf-extensions-v1.0.4
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-google.golang.org.protobuf-v1.28.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.moby.spdystream-v0.2.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.pkg.errors-v0.9.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.docker.go-metrics-v0.0.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.felixge.httpsnoop-v1.0.2
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.gorilla.mux-v1.8.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.otel.exporters.otlp.internal.retry-v1.4.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-golang.org.x.net-v0.7.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-google.golang.org.genproto-v0.0.0-20221024183307-1bc688fe9f3e
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.aws.aws-sdk-go-v2.internal.endpoints.v2-v2.4.4
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.davecgh.go-spew-v1.1.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.docker.docker-credential-helpers-v0.7.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.beorn7.perks-v1.0.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.docker.cli-docs-tool-v0.5.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.otel.exporters.otlp.otlptrace-v1.4.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-sigs.k8s.io.yaml-v1.2.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.mgutz.ansi-v0.0.0-20170206155736-9520e82c474b
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.tilt-dev.fsnotify-v1.4.8-0.20220602155310-fff9c274a375
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.googleapis.gnostic-v0.5.5
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.json-iterator.go-v1.1.12
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.mitchellh.mapstructure-v1.5.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.moby.sys.sequential-v0.5.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.aws.aws-sdk-go-v2.internal.configsources-v1.1.10
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.gofrs.flock-v0.8.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.containerd.continuity-v0.3.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.opencontainers.runc-v1.1.3
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-golang.org.x.crypto-v0.2.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.aws.aws-sdk-go-v2.config-v1.15.5
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.otel-v1.14.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.modern-go.reflect2-v1.0.2
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.contrib.instrumentation.google.golang.org.grpc.otelgrpc-v0.29.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.aws.aws-sdk-go-v2.credentials-v1.12.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.otel.metric-v0.27.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.otel.exporters.otlp.otlptrace.otlptracegrpc-v1.4.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.moby.term-v0.0.0-20221205130635-1aeaba878587
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.golang.mock-v1.6.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.hashicorp.go-version-v1.6.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.otel.exporters.otlp.otlptrace.otlptracehttp-v1.4.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-k8s.io.klog.v2-v2.60.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.cespare.xxhash.v2-v2.1.2
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.pelletier.go-toml-v1.9.5
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.grpc-ecosystem.go-grpc-middleware-v1.3.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.imdario.mergo-v0.3.13
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.tonistiigi.fsutil-v0.0.0-20230105215944-fb433841cbfa
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.tonistiigi.vt100-v0.0.0-20210615222946-8066bb97264f
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.otel.sdk-v1.4.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-google.golang.org.grpc-v1.50.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.buger.goterm-v1.0.4
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.mattn.go-shellwords-v1.0.12
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.gogo.protobuf-v1.3.2
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.rivo.uniseg-v0.2.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.sirupsen.logrus-v1.9.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.fvbommel.sortorder-v1.0.2
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.gogo.googleapis-v1.4.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.moby.patternmatcher-v0.5.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.stretchr.testify-v1.8.2
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-golang.org.x.term-v0.5.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.aws.aws-sdk-go-v2.service.internal.presigned-url-v1.9.4
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.docker.docker-v23.0.1+incompatible
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.google.shlex-v0.0.0-20191202100458-e7afc7fbc510
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.mattn.go-colorable-v0.1.13
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.morikuni.aec-v1.0.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.xeipuuv.gojsonreference-v0.0.0-20180127040603-bd5ef7bd5415
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-k8s.io.apimachinery-v0.24.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.aws.aws-sdk-go-v2.service.sts-v1.16.4
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.docker.go-units-v0.5.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-gopkg.in.inf.v0-v0.9.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.containerd.console-v1.0.3
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.google.gofuzz-v1.2.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.aws.aws-sdk-go-v2-v1.16.3
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-k8s.io.client-go-v0.24.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.golang.protobuf-v1.5.2
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.moby.buildkit-v0.11.3
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.prometheus.procfs-v0.8.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.xeipuuv.gojsonschema-v1.2.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.AlecAivazis.survey.v2-v2.3.6
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.aws.aws-sdk-go-v2.feature.ec2.imds-v1.12.4
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.xeipuuv.gojsonpointer-v0.0.0-20190905194746-02993c407bfb
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-golang.org.x.oauth2-v0.0.0-20221014153046-6fdb5e3db783
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.docker.go-connections-v0.4.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.tonistiigi.units-v0.0.0-20180711220420-6950e57a87ea
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.proto.otlp-v0.12.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-golang.org.x.time-v0.1.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.aws.aws-sdk-go-v2.internal.ini-v1.3.11
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.cenkalti.backoff.v4-v4.1.2
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-golang.org.x.sync-v0.1.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.google.go-cmp-v0.5.9
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.prometheus.common-v0.37.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.moby.sys.mountinfo-v0.6.2
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.contrib.instrumentation.net.http.httptrace.otelhttptrace-v0.29.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-golang.org.x.text-v0.7.0
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.docker.go-v1.5.1-1.0.20160303222718-d30aec9fd63c
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.hashicorp.go-multierror-v1.1.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.mattn.go-runewidth-v0.0.14
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.moby.locker-v1.0.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.docker.buildx-v0.10.3
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.docker.cli-v23.0.1+incompatible
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.kballard.go-shellquote-v0.0.0-20180428030007-95032a82bc51
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-gopkg.in.yaml.v3-v3.0.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-sigs.k8s.io.structured-merge-diff.v4-v4.2.1
+Relationship: SPDXRef-Package-github.com.docker.compose.v2 DEPENDS_ON SPDXRef-Package-github.com.containerd.typeurl-v1.0.2
+Relationship: SPDXRef-Package-github.com.moby.buildkit-v0.11.3 DEPENDS_ON SPDXRef-Package-github.com.docker.distribution-v2.8.1+incompatible
+Relationship: SPDXRef-Package-github.com.docker.docker-credential-helpers-v0.7.0 DEPENDS_ON SPDXRef-Package-golang.org.x.sys-v0.5.0
+Relationship: SPDXRef-Package-github.com.sirupsen.logrus-v1.9.0 DEPENDS_ON SPDXRef-Package-github.com.stretchr.testify-v1.8.2
+Relationship: SPDXRef-Package-github.com.sirupsen.logrus-v1.9.0 DEPENDS_ON SPDXRef-Package-golang.org.x.sys-v0.5.0
+Relationship: SPDXRef-Package-github.com.sirupsen.logrus-v1.9.0 DEPENDS_ON SPDXRef-Package-github.com.pmezard.go-difflib-v1.0.0
+Relationship: SPDXRef-Package-github.com.sirupsen.logrus-v1.9.0 DEPENDS_ON SPDXRef-Package-golang.org.x.crypto-v0.2.0
+Relationship: SPDXRef-Package-github.com.sirupsen.logrus-v1.9.0 DEPENDS_ON SPDXRef-Package-github.com.davecgh.go-spew-v1.1.1
+Relationship: SPDXRef-Package-github.com.opencontainers.image-spec-v1.1.0-rc2 DEPENDS_ON SPDXRef-Package-github.com.stretchr.testify-v1.8.2
+Relationship: SPDXRef-Package-github.com.opencontainers.image-spec-v1.1.0-rc2 DEPENDS_ON SPDXRef-Package-github.com.xeipuuv.gojsonreference-v0.0.0-20180127040603-bd5ef7bd5415
+Relationship: SPDXRef-Package-github.com.opencontainers.image-spec-v1.1.0-rc2 DEPENDS_ON SPDXRef-Package-github.com.xeipuuv.gojsonschema-v1.2.0
+Relationship: SPDXRef-Package-github.com.opencontainers.image-spec-v1.1.0-rc2 DEPENDS_ON SPDXRef-Package-gopkg.in.yaml.v3-v3.0.1
+Relationship: SPDXRef-Package-github.com.opencontainers.image-spec-v1.1.0-rc2 DEPENDS_ON SPDXRef-Package-github.com.xeipuuv.gojsonpointer-v0.0.0-20190905194746-02993c407bfb
+Relationship: SPDXRef-Package-github.com.opencontainers.image-spec-v1.1.0-rc2 DEPENDS_ON SPDXRef-Package-github.com.davecgh.go-spew-v1.1.1
+Relationship: SPDXRef-Package-github.com.opencontainers.image-spec-v1.1.0-rc2 DEPENDS_ON SPDXRef-Package-github.com.opencontainers.go-digest-v1.0.0
+Relationship: SPDXRef-Package-github.com.opencontainers.image-spec-v1.1.0-rc2 DEPENDS_ON SPDXRef-Package-github.com.pkg.errors-v0.9.1
+Relationship: SPDXRef-Package-golang.org.x.net-v0.7.0 DEPENDS_ON SPDXRef-Package-golang.org.x.sys-v0.5.0
+Relationship: SPDXRef-Package-golang.org.x.net-v0.7.0 DEPENDS_ON SPDXRef-Package-golang.org.x.term-v0.5.0
+Relationship: SPDXRef-Package-golang.org.x.net-v0.7.0 DEPENDS_ON SPDXRef-Package-golang.org.x.text-v0.7.0
+Relationship: SPDXRef-Package-golang.org.x.net-v0.7.0 DEPENDS_ON SPDXRef-Package-golang.org.x.crypto-v0.2.0
+Relationship: SPDXRef-Package-google.golang.org.protobuf-v1.28.1 DEPENDS_ON SPDXRef-Package-github.com.google.go-cmp-v0.5.9
+Relationship: SPDXRef-Package-google.golang.org.protobuf-v1.28.1 DEPENDS_ON SPDXRef-Package-google.golang.org.genproto-v0.0.0-20221024183307-1bc688fe9f3e
+Relationship: SPDXRef-Package-google.golang.org.protobuf-v1.28.1 DEPENDS_ON SPDXRef-Package-github.com.golang.protobuf-v1.5.2
+Relationship: SPDXRef-Package-github.com.golang.protobuf-v1.5.2 DEPENDS_ON SPDXRef-Package-github.com.google.go-cmp-v0.5.9
+Relationship: SPDXRef-Package-github.com.golang.protobuf-v1.5.2 DEPENDS_ON SPDXRef-Package-google.golang.org.protobuf-v1.28.1
+Relationship: SPDXRef-Package-github.com.prometheus.client-model-v0.3.0 DEPENDS_ON SPDXRef-Package-github.com.golang.protobuf-v1.5.2
+Relationship: SPDXRef-Package-github.com.prometheus.client-model-v0.3.0 DEPENDS_ON SPDXRef-Package-golang.org.x.sync-v0.1.0
+Relationship: SPDXRef-Package-github.com.prometheus.common-v0.37.0 DEPENDS_ON SPDXRef-Package-github.com.golang.protobuf-v1.5.2
+Relationship: SPDXRef-Package-github.com.prometheus.common-v0.37.0 DEPENDS_ON SPDXRef-Package-github.com.pkg.errors-v0.9.1
+Relationship: SPDXRef-Package-github.com.prometheus.common-v0.37.0 DEPENDS_ON SPDXRef-Package-github.com.sirupsen.logrus-v1.9.0
+Relationship: SPDXRef-Package-github.com.prometheus.common-v0.37.0 DEPENDS_ON SPDXRef-Package-github.com.matttproud.golang-protobuf-extensions-v1.0.4
+Relationship: SPDXRef-Package-github.com.prometheus.common-v0.37.0 DEPENDS_ON SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0
+Relationship: SPDXRef-Package-github.com.prometheus.common-v0.37.0 DEPENDS_ON SPDXRef-Package-golang.org.x.oauth2-v0.0.0-20221014153046-6fdb5e3db783
+Relationship: SPDXRef-Package-github.com.prometheus.common-v0.37.0 DEPENDS_ON SPDXRef-Package-golang.org.x.net-v0.7.0
+Relationship: SPDXRef-Package-github.com.prometheus.common-v0.37.0 DEPENDS_ON SPDXRef-Package-gopkg.in.yaml.v2-v2.4.0
+Relationship: SPDXRef-Package-github.com.prometheus.common-v0.37.0 DEPENDS_ON SPDXRef-Package-github.com.gogo.protobuf-v1.3.2
+Relationship: SPDXRef-Package-github.com.prometheus.common-v0.37.0 DEPENDS_ON SPDXRef-Package-github.com.prometheus.procfs-v0.8.0
+Relationship: SPDXRef-Package-github.com.prometheus.common-v0.37.0 DEPENDS_ON SPDXRef-Package-github.com.prometheus.client-model-v0.3.0
+Relationship: SPDXRef-Package-github.com.prometheus.common-v0.37.0 DEPENDS_ON SPDXRef-Package-golang.org.x.sys-v0.5.0
+Relationship: SPDXRef-Package-github.com.prometheus.common-v0.37.0 DEPENDS_ON SPDXRef-Package-github.com.beorn7.perks-v1.0.1
+Relationship: SPDXRef-Package-github.com.prometheus.common-v0.37.0 DEPENDS_ON SPDXRef-Package-golang.org.x.sync-v0.1.0
+Relationship: SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0 DEPENDS_ON SPDXRef-Package-golang.org.x.sys-v0.5.0
+Relationship: SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0 DEPENDS_ON SPDXRef-Package-google.golang.org.protobuf-v1.28.1
+Relationship: SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0 DEPENDS_ON SPDXRef-Package-github.com.matttproud.golang-protobuf-extensions-v1.0.4
+Relationship: SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0 DEPENDS_ON SPDXRef-Package-golang.org.x.net-v0.7.0
+Relationship: SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0 DEPENDS_ON SPDXRef-Package-github.com.stretchr.testify-v1.8.2
+Relationship: SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0 DEPENDS_ON SPDXRef-Package-github.com.json-iterator.go-v1.1.12
+Relationship: SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0 DEPENDS_ON SPDXRef-Package-golang.org.x.sync-v0.1.0
+Relationship: SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0 DEPENDS_ON SPDXRef-Package-golang.org.x.text-v0.7.0
+Relationship: SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0 DEPENDS_ON SPDXRef-Package-gopkg.in.yaml.v2-v2.4.0
+Relationship: SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0 DEPENDS_ON SPDXRef-Package-github.com.cespare.xxhash.v2-v2.1.2
+Relationship: SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0 DEPENDS_ON SPDXRef-Package-github.com.prometheus.client-model-v0.3.0
+Relationship: SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0 DEPENDS_ON SPDXRef-Package-github.com.prometheus.procfs-v0.8.0
+Relationship: SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0 DEPENDS_ON SPDXRef-Package-github.com.modern-go.concurrent-v0.0.0-20180306012644-bacd9c7ef1dd
+Relationship: SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0 DEPENDS_ON SPDXRef-Package-github.com.modern-go.reflect2-v1.0.2
+Relationship: SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0 DEPENDS_ON SPDXRef-Package-github.com.beorn7.perks-v1.0.1
+Relationship: SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0 DEPENDS_ON SPDXRef-Package-github.com.davecgh.go-spew-v1.1.1
+Relationship: SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0 DEPENDS_ON SPDXRef-Package-github.com.golang.protobuf-v1.5.2
+Relationship: SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0 DEPENDS_ON SPDXRef-Package-github.com.prometheus.common-v0.37.0
+Relationship: SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0 DEPENDS_ON SPDXRef-Package-golang.org.x.oauth2-v0.0.0-20221014153046-6fdb5e3db783
+Relationship: SPDXRef-Package-github.com.matttproud.golang-protobuf-extensions-v1.0.4 DEPENDS_ON SPDXRef-Package-github.com.golang.protobuf-v1.5.2
+Relationship: SPDXRef-Package-github.com.matttproud.golang-protobuf-extensions-v1.0.4 DEPENDS_ON SPDXRef-Package-golang.org.x.sync-v0.1.0
+Relationship: SPDXRef-Package-github.com.prometheus.procfs-v0.8.0 DEPENDS_ON SPDXRef-Package-golang.org.x.sync-v0.1.0
+Relationship: SPDXRef-Package-github.com.prometheus.procfs-v0.8.0 DEPENDS_ON SPDXRef-Package-golang.org.x.sys-v0.5.0
+Relationship: SPDXRef-Package-github.com.prometheus.procfs-v0.8.0 DEPENDS_ON SPDXRef-Package-github.com.google.go-cmp-v0.5.9
+Relationship: SPDXRef-Package-github.com.docker.go-metrics-v0.0.1 DEPENDS_ON SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0
+Relationship: SPDXRef-Package-github.com.moby.term-v0.0.0-20221205130635-1aeaba878587 DEPENDS_ON SPDXRef-Package-golang.org.x.sys-v0.5.0
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-github.com.prometheus.client-model-v0.3.0
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-golang.org.x.sys-v0.5.0
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-golang.org.x.term-v0.5.0
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-github.com.docker.go-connections-v0.4.0
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-github.com.opencontainers.image-spec-v1.1.0-rc2
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-github.com.stretchr.testify-v1.8.2
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-golang.org.x.net-v0.7.0
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-github.com.gogo.protobuf-v1.3.2
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-github.com.mitchellh.mapstructure-v1.5.0
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-github.com.spf13.cobra-v1.6.1
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-github.com.sirupsen.logrus-v1.9.0
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-google.golang.org.grpc-v1.50.1
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-github.com.docker.go-metrics-v0.0.1
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-github.com.golang.protobuf-v1.5.2
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-github.com.opencontainers.go-digest-v1.0.0
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-github.com.gorilla.mux-v1.8.0
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-github.com.matttproud.golang-protobuf-extensions-v1.0.4
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-github.com.pkg.errors-v0.9.1
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-github.com.prometheus.common-v0.37.0
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-github.com.prometheus.procfs-v0.8.0
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-github.com.beorn7.perks-v1.0.1
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-github.com.docker.distribution-v2.8.1+incompatible
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-github.com.docker.go-v1.5.1-1.0.20160303222718-d30aec9fd63c
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-github.com.spf13.pflag-v1.0.5
+Relationship: SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0 DEPENDS_ON SPDXRef-Package-golang.org.x.crypto-v0.2.0
+Relationship: SPDXRef-Package-golang.org.x.crypto-v0.2.0 DEPENDS_ON SPDXRef-Package-golang.org.x.net-v0.7.0
+Relationship: SPDXRef-Package-golang.org.x.crypto-v0.2.0 DEPENDS_ON SPDXRef-Package-golang.org.x.sys-v0.5.0
+Relationship: SPDXRef-Package-golang.org.x.crypto-v0.2.0 DEPENDS_ON SPDXRef-Package-golang.org.x.term-v0.5.0
+Relationship: SPDXRef-Package-golang.org.x.crypto-v0.2.0 DEPENDS_ON SPDXRef-Package-golang.org.x.text-v0.7.0
+Relationship: SPDXRef-Package-golang.org.x.term-v0.5.0 DEPENDS_ON SPDXRef-Package-golang.org.x.sys-v0.5.0
+Relationship: SPDXRef-Package-github.com.moby.sys.sequential-v0.5.0 DEPENDS_ON SPDXRef-Package-golang.org.x.sys-v0.5.0
+Relationship: SPDXRef-Package-github.com.spf13.cobra-v1.6.1 DEPENDS_ON SPDXRef-Package-gopkg.in.yaml.v3-v3.0.1
+Relationship: SPDXRef-Package-github.com.spf13.cobra-v1.6.1 DEPENDS_ON SPDXRef-Package-gopkg.in.yaml.v2-v2.4.0
+Relationship: SPDXRef-Package-github.com.spf13.cobra-v1.6.1 DEPENDS_ON SPDXRef-Package-github.com.spf13.pflag-v1.0.5
+Relationship: SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0 DEPENDS_ON SPDXRef-Package-github.com.docker.go-connections-v0.4.0
+Relationship: SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0 DEPENDS_ON SPDXRef-Package-github.com.google.go-cmp-v0.5.9
+Relationship: SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0 DEPENDS_ON SPDXRef-Package-github.com.mattn.go-shellwords-v1.0.12
+Relationship: SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0 DEPENDS_ON SPDXRef-Package-github.com.pmezard.go-difflib-v1.0.0
+Relationship: SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0 DEPENDS_ON SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa
+Relationship: SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0 DEPENDS_ON SPDXRef-Package-github.com.mitchellh.mapstructure-v1.5.0
+Relationship: SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0 DEPENDS_ON SPDXRef-Package-gopkg.in.yaml.v3-v3.0.1
+Relationship: SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0 DEPENDS_ON SPDXRef-Package-github.com.imdario.mergo-v0.3.13
+Relationship: SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0 DEPENDS_ON SPDXRef-Package-gopkg.in.yaml.v2-v2.4.0
+Relationship: SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0 DEPENDS_ON SPDXRef-Package-gotest.tools.v3-v3.4.0
+Relationship: SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0 DEPENDS_ON SPDXRef-Package-github.com.davecgh.go-spew-v1.1.1
+Relationship: SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0 DEPENDS_ON SPDXRef-Package-github.com.xeipuuv.gojsonpointer-v0.0.0-20190905194746-02993c407bfb
+Relationship: SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0 DEPENDS_ON SPDXRef-Package-github.com.xeipuuv.gojsonschema-v1.2.0
+Relationship: SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0 DEPENDS_ON SPDXRef-Package-golang.org.x.sync-v0.1.0
+Relationship: SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0 DEPENDS_ON SPDXRef-Package-github.com.xeipuuv.gojsonreference-v0.0.0-20180127040603-bd5ef7bd5415
+Relationship: SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0 DEPENDS_ON SPDXRef-Package-github.com.docker.go-units-v0.5.0
+Relationship: SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0 DEPENDS_ON SPDXRef-Package-github.com.opencontainers.go-digest-v1.0.0
+Relationship: SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0 DEPENDS_ON SPDXRef-Package-github.com.pkg.errors-v0.9.1
+Relationship: SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0 DEPENDS_ON SPDXRef-Package-github.com.sirupsen.logrus-v1.9.0
+Relationship: SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0 DEPENDS_ON SPDXRef-Package-github.com.stretchr.testify-v1.8.2
+Relationship: SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0 DEPENDS_ON SPDXRef-Package-golang.org.x.sys-v0.5.0
+Relationship: SPDXRef-Package-github.com.xeipuuv.gojsonschema-v1.2.0 DEPENDS_ON SPDXRef-Package-github.com.stretchr.testify-v1.8.2
+Relationship: SPDXRef-Package-github.com.xeipuuv.gojsonschema-v1.2.0 DEPENDS_ON SPDXRef-Package-github.com.xeipuuv.gojsonpointer-v0.0.0-20190905194746-02993c407bfb
+Relationship: SPDXRef-Package-github.com.xeipuuv.gojsonschema-v1.2.0 DEPENDS_ON SPDXRef-Package-github.com.xeipuuv.gojsonreference-v0.0.0-20180127040603-bd5ef7bd5415
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-github.com.gorilla.mux-v1.8.0
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-github.com.prometheus.client-golang-v1.14.0
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-golang.org.x.crypto-v0.2.0
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-github.com.beorn7.perks-v1.0.1
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-github.com.golang.protobuf-v1.5.2
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-github.com.prometheus.common-v0.37.0
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-golang.org.x.sys-v0.5.0
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-google.golang.org.genproto-v0.0.0-20221024183307-1bc688fe9f3e
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-google.golang.org.grpc-v1.50.1
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-google.golang.org.protobuf-v1.28.1
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-github.com.docker.go-metrics-v0.0.1
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-github.com.mitchellh.mapstructure-v1.5.0
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-github.com.opencontainers.image-spec-v1.1.0-rc2
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-github.com.prometheus.procfs-v0.8.0
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-github.com.spf13.pflag-v1.0.5
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-golang.org.x.net-v0.7.0
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-github.com.opencontainers.go-digest-v1.0.0
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-github.com.sirupsen.logrus-v1.9.0
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-golang.org.x.oauth2-v0.0.0-20221014153046-6fdb5e3db783
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-gopkg.in.yaml.v2-v2.4.0
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-github.com.felixge.httpsnoop-v1.0.2
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-github.com.prometheus.client-model-v0.3.0
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-github.com.spf13.cobra-v1.6.1
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-github.com.cespare.xxhash.v2-v2.1.2
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-github.com.matttproud.golang-protobuf-extensions-v1.0.4
+Relationship: SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa DEPENDS_ON SPDXRef-Package-golang.org.x.text-v0.7.0
+Relationship: SPDXRef-Package-github.com.imdario.mergo-v0.3.13 DEPENDS_ON SPDXRef-Package-gopkg.in.yaml.v3-v3.0.1
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.fvbommel.sortorder-v1.0.2
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.containerd.ttrpc-v1.1.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.mattn.go-shellwords-v1.0.12
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.tonistiigi.fsutil-v0.0.0-20230105215944-fb433841cbfa
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.morikuni.aec-v1.0.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.opencontainers.go-digest-v1.0.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.golang.protobuf-v1.5.2
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.pmezard.go-difflib-v1.0.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.otel.exporters.otlp.otlptrace-v1.4.1
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.pkg.errors-v0.9.1
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.otel.exporters.otlp.internal.retry-v1.4.1
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.modern-go.concurrent-v0.0.0-20180306012644-bacd9c7ef1dd
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.prometheus.client-model-v0.3.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.aws.aws-sdk-go-v2.config-v1.15.5
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.grpc-ecosystem.grpc-gateway-v1.16.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.go-logr.logr-v1.2.3
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.gogo.googleapis-v1.4.1
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-golang.org.x.oauth2-v0.0.0-20221014153046-6fdb5e3db783
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.docker.go-units-v0.5.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.serialx.hashring-v0.0.0-20190422032157-8b2912629002
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-golang.org.x.sync-v0.1.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.aws.aws-sdk-go-v2-v1.16.3
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.cenkalti.backoff.v4-v4.1.2
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-sigs.k8s.io.structured-merge-diff.v4-v4.2.1
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.otel.trace-v1.14.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.aws.aws-sdk-go-v2.service.sso-v1.11.4
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.otel.internal.metric-v0.27.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-gopkg.in.inf.v0-v0.9.1
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-golang.org.x.text-v0.7.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-k8s.io.klog.v2-v2.60.1
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.compose-spec.compose-go-v1.12.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.docker.distribution-v2.8.1+incompatible
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.pelletier.go-toml-v1.9.5
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.aws.aws-sdk-go-v2.credentials-v1.12.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.prometheus.common-v0.37.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.otel-v1.14.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.imdario.mergo-v0.3.13
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.modern-go.reflect2-v1.0.2
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.theupdateframework.notary-v0.7.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.googleapis.gnostic-v0.5.5
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-golang.org.x.term-v0.5.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.aws.aws-sdk-go-v2.internal.ini-v1.3.11
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.aws.aws-sdk-go-v2.service.internal.presigned-url-v1.9.4
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-google.golang.org.protobuf-v1.28.1
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.moby.sys.signal-v0.7.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.docker.docker-v23.0.1+incompatible
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.opencontainers.image-spec-v1.1.0-rc2
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.spf13.cobra-v1.6.1
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.cespare.xxhash.v2-v2.1.2
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.grpc-ecosystem.go-grpc-middleware-v1.3.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.moby.sys.sequential-v0.5.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.xeipuuv.gojsonreference-v0.0.0-20180127040603-bd5ef7bd5415
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.contrib.instrumentation.google.golang.org.grpc.otelgrpc-v0.29.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.moby.buildkit-v0.11.3
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.stretchr.testify-v1.8.2
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-golang.org.x.net-v0.7.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.google.shlex-v0.0.0-20191202100458-e7afc7fbc510
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.sirupsen.logrus-v1.9.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.docker.go-v1.5.1-1.0.20160303222718-d30aec9fd63c
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.go-logr.stdr-v1.2.2
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.prometheus.procfs-v0.8.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.felixge.httpsnoop-v1.0.2
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.aws.aws-sdk-go-v2.service.sts-v1.16.4
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.docker.go-metrics-v0.0.1
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.gogo.protobuf-v1.3.2
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.beorn7.perks-v1.0.1
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.gorilla.mux-v1.8.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-google.golang.org.grpc-v1.50.1
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-k8s.io.api-v0.24.1
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.otel.exporters.otlp.otlptrace.otlptracehttp-v1.4.1
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-google.golang.org.genproto-v0.0.0-20221024183307-1bc688fe9f3e
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.aws.smithy-go-v1.11.2
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.containerd.typeurl-v1.0.2
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.matttproud.golang-protobuf-extensions-v1.0.4
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.proto.otlp-v0.12.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.docker.docker-credential-helpers-v0.7.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.docker.go-connections-v0.4.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-k8s.io.utils-v0.0.0-20220210201930-3a6ce19ff2f9
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.moby.sys.mountinfo-v0.6.2
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.distribution.distribution.v3-v3.0.0-20230214150026-36d8c594d7aa
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.google.go-cmp-v0.5.9
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.otel.metric-v0.27.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.aws.aws-sdk-go-v2.feature.ec2.imds-v1.12.4
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.json-iterator.go-v1.1.12
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-go.opentelemetry.io.otel.sdk-v1.4.1
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-golang.org.x.crypto-v0.2.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-sigs.k8s.io.yaml-v1.2.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.gofrs.flock-v0.8.1
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.davecgh.go-spew-v1.1.1
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.google.gofuzz-v1.2.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.opencontainers.runc-v1.1.3
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.moby.patternmatcher-v0.5.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.xeipuuv.gojsonpointer-v0.0.0-20190905194746-02993c407bfb
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-k8s.io.apimachinery-v0.24.1
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.containerd.continuity-v0.3.0
+Relationship: SPDXRef-Package-github.com.docker.buildx-v0.10.3 DEPENDS_ON SPDXRef-Package-github.com.moby.term-v0.0.0-20221205130635-1aeaba878587
