@@ -1,5 +1,7 @@
 package org.svip.sbomanalysis.qualityattributes.tests.testresults;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.jaxrs.json.annotation.JSONP;
 import org.svip.sbom.model.Component;
 
 import java.util.ArrayList;
@@ -14,8 +16,8 @@ public class TestResults {
     /**
      * Component that the test results belong to
      */
-    private final Component component;
-    private final ArrayList<Test> tests;
+    @JsonProperty("component") private final Component component;
+    @JsonProperty("tests") private final ArrayList<Test> tests;
 
     /**
      * Initialize a new instance of TestResults

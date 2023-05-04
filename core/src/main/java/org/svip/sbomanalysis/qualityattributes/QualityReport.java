@@ -1,5 +1,6 @@
 package org.svip.sbomanalysis.qualityattributes;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.svip.sbomanalysis.qualityattributes.tests.testresults.TestResults;
 
 import java.util.ArrayList;
@@ -9,11 +10,11 @@ import java.util.ArrayList;
  */
 public class QualityReport {
     /** Test results from the QAPipeline */
-    private final ArrayList<TestResults> testResults;
+    @JsonProperty("testResults") private final ArrayList<TestResults> testResults;
     /**
      * The serial number of the SBOM that was tested
      */
-    private final String serialNumber;
+    @JsonProperty("serialNumber") private final String serialNumber;
 
     /**
      * Create new QualityReport object with the SBOM serialNumber.
@@ -66,6 +67,14 @@ public class QualityReport {
                 passed++;
         }
         return passed;
+    }
+
+    /**
+     * Remove empty TestResults from the QualityReport.
+     */
+    public void removeEmpty() {
+        // Remove testResults that are empty
+        testResults.removeIf(tr -> tr.getTests().isEmpty());
     }
 
     @Override

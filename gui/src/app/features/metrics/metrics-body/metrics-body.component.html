@@ -1,0 +1,29 @@
+<div class="metrics-body flex col center">
+    <div class="graphs">
+        <!--Not a priority atm-->
+    </div>
+    <div class="results" *ngIf="GetQualityReport() && GetQualityReport().testResults.length > 0">
+        <app-accordion title="TEST RESULTS" [extra]="[(GetQualityReport() ? GetQualityReport().testResults.length : '0') + ' COMPONENTS']" style="flex-direction: column;">
+            <div body>
+                <app-accordion *ngFor="let testResult of GetQualityReport()?.testResults" style="flex-direction: column;">
+                    <span title>
+                        {{testResult.component.name}}
+                    </span>
+                    <div body>
+                        <div class="test" *ngFor="let test of testResult.tests">
+                            <div class="result" id="{{test.status ? 'pass' : 'fail'}}" style="color: white">
+                                {{test.message}}
+                            </div>
+                        </div>
+                    </div>
+                </app-accordion>
+            </div>
+        </app-accordion>
+    </div>
+    <div class="text flex center" *ngIf="!GetQualityReport()">
+        Please select an SBOM to see test results
+    </div>
+    <div class="text flex center" *ngIf="GetQualityReport() && GetQualityReport().testResults.length === 0">
+        There aren't any test results with the selected SBOM
+    </div>
+</div>

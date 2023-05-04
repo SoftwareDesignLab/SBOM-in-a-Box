@@ -1,9 +1,17 @@
 plugins {
     id 'java'
+    id 'application'
+    id 'org.springframework.boot' version '3.0.6'
 }
 
 group 'org.svip'
 version '1.0.0-alpha'
+
+application {
+    mainClassName = 'org.svip.api.UnifiedApplication'
+    mainClass = 'org.svip.api.UnifiedApplication'
+
+}
 
 repositories {
     mavenCentral()
@@ -32,4 +40,8 @@ sourceSets {
             srcDir 'test'
         }
     }
+}
+
+bootJar {
+    mainClassName = 'org.svip.api.UnifiedApplication'
 }

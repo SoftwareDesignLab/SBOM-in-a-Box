@@ -1,0 +1,22 @@
+::ng-deep .mat-horizontal-stepper-header .mat-step-icon {
+  display: none !important;
+}
+
+::ng-deep .mat-step-header[aria-selected="true"] > *   {
+  color: var(--accent) !important;
+  font-weight: 10px;
+}
+
+.mat-icon{
+  display: block;
+  margin: auto;
+}
+
+.ng-template div{
+  text-align: center;
+}
+
+.stepper-buttons.ng-star-inserted {
+  display: flex;
+  gap: 10px;
+}
