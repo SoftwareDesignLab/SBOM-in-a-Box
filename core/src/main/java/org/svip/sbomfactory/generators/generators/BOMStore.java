@@ -4,10 +4,12 @@ import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.generators.utils.License;
 import org.svip.sbomfactory.generators.generators.utils.Tool;
+import org.svip.sbomfactory.generators.parsers.Parser;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * File: BOMStore.java
@@ -105,6 +107,11 @@ public abstract class BOMStore {
      * @param child The child ParserComponent storing all necessary component data.
      */
     public abstract void addChild(ParserComponent parent, ParserComponent child) throws GeneratorException;
+
+    /**
+     * Gets ALL components present in this BOMStore, including top-level components and their children.
+     */
+    public abstract Set<ParserComponent> getAllComponents();
 
     //#endregion
 

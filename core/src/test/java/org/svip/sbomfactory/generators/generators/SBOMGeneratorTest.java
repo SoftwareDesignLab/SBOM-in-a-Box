@@ -3,19 +3,27 @@ package org.svip.sbomfactory.generators.generators;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.ParserController;
+import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
+import org.svip.sbomfactory.generators.parsers.Parser;
 import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.sbomfactory.generators.generators.utils.Tool;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,6 +33,7 @@ import static org.svip.sbomfactory.generators.utils.Debug.log;
 public class SBOMGeneratorTest {
     private static final Path TEST_PATH = Path.of("src/test/java/org/svip/sbomfactory/generators/TestData/Java");
     private static final Path OUT_PATH = Path.of("src/test/java/org/svip/sbomfactory/generators/SBOMOut");
+    private SBOM internalSBOM;
     private List<SBOMGenerator> generators;
 
     /**
@@ -55,7 +64,7 @@ public class SBOMGeneratorTest {
             log(Debug.LOG_TYPE.EXCEPTION, e);
         }
 
-        SBOM internalSBOM = testController.getSBOM(); // Construct SBOM
+        internalSBOM = testController.getSBOM(); // Construct SBOM
 
         generators = new ArrayList<>();
         // Construct generators with each schema
@@ -87,7 +96,7 @@ public class SBOMGeneratorTest {
 
         for(String filePath : expectedFilePaths) {
             assertTrue(files.contains(new File(filePath)));
-            System.out.println(filePath + " generated.");
+            System.out.println(filePath + " generated as expected.");
 
             // TODO test each format here?
         }
@@ -98,5 +107,41 @@ public class SBOMGeneratorTest {
         }
         System.out.println("Files.delete(Paths.get(" + OUT_PATH + ");");
         Files.delete(Paths.get(OUT_PATH.toUri()));
+    }
+
+    @Test
+    @DisplayName("Correct BOMStore Type")
+    void buildBOMStoreTypeTest() throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+        for(SBOMGenerator generator : generators) {
+            BOMStore bomStore = generator.buildBOMStore();
+            System.out.println("BOMStore Type: " + bomStore.getClass().getName());
+            System.out.println("Generator Schema Type: " + generator.getSchema().getBomStoreType().getName());
+            assertEquals(bomStore.getClass(), generator.getSchema().getBomStoreType());
+        }
+    }
+
+    @Test
+    @DisplayName("Correct BOMStore Tool")
+    void buildBOMStoreToolTest() throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+        SBOMGenerator generator = generators.get(0);
+        BOMStore bomStore = generator.buildBOMStore();
+        List<Tool> bomStoreTools = bomStore.getTools();
+        assertTrue(bomStoreTools.contains(generator.getTool()));
+    }
+
+    @Test
+    @DisplayName("BOMStore Contains ALL SBOM Components")
+    void buildBOMStoreComponentTest() throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+        for(SBOMGenerator generator : generators) {
+            BOMStore bomStore = generator.buildBOMStore();
+            Set<String> bomStoreComponentNames = bomStore.getAllComponents().stream().map(ParserComponent::getName).collect(Collectors.toSet());
+            for(Component sbomComponent : internalSBOM.getAllComponents()) {
+                if(sbomComponent.getUUID().equals(internalSBOM.getHeadUUID())) continue;
+                String expectedName = sbomComponent.getName();
+                System.out.println("BOMStore expected to contain component " + expectedName);
+                assertTrue(bomStoreComponentNames.contains(expectedName));
+                System.out.printf("    BOMStore contains component %s\n", expectedName);
+            }
+        }
     }
 }

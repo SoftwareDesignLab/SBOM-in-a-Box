@@ -126,6 +126,18 @@ public class CycloneDXStore extends BOMStore {
                 child.getName(), parentUUID));
     }
 
+    /**
+     * Gets ALL components present in this BOMStore, including top-level components and their children.
+     */
+    @Override
+    public Set<ParserComponent> getAllComponents() {
+        Set<ParserComponent> allComponents = new HashSet<>(components);
+        for(ArrayList<ParserComponent> components : children.values()) {
+            allComponents.addAll(components);
+        }
+        return allComponents;
+    }
+
     //#endregion
 
 }
