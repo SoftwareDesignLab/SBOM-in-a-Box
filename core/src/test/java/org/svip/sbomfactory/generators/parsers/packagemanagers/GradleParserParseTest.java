@@ -45,7 +45,7 @@ public class GradleParserParseTest extends ParseDepFileTestCore {
         // Check values
         assertEquals("200.1.0", props.get("arcgisVersion"));
         assertEquals("this/is/a/path", props.get("rootPath"));
-        assertEquals("$rootPath/test", props.get("testPath"));
+        assertEquals("this/is/a/path/test", props.get("testPath"));
     }
 
     @Test
