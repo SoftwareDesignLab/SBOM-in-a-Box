@@ -88,7 +88,7 @@ public class GradleParser extends PackageManagerParser {
         // Init main Matcher
         // Regex101: https://regex101.com/r/a3rIlp/3
         final Matcher m = Pattern.compile("^(.*) \\{([\\s\\S]*?)^\\}", Pattern.MULTILINE)
-                        .matcher(fileContents);
+                .matcher(fileContents);
 
         // Store results in data
         for (final MatchResult mr : m.results().toList()) {
