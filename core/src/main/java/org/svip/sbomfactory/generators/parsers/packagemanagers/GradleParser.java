@@ -32,73 +32,6 @@ public class GradleParser extends PackageManagerParser {
 
     @Override
     protected void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data) {
-        // Init dependencies list
-        this.dependencies = new ArrayList<>();
-
-        // Get raw data
-        final String rawDependencies = data.get("dependencies").toString();
-
-        // Init dependency Pattern
-        // Regex101: https://regex101.com/r/cFnCpF/12
-        final Pattern dependenciesPattern =
-                Pattern.compile("^\\s*\\w* ?\\(?\\[?(?:(?:(?:[\\\"'](.*:.*)[\\\"'])|(?:(group: [^\\n{]*, name: [^\\n{]*, version: [^\\n{)\\]]*)\\)?\\[?))|file.*\\((.*)?\\))(?:(?=.*\\{\\n?).*\\{([\\S\\s]*?)^\\t?(?: {4})?\\})?", Pattern.MULTILINE);
-
-        // Init dependency matcher
-        final Matcher depMatcher = dependenciesPattern.matcher(rawDependencies);
-
-        // Iterate over results
-        for (final MatchResult depResult : depMatcher.results().toList()) {
-            final LinkedHashMap<String, String> dep = new LinkedHashMap<>();
-            // Group 1 format: "org.springframework:spring-api:3.6"
-            if(depResult.group(1) != null) {
-                // Extract values from dep string
-                final String[] depValues = depResult.group(1).split(":");
-                dep.put("groupId", depValues[0]);
-                if(depValues.length > 1) dep.put("artifactId", depValues[1]);
-                if(depValues.length > 2) dep.put("version", depValues[2]);
-            } // Group 2 format: "group: 'org.springframework', name: 'spring-core', version: '2.5'"
-            else if(depResult.group(2) != null) {
-                final String[] depValues = depResult.group(2).split(",");
-                final HashMap<String, String> props = new HashMap<>(depValues.length);
-                Arrays.stream(depValues).forEach(d -> {
-                    d = d.replace("'", "").replace("\"", "");
-                    final String dKey = d.substring(0, d.indexOf(":")).trim();
-                    final String dValue = d.substring(d.indexOf(":") + 1).trim();
-                    props.put(dKey, dValue);
-                });
-                if(props.containsKey("group")) dep.put("groupId", props.get("group"));
-                if(props.containsKey("name")) dep.put("artifactId", props.get("name"));
-                if(props.containsKey("version")) dep.put("version", props.get("version"));
-            } // Group 3 format for file(s)/dir(s): "'hibernate.jar', 'libs/spring.jar'"
-            else if(depResult.group(3) != null) {
-                // Extract values from dep string
-                final String[] depValues =  depResult.group(3)
-                        .replace("'", "")
-                        .replace("\"", "")
-                        .split(",");
-
-                // If one file is found, add its data to dep
-                if (depValues.length == 1) dep.put("artifactId", depValues[0].trim());
-                // If more than one file is found, create and add a new LHM for each one
-                else {
-                    this.dependencies.add(new LinkedHashMap<>() {{
-                        put("artifactId", depValues[0].trim());
-                    }});
-                    continue;
-                }
-            }
-
-            // Add any values found in group 4, if present
-            // This can only occur when group 1 or 2 != null
-            if(depResult.group(4) != null) {
-                // TODO: Process group 4 values
-                //  Group 4 captures
-            }
-
-            // Insert value
-            this.dependencies.add(dep); // TODO: Uniqueness? Tests fail on non-unique artifactIds
-        }
-
         // Get properties
         final ArrayList<String> ext =
                 (ArrayList<String>) data.get("ext");
@@ -164,7 +97,74 @@ public class GradleParser extends PackageManagerParser {
             final String value = mr.group(2).trim().replace("\r", "");
 
             // Dependencies will need to be parsed further, so pass raw string
-            if (key.equals("dependencies")) data.put(key, value);
+            if (key.equals("dependencies")) {
+                // Init dependencies list
+                final ArrayList<LinkedHashMap<String, String>> deps = new ArrayList<>();
+
+                // Get raw data
+                final String rawDependencies = data.get("dependencies").toString();
+
+                // Init dependency Pattern
+                // Regex101: https://regex101.com/r/cFnCpF/12
+                final Pattern dependenciesPattern =
+                        Pattern.compile("^\\s*\\w* ?\\(?\\[?(?:(?:(?:[\\\"'](.*:.*)[\\\"'])|(?:(group: [^\\n{]*, name: [^\\n{]*, version: [^\\n{)\\]]*)\\)?\\[?))|file.*\\((.*)?\\))(?:(?=.*\\{\\n?).*\\{([\\S\\s]*?)^\\t?(?: {4})?\\})?", Pattern.MULTILINE);
+
+                // Init dependency matcher
+                final Matcher depMatcher = dependenciesPattern.matcher(rawDependencies);
+
+                // Iterate over results
+                for (final MatchResult depResult : depMatcher.results().toList()) {
+                    final LinkedHashMap<String, String> dep = new LinkedHashMap<>();
+                    // Group 1 format: "org.springframework:spring-api:3.6"
+                    if(depResult.group(1) != null) {
+                        // Extract values from dep string
+                        final String[] depValues = depResult.group(1).split(":");
+                        dep.put("groupId", depValues[0]);
+                        if(depValues.length > 1) dep.put("artifactId", depValues[1]);
+                        if(depValues.length > 2) dep.put("version", depValues[2]);
+                    } // Group 2 format: "group: 'org.springframework', name: 'spring-core', version: '2.5'"
+                    else if(depResult.group(2) != null) {
+                        final String[] depValues = depResult.group(2).split(",");
+                        final HashMap<String, String> props = new HashMap<>(depValues.length);
+                        Arrays.stream(depValues).forEach(d -> {
+                            d = d.replace("'", "").replace("\"", "");
+                            final String dKey = d.substring(0, d.indexOf(":")).trim();
+                            final String dValue = d.substring(d.indexOf(":") + 1).trim();
+                            props.put(dKey, dValue);
+                        });
+                        if(props.containsKey("group")) dep.put("groupId", props.get("group"));
+                        if(props.containsKey("name")) dep.put("artifactId", props.get("name"));
+                        if(props.containsKey("version")) dep.put("version", props.get("version"));
+                    } // Group 3 format for file(s)/dir(s): "'hibernate.jar', 'libs/spring.jar'"
+                    else if(depResult.group(3) != null) {
+                        // Extract values from dep string
+                        final String[] depValues =  depResult.group(3)
+                                .replace("'", "")
+                                .replace("\"", "")
+                                .split(",");
+
+                        // If one file is found, add its data to dep
+                        if (depValues.length == 1) dep.put("artifactId", depValues[0].trim());
+                            // If more than one file is found, create and add a new LHM for each one
+                        else {
+                            deps.add(new LinkedHashMap<>() {{
+                                put("artifactId", depValues[0].trim());
+                            }});
+                            continue;
+                        }
+                    }
+
+                    // Add any values found in group 4, if present
+                    // This can only occur when group 1 or 2 != null
+                    if(depResult.group(4) != null) {
+                        // TODO: Process group 4 values
+                        //  Group 4 captures
+                    }
+
+                    // Insert value
+                    deps.add(dep); // TODO: Uniqueness? Tests fail on non-unique artifactIds
+                }
+            }
             // Other collected data can be split on "\n"
             else data.put(key, new ArrayList<>(Arrays.stream(value.split("\n")).map(String::trim).toList()));
         }
