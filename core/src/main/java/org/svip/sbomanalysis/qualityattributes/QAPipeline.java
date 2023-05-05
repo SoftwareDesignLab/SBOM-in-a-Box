@@ -7,6 +7,12 @@ import org.svip.sbomanalysis.qualityattributes.processors.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Pipeline that will run all tests against a given SBOM
+ *
+ * @author Dylan Mulligan
+ * @author Matt London
+ */
 public class QAPipeline {
 
     /** All processors that will run tests against this pipeline */
@@ -32,19 +38,19 @@ public class QAPipeline {
      * @return QualityReport containing all results
      */
     public QualityReport process(SBOM sbom){
-         // Init QualityReport
-         QualityReport qr = new QualityReport(sbom.getSerialNumber());
+        // Init QualityReport
+        QualityReport qr = new QualityReport(sbom.getSerialNumber());
 
-         // Run all added processors
-         for (AttributeProcessor p : processors) {
-             // Add results to master report object
-             qr.append(p.process(sbom));
-         }
+        // Run all added processors
+        for (AttributeProcessor p : processors) {
+            // Add results to master report object
+            qr.append(p.process(sbom));
+        }
 
         // Remove all empty tests
         qr.removeEmpty();
 
-         // Return Master QR
-         return qr;
+        // Return Master QR
+        return qr;
     }
 }
