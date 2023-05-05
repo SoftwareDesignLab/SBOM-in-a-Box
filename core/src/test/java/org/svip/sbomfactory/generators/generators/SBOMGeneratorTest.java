@@ -158,70 +158,43 @@ public class SBOMGeneratorTest {
 
     @Test
     @DisplayName("addComponent() Non-Recursive")
-    void addComponentNonRecursiveTest() throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
-        ParserComponent headComponent = new ParserComponent("Test Head");
-        ParserComponent testComponent = new ParserComponent("Test");
-        ParserComponent testChild = new ParserComponent("Child");
-        SBOM sbom = new SBOM();
-        sbom.addComponent(null, headComponent);
-        System.out.println("sbom.addComponent(null, headComponent);");
-        sbom.addComponent(headComponent.getUUID(), testComponent);
-        System.out.println("sbom.addComponent(headComponent.getUUID(), testComponent);");
-        sbom.addComponent(testComponent.getUUID(), testChild);
-        System.out.println("sbom.addComponent(testComponent.getUUID(), testChild);\n");
+    void addComponentNonRecursiveTest() {
+        SBOM testSBOM = new SBOM();
+        List<ParserComponent> testComponents = addTestComponentsToSBOM(testSBOM);
 
-        BOMStore bomStore = new CycloneDXStore("serialNumber", 1, headComponent);
-        SBOMGenerator generator = new SBOMGenerator(sbom, GeneratorSchema.CycloneDX);
-        generator.addComponent(bomStore, testComponent, false);
+        BOMStore bomStore = new CycloneDXStore("serialNumber", 1, testComponents.get(0));
+        SBOMGenerator generator = new SBOMGenerator(testSBOM, GeneratorSchema.CycloneDX);
+        generator.addComponent(bomStore, testComponents.get(1), false);
         System.out.println("generator.addComponent(bomStore, testComponent, false);");
         assertEquals(1, bomStore.getAllComponents().size());
     }
 
     @Test
     @DisplayName("addComponent() Recursive")
-    void addComponentRecursiveTest() throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
-        ParserComponent headComponent = new ParserComponent("Test Head");
-        ParserComponent testComponent = new ParserComponent("Test");
-        ParserComponent testChild = new ParserComponent("Child");
-        SBOM sbom = new SBOM();
-        sbom.addComponent(null, headComponent);
-        System.out.println("sbom.addComponent(null, headComponent);");
-        sbom.addComponent(headComponent.getUUID(), testComponent);
-        System.out.println("sbom.addComponent(headComponent.getUUID(), testComponent);");
-        sbom.addComponent(testComponent.getUUID(), testChild);
-        System.out.println("sbom.addComponent(testComponent.getUUID(), testChild);\n");
+    void addComponentRecursiveTest() {
+        SBOM testSBOM = new SBOM();
+        List<ParserComponent> testComponents = addTestComponentsToSBOM(testSBOM);
 
-        BOMStore bomStore = new CycloneDXStore("serialNumber", 1, headComponent);
-        SBOMGenerator generator = new SBOMGenerator(sbom, GeneratorSchema.CycloneDX);
-        generator.addComponent(bomStore, testComponent, true);
+        BOMStore bomStore = new CycloneDXStore("serialNumber", 1, testComponents.get(0));
+        SBOMGenerator generator = new SBOMGenerator(testSBOM, GeneratorSchema.CycloneDX);
+        generator.addComponent(bomStore, testComponents.get(1), true);
         System.out.println("generator.addComponent(bomStore, testComponent, true);");
-        assertEquals(2, bomStore.getAllComponents().size());
+        assertEquals(3, bomStore.getAllComponents().size());
     }
 
     @Test
     @DisplayName("addChildren()")
-    void addChildrenTest() throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
-        ParserComponent headComponent = new ParserComponent("Test Head");
-        ParserComponent testComponent = new ParserComponent("Test");
-        ParserComponent testChild = new ParserComponent("Child");
-        ParserComponent testChild2 = new ParserComponent("Child2");
-        SBOM sbom = new SBOM();
-        sbom.addComponent(null, headComponent);
-        System.out.println("sbom.addComponent(null, headComponent);");
-        sbom.addComponent(headComponent.getUUID(), testComponent);
-        System.out.println("sbom.addComponent(headComponent.getUUID(), testComponent);");
-        sbom.addComponent(testComponent.getUUID(), testChild);
-        System.out.println("sbom.addComponent(testComponent.getUUID(), testChild);");
-        sbom.addComponent(testComponent.getUUID(), testChild2);
-        System.out.println("sbom.addComponent(testComponent.getUUID(), testChild2);\n");
+    void addChildrenTest() {
+        SBOM testSBOM = new SBOM();
+        List<ParserComponent> testComponents = addTestComponentsToSBOM(testSBOM);
 
-        BOMStore bomStore = new CycloneDXStore("serialNumber", 1, headComponent);
-        SBOMGenerator generator = new SBOMGenerator(sbom, GeneratorSchema.CycloneDX);
-        generator.addComponent(bomStore, testComponent, false);
+        BOMStore bomStore = new CycloneDXStore("serialNumber", 1, testComponents.get(0));
+        SBOMGenerator generator = new SBOMGenerator(testSBOM, GeneratorSchema.CycloneDX);
+        generator.addComponent(bomStore, testComponents.get(1), false);
         System.out.println("generator.addComponent(bomStore, testComponent, false);");
         assertEquals(1, bomStore.getAllComponents().size());
 
-        generator.addChildren(bomStore, testComponent);
+        generator.addChildren(bomStore, testComponents.get(1));
         System.out.println("generator.addChildren(bomStore, testComponent);");
         assertEquals(3, bomStore.getAllComponents().size());
     }
@@ -229,11 +202,13 @@ public class SBOMGeneratorTest {
     @Test
     @DisplayName("addChildren() with Invalid Parent")
     void addChildrenInvalidParentTest() throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
+        SBOM testSBOM = new SBOM();
+        List<ParserComponent> testComponents = addTestComponentsToSBOM(testSBOM);
 
-        BOMStore bomStore = new CycloneDXStore("serialNumber", 1, headComponent);
-        SBOMGenerator generator = new SBOMGenerator(sbom, GeneratorSchema.CycloneDX);
+        BOMStore bomStore = new CycloneDXStore("serialNumber", 1, testComponents.get(0));
+        SBOMGenerator generator = new SBOMGenerator(testSBOM, GeneratorSchema.CycloneDX);
 
-        generator.addChildren(bomStore, testComponent);
+        generator.addChildren(bomStore, testComponents.get(1));
         System.out.println("generator.addChildren(bomStore, testComponent);");
         assertEquals(0, bomStore.getAllComponents().size());
     }
@@ -253,5 +228,24 @@ public class SBOMGeneratorTest {
         System.out.printf("Generator.generatePathToSBOM(\"%s\", %s)\n", testDir, format);
         assertEquals(testDir + pathSeparator + sbomName + "_" + generators.get(0).getSchema() + "." +
                 format.getExtension(), sbomPath);
+    }
+
+    // TODO docstring
+    private List<ParserComponent> addTestComponentsToSBOM(SBOM sbom) {
+        ParserComponent headComponent = new ParserComponent("Test Head");
+        ParserComponent testComponent = new ParserComponent("Test");
+        ParserComponent testChild = new ParserComponent("Child");
+        ParserComponent testChild2 = new ParserComponent("Child2");
+
+        sbom.addComponent(null, headComponent);
+        System.out.println("sbom.addComponent(null, headComponent);");
+        sbom.addComponent(headComponent.getUUID(), testComponent);
+        System.out.println("sbom.addComponent(headComponent.getUUID(), testComponent);");
+        sbom.addComponent(testComponent.getUUID(), testChild);
+        System.out.println("sbom.addComponent(testComponent.getUUID(), testChild);");
+        sbom.addComponent(testComponent.getUUID(), testChild2);
+        System.out.println("sbom.addComponent(testComponent.getUUID(), testChild2);\n");
+
+        return List.of(headComponent, testComponent, testChild, testChild2);
     }
 }
