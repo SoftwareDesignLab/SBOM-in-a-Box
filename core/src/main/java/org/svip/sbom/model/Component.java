@@ -1,7 +1,7 @@
 package org.svip.sbom.model;
 
 import org.svip.sbomanalysis.comparison.conflicts.ComponentConflict;
-import org.svip.sbomvex.model.VEX;
+import org.svip.sbomvex.model.Vulnerability;
 
 import java.util.*;
 
