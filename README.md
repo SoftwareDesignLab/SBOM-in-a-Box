@@ -12,16 +12,33 @@ v1.0.0 - alpha (2/27/23)
 _The full changelog can be found [here](CHANGELOG.md)_
 
 ## Quick Start
-todo add quick start
+- Core:
+  - run SVIPApplication.java
+- API:
+  - run UnifiedApplication.java
 
 ## Features
-todo flesh out with descriptions
+
 ### Open Source Integrated SBOM Generation
+- Use Docker, for instance, to build virtual containers that use open source tools
 ### SBOM Generation
+- Transform relevant data into serialized SBOM objects
+- Translator: Parse SBOMS from files and deserialize from formats:
+  - CycloneDX
+    > .xml and .json
+  - SPDX
+    > .spdx
 ### SBOM VEX Generation
-### SBOM Metrics
+- Vulnerability analysis
+- Make API calls to NVIP (National Vulnerability Intelligence Program) to gather vulnerability information associated with a CPE
+### SBOM Analysis
+- Differ
+- Comparison
+- Quallity
 ### SBOM Comparison
+- Generate detailed DiffReports from a target SBOM and a list of SBOMs. 
 ### SBOM Merging
+- todo
 
 ## Contributors
 **Principal Investigator:** [Mehdi Mirakhorli](mailto:mxmvse@rit.edu)
