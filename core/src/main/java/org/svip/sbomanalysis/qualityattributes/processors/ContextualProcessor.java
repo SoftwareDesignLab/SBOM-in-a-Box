@@ -3,6 +3,8 @@ import org.svip.sbomanalysis.qualityattributes.tests.*;
 
 /**
  * Metrics that measure the relevance of data in the context of the SBOM
+ *
+ * @author Dylan Mulligan
  */
 public class ContextualProcessor extends AttributeProcessor {
     /**
@@ -12,7 +14,7 @@ public class ContextualProcessor extends AttributeProcessor {
         super(new MetricTest[]{
                 new CompletenessTest(),
                 new DataVerificationTest(),
-                new ActionableTest()
+//                new ActionableTest()
                 // Add new tests here
         });
     }
