@@ -85,6 +85,9 @@ public class GradleParser extends PackageManagerParser {
         // Init main data structure
         final LinkedHashMap<String, Object> data = new LinkedHashMap<>();
 
+        // Init this.dependencies
+        this.dependencies = new ArrayList<>();
+
         // Init main Matcher
         // Regex101: https://regex101.com/r/a3rIlp/3
         final Matcher m = Pattern.compile("^(.*) \\{([\\s\\S]*?)^\\}", Pattern.MULTILINE)
@@ -101,16 +104,13 @@ public class GradleParser extends PackageManagerParser {
                 // Init dependencies list
                 final ArrayList<LinkedHashMap<String, String>> deps = new ArrayList<>();
 
-                // Get raw data
-                final String rawDependencies = data.get("dependencies").toString();
-
                 // Init dependency Pattern
                 // Regex101: https://regex101.com/r/cFnCpF/12
                 final Pattern dependenciesPattern =
                         Pattern.compile("^\\s*\\w* ?\\(?\\[?(?:(?:(?:[\\\"'](.*:.*)[\\\"'])|(?:(group: [^\\n{]*, name: [^\\n{]*, version: [^\\n{)\\]]*)\\)?\\[?))|file.*\\((.*)?\\))(?:(?=.*\\{\\n?).*\\{([\\S\\s]*?)^\\t?(?: {4})?\\})?", Pattern.MULTILINE);
 
                 // Init dependency matcher
-                final Matcher depMatcher = dependenciesPattern.matcher(rawDependencies);
+                final Matcher depMatcher = dependenciesPattern.matcher(value);
 
                 // Iterate over results
                 for (final MatchResult depResult : depMatcher.results().toList()) {
@@ -164,6 +164,8 @@ public class GradleParser extends PackageManagerParser {
                     // Insert value
                     deps.add(dep); // TODO: Uniqueness? Tests fail on non-unique artifactIds
                 }
+                // Insert data
+                this.dependencies.addAll(deps);
             }
             // Other collected data can be split on "\n"
             else data.put(key, new ArrayList<>(Arrays.stream(value.split("\n")).map(String::trim).toList()));
