@@ -41,19 +41,20 @@ public class CompletenessTest extends MetricTest {
     /**
      * Constructor to build the regex patterns used to test the format of a component information
      */
-    public CompletenessTest() {
+    protected CompletenessTest() {
         super("Completeness Test"); // Test name
 
         /*
             Checks if publisher email is in form: "email@mail.com"
          */
-        this.publisherEmailRegex = Pattern.compile("<\\S*@\\S*\\.\\S*>$", Pattern.MULTILINE);
+        this.publisherEmailRegex = Pattern.compile("(?:(Person|Organization)?: (.*?))? ?<?(\\S+@\\S+\\.[^\\s>]+)>?", Pattern.MULTILINE);
 
         /*
-            Regex101: https://regex101.com/r/wzJeIq/4
+            Regex101: https://regex101.com/r/BjMJCP/1
             Checks if version is in form: "12.*" | "4:*", version format varies a lot
+            Also supports git commit hashes (for example docker compose uses this)
          */
-        this.componentVersionRegex = Pattern.compile("^([0-9]+[\\.:\\-].*)", Pattern.MULTILINE);
+        this.componentVersionRegex = Pattern.compile("^(v?[0-9]+[\\.:\\-].*|[0-9a-fA-F]{7,40})$", Pattern.MULTILINE);
 
         // TODO for these patterns: check if name, version, etc matches component name, version, etc. Make classes?
 
@@ -142,12 +143,13 @@ public class CompletenessTest extends MetricTest {
      */
     private String getPublisherEmail(Component c) {
         if(c.getPublisher() == null) return null;
+        if (c.getPublisher().equals("")) return null;
         String publisher = c.getPublisher(); // Do this to make it more semantic
 
         int firstCharEmail = publisher.indexOf("<") + 1;
 
         if(firstCharEmail == 0) // If no "<", then there is no email that exists
-            return ""; // Return blank email
+            return null; // Return blank email
 
         return publisher.substring(
                 publisher.indexOf("<") + 1, // Will result in first character of email
