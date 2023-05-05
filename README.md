@@ -36,9 +36,9 @@ _The full changelog can be found [here](CHANGELOG.md)_
 - Comparison
 - Quallity
 ### SBOM Comparison
-- Generate detailed DiffReports from a target SBOM and a list of SBOMs. 
+- Generate detailed DiffReports from a target SBOM and a list of SBOMs 
 ### SBOM Merging
-- todo
+- Merge a collection of SBOMs into one main SBOM
 
 ## Contributors
 **Principal Investigator:** [Mehdi Mirakhorli](mailto:mxmvse@rit.edu)
