@@ -75,7 +75,7 @@ public class ParserController {
         put("pom.xml", new POMParser());
         put("csproj", new CSProjParser());
         put("requirements.txt", new RequirementsParser());
-        put("gradle.build", new GradleParser());
+        put("gradle", new GradleParser());
         // ADD NEW PARSER HERE: put("fileExtn", new Parser);
     }};
 
@@ -150,7 +150,7 @@ public class ParserController {
 
         // If extn matches popular package manager dependency file types, use whole filename instead
         switch (extn) {
-            case "xml", "txt", "build" -> extn = filename;
+            case "xml", "txt" -> extn = filename;
         }
 
         // Get correct parser (if and only if extn relates to a valid Parser)

@@ -24,7 +24,13 @@ import static org.svip.sbomfactory.generators.utils.Debug.*;
 public class GradleParser extends PackageManagerParser {
     //#region Constructors
 
-    public GradleParser() { super("https://docs.gradle.org/current/javadoc/", new JsonFactory()); }
+    public GradleParser() {
+        super(
+                "https://docs.gradle.org/current/javadoc/",
+                new JsonFactory(),
+                "\\$([^\\n/\\\\]*)" // Regex101: https://regex101.com/r/1Y2gb5/2
+        );
+    }
 
     //#endregion
 
@@ -32,12 +38,15 @@ public class GradleParser extends PackageManagerParser {
 
     @Override
     protected void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data) {
+        // Init properties
+        this.properties = new HashMap<>();
+
         // Get properties
         final ArrayList<String> ext =
                 (ArrayList<String>) data.get("ext");
 
         // Store properties
-        this.properties = (HashMap<String, String>) ext
+        this.resolveProperties((HashMap<String, String>) ext
                 .stream().collect(
                         Collectors.toMap(
                                 e -> e.substring(0, e.indexOf('=')).trim(),
@@ -45,18 +54,18 @@ public class GradleParser extends PackageManagerParser {
                                         .trim()
                                         .replace("'", "")
                                         .replace("\"", "")
-                        ));
+                        )));
 
         // Iterate over dependencies
         for (final LinkedHashMap<String, String> d : this.dependencies) {
             // Create ParserComponent from dep info
             final ParserComponent c = new ParserComponent(d.get("artifactId"));
             c.setGroup(d.get("group"));
-            if(d.containsKey("type")) {
+            if (d.containsKey("type")) {
                 final String type = d.get("type");
-                if(type.equals("file")) c.setType(ParserComponent.Type.INTERNAL);
+                if (type.equals("file")) c.setType(ParserComponent.Type.INTERNAL);
             }
-            if(d.containsKey("version")) c.setVersion(d.get("version"));
+            if (d.containsKey("version")) c.setVersion(d.get("version"));
 
             // TODO: Query
 //            String url = "";
@@ -71,16 +80,6 @@ public class GradleParser extends PackageManagerParser {
             components.add(c);
             log(LOG_TYPE.DEBUG, String.format("New Component: %s", c.toReadableString()));
         }
-    }
-
-    @Override
-    protected void resolveProperties(HashMap<String, String> props) {
-
-    }
-
-    @Override
-    protected void resolveProperty(String key, String value, HashMap<String, String> props, Pattern p) {
-
     }
 
     @Override
