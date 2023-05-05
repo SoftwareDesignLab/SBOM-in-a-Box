@@ -79,6 +79,10 @@ public class Comparison {
 
         // Loop through all components in SBOM and add them to comparisons list.
         for(Component current_component : current_sbom.getAllComponents()) {
+            // Don't look out unpackaged components
+            if (current_component.isUnpackaged()) {
+                continue;
+            }
 
             // Create a temporary ComponentVersion object for the current SBOM component
             ComponentVersion temporary_cv = generateComponentVersion(current_component, SBOM_index);
@@ -92,7 +96,17 @@ public class Comparison {
                 // Get all ComponentVersions that match the temporary ComponentVersion's version
                 List<ComponentVersion> matching_cv_list = current_cv_list
                         .stream()
-                        .filter(x -> (Objects.equals(x.getComponentVersion(), current_component.getVersion()) || x.getComponentVersion().contains(current_component.getVersion())))
+                        .filter(x -> {
+                            boolean objEqual = Objects.equals(x.getComponentVersion(), current_component.getVersion());
+                            boolean someNull = x.getComponentVersion() == null || current_component.getVersion() == null;
+                            // This means one of the versions is null and the other is not
+                            if (someNull && !objEqual) {
+                                return false;
+                            }
+                            boolean containsCurrent = x.getComponentVersion() != null && x.getComponentVersion().contains(current_component.getVersion());
+                            boolean containsX = current_component.getVersion() != null && current_component.getVersion().contains(x.getComponentVersion());
+                            return objEqual || containsCurrent || containsX;
+                        })
                         .toList();
 
                 // If there are no matching ComponentVersion objects in the Set for that package name
@@ -129,26 +143,33 @@ public class Comparison {
                         new_set.remove(matching_cv);
 
                         // Update the ComponentVersion object with the extra CPEs
-                        temporary_cv.getCPEs().iterator().forEachRemaining(
+                        temporary_cv.getCPEs().entrySet().stream().forEach(
                                 cpe -> {
-                                    cpe.addAppearance(SBOM_index);
-                                    matching_cv.addCPE(cpe);
+                                    if(!matching_cv.getCPEs().containsKey(cpe.getKey())) {
+                                        matching_cv.addCPE(cpe.getValue());
+                                    }
+                                    matching_cv.getCPE(cpe.getKey()).addAppearance(SBOM_index);
                                 }
                         );
 
                         // Update the ComponentVersion object with extra PURLs
-                        temporary_cv.getPURLs().iterator().forEachRemaining(
+                        temporary_cv.getPURLs().entrySet().stream().forEach(
                                 purl -> {
-                                    purl.addAppearance(SBOM_index);
-                                    matching_cv.addPURL(purl);
+                                    if(!matching_cv.getPURLs().containsKey(purl.getKey())) {
+                                        matching_cv.addPURL(purl.getValue());
+                                    }
+                                    matching_cv.getPURL(purl.getKey()).addAppearance(SBOM_index);
+
                                 }
                         );
 
                         // Update the ComponentVersion object with extra SWIDs
-                        temporary_cv.getSWIDs().iterator().forEachRemaining(
+                        temporary_cv.getSWIDs().entrySet().stream().forEach(
                                 swid -> {
-                                    swid.addAppearance(SBOM_index);
-                                    matching_cv.addSWID(swid);
+                                    if(!matching_cv.getSWIDs().containsKey(swid.getKey())) {
+                                        matching_cv.addSWID(swid.getValue());
+                                    }
+                                    matching_cv.getSWID(swid.getKey()).addAppearance(SBOM_index);
                                 }
                         );
 
@@ -185,9 +206,9 @@ public class Comparison {
     /**
      * Builds a ComponentVersion object for the current component including all IDs.
      *
-     * @param component
-     * @param SBOM_index
-     * @return
+     * @param component The current component
+     * @param SBOM_index The index of this SBOM in the whole set
+     * @return The ComponentVersion object
      */
     private ComponentVersion generateComponentVersion(Component component, int SBOM_index) {
 
@@ -225,29 +246,18 @@ public class Comparison {
 
     }
 
-    /**
-     * Returns the target SBOM
-     *
-     * @return target SBOM
-     */
+    ///
+    /// Getters
+    //
+
     public SBOM getTargetSBOM() {
         return this.targetSBOM;
     }
 
-    /**
-     * Returns the list of diffReports for the stream of SBOMs
-     *
-     * @return a list of diffReports
-     */
     public List<DiffReport> getDiffReports() {
         return this.diffReportList;
     }
 
-    /**
-     * Returns the comparisons map
-     *
-     * @return comparisons map containing Component Name as Key, and HashSet<ComponentVersion> as Value
-     */
     public Map<String, HashSet<ComponentVersion>> getComparisons() {
         return this.comparisons;
     }
