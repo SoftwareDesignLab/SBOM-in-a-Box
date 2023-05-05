@@ -7,10 +7,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import static org.svip.sbomfactory.generators.utils.Debug.*;
 
 public class GradleParserParseTest extends ParseDepFileTestCore {
     /**
@@ -56,7 +57,12 @@ public class GradleParserParseTest extends ParseDepFileTestCore {
                         .stream().collect(
                                 Collectors.toMap(
                                         d -> d.get("artifactId"),
-                                        d -> d
+                                        d -> d,
+                                        // Merge conflict function, currently overrides existing values
+                                        (d1, d2) -> {
+                                            log(LOG_TYPE.WARN, String.format("Duplicate key found: %s", d2.get("artifactId")));
+                                            return d2;
+                                        }
                                 ));
 
         // Test correct count is found
