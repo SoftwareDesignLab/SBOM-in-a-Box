@@ -41,8 +41,11 @@ public class GradleParser extends PackageManagerParser {
                 .stream().collect(
                         Collectors.toMap(
                                 e -> e.substring(0, e.indexOf('=')).trim(),
-                                e -> e.substring(e.indexOf('=') + 1).trim())
-                );
+                                e -> e.substring(e.indexOf('=') + 1)
+                                        .trim()
+                                        .replace("'", "")
+                                        .replace("\"", "")
+                        ));
 
         // Iterate over dependencies
         for (final LinkedHashMap<String, String> d : this.dependencies) {
