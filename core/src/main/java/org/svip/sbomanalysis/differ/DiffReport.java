@@ -20,11 +20,14 @@ public class DiffReport {
      * @param sbomConflict the sbom conflict
      * @param componentConflicts the set of component conflicts
      */
-
     public DiffReport(SBOMConflict sbomConflict, Set<ComponentConflict> componentConflicts) {
         this.sbomConflict = sbomConflict;
         this.componentConflicts = componentConflicts;
     }
+
+    ///
+    /// Getters
+    ///
 
     public SBOMConflict getSbomConflict() {
         return sbomConflict;
@@ -33,6 +36,10 @@ public class DiffReport {
     public Set<ComponentConflict> getComponentConflicts() {
         return componentConflicts;
     }
+
+    ///
+    /// Overrides
+    ///
 
     @Override
     public String toString() {
