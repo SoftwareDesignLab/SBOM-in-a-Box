@@ -45,7 +45,7 @@ public class GradleParserParseTest extends ParseDepFileTestCore {
         // Check values
         assertEquals("200.1.0", props.get("arcgisVersion"));
         assertEquals("this/is/a/path", props.get("rootPath"));
-        assertEquals("this/is/a/path/test", props.get("testPath"));
+        assertEquals("$rootPath/test", props.get("testPath"));
     }
 
     @Test
@@ -66,16 +66,33 @@ public class GradleParserParseTest extends ParseDepFileTestCore {
                                 ));
 
         // Test correct count is found
-        assertEquals(4, deps.size());
+        assertEquals(14, deps.size());
 
-        // create valueSet for the values
-        final Set<String> valueSet = new HashSet<>();
-        deps.values().forEach(v-> valueSet.add(v.get("artifactId")));
 
-        assertTrue(valueSet.contains("com.esri.arcgisruntime:arcgis-java:200.1.0"));
-        assertTrue(valueSet.contains("com.esri.arcgisruntime:arcgis-java-jnilibs:200.1.0"));
-        assertTrue(valueSet.contains("com.esri.arcgisruntime:arcgis-java-resources:200.1.0"));
-        assertTrue(valueSet.contains("org.slf4j:slf4j-nop:2.0.5"));
+        // Get keySet
+        final Set<String> keySet = deps.keySet();
+
+        // Check for correct element insertion
+        assertTrue(keySet.contains("arcgis-java"));
+        LinkedHashMap<String, String> depi = deps.get("arcgis-java");
+        assertEquals("com.esri.arcgisruntime", depi.get("groupId"));
+        assertEquals("$arcgisVersion", depi.get("version"));
+        assertEquals("200.1.0", this.PARSER.properties.get("arcgisVersion"));
+
+        assertTrue(keySet.contains("spring-api"));
+        depi = deps.get("spring-api");
+        assertEquals("org.springframework", depi.get("groupId"));
+        assertEquals("3.6", depi.get("version"));
+
+        assertTrue(keySet.contains("slf4j-nop"));
+        depi = deps.get("slf4j-nop");
+        assertEquals("org.slf4j", depi.get("groupId"));
+        assertEquals("2.0.5", depi.get("version"));
+
+        assertTrue(keySet.contains("spring-core"));
+        depi = deps.get("spring-core");
+        assertEquals("org.springframework", depi.get("groupId"));
+        assertEquals("2.5", depi.get("version"));
 
     }
 }
