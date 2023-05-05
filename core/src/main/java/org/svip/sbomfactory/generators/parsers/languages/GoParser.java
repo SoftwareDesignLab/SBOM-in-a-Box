@@ -139,7 +139,7 @@ public class GoParser extends LanguageParser {
         for (String token : tokens) {
             if(token.trim().equals("")) continue; // Skip any empty tokens
             // Tokenize on "/" and store last token as match and all but last token as from
-            final String[] parts = token.split("/");
+            final String[] parts = token.trim().split("/");
             // If there is more than one token
             if(parts.length > 0) {
                 // Check for alias
@@ -152,7 +152,8 @@ public class GoParser extends LanguageParser {
                     parts[parts.length - 1] = innerTokens[0] + " " + parts[parts.length - 1];
                 }
                 // Mapped in the form of:  "component_name":"from"
-                matches.put(parts[parts.length - 1], String.join("/", Arrays.copyOfRange(parts, 0, parts.length - 1)).trim());
+                final String from = String.join("/", Arrays.copyOfRange(parts, 0, parts.length - 1)).trim();
+                matches.put(parts[parts.length - 1], from.isBlank() ? null : from);
             } else matches.put(match.trim(), null); // Otherwise, from is null
         }
 
@@ -163,8 +164,8 @@ public class GoParser extends LanguageParser {
             // Raw string: Match: Group 1  Group 2
             // "f foo"   ->       "f"      "foo"
             // "bar"     ->       "bar"
-            // Regex101: https://regex101.com/r/CGa0gG/1
-            Pattern aliasRegex = Pattern.compile("^([\\w.]*)(?: (.*))?", Pattern.MULTILINE);
+            // Regex101: https://regex101.com/r/4n5U4A/1
+            Pattern aliasRegex = Pattern.compile("^([\\w\\*:.]*)(?: (.*))?", Pattern.MULTILINE);
             Matcher aliasMatcher = aliasRegex.matcher(name);
 
             // Match for name and alias
