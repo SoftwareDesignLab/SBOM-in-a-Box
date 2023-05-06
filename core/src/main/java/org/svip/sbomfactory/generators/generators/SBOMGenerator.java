@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.generators.generators;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.svip.sbom.model.Component;
 import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXStore;
@@ -138,10 +139,39 @@ public class SBOMGenerator {
             }
 
             log(Debug.LOG_TYPE.SUMMARY, schema.name() + " SBOM saved to: " + path);
-        } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+        } catch (GeneratorException e) {
+            log(Debug.LOG_TYPE.ERROR, "Unable to write " + schema.name() + " SBOM to " + path);
         }
     };
+
+    /** TODO i need to do this later
+     * Write an SBOM to a String and return.
+     *
+     * @returns A JSON string representation of an SBOM file, NOT including newlines or pretty-printing.
+     */
+    public String writeFileToString(GeneratorSchema.GeneratorFormat format) throws GeneratorException {
+        log(Debug.LOG_TYPE.DEBUG, "Building " + schema.name() + " SBOM object");
+
+        BOMStore bomStore = null;
+        try {
+            bomStore = buildBOMStore();
+        } catch (GeneratorException e) {
+            throw new GeneratorException(e.getMessage());
+        }
+
+        String out;
+        try {
+            out = format.getObjectMapper().writeValueAsString(bomStore);
+            log(Debug.LOG_TYPE.SUMMARY, schema.name() + " SBOM successfully written to string");
+            log(Debug.LOG_TYPE.INFO, out);
+
+            return out;
+        } catch (JsonProcessingException e) {
+            throw new GeneratorException(e.getMessage());
+        }
+
+
+    }
 
     //#endregion
 
@@ -153,14 +183,20 @@ public class SBOMGenerator {
      *
      * @return A BOMStore containing all transformed data of the SBOM.
      */
-    protected BOMStore buildBOMStore() throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    protected BOMStore buildBOMStore() throws GeneratorException {
         ParserComponent headComponent = (ParserComponent) internalSBOM.getComponent(internalSBOM.getHeadUUID());
         String serialNumber = internalSBOM.getSerialNumber();
         int version = 1; // TODO should we have to increment this?
 
         Object[] parameters = {serialNumber, version, headComponent};
         Class<?>[] parameterTypes = Arrays.stream(parameters).map(Object::getClass).toArray(Class<?>[]::new);
-        BOMStore bomStore = schema.getBomStoreType().getDeclaredConstructor(parameterTypes).newInstance(parameters);
+
+        BOMStore bomStore = null;
+        try {
+            bomStore = schema.getBomStoreType().getDeclaredConstructor(parameterTypes).newInstance(parameters);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new GeneratorException(e.getMessage());
+        }
 
         bomStore.addTool(tool); // Add our tool as info
 
