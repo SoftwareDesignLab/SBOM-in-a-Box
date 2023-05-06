@@ -40,8 +40,7 @@ public class SBOMGeneratorTest {
      * Constructor parses an SBOM
      */
     public SBOMGeneratorTest() {
-        // TODO Most of this is copy-pasted from GeneratorsTestMain, maybe move SBOM/controller construction into a
-        //  different method
+        // TODO Avoid using a ParserController to generate an SBOM
         ParserController testController = new ParserController(TEST_PATH); // Create new controller to build an SBOM
 
         Debug.enableSummary();
@@ -66,6 +65,10 @@ public class SBOMGeneratorTest {
 
         internalSBOM = testController.getSBOM(); // Construct SBOM
 
+        // TODO Instead, do something like this
+//        internalSBOM = new SBOM();
+//        this.addTestComponentsToSBOM(internalSBOM);
+
         generators = new ArrayList<>();
         // Construct generators with each schema
         for(GeneratorSchema schema : GeneratorSchema.values()) {
@@ -75,7 +78,7 @@ public class SBOMGeneratorTest {
 
     @Test
     @DisplayName("writeFile()")
-    void writeFileTest() throws IOException {
+    void writeFileTest() throws IOException { // TODO Will need to test file output with a string
         OUT_PATH.toFile().mkdir();
 
         List<String> expectedFilePaths = new ArrayList<>();
