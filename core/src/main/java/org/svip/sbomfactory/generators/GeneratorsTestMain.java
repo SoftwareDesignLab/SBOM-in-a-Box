@@ -382,15 +382,15 @@ public class GeneratorsTestMain {
                 (float)(parseT2 - parseT1) / 1000));
 
         // Build outPath
-//        String outPath = PWD;
-//
-//        // Language specific slash
-//        final String os = System.getProperty("os.name").toLowerCase();
-//        if(os.contains("win")) outPath += '\\';
-//        if(os.contains("mac") || os.contains("nix") || os.contains("nux") || os.contains("aix"))  outPath += '/';
-//
-//        outPath += OUT_DIRECTORY;
-        String outPath = null; // UNCOMMENT FOR TESTING ONLY, THIS DOES NOT GENERATE SBOM FILES, ONLY STRINGS
+        String outPath = PWD;
+
+        // Language specific slash
+        final String os = System.getProperty("os.name").toLowerCase();
+        if(os.contains("win")) outPath += '\\';
+        if(os.contains("mac") || os.contains("nix") || os.contains("nux") || os.contains("aix"))  outPath += '/';
+
+        outPath += OUT_DIRECTORY;
+//        String outPath = null; // UNCOMMENT FOR TESTING ONLY, THIS DOES NOT GENERATE SBOM FILES, ONLY STRINGS
 
         // Get schema from optional args, if not present, default to CycloneDX
         GeneratorSchema schema = GeneratorSchema.CycloneDX;
