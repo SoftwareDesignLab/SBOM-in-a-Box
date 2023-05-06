@@ -1,6 +1,7 @@
 package org.svip.sbomfactory.generators.generators;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.svip.sbom.model.Component;
 import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXStore;
@@ -137,19 +138,24 @@ public class SBOMGenerator {
     };
 
     /**
-     * Write an SBOM to a String and return.
+     * Write an SBOM to a single String, either pretty-printed or on one line.
      *
-     * @returns A JSON string representation of an SBOM file, NOT including newlines or pretty-printing.
+     * @param format The file format of the SBOM to write to the string.
+     * @param prettyPrint Whether to pretty-print the SBOM or leave it on one line.
+     *
+     * @return A string representation of an SBOM file.
      */
-    public String writeFileToString(GeneratorSchema.GeneratorFormat format) {
+    public String writeFileToString(GeneratorSchema.GeneratorFormat format, boolean prettyPrint) {
         log(Debug.LOG_TYPE.DEBUG, "Building " + schema.name() + " SBOM object");
 
         try {
             BOMStore bomStore = buildBOMStore();
+            ObjectMapper mapper = format.getObjectMapper();
+            if(!prettyPrint) mapper.setDefaultPrettyPrinter(null);
 
-            String out = format.getObjectMapper().writeValueAsString(bomStore);
+            String out = mapper.writeValueAsString(bomStore);
             log(Debug.LOG_TYPE.SUMMARY, schema.name() + " SBOM successfully written to string");
-            return out;
+            return out;//.replaceAll("\\s+","");
         } catch (GeneratorException | JsonProcessingException e) {
             log(Debug.LOG_TYPE.ERROR, "Unable to write " + schema.name() + " SBOM to a string");
         }

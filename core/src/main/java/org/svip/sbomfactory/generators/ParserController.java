@@ -247,7 +247,7 @@ public class ParserController {
             // Write SBOM to file according to schema and file format
             generator.writeFile(outPath, outFormat);
         } else {
-            String fileString = generator.writeFileToString(outFormat);
+            String fileString = generator.writeFileToString(outFormat, true);
             log(Debug.LOG_TYPE.INFO, "SBOM String:\n" + fileString);
         }
         return null;
