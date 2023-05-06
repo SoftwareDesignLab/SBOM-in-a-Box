@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.generators;
 
+import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.parsers.languages.*;
@@ -9,6 +10,7 @@ import org.svip.sbomfactory.generators.parsers.Parser;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbom.model.SBOM;
 
@@ -245,7 +247,8 @@ public class ParserController {
             // Write SBOM to file according to schema and file format
             generator.writeFile(outPath, outFormat);
         } else {
-            // TODO: Return stringified SBOM
+            String fileString = generator.writeFileToString(outFormat);
+            log(Debug.LOG_TYPE.INFO, "SBOM String:\n" + fileString);
         }
         return null;
     }

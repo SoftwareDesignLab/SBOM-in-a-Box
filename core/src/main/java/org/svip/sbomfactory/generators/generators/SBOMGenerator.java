@@ -129,48 +129,32 @@ public class SBOMGenerator {
 
             // Serialize
             log(Debug.LOG_TYPE.DEBUG, "Attempting to write to " + path);
-
-            // Get the correct OM from the format and write the file to it
-            if(schema == GeneratorSchema.SPDX) { // TODO is there a better way to do this?
-                format.getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File(path), (SPDXStore) bomStore);
-            } else {
-                format.getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File(path), (CycloneDXStore) bomStore);
-
-            }
-
+            format.getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File(path), bomStore);
             log(Debug.LOG_TYPE.SUMMARY, schema.name() + " SBOM saved to: " + path);
         } catch (GeneratorException e) {
             log(Debug.LOG_TYPE.ERROR, "Unable to write " + schema.name() + " SBOM to " + path);
         }
     };
 
-    /** TODO i need to do this later
+    /**
      * Write an SBOM to a String and return.
      *
      * @returns A JSON string representation of an SBOM file, NOT including newlines or pretty-printing.
      */
-    public String writeFileToString(GeneratorSchema.GeneratorFormat format) throws GeneratorException {
+    public String writeFileToString(GeneratorSchema.GeneratorFormat format) {
         log(Debug.LOG_TYPE.DEBUG, "Building " + schema.name() + " SBOM object");
 
-        BOMStore bomStore = null;
         try {
-            bomStore = buildBOMStore();
-        } catch (GeneratorException e) {
-            throw new GeneratorException(e.getMessage());
-        }
+            BOMStore bomStore = buildBOMStore();
 
-        String out;
-        try {
-            out = format.getObjectMapper().writeValueAsString(bomStore);
+            String out = format.getObjectMapper().writeValueAsString(bomStore);
             log(Debug.LOG_TYPE.SUMMARY, schema.name() + " SBOM successfully written to string");
-            log(Debug.LOG_TYPE.INFO, out);
-
             return out;
-        } catch (JsonProcessingException e) {
-            throw new GeneratorException(e.getMessage());
+        } catch (GeneratorException | JsonProcessingException e) {
+            log(Debug.LOG_TYPE.ERROR, "Unable to write " + schema.name() + " SBOM to a string");
         }
 
-
+        return null;
     }
 
     //#endregion
