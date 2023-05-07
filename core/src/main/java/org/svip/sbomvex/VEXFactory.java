@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.svip.sbom.model.*;
-import org.svip.sbomvex.model.VEX;
+import org.svip.sbomvex.model.*;
 import org.apache.http.HttpException;
 
 import java.io.IOException;
@@ -165,7 +165,7 @@ public class VEXFactory {
      * @param component - the component to populate with vulnerabilities
      */
     public void applyVexToComponentWithExceptions(Component component) throws HttpException {
-        ArrayList<VEX> vulnerabilities;
+        ArrayList<Vulnerability> vulnerabilities;
         if(component.getCpes() == null)
             // TODO alert the user that no CPE could be found, but that does not mean there are no vulnerabilities
             // throwing an error here down the road would be useful and we can catch it and transmit it to the frontend
@@ -179,11 +179,11 @@ public class VEXFactory {
                 throw e;
             }
 
-            for(VEX newVEX : vulnerabilities) {
+            for(Vulnerability newVEX : vulnerabilities) {
                 //add the CPEs
                 boolean unique = true;
                 if (newVEX.getCveId() != null) { //if we don't have a CVE ID, we can't check for duplicates. Just add it
-                    for (VEX vuln : component.getVulnerabilities()) {
+                    for (Vulnerability vuln : component.getVulnerabilities()) {
                         if (vuln.getCveId().equals(newVEX.getCveId())) {
                             unique = false;
                             break;
@@ -203,7 +203,7 @@ public class VEXFactory {
      * @return - arraylist of vulnerabilities
      * @throws HttpException - if error is returned from NVIP endpoint
      */
-    private ArrayList<VEX> lookupSingleId(String id) throws HttpException {
+    private ArrayList<Vulnerability> lookupSingleId(String id) throws HttpException {
         //check that endpoint, username, and token are set
         if (NVIPEndpoint == null) {
             throw new InvalidNVIPSettingsException("NVIPEndpoint is not set");
@@ -240,15 +240,15 @@ public class VEXFactory {
 
         //we have vulnerabilities to add
         ObjectMapper jacksonMapper = new ObjectMapper();
-        ArrayList<VEX> VEXObjects = new ArrayList<>();
+        ArrayList<Vulnerability> VEXObjects = new ArrayList<>();
         try {
             //turn the JSON into an array list of hash maps (because the response should be an array of JSON objects)
             ArrayList<LinkedHashMap> vulnerabilityList = jacksonMapper.readValue(response.body(), ArrayList.class);
 
             vulnerabilityList.remove(vulnerabilityList.size() - 1); //remove the end element which is the size of JSON array not data
             for (LinkedHashMap vulnerabilityMap : vulnerabilityList) {
-                VEX newVEX =
-                        new VEX(
+                Vulnerability newVEX =
+                        new Vulnerability(
                                 vulnerabilityMap.get("vulnId").toString(),
                                 vulnerabilityMap.get("cveId").toString(),
                                 vulnerabilityMap.get("description").toString(),
