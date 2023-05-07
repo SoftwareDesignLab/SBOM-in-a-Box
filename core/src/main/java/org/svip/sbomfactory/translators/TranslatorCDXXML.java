@@ -5,9 +5,8 @@ import com.google.common.collect.Multimap;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.svip.sbom.model.Component;
-import org.svip.sbom.model.PURL;
-import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.*;
+
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;

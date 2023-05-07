@@ -1,14 +1,10 @@
 package org.svip.sbomfactory.translators;
 
 import org.json.JSONObject;
-import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.*;
 
-import java.io.File;
-import java.io.FileReader;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 
 /**
