@@ -1,26 +1,24 @@
-/**
- * @file ComponentTest.java
- *
- * Test set for Component class
- *
- * @author Tyler Drake
- */
-
 package org.svip.sbom.model;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
+import org.svip.sbomvex.model.Vulnerability;
+
 import org.junit.jupiter.api.AfterEach;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import org.svip.sbom.model.Component;
-import org.svip.sbom.model.PURL;
-import org.svip.sbomvex.model.VEX;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * File: ComponentTest.java
+ * Tests for Component
+ *
+ * @author Tyler Drake
+ */
 public class ComponentTest {
 
     /**
@@ -79,6 +77,16 @@ public class ComponentTest {
     UUID test_uuid_one = UUID.fromString("749d4a17-1074-4b78-a968-fafc67378f75");
 
     UUID test_uuid_two = UUID.fromString("7facc5f3-aef2-4327-9313-247aea23455c");
+
+    /**
+     * Test CPEs, PURLs, SWIDs
+     */
+
+    String test_random_cpe = "cpe:2.3:a:random_test_cpe:random:3.11.2:*:*:*:*:*:*:*";
+
+    PURL test_random_purl = new PURL("pkg:random/test@2.0.0");
+
+    String test_random_swid = "random_test_identification_number";
 
 
     /**
@@ -215,6 +223,13 @@ public class ComponentTest {
     }
 
     @Test
+    public void addLicense_should_get_null_exception_without_existing_license_list() {
+        assertThrows(NullPointerException.class, () -> {
+            test_component.addLicense(test_license_three);
+        });
+    }
+
+    @Test
     public void addChild_test() {
         test_component.addChild(test_uuid_one);
     }
@@ -242,39 +257,36 @@ public class ComponentTest {
     }
 
     @Test
-    public void getCpes_test() {
+    public void getCPE_test() {
         assertEquals(new HashSet<>(List.of(new String[]{"cpe:2.3:a:python_software_foundation:python:3.11.2:*:*:*:*:*:*:*"})), test_component.getCpes());
     }
 
     @Test
-    public void getPurls_test() {
+    public void getPurl_test() {
         assertEquals(new HashSet<>(List.of(new PURL[]{new PURL("pkg:generic/python@3.11.2")})), test_component.getPurls());
     }
 
     @Test
-    public void getSwids_test() {
+    public void getSWID_test() {
         assertEquals(new HashSet<>(List.of(new String[]{"python_software_identification_number"})), test_component.getSwids());
     }
 
     @Test
-    public void setCpes_test() {
-        test_component.setCpes(test_cpe_two);
-        assertNotEquals(test_cpe, test_component.getCpes());
-        assertEquals(test_cpe_two, test_component.getCpes());
+    public void setCPE_test() {
+        test_component.addCPE(test_random_cpe);
+        assertTrue(test_component.getCpes().contains(test_random_cpe));
     }
 
     @Test
-    public void setPurls_test() {
-        test_component.setPurls(test_purl_two);
-        assertNotEquals(test_purl, test_component.getPurls());
-        assertEquals(test_purl_two, test_component.getPurls());
+    public void setPurl_test() {
+        test_component.addPURL(test_random_purl);
+        assertTrue(test_component.getPurls().contains(test_random_purl));
     }
 
     @Test
-    public void setSwid_test() {
-        test_component.setSwids(test_swid_two);
-        assertNotEquals(test_swid, test_component.getSwids());
-        assertEquals(test_swid_two, test_component.getSwids());
+    public void setSWID_test() {
+        test_component.addSWID(test_random_swid);
+        assertTrue(test_component.getSwids().contains(test_random_swid));
     }
 
     @Test
@@ -298,7 +310,7 @@ public class ComponentTest {
 
     @Test
     public void addVulnerability_test() {
-        VEX test_vulnerability = new VEX(
+        Vulnerability test_vulnerability = new Vulnerability(
                 vulnId, cveId, description, platform, introducedDate, publishedDate,
                 createdDate, lastModifiedDate, fixedDate, existsAtMitre, existsAtNvd,
                 timeGapNvd, timeGapMitre, statusId, vexFormatIdentifier, vexAuthor,
@@ -310,7 +322,7 @@ public class ComponentTest {
 
     @Test
     public void getVulnerabilities_test() {
-        VEX test_vulnerability = new VEX(
+        Vulnerability test_vulnerability = new Vulnerability(
                 vulnId, cveId, description, platform, introducedDate, publishedDate,
                 createdDate, lastModifiedDate, fixedDate, existsAtMitre, existsAtNvd,
                 timeGapNvd, timeGapMitre, statusId, vexFormatIdentifier, vexAuthor,
