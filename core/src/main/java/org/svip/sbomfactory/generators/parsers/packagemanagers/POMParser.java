@@ -57,7 +57,7 @@ public class POMParser extends PackageManagerParser {
             // Format all property keys -> values
             final String groupId = this.formatVariableNames(d.get("groupId")); // TODO: Replace with resolveVariable
             final String artifactId = this.formatVariableNames(d.get("artifactId"));
-            final String version = this.formatVariableNames(d.get("version"));
+            final String version = this.resolveProperty(d.get("version"), null);
 
             // Skip dependency if no name
             if(artifactId == null) continue;
