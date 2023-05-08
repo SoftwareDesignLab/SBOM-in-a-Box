@@ -9,14 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- 
+- Add `CPE` Class that generates CPE format strings by adding properties one-at-a-time as they are found.
+- Add `SBOMGeneratorTest` Test to begin testing our generators' file-writing capacities.
+  - `SBOMGeneratorTest` also currently tests the correct creation of various `BOMStore` Objects.
+- Add `writeFileToString()` Method to `SBOMGenerator` to return a generated SBOM with a specified filetype as a string 
+  rather than as written to a file.
+  - Includes the option to remove whitespace from or pretty-print the string output.
 
 ### Changed
 
-- 
+- Update `POMParser` to build and add CPEs to individual components as they are discovered.
+- Update `CycloneDXSerializer` & `SPDXSerializer` Classes to include discovered CPE data.
+- Fix `ParserController`'s `toFile()` test to ensure each file is being generated as expected.
 
 ### Removed
-- 
+- Remove `CPEQueryWorker` Class as no API requests need to be made. 
+- Remove `UNKNOWN` Type from `ParserComponent` as it doesn't make sense to default to.
 
 
 ## [v4.2.0-alpha] - (05/01/2023)
