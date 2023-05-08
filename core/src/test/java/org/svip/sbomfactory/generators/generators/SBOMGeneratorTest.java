@@ -116,7 +116,7 @@ public class SBOMGeneratorTest {
     @Test
     @DisplayName("Correct BOMStore Type")
     void buildBOMStoreTypeTest() throws InvocationTargetException, InstantiationException, IllegalAccessException,
-            NoSuchMethodException {
+            NoSuchMethodException, GeneratorException {
 
         for(SBOMGenerator generator : generators) {
             BOMStore bomStore = generator.buildBOMStore();
@@ -129,7 +129,7 @@ public class SBOMGeneratorTest {
     @Test
     @DisplayName("Correct BOMStore Tool")
     void buildBOMStoreToolTest() throws InvocationTargetException, InstantiationException, IllegalAccessException,
-            NoSuchMethodException {
+            NoSuchMethodException, GeneratorException {
 
         SBOMGenerator generator = generators.get(0);
         BOMStore bomStore = generator.buildBOMStore();
@@ -141,7 +141,7 @@ public class SBOMGeneratorTest {
     @Test
     @DisplayName("BOMStore Contains ALL SBOM Components")
     void buildBOMStoreComponentTest() throws InvocationTargetException, InstantiationException, IllegalAccessException,
-            NoSuchMethodException {
+            NoSuchMethodException, GeneratorException {
 
         for(SBOMGenerator generator : generators) { // TODO do we need to do for each type of generator?
             BOMStore bomStore = generator.buildBOMStore();
