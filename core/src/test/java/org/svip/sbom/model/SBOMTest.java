@@ -1,21 +1,19 @@
+package org.svip.sbom.model;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
- * @file SBOMTest.java
- *
- * Test set for SBOM class
+ * File: SBOMTest.java
+ * Tests for SBOM
  *
  * @author Tyler Drake
  */
-
-package org.svip.sbom.model;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.AfterEach;
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.*;
-import org.svip.sbom.model.*;
-
 public class SBOMTest {
 
     /**
@@ -39,6 +37,8 @@ public class SBOMTest {
     String test_specVersion = "1";
 
     String test_sbomVersion = "1";
+
+    String test_supplier = "supplier";
 
     String test_serialNumber = "urn:uuid:1b53623d-b96b-4660-8d25-f84b7f617c54";
 
@@ -148,7 +148,7 @@ public class SBOMTest {
                 test_name_two, test_publisher_two, test_version_two, test_cpe_two, test_purl_two, test_swid_two
         );
         test_sbom = new SBOM(
-                test_originFormat, test_specVersion, test_sbomVersion, test_publisher,
+                test_originFormat, test_specVersion, test_sbomVersion, test_supplier,
                 test_serialNumber, test_timestamp, test_signatures, test_dependencytree
         );
     }
