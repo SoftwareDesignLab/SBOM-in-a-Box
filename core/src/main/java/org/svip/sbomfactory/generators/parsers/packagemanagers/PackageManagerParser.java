@@ -178,41 +178,37 @@ public abstract class PackageManagerParser extends Parser {
         // Iterate over keys
         props.keySet().forEach(key -> {
             // Resolve property
-            this.properties.put(key, resolveProperty(key, props.get(key), props, this.TOKEN_PATTERN));
+            this.properties.put(key, resolveProperty(props.get(key), props));
         });
     }
 
     // TODO: Docstring
-    protected String resolveProperty(String key, String value, HashMap<String, String> props, Pattern p) {
+    protected String resolveProperty(String value, HashMap<String, String> props) {
         // Get results
-        final List<MatchResult> results =  p.matcher(value).results().toList();
+        final List<MatchResult> results =  this.TOKEN_PATTERN.matcher(value).results().toList();
 
         // Init resolved value to raw value
         String resolvedValue = value;
 
-        // If none found, this property does not contain a variable
-        if(results.size() == 0) resolvedValue = props.get(key);
-        else { // Otherwise, there is one or more variables that need to be resolved
-            // Iterate over match results
-            for (MatchResult result : results) {
-                final String varKey = result.group(1).trim();
-                // Get value from this.properties
-                String varValue = this.properties.get(varKey);
+        // Iterate over match results
+        for (MatchResult result : results) {
+            final String varKey = result.group(1).trim();
+            // Get value from this.properties
+            String varValue = this.properties.get(varKey);
 
-                // If no corresponding value, get value from props
-                if(varValue == null || p.matcher(varValue).find()) {
-                    varValue = props.get(varKey);
-                    // If value is null, this property cannot be resolved, store original value
-                    if(varValue == null)  resolvedValue = value;
+            // If no corresponding value, get value from props
+            if(varValue == null || this.TOKEN_PATTERN.matcher(varValue).find()) {
+                varValue = props.get(varKey);
+                // If value is null, this property cannot be resolved, store original value
+                if(varValue == null)  resolvedValue = value;
                     // Otherwise, recurse resolution
-                    else {
-                        resolvedValue = value.substring(0, result.start()) + varValue + value.substring(result.end());
-                        resolveProperty(key, resolvedValue, props, p);
-                    }
+                else {
+                    resolvedValue = value.substring(0, result.start()) + varValue + value.substring(result.end());
+                    resolveProperty(resolvedValue, props);
                 }
-                // Otherwise, this property can be resolved
-                else resolvedValue = value.substring(0, result.start()) + varValue + value.substring(result.end());
             }
+            // Otherwise, this property can be resolved
+            else resolvedValue = value.substring(0, result.start()) + varValue + value.substring(result.end());
         }
 
 
