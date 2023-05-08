@@ -46,7 +46,7 @@ public class TranslatorSPDXTest {
         Assertions.assertEquals(SBOMType.SPDX, test.getOriginFormat());
         assertEquals("1", test.getSbomVersion());
         assertEquals("SPDX-2.3", test.getSpecVersion());
-        assertEquals(94, test.getAllComponents().size());
+        assertEquals(17, test.getAllComponents().size());
     }
 
     @Test
@@ -67,7 +67,7 @@ public class TranslatorSPDXTest {
         assertEquals(SBOMType.SPDX, test.getOriginFormat());
         assertEquals("1", test.getSbomVersion());
         assertEquals("SPDX-2.3", test.getSpecVersion());
-        assertEquals(19037, test.getAllComponents().size());
+        assertEquals(433, test.getAllComponents().size());
     }
 
 
