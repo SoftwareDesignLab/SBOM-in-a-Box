@@ -249,6 +249,7 @@ public class ParserController {
         } else {
             String fileString = generator.writeFileToString(outFormat, true);
             log(Debug.LOG_TYPE.INFO, "SBOM String:\n" + fileString);
+            return fileString;
         }
         return null;
     }
