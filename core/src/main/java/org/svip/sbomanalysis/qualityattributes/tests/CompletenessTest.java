@@ -41,7 +41,7 @@ public class CompletenessTest extends MetricTest {
     /**
      * Constructor to build the regex patterns used to test the format of a component information
      */
-    protected CompletenessTest() {
+    public CompletenessTest() {
         super("Completeness Test"); // Test name
 
         /*

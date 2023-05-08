@@ -457,4 +457,3 @@ public class TranslatorSPDX {
         }
     }
 }
-

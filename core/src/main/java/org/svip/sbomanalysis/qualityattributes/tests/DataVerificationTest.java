@@ -25,7 +25,7 @@ public class DataVerificationTest extends MetricTest {
     /**
      * Constructor for DataVerificationTest
      */
-    protected DataVerificationTest() {
+    public DataVerificationTest() {
         super("Data Verification Test");
     }
 
