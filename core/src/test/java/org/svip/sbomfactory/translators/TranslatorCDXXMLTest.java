@@ -18,6 +18,7 @@ import org.svip.sbomfactory.translators.TranslatorCDXXML;
 import static org.junit.jupiter.api.Assertions.*;
 
 import javax.xml.parsers.ParserConfigurationException;
+import org.cyclonedx.exception.ParseException;
 
 /**
  * File: TranslatorCDXXMLTest.java
@@ -31,7 +32,7 @@ public class TranslatorCDXXMLTest {
     public static final String test_large_cdx = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.python.xml";
     public static final String test_no_metadata_cdx = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.nometadata.xml";
     public static final String test_no_components_cdx = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.nocomponents.xml";
-
+    public static final String TEST_CDX_SBOM_1_4_DEPENDENCIES = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.cdxgen.1-4.xml";
 
     @Test
     public void translatorcdx_small_file_test() throws ParserConfigurationException {
@@ -68,6 +69,13 @@ public class TranslatorCDXXMLTest {
         assertEquals("1", sbom.getSbomVersion());
         assertEquals("http://cyclonedx.org/schema/bom/1.4", sbom.getSpecVersion());
         assertEquals(1, sbom.getAllComponents().size());
+    }
+
+    @Test
+    public void translatorcdx_v1_2_dependencies_other_test() throws ParserConfigurationException {
+        SBOM sbom = TranslatorCDXXML.translatorCDXXML(TEST_CDX_SBOM_1_4_DEPENDENCIES);
+        assertNotNull(sbom);
+        assertEquals(631, sbom.getAllComponents().size());
     }
 
 }
