@@ -4,6 +4,7 @@ import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.utils.Debug;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -389,6 +390,7 @@ public class GeneratorsTestMain {
         if(os.contains("mac") || os.contains("nix") || os.contains("nux") || os.contains("aix"))  outPath += '/';
 
         outPath += OUT_DIRECTORY;
+//        String outPath = null; // UNCOMMENT FOR TESTING ONLY, THIS DOES NOT GENERATE SBOM FILES, ONLY STRINGS
 
         // Get schema from optional args, if not present, default to CycloneDX
         GeneratorSchema schema = GeneratorSchema.CycloneDX;
@@ -416,7 +418,12 @@ public class GeneratorsTestMain {
             }
         }
 
-        // Write to file
-        controller.toFile(outPath, schema, format);
+        try {
+            // Write to file
+            controller.toFile(outPath, schema, format);
+        } catch(IOException e) {
+            log(Debug.LOG_TYPE.EXCEPTION, e);
+            log(Debug.LOG_TYPE.ERROR, "Error writing to file " + path);
+        }
     }
 }

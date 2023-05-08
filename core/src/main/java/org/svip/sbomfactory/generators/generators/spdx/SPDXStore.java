@@ -9,6 +9,7 @@ import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.svip.sbomfactory.generators.utils.Debug.log;
 
@@ -162,6 +163,14 @@ public class SPDXStore extends BOMStore {
 
         relationships.add(relationship);
         log(Debug.LOG_TYPE.DEBUG, "SPDXStore: Added relationship " + relationship);
+    }
+
+    /**
+     * Gets ALL components present in this BOMStore, including top-level components and their children.
+     */
+    @Override
+    public Set<ParserComponent> getAllComponents() {
+        return new HashSet<>(packages);
     }
 
     //#endregion

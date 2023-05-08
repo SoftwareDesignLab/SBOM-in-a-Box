@@ -5,6 +5,56 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v4.3.0-alpha] - (05/08/2023)
+
+### Added
+
+- Add `CPE` Class that generates CPE format strings by adding properties one-at-a-time as they are found.
+- Add `SBOMGeneratorTest` Test to begin testing our generators' file-writing capacities.
+  - `SBOMGeneratorTest` also currently tests the correct creation of various `BOMStore` Objects.
+- Add `writeFileToString()` Method to `SBOMGenerator` to return a generated SBOM with a specified filetype as a string 
+  rather than as written to a file.
+  - Includes the option to remove whitespace from or pretty-print the string output.
+- Add `GradleParserParseTest` & `RequirementsParserParseTest`
+
+### Changed
+
+- Update `POMParser` to build and add CPEs to individual components as they are discovered.
+- Update `GradleParser` to properly cover and parse a wide variety of edge cases.
+  - Gradle documentation reference provided a fairly comprehensive set of different styles of dependency declaration
+  to support.
+- Update `PackageMangerParser` (& implementations) to make better use of inheritance when initializing
+  - Common fields moved up levels of inheritance, constructors updated to simplify child class creation
+  and better delegate the responsibilities of each class
+- Update `PackageMangerParser` to handle property resolution
+  - Generified code to resolve properties and fixed deep recursive edge cases
+    - This allows better access to the properties list that `PackageManagerParser` implementations store, and reduces
+    all token replacement code to two methods
+    - Any value read in from a `PackageManagerParser` has the potential to be or contain property reference tokens,
+    this change makes the process of "resolving" any given value extremely easy and generic.
+- Update `CycloneDXSerializer` & `SPDXSerializer` Classes to include discovered CPE data.
+- Fix `ParserController`'s `toFile()` test to ensure each file is being generated as expected.
+  - Method also changed from type void to type String, giving the method the ability to output both directly to file, 
+  as well as return the stringified file contents instead.
+    - This allows for our integration with the API, where we are not reading and writing directly to and from files,
+    but passing stringified file contents around.
+- Fix `GoParser` edge case bugs found during dataset development
+- Fix `ParserTestCore` (& implementations) typing
+  - Instead of now storing a generic instance of `Parser` and casting
+  it to a child class in order to access protected fields, `ParserTestCore` was properly generalized 
+  (`ParserTestCore<T extends Parser>`).
+- Update `POMParserParseTest` (& all new test files) to include two main tests
+  - `testProperties` - Checks multiple properties for correctness
+    - Includes recursive property resolution edge cases
+  - `testDependencies` - Checks multiple dependencies for correctness
+    - Includes recursive dependency resolution edge cases
+  - NOTE: These may end up being broken into more granular tests
+
+### Removed
+- Remove `CPEQueryWorker` Class as no API requests need to be made. 
+- Remove `UNKNOWN` Type from `ParserComponent` as it doesn't make sense to default to.
+
+
 ## [v4.2.0-alpha] - (05/01/2023)
 
 ### Added

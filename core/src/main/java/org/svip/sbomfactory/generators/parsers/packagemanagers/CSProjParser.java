@@ -16,7 +16,13 @@ import java.util.regex.Pattern;
  */
 public class CSProjParser extends PackageManagerParser {
 
-    public CSProjParser() { super("https://learn.microsoft.com/en-us/dotnet/api/", new XmlFactory()); }
+    public CSProjParser() {
+        super(
+                "https://learn.microsoft.com/en-us/dotnet/api/",
+                new XmlFactory(),
+                "" // TODO: Token regex
+        );
+    }
 
     @Override
     protected void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data) {
@@ -74,11 +80,6 @@ public class CSProjParser extends PackageManagerParser {
     // TODO?
     @Override
     protected void resolveProperties(HashMap<String, String> props) {
-
-    }
-
-    @Override
-    protected void resolveProperty(String key, String value, HashMap<String, String> props, Pattern p) {
 
     }
 

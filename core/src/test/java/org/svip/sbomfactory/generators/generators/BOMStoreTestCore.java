@@ -1,15 +1,18 @@
 package org.svip.sbomfactory.generators.generators;
 
+import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.parsers.Parser;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public abstract class GeneratorTestCore {
+public abstract class BOMStoreTestCore {
 //    protected Parser PARSER;
 //
 //    // TODO: Docstring
-//    protected GeneratorTestCore(Parser parser, String src) {
+//    protected BOMStoreTestCore(GeneratorSchema schema, String specVersion, String serialNumber, int bomVersion,
+//                               ParserComponent headComponent) {
 //        setDummyParser(parser, src);
 //    }
 //

@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.generators;
 
+import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.parsers.languages.*;
@@ -9,6 +10,7 @@ import org.svip.sbomfactory.generators.parsers.Parser;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbom.model.SBOM;
 
@@ -75,7 +77,7 @@ public class ParserController {
         put("pom.xml", new POMParser());
         put("csproj", new CSProjParser());
         put("requirements.txt", new RequirementsParser());
-        put("gradle.build", new GradleParser());
+        put("gradle", new GradleParser());
         // ADD NEW PARSER HERE: put("fileExtn", new Parser);
     }};
 
@@ -150,7 +152,7 @@ public class ParserController {
 
         // If extn matches popular package manager dependency file types, use whole filename instead
         switch (extn) {
-            case "xml", "txt", "build" -> extn = filename;
+            case "xml", "txt" -> extn = filename;
         }
 
         // Get correct parser (if and only if extn relates to a valid Parser)
@@ -216,7 +218,7 @@ public class ParserController {
      *
      * @param outPath Path to write file to
      */
-    public String toFile(String outPath, GeneratorSchema outSchema, GeneratorSchema.GeneratorFormat outFormat) {
+    public String toFile(String outPath, GeneratorSchema outSchema, GeneratorSchema.GeneratorFormat outFormat) throws IOException {
         // If format is not supported by schema
         if(!outSchema.supportsFormat(outFormat)) {
             // Acquire default format from schema
@@ -245,7 +247,9 @@ public class ParserController {
             // Write SBOM to file according to schema and file format
             generator.writeFile(outPath, outFormat);
         } else {
-            // TODO: Return stringified SBOM
+            String fileString = generator.writeFileToString(outFormat, true);
+            log(Debug.LOG_TYPE.INFO, "SBOM String:\n" + fileString);
+            return fileString;
         }
         return null;
     }

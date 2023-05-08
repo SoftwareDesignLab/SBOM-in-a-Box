@@ -7,10 +7,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import static org.svip.sbomfactory.generators.utils.Debug.*;
 
 public class GradleParserParseTest extends ParseDepFileTestCore {
     /**
@@ -19,7 +20,7 @@ public class GradleParserParseTest extends ParseDepFileTestCore {
      */
     protected GradleParserParseTest() throws IOException {
         super(new GradleParser(),
-                Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/generators/TestData/Java/gradle.build")),
+                Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/generators/TestData/Java/build.gradle")),
                 "src/test/java/org/svip/sbomfactory/generators/TestData/Java");
     }
 
@@ -56,20 +57,42 @@ public class GradleParserParseTest extends ParseDepFileTestCore {
                         .stream().collect(
                                 Collectors.toMap(
                                         d -> d.get("artifactId"),
-                                        d -> d
+                                        d -> d,
+                                        // Merge conflict function, currently overrides existing values
+                                        (d1, d2) -> {
+                                            log(LOG_TYPE.WARN, String.format("Duplicate key found: %s", d2.get("artifactId")));
+                                            return d2;
+                                        }
                                 ));
 
         // Test correct count is found
-        assertEquals(4, deps.size());
+        assertEquals(14, deps.size());
 
-        // create valueSet for the values
-        final Set<String> valueSet = new HashSet<>();
-        deps.values().forEach(v-> valueSet.add(v.get("artifactId")));
 
-        assertTrue(valueSet.contains("com.esri.arcgisruntime:arcgis-java:200.1.0"));
-        assertTrue(valueSet.contains("com.esri.arcgisruntime:arcgis-java-jnilibs:200.1.0"));
-        assertTrue(valueSet.contains("com.esri.arcgisruntime:arcgis-java-resources:200.1.0"));
-        assertTrue(valueSet.contains("org.slf4j:slf4j-nop:2.0.5"));
+        // Get keySet
+        final Set<String> keySet = deps.keySet();
+
+        // Check for correct element insertion
+        assertTrue(keySet.contains("arcgis-java"));
+        LinkedHashMap<String, String> depi = deps.get("arcgis-java");
+        assertEquals("com.esri.arcgisruntime", depi.get("groupId"));
+        assertEquals("$arcgisVersion", depi.get("version"));
+        assertEquals("200.1.0", this.PARSER.properties.get("arcgisVersion"));
+
+        assertTrue(keySet.contains("spring-api"));
+        depi = deps.get("spring-api");
+        assertEquals("org.springframework", depi.get("groupId"));
+        assertEquals("3.6", depi.get("version"));
+
+        assertTrue(keySet.contains("slf4j-nop"));
+        depi = deps.get("slf4j-nop");
+        assertEquals("org.slf4j", depi.get("groupId"));
+        assertEquals("2.0.5", depi.get("version"));
+
+        assertTrue(keySet.contains("spring-core"));
+        depi = deps.get("spring-core");
+        assertEquals("org.springframework", depi.get("groupId"));
+        assertEquals("2.5", depi.get("version"));
 
     }
 }

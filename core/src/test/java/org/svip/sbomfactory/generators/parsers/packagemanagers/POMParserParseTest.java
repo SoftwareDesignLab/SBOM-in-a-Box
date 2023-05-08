@@ -81,7 +81,6 @@ public class POMParserParseTest extends ParseDepFileTestCore {
         assertTrue(keySet.contains("logstash-logback-encoder"));
         final LinkedHashMap<String, String> dep3 = deps.get("logstash-logback-encoder");
         assertEquals("net.logstash.logback", dep3.get("groupId"));
-        assertEquals("net.logstash.logback", dep3.get("groupId"));
         assertEquals("4.9", dep3.get("version"));
     }
 }

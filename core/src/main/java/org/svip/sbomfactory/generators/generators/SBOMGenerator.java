@@ -1,5 +1,7 @@
 package org.svip.sbomfactory.generators.generators;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.svip.sbom.model.Component;
 import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXStore;
@@ -42,7 +44,7 @@ public class SBOMGenerator {
     /**
      * The version of our SBOMGenerator tool.
      */
-    public static final String TOOL_VERSION = "v4.1.0-alpha";
+    public static final String TOOL_VERSION = "v4.3.0-alpha";
 
     /**
      * The license of our SBOMGenerator tool.
@@ -118,7 +120,7 @@ public class SBOMGenerator {
      * @param directory The path of the SBOM file including the file name and type to write to.
      * @param format The file format to write to the file.
      */
-    public void writeFile(String directory, GeneratorSchema.GeneratorFormat format) {
+    public void writeFile(String directory, GeneratorSchema.GeneratorFormat format) throws IOException {
         String path = generatePathToSBOM(directory, format);
 
         log(Debug.LOG_TYPE.DEBUG, "Building " + schema.name() + " SBOM object");
@@ -128,23 +130,38 @@ public class SBOMGenerator {
 
             // Serialize
             log(Debug.LOG_TYPE.DEBUG, "Attempting to write to " + path);
-
-            // Get the correct OM from the format and write the file to it
-            if(schema == GeneratorSchema.SPDX) { // TODO is there a better way to do this?
-                format.getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File(path), (SPDXStore) bomStore);
-            } else {
-                format.getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File(path), (CycloneDXStore) bomStore);
-
-            }
-
+            format.getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File(path), bomStore);
             log(Debug.LOG_TYPE.SUMMARY, schema.name() + " SBOM saved to: " + path);
-        } catch (IOException e) {
-            log(Debug.LOG_TYPE.EXCEPTION, e);
-            log(Debug.LOG_TYPE.ERROR, "Error writing to file " + path);
-        } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+        } catch (GeneratorException e) {
+            log(Debug.LOG_TYPE.ERROR, "Unable to write " + schema.name() + " SBOM to " + path);
         }
     };
+
+    /**
+     * Write an SBOM to a single String, either pretty-printed or on one line.
+     *
+     * @param format The file format of the SBOM to write to the string.
+     * @param prettyPrint Whether to pretty-print the SBOM or leave it on one line.
+     *
+     * @return A string representation of an SBOM file.
+     */
+    public String writeFileToString(GeneratorSchema.GeneratorFormat format, boolean prettyPrint) {
+        log(Debug.LOG_TYPE.DEBUG, "Building " + schema.name() + " SBOM object");
+
+        try {
+            BOMStore bomStore = buildBOMStore();
+            ObjectMapper mapper = format.getObjectMapper();
+            if(!prettyPrint) mapper.setDefaultPrettyPrinter(null);
+
+            String out = mapper.writeValueAsString(bomStore);
+            log(Debug.LOG_TYPE.SUMMARY, schema.name() + " SBOM successfully written to string");
+            return out;//.replaceAll("\\s+","");
+        } catch (GeneratorException | JsonProcessingException e) {
+            log(Debug.LOG_TYPE.ERROR, "Unable to write " + schema.name() + " SBOM to a string");
+        }
+
+        return null;
+    }
 
     //#endregion
 
@@ -156,14 +173,20 @@ public class SBOMGenerator {
      *
      * @return A BOMStore containing all transformed data of the SBOM.
      */
-    private BOMStore buildBOMStore() throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    protected BOMStore buildBOMStore() throws GeneratorException {
         ParserComponent headComponent = (ParserComponent) internalSBOM.getComponent(internalSBOM.getHeadUUID());
         String serialNumber = internalSBOM.getSerialNumber();
         int version = 1; // TODO should we have to increment this?
 
         Object[] parameters = {serialNumber, version, headComponent};
         Class<?>[] parameterTypes = Arrays.stream(parameters).map(Object::getClass).toArray(Class<?>[]::new);
-        BOMStore bomStore = schema.getBomStoreType().getDeclaredConstructor(parameterTypes).newInstance(parameters);
+
+        BOMStore bomStore = null;
+        try {
+            bomStore = schema.getBomStoreType().getDeclaredConstructor(parameterTypes).newInstance(parameters);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new GeneratorException(e.getMessage());
+        }
 
         bomStore.addTool(tool); // Add our tool as info
 
@@ -185,7 +208,7 @@ public class SBOMGenerator {
      * @param component The component that will be added to the BOMStore.
      * @param recursive Whether to recursively add children of {@code component} to the BOMStore.
      */
-    private void addComponent(BOMStore bomStore, ParserComponent component, boolean recursive) {
+    protected void addComponent(BOMStore bomStore, ParserComponent component, boolean recursive) {
         bomStore.addComponent(component);
 
         if(recursive) {
@@ -203,7 +226,7 @@ public class SBOMGenerator {
      * @param bomStore The BOMStore to add the component to.
      * @param component The component whose children will be added to the BOMStore.
      */
-    private void addChildren(BOMStore bomStore, ParserComponent component) {
+    protected void addChildren(BOMStore bomStore, ParserComponent component) {
         // Get set of all children from the internal SBOM
         Set<ParserComponent> children = (Set<ParserComponent>) (Set<?>) internalSBOM
                 .getComponentChildren(component.getUUID());
@@ -244,6 +267,23 @@ public class SBOMGenerator {
 
         return path.toString();
     }
+
+    //#endregion
+
+    //#region Getters
+
+    public SBOM getInternalSBOM() {
+        return internalSBOM;
+    }
+
+    public Tool getTool() {
+        return tool;
+    }
+
+    public GeneratorSchema getSchema() {
+        return schema;
+    }
+
 
     //#endregion
 
