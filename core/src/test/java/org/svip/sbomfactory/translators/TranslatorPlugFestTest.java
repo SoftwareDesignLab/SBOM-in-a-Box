@@ -208,18 +208,18 @@ public class TranslatorPlugFestTest {
 
     @Test
     public void driver_translates_xml_children() {
-        SBOM sbom = TranslatorPlugFest.translate(TEST_SPDX);
+        SBOM sbom = TranslatorPlugFest.translate(TEST_XML);
         assertNotNull(sbom);
         assertNotNull(sbom.getHeadUUID());
-        assertEquals(135, sbom.getChildrenUUIDs(sbom.getHeadUUID()).size());
+        assertEquals(17, sbom.getChildrenUUIDs(sbom.getHeadUUID()).size());
     }
 
     @Test
     public void driver_translates_json_spec_children() {
-        SBOM sbom = TranslatorPlugFest.translate(TEST_SPDX);
+        SBOM sbom = TranslatorPlugFest.translate(TEST_JSON);
         assertNotNull(sbom);
         assertNotNull(sbom.getHeadUUID());
-        assertEquals(135, sbom.getChildrenUUIDs(sbom.getHeadUUID()).size());
+        assertEquals(11, sbom.getChildrenUUIDs(sbom.getHeadUUID()).size());
     }
 
     @Test
@@ -227,6 +227,6 @@ public class TranslatorPlugFestTest {
         SBOM sbom = TranslatorPlugFest.translate(TEST_SPDX);
         assertNotNull(sbom);
         assertNotNull(sbom.getHeadUUID());
-        assertEquals(135, sbom.getChildrenUUIDs(sbom.getHeadUUID()).size());
+        assertEquals(136, sbom.getChildrenUUIDs(sbom.getHeadUUID()).size());
     }
 }
