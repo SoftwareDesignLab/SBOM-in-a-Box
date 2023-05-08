@@ -184,6 +184,9 @@ public abstract class PackageManagerParser extends Parser {
 
     // TODO: Docstring
     protected String resolveProperty(String value, HashMap<String, String> props) {
+        // Ingore value if null or blank
+        if(value == null || value.isBlank()) return value;
+
         // Get results
         final List<MatchResult> results =  this.TOKEN_PATTERN.matcher(value).results().toList();
 
