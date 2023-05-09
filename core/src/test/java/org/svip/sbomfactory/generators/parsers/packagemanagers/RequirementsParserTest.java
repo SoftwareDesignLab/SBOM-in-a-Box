@@ -11,6 +11,7 @@ import java.util.*;
 
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 public class RequirementsParserTest extends ParseDepFileTestCore {
     /**
