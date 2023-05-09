@@ -48,29 +48,29 @@ public class TranslatorPlugFest {
 
         final String extension = filePath.substring(filePath.toLowerCase().lastIndexOf('.'));
 
-        try {
-
-            //call the appropriate translator based on the file extension
-            switch (extension) {
-
-                case ".xml"  -> sbom = TranslatorCDXXML.translatorCDXXMLContents(contents, filePath);
-
-                case ".json" -> {
-                    if (new JSONObject(new String(Files.readAllBytes(Paths.get(filePath)))).toMap().get("bomFormat").equals("CycloneDX")) {
-                        sbom = TranslatorCDXJSON.translatorCDXJSONContents(contents, filePath);
-                    }
-                }
-
-                case ".spdx" -> sbom = TranslatorSPDX.translatorSPDXContents(contents, filePath);
-
-                default      -> System.err.println("\nInvalid SBOM format found at: " + filePath);
-
-            }
-
-        }
-        catch (Exception e) {
-            System.err.println("Error: " + e.getMessage());
-        }
+//        try {
+//
+//            //call the appropriate translator based on the file extension
+//            switch (extension) {
+//
+//                case ".xml"  -> sbom = TranslatorCDXXML.translatorCDXXMLContents(contents, filePath);
+//
+//                case ".json" -> {
+//                    if (new JSONObject(new String(Files.readAllBytes(Paths.get(filePath)))).toMap().get("bomFormat").equals("CycloneDX")) {
+//                        sbom = TranslatorCDXJSON.translateContents(contents, filePath);
+//                    }
+//                }
+//
+//                case ".spdx" -> sbom = TranslatorSPDX.translatorSPDXContents(contents, filePath);
+//
+//                default      -> System.err.println("\nInvalid SBOM format found at: " + filePath);
+//
+//            }
+//
+//        }
+//        catch (Exception e) {
+//            System.err.println("Error: " + e.getMessage());
+//        }
 
         return sbom;
     }

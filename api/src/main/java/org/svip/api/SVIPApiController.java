@@ -105,9 +105,10 @@ public class SVIPApiController {
             throw new Exception("Failed to Generate SBOMs with OSI");
 
         // 2. call translators
-        ArrayList<SBOM> SBOMs;
+        ArrayList<SBOM> SBOMs = new ArrayList<>(); // TODO: Remove redundant init
         try{
-            SBOMs = Translator.toReport(osiBoundDir + "/sboms");
+            // TODO: Add controller for file driving possibly?
+//            SBOMs = Translator.parseSBOMs(osiBoundDir + "/sboms");
         } catch (Exception e){
             throw new Exception("Unable to Translate SBOMs");
         }
