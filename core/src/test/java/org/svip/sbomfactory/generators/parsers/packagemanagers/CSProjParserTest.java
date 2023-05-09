@@ -32,7 +32,7 @@ public class CSProjParserTest extends ParseDepFileTestCore {
     }
 
     @Test
-    @DisplayName("CS Test Componemts")
+    @DisplayName("CSharp Test Componemts")
     void testComponemts() {
 
         // Get Components from PARSER
@@ -52,6 +52,12 @@ public class CSProjParserTest extends ParseDepFileTestCore {
         assertTrue(ValueSet.contains(str));
         //Check component's group
         assertEquals("Mono/Linq", getComponent(str).getGroup());
+
+        //Check component's name
+        str = "Data" ;
+        assertTrue(ValueSet.contains(str));
+        //Check component's group
+        assertEquals("System", getComponent(str).getGroup());
 
         //Check component's name
         str = "DataSetExtensions" ;
