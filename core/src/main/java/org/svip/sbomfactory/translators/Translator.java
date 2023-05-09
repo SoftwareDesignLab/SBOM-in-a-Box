@@ -1,7 +1,6 @@
 package org.svip.sbomfactory.translators;
 
 import org.svip.sbom.model.*;
-import org.json.JSONObject;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
@@ -59,15 +58,15 @@ public class Translator {
 
             switch (extension) {
 
-                case ".xml"  -> sbom = TranslatorCDXXML.translatorCDXXMLContents(contents, filePath);
+//                case ".xml"  -> sbom = TranslatorCDXXML.translatorCDXXMLContents(contents, filePath);
 
                 case ".json" -> {
-                    if (new JSONObject(new String(Files.readAllBytes(Paths.get(filePath)))).toMap().get("bomFormat").equals("CycloneDX")) {
-                        sbom = TranslatorCDXJSON.translatorCDXJSONContents(contents, filePath);
-                    }
+//                    if (new JSONObject(new String(Files.readAllBytes(Paths.get(filePath)))).toMap().get("bomFormat").equals("CycloneDX")) {
+//                        sbom = TranslatorCDXJSON.translateContents(contents, filePath);
+//                    }
                 }
 
-                case ".spdx" -> sbom = TranslatorSPDX.translatorSPDXContents(contents, filePath);
+//                case ".spdx" -> sbom = TranslatorSPDX.translatorSPDXContents(contents, filePath);
 
                 default      -> System.err.println("\nInvalid SBOM format found at: " + filePath);
 
@@ -102,9 +101,9 @@ public class Translator {
         for (Path sbom_item : sbom_files) {
             try {
                 if (sbom_item.toString().toLowerCase().endsWith(".xml")) {
-                    sbom_objects.add(TranslatorCDXXML.translatorCDXXML(sbom_item.toString()));
+//                    sbom_objects.add(TranslatorCDXXML.translatorCDXXML(sbom_item.toString()));
                 } else if (sbom_item.toString().toLowerCase().endsWith(".spdx")) {
-                    sbom_objects.add(TranslatorSPDX.translatorSPDX(sbom_item.toString()));
+//                    sbom_objects.add(TranslatorSPDX.translatorSPDX(sbom_item.toString()));
                 } else {
                     System.err.println("\nInvalid SBOM format found in: " + sbom_item);
                 }
