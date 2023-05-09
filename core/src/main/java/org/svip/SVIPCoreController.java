@@ -2,6 +2,7 @@ package org.svip;
 
 import org.svip.sbomanalysis.comparison.Merger;
 import org.svip.sbomfactory.translators.Translator;
+import org.svip.sbomfactory.translators.TranslatorCore;
 import org.svip.sbomvex.VEXFactory;
 import org.svip.sbomvex.VEXFactory.*;
 import org.svip.sbomfactory.osi.OSI;
@@ -82,6 +83,7 @@ public class SVIPCoreController {
     public SVIPCoreController() {
         headers = new HttpHeaders();
         headers.add("AccessControlAllowOrigin", "http://localhost:4200");
+
     }
 
     /**
@@ -106,9 +108,10 @@ public class SVIPCoreController {
             throw new Exception("Failed to Generate SBOMs with OSI");
 
         // 2. call translators
-        ArrayList<SBOM> SBOMs;
-        try{
-            SBOMs = Translator.toReport(osiBoundDir + "/sboms");
+        ArrayList<SBOM> SBOMs = new ArrayList<>(); // TODO: Remove redundant init
+        try {
+            // TODO: Add controller for file driving possibly?
+//            SBOMs = Translator.parseSBOMs(osiBoundDir + "/sboms");
         } catch (Exception e){
             throw new Exception("Unable to Translate SBOMs");
         }
