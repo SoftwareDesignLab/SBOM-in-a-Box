@@ -55,8 +55,8 @@ public class POMParser extends PackageManagerParser {
         // Iterate and build URLs
         for (final LinkedHashMap<String, String> d : this.dependencies) {
             // Format all property keys -> values
-            final String groupId = this.formatVariableNames(d.get("groupId")); // TODO: Replace with resolveVariable
-            final String artifactId = this.formatVariableNames(d.get("artifactId"));
+            final String groupId = this.resolveProperty(d.get("groupId"), null);
+            final String artifactId = this.resolveProperty(d.get("artifactId"), null);
             final String version = this.resolveProperty(d.get("version"), null);
 
             // Skip dependency if no name
@@ -120,30 +120,6 @@ public class POMParser extends PackageManagerParser {
 
         // Query all found URLs and store any relevant data
         queryURLs(this.queryWorkers);
-    }
-
-    /** // TODO: Remove
-     * Given a raw string, this method will attempt to strip all instances of "${...}" -> "...",
-     * retrieve their corresponding values from this.props, and return the formatted string.
-     * If any step fails, the original string is returned.
-     *
-     * @param string the string to be formatted
-     * @return formatted string if successful, otherwise, original string is returned
-     */
-    private String formatVariableNames(String string) {
-        if(string == null) return null;
-        // Regex101: https://regex101.com/r/gIluSW/1
-        // Regex first matches ALL intances of "${...}"
-        final Pattern p = Pattern.compile("\\$\\{([^}]*)\\}", Pattern.MULTILINE);
-
-        // Then replace these instances with "..." (the stripped value)
-        string = p.matcher(string).replaceAll("$1");
-        String[] parts = string.split("/");
-        for (int i = 0; i < parts.length; i++) {
-            final String value = this.properties.get(parts[i]);
-            if(value != null) parts[i] = value;
-        }
-        return String.join("/", parts);
     }
 
     //#endregion
