@@ -64,6 +64,11 @@ public class ParserComponent extends Component {
      */
     private String SPDXid;
 
+    /**
+     * Group of the component
+     */
+    protected String group;
+
     //#endregion
 
     //#region Constructors
@@ -93,6 +98,14 @@ public class ParserComponent extends Component {
 
     public Set<License> getResolvedLicenses() { return resolvedLicenses; }
     public String getSPDXID() { return SPDXid; }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
 
     //#endregion
 
@@ -215,7 +228,6 @@ public class ParserComponent extends Component {
      *
      * @return A UUID unique to this Component.
      */
-    @Override
     public UUID generateUUID() {
         // Convert unique Component identifiers to byte representation
         byte[] uuidBytes = (generateHash()).getBytes();
