@@ -195,20 +195,69 @@ public class TranslatorSPDX extends TranslatorCore {
          * Parse through components, add them to components HashSet
          */
         // Loop through every Package until Relationships or end of file
+
+
+        /**
+         * Parse through unpackaged files, add them to components HashSet
+         */
+        // While line isn't null, package tag, relationship tag, or a relationship key
         while ( current_line != null
+                && !current_line.contains(PACKAGE_TAG)
                 && !current_line.contains(RELATIONSHIP_TAG)
                 && !current_line.contains(RELATIONSHIP_KEY)
         ) {
-            if (current_line.contains(RELATIONSHIP_TAG)) break;
+            if (current_line.contains(PACKAGE_TAG) || current_line.contains(RELATIONSHIP_TAG)) break;
 
-            // Temporary component collection of materials
-            HashMap<String, String> component_materials = new HashMap<>();
-            Set<String> cpes = new HashSet<>();
-            Set<PURL> purls = new HashSet<>();
-            Set<String> swids = new HashSet<>();
+            // Information for un-packaged component
+            HashMap<String, String> file_materials = new HashMap<>();
+
+            // If current line is empty (new un-packaged component)
+            if (current_line.isEmpty()) {
+
+                // Loop through the contents until the next empty line or tag
+                while (!(current_line = br.readLine()).contains(TAG) && !current_line.isEmpty()) {
+
+                    // If line contains separator, split line into Key:Value then store it into component materials map
+                    if ( current_line.contains(": ")) {
+                        file_materials.put(current_line.split(": ", 2)[0], current_line.split(": ", 2)[1]);
+                    }
+                }
+
+                // Create new component from materials
+                Component unpackaged_component = new Component(
+                        file_materials.get("FileName"),
+                        "Unknown",
+                        file_materials.get("PackageVersion"),
+                        file_materials.get("SPDXID")
+                );
+                unpackaged_component.setUnpackaged(true);
+
+                // Add unpackaged file to components
+                components.put(unpackaged_component.getUniqueID(), unpackaged_component);
+
+            } else {
+                current_line = br.readLine();
+            }
+        }
+
+
+        /**
+         * Parse through components, add them to components HashSet
+         */
+        // Loop through every Package until Relationships or end of file
+        while ( current_line != null ) {
+
+
 
             // If new package/component is found
             if (current_line.contains(PACKAGE_TAG)) {
+
+                // Temporary component collection of materials
+                HashMap<String, String> component_materials = new HashMap<>();
+                Set<String> cpes = new HashSet<>();
+                Set<PURL> purls = new HashSet<>();
+                Set<String> swids = new HashSet<>();
+
 
                 // While in the same package/component
                 while ( (current_line = br.readLine()) != null
@@ -293,66 +342,50 @@ public class TranslatorSPDX extends TranslatorCore {
                 // Add packaged component to packages list as well
                 packages.add(component.getUniqueID());
 
-            } else {
+            }
+            // If relationship key is found
+            else if(current_line.contains(RELATIONSHIP_KEY)) {
+
+                // Split and get and value of the line
+                String relationship = current_line.split(RELATIONSHIP_KEY, 2)[1];
+
+                // Split dependency relationship and store into relationships map depends on relationship type
+                if (current_line.contains("DEPENDS_ON")) {
+
+                    dependencies.put(
+                            relationship.split(" DEPENDS_ON ")[0],
+                            relationship.split(" DEPENDS_ON ")[1]
+                    );
+
+                } else if (current_line.contains("DEPENDENCY_OF")) {
+
+                    dependencies.put(
+                            relationship.split(" DEPENDENCY_OF ")[1],
+                            relationship.split(" DEPENDENCY_OF ")[0]
+                    );
+
+                }  else if (current_line.contains("DESCRIBES")) {
+
+                    // If document references itself as top component, make it the top component using sbom head information
+                    // Otherwise, get the SPDXID for the component it references and make that the top component
+                    top_component = relationship.split(" DESCRIBES ")[1].contains(DOCUMENT_REFERENCE_TAG)
+                            ? new Component(sbom_materials.get("DocumentName"), "N/A", "N/A", sbom_materials.get("SPDXID") )
+                            : components.get(relationship.split(" DESCRIBES ")[1]);
+
+                    // If top component exists, and if it is SPDXID: SPDXRef-DOCUMENT, add top level components as its dependencies
+                    // Then, add it as the top level component of the dependency tree
+                    if( top_component != null && top_component.getUniqueID().contains(DOCUMENT_REFERENCE_TAG) ) {
+                        dependencies.putAll(top_component.getUniqueID(), packages);
+                        dependencies.remove(top_component.getUniqueID(), top_component.getUniqueID());
+                    }
+                }
+
+                current_line = br.readLine();
+
+            }
+            else {
                 // if no package/component is found, get next line
                 current_line = br.readLine();
-            }
-        }
-
-        // Parse through what is left (relationships, if there are any)
-        while((current_line = br.readLine()) != null) {
-
-            // If relationship key is found
-            if (!current_line.contains(RELATIONSHIP_KEY)) {
-                continue;
-            }
-
-            // Split and get and value of the line
-            String relationship = current_line.split(RELATIONSHIP_KEY, 2)[1];
-
-            // Split dependency relationship and store into relationships map depends on relationship type
-            if(current_line.contains("CONTAINS")) {
-
-                dependencies.put(
-                        relationship.split(" CONTAINS ")[0],
-                        relationship.split(" CONTAINS ")[1]
-                );
-
-            } else if (current_line.contains("DEPENDS_ON")) {
-
-                dependencies.put(
-                        relationship.split(" DEPENDS_ON ")[0],
-                        relationship.split(" DEPENDS_ON ")[1]
-                );
-
-            } else if (current_line.contains("DEPENDENCY_OF")) {
-
-                dependencies.put(
-                        relationship.split(" DEPENDENCY_OF ")[1],
-                        relationship.split(" DEPENDENCY_OF ")[0]
-                );
-
-            } else if (current_line.contains("OTHER")) {
-
-                dependencies.put(
-                        relationship.split(" OTHER ")[1],
-                        relationship.split(" OTHER ")[0]
-                );
-
-            } else if (current_line.contains("DESCRIBES")) {
-
-                // If document references itself as top component, make it the top component using sbom head information
-                // Otherwise, get the SPDXID for the component it references and make that the top component
-                top_component = relationship.split(" DESCRIBES ")[1].contains(DOCUMENT_REFERENCE_TAG)
-                        ? new Component(sbom_materials.get("DocumentName"), "N/A", "N/A", sbom_materials.get("SPDXID") )
-                        : components.get(relationship.split(" DESCRIBES ")[1]);
-
-                // If top component exists, and if it is SPDXID: SPDXRef-DOCUMENT, add top level components as its dependencies
-                // Then, add it as the top level component of the dependency tree
-                if( top_component != null && top_component.getUniqueID().contains(DOCUMENT_REFERENCE_TAG) ) {
-                    dependencies.putAll(top_component.getUniqueID(), packages);
-                    dependencies.remove(top_component.getUniqueID(), top_component.getUniqueID());
-                }
             }
         }
 
@@ -388,27 +421,6 @@ public class TranslatorSPDX extends TranslatorCore {
         // Return SBOM object
         return sbom;
     }
-
-//    /**
-//     * Coverts SPDX SBOMs into internal SBOM objects
-//     *
-//     * @param file_path Path to SPDX SBOM
-//     * @return internal SBOM object
-//     * @throws IOException
-//     */
-//    public SBOM translatorSPDX(String file_path) throws IOException {
-//        // Get file_path contents and save it into a string
-//        String file_contents = "";
-//        try {
-//            file_contents = new String(Files.readAllBytes(Paths.get(file_path)));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            System.err.println("Error: Unable to read file: " + file_path);
-//            return null;
-//        }
-//
-//        return translateContents(file_contents, file_path);
-//    }
 
     /**
      * A simple recursive function to build a dependency tree out of the SPDX SBOM
