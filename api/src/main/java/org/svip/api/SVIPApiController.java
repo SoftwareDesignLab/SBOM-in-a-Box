@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomanalysis.comparison.Merger;
 import org.svip.sbomfactory.osi.OSI;
-import org.svip.sbomfactory.translators.Translator;
+import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomvex.VEXFactory;
 import org.svip.visualizer.NodeFactory;
 
@@ -105,10 +105,9 @@ public class SVIPApiController {
             throw new Exception("Failed to Generate SBOMs with OSI");
 
         // 2. call translators
-        ArrayList<SBOM> SBOMs = new ArrayList<>(); // TODO: Remove redundant init
+        ArrayList<SBOM> SBOMs;
         try{
-            // TODO: Add controller for file driving possibly?
-//            SBOMs = Translator.parseSBOMs(osiBoundDir + "/sboms");
+            SBOMs = TranslatorController.toReport(osiBoundDir + "/sboms");
         } catch (Exception e){
             throw new Exception("Unable to Translate SBOMs");
         }

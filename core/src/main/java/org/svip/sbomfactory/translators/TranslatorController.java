@@ -13,13 +13,13 @@ import java.util.stream.Stream;
 
 
 /**
- * file: Translator.java
+ * file: TranslatorController.java
  *
  * Driver class for SPDX and CDX Translators
  * @author Tyler Drake
  * @author Matt London
  */
-public class Translator {
+public class TranslatorController {
     /**
      * Parse an SBOM using the appropriate translator and return the object
      *

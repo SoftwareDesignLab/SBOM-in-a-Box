@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 import java.nio.file.Files;
 
 /**
- * file: Translator.java
+ * file: TranslatorController.java
  *
  * Driver class for SPDX and CDX Translators
  * @author Tyler Drake
