@@ -7,8 +7,6 @@ import org.svip.sbom.model.*;
 import org.svip.sbom.model.Component;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,7 +17,11 @@ import java.util.stream.Collectors;
  *
  * @author Tyler Drake
  */
-public class TranslatorCDXJSON {
+public class TranslatorCDXJSON extends TranslatorCore {
+    public TranslatorCDXJSON() {
+        super("json");
+    }
+
     /**
      * Converts a file into an internal SBOM object
      *
@@ -28,7 +30,8 @@ public class TranslatorCDXJSON {
      * @return internal SBOM object
      * @throws ParseException If file is not valid JSON
      */
-    public static SBOM translatorCDXJSONContents(String fileContents, String file_path) throws ParseException {
+    @Override
+    protected SBOM translateContents(String fileContents, String file_path) throws IOException, ParseException {
         // Internal SBOM Object
         SBOM sbom;
 
@@ -153,7 +156,7 @@ public class TranslatorCDXJSON {
         // Otherwise, default the dependencyTree by adding all subcomponents as children to the top component
         if( dependencies != null ) {
             try {
-                dependencyBuilder(dependencies, components, top_component, sbom, null);
+                this.dependencyBuilder(dependencies, components, top_component, sbom, null);
             } catch (Exception e) {
                 System.out.println("Error building dependency tree. Dependency tree may be incomplete for: " + file_path);
             }
@@ -174,27 +177,6 @@ public class TranslatorCDXJSON {
     }
 
     /**
-     * Coverts CDX JSON SBOMs into internal SBOM objects
-     *
-     * @param file_path Path to CDX JSON SBOM
-     * @return internal SBOM object
-     * @throws ParseException
-     */
-    public static SBOM translatorCDXJSON(String file_path) throws ParseException {
-        // Read the file at file_path into a string
-        String contents = null;
-        try {
-            contents = new String(Files.readAllBytes(Paths.get(file_path)));
-        }
-        catch (IOException e) {
-            System.err.println("Could not read file: " + file_path);
-            return null;
-        }
-
-        return translatorCDXJSONContents(contents, file_path);
-    }
-
-    /**
      * A simple recursive function to build a dependency tree out of the CDX JSON SBOM
      *
      * @param dependencies  A map containing packaged components with their CDX bom-refs, pointing to dependencies
@@ -202,49 +184,29 @@ public class TranslatorCDXJSON {
      * @param parent        Parent component to have dependencies connected to
      * @param sbom          The SBOM object
      */
-    public static void dependencyBuilder(Map dependencies, HashMap components, Component parent, SBOM sbom, Set<String> visited) {
-
+    @Override
+    protected void dependencyBuilder(Object dependencies, HashMap<String, Component> components, Component parent, SBOM sbom, Set<String> visited) {
         // If top component is null, return. There is nothing to process.
-        if (parent == null) { return; }
+        if (parent == null) return;
+
+        // Get the parent's dependencies as a list
+        List<String> childRefs = ((Map<String, List<Dependency>>) dependencies).get(parent.getUniqueID())
+                .stream().map(BomReference::getRef).toList();
 
         if (visited != null) {
             // Add this parent to the visited set
             visited.add(parent.getUniqueID());
         }
 
-        // Get the parent's dependencies as a list
-        String parent_id = parent.getUniqueID();
-        List<Dependency> children_ref = (List<Dependency>) dependencies.get(parent_id);
-
-        // If there are no
-        if( children_ref == null ) { return; }
+        // Return if there are no children found
+        if(childRefs.size() == 0) return;
 
         // Cycle through each dependency the parent component has
-        for (Dependency child_ref: children_ref) {
+        for (String childRef : childRefs) {
             // Retrieve the component the parent has a dependency for
-            Component child = (Component) components.get(child_ref.getRef());
+            Component child = components.get(childRef);
 
-            // If component is already in the dependency tree, add it as a child to the parent
-            // Else, add it to the dependency tree while setting the parent
-            if(sbom.hasComponent(child.getUUID())) {
-                parent.addChild(child.getUUID());
-            } else {
-                sbom.addComponent(parent.getUUID(), child);
-            }
-
-            if (visited == null) {
-                // This means we are in the top level component
-                // Pass in a new hashset instead of the visited set
-                visited = new HashSet<>();
-                dependencyBuilder(dependencies, components, child, sbom, new HashSet<>());
-            }
-            else {
-                // Only explore if we haven't already visited this component
-                if (!visited.contains(child.getUniqueID())) {
-                    // Pass the child component as the new parent into dependencyBuilder
-                    dependencyBuilder(dependencies, components, child, sbom, visited);
-                }
-            }
+            addDependency(dependencies, components, parent, child, sbom, visited);
         }
     }
 }

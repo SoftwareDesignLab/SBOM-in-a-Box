@@ -24,7 +24,11 @@ import java.util.UUID;
  *
  * @author Tyler Drake
  */
-public class TranslatorCDXXML {
+public class TranslatorCDXXML extends TranslatorCore {
+    protected TranslatorCDXXML() {
+        super("xml");
+    }
+
     /**
      * Translates a CycloneDX XML file into an SBOM object from the contents of an SBOM
      *
@@ -33,7 +37,8 @@ public class TranslatorCDXXML {
      * @return SBOM object
      * @throws ParserConfigurationException if the DocumentBuilder cannot be created
      */
-    public static SBOM translatorCDXXMLContents(String contents, String file_path) throws ParserConfigurationException {
+    @Override
+    protected SBOM translateContents(String contents, String file_path) throws ParserConfigurationException {
         // New SBOM object
         SBOM sbom;
 
@@ -234,27 +239,32 @@ public class TranslatorCDXXML {
         return sbom;
     }
 
-    /**
-     * Coverts CycloneDX SBOMs into internal SBOM object
-     *
-     * @param file_path Path to CycloneDX SBOM
-     * @return internal SBOM object
-     * @throws ParserConfigurationException
-     * @throws IOException
-     * @throws SAXException
-     */
-    public static SBOM translatorCDXXML(String file_path) throws ParserConfigurationException {
-        // Get file_path contents and save it into a string
-        String file_contents = "";
-        try {
-            file_contents = new String(Files.readAllBytes(Paths.get(file_path)));
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Error: Unable to read file: " + file_path);
-            return null;
-        }
-
-        return translatorCDXXMLContents(file_contents, file_path);
-
+    @Override
+    protected void dependencyBuilder(Object dependencies, HashMap<String, Component> components, Component parent, SBOM sbom, Set<String> visited) {
+        // TODO: Extract relevant logic from this.parseContents
     }
+
+//    /**
+//     * Coverts CycloneDX SBOMs into internal SBOM object
+//     *
+//     * @param file_path Path to CycloneDX SBOM
+//     * @return internal SBOM object
+//     * @throws ParserConfigurationException
+//     * @throws IOException
+//     * @throws SAXException
+//     */
+//    public static SBOM translatorCDXXML(String file_path) throws ParserConfigurationException {
+//        // Get file_path contents and save it into a string
+//        String file_contents = "";
+//        try {
+//            file_contents = new String(Files.readAllBytes(Paths.get(file_path)));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            System.err.println("Error: Unable to read file: " + file_path);
+//            return null;
+//        }
+//
+//        return translateContents(file_contents, file_path);
+//
+//    }
 }
