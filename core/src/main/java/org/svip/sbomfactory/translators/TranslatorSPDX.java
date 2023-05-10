@@ -417,36 +417,4 @@ public class TranslatorSPDX extends TranslatorCore {
         // Return SBOM object
         return sbom;
     }
-
-    /**
-     * A simple recursive function to build a dependency tree out of the SPDX SBOM
-     *
-     * @param components    A map containing each Component with their SPDX ID as a key
-     * @param parent        Parent component to have dependencies connected to
-     * @param sbom          The SBOM object
-     */
-    @Override
-    protected void dependencyBuilder(HashMap<String, Component> components, Component parent, SBOM sbom, Set<String> visited) {
-        // If top component is null, return. There is nothing to process.
-        if (parent == null) { return; }
-
-        // Get the parent's dependencies as a list
-        ArrayList<String> childRefs = dependencies.get(parent.getUniqueID());
-
-        if (visited != null) {
-            // Add this parent to the visited set
-            visited.add(parent.getUniqueID());
-        }
-
-        // Return if there are no children found
-        if(childRefs == null) return;
-
-        // Cycle through each dependency the parent component has
-        for (String childRef : childRefs) {
-            // Retrieve the component the parent has a dependency for
-            Component child = components.get(childRef);
-
-            addDependency(components, parent, child, sbom, visited);
-        }
-    }
 }
