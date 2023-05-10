@@ -7,7 +7,6 @@ import org.svip.sbomfactory.generators.utils.QueryWorker;
 import org.svip.sbom.model.PURL;
 
 import java.util.*;
-import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

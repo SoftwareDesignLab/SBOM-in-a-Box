@@ -1,8 +1,6 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
-import com.fasterxml.jackson.core.JsonFactory;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.sbomfactory.generators.utils.QueryWorker;
 
 import java.util.*;
 import java.util.regex.MatchResult;
