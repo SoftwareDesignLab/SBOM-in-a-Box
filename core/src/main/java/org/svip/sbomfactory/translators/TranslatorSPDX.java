@@ -1,15 +1,11 @@
 package org.svip.sbomfactory.translators;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import org.cyclonedx.exception.ParseException;
 import org.svip.sbom.model.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
@@ -349,14 +345,14 @@ public class TranslatorSPDX extends TranslatorCore {
                 // Split dependency relationship and store into relationships map depends on relationship type
                 if (current_line.contains("DEPENDS_ON")) {
 
-                    collectDependency(
+                    addDependency(
                             relationship.split(" DEPENDS_ON ")[0],
                             relationship.split(" DEPENDS_ON ")[1]
                     );
 
                 } else if (current_line.contains("DEPENDENCY_OF")) {
 
-                    collectDependency(
+                    addDependency(
                             relationship.split(" DEPENDENCY_OF ")[1],
                             relationship.split(" DEPENDENCY_OF ")[0]
                     );
@@ -372,7 +368,7 @@ public class TranslatorSPDX extends TranslatorCore {
                     // If top component exists, and if it is SPDXID: SPDXRef-DOCUMENT, add top level components as its dependencies
                     // Then, add it as the top level component of the dependency tree
                     if( top_component != null && top_component.getUniqueID().contains(DOCUMENT_REFERENCE_TAG) ) {
-                        collectDependencies(top_component.getUniqueID(), packages);
+                        setDependencies(top_component.getUniqueID(), packages);
                     }
                 }
 
