@@ -240,7 +240,7 @@ public class TranslatorCDXXML extends TranslatorCore {
     }
 
     @Override
-    protected void dependencyBuilder(Object dependencies, HashMap<String, Component> components, Component parent, SBOM sbom, Set<String> visited) {
+    protected void dependencyBuilder(HashMap<String, Component> components, Component parent, SBOM sbom, Set<String> visited) {
         // TODO: Extract relevant logic from this.parseContents
     }
 
