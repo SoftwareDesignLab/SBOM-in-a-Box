@@ -23,7 +23,7 @@ public class NugetParserTest extends ParseDepFileTestCore{
 
     protected NugetParserTest() throws IOException {
         super(new NugetParser(),
-                Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/generators/TestData/CSharp/Nuget/nuspec.xsd")),
+                Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/generators/TestData/CSharp/Nuget/ErrLog.IO.nugspec")),
                 "src/test/java/org/svip/sbomfactory/generators/TestData/CSharp/Nuget");
     }
 
