@@ -142,20 +142,23 @@ public class TranslatorCDXJSON extends TranslatorCore {
                             Collectors.toMap(
                                     Dependency::getRef,
                                     x -> {
+                                        // Returns dependencies as strings
                                         return x.getDependencies().stream().map(
                                                 y -> y.getRef()).collect(
                                                         Collectors.toCollection(ArrayList::new));
-                                        // Returns dependencies as strings
                                     },
                                     (x,y) -> y,
                                     HashMap::new
                             )
                     );
         } catch (NullPointerException nullPointerException) {
-            // I failed, ourput error message and default dependencies to null
+            // If dependencies fail, default
             System.err.println("Could not find dependencies from CycloneDX Object. " +
                     "Defaulting all components to point to head component. File: " + file_path);
-            dependencies = null;
+            dependencies.put(
+                    top_component.getUniqueID(),
+                    components.values().stream().map(x->x.getUniqueID()).collect(Collectors.toCollection(ArrayList::new))
+            );
         }
 
 
@@ -166,15 +169,6 @@ public class TranslatorCDXJSON extends TranslatorCore {
                 this.dependencyBuilder(components, top_component, sbom, null);
             } catch (Exception e) {
                 System.out.println("Error building dependency tree. Dependency tree may be incomplete for: " + file_path);
-            }
-        } else {
-            try {
-                for (Map.Entry<String, Component> comp : components.entrySet()) {
-                    if (comp != null) { sbom.addComponent(top_component.getUUID(), comp.getValue()); }
-                }
-            } catch (Exception exception) {
-                System.out.println("Could not default default the dependency tree. Dependency tree may be empty.");
-                exception.printStackTrace();
             }
         }
 
