@@ -87,30 +87,6 @@ public abstract class TranslatorCore {
         }
     }
 
-    protected void addDependency(HashMap<String, Component> components, Component parent, Component child, SBOM sbom, Set<String> visited) {
-        // If component is already in the dependency tree, add it as a child to the parent
-        // Else, add it to the dependency tree while setting the parent
-        if(sbom.hasComponent(child.getUUID())) {
-            parent.addChild(child.getUUID());
-        } else {
-            sbom.addComponent(parent.getUUID(), child);
-        }
-
-        if (visited == null) {
-            // This means we are in the top level component
-            // Pass in a new hashset instead of the visited set
-            visited = new HashSet<>();
-            dependencyBuilder(components, child, sbom, new HashSet<>());
-        }
-        else {
-            // Only explore if we haven't already visited this component
-            if (!visited.contains(child.getUniqueID())) {
-                // Pass the child component as the new parent into dependencyBuilder
-                dependencyBuilder(components, child, sbom, visited);
-            }
-        }
-    }
-
     protected void collectDependency(String key, String value) {
         if (dependencies.get(key) == null || dependencies.get(key).isEmpty()) {
             ArrayList<String> newDependencies = new ArrayList<>(Arrays.asList(value));
