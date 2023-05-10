@@ -6,10 +6,12 @@ import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.QueryWorker;
 import org.svip.sbom.model.PURL;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static org.svip.sbomfactory.generators.utils.Debug.*;
 
@@ -40,11 +42,31 @@ public class POMParser extends PackageManagerParser {
         this.properties = new HashMap<>();
 
         // Resolve nested properties (e.x. "<maven.compiler.source>${java.version}</maven.compiler.source>")
-        this.resolveProperties((LinkedHashMap<String, String>) data.get("properties"));
+        this.resolveProperties(
+                this.properties,
+                (HashMap<String, String>) data.get("properties")
+        );
+
+        // Init dependencies
+        this.dependencies = new HashMap<>();
 
         // Get dependencies from data
-        this.dependencies = ((LinkedHashMap<String, ArrayList<LinkedHashMap<String, String>>>)
-                data.get("dependencies")).get("dependency");
+        this.resolveProperties(
+                this.dependencies,
+                new HashMap(((LinkedHashMap<String, ArrayList<HashMap<String, String>>>) data.get("dependencies"))
+                        .get("dependency")
+                        .stream().collect(
+                                Collectors.toMap(
+                                        d -> d.get("artifactId"),
+                                        d -> d,
+                                        (d1, d2) -> {
+                                            log(LOG_TYPE.WARN, String.format("Duplicate key found: %s", d2.get("artifactId")));
+                                            return d2;
+                                        }
+                                )
+                        )
+                )
+        );
 
         final LinkedHashMap build = (LinkedHashMap) data.get("build");
 
@@ -53,14 +75,13 @@ public class POMParser extends PackageManagerParser {
                 ((LinkedHashMap<String, ArrayList<LinkedHashMap<String, String>>>) build.get("plugins")).get("plugin");
 
         // Iterate and build URLs
-        for (final LinkedHashMap<String, String> d : this.dependencies) {
-            // Format all property keys -> values
-            final String groupId = this.resolveProperty(d.get("groupId"), null);
-            final String artifactId = this.resolveProperty(d.get("artifactId"), null);
-            final String version = this.resolveProperty(d.get("version"), null);
+        for (final String artifactId : this.dependencies.keySet()) {
+            // Get value from map
+            final HashMap<String, String> d = this.dependencies.get(artifactId);
 
-            // Skip dependency if no name
-            if(artifactId == null) continue;
+            // Format all property keys -> values
+            final String groupId = d.get("groupId");
+            final String version = d.get("version");
 
             final ParserComponent c = new ParserComponent(artifactId);
             if(groupId != null) c.setGroup(groupId);

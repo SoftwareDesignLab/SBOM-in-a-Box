@@ -38,30 +38,39 @@ public class GradleParser extends PackageManagerParser {
         // Init properties
         this.properties = new HashMap<>();
 
+        // Init dependencies
+        this.dependencies = new LinkedHashMap<>();
+
         // Insert data
-        this.dependencies.addAll(
-                (ArrayList<LinkedHashMap<String, String>>) data.get("dependencies")
+        this.resolveProperties(
+                this.dependencies,
+                (HashMap<String, String>) data.get("dependencies")
         );
 
         // Get properties
-        final ArrayList<String> ext =
-                (ArrayList<String>) data.get("ext");
+        final ArrayList<String> ext = (ArrayList<String>) data.get("ext");
 
         // Store properties
-        this.resolveProperties((HashMap<String, String>) ext
-                .stream().collect(
-                        Collectors.toMap(
-                                e -> e.substring(0, e.indexOf('=')).trim(),
-                                e -> e.substring(e.indexOf('=') + 1)
-                                        .trim()
-                                        .replace("'", "")
-                                        .replace("\"", "")
-                        )));
+        this.resolveProperties(
+                this.properties,
+                (HashMap<String, String>) ext
+                        .stream().collect(
+                            Collectors.toMap(
+                                    e -> e.substring(0, e.indexOf('=')).trim(),
+                                    e -> e.substring(e.indexOf('=') + 1)
+                                            .trim()
+                                            .replace("'", "")
+                                            .replace("\"", "")
+                            ))
+        );
 
         // Iterate over dependencies
-        for (final LinkedHashMap<String, String> d : this.dependencies) {
+        for (final String artifactId : this.dependencies.keySet()) {
+            // Get value from map
+            final HashMap<String, String> d = this.dependencies.get(artifactId);
+
             // Create ParserComponent from dep info
-            final ParserComponent c = new ParserComponent(d.get("artifactId"));
+            final ParserComponent c = new ParserComponent(artifactId);
             c.setGroup(d.get("group"));
             if (d.containsKey("type")) {
                 final String type = d.get("type");
@@ -89,9 +98,6 @@ public class GradleParser extends PackageManagerParser {
         // Init main data structure
         final LinkedHashMap<String, Object> data = new LinkedHashMap<>();
 
-        // Init this.dependencies
-        this.dependencies = new ArrayList<>();
-
         // Init main Matcher
         // Regex101: https://regex101.com/r/a3rIlp/3
         final Matcher m = Pattern.compile("^(.*) \\{([\\s\\S]*?)^\\}", Pattern.MULTILINE)
@@ -106,7 +112,7 @@ public class GradleParser extends PackageManagerParser {
             // Dependencies will need to be parsed further, so pass raw string
             if (key.equals("dependencies")) {
                 // Init dependencies list
-                final ArrayList<LinkedHashMap<String, String>> deps = new ArrayList<>();
+                final HashMap<String, LinkedHashMap<String, String>> deps = new HashMap<>();
 
                 // Init dependency Pattern
                 // Regex101: https://regex101.com/r/cFnCpF/12
@@ -149,11 +155,13 @@ public class GradleParser extends PackageManagerParser {
 
                         // If one file is found, add its data to dep
                         if (depValues.length == 1) dep.put("artifactId", depValues[0].trim());
-                            // If more than one file is found, create and add a new LHM for each one
+                        // If more than one file is found, create and add a new LHM for each one
                         else {
-                            deps.add(new LinkedHashMap<>() {{
-                                put("artifactId", depValues[0].trim());
-                            }});
+                            for (final String depValue : depValues) {
+                                final String artifactId = depValue.trim();
+                                dep.put("artifactId", artifactId);
+                                deps.put(artifactId, dep);
+                            }
                             continue;
                         }
                     }
@@ -166,7 +174,7 @@ public class GradleParser extends PackageManagerParser {
                     }
 
                     // Insert value
-                    deps.add(dep); // TODO: Uniqueness? Tests fail on non-unique artifactIds
+                    deps.put(dep.get("artifactId"), dep); // TODO: Uniqueness? Tests fail on non-unique artifactIds
                 }
                 data.put("dependencies", deps);
             }

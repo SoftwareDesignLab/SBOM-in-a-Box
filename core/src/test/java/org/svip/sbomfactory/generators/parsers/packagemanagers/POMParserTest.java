@@ -52,32 +52,27 @@ public class POMParserTest extends ParseDepFileTestCore {
     @DisplayName("Test Dependencies")
     void testDependencies() {
         // Rebuild list of deps as map, with artifactId as key
-        final HashMap<String, LinkedHashMap<String, String>> deps =
-                (HashMap<String, LinkedHashMap<String, String>>) this.PARSER.dependencies
-                        .stream().collect(
-                            Collectors.toMap(
-                                    d -> d.get("artifactId"),
-                                    d -> d
-                            ));
+        final HashMap<String, LinkedHashMap<String, String>> deps = this.PARSER.dependencies;
 
         // Test correct count is found
         assertEquals(69, deps.size());
 
         // Get keySet
         final Set<String> keySet = deps.keySet();
+        HashMap<String, String> dep;
 
         // Check for correct element insertion
         assertTrue(keySet.contains("spring-social-security"));
-        final LinkedHashMap<String, String> dep1 = deps.get("spring-social-security");
-        assertEquals("org.springframework.social", dep1.get("groupId"));
+        dep = deps.get("spring-social-security");
+        assertEquals("org.springframework.social", dep.get("groupId"));
 
         assertTrue(keySet.contains("httpclient"));
-        final LinkedHashMap<String, String> dep2 = deps.get("httpclient");
-        assertEquals("org.apache.httpcomponents", dep2.get("groupId"));
+        dep = deps.get("httpclient");
+        assertEquals("org.apache.httpcomponents", dep.get("groupId"));
 
         assertTrue(keySet.contains("logstash-logback-encoder"));
-        final LinkedHashMap<String, String> dep3 = deps.get("logstash-logback-encoder");
-        assertEquals("net.logstash.logback", dep3.get("groupId"));
-        assertEquals("4.9", dep3.get("version"));
+        dep = deps.get("logstash-logback-encoder");
+        assertEquals("net.logstash.logback", dep.get("groupId"));
+        assertEquals("4.9", dep.get("version"));
     }
 }

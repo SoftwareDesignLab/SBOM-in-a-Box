@@ -8,10 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -39,7 +36,7 @@ public abstract class PackageManagerParser extends Parser {
 
     protected final ArrayList<QueryWorker> queryWorkers;
     protected HashMap<String, String> properties;
-    protected ArrayList<LinkedHashMap<String, String>> dependencies;
+    protected HashMap<String, LinkedHashMap<String, String>> dependencies;
 
     protected final Pattern TOKEN_PATTERN;
 
@@ -174,24 +171,66 @@ public abstract class PackageManagerParser extends Parser {
     protected abstract void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data);
 
     // TODO: Docstring
-    protected void resolveProperties(HashMap<String, String> props) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    protected void resolveProperties(HashMap resolvedMap, HashMap<String, String> rawMap) {
         // Iterate over keys
-        props.keySet().forEach(key -> {
+        rawMap.keySet().forEach(key -> {
             // Resolve property
-            this.properties.put(key, resolveProperty(props.get(key), props));
+            resolvedMap.put(key, this.resolveProperty(rawMap.get(key), rawMap));
         });
     }
 
     // TODO: Docstring
-    protected String resolveProperty(String value, HashMap<String, String> props) {
-        // Ingore value if null or blank
-        if(value == null || value.isBlank()) return value;
+    @SuppressWarnings({"unchecked"})
+    protected Object resolveProperty(Object value, HashMap<String, String> props) {
+        // Ingore value if null
+        if(value == null) return value;
 
+        // If value contains multiple values (is a map), store it as such
+        if(value instanceof HashMap) {
+            // Get map of properties to resolve
+            final HashMap<String, String> rawProperties = (HashMap<String, String>) value;
+
+            // Resolve properties
+            return resolveMap(rawProperties, props);
+        }
+        // Otherwise, value is a string
+        else {
+            // Cast value to string
+            final String valueString = (String) value;
+
+            // If value is empty, return null
+            if (valueString.isBlank()) return null;
+
+            // Otherwise, resolve string
+            return resolveString(valueString, props);
+        }
+    }
+
+    private HashMap<String, String> resolveMap(HashMap map, HashMap<String, String> props) {
+        // Init resolved map
+        final HashMap<String, String> resolvedMap = new HashMap<>(map.size());
+
+        // Iterate over unresolved map and store resolved values
+        map.forEach(
+                (k, v) -> {
+                    if(v instanceof String) {
+                        final String keyString = (String) k;
+                        final String valueString = (String) v;
+                        resolvedMap.put(keyString, this.resolveString(valueString, props));
+                    } else log(LOG_TYPE.WARN, String.format("Could not resolve illegal value of type: %s (Expected type: String)", v.getClass().getSimpleName()));
+                });
+
+        // Return resolved map
+        return resolvedMap;
+    }
+
+    private String resolveString(String string, HashMap<String, String> props) {
         // Get results
-        final List<MatchResult> results =  this.TOKEN_PATTERN.matcher(value).results().toList();
+        final List<MatchResult> results =  this.TOKEN_PATTERN.matcher(string).results().toList();
 
         // Init resolved value to raw value
-        String resolvedValue = value;
+        String resolvedValue = string;
 
         // Iterate over match results
         for (MatchResult result : results) {
@@ -203,15 +242,15 @@ public abstract class PackageManagerParser extends Parser {
             if(varValue == null || this.TOKEN_PATTERN.matcher(varValue).find()) {
                 varValue = props.get(varKey);
                 // If value is null, this property cannot be resolved, store original value
-                if(varValue == null)  resolvedValue = value;
+                if(varValue == null)  resolvedValue = string;
                     // Otherwise, recurse resolution
                 else {
-                    resolvedValue = value.substring(0, result.start()) + varValue + value.substring(result.end());
-                    resolveProperty(resolvedValue, props);
+                    resolvedValue = string.substring(0, result.start()) + varValue + string.substring(result.end());
+                    resolveString(resolvedValue, props);
                 }
             }
             // Otherwise, this property can be resolved
-            else resolvedValue = value.substring(0, result.start()) + varValue + value.substring(result.end());
+            else resolvedValue = string.substring(0, result.start()) + varValue + string.substring(result.end());
         }
 
 
