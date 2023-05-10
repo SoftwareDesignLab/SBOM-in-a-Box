@@ -1,6 +1,6 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
-import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class NugetParser extends PackageManagerParser{
     protected NugetParser() {
         super(
                 "https://www.nuget.org/api/v2",
-                new JsonFactory(),
+                new XmlFactory(),
                 "" // TODO: Token regex
         );
     }
