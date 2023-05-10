@@ -133,7 +133,7 @@ public class TranslatorCDXJSON extends TranslatorCore {
         sbom.addComponent(null, top_component);
 
         // Create dependency collection
-        Map<String, List<Dependency>> dependencies;
+        //Map<String, List<String>> dependencies;
         try {
             // Attempt to get all dependencies from CycloneDX Object
             dependencies = json_sbom.getDependencies()
@@ -141,7 +141,14 @@ public class TranslatorCDXJSON extends TranslatorCore {
                     .collect(
                             Collectors.toMap(
                                     Dependency::getRef,
-                                    Dependency::getDependencies
+                                    x -> {
+                                        return x.getDependencies().stream().map(
+                                                y -> y.getRef()).collect(
+                                                        Collectors.toCollection(ArrayList::new));
+                                        // Returns dependencies as strings
+                                    },
+                                    (x,y) -> y,
+                                    HashMap::new
                             )
                     );
         } catch (NullPointerException nullPointerException) {
@@ -156,7 +163,7 @@ public class TranslatorCDXJSON extends TranslatorCore {
         // Otherwise, default the dependencyTree by adding all subcomponents as children to the top component
         if( dependencies != null ) {
             try {
-                this.dependencyBuilder(dependencies, components, top_component, sbom, null);
+                this.dependencyBuilder(components, top_component, sbom, null);
             } catch (Exception e) {
                 System.out.println("Error building dependency tree. Dependency tree may be incomplete for: " + file_path);
             }
@@ -172,6 +179,9 @@ public class TranslatorCDXJSON extends TranslatorCore {
         }
 
 
+        this.defaultDependencies(components, top_component, sbom);
+
+
         // Return SBOM object
         return sbom;
     }
@@ -179,19 +189,17 @@ public class TranslatorCDXJSON extends TranslatorCore {
     /**
      * A simple recursive function to build a dependency tree out of the CDX JSON SBOM
      *
-     * @param dependencies  A map containing packaged components with their CDX bom-refs, pointing to dependencies
      * @param components    A map containing each Component with their bom-ref ID as a key
      * @param parent        Parent component to have dependencies connected to
      * @param sbom          The SBOM object
      */
     @Override
-    protected void dependencyBuilder(Object dependencies, HashMap<String, Component> components, Component parent, SBOM sbom, Set<String> visited) {
+    protected void dependencyBuilder(HashMap<String, Component> components, Component parent, SBOM sbom, Set<String> visited) {
         // If top component is null, return. There is nothing to process.
         if (parent == null) return;
 
         // Get the parent's dependencies as a list
-        List<String> childRefs = ((Map<String, List<Dependency>>) dependencies).get(parent.getUniqueID())
-                .stream().map(BomReference::getRef).toList();
+        List<String> childRefs = dependencies.get(parent.getUniqueID());
 
         if (visited != null) {
             // Add this parent to the visited set
@@ -206,7 +214,7 @@ public class TranslatorCDXJSON extends TranslatorCore {
             // Retrieve the component the parent has a dependency for
             Component child = components.get(childRef);
 
-            addDependency(dependencies, components, parent, child, sbom, visited);
+            addDependency(components, parent, child, sbom, visited);
         }
     }
 }

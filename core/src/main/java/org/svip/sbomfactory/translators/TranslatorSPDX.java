@@ -84,11 +84,10 @@ public class TranslatorSPDX extends TranslatorCore {
 
         // Collection for dependencies, contains every single component, and what it relies on, if any
         // Key (SPDX_ID) = Component, Values (SPDX_ID) = Components it needs
-        ArrayListMultimap<String, String> dependencies = ArrayListMultimap.create();
 
         // Collection of packages, used  for adding head components to top component if in the header (SPDXRef-DOCUMENT)
         // Value (SPDX_ID)
-        List<String> packages = new ArrayList<>();
+        ArrayList<String> packages = new ArrayList<>();
 
         // Get SPDX file
         // Initialize BufferedReader along with current line
@@ -247,8 +246,6 @@ public class TranslatorSPDX extends TranslatorCore {
         // Loop through every Package until Relationships or end of file
         while ( current_line != null ) {
 
-
-
             // If new package/component is found
             if (current_line.contains(PACKAGE_TAG)) {
 
@@ -352,14 +349,14 @@ public class TranslatorSPDX extends TranslatorCore {
                 // Split dependency relationship and store into relationships map depends on relationship type
                 if (current_line.contains("DEPENDS_ON")) {
 
-                    dependencies.put(
+                    collectDependency(
                             relationship.split(" DEPENDS_ON ")[0],
                             relationship.split(" DEPENDS_ON ")[1]
                     );
 
                 } else if (current_line.contains("DEPENDENCY_OF")) {
 
-                    dependencies.put(
+                    collectDependency(
                             relationship.split(" DEPENDENCY_OF ")[1],
                             relationship.split(" DEPENDENCY_OF ")[0]
                     );
@@ -375,8 +372,7 @@ public class TranslatorSPDX extends TranslatorCore {
                     // If top component exists, and if it is SPDXID: SPDXRef-DOCUMENT, add top level components as its dependencies
                     // Then, add it as the top level component of the dependency tree
                     if( top_component != null && top_component.getUniqueID().contains(DOCUMENT_REFERENCE_TAG) ) {
-                        dependencies.putAll(top_component.getUniqueID(), packages);
-                        dependencies.remove(top_component.getUniqueID(), top_component.getUniqueID());
+                        collectDependencies(top_component.getUniqueID(), packages);
                     }
                 }
 
@@ -411,7 +407,7 @@ public class TranslatorSPDX extends TranslatorCore {
         // Create the top level component
         // Build the dependency tree using dependencyBuilder
         try {
-            this.dependencyBuilder(dependencies, components, top_component, sbom, null);
+            this.dependencyBuilder(components, top_component, sbom, null);
         } catch (Exception e) {
             System.err.println("Error processing dependency tree.");
         }
@@ -425,18 +421,17 @@ public class TranslatorSPDX extends TranslatorCore {
     /**
      * A simple recursive function to build a dependency tree out of the SPDX SBOM
      *
-     * @param dependencies  A map containing packaged components with their SPDX IDs, pointing to dependencies
      * @param components    A map containing each Component with their SPDX ID as a key
      * @param parent        Parent component to have dependencies connected to
      * @param sbom          The SBOM object
      */
     @Override
-    protected void dependencyBuilder(Object dependencies, HashMap<String, Component> components, Component parent, SBOM sbom, Set<String> visited) {
+    protected void dependencyBuilder(HashMap<String, Component> components, Component parent, SBOM sbom, Set<String> visited) {
         // If top component is null, return. There is nothing to process.
         if (parent == null) { return; }
 
         // Get the parent's dependencies as a list
-        Collection<String> childRefs = ((Multimap<String, String>) dependencies).get(parent.getUniqueID());
+        ArrayList<String> childRefs = dependencies.get(parent.getUniqueID());
 
         if (visited != null) {
             // Add this parent to the visited set
@@ -451,7 +446,7 @@ public class TranslatorSPDX extends TranslatorCore {
             // Retrieve the component the parent has a dependency for
             Component child = components.get(childRef);
 
-            addDependency(dependencies, components, parent, child, sbom, visited);
+            addDependency(components, parent, child, sbom, visited);
         }
     }
 }
