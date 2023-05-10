@@ -1,6 +1,8 @@
 package org.svip.sbomfactory.translators;
 
 import org.cyclonedx.exception.ParseException;
+import org.cyclonedx.model.Dependency;
+import org.cyclonedx.model.Hash;
 import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
 
@@ -15,8 +17,11 @@ import java.util.stream.Stream;
 public abstract class TranslatorCore {
     protected final String FILE_EXTN;
 
+    protected HashMap<String, ArrayList<String>> dependencies;
+
     protected TranslatorCore(String fileExtn) {
         FILE_EXTN = fileExtn;
+        dependencies = new HashMap<>();
     }
 
     /**
@@ -28,8 +33,61 @@ public abstract class TranslatorCore {
      */
     protected abstract SBOM translateContents(String contents, String filePath) throws IOException, ParseException, ParserConfigurationException;
 
-    protected abstract void dependencyBuilder(Object dependencies, HashMap<String, Component> components, Component parent, SBOM sbom, Set<String> visited);
-    protected void addDependency(Object dependencies, HashMap<String, Component> components, Component parent, Component child, SBOM sbom, Set<String> visited) {
+    protected void dependencyBuilder(HashMap<String, Component> components, Component parent, SBOM sbom, Set<String> visited) {
+
+        // If top component is null, return. There is nothing to process.
+        if (parent == null) { return; }
+
+        if (visited != null) {
+            // Add this parent to the visited set
+            visited.add(parent.getUniqueID());
+        }
+
+        // Get the parent's dependencies as a list
+        String parent_id = parent.getUniqueID();
+        ArrayList<String> childrenID = dependencies.get(parent_id);
+        dependencies.remove(parent_id);
+
+        // If there are no
+        if( childrenID == null ) { return; }
+
+        // Cycle through each dependency the parent component has
+        for (String childID: childrenID) {
+            // Retrieve the component the parent has a dependency for
+            Component child = components.get(childID);
+
+            // If component is already in the dependency tree, add it as a child to the parent
+            // Else, add it to the dependency tree while setting the parent
+            if(sbom.hasComponent(child.getUUID())) {
+                parent.addChild(child.getUUID());
+            } else {
+                sbom.addComponent(parent.getUUID(), child);
+            }
+
+            if (visited == null) {
+                // This means we are in the top level component
+                // Pass in a new hashset instead of the visited set
+                visited = new HashSet<>();
+                dependencyBuilder(components, child, sbom, new HashSet<>());
+            }
+            else {
+                // Only explore if we haven't already visited this component
+                if (!visited.contains(child.getUniqueID())) {
+                    // Pass the child component as the new parent into dependencyBuilder
+                    dependencyBuilder(components, child, sbom, visited);
+                }
+            }
+        }
+    }
+
+    protected void defaultDependencies(HashMap<String, Component> components, Component parent, SBOM sbom) {
+        if (dependencies == null) { return; }
+        for(ArrayList<String> defaults : dependencies.values()) {
+            defaults.stream().forEach(x -> sbom.addComponent(parent.getUUID(), components.get(x)));
+        }
+    }
+
+    protected void addDependency(HashMap<String, Component> components, Component parent, Component child, SBOM sbom, Set<String> visited) {
         // If component is already in the dependency tree, add it as a child to the parent
         // Else, add it to the dependency tree while setting the parent
         if(sbom.hasComponent(child.getUUID())) {
@@ -42,15 +100,31 @@ public abstract class TranslatorCore {
             // This means we are in the top level component
             // Pass in a new hashset instead of the visited set
             visited = new HashSet<>();
-            dependencyBuilder(dependencies, components, child, sbom, new HashSet<>());
+            dependencyBuilder(components, child, sbom, new HashSet<>());
         }
         else {
             // Only explore if we haven't already visited this component
             if (!visited.contains(child.getUniqueID())) {
                 // Pass the child component as the new parent into dependencyBuilder
-                dependencyBuilder(dependencies, components, child, sbom, visited);
+                dependencyBuilder(components, child, sbom, visited);
             }
         }
+    }
+
+    protected void collectDependency(String key, String value) {
+        if (dependencies.get(key) == null || dependencies.get(key).isEmpty()) {
+            ArrayList<String> newDependencies = new ArrayList<>(Arrays.asList(value));
+            dependencies.put(key, newDependencies);
+        } else {
+            ArrayList<String> oldDependencies = dependencies.get(key);
+            oldDependencies.add(value);
+            dependencies.replace(key, oldDependencies);
+        }
+    }
+
+    protected void collectDependencies(String key, ArrayList values) {
+        values.remove(key);
+        dependencies.put(key, values);
     }
 
     public SBOM translatePath(String filePath) throws IOException, ParseException, ParserConfigurationException {
