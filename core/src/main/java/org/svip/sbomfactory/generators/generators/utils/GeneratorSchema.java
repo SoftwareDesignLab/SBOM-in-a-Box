@@ -13,6 +13,7 @@ import org.svip.sbom.model.SBOMType;
 import org.svip.sbomfactory.generators.generators.BOMStore;
 import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXSerializer;
 import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXStore;
+import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXXMLSerializer;
 import org.svip.sbomfactory.generators.generators.spdx.SPDXSerializer;
 import org.svip.sbomfactory.generators.generators.spdx.SPDXStore;
 
@@ -94,18 +95,21 @@ public enum GeneratorSchema {
             // Indent arrays - this will cause each array element to be printed on its own line when not an object
             // prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
 
-            // Enable object indentation and set the pretty printer
-            objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-            objectMapper.setDefaultPrettyPrinter(prettyPrinter);
-
             // Add serializer module to object mapper
             SimpleModule module = new SimpleModule();
             switch(schema) {
-                case CycloneDX -> module.addSerializer(CycloneDXStore.class, new CycloneDXSerializer());
+                case CycloneDX -> {
+                    if(this != XML) module.addSerializer(CycloneDXStore.class, new CycloneDXSerializer());
+                    else module.addSerializer(CycloneDXStore.class, new CycloneDXXMLSerializer());
+                }
                 case SPDX -> module.addSerializer(SPDXStore.class, new SPDXSerializer());
                 default -> throw new GeneratorException("No serializer registered in getObjectMapper() for this schema.");
             }
             objectMapper.registerModule(module);
+
+            // Enable object indentation and set the pretty printer
+            objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+            objectMapper.setDefaultPrettyPrinter(prettyPrinter);
 
             return objectMapper;
         }
