@@ -1,6 +1,6 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
-import com.fasterxml.jackson.dataformat.xml.XmlFactory;
+import com.fasterxml.jackson.core.JsonFactory;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
@@ -8,9 +8,9 @@ import java.util.HashMap;
 
 /**
  * file: NugetParser.java
- * Description: Package-manager specific implementation of the PackageManagerParser (.csproj/.json)
+ * Description: Package-manager specific implementation of the PackageManagerParser (.nuspec/.json)
  *
- * @author Dylan Mulligan
+ * @author Juan Francisco Patino
  */
 public class NugetParser extends PackageManagerParser{
     /**
@@ -22,7 +22,7 @@ public class NugetParser extends PackageManagerParser{
     protected NugetParser() {
         super(
                 "https://www.nuget.org/api/v2",
-                new XmlFactory(),
+                new JsonFactory(),
                 "" // TODO: Token regex
         );
     }
@@ -38,6 +38,7 @@ public class NugetParser extends PackageManagerParser{
     @Override
     protected void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data) {
 
+        int x = 0;
 
     }
 
