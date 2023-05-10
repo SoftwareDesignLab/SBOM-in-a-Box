@@ -8,7 +8,6 @@ import org.svip.sbom.model.PURL;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
