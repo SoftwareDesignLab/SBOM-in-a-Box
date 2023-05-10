@@ -1,8 +1,6 @@
 package org.svip.sbomfactory.translators;
 
 import org.cyclonedx.exception.ParseException;
-import org.cyclonedx.model.Dependency;
-import org.cyclonedx.model.Hash;
 import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
 
@@ -32,6 +30,24 @@ public abstract class TranslatorCore {
      * @return SBOM object, null if failed
      */
     protected abstract SBOM translateContents(String contents, String filePath) throws IOException, ParseException, ParserConfigurationException;
+
+    protected SBOM createSBOM(HashMap<String, String> bom_data) {
+        try {
+            return new SBOM(
+                    bom_data.get("format"),
+                    bom_data.get("specVersion"),
+                    bom_data.get("sbomVersion"),
+                    bom_data.get("author"),
+                    bom_data.get("serialNumber"),
+                    bom_data.get("timestamp"),
+                    null
+            );
+        } catch (Exception e) {
+            System.err.println("Error: Internal SBOM could not be created. File: " + this.FILE_EXTN);
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     protected void dependencyBuilder(HashMap<String, Component> components, Component parent, SBOM sbom, Set<String> visited) {
 
@@ -87,10 +103,9 @@ public abstract class TranslatorCore {
         }
     }
 
-    protected void collectDependency(String key, String value) {
+    protected void addDependency(String key, String value) {
         if (dependencies.get(key) == null || dependencies.get(key).isEmpty()) {
-            ArrayList<String> newDependencies = new ArrayList<>(Arrays.asList(value));
-            dependencies.put(key, newDependencies);
+            dependencies.put(key, new ArrayList<>(Arrays.asList(value)));
         } else {
             ArrayList<String> oldDependencies = dependencies.get(key);
             oldDependencies.add(value);
@@ -98,12 +113,12 @@ public abstract class TranslatorCore {
         }
     }
 
-    protected void collectDependencies(String key, ArrayList values) {
+    protected void setDependencies(String key, ArrayList values) {
         values.remove(key);
         dependencies.put(key, values);
     }
 
-    public SBOM translatePath(String filePath) throws IOException, ParseException, ParserConfigurationException {
+    public SBOM translate(String filePath) throws IOException, ParseException, ParserConfigurationException {
         // Read the file at filePath into a string
         String contents = null;
         try {
@@ -138,7 +153,7 @@ public abstract class TranslatorCore {
         for (Path sbom_item : sbom_files) {
             try {
                 if (sbom_item.toString().toLowerCase().endsWith(this.FILE_EXTN)) {
-                    sbom_objects.add(this.translatePath(sbom_item.toString()));
+                    sbom_objects.add(this.translate(sbom_item.toString()));
                 } else {
                     System.err.println("\nInvalid SBOM format found in: " + sbom_item);
                 }

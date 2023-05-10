@@ -10,8 +10,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.StringReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -324,7 +322,7 @@ public class TranslatorCDXXML extends TranslatorCore {
 
                     // For each child node, add it to the Multimap with the parent as key
                     for (int m = 0 ; m < children.getLength() ; m++) {
-                        collectDependency(
+                        addDependency(
                                 parent,
                                 children.item(m).getAttributes().item(0).getTextContent().replaceAll("@", "")
                         );
