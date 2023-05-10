@@ -97,12 +97,11 @@ public class SubprocessParser extends ContextParser {
         // Log number of found calls
         log(LOG_TYPE.DEBUG, String.format("%s Subprocess Calls Detected", this.context.size()));
 
+        // TODO: Better way to handle this? Currently the entire call is stored as name and type is set to EXTERNAL
         for (final String subprocessCall : this.context) {
             // Create ParserComponent
-            // TODO: Better way to handle this? Currently the entire call is stored as name and type is set to EXTERNAL
             final ParserComponent c = new ParserComponent(subprocessCall);
             c.setType(ParserComponent.Type.EXTERNAL);
-
             // Add ParserComponent to components
             components.add(c);
         }
