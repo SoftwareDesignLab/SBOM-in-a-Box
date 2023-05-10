@@ -6,15 +6,19 @@ import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbom.model.SBOMType;
 import org.svip.sbomfactory.generators.generators.BOMStore;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
+import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXSerializer;
 import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXStore;
 import org.svip.sbomfactory.generators.generators.spdx.SPDXSerializer;
 import org.svip.sbomfactory.generators.generators.spdx.SPDXStore;
+import org.svip.sbomfactory.generators.utils.Debug;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -63,7 +67,7 @@ public enum GeneratorSchema {
     public enum GeneratorFormat {
         // Construct types with their respective file extensions
         JSON("json", new ObjectMapper(new JsonFactory())),
-        XML("xml", new XmlMapper()),
+        XML("xml", new XmlMapper(new XmlFactory())),
         YAML("yml",  new ObjectMapper(new YAMLFactory()));
 
         // Store file extension
@@ -88,7 +92,7 @@ public enum GeneratorSchema {
          */
         public String getExtension() { return extension; }
 
-        public ObjectMapper getObjectMapper() {
+        public ObjectMapper getObjectMapper(GeneratorSchema schema) throws GeneratorException {
             // Configure a new pretty printer that indents arrays
             DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
             prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
@@ -96,6 +100,18 @@ public enum GeneratorSchema {
             // Enable object mapper indentation and set the pretty printer
             objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
             objectMapper.setDefaultPrettyPrinter(prettyPrinter);
+
+            // Add serializer module to object mapper
+            SimpleModule module = new SimpleModule();
+            switch(schema) {
+                case CycloneDX -> { module.addSerializer(CycloneDXStore.class, new CycloneDXSerializer()); }
+                case SPDX -> { module.addSerializer(SPDXStore.class, new SPDXSerializer()); }
+                default -> {
+                    throw new GeneratorException("No serializer registered in getObjectMapper() for this schema.");
+                }
+            }
+            objectMapper.registerModule(module);
+
             return objectMapper;
         }
     }

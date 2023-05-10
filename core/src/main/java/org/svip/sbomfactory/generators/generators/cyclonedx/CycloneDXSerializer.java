@@ -29,7 +29,7 @@ public class CycloneDXSerializer extends StdSerializer<CycloneDXStore> {
     /**
      * The default serializer constructor that takes in no arguments and serializes a null CycloneDXStore class.
      */
-    protected CycloneDXSerializer() { super((Class<CycloneDXStore>) null); }
+    public CycloneDXSerializer() { super((Class<CycloneDXStore>) null); }
 
     /**
      * A serializer constructor that takes in a CycloneDXStore class to serialize.

@@ -20,7 +20,6 @@ import static org.svip.sbomfactory.generators.utils.Debug.log;
  * </p>
  * @author Ian Dunn
  */
-@JsonSerialize(using = SPDXSerializer.class)
 public class SPDXStore extends BOMStore {
 
     //#region Attributes
