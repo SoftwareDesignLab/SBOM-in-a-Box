@@ -12,12 +12,12 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class POMParserParseTest extends ParseDepFileTestCore {
+public class POMParserTest extends ParseDepFileTestCore {
     /**
      * Constructor initializes the respective parser and assigns both the
      * fileContents to test it against and the source directory to test on.
      */
-    protected POMParserParseTest() throws IOException {
+    protected POMParserTest() throws IOException {
         super(new POMParser(),
                 Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/generators/TestData/Java/pom.xml")),
                 "src/test/java/org/svip/sbomfactory/generators/TestData/Java");
