@@ -7,7 +7,6 @@ import org.svip.sbomfactory.generators.utils.ParserComponent;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,29 +20,17 @@ public class CSProjParserTest extends ParseDepFileTestCore {
                 "src/test/java/org/svip/sbomfactory/generators/TestData/CSharp/Bar");
     }
 
-    protected ParserComponent getComponent(String name) {
-        for(ParserComponent i : this.components) {
-            String cname = i.getName();
-            if((cname != null) && cname.equals(name) ) {
-                    return i;
-            }
-        }
-        return null;
-    }
 
     @Test
     @DisplayName("CSharp Test Componemts")
     void testComponemts() {
 
-        // Get Components from PARSER
-        final ArrayList<ParserComponent> components = this.components;
-
         // Test correct count is found
-        assertEquals(12, components.size());
+        assertEquals(12, this.components.size());
 
         //Make ValueSet
         final Set<String> ValueSet = new HashSet<>();;
-        for(ParserComponent pc : components) {
+        for(ParserComponent pc : this.components) {
             ValueSet.add(pc.getName());
         }
 

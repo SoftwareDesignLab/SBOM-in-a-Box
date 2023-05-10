@@ -34,4 +34,20 @@ public abstract class ParseDepFileTestCore extends ParserTestCore<PackageManager
         // Parse fileContents into components array
         this.PARSER.parse(components, fileContents);
     }
+
+    /**
+     * Method to find an individual component from {@link this.components }, null is returned if not found
+     * @param name Name used to find the component
+     * @return The found component object or null
+     */
+    protected ParserComponent getComponent(String name) {
+        for(ParserComponent i : this.components) {
+            String cname = i.getName();
+            if((cname != null) && cname.equals(name) ) {
+                return i;
+            }
+        }
+        return null;
+    }
+
 }
