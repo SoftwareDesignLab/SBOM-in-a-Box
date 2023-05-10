@@ -40,7 +40,7 @@ public class JSTSParser extends LanguageParser {
             final String target = pathParts[pathParts.length - 1];
 
             // Get project path from this.src and walk files to find component
-            try (Stream<Path> stream = Files.walk(Paths.get(String.valueOf(this.PWD)))) {
+            try (Stream<Path> stream = Files.walk(this.PWD)) {
                 return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
             } catch (Exception e){
                 log(LOG_TYPE.EXCEPTION, e);
