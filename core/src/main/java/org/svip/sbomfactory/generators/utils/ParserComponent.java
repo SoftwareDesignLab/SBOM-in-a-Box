@@ -76,12 +76,6 @@ public class ParserComponent extends Component {
         this.resolvedLicenses = new HashSet<>();
     }
 
-    /**
-     * Placeholder constructor that enables instances of
-     * Component to be created dynamically by an ObjectMapper.
-     */
-    public ParserComponent() { }
-
     //#endregion
 
     //#region Getters
