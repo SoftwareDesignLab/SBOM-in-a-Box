@@ -2,12 +2,15 @@ package org.svip.sbomfactory.generators.generators.utils;
 
 
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.svip.sbom.model.SBOMType;
 import org.svip.sbomfactory.generators.generators.BOMStore;
@@ -110,6 +113,7 @@ public enum GeneratorSchema {
             // Enable object indentation and set the pretty printer
             objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
             objectMapper.setDefaultPrettyPrinter(prettyPrinter);
+            if(this == XML) ((XmlMapper) objectMapper).enable(ToXmlGenerator.Feature.WRITE_XML_1_1);
 
             return objectMapper;
         }
