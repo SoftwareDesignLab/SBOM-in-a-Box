@@ -43,6 +43,9 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
      */
     private static final String PREFIX = "bom";
 
+    /**
+     * The object storing the root name, prefix, and namespace of the BOM
+     */
     private static final QName ROOT_NAME = new QName(NAMESPACE_URI, PREFIX, PREFIX);
 
     //#endregion
@@ -90,7 +93,7 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
         initGenerator(xmlGenerator, ROOT_NAME);
 
         //
-        // Root Component TODO
+        // Root Component
         //
 
         xmlGenerator.writeStartObject();
