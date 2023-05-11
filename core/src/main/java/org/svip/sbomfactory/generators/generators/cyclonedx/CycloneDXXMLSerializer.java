@@ -61,18 +61,34 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
         //
 
         ToXmlGenerator xmlGenerator = (ToXmlGenerator) jsonGenerator;
-        QName defaultRootName = new QName("namespace", "root", "bom");
+        QName defaultRootName = new QName("http://cyclonedx.org/schema/bom/1.4", "bom");
         initGenerator(xmlGenerator, defaultRootName);
 
         //
-        // BOM info TODO
+        // Root Component TODO
         //
 
         xmlGenerator.writeStartObject();
+        writeAttribute(xmlGenerator, "serialNumber", cycloneDXStore.getSerialNumber());
+        writeAttribute(xmlGenerator, "version", cycloneDXStore.getBOMVersion());
 
-        xmlGenerator.setNextName(new QName("bom:metadata"));
-        xmlGenerator.writeStringField("testfield", "testvalue");
-        // other fields
+        //
+        // Metadata
+        //
+
+        xmlGenerator.writeFieldName("metadata");
+        xmlGenerator.writeStartObject();
+        xmlGenerator.writeStringField("tool", "testvalue");
+        xmlGenerator.writeEndObject();
+
+        //
+        // Components
+        //
+
+        xmlGenerator.writeFieldName("components");
+        xmlGenerator.writeStartObject();
+        xmlGenerator.writeStringField("component", "testvalue");
+        xmlGenerator.writeEndObject();
 
         xmlGenerator.writeEndObject();
     }
@@ -103,6 +119,12 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
                 StaxUtil.throwAsGenerationException(e, xmlGenerator);
             }
         }
+    }
+
+    private void writeAttribute(ToXmlGenerator xmlGenerator, String name, Object value) throws IOException {
+        xmlGenerator.setNextIsAttribute(true);
+        xmlGenerator.writeObjectField(name, value);
+        xmlGenerator.setNextIsAttribute(false);
     }
 
     //#endregion
