@@ -113,7 +113,7 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
         xmlGenerator.writeEndObject();
 
         // Component
-        writeComponent(xmlGenerator, cycloneDXStore.getHeadComponent());
+        writeComponent(xmlGenerator, cycloneDXStore, cycloneDXStore.getHeadComponent());
         xmlGenerator.writeEndObject();
 
         //
@@ -215,7 +215,9 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
         xmlGenerator.writeEndObject();
     }
 
-    private void writeComponent(ToXmlGenerator xmlGenerator, ParserComponent component) throws IOException {
+    private void writeComponent(ToXmlGenerator xmlGenerator, CycloneDXStore cycloneDXStore, ParserComponent component)
+            throws IOException {
+
         writeObject(xmlGenerator, "component");
         writeAttribute(xmlGenerator, "type", component.getType());
 
@@ -261,20 +263,17 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
         // Nested child components
         //
 
-//        // Write children
-//        List<ParserComponent> children = cycloneDXStore.getChildren(component.getUUID());
-//        if(children.size() > 0) {
-//            jsonGenerator.writeFieldName("components");
-//            jsonGenerator.writeStartArray();
-//
-//            for(ParserComponent child : children) {
-//                writeComponent(jsonGenerator, cycloneDXStore, child);
-//            }
-//
-//            jsonGenerator.writeEndArray();
-//        }
-//
-//        jsonGenerator.writeEndObject(); // }
+        // Write children
+        List<ParserComponent> children = cycloneDXStore.getChildren(component.getUUID());
+        if(children.size() > 0) {
+            writeObject(xmlGenerator, "components");
+
+            for(ParserComponent child : children) {
+                writeComponent(xmlGenerator, cycloneDXStore, child);
+            }
+
+            xmlGenerator.writeEndObject();
+        }
 
         xmlGenerator.writeEndObject();
     }
