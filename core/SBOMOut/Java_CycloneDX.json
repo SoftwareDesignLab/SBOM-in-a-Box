@@ -1,0 +1,1540 @@
+{
+  "CycloneDXStore" : {
+    "bomFormat" : "CycloneDX",
+    "specVersion" : "1.4",
+    "serialNumber" : "urn:uuid:347463e3-816c-3823-a6be-2bda75791a5c",
+    "version" : 1,
+    "metadata" : {
+      "timestamp" : "2023-05-11T16:16:16Z",
+      "tools" : [ {
+        "vendor" : "SVIP",
+        "name" : "BenchmarkGenerator",
+        "version" : "v4.3.0-alpha",
+        "hashes" : [ {
+          "alg" : "SHA-256",
+          "content" : "37845c65494fb9d758550acce421da0888cccc7d7f01b32cdf46ec307ec56a78"
+        } ]
+      } ],
+      "component" : {
+        "name" : "Java",
+        "hashes" : [ {
+          "alg" : "SHA-256",
+          "content" : "a0296be1bf83a65809d779d56df96302c2151793623d0d09385039d1a56ae471"
+        } ],
+        "licenses" : [ {
+          "license" : {
+            "id" : "MIT-0",
+            "url" : "https://opensource.org/license/mit/"
+          }
+        } ],
+        "type" : "library"
+      }
+    },
+    "components" : [ {
+      "name" : "metrics-jcache",
+      "group" : "io.dropwizard.metrics",
+      "version" : "3.2.2",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "cfa07432ba100590d55357015cb9ede2f9ac6690d212ada79d57034f7aac458a"
+      } ],
+      "purl" : "pkg:maven/io.dropwizard.metrics/metrics-jcache@3.2.2",
+      "cpe" : "cpe:2.3:a:maven:metrics-jcache:3.2.2:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "hibernate",
+      "version" : "3.0.5",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "9750706c6ec9f44e2e5a5f8e8ac8d15206e1de45fc719bd80f1de2a33be5a1eb"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\build.gradle"
+      } ]
+    }, {
+      "name" : "\rSecond Multi\rLine Comment\rTest\r*",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "6cc28851a73393d27b18fb80d75491f0940fb04b90d37b7c77872963668bb6e3"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "jjwt",
+      "group" : "io.jsonwebtoken",
+      "version" : "0.7.0",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "349384265d8d25b3328d71b1c057e40328630a981e9fe7dd18b0036f244a397d"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "Apache-2.0"
+        }
+      } ],
+      "purl" : "pkg:maven/io.jsonwebtoken/jjwt@0.7.0",
+      "cpe" : "cpe:2.3:a:maven:jjwt:0.7.0:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "*",
+      "group" : "p3a/p3b",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "20329d262f1708f3f5b072268669a4f186e87df66edab69e4710e6e47e1ad4e7"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\Bar.java"
+      } ]
+    }, {
+      "name" : "",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "5d11af10e5363e269dcde71119ea793cce30f4694207d8bd218c957d7dce9edc"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "json-path",
+      "group" : "com.jayway.jsonpath",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "ce605e13987435290ea1bb248bee9fa30c0addb5db72d841e3bf2058c9ea375e"
+      } ],
+      "purl" : "pkg:maven/com.jayway.jsonpath/json-path",
+      "cpe" : "cpe:2.3:a:maven:json-path:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "spring-context-support",
+      "group" : "org.springframework",
+      "version" : "4.3.9.RELEASE",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "38174b7c9f679864f4a232a07f41cb1c7c2544add7c38cf9107ab890115e3d52"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "Apache-2.0"
+        }
+      } ],
+      "purl" : "pkg:maven/org.springframework/spring-context-support@4.3.9.RELEASE",
+      "cpe" : "cpe:2.3:a:maven:spring-context-support:4.3.9.RELEASE:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "spring-social-facebook",
+      "group" : "org.springframework.social",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "247417218c0365c6ff4a8625ac4e02871513c012a46dc65a2a7b5e6edd061b68"
+      } ],
+      "purl" : "pkg:maven/org.springframework.social/spring-social-facebook",
+      "cpe" : "cpe:2.3:a:maven:spring-social-facebook:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "assertj-core",
+      "group" : "org.assertj",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "fd0be396d9506182dc806ccfc7e89b8fd9fa6e3b48a5495798b7c1bac485c673"
+      } ],
+      "purl" : "pkg:maven/org.assertj/assertj-core",
+      "cpe" : "cpe:2.3:a:maven:assertj-core:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : " Live Import\r",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "a0da392a7f7db876f318dac42f1a6f50d55587749d6c4c54226ba23fdf75396f"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "Foo",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "8966d2548752e48965a2545729d94a1990626aea1a88d11a9cb86ade402799ca"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "spring-boot-autoconfigure",
+      "group" : "org.springframework.boot",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "81df613c5f0d0b201b4665b603223ecc8d66904dd195e7007a63cb09e2de1e5f"
+      } ],
+      "purl" : "pkg:maven/org.springframework.boot/spring-boot-autoconfigure",
+      "cpe" : "cpe:2.3:a:maven:spring-boot-autoconfigure:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "jackson-datatype-jsr310",
+      "group" : "com.fasterxml.jackson.datatype",
+      "version" : "2.8.8",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "174f86e39b8fc47c77226c7d1c3bd5a71d65d6b987e726a4306f6fa5bb4c60a1"
+      } ],
+      "purl" : "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.8.8",
+      "cpe" : "cpe:2.3:a:maven:jackson-datatype-jsr310:2.8.8:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "slugify",
+      "group" : "com.github.slugify",
+      "version" : "2.1.9",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "a0fae4a014f7cc901be8be87081e86eec288874dc42399ed125c1f1cd3fd5690"
+      } ],
+      "purl" : "pkg:maven/com.github.slugify/slugify@2.1.9",
+      "cpe" : "cpe:2.3:a:maven:slugify:2.1.9:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "hibernate-jcache",
+      "group" : "org.hibernate",
+      "version" : "5.2.8.Final",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "8cebd85ebefe17b70213e76bd7d4c62e43a2bd606e8b5333a400569169ed5eb9"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "libselinux-1.0"
+        }
+      } ],
+      "purl" : "pkg:maven/org.hibernate/hibernate-jcache@5.2.8.Final",
+      "cpe" : "cpe:2.3:a:maven:hibernate-jcache:5.2.8.Final:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "*",
+      "group" : "mypackage/myconstants",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "c97931f72e7dda4dd38d2d4f9183db6ae5b6dd63da4008a304ec47ea470a1c47"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\Bar.java"
+      } ]
+    }, {
+      "name" : "nap",
+      "version" : "1",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "e3362befc5a696bcf59eb9312ce216f77087b28c6904ada16326e9433db6b7b8"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\build.gradle"
+      } ]
+    }, {
+      "name" : "postgresql",
+      "group" : "org.postgresql",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "d0cfb35ca0244c3ce0579641125a0efc5306cd168614b4384d3d925816164c9c"
+      } ],
+      "purl" : "pkg:maven/org.postgresql/postgresql",
+      "cpe" : "cpe:2.3:a:maven:postgresql:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "spring-boot-starter-websocket",
+      "group" : "org.springframework.boot",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "f4898834be8e568684bab7918bc8257eed6501bb72da132221a05716c903d383"
+      } ],
+      "purl" : "pkg:maven/org.springframework.boot/spring-boot-starter-websocket",
+      "cpe" : "cpe:2.3:a:maven:spring-boot-starter-websocket:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "p2a/p2b",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "bcb1aa9f21bae2bb7b775fda4969c037456e595cfe5d72547df311840e33cee3"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "spring-boot-loader-tools",
+      "group" : "org.springframework.boot",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "f4144518758029f953713fb4f0513e7a9c5c48ea5ee3f5095e59d336cb210249"
+      } ],
+      "purl" : "pkg:maven/org.springframework.boot/spring-boot-loader-tools",
+      "cpe" : "cpe:2.3:a:maven:spring-boot-loader-tools:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "spring-boot-test",
+      "group" : "org.springframework.boot",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "623ad71a8f21532e0b240ac5a7a9bd0fa7c0abc0eb3ccd925e62393e56467fb4"
+      } ],
+      "purl" : "pkg:maven/org.springframework.boot/spring-boot-test",
+      "cpe" : "cpe:2.3:a:maven:spring-boot-test:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "spring-boot-starter-logging",
+      "group" : "org.springframework.boot",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "de83b0fb56da000474d6e7a632381c83773cb1730d68152195fa45be78107eb9"
+      } ],
+      "purl" : "pkg:maven/org.springframework.boot/spring-boot-starter-logging",
+      "cpe" : "cpe:2.3:a:maven:spring-boot-starter-logging:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "jna",
+      "group" : "net.java.dev.jna",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "9d45a09145b6d865d5ca96d2bb86152fc1f44dd1e857481c26560088ab9e65bb"
+      } ],
+      "purl" : "pkg:maven/net.java.dev.jna/jna",
+      "cpe" : "cpe:2.3:a:maven:jna:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "liquibase-core",
+      "group" : "org.liquibase",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "9a0d6f41fb947b4e0210ee440affcc3d945c8cebe7cf27e24cc585bd9e58f573"
+      } ],
+      "purl" : "pkg:maven/org.liquibase/liquibase-core",
+      "cpe" : "cpe:2.3:a:maven:liquibase-core:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "Date",
+      "group" : "java/util",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "3be196cd27cd7bb0f86fd6d9ab4abb4fa78c67524dbde00969d59329fab7b013"
+      } ],
+      "type" : "framework",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\lib\\Foo.java"
+      } ]
+    }, {
+      "name" : "springfox-bean-validators",
+      "group" : "io.springfox",
+      "version" : "2.7.0",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "85917f71fd22df3927986d32185c796276868e4a2c85923d3f3aea736ac11219"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "Apache-2.0"
+        }
+      } ],
+      "purl" : "pkg:maven/io.springfox/springfox-bean-validators@2.7.0",
+      "cpe" : "cpe:2.3:a:maven:springfox-bean-validators:2.7.0:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "h2",
+      "group" : "com.h2database",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "53a93abb15d79e360688b253e325acf110de77c4ae8eabfdff2d8ff65358eb51"
+      } ],
+      "purl" : "pkg:maven/com.h2database/h2",
+      "cpe" : "cpe:2.3:a:maven:h2:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : " import BADbar1;\r",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "5151916d39988195f172ab5a5d2badeda047ff51fc717d4cc79eb44172decf34"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "spring-bean",
+      "version" : "2.3",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "4df7b3cddf2b59b1beae5108115a2bc464cf1793ced792c455a9e8209a30c102"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\build.gradle"
+      } ]
+    }, {
+      "name" : "mapstruct-jdk8",
+      "group" : "org.mapstruct",
+      "version" : "1.1.0.Final",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "8e9547f12d7c37c74cdb67adc479da83c74d9d07a714d9807d0071750de48be9"
+      } ],
+      "purl" : "pkg:maven/org.mapstruct/mapstruct-jdk8@1.1.0.Final",
+      "cpe" : "cpe:2.3:a:maven:mapstruct-jdk8:1.1.0.Final:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "\rimport BADbar2;\r*",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "594160e21ba48fbe28156cf412f0088c0f62a0ced768ddcc18f558f4b4ce3077"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "HikariCP",
+      "group" : "com.zaxxer",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "1548970c8e61f362fc53aacf0739de02237fac3682f356308eac03fa1550955d"
+      } ],
+      "purl" : "pkg:maven/com.zaxxer/HikariCP",
+      "cpe" : "cpe:2.3:a:maven:HikariCP:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "jackson-datatype-json-org",
+      "group" : "com.fasterxml.jackson.datatype",
+      "version" : "2.8.8",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "a7924a251df2ec03b4983c82e443cf9fab12c3507f74cd8074b8d1dca0badd61"
+      } ],
+      "purl" : "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-json-org@2.8.8",
+      "cpe" : "cpe:2.3:a:maven:jackson-datatype-json-org:2.8.8:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "p6a",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "6f88e44e3ad0c940d2a643c106ed5e125c586bc7b85921e8ca48e32548263dda"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "p7a",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "86120066e20963d48dabd6adc64f0a24274010141554c9798de34799158d50cd"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "wake",
+      "version" : "1.2.3",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "1cd828e8a12a22416aa82fcd4439ceaab2d06bd1938ed706ac0adb80658cafef"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\build.gradle"
+      } ]
+    }, {
+      "name" : "logstash-logback-encoder",
+      "group" : "net.logstash.logback",
+      "version" : "4.9",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "765ec16761ba3e3adc2f1483ad3bd20671526d3d9932ea035a822a275cbd0578"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "MIT"
+        }
+      }, {
+        "license" : {
+          "id" : "Apache-2.0"
+        }
+      } ],
+      "purl" : "pkg:maven/net.logstash.logback/logstash-logback-encoder@4.9",
+      "cpe" : "cpe:2.3:a:maven:logstash-logback-encoder:4.9:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "Foo",
+      "group" : "Java/lib",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "1b321298d6c6bfb0233c9832fd88d2f9a1b406bfa95ad2840649ed7eff35f0df"
+      } ],
+      "type" : "file",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\Bar.java"
+      } ]
+    }, {
+      "name" : "gatling-charts-highcharts",
+      "group" : "io.gatling.highcharts",
+      "version" : "2.2.5",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "95f8f76be60ad836ce193a5303c19bf23647674309326e98b45d103373995514"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "name" : "Gatling Highcharts License"
+        }
+      } ],
+      "purl" : "pkg:maven/io.gatling.highcharts/gatling-charts-highcharts@2.2.5",
+      "cpe" : "cpe:2.3:a:maven:gatling-charts-highcharts:2.2.5:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "jackson-module-kotlin",
+      "group" : "com.fasterxml.jackson.module",
+      "version" : "2.8.7",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "1ea656054bc923a2037d176938b894b22f597321658d4f1e41e42fb10dc58275"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "Apache-2.0"
+        }
+      } ],
+      "purl" : "pkg:maven/com.fasterxml.jackson.module/jackson-module-kotlin@2.8.7",
+      "cpe" : "cpe:2.3:a:maven:jackson-module-kotlin:2.8.7:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "spring-boot-actuator",
+      "group" : "org.springframework.boot",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "d4a25337506505dd1eeafc1b2d581129fccce2a0f6642d3ab7966aeb93e9849a"
+      } ],
+      "purl" : "pkg:maven/org.springframework.boot/spring-boot-actuator",
+      "cpe" : "cpe:2.3:a:maven:spring-boot-actuator:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "spring-rope",
+      "version" : "2.1",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "162f4df8ab2ddc4cb66dca53d5333b0f2eeb2321cb796393b0c2677b51322280"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\build.gradle"
+      } ]
+    }, {
+      "name" : "spring-security-messaging",
+      "group" : "org.springframework.security",
+      "version" : "4.2.3.RELEASE",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "f966e07880780c53577b72588b883615152ffec16a3571ba557fd0e5408a0d3f"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "Apache-2.0"
+        }
+      } ],
+      "purl" : "pkg:maven/org.springframework.security/spring-security-messaging@4.2.3.RELEASE",
+      "cpe" : "cpe:2.3:a:maven:spring-security-messaging:4.2.3.RELEASE:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "jzlib",
+      "group" : "com.jcraft",
+      "version" : "1.1.3",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "73e3a7591bc3e66e982f4abc43f8d1e8884401efd2bd21c2e80933a3a0827772"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "BSD-3-Clause-No-Nuclear-License-2014"
+        }
+      } ],
+      "purl" : "pkg:maven/com.jcraft/jzlib@1.1.3",
+      "cpe" : "cpe:2.3:a:maven:jzlib:1.1.3:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "ehcache",
+      "group" : "org.ehcache",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "94a3fe3f7afb9567a1ef1f39c212f8681eefa11682bef2f42c35c580d7539c70"
+      } ],
+      "purl" : "pkg:maven/org.ehcache/ehcache",
+      "cpe" : "cpe:2.3:a:maven:ehcache:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "slf4j-nop",
+      "version" : "2.0.5",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "ddf0b2ecbb5aaa49336e502e97ec1f9572eb4a99daa68fdd59ad07c4aad100a0"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\build.gradle"
+      } ]
+    }, {
+      "name" : "commons-io",
+      "group" : "commons-io",
+      "version" : "2.5",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "963a96dcf0cd01900c6607b612b5cc3bf308bf27b26d78a7f1ea08b53c09486a"
+      } ],
+      "purl" : "pkg:maven/commons-io/commons-io@2.5",
+      "cpe" : "cpe:2.3:a:maven:commons-io:2.5:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "p8a",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "74ef4802d95ad4cf979932b22a18e53096693adfdc8449e11d0bf32b3739d40c"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "C4a",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "a0822e56e6be3664a56b5f68f18c90b3ec5498a5d16c16dcffc408230c38d2eb"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "metrics-json",
+      "group" : "io.dropwizard.metrics",
+      "version" : "3.2.2",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "3bf27ea58533dba473597ab7f3a2fb52f9a3f6c38b0f69a3ccc1b3e48d66be61"
+      } ],
+      "purl" : "pkg:maven/io.dropwizard.metrics/metrics-json@3.2.2",
+      "cpe" : "cpe:2.3:a:maven:metrics-json:3.2.2:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "metrics-annotation",
+      "group" : "io.dropwizard.metrics",
+      "version" : "3.2.2",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "7f808fcc1f4631934d35430154765bd7e81ecd0f4aa1e7e38b201f35d7f806e7"
+      } ],
+      "purl" : "pkg:maven/io.dropwizard.metrics/metrics-annotation@3.2.2",
+      "cpe" : "cpe:2.3:a:maven:metrics-annotation:3.2.2:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "spring-boot-starter-web",
+      "group" : "org.springframework.boot",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "dc744484d12541968a65631d1e6c2ab6a087b8a77b435742eabc7f04535ecf69"
+      } ],
+      "purl" : "pkg:maven/org.springframework.boot/spring-boot-starter-web",
+      "cpe" : "cpe:2.3:a:maven:spring-boot-starter-web:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "spring-social-google",
+      "group" : "org.springframework.social",
+      "version" : "1.0.0.RELEASE",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "386263031a881d4ac99a431af36c16269573b6c6ca9d4567717f752b49775e49"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "Apache-2.0"
+        }
+      } ],
+      "purl" : "pkg:maven/org.springframework.social/spring-social-google@1.0.0.RELEASE",
+      "cpe" : "cpe:2.3:a:maven:spring-social-google:1.0.0.RELEASE:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "A*",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "b89359f3cb3f9cab431df29a9afc24273b547eb15e9721bb71ad2e0283726c94"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "Process Call Comment\r",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "b2c366c581ab5fb15a5d42fef6125282f4c0479b2494cc4d311c5a35019620e9"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "springfox-swagger2",
+      "group" : "io.springfox",
+      "version" : "2.7.0",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "e3eaab655cfa5b1d05702147bcbd72b54a9d92491d41fd8c850c5c3ac9184116"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "Apache-2.0"
+        }
+      } ],
+      "purl" : "pkg:maven/io.springfox/springfox-swagger2@2.7.0",
+      "cpe" : "cpe:2.3:a:maven:springfox-swagger2:2.7.0:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : " Dead Import\r",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "df7bf66fd96304e6b1131225bc638a7b8cfb665039dfedd3bd5ddcb98212e476"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "cache-api",
+      "group" : "javax.cache",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "0ecd4880b16f5e6a9e4f0113ed70e90387b8c379efed402b1aeeca17d12625b4"
+      } ],
+      "purl" : "pkg:maven/javax.cache/cache-api",
+      "cpe" : "cpe:2.3:a:maven:cache-api:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "arcgis-java-resources",
+      "version" : "$arcgisVersion",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "8aee1488c523a6dd775aa91c50d6dbbe3968473b14e5958fc1e3493a0a87a436"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\build.gradle"
+      } ]
+    }, {
+      "name" : "jackson-datatype-hppc",
+      "group" : "com.fasterxml.jackson.datatype",
+      "version" : "2.8.8",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "ab71d86e79c63c7378f773059f1817709fd01f20361c45a5d863e6b5ee2ed9ac"
+      } ],
+      "purl" : "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-hppc@2.8.8",
+      "cpe" : "cpe:2.3:a:maven:jackson-datatype-hppc:2.8.8:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "httpclient",
+      "group" : "org.apache.httpcomponents",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "90e09ccfc249bf967181f0956fbc8a128b1c13dfd48a2e96afaef276d3abdfd1"
+      } ],
+      "purl" : "pkg:maven/org.apache.httpcomponents/httpclient",
+      "cpe" : "cpe:2.3:a:maven:httpclient:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "*",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "08e886b8988dd89f9304b83c83aa27265410fce6e851fb308c359c1e8fc3baae"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\Bar.java"
+      } ]
+    }, {
+      "name" : "ArrayList",
+      "group" : "java/util",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "16db3d350fd942314ac92e5a37cd2d7dfe19aa4442193b9cee858d184b48adb8"
+      } ],
+      "type" : "framework",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\lib\\Foo.java"
+      } ]
+    }, {
+      "name" : "feign-gson",
+      "group" : "com.netflix.feign",
+      "version" : "8.18.0",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "32e0327a6a3028da6666fddba7cd21ac2a98b3beda405758f500d02105c1965a"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "Apache-2.0"
+        }
+      } ],
+      "purl" : "pkg:maven/com.netflix.feign/feign-gson@8.18.0",
+      "cpe" : "cpe:2.3:a:maven:feign-gson:8.18.0:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "spring-boot-configuration-processor",
+      "group" : "org.springframework.boot",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "41091279231a350dd9391420a515bcc4dad7bdaafee64f75d3c6daa954ff3b01"
+      } ],
+      "purl" : "pkg:maven/org.springframework.boot/spring-boot-configuration-processor",
+      "cpe" : "cpe:2.3:a:maven:spring-boot-configuration-processor:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "spring-boot-starter-mail",
+      "group" : "org.springframework.boot",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "0e1e4ff8f6e18c76ccd88cd9f45647a53b08fe791cd4db4451d7128a6a1a7f69"
+      } ],
+      "purl" : "pkg:maven/org.springframework.boot/spring-boot-starter-mail",
+      "cpe" : "cpe:2.3:a:maven:spring-boot-starter-mail:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "feign-core",
+      "group" : "com.netflix.feign",
+      "version" : "8.18.0",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "1f5c82a59be865c825540234b6ffb04acc3aa25a9476c14431a6763ebca95594"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "Apache-2.0"
+        }
+      } ],
+      "purl" : "pkg:maven/com.netflix.feign/feign-core@8.18.0",
+      "cpe" : "cpe:2.3:a:maven:feign-core:8.18.0:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "hibernate",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "0ecb0b7fed61d51c36c9e9d4fd1250394655feaa812d6a88656ef616b2286fda"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\build.gradle"
+      } ]
+    }, {
+      "name" : "spring-boot-starter-aop",
+      "group" : "org.springframework.boot",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "85d2c3715facb8f21fe335c2dd20fd90c09a1a398f9492f6335257e65d14ffdc"
+      } ],
+      "purl" : "pkg:maven/org.springframework.boot/spring-boot-starter-aop",
+      "cpe" : "cpe:2.3:a:maven:spring-boot-starter-aop:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "ColorSpace",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "f374fd601637d6a3431375e95519ebc41ed05fa357cf3fc77aa7c30608f63ead"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "p1a",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "089e7a640c3881d4edd489fb67af36ccf6416d7acfa7c9fbb122ad61112d2721"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\Bar.java"
+      } ]
+    }, {
+      "name" : "metrics-servlets",
+      "group" : "io.dropwizard.metrics",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "2d47d6d714740b7774805d3c473da14ef69d3e23d7a739342dd4c3e93599cb30"
+      } ],
+      "purl" : "pkg:maven/io.dropwizard.metrics/metrics-servlets",
+      "cpe" : "cpe:2.3:a:maven:metrics-servlets:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "hibernate-validator",
+      "group" : "org.hibernate",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "45a1ee22b248f1a35e2a3a0ce6a0a2594b02f0dd80b6cec3885f1769a6c43b3e"
+      } ],
+      "purl" : "pkg:maven/org.hibernate/hibernate-validator",
+      "cpe" : "cpe:2.3:a:maven:hibernate-validator:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "kotlin-stdlib-jre8",
+      "group" : "org.jetbrains.kotlin",
+      "version" : "1.1.4-2",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "1bb0ca4189c9164f68d157949148631290abdbb2e93f00dd1ba39419e2366512"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "Apache-2.0"
+        }
+      } ],
+      "purl" : "pkg:maven/org.jetbrains.kotlin/kotlin-stdlib-jre8@1.1.4-2",
+      "cpe" : "cpe:2.3:a:maven:kotlin-stdlib-jre8:1.1.4-2:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "spring-boot-starter-thymeleaf",
+      "group" : "org.springframework.boot",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "8ceb367885681aefb93cd20d3dca1915e7d2b932991aee5abe677a96de2629ea"
+      } ],
+      "purl" : "pkg:maven/org.springframework.boot/spring-boot-starter-thymeleaf",
+      "cpe" : "cpe:2.3:a:maven:spring-boot-starter-thymeleaf:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "spring-core",
+      "version" : "2.5",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "dde28d0a84cc9fdcac40d020afa48e616094e3c177cb253829fbc5e7a61728e5"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\build.gradle"
+      } ]
+    }, {
+      "name" : "jackson-datatype-hibernate5",
+      "group" : "com.fasterxml.jackson.datatype",
+      "version" : "2.8.8",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "d5170170dfa7680bf791b92fff36af698338dbec569e17dd11420fb136832df1"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "Apache-2.0"
+        }
+      } ],
+      "purl" : "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-hibernate5@2.8.8",
+      "cpe" : "cpe:2.3:a:maven:jackson-datatype-hibernate5:2.8.8:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "spring-boot-starter-cloud-connectors",
+      "group" : "org.springframework.boot",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "b74dbc773b8802d7bceae8f135eb86f10182a4dade279c678d179466a5236af4"
+      } ],
+      "purl" : "pkg:maven/org.springframework.boot/spring-boot-starter-cloud-connectors",
+      "cpe" : "cpe:2.3:a:maven:spring-boot-starter-cloud-connectors:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "hibernate.jar",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "3c04459147a4ae2e0e53daa9f80095ec37bf8ad7e2963b57c6142c19b630d548"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\build.gradle"
+      } ]
+    }, {
+      "name" : " Same Line Long Comment ",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "8fdb31522f5f431c5efce20140e3dbccb1ac9150e37290d254a9747025d4c1be"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "spring-boot-starter-security",
+      "group" : "org.springframework.boot",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "3aae23b768b8eb45ea934cadf77ddf43341b1a8e7c4259aadc4bd9e127b06c7d"
+      } ],
+      "purl" : "pkg:maven/org.springframework.boot/spring-boot-starter-security",
+      "cpe" : "cpe:2.3:a:maven:spring-boot-starter-security:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "spring-security-data",
+      "group" : "org.springframework.security",
+      "version" : "4.2.3.RELEASE",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "1d297c8ebe63e6df1f2091bb44c1a2160e1b6b263a346ce5144098ec372433cc"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "Apache-2.0"
+        }
+      } ],
+      "purl" : "pkg:maven/org.springframework.security/spring-security-data@4.2.3.RELEASE",
+      "cpe" : "cpe:2.3:a:maven:spring-security-data:4.2.3.RELEASE:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "liquibase-slf4j",
+      "group" : "com.mattbertolini",
+      "version" : "2.0.0",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "71a9d2d00337333c7f26018d51fb4736ac10dee5b729091d48e7b900bab4becc"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "MIT"
+        }
+      } ],
+      "purl" : "pkg:maven/com.mattbertolini/liquibase-slf4j@2.0.0",
+      "cpe" : "cpe:2.3:a:maven:liquibase-slf4j:2.0.0:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "commons-lang3",
+      "group" : "org.apache.commons",
+      "version" : "3.5",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "0507349a0b7492086d0da562e953018af6582ff083ac90da02f4189fd6394f65"
+      } ],
+      "purl" : "pkg:maven/org.apache.commons/commons-lang3@3.5",
+      "cpe" : "cpe:2.3:a:maven:commons-lang3:3.5:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "spring-social-security",
+      "group" : "org.springframework.social",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "b7d88d8188eec39c230e5f9141e6e2b3fd753f23434e6d487a56d5b2ab107559"
+      } ],
+      "purl" : "pkg:maven/org.springframework.social/spring-social-security",
+      "cpe" : "cpe:2.3:a:maven:spring-social-security:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "java/awt/color",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "5144f4745e22660ba728ae6219dd2bd113f6f6ec1488f4dc589b4aa5dc0d4500"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "awaitility",
+      "group" : "org.awaitility",
+      "version" : "2.0.0",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "af9e8ae0d7bafca01416201eb8e2a870e9ad50a1679f737b8bb301047231250c"
+      } ],
+      "purl" : "pkg:maven/org.awaitility/awaitility@2.0.0",
+      "cpe" : "cpe:2.3:a:maven:awaitility:2.0.0:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "jbcrypt",
+      "group" : "org.mindrot",
+      "version" : "0.4",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "77b7a19634f8ea6fa2a6cbd99c26722c100245c1cef54fdf378a67e362671be3"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "ISC"
+        }
+      } ],
+      "purl" : "pkg:maven/org.mindrot/jbcrypt@0.4",
+      "cpe" : "cpe:2.3:a:maven:jbcrypt:0.4:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "metrics-jvm",
+      "group" : "io.dropwizard.metrics",
+      "version" : "3.2.2",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "2e361a57151cedc72245f0b99a36f604def56cc8f55615f78629ae4957a1922f"
+      } ],
+      "purl" : "pkg:maven/io.dropwizard.metrics/metrics-jvm@3.2.2",
+      "cpe" : "cpe:2.3:a:maven:metrics-jvm:3.2.2:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "arcgis-java-jnilibs",
+      "version" : "$arcgisVersion",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "af7109bb966c15be17a1211a9195a1186cd5d49d34374da26f564eff1eb22910"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\build.gradle"
+      } ]
+    }, {
+      "name" : "metrics-core",
+      "group" : "io.dropwizard.metrics",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "af292acd7bfaf6a75cc901c9eb0672903a67c6ebc603b77c6c3e3295c314f830"
+      } ],
+      "purl" : "pkg:maven/io.dropwizard.metrics/metrics-core",
+      "cpe" : "cpe:2.3:a:maven:metrics-core:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "metrics-spring",
+      "group" : "com.ryantenney.metrics",
+      "version" : "3.1.3",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "d3bc1e3e73388db7acf4e1da52571eeb5fc73abc5f245b79b485707ce7088239"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "Apache-2.0"
+        }
+      } ],
+      "purl" : "pkg:maven/com.ryantenney.metrics/metrics-spring@3.1.3",
+      "cpe" : "cpe:2.3:a:maven:metrics-spring:3.1.3:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "C4a",
+      "group" : "p4a/p4b/p4c",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "95514ca28e49b3fe8d2b3f321379d050165e2fd7f8b92a73475371e61e332c57"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\Bar.java"
+      } ]
+    }, {
+      "name" : "\r * Long Comment\r *",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "ae0fba4e67ed8a2650d30f0e723501eb40320b756d82757cc644e0ebb0ae7c40"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "kotlin-reflect",
+      "group" : "org.jetbrains.kotlin",
+      "version" : "1.1.4-2",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "a40cb999cd15395c940da18026ca1ed52f88a1de9a75a23906bc5fe1320d6785"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "Apache-2.0"
+        }
+      } ],
+      "purl" : "pkg:maven/org.jetbrains.kotlin/kotlin-reflect@1.1.4-2",
+      "cpe" : "cpe:2.3:a:maven:kotlin-reflect:1.1.4-2:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "spring-boot-starter-data-jpa",
+      "group" : "org.springframework.boot",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "354f1a4afaed4cc9a2ca4653243c24e0bdced9edbadaa42caede791af902b72d"
+      } ],
+      "purl" : "pkg:maven/org.springframework.boot/spring-boot-starter-data-jpa",
+      "cpe" : "cpe:2.3:a:maven:spring-boot-starter-data-jpa:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "jackson-module-afterburner",
+      "group" : "com.fasterxml.jackson.module",
+      "version" : "2.8.8",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "e81f930548f44bbaed8d9dda1a61f640d2c7a2e382e1bd7a3c33bc8413f2d7f9"
+      } ],
+      "purl" : "pkg:maven/com.fasterxml.jackson.module/jackson-module-afterburner@2.8.8",
+      "cpe" : "cpe:2.3:a:maven:jackson-module-afterburner:2.8.8:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "jhipster",
+      "group" : "io.github.jhipster",
+      "version" : "1.1.8",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "c74057aa35ce5428f6f2449141c1d1dcb15be075f425e37b37f2eb929bec5b5f"
+      } ],
+      "purl" : "pkg:maven/io.github.jhipster/jhipster@1.1.8",
+      "cpe" : "cpe:2.3:a:maven:jhipster:1.1.8:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "C:\\\\PathToExe\\\\MyExe.exe param1 param2",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "c4f63ce510f141c59e264ca6a19c91c4fbe4ce83689548910533103b9a565048"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "spring-security-test",
+      "group" : "org.springframework.security",
+      "version" : "4.2.3.RELEASE",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "6b6b7fdc258663e895b1fee378ea61c5d2d8cb2880077e0d264442191992ac4a"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "Apache-2.0"
+        }
+      } ],
+      "purl" : "pkg:maven/org.springframework.security/spring-security-test@4.2.3.RELEASE",
+      "cpe" : "cpe:2.3:a:maven:spring-security-test:4.2.3.RELEASE:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "java/awt/color",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "8777030433e085757440a4caf4ae30cfdf291cca6a271b161d74931e5b137340"
+      } ],
+      "type" : "framework",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\Bar.java"
+      } ]
+    }, {
+      "name" : "metrics-servlet",
+      "group" : "io.dropwizard.metrics",
+      "version" : "3.2.2",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "515fd42daf783620598159afcf3124c27d0ccc75de6d46e61ae163433163b77b"
+      } ],
+      "purl" : "pkg:maven/io.dropwizard.metrics/metrics-servlet@3.2.2",
+      "cpe" : "cpe:2.3:a:maven:metrics-servlet:3.2.2:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "\r * Multi Line\r * Test\r * Comment\r *",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "f88b0710aeb5fd6b25bd114a22927ccd5082a7d89d757c43921ad3efd4407ce6"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "* javadoc test ",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "ac8b0bb8cbc0a73b29b5d65d68d52567281af129324230ab16bc8e64bab7383a"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "spring-boot-starter-test",
+      "group" : "org.springframework.boot",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "f299b07c639cbc47041008576ebaa73675c0b1fb493857be90e816b85ae15d43"
+      } ],
+      "purl" : "pkg:maven/org.springframework.boot/spring-boot-starter-test",
+      "cpe" : "cpe:2.3:a:maven:spring-boot-starter-test:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : " Invalid import\r",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "354d6f9e6412e580f5edf57cf060eb5b8f83d55b1164776e29509d024e3ef9ab"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : " Internal file\r",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "a4a9f562cdc810e1024250f7e3eb5c51305876636540bb349a109b918c37c810"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "hibernate-envers",
+      "group" : "org.hibernate",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "27c5083eff453110455eab1c8bd394f0411e2a9c00488b43aa8c1063a9f79829"
+      } ],
+      "purl" : "pkg:maven/org.hibernate/hibernate-envers",
+      "cpe" : "cpe:2.3:a:maven:hibernate-envers:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "Date",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "607a6c3476444e60cb471d241210d093122bc7bb1160aa1371e486422bdad57e"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "spring-oop",
+      "version" : "5.7",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "173f240c1d031de42a87dd9f299175da4355d5c883249822df2c67a4a2a7fad5"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\build.gradle"
+      } ]
+    }, {
+      "name" : "spring-social-twitter",
+      "group" : "org.springframework.social",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "7837697ee8a96e737e0ba187f36c93a1767b11d3d965f430ae094b637364ecc9"
+      } ],
+      "purl" : "pkg:maven/org.springframework.social/spring-social-twitter",
+      "cpe" : "cpe:2.3:a:maven:spring-social-twitter:*:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : "spring-api",
+      "version" : "3.6",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "72c9f78051ed6f9a4aa9797964d6fd51abf616636450e12a26129174ef7f2011"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\build.gradle"
+      } ]
+    }, {
+      "name" : "ColorSpace",
+      "group" : "java/awt/color",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "a4ca1241ef5f976c6c767b373637cdbd473049496e23324b90734adb7986a6b9"
+      } ],
+      "type" : "framework",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\Bar.java"
+      } ]
+    }, {
+      "name" : "this imports bar\r",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "8ecd4a4fdfd495b325b67ca36868542d3fbdd2da02fc1b972bd9ad5ce6ab98fd"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "A*",
+      "group" : "p5a",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "1f22dbf82d79a1729acf0a0026d49d5b61907ff21b63b752e27f3f8a3844cffb"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\Bar.java"
+      } ]
+    }, {
+      "name" : "libs",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "c56a91783d745de1b05c0becef362d0976ab2549a349937e6131bbe551ab6b41"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\build.gradle"
+      } ]
+    }, {
+      "name" : "spring-boot-starter-data-jest",
+      "group" : "com.github.vanroy",
+      "version" : "2.2.0.RELEASE",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "6ba23b865d612bb8a5a48f78e63abd6d1e8a12bdd749b28ec076e16ce197f257"
+      } ],
+      "purl" : "pkg:maven/com.github.vanroy/spring-boot-starter-data-jest@2.2.0.RELEASE",
+      "cpe" : "cpe:2.3:a:maven:spring-boot-starter-data-jest:2.2.0.RELEASE:*:*:*:*:*:*:*",
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\pom.xml"
+      } ]
+    }, {
+      "name" : " import BADbar3; ",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "20820162d3ca7dfa781af653878dd2a29de22b4da4896a38a7b9c75e9d104682"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "arcgis-java",
+      "version" : "$arcgisVersion",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "47eeaa6888db915a63577b4d903090032f1ac62819971e8de4323a2c2f7d2c01"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Java\\build.gradle"
+      } ]
+    } ]
+  }
+}
