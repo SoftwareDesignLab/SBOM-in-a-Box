@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v4.3.1-alpha] - (05/11/2023)
+
+### Added
+
+- Add `CycloneDXXMLSerializer` Class.
+  - Similar to `CycloneDXSerializer`, this class overrides the Jackson `StdSerializer` Class to allow serialization of
+    a `CycloneDXStore` instance to an XML file according to the [CycloneDX v1.4 XML specification](https://cyclonedx.org/docs/1.4/xml/).
+  - A separate serializer is required due to the inherent difference between JSON and XML.
+- Add abstract `TranslatorCore` Class that all other translators extend to increase modularity.
+- Add abstract `TranslatorTestCore` Class that allows the tests to have a similar level of modularity.
+- Add `CSProjParserTest` to test the C# Package Parser.
+- Add 
+
+### Changed
+
+- Update `GeneratorSchema.getObjectMapper()` to take a schema argument to register all serializers with their respective
+  `ObjectMapper`
+  - Previously, registering the custom serializers was done using Jackson decorators on all `BOMStore` classes. However,
+    this made it difficult to have multiple different types of serializers.
+  - Now, all `ObjectMapper` configuration and serialization setup is done in `getObjectMapper()`. This allows for simply
+    calling the method on a specific format and passing in the schema to get a completely set up `ObjectMapper` whose
+    serializer is dependent on the file format back.
+- Update `ObjectMapper` pretty-printing to stop indenting each line of an array to enhance SBOM readability.
+- Refactor all translator tests (see below) to reflect the updated translator (and `TranslatorTestCore`) architecture.
+  - `TranslatorCDXJSONTest`
+  - `TranslatorCDXXMLTest`
+  - `TranslatorSPDXTest`
+- Rename `GradleParserParseTest` to `GradleParserTest` for semantics.
+- Update `CommentParser`, `DeadImportParser`, & `SubprocessParser` to add parsed contexts to SBOM components.
+
+
 ## [v4.3.0-alpha] - (05/08/2023)
 
 ### Added

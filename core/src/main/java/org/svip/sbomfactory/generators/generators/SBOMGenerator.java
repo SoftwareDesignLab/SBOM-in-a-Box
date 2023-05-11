@@ -44,7 +44,7 @@ public class SBOMGenerator {
     /**
      * The version of our SBOMGenerator tool.
      */
-    public static final String TOOL_VERSION = "v4.3.0-alpha";
+    public static final String TOOL_VERSION = "v4.3.1-alpha";
 
     /**
      * The license of our SBOMGenerator tool.
