@@ -173,6 +173,10 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
         xmlGenerator.writeStartObject();
     }
 
+    private void writeFieldIfExists(ToXmlGenerator xmlGenerator, String name, String value) throws IOException {
+        if(value != null && value.length() > 0) xmlGenerator.writeStringField(name, value);
+    }
+
     private void writeHashes(ToXmlGenerator xmlGenerator, Map<String, String> hashes) throws IOException {
         if (hashes.size() > 0) {
             writeObject(xmlGenerator, "hashes");
@@ -227,8 +231,8 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
         writeAttribute(xmlGenerator, "type", CycloneDXSerializer.getCDXType(component.getType()));
 
         xmlGenerator.writeStringField("name", component.getName());
-        xmlGenerator.writeStringField("group", component.getGroup());
-        xmlGenerator.writeStringField("version", component.getVersion());
+        writeFieldIfExists(xmlGenerator, "group", component.getGroup());
+        writeFieldIfExists(xmlGenerator,"version", component.getVersion());
 
         writeHashes(xmlGenerator, new HashMap<String, String>() {{ put(component.generateHash(), "SHA-256"); }});
 
@@ -242,9 +246,9 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
         // External identifiers
         //
 
-        xmlGenerator.writeStringField("purl",
+        writeFieldIfExists(xmlGenerator,"purl",
                 String.join(", ", component.getPurls().stream().map(PURL::toString).toList()));
-        xmlGenerator.writeStringField("cpe", String.join(", ", component.getCpes()));
+        writeFieldIfExists(xmlGenerator,"cpe", String.join(", ", component.getCpes()));
         // TODO Do this for SWIDs once we support them
 
         //
