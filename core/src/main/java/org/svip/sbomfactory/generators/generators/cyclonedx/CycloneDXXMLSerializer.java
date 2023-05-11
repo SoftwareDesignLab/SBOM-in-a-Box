@@ -7,6 +7,7 @@ import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 import org.svip.sbom.model.PURL;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
+import org.svip.sbomfactory.generators.generators.utils.License;
 import org.svip.sbomfactory.generators.generators.utils.Tool;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXSerializer.getCDXType;
 
@@ -193,8 +195,30 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
         xmlGenerator.writeEndObject();
     }
 
+    private void writeLicenses(ToXmlGenerator xmlGenerator, Set<License> licenses) throws IOException {
+        if(licenses.size() == 0) return;
+
+        writeObject(xmlGenerator, "licenses");
+
+        for(License license : licenses) {
+            writeObject(xmlGenerator, "license");
+
+            if(license.getSpdxLicense() != null) {
+                xmlGenerator.writeStringField("id", license.getSpdxLicense());
+            } else {
+                xmlGenerator.writeStringField("name", license.getLicenseName());
+            }
+            xmlGenerator.writeStringField("url", license.getUrl());
+
+            xmlGenerator.writeEndObject();
+        }
+
+        xmlGenerator.writeEndObject();
+    }
+
     private void writeComponent(ToXmlGenerator xmlGenerator, ParserComponent component) throws IOException {
         writeObject(xmlGenerator, "component");
+        writeAttribute(xmlGenerator, "type", component.getType());
 
         xmlGenerator.writeStringField("name", component.getName());
         xmlGenerator.writeStringField("group", component.getGroup());
@@ -206,22 +230,16 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
         // Licenses
         //
 
-//        writeLicenses(jsonGenerator, component.getResolvedLicenses());
+        writeLicenses(xmlGenerator, component.getResolvedLicenses());
 
         //
         // External identifiers
         //
 
-//        writeFieldIfExists(jsonGenerator, "purl",
-//                String.join(", ", component.getPurls().stream().map(PURL::toString).toList()));
-//        writeFieldIfExists(jsonGenerator, "cpe", String.join(", ", component.getCpes()));
-//        // TODO Do this for SWIDs once we support them
-
-        //
-        // Type
-        //
-
-//        xmlGenerator.writeStringField("type", getCDXType(component.getType()));
+        xmlGenerator.writeStringField("purl",
+                String.join(", ", component.getPurls().stream().map(PURL::toString).toList()));
+        xmlGenerator.writeStringField("cpe", String.join(", ", component.getCpes()));
+        // TODO Do this for SWIDs once we support them
 
         //
         // Properties (files analyzed)
