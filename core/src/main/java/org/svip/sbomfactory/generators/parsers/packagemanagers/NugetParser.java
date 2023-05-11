@@ -83,19 +83,14 @@ public class NugetParser extends PackageManagerParser{
                 this.resolveProperties(
                         this.dependencies,
 
-                        /*
-                        Inconvertible types; cannot cast 'java.util.ArrayList<java.util.HashMap<java.lang.String,java.lang.String>>' to 'java.util.LinkedHashMap<java.lang.String,java.util.ArrayList<java.util.HashMap<java.lang.String,java.lang.String>>>
-                         */
 
-
-                        new HashMap(((LinkedHashMap<String, ArrayList<HashMap<String, String>>>) (((LinkedHashMap<?, ?>)o).get("frameworkAssembly")))
-                                .get("dependency")
+                        new HashMap(((ArrayList<LinkedHashMap<String,String>>) (((LinkedHashMap<?, ?>)o).get("frameworkAssembly")))
                                 .stream().collect(
                                         Collectors.toMap(
-                                                d -> d.get("id"),
+                                                d -> d.get("assemblyName"),
                                                 d -> d,
                                                 (d1, d2) -> {
-                                                    log(Debug.LOG_TYPE.WARN, String.format("Duplicate key found: %s", d2.get("artifactId")));
+                                                    log(Debug.LOG_TYPE.WARN, String.format("Duplicate key found: %s", d2.get("assemblyName")));
                                                     return d2;
                                                 }
                                         )
@@ -105,8 +100,7 @@ public class NugetParser extends PackageManagerParser{
 
             } else if (s.equals("dependency")) {
 
-                new HashMap(((LinkedHashMap<String, ArrayList<HashMap<String, String>>>) (((LinkedHashMap<?, ?>)o).get("dependency")))
-                        .get("dependency")
+                new HashMap(((ArrayList<LinkedHashMap<String,String>>) (((LinkedHashMap<?, ?>)o).get("dependency")))
                         .stream().collect(
                                 Collectors.toMap(
                                         d -> d.get("id"),
