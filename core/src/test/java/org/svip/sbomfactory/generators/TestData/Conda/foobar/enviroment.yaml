@@ -1,0 +1,21 @@
+name: example-environment
+
+channels:
+  - pytorch
+  - defaults
+
+dependencies:
+  - python=3.4
+  - numpy
+  - toolz
+  - matplotlib
+  - dill=1.2
+  - pandas
+  - partd
+  - bokeh
+  - pip
+  - pip:
+      - git+https://github.com/blaze/dask.git#egg=dask[complete]
+      - yellowbrick==3.2
+      - progressbar==1.0
+      - -r file:requirements.txt
