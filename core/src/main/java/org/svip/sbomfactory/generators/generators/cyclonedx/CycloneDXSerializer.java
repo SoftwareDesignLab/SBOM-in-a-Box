@@ -300,7 +300,7 @@ public class CycloneDXSerializer extends StdSerializer<CycloneDXStore> {
      * @param type The type of the ParserComponent.
      * @return The CDX-specific type that the ParserComponent type maps to.
      */
-    private String getCDXType(ParserComponent.Type type) {
+    protected static String getCDXType(ParserComponent.Type type) {
         // Set component type based on what the parser reads it in as
         // https://cyclonedx.org/docs/1.4/json/#components_items_type TODO figure out if we can be more descriptive
         switch(type) {

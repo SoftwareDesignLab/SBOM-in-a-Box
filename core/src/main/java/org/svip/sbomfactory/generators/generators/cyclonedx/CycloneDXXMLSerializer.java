@@ -5,11 +5,19 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
+import org.svip.sbom.model.PURL;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
+import org.svip.sbomfactory.generators.generators.utils.Tool;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXSerializer.getCDXType;
 
 /**
  * File: CycloneDXXMLSerializer.java
@@ -90,18 +98,30 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
         // Metadata
         //
 
-        xmlGenerator.writeFieldName("metadata");
-        xmlGenerator.writeStartObject();
-        xmlGenerator.writeStringField("tool", "testvalue");
+        writeObject(xmlGenerator, "metadata");
+        xmlGenerator.writeStringField("timestamp", cycloneDXStore.getTimestamp());
+
+        // Tools
+        writeObject(xmlGenerator, "tools");
+
+        for(Tool tool : cycloneDXStore.getTools()) {
+            writeTool(xmlGenerator, tool);
+        }
+
+        xmlGenerator.writeEndObject();
+
+        // Component
+        writeComponent(xmlGenerator, cycloneDXStore.getHeadComponent());
         xmlGenerator.writeEndObject();
 
         //
         // Components
         //
 
-        xmlGenerator.writeFieldName("components");
-        xmlGenerator.writeStartObject();
+        writeObject(xmlGenerator, "components");
+
         xmlGenerator.writeStringField("component", "testvalue");
+
         xmlGenerator.writeEndObject();
 
         xmlGenerator.writeEndObject();
@@ -139,6 +159,111 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
         xmlGenerator.setNextIsAttribute(true);
         xmlGenerator.writeObjectField(name, value);
         xmlGenerator.setNextIsAttribute(false);
+    }
+
+    private void writeObject(ToXmlGenerator xmlGenerator, String objectName) throws IOException {
+        xmlGenerator.writeFieldName(objectName);
+        xmlGenerator.writeStartObject();
+    }
+
+    private void writeHashes(ToXmlGenerator xmlGenerator, Map<String, String> hashes) throws IOException {
+        if (hashes.size() > 0) {
+            writeObject(xmlGenerator, "hashes");
+
+            for(Map.Entry<String, String> hash : hashes.entrySet()) {
+                writeObject(xmlGenerator, "hash");
+                xmlGenerator.setNextIsAttribute(true);
+                writeAttribute(xmlGenerator, "alg", hash.getValue());
+                xmlGenerator.writeRaw(hash.getKey());
+                xmlGenerator.writeEndObject();
+            }
+
+            xmlGenerator.writeEndObject();
+        }
+    }
+
+    private void writeTool(ToXmlGenerator xmlGenerator, Tool tool) throws IOException {
+        writeObject(xmlGenerator, "tool");
+        xmlGenerator.writeStringField("vendor", tool.getVendor());
+        xmlGenerator.writeStringField("name", tool.getName());
+        xmlGenerator.writeStringField("version", tool.getVersion());
+
+        writeHashes(xmlGenerator, tool.getHashes());
+
+        xmlGenerator.writeEndObject();
+    }
+
+    private void writeComponent(ToXmlGenerator xmlGenerator, ParserComponent component) throws IOException {
+        writeObject(xmlGenerator, "component");
+
+        xmlGenerator.writeStringField("name", component.getName());
+        xmlGenerator.writeStringField("group", component.getGroup());
+        xmlGenerator.writeStringField("version", component.getVersion());
+
+        writeHashes(xmlGenerator, new HashMap<String, String>() {{ put(component.generateHash(), "SHA-256"); }});
+
+        //
+        // Licenses
+        //
+
+//        writeLicenses(jsonGenerator, component.getResolvedLicenses());
+
+        //
+        // External identifiers
+        //
+
+//        writeFieldIfExists(jsonGenerator, "purl",
+//                String.join(", ", component.getPurls().stream().map(PURL::toString).toList()));
+//        writeFieldIfExists(jsonGenerator, "cpe", String.join(", ", component.getCpes()));
+//        // TODO Do this for SWIDs once we support them
+
+        //
+        // Type
+        //
+
+//        xmlGenerator.writeStringField("type", getCDXType(component.getType()));
+
+        //
+        // Properties (files analyzed)
+        //
+
+//        if(component.getFiles().size() > 0) {
+//            jsonGenerator.writeFieldName("properties");
+//            jsonGenerator.writeStartArray();
+//
+//            for(String file : component.getFiles()) {
+//                jsonGenerator.writeStartObject();
+//
+//                // https://cyclonedx.org/docs/1.4/json/#components_items_properties_items_name
+//                // The value must be a string, but duplicate names with different values are explicitly allowed
+//                writeFieldIfExists(jsonGenerator, "fileAnalyzed", file);
+//
+//                jsonGenerator.writeEndObject();
+//            }
+//
+//            jsonGenerator.writeEndArray();
+//        }
+
+        //
+        // Nested child components
+        //
+
+//        // Write children
+//        List<ParserComponent> children = cycloneDXStore.getChildren(component.getUUID());
+//        if(children.size() > 0) {
+//            jsonGenerator.writeFieldName("components");
+//            jsonGenerator.writeStartArray();
+//
+//            for(ParserComponent child : children) {
+//                writeComponent(jsonGenerator, cycloneDXStore, child);
+//            }
+//
+//            jsonGenerator.writeEndArray();
+//        }
+//
+//        jsonGenerator.writeEndObject(); // }
+
+        xmlGenerator.writeEndObject();
     }
 
     //#endregion
