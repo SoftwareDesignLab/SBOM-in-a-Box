@@ -1,10 +1,15 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
+import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.stream.Collectors;
+
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
  * file: NugetParser.java
@@ -13,6 +18,7 @@ import java.util.HashMap;
  * @author Juan Francisco Patino
  */
 public class NugetParser extends PackageManagerParser{
+
     /**
      * Protected Constructor meant for use by parser implementations
      * to store their package-manager-specific static values in their respective
@@ -49,29 +55,80 @@ public class NugetParser extends PackageManagerParser{
                 <authors></authors>
 
                 <!-- Optional elements -->
+                <dependencies></dependencies>
+                <frameworkAssemblies></frameworkAssemblies>
                 <!-- ... -->
             </metadata>
             <!-- Optional 'files' node -->
         </package>
          */
 
-        int x = 0;
+        this.dependencies = new HashMap<>();
+        HashMap<String, String> metadata = new HashMap((LinkedHashMap<String, ArrayList<HashMap<String, String>>>) data.get("metadata"));
+
+
+
+
+       // this.resolveProperties(this.dependencies, new HashMap((metadata data.get("dependencies")).get("dependency"));
+
+        int i = 0;
+
+        for (Object o: metadata.values()
+             ) {
+
+            String s = ((LinkedHashMap)o).entrySet().toArray()[i].toString();
+
+            if(s.contains("frameworkAssembly")){
+
+                this.resolveProperties(
+                        this.dependencies,
+
+                        /*
+                        Inconvertible types; cannot cast 'java.util.ArrayList<java.util.HashMap<java.lang.String,java.lang.String>>' to 'java.util.LinkedHashMap<java.lang.String,java.util.ArrayList<java.util.HashMap<java.lang.String,java.lang.String>>>
+                         */
+
+
+                        new HashMap(((LinkedHashMap<String, ArrayList<HashMap<String, String>>>) (((LinkedHashMap<?, ?>)o).get("frameworkAssembly")))
+                                .get("dependency")
+                                .stream().collect(
+                                        Collectors.toMap(
+                                                d -> d.get("id"),
+                                                d -> d,
+                                                (d1, d2) -> {
+                                                    log(Debug.LOG_TYPE.WARN, String.format("Duplicate key found: %s", d2.get("artifactId")));
+                                                    return d2;
+                                                }
+                                        )
+                                )
+                        )
+                );
+
+            } else if (s.equals("dependency")) {
+
+                new HashMap(((LinkedHashMap<String, ArrayList<HashMap<String, String>>>) (((LinkedHashMap<?, ?>)o).get("dependency")))
+                        .get("dependency")
+                        .stream().collect(
+                                Collectors.toMap(
+                                        d -> d.get("id"),
+                                        d -> d,
+                                        (d1, d2) -> {
+                                            log(Debug.LOG_TYPE.WARN, String.format("Duplicate key found: %s", d2.get("id")));
+                                            return d2;
+                                        }
+                                )
+                        )
+
+                );
+
+            }
+
+            i++;
+
+        }
+
+
 
     }
 
-    /**
-     * Reformats to ParserComponent and adds the component to the list.
-     * @param components list to add component to
-     * @param type item type (Reference, Compile, etc)
-     * @param component component properties table
-     */
-    private void addComponent(ArrayList<ParserComponent> components, String type, HashMap<String, String> component) {
-        //todo. maybe not if this is specific to CSProjParser
-    }
-
-    //todo docstring in here and
-    private String buildURL(ParserComponent component){
-        return ""; //todo. same as addComponent
-    }
 
 }
