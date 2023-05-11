@@ -174,7 +174,6 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
 
             for(Map.Entry<String, String> hash : hashes.entrySet()) {
                 writeObject(xmlGenerator, "hash");
-                xmlGenerator.setNextIsAttribute(true);
                 writeAttribute(xmlGenerator, "alg", hash.getValue());
                 xmlGenerator.writeRaw(hash.getKey());
                 xmlGenerator.writeEndObject();
@@ -245,22 +244,18 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
         // Properties (files analyzed)
         //
 
-//        if(component.getFiles().size() > 0) {
-//            jsonGenerator.writeFieldName("properties");
-//            jsonGenerator.writeStartArray();
-//
-//            for(String file : component.getFiles()) {
-//                jsonGenerator.writeStartObject();
-//
-//                // https://cyclonedx.org/docs/1.4/json/#components_items_properties_items_name
-//                // The value must be a string, but duplicate names with different values are explicitly allowed
-//                writeFieldIfExists(jsonGenerator, "fileAnalyzed", file);
-//
-//                jsonGenerator.writeEndObject();
-//            }
-//
-//            jsonGenerator.writeEndArray();
-//        }
+        if(component.getFiles().size() > 0) {
+            writeObject(xmlGenerator, "properties");
+
+            for(String file : component.getFiles()) {
+                writeObject(xmlGenerator, "property");
+                writeAttribute(xmlGenerator, "name", "fileAnalyzed");
+                xmlGenerator.writeRaw(file);
+                xmlGenerator.writeEndObject();
+            }
+
+            xmlGenerator.writeEndObject();
+        }
 
         //
         // Nested child components
