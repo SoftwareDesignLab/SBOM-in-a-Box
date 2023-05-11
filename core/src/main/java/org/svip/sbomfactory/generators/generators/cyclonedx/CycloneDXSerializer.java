@@ -18,7 +18,7 @@ import java.util.Set;
  * File: CycloneDXSerializer.java
  * <p>
  * A custom serializer for the <code>CycloneDXStore</code> class extended from the Jackson library's <code>STDSerializer</code>
- * class to convert the data of <code>CycloneDXStore</code> to an CDX v1.4 bill of materials.
+ * class to convert the data of <code>CycloneDXStore</code> to a CDX v1.4 bill of materials in JSON or YAML format.
  * </p>
  * @author Ian Dunn
  */

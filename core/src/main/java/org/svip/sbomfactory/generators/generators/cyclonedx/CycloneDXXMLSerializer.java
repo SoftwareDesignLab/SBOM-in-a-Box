@@ -1,87 +1,109 @@
 package org.svip.sbomfactory.generators.generators.cyclonedx;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
-import org.svip.sbomanalysis.qualityattributes.QualityReport;
+import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 import java.io.IOException;
 
+/**
+ * File: CycloneDXXMLSerializer.java
+ * <p>
+ * A custom serializer for the <code>CycloneDXStore</code> class extended from the Jackson library's <code>STDSerializer</code>
+ * class to convert the data of <code>CycloneDXStore</code> to a CDX v1.4 bill of materials in XML format.
+ * </p>
+ * @author Ian Dunn
+ */
 public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
+
+    //#region Constructors
+
+    /**
+     * The default serializer constructor that takes in no arguments and serializes a null CycloneDXStore class.
+     */
     public CycloneDXXMLSerializer() {
         super((Class<CycloneDXStore>) null);
     }
 
+    /**
+     * A serializer constructor that takes in a CycloneDXStore class to serialize.
+     *
+     * @param t The CycloneDXStore class object.
+     */
     protected CycloneDXXMLSerializer(Class<CycloneDXStore> t) {
         super(t);
     }
 
-    @Override
-    public void serialize(CycloneDXStore cycloneDXStore, JsonGenerator jsonGenerator, SerializerProvider provider) throws IOException {
-        ToXmlGenerator xmlGenerator = (ToXmlGenerator) jsonGenerator;
-//        xmlGenerator.initGenerator();
-//        xmlGenerator.setNextName(new QName("", "root"));
-        initWithRootName(xmlGenerator, new QName("namespace", "root", "bom"));
-//        try {
-//            xmlGenerator.getStaxWriter().writeStartDocument("1.1");
-//            xmlGenerator.getStaxWriter().setDefaultNamespace("bom");
-//        } catch (XMLStreamException e) {
-//            throw new RuntimeException(e);
-//        }
+    //#endregion
 
-        // TODO Writing XML objects is currently broken in the library:
-        //  https://github.com/FasterXML/jackson-dataformat-xml/issues/595
+    //#region Overrides
+
+    /**
+     * The default serialize method called by Jackson ObjectMappers to serialize the CycloneDXStore class to an XML CDX
+     * bill of materials.
+     *
+     * @param cycloneDXStore The CycloneDXStore instance with the bill of materials data.
+     * @param jsonGenerator The JsonGenerator used by Jackson to serialize to a file.
+     * @param serializerProvider The SerializerProvider used by Jackson to serialize to a file.
+     * @throws IOException If an error writing to the file occurs.
+     */
+    @Override
+    public void serialize(CycloneDXStore cycloneDXStore, JsonGenerator jsonGenerator,
+                          SerializerProvider serializerProvider) throws IOException {
+
+        //
+        // Initialize generator
+        //
+
+        ToXmlGenerator xmlGenerator = (ToXmlGenerator) jsonGenerator;
+        QName defaultRootName = new QName("namespace", "root", "bom");
+        initGenerator(xmlGenerator, defaultRootName);
+
+        //
+        // BOM info TODO
+        //
+
         xmlGenerator.writeStartObject();
 
         xmlGenerator.setNextName(new QName("bom:metadata"));
-        xmlGenerator.writeFieldName("bom:metadata");
-        xmlGenerator.writeStartObject();
-        xmlGenerator.writeStringField("test", "value");
-        xmlGenerator.writeEndObject();
+        xmlGenerator.writeStringField("testfield", "testvalue");
+        // other fields
 
         xmlGenerator.writeEndObject();
-
-//        XMLStreamWriter writer = xmlGenerator.getStaxWriter();
-//
-//        try {
-//            writer.writeStartDocument();
-//            writer.writeStartElement("root");
-//
-//            writer.writeStartElement("testName");
-//            writer.writeAttribute("testAttribute", "testAttributeValue");
-//            writer.writeCharacters("test value");
-//            writer.writeEndElement();
-//
-//            writer.writeEndElement();
-//            writer.writeEndDocument();
-//        } catch (XMLStreamException e) {
-//            throw new RuntimeException(e);
-//        }
     }
 
-    protected void initWithRootName(ToXmlGenerator xgen, QName rootName) throws IOException
-    {
-        if (!xgen.setNextNameIfMissing(rootName)) {
-            // however, if we are root, we... insist
-            if (xgen.inRoot()) {
-                xgen.setNextName(rootName);
-            }
+    //#endregion
+
+    //#region Helper Methods
+
+    /**
+     * A private helper method to initialize an instance of a {@code ToXmlGenerator} with a root {@code QName},
+     * including a default prefix, namespace, and local root name.
+     *
+     * @param xmlGenerator The {@code ToXmlGenerator} to initialize.
+     * @param rootName The {@code QName} that stores the default prefix, namespace, and local root name.
+     * @throws IOException If the XML Stream Writer cannot set the default namespace.
+     */
+    private void initGenerator(ToXmlGenerator xmlGenerator, QName rootName) throws IOException {
+        if (!xmlGenerator.setNextNameIfMissing(rootName) && xmlGenerator.inRoot()) {
+            xmlGenerator.setNextName(rootName); // Set root name if current name is missing or in root
         }
-        xgen.initGenerator();
-        String ns = rootName.getNamespaceURI();
+        xmlGenerator.initGenerator(); // Initialize generator
+
+        String ns = rootName.getNamespaceURI(); // Get the default namespace we want from rootName
         if (ns != null && ns.length() > 0) {
             try {
-                xgen.getStaxWriter().setDefaultNamespace(ns);
+                xmlGenerator.getStaxWriter().setDefaultNamespace(ns); // If namespace exists, set the default to this
             } catch (XMLStreamException e) {
-                StaxUtil.throwAsGenerationException(e, xgen);
+                StaxUtil.throwAsGenerationException(e, xmlGenerator);
             }
         }
     }
+
+    //#endregion
 }
