@@ -21,6 +21,20 @@ import java.io.IOException;
  */
 public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
 
+    //#region Constants
+
+    /**
+     * The namespace URI of the CDX XML schema
+     */
+    private static final String NAMESPACE_URI = "http://cyclonedx.org/schema/bom/1.4";
+
+    /**
+     * The prefix used to represent the XML namespace
+     */
+    private static final String PREFIX = "bom";
+
+    //#endregion
+
     //#region Constructors
 
     /**
@@ -61,7 +75,7 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
         //
 
         ToXmlGenerator xmlGenerator = (ToXmlGenerator) jsonGenerator;
-        QName defaultRootName = new QName("http://cyclonedx.org/schema/bom/1.4", "bom");
+        QName defaultRootName = new QName(NAMESPACE_URI, PREFIX, PREFIX);
         initGenerator(xmlGenerator, defaultRootName);
 
         //
@@ -114,7 +128,7 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
         String ns = rootName.getNamespaceURI(); // Get the default namespace we want from rootName
         if (ns != null && ns.length() > 0) {
             try {
-                xmlGenerator.getStaxWriter().setDefaultNamespace(ns); // If namespace exists, set the default to this
+                xmlGenerator.getStaxWriter().setPrefix(PREFIX, ns);
             } catch (XMLStreamException e) {
                 StaxUtil.throwAsGenerationException(e, xmlGenerator);
             }
