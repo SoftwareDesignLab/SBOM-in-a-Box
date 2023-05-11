@@ -46,7 +46,7 @@ public class SPDXSerializer extends StdSerializer<SPDXStore> {
     /**
      * The default serializer constructor that takes in no arguments and serializes a null SPDXStore class.
      */
-    protected SPDXSerializer() { super((Class<SPDXStore>) null); }
+    public SPDXSerializer() { super((Class<SPDXStore>) null); }
 
     /**
      * A serializer constructor that takes in an SPDXStore class to serialize.

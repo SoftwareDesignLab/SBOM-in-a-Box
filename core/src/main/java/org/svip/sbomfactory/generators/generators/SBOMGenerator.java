@@ -130,7 +130,7 @@ public class SBOMGenerator {
 
             // Serialize
             log(Debug.LOG_TYPE.DEBUG, "Attempting to write to " + path);
-            format.getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File(path), bomStore);
+            format.getObjectMapper(schema).writerWithDefaultPrettyPrinter().writeValue(new File(path), bomStore);
             log(Debug.LOG_TYPE.SUMMARY, schema.name() + " SBOM saved to: " + path);
         } catch (GeneratorException e) {
             log(Debug.LOG_TYPE.ERROR, "Unable to write " + schema.name() + " SBOM to " + path);
@@ -150,7 +150,7 @@ public class SBOMGenerator {
 
         try {
             BOMStore bomStore = buildBOMStore();
-            ObjectMapper mapper = format.getObjectMapper();
+            ObjectMapper mapper = format.getObjectMapper(schema);
             if(!prettyPrint) mapper.setDefaultPrettyPrinter(null);
 
             String out = mapper.writeValueAsString(bomStore);
