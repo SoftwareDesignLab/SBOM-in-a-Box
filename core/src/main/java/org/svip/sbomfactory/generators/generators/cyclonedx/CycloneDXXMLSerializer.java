@@ -43,6 +43,8 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
      */
     private static final String PREFIX = "bom";
 
+    private static final QName ROOT_NAME = new QName(NAMESPACE_URI, PREFIX, PREFIX);
+
     //#endregion
 
     //#region Constructors
@@ -85,8 +87,7 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
         //
 
         ToXmlGenerator xmlGenerator = (ToXmlGenerator) jsonGenerator;
-        QName defaultRootName = new QName(NAMESPACE_URI, PREFIX, PREFIX);
-        initGenerator(xmlGenerator, defaultRootName);
+        initGenerator(xmlGenerator, ROOT_NAME);
 
         //
         // Root Component TODO
@@ -122,7 +123,9 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
 
         writeObject(xmlGenerator, "components");
 
-        xmlGenerator.writeStringField("component", "testvalue");
+        for(ParserComponent c : cycloneDXStore.getComponents()) {
+            writeComponent(xmlGenerator, cycloneDXStore, c);
+        }
 
         xmlGenerator.writeEndObject();
 
@@ -159,8 +162,10 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
 
     private void writeAttribute(ToXmlGenerator xmlGenerator, String name, Object value) throws IOException {
         xmlGenerator.setNextIsAttribute(true);
+        xmlGenerator.setNextName(new QName(name));
         xmlGenerator.writeObjectField(name, value);
         xmlGenerator.setNextIsAttribute(false);
+        xmlGenerator.setNextName(ROOT_NAME);
     }
 
     private void writeObject(ToXmlGenerator xmlGenerator, String objectName) throws IOException {
@@ -219,7 +224,7 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
             throws IOException {
 
         writeObject(xmlGenerator, "component");
-        writeAttribute(xmlGenerator, "type", component.getType());
+        writeAttribute(xmlGenerator, "type", CycloneDXSerializer.getCDXType(component.getType()));
 
         xmlGenerator.writeStringField("name", component.getName());
         xmlGenerator.writeStringField("group", component.getGroup());
