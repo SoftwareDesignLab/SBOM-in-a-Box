@@ -5,11 +5,11 @@
     "serialNumber" : "urn:uuid:347463e3-816c-3823-a6be-2bda75791a5c",
     "version" : 1,
     "metadata" : {
-      "timestamp" : "2023-05-11T16:16:23Z",
+      "timestamp" : "2023-05-11T16:45:10Z",
       "tools" : [ {
         "vendor" : "SVIP",
         "name" : "BenchmarkGenerator",
-        "version" : "v4.3.0-alpha",
+        "version" : "v4.3.1-alpha",
         "hashes" : [ {
           "alg" : "SHA-256",
           "content" : "37845c65494fb9d758550acce421da0888cccc7d7f01b32cdf46ec307ec56a78"
@@ -31,19 +31,27 @@
       }
     },
     "components" : [ {
-      "name" : "C2b",
+      "name" : "*",
+      "group" : "p5a",
       "hashes" : [ {
         "alg" : "SHA-256",
-        "content" : "ea61c0a8f6915035b75d786b856c51910dede26d8540290fd0a5cc60a5daf89d"
+        "content" : "27c01cc2bd7b3e414d4e733439b11bc22d7e3eae31b192d63b1d000d280d59e9"
       } ],
-      "type" : "library"
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
+      } ]
     }, {
-      "name" : "C5b",
+      "name" : "C4c",
+      "group" : "p10a",
       "hashes" : [ {
         "alg" : "SHA-256",
-        "content" : "249b079371f54c08fcdea3b44f1cc4ae5c507fb96a4e00eb048804a58efb4f57"
+        "content" : "eb2c89b69564f28666fb5ce42193c1707495842f2d3ad45c38e21ec7c2d7aacf"
       } ],
-      "type" : "library"
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
+      } ]
     }, {
       "name" : "pyparsing",
       "version" : "3.0.9",
@@ -68,38 +76,15 @@
       } ],
       "type" : "library"
     }, {
-      "name" : "C4c",
-      "group" : "p10a",
+      "name" : "ibar",
+      "group" : "ifoo",
       "hashes" : [ {
         "alg" : "SHA-256",
-        "content" : "eb2c89b69564f28666fb5ce42193c1707495842f2d3ad45c38e21ec7c2d7aacf"
+        "content" : "6b1eac3b129d437dc32d1d8fd2bbb572dfea0b20a959b17fc3599809acc895a5"
       } ],
-      "type" : "library",
+      "type" : "file",
       "properties" : [ {
         "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
-      "name" : "C4b",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "77ef9c23da37706de952c0c094b63fb0f15db5add8de78880aaf5524e2d865b3"
-      } ],
-      "type" : "library"
-    }, {
-      "name" : "numpy",
-      "version" : "1.23.5",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "cbcc94c245137aacea96c3561b07a5eb9257e1f6698ca173e4f2a1b3c658becd"
-      } ],
-      "licenses" : [ {
-        "license" : {
-          "id" : "BSD-3-Clause-No-Nuclear-License-2014"
-        }
-      } ],
-      "type" : "library",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt"
       } ]
     }, {
       "name" : "pytz",
@@ -118,11 +103,34 @@
         "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt"
       } ]
     }, {
-      "name" : "ifoobarClass",
-      "group" : "ifoo/ibar/ifoobarModule",
+      "name" : "C5b",
       "hashes" : [ {
         "alg" : "SHA-256",
-        "content" : "7f6552d32e3737e3a0a47131f9961b0a58329e2e430d37ff7aa55b3892e6bd49"
+        "content" : "249b079371f54c08fcdea3b44f1cc4ae5c507fb96a4e00eb048804a58efb4f57"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "six",
+      "version" : "1.16.0",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "8bede62b2a9e770e66cbb97b67b7644f6663bb10b277239087306ab76a55dd3d"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "MIT-0"
+        }
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt"
+      } ]
+    }, {
+      "name" : "r",
+      "group" : "Absolute",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "5a0ab2cc94a0881a416f18bfe23fb9faf5794fa139e5250eb03b7ff65292021e"
       } ],
       "type" : "file",
       "properties" : [ {
@@ -134,24 +142,54 @@
         "alg" : "SHA-256",
         "content" : "e6a4a8df8122ab1c57c97bcdeb0a860f336ed0c1587ebabcd541e7d71da77939"
       } ],
-      "type" : "library"
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
+      } ]
     }, {
-      "name" : "ifoo",
-      "group" : "Absolute",
+      "name" : "numpy",
+      "version" : "1.23.5",
       "hashes" : [ {
         "alg" : "SHA-256",
-        "content" : "18337d7e68ed8f20a1399f49c3da989a34e12d4100349f9aa6abdcbf50bf94fd"
+        "content" : "cbcc94c245137aacea96c3561b07a5eb9257e1f6698ca173e4f2a1b3c658becd"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "BSD-3-Clause-No-Nuclear-License-2014"
+        }
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt"
+      } ]
+    }, {
+      "name" : "ifee",
+      "group" : "Absolute/ifoo",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "8c6c81124ba6cd8619b08ab8e5bfa1dc37eed743958d077d8ea2f659581f90b6"
       } ],
       "type" : "file",
       "properties" : [ {
         "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
       } ]
     }, {
-      "name" : "b",
-      "group" : "Absolute",
+      "name" : "r",
+      "group" : "Python/Absolute",
       "hashes" : [ {
         "alg" : "SHA-256",
-        "content" : "910eea7889969563ad69bef4c1d5e203ffbc99492a3421e552d31f4609a57987"
+        "content" : "f39b56374cd7eee3d2cc57e7d96e568441ae8932d7f13f401d719fa578993d39"
+      } ],
+      "type" : "file",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
+      } ]
+    }, {
+      "name" : "ib",
+      "group" : "ifoo/ibar",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "6ef0841e6e55b5459de534a2896f1102d27b466d0f9f0e3795a5c3cf336f122d"
       } ],
       "type" : "file",
       "properties" : [ {
@@ -174,47 +212,42 @@
         "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt"
       } ]
     }, {
-      "name" : "C2b",
-      "group" : "p7a",
+      "name" : "a",
+      "group" : "Absolute",
       "hashes" : [ {
         "alg" : "SHA-256",
-        "content" : "890638d8cd2dc35010fd5cd93396f74895a5e83da3818b25050dfe08cef56bda"
+        "content" : "6d124ea992686f8b8258b652733416eaab1b54f6584885c9075c1b3eb441ead6"
       } ],
-      "type" : "library",
+      "type" : "file",
       "properties" : [ {
         "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
       } ]
     }, {
-      "name" : "p3c",
+      "name" : "b",
+      "group" : "Python/Absolute",
       "hashes" : [ {
         "alg" : "SHA-256",
-        "content" : "936cfb85b94d393d4a4bf930fc59a899eba7f38be04f0ce7dbb24ea85b4d545e"
+        "content" : "f43c392a4a63b82e1765503391617486343da09aaab9606f5132fd333ec56181"
+      } ],
+      "type" : "file",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
+      } ]
+    }, {
+      "name" : "C2b",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "ea61c0a8f6915035b75d786b856c51910dede26d8540290fd0a5cc60a5daf89d"
       } ],
       "type" : "library"
     }, {
-      "name" : "scipy",
-      "version" : "1.9.3",
+      "name" : "ia",
+      "group" : "ifoo/ibar",
       "hashes" : [ {
         "alg" : "SHA-256",
-        "content" : "d1d77a68f49561ad8dff166c3029f626826a29a884ad2506f64869e195016ab5"
+        "content" : "1edf76726ac1bdbfe62839a8eaa3be34fce6f294da38632634edd98a66ef24a3"
       } ],
-      "licenses" : [ {
-        "license" : {
-          "id" : "BSD-3-Clause-No-Nuclear-License-2014"
-        }
-      } ],
-      "type" : "library",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt"
-      } ]
-    }, {
-      "name" : "C1a",
-      "group" : "p6a",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "9ba5545d8a1df109de763817f30c68a60216bff25431e984c1b0b9e243cb2f67"
-      } ],
-      "type" : "library",
+      "type" : "file",
       "properties" : [ {
         "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
       } ]
@@ -235,12 +268,337 @@
         "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt"
       } ]
     }, {
-      "name" : "Long Comment Test ",
+      "name" : "C4b",
       "hashes" : [ {
         "alg" : "SHA-256",
-        "content" : "cfac2e43cb47049147628e5248df99939e4265204933f1ea4488d46c67c74e22"
+        "content" : "77ef9c23da37706de952c0c094b63fb0f15db5add8de78880aaf5524e2d865b3"
       } ],
       "type" : "library"
+    }, {
+      "name" : "C1a",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "d45e1dff1e8377b63a255186c5f7753435817f464151e175fe554336693f1930"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "fonttools",
+      "version" : "4.38.0",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "b37fe129ab66375d299fedb989ceb23672e3cc72ce8080922729aca363204c3c"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "MIT-0"
+        }
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt"
+      } ]
+    }, {
+      "name" : "C3a",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "c8992074c9b3d2e0fc1975d2588dd9007d2aede34d276fb5160b1a2faeeffd5e"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "p4a",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "568e33209aa6541b1a7580f512fd725e1eb4d44b31663aa1bbf8b8dc87f23f9f"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
+      } ]
+    }, {
+      "name" : "C2b",
+      "group" : "p7a",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "890638d8cd2dc35010fd5cd93396f74895a5e83da3818b25050dfe08cef56bda"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
+      } ]
+    }, {
+      "name" : "C4a",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "a0822e56e6be3664a56b5f68f18c90b3ec5498a5d16c16dcffc408230c38d2eb"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "C2a",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "6423254d7019c2856826bc50af1aed905c68ba6d9742576d4e2347d61cc45072"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : " Basic Alias\r",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "9c0997baf1c6cbb1fff887ef5cf1f7fa92b53d389edf583fd77abf7b473f9c82"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "*",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "08e886b8988dd89f9304b83c83aa27265410fce6e851fb308c359c1e8fc3baae"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "p3a",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "51872529872300461256d33c64d9d1c6a8bfcbf406500990f3f3f68c97033cd5"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "C3a",
+      "group" : "p8a",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "3a93098308d9c05180c56915b226de1be916e54223d6075009471f4947d61484"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
+      } ]
+    }, {
+      "name" : "ifoo",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "a08256871e74728048f43da1439131391976ffa2db2fed67a3543a7fa4824c81"
+      } ],
+      "type" : "file",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
+      } ]
+    }, {
+      "name" : "C2a",
+      "group" : "p7a",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "396388894df47f7e85d42a9e3681994f4b674e07235a321edc9fb8283a83900d"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
+      } ]
+    }, {
+      "name" : "p1a",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "089e7a640c3881d4edd489fb67af36ccf6416d7acfa7c9fbb122ad61112d2721"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
+      } ]
+    }, {
+      "name" : "ifoobarModule",
+      "group" : "ifoo/ibar",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "3a0255d0bc3d031da67cdf89b3d66a749740f1e08628a886121a44935b459887"
+      } ],
+      "type" : "file",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
+      } ]
+    }, {
+      "name" : "p4a",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "02370ceef2bbd92a5a6e12440adc629c8873d840edc3943c4f0457847d09eabf"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "matplotlib",
+      "version" : "3.6.2",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "706abb1f094f4edd5a2adfd7975ce4a7fd4dcc3f8679e632f34fc9f45bf23c47"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "Python-2.0.1"
+        }
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt"
+      } ]
+    }, {
+      "name" : " from: Relative\r",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "854e4dccf4184cec45f872a054d50a452eaa6bbf27cbfad03e23b56586092b06"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "C5c",
+      "group" : "p11a",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "36a5654cfe29b8f555b0fb58987343f18463547f16fa83d69452d6e5313add13"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
+      } ]
+    }, {
+      "name" : "java -jar run.jar",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "f07536c1256f21d4aa893cb5a01e4e5b91752ed8b5ea39586cc9b00d8afab39c"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "cycler",
+      "version" : "0.11.0",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "251ce4016da79c26111a789c00e7bd3c379ef29119c0375626180c06833ab25a"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "BSD-3-Clause-No-Nuclear-License-2014"
+        }
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt"
+      } ]
+    }, {
+      "name" : "ifee",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "4959aa8a1554143e552117724067e7f2b6ce46e9d03016c17514105f8bae2c69"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : " import *\r",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "50f0aa3458e4d5e27b521496ac6a04928f74703ec194b6ee6b214bc5ca14dc37"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "import bar\r",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "a6380e2cf0dcac6553185107c7bedea2029ab81378dad381b30cbe0f364ed657"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : " from: Absolute External\r",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "2d8024e4c0d330bd4c26b52a6512b1ebff953e794a9ec3b4727a870d1212d8d7"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "C5a",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "66d7598ebcfeed07c69bc6dcc84e6b65bf9a27a0168d8d4e5fec1c979ba6536f"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "b",
+      "group" : "Absolute",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "910eea7889969563ad69bef4c1d5e203ffbc99492a3421e552d31f4609a57987"
+      } ],
+      "type" : "file",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
+      } ]
+    }, {
+      "name" : "subprocess",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "ccbccbeb2668c680ca39629b6d2b1b606023a2133dfc52f65a7fba22d77a8214"
+      } ],
+      "type" : "framework",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
+      } ]
+    }, {
+      "name" : "scipy",
+      "version" : "1.9.3",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "d1d77a68f49561ad8dff166c3029f626826a29a884ad2506f64869e195016ab5"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "BSD-3-Clause-No-Nuclear-License-2014"
+        }
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt"
+      } ]
+    }, {
+      "name" : "ifoobarClass",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "d685ff648c61b49d28da4cffa6fea571a4b951cf717146362fe7b601081a59a5"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "C4a",
+      "group" : "p10a",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "679afc09b617154498c29f8e28b3ef28a6d2660f7c18a7284474f333ace9e0e1"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
+      } ]
+    }, {
+      "name" : "p3c",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "936cfb85b94d393d4a4bf930fc59a899eba7f38be04f0ce7dbb24ea85b4d545e"
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
+      } ]
+    }, {
+      "name" : "ifoobarClass",
+      "group" : "ifoo/ibar/ifoobarModule",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "7f6552d32e3737e3a0a47131f9961b0a58329e2e430d37ff7aa55b3892e6bd49"
+      } ],
+      "type" : "file",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
+      } ]
+    }, {
+      "name" : "ifoo",
+      "group" : "Absolute",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "18337d7e68ed8f20a1399f49c3da989a34e12d4100349f9aa6abdcbf50bf94fd"
+      } ],
+      "type" : "file",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
+      } ]
     }, {
       "name" : "packaging",
       "version" : "21.3",
@@ -258,6 +616,47 @@
         "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt"
       } ]
     }, {
+      "name" : "kiwisolver",
+      "version" : "1.4.4",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "ec933ca0675f4a3a191995fd6609571b21dde9f22751f8dd1c456292e23bc26d"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "BSD-3-Clause-No-Nuclear-License-2014"
+        }
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt"
+      } ]
+    }, {
+      "name" : "ir",
+      "group" : "ifoo/ibar",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "b6c03fa1386319b76e6a7d069682e44ede8b5b513a7e070695b2da2b59a4c165"
+      } ],
+      "type" : "file",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
+      } ]
+    }, {
+      "name" : "ir",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "999cf69644ccfd15651233c262185087e2cdf589e67c57e924f38ceabc2084f8"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : " from: Absolute Internal\r",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "2d69e85d7f41891b2883632bff99c03adff8a28029e79db7b72616f80baf6e79"
+      } ],
+      "type" : "library"
+    }, {
       "name" : "C5a",
       "group" : "p11a",
       "hashes" : [ {
@@ -268,6 +667,31 @@
       "properties" : [ {
         "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
       } ]
+    }, {
+      "name" : " Import\r",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "0b14637ea5d540def77bfa40e96aa150facdefe97dcdc5bf038bee72ab93d835"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "Absolute",
+      "group" : "Python",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "b0b11e9248697630521b146b1e879c9e291b243fcab41be6bc70459c1fa76f72"
+      } ],
+      "type" : "file",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
+      } ]
+    }, {
+      "name" : "Long Comment Test ",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "cfac2e43cb47049147628e5248df99939e4265204933f1ea4488d46c67c74e22"
+      } ],
+      "type" : "library"
     }, {
       "name" : "a",
       "group" : "Python/Absolute",
@@ -280,29 +704,6 @@
         "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
       } ]
     }, {
-      "name" : "pillow",
-      "version" : "9.3.0",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "956e363eca6789aff0de70ce4bb54030a8d191f3ca799dd10bcc30f54c8e8a2f"
-      } ],
-      "licenses" : [ {
-        "license" : {
-          "id" : "libselinux-1.0"
-        }
-      } ],
-      "type" : "library",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt"
-      } ]
-    }, {
-      "name" : " Python unit testing\r",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "64c87a8edb502930707ec8581ea1e95e909aba7200a2a2f23d5b585f9ba58bb2"
-      } ],
-      "type" : "library"
-    }, {
       "name" : "C4b",
       "group" : "p10a",
       "hashes" : [ {
@@ -310,16 +711,6 @@
         "content" : "1186025b12dc6702feb17674976e03a7607c7c1f16de3e07b7c7ed01ac2fd1a8"
       } ],
       "type" : "library",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
-      "name" : "subprocess",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "ccbccbeb2668c680ca39629b6d2b1b606023a2133dfc52f65a7fba22d77a8214"
-      } ],
-      "type" : "framework",
       "properties" : [ {
         "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
       } ]
@@ -347,17 +738,6 @@
       } ],
       "type" : "library"
     }, {
-      "name" : "C5b",
-      "group" : "p11a",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "7db8b596429e665dc692850023cc0171bef7923f073920ee7feb4cc221368753"
-      } ],
-      "type" : "library",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
       "name" : "C5c",
       "hashes" : [ {
         "alg" : "SHA-256",
@@ -365,20 +745,13 @@
       } ],
       "type" : "library"
     }, {
-      "name" : " from: Absolute Internal\r",
+      "name" : "C5b",
+      "group" : "p11a",
       "hashes" : [ {
         "alg" : "SHA-256",
-        "content" : "2d69e85d7f41891b2883632bff99c03adff8a28029e79db7b72616f80baf6e79"
+        "content" : "7db8b596429e665dc692850023cc0171bef7923f073920ee7feb4cc221368753"
       } ],
-      "type" : "library"
-    }, {
-      "name" : "Absolute",
-      "group" : "Python",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "b0b11e9248697630521b146b1e879c9e291b243fcab41be6bc70459c1fa76f72"
-      } ],
-      "type" : "file",
+      "type" : "library",
       "properties" : [ {
         "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
       } ]
@@ -399,6 +772,29 @@
         "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt"
       } ]
     }, {
+      "name" : " Python unit testing\r",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "64c87a8edb502930707ec8581ea1e95e909aba7200a2a2f23d5b585f9ba58bb2"
+      } ],
+      "type" : "library"
+    }, {
+      "name" : "pillow",
+      "version" : "9.3.0",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "956e363eca6789aff0de70ce4bb54030a8d191f3ca799dd10bcc30f54c8e8a2f"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "libselinux-1.0"
+        }
+      } ],
+      "type" : "library",
+      "properties" : [ {
+        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt"
+      } ]
+    }, {
       "name" : "p2b",
       "group" : "p2a",
       "hashes" : [ {
@@ -410,408 +806,15 @@
         "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
       } ]
     }, {
-      "name" : "ibar",
-      "group" : "ifoo",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "6b1eac3b129d437dc32d1d8fd2bbb572dfea0b20a959b17fc3599809acc895a5"
-      } ],
-      "type" : "file",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
-      "name" : "p3a",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "51872529872300461256d33c64d9d1c6a8bfcbf406500990f3f3f68c97033cd5"
-      } ],
-      "type" : "library",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
-      "name" : "cycler",
-      "version" : "0.11.0",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "251ce4016da79c26111a789c00e7bd3c379ef29119c0375626180c06833ab25a"
-      } ],
-      "licenses" : [ {
-        "license" : {
-          "id" : "BSD-3-Clause-No-Nuclear-License-2014"
-        }
-      } ],
-      "type" : "library",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt"
-      } ]
-    }, {
-      "name" : "a",
-      "group" : "Absolute",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "6d124ea992686f8b8258b652733416eaab1b54f6584885c9075c1b3eb441ead6"
-      } ],
-      "type" : "file",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
-      "name" : "C5c",
-      "group" : "p11a",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "36a5654cfe29b8f555b0fb58987343f18463547f16fa83d69452d6e5313add13"
-      } ],
-      "type" : "library",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
-      "name" : "p4a",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "02370ceef2bbd92a5a6e12440adc629c8873d840edc3943c4f0457847d09eabf"
-      } ],
-      "type" : "library"
-    }, {
-      "name" : "r",
-      "group" : "Absolute",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "5a0ab2cc94a0881a416f18bfe23fb9faf5794fa139e5250eb03b7ff65292021e"
-      } ],
-      "type" : "file",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
-      "name" : " from: Absolute External\r",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "2d8024e4c0d330bd4c26b52a6512b1ebff953e794a9ec3b4727a870d1212d8d7"
-      } ],
-      "type" : "library"
-    }, {
-      "name" : "C3a",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "c8992074c9b3d2e0fc1975d2588dd9007d2aede34d276fb5160b1a2faeeffd5e"
-      } ],
-      "type" : "library"
-    }, {
-      "name" : "C2a",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "6423254d7019c2856826bc50af1aed905c68ba6d9742576d4e2347d61cc45072"
-      } ],
-      "type" : "library"
-    }, {
-      "name" : "C4a",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "a0822e56e6be3664a56b5f68f18c90b3ec5498a5d16c16dcffc408230c38d2eb"
-      } ],
-      "type" : "library"
-    }, {
-      "name" : "java -jar run.jar",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "f07536c1256f21d4aa893cb5a01e4e5b91752ed8b5ea39586cc9b00d8afab39c"
-      } ],
-      "type" : "library"
-    }, {
-      "name" : "ir",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "999cf69644ccfd15651233c262185087e2cdf589e67c57e924f38ceabc2084f8"
-      } ],
-      "type" : "library"
-    }, {
-      "name" : " import *\r",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "50f0aa3458e4d5e27b521496ac6a04928f74703ec194b6ee6b214bc5ca14dc37"
-      } ],
-      "type" : "library"
-    }, {
-      "name" : "ib",
-      "group" : "ifoo/ibar",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "6ef0841e6e55b5459de534a2896f1102d27b466d0f9f0e3795a5c3cf336f122d"
-      } ],
-      "type" : "file",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
-      "name" : "ifee",
-      "group" : "Absolute/ifoo",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "8c6c81124ba6cd8619b08ab8e5bfa1dc37eed743958d077d8ea2f659581f90b6"
-      } ],
-      "type" : "file",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
-      "name" : "r",
-      "group" : "Python/Absolute",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "f39b56374cd7eee3d2cc57e7d96e568441ae8932d7f13f401d719fa578993d39"
-      } ],
-      "type" : "file",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
-      "name" : "kiwisolver",
-      "version" : "1.4.4",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "ec933ca0675f4a3a191995fd6609571b21dde9f22751f8dd1c456292e23bc26d"
-      } ],
-      "licenses" : [ {
-        "license" : {
-          "id" : "BSD-3-Clause-No-Nuclear-License-2014"
-        }
-      } ],
-      "type" : "library",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt"
-      } ]
-    }, {
-      "name" : "p4a",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "568e33209aa6541b1a7580f512fd725e1eb4d44b31663aa1bbf8b8dc87f23f9f"
-      } ],
-      "type" : "library",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
-      "name" : " Basic Alias\r",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "9c0997baf1c6cbb1fff887ef5cf1f7fa92b53d389edf583fd77abf7b473f9c82"
-      } ],
-      "type" : "library"
-    }, {
-      "name" : "b",
-      "group" : "Python/Absolute",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "f43c392a4a63b82e1765503391617486343da09aaab9606f5132fd333ec56181"
-      } ],
-      "type" : "file",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
-      "name" : "ia",
-      "group" : "ifoo/ibar",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "1edf76726ac1bdbfe62839a8eaa3be34fce6f294da38632634edd98a66ef24a3"
-      } ],
-      "type" : "file",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
-      "name" : " Import\r",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "0b14637ea5d540def77bfa40e96aa150facdefe97dcdc5bf038bee72ab93d835"
-      } ],
-      "type" : "library"
-    }, {
-      "name" : "ifee",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "4959aa8a1554143e552117724067e7f2b6ce46e9d03016c17514105f8bae2c69"
-      } ],
-      "type" : "library"
-    }, {
-      "name" : "C5a",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "66d7598ebcfeed07c69bc6dcc84e6b65bf9a27a0168d8d4e5fec1c979ba6536f"
-      } ],
-      "type" : "library"
-    }, {
-      "name" : "ir",
-      "group" : "ifoo/ibar",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "b6c03fa1386319b76e6a7d069682e44ede8b5b513a7e070695b2da2b59a4c165"
-      } ],
-      "type" : "file",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
-      "name" : "ifoobarClass",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "d685ff648c61b49d28da4cffa6fea571a4b951cf717146362fe7b601081a59a5"
-      } ],
-      "type" : "library"
-    }, {
-      "name" : "C3a",
-      "group" : "p8a",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "3a93098308d9c05180c56915b226de1be916e54223d6075009471f4947d61484"
-      } ],
-      "type" : "library",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
-      "name" : "matplotlib",
-      "version" : "3.6.2",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "706abb1f094f4edd5a2adfd7975ce4a7fd4dcc3f8679e632f34fc9f45bf23c47"
-      } ],
-      "licenses" : [ {
-        "license" : {
-          "id" : "Python-2.0.1"
-        }
-      } ],
-      "type" : "library",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt"
-      } ]
-    }, {
-      "name" : "C4a",
-      "group" : "p10a",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "679afc09b617154498c29f8e28b3ef28a6d2660f7c18a7284474f333ace9e0e1"
-      } ],
-      "type" : "library",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
       "name" : "C1a",
+      "group" : "p6a",
       "hashes" : [ {
         "alg" : "SHA-256",
-        "content" : "d45e1dff1e8377b63a255186c5f7753435817f464151e175fe554336693f1930"
-      } ],
-      "type" : "library"
-    }, {
-      "name" : "C2a",
-      "group" : "p7a",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "396388894df47f7e85d42a9e3681994f4b674e07235a321edc9fb8283a83900d"
+        "content" : "9ba5545d8a1df109de763817f30c68a60216bff25431e984c1b0b9e243cb2f67"
       } ],
       "type" : "library",
       "properties" : [ {
         "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
-      "name" : "*",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "08e886b8988dd89f9304b83c83aa27265410fce6e851fb308c359c1e8fc3baae"
-      } ],
-      "type" : "library"
-    }, {
-      "name" : "six",
-      "version" : "1.16.0",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "8bede62b2a9e770e66cbb97b67b7644f6663bb10b277239087306ab76a55dd3d"
-      } ],
-      "licenses" : [ {
-        "license" : {
-          "id" : "MIT-0"
-        }
-      } ],
-      "type" : "library",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt"
-      } ]
-    }, {
-      "name" : "ifoobarModule",
-      "group" : "ifoo/ibar",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "3a0255d0bc3d031da67cdf89b3d66a749740f1e08628a886121a44935b459887"
-      } ],
-      "type" : "file",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
-      "name" : " from: Relative\r",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "854e4dccf4184cec45f872a054d50a452eaa6bbf27cbfad03e23b56586092b06"
-      } ],
-      "type" : "library"
-    }, {
-      "name" : "import bar\r",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "a6380e2cf0dcac6553185107c7bedea2029ab81378dad381b30cbe0f364ed657"
-      } ],
-      "type" : "library"
-    }, {
-      "name" : "*",
-      "group" : "p5a",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "27c01cc2bd7b3e414d4e733439b11bc22d7e3eae31b192d63b1d000d280d59e9"
-      } ],
-      "type" : "library",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
-      "name" : "ifoo",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "a08256871e74728048f43da1439131391976ffa2db2fed67a3543a7fa4824c81"
-      } ],
-      "type" : "file",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
-      "name" : "p1a",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "089e7a640c3881d4edd489fb67af36ccf6416d7acfa7c9fbb122ad61112d2721"
-      } ],
-      "type" : "library",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py"
-      } ]
-    }, {
-      "name" : "fonttools",
-      "version" : "4.38.0",
-      "hashes" : [ {
-        "alg" : "SHA-256",
-        "content" : "b37fe129ab66375d299fedb989ceb23672e3cc72ce8080922729aca363204c3c"
-      } ],
-      "licenses" : [ {
-        "license" : {
-          "id" : "MIT-0"
-        }
-      } ],
-      "type" : "library",
-      "properties" : [ {
-        "fileAnalyzed" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt"
       } ]
     } ]
   }

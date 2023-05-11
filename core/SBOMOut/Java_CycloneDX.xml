@@ -1,12 +1,12 @@
 <?xml version='1.1' encoding='UTF-8'?>
 <bom:bom xmlns:bom="http://cyclonedx.org/schema/bom/1.4" serialNumber="urn:uuid:347463e3-816c-3823-a6be-2bda75791a5c" version="1">
   <bom:metadata>
-    <bom:timestamp>2023-05-11T16:17:04Z</bom:timestamp>
+    <bom:timestamp>2023-05-11T16:45:26Z</bom:timestamp>
     <bom:tools>
       <bom:tool>
         <bom:vendor>SVIP</bom:vendor>
         <bom:name>BenchmarkGenerator</bom:name>
-        <bom:version>v4.3.0-alpha</bom:version>
+        <bom:version>v4.3.1-alpha</bom:version>
         <bom:hashes>
           <bom:hash alg="SHA-256">37845c65494fb9d758550acce421da0888cccc7d7f01b32cdf46ec307ec56a78</bom:hash>
         </bom:hashes>
@@ -112,6 +112,15 @@
       </bom:properties>
     </bom:component>
     <bom:component type="library">
+      <bom:name>hibernate.jar</bom:name>
+      <bom:hashes>
+        <bom:hash alg="SHA-256">3c04459147a4ae2e0e53daa9f80095ec37bf8ad7e2963b57c6142c19b630d548</bom:hash>
+      </bom:hashes>
+      <bom:properties>
+        <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\build.gradle</bom:property>
+      </bom:properties>
+    </bom:component>
+    <bom:component type="library">
       <bom:name>spring-boot-starter-security</bom:name>
       <bom:group>org.springframework.boot</bom:group>
       <bom:hashes>
@@ -128,15 +137,6 @@
       <bom:hashes>
         <bom:hash alg="SHA-256">8fdb31522f5f431c5efce20140e3dbccb1ac9150e37290d254a9747025d4c1be</bom:hash>
       </bom:hashes>
-    </bom:component>
-    <bom:component type="library">
-      <bom:name>hibernate.jar</bom:name>
-      <bom:hashes>
-        <bom:hash alg="SHA-256">3c04459147a4ae2e0e53daa9f80095ec37bf8ad7e2963b57c6142c19b630d548</bom:hash>
-      </bom:hashes>
-      <bom:properties>
-        <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\build.gradle</bom:property>
-      </bom:properties>
     </bom:component>
     <bom:component type="framework">
       <bom:name>Date</bom:name>
@@ -249,9 +249,6 @@
       <bom:hashes>
         <bom:hash alg="SHA-256">089e7a640c3881d4edd489fb67af36ccf6416d7acfa7c9fbb122ad61112d2721</bom:hash>
       </bom:hashes>
-      <bom:properties>
-        <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\Bar.java</bom:property>
-      </bom:properties>
     </bom:component>
     <bom:component type="library">
       <bom:name>httpclient</bom:name>
@@ -298,6 +295,12 @@
       </bom:properties>
     </bom:component>
     <bom:component type="library">
+      <bom:name>* javadoc test </bom:name>
+      <bom:hashes>
+        <bom:hash alg="SHA-256">ac8b0bb8cbc0a73b29b5d65d68d52567281af129324230ab16bc8e64bab7383a</bom:hash>
+      </bom:hashes>
+    </bom:component>
+    <bom:component type="library">
       <bom:name>metrics-core</bom:name>
       <bom:group>io.dropwizard.metrics</bom:group>
       <bom:hashes>
@@ -308,12 +311,6 @@
       <bom:properties>
         <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\pom.xml</bom:property>
       </bom:properties>
-    </bom:component>
-    <bom:component type="library">
-      <bom:name>* javadoc test </bom:name>
-      <bom:hashes>
-        <bom:hash alg="SHA-256">ac8b0bb8cbc0a73b29b5d65d68d52567281af129324230ab16bc8e64bab7383a</bom:hash>
-      </bom:hashes>
     </bom:component>
     <bom:component type="library">
       <bom:name>hibernate-envers</bom:name>
@@ -331,6 +328,12 @@
       <bom:name>A*</bom:name>
       <bom:hashes>
         <bom:hash alg="SHA-256">b89359f3cb3f9cab431df29a9afc24273b547eb15e9721bb71ad2e0283726c94</bom:hash>
+      </bom:hashes>
+    </bom:component>
+    <bom:component type="library">
+      <bom:name> Dead Import&#xd;</bom:name>
+      <bom:hashes>
+        <bom:hash alg="SHA-256">df7bf66fd96304e6b1131225bc638a7b8cfb665039dfedd3bd5ddcb98212e476</bom:hash>
       </bom:hashes>
     </bom:component>
     <bom:component type="library">
@@ -360,24 +363,9 @@
       </bom:properties>
     </bom:component>
     <bom:component type="library">
-      <bom:name> Dead Import&#xd;</bom:name>
-      <bom:hashes>
-        <bom:hash alg="SHA-256">df7bf66fd96304e6b1131225bc638a7b8cfb665039dfedd3bd5ddcb98212e476</bom:hash>
-      </bom:hashes>
-    </bom:component>
-    <bom:component type="library">
       <bom:name>*</bom:name>
       <bom:hashes>
         <bom:hash alg="SHA-256">08e886b8988dd89f9304b83c83aa27265410fce6e851fb308c359c1e8fc3baae</bom:hash>
-      </bom:hashes>
-      <bom:properties>
-        <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\Bar.java</bom:property>
-      </bom:properties>
-    </bom:component>
-    <bom:component type="library">
-      <bom:name>p8a</bom:name>
-      <bom:hashes>
-        <bom:hash alg="SHA-256">74ef4802d95ad4cf979932b22a18e53096693adfdc8449e11d0bf32b3739d40c</bom:hash>
       </bom:hashes>
       <bom:properties>
         <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\Bar.java</bom:property>
@@ -397,15 +385,15 @@
       </bom:properties>
     </bom:component>
     <bom:component type="library">
-      <bom:name>C4a</bom:name>
+      <bom:name>p8a</bom:name>
       <bom:hashes>
-        <bom:hash alg="SHA-256">a0822e56e6be3664a56b5f68f18c90b3ec5498a5d16c16dcffc408230c38d2eb</bom:hash>
+        <bom:hash alg="SHA-256">74ef4802d95ad4cf979932b22a18e53096693adfdc8449e11d0bf32b3739d40c</bom:hash>
       </bom:hashes>
     </bom:component>
     <bom:component type="library">
-      <bom:name>p6a</bom:name>
+      <bom:name>C4a</bom:name>
       <bom:hashes>
-        <bom:hash alg="SHA-256">6f88e44e3ad0c940d2a643c106ed5e125c586bc7b85921e8ca48e32548263dda</bom:hash>
+        <bom:hash alg="SHA-256">a0822e56e6be3664a56b5f68f18c90b3ec5498a5d16c16dcffc408230c38d2eb</bom:hash>
       </bom:hashes>
     </bom:component>
     <bom:component type="library">
@@ -428,13 +416,16 @@
       </bom:properties>
     </bom:component>
     <bom:component type="library">
+      <bom:name>p6a</bom:name>
+      <bom:hashes>
+        <bom:hash alg="SHA-256">6f88e44e3ad0c940d2a643c106ed5e125c586bc7b85921e8ca48e32548263dda</bom:hash>
+      </bom:hashes>
+    </bom:component>
+    <bom:component type="library">
       <bom:name>p7a</bom:name>
       <bom:hashes>
         <bom:hash alg="SHA-256">86120066e20963d48dabd6adc64f0a24274010141554c9798de34799158d50cd</bom:hash>
       </bom:hashes>
-      <bom:properties>
-        <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\Bar.java</bom:property>
-      </bom:properties>
     </bom:component>
     <bom:component type="library">
       <bom:name>jhipster</bom:name>
@@ -450,19 +441,6 @@
       </bom:properties>
     </bom:component>
     <bom:component type="library">
-      <bom:name>jackson-datatype-jsr310</bom:name>
-      <bom:group>com.fasterxml.jackson.datatype</bom:group>
-      <bom:version>2.8.8</bom:version>
-      <bom:hashes>
-        <bom:hash alg="SHA-256">174f86e39b8fc47c77226c7d1c3bd5a71d65d6b987e726a4306f6fa5bb4c60a1</bom:hash>
-      </bom:hashes>
-      <bom:purl>pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.8.8</bom:purl>
-      <bom:cpe>cpe:2.3:a:maven:jackson-datatype-jsr310:2.8.8:*:*:*:*:*:*:*</bom:cpe>
-      <bom:properties>
-        <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\pom.xml</bom:property>
-      </bom:properties>
-    </bom:component>
-    <bom:component type="library">
       <bom:name>metrics-annotation</bom:name>
       <bom:group>io.dropwizard.metrics</bom:group>
       <bom:version>3.2.2</bom:version>
@@ -471,6 +449,19 @@
       </bom:hashes>
       <bom:purl>pkg:maven/io.dropwizard.metrics/metrics-annotation@3.2.2</bom:purl>
       <bom:cpe>cpe:2.3:a:maven:metrics-annotation:3.2.2:*:*:*:*:*:*:*</bom:cpe>
+      <bom:properties>
+        <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\pom.xml</bom:property>
+      </bom:properties>
+    </bom:component>
+    <bom:component type="library">
+      <bom:name>jackson-datatype-jsr310</bom:name>
+      <bom:group>com.fasterxml.jackson.datatype</bom:group>
+      <bom:version>2.8.8</bom:version>
+      <bom:hashes>
+        <bom:hash alg="SHA-256">174f86e39b8fc47c77226c7d1c3bd5a71d65d6b987e726a4306f6fa5bb4c60a1</bom:hash>
+      </bom:hashes>
+      <bom:purl>pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.8.8</bom:purl>
+      <bom:cpe>cpe:2.3:a:maven:jackson-datatype-jsr310:2.8.8:*:*:*:*:*:*:*</bom:cpe>
       <bom:properties>
         <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\pom.xml</bom:property>
       </bom:properties>
@@ -640,6 +631,12 @@
       </bom:properties>
     </bom:component>
     <bom:component type="library">
+      <bom:name>Foo</bom:name>
+      <bom:hashes>
+        <bom:hash alg="SHA-256">8966d2548752e48965a2545729d94a1990626aea1a88d11a9cb86ade402799ca</bom:hash>
+      </bom:hashes>
+    </bom:component>
+    <bom:component type="library">
       <bom:name>springfox-bean-validators</bom:name>
       <bom:group>io.springfox</bom:group>
       <bom:version>2.7.0</bom:version>
@@ -659,30 +656,12 @@
       </bom:properties>
     </bom:component>
     <bom:component type="library">
-      <bom:name>Foo</bom:name>
-      <bom:hashes>
-        <bom:hash alg="SHA-256">8966d2548752e48965a2545729d94a1990626aea1a88d11a9cb86ade402799ca</bom:hash>
-      </bom:hashes>
-    </bom:component>
-    <bom:component type="library">
       <bom:name>p2a/p2b</bom:name>
       <bom:hashes>
         <bom:hash alg="SHA-256">bcb1aa9f21bae2bb7b775fda4969c037456e595cfe5d72547df311840e33cee3</bom:hash>
       </bom:hashes>
       <bom:properties>
         <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\Bar.java</bom:property>
-      </bom:properties>
-    </bom:component>
-    <bom:component type="library">
-      <bom:name>json-path</bom:name>
-      <bom:group>com.jayway.jsonpath</bom:group>
-      <bom:hashes>
-        <bom:hash alg="SHA-256">ce605e13987435290ea1bb248bee9fa30c0addb5db72d841e3bf2058c9ea375e</bom:hash>
-      </bom:hashes>
-      <bom:purl>pkg:maven/com.jayway.jsonpath/json-path</bom:purl>
-      <bom:cpe>cpe:2.3:a:maven:json-path:*:*:*:*:*:*:*:*</bom:cpe>
-      <bom:properties>
-        <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\pom.xml</bom:property>
       </bom:properties>
     </bom:component>
     <bom:component type="library">
@@ -700,6 +679,18 @@
       </bom:licenses>
       <bom:purl>pkg:maven/org.springframework/spring-context-support@4.3.9.RELEASE</bom:purl>
       <bom:cpe>cpe:2.3:a:maven:spring-context-support:4.3.9.RELEASE:*:*:*:*:*:*:*</bom:cpe>
+      <bom:properties>
+        <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\pom.xml</bom:property>
+      </bom:properties>
+    </bom:component>
+    <bom:component type="library">
+      <bom:name>json-path</bom:name>
+      <bom:group>com.jayway.jsonpath</bom:group>
+      <bom:hashes>
+        <bom:hash alg="SHA-256">ce605e13987435290ea1bb248bee9fa30c0addb5db72d841e3bf2058c9ea375e</bom:hash>
+      </bom:hashes>
+      <bom:purl>pkg:maven/com.jayway.jsonpath/json-path</bom:purl>
+      <bom:cpe>cpe:2.3:a:maven:json-path:*:*:*:*:*:*:*:*</bom:cpe>
       <bom:properties>
         <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\pom.xml</bom:property>
       </bom:properties>
@@ -753,16 +744,6 @@
       </bom:hashes>
     </bom:component>
     <bom:component type="library">
-      <bom:name>*</bom:name>
-      <bom:group>p3a/p3b</bom:group>
-      <bom:hashes>
-        <bom:hash alg="SHA-256">20329d262f1708f3f5b072268669a4f186e87df66edab69e4710e6e47e1ad4e7</bom:hash>
-      </bom:hashes>
-      <bom:properties>
-        <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\Bar.java</bom:property>
-      </bom:properties>
-    </bom:component>
-    <bom:component type="library">
       <bom:name>slf4j-nop</bom:name>
       <bom:version>2.0.5</bom:version>
       <bom:hashes>
@@ -770,6 +751,16 @@
       </bom:hashes>
       <bom:properties>
         <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\build.gradle</bom:property>
+      </bom:properties>
+    </bom:component>
+    <bom:component type="library">
+      <bom:name>*</bom:name>
+      <bom:group>p3a/p3b</bom:group>
+      <bom:hashes>
+        <bom:hash alg="SHA-256">20329d262f1708f3f5b072268669a4f186e87df66edab69e4710e6e47e1ad4e7</bom:hash>
+      </bom:hashes>
+      <bom:properties>
+        <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\Bar.java</bom:property>
       </bom:properties>
     </bom:component>
     <bom:component type="library">
@@ -791,6 +782,12 @@
       </bom:hashes>
     </bom:component>
     <bom:component type="library">
+      <bom:name>&#xd;Second Multi&#xd;Line Comment&#xd;Test&#xd;*</bom:name>
+      <bom:hashes>
+        <bom:hash alg="SHA-256">6cc28851a73393d27b18fb80d75491f0940fb04b90d37b7c77872963668bb6e3</bom:hash>
+      </bom:hashes>
+    </bom:component>
+    <bom:component type="library">
       <bom:name>spring-boot-test</bom:name>
       <bom:group>org.springframework.boot</bom:group>
       <bom:hashes>
@@ -801,12 +798,6 @@
       <bom:properties>
         <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\pom.xml</bom:property>
       </bom:properties>
-    </bom:component>
-    <bom:component type="library">
-      <bom:name>&#xd;Second Multi&#xd;Line Comment&#xd;Test&#xd;*</bom:name>
-      <bom:hashes>
-        <bom:hash alg="SHA-256">6cc28851a73393d27b18fb80d75491f0940fb04b90d37b7c77872963668bb6e3</bom:hash>
-      </bom:hashes>
     </bom:component>
     <bom:component type="library">
       <bom:name>&#xd; * Multi Line&#xd; * Test&#xd; * Comment&#xd; *</bom:name>
@@ -1009,18 +1000,6 @@
       </bom:properties>
     </bom:component>
     <bom:component type="library">
-      <bom:name>HikariCP</bom:name>
-      <bom:group>com.zaxxer</bom:group>
-      <bom:hashes>
-        <bom:hash alg="SHA-256">1548970c8e61f362fc53aacf0739de02237fac3682f356308eac03fa1550955d</bom:hash>
-      </bom:hashes>
-      <bom:purl>pkg:maven/com.zaxxer/HikariCP</bom:purl>
-      <bom:cpe>cpe:2.3:a:maven:HikariCP:*:*:*:*:*:*:*:*</bom:cpe>
-      <bom:properties>
-        <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\pom.xml</bom:property>
-      </bom:properties>
-    </bom:component>
-    <bom:component type="library">
       <bom:name>metrics-jcache</bom:name>
       <bom:group>io.dropwizard.metrics</bom:group>
       <bom:version>3.2.2</bom:version>
@@ -1029,6 +1008,18 @@
       </bom:hashes>
       <bom:purl>pkg:maven/io.dropwizard.metrics/metrics-jcache@3.2.2</bom:purl>
       <bom:cpe>cpe:2.3:a:maven:metrics-jcache:3.2.2:*:*:*:*:*:*:*</bom:cpe>
+      <bom:properties>
+        <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\pom.xml</bom:property>
+      </bom:properties>
+    </bom:component>
+    <bom:component type="library">
+      <bom:name>HikariCP</bom:name>
+      <bom:group>com.zaxxer</bom:group>
+      <bom:hashes>
+        <bom:hash alg="SHA-256">1548970c8e61f362fc53aacf0739de02237fac3682f356308eac03fa1550955d</bom:hash>
+      </bom:hashes>
+      <bom:purl>pkg:maven/com.zaxxer/HikariCP</bom:purl>
+      <bom:cpe>cpe:2.3:a:maven:HikariCP:*:*:*:*:*:*:*:*</bom:cpe>
       <bom:properties>
         <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\pom.xml</bom:property>
       </bom:properties>
@@ -1226,6 +1217,16 @@
       </bom:properties>
     </bom:component>
     <bom:component type="library">
+      <bom:name>wake</bom:name>
+      <bom:version>1.2.3</bom:version>
+      <bom:hashes>
+        <bom:hash alg="SHA-256">1cd828e8a12a22416aa82fcd4439ceaab2d06bd1938ed706ac0adb80658cafef</bom:hash>
+      </bom:hashes>
+      <bom:properties>
+        <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\build.gradle</bom:property>
+      </bom:properties>
+    </bom:component>
+    <bom:component type="library">
       <bom:name>ehcache</bom:name>
       <bom:group>org.ehcache</bom:group>
       <bom:hashes>
@@ -1235,16 +1236,6 @@
       <bom:cpe>cpe:2.3:a:maven:ehcache:*:*:*:*:*:*:*:*</bom:cpe>
       <bom:properties>
         <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\pom.xml</bom:property>
-      </bom:properties>
-    </bom:component>
-    <bom:component type="library">
-      <bom:name>wake</bom:name>
-      <bom:version>1.2.3</bom:version>
-      <bom:hashes>
-        <bom:hash alg="SHA-256">1cd828e8a12a22416aa82fcd4439ceaab2d06bd1938ed706ac0adb80658cafef</bom:hash>
-      </bom:hashes>
-      <bom:properties>
-        <bom:property name="fileAnalyzed">src\test\java\org\svip\sbomfactory\generators\TestData\Java\build.gradle</bom:property>
       </bom:properties>
     </bom:component>
     <bom:component type="library">
