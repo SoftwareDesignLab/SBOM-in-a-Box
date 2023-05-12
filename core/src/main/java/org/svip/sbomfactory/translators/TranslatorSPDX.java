@@ -33,6 +33,12 @@ public class TranslatorSPDX extends TranslatorCore {
 
     private static final String RELATIONSHIP_KEY = "Relationship: ";
 
+    private static final String SPEC_VERSION_TAG = "SPDXVersion: ";
+
+    private static final String ID_TAG = "SPDXID: ";
+
+    private static final String TIMESTAMP_TAG = "Created: ";
+
     private static final String DOCUMENT_NAMESPACE_TAG = "DocumentNamespace: ";
 
     private static final String AUTHOR_TAG = "Creator: ";
@@ -59,27 +65,15 @@ public class TranslatorSPDX extends TranslatorCore {
     // TODO: Break into sub-methods
     @Override
     protected SBOM translateContents(String fileContents, String file_path) throws IOException, ParseException {
-        // Create a new SBOM object
-        SBOM sbom;
 
         // Top level component information
-        Component top_component = null;
         String sbom_serial_number;
 
-        // Collection for sbom materials
-        // Key = Name , Value = Value
-        HashMap<String, String> sbom_materials = new HashMap<>();
-
-        // Creator information
-        // Key = Name , Value = Value
-        String author = "";
+        String product_id = "";
 
         // Collection for components, packaged and unpackaged
         // Key = SPDXID , Value = Component
         HashMap<String, Component> components = new HashMap<>();
-
-        // Collection for dependencies, contains every single component, and what it relies on, if any
-        // Key (SPDX_ID) = Component, Values (SPDX_ID) = Components it needs
 
         // Collection of packages, used  for adding head components to top component if in the header (SPDXRef-DOCUMENT)
         // Value (SPDX_ID)
@@ -89,6 +83,9 @@ public class TranslatorSPDX extends TranslatorCore {
         // Initialize BufferedReader along with current line
         BufferedReader br = new BufferedReader(new StringReader(fileContents));
         String current_line;
+
+        bom_data.put("sbomVersion", "1");
+        bom_data.put("format", "spdx");
 
         /**
          * Parse through top level SBOM data
@@ -100,97 +97,59 @@ public class TranslatorSPDX extends TranslatorCore {
                 && !current_line.contains(RELATIONSHIP_TAG)
                 && !current_line.contains(RELATIONSHIP_KEY)
         ) {
+            if (current_line.contains(": ")) {
 
-            // If the document namespace (serial number) tag is found, attempt to extract the UUID
-            // Else, if line with separator is found, split it and store into sbom materials as key:value
-            if (current_line.contains(DOCUMENT_NAMESPACE_TAG)) {
+                switch (current_line.split(": ", 2)[0] + ": ") {
 
-                // Attempt to get UUID from current line using regex
-                // replaceAll regex provided by:
-                // https://stackoverflow.com/questions/25852961/how-to-remove-brackets-character-in-string-java
-                sbom_serial_number = Arrays.toString(
-                        uuid_pattern
-                                .matcher(current_line)
-                                .results()
-                                .map(MatchResult::group)
-                                .toArray(String[]::new)
-                ).replaceAll("[\\[\\](){}]", "");
+                    case DOCUMENT_NAMESPACE_TAG:
+                        // Attempt to get UUID from current line using regex
+                        // replaceAll regex provided by:
+                        // https://stackoverflow.com/questions/25852961/how-to-remove-brackets-character-in-string-java
+                        sbom_serial_number = Arrays.toString(
+                                uuid_pattern
+                                        .matcher(current_line)
+                                        .results()
+                                        .map(MatchResult::group)
+                                        .toArray(String[]::new)
+                        ).replaceAll("[\\[\\](){}]", "");
 
-                // If a UUID is found, set it as the SBOM serial number, otherwise default to DocumentNamespace value
-                sbom_serial_number = (sbom_serial_number.isBlank()) // TODO: Verify change (sbom_serial_number was never null, only possibly empty)
-                        ? sbom_materials.get("DocumentNamespace")
-                        : sbom_serial_number;
+                        // If a UUID is found, set it as the SBOM serial number, otherwise default to DocumentNamespace value
+                        sbom_serial_number = (sbom_serial_number.isBlank()) // TODO: Verify change (sbom_serial_number was never null, only possibly empty)
+                                ? bom_data.get("DocumentNamespace")
+                                : sbom_serial_number;
 
-                // Add DocumentNamespace value to sbom materials collection
-                sbom_materials.put(current_line.split(": ", 2)[0], sbom_serial_number);
+                        // Add DocumentNamespace value to sbom materials collection
+                        bom_data.put("serialNumber", sbom_serial_number);
+                        break;
 
-            } else if (current_line.contains(AUTHOR_TAG)) {
+                    case SPEC_VERSION_TAG:
+                        bom_data.put("specVersion", current_line.split(": ", 2)[1]);
+                        break;
 
-                String author_item = current_line.split(AUTHOR_TAG)[1];
+                    case AUTHOR_TAG:
+                        if(!bom_data.containsKey("author")) {
+                            bom_data.put("author", current_line.split(":", 2)[1]);
+                        } else {
+                            bom_data.put("author", bom_data.get("author") + " " + current_line.split(":", 2)[1]);
+                        }
+                        break;
 
-                if(author_item.contains(": ")) {
-                    if(author != "") { author += " ~ "; }
-                    author += author_item.split(": ", 2)[1];
+                    case ID_TAG:
+                        bom_data.put("id", current_line.split(": ", 2)[1]);
+                        break;
+
+                    case TIMESTAMP_TAG:
+                        bom_data.put("timestamp", current_line.split(": ", 2)[1]);
+                        break;
+
+                    default:
+                        bom_data.put(current_line.split(": ", 2)[0], current_line.split(": ", 2)[1]);
+
                 }
 
-            } else if (current_line.contains(": ")) {
-
-                // Split current line by key:value, store into sbom materials collection
-                sbom_materials.put(current_line.split(": ", 2)[0], current_line.split(": ", 2)[1]);
             }
 
         }
-
-
-        /**
-         * Parse through unpackaged files, add them to components HashSet
-         */
-        // While line isn't null, package tag, relationship tag, or a relationship key
-        while ( current_line != null
-                && !current_line.contains(PACKAGE_TAG)
-                && !current_line.contains(RELATIONSHIP_TAG)
-                && !current_line.contains(RELATIONSHIP_KEY)
-        ) {
-            if (current_line.contains(PACKAGE_TAG) || current_line.contains(RELATIONSHIP_TAG)) break;
-
-            // Information for un-packaged component
-            HashMap<String, String> file_materials = new HashMap<>();
-
-            // If current line is empty (new un-packaged component)
-            if (current_line.isEmpty()) {
-
-                // Loop through the contents until the next empty line or tag
-                while (!(current_line = br.readLine()).contains(TAG) && !current_line.isEmpty()) {
-
-                    // If line contains separator, split line into Key:Value then store it into component materials map
-                    if ( current_line.contains(": ")) {
-                        file_materials.put(current_line.split(": ", 2)[0], current_line.split(": ", 2)[1]);
-                    }
-                }
-
-                // Create new component from materials
-                Component unpackaged_component = new Component(
-                        file_materials.get("FileName"),
-                        "Unknown",
-                        file_materials.get("PackageVersion"),
-                        file_materials.get("SPDXID")
-                );
-                unpackaged_component.setUnpackaged(true);
-
-                // Add unpackaged file to components
-                components.put(unpackaged_component.getUniqueID(), unpackaged_component);
-
-            } else {
-                current_line = br.readLine();
-            }
-        }
-
-
-        /**
-         * Parse through components, add them to components HashSet
-         */
-        // Loop through every Package until Relationships or end of file
-
 
         /**
          * Parse through unpackaged files, add them to components HashSet
@@ -359,17 +318,8 @@ public class TranslatorSPDX extends TranslatorCore {
 
                 }  else if (current_line.contains("DESCRIBES")) {
 
-                    // If document references itself as top component, make it the top component using sbom head information
-                    // Otherwise, get the SPDXID for the component it references and make that the top component
-                    top_component = relationship.split(" DESCRIBES ")[1].contains(DOCUMENT_REFERENCE_TAG)
-                            ? new Component(sbom_materials.get("DocumentName"), "N/A", "N/A", sbom_materials.get("SPDXID") )
-                            : components.get(relationship.split(" DESCRIBES ")[1]);
+                    product_id = relationship.split(" DESCRIBES ")[1];
 
-                    // If top component exists, and if it is SPDXID: SPDXRef-DOCUMENT, add top level components as its dependencies
-                    // Then, add it as the top level component of the dependency tree
-                    if( top_component != null && top_component.getUniqueID().contains(DOCUMENT_REFERENCE_TAG) ) {
-                        setDependencies(top_component.getUniqueID(), packages);
-                    }
                 }
 
                 current_line = br.readLine();
@@ -381,36 +331,36 @@ public class TranslatorSPDX extends TranslatorCore {
             }
         }
 
-        // Create the new SBOM Object with top level data
-        try {
-            sbom = new SBOM(
-                    "spdx",
-                    sbom_materials.get("SPDXVersion"),
-                    "1",
-                    author == "" ? "Unknown" : author,
-                    sbom_materials.get("DocumentNamespace"),
-                    sbom_materials.get("Created"),
-                    null);
-        } catch (Exception e) {
-            System.err.println("Could not create SBOM object. File: " + file_path);
-            e.printStackTrace();
-            br.close();
-            return null;
+        br.close();
+
+        // product == DOCUMENT_REFERENCE_TAG
+        // ? new Component(bom_data.get("DocumentName"), "N/A", "N/A", bom_data.get("id") )
+        // : components.get(relationship.split(" DESCRIBES ")[1]);
+
+        if (product_id.contains(DOCUMENT_REFERENCE_TAG)) {
+            product_data.put("name", bom_data.get("DocumentName"));
+            product_data.put("publisher", bom_data.get("N/A"));
+            product_data.put("version", bom_data.get("N/A"));
+            product_data.put("id", bom_data.get("id"));
+            setDependencies(product_data.get("id"), packages);
+        } else {
+            product = components.get(product_id);
         }
 
-        if(top_component!=null) { sbom.addComponent(null, top_component); }
+        // Create the new SBOM Object with top level data
+        this.createSBOM();
 
         // Create the top level component
         // Build the dependency tree using dependencyBuilder
         try {
-            this.dependencyBuilder(components, top_component, sbom, null);
+            this.dependencyBuilder(components, this.product, null);
         } catch (Exception e) {
             System.err.println("Error processing dependency tree.");
         }
 
-        br.close();
+        this.defaultDependencies(components, this.product);
 
         // Return SBOM object
-        return sbom;
+        return this.sbom;
     }
 }
