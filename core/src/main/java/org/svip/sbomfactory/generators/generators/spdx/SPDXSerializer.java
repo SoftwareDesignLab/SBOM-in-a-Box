@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.generators.generators.spdx;
 
+import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import org.svip.sbom.model.PURL;
 import org.svip.sbomfactory.generators.generators.utils.License;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.svip.sbomfactory.generators.generators.utils.Tool;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
+import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +75,12 @@ public class SPDXSerializer extends StdSerializer<SPDXStore> {
     @Override
     public void serialize(SPDXStore spdxStore, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
             throws IOException {
+
+        // If we are serializing to XML, specify the root element as "Document"
+        if(jsonGenerator instanceof ToXmlGenerator xmlGenerator) {
+            xmlGenerator.initGenerator();
+            xmlGenerator.setNextName(new QName("Document"));
+        }
 
         jsonGenerator.writeStartObject(); // {
 
