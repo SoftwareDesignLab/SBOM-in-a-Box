@@ -12,7 +12,10 @@ v1.0.0 - alpha (2/27/23)
 _Full sub-system READMEs & changelogs can be found in the `doc` directory_
 
 ## Quick Start
-todo add quick start
+- Core:
+  - run SVIPApplication.java
+- API:
+  - run UnifiedApplication.java
 
 ## Features
 This is a list of all "features", or sub-systems that SVIP contains. Each links to their respective README.md file.
