@@ -70,6 +70,13 @@ public class SPDXTagValueWriter {
             out.append(getPackage(pkg));
         }
 
+        if(spdxStore.getRelationships().size() > 0) {
+            out.append("## Relationships\n");
+            for(Relationship relationship : spdxStore.getRelationships()) {
+                out.append("Relationship: ").append(relationship.toString()).append("\n");
+            }
+        }
+
         return out.toString();
     }
 
