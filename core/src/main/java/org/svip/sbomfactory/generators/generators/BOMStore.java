@@ -165,10 +165,5 @@ public abstract class BOMStore {
         return licenses;
     }
 
-    public String getToolLicensesString() {
-        List<String> toolLicenses = getToolLicenses().stream().map(License::toString).toList();
-        return String.join(" AND ", toolLicenses);
-    }
-
     //#endregion
 }

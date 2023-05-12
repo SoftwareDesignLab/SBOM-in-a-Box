@@ -6,6 +6,7 @@ import org.svip.sbomfactory.generators.generators.utils.License;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import org.svip.sbomfactory.generators.generators.utils.LicenseManager;
 import org.svip.sbomfactory.generators.generators.utils.Tool;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
@@ -111,7 +112,8 @@ public class SPDXSerializer extends StdSerializer<SPDXStore> {
 
 
         // Get all licenses from tools
-        jsonGenerator.writeStringField("dataLicense", spdxStore.getToolLicensesString());
+        jsonGenerator.writeStringField("dataLicense",
+                LicenseManager.getConcatenatedLicenseString(spdxStore.getToolLicenses()));
 
         //
         // Extracted licensing info (invalid licenses)
@@ -285,11 +287,8 @@ public class SPDXSerializer extends StdSerializer<SPDXStore> {
         //
 
         if(pkg.getResolvedLicenses().size() > 0) {
-            Set<String> shortStrings = pkg.getResolvedLicenses().stream().map(License::getSpdxLicense)
-                    .collect(Collectors.toSet());
-
-            String licenseList = String.join(" AND ", shortStrings); // Join with AND for multiple licenses
-            jsonGenerator.writeStringField("licenseConcluded", licenseList);
+            jsonGenerator.writeStringField("licenseConcluded",
+                    LicenseManager.getConcatenatedLicenseString(pkg.getResolvedLicenses()));
         } else {
             jsonGenerator.writeStringField("licenseConcluded", "NONE"); // Otherwise, no license found
         }
