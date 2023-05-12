@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-/**
+/** TODO Add comments detailing generation info?
  * File: BOMStore.java
  * <p>
  * Abstract dataclass to store common attributes and methods between all CycloneDXStore specifications. This class will be
@@ -163,6 +163,11 @@ public abstract class BOMStore {
         List<License> licenses = new ArrayList<>();
         tools.stream().map(Tool::getLicenses).forEach(licenses::addAll);
         return licenses;
+    }
+
+    public String getToolLicensesString() {
+        List<String> toolLicenses = getToolLicenses().stream().map(License::toString).toList();
+        return String.join(" AND ", toolLicenses);
     }
 
     //#endregion

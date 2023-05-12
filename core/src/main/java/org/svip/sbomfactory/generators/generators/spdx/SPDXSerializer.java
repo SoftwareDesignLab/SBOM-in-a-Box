@@ -103,8 +103,7 @@ public class SPDXSerializer extends StdSerializer<SPDXStore> {
 
 
         // Get all licenses from tools
-        List<String> toolLicenses = spdxStore.getToolLicenses().stream().map(License::toString).toList();
-        jsonGenerator.writeStringField("dataLicense", String.join(" AND ", toolLicenses));
+        jsonGenerator.writeStringField("dataLicense", spdxStore.getToolLicensesString());
 
         //
         // Extracted licensing info (invalid licenses)
