@@ -4,23 +4,19 @@ to either the CycloneDX or SPDX schema, and the XML, JSON, or YAML format.
 
 # Last Changelog Update
 
-## [v4.3.1-alpha] - (05/11/2023)
+## [v4.3.2-alpha] - (05/12/2023)
 
 ### Added
 
-- Add `CycloneDXXMLSerializer` Class.
-- Add abstract `TranslatorCore` Class that all other translators extend to increase modularity.
-- Add abstract `TranslatorTestCore` Class that allows the tests to have a similar level of modularity.
-- Add `CSProjParserTest` to test the C# Package Parser.
+- Add `LicenseManager.getConcatenatedLicenseString()` method to concisely concatenate all tool licenses to use when
+  representing a Collection of licenses as a string.
 
 ### Changed
 
-- Update `GeneratorSchema.getObjectMapper()` to take a schema argument to register all serializers with their respective
-  `ObjectMapper`
-- Update `ObjectMapper` pretty-printing to stop indenting each line of an array to enhance SBOM readability.
-- Refactor all translator tests to reflect the updated translator (and `TranslatorTestCore`) architecture.
-- Rename `GradleParserParseTest` to `GradleParserTest` for semantics.
-- Update `CommentParser`, `DeadImportParser`, & `SubprocessParser` to add parsed contexts to SBOM components.
+- Ensure `SPDXSerializer` Class properly serializes an XML Document according to the documentation and
+  [official example](https://github.com/spdx/spdx-spec/blob/development/v2.3.1/examples/SPDXXMLExample-v2.3.spdx.xml).
+- Update `SPDXSerializer` Class to ensure the XML root element is `Document` when serializing using an instance of
+  `ToXmlGenerator`.
 
 > See the full [changelog](changelog.md) for more information regarding recent changes.
 
