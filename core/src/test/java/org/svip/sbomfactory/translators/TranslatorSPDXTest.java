@@ -105,6 +105,6 @@ public class TranslatorSPDXTest extends TranslatorTestCore<TranslatorSPDX> {
         assertEquals(SBOMType.SPDX, test.getOriginFormat());
         assertEquals("1", test.getSbomVersion());
         assertEquals(null, test.getSpecVersion());
-        assertEquals(0, test.getAllComponents().size());
+        assertEquals(1, test.getAllComponents().size());
     }
 }

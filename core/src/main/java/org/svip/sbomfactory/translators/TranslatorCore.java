@@ -13,12 +13,26 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public abstract class TranslatorCore {
+
     protected final String FILE_EXTN;
+
+    protected SBOM sbom;
+
+    protected Component product;
+
+    protected HashMap<String, String> bom_data;
+
+    protected HashMap<String, String> product_data;
+
+    protected HashMap<String, String> components;
 
     protected HashMap<String, ArrayList<String>> dependencies;
 
     protected TranslatorCore(String fileExtn) {
         FILE_EXTN = fileExtn;
+        bom_data = new HashMap<>();
+        product_data = new HashMap<>();
+        components = new HashMap<>();
         dependencies = new HashMap<>();
     }
 
@@ -31,9 +45,9 @@ public abstract class TranslatorCore {
      */
     protected abstract SBOM translateContents(String contents, String filePath) throws IOException, ParseException, ParserConfigurationException;
 
-    protected SBOM createSBOM(HashMap<String, String> bom_data) {
+    protected void createSBOM() {
         try {
-            return new SBOM(
+            sbom = new SBOM(
                     bom_data.get("format"),
                     bom_data.get("specVersion"),
                     bom_data.get("sbomVersion"),
@@ -43,13 +57,34 @@ public abstract class TranslatorCore {
                     null
             );
         } catch (Exception e) {
-            System.err.println("Error: Internal SBOM could not be created. File: " + this.FILE_EXTN);
+            System.err.println(
+                    "Error: Internal SBOM could not be created. Cancelling translation for this SBOM. \n " +
+                    "File: " + this.FILE_EXTN + "\n"
+            );
             e.printStackTrace();
-            return null;
+            sbom = null;
+            System.exit(0);
         }
+
+        if (product == null) {
+            try {
+                product = new Component(
+                        product_data.get("name"),
+                        product_data.get("publisher"),
+                        product_data.get("version"),
+                        product_data.get("id")
+                );
+                sbom.addComponent(null, product);
+            } catch (Exception e) {
+                System.err.println("Error: Could not create top component from SBOM metadata. File: " + this.FILE_EXTN);
+            }
+        } else if (product != null) {
+            sbom.addComponent(null, product);
+        }
+
     }
 
-    protected void dependencyBuilder(HashMap<String, Component> components, Component parent, SBOM sbom, Set<String> visited) {
+    protected void dependencyBuilder(HashMap<String, Component> components, Component parent, Set<String> visited) {
 
         // If top component is null, return. There is nothing to process.
         if (parent == null) { return; }
@@ -84,19 +119,19 @@ public abstract class TranslatorCore {
                 // This means we are in the top level component
                 // Pass in a new hashset instead of the visited set
                 visited = new HashSet<>();
-                dependencyBuilder(components, child, sbom, new HashSet<>());
+                dependencyBuilder(components, child, new HashSet<>());
             }
             else {
                 // Only explore if we haven't already visited this component
                 if (!visited.contains(child.getUniqueID())) {
                     // Pass the child component as the new parent into dependencyBuilder
-                    dependencyBuilder(components, child, sbom, visited);
+                    dependencyBuilder(components, child, visited);
                 }
             }
         }
     }
 
-    protected void defaultDependencies(HashMap<String, Component> components, Component parent, SBOM sbom) {
+    protected void defaultDependencies(HashMap<String, Component> components, Component parent) {
         if (dependencies == null) { return; }
         for(ArrayList<String> defaults : dependencies.values()) {
             defaults.stream().forEach(x -> sbom.addComponent(parent.getUUID(), components.get(x)));

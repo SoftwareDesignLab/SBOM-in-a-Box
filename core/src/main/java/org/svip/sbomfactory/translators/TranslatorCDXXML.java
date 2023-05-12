@@ -35,12 +35,6 @@ public class TranslatorCDXXML extends TranslatorCore {
      */
     @Override
     protected SBOM translateContents(String contents, String file_path) throws ParserConfigurationException {
-        // New SBOM object
-        SBOM sbom;
-
-        // Top component (component sbom is for) uuid
-        Component top_component;
-        UUID top_component_uuid = null;
 
         // Data for author
         String author = "";
@@ -54,9 +48,6 @@ public class TranslatorCDXXML extends TranslatorCore {
         // Key = unique id (bom-ref), Value = Component Object
         HashMap<String, Component> components = new HashMap<>();
 
-        // Collection of component names used by dependencyTree
-        Set<String> components_left = new HashSet<>();
-
         // Initialize Document Builder
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setIgnoringElementContentWhitespace(true);
@@ -67,6 +58,9 @@ public class TranslatorCDXXML extends TranslatorCore {
 
         try {
             sbom_xml_file = documentBuilder.parse(new InputSource(new StringReader(contents)));
+        } catch (NullPointerException nullPointerException) {
+            System.err.println("Error: NullPointerException found. File contents may be null in: " + file_path);
+            return null;
         } catch (SAXException saxException) {
             System.err.println("Error: SAXException found. File must be a properly formatted Cyclone-DX XML file: " + file_path);
             return null;
@@ -174,38 +168,21 @@ public class TranslatorCDXXML extends TranslatorCore {
             }
         }
 
-        // Create the new SBOM Object with top level data
-        try {
-            sbom = new SBOM(
-                    "cyclonedx",
-                    header_materials.get("xmlns"),
-                    header_materials.get("version"),
-                    author == "" ? sbom_materials.get("vendor") : author,
-                    header_materials.get("serialNumber"),
-                    sbom_materials.get("timestamp"),
-                    null);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Could not create SBOM object. File: " + file_path);
-            return null;
-        }
+        bom_data.put("format", "cyclonedx");
+        bom_data.put("specVersion", header_materials.get("xmlns"));
+        bom_data.put("sbomVersion", header_materials.get("version"));
+        bom_data.put("author", author == "" ? sbom_materials.get("vendor") : author);
+        bom_data.put("serialNumber", header_materials.get("serialNumber"));
+        bom_data.put("timestamp", sbom_materials.get("timestamp"));
 
-        // Add the top level component as the root component
-        try {
-            top_component = new Component(
-                    sbom_component.get("name"),
-                    sbom_component.get("publisher") == null
-                            ? sbom_materials.get("author")
-                            : sbom_component.get("publisher"),
-                    sbom_component.get("version"),
-                    sbom_component.get("bom-ref")
-            );
-            sbom.addComponent(null, top_component);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Cannot find top level component in metadata. File: " + file_path);
-            top_component = null;
-        }
+        product_data.put("name" , sbom_component.get("name"));
+        product_data.put("publisher", sbom_component.get("publisher") == null
+                        ? sbom_materials.get("author") : sbom_component.get("publisher"));
+        product_data.put("version", sbom_component.get("version"));
+        product_data.put("id", sbom_component.get("bom-ref"));
+
+        // Create the new SBOM Object with top level data
+        this.createSBOM();
 
         /*
          * Cycle through all components and correctly attach them to Java SBOM object
@@ -292,7 +269,8 @@ public class TranslatorCDXXML extends TranslatorCore {
                     component.setLicenses(component_licenses);
 
                     components.put(component.getUniqueID(), component);
-                    components_left.add(component.getUniqueID());
+
+                    this.product = product == null ? component : product;
 
                 }
 
@@ -331,7 +309,7 @@ public class TranslatorCDXXML extends TranslatorCore {
             }
         } else {
             dependencies.put(
-                    top_component.getUniqueID(),
+                    this.product.getUniqueID(),
                     components.values().stream().map(x->x.getUniqueID()).collect(Collectors.toCollection(ArrayList::new))
             );
         }
@@ -340,19 +318,19 @@ public class TranslatorCDXXML extends TranslatorCore {
         // Create the top level component
         // Build the dependency tree using dependencyBuilder
         try {
-            dependencyBuilder(components, top_component, sbom, null);
+            dependencyBuilder(components, this.product,null);
         } catch (Exception e) {
             System.err.println("Error processing dependency tree.");
         }
 
         try {
-            defaultDependencies(components, top_component, sbom);
+            defaultDependencies(components, this.product);
         } catch (Exception e) {
             System.err.println("Something went wrong with defaulting dependencies. A dependency tree may not exist.");
         }
 
         // Return complete SBOM object
-        return sbom;
+        return this.sbom;
     }
 
 }
