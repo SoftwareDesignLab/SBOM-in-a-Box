@@ -10,8 +10,10 @@
             on the target framework.
         </description>
         <dependencies>
-            <dependency id="another-package" version="3.0.0" />
-            <dependency id="yet-another-package" version="1.0.0" />
+            <dependency id="Newtonsoft.Json" version="11.0.2" />
+            <dependency id="RestSharp" version="106.3.1" />
+            <dependency id="Selenium.Support" version="3.14.0" />
+            <dependency id="Selenium.WebDriver" version="3.14.0" />
         </dependencies>
         <frameworkAssemblies>
             <frameworkAssembly assemblyName="System.Web" targetFramework="net40" />

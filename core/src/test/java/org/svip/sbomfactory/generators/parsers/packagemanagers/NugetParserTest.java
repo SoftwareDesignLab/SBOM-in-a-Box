@@ -46,7 +46,7 @@ public class NugetParserTest extends ParseDepFileTestCore{
         final ArrayList<ParserComponent> components = this.components;
 
         // Test correct count is found
-        assertEquals(6, components.size());
+        assertEquals(8, components.size());
 
         //Make ValueSet
         final Set<String> ValueSet = new HashSet<>();;
@@ -55,26 +55,26 @@ public class NugetParserTest extends ParseDepFileTestCore{
         }
 
         //Check component's name
-        String str = "yet-another-package" ;
+
+        String str = "System.Web" ;
         assertTrue(ValueSet.contains(str));
 
-        //Check component's name
-        str = "another-package" ;
-        assertTrue(ValueSet.contains(str));
-
-        //Check component's name
-        str = "System.Web" ;
-        assertTrue(ValueSet.contains(str));
-
-        //Check component's name
         str = "System.Net" ;
         assertTrue(ValueSet.contains(str));
 
-        //Check component's name
         str = "Microsoft.Devices.Sensors" ;
         assertTrue(ValueSet.contains(str));
 
-        str = "System.Json" ;
+        str = "Newtonsoft.Json" ;
+        assertTrue(ValueSet.contains(str));
+
+        str = "RestSharp" ;
+        assertTrue(ValueSet.contains(str));
+
+        str = "Selenium.Support" ;
+        assertTrue(ValueSet.contains(str));
+
+        str = "Selenium.WebDriver" ;
         assertTrue(ValueSet.contains(str));
 
      }
