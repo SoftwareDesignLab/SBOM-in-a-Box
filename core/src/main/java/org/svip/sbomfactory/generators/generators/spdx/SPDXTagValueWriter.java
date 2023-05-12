@@ -1,5 +1,7 @@
 package org.svip.sbomfactory.generators.generators.spdx;
 
+import org.svip.sbom.model.CPE;
+import org.svip.sbom.model.PURL;
 import org.svip.sbomfactory.generators.generators.utils.License;
 import org.svip.sbomfactory.generators.generators.utils.LicenseManager;
 import org.svip.sbomfactory.generators.generators.utils.Tool;
@@ -51,6 +53,11 @@ public class SPDXTagValueWriter {
         out.append(getDocumentHeader());
         out.append("## Creation Information\n").append(getCreationInformation());
         out.append("## Extracted License Information\n").append(getExtractedLicenseInformation());
+
+        out.append("## Packages\n");
+        for(ParserComponent pkg : spdxStore.getPackages()) {
+            out.append(getPackage(pkg));
+        }
 
         return out.toString();
     }
@@ -104,7 +111,49 @@ public class SPDXTagValueWriter {
     }
 
     private String getPackage(ParserComponent component) {
-        return "";
+        StringBuilder out = new StringBuilder();
+
+        out.append("PackageName: ").append(component.getName()).append("\n");
+        out.append("SPDXID: ").append(component.getSPDXID()).append("\n");
+        if(component.getVersion() != null) out.append("PackageVersion: ").append(component.getVersion()).append("\n");
+        if(component.getGroup() != null) out.append("PackageFileName: ").append(component.getGroup()).append("\n");
+
+        if(component.getPublisher() != null && component.getPublisher().length() > 0
+                && !component.getPublisher().equals("Unknown")) // TODO is this correct? See SPDXSerializer as well
+            out.append("PackageSupplier: Organization: ").append(component.getPublisher());
+
+        out.append("PackageChecksum: SHA-256: ").append(component.generateHash()).append("\n");
+        out.append("PackageCopyrightText: NOASSERTION\n");
+
+        if(component.getResolvedLicenses().size() > 0) {
+            out.append("PackageLicenseConcluded: ")
+                    .append(LicenseManager.getConcatenatedLicenseString(component.getResolvedLicenses())).append("\n");
+        } else {
+            out.append("PackageLicenseConcluded: NONE\n");
+        }
+
+        out.append("PackageLicenseDeclared: NOASSERTION\n");
+
+        for(String cpe : component.getCpes()) {
+            out.append("ExternalRef: SECURITY cpe23Type ").append(cpe).append("\n");
+        }
+
+        for(PURL purl : component.getPurls()) {
+            out.append("ExternalRef: SECURITY purl ").append(purl.toString()).append("\n");
+        }
+
+        if(component.getFiles().size() > 0) {
+            out.append("FilesAnalyzed: true\n");
+
+            for(String file : component.getFiles()) {
+                out.append("HasFile: ").append(file).append("\n"); // TODO is this correct?
+            }
+
+        } else {
+            out.append("FilesAnalyzed: false\n");
+        }
+
+        return out.append("\n").toString();
     }
 
     //#endregion
