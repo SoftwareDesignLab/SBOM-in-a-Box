@@ -2,17 +2,13 @@ package org.svip.sbomfactory.generators.generators.utils;
 
 
 import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.PrettyPrinter;
-import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -23,7 +19,6 @@ import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXStore;
 import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXXMLSerializer;
 import org.svip.sbomfactory.generators.generators.spdx.SPDXSerializer;
 import org.svip.sbomfactory.generators.generators.spdx.SPDXStore;
-import org.svip.sbomfactory.generators.generators.spdx.SPDXXMLSerializer;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -112,8 +107,7 @@ public enum GeneratorSchema {
                     else module.addSerializer(CycloneDXStore.class, new CycloneDXXMLSerializer());
                 }
                 case SPDX -> {
-                    if(this != XML) module.addSerializer(SPDXStore.class, new SPDXSerializer());
-                    else module.addSerializer(SPDXStore.class, new SPDXXMLSerializer());
+                    module.addSerializer(SPDXStore.class, new SPDXSerializer());
                 }
                 default -> throw new GeneratorException("No serializer registered in getObjectMapper() for schema " +
                         schema + ".");
