@@ -37,7 +37,7 @@ public class SPDXXMLSerializer extends StdSerializer<SPDXStore> {
      * The namespace URI of the SPDX XML schema
      */
     private static final String SPDX_NAMESPACE_URI = "https://spdx.org/rdf/terms/";
-    private static final String RDF_NAMESPACE_URI = "http://www.w3.org/2000/01/rdf-schema";
+    private static final String RDF_NAMESPACE_URI = "https://www.w3.org/2000/01/rdf-schema";
 
     /**
      * The prefix used to represent the XML namespace
@@ -100,8 +100,47 @@ public class SPDXXMLSerializer extends StdSerializer<SPDXStore> {
 
         xmlGenerator.writeStartObject();
         writeAttribute(xmlGenerator, "xmlns:" + RDF_PREFIX, RDF_NAMESPACE_URI); // Write another namespace
+        writeAttribute(xmlGenerator, "rdf:about", spdxStore.getSerialNumber() + spdxStore.getDocumentId()); // Serial number
+        xmlGenerator.writeStringField("specVersion", spdxStore.getSpecVersion()); // Spec version
+        xmlGenerator.writeStringField("name", spdxStore.getHeadComponent().getName());
+        writeObject(xmlGenerator, "dataLicense");
+        writeAttribute(xmlGenerator, "rdf:resource", spdxStore.getToolLicenses().get(0).getUrl());
+        xmlGenerator.writeEndObject();
 
-        xmlGenerator.writeStringField("test", "testvalue");
+        //
+        // Creation Info
+        //
+        writeObject(xmlGenerator, "CreationInfo");
+
+        xmlGenerator.writeStringField("created", spdxStore.getTimestamp());
+
+        for(Tool tool : spdxStore.getTools()) {
+            xmlGenerator.writeStringField("creator", tool.getToolInfo());
+        }
+
+        xmlGenerator.writeEndObject();
+
+        //
+        // Extracted License Info
+        //
+
+        if(spdxStore.getExternalLicenses().size() > 0) {
+            for(License license : spdxStore.getExternalLicenses()) {
+                writeObject(xmlGenerator, "ExtractedLicensingInfo");
+                writeAttribute(xmlGenerator, "rdf:about", spdxStore.getSerialNumber() + "#" + license.getSpdxLicense());
+
+                xmlGenerator.writeStringField("licenseId", license.getSpdxLicense());
+                xmlGenerator.writeStringField("name", license.getLicenseName());
+                if(license.getUrl() != null && license.getUrl().length() > 0) {
+                    xmlGenerator.setNextName(new QName("rdfs:seeAlso"));
+                    xmlGenerator.writeStringField("rdfs:seeAlso", license.getLicenseName());
+                    xmlGenerator.setNextName(ROOT_NAME);
+                }
+
+                xmlGenerator.writeEndObject();
+            }
+        }
+
 
         xmlGenerator.writeEndObject();
     }
