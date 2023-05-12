@@ -1,0 +1,1049 @@
+{
+  "SPDXStore" : {
+    "SPDXID" : "SPDXRef-DOCUMENT",
+    "spdxVersion" : "SPDX-2.3",
+    "creationInfo" : {
+      "created" : "2023-05-12T14:20:21Z",
+      "creators" : [ "Tool: BenchmarkGenerator v4.3.2-alpha" ]
+    },
+    "name" : "Python",
+    "dataLicense" : "MIT-0",
+    "hasExtractedLicensingInfos" : [ ],
+    "documentDescribes" : [ "SPDXRef-00", "SPDXRef-02", "SPDXRef-03", "SPDXRef-04", "SPDXRef-06", "SPDXRef-07", "SPDXRef-08", "SPDXRef-09", "SPDXRef-10", "SPDXRef-11", "SPDXRef-12", "SPDXRef-13", "SPDXRef-14", "SPDXRef-15", "SPDXRef-16", "SPDXRef-17", "SPDXRef-18", "SPDXRef-19", "SPDXRef-20", "SPDXRef-21", "SPDXRef-22", "SPDXRef-23", "SPDXRef-24", "SPDXRef-25", "SPDXRef-26", "SPDXRef-27", "SPDXRef-28", "SPDXRef-29", "SPDXRef-30", "SPDXRef-31", "SPDXRef-32", "SPDXRef-33", "SPDXRef-34", "SPDXRef-35", "SPDXRef-36", "SPDXRef-37", "SPDXRef-38", "SPDXRef-39", "SPDXRef-40", "SPDXRef-41", "SPDXRef-42", "SPDXRef-43", "SPDXRef-44", "SPDXRef-45", "SPDXRef-46", "SPDXRef-47", "SPDXRef-48", "SPDXRef-49", "SPDXRef-50", "SPDXRef-51", "SPDXRef-52", "SPDXRef-53", "SPDXRef-54", "SPDXRef-55", "SPDXRef-56", "SPDXRef-57", "SPDXRef-58", "SPDXRef-59", "SPDXRef-60", "SPDXRef-61", "SPDXRef-62", "SPDXRef-63", "SPDXRef-64", "SPDXRef-65", "SPDXRef-66", "SPDXRef-67", "SPDXRef-68", "SPDXRef-69", "SPDXRef-70", "SPDXRef-71", "SPDXRef-72", "SPDXRef-73", "SPDXRef-74", "SPDXRef-75", "SPDXRef-76" ],
+    "documentNamespace" : "urn:uuid:878acece-289b-34e5-be1a-eceac5c03d76",
+    "packages" : [ {
+      "SPDXID" : "SPDXRef-00",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "51872529872300461256d33c64d9d1c6a8bfcbf406500990f3f3f68c97033cd5"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "p3a",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-02",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "a08256871e74728048f43da1439131391976ffa2db2fed67a3543a7fa4824c81"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "ifoo",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-03",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "02370ceef2bbd92a5a6e12440adc629c8873d840edc3943c4f0457847d09eabf"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "p4a",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-04",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-05" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "e84a7ef8ece0a5776588dfbc312c8d25dffab1b5bc7674b93db7fc2dedc399c3"
+      } ],
+      "licenseConcluded" : "BSD-3-Clause-No-Nuclear-License-2014",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "pandas",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "1.5.1"
+    }, {
+      "SPDXID" : "SPDXRef-06",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "089e7a640c3881d4edd489fb67af36ccf6416d7acfa7c9fbb122ad61112d2721"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "p1a",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-07",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "f43c392a4a63b82e1765503391617486343da09aaab9606f5132fd333ec56181"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "b",
+      "packageFileName" : "Python/Absolute",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-08",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "66d7598ebcfeed07c69bc6dcc84e6b65bf9a27a0168d8d4e5fec1c979ba6536f"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "C5a",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-09",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "5a0ab2cc94a0881a416f18bfe23fb9faf5794fa139e5250eb03b7ff65292021e"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "r",
+      "packageFileName" : "Absolute",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-10",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "2d8024e4c0d330bd4c26b52a6512b1ebff953e794a9ec3b4727a870d1212d8d7"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : " from: Absolute External\r",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-11",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "6d124ea992686f8b8258b652733416eaab1b54f6584885c9075c1b3eb441ead6"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "a",
+      "packageFileName" : "Absolute",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-12",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-05" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "383b793fa6b2d5e32f31cbe9359b113541722d7428de70645f2093e657787f96"
+      } ],
+      "licenseConcluded" : "BSD-3-Clause-No-Nuclear-License-2014",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "seaborn",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "0.10.1"
+    }, {
+      "SPDXID" : "SPDXRef-13",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "e3154151ac604aae57ca10ec7aa93ace00ee79f580e42333d2300c8e4e61b2c1"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "p2b",
+      "packageFileName" : "p2a",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-14",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "8c6c81124ba6cd8619b08ab8e5bfa1dc37eed743958d077d8ea2f659581f90b6"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "ifee",
+      "packageFileName" : "Absolute/ifoo",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-15",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "ccbccbeb2668c680ca39629b6d2b1b606023a2133dfc52f65a7fba22d77a8214"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "subprocess",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-16",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "6ef0841e6e55b5459de534a2896f1102d27b466d0f9f0e3795a5c3cf336f122d"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "ib",
+      "packageFileName" : "ifoo/ibar",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-17",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "b0b11e9248697630521b146b1e879c9e291b243fcab41be6bc70459c1fa76f72"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "Absolute",
+      "packageFileName" : "Python",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-18",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "39794769228508e984b957c805975e7b293a6e10a724f00480183694269e186e"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "C5a",
+      "packageFileName" : "p11a",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-19",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "2d69e85d7f41891b2883632bff99c03adff8a28029e79db7b72616f80baf6e79"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : " from: Absolute Internal\r",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-20",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-05" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "b37fe129ab66375d299fedb989ceb23672e3cc72ce8080922729aca363204c3c"
+      } ],
+      "licenseConcluded" : "MIT-0",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "fonttools",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "4.38.0"
+    }, {
+      "SPDXID" : "SPDXRef-21",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "3a0255d0bc3d031da67cdf89b3d66a749740f1e08628a886121a44935b459887"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "ifoobarModule",
+      "packageFileName" : "ifoo/ibar",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-22",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "1186025b12dc6702feb17674976e03a7607c7c1f16de3e07b7c7ed01ac2fd1a8"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "C4b",
+      "packageFileName" : "p10a",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-23",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "854e4dccf4184cec45f872a054d50a452eaa6bbf27cbfad03e23b56586092b06"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : " from: Relative\r",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-24",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "6b1eac3b129d437dc32d1d8fd2bbb572dfea0b20a959b17fc3599809acc895a5"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "ibar",
+      "packageFileName" : "ifoo",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-25",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "a6380e2cf0dcac6553185107c7bedea2029ab81378dad381b30cbe0f364ed657"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "import bar\r",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-26",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "7577ef0dc3eb27aa7fcaa3234885a7e75397de1d50ee15a0918cbe66115ab42c"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "C5c",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-27",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "9ba5545d8a1df109de763817f30c68a60216bff25431e984c1b0b9e243cb2f67"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "C1a",
+      "packageFileName" : "p6a",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-28",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "1b48620b8901ea24c3d005bb7e918cbd3cc78361ae755afeb013ceb7ecdf8cc5"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "C4c",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-29",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-05" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "956e363eca6789aff0de70ce4bb54030a8d191f3ca799dd10bcc30f54c8e8a2f"
+      } ],
+      "licenseConcluded" : "libselinux-1.0",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "pillow",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "9.3.0"
+    }, {
+      "SPDXID" : "SPDXRef-30",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "d685ff648c61b49d28da4cffa6fea571a4b951cf717146362fe7b601081a59a5"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "ifoobarClass",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-31",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-05" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "ec933ca0675f4a3a191995fd6609571b21dde9f22751f8dd1c456292e23bc26d"
+      } ],
+      "licenseConcluded" : "BSD-3-Clause-No-Nuclear-License-2014",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "kiwisolver",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "1.4.4"
+    }, {
+      "SPDXID" : "SPDXRef-32",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "4959aa8a1554143e552117724067e7f2b6ce46e9d03016c17514105f8bae2c69"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "ifee",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-33",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "50f0aa3458e4d5e27b521496ac6a04928f74703ec194b6ee6b214bc5ca14dc37"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : " import *\r",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-34",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "36a5654cfe29b8f555b0fb58987343f18463547f16fa83d69452d6e5313add13"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "C5c",
+      "packageFileName" : "p11a",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-35",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "999cf69644ccfd15651233c262185087e2cdf589e67c57e924f38ceabc2084f8"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "ir",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-36",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "64c87a8edb502930707ec8581ea1e95e909aba7200a2a2f23d5b585f9ba58bb2"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : " Python unit testing\r",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-37",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "0b14637ea5d540def77bfa40e96aa150facdefe97dcdc5bf038bee72ab93d835"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : " Import\r",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-38",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-05" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "65f9ec6134d949df19d83257a99bf967178d2717fdd7374b6b324e8feded3797"
+      } ],
+      "licenseConcluded" : "MIT-0",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "pytz",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "2022.6"
+    }, {
+      "SPDXID" : "SPDXRef-39",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "f07536c1256f21d4aa893cb5a01e4e5b91752ed8b5ea39586cc9b00d8afab39c"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "java -jar run.jar",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-40",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-05" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "251ce4016da79c26111a789c00e7bd3c379ef29119c0375626180c06833ab25a"
+      } ],
+      "licenseConcluded" : "BSD-3-Clause-No-Nuclear-License-2014",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "cycler",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "0.11.0"
+    }, {
+      "SPDXID" : "SPDXRef-41",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "910eea7889969563ad69bef4c1d5e203ffbc99492a3421e552d31f4609a57987"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "b",
+      "packageFileName" : "Absolute",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-42",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "f39b56374cd7eee3d2cc57e7d96e568441ae8932d7f13f401d719fa578993d39"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "r",
+      "packageFileName" : "Python/Absolute",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-43",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "cfac2e43cb47049147628e5248df99939e4265204933f1ea4488d46c67c74e22"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "Long Comment Test ",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-44",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "7db8b596429e665dc692850023cc0171bef7923f073920ee7feb4cc221368753"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "C5b",
+      "packageFileName" : "p11a",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-45",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-05" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "7c802bc7b7f387fa257219b58477080b9321ddbb8e3e6e0705b2f1afff764612"
+      } ],
+      "licenseConcluded" : "BSD-3-Clause-No-Nuclear-License-2014",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "contourpy",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "1.0.6"
+    }, {
+      "SPDXID" : "SPDXRef-46",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "7f6552d32e3737e3a0a47131f9961b0a58329e2e430d37ff7aa55b3892e6bd49"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "ifoobarClass",
+      "packageFileName" : "ifoo/ibar/ifoobarModule",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-47",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-05" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "cbcc94c245137aacea96c3561b07a5eb9257e1f6698ca173e4f2a1b3c658becd"
+      } ],
+      "licenseConcluded" : "BSD-3-Clause-No-Nuclear-License-2014",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "numpy",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "1.23.5"
+    }, {
+      "SPDXID" : "SPDXRef-48",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "ea61c0a8f6915035b75d786b856c51910dede26d8540290fd0a5cc60a5daf89d"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "C2b",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-49",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "18337d7e68ed8f20a1399f49c3da989a34e12d4100349f9aa6abdcbf50bf94fd"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "ifoo",
+      "packageFileName" : "Absolute",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-50",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "27c01cc2bd7b3e414d4e733439b11bc22d7e3eae31b192d63b1d000d280d59e9"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "*",
+      "packageFileName" : "p5a",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-51",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-05" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "7b538c2da538a150ebddcf6437cf97453a9b97c68b68a4c702e859de023f26f0"
+      } ],
+      "licenseConcluded" : "BSD-3-Clause-No-Nuclear-License-2014",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "packaging",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "21.3"
+    }, {
+      "SPDXID" : "SPDXRef-52",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "679afc09b617154498c29f8e28b3ef28a6d2660f7c18a7284474f333ace9e0e1"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "C4a",
+      "packageFileName" : "p10a",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-53",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "77ef9c23da37706de952c0c094b63fb0f15db5add8de78880aaf5524e2d865b3"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "C4b",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-54",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "249b079371f54c08fcdea3b44f1cc4ae5c507fb96a4e00eb048804a58efb4f57"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "C5b",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-55",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-05" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "8bede62b2a9e770e66cbb97b67b7644f6663bb10b277239087306ab76a55dd3d"
+      } ],
+      "licenseConcluded" : "MIT-0",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "six",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "1.16.0"
+    }, {
+      "SPDXID" : "SPDXRef-56",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "3eb91f47155da565d60d5c62d90641fc78165f67bd7758557af82ab2613b33c4"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "a",
+      "packageFileName" : "Python/Absolute",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-57",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-05" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "8d79ea4720d26406ea92a0cb86c3d19196928c4307473221455919017c730b60"
+      } ],
+      "licenseConcluded" : "MIT",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "pyparsing",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "3.0.9"
+    }, {
+      "SPDXID" : "SPDXRef-58",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-05" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "706abb1f094f4edd5a2adfd7975ce4a7fd4dcc3f8679e632f34fc9f45bf23c47"
+      } ],
+      "licenseConcluded" : "Python-2.0.1",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "matplotlib",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "3.6.2"
+    }, {
+      "SPDXID" : "SPDXRef-59",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "1edf76726ac1bdbfe62839a8eaa3be34fce6f294da38632634edd98a66ef24a3"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "ia",
+      "packageFileName" : "ifoo/ibar",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-60",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "3a93098308d9c05180c56915b226de1be916e54223d6075009471f4947d61484"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "C3a",
+      "packageFileName" : "p8a",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-61",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "396388894df47f7e85d42a9e3681994f4b674e07235a321edc9fb8283a83900d"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "C2a",
+      "packageFileName" : "p7a",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-62",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "08e886b8988dd89f9304b83c83aa27265410fce6e851fb308c359c1e8fc3baae"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "*",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-63",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-05" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "9a8e04a527206f07ab897059118af8f0cddabd6c850f74e4412e2a6bf7a7606f"
+      } ],
+      "licenseConcluded" : "BSD-3-Clause-No-Nuclear-License-2014",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "python-dateutil",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "2.8.2"
+    }, {
+      "SPDXID" : "SPDXRef-64",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-05" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "d1d77a68f49561ad8dff166c3029f626826a29a884ad2506f64869e195016ab5"
+      } ],
+      "licenseConcluded" : "BSD-3-Clause-No-Nuclear-License-2014",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "scipy",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "1.9.3"
+    }, {
+      "SPDXID" : "SPDXRef-65",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "936cfb85b94d393d4a4bf930fc59a899eba7f38be04f0ce7dbb24ea85b4d545e"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "p3c",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-66",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "b0135c1b9d5d7f6c14caad1a3485e5637c0a1bef5eb4178826eb00157283a3f8"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "p2b",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-67",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "eb2c89b69564f28666fb5ce42193c1707495842f2d3ad45c38e21ec7c2d7aacf"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "C4c",
+      "packageFileName" : "p10a",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-68",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "b6c03fa1386319b76e6a7d069682e44ede8b5b513a7e070695b2da2b59a4c165"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "ir",
+      "packageFileName" : "ifoo/ibar",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-69",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "d45e1dff1e8377b63a255186c5f7753435817f464151e175fe554336693f1930"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "C1a",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-70",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "890638d8cd2dc35010fd5cd93396f74895a5e83da3818b25050dfe08cef56bda"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "C2b",
+      "packageFileName" : "p7a",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-71",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "c8992074c9b3d2e0fc1975d2588dd9007d2aede34d276fb5160b1a2faeeffd5e"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "C3a",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-72",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "a0822e56e6be3664a56b5f68f18c90b3ec5498a5d16c16dcffc408230c38d2eb"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "C4a",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-73",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "e6a4a8df8122ab1c57c97bcdeb0a860f336ed0c1587ebabcd541e7d71da77939"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "p3b",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-74",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "6423254d7019c2856826bc50af1aed905c68ba6d9742576d4e2347d61cc45072"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "C2a",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-75",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : true,
+      "hasFiles" : [ "SPDXRef-01" ],
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "568e33209aa6541b1a7580f512fd725e1eb4d44b31663aa1bbf8b8dc87f23f9f"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : "p4a",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    }, {
+      "SPDXID" : "SPDXRef-76",
+      "copyrightText" : "NOASSERTION",
+      "filesAnalyzed" : false,
+      "checksums" : [ {
+        "algorithm" : "SHA256",
+        "checksumValue" : "9c0997baf1c6cbb1fff887ef5cf1f7fa92b53d389edf583fd77abf7b473f9c82"
+      } ],
+      "licenseConcluded" : "NONE",
+      "licenseDeclared" : "NOASSERTION",
+      "name" : " Basic Alias\r",
+      "packageFileName" : "NOASSERTION",
+      "versionInfo" : "NOASSERTION"
+    } ],
+    "files" : [ {
+      "SPDXID" : "SPDXRef-01",
+      "fileName" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\b.py",
+      "fileTypes" : [ "SOURCE" ]
+    }, {
+      "SPDXID" : "SPDXRef-05",
+      "fileName" : "src\\test\\java\\org\\svip\\sbomfactory\\generators\\TestData\\Python\\Absolute\\requirements.txt",
+      "fileTypes" : [ "SOURCE" ]
+    } ]
+  }
+}
