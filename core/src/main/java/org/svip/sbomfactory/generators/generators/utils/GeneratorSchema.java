@@ -23,6 +23,7 @@ import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXStore;
 import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXXMLSerializer;
 import org.svip.sbomfactory.generators.generators.spdx.SPDXSerializer;
 import org.svip.sbomfactory.generators.generators.spdx.SPDXStore;
+import org.svip.sbomfactory.generators.generators.spdx.SPDXXMLSerializer;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -110,7 +111,10 @@ public enum GeneratorSchema {
                     if(this != XML) module.addSerializer(CycloneDXStore.class, new CycloneDXSerializer());
                     else module.addSerializer(CycloneDXStore.class, new CycloneDXXMLSerializer());
                 }
-                case SPDX -> module.addSerializer(SPDXStore.class, new SPDXSerializer());
+                case SPDX -> {
+                    if(this != XML) module.addSerializer(SPDXStore.class, new SPDXSerializer());
+                    else module.addSerializer(SPDXStore.class, new SPDXXMLSerializer());
+                }
                 default -> throw new GeneratorException("No serializer registered in getObjectMapper() for schema " +
                         schema + ".");
             }
