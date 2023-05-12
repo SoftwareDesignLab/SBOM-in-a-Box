@@ -19,6 +19,21 @@ import static org.svip.sbomfactory.generators.utils.Debug.log;
  */
 public class NugetParser extends PackageManagerParser{
 
+    //todo dependency groups. i.e., test with
+    /*
+            <group>
+            <dependency id="RouteMagic" version="1.1.0" />
+        </group>
+
+        <group targetFramework=".NETFramework4.7.2">
+            <dependency id="jQuery" version="1.6.2" />
+            <dependency id="WebActivator" version="1.4.4" />
+        </group>
+
+        <group targetFramework="netcoreapp3.1">
+        </group>
+     */
+
     /**
      * Protected Constructor meant for use by parser implementations
      * to store their package-manager-specific static values in their respective
@@ -29,7 +44,7 @@ public class NugetParser extends PackageManagerParser{
         super(
                 "https://www.nuget.org/packages",
                 new XmlFactory(),
-                "\\$\\{([^}]*)\\}" // TODO: Token regex
+                "\\$\\{([^}]*)\\}"
         );
     }
 
