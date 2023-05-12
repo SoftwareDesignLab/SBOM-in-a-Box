@@ -163,7 +163,7 @@ public class SPDXTagValueWriter {
             out.append("FilesAnalyzed: true\n");
 
             for(String file : component.getFiles()) {
-                out.append("HasFile: ").append(file).append("\n"); // TODO is this correct?
+                out.append("HasFile: ").append(spdxStore.getFiles().get(file)).append("\n");
             }
 
         } else {
