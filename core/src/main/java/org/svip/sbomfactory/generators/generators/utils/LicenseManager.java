@@ -23,7 +23,7 @@ public class LicenseManager {
 
     //#region Constants
 
-    /**
+    /** TODO Support license list version (valid field in SPDX documents)
      * The URL where the list of valid SPDX licenses and their details are stored.
      */
     private static final String SPDX_LICENSE_URL = "https://spdx.org/licenses/";
