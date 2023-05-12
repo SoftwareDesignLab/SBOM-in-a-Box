@@ -14,9 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     a `CycloneDXStore` instance to an XML file according to the [CycloneDX v1.4 XML specification](https://cyclonedx.org/docs/1.4/xml/).
   - A separate serializer is required due to the inherent difference between JSON and XML.
 - Add abstract `TranslatorCore` Class that all other translators extend to increase modularity.
+  - This will eventually replace the current implementation of `Translator`, which used to act as a controller for the
+  translators and is no longer needed. Instead, it will remain the abstract core class of the translators, to be
+  extended to support a new schema/format easily.
 - Add abstract `TranslatorTestCore` Class that allows the tests to have a similar level of modularity.
 - Add `CSProjParserTest` to test the C# Package Parser.
-- Add 
 
 ### Changed
 
@@ -34,6 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `TranslatorSPDXTest`
 - Rename `GradleParserParseTest` to `GradleParserTest` for semantics.
 - Update `CommentParser`, `DeadImportParser`, & `SubprocessParser` to add parsed contexts to SBOM components.
+  - `CommentParser` could use a look in terms of the value of the data collected, as many comments provide no real, 
+  valuable information to our SBOM.
 
 
 ## [v4.3.0-alpha] - (05/08/2023)
