@@ -168,7 +168,7 @@ public class SBOMGenerator {
                 out = mapper.writeValueAsString(bomStore);
             }
             log(Debug.LOG_TYPE.SUMMARY, schema.name() + " SBOM successfully written to string");
-            return out;//.replaceAll("\\s+","");
+            return out;
         } catch (GeneratorException | JsonProcessingException e) {
             log(Debug.LOG_TYPE.ERROR, "Unable to write " + schema.name() + " SBOM to a string");
         }

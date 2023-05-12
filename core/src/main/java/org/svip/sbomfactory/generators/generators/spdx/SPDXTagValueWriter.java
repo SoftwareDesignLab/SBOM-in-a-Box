@@ -1,5 +1,10 @@
 package org.svip.sbomfactory.generators.generators.spdx;
 
+import org.svip.sbomfactory.generators.generators.utils.License;
+import org.svip.sbomfactory.generators.generators.utils.LicenseManager;
+import org.svip.sbomfactory.generators.generators.utils.Tool;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
+
 /**
  * File: SPDXTagValueWriter.java
  * <p>
@@ -15,7 +20,7 @@ public class SPDXTagValueWriter {
     /**
      * The SPDXStore instance to write data from.
      */
-    private SPDXStore spdxStore;
+    private final SPDXStore spdxStore;
 
     //#endregion
 
@@ -41,8 +46,13 @@ public class SPDXTagValueWriter {
      * @return A string containing the entire SPDX tag-value document.
      */
     public String writeToString() {
-        // TODO
-        return "";
+        StringBuilder out = new StringBuilder();
+
+        out.append(getDocumentHeader());
+        out.append("## Creation Information\n").append(getCreationInformation());
+        out.append("## Extracted License Information\n").append(getExtractedLicenseInformation());
+
+        return out.toString();
     }
 
     /**
@@ -54,6 +64,47 @@ public class SPDXTagValueWriter {
         String tagValueString = this.writeToString();
 
         // TODO write tagValueString to filePath
+    }
+
+    private String getDocumentHeader() {
+        StringBuilder out = new StringBuilder();
+        out.append("SPDXVersion: ").append(spdxStore.getSpecVersion()).append("\n");
+        out.append("DataLicense: ")
+                .append(LicenseManager.getConcatenatedLicenseString(spdxStore.getToolLicenses())).append("\n");
+        out.append("SPDXID: ").append(spdxStore.getDocumentId()).append("\n");
+        out.append("DocumentName: ").append(spdxStore.getHeadComponent().getName()).append("\n");
+        out.append("DocumentNamespace: ").append(spdxStore.getSerialNumber()).append("\n\n");
+//        out.append("LicenseListVersion: ").append(spdxStore.getSpecVersion()).append("\n");
+
+        return out.toString();
+    }
+
+    private String getCreationInformation() {
+        StringBuilder out = new StringBuilder();
+        for(Tool tool : spdxStore.getTools()) {
+            out.append("Creator: ").append(tool.getToolInfo()).append("\n");
+        }
+        out.append("Created: ").append(spdxStore.getTimestamp()).append("\n\n");
+
+        return out.toString();
+    }
+
+    private String getExtractedLicenseInformation() {
+        StringBuilder out = new StringBuilder();
+        for(License license : spdxStore.getExternalLicenses()) {
+            out.append("LicenseID: ").append(license.getSpdxLicense()).append("\n");
+            out.append("LicenseName: ").append(license.getLicenseName()).append("\n\n");
+        }
+
+        return out.toString();
+    }
+
+    private String getFile(ParserComponent component) {
+        return "";
+    }
+
+    private String getPackage(ParserComponent component) {
+        return "";
     }
 
     //#endregion

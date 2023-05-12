@@ -390,7 +390,7 @@ public class GeneratorsTestMain {
         if(os.contains("mac") || os.contains("nix") || os.contains("nux") || os.contains("aix"))  outPath += '/';
 
         outPath += OUT_DIRECTORY;
-//        String outPath = null; // UNCOMMENT FOR TESTING ONLY, THIS DOES NOT GENERATE SBOM FILES, ONLY STRINGS
+        outPath = null; // UNCOMMENT FOR TESTING ONLY, THIS DOES NOT GENERATE SBOM FILES, ONLY STRINGS
 
         // Get schema from optional args, if not present, default to CycloneDX
         GeneratorSchema schema = GeneratorSchema.CycloneDX;
