@@ -9,6 +9,7 @@ import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 
 /**
  * File: SPDXTagValueWriter.java
@@ -56,6 +57,13 @@ public class SPDXTagValueWriter {
         out.append(getDocumentHeader());
         out.append("## Creation Information\n").append(getCreationInformation());
         out.append("## Extracted License Information\n").append(getExtractedLicenseInformation());
+
+        if(spdxStore.getFiles().size() > 0) {
+            out.append("## File Information\n");
+            for (Map.Entry<String, String> entry : spdxStore.getFiles().entrySet()) {
+                out.append(getFile(entry.getKey(), entry.getValue()));
+            }
+        }
 
         out.append("## Packages\n");
         for(ParserComponent pkg : spdxStore.getPackages()) {
@@ -109,8 +117,14 @@ public class SPDXTagValueWriter {
         return out.toString();
     }
 
-    private String getFile(ParserComponent component) {
-        return "";
+    private String getFile(String file, String spdxId) {
+        StringBuilder out = new StringBuilder();
+
+        out.append("FileName: ").append(file).append("\n");
+        out.append("SPDXID: ").append(spdxId).append("\n");
+        out.append("FileType: SOURCE\n\n"); // TODO we currently only analyze source files??
+
+        return out.toString();
     }
 
     private String getPackage(ParserComponent component) {
