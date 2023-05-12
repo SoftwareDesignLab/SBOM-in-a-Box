@@ -7,6 +7,9 @@ import org.svip.sbomfactory.generators.generators.utils.LicenseManager;
 import org.svip.sbomfactory.generators.generators.utils.Tool;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
 /**
  * File: SPDXTagValueWriter.java
  * <p>
@@ -67,10 +70,10 @@ public class SPDXTagValueWriter {
      *
      * @param filePath The full filepath (including filename) to write the document to.
      */
-    public void writeToFile(String filePath) {
-        String tagValueString = this.writeToString();
-
-        // TODO write tagValueString to filePath
+    public void writeToFile(String filePath) throws IOException {
+        PrintWriter out = new PrintWriter(filePath);
+        out.println(this.writeToString());
+        out.close();
     }
 
     private String getDocumentHeader() {
