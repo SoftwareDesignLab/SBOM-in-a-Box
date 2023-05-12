@@ -21,7 +21,6 @@ import static org.svip.sbomfactory.generators.utils.Debug.log;
  * </p>
  * @author Ian Dunn
  */
-@JsonSerialize(using = CycloneDXSerializer.class)
 public class CycloneDXStore extends BOMStore {
 
     //#region Attributes

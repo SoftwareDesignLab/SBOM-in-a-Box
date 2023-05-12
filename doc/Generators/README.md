@@ -1,56 +1,55 @@
-# Project Benchmark Parser
-> Parser for collecting dependencies from project source files.
+# Generators
+> System that collects information from both source and package manager files and generates an SBOM, to be outputted
+to either the CycloneDX or SPDX schema, and the XML, JSON, or YAML format.
 
-> See the [changelog](changelog.md) for information regarding recent changes.
+# Last Changelog Update
+
+## [v4.3.2-alpha] - (05/12/2023)
+
+### Added
+
+- Add `LicenseManager.getConcatenatedLicenseString()` method to concisely concatenate all tool licenses to use when
+  representing a Collection of licenses as a string.
+
+### Changed
+
+- Ensure `SPDXSerializer` Class properly serializes an XML Document according to the documentation and
+  [official example](https://github.com/spdx/spdx-spec/blob/development/v2.3.1/examples/SPDXXMLExample-v2.3.spdx.xml).
+- Update `SPDXSerializer` Class to ensure the XML root element is `Document` when serializing using an instance of
+  `ToXmlGenerator`.
+
+> See the full [changelog](changelog.md) for more information regarding recent changes.
+
 
 ## Usage
 > For running locally, see **Building Project Locally**
 
-Download the latest release [here](https://github.com/SoftwareDesignLab/SBOM_WorkingGroup/releases)
-
-How to run `jar` file: `java -jar parser.jar <"targetPath":"componentName"?> <optionalArgs...>`
-> Note `componentName` should only be added when appending, see **Examples** for more information.
+How to run: `<targetPath> <optionalArgs...>`
 
 ### Examples:
-- Display usages: `java -jar parser.jar -h`
-- Basic: `java -jar parser.jar MyProject/src`
-- Redundant Component Name: `java -jar parser.jar MyProject/src:parentCName`
-  - The value "parentCName" is ignored in this context, and the project is parsed normally
+- Display help prompt: `-h`
+- Basic: `MyProject/src`
 - Debug: 
-  - `java -jar parser.jar MyProject/src -d`
-  - `java -jar parser.jar -d MyProject/src`
-  - `java -jar parser.jar MyProject/src -d`
-- Summary: `java -jar parser.jar MyProject/src -s`
-- Debug (Overrides Summary): `java -jar parser.jar MyProject/src -d -s`
+  - `MyProject/src -d`
+  - `-d MyProject/src`
+  - `MyProject/src -d`
+- Summary: `MyProject/src -s`
+- Debug (Overrides Summary): `MyProject/src -d -s`
 #### CycloneDX
-- `java -jar parser.jar MyProject/src -d`
+- `MyProject/src -d`
   - Outputs a JSON CycloneDX SBOM file with debug mode activated
-- `java -jar parser.jar MyProject/src -d -o=CycloneDX -f=JSON`
+- `MyProject/src -d -o=CycloneDX -f=JSON`
   - Outputs a JSON CycloneDX SBOM file with debug mode activated
-- `java -jar parser.jar MyProject/src -o=CycloneDX -f=XML`
+- `MyProject/src -o=CycloneDX -f=XML`
   - Outputs an XML CycloneDX SBOM file without debug mode
 #### SPDX
-- `java -jar parser.jar MyProject/src -d -o=SPDX`
+- `MyProject/src -d -o=SPDX`
   - Outputs a JSON SPDX SBOM file with debug mode activated
-- `java -jar parser.jar MyProject/src -o=SPDX -f=YAML`
+- `MyProject/src -o=SPDX -f=YAML`
   - Outputs an XML SPDX SBOM file without debug mode
 
 ### Required Arguments (Ordered)
 - `targetPath`: Path to a target file or root directory to parse.
-> NOTE: The parser can parse generated dependency files as well as source files/directories
-- `Language`: Programming language of the targetPath
-   - `SUPPORTED_LANGUAGES`:
-      - `go`
-      - `rust`
-      - `ruby`
-      - `perl`
-      - `scala`
-      - `java`
-      - `js/ts`
-      - `python`
-      - `c#`
-      - `c++`
-      - `c`
 
 If these arguments are invalid or missing, a CLI script will run to get the correct input.
 
@@ -79,6 +78,26 @@ It also has several optional `'key=value'` flags:
 
 > NOTE: If more than one component shares the same `componentName`, the user
 > is given a choice between all matches.
+
+## Supported Project File Formats:
+This list of formats represents all given files that can be parsed, if the extension is not on this list,
+the file will not be parsed.
+- `Language Files`
+  - `go`
+  - `rust`
+  - `ruby`
+  - `perl`
+  - `scala`
+  - `java`
+  - `js/ts`
+  - `python`
+  - `c#`
+  - `c++`
+  - `c`
+- `Package Manager Files`
+  - `pom.xml`
+  - `build.gradle`
+  - `.csproj`
 
 ## Building Project Locally
 This installation is through Intellij and runs the project through Intellij's configuration files

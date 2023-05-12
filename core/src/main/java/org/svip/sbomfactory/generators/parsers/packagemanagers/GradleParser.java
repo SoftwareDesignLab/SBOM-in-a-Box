@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.QueryWorker;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.*;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +24,7 @@ public class GradleParser extends PackageManagerParser {
     public GradleParser() {
         super(
                 "https://docs.gradle.org/current/javadoc/",
-                new JsonFactory(),
+                null,
                 "\\$([^\\n/\\\\]*)" // Regex101: https://regex101.com/r/1Y2gb5/2
         );
     }
@@ -40,6 +37,11 @@ public class GradleParser extends PackageManagerParser {
     protected void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data) {
         // Init properties
         this.properties = new HashMap<>();
+
+        // Insert data
+        this.dependencies.addAll(
+                (ArrayList<LinkedHashMap<String, String>>) data.get("dependencies")
+        );
 
         // Get properties
         final ArrayList<String> ext =
@@ -166,8 +168,7 @@ public class GradleParser extends PackageManagerParser {
                     // Insert value
                     deps.add(dep); // TODO: Uniqueness? Tests fail on non-unique artifactIds
                 }
-                // Insert data
-                this.dependencies.addAll(deps);
+                data.put("dependencies", deps);
             }
             // Other collected data can be split on "\n"
             else data.put(key, new ArrayList<>(Arrays.stream(value.split("\n")).map(String::trim).toList()));
