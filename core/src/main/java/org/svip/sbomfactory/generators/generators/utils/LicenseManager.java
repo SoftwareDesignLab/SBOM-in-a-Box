@@ -23,7 +23,7 @@ public class LicenseManager {
 
     //#region Constants
 
-    /**
+    /** TODO Support license list version (valid field in SPDX documents)
      * The URL where the list of valid SPDX licenses and their details are stored.
      */
     private static final String SPDX_LICENSE_URL = "https://spdx.org/licenses/";
@@ -55,6 +55,7 @@ public class LicenseManager {
 
     //#region Core Methods
 
+    // TODO Docstring
     public static boolean isValidShortString(String shortString) {
         return licenses.containsValue(shortString);
     }
@@ -115,6 +116,18 @@ public class LicenseManager {
         }
 
         return shortString; // Return the short string found
+    }
+
+    /**
+     * Returns a string of licenses concatenated by "AND" (according to the SPDX license specification). It defaults to
+     * the short string, but if one cannot be found it will concatenate the long string.
+     *
+     * @param licenses The set of licenses to concatenate
+     * @return The string version of each license concatenated by "AND"
+     */
+    public static String getConcatenatedLicenseString(Collection<License> licenses) {
+        List<String> stringLicenses = licenses.stream().map(License::toString).toList();
+        return String.join(" AND ", stringLicenses);
     }
 
     //#endregion

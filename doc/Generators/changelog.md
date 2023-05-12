@@ -5,6 +5,20 @@ All notable changes to the Generators sub-system will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v4.3.2-alpha] - (05/12/2023)
+
+### Added
+
+- Add `LicenseManager.getConcatenatedLicenseString()` method to concisely concatenate all tool licenses to use when
+  representing a Collection of licenses as a string.
+
+### Changed
+
+- Ensure `SPDXSerializer` Class properly serializes an XML Document according to the documentation and 
+  [official example](https://github.com/spdx/spdx-spec/blob/development/v2.3.1/examples/SPDXXMLExample-v2.3.spdx.xml).
+- Update `SPDXSerializer` Class to ensure the XML root element is `Document` when serializing using an instance of 
+  `ToXmlGenerator`.
+
 ## [v4.3.1-alpha] - (05/11/2023)
 
 ### Added

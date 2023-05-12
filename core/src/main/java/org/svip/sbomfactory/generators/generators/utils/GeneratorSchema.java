@@ -2,17 +2,13 @@ package org.svip.sbomfactory.generators.generators.utils;
 
 
 import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.PrettyPrinter;
-import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -110,7 +106,9 @@ public enum GeneratorSchema {
                     if(this != XML) module.addSerializer(CycloneDXStore.class, new CycloneDXSerializer());
                     else module.addSerializer(CycloneDXStore.class, new CycloneDXXMLSerializer());
                 }
-                case SPDX -> module.addSerializer(SPDXStore.class, new SPDXSerializer());
+                case SPDX -> {
+                    module.addSerializer(SPDXStore.class, new SPDXSerializer());
+                }
                 default -> throw new GeneratorException("No serializer registered in getObjectMapper() for schema " +
                         schema + ".");
             }
