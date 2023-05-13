@@ -342,7 +342,7 @@ public class TranslatorSPDX extends TranslatorCore {
             product_data.put("publisher", bom_data.get("N/A"));
             product_data.put("version", bom_data.get("N/A"));
             product_data.put("id", bom_data.get("id"));
-            setDependencies(product_data.get("id"), packages);
+            defaultTopComponent(product_data.get("id"), packages);
         } else {
             product = components.get(product_id);
         }
