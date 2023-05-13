@@ -7,27 +7,46 @@ import org.svip.sbom.model.SBOM;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Stream;
 
+/**
+ * File: TranslatorCore.java
+ * A generic abstract translator that holds shared functionality
+ * amongst the translators. Other translators having unique
+ * parsing methods will be extended off of this translator.
+ *
+ * @author Tyler Drake
+ * @author Dylan Mulligan
+ */
 public abstract class TranslatorCore {
 
+    // Current file's extension
     protected final String FILE_EXTN;
 
+    // The internal SBOM object to be build
     protected SBOM sbom;
 
+    // The top level component (what the SBOM is about)
     protected Component product;
 
+    // Top level SBOM data
     protected HashMap<String, String> bom_data;
 
+    // Top component data
     protected HashMap<String, String> product_data;
 
+    // Map holding all components found
     protected HashMap<String, String> components;
 
+    // Map of dependencies in SBOM between components
     protected HashMap<String, ArrayList<String>> dependencies;
 
+    /**
+     * Generic Translator core constructor.
+     *
+     * @param fileExtn The file extension
+     */
     protected TranslatorCore(String fileExtn) {
         FILE_EXTN = fileExtn;
         bom_data = new HashMap<>();
@@ -78,12 +97,19 @@ public abstract class TranslatorCore {
             } catch (Exception e) {
                 System.err.println("Error: Could not create top component from SBOM metadata. File: " + this.FILE_EXTN);
             }
-        } else if (product != null) {
+        } else {
             sbom.addComponent(null, product);
         }
 
     }
 
+    /**
+     * A simple recursive function to build a dependencyTree out of a list of dependencies.
+     *
+     * @param components All components from the translated SBOM file
+     * @param parent     The current parent to have the children components assigned to
+     * @param visited    Components that have been visited to prevent circular dependencies
+     */
     protected void dependencyBuilder(HashMap<String, Component> components, Component parent, Set<String> visited) {
 
         // If top component is null, return. There is nothing to process.
@@ -131,6 +157,12 @@ public abstract class TranslatorCore {
         }
     }
 
+    /**
+     * Defaults all dependencies in the SBOM by adding them as children to the current parent component.
+     *
+     * @param components Components to be added as the children
+     * @param parent     Parent (product) component
+     */
     protected void defaultDependencies(HashMap<String, Component> components, Component parent) {
         if (dependencies == null) { return; }
         for(ArrayList<String> defaults : dependencies.values()) {
@@ -138,6 +170,12 @@ public abstract class TranslatorCore {
         }
     }
 
+    /**
+     * Adds a dependency to the dependency list. Key being the parent, value as the child.
+     *
+     * @param key   The parent component
+     * @param value The child component
+     */
     protected void addDependency(String key, String value) {
         if (dependencies.get(key) == null || dependencies.get(key).isEmpty()) {
             dependencies.put(key, new ArrayList<>(Arrays.asList(value)));
@@ -148,11 +186,29 @@ public abstract class TranslatorCore {
         }
     }
 
-    protected void setDependencies(String key, ArrayList values) {
+    /**
+     * Defaults the dependency list. Asserts the given 'key' as the product or 'top component'
+     * and then sets all other 'values' as the children components.
+     *
+     * @param key    The component to be asserted as the product (top component)
+     * @param values The components to be assigned as children dependencies to the product
+     */
+    protected void defaultTopComponent(String key, ArrayList values) {
         values.remove(key);
         dependencies.put(key, values);
     }
 
+    /**
+     * Breaks the SBOM file into a String of contents. Then sends the contents to
+     * the respective trnslator for translation. If the file can't be broken down,
+     * return nothing.
+     *
+     * @param filePath path leading to the current SBOM file
+     * @return an SBOM object if translation is successful
+     * @throws IOException
+     * @throws ParseException
+     * @throws ParserConfigurationException
+     */
     public SBOM translate(String filePath) throws IOException, ParseException, ParserConfigurationException {
         // Read the file at filePath into a string
         String contents = null;
@@ -167,47 +223,4 @@ public abstract class TranslatorCore {
         return this.translateContents(contents, filePath);
     }
 
-    public ArrayList<SBOM> parseSBOMs(String sbomPath) throws IOException {
-        // Collection for potential SBOM files
-        final ArrayList<Path> sbom_files = new ArrayList<>();
-
-        // Collection for built SBOM Objects
-        final ArrayList<SBOM> sbom_objects = new ArrayList<>();
-
-        // Go through target folder and add files to sbom_file ArrayList
-        try (Stream<Path> paths = Files.walk(Paths.get(sbomPath))) {
-            paths.filter(Files::isRegularFile).forEach(sbom_files::add);
-        }
-
-        /*
-         * Iterate through every file found in SBOM folder. If a supported file is found, throw it into a translator.
-         * Supported formats:
-         *  - CYCLONE-DX XML
-         *  - SPDX TAG-VALUE
-         */
-        for (Path sbom_item : sbom_files) {
-            try {
-                if (sbom_item.toString().toLowerCase().endsWith(this.FILE_EXTN)) {
-                    sbom_objects.add(this.translate(sbom_item.toString()));
-                } else {
-                    System.err.println("\nInvalid SBOM format found in: " + sbom_item);
-                }
-                // todo deleting gitignore
-                try {
-                    Files.delete(sbom_item);
-                } catch (IOException e) {
-                    // This means it couldn't delete the file, which is fine
-                }
-            }
-            catch (Exception e){
-                System.err.println("Error translating SBOM: " + sbom_item);
-            }
-        }
-
-        // Remove all null sboms in sbom collection
-        sbom_objects.removeAll(Collections.singleton(null));
-
-        // Return ArrayList of Java SBOM Objects
-        return sbom_objects;
-    }
 }
