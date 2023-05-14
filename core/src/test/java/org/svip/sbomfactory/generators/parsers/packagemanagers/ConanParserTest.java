@@ -6,17 +6,21 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class GradleParserTest extends ParseDepFileTestCore {
+public class ConanParserTest extends ParseDepFileTestCore {
     /**
      * Constructor initializes the respective parser and assigns both the
      * fileContents to test it against and the source directory to test on.
      */
-    protected GradleParserTest() throws IOException {
-        super(new GradleParser(),
+    protected ConanParserTest() throws IOException {
+        super(new ConanParser(),
                 Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/generators/TestData/Java/build.gradle")),
                 "src/test/java/org/svip/sbomfactory/generators/TestData/Java");
     }

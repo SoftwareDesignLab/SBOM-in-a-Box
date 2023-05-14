@@ -1,5 +1,8 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
+import org.svip.sbom.model.CPE;
+import org.svip.sbom.model.PURL;
+import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.QueryWorker;
 import org.svip.sbomfactory.generators.parsers.Parser;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -13,6 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
@@ -271,6 +275,103 @@ public abstract class PackageManagerParser extends Parser {
             final HashMap<String, Object> data = this.OM.readValue(fileContents, HashMap.class);
             this.parseData(components, data);
         } catch (IOException e) { log(LOG_TYPE.EXCEPTION, e); }
+    }
+
+    /**
+     * Builds URLs and instantiates ParserComponent objects
+     *
+     * @param components the ParserComponent array to fill
+     * @param parser the package-manager parser
+     * @param packageManager the package manager
+     */
+    public static void buildURLs(ArrayList<ParserComponent> components, PackageManagerParser parser, String packageManager) {
+        // Iterate and build URLs
+
+        boolean nugetParser = packageManager.equals("nuget");
+
+        for (final String id : parser.dependencies.keySet()) { //todo this shares a lot of code with POMParser. Maybe make static method
+            // Get value from map
+            final HashMap<String, String> d = parser.dependencies.get(id);
+
+            // Format all property keys -> values
+            String groupId;
+            if(nugetParser){
+                groupId = d.get("id");
+                if(groupId == null)
+                    groupId = d.get("assemblyName"); // framework assembly name
+            }
+            else
+                groupId = d.get("groupId");
+
+            String version = d.get("version");
+            if(version == null && nugetParser)
+                version = d.get("targetFramework"); //todo this isn't entirely synonymous with version?
+
+            final ParserComponent c = new ParserComponent(id);
+
+            //framework assemblies use assemblyName + targetFramework
+            if (groupId != null) c.setGroup(groupId);
+            if (version != null) c.setVersion(version);
+
+            // TODO: Find this PURL regex a home (Translator?): https://regex101.com/r/sbFd7Z/2
+            //  "^pkg:([^/]+)/([^#\n@]+)(?:@([^\?\n]+))?(?:\?([^#\n]+))?(?:#([^\n]+))?"
+
+            // is this a .NET assembly
+            boolean frameworkAssembly =
+                    nugetParser && groupId != null && (groupId.toLowerCase().contains("system") || groupId.toLowerCase().contains("microsoft"));
+
+            // Build PURL String
+            final HashMap<String, String> PURLData = new HashMap<>();
+            PURLData.put("type", packageManager);
+            PURLData.put("name", id);
+            if (groupId != null) PURLData.put("namespace", groupId);
+            if (version != null) PURLData.put("version", version);
+
+            if (frameworkAssembly)
+                c.setPublisher("Microsoft");
+
+            String PURLString = PackageManagerParser.buildPURL(PURLData);
+
+            // Add built PURL
+            c.addPURL(new PURL(PURLString));
+            log(Debug.LOG_TYPE.DEBUG, String.format("Dependency Found with PURL: %s", PURLString));
+
+            // Build CPE
+            CPE cpe = new CPE(packageManager, id, version);
+            String cpeFormatString = cpe.bindToFS();
+            c.addCPE(cpeFormatString);
+            log(Debug.LOG_TYPE.DEBUG, String.format("Dependency Found with CPE: %s", cpeFormatString));
+
+            // Build URL and worker object
+            if (groupId != null) {
+                String url = parser.STD_LIB_URL;
+                if(!nugetParser)
+                    url += groupId;
+                url += "/" + id;
+                if (version != null) url += "/" + version;
+                // Create and add QueryWorker with Component reference and URL
+                parser.queryWorkers.add(new QueryWorker(c, url) {
+                    @Override
+                    public void run() {
+                        // Get page contents
+                        final String contents = getUrlContents(queryURL(this.url, false));
+
+                        // Parse license(s)
+                        // Regex101: https://regex101.com/r/FUOPSK/1
+                        final Matcher m = Pattern.compile("<li data-test=\\\"license\\\">(.*?)</li>",
+                                Pattern.MULTILINE).matcher(contents); //todo look into this more for nuget
+
+                        // Add all found licenses
+                        while (m.find()) {
+                            this.component.addLicense(m.group(1).trim());
+                        }
+                    }
+                });
+            }
+
+            // Add ParserComponent to components
+            components.add(c);
+        }
     }
 
     //#endregion

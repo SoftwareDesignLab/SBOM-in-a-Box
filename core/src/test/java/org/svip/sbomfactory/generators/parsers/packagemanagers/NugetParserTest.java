@@ -23,8 +23,9 @@ public class NugetParserTest extends ParseDepFileTestCore{
 
     protected NugetParserTest() throws IOException {
         super(new NugetParser(),
-                Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/generators/TestData/CSharp/Bar/sample.csproj")),
-                "src/test/java/org/svip/sbomfactory/generators/TestData/CSharp/Bar");
+                Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/" +
+                        "generators/TestData/CSharp/Nuget/WIthFrameworkAssembliesAndDependencies.nugspec")),
+                "src/test/java/org/svip/sbomfactory/generators/TestData/CSharp/Nuget");
     }
 
     protected ParserComponent getComponent(String name) {
@@ -38,16 +39,14 @@ public class NugetParserTest extends ParseDepFileTestCore{
     }
 
     @Test
-    @DisplayName("Nuget Test Componemts")
-    void testComponemts() {
-
-        //todo refactor this for nuget pm
+    @DisplayName("Nuget Test Dependencies")
+    void testDependencies() {
 
         // Get Components from PARSER
         final ArrayList<ParserComponent> components = this.components;
 
         // Test correct count is found
-        assertEquals(12, components.size());
+        assertEquals(8, components.size());
 
         //Make ValueSet
         final Set<String> ValueSet = new HashSet<>();;
@@ -56,34 +55,28 @@ public class NugetParserTest extends ParseDepFileTestCore{
         }
 
         //Check component's name
-        String str = "Expressions" ;
-        assertTrue(ValueSet.contains(str));
-        //Check component's group
-        assertEquals("Mono/Linq", getComponent(str).getGroup());
 
-        //Check component's name
-        str = "Data" ;
+        String str = "System.Web" ;
         assertTrue(ValueSet.contains(str));
-        //Check component's group
-        assertEquals("System", getComponent(str).getGroup());
 
-        //Check component's name
-        str = "DataSetExtensions" ;
+        str = "System.Net" ;
         assertTrue(ValueSet.contains(str));
-        //Check component's group
-        assertEquals("System/Data", getComponent(str).getGroup());
 
-        //Check component's name
-        str = "Program" ;
+        str = "Microsoft.Devices.Sensors" ;
         assertTrue(ValueSet.contains(str));
-        //Check component's group
-        assertNull(getComponent(str).getGroup());
 
-        //Check component's name
-        str = "packages" ;
+        str = "Newtonsoft.Json" ;
         assertTrue(ValueSet.contains(str));
-        //Check component's group
-        assertNull(getComponent(str).getGroup());
-    }
+
+        str = "RestSharp" ;
+        assertTrue(ValueSet.contains(str));
+
+        str = "Selenium.Support" ;
+        assertTrue(ValueSet.contains(str));
+
+        str = "Selenium.WebDriver" ;
+        assertTrue(ValueSet.contains(str));
+
+     }
 
 }

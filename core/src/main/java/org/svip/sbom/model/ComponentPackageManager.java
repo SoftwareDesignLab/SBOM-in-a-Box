@@ -7,5 +7,5 @@ package org.svip.sbom.model;
  * @author Juan Francisco Patino
  */
 public enum ComponentPackageManager {
-    ALPINE, DEBIAN, PYTHON // add more as we go
+    ALPINE, DEBIAN, PYTHON, NUGET // add more as we go
 }

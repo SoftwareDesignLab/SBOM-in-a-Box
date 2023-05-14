@@ -1,0 +1,39 @@
+name: Syft SBOM Generation
+on: push
+
+jobs:
+  get-sbom-type:
+    runs-on: ubuntu-latest
+    outputs:
+      sbom-type: ${{ steps.sbom-type.outputs.type }}
+    steps:
+      - name: Get SBOM type
+        id: sbom-type
+        run: |
+          case ${GITHUB_REF##*/} in
+            ${{ vars.PROD_BRANCH }}) echo "type=production" >> "$GITHUB_OUTPUT";;
+            ${{ vars.DEV_BRANCH }}) echo "type=dev" >> "$GITHUB_OUTPUT";;
+            *) echo "type=snapshot" >> "$GITHUB_OUTPUT";;
+          esac
+  
+  gen-sboms:
+    runs-on: ubuntu-latest
+    needs: get-sbom-type
+    env:
+      SBOM_TYPE: ${{ needs.get-sbom-type.outputs.sbom-type }}
+    steps:
+    
+      - name: checkout
+        uses: actions/checkout@v3.5.2
+
+      - name: spdx-sbom
+        uses: anchore/sbom-action@v0.14.2
+        with:
+          format: spdx
+          artifact-name: svip-sbom-${{ env.SBOM_TYPE }}.spdx
+      
+      - name: cyclonedx-sbom
+        uses: anchore/sbom-action@v0.14.2
+        with:
+          format: cyclonedx-json
+          artifact-name: svip-sbom-cdx-${{ env.SBOM_TYPE }}.json

@@ -1,10 +1,15 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
-import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.dataformat.xml.XmlFactory;
+import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.stream.Collectors;
+
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
  * file: NugetParser.java
@@ -13,6 +18,22 @@ import java.util.HashMap;
  * @author Juan Francisco Patino
  */
 public class NugetParser extends PackageManagerParser{
+
+    //todo dependency groups. i.e., test with
+    /*
+            <group>
+            <dependency id="RouteMagic" version="1.1.0" />
+        </group>
+
+        <group targetFramework=".NETFramework4.7.2">
+            <dependency id="jQuery" version="1.6.2" />
+            <dependency id="WebActivator" version="1.4.4" />
+        </group>
+
+        <group targetFramework="netcoreapp3.1">
+        </group>
+     */
+
     /**
      * Protected Constructor meant for use by parser implementations
      * to store their package-manager-specific static values in their respective
@@ -21,9 +42,9 @@ public class NugetParser extends PackageManagerParser{
      */
     protected NugetParser() {
         super(
-                "https://www.nuget.org/api/v2",
-                new JsonFactory(),
-                "" // TODO: Token regex
+                "https://www.nuget.org/packages",
+                new XmlFactory(),
+                "\\$\\{([^}]*)\\}"
         );
     }
 
@@ -38,23 +59,88 @@ public class NugetParser extends PackageManagerParser{
     @Override
     protected void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data) {
 
-        int x = 0;
+        /*
+                <?xml version="1.0" encoding="utf-8"?>
+        <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+            <metadata>
+                <!-- Required elements-->
+                <id></id>
+                <version></version>
+                <description></description>
+                <authors></authors>
+
+                <!-- Optional elements -->
+                <dependencies></dependencies>
+                <frameworkAssemblies></frameworkAssemblies>
+                <!-- ... -->
+            </metadata>
+            <!-- Optional 'files' node -->
+        </package>
+         */
+
+        this.dependencies = new HashMap<>();
+        HashMap<String, String> metadata = new HashMap((LinkedHashMap<String, ArrayList<HashMap<String, String>>>) data.get("metadata"));
+
+
+
+
+       // this.resolveProperties(this.dependencies, new HashMap((metadata data.get("dependencies")).get("dependency"));
+
+        int i = 0;
+
+        for (Object o: metadata.values()
+             ) {
+
+            String s = o.toString();
+
+            if(s.contains("frameworkAssembly")){ // treat C# framework assemblies as dependencies
+
+                this.resolveProperties(
+                        this.dependencies,
+
+
+                        new HashMap(((ArrayList<LinkedHashMap<String,String>>) (((LinkedHashMap<?, ?>)o).get("frameworkAssembly")))
+                                .stream().collect(
+                                        Collectors.toMap(
+                                                d -> d.get("assemblyName"),
+                                                d -> d,
+                                                (d1, d2) -> {
+                                                    log(Debug.LOG_TYPE.WARN, String.format("Duplicate key found: %s", d2.get("assemblyName")));
+                                                    return d2;
+                                                }
+                                        )
+                                )
+                        )
+                );
+
+            } else if (s.contains("dependency")) {
+
+                this.resolveProperties(this.dependencies,
+
+                new HashMap(((ArrayList<LinkedHashMap<String,String>>) (((LinkedHashMap<?, ?>)o).get("dependency")))
+                        .stream().collect(
+                                Collectors.toMap(
+                                        d -> d.get("id"),
+                                        d -> d,
+                                        (d1, d2) -> {
+                                            log(Debug.LOG_TYPE.WARN, String.format("Duplicate key found: %s", d2.get("id")));
+                                            return d2;
+                                        }
+                                )
+                        )
+
+                ));
+
+            }
+
+
+        }
+
+        PackageManagerParser.buildURLs(components, this, "nuget");
+
+        queryURLs(this.queryWorkers);
 
     }
 
-    /**
-     * Reformats to ParserComponent and adds the component to the list.
-     * @param components list to add component to
-     * @param type item type (Reference, Compile, etc)
-     * @param component component properties table
-     */
-    private void addComponent(ArrayList<ParserComponent> components, String type, HashMap<String, String> component) {
-        //todo. maybe not if this is specific to CSProjParser
-    }
-
-    //todo docstring in here and
-    private String buildURL(ParserComponent component){
-        return ""; //todo. same as addComponent
-    }
 
 }

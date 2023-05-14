@@ -74,6 +74,8 @@ public class CSProjParser extends PackageManagerParser {
             // Query all found URLs and store any relevant data
             queryURLs(this.queryWorkers);
         }
+
+//        props(components, data);
     }
 
     /**
@@ -181,4 +183,36 @@ public class CSProjParser extends PackageManagerParser {
         // Return built URL
         return this.STD_LIB_URL + endpoint;
     }
+
+//    private void props(ArrayList<ParserComponent> components, HashMap<String, Object> data) {
+//        // Ensure ItemGroup is not null
+//        if (data.get("PropertyGroup") == null) return;
+//
+//        // List of all Item Groups
+//        final ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>> propgroups = (ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>>) data.get("PropertyGroup");
+//
+//        // Iterate over itemgroups
+//        for (HashMap<String, ArrayList<HashMap<String, String>>> propgroup : propgroups) {
+//
+//            // Get all types in this itemgroup
+//            final Iterator types = propgroup.entrySet().iterator();
+//
+//            // Iterate over types
+//            while (types.hasNext()) {
+//                // Get type (as Map.Entry)
+//                final Map.Entry<String, Object> type = (Map.Entry<String, Object>) types.next();
+//
+//                // If there is only one type, it will be a hashmap instead of an arraylist
+//                if (type.getValue() instanceof HashMap) {
+//                    // Add component with type as HashMap
+//                    addComponent(components, type.getKey(), (HashMap<String, String>) type.getValue());
+//                } else { // Otherwise, there will be a list of hashmaps
+//                    for (HashMap<String, String> item : (ArrayList<HashMap<String, String>>) type.getValue()) {
+//                        // Add component with type as an ArrayList of HashMaps
+//                        addComponent(components, type.getKey(), item);
+//                    }
+//                }
+//            }
+//        }
+//    }
 }
