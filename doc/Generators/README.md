@@ -4,21 +4,18 @@ to either the CycloneDX or SPDX schema, and the XML, JSON, or YAML format.
 
 # Last Changelog Update
 
-## [v4.3.2-alpha] - (05/12/2023)
+## [v4.4.0-alpha] - (05/15/2023)
 
 ### Added
 
-- Add `LicenseManager.getConcatenatedLicenseString()` method to concisely concatenate all tool licenses to use when
-  representing a Collection of licenses as a string.
+- Add `SPDXTagValueWriter` Class to serialize an instance of `SPDXStore` to a tag-value document and output to either a
+  string or file.
+    - Contains methods for `writeToString()` and `writeToFile()`
+- Add new SPDX `GeneratorFormat` Enum Value in `GeneratorSchema` Class to support file output for this value.
 
 ### Changed
-
-- Ensure `SPDXSerializer` Class properly serializes an XML Document according to the documentation and
-  [official example](https://github.com/spdx/spdx-spec/blob/development/v2.3.1/examples/SPDXXMLExample-v2.3.spdx.xml).
-- Update `SPDXSerializer` Class to ensure the XML root element is `Document` when serializing using an instance of
-  `ToXmlGenerator`.
-
-> See the full [changelog](changelog.md) for more information regarding recent changes.
+- Changed `SBOMGenerator` Class to use an `SPDXTagValueWriter` instead of an `ObjectMapper` when dealing with the SPDX
+  tag-value format.
 
 
 ## Usage

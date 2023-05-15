@@ -6,6 +6,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.svip.sbom.model.Component;
 import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXStore;
 import org.svip.sbomfactory.generators.generators.spdx.SPDXStore;
+import org.svip.sbomfactory.generators.generators.spdx.SPDXTagValueWriter;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.generators.utils.License;
@@ -44,7 +45,7 @@ public class SBOMGenerator {
     /**
      * The version of our SBOMGenerator tool.
      */
-    public static final String TOOL_VERSION = "v4.3.2-alpha";
+    public static final String TOOL_VERSION = "v4.4.0-alpha";
 
     /**
      * The license of our SBOMGenerator tool.
@@ -130,7 +131,12 @@ public class SBOMGenerator {
 
             // Serialize
             log(Debug.LOG_TYPE.DEBUG, "Attempting to write to " + path);
-            format.getObjectMapper(schema).writerWithDefaultPrettyPrinter().writeValue(new File(path), bomStore);
+            if(format == GeneratorSchema.GeneratorFormat.SPDX) {
+                SPDXTagValueWriter writer = new SPDXTagValueWriter((SPDXStore) bomStore);
+                writer.writeToFile(path);
+            } else {
+                format.getObjectMapper(schema).writerWithDefaultPrettyPrinter().writeValue(new File(path), bomStore);
+            }
             log(Debug.LOG_TYPE.SUMMARY, schema.name() + " SBOM saved to: " + path);
         } catch (GeneratorException e) {
             log(Debug.LOG_TYPE.ERROR, "Unable to write " + schema.name() + " SBOM to " + path);
@@ -153,9 +159,16 @@ public class SBOMGenerator {
             ObjectMapper mapper = format.getObjectMapper(schema);
             if(!prettyPrint) mapper.setDefaultPrettyPrinter(null);
 
-            String out = mapper.writeValueAsString(bomStore);
+            String out;
+
+            if(format == GeneratorSchema.GeneratorFormat.SPDX) {
+                SPDXTagValueWriter writer = new SPDXTagValueWriter((SPDXStore) bomStore);
+                out = writer.writeToString(); // TODO should we support pretty-printing?
+            } else {
+                out = mapper.writeValueAsString(bomStore);
+            }
             log(Debug.LOG_TYPE.SUMMARY, schema.name() + " SBOM successfully written to string");
-            return out;//.replaceAll("\\s+","");
+            return out;
         } catch (GeneratorException | JsonProcessingException e) {
             log(Debug.LOG_TYPE.ERROR, "Unable to write " + schema.name() + " SBOM to a string");
         }
