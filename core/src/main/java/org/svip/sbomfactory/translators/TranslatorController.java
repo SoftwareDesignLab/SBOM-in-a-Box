@@ -43,7 +43,7 @@ public class TranslatorController {
      * @param filePath path to the bom
      * @return SBOM object, null if failed
      */
-    public SBOM toSBOM(String filePath) {
+    public static SBOM toSBOM(String contents, String filePath) {
 
         SBOM sbom = null;
 
