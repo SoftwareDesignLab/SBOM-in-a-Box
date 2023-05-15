@@ -333,10 +333,6 @@ public class TranslatorSPDX extends TranslatorCore {
 
         br.close();
 
-        // product == DOCUMENT_REFERENCE_TAG
-        // ? new Component(bom_data.get("DocumentName"), "N/A", "N/A", bom_data.get("id") )
-        // : components.get(relationship.split(" DESCRIBES ")[1]);
-
         if (product_id.contains(DOCUMENT_REFERENCE_TAG)) {
             product_data.put("name", bom_data.get("DocumentName"));
             product_data.put("publisher", bom_data.get("N/A"));
@@ -362,5 +358,7 @@ public class TranslatorSPDX extends TranslatorCore {
 
         // Return SBOM object
         return this.sbom;
+
     }
+
 }
