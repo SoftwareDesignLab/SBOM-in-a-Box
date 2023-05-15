@@ -69,13 +69,13 @@ public class PerlParser extends LanguageParser {
     protected boolean isInternalComponent(ParserComponent component) {
         // Target is component name + ".pm"
         final String target = component.getName() + ".pm";
-
-        // Get project path from this.src and walk files to find component
-        try (Stream<Path> stream = Files.walk(this.PWD)) {
-            return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
-        } catch (Exception e){
-            log(LOG_TYPE.EXCEPTION, e);
-        }
+        // TODO
+//        // Get project path from this.src and walk files to find component
+//        try (Stream<Path> stream = Files.walk(this.PWD)) {
+//            return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
+//        } catch (Exception e){
+//            log(LOG_TYPE.EXCEPTION, e);
+//        }
 
         return false;
     }

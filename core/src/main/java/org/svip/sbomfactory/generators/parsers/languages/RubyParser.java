@@ -123,12 +123,13 @@ public class RubyParser extends LanguageParser {
         // Assign value to final string to appease the lamba function's requirements
         final String target = name;
 
-        // Get project path from this.src and walk files to find component
-        try (Stream<Path> stream = Files.walk(this.PWD)) {
-            return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
-        } catch (Exception e){
-            log(LOG_TYPE.EXCEPTION, e);
-        }
+        // TODO
+//        // Get project path from this.src and walk files to find component
+//        try (Stream<Path> stream = Files.walk(this.PWD)) {
+//            return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
+//        } catch (Exception e){
+//            log(LOG_TYPE.EXCEPTION, e);
+//        }
 
         return false;
     }

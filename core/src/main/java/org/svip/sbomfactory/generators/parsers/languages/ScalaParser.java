@@ -41,13 +41,14 @@ public class ScalaParser extends LanguageParser {
             // Get path terminus
             final String target = component.getName().toLowerCase() + ".sc";
 
-            // Get project path from this.src and walk files to find component
-            try (Stream<Path> stream = Files.walk(this.PWD)) {
-                // Uses .contains instead of .equals so that both files with ".sc" and ".scala" are found
-                return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().contains(target));
-            } catch (Exception e){
-                log(LOG_TYPE.EXCEPTION, e);
-            }
+            // TODO
+//            // Get project path from this.src and walk files to find component
+//            try (Stream<Path> stream = Files.walk(this.PWD)) {
+//                // Uses .contains instead of .equals so that both files with ".sc" and ".scala" are found
+//                return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().contains(target));
+//            } catch (Exception e){
+//                log(LOG_TYPE.EXCEPTION, e);
+//            }
         }
 
         return false;

@@ -107,12 +107,13 @@ public class JavaParser extends LanguageParser {
             // Get path terminus
             final String target = component.getName().toLowerCase() + ".java";
 
-            // Get project path from this.src and walk files to find component
-            try (Stream<Path> stream = Files.walk(this.SRC)) {
-                return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
-            } catch (Exception e){
-                log(LOG_TYPE.EXCEPTION, e);
-            }
+            // TODO
+//            // Get project path from this.src and walk files to find component
+//            try (Stream<Path> stream = Files.walk(this.SRC)) {
+//                return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
+//            } catch (Exception e){
+//                log(LOG_TYPE.EXCEPTION, e);
+//            }
         }
 
         return false;
