@@ -1,6 +1,7 @@
 package org.svip.sbomfactory.generators.parsers;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.VirtualPath;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -23,8 +24,8 @@ import static org.svip.sbomfactory.generators.utils.Debug.*;
 public abstract class Parser {
     //#region Attributes
     private static final int MAX_CONNECTION_TIMEOUT = 1000;
-    protected Path PWD; // Filepath to target directory
-    protected Path SRC; // Filepath to src directory
+    protected VirtualPath PWD; // Filepath to target directory
+    protected VirtualPath SRC; // Filepath to src directory
     protected final String STD_LIB_URL;
 
     //#endregion
@@ -47,9 +48,9 @@ public abstract class Parser {
 
     //#region Setters
 
-    public void setPWD(Path PWD) { this.PWD = PWD; }
+    public void setPWD(VirtualPath PWD) { this.PWD = PWD; }
 
-    public void setSRC(Path SRC) { this.SRC = SRC; }
+    public void setSRC(VirtualPath SRC) { this.SRC = SRC; }
 
     //#endregion
 

@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbom.model.SBOM;
+import org.svip.sbomfactory.generators.utils.VirtualPath;
 
 import java.io.File;
 import java.io.IOException;
@@ -172,8 +173,8 @@ public class ParserController {
         final String parentDir = String.join("/", Arrays.copyOfRange(pathParts, 0, pathParts.length - 1));
 
         // Set parser details
-//        parser.setPWD(parentDir);
-//        parser.setSRC(this.SRC); // TODO: Fix
+        parser.setPWD(new VirtualPath(parentDir));
+        parser.setSRC(new VirtualPath(this.SRC));
 
         final ArrayList<ContextParser> contextParsers = new ArrayList<>();
         if(parser instanceof LanguageParser) {
