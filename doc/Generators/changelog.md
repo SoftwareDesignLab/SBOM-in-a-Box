@@ -1,9 +1,58 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to the Generators sub-system will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [v4.3.2-alpha] - (05/12/2023)
+
+### Added
+
+- Add `LicenseManager.getConcatenatedLicenseString()` method to concisely concatenate all tool licenses to use when
+  representing a Collection of licenses as a string.
+
+### Changed
+
+- Ensure `SPDXSerializer` Class properly serializes an XML Document according to the documentation and 
+  [official example](https://github.com/spdx/spdx-spec/blob/development/v2.3.1/examples/SPDXXMLExample-v2.3.spdx.xml).
+- Update `SPDXSerializer` Class to ensure the XML root element is `Document` when serializing using an instance of 
+  `ToXmlGenerator`.
+
+## [v4.3.1-alpha] - (05/11/2023)
+
+### Added
+
+- Add `CycloneDXXMLSerializer` Class.
+  - Similar to `CycloneDXSerializer`, this class overrides the Jackson `StdSerializer` Class to allow serialization of
+    a `CycloneDXStore` instance to an XML file according to the [CycloneDX v1.4 XML specification](https://cyclonedx.org/docs/1.4/xml/).
+  - A separate serializer is required due to the inherent difference between JSON and XML.
+- Add abstract `TranslatorCore` Class that all other translators extend to increase modularity.
+  - This will eventually replace the current implementation of `Translator`, which used to act as a controller for the
+  translators and is no longer needed. Instead, it will remain the abstract core class of the translators, to be
+  extended to support a new schema/format easily.
+- Add abstract `TranslatorTestCore` Class that allows the tests to have a similar level of modularity.
+- Add `CSProjParserTest` to test the C# Package Parser.
+
+### Changed
+
+- Update `GeneratorSchema.getObjectMapper()` to take a schema argument to register all serializers with their respective
+  `ObjectMapper`
+  - Previously, registering the custom serializers was done using Jackson decorators on all `BOMStore` classes. However,
+    this made it difficult to have multiple different types of serializers.
+  - Now, all `ObjectMapper` configuration and serialization setup is done in `getObjectMapper()`. This allows for simply
+    calling the method on a specific format and passing in the schema to get a completely set up `ObjectMapper` whose
+    serializer is dependent on the file format back.
+- Update `ObjectMapper` pretty-printing to stop indenting each line of an array to enhance SBOM readability.
+- Refactor all translator tests (see below) to reflect the updated translator (and `TranslatorTestCore`) architecture.
+  - `TranslatorCDXJSONTest`
+  - `TranslatorCDXXMLTest`
+  - `TranslatorSPDXTest`
+- Rename `GradleParserParseTest` to `GradleParserTest` for semantics.
+- Update `CommentParser`, `DeadImportParser`, & `SubprocessParser` to add parsed contexts to SBOM components.
+  - `CommentParser` could use a look in terms of the value of the data collected, as many comments provide no real, 
+  valuable information to our SBOM.
+
 
 ## [v4.3.0-alpha] - (05/08/2023)
 

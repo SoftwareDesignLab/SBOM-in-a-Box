@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-/**
+/** TODO Add comments detailing generation info?
  * File: BOMStore.java
  * <p>
  * Abstract dataclass to store common attributes and methods between all CycloneDXStore specifications. This class will be

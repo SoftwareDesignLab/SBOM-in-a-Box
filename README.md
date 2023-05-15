@@ -7,9 +7,9 @@ v1.0.0 - alpha (2/27/23)
 
 - Electron.js App for Front end
 - Spring-Boot backend to handle API requests
-- SVIP Core that uses a Docker Container to generate SBOMs, merges them, and creates a D3 JSON Visual
+- SVIP Core that uses a Docker Container to generate SBOMs, merge them, and create a D3 JSON Visual
 
-_The full changelog can be found [here](CHANGELOG.md)_
+_Full sub-system READMEs & changelogs can be found in the `doc` directory_
 
 ## Quick Start
 - Core:
@@ -18,27 +18,13 @@ _The full changelog can be found [here](CHANGELOG.md)_
   - run UnifiedApplication.java
 
 ## Features
-
-### Open Source Integrated SBOM Generation
-- Use Docker, for instance, to build virtual containers that use open source tools
-### SBOM Generation
-- Transform relevant data into serialized SBOM objects
-- Translator: Parse SBOMS from files and deserialize from formats:
-  - CycloneDX
-    > .xml and .json
-  - SPDX
-    > .spdx
-### SBOM VEX Generation
-- Vulnerability analysis
-- Make API calls to NVIP (National Vulnerability Intelligence Program) to gather vulnerability information associated with a CPE
-### SBOM Analysis
-- Differ
-- Comparison
-- Quallity
-### SBOM Comparison
-- Generate detailed DiffReports from a target SBOM and a list of SBOMs 
-### SBOM Merging
-- Merge a collection of SBOMs into one main SBOM
+This is a list of all "features", or sub-systems that SVIP contains. Each links to their respective README.md file.
+#### [Open Source Integrated SBOM Generation](doc/OSI/README.md) - Makes use of open source libraries to generate SBOMs
+#### [SBOM Generation](doc/Generators/README.md) - Custom SBOM generation via source file and package manager file analysis
+#### [SBOM VEX Generation](doc/VEX/README.md) - 
+#### [SBOM Metrics](doc/Metrics/README.md) - 
+#### [SBOM Comparison](doc/Comparer/README.md) - 
+#### [SBOM Merging](doc/Merger/README.md) - 
 
 ## Contributors
 **Principal Investigator:** [Mehdi Mirakhorli](mailto:mxmvse@rit.edu)

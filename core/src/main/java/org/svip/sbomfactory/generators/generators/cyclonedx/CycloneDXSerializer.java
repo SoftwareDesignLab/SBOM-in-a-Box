@@ -18,7 +18,7 @@ import java.util.Set;
  * File: CycloneDXSerializer.java
  * <p>
  * A custom serializer for the <code>CycloneDXStore</code> class extended from the Jackson library's <code>STDSerializer</code>
- * class to convert the data of <code>CycloneDXStore</code> to an CDX v1.4 bill of materials.
+ * class to convert the data of <code>CycloneDXStore</code> to a CDX v1.4 bill of materials in JSON or YAML format.
  * </p>
  * @author Ian Dunn
  */
@@ -300,7 +300,7 @@ public class CycloneDXSerializer extends StdSerializer<CycloneDXStore> {
      * @param type The type of the ParserComponent.
      * @return The CDX-specific type that the ParserComponent type maps to.
      */
-    private String getCDXType(ParserComponent.Type type) {
+    protected static String getCDXType(ParserComponent.Type type) {
         // Set component type based on what the parser reads it in as
         // https://cyclonedx.org/docs/1.4/json/#components_items_type TODO figure out if we can be more descriptive
         switch(type) {
