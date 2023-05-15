@@ -1,12 +1,15 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
+import org.cyclonedx.model.Hash;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.svip.sbomfactory.generators.utils.QueryWorker;
 
 import static org.svip.sbomfactory.generators.utils.Debug.*;
 
@@ -17,11 +20,13 @@ import static org.svip.sbomfactory.generators.utils.Debug.*;
  * @author Dylan Mulligan
  */
 public class GradleParser extends PackageManagerParser {
+
     //#region Constructors
 
     public GradleParser() {
         super(
-                "https://docs.gradle.org/current/javadoc/",
+                //gradle can use any maven or ivy repo provided, however not all repos will provide license information.
+                "https://central.sonatype.com/artifact/",
                 null,
                 "\\$([^\\n/\\\\]*)" // Regex101: https://regex101.com/r/1Y2gb5/2
         );
@@ -48,19 +53,22 @@ public class GradleParser extends PackageManagerParser {
         // Get properties
         final ArrayList<String> ext = (ArrayList<String>) data.get("ext");
 
-        // Store properties
-        this.resolveProperties(
-                this.properties,
-                (HashMap<String, String>) ext
-                        .stream().collect(
-                            Collectors.toMap(
-                                    e -> e.substring(0, e.indexOf('=')).trim(),
-                                    e -> e.substring(e.indexOf('=') + 1)
-                                            .trim()
-                                            .replace("'", "")
-                                            .replace("\"", "")
-                            ))
-        );
+        if(ext != null) {
+            // Store properties
+            this.resolveProperties(
+                    this.properties,
+                    (HashMap<String, String>) ext
+                            .stream().collect(
+                                    Collectors.toMap(
+                                            e -> e.substring(0, e.indexOf('=')).trim(),
+                                            e -> e.substring(e.indexOf('=') + 1)
+                                                    .trim()
+                                                    .replace("'", "")
+                                                    .replace("\"", "")
+                                    ))
+            );
+        }
+
 
         // Iterate over dependencies
         for (final String artifactId : this.dependencies.keySet()) {
@@ -69,22 +77,37 @@ public class GradleParser extends PackageManagerParser {
 
             // Create ParserComponent from dep info
             final ParserComponent c = new ParserComponent(artifactId);
-            c.setGroup(d.get("group"));
+            c.setGroup(d.get("groupId"));
             if (d.containsKey("type")) {
                 final String type = d.get("type");
                 if (type.equals("file")) c.setType(ParserComponent.Type.INTERNAL);
             }
             if (d.containsKey("version")) c.setVersion(d.get("version"));
 
-            // TODO: Query
-//            String url = "";
-//            this.queryWorkers.add(new QueryWorker(c, url) {
-//                @Override
-//                public void run() {
-//
-//                }
-//            });
 
+            String url = STD_LIB_URL + c.getGroup() + "/" + c.getName() + "/" + c.getVersion();
+            this.queryWorkers.add(new QueryWorker(c, url) {
+                @Override
+                public void run() {
+                    // Get page contents
+                    final String contents = getUrlContents(queryURL(this.url, false));
+
+                    if(contents.length() == 0) {
+                        return;
+                    }
+
+                    // Parse license(s)
+                    // Regex101: https://regex101.com/r/FUOPSK/1
+                    final Matcher m = Pattern.compile("<li data-test=\\\"license\\\">(.*?)</li>", Pattern.MULTILINE).matcher(contents);
+
+                    // Add all found licenses
+                    while(m.find()) {
+                        this.component.addLicense(m.group(1).trim());
+                    }
+                }
+            });
+
+            queryURLs(this.queryWorkers);
             // Add ParserComponent to components
             components.add(c);
             log(LOG_TYPE.DEBUG, String.format("New Component: %s", c.toReadableString()));
