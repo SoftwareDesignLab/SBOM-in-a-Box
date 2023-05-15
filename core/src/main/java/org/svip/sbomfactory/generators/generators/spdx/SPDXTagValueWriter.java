@@ -91,6 +91,15 @@ public class SPDXTagValueWriter {
         out.close();
     }
 
+    //#endregion
+
+    //#region Helper Methods
+
+    /**
+     * Helper method to construct the document header with metadata information.
+     *
+     * @return A string containing all details of the document header.
+     */
     private String getDocumentHeader() {
         StringBuilder out = new StringBuilder();
         out.append("SPDXVersion: ").append(spdxStore.getSpecVersion()).append("\n");
@@ -104,6 +113,11 @@ public class SPDXTagValueWriter {
         return out.toString();
     }
 
+    /**
+     * Helper method to construct the creation information of the document.
+     *
+     * @return A string containing all details of the creation information of the document.
+     */
     private String getCreationInformation() {
         StringBuilder out = new StringBuilder();
         for(Tool tool : spdxStore.getTools()) {
@@ -114,6 +128,11 @@ public class SPDXTagValueWriter {
         return out.toString();
     }
 
+    /**
+     * Helper method to construct the extracted license information of the document.
+     *
+     * @return A string containing all details of the extracted license information of the document.
+     */
     private String getExtractedLicenseInformation() {
         StringBuilder out = new StringBuilder();
         for(License license : spdxStore.getExternalLicenses()) {
@@ -124,6 +143,13 @@ public class SPDXTagValueWriter {
         return out.toString();
     }
 
+    /**
+     * Helper method to construct an individual file in the document from a filename and SPDX file ID.
+     *
+     * @param file The name and path of the file.
+     * @param spdxId The SPDX ID of the file.
+     * @return A string containing all details of the individual file in the document.
+     */
     private String getFile(String file, String spdxId) {
         StringBuilder out = new StringBuilder();
 
@@ -134,6 +160,12 @@ public class SPDXTagValueWriter {
         return out.toString();
     }
 
+    /**
+     * Helper method to construct an individual package in the document from a ParserComponent.
+     *
+     * @param component The component to construct a package from.
+     * @return A string containing all details of the individual package in the document.
+     */
     private String getPackage(ParserComponent component) {
         StringBuilder out = new StringBuilder();
 
