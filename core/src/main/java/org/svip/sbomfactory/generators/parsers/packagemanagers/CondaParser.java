@@ -69,6 +69,10 @@ public class CondaParser extends PackageManagerParser{
                 e.printStackTrace();
             }
 
+/* todo
+    fix bug where loop variables are not cleared for some reason
+    split up git requests to pull out the version data
+ */
             //PIP dependencies, under the pip tag in the dependencies tag, or other tags defined like this (if they exist)
             // EG.
             // dependencies:
