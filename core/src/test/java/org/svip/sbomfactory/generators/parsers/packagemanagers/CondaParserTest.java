@@ -50,7 +50,7 @@ public class CondaParserTest extends ParseDepFileTestCore{
         final HashMap<String, LinkedHashMap<String, String>> dependencies = this.PARSER.dependencies;
 
         //there should be 34 dependencies in this enviroment file.
-        assertEquals(34, dependencies.size());
+        assertEquals(54, dependencies.size());
 
         //check a few dependencies
         final Set<String> keySet = dependencies.keySet(); //variables
@@ -68,8 +68,8 @@ public class CondaParserTest extends ParseDepFileTestCore{
         testDep = dependencies.get("mpi4py");
         assertNull(testDep.get("version"));
 
-        assertTrue(keySet.contains("pip:pillow"));
-        testDep = dependencies.get("pip:pillow");
+        assertTrue(keySet.contains("pip:Pillow"));
+        testDep = dependencies.get("pip:Pillow");
         assertNull(testDep.get("version"));
 
         assertTrue(keySet.contains("pip:https://github.com/inksci/mujoco-py-v0.5.7"));
