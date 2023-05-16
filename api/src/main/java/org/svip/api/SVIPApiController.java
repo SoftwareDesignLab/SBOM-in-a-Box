@@ -177,7 +177,7 @@ public class SVIPApiController {
      * @param fileArray Array of file names as a JSON string
      * @return Wrapped Comparison object
      */
-    @PostMapping("compare")
+    @PostMapping("/compare")
     public ResponseEntity<Comparison> compare(@RequestParam("contents") String contentArray, @RequestParam("fileNames") String fileArray) throws IOException {
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -216,7 +216,7 @@ public class SVIPApiController {
      * @param fileName - Name of the SBOM file
      * @return - wrapped QualityReport object, null if failed
      */
-    @PostMapping("qa")
+    @PostMapping("/qa")
     public ResponseEntity<QualityReport> qa(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
 
         SBOM sbom = TranslatorPlugFest.translateContents(contents, fileName);
@@ -244,7 +244,7 @@ public class SVIPApiController {
      * @param fileName Name of the file that the SBOM contents came from
      * @return SBOM object, null if failed to parse
      */
-    @PostMapping("parse")
+    @PostMapping("/parse")
     public ResponseEntity<SBOM> parse(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
         SBOM sbom = TranslatorPlugFest.translateContents(contents, fileName);
 
