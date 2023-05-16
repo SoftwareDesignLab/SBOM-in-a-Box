@@ -19,12 +19,12 @@ import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
  * file: GeneratorsTestMain.java
- * Description: Entry for Generators code
+ * Description: SBOM Generation CLI Code
  *
  * @author Dylan Mulligan
  * @author Derek Garcia
  */
-public class GeneratorsTestMain {
+public class SBOMGeneratorCLI {
 
     //#region Exceptions
 
