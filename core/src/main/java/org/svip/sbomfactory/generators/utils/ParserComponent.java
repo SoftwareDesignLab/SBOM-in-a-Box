@@ -119,7 +119,8 @@ public class ParserComponent extends Component {
 
     /**
      * Resolve all String licenses added to this ParserComponent during parsing to a {@code License} that converts the
-     * license string to a short SPDX identifier.
+     * license string to a short SPDX identifier. If more than one license exists in a string, it will be resolved to
+     * multiple licenses.
      */
     public void resolveLicenses() {
         for(String licenseName : getLicenses()) {
@@ -152,7 +153,7 @@ public class ParserComponent extends Component {
     }
 
     /**
-     * Add a NEW, already-resolved license to this ParserComponent.
+     * Add an already-resolved license to this ParserComponent.
      *
      * @param resolved The {@code License} to add to this ParserComponent.
      */
