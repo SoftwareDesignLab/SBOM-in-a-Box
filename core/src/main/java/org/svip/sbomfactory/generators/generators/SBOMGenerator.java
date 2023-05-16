@@ -274,8 +274,7 @@ public class SBOMGenerator {
         if(os.contains("mac") || os.contains("nix") || os.contains("nux") || os.contains("aix")) path.append('/');
 
         String projectName = internalSBOM.getComponent(internalSBOM.getHeadUUID()).getName();
-        path.append(projectName) // Append project name
-                .append("_").append(this.schema) // Append origin format for transparency
+        path.append("_").append(this.schema) // Append origin format for transparency
                 .append('.').append(format.getExtension()); // Append file extension
 
         return path.toString();

@@ -90,7 +90,7 @@ public class ParserController {
     /**
      * Create a new ParserController with a path to the PWD.
      *
-     * @param String a Path to the present working directory
+     * @param PWD a Path to the present working directory
      */
     public ParserController(String PWD) {
         // Set attributes
