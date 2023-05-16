@@ -31,23 +31,7 @@ import java.util.ArrayList;
 @RestController
 @RequestMapping("/svip")
 public class SVIPApiController {
-    /**
-     * NVIP Login Credentials username
-     */
-    private static String NVIPUsername;
-    /**
-     * NVIP Login Credentials password
-     */
-    private static String NVIPPassword;
-    /**
-     * NVIP Endpoint (Entire URL without resource and arguments)
-     */
-    private static String NVIPEndpoint;
 
-    /**
-     * SVIP VexFactory instance
-     */
-    private VEXFactory factory;
 
     /**
      * Http headers of Spring boot application
@@ -120,18 +104,18 @@ public class SVIPApiController {
         if(master == null)
             throw new Exception("Failed to merge SBOMs");
 
-        // 4. Apply Vex
-        if (NVIPUsername == null || NVIPPassword == null)
-            System.err.println("NVIP Login Credentials not set. Call setNVIPLogin() first. No VEX will be applied.");
-        else if (NVIPEndpoint == null)
-            System.err.println("NVIP Endpoint not set. Call setNVIPEndpoint() first. No VEX will be applied.");
-        else {
-            try {
-                factory.applyVex(master);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+//        // 4. Apply Vex
+//        if (NVIPUsername == null || NVIPPassword == null)
+//            System.err.println("NVIP Login Credentials not set. Call setNVIPLogin() first. No VEX will be applied.");
+//        else if (NVIPEndpoint == null)
+//            System.err.println("NVIP Endpoint not set. Call setNVIPEndpoint() first. No VEX will be applied.");
+//        else {
+//            try {
+//                factory.applyVex(master);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
 
         // 5. Convert to D3 and return result
         return new NodeFactory().CreateNodeGraphJSON(master);
@@ -154,38 +138,5 @@ public class SVIPApiController {
         }
     }
 
-    /**
-     * Sets the NVIP Login Credentials for the VEXFactory
-     *
-     * @param username - NVIP Username
-     * @param password - NVIP Password in plain text
-     */
-    @PostMapping(value = "/login", params = {"username", "password"})
-    public ResponseEntity<Boolean> login(@RequestParam("username") String username, @RequestParam("password") String password){
-        NVIPUsername = username;
-        NVIPPassword = password;
 
-        try {
-            factory = new VEXFactory(NVIPEndpoint, username, password);
-            return new ResponseEntity<>(true, headers, HttpStatus.OK);
-        } catch (VEXFactory.InvalidLoginException e) {
-            return new ResponseEntity<>(false, headers, HttpStatus.OK);
-        }
-    }
-
-    /**
-     * Sets the NVIP Endpoint for the VEXFactory. This is the bit of the URL before the specific resource.
-     * For example if the URL is http://localhost:8080/nvip_ui_war_exploded/searchServelet then the endpoint is http://localhost:8080/nvip_ui_war_exploded
-     * If you are getting errors ensure
-     *      A. The endpoint is correct (you can connect to it in a browser)
-     *      B. You have logged in to NVIP and have a valid token
-     *      C. You have specified the protocol (http:// or https://)
-     *
-     * @param endpoint - NVIP Endpoint
-     */
-    @PostMapping(value = "/endpoint", params = {"endpoint"})
-    public ResponseEntity<Boolean> setNVIPEndpoint(@RequestParam("endpoint") String endpoint){
-        NVIPEndpoint = endpoint;
-        return new ResponseEntity<>(true, headers, HttpStatus.OK);
-    }
 }
