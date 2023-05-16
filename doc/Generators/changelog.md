@@ -5,7 +5,7 @@ All notable changes to the Generators sub-system will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v4.4.1-alpha] - (05/15/2023)
+## [v4.4.1-alpha] - (05/XX/2023)
 
 ### Changed
 - Updated `LicenseManager.parseLicense()` method to more accurately and efficiently match an arbitrary license string to
