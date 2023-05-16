@@ -9,6 +9,7 @@
             A package that has framework assemblyReferences depending
             on the target framework.
         </description>
+
         <dependencies>
             <dependency id="Newtonsoft.Json" version="11.0.2" />
             <dependency id="RestSharp" version="106.3.1" />
