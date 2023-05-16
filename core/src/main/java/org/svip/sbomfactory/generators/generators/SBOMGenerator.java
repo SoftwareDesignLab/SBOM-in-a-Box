@@ -141,7 +141,7 @@ public class SBOMGenerator {
         } catch (GeneratorException e) {
             log(Debug.LOG_TYPE.ERROR, "Unable to write " + schema.name() + " SBOM to " + path);
         }
-    };
+    }
 
     /**
      * Write an SBOM to a single String, either pretty-printed or on one line.
@@ -194,7 +194,7 @@ public class SBOMGenerator {
         Object[] parameters = {serialNumber, version, headComponent};
         Class<?>[] parameterTypes = Arrays.stream(parameters).map(Object::getClass).toArray(Class<?>[]::new);
 
-        BOMStore bomStore = null;
+        BOMStore bomStore;
         try {
             bomStore = schema.getBomStoreType().getDeclaredConstructor(parameterTypes).newInstance(parameters);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -274,7 +274,8 @@ public class SBOMGenerator {
         if(os.contains("mac") || os.contains("nix") || os.contains("nux") || os.contains("aix")) path.append('/');
 
         String projectName = internalSBOM.getComponent(internalSBOM.getHeadUUID()).getName();
-        path.append("_").append(this.schema) // Append origin format for transparency
+        path.append(projectName)
+                .append("_").append(this.schema) // Append origin format for transparency
                 .append('.').append(format.getExtension()); // Append file extension
 
         return path.toString();

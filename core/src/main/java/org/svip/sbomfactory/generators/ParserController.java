@@ -95,7 +95,10 @@ public class ParserController {
     public ParserController(String PWD) {
         // Set attributes
         // Get filename
-        final String[] pathParts = PWD.split("/");
+        String[] pathParts = PWD.split("/");
+        final String os = System.getProperty("os.name").toLowerCase();
+        if(os.contains("win")) pathParts = PWD.split("\\\\");
+
         // Set project name to root filename
         this.projectName = pathParts[pathParts.length - 1];
         this.PWD = PWD;
@@ -118,7 +121,7 @@ public class ParserController {
     public String getSRC() { return this.SRC; }
     public int getDirCount() { return this.dirCount.intValue(); }
     public int getFileCount() { return this.fileCount.intValue(); }
-    public int getDepCount() { return this.SBOM.getAllComponents().size(); } // TODO: Direct method in SBOM to count
+    public int getDepCount() { return this.SBOM.getAllComponents().size(); }
     public SBOM getSBOM() { return this.SBOM; }
 
     //#endregion
@@ -150,9 +153,9 @@ public class ParserController {
      */
     public void parse(UUID parent, String filepath, String fileContents) {
         // Get filename
-        String[] pathParts = PWD.split("/");
+        String[] pathParts = filepath.split("/");
         final String os = System.getProperty("os.name").toLowerCase();
-        if(os.contains("win")) pathParts = PWD.split("\\\\");
+        if(os.contains("win")) pathParts = filepath.split("\\\\");
 
         // Set project name to root filename
         final String filename = pathParts[pathParts.length - 1];
@@ -181,7 +184,8 @@ public class ParserController {
 
         final ArrayList<ContextParser> contextParsers = new ArrayList<>();
         if(parser instanceof LanguageParser) {
-            contextParsers.add(new CommentParser());
+            // TODO do we need to parse comments? This adds unnecessary components to the SBOM
+            //   contextParsers.add(new CommentParser());
             contextParsers.add(new SubprocessParser());
             contextParsers.add(new DeadImportParser());
             // Add new ContextParser
@@ -194,7 +198,6 @@ public class ParserController {
         // Parse components
         parser.parse(components, fileContents);
 
-        // TODO: Make sure this works
         components.forEach(c -> c.addFile(filepath));
 
         // If file being parsed is a language file
@@ -204,7 +207,6 @@ public class ParserController {
         // If file being parsed is a package manager file
         if(parser instanceof PackageManagerParser) { // Parsing an EXTERNAL dependency
             components.forEach(ParserComponent::setPackaged); // Sets it to packaged and EXTERNAL
-            // TODO check CPEs & modify component with that data
         } // Otherwise it will be unpackaged and INTERNAL (LIBRARY if it has been parsed as such)
 
         // Add Components to SBOM
