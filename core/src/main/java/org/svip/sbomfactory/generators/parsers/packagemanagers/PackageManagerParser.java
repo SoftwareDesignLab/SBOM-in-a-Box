@@ -298,14 +298,12 @@ public abstract class PackageManagerParser extends Parser {
             if(nugetParser){
                 groupId = d.get("id");
                 if(groupId == null)
-                    groupId = d.get("assemblyName").split("[.]")[0]; // framework assembly name //todo this messes up query. fine for the sake of PURLs
+                    groupId = d.get("targetFramework").split("[.]")[0]; // framework assembly name //todo this messes up query. fine for the sake of PURLs
             }
             else
                 groupId = d.get("groupId");
 
             String version = d.get("version");
-            if(version == null && nugetParser)
-                version = d.get("targetFramework"); //todo this isn't entirely synonymous with version?
 
             final ParserComponent c = new ParserComponent(id);
 
@@ -318,7 +316,7 @@ public abstract class PackageManagerParser extends Parser {
 
             // is this a .NET assembly
             boolean frameworkAssembly =
-                    nugetParser && groupId != null && (groupId.toLowerCase().contains("system") || groupId.toLowerCase().contains("microsoft"));
+                    nugetParser && id != null && (id.toLowerCase().contains("system") || id.toLowerCase().contains("microsoft"));
 
             // Build PURL String
             final HashMap<String, String> PURLData = new HashMap<>();

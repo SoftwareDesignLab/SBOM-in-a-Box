@@ -81,13 +81,7 @@ public class NugetParser extends PackageManagerParser{
         this.dependencies = new HashMap<>();
         HashMap<String, String> metadata = new HashMap((LinkedHashMap<String, ArrayList<HashMap<String, String>>>) data.get("metadata"));
 
-
-
-
-       // this.resolveProperties(this.dependencies, new HashMap((metadata data.get("dependencies")).get("dependency"));
-
         int i = 0;
-        // todo refactor .nugspec to look like POM then that will solve all problems
         for (Object o: metadata.values()
              ) {
 
@@ -144,21 +138,30 @@ public class NugetParser extends PackageManagerParser{
                 The group format cannot be intermixed with a flat list.
                  */
 
-            this.resolveProperties(this.dependencies,
 
-                    new HashMap(((ArrayList<LinkedHashMap<String,String>>) (((LinkedHashMap<?, ?>)o).get("dependency")))
-                            .stream().collect(
-                                    Collectors.toMap(
-                                            d -> d.get("id"),
-                                            d -> d,
-                                            (d1, d2) -> {
-                                                log(Debug.LOG_TYPE.WARN, String.format("Duplicate key found: %s", d2.get("id")));
-                                                return d2;
-                                            }
-                                    )
-                            )
+                //reformat info to look like POM
 
-                    ));
+
+
+
+
+                // Get dependencies from data
+                this.resolveProperties(
+                        this.dependencies,
+                        new HashMap(((LinkedHashMap<String, ArrayList<HashMap<String, String>>>) data.get("dependencies"))
+                                .get("dependency")
+                                .stream().collect(
+                                        Collectors.toMap(
+                                                d -> d.get("group"),
+                                                d -> d,
+                                                (d1, d2) -> {
+                                                    log(Debug.LOG_TYPE.WARN, String.format("Duplicate key found: %s", d2.get("artifactId")));
+                                                    return d2;
+                                                }
+                                        )
+                                )
+                        )
+                );
 
         }
 
