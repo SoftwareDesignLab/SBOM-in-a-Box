@@ -38,46 +38,47 @@ public class ConanParser extends PackageManagerParser {
     @Override
     protected void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data) {
         // Init properties
-        this.properties = new HashMap<>();
+        //pliu this.properties = new HashMap<>();
 
         // Init dependencies
-        this.dependencies = new LinkedHashMap<>();
+        //pliu this.dependencies = new LinkedHashMap<>();
 
         // Insert data
-        this.resolveProperties(
-                this.dependencies,
-                (HashMap<String, String>) data.get("dependencies")
-        );
+//        this.resolveProperties(
+//                this.dependencies,
+//                (HashMap<String, String>) data.get("dependencies")
+//        );
 
         // Get properties
-        final ArrayList<String> ext = (ArrayList<String>) data.get("ext");
+//        final ArrayList<String> ext = (ArrayList<String>) data.get("ext");
 
         // Store properties
-        this.resolveProperties(
-                this.properties,
-                (HashMap<String, String>) ext
-                        .stream().collect(
-                                Collectors.toMap(
-                                        e -> e.substring(0, e.indexOf('=')).trim(),
-                                        e -> e.substring(e.indexOf('=') + 1)
-                                                .trim()
-                                                .replace("'", "")
-                                                .replace("\"", "")
-                                ))
-        );
+//        this.resolveProperties(
+//                this.properties,
+//                (HashMap<String, String>) ext
+//                        .stream().collect(
+//                                Collectors.toMap(
+//                                        e -> e.substring(0, e.indexOf('=')).trim(),
+//                                        e -> e.substring(e.indexOf('=') + 1)
+//                                                .trim()
+//                                                .replace("'", "")
+//                                                .replace("\"", "")
+//                                ))
+//        );
+
 
         // Iterate over dependencies
-        for (final String artifactId : this.dependencies.keySet()) {
+        for (final LinkedHashMap<String, String> d : (ArrayList<LinkedHashMap<String, String>>) data.get("dependencies")) {
             // Get value from map
-            final HashMap<String, String> d = this.dependencies.get(artifactId);
+            //final HashMap<String, String> d = this.dependencies.get(artifactId);
 
             // Create ParserComponent from dep info
-            final ParserComponent c = new ParserComponent(artifactId);
-            c.setGroup(d.get("group"));
-            if (d.containsKey("type")) {
-                final String type = d.get("type");
-                if (type.equals("file")) c.setType(ParserComponent.Type.INTERNAL);
-            }
+            final ParserComponent c = new ParserComponent(d.get("artifactId"));
+            //c.setGroup(d.get("group"));
+//            if (d.containsKey("type")) {
+//                final String type = d.get("type");
+//                if (type.equals("file")) c.setType(ParserComponent.Type.INTERNAL);
+//            }
             if (d.containsKey("version")) c.setVersion(d.get("version"));
 
             // TODO: Query
@@ -136,7 +137,7 @@ public class ConanParser extends PackageManagerParser {
             }
         }   // for (final MatchResult mr : m.results().toList()) {
             // Parse data
-            //pliu this.parseData(components, data);
+            this.parseData(components, data);
         //#endregion
     }
 
