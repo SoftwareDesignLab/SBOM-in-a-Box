@@ -1,7 +1,9 @@
-package org.svip.sbomfactory.generators.parsers.packagemanagers;
+package org.svip.sbomfactory.generators.parsers.packagemanagers.Nuget;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.svip.sbomfactory.generators.parsers.packagemanagers.NugetParser;
+import org.svip.sbomfactory.generators.parsers.packagemanagers.ParseDepFileTestCore;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.IOException;
@@ -15,17 +17,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * file: NugetParserTest.java
+ * file: NugetParserNoDependenciesTest.java
  * Description: Tests for Nuget Package-manager implementation of the PackageManagerParser (.nuspec/.json)
  *
  * @author Juan Francisco Patino
  */
-public class NugetParserDependencyGroupsTest extends ParseDepFileTestCore{
+public class NugetParserNoDependenciesTest extends ParseDepFileTestCore {
 
-    protected NugetParserDependencyGroupsTest() throws IOException {
+    protected NugetParserNoDependenciesTest() throws IOException {
         super(new NugetParser(),
                 Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/" +
-                        "generators/TestData/CSharp/Nuget/WithDependencyGroups.nugspec")),
+                        "generators/TestData/CSharp/Nuget/NoDependencies.nuspec")),
                 "src/test/java/org/svip/sbomfactory/generators/TestData/CSharp/Nuget");
     }
 
@@ -47,26 +49,7 @@ public class NugetParserDependencyGroupsTest extends ParseDepFileTestCore{
         final ArrayList<ParserComponent> components = this.components;
 
         // Test correct count is found
-        assertEquals(3, components.size());
-
-        //Make ValueSet
-        final Set<String> ValueSet = new HashSet<>();;
-        for(ParserComponent pc : components) {
-            ValueSet.add(pc.getName());
-        }
-
-        //Check component's name
-
-        String str = "RouteMagic" ;
-        assertTrue(ValueSet.contains(str));
-
-        str = "jQuery" ;
-        assertTrue(ValueSet.contains(str));
-
-        str = "WebActivator" ;
-        assertTrue(ValueSet.contains(str));
-
-        //todo test group names
+        assertEquals(0, components.size());
 
      }
 

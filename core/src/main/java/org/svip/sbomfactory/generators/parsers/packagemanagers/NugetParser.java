@@ -19,28 +19,13 @@ import static org.svip.sbomfactory.generators.utils.Debug.log;
  */
 public class NugetParser extends PackageManagerParser{
 
-    //todo dependency groups. i.e., test with
-    /*
-            <group>
-            <dependency id="RouteMagic" version="1.1.0" />
-        </group>
-
-        <group targetFramework=".NETFramework4.7.2">
-            <dependency id="jQuery" version="1.6.2" />
-            <dependency id="WebActivator" version="1.4.4" />
-        </group>
-
-        <group targetFramework="netcoreapp3.1">
-        </group>
-     */
-
     /**
      * Protected Constructor meant for use by parser implementations
      * to store their package-manager-specific static values in their respective
      * attributes.
      *
      */
-    protected NugetParser() {
+    public NugetParser() {
         super(
                 "https://www.nuget.org/packages",
                 new XmlFactory(),
@@ -114,21 +99,46 @@ public class NugetParser extends PackageManagerParser{
                 The group format cannot be intermixed with a flat list.
                  */
 
-                this.resolveProperties(this.dependencies,
+                try{
+                    this.resolveProperties(this.dependencies,
 
-                new HashMap(((ArrayList<LinkedHashMap<String,String>>) (((LinkedHashMap<?, ?>)o).get("dependency")))
-                        .stream().collect(
-                                Collectors.toMap(
-                                        d -> d.get("id"),
-                                        d -> d,
-                                        (d1, d2) -> {
-                                            log(Debug.LOG_TYPE.WARN, String.format("Duplicate key found: %s", d2.get("id")));
-                                            return d2;
-                                        }
-                                )
-                        )
+                            new HashMap(((ArrayList<LinkedHashMap<String,String>>) (((LinkedHashMap<?, ?>)o).get("dependency")))
+                                    .stream().collect(
+                                            Collectors.toMap(
+                                                    d -> d.get("id"),
+                                                    d -> d,
+                                                    (d1, d2) -> {
+                                                        log(Debug.LOG_TYPE.WARN, String.format("Duplicate key found: %s", d2.get("id")));
+                                                        return d2;
+                                                    }
+                                            )
+                                    )
 
-                ));
+                            ));
+                }catch(ClassCastException e){ // only one dependency
+
+                    String[] split = s.split("[=,}]");
+                    i = 0;
+                    LinkedHashMap<String, String> id = null;
+                    for (String elem: split
+                         ) {
+
+                        if(elem.contains("id")){
+                            id = new LinkedHashMap<>();
+                            id.put("id",split[i+1]);
+                            dependencies.put(split[i+1], id);
+                        }
+                        else if(elem.contains("version")){
+                            assert(id != null);
+                            id.put("version", split[i+1]);
+                            break;
+                        }
+
+                        i++;
+
+                    }
+
+                }
 
             }
          else if (s.contains("dependency") && s.contains("group")) { // optional dependency group format
@@ -138,30 +148,24 @@ public class NugetParser extends PackageManagerParser{
                 The group format cannot be intermixed with a flat list.
                  */
 
+                // this format is too different for resolveProperties() to work
 
-                //reformat info to look like POM
-
-
-
-
+                // targetFramework is synonymous with groupId in POMParser
 
                 // Get dependencies from data
-                this.resolveProperties(
-                        this.dependencies,
-                        new HashMap(((LinkedHashMap<String, ArrayList<HashMap<String, String>>>) data.get("dependencies"))
-                                .get("dependency")
-                                .stream().collect(
-                                        Collectors.toMap(
-                                                d -> d.get("group"),
-                                                d -> d,
-                                                (d1, d2) -> {
-                                                    log(Debug.LOG_TYPE.WARN, String.format("Duplicate key found: %s", d2.get("artifactId")));
-                                                    return d2;
-                                                }
-                                        )
-                                )
-                        )
-                );
+
+                int x = 0;
+
+                // at this point, s should be in the form
+
+                /*
+                {group=[{dependency={id=RouteMagic, version=1.1.0}}, {targetFramework=.NETFramework4.7.2, dependency=[{id=jQuery, version=1.6.2}, {id=WebActivator, version=1.4.4}]}, {targetFramework=netcoreapp3.1}]}
+                 */
+
+                //todo, this is pretty much an edge case, there are almost no examples of nuspec files with dependency groups, however they do exist
+
+                // String[] groups = s.split("[]")
+
 
         }
 

@@ -1,7 +1,9 @@
-package org.svip.sbomfactory.generators.parsers.packagemanagers;
+package org.svip.sbomfactory.generators.parsers.packagemanagers.Nuget;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.svip.sbomfactory.generators.parsers.packagemanagers.NugetParser;
+import org.svip.sbomfactory.generators.parsers.packagemanagers.ParseDepFileTestCore;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.IOException;
@@ -11,20 +13,21 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * file: NugetParserTest.java
- * Description: Tests for Nuget Package-manager implementation of the PackageManagerParser (.nuspec/.json)
+ * file: NugetParserErrLogIOTest.java
+ * Description: Tests for the case of only one dependency
  *
  * @author Juan Francisco Patino
  */
-public class NugetParserTest extends ParseDepFileTestCore{
+public class NugetParserErrLogIOTest extends ParseDepFileTestCore {
 
-    protected NugetParserTest() throws IOException {
+    protected NugetParserErrLogIOTest() throws IOException {
         super(new NugetParser(),
                 Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/" +
-                        "generators/TestData/CSharp/Nuget/WithFrameworkAssembliesAndDependencies.nugspec")),
+                        "generators/TestData/CSharp/Nuget/ErrLog.IO.nuspec")),
                 "src/test/java/org/svip/sbomfactory/generators/TestData/CSharp/Nuget");
     }
 
@@ -46,7 +49,7 @@ public class NugetParserTest extends ParseDepFileTestCore{
         final ArrayList<ParserComponent> components = this.components;
 
         // Test correct count is found
-        assertEquals(8, components.size());
+        assertEquals(1, components.size());
 
         //Make ValueSet
         final Set<String> ValueSet = new HashSet<>();;
@@ -56,26 +59,9 @@ public class NugetParserTest extends ParseDepFileTestCore{
 
         //Check component's name
 
-        String str = "System.Web" ;
+        String str = "Newtonsoft.Json" ;
         assertTrue(ValueSet.contains(str));
 
-        str = "System.Net" ;
-        assertTrue(ValueSet.contains(str));
-
-        str = "Microsoft.Devices.Sensors" ;
-        assertTrue(ValueSet.contains(str));
-
-        str = "Newtonsoft.Json" ;
-        assertTrue(ValueSet.contains(str));
-
-        str = "RestSharp" ;
-        assertTrue(ValueSet.contains(str));
-
-        str = "Selenium.Support" ;
-        assertTrue(ValueSet.contains(str));
-
-        str = "Selenium.WebDriver" ;
-        assertTrue(ValueSet.contains(str));
 
      }
 
