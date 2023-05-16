@@ -315,7 +315,7 @@ public abstract class PackageManagerParser extends Parser {
             //  "^pkg:([^/]+)/([^#\n@]+)(?:@([^\?\n]+))?(?:\?([^#\n]+))?(?:#([^\n]+))?"
 
             // is this a .NET assembly
-            boolean frameworkAssembly =
+            boolean frameworkAssembly = //todo ensure these are the only cases
                     nugetParser && id != null && (id.toLowerCase().contains("system") || id.toLowerCase().contains("microsoft"));
 
             // Build PURL String
