@@ -123,10 +123,10 @@ public class PerlParser extends LanguageParser {
 
         //(?:(?:use (?:(?=if).*, [ '\"]*(\w+)[ '\"]|(?:[ '\"]*(.+)[ '\"]*));|(no v?[\d.]+))
         //Checks for the ‘use’ keyword, and gets the package w/o [‘ “] (except for alias imports). It also checks to see if the import is conditional and selects just the package instead of the whole if statement.
-        //It also selects “no [digit],” which means that you are using Perl v[digit] or greater to compile this section
+        //It also selects “no [digit]," which means that you are using Perl v[digit] or greater to compile this section
 
         //require [ '\"]*([\$\w.]+)[ '\"]*(?:(?=.*->VERSION).* .*->VERSION\(([\w.]*)|))
-        //Checks for the “require” keyword and gets the package w/o [‘ “]. It also gets the version number if applicable
+        //Checks for the “require" keyword and gets the package w/o [‘ “]. It also gets the version number if applicable
 
         //(?![^\=]*\=(?:cut|end))
         //Multi-line comments. Since it isn’t officially supported, perl has a way to get multi-line comments using =begin comment here =cut; which counts.

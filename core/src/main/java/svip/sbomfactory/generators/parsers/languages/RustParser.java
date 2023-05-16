@@ -133,7 +133,7 @@ public class RustParser extends LanguageParser {
         Checks and ignores anything after and including //
 
         import(?: static)?
-        Only matches “import” and an optional “static”
+        Only matches “import" and an optional “static"
 
          ([\w\*]*)(.*);
         It then matches any letter or * and then grabs all values after ‘.’ for a list of specific functions, and ends in a ‘;’
