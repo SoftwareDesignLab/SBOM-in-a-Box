@@ -90,7 +90,7 @@ public class ParserController {
     /**
      * Create a new ParserController with a path to the PWD.
      *
-     * @param String a Path to the present working directory
+     * @param PWD a Path to the present working directory
      */
     public ParserController(String PWD) {
         // Set attributes
@@ -150,7 +150,10 @@ public class ParserController {
      */
     public void parse(UUID parent, String filepath, String fileContents) {
         // Get filename
-        final String[] pathParts = PWD.split("/");
+        String[] pathParts = PWD.split("/");
+        final String os = System.getProperty("os.name").toLowerCase();
+        if(os.contains("win")) pathParts = PWD.split("\\\\");
+
         // Set project name to root filename
         final String filename = pathParts[pathParts.length - 1];
 
