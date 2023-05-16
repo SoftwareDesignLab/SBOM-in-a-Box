@@ -10,8 +10,8 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
  * @author Asa Horn
  */
 @SpringBootApplication
-public class UnifiedApplication extends SpringBootServletInitializer {
+public class SVIPApplication extends SpringBootServletInitializer {
     public static void main(String[] args) {
-        SpringApplication.run(UnifiedApplication.class, args);
+        SpringApplication.run(SVIPApplication.class, args);
     }
 }
