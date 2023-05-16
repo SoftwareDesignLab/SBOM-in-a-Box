@@ -48,7 +48,6 @@ public class NVIPApiController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("AccessControlAllowOrigin", "http://localhost:4200");
         try {
-
             factory = new VEXFactory(NVIPEndpoint, username, password);
             return new ResponseEntity<>(true, headers, HttpStatus.OK);
         } catch (VEXFactory.InvalidLoginException e) {

@@ -38,7 +38,7 @@ public class CompareFromAPITest {
     /**
      * Controller to test
      */
-    private PlugFestApiController ctrl;
+    private SVIPApiController ctrl;
 
     /**
      * Test that the API can compare three SBOMs
@@ -75,7 +75,7 @@ public class CompareFromAPITest {
     @BeforeEach
     public void setup(){
 
-        ctrl = new PlugFestApiController();
+        ctrl = new SVIPApiController();
 
     }
 
