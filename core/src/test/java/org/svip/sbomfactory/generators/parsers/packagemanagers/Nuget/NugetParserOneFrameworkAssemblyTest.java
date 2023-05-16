@@ -13,8 +13,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * file: NugetParserOneFrameworkAssemblyTest.java //todo
@@ -27,7 +26,7 @@ public class NugetParserOneFrameworkAssemblyTest extends ParseDepFileTestCore {
     protected NugetParserOneFrameworkAssemblyTest() throws IOException {
         super(new NugetParser(),
                 Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/" +
-                        "generators/TestData/CSharp/Nuget/ErrLog.IO.nuspec")),
+                        "generators/TestData/CSharp/Nuget/WithOneFrameworkAssembly.nuspec")),
                 "src/test/java/org/svip/sbomfactory/generators/TestData/CSharp/Nuget");
     }
 
@@ -51,6 +50,8 @@ public class NugetParserOneFrameworkAssemblyTest extends ParseDepFileTestCore {
         // Test correct count is found
         assertEquals(1, components.size());
 
+        assertSame(ParserComponent.Type.LANGUAGE, components.get(0).getType());
+        assertSame("Microsoft", components.get(0).getPublisher());
         //Make ValueSet
         final Set<String> ValueSet = new HashSet<>();;
         for(ParserComponent pc : components) {
@@ -59,7 +60,7 @@ public class NugetParserOneFrameworkAssemblyTest extends ParseDepFileTestCore {
 
         //Check component's name
 
-        String str = "Newtonsoft.Json" ;
+        String str = "System.Web" ;
         assertTrue(ValueSet.contains(str));
 
 

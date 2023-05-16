@@ -13,8 +13,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * file: NugetParserDependenciesTest.java //todo
@@ -50,6 +49,9 @@ public class NugetParserDependenciesTest extends ParseDepFileTestCore {
 
         // Test correct count is found
         assertEquals(2, components.size());
+
+        assertSame(ParserComponent.Type.EXTERNAL, components.get(0).getType());
+        assertSame(ParserComponent.Type.EXTERNAL, components.get(1).getType());
 
         //Make ValueSet
         final Set<String> ValueSet = new HashSet<>();;

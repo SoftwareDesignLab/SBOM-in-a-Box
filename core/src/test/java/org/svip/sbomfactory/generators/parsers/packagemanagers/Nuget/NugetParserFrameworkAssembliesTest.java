@@ -26,7 +26,7 @@ public class NugetParserFrameworkAssembliesTest extends ParseDepFileTestCore {
     protected NugetParserFrameworkAssembliesTest() throws IOException {
         super(new NugetParser(),
                 Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/" +
-                        "generators/TestData/CSharp/Nuget/ErrLog.IO.nuspec")),
+                        "generators/TestData/CSharp/Nuget/WithFrameworkAssemblies.nuspec")),
                 "src/test/java/org/svip/sbomfactory/generators/TestData/CSharp/Nuget");
     }
 
@@ -49,13 +49,12 @@ public class NugetParserFrameworkAssembliesTest extends ParseDepFileTestCore {
 
         for (ParserComponent f: components //assert these are language components
              ) {
-
-            assertSame(f.getType(), ParserComponent.Type.LANGUAGE);
-
+            assertSame(ParserComponent.Type.LANGUAGE, f.getType());
+            assertSame("Microsoft", f.getPublisher());
         }
 
         // Test correct count is found
-        assertEquals(3, components.size());
+        assertEquals(4, components.size());
 
         //Make ValueSet
         final Set<String> ValueSet = new HashSet<>();;
@@ -74,7 +73,7 @@ public class NugetParserFrameworkAssembliesTest extends ParseDepFileTestCore {
         str = "Microsoft.Devices.Sensors" ;
         assertTrue(ValueSet.contains(str));
 
-        str = "System.json" ;
+        str = "System.Json" ;
         assertTrue(ValueSet.contains(str));
 
      }

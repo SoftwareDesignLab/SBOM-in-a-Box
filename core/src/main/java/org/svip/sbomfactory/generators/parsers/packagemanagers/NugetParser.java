@@ -67,33 +67,39 @@ public class NugetParser extends PackageManagerParser{
         HashMap<String, String> metadata = new HashMap((LinkedHashMap<String, ArrayList<HashMap<String, String>>>) data.get("metadata"));
 
         int i = 0;
+        String type;
         for (Object o: metadata.values()
              ) {
 
             String s = o.toString();
 
             if(s.contains("frameworkAssembly")){ // treat C# framework assemblies as dependencies
+                type = "frameworkAssembly";
+                try{
+                    this.resolveProperties(
+                            this.dependencies,
 
-                this.resolveProperties(
-                        this.dependencies,
 
+                            new HashMap(((ArrayList<LinkedHashMap<String,String>>) (((LinkedHashMap<?, ?>)o).get(type)))
+                                    .stream().collect(
+                                            Collectors.toMap(
+                                                    d -> d.get("assemblyName"),
+                                                    d -> d,
+                                                    (d1, d2) -> {
+                                                        log(Debug.LOG_TYPE.WARN, String.format("Duplicate key found: %s", d2.get("assemblyName")));
+                                                        return d2;
+                                                    }
+                                            )
+                                    )
+                            )
+                    );
+                }catch (ClassCastException c){
+                    oneDependency(s, type);
+                }
 
-                        new HashMap(((ArrayList<LinkedHashMap<String,String>>) (((LinkedHashMap<?, ?>)o).get("frameworkAssembly")))
-                                .stream().collect(
-                                        Collectors.toMap(
-                                                d -> d.get("assemblyName"),
-                                                d -> d,
-                                                (d1, d2) -> {
-                                                    log(Debug.LOG_TYPE.WARN, String.format("Duplicate key found: %s", d2.get("assemblyName")));
-                                                    return d2;
-                                                }
-                                        )
-                                )
-                        )
-                );
 
             } else if (s.contains("dependency") && !s.contains("group")) { // no dependency group format
-
+                type = "dependency";
                 /*
                 https://learn.microsoft.com/en-us/nuget/reference/nuspec
                 The group format cannot be intermixed with a flat list.
@@ -102,7 +108,7 @@ public class NugetParser extends PackageManagerParser{
                 try{
                     this.resolveProperties(this.dependencies,
 
-                            new HashMap(((ArrayList<LinkedHashMap<String,String>>) (((LinkedHashMap<?, ?>)o).get("dependency")))
+                            new HashMap(((ArrayList<LinkedHashMap<String,String>>) (((LinkedHashMap<?, ?>)o).get(type)))
                                     .stream().collect(
                                             Collectors.toMap(
                                                     d -> d.get("id"),
@@ -117,26 +123,7 @@ public class NugetParser extends PackageManagerParser{
                             ));
                 }catch(ClassCastException e){ // only one dependency
 
-                    String[] split = s.split("[=,}]");
-                    i = 0;
-                    LinkedHashMap<String, String> id = null;
-                    for (String elem: split
-                         ) {
-
-                        if(elem.contains("id")){
-                            id = new LinkedHashMap<>();
-                            id.put("id",split[i+1]);
-                            dependencies.put(split[i+1], id);
-                        }
-                        else if(elem.contains("version")){
-                            assert(id != null);
-                            id.put("version", split[i+1]);
-                            break;
-                        }
-
-                        i++;
-
-                    }
+                    oneDependency(s, type);
 
                 }
 
@@ -177,6 +164,45 @@ public class NugetParser extends PackageManagerParser{
 
         queryURLs(this.queryWorkers);
 
+    }
+
+    /**
+     * Resolves one dependency of either type
+     * @param s Metadata string
+     * @param type Dependency type
+     */
+    private void oneDependency(String s, String type) {
+
+        String idType = "id";
+        if(type.equals("frameworkAssembly"))
+            idType = "assemblyName";
+
+        int i;
+        String[] split = s.split("[=,}]");
+        i = 0;
+        LinkedHashMap<String, String> id = null;
+        for (String elem: split
+             ) {
+
+            if(elem.contains(idType)){
+                id = new LinkedHashMap<>();
+                id.put(idType,split[i+1]);
+                dependencies.put(split[i+1], id);
+            }
+            else if(elem.contains("version")){
+                assert(id != null);
+                id.put("version", split[i+1]);
+                break;
+            }
+            else if(elem.contains("targetFramework") && type.equals("frameworkAssembly")){
+                assert(id != null);
+                id.put("targetFramework", split[i+1]);
+                break;
+            }
+
+            i++;
+
+        }
     }
 
 
