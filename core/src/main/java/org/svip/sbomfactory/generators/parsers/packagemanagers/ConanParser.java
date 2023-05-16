@@ -101,14 +101,28 @@ public class ConanParser extends PackageManagerParser {
         // Init main data structure
         final LinkedHashMap<String, Object> data = new LinkedHashMap<>();
 
+
         // Init main Matcher
         // Regex101: https://regex101.com/r/a3rIlp/3
-        final Matcher m = Pattern.compile("(^|\\s*)(\\[[a-z_-]*\\])\\s*(((?!.*\\[([a-z_-]*)\\]).*\\s*)*)", Pattern.MULTILINE)
-                .matcher(fileContents);
+        Matcher m; // = Pattern.compile("(^|\\s*)(\\[[a-z_-]*\\])\\s*(((?!.*\\[([a-z_-]*)\\]).*\\s*)*)", Pattern.MULTILINE).matcher(fileContents);
+
+        //Check file content to see if it is a conanfile.txt or conanfile.py
+        if (fileContents.contains("[requires]")) {
+            System.out.println("conanfile.txt content found!");
+            m = Pattern.compile("(^|\\s*)(\\[[a-z_-]*\\])\\s*(((?!.*\\[([a-z_-]*)\\]).*\\s*)*)", Pattern.MULTILINE).matcher(fileContents);
+        } else if (fileContents.contains(" requirements(self):") && fileContents.contains("self.requires(")) {
+            System.out.println("conanfile.py content found!");
+            m = Pattern.compile("(^|\\s*)(def\\s+[a-z_]+\\(self\\)\\:)\\s*(((?!.*def\\s+[a-z_]+\\(self\\)\\:).*\\s*)*)",Pattern.MULTILINE)
+                    .matcher(fileContents);
+        } else {
+            System.out.println("Neither a conanfile.py nor conanfile.txt !");
+            return;
+        }
+
 
         // Store results in data
         for (final MatchResult mr : m.results().toList()) {
-            // Get key and value of match ("[requires]...")
+            // Get key and value of match ("[requires]...") or .....
             final String key = mr.group(2).trim();
             final String value = mr.group(3).trim();
             System.out.println("key:\n  " + key + "\nvalue:\n   " + value + "\n\n");
