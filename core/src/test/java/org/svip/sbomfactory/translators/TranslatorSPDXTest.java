@@ -28,6 +28,8 @@ public class TranslatorSPDXTest extends TranslatorTestCore<TranslatorSPDX> {
 
     private static final String TEST_SPDX_v2_2_SBOM = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.docker.2-2.spdx";
 
+    private static final String TEST_SPDX_SMALL_v2_2_SBOM = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.docker.2-2_small.spdx";
+
     private static final String TEST_SPDX_LARGE_v2_3_SBOM = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.python.2-3.spdx";
 
     private static final String TEST_SBOM_DOESNT_EXIST = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.idontexist.spdx";
@@ -62,6 +64,15 @@ public class TranslatorSPDXTest extends TranslatorTestCore<TranslatorSPDX> {
         assertEquals("1", test.getSbomVersion());
         assertEquals("SPDX-2.2", test.getSpecVersion());
         assertEquals(137, test.getAllComponents().size());
+    }
+
+    @Test
+    public void builder_makes_SBOM_from_small_SPDX_2_2_test() throws IOException, ParseException, ParserConfigurationException {
+        SBOM test = this.TRANSLATOR.translate(TEST_SPDX_SMALL_v2_2_SBOM);
+        assertNotNull(test);
+        assertEquals("1", test.getSbomVersion());
+        assertEquals("SPDX-2.2", test.getSpecVersion());
+        assertEquals(28, test.getAllComponents().size());
     }
 
 
