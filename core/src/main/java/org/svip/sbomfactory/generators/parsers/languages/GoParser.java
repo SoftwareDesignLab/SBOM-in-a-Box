@@ -38,15 +38,16 @@ public class GoParser extends LanguageParser {
         // Build file name
         final String target = component.getName().toLowerCase() + ".go";
 
-        // Get project path from this.src and walk files to find component
-        try (Stream<Path> stream = Files.walk(this.PWD)) {
-            // Return result of recursive file search
-            return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
-        } catch (Exception e){
-            log(LOG_TYPE.EXCEPTION, e);
-            // Return false if an error was thrown
-            return false;
-        }
+        // TODO
+//        // Get project path from this.src and walk files to find component
+//        try (Stream<Path> stream = Files.walk(this.PWD)) {
+//            // Return result of recursive file search
+//            return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
+//        } catch (Exception e){
+//            log(LOG_TYPE.EXCEPTION, e);
+//        }
+
+        return false;
     }
 
 
