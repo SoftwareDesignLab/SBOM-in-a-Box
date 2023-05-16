@@ -23,11 +23,39 @@ public class CondaParser extends PackageManagerParser{
         // Init properties
         this.properties = new HashMap<>();
 
+        // get properties from channels
+        if(data.containsKey("channels")){
+            ArrayList<String> rawChannels;
+            try {
+                rawChannels = (ArrayList<String>) data.get("channels");
+            } catch (Exception e) {
+                System.err.println("Error: Could not cast channels to ArrayList<String>");
+                return;
+            }
+            //add all found channels as properties
+            for (int i = 0; i < rawChannels.size(); i++) {
+                this.properties.put("source" + i, rawChannels.get(i));
+            }
+        }
+
+        // get properties from variables
+        ArrayList<HashMap<String, String>> rawVariables;
+        if(data.containsKey("variables")) {
+            try {
+                rawVariables = (ArrayList<HashMap<String, String>>) data.get("variables");
+            } catch (Exception e) {
+                System.err.println("Error: Could not cast channels to ArrayList<String>");
+                return;
+            }
+            //add all found variables as properties
+            for (HashMap<String, String> line : rawVariables) {
+                String key = line.keySet().iterator().next();
+                this.properties.put(key, line.get(key));
+            }
+        }
+
         // Init dependencies
         this.dependencies = new HashMap<>();
-
-        // get dependencies
-        HashMap<String, LinkedHashMap<String, String>> deps = new HashMap<>();
 
         //attempt the dangerous cast
         ArrayList<String> rawDependencies;
@@ -39,9 +67,8 @@ public class CondaParser extends PackageManagerParser{
         }
 
         for (Object unknown : rawDependencies){
-            LinkedHashMap<String, String> newDependecy = new LinkedHashMap<>();
-
             //cast to the correct data type and process. Need to handle hashmap sections, and single line strings
+            boolean dependencyFoundFlag = false;
 
             //Basic dependencies, simply under the dependencies tag
             // EG.
@@ -50,6 +77,9 @@ public class CondaParser extends PackageManagerParser{
             //   - numpy=1.13.1
             try{
                 String line = (String) unknown;
+
+                LinkedHashMap<String, String> newDependecy = new LinkedHashMap<>();
+
                 //split the line into the name and version
                 String[] temp = line.split("=");
 
@@ -62,6 +92,7 @@ public class CondaParser extends PackageManagerParser{
                 }
 
                 this.dependencies.put(name, newDependecy);
+                dependencyFoundFlag = true;
             } catch (ClassCastException e){
                 ; //perfectly normal, this means it is another datatype
             } catch (Exception e){
@@ -69,10 +100,6 @@ public class CondaParser extends PackageManagerParser{
                 e.printStackTrace();
             }
 
-/* todo
-    fix bug where loop variables are not cleared for some reason
-    split up git requests to pull out the version data
- */
             //PIP dependencies, under the pip tag in the dependencies tag, or other tags defined like this (if they exist)
             // EG.
             // dependencies:
@@ -83,9 +110,22 @@ public class CondaParser extends PackageManagerParser{
             try {
                 LinkedHashMap<String, ArrayList<String>> section = (LinkedHashMap<String, ArrayList<String>>) unknown;
                 String sectionName = section.keySet().iterator().next();
+                dependencyFoundFlag = true;
 
                 for (String line : section.get(sectionName)){
-                    String[] temp = line.split("==");
+                    LinkedHashMap<String, String> newDependecy = new LinkedHashMap<>();
+                    String[] temp;
+
+                    //handle git links
+                    if(line.substring(0, 4).equals("git+")){
+                        temp = line.split("@");
+                        temp[0] = temp[0].substring(4, temp[0].length() - 4); //remove git+ and .git from string
+                    }
+
+                    //handle raw lines
+                    else {
+                        temp = line.split("==");
+                    }
 
                     String name = temp[0];
                     newDependecy.put("artifactId", name);
@@ -94,10 +134,6 @@ public class CondaParser extends PackageManagerParser{
                         String version = temp[1];
                         newDependecy.put("version", version);
                     }
-
-                    //not so sure about these. Please give feedback
-                    newDependecy.put("from", sectionName);
-                    newDependecy.put("groupId", sectionName);
 
                     this.dependencies.put(sectionName + ':' + name, newDependecy);
                 }
@@ -108,7 +144,7 @@ public class CondaParser extends PackageManagerParser{
                 e.printStackTrace();
             }
 
-            if (newDependecy.isEmpty()){
+            if (!dependencyFoundFlag){
                 //not normal, because this last check this means we couldn't find the type
                 System.err.println("Error: Could not parse dependency: " + unknown);
             }
