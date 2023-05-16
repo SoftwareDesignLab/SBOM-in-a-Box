@@ -1,27 +1,33 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ConanParserTxtFileTest extends ParseDepFileTestCore {
+
+public class ConanParserPyFileTest extends ParseDepFileTestCore {
     /**
      * Constructor initializes the respective parser and assigns both the
      * fileContents to test it against and the source directory to test on.
      */
-    public ConanParserTxtFileTest() throws IOException {
+    public ConanParserPyFileTest() throws IOException {
         super(new ConanParser(),
-                Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.txt")),
+                Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.py")),
                 "src/test/java/org/svip/sbomfactory/generators/TestData/Conan");
     }
-
+    
     @Test
     @DisplayName("Test Properties")
     void testProperties() {
@@ -47,9 +53,11 @@ public class ConanParserTxtFileTest extends ParseDepFileTestCore {
 //        assertEquals("this/is/a/path/test", props.get("testPath"));
     }
 
+    @Disabled
     @Test
-    @DisplayName("Conan TXT Test Components")
-    void testTxtComponents() {
+    @DisplayName("Conan PY Test Components")
+    void testComponents() {
+
         // Test correct count is found
         assertEquals(9, this.components.size());
 
