@@ -133,25 +133,27 @@ public abstract class TranslatorCore {
             // Retrieve the component the parent has a dependency for
             Component child = components.get(childID);
 
-            // If component is already in the dependency tree, add it as a child to the parent
-            // Else, add it to the dependency tree while setting the parent
-            if(sbom.hasComponent(child.getUUID())) {
-                parent.addChild(child.getUUID());
-            } else {
-                sbom.addComponent(parent.getUUID(), child);
-            }
+            if(child != null) {
 
-            if (visited == null) {
-                // This means we are in the top level component
-                // Pass in a new hashset instead of the visited set
-                visited = new HashSet<>();
-                dependencyBuilder(components, child, new HashSet<>());
-            }
-            else {
-                // Only explore if we haven't already visited this component
-                if (!visited.contains(child.getUniqueID())) {
-                    // Pass the child component as the new parent into dependencyBuilder
-                    dependencyBuilder(components, child, visited);
+                // If component is already in the dependency tree, add it as a child to the parent
+                // Else, add it to the dependency tree while setting the parent
+                if (sbom.hasComponent(child.getUUID())) {
+                    parent.addChild(child.getUUID());
+                } else {
+                    sbom.addComponent(parent.getUUID(), child);
+                }
+
+                if (visited == null) {
+                    // This means we are in the top level component
+                    // Pass in a new hashset instead of the visited set
+                    visited = new HashSet<>();
+                    dependencyBuilder(components, child, new HashSet<>());
+                } else {
+                    // Only explore if we haven't already visited this component
+                    if (!visited.contains(child.getUniqueID())) {
+                        // Pass the child component as the new parent into dependencyBuilder
+                        dependencyBuilder(components, child, visited);
+                    }
                 }
             }
         }
@@ -166,7 +168,14 @@ public abstract class TranslatorCore {
     protected void defaultDependencies(HashMap<String, Component> components, Component parent) {
         if (dependencies == null) { return; }
         for(ArrayList<String> defaults : dependencies.values()) {
-            defaults.stream().forEach(x -> sbom.addComponent(parent.getUUID(), components.get(x)));
+            defaults.stream().forEach(
+                    x -> {
+                        if(components.get(x) != null && !sbom.hasComponent(components.get(x).getUUID())) {
+                            sbom.addComponent(parent.getUUID(), components.get(x));
+                        }
+                    }
+                            //sbom.addComponent(parent.getUUID(), components.get(x))
+            );
         }
     }
 
@@ -210,17 +219,20 @@ public abstract class TranslatorCore {
      * @throws ParserConfigurationException
      */
     public SBOM translate(String filePath) throws IOException, ParseException, ParserConfigurationException {
+
+        String contents;
+
         // Read the file at filePath into a string
-        String contents = null;
         try {
             contents = new String(Files.readAllBytes(Paths.get(filePath)));
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.err.println("Could not read file: " + filePath);
             return null;
         }
 
-        return this.translateContents(contents, filePath);
+        this.translateContents(contents, filePath);
+
+        return this.sbom;
     }
 
 }
