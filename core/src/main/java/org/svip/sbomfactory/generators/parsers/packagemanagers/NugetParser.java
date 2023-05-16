@@ -65,8 +65,6 @@ public class NugetParser extends PackageManagerParser{
 
         this.dependencies = new HashMap<>();
         HashMap<String, String> metadata = new HashMap((LinkedHashMap<String, ArrayList<HashMap<String, String>>>) data.get("metadata"));
-
-        int i = 0;
         String type;
         for (Object o: metadata.values()
              ) {
