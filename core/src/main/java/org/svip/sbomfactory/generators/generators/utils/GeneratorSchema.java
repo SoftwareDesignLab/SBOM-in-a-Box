@@ -37,7 +37,7 @@ public enum GeneratorSchema {
     CycloneDX("1.4", SBOMType.CYCLONE_DX, CycloneDXStore.class,
             new LinkedHashSet<>(Arrays.asList(GeneratorFormat.JSON, GeneratorFormat.XML))),
     SPDX("2.3", SBOMType.SPDX, SPDXStore.class,
-            new LinkedHashSet<>(Arrays.asList(GeneratorFormat.JSON,/* GeneratorFormat.SPDX,*/ GeneratorFormat.YAML, GeneratorFormat.XML)));
+            new LinkedHashSet<>(Arrays.asList(GeneratorFormat.JSON, GeneratorFormat.SPDX, GeneratorFormat.YAML, GeneratorFormat.XML)));
 
     private final String version;
     private final SBOMType internalType;
@@ -68,7 +68,8 @@ public enum GeneratorSchema {
         // Construct types with their respective file extensions
         JSON("json", new ObjectMapper(new JsonFactory())),
         XML("xml", new XmlMapper(new XmlFactory())),
-        YAML("yml",  new ObjectMapper(new YAMLFactory()));
+        YAML("yml",  new ObjectMapper(new YAMLFactory())),
+        SPDX("spdx", new ObjectMapper());
 
         // Store file extension
         private final String extension;

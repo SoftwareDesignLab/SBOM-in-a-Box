@@ -5,6 +5,19 @@ All notable changes to the Generators sub-system will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v4.4.0-alpha] - (05/15/2023)
+
+### Added
+
+- Add `SPDXTagValueWriter` Class to serialize an instance of `SPDXStore` to a tag-value document and output to either a
+  string or file.
+  - Contains methods for `writeToString()` and `writeToFile()`
+- Add new SPDX `GeneratorFormat` Enum Value in `GeneratorSchema` Class to support file output for this value.
+
+### Changed
+- Changed `SBOMGenerator` Class to use an `SPDXTagValueWriter` instead of an `ObjectMapper` when dealing with the SPDX
+  tag-value format.
+
 ## [v4.3.2-alpha] - (05/12/2023)
 
 ### Added
