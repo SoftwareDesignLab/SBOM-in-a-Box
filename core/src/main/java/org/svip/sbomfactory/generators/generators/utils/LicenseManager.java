@@ -28,6 +28,23 @@ public class LicenseManager {
      */
     private static final String SPDX_LICENSE_URL = "https://spdx.org/licenses/";
 
+    private static final Set<String> COMMON_TOKENS =  new HashSet<>() {{
+        add("the");
+        add("open");
+        add("free");
+        add("documentation");
+        add("software");
+        add("version");
+        add("license");
+        add("notice");
+        add("disclaimer");
+        add("all");
+        add("rights");
+        add("reserved");
+        add("copyright");
+        add("c");
+    }};
+
     //#endregion
 
     //#region Attributes
@@ -35,9 +52,9 @@ public class LicenseManager {
     /** TODO We can add a backup map if no licenses are found for the query
      * A HashMap to map long license strings to their shortened equivalent that will be used in an SPDX document.
      * <br>
-     * Format: {@code HashMap<Long License, Short License>}
+     * Format: {@code Map<Long License, Short License>}
      */
-    private static final HashMap<String, String> licenses = new HashMap<>();
+    private static final Map<String, String> licenses = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     static {
         // Query the SPDX license URL to get valid licenses
@@ -57,7 +74,8 @@ public class LicenseManager {
 
     // TODO Docstring
     public static boolean isValidShortString(String shortString) {
-        return licenses.containsValue(shortString);
+        return licenses.values().stream().map(String::toLowerCase).collect(Collectors.toSet())
+                .contains(shortString.toLowerCase());
     }
 
     public static String getNameFromSpdxString(String shortString) {
@@ -76,46 +94,65 @@ public class LicenseManager {
      * @return An SPDX short license string for use in an SPDX document.
      */
     public static String parseLicense(String longString) {
+        if(isValidShortString(longString)) return longString; // Check if the short license string
         String shortString = licenses.get(longString); // Attempt to directly get the short string
+        if(shortString != null) return shortString;
 
-        if(shortString == null) { // If no match has been found, tokenize the license and assume
-            ArrayList<String> tokens = tokenizeLicense(longString); // Get unique words from the license
-            String licenseVersion = getLicenseVersion(longString); // Get a version (if one exists) from the license
-            Set<String> validKeys = licenses.keySet(); // Get a set of valid long strings to search through later
+        Set<String> tokens = tokenizeLicense(longString); // Get unique words from the license
+        String licenseVersion = getLicenseVersion(longString); // Get a version (if one exists) from the license
+        Set<String> validKeys = licenses.keySet(); // Get a set of valid long strings to search through later
 
-            // If a license version exists, filter out all licenses that don't have that version
-            if(licenseVersion != null) {
-                validKeys = validKeys.stream().filter(l -> l.contains(licenseVersion)).collect(Collectors.toSet());
+        // If a license version exists, filter out all licenses that don't have that version
+        if(licenseVersion != null) {
+            validKeys = validKeys.stream().filter(l -> l.contains(licenseVersion)).collect(Collectors.toSet());
 
-                // Remove license version from valid tokens
-                tokens.remove(licenseVersion);
-                tokens.remove("v" + licenseVersion);
-            }
-
-            for(String license : validKeys) { // Loop through the keys we have left
-                // Tokenize a lowercase version of the license to check for matches
-                ArrayList<String> tokenizedLicense = tokenizeLicense(license.toLowerCase());
-
-                // Check if a token match can be found between the current license and the license we are trying
-                // to assume
-                for(String token : tokens) {
-                    // If a token matches, warn that it was assumed that the license is this one and return
-                    if(tokenizedLicense.contains(token)) {
-                        shortString = licenses.get(license);
-                        Debug.log(Debug.LOG_TYPE.WARN, String.format("LicenseManager: License \"%s\" assumed" +
-                                " to be \"%s\"", longString, license));
-                        return shortString;
-                    }
-                }
-            }
-
-            // If the end of the license list has been reached, we cannot assume a license
-            Debug.log(Debug.LOG_TYPE.WARN, (String.format("No license found when attempting to parse: \"%s\"",
-                    longString)));
-            return null;
+            // Remove license version from valid tokens
+            tokens.remove(licenseVersion);
+            tokens.remove("v" + licenseVersion);
+            tokens.remove("version" + licenseVersion);
+            tokens.remove("Version" + licenseVersion);
         }
 
-        return shortString; // Return the short string found
+        /*
+            Common Edge Cases
+         */
+
+        if(tokens.size() == 1) {
+            switch(tokens.stream().map(String::toLowerCase).toList().get(0)) {
+                case "bsd" -> { return "0BSD"; }
+                case "apache" -> { return "Apache-2.0"; }
+                case "mit" -> { return "MIT"; }
+            }
+        }
+
+        for(String token : tokens) {
+            if (isValidShortString(token)) return token;
+        }
+
+        Map<String, Integer> matches = new HashMap<>();
+
+        for(String license : validKeys) { // Loop through the keys we have left
+            // Tokenize a lowercase version of the license to check for matches
+            Set<String> tokenizedLicense = tokenizeLicense(license.toLowerCase());
+
+            tokens.forEach(token -> {
+                if(tokenizedLicense.contains(token.toLowerCase())) {
+                    matches.merge(license, 1, Integer::sum); // Increment the number of matches for this license
+                }
+            });
+        }
+
+        // If the end of the license list has been reached, we cannot assume a license
+        if(matches.size() > 0) {
+            String license = Collections.max(matches.entrySet(), Map.Entry.comparingByValue()).getKey();
+            Debug.log(Debug.LOG_TYPE.WARN, String.format("LicenseManager: License \"%s\" assumed" +
+                    " to be \"%s\"", longString, license));
+            return licenses.get(license);
+        }
+
+        Debug.log(Debug.LOG_TYPE.WARN, (String.format("No license found when attempting to parse: \"%s\"",
+                longString)));
+        return null;
     }
 
     /**
@@ -141,20 +178,12 @@ public class LicenseManager {
      * @param license The license string to tokenize.
      * @return A list containing all tokens in the license.
      */
-    private static ArrayList<String> tokenizeLicense(String license) {
+    private static Set<String> tokenizeLicense(String license) {
         // Split by whitespace to get words in license text
-        ArrayList<String> tokens = new ArrayList<>(List.of(license.toLowerCase().split("[\\s,:]+")));
+        Set<String> tokens = new HashSet<>(List.of(license.split("[\\s,():]+")));
 
-        // Remove common words
-        tokens.remove("the");
-        tokens.remove("open");
-        tokens.remove("free");
-        tokens.remove("documentation");
-        tokens.remove("software");
-        tokens.remove("version");
-        tokens.remove("license");
-
-        return tokens;
+        return tokens.stream().filter(token -> !COMMON_TOKENS.contains(token.toLowerCase()))
+                .collect(Collectors.toSet());
     }
 
     /**

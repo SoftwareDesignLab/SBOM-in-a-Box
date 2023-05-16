@@ -7,6 +7,7 @@ import org.svip.sbomfactory.generators.generators.utils.LicenseManager;
 import org.svip.sbom.model.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <b>File</b>: Component.java<br>
@@ -122,10 +123,17 @@ public class ParserComponent extends Component {
      */
     public void resolveLicenses() {
         for(String licenseName : getLicenses()) {
-            Debug.log(Debug.LOG_TYPE.DEBUG, String.format("SPDXStore: License found in component %s: \"%s\"",
-                    this.getName(), licenseName));
+            Debug.log(Debug.LOG_TYPE.DEBUG, String.format("Attempting to resolve license \"%s\"", licenseName));
 
-            resolvedLicenses.add(new License(licenseName));
+            List<License> licenses = Arrays.stream(licenseName.split(",")).map(License::new).toList();
+
+            boolean licenseFound = false;
+            for(License license : licenses) {
+                if (!licenseFound) {
+                    addResolvedLicense(license);
+                    licenseFound = true;
+                } else if (license.getSpdxLicense() != null) addResolvedLicense(license);
+            }
         }
     }
 
@@ -149,6 +157,8 @@ public class ParserComponent extends Component {
      * @param resolved The {@code License} to add to this ParserComponent.
      */
     public void addResolvedLicense(License resolved) {
+        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("SPDXStore: License resolved in component %s: \"%s\"",
+                this.getName(), resolved.getLicenseName()));
         resolvedLicenses.add(resolved);
     }
 
