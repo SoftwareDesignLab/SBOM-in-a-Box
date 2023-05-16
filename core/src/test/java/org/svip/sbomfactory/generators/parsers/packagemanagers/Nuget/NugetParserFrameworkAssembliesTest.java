@@ -13,8 +13,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * file: NugetParserFrameworkAssembliesTest.java //todo
@@ -48,8 +47,15 @@ public class NugetParserFrameworkAssembliesTest extends ParseDepFileTestCore {
         // Get Components from PARSER
         final ArrayList<ParserComponent> components = this.components;
 
+        for (ParserComponent f: components //assert these are language components
+             ) {
+
+            assertSame(f.getType(), ParserComponent.Type.LANGUAGE);
+
+        }
+
         // Test correct count is found
-        assertEquals(1, components.size());
+        assertEquals(3, components.size());
 
         //Make ValueSet
         final Set<String> ValueSet = new HashSet<>();;
@@ -59,9 +65,17 @@ public class NugetParserFrameworkAssembliesTest extends ParseDepFileTestCore {
 
         //Check component's name
 
-        String str = "Newtonsoft.Json" ;
+        String str = "System.Web" ;
         assertTrue(ValueSet.contains(str));
 
+        str = "System.Net" ;
+        assertTrue(ValueSet.contains(str));
+
+        str = "Microsoft.Devices.Sensors" ;
+        assertTrue(ValueSet.contains(str));
+
+        str = "System.json" ;
+        assertTrue(ValueSet.contains(str));
 
      }
 

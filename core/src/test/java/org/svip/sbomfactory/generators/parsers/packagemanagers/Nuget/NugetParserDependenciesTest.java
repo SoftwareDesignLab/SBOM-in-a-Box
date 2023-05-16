@@ -27,7 +27,7 @@ public class NugetParserDependenciesTest extends ParseDepFileTestCore {
     protected NugetParserDependenciesTest() throws IOException {
         super(new NugetParser(),
                 Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/" +
-                        "generators/TestData/CSharp/Nuget/ErrLog.IO.nuspec")),
+                        "generators/TestData/CSharp/Nuget/WithOnlyDependencies.nuspec")),
                 "src/test/java/org/svip/sbomfactory/generators/TestData/CSharp/Nuget");
     }
 
@@ -49,7 +49,7 @@ public class NugetParserDependenciesTest extends ParseDepFileTestCore {
         final ArrayList<ParserComponent> components = this.components;
 
         // Test correct count is found
-        assertEquals(1, components.size());
+        assertEquals(2, components.size());
 
         //Make ValueSet
         final Set<String> ValueSet = new HashSet<>();;
@@ -59,9 +59,11 @@ public class NugetParserDependenciesTest extends ParseDepFileTestCore {
 
         //Check component's name
 
-        String str = "Newtonsoft.Json" ;
+        String str = "another-package" ;
         assertTrue(ValueSet.contains(str));
 
+        str = "yet-another-package" ;
+        assertTrue(ValueSet.contains(str));
 
      }
 

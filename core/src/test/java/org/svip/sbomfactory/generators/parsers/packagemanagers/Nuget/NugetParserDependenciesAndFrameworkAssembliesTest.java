@@ -79,6 +79,22 @@ public class NugetParserDependenciesAndFrameworkAssembliesTest extends ParseDepF
         str = "Selenium.WebDriver" ;
         assertTrue(ValueSet.contains(str));
 
+        int languageComponents = 0;
+        int externalComponents = 0;
+
+        for (ParserComponent f: components //assert there are exactly four language components
+        ) {
+
+            if(f.getType() == ParserComponent.Type.LANGUAGE)
+                languageComponents++;
+            else if(f.getType() == ParserComponent.Type.EXTERNAL)
+                externalComponents++;
+
+        }
+
+        assertEquals(languageComponents, 4);
+        assertEquals(externalComponents, 4);
+
      }
 
 
