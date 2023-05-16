@@ -1,6 +1,5 @@
 package org.svip.sbomfactory.generators;
 
-import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.parsers.languages.*;
@@ -170,7 +169,7 @@ public class ParserController {
 
          final ArrayList<ContextParser> contextParsers = new ArrayList<>();
          if(parser instanceof LanguageParser) {
-             contextParsers.add(new CommentParser());
+             // contextParsers.add(new CommentParser()); TODO do we need to add comments as components?
              contextParsers.add(new SubprocessParser());
              contextParsers.add(new DeadImportParser());
             // Add new ContextParser
@@ -199,7 +198,6 @@ public class ParserController {
             // If file being parsed is a package manager file
             if(parser instanceof PackageManagerParser) { // Parsing an EXTERNAL dependency
                 components.forEach(ParserComponent::setPackaged); // Sets it to packaged and EXTERNAL
-                // TODO check CPEs & modify component with that data
             } // Otherwise it will be unpackaged and INTERNAL (LIBRARY if it has been parsed as such)
 
             // Add Components to SBOM
