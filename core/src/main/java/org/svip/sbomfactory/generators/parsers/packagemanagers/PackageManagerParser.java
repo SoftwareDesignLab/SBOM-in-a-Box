@@ -289,7 +289,7 @@ public abstract class PackageManagerParser extends Parser {
 
         boolean nugetParser = packageManager.equals("nuget");
 
-        for (final String id : parser.dependencies.keySet()) { //todo this shares a lot of code with POMParser. Maybe make static method
+        for (String id : parser.dependencies.keySet()) { //todo this shares a lot of code with POMParser. Maybe make static method
             // Get value from map
             final HashMap<String, String> d = parser.dependencies.get(id);
 
@@ -298,7 +298,7 @@ public abstract class PackageManagerParser extends Parser {
             if(nugetParser){
                 groupId = d.get("id");
                 if(groupId == null)
-                    groupId = d.get("assemblyName"); // framework assembly name
+                    groupId = d.get("assemblyName").split("[.]")[0]; // framework assembly name //todo this messes up query. fine for the sake of PURLs
             }
             else
                 groupId = d.get("groupId");
@@ -327,9 +327,11 @@ public abstract class PackageManagerParser extends Parser {
             if (groupId != null) PURLData.put("namespace", groupId);
             if (version != null) PURLData.put("version", version);
 
-            if (frameworkAssembly)
+            if (frameworkAssembly) {
                 c.setPublisher("Microsoft");
-
+                id = d.get("assemblyName").split("[.]")[1];
+                c.setType(ParserComponent.Type.LANGUAGE);
+            }
             String PURLString = PackageManagerParser.buildPURL(PURLData);
 
             // Add built PURL

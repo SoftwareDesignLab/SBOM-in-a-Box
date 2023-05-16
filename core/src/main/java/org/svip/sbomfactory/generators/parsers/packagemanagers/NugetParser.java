@@ -87,7 +87,7 @@ public class NugetParser extends PackageManagerParser{
        // this.resolveProperties(this.dependencies, new HashMap((metadata data.get("dependencies")).get("dependency"));
 
         int i = 0;
-
+        // todo refactor .nugspec to look like POM then that will solve all problems
         for (Object o: metadata.values()
              ) {
 
@@ -113,7 +113,12 @@ public class NugetParser extends PackageManagerParser{
                         )
                 );
 
-            } else if (s.contains("dependency")) {
+            } else if (s.contains("dependency") && !s.contains("group")) { // no dependency group format
+
+                /*
+                https://learn.microsoft.com/en-us/nuget/reference/nuspec
+                The group format cannot be intermixed with a flat list.
+                 */
 
                 this.resolveProperties(this.dependencies,
 
@@ -132,6 +137,31 @@ public class NugetParser extends PackageManagerParser{
                 ));
 
             }
+         else if (s.contains("dependency") && s.contains("group")) { // optional dependency group format
+
+                /*
+                https://learn.microsoft.com/en-us/nuget/reference/nuspec
+                The group format cannot be intermixed with a flat list.
+                 */
+
+            this.resolveProperties(this.dependencies,
+
+                    new HashMap(((ArrayList<LinkedHashMap<String,String>>) (((LinkedHashMap<?, ?>)o).get("dependency")))
+                            .stream().collect(
+                                    Collectors.toMap(
+                                            d -> d.get("id"),
+                                            d -> d,
+                                            (d1, d2) -> {
+                                                log(Debug.LOG_TYPE.WARN, String.format("Duplicate key found: %s", d2.get("id")));
+                                                return d2;
+                                            }
+                                    )
+                            )
+
+                    ));
+
+        }
+
 
 
         }

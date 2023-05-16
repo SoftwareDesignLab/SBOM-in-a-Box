@@ -22,8 +22,8 @@ public class CSProjParserTest extends ParseDepFileTestCore {
 
 
     @Test
-    @DisplayName("CSharp Test Componemts")
-    void testComponemts() {
+    @DisplayName("CSharp Test Components")
+    void testComponents() {
 
         // Test correct count is found
         assertEquals(12, this.components.size());

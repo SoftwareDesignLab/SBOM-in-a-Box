@@ -8,21 +8,21 @@ import org.svip.sbomfactory.generators.utils.ParserComponent;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 
-public class ConanParserTest extends ParseDepFileTestCore {
+public class ConanParserTxtFileTest extends ParseDepFileTestCore {
     /**
      * Constructor initializes the respective parser and assigns both the
      * fileContents to test it against and the source directory to test on.
      */
-    protected ConanParserTest() throws IOException {
+    protected ConanParserTxtFileTest() throws IOException {
         super(new ConanParser(),
                 Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.txt")),
                 "src/test/java/org/svip/sbomfactory/generators/TestData/Conan");
@@ -90,5 +90,60 @@ public class ConanParserTest extends ParseDepFileTestCore {
         assertEquals("org.springframework", dep.get("groupId"));
         assertEquals("2.5", dep.get("version"));
 
+    }
+
+    @Test
+    @DisplayName("Conan Test Components")
+    void testComponents() {
+
+        // Test correct count is found
+        assertEquals(9, this.components.size());
+
+        //Make ValueSet
+        final Set<String> ValueSet = new HashSet<>();;
+        for(ParserComponent pc : this.components) {
+            ValueSet.add(pc.getName());
+        }
+
+
+
+//        imgui/1.79
+//        glfw/3.3.2
+//        glew/2.1.0
+//        opencv/2.4.13.7
+//        poco/[>1.0,<1.9]
+//        zlib/1.2.13#revision1
+//        boost/1.70.0#revision2
+
+
+        //Check component's name
+        String str = "folly" ;
+        assertTrue(ValueSet.contains(str));
+        //Check component's Version
+        assertEquals("2020.08.10.00", getComponent(str).getVersion());
+
+        //Check component's name
+        str = "openssl" ;
+        assertTrue(ValueSet.contains(str));
+        //Check component's Version
+        assertEquals("1.1.1k", getComponent(str).getVersion());
+
+//        //Check component's name
+//        str = "DataSetExtensions" ;
+//        assertTrue(ValueSet.contains(str));
+//        //Check component's group
+//        assertEquals("System/Data", getComponent(str).getGroup());
+//
+//        //Check component's name
+//        str = "Program" ;
+//        assertTrue(ValueSet.contains(str));
+//        //Check component's group
+//        assertNull(getComponent(str).getGroup());
+//
+//        //Check component's name
+//        str = "packages" ;
+//        assertTrue(ValueSet.contains(str));
+//        //Check component's group
+//        assertNull(getComponent(str).getGroup());
     }
 }
