@@ -20,33 +20,41 @@ import java.util.stream.Stream;
 @RequestMapping("/svip")
 public class SBOMFactoryApiController {
     // TODO: Docstring
-    @PostMapping("generate")
-    public ResponseEntity<String> generate(@RequestParam("contents") String contentArray, @RequestParam("fileNames") String fileArray, @RequestParam("schemaName") String schemaName, @RequestParam("formatName") String formatName) throws IOException {
+    @PostMapping("generateSBOM")
+    public ResponseEntity<String> generate(@RequestParam("contents") String contentsArray, @RequestParam("fileNames") String fileArray, @RequestParam("schemaName") String schemaName, @RequestParam("formatName") String formatName) throws IOException {
 
         final ObjectMapper objectMapper = new ObjectMapper();
-        final List<String> fileContents = objectMapper.readValue(contentArray, new TypeReference<>(){});
+        final List<String> fileContents = objectMapper.readValue(contentsArray, new TypeReference<>(){});
         final List<String> filePaths = objectMapper.readValue(fileArray, new TypeReference<>(){});
 
-        final ParserController controller = new ParserController(null); // TODO: FIX
+        final ParserController controller = new ParserController(null); // TODO: Get root directory and use it here
 
-        // Parse the root directory with the controller
-        try (final Stream<String> stream = filePaths.stream()) {
-            stream.forEach(filepath -> {
-                try {
-                    // Set pwd to formatted filepath if it is actually a directory
+        for (int i = 0; i < filePaths.size(); i++) {
+            final String path = filePaths.get(i);
+            final String contents = fileContents.get(i);
+            controller.setPWD(path);
+            controller.parse(path, contents); // TODO: Fix
+        }
+
+//        // Parse the root directory with the controller
+//        try (final Stream<String> stream = filePaths.stream()) {
+//            stream.forEach(filepath -> {
+//                try {
+//                    // Set pwd to formatted filepath if it is actually a directory
 //                    if (Files.isDirectory(filepath)) {
 //                        controller.setPWD(filepath);
 //                        controller.incrementDirCounter(); // TODO: Remove
 //                    } else { // Otherwise, it is a file, try to parse
-                        controller.parse(Path.of(filepath)); // TODO: Fix
+//                        controller.setPWD(filepath);
+//                        controller.parse(filepath, fileContents); // TODO: Fix
 //                    }
-                } catch (Exception e) {
-//                    log(Debug.LOG_TYPE.EXCEPTION, e);
-                }
-            });
-        } catch (Exception e) {
-//            log(Debug.LOG_TYPE.EXCEPTION, e);
-        }
+//                } catch (Exception e) {
+////                    log(Debug.LOG_TYPE.EXCEPTION, e);
+//                }
+//            });
+//        } catch (Exception e) {
+////            log(Debug.LOG_TYPE.EXCEPTION, e);
+//        }
 
         // Get schema from parameters, if not valid, default to CycloneDX
         GeneratorSchema schema = GeneratorSchema.CycloneDX;

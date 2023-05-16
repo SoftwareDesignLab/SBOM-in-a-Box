@@ -39,7 +39,7 @@ public abstract class LanguageParser extends Parser {
      *
      * @param component component to search for
      * @return true if internal, false otherwise
-     */
+     */ // TODO: Pass list of filenames instead of letting implementations walk files
     protected abstract boolean isInternalComponent(ParserComponent component);
 
     /**

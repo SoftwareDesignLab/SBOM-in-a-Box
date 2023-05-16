@@ -41,19 +41,20 @@ public class SBOMGeneratorTest {
      */
     public SBOMGeneratorTest() {
         // TODO Avoid using a ParserController to generate an SBOM
-        ParserController testController = new ParserController(TEST_PATH); // Create new controller to build an SBOM
+        ParserController testController = new ParserController(TEST_PATH.toString()); // Create new controller to build an SBOM
 
         Debug.enableSummary();
+        // TODO: Remove reliance on Files.walk
         // Read all files from our test path in
         try (Stream<Path> stream = Files.walk(TEST_PATH)) {
             stream.forEach(filepath -> {
                 try {
                     // Set pwd to formatted filepath if it is actually a directory
                     if (Files.isDirectory(filepath)) {
-                        testController.setPWD(filepath);
+                        testController.setPWD(filepath.toString());
                         testController.incrementDirCounter();
                     } else { // Otherwise, it is a file, try to parse
-                        testController.parse(filepath);
+                        testController.parse(filepath.toAbsolutePath().toString(), Files.readString(filepath));
                     }
                 } catch (Exception e) {
                     log(Debug.LOG_TYPE.EXCEPTION, e);
