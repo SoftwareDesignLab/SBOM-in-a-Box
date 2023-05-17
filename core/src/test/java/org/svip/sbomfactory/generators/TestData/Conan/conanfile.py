@@ -9,7 +9,7 @@ class Engine(ConanFile):
         self.requires("matrix/[>=1.0 <2.0]")
         if self.settings.arch == "x86":
             self.requires("sound32/[>=1.0 <2.0]")
-
+"""
 from conan import ConanFile
 from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout
 from conan.tools.files import get
@@ -29,6 +29,7 @@ class helloRecipe(ConanFile):
                        "fPIC": True}
 
     generators = "CMakeDeps"
+"""
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -62,3 +63,5 @@ class helloRecipe(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = ["hello"]
+        # Hello comment from a blank like
+        self.c_pingliu = ["empty string"]#not_a_comment     #but this is a comment
