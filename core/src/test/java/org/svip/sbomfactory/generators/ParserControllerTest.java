@@ -60,7 +60,7 @@ public class ParserControllerTest {
         //argv[0] = "src/test/java/org/svip/sbomfactory/generators/TestData/Java";
         //controller.setPWD(Paths.get(argv[0]));
         try {
-            //org.svip.sbomfactory.generators.generators.Main.xmlComment();
+            //Main.xmlComment();
         }
         catch (Exception e) {
             e.printStackTrace();

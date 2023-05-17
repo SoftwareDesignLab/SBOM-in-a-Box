@@ -1,7 +1,5 @@
-package org.svip.sbomfactory.generators;
-
-import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
-import org.svip.sbomfactory.generators.utils.Debug;
+import generators.GeneratorSchema;
+import utils.Debug;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
@@ -13,16 +11,17 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
-import static org.svip.sbomfactory.generators.utils.Debug.*;
+import static utils.Debug.LOG_TYPE;
+import static utils.Debug.log;
 
 /**
- * file: GeneratorsTestMain.java
- * Description: Entry for Generators code
+ * file: Main.java
+ * Description: Entry for BenchmarkParser code
  *
  * @author Dylan Mulligan
  * @author Derek Garcia
  */
-public class GeneratorsTestMain {
+public class Main {
 
     //#region Exceptions
 
@@ -173,7 +172,7 @@ public class GeneratorsTestMain {
      * @param e    Exception to determine what type of input is needed
      * @param args Existing arguments to use if needed
      */
-    private static boolean getArgs(Exception e, ArrayList<String> args) {
+    private static void getArgs(Exception e, ArrayList<String> args) {
         // Init scanner
         Scanner scanner = new Scanner(System.in);
 
@@ -194,10 +193,9 @@ public class GeneratorsTestMain {
             if (args.get(0).equals("")) {
                 // If so, terminate program
                 System.err.println("No Input Given; terminating. . .");
-                return false;
+                System.exit(0);
             }
         }
-        return true;
     }
 
     /**
@@ -252,7 +250,7 @@ public class GeneratorsTestMain {
      * @param reqArgs a list of required arguments
      * @param optArgs a map of optional arguments to their values
      */
-    private static boolean verifyArgs(ArrayList<String> reqArgs, HashMap<String, String> optArgs) {
+    private static void verifyArgs(ArrayList<String> reqArgs, HashMap<String, String> optArgs) {
         // Attempt get valid arguments until exceed max attempts
         int attempt = 0;
 
@@ -261,7 +259,7 @@ public class GeneratorsTestMain {
             // Break if exceed allow attempts
             if (attempt > MAX_ALLOWED_ATTEMPTS) {
                 System.err.println("Exceeded Max Attempts; terminating. . .");
-                return false;
+                System.exit(0);
             }
 
             // Try to validate the arguments
@@ -276,16 +274,15 @@ public class GeneratorsTestMain {
                 // Print error message and get new arguments
                 System.err.println("Error: " + e.getMessage());
                 System.err.println("Arguments: <path/to/target>");
-                return getArgs(e, reqArgs);
+                getArgs(e, reqArgs);
             } // If parsing optional args fails, inform user and end program
             catch (IllegalArgumentException e) {
                 System.err.println("Error: " + e.getMessage());
-                return false;
+                System.exit(0);
             } finally {
                 attempt++;  // Increment attempt count
             }
         }
-        return true;
     }
 
     /**
@@ -329,15 +326,12 @@ public class GeneratorsTestMain {
         //  Each value (Object) can be verified and possibly modified (e.x. string -> enum)
         //  This would mean each value has a key and is either ready for use or null.
         // Verify args
-        if (!verifyArgs(reqArgs, optArgs)) {
-            // If verification fails, exit program
-            return;
-        }
+        verifyArgs(reqArgs, optArgs);
 
         // Show Usages if -h is on the cli and exit program
         if(showUsages) {
             displayUsages("");
-            return;
+            System.exit(0);
         }
 
         // Path

@@ -1,16 +1,14 @@
-package org.svip.sbomfactory.generators;
-
-import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
-import org.svip.sbomfactory.generators.generators.SBOMGenerator;
-import org.svip.sbomfactory.generators.parsers.languages.*;
-import org.svip.sbomfactory.generators.parsers.packagemanagers.*;
-import org.svip.sbomfactory.generators.parsers.contexts.*;
-import org.svip.sbomfactory.generators.parsers.Parser;
+import generators.GeneratorSchema;
+import generators.SBOMGenerator;
+import parsers.languages.*;
+import parsers.packagemanagers.*;
+import parsers.contexts.*;
+import parsers.Parser;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.sbom.model.SBOM;
+import utils.ParserComponent;
+import utils.SBOM.SBOM;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,8 +19,8 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
-import static org.svip.sbomfactory.generators.utils.Debug.log;
+import static utils.Debug.LOG_TYPE;
+import static utils.Debug.log;
 
 /**
  * <b>File</b>: ParserController.java<br>
@@ -41,6 +39,8 @@ public class ParserController {
     private final SBOM SBOM;
     private final AtomicInteger dirCount;
     private final AtomicInteger fileCount;
+    // TODO: Remove outputFileType
+//    private SBOMGenerator.FORMAT outputFileType; // Output file type
     private static final ObjectMapper OM = new ObjectMapper(new JsonFactory()); // ObjectMapper Initialization
     static { OM.setSerializationInclusion(JsonInclude.Include.NON_NULL); } // ObjectMapper Configuration
     private static final HashMap<String, Parser> EXTENSION_MAP = new HashMap<>() {{
@@ -88,7 +88,7 @@ public class ParserController {
      *
      * @param PWD a Path to the present working directory
      */
-    public ParserController(Path PWD) {
+    public ParserController(Path PWD/*, SBOMGenerator.FORMAT outputFileType*/) { // TODO: Remove outputFileType
         // Set attributes
         this.projectName = PWD.getFileName().toString();
         this.PWD = PWD;
@@ -98,8 +98,7 @@ public class ParserController {
 //        this.outputFileType = outputFileType;
 
         // Create new SBOM Object
-        ParserComponent headComponent = new ParserComponent(this.projectName);
-        this.SBOM = new SBOM(headComponent);
+        this.SBOM = new SBOM(this.projectName);
     }
 
     //#endregion
@@ -112,6 +111,8 @@ public class ParserController {
     public int getDirCount() { return this.dirCount.intValue(); }
     public int getFileCount() { return this.fileCount.intValue(); }
     public int getDepCount() { return this.SBOM.getAllComponents().size(); } // TODO: Direct method in SBOM to count
+    // TODO: Remove outputFileType
+//    public SBOMGenerator.FORMAT getOutputFileType() { return outputFileType; }
     public SBOM getSBOM() { return this.SBOM; }
 
     //#endregion
@@ -183,12 +184,12 @@ public class ParserController {
             // Parse file contents
             final String fileContents = Files.readString(filepath);
 
-            // Parse components
-            parser.parse(components, fileContents);
-
             // TODO: Add all files
 //            c.addAllFiles()
-            components.forEach(c -> c.addFile(filepath.toString()));
+            components.forEach(c -> c.setFile(filepath.toString().replace("\\\\", "\\")));
+
+            // Parse components
+            parser.parse(components, fileContents);
 
             // If file being parsed is a language file
             if(parser instanceof LanguageParser) // Execute all added ContextParsers
@@ -216,7 +217,7 @@ public class ParserController {
      *
      * @param outPath Path to write file to
      */
-    public String toFile(String outPath, GeneratorSchema outSchema, GeneratorSchema.GeneratorFormat outFormat) {
+    public void toFile(String outPath, GeneratorSchema outSchema, GeneratorSchema.GeneratorFormat outFormat) {
         // If format is not supported by schema
         if(!outSchema.supportsFormat(outFormat)) {
             // Acquire default format from schema
@@ -233,21 +234,16 @@ public class ParserController {
             outFormat = defaultFormat;
         }
 
-        // Create generator based on schema
-        final SBOMGenerator generator = new SBOMGenerator(this.SBOM, outSchema);
+        // Make new out directory if none exist
+        final File outDir = new File(outPath);
+        if(outDir.mkdirs())
+            log(LOG_TYPE.SUMMARY, "New Output Directory created [ " + outPath + " ]");
 
-        if(outPath != null) {
-            // Make new out directory if none exist
-            final File outDir = new File(outPath);
-            if(outDir.mkdirs())
-                log(LOG_TYPE.SUMMARY, "New Output Directory created [ " + outPath + " ]");
+        // Select generator based on schema
+        final SBOMGenerator generator = outSchema.newGenerator(this.SBOM);
 
-            // Write SBOM to file according to schema and file format
-            generator.writeFile(outPath, outFormat);
-        } else {
-            // TODO: Return stringified SBOM
-        }
-        return null;
+        // Write SBOM to file according to schema and file format
+        generator.writeFile(outPath, outFormat);
     }
 
     //#endregion
