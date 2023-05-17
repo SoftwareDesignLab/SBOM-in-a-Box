@@ -29,6 +29,7 @@ public class ParserComponent extends Component {
     public enum Type {
         LANGUAGE,
         INTERNAL,
+        APPLICATION,
         EXTERNAL;
 
         /**

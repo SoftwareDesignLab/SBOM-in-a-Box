@@ -3,6 +3,7 @@ package org.svip.sbomfactory.generators.parsers.contexts;
 // Declares Imports
 
 import org.apache.commons.lang3.StringUtils;
+import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class SubprocessParser extends ContextParser {
      * Method for detecting Subprocess calls or Outward Process calls.
      */
     private void detectSubprocessCall(String fileContents) {
-        System.out.println("Searching File for SubProcess Call Edge Cases...\n");
+        Debug.log(LOG_TYPE.DEBUG, "Searching File for SubProcess Call Edge Cases...");
         // Define array of subprocess call keywords
         final String[] keywords = {"process", "sub", "sys", "os", "external", "execute", "exec", "run", "popen", ".!", "%x", "spawn"};
         final String[] capKeywords = Arrays.stream(keywords).map(StringUtils::capitalize).toArray(String[]::new);
@@ -81,7 +82,7 @@ public class SubprocessParser extends ContextParser {
         lines = lines.stream().filter(l -> !l.isEmpty() && !l.startsWith("#") && !l.startsWith("//")).toList();
 
         // Log any unparsed data (remaining lines)
-        log(LOG_TYPE.DEBUG, "UNPARSED DATA:\n\t" + String.join("\n\t", lines));
+//        log(LOG_TYPE.DEBUG, "UNPARSED DATA:\n\t" + String.join("\n\t", lines));
     }
 
     /**
@@ -104,8 +105,8 @@ public class SubprocessParser extends ContextParser {
         // TODO: Better way to handle this? Currently the entire call is stored as name and type is set to EXTERNAL
         for (final String subprocessCall : this.context) {
             // Create ParserComponent
-            final ParserComponent c = new ParserComponent(subprocessCall);
-            c.setType(ParserComponent.Type.EXTERNAL);
+            final ParserComponent c = new ParserComponent(subprocessCall.replaceAll("\\\\\\\\", "/"));
+            c.setType(ParserComponent.Type.APPLICATION);
             // Add ParserComponent to components
             components.add(c);
         }

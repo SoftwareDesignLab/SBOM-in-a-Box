@@ -92,13 +92,18 @@ public abstract class LanguageParser extends Parser {
                 if(component.getName().equals("*")) {
                     Debug.log(Debug.LOG_TYPE.DEBUG, String.format("Import wildcard found in component %s with group %s",
                             component.getName(), component.getGroup()));
+
                     if(component.getGroup() != null) {
+                        // Get list of all subgroups in the component group
                         List<String> groups = new ArrayList<>(Arrays.stream(component.getGroup().split("/"))
-                                .toList()); // Get list of all subgroups in the component group
-                        component.setName(groups.remove(groups.size() - 1)); // Set name to last group of component
-                                                                                   // TODO is this correct behavior?
+                                .toList());
+
+                        // Set name to last group of component TODO is this correct behavior?
+                        component.setName(groups.remove(groups.size() - 1));
+
                         // Set new component group, exclude last element
                         component.setGroup(String.join("/", groups));
+
                         Debug.log(Debug.LOG_TYPE.DEBUG, String.format("Component renamed to %s with group %s",
                                 component.getName(), component.getGroup()));
                     } else {
@@ -108,7 +113,7 @@ public abstract class LanguageParser extends Parser {
                 }
             }
 
-            componentsToRemove.forEach(components::remove);
+            components.removeAll(componentsToRemove);
 
             final long t2 = System.currentTimeMillis();
             log(Debug.LOG_TYPE.DEBUG, String.format("Component parsing done in %s ms.", t2 - t1));
