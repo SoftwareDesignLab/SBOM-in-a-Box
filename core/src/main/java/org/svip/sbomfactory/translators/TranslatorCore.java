@@ -64,7 +64,14 @@ public abstract class TranslatorCore {
      */
     protected abstract SBOM translateContents(String contents, String filePath) throws IOException, ParseException, ParserConfigurationException;
 
+    /**
+     * Builds an SBOM with the parsed top level information. It will also attempt to
+     * create a top level component (the product the SBOM is for) with the available
+     * information.
+     */
     protected void createSBOM() {
+
+        // Attempt to create the SBOM with top level data, if an error is thrown return null and exit
         try {
             sbom = new SBOM(
                     bom_data.get("format"),
@@ -85,6 +92,8 @@ public abstract class TranslatorCore {
             System.exit(0);
         }
 
+        // If there is no top component (product) already, try to create it
+        // Otherwise, make sure it's in the SBOM
         if (product == null) {
             try {
                 product = new Component(
@@ -125,14 +134,16 @@ public abstract class TranslatorCore {
         ArrayList<String> childrenID = dependencies.get(parent_id);
         dependencies.remove(parent_id);
 
-        // If there are no
+        // If there are no dependencies, return
         if( childrenID == null ) { return; }
 
         // Cycle through each dependency the parent component has
         for (String childID: childrenID) {
+
             // Retrieve the component the parent has a dependency for
             Component child = components.get(childID);
 
+            // If child component is not null
             if(child != null) {
 
                 // If component is already in the dependency tree, add it as a child to the parent
@@ -166,7 +177,11 @@ public abstract class TranslatorCore {
      * @param parent     Parent (product) component
      */
     protected void defaultDependencies(HashMap<String, Component> components, Component parent) {
+
+        // If there are no dependencies there is no reason to default, return.
         if (dependencies == null) { return; }
+
+        // Loop through all dependencies. If it is not null and is not present in the SBOM already, add it.
         for(ArrayList<String> defaults : dependencies.values()) {
             defaults.stream().forEach(
                     x -> {
@@ -174,9 +189,9 @@ public abstract class TranslatorCore {
                             sbom.addComponent(parent.getUUID(), components.get(x));
                         }
                     }
-                            //sbom.addComponent(parent.getUUID(), components.get(x))
             );
         }
+
     }
 
     /**
@@ -186,6 +201,9 @@ public abstract class TranslatorCore {
      * @param value The child component
      */
     protected void addDependency(String key, String value) {
+
+        // If there is no key for the specific parent, then put it into the list with It's child component
+        // Otherwise, get the dependency's old children components and update them. Store it back into dependencies.
         if (dependencies.get(key) == null || dependencies.get(key).isEmpty()) {
             dependencies.put(key, new ArrayList<>(Arrays.asList(value)));
         } else {
@@ -193,6 +211,7 @@ public abstract class TranslatorCore {
             oldDependencies.add(value);
             dependencies.replace(key, oldDependencies);
         }
+
     }
 
     /**
@@ -220,9 +239,10 @@ public abstract class TranslatorCore {
      */
     public SBOM translate(String filePath) throws IOException, ParseException, ParserConfigurationException {
 
+        // File contents
         String contents;
 
-        // Read the file at filePath into a string
+        // Read the file at filePath into a string. If it can't read the file return null.
         try {
             contents = new String(Files.readAllBytes(Paths.get(filePath)));
         } catch (IOException e) {
@@ -230,9 +250,12 @@ public abstract class TranslatorCore {
             return null;
         }
 
+        // Throw the file contents into it's respective translator
         this.translateContents(contents, filePath);
 
+        // Return the SBOM
         return this.sbom;
+
     }
 
 }
