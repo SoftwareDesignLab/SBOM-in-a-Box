@@ -186,8 +186,6 @@ public class ParserController {
         // Parse components
         parser.parse(components, fileContents);
 
-        components.forEach(c -> c.addFile(filepath.replaceAll("\\\\", "/")));
-
         // List to store any duplicates/dead imports we find to avoid concurrent arraylist modification
         ArrayList<ParserComponent> toRemove = new ArrayList<>();
 
@@ -204,6 +202,8 @@ public class ParserController {
         if(parser instanceof PackageManagerParser) { // Parsing an EXTERNAL dependency
             components.forEach(ParserComponent::setPackaged); // Sets it to packaged and EXTERNAL
         } // Otherwise it will be unpackaged and INTERNAL (LIBRARY if it has been parsed as such)
+
+        components.forEach(c -> c.addFile(filepath.replaceAll("\\\\", "/")));
 
         // componentMap contains a map from a component's name to itself
         Map<String, ParserComponent> componentMap = new HashMap<>();
