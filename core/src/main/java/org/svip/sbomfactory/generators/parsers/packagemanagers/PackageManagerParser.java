@@ -355,7 +355,7 @@ public abstract class PackageManagerParser extends Parser {
 
                         // Parse license(s)
                         final Matcher m = Pattern.compile(finalLicenseRegex,
-                                Pattern.MULTILINE).matcher(contents); //todo look into this more for nuget
+                                Pattern.MULTILINE).matcher(contents);
 
                         // Add all found licenses
                         while (m.find()) {
@@ -380,10 +380,10 @@ public abstract class PackageManagerParser extends Parser {
     private static parserConfig getParserConfig(boolean nugetParser, HashMap<String, String> d, String licenseRegex) {
         String groupId;
         if(nugetParser){
-            licenseRegex = ">(.*?)</a>( *)license"; // Regex101: https://regex101.com/r/tskCMf/1
+            licenseRegex = ">(.*?)</a>(?: *)license"; // Regex101: https://regex101.com/r/tskCMf/1
             groupId = d.get("id");
             if(groupId == null)
-                groupId = d.get("targetFramework").split("[.]")[0]; // framework assembly name //todo this messes up query. fine for the sake of PURLs
+                groupId = d.get("targetFramework").split("[.]")[0]; // framework assembly name
         }
         else
             groupId = d.get("groupId");
