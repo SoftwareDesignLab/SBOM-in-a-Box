@@ -1,6 +1,5 @@
 package org.svip.sbomfactory.generators.generators.spdx;
 
-import org.svip.sbom.model.CPE;
 import org.svip.sbom.model.PURL;
 import org.svip.sbomfactory.generators.generators.utils.License;
 import org.svip.sbomfactory.generators.generators.utils.LicenseManager;

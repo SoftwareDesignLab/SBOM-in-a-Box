@@ -2,16 +2,14 @@ package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
-import static org.svip.sbomfactory.generators.utils.Debug.*;
+import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 
 /**
@@ -69,13 +67,13 @@ public class PerlParser extends LanguageParser {
     protected boolean isInternalComponent(ParserComponent component) {
         // Target is component name + ".pm"
         final String target = component.getName() + ".pm";
-
-        // Get project path from this.src and walk files to find component
-        try (Stream<Path> stream = Files.walk(this.PWD)) {
-            return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
-        } catch (Exception e){
-            log(LOG_TYPE.EXCEPTION, e);
-        }
+        // TODO
+//        // Get project path from this.src and walk files to find component
+//        try (Stream<Path> stream = Files.walk(this.PWD)) {
+//            return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
+//        } catch (Exception e){
+//            log(LOG_TYPE.EXCEPTION, e);
+//        }
 
         return false;
     }

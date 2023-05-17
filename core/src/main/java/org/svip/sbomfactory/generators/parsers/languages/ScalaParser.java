@@ -2,14 +2,12 @@ package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
-import static org.svip.sbomfactory.generators.utils.Debug.*;
+import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
  * file: ScalaParser.java
@@ -41,13 +39,14 @@ public class ScalaParser extends LanguageParser {
             // Get path terminus
             final String target = component.getName().toLowerCase() + ".sc";
 
-            // Get project path from this.src and walk files to find component
-            try (Stream<Path> stream = Files.walk(this.PWD)) {
-                // Uses .contains instead of .equals so that both files with ".sc" and ".scala" are found
-                return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().contains(target));
-            } catch (Exception e){
-                log(LOG_TYPE.EXCEPTION, e);
-            }
+            // TODO
+//            // Get project path from this.src and walk files to find component
+//            try (Stream<Path> stream = Files.walk(this.PWD)) {
+//                // Uses .contains instead of .equals so that both files with ".sc" and ".scala" are found
+//                return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().contains(target));
+//            } catch (Exception e){
+//                log(LOG_TYPE.EXCEPTION, e);
+//            }
         }
 
         return false;

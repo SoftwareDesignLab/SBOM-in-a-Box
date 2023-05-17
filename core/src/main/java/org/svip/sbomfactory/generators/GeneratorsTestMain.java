@@ -14,7 +14,8 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
-import static org.svip.sbomfactory.generators.utils.Debug.*;
+import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
  * file: GeneratorsTestMain.java
@@ -345,7 +346,7 @@ public class GeneratorsTestMain {
         Path path = Path.of(reqArgs.get(0));
 
         // Instantiate controller with verified path and default output as JSON
-        final ParserController controller = new ParserController(path);
+        final ParserController controller = new ParserController(path.toString());
 
         // Enable summary run if indicated
         if (optArgs.containsKey("-s")) Debug.enableSummary();
@@ -354,16 +355,17 @@ public class GeneratorsTestMain {
 
         final long parseT1 = System.currentTimeMillis();
 
+        // TODO: Remove reliance on Files.walk
         // Parse the root directory with the controller
         try (Stream<Path> stream = Files.walk(path)) {
             stream.forEach(filepath -> {
                 try {
                     // Set pwd to formatted filepath if it is actually a directory
                     if (Files.isDirectory(filepath)) {
-                        controller.setPWD(filepath);
+                        controller.setPWD(filepath.toString());
                         controller.incrementDirCounter();
-                    } else { // Otherwise, it is a file, try to parse
-                        controller.parse(filepath);
+                    } else { // Otherwise, it is a file
+                        controller.parse(filepath.toAbsolutePath().toString(), Files.readString(filepath));
                     }
                 } catch (Exception e) {
                     log(LOG_TYPE.EXCEPTION, e);

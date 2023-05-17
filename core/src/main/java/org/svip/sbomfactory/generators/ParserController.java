@@ -1,24 +1,25 @@
 package org.svip.sbomfactory.generators;
 
-import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
-import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
-import org.svip.sbomfactory.generators.generators.SBOMGenerator;
-import org.svip.sbomfactory.generators.parsers.languages.*;
-import org.svip.sbomfactory.generators.parsers.packagemanagers.*;
-import org.svip.sbomfactory.generators.parsers.contexts.*;
-import org.svip.sbomfactory.generators.parsers.Parser;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.svip.sbom.model.SBOM;
+import org.svip.sbomfactory.generators.generators.SBOMGenerator;
+import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
+import org.svip.sbomfactory.generators.parsers.Parser;
+import org.svip.sbomfactory.generators.parsers.contexts.ContextParser;
+import org.svip.sbomfactory.generators.parsers.contexts.DeadImportParser;
+import org.svip.sbomfactory.generators.parsers.contexts.SubprocessParser;
+import org.svip.sbomfactory.generators.parsers.languages.*;
+import org.svip.sbomfactory.generators.parsers.packagemanagers.*;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.sbom.model.SBOM;
+import org.svip.sbomfactory.generators.utils.VirtualPath;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -38,8 +39,8 @@ public class ParserController {
 
     //#region Attributes
     private final String projectName;
-    private Path PWD;
-    private final Path SRC;
+    private String PWD;
+    private final String SRC;
     private final SBOM SBOM;
     private final AtomicInteger dirCount;
     private final AtomicInteger fileCount;
@@ -90,9 +91,15 @@ public class ParserController {
      *
      * @param PWD a Path to the present working directory
      */
-    public ParserController(Path PWD) {
+    public ParserController(String PWD) {
         // Set attributes
-        this.projectName = PWD.getFileName().toString();
+        // Get filename
+        String[] pathParts = PWD.split("/");
+        final String os = System.getProperty("os.name").toLowerCase();
+        if(os.contains("win")) pathParts = PWD.split("\\\\");
+
+        // Set project name to root filename
+        this.projectName = pathParts[pathParts.length - 1];
         this.PWD = PWD;
         this.SRC = PWD; // A new ParserController is created in the source directory, this shouldn't need to be changed
         this.dirCount = new AtomicInteger();
@@ -109,18 +116,18 @@ public class ParserController {
     //#region Getters
 
     public String getProjectName() { return this.projectName; }
-    public Path getPWD() { return this.PWD; }
-    public Path getSRC() { return this.SRC; }
+    public String getPWD() { return this.PWD; }
+    public String getSRC() { return this.SRC; }
     public int getDirCount() { return this.dirCount.intValue(); }
     public int getFileCount() { return this.fileCount.intValue(); }
-    public int getDepCount() { return this.SBOM.getAllComponents().size(); } // TODO: Direct method in SBOM to count
+    public int getDepCount() { return this.SBOM.getAllComponents().size(); }
     public SBOM getSBOM() { return this.SBOM; }
 
     //#endregion
 
     //#region Setters
 
-    public void setPWD(Path PWD) { this.PWD = PWD; }
+    public void setPWD(String PWD) { this.PWD = PWD; }
     public void incrementDirCounter() { this.dirCount.getAndIncrement(); }
 
     //#endregion
@@ -132,7 +139,7 @@ public class ParserController {
      *
      * @param filepath path to file or root directory to be parsed
      */
-    public void parse(Path filepath) { parse(this.SBOM.getHeadUUID(), filepath); }
+    public void parse(String filepath, String fileContents) { parse(this.SBOM.getHeadUUID(), filepath, fileContents); }
 
 
     /**
@@ -143,14 +150,19 @@ public class ParserController {
      * @param filepath path to file or root directory to be parsed
      * @param parent parent Component to be appended to
      */
-    public void parse(UUID parent, Path filepath) {
+    public void parse(UUID parent, String filepath, String fileContents) {
         // Get filename
-        final String filename = filepath.getFileName().toString();
+        String[] pathParts = filepath.split("/");
+        final String os = System.getProperty("os.name").toLowerCase();
+        if(os.contains("win")) pathParts = filepath.split("\\\\");
+
+        // Set project name to root filename
+        final String filename = pathParts[pathParts.length - 1];
 
         // Extract extn from filename
         String extn = filename.substring(filename.lastIndexOf('.') + 1);
 
-        // If extn matches popular package manager dependency file types, use whole filename instead
+        // If extn matches some generic filetypes, use whole filename instead
         switch (extn) {
             case "xml", "txt" -> extn = filename;
         }
@@ -163,53 +175,41 @@ public class ParserController {
             return;
         } else log(LOG_TYPE.SUMMARY, "Parsing file '" + filename + "'");
 
+        final String parentDir = String.join("/", Arrays.copyOfRange(pathParts, 0, pathParts.length - 1));
+
         // Set parser details
-        parser.setPWD(filepath.getParent());
-        parser.setSRC(this.SRC);
+        parser.setPWD(new VirtualPath(parentDir));
+        parser.setSRC(new VirtualPath(this.SRC));
 
-
-         final ArrayList<ContextParser> contextParsers = new ArrayList<>();
-         if(parser instanceof LanguageParser) {
-             contextParsers.add(new CommentParser());
-             contextParsers.add(new SubprocessParser());
-             contextParsers.add(new DeadImportParser());
+        final ArrayList<ContextParser> contextParsers = new ArrayList<>();
+        if(parser instanceof LanguageParser) {
+            // TODO do we need to parse comments? This adds unnecessary components to the SBOM
+            //   contextParsers.add(new CommentParser());
+            contextParsers.add(new SubprocessParser());
+            contextParsers.add(new DeadImportParser());
             // Add new ContextParser
-         }
-
+        }
 
         // Otherwise, parse file
-        try {
-            // Init Component list
-            ArrayList<ParserComponent> components = new ArrayList<>();
+        // Init Component list
+        ArrayList<ParserComponent> components = new ArrayList<>();
 
-            // Parse file contents
-            final String fileContents = Files.readString(filepath);
+        // Parse components
+        parser.parse(components, fileContents);
 
-            // Parse components
-            parser.parse(components, fileContents);
+        components.forEach(c -> c.addFile(filepath.replaceAll("\\\\", "/")));
 
-            // TODO: Add all files
-//            c.addAllFiles()
-            components.forEach(c -> c.addFile(filepath.toString()));
+        // If file being parsed is a language file
+        if(parser instanceof LanguageParser) // Execute all added ContextParsers
+            for(final ContextParser cp : contextParsers) { cp.parse(components, fileContents); }
 
-            // If file being parsed is a language file
-            if(parser instanceof LanguageParser) // Execute all added ContextParsers
-                for(final ContextParser cp : contextParsers) { cp.parse(components, fileContents); }
+        // If file being parsed is a package manager file
+        if(parser instanceof PackageManagerParser) { // Parsing an EXTERNAL dependency
+            components.forEach(ParserComponent::setPackaged); // Sets it to packaged and EXTERNAL
+        } // Otherwise it will be unpackaged and INTERNAL (LIBRARY if it has been parsed as such)
 
-            // If file being parsed is a package manager file
-            if(parser instanceof PackageManagerParser) { // Parsing an EXTERNAL dependency
-                components.forEach(ParserComponent::setPackaged); // Sets it to packaged and EXTERNAL
-                // TODO check CPEs & modify component with that data
-            } // Otherwise it will be unpackaged and INTERNAL (LIBRARY if it has been parsed as such)
-
-            // Add Components to SBOM
-            this.SBOM.addComponents(parent, components);
-        }
-        catch (IOException e) {
-            final IOException newE = new IOException(String.format("Error Parsing File '%s': File could not be parsed.", filename));
-            newE.setStackTrace(e.getStackTrace());
-            log(LOG_TYPE.EXCEPTION, newE);
-        }
+        // Add Components to SBOM
+        this.SBOM.addComponents(parent, components);
         this.fileCount.getAndIncrement();
     }
 

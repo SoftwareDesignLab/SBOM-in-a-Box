@@ -6,15 +6,13 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
-import static org.svip.sbomfactory.generators.utils.Debug.*;
+import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 
 /**
@@ -107,12 +105,13 @@ public class JavaParser extends LanguageParser {
             // Get path terminus
             final String target = component.getName().toLowerCase() + ".java";
 
-            // Get project path from this.src and walk files to find component
-            try (Stream<Path> stream = Files.walk(this.SRC)) {
-                return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
-            } catch (Exception e){
-                log(LOG_TYPE.EXCEPTION, e);
-            }
+            // TODO
+//            // Get project path from this.src and walk files to find component
+//            try (Stream<Path> stream = Files.walk(this.SRC)) {
+//                return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
+//            } catch (Exception e){
+//                log(LOG_TYPE.EXCEPTION, e);
+//            }
         }
 
         return false;

@@ -1,5 +1,7 @@
 package org.svip.sbomfactory.generators.parsers;
 
+import org.svip.sbomfactory.generators.utils.VirtualPath;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -18,9 +20,8 @@ public abstract class ParserTestCore<T extends Parser> {
      * @param src Path to directory to be tested
      */
     private void setDummyParser(T parser, String src) {
-        final Path path = Paths.get(src);
-        parser.setPWD(path);
-        parser.setSRC(path);
+        parser.setPWD(new VirtualPath(src));
+        parser.setSRC(new VirtualPath(src));
         this.PARSER = parser;
     }
 }

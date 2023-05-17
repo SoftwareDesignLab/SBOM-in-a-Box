@@ -29,6 +29,7 @@ jobs:
         
       - name: Store Report
         uses: actions/upload-artifact@v3
+        if: always()
         with:
           name: reports
           path: "**/build/reports/"

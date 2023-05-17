@@ -2,16 +2,18 @@ package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import org.svip.sbom.model.CPE;
+import org.svip.sbom.model.PURL;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.QueryWorker;
-import org.svip.sbom.model.PURL;
 
-import java.util.*;
-import java.util.regex.MatchResult;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.svip.sbomfactory.generators.utils.Debug.*;
+import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
  * file: POMParser.java

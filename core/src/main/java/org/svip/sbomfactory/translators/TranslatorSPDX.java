@@ -1,7 +1,9 @@
 package org.svip.sbomfactory.translators;
 
 import org.cyclonedx.exception.ParseException;
-import org.svip.sbom.model.*;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.PURL;
+import org.svip.sbom.model.SBOM;
 
 import java.io.BufferedReader;
 import java.io.IOException;

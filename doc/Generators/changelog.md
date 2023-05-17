@@ -5,6 +5,20 @@ All notable changes to the Generators sub-system will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v4.4.1-alpha] - (05/XX/2023)
+
+### Changed
+- Updated `LicenseManager.parseLicense()` method to more accurately and efficiently match an arbitrary license string to
+  an SPDX short identifier.
+  - This is done by quantifying the number of token matches per license string and then choosing the string with the 
+    most matches.
+  - It also contains checks for common license keywords and short identifiers to increase speed.
+- Updated `ParserComponent.resolveLicenses()` method to support finding multiple licenses in a single, comma-separated
+  string.
+  - This increases the license parsing accuracy, as one string can now be separated into multiple licenses.
+  - However, any invalid license after the first one is found will be discarded to avoid "garbage" licenses occuring in
+    the SBOM.
+
 ## [v4.4.0-alpha] - (05/15/2023)
 
 ### Added

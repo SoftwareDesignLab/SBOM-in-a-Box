@@ -6,17 +6,15 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
-import static org.svip.sbomfactory.generators.utils.Debug.*;
+import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 
 /**
@@ -123,12 +121,13 @@ public class RubyParser extends LanguageParser {
         // Assign value to final string to appease the lamba function's requirements
         final String target = name;
 
-        // Get project path from this.src and walk files to find component
-        try (Stream<Path> stream = Files.walk(this.PWD)) {
-            return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
-        } catch (Exception e){
-            log(LOG_TYPE.EXCEPTION, e);
-        }
+        // TODO
+//        // Get project path from this.src and walk files to find component
+//        try (Stream<Path> stream = Files.walk(this.PWD)) {
+//            return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
+//        } catch (Exception e){
+//            log(LOG_TYPE.EXCEPTION, e);
+//        }
 
         return false;
     }
