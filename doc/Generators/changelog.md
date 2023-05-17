@@ -7,17 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v4.4.1-alpha] - (05/XX/2023)
 
+### Added
+
+- Added a new `APPLICATION` type to `ParserComponent.Type` Enum to reflect the type of subprocess calls.
+- Added checking for duplicate components in the SBOM as well as in the components parsed in the 
+  `ParserController.parse()` Method.
+
 ### Changed
-- Updated `LicenseManager.parseLicense()` method to more accurately and efficiently match an arbitrary license string to
+- Updated `LicenseManager.parseLicense()` Method to more accurately and efficiently match an arbitrary license string to
   an SPDX short identifier.
   - This is done by quantifying the number of token matches per license string and then choosing the string with the 
     most matches.
   - It also contains checks for common license keywords and short identifiers to increase speed.
-- Updated `ParserComponent.resolveLicenses()` method to support finding multiple licenses in a single, comma-separated
+- Updated `ParserComponent.resolveLicenses()` Method to support finding multiple licenses in a single, comma-separated
   string.
   - This increases the license parsing accuracy, as one string can now be separated into multiple licenses.
   - However, any invalid license after the first one is found will be discarded to avoid "garbage" licenses occuring in
     the SBOM.
+- Updated `LanguageParser` Class to check for and handle import wildcards.
+  - If any import wildcards are found while parsing a file, the component name will be replaced with the 
+    next-highest-level package in the import statement and the component group will be changed to reflect that.
+- Fixed some backslashes not being changed to forward slashes to improve file readability.
+  - Ex: `\\` in a filepath will now always be changed to `/`.
+- Fixed components generated from subprocess calls not containing the files they were found in.
+- Fixed duplicates being added to the internal SBOM in `ParserController.parse()` Method because of the way the 
+  `ContextParser`s were set up to store components.
 
 ## [v4.4.0-alpha] - (05/15/2023)
 
