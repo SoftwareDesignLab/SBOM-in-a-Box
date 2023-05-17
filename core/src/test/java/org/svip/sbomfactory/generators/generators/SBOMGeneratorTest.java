@@ -1,23 +1,19 @@
 package org.svip.sbomfactory.generators.generators;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
-import org.svip.sbomfactory.generators.ParserController;
 import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXStore;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
-import org.svip.sbomfactory.generators.parsers.Parser;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.generators.utils.Tool;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,15 +22,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 public class SBOMGeneratorTest {
     private static final Path OUT_PATH = Path.of("src/test/java/org/svip/sbomfactory/generators/SBOMOut");
-    private SBOM internalSBOM;
-    private List<SBOMGenerator> generators;
+    private final SBOM internalSBOM;
+    private final List<SBOMGenerator> generators;
 
     /**
      * Constructor parses an SBOM
@@ -43,7 +37,7 @@ public class SBOMGeneratorTest {
 //        Debug.enableSummary();
 
         internalSBOM = new SBOM();
-        this.addTestComponentsToSBOM(internalSBOM);
+        addTestComponentsToSBOM(internalSBOM);
 
         generators = new ArrayList<>();
         // Construct generators with each schema
@@ -264,7 +258,7 @@ public class SBOMGeneratorTest {
      * @param sbom The SBOM instance to add the test components to.
      * @return A list of the components: {@code [Head_Component, Test_Component, Child_Component_0, Child_Component_1]}
      */
-    private List<ParserComponent> addTestComponentsToSBOM(SBOM sbom) {
+    public static List<ParserComponent> addTestComponentsToSBOM(SBOM sbom) {
         ParserComponent headComponent = new ParserComponent("Head_Component");
         ParserComponent testComponent = new ParserComponent("Test_Component");
         ParserComponent testChild0 = new ParserComponent("Child_Component_0");
