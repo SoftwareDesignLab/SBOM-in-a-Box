@@ -101,10 +101,11 @@ public class ConanParser extends PackageManagerParser {
         // Init main data structure
         final LinkedHashMap<String, Object> data = new LinkedHashMap<>();
 
+        fileContents = removeComments(fileContents);
 
         // Init main Matcher
         // Regex101: https://regex101.com/r/a3rIlp/3
-        Matcher m; // = Pattern.compile("(^|\\s*)(\\[[a-z_-]*\\])\\s*(((?!.*\\[([a-z_-]*)\\]).*\\s*)*)", Pattern.MULTILINE).matcher(fileContents);
+        Matcher m;
 
         //Check file content to see if it is a conanfile.txt or conanfile.py
         if (fileContents.contains("[requires]")) {
@@ -123,9 +124,12 @@ public class ConanParser extends PackageManagerParser {
         // Store results in data
         for (final MatchResult mr : m.results().toList()) {
             // Get key and value of match ("[requires]...") or .....
-            final String key = mr.group(2).trim();
+                  String key = mr.group(2).trim();
             final String value = mr.group(3).trim();
             System.out.println("key:\n  " + key + "\nvalue:\n   " + value + "\n\n");
+            key = key.replaceAll("\\s+","");
+            System.out.println("R key:\n  " + key + "\nvalue:\n   " + value + "\n\n");
+
 
             // Dependencies will need to be parsed further, so pass raw string
             switch(key) {
@@ -155,4 +159,29 @@ public class ConanParser extends PackageManagerParser {
         //#endregion
     }
 
+    public String removeComments(String text) {
+        String effectivetext = "";
+        Boolean incomment = false;
+        for (String line : text.split("\n")) {
+            if (line.contains("\"\"\"") || line.contains("'''")) {
+                incomment = !incomment;
+                //check to see if the end comment(""" or ''') is on the same line
+                String tline = line.trim();
+                String bsubstr = tline.substring(0, 3);
+                String substr = tline.substring(3);
+                if ((bsubstr.contains("\"\"\"") || bsubstr.contains("'''")) && (substr.contains("\"\"\"") || substr.contains("'''"))) {
+                    incomment = !incomment;
+                }
+                continue;  //skip the ending quotes
+            }
+            if (!incomment) {
+                String rmedcmt = line.replaceAll("^#.*|\\s+#.*", "") + "\n"; //#/line sign comments
+                effectivetext = effectivetext + rmedcmt;
+            }
+        }
+        System.out.println("text***********:\n" + text);
+        System.out.println("effectivetext==============:\n" + effectivetext);
+
+        return effectivetext;
+    }
 }
