@@ -3,6 +3,7 @@ package org.svip.sbomfactory.generators;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
@@ -18,11 +19,9 @@ import org.svip.sbomfactory.generators.utils.VirtualPath;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
 import static org.svip.sbomfactory.generators.utils.Debug.log;
@@ -181,16 +180,6 @@ public class ParserController {
         parser.setPWD(new VirtualPath(parentDir));
         parser.setSRC(new VirtualPath(this.SRC));
 
-        final ArrayList<ContextParser> contextParsers = new ArrayList<>();
-        if(parser instanceof LanguageParser) {
-            // TODO do we need to parse comments? This adds unnecessary components to the SBOM
-            //   contextParsers.add(new CommentParser());
-            contextParsers.add(new SubprocessParser());
-            contextParsers.add(new DeadImportParser());
-            // Add new ContextParser
-        }
-
-        // Otherwise, parse file
         // Init Component list
         ArrayList<ParserComponent> components = new ArrayList<>();
 
@@ -199,14 +188,51 @@ public class ParserController {
 
         components.forEach(c -> c.addFile(filepath.replaceAll("\\\\", "/")));
 
-        // If file being parsed is a language file
-        if(parser instanceof LanguageParser) // Execute all added ContextParsers
-            for(final ContextParser cp : contextParsers) { cp.parse(components, fileContents); }
+        // List to store any duplicates/dead imports we find to avoid concurrent arraylist modification
+        ArrayList<ParserComponent> toRemove = new ArrayList<>();
+
+        // If file being parsed is a language file, execute contextParsers
+        if(parser instanceof LanguageParser) {
+            ContextParser deadImportParser = new DeadImportParser();
+            deadImportParser.parse(toRemove, fileContents); // Add dead imports to list of components to remove
+
+            ContextParser subprocessParser = new SubprocessParser();
+            subprocessParser.parse(components, fileContents); // Add subprocesses called to list of components
+        }
 
         // If file being parsed is a package manager file
         if(parser instanceof PackageManagerParser) { // Parsing an EXTERNAL dependency
             components.forEach(ParserComponent::setPackaged); // Sets it to packaged and EXTERNAL
         } // Otherwise it will be unpackaged and INTERNAL (LIBRARY if it has been parsed as such)
+
+        // componentMap contains a map from a component's name to itself
+        Map<String, ParserComponent> componentMap = new HashMap<>();
+        for(Component c : this.SBOM.getAllComponents()) {
+            componentMap.put(c.getName(), (ParserComponent) c);
+        }
+
+        // Check for duplicate named components
+        for(ParserComponent component : components) {
+            // If a component name doesn't exist, there are no duplicates
+            if(componentMap.get(component.getName()) == null) {
+                // Add the component to the map to avoid
+                componentMap.put(component.getName(), component);
+                continue;
+            }
+
+            ParserComponent old = componentMap.get(component.getName());
+
+            // Compare important fields and update old component
+            old.setGroup(component.getGroup());
+            component.getFiles().forEach(old::addFile);
+
+            // TODO possibly more assignments?
+
+            toRemove.add(component); // Remove new component directly since TODO we can't remove old component
+            Debug.log(LOG_TYPE.WARN, "Found and removed duplicate component " + component.getName());
+        }
+
+        components.removeAll(toRemove); // Remove all duplicates TODO make sure dead imports are removed
 
         // Add Components to SBOM
         this.SBOM.addComponents(parent, components);
