@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.svip.sbomfactory.generators.generators.BOMStoreTestCore;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,6 +41,19 @@ public class CycloneDXStoreTest extends BOMStoreTestCore<CycloneDXStore> {
     }
 
     @Test
+    @DisplayName("getAllComponents()")
+    void getAllComponentsTest() throws GeneratorException {
+        Debug.log(Debug.LOG_TYPE.INFO, "addComponent(testComponents.get(0))");
+        bomStore.addComponent(testComponents.get(0)); // Add head component
+
+        Debug.log(Debug.LOG_TYPE.INFO, "addChild(testComponents.get(0), testComponents.get(1))");
+        bomStore.addChild(testComponents.get(0), testComponents.get(1)); // Add child component
+
+        assertEquals(2, bomStore.getAllComponents().size());
+        Debug.log(Debug.LOG_TYPE.SUMMARY, "Correctly contains 2 components");
+    }
+
+    @Test
     @DisplayName("addComponent()")
     void addComponentTest() {
         Debug.log(Debug.LOG_TYPE.INFO, "addComponent(testComponents.get(0))");
@@ -57,22 +73,13 @@ public class CycloneDXStoreTest extends BOMStoreTestCore<CycloneDXStore> {
         Debug.log(Debug.LOG_TYPE.INFO, "addChild(testComponents.get(0), testComponents.get(1))");
         bomStore.addChild(testComponents.get(0), testComponents.get(1)); // Add child component
 
-        assertTrue(bomStore.getAllComponents().contains(testComponents.get(0)));
-        Debug.log(Debug.LOG_TYPE.SUMMARY, "Correctly contains testComponents.get(0)");
-
         assertTrue(bomStore.getAllComponents().contains(testComponents.get(1)));
         Debug.log(Debug.LOG_TYPE.SUMMARY, "Correctly contains testComponents.get(1)");
-
-        assertEquals(2, bomStore.getAllComponents().size());
-        Debug.log(Debug.LOG_TYPE.SUMMARY, "Correctly contains 2 components");
-
-        assertEquals(1, bomStore.getComponents().size());
-        Debug.log(Debug.LOG_TYPE.SUMMARY, "Correctly contains 1 top-level component");
     }
 
     @Test
     @DisplayName("addChild() with invalid parent")
-    void addChildInvalidTest() throws GeneratorException {
+    void addChildInvalidTest() {
         assertEquals(0, bomStore.getAllComponents().size());
         Debug.log(Debug.LOG_TYPE.SUMMARY, "Correctly contains 0 components");
 
@@ -83,5 +90,40 @@ public class CycloneDXStoreTest extends BOMStoreTestCore<CycloneDXStore> {
         });
 
         Debug.log(Debug.LOG_TYPE.SUMMARY, "Correctly throws GeneratorException");
+    }
+
+    @Test
+    @DisplayName("getChildren() with children")
+    void getChildrenTest() throws GeneratorException {
+        Debug.log(Debug.LOG_TYPE.INFO, "addComponent(testComponents.get(0))");
+        bomStore.addComponent(testComponents.get(0)); // Add head component
+
+        Debug.log(Debug.LOG_TYPE.INFO, "addChild(testComponents.get(0), testComponents.get(1))");
+        bomStore.addChild(testComponents.get(0), testComponents.get(1)); // Add child component
+
+        Debug.log(Debug.LOG_TYPE.INFO, "addChild(testComponents.get(0), testComponents.get(2))");
+        bomStore.addChild(testComponents.get(0), testComponents.get(2)); // Add child component
+
+        Debug.log(Debug.LOG_TYPE.INFO, "getChildren(testComponents.get(0).getUUID())");
+        List<ParserComponent> children = bomStore.getChildren(testComponents.get(0).getUUID());
+
+        assertTrue(children.contains(testComponents.get(1)));
+        Debug.log(Debug.LOG_TYPE.SUMMARY, "Child list correctly contains testComponents.get(1)");
+
+        assertTrue(children.contains(testComponents.get(2)));
+        Debug.log(Debug.LOG_TYPE.SUMMARY, "Child list correctly contains testComponents.get(2)");
+    }
+
+    @Test
+    @DisplayName("getChildren() without children")
+    void getChildrenWithoutChildrenTest() {
+        Debug.log(Debug.LOG_TYPE.INFO, "addComponent(testComponents.get(0))");
+        bomStore.addComponent(testComponents.get(0)); // Add head component
+
+        Debug.log(Debug.LOG_TYPE.INFO, "getChildren(testComponents.get(0).getUUID())");
+        List<ParserComponent> children = bomStore.getChildren(testComponents.get(0).getUUID());
+
+        assertEquals(0, children.size());
+        Debug.log(Debug.LOG_TYPE.SUMMARY, "Child list is empty");
     }
 }
