@@ -25,7 +25,6 @@ public abstract class BOMStoreTestCore<T extends BOMStore> {
 
     // TODO: Docstring
     protected BOMStoreTestCore(T bomStore) {
-        Debug.enableDebug();
         this.bomStore = bomStore;
     }
 }
