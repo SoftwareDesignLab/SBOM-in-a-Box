@@ -294,21 +294,17 @@ public abstract class PackageManagerParser extends Parser {
             final HashMap<String, String> d = parser.dependencies.get(id);
 
             // Format all property keys -> values
-            String groupId;
-            if(nugetParser){
-                groupId = d.get("id");
-                if(groupId == null)
-                    groupId = d.get("targetFramework").split("[.]")[0]; // framework assembly name //todo this messes up query. fine for the sake of PURLs
-            }
-            else
-                groupId = d.get("groupId");
+            String licenseRegex = "<li data-test=\\\"license\\\">(.*?)</li>"; // Regex101: https://regex101.com/r/FUOPSK/1
+
+            // Refactor variables if Nuget parser
+            parserConfig result = getParserConfig(nugetParser, d, licenseRegex);
 
             String version = d.get("version");
 
             final ParserComponent c = new ParserComponent(id);
 
             //framework assemblies use assemblyName + targetFramework
-            if (groupId != null) c.setGroup(groupId);
+            if (result.groupId() != null) c.setGroup(result.groupId());
             if (version != null) c.setVersion(version);
 
             // TODO: Find this PURL regex a home (Translator?): https://regex101.com/r/sbFd7Z/2
@@ -322,12 +318,12 @@ public abstract class PackageManagerParser extends Parser {
             final HashMap<String, String> PURLData = new HashMap<>();
             PURLData.put("type", packageManager);
             PURLData.put("name", id);
-            if (groupId != null) PURLData.put("namespace", groupId);
+            if (result.groupId() != null) PURLData.put("namespace", result.groupId());
             if (version != null) PURLData.put("version", version);
 
             if (frameworkAssembly) {
                 c.setPublisher("Microsoft");
-                id = d.get("assemblyName").split("[.]")[1];
+                id = d.get("assemblyName");
                 c.setType(ParserComponent.Type.LANGUAGE);
             }
             String PURLString = PackageManagerParser.buildPURL(PURLData);
@@ -343,13 +339,14 @@ public abstract class PackageManagerParser extends Parser {
             log(Debug.LOG_TYPE.DEBUG, String.format("Dependency Found with CPE: %s", cpeFormatString));
 
             // Build URL and worker object
-            if (groupId != null) {
+            if (result.groupId() != null) {
                 String url = parser.STD_LIB_URL;
                 if(!nugetParser)
-                    url += groupId;
+                    url += result.groupId();
                 url += "/" + id;
                 if (version != null) url += "/" + version;
                 // Create and add QueryWorker with Component reference and URL
+                String finalLicenseRegex = result.licenseRegex();
                 parser.queryWorkers.add(new QueryWorker(c, url) {
                     @Override
                     public void run() {
@@ -357,8 +354,7 @@ public abstract class PackageManagerParser extends Parser {
                         final String contents = getUrlContents(queryURL(this.url, false));
 
                         // Parse license(s)
-                        // Regex101: https://regex101.com/r/FUOPSK/1
-                        final Matcher m = Pattern.compile("<li data-test=\\\"license\\\">(.*?)</li>",
+                        final Matcher m = Pattern.compile(finalLicenseRegex,
                                 Pattern.MULTILINE).matcher(contents); //todo look into this more for nuget
 
                         // Add all found licenses
@@ -372,6 +368,29 @@ public abstract class PackageManagerParser extends Parser {
             // Add ParserComponent to components
             components.add(c);
         }
+    }
+
+    /**
+     * Configures the buildURL method for either parser
+     * @param nugetParser whether this is NugetParser
+     * @param d data
+     * @param licenseRegex license regex for parsing
+     * @return this variable configuration
+     */
+    private static parserConfig getParserConfig(boolean nugetParser, HashMap<String, String> d, String licenseRegex) {
+        String groupId;
+        if(nugetParser){
+            licenseRegex = ">(.*?)</a>( *)license"; // Regex101: https://regex101.com/r/tskCMf/1
+            groupId = d.get("id");
+            if(groupId == null)
+                groupId = d.get("targetFramework").split("[.]")[0]; // framework assembly name //todo this messes up query. fine for the sake of PURLs
+        }
+        else
+            groupId = d.get("groupId");
+        return new parserConfig(groupId, licenseRegex);
+    }
+
+    private record parserConfig(String groupId, String licenseRegex) {
     }
 
     //#endregion

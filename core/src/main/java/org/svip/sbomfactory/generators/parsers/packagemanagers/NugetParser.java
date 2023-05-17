@@ -134,23 +134,14 @@ public class NugetParser extends PackageManagerParser{
                  */
 
                 // this format is too different for resolveProperties() to work
-
                 // targetFramework is synonymous with groupId in POMParser
-
                 // Get dependencies from data
-
-                int x = 0;
-
-                // at this point, s should be in the form
-
+                // at this point, s should be in the form:
                 /*
                 {group=[{dependency={id=RouteMagic, version=1.1.0}}, {targetFramework=.NETFramework4.7.2, dependency=[{id=jQuery, version=1.6.2}, {id=WebActivator, version=1.4.4}]}, {targetFramework=netcoreapp3.1}]}
                  */
 
                 //todo, this is pretty much an edge case, there are almost no examples of nuspec files with dependency groups, however they do exist
-
-                // String[] groups = s.split("[]")
-
 
         }
 
