@@ -1,9 +1,11 @@
 package org.svip.sbomfactory.generators.parsers.contexts;
 
 // Declares Imports
+
 import org.apache.commons.lang3.StringUtils;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+
 import java.util.ArrayList;
 
 import static org.svip.sbomfactory.generators.utils.Debug.log;

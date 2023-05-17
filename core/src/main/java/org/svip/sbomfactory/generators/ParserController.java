@@ -1,24 +1,23 @@
 package org.svip.sbomfactory.generators;
 
-import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
-import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
-import org.svip.sbomfactory.generators.generators.SBOMGenerator;
-import org.svip.sbomfactory.generators.parsers.languages.*;
-import org.svip.sbomfactory.generators.parsers.packagemanagers.*;
-import org.svip.sbomfactory.generators.parsers.contexts.*;
-import org.svip.sbomfactory.generators.parsers.Parser;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.svip.sbom.model.SBOM;
+import org.svip.sbomfactory.generators.generators.SBOMGenerator;
+import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
+import org.svip.sbomfactory.generators.parsers.Parser;
+import org.svip.sbomfactory.generators.parsers.contexts.ContextParser;
+import org.svip.sbomfactory.generators.parsers.contexts.DeadImportParser;
+import org.svip.sbomfactory.generators.parsers.contexts.SubprocessParser;
+import org.svip.sbomfactory.generators.parsers.languages.*;
+import org.svip.sbomfactory.generators.parsers.packagemanagers.*;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.utils.VirtualPath;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

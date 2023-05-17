@@ -1,13 +1,11 @@
 package org.svip.sbomfactory.generators.utils;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.svip.sbom.model.PURL;
+import org.svip.sbom.model.Component;
 import org.svip.sbomfactory.generators.generators.utils.License;
 import org.svip.sbomfactory.generators.generators.utils.LicenseManager;
-import org.svip.sbom.model.Component;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * <b>File</b>: Component.java<br>

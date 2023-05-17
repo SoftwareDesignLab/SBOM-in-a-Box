@@ -1,11 +1,11 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
-import org.svip.sbomfactory.generators.utils.QueryWorker;
-import org.svip.sbomfactory.generators.parsers.Parser;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.svip.sbomfactory.generators.parsers.Parser;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.QueryWorker;
 
 import java.io.IOException;
 import java.util.ArrayList;

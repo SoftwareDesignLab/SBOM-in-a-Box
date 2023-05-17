@@ -1,10 +1,13 @@
 package org.svip.sbomfactory.translators;
 
 import org.cyclonedx.exception.ParseException;
-import org.cyclonedx.model.*;
+import org.cyclonedx.model.Bom;
+import org.cyclonedx.model.BomReference;
+import org.cyclonedx.model.Dependency;
 import org.cyclonedx.parsers.JsonParser;
-import org.svip.sbom.model.*;
 import org.svip.sbom.model.Component;
+import org.svip.sbom.model.PURL;
+import org.svip.sbom.model.SBOM;
 
 import java.io.IOException;
 import java.util.*;

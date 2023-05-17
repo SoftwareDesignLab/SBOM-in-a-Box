@@ -1,8 +1,10 @@
 package org.svip.sbomfactory.generators.parsers.contexts;
 
 // Declares Imports
-import java.util.*;
+
 import org.svip.sbomfactory.generators.parsers.Parser;
+
+import java.util.ArrayList;
 
 /**
  * file: ContextParser.java

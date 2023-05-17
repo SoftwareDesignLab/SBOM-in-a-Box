@@ -5,7 +5,6 @@ import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.QueryWorker;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * file: CSProjParser.java

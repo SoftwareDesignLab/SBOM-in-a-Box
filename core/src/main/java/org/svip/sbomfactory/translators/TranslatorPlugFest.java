@@ -1,10 +1,9 @@
 package org.svip.sbomfactory.translators;
 
-import org.json.JSONObject;
 import org.svip.sbom.model.SBOM;
 
-import java.nio.file.Paths;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * file: Translator.java

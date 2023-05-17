@@ -1,6 +1,5 @@
 package org.svip.sbomfactory.generators.generators.spdx;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.svip.sbomfactory.generators.generators.BOMStore;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
@@ -9,7 +8,6 @@ import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.svip.sbomfactory.generators.utils.Debug.log;
 

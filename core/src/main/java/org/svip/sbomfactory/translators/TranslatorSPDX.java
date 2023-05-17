@@ -3,13 +3,13 @@ package org.svip.sbomfactory.translators;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import org.cyclonedx.exception.ParseException;
-import org.svip.sbom.model.*;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.PURL;
+import org.svip.sbom.model.SBOM;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;

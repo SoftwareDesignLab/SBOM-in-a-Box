@@ -1,6 +1,6 @@
 package org.svip.sbomfactory.translators;
 
-import org.svip.sbom.model.*;
+import org.svip.sbom.model.SBOM;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
