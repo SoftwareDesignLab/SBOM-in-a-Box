@@ -202,7 +202,8 @@ public class ParserController {
             } // Otherwise it will be unpackaged and INTERNAL (LIBRARY if it has been parsed as such)
 
             // Add Components to SBOM
-            this.SBOM.addComponents(parent, components);
+            for (ParserComponent c : components)
+                this.SBOM.addComponent(parent, c);
         }
         catch (IOException e) {
             final IOException newE = new IOException(String.format("Error Parsing File '%s': File could not be parsed.", filename));
