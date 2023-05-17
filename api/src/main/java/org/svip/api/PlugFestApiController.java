@@ -11,7 +11,7 @@ import org.svip.sbom.model.SBOM;
 import org.svip.sbomanalysis.comparison.Comparison;
 import org.svip.sbomanalysis.qualityattributes.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.QualityReport;
-import org.svip.sbomfactory.translators.TranslatorPlugFest;
+import org.svip.sbomfactory.translators.TranslatorController;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ public class PlugFestApiController {
 
         for (int i = 0; i < contents.size(); i++) {
             // Get contents of the file
-            sboms.add(TranslatorPlugFest.translateContents(contents.get(i), fileNames.get(i)));
+            sboms.add(TranslatorController.toSBOM(contents.get(i), fileNames.get(i)));
         }
 
         if(sboms.size() < 2){
@@ -90,7 +90,7 @@ public class PlugFestApiController {
     @PostMapping("qa")
     public ResponseEntity<QualityReport> qa(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
 
-        SBOM sbom = TranslatorPlugFest.translateContents(contents, fileName);
+        SBOM sbom = TranslatorController.toSBOM(contents, fileName);
 
         // Check if the sbom is null
         if (sbom == null) {
@@ -117,7 +117,7 @@ public class PlugFestApiController {
      */
     @PostMapping("parse")
     public ResponseEntity<SBOM> parse(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
-        SBOM sbom = TranslatorPlugFest.translateContents(contents, fileName);
+        SBOM sbom = TranslatorController.toSBOM(contents, fileName);
 
         try {
             // Explicitly return null if failed
