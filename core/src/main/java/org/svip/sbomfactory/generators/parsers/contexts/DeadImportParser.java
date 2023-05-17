@@ -25,7 +25,7 @@ public class DeadImportParser extends ContextParser {
      * @param fileContents file contents to be parsed
      */
     public void parseDeadImports(ArrayList<ParserComponent> components, String fileContents) {
-        System.out.println("Detecting Dead Code & Imports...\n");
+        Debug.log(Debug.LOG_TYPE.DEBUG, "Detecting Dead Code & Imports...");
         // Splits source file to be read line by line
         final String[] lines = fileContents.split("\n");
         // Iterates through each component of the source file
