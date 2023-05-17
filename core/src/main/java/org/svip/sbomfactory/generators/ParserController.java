@@ -99,7 +99,8 @@ public class ParserController {
 
         // Create new SBOM Object
         ParserComponent headComponent = new ParserComponent(this.projectName);
-        this.SBOM = new SBOM(headComponent);
+        this.SBOM = new SBOM();
+        this.SBOM.addComponent(null, headComponent); //add head component to SBOM
     }
 
     //#endregion
