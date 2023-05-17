@@ -5,6 +5,8 @@ import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -83,6 +85,30 @@ public abstract class LanguageParser extends Parser {
             final long t1 = System.currentTimeMillis();
 
             parseRegexMatch(components, m);
+
+            List<ParserComponent> componentsToRemove = new ArrayList<>();
+
+            for(ParserComponent component : components) {
+                if(component.getName().equals("*")) {
+                    Debug.log(Debug.LOG_TYPE.DEBUG, String.format("Import wildcard found in component %s with group %s",
+                            component.getName(), component.getGroup()));
+                    if(component.getGroup() != null) {
+                        List<String> groups = new ArrayList<>(Arrays.stream(component.getGroup().split("/"))
+                                .toList()); // Get list of all subgroups in the component group
+                        component.setName(groups.remove(groups.size() - 1)); // Set name to last group of component
+                                                                                   // TODO is this correct behavior?
+                        // Set new component group, exclude last element
+                        component.setGroup(String.join("/", groups));
+                        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("Component renamed to %s with group %s",
+                                component.getName(), component.getGroup()));
+                    } else {
+                        componentsToRemove.add(component); // This is an invalid component (something like import *)
+                        Debug.log(Debug.LOG_TYPE.DEBUG, "Component has no group, removing from SBOM.");
+                    }
+                }
+            }
+
+            componentsToRemove.forEach(components::remove);
 
             final long t2 = System.currentTimeMillis();
             log(Debug.LOG_TYPE.DEBUG, String.format("Component parsing done in %s ms.", t2 - t1));
