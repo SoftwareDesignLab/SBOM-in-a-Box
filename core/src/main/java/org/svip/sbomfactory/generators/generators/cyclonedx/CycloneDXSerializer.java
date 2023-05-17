@@ -305,6 +305,7 @@ public class CycloneDXSerializer extends StdSerializer<CycloneDXStore> {
         switch(type) {
             case LANGUAGE -> { return "framework"; }
             case INTERNAL -> { return "file"; }
+            case APPLICATION -> { return "application"; }
             default -> { return "library"; }
         }
     }

@@ -105,8 +105,8 @@ public class SubprocessParser extends ContextParser {
         // TODO: Better way to handle this? Currently the entire call is stored as name and type is set to EXTERNAL
         for (final String subprocessCall : this.context) {
             // Create ParserComponent
-            final ParserComponent c = new ParserComponent(subprocessCall);
-            c.setType(ParserComponent.Type.EXTERNAL);
+            final ParserComponent c = new ParserComponent(subprocessCall.replaceAll("\\\\\\\\", "/"));
+            c.setType(ParserComponent.Type.APPLICATION);
             // Add ParserComponent to components
             components.add(c);
         }
