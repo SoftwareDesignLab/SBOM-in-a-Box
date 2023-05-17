@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.stream.Stream;
 
 
@@ -21,19 +20,29 @@ import java.util.stream.Stream;
  */
 public class TranslatorController {
 
-    // Map containing all translators with their extensions
-    private static final HashMap<String, TranslatorCore> EXTENSION_MAP = new HashMap<>() {{
+    public enum TranslatorSchema {
+        XML("xml", new TranslatorCDXXML()),
+        JSON("json", new TranslatorCDXJSON()),
+        SPDX("spdx", new TranslatorSPDX());
 
-        final TranslatorCDXXML translatorCDXXML = new TranslatorCDXXML();
-        put("xml", translatorCDXXML);
+        private final String extension;
 
-        final TranslatorCDXJSON translatorCDXJSON = new TranslatorCDXJSON();
-        put("json", translatorCDXJSON);
+        private TranslatorCore translator;
 
-        final TranslatorSPDX translatorSPDX = new TranslatorSPDX();
-        put("spdx", translatorSPDX);
+        TranslatorSchema(String extension, TranslatorCore translator) {
+            this.extension = extension;
+            this.translator = translator;
+        }
 
-    }};
+        public static TranslatorSchema getTranslator(String extension) {
+            switch (extension) {
+                case "xml" -> { return XML; }
+                case "json" -> { return JSON; }
+                case "spdx" -> { return SPDX; }
+            }
+            return null;
+        }
+    }
 
 
     /**
@@ -49,9 +58,9 @@ public class TranslatorController {
 
         try {
             // Get the respective translator based on the file's extension
-            final TranslatorCore translator = EXTENSION_MAP.get(
+            final TranslatorCore translator = TranslatorSchema.getTranslator(
                     filePath.substring(filePath.lastIndexOf('.') + 1)
-            );
+            ).translator;
 
             // If the translator exists and is an actual translator, translate and add the SBOM to the list
             // Otherwise, print out an error stating that the SBOM is not a correct format
@@ -102,9 +111,9 @@ public class TranslatorController {
             try {
 
                 // Get the respective translator based on the file's extension
-                final TranslatorCore translator = EXTENSION_MAP.get(
+                final TranslatorCore translator = TranslatorSchema.getTranslator(
                         sbom_item.substring(sbom_item.lastIndexOf('.') + 1)
-                );
+                ).translator;
 
                 // If the translator exists and is an actual translator, translate and add the SBOM to the list
                 // Otherwise, print out an error stating that the SBOM is not a correct format

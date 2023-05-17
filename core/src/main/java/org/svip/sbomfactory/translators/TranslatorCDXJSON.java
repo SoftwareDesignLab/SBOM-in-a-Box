@@ -39,7 +39,7 @@ public class TranslatorCDXJSON extends TranslatorCore {
         // Use JSON Parser to parse cdx.json file and store into cyclonedx Bom Object
         Bom json_sbom = parser.parse(fileContents.getBytes());
 
-        bom_data.put("originFormat", json_sbom.getBomFormat());
+        bom_data.put("format", json_sbom.getBomFormat());
         bom_data.put("specVersion", json_sbom.getSpecVersion());
         bom_data.put("sbomVersion", String.valueOf(json_sbom.getVersion()));
         bom_data.put("author", json_sbom.getMetadata().getAuthors() == null ?
