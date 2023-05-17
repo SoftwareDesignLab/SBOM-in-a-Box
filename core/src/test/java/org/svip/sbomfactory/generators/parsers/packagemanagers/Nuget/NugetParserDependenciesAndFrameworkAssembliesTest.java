@@ -58,7 +58,11 @@ public class NugetParserDependenciesAndFrameworkAssembliesTest extends ParseDepF
 
         //Check component's name
 
-        String str = "System.Web" ;
+        String str = "System.Json" ;
+        assertTrue(ValueSet.contains(str));
+        assertEquals("MIT", components.get(0).getLicenses().toArray()[0]);
+
+        str = "System.Web" ;
         assertTrue(ValueSet.contains(str));
 
         str = "System.Net" ;
@@ -69,9 +73,11 @@ public class NugetParserDependenciesAndFrameworkAssembliesTest extends ParseDepF
 
         str = "Newtonsoft.Json" ;
         assertTrue(ValueSet.contains(str));
+        assertEquals("MIT", components.get(5).getLicenses().toArray()[0]);
 
         str = "RestSharp" ;
         assertTrue(ValueSet.contains(str));
+        assertEquals("Apache-2.0", components.get(2).getLicenses().toArray()[0]);
 
         str = "Selenium.Support" ;
         assertTrue(ValueSet.contains(str));

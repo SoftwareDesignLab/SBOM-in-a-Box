@@ -353,14 +353,17 @@ public abstract class PackageManagerParser extends Parser {
                         // Get page contents
                         final String contents = getUrlContents(queryURL(this.url, false));
 
-                        // Parse license(s)
-                        final Matcher m = Pattern.compile(finalLicenseRegex,
-                                Pattern.MULTILINE).matcher(contents);
+                        if(contents.length() > 0){
+                            // Parse license(s)
+                            final Matcher m = Pattern.compile(finalLicenseRegex,
+                                    Pattern.MULTILINE).matcher(contents);
 
-                        // Add all found licenses
-                        while (m.find()) {
-                            this.component.addLicense(m.group(1).trim());
+                            // Add all found licenses
+                            while (m.find()) {
+                                this.component.addLicense(m.group(1).trim());
+                            }
                         }
+
                     }
                 });
             }
