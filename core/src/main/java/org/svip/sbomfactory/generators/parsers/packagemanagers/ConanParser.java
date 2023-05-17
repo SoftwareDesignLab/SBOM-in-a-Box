@@ -69,16 +69,11 @@ public class ConanParser extends PackageManagerParser {
 
         // Iterate over dependencies
         for (final LinkedHashMap<String, String> d : (ArrayList<LinkedHashMap<String, String>>) data.get("dependencies")) {
-            // Get value from map
-            //final HashMap<String, String> d = this.dependencies.get(artifactId);
-
+            // Get value from ma
             // Create ParserComponent from dep info
             final ParserComponent c = new ParserComponent(d.get("artifactId"));
-            //c.setGroup(d.get("group"));
-//            if (d.containsKey("type")) {
-//                final String type = d.get("type");
-//                if (type.equals("file")) c.setType(ParserComponent.Type.INTERNAL);
-//            }
+                  c.setType(ParserComponent.Type.EXTERNAL);
+                  c.setGroup("None");
             if (d.containsKey("version")) c.setVersion(d.get("version"));
 
             // TODO: Query
@@ -103,54 +98,57 @@ public class ConanParser extends PackageManagerParser {
 
         fileContents = removeComments(fileContents);
 
-        // Init main Matcher
-        // Regex101: https://regex101.com/r/a3rIlp/3
-        Matcher m;
+        // Init main Matcher for conanfile.txt(default)   // Regex101: https://regex101.com/r/a3rIlp/3
+        Matcher m = Pattern.compile("(^|\\s*)(\\[[a-z_-]*\\])\\s*(((?!.*\\[([a-z_-]*)\\]).*\\s*)*)", Pattern.MULTILINE).matcher(fileContents);
 
         //Check file content to see if it is a conanfile.txt or conanfile.py
-        if (fileContents.contains("[requires]")) {
-            System.out.println("conanfile.txt content found!");
-            m = Pattern.compile("(^|\\s*)(\\[[a-z_-]*\\])\\s*(((?!.*\\[([a-z_-]*)\\]).*\\s*)*)", Pattern.MULTILINE).matcher(fileContents);
-        } else if (fileContents.contains(" requirements(self):") && fileContents.contains("self.requires(")) {
-            System.out.println("conanfile.py content found!");
+        if (fileContents.contains(" requirements(self):") && fileContents.contains("self.requires(")) {
+            //System.out.println("conanfile.py content found!");
             m = Pattern.compile("(^|\\s*)(def\\s+[a-z_]+\\(self\\)\\:)\\s*(((?!.*def\\s+[a-z_]+\\(self\\)\\:).*\\s*)*)",Pattern.MULTILINE)
                     .matcher(fileContents);
-        } else {
-            System.out.println("Neither a conanfile.py nor conanfile.txt !");
-            return;
         }
 
 
+        ArrayList<LinkedHashMap<String, String>> deps = new ArrayList<>();
         // Store results in data
         for (final MatchResult mr : m.results().toList()) {
-            // Get key and value of match ("[requires]...") or .....
+            // Get key and value of match ("[requires]...") or "defrequirements(self):..."
                   String key = mr.group(2).trim();
             final String value = mr.group(3).trim();
-            System.out.println("key:\n  " + key + "\nvalue:\n   " + value + "\n\n");
+            //System.out.println("key:\n  " + key + "\nvalue:\n   " + value + "\n\n");
+            //remove all white spaces in the key
             key = key.replaceAll("\\s+","");
-            System.out.println("R key:\n  " + key + "\nvalue:\n   " + value + "\n\n");
-
+            //System.out.println("R key:\n  " + key + "\nvalue:\n   " + value + "\n\n");
 
             // Dependencies will need to be parsed further, so pass raw string
             switch(key) {
                 case "[requires]":
-                    System.out.println("got \"[requires]\" in switch stmt");
+                    //System.out.println("got \"[requires]\" in switch stmt");
                     String[] lines = value.split("\n");
                     // Init dependencies list
-                    final ArrayList<LinkedHashMap<String, String>> deps = new ArrayList<>();
                     for (String line : lines) {
                         final LinkedHashMap<String, String> dep = new LinkedHashMap<>();
-                        final String[] linei = line.trim().split("/");
-                        dep.put("artifactId", linei[0]);
-                        dep.put("version", linei[1]);
+                        procline(dep,  line);
                         // Insert value
                         deps.add(dep);
                     }  //for loop for lines
                     data.put("dependencies", deps);
-                    int i = 5;
+                    break;
+                case "defrequirements(self):":
+                    //System.out.println("Got R key:\n  " + key + "\nvalue:\n   " + value + "\n\n");
+                    lines = value.split("\n");
+                    for (String line : lines) {
+                        if(line.contains("self.requires(\"")) {
+                            final LinkedHashMap<String, String> dep = new LinkedHashMap<>();
+                            String tline = line.trim().replaceAll("self\\.requires\\(\"|\"\\)", "");
+                            procline(dep,  tline);
+                            // Insert value
+                            deps.add(dep);
+                        }
+                    }
+                    data.put("dependencies", deps);
                     break;
                 default:
-                    System.out.println("Not a \"[requires]\" in switch stmt");
                     break;
             }
         }   // for (final MatchResult mr : m.results().toList()) {
@@ -160,28 +158,35 @@ public class ConanParser extends PackageManagerParser {
     }
 
     public String removeComments(String text) {
-        String effectivetext = "";
-        Boolean incomment = false;
+        String nocommenttext = "";
+        Boolean inblockcomment = false;
         for (String line : text.split("\n")) {
             if (line.contains("\"\"\"") || line.contains("'''")) {
-                incomment = !incomment;
+                inblockcomment = !inblockcomment;
                 //check to see if the end comment(""" or ''') is on the same line
                 String tline = line.trim();
                 String bsubstr = tline.substring(0, 3);
                 String substr = tline.substring(3);
                 if ((bsubstr.contains("\"\"\"") || bsubstr.contains("'''")) && (substr.contains("\"\"\"") || substr.contains("'''"))) {
-                    incomment = !incomment;
+                    inblockcomment = !inblockcomment;
                 }
                 continue;  //skip the ending quotes
             }
-            if (!incomment) {
+            if (!inblockcomment) {
                 String rmedcmt = line.replaceAll("^#.*|\\s+#.*", "") + "\n"; //#/line sign comments
-                effectivetext = effectivetext + rmedcmt;
+                nocommenttext = nocommenttext + rmedcmt;
             }
         }
-        System.out.println("text***********:\n" + text);
-        System.out.println("effectivetext==============:\n" + effectivetext);
+        //System.out.println("text***********:\n" + text);
+        //System.out.println("nocommenttext==============:\n" + nocommenttext);
 
-        return effectivetext;
+        return nocommenttext;
+    }
+
+    public LinkedHashMap<String, String> procline(LinkedHashMap<String, String> dep,  String line) {
+        final String[] linei = line.trim().split("/");
+        dep.put("artifactId", linei[0]);
+        dep.put("version", linei[1]);
+        return dep;
     }
 }

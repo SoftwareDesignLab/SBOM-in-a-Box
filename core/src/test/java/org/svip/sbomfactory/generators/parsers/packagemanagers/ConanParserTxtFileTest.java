@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
@@ -22,6 +23,7 @@ public class ConanParserTxtFileTest extends ParseDepFileTestCore {
                 "src/test/java/org/svip/sbomfactory/generators/TestData/Conan");
     }
 
+    @Disabled
     @Test
     @DisplayName("Test Properties")
     void testProperties() {

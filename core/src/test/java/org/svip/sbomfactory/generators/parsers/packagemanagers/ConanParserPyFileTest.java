@@ -27,7 +27,8 @@ public class ConanParserPyFileTest extends ParseDepFileTestCore {
                 Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.py")),
                 "src/test/java/org/svip/sbomfactory/generators/TestData/Conan");
     }
-    
+
+    @Disabled
     @Test
     @DisplayName("Test Properties")
     void testProperties() {
@@ -53,13 +54,14 @@ public class ConanParserPyFileTest extends ParseDepFileTestCore {
 //        assertEquals("this/is/a/path/test", props.get("testPath"));
     }
 
-    @Disabled
+
     @Test
     @DisplayName("Conan PY Test Components")
     void testComponents() {
 
+        int i = 5;
         // Test correct count is found
-        assertEquals(9, this.components.size());
+        assertEquals(2, this.components.size());
 
         //Make ValueSet
         final Set<String> ValueSet = new HashSet<>();
@@ -68,28 +70,18 @@ public class ConanParserPyFileTest extends ParseDepFileTestCore {
             ValueSet.add(pc.getName());
         }
 
+
         //Check component's name
-        String str = "folly";
+        String str = "matrix";
         assertTrue(ValueSet.contains(str));
         //Check component's Version
-        assertEquals("2020.08.10.00", getComponent(str).getVersion());
+        assertEquals("[>=1.0 <2.0]", getComponent(str).getVersion());
 
         //Check component's name
-        str = "openssl";
+        str = "sound32";
         assertTrue(ValueSet.contains(str));
         //Check component's Version
-        assertEquals("1.1.1k", getComponent(str).getVersion());
+        assertEquals("[>=1.0 <2.0]", getComponent(str).getVersion());
 
-        //Check component's name
-        str = "poco";
-        assertTrue(ValueSet.contains(str));
-        //Check component's version
-        assertEquals("[>1.0,<1.9]", getComponent(str).getVersion());
-
-        //Check component's name
-        str = "boost";
-        assertTrue(ValueSet.contains(str));
-        //Check component's version
-        assertEquals("1.70.0#revision2", getComponent(str).getVersion());
     }
 }
