@@ -119,26 +119,23 @@ public class SBOMGenerator {
      * @param directory The path of the SBOM file including the file name and type to write to.
      * @param format The file format to write to the file.
      */
-    public void writeFile(String directory, GeneratorSchema.GeneratorFormat format) throws IOException {
+    public void writeFile(String directory, GeneratorSchema.GeneratorFormat format) throws IOException, GeneratorException {
         String path = generatePathToSBOM(directory, format);
 
         log(Debug.LOG_TYPE.DEBUG, "Building " + schema.name() + " SBOM object");
-        try {
-            // Build model
-            BOMStore bomStore = buildBOMStore();
+        // Build model
+        BOMStore bomStore = buildBOMStore();
 
-            // Serialize
-            log(Debug.LOG_TYPE.DEBUG, "Attempting to write to " + path);
-            if(format == GeneratorSchema.GeneratorFormat.SPDX) {
-                SPDXTagValueWriter writer = new SPDXTagValueWriter((SPDXStore) bomStore);
-                writer.writeToFile(path);
-            } else {
-                format.getObjectMapper(schema).writerWithDefaultPrettyPrinter().writeValue(new File(path), bomStore);
-            }
-            log(Debug.LOG_TYPE.SUMMARY, schema.name() + " SBOM saved to: " + path);
-        } catch (GeneratorException e) {
-            log(Debug.LOG_TYPE.ERROR, "Unable to write " + schema.name() + " SBOM to " + path);
+        // Serialize
+        log(Debug.LOG_TYPE.DEBUG, "Attempting to write to " + path);
+        if(format == GeneratorSchema.GeneratorFormat.SPDX) {
+            SPDXTagValueWriter writer = new SPDXTagValueWriter((SPDXStore) bomStore);
+            writer.writeToFile(path);
+        } else {
+            format.getObjectMapper(schema).writerWithDefaultPrettyPrinter().writeValue(new File(path), bomStore);
         }
+
+        log(Debug.LOG_TYPE.SUMMARY, schema.name() + " SBOM saved to: " + path);
     }
 
     /**
@@ -149,29 +146,24 @@ public class SBOMGenerator {
      *
      * @return A string representation of an SBOM file.
      */
-    public String writeFileToString(GeneratorSchema.GeneratorFormat format, boolean prettyPrint) {
+    public String writeFileToString(GeneratorSchema.GeneratorFormat format, boolean prettyPrint) throws GeneratorException, JsonProcessingException {
         log(Debug.LOG_TYPE.DEBUG, "Building " + schema.name() + " SBOM object");
 
-        try {
-            BOMStore bomStore = buildBOMStore();
-            ObjectMapper mapper = format.getObjectMapper(schema);
-            if(!prettyPrint) mapper.setDefaultPrettyPrinter(null);
+        BOMStore bomStore = buildBOMStore();
+        ObjectMapper mapper = format.getObjectMapper(schema);
+        if(!prettyPrint) mapper.setDefaultPrettyPrinter(null);
 
-            String out;
+        String out;
 
-            if(format == GeneratorSchema.GeneratorFormat.SPDX) {
-                SPDXTagValueWriter writer = new SPDXTagValueWriter((SPDXStore) bomStore);
-                out = writer.writeToString(); // TODO should we support pretty-printing?
-            } else {
-                out = mapper.writeValueAsString(bomStore);
-            }
-            log(Debug.LOG_TYPE.SUMMARY, schema.name() + " SBOM successfully written to string");
-            return out;
-        } catch (GeneratorException | JsonProcessingException e) {
-            log(Debug.LOG_TYPE.ERROR, "Unable to write " + schema.name() + " SBOM to a string");
+        if(format == GeneratorSchema.GeneratorFormat.SPDX) {
+            SPDXTagValueWriter writer = new SPDXTagValueWriter((SPDXStore) bomStore);
+            out = writer.writeToString();
+        } else {
+            out = mapper.writeValueAsString(bomStore);
         }
 
-        return null;
+        log(Debug.LOG_TYPE.SUMMARY, schema.name() + " SBOM successfully written to string");
+        return out;
     }
 
     //#endregion

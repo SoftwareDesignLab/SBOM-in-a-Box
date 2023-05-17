@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.generators.generators;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,7 +54,7 @@ public class SBOMGeneratorTest {
 
     @Test
     @DisplayName("writeFile()")
-    void writeFileTest() throws IOException {
+    void writeFileTest() throws IOException, GeneratorException {
         OUT_PATH.toFile().mkdir();
 
         List<String> expectedFilePaths = new ArrayList<>();
@@ -91,7 +92,7 @@ public class SBOMGeneratorTest {
 
     @Test
     @DisplayName("writeFileToString() (NO PRETTY-PRINTING)")
-    void writeFileToStringNoPrettyPrintingTest() {
+    void writeFileToStringNoPrettyPrintingTest() throws GeneratorException, JsonProcessingException {
         for(SBOMGenerator generator : generators) {
             // Test all possible formats
             for(GeneratorSchema.GeneratorFormat format : GeneratorSchema.GeneratorFormat.values()) {
@@ -117,7 +118,7 @@ public class SBOMGeneratorTest {
 
     @Test
     @DisplayName("writeFileToString() (PRETTY-PRINTING)")
-    void writeFileToStringPrettyPrintingTest() {
+    void writeFileToStringPrettyPrintingTest() throws GeneratorException, JsonProcessingException {
         for(SBOMGenerator generator : generators) {
             // Test all possible formats
             for(GeneratorSchema.GeneratorFormat format : GeneratorSchema.GeneratorFormat.values()) {
