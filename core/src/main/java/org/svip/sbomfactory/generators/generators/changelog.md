@@ -5,41 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v4.2.0-alpha] - (05/01/2023)
+## [v4.2.0-alpha] - (04/XX/2023)
 
 ### Added
 
-- Add `CycloneDXStore` & `CycloneDXSerializer` Classes
-  - The `CycloneDXStore` class stores all components and metadata associated with a CDX BOM.
-  - The `CycloneDXSerializer` class can serialize an instance of `CycloneDXStore` to a CDX output file, using a custom 
-    implementation of a Jackson JSON serializer
+- Add `BOM` & `BOMSerializer` Classes
+  - The `BOM` class stores all components and metadata associated with a CDX BOM.
+  - The `BOMSerializer` class can serialize an instance of `BOM` to a CDX output file, using a custom implementation of
+    a Jackson JSON serializer
 - Add `Tool` Class
   - A simple dataclass that allows storage of information about our generator tool.
-- Add `License` Class
-  - Contains methods to store a license string and its SPDX short identifier, parsed using the now-static
-    `LicenseManager` Class.
-  - Replaced storage via strings in all stores, serializers, and `Tool`.
-- Refactored common functionality from `SPDXStore` & `CycloneDXStore` into a `BOMStore` Class.
-- Add `version`, `internalType`, & `bomStoreType` fields to `GeneratorSchema` Class.
-  - This allows us to construct an `SBOMGenerator` with only an SBOM object and GeneratorSchema.
 
 ### Changed
 
-- Refactored SPDX-specific class names into generic class names to promote semantics.
+- Refactored all SPDX serializer classes into `Document` classes to promote semantics as well as to make XML generation
+  fit to v2.3 specification.
+  - `SPDXStore` -> `Document`
+  - `SPDXStoreSerializer` -> `DocumentSerializer`
   - `SPDXRelationship` -> `Relationship`
   - `SPDXLicenseManager` -> `LicenseManager`
 - Refactored `SPDXStoreException` Class into `GeneratorException` Class to use between different generators.
-- Create `generators.utils` package, moved the following classes in:
-  - `GeneratorException`, `GeneratorSchema`, `License`, `LicenseManager`, `Tool`
-- `LicenseManager` Class is now static and queries the SPDX license URL only once when first referenced.
-- `SBOMGenerator` Class is no longer abstract and contains all methods to construct a `BOMStore` instance.
-- `ParserComponent` Class now stores multiple `License`'s and all files analyzed when constructing.
-- `ParserComponent` Class now contains a `generateHash()` method to obtain the checksum of a component.
 
 ### Removed
 - `Java_SPDX_old.json` as we now implement more fields than the previous implementation that used `spdx-java-library`.
-- `SPDXGenerator` & `CycloneDXGenerator` Class
-  - All functionality has been moved into `SBOMGenerator`
 
 ## [v4.1.1-alpha] - (04/21/2023)
 
