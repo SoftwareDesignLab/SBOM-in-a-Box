@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v4.4.1-alpha] - (05/XX/2023)
 
+### Added
+
+- `NugetParser` which parses the main configuration file of Nuget projects, and queries the Nuget package-manager for any existing licenses. 
+
 ### Changed
 - Updated `LicenseManager.parseLicense()` method to more accurately and efficiently match an arbitrary license string to
   an SPDX short identifier.
