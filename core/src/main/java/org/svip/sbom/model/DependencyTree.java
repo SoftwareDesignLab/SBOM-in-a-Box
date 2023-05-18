@@ -179,6 +179,7 @@ public class DependencyTree {
      * @return A string representation of the internal dependency map.
      */
     private String dependencyMapToString(UUID component, String indent) {
+        if(component == null) return "";
         Component depComponent = getComponent(component);
         StringBuilder out = new StringBuilder(indent + "+ ");
 
