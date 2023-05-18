@@ -28,9 +28,9 @@ public class CycloneDXSerializerTest {
 
     protected CycloneDXSerializerTest() {
         jsonTranslator = new TranslatorCDXJSON();
-        testSBOM = new SBOM(); // TODO build test SBOM
+        testSBOM = new SBOM();
         testSBOM.addComponent(null, new ParserComponent("testcomponent"));
-//        SBOMGeneratorTest.addTestComponentsToSBOM(testSBOM);
+//        SBOMGeneratorTest.addTestComponentsToSBOM(testSBOM); // TODO this currently breaks translator
         generator = new SBOMGenerator(testSBOM, GeneratorSchema.CycloneDX);
     }
 
