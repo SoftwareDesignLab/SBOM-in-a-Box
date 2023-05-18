@@ -196,6 +196,9 @@ public class Component {
     }
 
     public void addLicense(String license) {
+        if (licenses == null) {
+            licenses = new HashSet<>();
+        }
         licenses.add(license);
     }
 
