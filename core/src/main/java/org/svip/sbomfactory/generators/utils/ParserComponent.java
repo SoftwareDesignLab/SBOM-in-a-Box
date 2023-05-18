@@ -134,6 +134,7 @@ public class ParserComponent extends Component {
      * license string to a short SPDX identifier.
      */
     public void resolveLicenses() {
+        if(getLicenses() == null || getLicenses().isEmpty()) return;
         for(String licenseName : getLicenses()) {
             Debug.log(Debug.LOG_TYPE.DEBUG, String.format("SPDXStore: License found in component %s: \"%s\"",
                     this.getName(), licenseName));
