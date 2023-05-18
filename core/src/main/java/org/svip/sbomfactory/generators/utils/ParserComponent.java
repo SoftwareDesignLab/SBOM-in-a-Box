@@ -100,6 +100,8 @@ public class ParserComponent extends Component {
     public String getSPDXID() { return SPDXid; }
 
     public String getGroup() {
+        if(Objects.equals(group, ""))
+            return null;
         return group;
     }
 
