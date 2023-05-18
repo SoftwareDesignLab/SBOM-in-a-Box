@@ -101,6 +101,9 @@ public class SBOMGenerator {
         UUID uuid = UUID.nameUUIDFromBytes(hash.getBytes());
         internalSBOM.setSerialNumber(String.format("urn:uuid:%s", uuid));
 
+        // Set sbom version TODO figure out how to increment this for the same project
+        internalSBOM.setSbomVersion("1");
+
         /*
             SBOM specific settings
          */
@@ -179,7 +182,7 @@ public class SBOMGenerator {
     protected BOMStore buildBOMStore() throws GeneratorException {
         ParserComponent headComponent = (ParserComponent) internalSBOM.getComponent(internalSBOM.getHeadUUID());
         String serialNumber = internalSBOM.getSerialNumber();
-        int version = 1; // TODO should we have to increment this?
+        int version = Integer.parseInt(internalSBOM.getSbomVersion());
 
         Object[] parameters = {serialNumber, version, headComponent};
         Class<?>[] parameterTypes = Arrays.stream(parameters).map(Object::getClass).toArray(Class<?>[]::new);
@@ -192,6 +195,7 @@ public class SBOMGenerator {
         }
 
         bomStore.addTool(tool); // Add our tool as info
+        internalSBOM.setTimestamp(bomStore.getTimestamp()); // Update internal SBOM with new timestamp
 
         // Add all depth 0 components as packages
         final Set<Component> componentSet = internalSBOM

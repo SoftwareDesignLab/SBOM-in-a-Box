@@ -10,6 +10,7 @@ import org.svip.sbom.model.PURL;
 import org.svip.sbom.model.SBOM;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -48,7 +49,11 @@ public class TranslatorCDXJSON extends TranslatorCore {
         bom_data.put("author", json_sbom.getMetadata().getAuthors() == null ?
                         json_sbom.getMetadata().getTools().toString() : json_sbom.getMetadata().getAuthors().toString());
         bom_data.put("serialNumber", json_sbom.getSerialNumber());
-        bom_data.put("timestamp" , json_sbom.getMetadata().getTimestamp().toString());
+
+        Date timestamp = json_sbom.getMetadata().getTimestamp();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+        bom_data.put("timestamp" , format.format(timestamp));
 
         org.cyclonedx.model.Component top_component_meta = json_sbom.getMetadata().getComponent();
 
