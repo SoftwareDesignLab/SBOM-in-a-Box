@@ -153,7 +153,8 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
         String ns = rootName.getNamespaceURI(); // Get the default namespace we want from rootName
         if (ns != null && ns.length() > 0) {
             try {
-                xmlGenerator.getStaxWriter().setPrefix(PREFIX, ns);
+                xmlGenerator.getStaxWriter().setDefaultNamespace(ns);
+//                xmlGenerator.getStaxWriter().setPrefix(PREFIX, ns);
             } catch (XMLStreamException e) {
                 StaxUtil.throwAsGenerationException(e, xmlGenerator);
             }
