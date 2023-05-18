@@ -116,7 +116,7 @@ public class SBOMGenerator {
     /**
      * Write an SBOM to a specified filepath and file format.
      *
-     * @param directory The path of the SBOM file including the file name and type to write to.
+     * @param directory The directory to generate the SBOM file in.
      * @param format The file format to write to the file.
      */
     public void writeFile(String directory, GeneratorSchema.GeneratorFormat format) throws IOException, GeneratorException {
