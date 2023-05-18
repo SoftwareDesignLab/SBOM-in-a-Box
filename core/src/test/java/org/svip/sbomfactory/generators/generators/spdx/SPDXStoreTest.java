@@ -9,6 +9,7 @@ import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -61,6 +62,11 @@ public class SPDXStoreTest extends BOMStoreTestCore<SPDXStore> {
         Debug.log(Debug.LOG_TYPE.SUMMARY, "SPDX Package correctly contains resolved external license with ID: "
                 + external.getSpdxLicense());
 
+        Map.Entry<String, String> file = bomStore.getFiles().entrySet().stream().toList().get(0);
+        assertEquals(1, bomStore.getFiles().keySet().size());
+        Debug.log(Debug.LOG_TYPE.SUMMARY, String.format("SPDX Document correctly contains file: %s with ID: %s",
+                file.getKey(), file.getValue()));
+
         assertTrue(bomStore.getDocumentDescribes().contains(spdxId));
         Debug.log(Debug.LOG_TYPE.SUMMARY, "SPDX Document Description field contains ID: " + spdxId);
 
@@ -68,32 +74,39 @@ public class SPDXStoreTest extends BOMStoreTestCore<SPDXStore> {
         Debug.log(Debug.LOG_TYPE.SUMMARY, "SPDX Packages contains added component");
     }
 
-//    @Test
-//    @DisplayName("addChild() with valid parent")
-//    void addChildValidTest() throws GeneratorException {
-//        Debug.log(Debug.LOG_TYPE.INFO, "addComponent(testComponents.get(0))");
-//        bomStore.addComponent(testComponents.get(0)); // Add head component
-//
-//        Debug.log(Debug.LOG_TYPE.INFO, "addChild(testComponents.get(0), testComponents.get(1))");
-//        bomStore.addChild(testComponents.get(0), testComponents.get(1)); // Add child component
-//
-//        assertTrue(bomStore.getAllComponents().contains(testComponents.get(1)));
-//        Debug.log(Debug.LOG_TYPE.SUMMARY, "Correctly contains testComponents.get(1)");
-//    }
-//
-//    @Test
-//    @DisplayName("addChild() with invalid parent")
-//    void addChildInvalidTest() {
-//        assertEquals(0, bomStore.getAllComponents().size());
-//        Debug.log(Debug.LOG_TYPE.SUMMARY, "Correctly contains 0 components");
-//
-//        Debug.log(Debug.LOG_TYPE.INFO, "addChild(testComponents.get(0), testComponents.get(1))");
-//
-//        assertThrows(GeneratorException.class, () -> {
-//            bomStore.addChild(testComponents.get(0), testComponents.get(1)); // Add child component
-//        });
-//
-//        Debug.log(Debug.LOG_TYPE.SUMMARY, "Correctly throws GeneratorException");
-//    }
+    @Test
+    @DisplayName("addChild() with valid parent")
+    void addChildValidTest() throws GeneratorException {
+        Debug.log(Debug.LOG_TYPE.INFO, "addComponent(testComponents.get(0))");
+        bomStore.addComponent(testComponents.get(0)); // Add head component
+
+        Debug.log(Debug.LOG_TYPE.INFO, "addChild(testComponents.get(0), testComponents.get(1))");
+        bomStore.addChild(testComponents.get(0), testComponents.get(1)); // Add child component
+
+        Relationship relationship = bomStore.getRelationships().get(0);
+
+        assertEquals(relationship.getRelationshipType(), Relationship.RELATIONSHIP_TYPE.DEPENDS_ON);
+        assertEquals(relationship.getElementId(), testComponents.get(0).getSPDXID());
+        assertEquals(relationship.getRelatedElement(), testComponents.get(1).getSPDXID());
+        Debug.log(Debug.LOG_TYPE.SUMMARY, "Relationship correctly generated: " + relationship);
+    }
+
+    @Test
+    @DisplayName("addChild() with invalid parent")
+    void addChildInvalidTest() throws GeneratorException {
+        assertEquals(0, bomStore.getAllComponents().size());
+        Debug.log(Debug.LOG_TYPE.SUMMARY, "Correctly contains 0 components");
+
+        testComponents.get(0).setSPDXID(null);
+        testComponents.get(1).setSPDXID(null);
+        Debug.log(Debug.LOG_TYPE.SUMMARY, "Reset testComponents SPDX IDs to null");
+
+        Debug.log(Debug.LOG_TYPE.INFO, "addChild(testComponents.get(0), testComponents.get(1))");
+
+        assertThrows(GeneratorException.class, () -> {
+            bomStore.addChild(testComponents.get(0), testComponents.get(1)); // Add child component
+        });
+        Debug.log(Debug.LOG_TYPE.SUMMARY, "Correctly throws GeneratorException");
+    }
 }
 
