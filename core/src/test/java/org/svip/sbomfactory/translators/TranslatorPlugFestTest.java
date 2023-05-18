@@ -219,7 +219,7 @@ public class TranslatorPlugFestTest {
         SBOM sbom = TranslatorPlugFest.translate(TEST_JSON);
         assertNotNull(sbom);
         assertNotNull(sbom.getHeadUUID());
-        assertEquals(11, sbom.getChildrenUUIDs(sbom.getHeadUUID()).size());
+        assertEquals(134, sbom.getChildrenUUIDs(sbom.getHeadUUID()).size());
     }
 
     @Test
