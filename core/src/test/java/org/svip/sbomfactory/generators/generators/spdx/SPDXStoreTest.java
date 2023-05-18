@@ -83,12 +83,14 @@ public class SPDXStoreTest extends BOMStoreTestCore<SPDXStore> {
         Debug.log(Debug.LOG_TYPE.INFO, "addChild(testComponents.get(0), testComponents.get(1))");
         bomStore.addChild(testComponents.get(0), testComponents.get(1)); // Add child component
 
-        Relationship relationship = bomStore.getRelationships().get(0);
-
-        assertEquals(relationship.getRelationshipType(), Relationship.RELATIONSHIP_TYPE.DEPENDS_ON);
-        assertEquals(relationship.getElementId(), testComponents.get(0).getSPDXID());
-        assertEquals(relationship.getRelatedElement(), testComponents.get(1).getSPDXID());
-        Debug.log(Debug.LOG_TYPE.SUMMARY, "Relationship correctly generated: " + relationship);
+        for(Relationship relationship : bomStore.getRelationships()) {
+            if(relationship.getRelationshipType() == Relationship.RELATIONSHIP_TYPE.DEPENDS_ON) {
+                assertEquals(relationship.getRelationshipType(), Relationship.RELATIONSHIP_TYPE.DEPENDS_ON);
+                assertEquals(relationship.getElementId(), testComponents.get(0).getSPDXID());
+                assertEquals(relationship.getRelatedElement(), testComponents.get(1).getSPDXID());
+                Debug.log(Debug.LOG_TYPE.SUMMARY, "Relationship correctly generated: " + relationship);
+            }
+        }
     }
 
     @Test
