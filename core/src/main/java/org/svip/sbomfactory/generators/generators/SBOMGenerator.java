@@ -259,7 +259,7 @@ public class SBOMGenerator {
      * @param format The format of the SBOM that will be written.
      * @return The complete filepath including file name and extension.
      */
-    protected String generatePathToSBOM(String directory, GeneratorSchema.GeneratorFormat format) {
+    public String generatePathToSBOM(String directory, GeneratorSchema.GeneratorFormat format) {
         // Get project name from head component of the SBOM
         StringBuilder path = new StringBuilder(directory);
 

@@ -152,7 +152,7 @@ public class DependencyTree {
         if (this == o) return true;
         if (!(o instanceof DependencyTree that)) return false;
 
-        return components.toString().equals(that.components.toString());
+        return this.toString().equals(that.toString());
     }
 
     @Override

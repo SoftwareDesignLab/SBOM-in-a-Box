@@ -4,12 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.cyclonedx.exception.ParseException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.generators.SBOMGeneratorTest;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.translators.TranslatorCDXJSON;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -27,7 +29,8 @@ public class CycloneDXSerializerTest {
     protected CycloneDXSerializerTest() {
         jsonTranslator = new TranslatorCDXJSON();
         testSBOM = new SBOM(); // TODO build test SBOM
-        SBOMGeneratorTest.addTestComponentsToSBOM(testSBOM);
+        testSBOM.addComponent(null, new ParserComponent("testcomponent"));
+//        SBOMGeneratorTest.addTestComponentsToSBOM(testSBOM);
         generator = new SBOMGenerator(testSBOM, GeneratorSchema.CycloneDX);
     }
 
@@ -41,11 +44,12 @@ public class CycloneDXSerializerTest {
         // TODO if this test works, ensure string output is the same as file output and we should be good
         generator.writeFile(OUT_PATH.toAbsolutePath().toString(), GeneratorSchema.GeneratorFormat.JSON);
 
-        Debug.log(Debug.LOG_TYPE.INFO, String.format("jsonTranslator.translate(\"%s\");",
-                OUT_PATH.toAbsolutePath() + "\\Head_Component_CycloneDX.json"));
-        // TODO get this to work
-        SBOM outSBOM = jsonTranslator.translate(OUT_PATH.toAbsolutePath() + "\\Head_Component_CycloneDX.json"); // TODO figure out translator path
+        String filePath = generator.generatePathToSBOM(OUT_PATH.toAbsolutePath().toString(),
+                GeneratorSchema.GeneratorFormat.JSON);
+        Debug.log(Debug.LOG_TYPE.INFO, String.format("jsonTranslator.translate(\"%s\");", filePath));
+        SBOM outSBOM = jsonTranslator.translate(filePath);
 
         assertEquals(generator.getInternalSBOM(), outSBOM); // Compare against internal, updated generator SBOM
+        Debug.log(Debug.LOG_TYPE.SUMMARY, "SBOM from generator == Translated SBOM from file output");
     }
 }
