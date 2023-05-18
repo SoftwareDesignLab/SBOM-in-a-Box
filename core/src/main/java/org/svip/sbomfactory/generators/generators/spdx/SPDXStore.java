@@ -77,7 +77,11 @@ public class SPDXStore extends BOMStore {
 
         this.packages = new ArrayList<>();
         this.documentDescribes = new ArrayList<>();
+
         this.relationships = new ArrayList<>();
+        this.relationships.add(new Relationship("SPDXRef-DOCUMENT", "SPDXRef-DOCUMENT",
+                Relationship.RELATIONSHIP_TYPE.DESCRIBES)); // TODO translator needs this, is this correct?
+
         this.files = new HashMap<>();
         this.externalLicenses = new HashSet<>();
 

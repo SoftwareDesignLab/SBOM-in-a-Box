@@ -27,7 +27,9 @@ public class SPDXTagValueWriterTest {
     protected SPDXTagValueWriterTest() {
         spdxTranslator = new TranslatorSPDX();
         testSBOM = new SBOM();
+        // We need >1 component in this because .spdx does not include a head component
         testSBOM.addComponent(null, new ParserComponent("testcomponent"));
+        testSBOM.addComponent(testSBOM.getHeadUUID(), new ParserComponent("testvisiblepackage"));
 //        SBOMGeneratorTest.addTestComponentsToSBOM(testSBOM); // TODO this currently breaks translator
         generator = new SBOMGenerator(testSBOM, GeneratorSchema.SPDX);
     }

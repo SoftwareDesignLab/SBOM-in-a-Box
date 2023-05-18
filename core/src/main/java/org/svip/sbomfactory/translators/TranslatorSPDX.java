@@ -25,29 +25,29 @@ public class TranslatorSPDX extends TranslatorCore {
     /**
      * Constants
      */
-    private static final String TAG = "#####";
+    public static final String TAG = "#####";
 
-    private static final String UNPACKAGED_TAG = "##### Unpackaged files";
+    public static final String UNPACKAGED_TAG = "##### Unpackaged files";
 
-    private static final String PACKAGE_TAG = "##### Package";
+    public static final String PACKAGE_TAG = "##### Package";
 
-    private static final String RELATIONSHIP_TAG = "##### Relationships";
+    public static final String RELATIONSHIP_TAG = "##### Relationships";
 
-    private static final String RELATIONSHIP_KEY = "Relationship: ";
+    public static final String RELATIONSHIP_KEY = "Relationship: ";
 
-    private static final String SPEC_VERSION_TAG = "SPDXVersion: ";
+    public static final String SPEC_VERSION_TAG = "SPDXVersion: ";
 
-    private static final String ID_TAG = "SPDXID: ";
+    public static final String ID_TAG = "SPDXID: ";
 
-    private static final String TIMESTAMP_TAG = "Created: ";
+    public static final String TIMESTAMP_TAG = "Created: ";
 
-    private static final String DOCUMENT_NAMESPACE_TAG = "DocumentNamespace: ";
+    public static final String DOCUMENT_NAMESPACE_TAG = "DocumentNamespace: ";
 
-    private static final String AUTHOR_TAG = "Creator: ";
+    public static final String AUTHOR_TAG = "Creator: ";
 
 
     // Used as an identifier for main SBOM information. Sometimes used as reference in relationships to show header contains main component.
-    private static final String DOCUMENT_REFERENCE_TAG = "SPDXRef-DOCUMENT";
+    public static final String DOCUMENT_REFERENCE_TAG = "SPDXRef-DOCUMENT";
 
     //Regex expression provided from: https://stackoverflow.com/questions/37615731/java-regex-for-uuid
     private static final Pattern uuid_pattern = Pattern.compile("urn:uuid:[a-f0-9]{8}(?:-[a-f0-9]{4}){4}[a-f0-9]{8}");
@@ -130,7 +130,7 @@ public class TranslatorSPDX extends TranslatorCore {
 
                     case AUTHOR_TAG:
                         if(!bom_data.containsKey("author")) {
-                            bom_data.put("author", current_line.split(":", 2)[1]);
+                            bom_data.put("author", current_line.split(": ", 2)[1]);
                         } else {
                             bom_data.put("author", bom_data.get("author") + " " + current_line.split(":", 2)[1]);
                         }
