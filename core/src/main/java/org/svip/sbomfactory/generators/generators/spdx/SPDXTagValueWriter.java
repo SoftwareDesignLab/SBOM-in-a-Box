@@ -59,7 +59,7 @@ public class SPDXTagValueWriter {
 
         String extractedLicenseInformation = getExtractedLicenseInformation();
         if(!extractedLicenseInformation.equals(""))
-            out.append(TranslatorSPDX.TAG + "Extracted License Information\n").append(extractedLicenseInformation);
+            out.append(TranslatorSPDX.TAG + " Extracted Licensing Information\n").append(extractedLicenseInformation);
 
         if(spdxStore.getFiles().size() > 0) {
             out.append(TranslatorSPDX.UNPACKAGED_TAG + "\n\n");
