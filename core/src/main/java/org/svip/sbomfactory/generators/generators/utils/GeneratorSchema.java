@@ -117,7 +117,7 @@ public enum GeneratorSchema {
 
             // Enable object indentation and set the pretty printer
             objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-            objectMapper.enable(SerializationFeature.WRAP_ROOT_VALUE);
+//            objectMapper.enable(SerializationFeature.WRAP_ROOT_VALUE);
             objectMapper.setDefaultPrettyPrinter(prettyPrinter);
             if(this == XML) ((XmlMapper) objectMapper).enable(ToXmlGenerator.Feature.WRITE_XML_1_1);
 
