@@ -50,7 +50,7 @@ public class TranslatorSPDX extends TranslatorCore {
     private static final String DOCUMENT_REFERENCE_TAG = "SPDXRef-DOCUMENT";
 
     //Regex expression provided from: https://stackoverflow.com/questions/37615731/java-regex-for-uuid
-    private static final Pattern uuid_pattern = Pattern.compile("[a-f0-9]{8}(?:-[a-f0-9]{4}){4}[a-f0-9]{8}");
+    private static final Pattern uuid_pattern = Pattern.compile("urn:uuid:[a-f0-9]{8}(?:-[a-f0-9]{4}){4}[a-f0-9]{8}");
 
     public TranslatorSPDX() {
         super("spdx");
@@ -125,7 +125,7 @@ public class TranslatorSPDX extends TranslatorCore {
                         break;
 
                     case SPEC_VERSION_TAG:
-                        bom_data.put("specVersion", current_line.split(": ", 2)[1]);
+                        bom_data.put("specVersion", current_line.split(": SPDX-", 2)[1]);
                         break;
 
                     case AUTHOR_TAG:
