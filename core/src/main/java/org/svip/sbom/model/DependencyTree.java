@@ -152,8 +152,7 @@ public class DependencyTree {
         if (this == o) return true;
         if (!(o instanceof DependencyTree that)) return false;
 
-        if (!components.equals(that.components)) return false;
-        return Objects.equals(headComponent, that.headComponent);
+        return components.toString().equals(that.components.toString());
     }
 
     @Override
@@ -161,5 +160,27 @@ public class DependencyTree {
         int result = components.hashCode();
         result = 31 * result + (headComponent != null ? headComponent.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        String componentMap = dependencyMapToString(headComponent, "  ");
+
+        return "\nSBOM Dependency Tree Information\n" +
+                "  + Component Map: \n  " + componentMap;
+    }
+
+    private String dependencyMapToString(UUID component, String indent) {
+        Component depComponent = getComponent(component);
+        StringBuilder out = new StringBuilder(indent + "+ ");
+
+        // All fields in this string will be used to compare
+        out.append(depComponent.getName()).append("\n");
+
+        for(UUID child : getChildrenUUIDs(component)) {
+            out.append(dependencyMapToString(child, indent + "  "));
+        }
+
+        return out.toString();
     }
 }
