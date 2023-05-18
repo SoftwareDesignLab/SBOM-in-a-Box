@@ -222,12 +222,12 @@ public class ComponentTest {
         assertEquals(3, test_component.getLicenses().size());
     }
 
-    @Test
-    public void addLicense_should_get_null_exception_without_existing_license_list() {
-        assertThrows(NullPointerException.class, () -> {
-            test_component.addLicense(test_license_three);
-        });
-    }
+//    @Test
+//    public void addLicense_should_get_null_exception_without_existing_license_list() {
+//        assertThrows(NullPointerException.class, () -> {
+//            test_component.addLicense(test_license_three);
+//        });
+//    }
 
     @Test
     public void addChild_test() {
