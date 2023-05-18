@@ -23,31 +23,14 @@ public class ConanParserTxtFileTest extends ParseDepFileTestCore {
                 "src/test/java/org/svip/sbomfactory/generators/TestData/Conan");
     }
 
-    @Disabled
-    @Test
-    @DisplayName("Test Properties")
-    void testProperties() {
-        int n = 5;
-        // Get properties from PARSER
-        //final ArrayList<ParserComponent> props = this.components;
-
-        // Test correct count is found
-//        assertEquals(4, props.size());
-//
-//        // Get keySet
-//        final Set<String> keySet = props.keySet();
-//
-//        // Check for correct element insertion
-//        assertTrue(keySet.contains("arcgisVersion"));
-//        assertTrue(keySet.contains("sampleVersion1"));
-//        assertTrue(keySet.contains("rootPath"));
-//        assertTrue(keySet.contains("testPath"));
-//
-//        // Check values
-//        assertEquals("200.1.0", props.get("arcgisVersion"));
-//        assertEquals("this/is/a/path", props.get("rootPath"));
-//        assertEquals("this/is/a/path/test", props.get("testPath"));
-    }
+          //Check component's name
+//        String str = "contourpy" ;
+//        assertTrue(ValueSet.contains(str));
+//        //Check component's version
+//        String version = getComponent(str).getVersion();
+//        int r = version.compareTo("1.0.6");
+//        //version is less than 1.0.6:
+//        if (r < 0) assertEquals("1.0.6", version);
 
     @Test
     @DisplayName("Conan TXT Test Components")
@@ -79,11 +62,19 @@ public class ConanParserTxtFileTest extends ParseDepFileTestCore {
         assertTrue(ValueSet.contains(str));
         //Check component's version
         assertEquals("[>1.0,<1.9]", getComponent(str).getVersion());
+        assertEquals("BSL-1.0", getComponent(str).getLicense("BSL-1.0"));
 
         //Check component's name
         str = "boost";
         assertTrue(ValueSet.contains(str));
         //Check component's version
         assertEquals("1.70.0#revision2", getComponent(str).getVersion());
+
+        //Check component's name
+        str = "imgui";
+        assertTrue(ValueSet.contains(str));
+        //Check component's Version
+        assertEquals("1.79", getComponent(str).getVersion());
+        assertEquals("MIT", getComponent(str).getLicense("MIT"));
     }
 }

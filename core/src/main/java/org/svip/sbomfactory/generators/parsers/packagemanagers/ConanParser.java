@@ -1,37 +1,35 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.QueryWorker;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+
 
 import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
 import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
  * file: ConanParser.java
- * Description: Package-manager specific implementation of the PackageManagerParser (Conan/conanfile.txt)
+ * Description: Package-manager specific implementation of the PackageManagerParser (Conan/conanfile.txt or conanfile.py)
  *
- * @author Dylan Mulligan
+ * @author Dylan Mulligan, Ping Liu
  */
 public class ConanParser extends PackageManagerParser {
     //#region Constructors
 
     public ConanParser() {
         super(
-                "https://docs.conan.io/2/",
+                "https://conan.io/center/",
                 null,
                 "" // Regex101: https://regex101.com/r/1Y2gb5/2
         );
     }
-
-    //#endregion
 
     //#region Core Methods
 
@@ -75,16 +73,59 @@ public class ConanParser extends PackageManagerParser {
                   c.setType(ParserComponent.Type.EXTERNAL);
                   c.setGroup("None");
             if (d.containsKey("version")) c.setVersion(d.get("version"));
+            //Query for Licenses
+            String name = d.get("artifactId");
+            // Build URL and worker object
+            if(name != null) {
+                // Create and add QueryWorker with Component reference and URL
+                this.queryWorkers.add(new QueryWorker(c, this.STD_LIB_URL + name){
+                    @Override
+                    public void run() {
+                        // Get page contents
+                        final String contents = getUrlContents(queryURL(this.url, true));
+                        //System.out.println("QueryWorker(" + name +"): \n" + contents);
+                        System.out.println("QueryWorker(" + name +"): " + this.url);
+                        // Parse license
+                        // https://regex101.com/r/LKcQrx/1
+                        //license = \"Zlib\"\n
+                        Matcher m = Pattern.compile("license\\s*=\\s*[\\\\]*\"([a-zA-Z0-9.\\-_]*)[\\\\]*\"", Pattern.MULTILINE).matcher(contents);
+                        String r;
+                        if(m.find()) {
+                            r = m.group(1).trim();
+                            System.out.println("QueryWorker-m(" + name +"): \n" + r);
+                            this.component.addLicense(r);
+                        }
+                        else {
+                            // <script data-n-head="ssr" type="application/ld+json">
+                            //                                {
+                            //                                        "@context": "http://schema.org",
+                            //                                "@graph": [
+                            //                        {
+                            //                            "@context":"http://schema.org",
+                            //                                "@type":"Dataset",
+                            //                                "name":"imgui",    <----- matching this
+                            //                                "description":"Bloat-free Immediate Mode Graphical User interface for C++ with minimal dependencies",
+                            //                                "version":"cci.20230105+1.89.2.docking",
+                            //                                "license":"MIT",    <----- matching this also
+                            //                                "interactionCount": "30,144"
+                            //                        }
+                            //        ]
+                            //      }
+                            //    </script>
+                            m = Pattern.compile(String.format("<script.*\"name\"[\\s:]+\"%s\".*\"license\"[\\s:]+\"([a-zA-Z0-9.\\\\-_]*)\".*</script>",name), Pattern.MULTILINE).matcher(contents);
+                            if(m.find()) {
+                                r = m.group(1).trim();
+                                System.out.println("QueryWorker-m again(" + name +"): \n" + r);
+                                this.component.addLicense(r);
+                            }
+                        }
+                    }
 
-            // TODO: Query
-//            String url = "";
-//            this.queryWorkers.add(new QueryWorker(c, url) {
-//                @Override
-//                public void run() {
-//
-//                }
-//            });
+                    // TODO Add CPEs and PURLS
+                });
+            }
 
+            queryURLs(this.queryWorkers);
             // Add ParserComponent to components
             components.add(c);
             log(LOG_TYPE.DEBUG, String.format("New Component: %s", c.toReadableString()));
@@ -107,7 +148,6 @@ public class ConanParser extends PackageManagerParser {
             m = Pattern.compile("(^|\\s*)(def\\s+[a-z_]+\\(self\\)\\:)\\s*(((?!.*def\\s+[a-z_]+\\(self\\)\\:).*\\s*)*)",Pattern.MULTILINE)
                     .matcher(fileContents);
         }
-
 
         ArrayList<LinkedHashMap<String, String>> deps = new ArrayList<>();
         // Store results in data
@@ -138,9 +178,10 @@ public class ConanParser extends PackageManagerParser {
                     //System.out.println("Got R key:\n  " + key + "\nvalue:\n   " + value + "\n\n");
                     lines = value.split("\n");
                     for (String line : lines) {
-                        if(line.contains("self.requires(\"")) {
+                        if(line.contains("self.requires(\"") || line.contains("self.requires('")) {
                             final LinkedHashMap<String, String> dep = new LinkedHashMap<>();
-                            String tline = line.trim().replaceAll("self\\.requires\\(\"|\"\\)", "");
+                            //getting the values in quotes
+                            String tline = line.trim().replaceAll("self\\.requires\\([\"']|[\"']\\)", "");
                             procline(dep,  tline);
                             // Insert value
                             deps.add(dep);
