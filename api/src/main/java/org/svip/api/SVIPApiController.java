@@ -1,5 +1,6 @@
 package org.svip.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
@@ -180,17 +181,7 @@ public class SVIPApiController {
     @PostMapping("/compare")
     public ResponseEntity<Comparison> compare(@RequestParam("contents") String contentArray, @RequestParam("fileNames") String fileArray) throws IOException {
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<String> contents = objectMapper.readValue(contentArray, new TypeReference<List<String>>(){});
-        List<String> fileNames = objectMapper.readValue(fileArray, new TypeReference<List<String>>(){});
-
-        // Convert the SBOMs to SBOM objects
-        ArrayList<SBOM> sboms = new ArrayList<>();
-
-        for (int i = 0; i < contents.size(); i++) {
-            // Get contents of the file
-            sboms.add(TranslatorPlugFest.translateContents(contents.get(i), fileNames.get(i)));
-        }
+        ArrayList<SBOM> sboms = translateMultiple(contentArray, fileArray);
 
         if(sboms.size() < 2){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -246,6 +237,7 @@ public class SVIPApiController {
      */
     @PostMapping("/parse")
     public ResponseEntity<SBOM> parse(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
+
         SBOM sbom = TranslatorPlugFest.translateContents(contents, fileName);
 
         try {
@@ -263,26 +255,80 @@ public class SVIPApiController {
     /**
      * Merge 2 SBOMs together, regardless of origin format
      *
-     * @param contents JSON string array of the contents of all provided SBOMs
+     * @param fileContents JSON string array of the contents of all provided SBOMs
      * @param fileNames JSON string array of the filenames of all provided SBOMs
      * @param schema String value of expected output schema (SPDX/CycloneDX)
      * @param format String value of expected output format (JSON/XML/YAML)
      * @return
      */
     @PostMapping("merge")
-    public ResponseEntity<SBOM> merge(@RequestParam("fileContents") String contents, @RequestParam("fileNames") String fileNames
-            , @RequestParam("schema") String schema, @RequestParam("format") String format) {
-        SBOM sbom = TranslatorPlugFest.translateContents(contents, fileNames);
+    public ResponseEntity<SBOM> merge(@RequestParam("fileContents") String fileContents, @RequestParam("fileNames") String fileNames
+            , @RequestParam("schema") String schema, @RequestParam("format") String format) throws JsonProcessingException {
 
+        // deserialize SBOMs, merge them and return the unified SBOM
+
+        Merger merger = new Merger();
+
+        ArrayList<SBOM> sboms = translateMultiple(fileContents, fileNames);
+
+        if(sboms.size() < 2){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        configureSchema(schema, format);
+
+        SBOM result = merger.merge(sboms); // report to return
+
+        //todo translate result sbom into desired schema/format
+
+        //encode and send report
         try {
-            // Explicitly return null if failed
-            if (sbom == null) {
-                return new ResponseEntity<>(null, HttpStatus.OK);
-            }
-            return new ResponseEntity<>(sbom, HttpStatus.OK);
+            return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+    }
+
+    /**
+     * Code shared by /compare and /merge used to configure optional parameters
+     *
+     * @param schema schema string value
+     * @param format format string value
+     */
+    private static void configureSchema(String schema, String format) {
+        // Get schema from parameters, if not valid, default to CycloneDX
+        GeneratorSchema resultSchema = GeneratorSchema.CycloneDX;
+        try { resultSchema = GeneratorSchema.valueOfArgument(schema.toUpperCase()); }
+        catch (IllegalArgumentException ignored) { }
+
+        // Get format from parameters, if not valid, default to JSON
+        GeneratorSchema.GeneratorFormat resultFormat = resultSchema.getDefaultFormat();
+        try { resultFormat = GeneratorSchema.GeneratorFormat.valueOf(format.toUpperCase()); }
+        catch (IllegalArgumentException ignored) {}
+    }
+
+    /**
+     * Code shared by /compare and /merge used to deserialize multiple SBOMs
+     *
+     * @param fileContents JSON string array of the contents of all provided SBOMs
+     * @param fileNames JSON string array of the filenames of all provided SBOMs
+     * @return list of SBOM objects
+     * @throws JsonProcessingException
+     */
+    private static ArrayList<SBOM> translateMultiple(String fileContents, String fileNames) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<String> contents = objectMapper.readValue(fileContents, new TypeReference<List<String>>(){});
+        List<String> fNames = objectMapper.readValue(fileNames, new TypeReference<List<String>>(){});
+
+        // Convert the SBOMs to SBOM objects
+        ArrayList<SBOM> sboms = new ArrayList<>();
+
+        for (int i = 0; i < contents.size(); i++) {
+            // Get contents of the file
+            sboms.add(TranslatorPlugFest.translateContents(contents.get(i), fNames.get(i)));
+        }
+        return sboms;
     }
 
 
