@@ -260,4 +260,30 @@ public class SVIPApiController {
     }
 
 
+    /**
+     * Merge 2 SBOMs together, regardless of origin format
+     *
+     * @param contents JSON string array of the contents of all provided SBOMs
+     * @param fileNames JSON string array of the filenames of all provided SBOMs
+     * @param schema String value of expected output schema (SPDX/CycloneDX)
+     * @param format String value of expected output format (JSON/XML/YAML)
+     * @return
+     */
+    @PostMapping("merge")
+    public ResponseEntity<SBOM> merge(@RequestParam("fileContents") String contents, @RequestParam("fileNames") String fileNames
+            , @RequestParam("schema") String schema, @RequestParam("format") String format) {
+        SBOM sbom = TranslatorPlugFest.translateContents(contents, fileNames);
+
+        try {
+            // Explicitly return null if failed
+            if (sbom == null) {
+                return new ResponseEntity<>(null, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(sbom, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }
