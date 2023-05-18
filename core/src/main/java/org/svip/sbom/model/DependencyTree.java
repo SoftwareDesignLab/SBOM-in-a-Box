@@ -147,4 +147,19 @@ public class DependencyTree {
         return components.containsKey(componentUUID);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DependencyTree that)) return false;
+
+        if (!components.equals(that.components)) return false;
+        return Objects.equals(headComponent, that.headComponent);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = components.hashCode();
+        result = 31 * result + (headComponent != null ? headComponent.hashCode() : 0);
+        return result;
+    }
 }
