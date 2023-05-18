@@ -31,7 +31,7 @@ public class TranslatorControllerTest {
         assertNotNull(sbom);
         assertEquals(SBOMType.CYCLONE_DX, sbom.getOriginFormat());
         assertEquals("1", sbom.getSbomVersion());
-        assertEquals("http://cyclonedx.org/schema/bom/1.4", sbom.getSpecVersion());
+        assertEquals("1.4", sbom.getSpecVersion());
         assertEquals(18, sbom.getAllComponents().size());
     }
 
@@ -41,7 +41,7 @@ public class TranslatorControllerTest {
         assertNotNull(sbom);
         assertEquals(SBOMType.SPDX, sbom.getOriginFormat());
         assertEquals("1", sbom.getSbomVersion());
-        assertEquals("SPDX-2.3", sbom.getSpecVersion());
+        assertEquals("2.3", sbom.getSpecVersion());
         assertEquals(17, sbom.getAllComponents().size());
     }
 
