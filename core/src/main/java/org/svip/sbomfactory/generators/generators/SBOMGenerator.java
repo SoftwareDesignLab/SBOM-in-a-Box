@@ -195,7 +195,7 @@ public class SBOMGenerator {
         }
 
         bomStore.addTool(tool); // Add our tool as info
-        internalSBOM.setSupplier(tool.toString()); // Add our tool to internal SBOM for testing
+        internalSBOM.setSupplier(tool.getToolInfo()); // Add our tool to internal SBOM for testing
         internalSBOM.setTimestamp(bomStore.getTimestamp()); // Update internal SBOM with new timestamp for testing
 
         // Add all depth 0 components as packages
