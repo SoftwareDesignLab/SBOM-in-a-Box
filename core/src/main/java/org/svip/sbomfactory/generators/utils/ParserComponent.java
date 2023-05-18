@@ -93,7 +93,7 @@ public class ParserComponent extends Component {
 
     public Type getType() { return this.type; }
     public int getDepth() { return this.depth; }
-    public String getAlias() { if(alias.equals(""))return null; return this.alias; }
+    public String getAlias() { if(Objects.equals(alias, ""))return null; return this.alias; }
     public List<String> getFiles() { return this.files; }
 
     public Set<License> getResolvedLicenses() { return resolvedLicenses; }
