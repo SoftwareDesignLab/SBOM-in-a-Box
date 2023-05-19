@@ -288,7 +288,7 @@ public class SVIPApiController {
         SBOMGenerator generator = new SBOMGenerator(result, generatorSchema);
 
         String dir = System.getProperty("user.dir");
-        String fileName = dir + generatorFormat.toString().toLowerCase();
+        String fileName = dir + "tmp" + generatorFormat.toString().toLowerCase();
         generator.writeFile(fileName, generatorFormat);
         result = Translator.translate(fileName);
         Files.deleteIfExists(Path.of(fileName));
