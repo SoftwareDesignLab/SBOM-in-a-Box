@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.svip.sbom.model.Component;
-import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXStore;
 import org.svip.sbomfactory.generators.generators.spdx.SPDXStore;
 import org.svip.sbomfactory.generators.generators.spdx.SPDXTagValueWriter;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
@@ -13,7 +12,6 @@ import org.svip.sbomfactory.generators.generators.utils.License;
 import org.svip.sbomfactory.generators.generators.utils.Tool;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbom.model.SBOM;
-import org.svip.sbom.model.SBOMType;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.File;

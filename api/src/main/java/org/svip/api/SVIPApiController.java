@@ -9,10 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.svip.sbom.model.Component;
-import org.svip.sbom.model.DependencyTree;
 import org.svip.sbom.model.SBOM;
-import org.svip.sbom.model.SBOMType;
 import org.svip.sbomanalysis.comparison.Comparison;
 import org.svip.sbomanalysis.comparison.Merger;
 import org.svip.sbomanalysis.qualityattributes.QAPipeline;
@@ -22,7 +19,6 @@ import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 
 import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.osi.OSI;
 import org.svip.sbomfactory.translators.TranslatorCDXJSON;
 import org.svip.sbomfactory.translators.TranslatorCDXXML;
