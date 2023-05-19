@@ -18,6 +18,7 @@ import org.svip.sbomanalysis.comparison.Merger;
 import org.svip.sbomanalysis.qualityattributes.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.QualityReport;
 import org.svip.sbomfactory.generators.ParserController;
+import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXSerializer;
 import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXStore;
 import org.svip.sbomfactory.generators.generators.spdx.SPDXSerializer;
@@ -32,6 +33,8 @@ import org.svip.sbomvex.VEXFactory;
 import org.svip.visualizer.NodeFactory;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -265,7 +268,7 @@ public class SVIPApiController {
             , @RequestParam("schema") String schema, @RequestParam("format") String format) throws IOException {
 
         // deserialize SBOMs, merge them and return the unified SBOM
-
+        boolean optionalParams = schema.length() > 0 || format.length() > 0;
 
         ArrayList<SBOM> sboms = translateMultiple(fileContents, fileNames);
 
@@ -273,46 +276,27 @@ public class SVIPApiController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = configureSchema(schema, format);
-        GeneratorSchema generatorSchema = (GeneratorSchema) m.keySet().toArray()[0];
-        GeneratorSchema.GeneratorFormat generatorFormat = (GeneratorSchema.GeneratorFormat) m.entrySet().toArray()[0];
-
-
         Merger merger = new Merger();
         SBOM result = merger.merge(sboms); // report to return
 
-        Component[] dt = (Component[]) result.getAllComponents().toArray();
+        if(optionalParams){ // if call has schema or format
+            Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = configureSchema(schema, format);
+            GeneratorSchema generatorSchema = (GeneratorSchema) m.keySet().toArray()[0];
+            GeneratorSchema.GeneratorFormat generatorFormat = (GeneratorSchema.GeneratorFormat) m.entrySet().toArray()[0];
 
-        //todo serialize SBOM to file (?) then run it through Translator to appropriate format?
+            if(generatorSchema == GeneratorSchema.SPDX) // spdx schema implies spdx file extension
+                generatorFormat = GeneratorSchema.GeneratorFormat.SPDX;
 
-        switch (generatorSchema){
-            case SPDX:
-                SPDXStore s = new SPDXStore(result.getSerialNumber(), Integer.parseInt(result.getSbomVersion()), null);
-                for (Component c: dt
-                     ) {
+            SBOMGenerator generator = new SBOMGenerator(result, generatorSchema);
+            String dir = System.getProperty("user.dir");
+            String fileName = dir + generatorFormat.toString().toLowerCase();
 
-                    s.addComponent((ParserComponent) c); //todo this shouldnt work but I want to stub out the logic
-
-                }
-                SPDXSerializer serializer = new SPDXSerializer();
-                serializer.serialize(s,null,null);
-                break;
-            default: //CDX
-                CycloneDXStore c = new CycloneDXStore(result.getSerialNumber(), Integer.parseInt(result.getSbomVersion()), null);
-                for (Component comp: dt
-                ) {
-
-                    c.addComponent((ParserComponent) comp);
-
-                }
-                CycloneDXSerializer serializer1 = new CycloneDXSerializer();
-                serializer1.serialize(c,null,null);
+            generator.writeFile(fileName, generatorFormat);
+            result = Translator.translate(fileName);
+            Files.deleteIfExists(Path.of(fileName));
         }
 
-        String fileName = "tmp" + generatorFormat.toString().toLowerCase();
-        result = TranslatorPlugFest.translateContents("TODO", fileName);
-
-        //encode and send result
+        // encode and send merged SBOM
         try {
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
