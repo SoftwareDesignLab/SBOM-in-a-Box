@@ -267,8 +267,6 @@ public class SVIPApiController {
     public ResponseEntity<SBOM> merge(@RequestParam("fileContents") String fileContents, @RequestParam("fileNames") String fileNames
             , @RequestParam("schema") String schema, @RequestParam("format") String format) throws IOException {
 
-        // deserialize SBOMs, merge them and return the unified SBOM
-
         ArrayList<SBOM> sboms = translateMultiple(fileContents, fileNames);
 
         if(sboms.size() < 2){
@@ -278,22 +276,22 @@ public class SVIPApiController {
         Merger merger = new Merger();
         SBOM result = merger.merge(sboms); // report to return
 
-        Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = configureSchema(schema, format);
+        Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = configureSchema(schema, format); // get schema enumerations from call
         GeneratorSchema generatorSchema = (GeneratorSchema) m.keySet().toArray()[0];
         GeneratorSchema.GeneratorFormat generatorFormat = (GeneratorSchema.GeneratorFormat) m.entrySet().toArray()[0];
 
-        if(generatorSchema == GeneratorSchema.SPDX)
+        if(generatorSchema == GeneratorSchema.SPDX) // spdx schema implies spdx format
             generatorFormat = GeneratorSchema.GeneratorFormat.SPDX;
 
         SBOMGenerator generator = new SBOMGenerator(result, generatorSchema);
 
         String dir = System.getProperty("user.dir");
-        String fileName = dir + "tmp" + generatorFormat.toString().toLowerCase();
+        String fileName = dir + "tmp" + generatorFormat.toString().toLowerCase(); // create file to re-translate
         generator.writeFile(fileName, generatorFormat);
-        result = Translator.translate(fileName);
+        result = Translator.translate(fileName); // translate the new SBOM into the desired format then delete
         Files.deleteIfExists(Path.of(fileName));
 
-        //encode and send result
+        // encode and send result
         try {
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
