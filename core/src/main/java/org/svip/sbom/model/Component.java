@@ -154,7 +154,6 @@ public class Component {
     public void copyFrom(Component component) {
         this.name = component.name;
         this.publisher = component.publisher;
-        this.group = component.group;
         this.uuid = component.uuid;
         this.cpes = new HashSet<>(component.cpes);
         this.purls = new HashSet<>(component.purls);

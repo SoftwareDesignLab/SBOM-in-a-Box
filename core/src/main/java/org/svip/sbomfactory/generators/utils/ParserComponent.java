@@ -87,7 +87,6 @@ public class ParserComponent extends Component {
      */
     public ParserComponent(Component component) {
         this(component.getName());
-        this.setGroup(component.getGroup());
         this.setUUID(component.getUUID());
         this.setPublisher(component.getPublisher());
         this.setVersion(component.getVersion());

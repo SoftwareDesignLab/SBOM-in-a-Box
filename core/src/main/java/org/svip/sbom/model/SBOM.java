@@ -167,7 +167,7 @@ public class SBOM {
      * @return UUID of added component (null if failed)
      */
     public void addComponents(UUID parent, List<? extends Component> toAdd) {
-        dependencyTree.addComponents(parent, toAdd);
+        toAdd.forEach(c -> dependencyTree.addComponent(parent, c));
     }
 
     /**

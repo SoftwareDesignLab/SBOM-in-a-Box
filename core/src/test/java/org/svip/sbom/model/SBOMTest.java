@@ -123,14 +123,7 @@ public class SBOMTest {
 
     String test_random_timestamp = "2023-02-16T02:36:00-15:00";
 
-    String test_expected_to_string = "\nSBOM Information\n" +
-            "  + Origin Format: " + test_originFormat + "\n" +
-            "  + Specification Version: " + test_specVersion + "\n" +
-            "  + SBOM Version: " + test_sbomVersion + "\n" +
-            "  + Serial Number: " + test_serialNumber + "\n" +
-            "  + Supplier: " + test_publisher + "\n" +
-            "  + Time Stamp: " + test_timestamp + "\n" +
-            "  + Dependency Tree: " + test_dependencytree + "\n";
+    String test_expected_to_string = "";
 
     int test_hash_code = 770939883;
 
@@ -144,14 +137,28 @@ public class SBOMTest {
                 test_x, test_y, test_certificates, test_excludes, test_value
         );
         test_signatures.add(test_signature);
+
         test_component_one = new Component(
                 test_name, test_publisher, test_version, test_cpe, test_purl, test_swid
         );
-        test_component_one = new Component(
+        test_component_two = new Component(
                 test_name_two, test_publisher_two, test_version_two, test_cpe_two, test_purl_two, test_swid_two
         );
+
+//        test_dependencytree.addComponent(null, test_component_one);
+//        test_dependencytree.addComponent(test_component_one.getUUID(), test_component_two);
+
+        test_expected_to_string = "\nSBOM Information\n" +
+                "  + Origin Format: " + test_originFormat + "\n" +
+                "  + Specification Version: " + test_specVersion + "\n" +
+                "  + SBOM Version: " + test_sbomVersion + "\n" +
+                "  + Serial Number: " + test_serialNumber + "\n" +
+                "  + Supplier: " + test_publisher + "\n" +
+                "  + Time Stamp: " + test_timestamp + "\n" +
+                "  + Dependency Tree: " + test_dependencytree + "\n";
+
         test_sbom = new SBOM(
-                test_originFormat, test_specVersion, test_sbomVersion, test_supplier,
+                test_originFormat, test_specVersion, test_sbomVersion, test_publisher,
                 test_serialNumber, test_timestamp, test_signatures, test_dependencytree
         );
     }
