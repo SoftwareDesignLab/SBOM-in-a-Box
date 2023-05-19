@@ -10,7 +10,7 @@ class Engine(ConanFile):
         if self.settings.arch == "x86":
             self.requires("sound32/[>=1.0 <2.0]")
             self.requires('zlib/1.7.0')
-            self.requires('imgui/1.7.0')
+            self.requires('imgui/1.7.0#revision1')
             self.requires("mysql-connector-c/6.1.11")
             self.requires("libmysqlclient/8.0.31")
             self.requires("libmodbus/3.1.8")

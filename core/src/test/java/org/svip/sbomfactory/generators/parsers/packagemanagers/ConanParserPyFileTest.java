@@ -65,7 +65,7 @@ public class ConanParserPyFileTest extends ParseDepFileTestCore {
         str = "imgui";
         assertTrue(ValueSet.contains(str));
         //Check component's Version
-        assertEquals("1.7.0", getComponent(str).getVersion());
+        assertEquals("1.7.0#revision1", getComponent(str).getVersion());
         assertEquals("MIT", getComponent(str).getLicense("MIT"));
     }
 }
