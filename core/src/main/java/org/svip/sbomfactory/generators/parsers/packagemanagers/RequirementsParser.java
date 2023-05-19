@@ -43,7 +43,6 @@ public class RequirementsParser extends PackageManagerParser {
                     public void run() {
                         // Get page contents
                         final String contents = getUrlContents(queryURL(this.url, true));
-                        System.out.println("QueryWorker(" + name +"): \n" + contents);
                         // Parse license
                         // https://regex101.com/r/LKcQrx/1
                         final Matcher m = Pattern.compile("<p><strong>License:</strong>(.*?)</p>", Pattern.MULTILINE).matcher(contents);

@@ -1,6 +1,5 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.svip.sbomfactory.generators.utils.ParserComponent;

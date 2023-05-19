@@ -1,6 +1,5 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
@@ -8,9 +7,7 @@ import org.svip.sbomfactory.generators.utils.ParserComponent;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
