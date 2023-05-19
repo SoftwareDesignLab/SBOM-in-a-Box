@@ -5,7 +5,6 @@ import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.QueryWorker;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * file: CSProjParser.java
@@ -16,7 +15,13 @@ import java.util.regex.Pattern;
  */
 public class CSProjParser extends PackageManagerParser {
 
-    public CSProjParser() { super("https://learn.microsoft.com/en-us/dotnet/api/", new XmlFactory()); }
+    public CSProjParser() {
+        super(
+                "https://learn.microsoft.com/en-us/dotnet/api/",
+                new XmlFactory(),
+                "" // TODO: Token regex
+        );
+    }
 
     @Override
     protected void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data) {
@@ -77,11 +82,6 @@ public class CSProjParser extends PackageManagerParser {
 
     }
 
-    @Override
-    protected void resolveProperty(String key, String value, HashMap<String, String> props, Pattern p) {
-
-    }
-
     /**
      * Reformats to ParserComponent and adds the component to the list.
      * @param components list to add component to
@@ -96,7 +96,7 @@ public class CSProjParser extends PackageManagerParser {
         // Ensure include was found
         if(include == null) return;
 
-        final ParserComponent c = new ParserComponent();
+        final ParserComponent c = new ParserComponent("CSProjParserComponent");
 
         // Convert hashmap to parser component
         switch(type) {

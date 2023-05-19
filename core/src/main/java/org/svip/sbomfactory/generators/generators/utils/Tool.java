@@ -83,7 +83,7 @@ public class Tool {
      *
      * @param license The license object to add.
      */
-    public void addLicense(License license) throws GeneratorException {
+    public void addLicense(License license) {
         licenses.add(license);
     }
 
@@ -137,4 +137,15 @@ public class Tool {
 
     //#endregion
 
+
+    @Override
+    public String toString() {
+        return "Tool{" +
+                "vendor='" + vendor + '\'' +
+                ", name='" + name + '\'' +
+                ", version='" + version + '\'' +
+                ", licenses=" + licenses +
+                ", hashes=" + hashes +
+                '}';
+    }
 }

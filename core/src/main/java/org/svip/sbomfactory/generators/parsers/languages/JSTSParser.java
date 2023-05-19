@@ -2,15 +2,12 @@ package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
-import static org.svip.sbomfactory.generators.utils.Debug.*;
+import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
  * file: JSTSParser.java
@@ -39,12 +36,13 @@ public class JSTSParser extends LanguageParser {
             // Get path terminus
             final String target = pathParts[pathParts.length - 1];
 
-            // Get project path from this.src and walk files to find component
-            try (Stream<Path> stream = Files.walk(Paths.get(String.valueOf(this.PWD)))) {
-                return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
-            } catch (Exception e){
-                log(LOG_TYPE.EXCEPTION, e);
-            }
+            // TODO
+//            // Get project path from this.src and walk files to find component
+//            try (Stream<Path> stream = Files.walk(this.PWD)) {
+//                return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
+//            } catch (Exception e){
+//                log(LOG_TYPE.EXCEPTION, e);
+//            }
         }
 
         return false;

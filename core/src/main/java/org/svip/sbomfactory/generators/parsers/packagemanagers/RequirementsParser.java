@@ -16,7 +16,13 @@ import java.util.regex.Pattern;
  * @author Dylan Mulligan
  */
 public class RequirementsParser extends PackageManagerParser {
-    public RequirementsParser() { super("https://pypi.org/project/", null); }
+    public RequirementsParser() {
+        super(
+                "https://pypi.org/project/",
+                null,
+                "" // TODO: Token regex? I don't think PIP has need for this
+        );
+    }
 
     @Override
     protected void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data) {
@@ -57,17 +63,6 @@ public class RequirementsParser extends PackageManagerParser {
 
         // Query all found URLs and store any relevant data
         queryURLs(this.queryWorkers);
-    }
-
-    // TODO?
-    @Override
-    protected void resolveProperties(HashMap<String, String> props) {
-
-    }
-
-    @Override
-    protected void resolveProperty(String key, String value, HashMap<String, String> props, Pattern p) {
-
     }
 
     @Override

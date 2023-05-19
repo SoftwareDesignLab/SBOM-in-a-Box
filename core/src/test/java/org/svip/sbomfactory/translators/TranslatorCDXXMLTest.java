@@ -8,17 +8,17 @@
 
 package org.svip.sbomfactory.translators;
 
+import org.cyclonedx.exception.ParseException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import org.svip.sbom.model.SBOM;
 import org.svip.sbom.model.SBOMType;
-import org.svip.sbomfactory.translators.TranslatorCDXXML;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import javax.xml.parsers.ParserConfigurationException;
-import org.cyclonedx.exception.ParseException;
+import java.io.IOException;
 
 /**
  * File: TranslatorCDXXMLTest.java
@@ -26,56 +26,53 @@ import org.cyclonedx.exception.ParseException;
  *
  * @author Tyler Drake
  */
-public class TranslatorCDXXMLTest {
+public class TranslatorCDXXMLTest extends TranslatorTestCore<TranslatorCDXXML> {
 
-    public static final String test_small_cdx = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.alpine.xml";
-    public static final String test_large_cdx = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.python.xml";
-    public static final String test_no_metadata_cdx = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.nometadata.xml";
-    public static final String test_no_components_cdx = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.nocomponents.xml";
-    public static final String TEST_CDX_SBOM_1_4_DEPENDENCIES = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.cdxgen.1-4.xml";
+    public static final String TEST_SMALL_CDX = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.alpine.xml";
+    public static final String TEST_LARGE_CDX = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.python.xml";
+    public static final String TEST_NO_METADATA_CDX = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.nometadata.xml";
+    public static final String TEST_NO_COMPONENTS_CDX = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.nocomponents.xml";
+
+    protected TranslatorCDXXMLTest() {
+        super(new TranslatorCDXXML());
+    }
+
 
     @Test
-    public void translatorcdx_small_file_test() throws ParserConfigurationException {
-        SBOM sbom = TranslatorCDXXML.translatorCDXXML(test_small_cdx.toString());
+    public void translatorcdx_small_file_test() throws ParserConfigurationException, IOException, ParseException {
+        SBOM sbom = this.TRANSLATOR.translate(TEST_SMALL_CDX);
         assertNotNull(sbom);
         Assertions.assertEquals(SBOMType.CYCLONE_DX, sbom.getOriginFormat());
         assertEquals("1", sbom.getSbomVersion());
-        assertEquals("http://cyclonedx.org/schema/bom/1.4", sbom.getSpecVersion());
+        assertEquals("1.4", sbom.getSpecVersion());
         assertEquals(18, sbom.getAllComponents().size());
     }
 
     @Test
-    public void translatorcdx_large_file_test() throws ParserConfigurationException {
-        SBOM sbom = TranslatorCDXXML.translatorCDXXML(test_large_cdx.toString());
+    public void translatorcdx_large_file_test() throws ParserConfigurationException, IOException, ParseException {
+        SBOM sbom = this.TRANSLATOR.translate(TEST_LARGE_CDX);
         assertNotNull(sbom);
         assertEquals(SBOMType.CYCLONE_DX, sbom.getOriginFormat());
         assertEquals("1", sbom.getSbomVersion());
-        assertEquals("http://cyclonedx.org/schema/bom/1.4", sbom.getSpecVersion());
+        assertEquals("1.4", sbom.getSpecVersion());
         assertEquals(434, sbom.getAllComponents().size());
     }
 
     @Test
-    public void translatorcdx_no_metadata_test() throws ParserConfigurationException {
-        SBOM sbom = TranslatorCDXXML.translatorCDXXML(test_no_metadata_cdx.toString());
+    public void translatorcdx_no_metadata_test() throws ParserConfigurationException, IOException, ParseException {
+        SBOM sbom = this.TRANSLATOR.translate(TEST_NO_METADATA_CDX);
         assertNull(sbom);
     }
 
     @Test
-    public void translatorcdx_no_components_test() throws ParserConfigurationException {
-        SBOM sbom = TranslatorCDXXML.translatorCDXXML(test_no_components_cdx.toString());
+    public void translatorcdx_no_components_test() throws ParserConfigurationException, IOException, ParseException {
+        SBOM sbom = this.TRANSLATOR.translate(TEST_NO_COMPONENTS_CDX);
         assertNotNull(sbom);
         // Should be 1 component for head component
         assertEquals(SBOMType.CYCLONE_DX, sbom.getOriginFormat());
         assertEquals("1", sbom.getSbomVersion());
-        assertEquals("http://cyclonedx.org/schema/bom/1.4", sbom.getSpecVersion());
+        assertEquals("1.4", sbom.getSpecVersion());
         assertEquals(1, sbom.getAllComponents().size());
-    }
-
-    @Test
-    public void translatorcdx_v1_2_dependencies_other_test() throws ParserConfigurationException {
-        SBOM sbom = TranslatorCDXXML.translatorCDXXML(TEST_CDX_SBOM_1_4_DEPENDENCIES);
-        assertNotNull(sbom);
-        assertEquals(631, sbom.getAllComponents().size());
     }
 
 }

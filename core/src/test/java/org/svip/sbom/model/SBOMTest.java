@@ -124,10 +124,13 @@ public class SBOMTest {
     String test_random_timestamp = "2023-02-16T02:36:00-15:00";
 
     String test_expected_to_string = "\nSBOM Information\n" +
+            "  + Origin Format: " + test_originFormat + "\n" +
+            "  + Specification Version: " + test_specVersion + "\n" +
+            "  + SBOM Version: " + test_sbomVersion + "\n" +
             "  + Serial Number: " + test_serialNumber + "\n" +
-            "  + Version: " + test_specVersion + "\n" +
-            "  + Tool Version: " + test_sbomVersion + "\n" +
-            "  + Time Stamp: " + test_timestamp + "\n";
+            "  + Supplier: " + test_publisher + "\n" +
+            "  + Time Stamp: " + test_timestamp + "\n" +
+            "  + Dependency Tree: " + test_dependencytree + "\n";
 
     int test_hash_code = 770939883;
 

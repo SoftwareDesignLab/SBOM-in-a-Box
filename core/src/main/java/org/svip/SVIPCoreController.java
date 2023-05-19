@@ -1,7 +1,7 @@
 package org.svip;
 
 import org.svip.sbomanalysis.comparison.Merger;
-import org.svip.sbomfactory.translators.Translator;
+import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomvex.VEXFactory;
 import org.svip.sbomvex.VEXFactory.*;
 import org.svip.sbomfactory.osi.OSI;
@@ -108,7 +108,7 @@ public class SVIPCoreController {
         // 2. call translators
         ArrayList<SBOM> SBOMs;
         try{
-            SBOMs = Translator.toReport(osiBoundDir + "/sboms");
+            SBOMs = TranslatorController.toReport(osiBoundDir + "/sboms");
         } catch (Exception e){
             throw new Exception("Unable to Translate SBOMs");
         }

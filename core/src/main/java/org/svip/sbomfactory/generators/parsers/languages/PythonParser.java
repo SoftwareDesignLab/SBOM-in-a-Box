@@ -1,16 +1,15 @@
 package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.VirtualPath;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
-import static org.svip.sbomfactory.generators.utils.Debug.*;
+import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 
 /**
@@ -73,28 +72,30 @@ public class PythonParser extends LanguageParser {
                 }
             }
         }
-        // Get project path from this.src and walk files to find component
-        try (Stream<Path> stream = Files.walk(this.PWD)) {
-            return stream.anyMatch(file -> {
-                final String fileName = file.getFileName().toString().toLowerCase().split("\\.")[0];
-                // Check all targets for match
-                if(fileName.equals(component.getName().toLowerCase())) {
-                    final String from = component.getGroup();
-                    // If from exists, ensure it is part of the path
-                    if(from != null) {
-                        final String path = file.toAbsolutePath().toString();
-                        if(!from.contains("/")) return path.contains(from);
-                        else return path.replace('\\', '/').contains(from);
-                    }
-                    return true;
-                }
-                else if(component.getGroup() != null)
-                    return fileName.equals(component.getGroup().split("/")[0].toLowerCase());
-                return false;
-            });
-        } catch (Exception e){
-            log(LOG_TYPE.EXCEPTION, e);
-        }
+
+        // TODO
+//        // Get project path from this.src and walk files to find component
+//        try (Stream<Path> stream = Files.walk(this.PWD)) {
+//            return stream.anyMatch(file -> {
+//                final String fileName = file.getFileName().toString().toLowerCase().split("\\.")[0];
+//                // Check all targets for match
+//                if(fileName.equals(component.getName().toLowerCase())) {
+//                    final String from = component.getGroup();
+//                    // If from exists, ensure it is part of the path
+//                    if(from != null) {
+//                        final String path = file.toAbsolutePath().toString();
+//                        if(!from.contains("/")) return path.contains(from);
+//                        else return path.replace('\\', '/').contains(from);
+//                    }
+//                    return true;
+//                }
+//                else if(component.getGroup() != null)
+//                    return fileName.equals(component.getGroup().split("/")[0].toLowerCase());
+//                return false;
+//            });
+//        } catch (Exception e){
+//            log(LOG_TYPE.EXCEPTION, e);
+//        }
 
         return false;
     }
@@ -169,7 +170,7 @@ public class PythonParser extends LanguageParser {
 
         // 3. Parse tokens
         // Ex: import foo, bar -> "foo" and "bar"
-        final Path tempPwd = this.PWD;
+        final VirtualPath tempPwd = this.PWD;
         for (String token : tokens) {
             token = token.trim();   // remove leading/trailing whitespace
 

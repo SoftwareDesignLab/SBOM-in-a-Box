@@ -1,15 +1,14 @@
 package org.svip.sbomfactory.generators.generators.cyclonedx;
 
-import org.svip.sbom.model.PURL;
-import org.svip.sbomfactory.generators.generators.utils.License;
-import org.svip.sbomfactory.generators.generators.utils.Tool;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import org.svip.sbom.model.PURL;
+import org.svip.sbomfactory.generators.generators.utils.License;
+import org.svip.sbomfactory.generators.generators.utils.Tool;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +17,7 @@ import java.util.Set;
  * File: CycloneDXSerializer.java
  * <p>
  * A custom serializer for the <code>CycloneDXStore</code> class extended from the Jackson library's <code>STDSerializer</code>
- * class to convert the data of <code>CycloneDXStore</code> to an CDX v1.4 bill of materials.
+ * class to convert the data of <code>CycloneDXStore</code> to a CDX v1.4 bill of materials in JSON or YAML format.
  * </p>
  * @author Ian Dunn
  */
@@ -29,7 +28,7 @@ public class CycloneDXSerializer extends StdSerializer<CycloneDXStore> {
     /**
      * The default serializer constructor that takes in no arguments and serializes a null CycloneDXStore class.
      */
-    protected CycloneDXSerializer() { super((Class<CycloneDXStore>) null); }
+    public CycloneDXSerializer() { super((Class<CycloneDXStore>) null); }
 
     /**
      * A serializer constructor that takes in a CycloneDXStore class to serialize.
@@ -300,12 +299,13 @@ public class CycloneDXSerializer extends StdSerializer<CycloneDXStore> {
      * @param type The type of the ParserComponent.
      * @return The CDX-specific type that the ParserComponent type maps to.
      */
-    private String getCDXType(ParserComponent.Type type) {
+    protected static String getCDXType(ParserComponent.Type type) {
         // Set component type based on what the parser reads it in as
         // https://cyclonedx.org/docs/1.4/json/#components_items_type TODO figure out if we can be more descriptive
         switch(type) {
             case LANGUAGE -> { return "framework"; }
             case INTERNAL -> { return "file"; }
+            case APPLICATION -> { return "application"; }
             default -> { return "library"; }
         }
     }

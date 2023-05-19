@@ -1,11 +1,11 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
-import org.svip.sbomfactory.generators.utils.QueryWorker;
-import org.svip.sbomfactory.generators.parsers.Parser;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.svip.sbomfactory.generators.parsers.Parser;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.QueryWorker;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
@@ -40,6 +41,8 @@ public abstract class PackageManagerParser extends Parser {
     protected HashMap<String, String> properties;
     protected ArrayList<LinkedHashMap<String, String>> dependencies;
 
+    protected final Pattern TOKEN_PATTERN;
+
     //#endregion
 
     //#region Constructors
@@ -51,7 +54,7 @@ public abstract class PackageManagerParser extends Parser {
      *
      * @param REPO_URL a URL to the repository of the package manager packages
      */
-    protected PackageManagerParser(String REPO_URL, JsonFactory factory) {
+    protected PackageManagerParser(String REPO_URL, JsonFactory factory, String tokenPattern) {
         super(REPO_URL);
         this.queryWorkers = new ArrayList<>();
         // Safely init ObjectMapper instance with the given factory
@@ -62,6 +65,7 @@ public abstract class PackageManagerParser extends Parser {
             this.OM = new ObjectMapper(factory);
             this.OM.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         }
+        this.TOKEN_PATTERN = Pattern.compile(tokenPattern, Pattern.MULTILINE);
     }
 
     //#endregion
@@ -170,9 +174,50 @@ public abstract class PackageManagerParser extends Parser {
     protected abstract void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data);
 
     // TODO: Docstring
-    protected abstract void resolveProperties(HashMap<String, String> props);
+    protected void resolveProperties(HashMap<String, String> props) {
+        // Iterate over keys
+        props.keySet().forEach(key -> {
+            // Resolve property
+            this.properties.put(key, resolveProperty(props.get(key), props));
+        });
+    }
+
     // TODO: Docstring
-    protected abstract void resolveProperty(String key, String value, HashMap<String, String> props, Pattern p);
+    protected String resolveProperty(String value, HashMap<String, String> props) {
+        // Ingore value if null or blank
+        if(value == null || value.isBlank()) return value;
+
+        // Get results
+        final List<MatchResult> results =  this.TOKEN_PATTERN.matcher(value).results().toList();
+
+        // Init resolved value to raw value
+        String resolvedValue = value;
+
+        // Iterate over match results
+        for (MatchResult result : results) {
+            final String varKey = result.group(1).trim();
+            // Get value from this.properties
+            String varValue = this.properties.get(varKey);
+
+            // If no corresponding value, get value from props
+            if(varValue == null || this.TOKEN_PATTERN.matcher(varValue).find()) {
+                varValue = props.get(varKey);
+                // If value is null, this property cannot be resolved, store original value
+                if(varValue == null)  resolvedValue = value;
+                    // Otherwise, recurse resolution
+                else {
+                    resolvedValue = value.substring(0, result.start()) + varValue + value.substring(result.end());
+                    resolveProperty(resolvedValue, props);
+                }
+            }
+            // Otherwise, this property can be resolved
+            else resolvedValue = value.substring(0, result.start()) + varValue + value.substring(result.end());
+        }
+
+
+        // Return resolved String value
+        return resolvedValue;
+    }
 
     /**
      * Parses a package manager dependency file and stores found Components

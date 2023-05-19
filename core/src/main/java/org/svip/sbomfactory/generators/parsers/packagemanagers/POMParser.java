@@ -2,16 +2,18 @@ package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import org.svip.sbom.model.CPE;
+import org.svip.sbom.model.PURL;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.QueryWorker;
-import org.svip.sbom.model.PURL;
 
-import java.util.*;
-import java.util.regex.MatchResult;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.svip.sbomfactory.generators.utils.Debug.*;
+import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
  * file: POMParser.java
@@ -22,7 +24,13 @@ import static org.svip.sbomfactory.generators.utils.Debug.*;
 public class POMParser extends PackageManagerParser {
     //#region Constructors
 
-    public POMParser() { super("https://central.sonatype.com/artifact/", new XmlFactory()); }
+    public POMParser() {
+        super(
+                "https://central.sonatype.com/artifact/",
+                new XmlFactory(),
+                "\\$\\{([^}]*)\\}" // Regex101: https://regex101.com/r/gIluSW/1
+        );
+    }
 
     //#endregion
 
@@ -49,9 +57,9 @@ public class POMParser extends PackageManagerParser {
         // Iterate and build URLs
         for (final LinkedHashMap<String, String> d : this.dependencies) {
             // Format all property keys -> values
-            final String groupId = this.formatVariableNames(d.get("groupId"));
-            final String artifactId = this.formatVariableNames(d.get("artifactId"));
-            final String version = this.formatVariableNames(d.get("version"));
+            final String groupId = this.resolveProperty(d.get("groupId"), null);
+            final String artifactId = this.resolveProperty(d.get("artifactId"), null);
+            final String version = this.resolveProperty(d.get("version"), null);
 
             // Skip dependency if no name
             if(artifactId == null) continue;
@@ -114,79 +122,6 @@ public class POMParser extends PackageManagerParser {
 
         // Query all found URLs and store any relevant data
         queryURLs(this.queryWorkers);
-    }
-
-    /**
-     * Given a raw string, this method will attempt to strip all instances of "${...}" -> "...",
-     * retrieve their corresponding values from this.props, and return the formatted string.
-     * If any step fails, the original string is returned.
-     *
-     * @param string the string to be formatted
-     * @return formatted string if successful, otherwise, original string is returned
-     */
-    private String formatVariableNames(String string) {
-        if(string == null) return null;
-        // Regex101: https://regex101.com/r/gIluSW/1
-        // Regex first matches ALL intances of "${...}"
-        final Pattern p = Pattern.compile("\\$\\{([^}]*)\\}", Pattern.MULTILINE);
-
-        // Then replace these instances with "..." (the stripped value)
-        string = p.matcher(string).replaceAll("$1");
-        String[] parts = string.split("/");
-        for (int i = 0; i < parts.length; i++) {
-            final String value = this.properties.get(parts[i]);
-            if(value != null) parts[i] = value;
-        }
-        return String.join("/", parts);
-    }
-
-
-    // TODO: Complete this, currently it is broken
-    @Override
-    protected void resolveProperties(HashMap<String, String> props) {
-        // Regex101: https://regex101.com/r/gIluSW/1
-        // Regex first matches ALL intances of "${...}"
-        final Pattern p = Pattern.compile("\\$\\{([^}]*)\\}", Pattern.MULTILINE);
-
-        // Iterate over keys
-        props.keySet().forEach(key -> {
-            // Resolve property
-            resolveProperty(key, props.get(key), props, p);
-        });
-    }
-
-    protected void resolveProperty(String key, String value, HashMap<String, String> props, Pattern p) {
-        // Get results
-        final List<MatchResult> results =  p.matcher(value).results().toList();
-
-        // If none found, this property does not contain a variable
-        if(results.size() == 0) this.properties.put(key, props.get(key));
-        else { // Otherwise, there is one or more variables that need to be resolved
-            // Iterate over match results
-            for (MatchResult result : results) {
-                final String varKey = result.group(1).trim();
-                // Get value from this.properties
-                String varValue = this.properties.get(varKey);
-
-                // If no corresponding value, get value from props
-                if(varValue == null || p.matcher(varValue).find()) {
-                    varValue = props.get(varKey);
-                    // If value is null, this property cannot be resolved, store original value
-                    if(varValue == null) this.properties.put(key, value);
-                    // Otherwise, recurse resolution
-                    else {
-                        // TODO: Do this for all values
-                        final String resolvedValue =
-                                value.substring(0, result.start()) +
-                                varValue +
-                                value.substring(result.end());
-                        resolveProperty(key, resolvedValue, props, p);
-                    }
-                }
-                // Otherwise, this property can be resolved
-                else this.properties.put(key, varValue);
-            }
-        }
     }
 
     //#endregion

@@ -1,9 +1,14 @@
 package org.svip.sbomfactory.generators.parsers.contexts;
 
 // Declares Imports
+
 import org.apache.commons.lang3.StringUtils;
+import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+
 import java.util.ArrayList;
+
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
  * file: CommentParser
@@ -85,11 +90,22 @@ public class CommentParser extends ContextParser {
      */
     @Override
     public void parse(ArrayList<ParserComponent> components, String fileContents) {
-        // Parse comments
+        // Parse Comments
         this.parseComments(fileContents);
-        for (final String fileComment : this.context) {
-            System.out.println(fileComment);
+
+        // Log found comments
+        log(Debug.LOG_TYPE.DEBUG, "SOURCE CODE COMMENTS:\n\t" + String.join("\n\t", this.context));
+
+        // Log number of found comments
+        log(Debug.LOG_TYPE.DEBUG, String.format("%s Source Comments Detected", this.context.size()));
+
+        // TODO: Better way to handle this? Currently the entire call is stored as name and type is set to EXTERNAL
+        for(final String comment : this.context) {
+            // Create ParserComponent
+            final ParserComponent c = new ParserComponent(comment);
+            c.setType(ParserComponent.Type.EXTERNAL);
+            // Add comment to components
+            components.add(c);
         }
-        // TODO: Add info to components
     }
 }

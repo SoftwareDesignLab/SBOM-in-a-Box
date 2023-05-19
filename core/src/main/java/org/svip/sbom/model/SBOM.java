@@ -1,8 +1,6 @@
 package org.svip.sbom.model;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * File: SBOM.java
@@ -132,6 +130,15 @@ public class SBOM {
         this(from.getOriginFormat(), from.getSpecVersion(), from.getSbomVersion(), from.getSupplier(), from.getSerialNumber(), from.getTimestamp(), from.getSignature(), null);
     }
 
+    // TODO: Docstring
+    public SBOM(Component headComponent) {
+        // Creates an empty SBOM Object with a new DependencyTree for ParserController
+        this((String) null, null, null, null, null, null, null, new DependencyTree());
+
+        // Creates a head component for the dependencies to exist in
+        this.dependencyTree.addComponent(null, headComponent);
+    }
+
     /**
      * Get a set of all components in the project
      *
@@ -150,6 +157,17 @@ public class SBOM {
      */
     public UUID addComponent(UUID parent, Component toAdd) {
         return dependencyTree.addComponent(parent, toAdd);
+    }
+
+    /**
+     * Add multiple components into the dependency tree
+     *
+     * @param parent Parent UUID (null for root component)
+     * @param toAdd  Components to add into the tree
+     * @return UUID of added component (null if failed)
+     */
+    public void addComponents(UUID parent, List<? extends Component> toAdd) {
+        dependencyTree.addComponents(parent, toAdd);
     }
 
     /**
@@ -298,10 +316,28 @@ public class SBOM {
     @Override
     public String toString() {
         return "\nSBOM Information\n" +
+                "  + Origin Format: " + getOriginFormat() + "\n" +
+                "  + Specification Version: " + getSpecVersion() + "\n" +
+                "  + SBOM Version: " + getSbomVersion() + "\n" +
                 "  + Serial Number: " + getSerialNumber() + "\n" +
-                "  + Version: " + getSpecVersion() + "\n" +
-                "  + Tool Version: " + getSbomVersion() + "\n" +
-                "  + Time Stamp: " + getTimestamp() + "\n";
+                "  + Supplier: " + getSupplier() + "\n" +
+                "  + Time Stamp: " + getTimestamp() + "\n" +
+                "  + Dependency Tree: " + dependencyTree + "\n";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SBOM sbom)) return false;
+
+        if (!Objects.equals(dependencyTree, sbom.dependencyTree))
+            return false;
+        if (originFormat != sbom.originFormat) return false;
+        if (!Objects.equals(specVersion, sbom.specVersion)) return false;
+        if (!Objects.equals(sbomVersion, sbom.sbomVersion)) return false;
+        if (!Objects.equals(serialNumber, sbom.serialNumber)) return false;
+        if (!Objects.equals(supplier, sbom.supplier)) return false;
+        return Objects.equals(timestamp, sbom.timestamp);
     }
 
     /**
@@ -355,4 +391,3 @@ public class SBOM {
     }
 
 }
-

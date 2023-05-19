@@ -8,8 +8,9 @@ import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-/**
+/** TODO Add comments detailing generation info?
  * File: BOMStore.java
  * <p>
  * Abstract dataclass to store common attributes and methods between all CycloneDXStore specifications. This class will be
@@ -105,6 +106,11 @@ public abstract class BOMStore {
      * @param child The child ParserComponent storing all necessary component data.
      */
     public abstract void addChild(ParserComponent parent, ParserComponent child) throws GeneratorException;
+
+    /**
+     * Gets ALL components present in this BOMStore, including top-level components and their children.
+     */
+    public abstract Set<ParserComponent> getAllComponents();
 
     //#endregion
 

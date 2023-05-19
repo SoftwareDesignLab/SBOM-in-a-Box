@@ -1,10 +1,9 @@
 package org.svip.sbomfactory.generators.utils;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.svip.sbom.model.PURL;
+import org.svip.sbom.model.Component;
 import org.svip.sbomfactory.generators.generators.utils.License;
 import org.svip.sbomfactory.generators.generators.utils.LicenseManager;
-import org.svip.sbom.model.Component;
 
 import java.util.*;
 
@@ -30,6 +29,7 @@ public class ParserComponent extends Component {
     public enum Type {
         LANGUAGE,
         INTERNAL,
+        APPLICATION,
         EXTERNAL;
 
         /**
@@ -82,10 +82,30 @@ public class ParserComponent extends Component {
     }
 
     /**
-     * Placeholder constructor that enables instances of
-     * Component to be created dynamically by an ObjectMapper.
+     * "Copy" constructor that allows us to construct a ParserComponent from an existing Component. This is for use in
+     * the generators, which operate solely with ParserComponents.
      */
-    public ParserComponent() { }
+    public ParserComponent(Component component) {
+        this(component.getName());
+        this.setGroup(component.getGroup());
+        this.setUUID(component.getUUID());
+        this.setPublisher(component.getPublisher());
+        this.setVersion(component.getVersion());
+        this.setLicenses(component.getLicenses());
+        this.setCpes(component.getCpes());
+        this.setPurls(component.getPurls());
+        this.setSwids(component.getSwids());
+        this.setUniqueID(component.getUniqueID());
+
+        // Add children TODO needed?
+        component.getChildren().forEach(this::addChild);
+
+        // Add conflicts
+        component.getConflicts().forEach(this::addConflict);
+
+        // Add vulnerabilities
+        component.getVulnerabilities().forEach(this::addVulnerability);
+    }
 
     //#endregion
 
@@ -133,15 +153,23 @@ public class ParserComponent extends Component {
 
     /**
      * Resolve all String licenses added to this ParserComponent during parsing to a {@code License} that converts the
-     * license string to a short SPDX identifier.
+     * license string to a short SPDX identifier. If more than one license exists in a string, it will be resolved to
+     * multiple licenses.
      */
     public void resolveLicenses() {
         if(getLicenses() == null || getLicenses().isEmpty()) return;
         for(String licenseName : getLicenses()) {
-            Debug.log(Debug.LOG_TYPE.DEBUG, String.format("SPDXStore: License found in component %s: \"%s\"",
-                    this.getName(), licenseName));
+            Debug.log(Debug.LOG_TYPE.DEBUG, String.format("Attempting to resolve license \"%s\"", licenseName));
 
-            resolvedLicenses.add(new License(licenseName));
+            List<License> licenses = Arrays.stream(licenseName.split(",")).map(License::new).toList();
+
+            boolean licenseFound = false;
+            for(License license : licenses) {
+                if (!licenseFound) {
+                    addResolvedLicense(license);
+                    licenseFound = true;
+                } else if (license.getSpdxLicense() != null) addResolvedLicense(license);
+            }
         }
     }
 
@@ -160,11 +188,13 @@ public class ParserComponent extends Component {
     }
 
     /**
-     * Add a NEW, already-resolved license to this ParserComponent.
+     * Add an already-resolved license to this ParserComponent.
      *
      * @param resolved The {@code License} to add to this ParserComponent.
      */
     public void addResolvedLicense(License resolved) {
+        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("SPDXStore: License resolved in component %s: \"%s\"",
+                this.getName(), resolved.getLicenseName()));
         resolvedLicenses.add(resolved);
     }
 

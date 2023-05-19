@@ -1,19 +1,19 @@
 package org.svip.sbomfactory.generators.generators.spdx;
 
-import org.svip.sbom.model.PURL;
-import org.svip.sbomfactory.generators.generators.utils.License;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
+import org.svip.sbom.model.PURL;
+import org.svip.sbomfactory.generators.generators.utils.License;
+import org.svip.sbomfactory.generators.generators.utils.LicenseManager;
 import org.svip.sbomfactory.generators.generators.utils.Tool;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
+import javax.xml.namespace.QName;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * File: SPDXSerializer.java
@@ -46,7 +46,7 @@ public class SPDXSerializer extends StdSerializer<SPDXStore> {
     /**
      * The default serializer constructor that takes in no arguments and serializes a null SPDXStore class.
      */
-    protected SPDXSerializer() { super((Class<SPDXStore>) null); }
+    public SPDXSerializer() { super((Class<SPDXStore>) null); }
 
     /**
      * A serializer constructor that takes in an SPDXStore class to serialize.
@@ -73,6 +73,12 @@ public class SPDXSerializer extends StdSerializer<SPDXStore> {
     @Override
     public void serialize(SPDXStore spdxStore, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
             throws IOException {
+
+        // If we are serializing to XML, specify the root element as "Document"
+        if(jsonGenerator instanceof ToXmlGenerator xmlGenerator) {
+            xmlGenerator.initGenerator();
+            xmlGenerator.setNextName(new QName("Document"));
+        }
 
         jsonGenerator.writeStartObject(); // {
 
@@ -103,8 +109,8 @@ public class SPDXSerializer extends StdSerializer<SPDXStore> {
 
 
         // Get all licenses from tools
-        List<String> toolLicenses = spdxStore.getToolLicenses().stream().map(License::toString).toList();
-        jsonGenerator.writeStringField("dataLicense", String.join(" AND ", toolLicenses));
+        jsonGenerator.writeStringField("dataLicense",
+                LicenseManager.getConcatenatedLicenseString(spdxStore.getToolLicenses()));
 
         //
         // Extracted licensing info (invalid licenses)
@@ -278,11 +284,8 @@ public class SPDXSerializer extends StdSerializer<SPDXStore> {
         //
 
         if(pkg.getResolvedLicenses().size() > 0) {
-            Set<String> shortStrings = pkg.getResolvedLicenses().stream().map(License::getSpdxLicense)
-                    .collect(Collectors.toSet());
-
-            String licenseList = String.join(" AND ", shortStrings); // Join with AND for multiple licenses
-            jsonGenerator.writeStringField("licenseConcluded", licenseList);
+            jsonGenerator.writeStringField("licenseConcluded",
+                    LicenseManager.getConcatenatedLicenseString(pkg.getResolvedLicenses()));
         } else {
             jsonGenerator.writeStringField("licenseConcluded", "NONE"); // Otherwise, no license found
         }

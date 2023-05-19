@@ -1,13 +1,12 @@
 package org.svip.sbomfactory.generators.generators.cyclonedx;
 
-import org.svip.sbomfactory.generators.generators.*;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.svip.sbom.model.Component;
+import org.svip.sbomfactory.generators.generators.BOMStore;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.generators.utils.License;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.sbom.model.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,7 +20,6 @@ import static org.svip.sbomfactory.generators.utils.Debug.log;
  * </p>
  * @author Ian Dunn
  */
-@JsonSerialize(using = CycloneDXSerializer.class)
 public class CycloneDXStore extends BOMStore {
 
     //#region Attributes
@@ -124,6 +122,18 @@ public class CycloneDXStore extends BOMStore {
 
         log(Debug.LOG_TYPE.DEBUG, String.format("CycloneDXStore: Added child component \"%s\" that depends on parent UUID %s",
                 child.getName(), parentUUID));
+    }
+
+    /**
+     * Gets ALL components present in this BOMStore, including top-level components and their children.
+     */
+    @Override
+    public Set<ParserComponent> getAllComponents() {
+        Set<ParserComponent> allComponents = new HashSet<>(components);
+        for(ArrayList<ParserComponent> components : children.values()) {
+            allComponents.addAll(components);
+        }
+        return allComponents;
     }
 
     //#endregion

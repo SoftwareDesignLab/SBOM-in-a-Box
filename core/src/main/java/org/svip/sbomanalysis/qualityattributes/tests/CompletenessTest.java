@@ -100,10 +100,12 @@ public class CompletenessTest extends MetricTest {
         testResults.addTest(testComponentVersion(c));
 
         // Test CPEs
-        testResults.addTest(testCPEs(c));
+        if(c.getCpes().size() > 0)
+            testResults.addTest(testCPEs(c));
 
         // Test PURLs
-        testResults.addTest(testPURLs(c));
+        if(c.getPurls().size() > 0)
+            testResults.addTest(testPURLs(c));
 
         // Return result
         return testResults;

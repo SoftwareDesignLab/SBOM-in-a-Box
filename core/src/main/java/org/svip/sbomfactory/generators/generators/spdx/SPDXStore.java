@@ -1,6 +1,5 @@
 package org.svip.sbomfactory.generators.generators.spdx;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.svip.sbomfactory.generators.generators.BOMStore;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
@@ -19,7 +18,6 @@ import static org.svip.sbomfactory.generators.utils.Debug.log;
  * </p>
  * @author Ian Dunn
  */
-@JsonSerialize(using = SPDXSerializer.class)
 public class SPDXStore extends BOMStore {
 
     //#region Attributes
@@ -79,7 +77,11 @@ public class SPDXStore extends BOMStore {
 
         this.packages = new ArrayList<>();
         this.documentDescribes = new ArrayList<>();
+
         this.relationships = new ArrayList<>();
+        this.relationships.add(new Relationship("SPDXRef-DOCUMENT", "SPDXRef-DOCUMENT",
+                Relationship.RELATIONSHIP_TYPE.DESCRIBES)); // TODO translator needs this, is this correct?
+
         this.files = new HashMap<>();
         this.externalLicenses = new HashSet<>();
 
@@ -162,6 +164,14 @@ public class SPDXStore extends BOMStore {
 
         relationships.add(relationship);
         log(Debug.LOG_TYPE.DEBUG, "SPDXStore: Added relationship " + relationship);
+    }
+
+    /**
+     * Gets ALL components present in this BOMStore, including top-level components and their children.
+     */
+    @Override
+    public Set<ParserComponent> getAllComponents() {
+        return new HashSet<>(packages);
     }
 
     //#endregion

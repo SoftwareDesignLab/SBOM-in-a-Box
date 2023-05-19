@@ -7,21 +7,24 @@ v1.0.0 - alpha (2/27/23)
 
 - Electron.js App for Front end
 - Spring-Boot backend to handle API requests
-- SVIP Core that uses a Docker Container to generate SBOMs, merges them, and creates a D3 JSON Visual
+- SVIP Core that uses a Docker Container to generate SBOMs, merge them, and create a D3 JSON Visual
 
-_The full changelog can be found [here](CHANGELOG.md)_
+_Full sub-system READMEs & changelogs can be found in the `doc` directory_
 
 ## Quick Start
-todo add quick start
+- Core:
+  - run SVIPApplication.java
+- API:
+  - run UnifiedApplication.java
 
 ## Features
-todo flesh out with descriptions
-### Open Source Integrated SBOM Generation
-### SBOM Generation
-### SBOM VEX Generation
-### SBOM Metrics
-### SBOM Comparison
-### SBOM Merging
+This is a list of all "features", or sub-systems that SVIP contains. Each links to their respective README.md file.
+#### [Open Source Integrated SBOM Generation](doc/OSI/README.md) - Makes use of open source libraries to generate SBOMs
+#### [SBOM Generation](doc/Generators/README.md) - Custom SBOM generation via source file and package manager file analysis
+#### [SBOM VEX Generation](doc/VEX/README.md) - 
+#### [SBOM Metrics](doc/Metrics/README.md) - 
+#### [SBOM Comparison](doc/Comparer/README.md) - 
+#### [SBOM Merging](doc/Merger/README.md) - 
 
 ## Contributors
 **Principal Investigator:** [Mehdi Mirakhorli](mailto:mxmvse@rit.edu)

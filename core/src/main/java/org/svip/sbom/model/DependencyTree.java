@@ -141,4 +141,49 @@ public class DependencyTree {
         return components.containsKey(componentUUID);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DependencyTree that)) return false;
+
+        return this.toString().equals(that.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = components.hashCode();
+        result = 31 * result + (headComponent != null ? headComponent.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        String componentMap = dependencyMapToString(headComponent, "  ");
+
+        return "\nSBOM Dependency Tree Information\n" +
+                "  + Component Map: \n  " + componentMap;
+    }
+
+    /**
+     * Generates a string representation of the internal dependency map that does NOT depend on UUIDs. Each child is
+     * indented by a fixed amount of spaces to allow comparing two dependency trees without regard to UUIDs.
+     *
+     * @param component The root component of the dependency map to generate a string from.
+     * @param indent The indentation of each child.
+     * @return A string representation of the internal dependency map.
+     */
+    private String dependencyMapToString(UUID component, String indent) {
+        if(component == null) return "";
+        Component depComponent = getComponent(component);
+        StringBuilder out = new StringBuilder(indent + "+ ");
+
+        // All fields in this string will be used to compare
+        out.append(depComponent.getName()).append("\n"); // TODO add more comparison fields
+
+        for(UUID child : getChildrenUUIDs(component)) {
+            out.append(dependencyMapToString(child, indent + "  "));
+        }
+
+        return out.toString();
+    }
 }
