@@ -300,7 +300,7 @@ public class SVIPApiController {
                      //     break;
                      //   case XML:
                      //       result = new TranslatorCDXXML().translate(path);
-                    //          break;
+                    //          break; // todo once the other SPDX formats are done, uncomment
                      //   case YAML:
                      //       result = new TranslatorCDXXML().translate(path);
                     //     break;
