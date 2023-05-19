@@ -5,6 +5,11 @@
  * 4. dependencies (NugetParserDependenciesTest) [DONE]
  * 5. frameworkAssemblies (NugetParserFrameworkAssembliesTest) [DONE]
  * 6. dependencies AND frameworkAssemblies (NugetParserDependenciesAndFrameworksTest) [DONE]
+ *
+                 /*
+                 https://learn.microsoft.com/en-us/nuget/reference/nuspec
+                 The group format cannot be intermixed with a flat list.
+                  */
  * 7. dependency group(s) [RARE] (NugetParserDependencyGroupsTest) []
  * 8. dependency group(s) + frameworkAssemblie(s) [VERY RARE] (NugetParserDependencyGroupsAndFrameworksTest) []
  *

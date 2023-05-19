@@ -23,7 +23,6 @@ public class NugetParser extends PackageManagerParser{
      * Protected Constructor meant for use by parser implementations
      * to store their package-manager-specific static values in their respective
      * attributes.
-     *
      */
     public NugetParser() {
         super(
@@ -126,26 +125,6 @@ public class NugetParser extends PackageManagerParser{
                 }
 
             }
-         else if (s.contains("dependency") && s.contains("group")) { // optional dependency group format
-
-                /*
-                https://learn.microsoft.com/en-us/nuget/reference/nuspec
-                The group format cannot be intermixed with a flat list.
-                 */
-
-                // this format is too different for resolveProperties() to work
-                // targetFramework is synonymous with groupId in POMParser
-                // Get dependencies from data
-                // at this point, s should be in the form:
-                /*
-                {group=[{dependency={id=RouteMagic, version=1.1.0}}, {targetFramework=.NETFramework4.7.2, dependency=[{id=jQuery, version=1.6.2}, {id=WebActivator, version=1.4.4}]}, {targetFramework=netcoreapp3.1}]}
-                 */
-
-                //todo, this is pretty much an edge case, there are almost no examples of nuspec files with dependency groups, however they do exist
-
-        }
-
-
 
         }
 
@@ -157,6 +136,7 @@ public class NugetParser extends PackageManagerParser{
 
     /**
      * Resolves one dependency of either type
+     *
      * @param s Metadata string
      * @param type Dependency type
      */
