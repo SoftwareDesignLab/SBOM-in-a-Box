@@ -131,6 +131,8 @@ public class CycloneDXSerializer extends StdSerializer<CycloneDXStore> {
         jsonGenerator.writeStringField("name", component.getName());
         writeFieldIfExists(jsonGenerator,"group", component.getGroup());
         writeFieldIfExists(jsonGenerator,"version", component.getVersion());
+        if(component.getPublisher() != null && component.getPublisher().length() > 0 && !component.getPublisher().equals("Unknown"))
+            jsonGenerator.writeStringField("publisher", "Organization: " + component.getPublisher());
 
         //
         // Package Hash

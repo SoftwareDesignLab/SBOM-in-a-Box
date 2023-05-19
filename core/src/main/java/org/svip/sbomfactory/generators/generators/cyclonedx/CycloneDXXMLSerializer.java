@@ -234,6 +234,8 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
         xmlGenerator.writeStringField("name", component.getName());
         writeFieldIfExists(xmlGenerator, "group", component.getGroup());
         writeFieldIfExists(xmlGenerator,"version", component.getVersion());
+        if(component.getPublisher() != null && component.getPublisher().length() > 0 && !component.getPublisher().equals("Unknown"))
+            xmlGenerator.writeStringField("publisher", "Organization: " + component.getPublisher());
 
         writeHashes(xmlGenerator, new HashMap<String, String>() {{ put(component.generateHash(), "SHA-256"); }});
 
