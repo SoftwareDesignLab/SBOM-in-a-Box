@@ -187,7 +187,7 @@ public class SBOMGenerator {
      * @return A BOMStore containing all transformed data of the SBOM.
      */
     protected BOMStore buildBOMStore() throws GeneratorException {
-        ParserComponent headComponent = (ParserComponent) internalSBOM.getComponent(internalSBOM.getHeadUUID());
+        ParserComponent headComponent = resolveComponent(internalSBOM.getComponent(internalSBOM.getHeadUUID()));
         String serialNumber = internalSBOM.getSerialNumber();
         int version = 1; // TODO should we have to increment this?
 
@@ -208,7 +208,7 @@ public class SBOMGenerator {
                 .getComponentChildren(internalSBOM.getHeadUUID()); // Get all depth 0 dependencies
 
         for(Component c : componentSet) { // Loop through and add all packages
-            this.addComponent(bomStore, (ParserComponent) c, true);
+            this.addComponent(bomStore, c, true);
         }
 
         return bomStore;
