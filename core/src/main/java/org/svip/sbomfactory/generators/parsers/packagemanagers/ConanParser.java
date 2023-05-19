@@ -31,6 +31,14 @@ public class ConanParser extends PackageManagerParser {
     }
 
 
+    /**
+     * Parses a given set of raw data into Components and adds them to the given list
+     * of Components. This method is abstract and should be implemented to parse each specific
+     * dependency file differently, as needed.
+     *
+     * @param components list of Components to add to
+     * @param data       map of data to be parsed
+     */
     @Override
     protected void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data) {
 
@@ -94,6 +102,12 @@ public class ConanParser extends PackageManagerParser {
         }
     }
 
+    /**
+     * Parse the fileContents based on the given regex to form key-value pairs,
+     * then call parseData() for further process
+     * @param components list of Components to add to
+     * @param fileContents the contents of the file to be parsed
+     */
     @Override
     public void parse(ArrayList<ParserComponent> components, String fileContents) {
         // Init main data structure
@@ -158,6 +172,11 @@ public class ConanParser extends PackageManagerParser {
             this.parseData(components, data);
     }
 
+    /**
+     * Removing any comments in the given text and returns the text without comments
+     * @param text A file content from conanfile.txt or conanfile.py
+     * @return The text without comments
+     */
     public String removeComments(String text) {
         String nocommenttext = "";
         Boolean inblockcomment = false;
@@ -202,6 +221,12 @@ public class ConanParser extends PackageManagerParser {
         return nocommenttext;
     }
 
+    /**
+     * Split the data {@code line} into key-value pair and store the pair in the param {@code dep} and returned
+     * @param dep  Data storage to contain key-value pair to be returned
+     * @param line Data source
+     * @return The populated {@code dep} data storage
+     */
     public LinkedHashMap<String, String> procline(LinkedHashMap<String, String> dep,  String line) {
         final String[] linei = line.trim().split("/");
         dep.put("artifactId", linei[0]);
