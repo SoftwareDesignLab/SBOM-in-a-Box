@@ -9,22 +9,33 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.DependencyTree;
 import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.SBOMType;
 import org.svip.sbomanalysis.comparison.Comparison;
 import org.svip.sbomanalysis.comparison.Merger;
 import org.svip.sbomanalysis.qualityattributes.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.QualityReport;
 import org.svip.sbomfactory.generators.ParserController;
+import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXSerializer;
+import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXStore;
+import org.svip.sbomfactory.generators.generators.spdx.SPDXSerializer;
+import org.svip.sbomfactory.generators.generators.spdx.SPDXStore;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.osi.OSI;
 import org.svip.sbomfactory.translators.Translator;
 import org.svip.sbomfactory.translators.TranslatorPlugFest;
+import org.svip.sbomfactory.translators.TranslatorSPDX;
 import org.svip.sbomvex.VEXFactory;
 import org.svip.visualizer.NodeFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * API Controller for handling requests to SVIP
@@ -144,21 +155,9 @@ public class SVIPApiController {
 ////            log(Debug.LOG_TYPE.EXCEPTION, e);
 //        }
 
-        // Get schema from parameters, if not valid, default to CycloneDX
-        GeneratorSchema schema = GeneratorSchema.CycloneDX;
-        try { schema = GeneratorSchema.valueOfArgument(schemaName.toUpperCase()); }
-        catch (IllegalArgumentException ignored) { }
-
-        // Get format from parameters, if not valid, default to JSON
-        GeneratorSchema.GeneratorFormat format = schema.getDefaultFormat();
-        try { format = GeneratorSchema.GeneratorFormat.valueOf(formatName.toUpperCase()); }
-        catch (IllegalArgumentException ignored) {
-//            log(Debug.LOG_TYPE.WARN, String.format(
-//                    "Invalid format type provided: '%s', defaulting to '%s'",
-//                    optArgs.get("-f").toUpperCase(),
-//                    format
-//            ));
-        }
+        Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = configureSchema(schemaName, formatName);
+        GeneratorSchema schema = (GeneratorSchema) m.keySet().toArray()[0];
+        GeneratorSchema.GeneratorFormat format = (GeneratorSchema.GeneratorFormat) m.entrySet().toArray()[0];
 
         //encode and send report
         try {
@@ -259,15 +258,14 @@ public class SVIPApiController {
      * @param fileNames JSON string array of the filenames of all provided SBOMs
      * @param schema String value of expected output schema (SPDX/CycloneDX)
      * @param format String value of expected output format (JSON/XML/YAML)
-     * @return
+     * @return merged result SBOM
      */
     @PostMapping("merge")
     public ResponseEntity<SBOM> merge(@RequestParam("fileContents") String fileContents, @RequestParam("fileNames") String fileNames
-            , @RequestParam("schema") String schema, @RequestParam("format") String format) throws JsonProcessingException {
+            , @RequestParam("schema") String schema, @RequestParam("format") String format) throws IOException {
 
         // deserialize SBOMs, merge them and return the unified SBOM
 
-        Merger merger = new Merger();
 
         ArrayList<SBOM> sboms = translateMultiple(fileContents, fileNames);
 
@@ -275,13 +273,46 @@ public class SVIPApiController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        configureSchema(schema, format);
+        Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = configureSchema(schema, format);
+        GeneratorSchema generatorSchema = (GeneratorSchema) m.keySet().toArray()[0];
+        GeneratorSchema.GeneratorFormat generatorFormat = (GeneratorSchema.GeneratorFormat) m.entrySet().toArray()[0];
 
+
+        Merger merger = new Merger();
         SBOM result = merger.merge(sboms); // report to return
 
-        //todo translate result sbom into desired schema/format
+        Component[] dt = (Component[]) result.getAllComponents().toArray();
 
-        //encode and send report
+        //todo serialize SBOM to file (?) then run it through Translator to appropriate format?
+
+        switch (generatorSchema){
+            case SPDX:
+                SPDXStore s = new SPDXStore(result.getSerialNumber(), Integer.parseInt(result.getSbomVersion()), null);
+                for (Component c: dt
+                     ) {
+
+                    s.addComponent((ParserComponent) c); //todo this shouldnt work but I want to stub out the logic
+
+                }
+                SPDXSerializer serializer = new SPDXSerializer();
+                serializer.serialize(s,null,null);
+                break;
+            default: //CDX
+                CycloneDXStore c = new CycloneDXStore(result.getSerialNumber(), Integer.parseInt(result.getSbomVersion()), null);
+                for (Component comp: dt
+                ) {
+
+                    c.addComponent((ParserComponent) comp);
+
+                }
+                CycloneDXSerializer serializer1 = new CycloneDXSerializer();
+                serializer1.serialize(c,null,null);
+        }
+
+        String fileName = "tmp" + generatorFormat.toString().toLowerCase();
+        result = TranslatorPlugFest.translateContents("TODO", fileName);
+
+        //encode and send result
         try {
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
@@ -296,7 +327,7 @@ public class SVIPApiController {
      * @param schema schema string value
      * @param format format string value
      */
-    private static void configureSchema(String schema, String format) {
+    private static Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> configureSchema(String schema, String format) {
         // Get schema from parameters, if not valid, default to CycloneDX
         GeneratorSchema resultSchema = GeneratorSchema.CycloneDX;
         try { resultSchema = GeneratorSchema.valueOfArgument(schema.toUpperCase()); }
@@ -306,6 +337,9 @@ public class SVIPApiController {
         GeneratorSchema.GeneratorFormat resultFormat = resultSchema.getDefaultFormat();
         try { resultFormat = GeneratorSchema.GeneratorFormat.valueOf(format.toUpperCase()); }
         catch (IllegalArgumentException ignored) {}
+
+        return Map.of(resultSchema, resultFormat);
+
     }
 
     /**
