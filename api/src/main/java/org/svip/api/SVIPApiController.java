@@ -33,7 +33,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -339,15 +338,14 @@ public class SVIPApiController {
      * @param format format string value
      */
     private static Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> configureSchema(String schema, String format) {
-        // Get schema from parameters, if not valid, default to CycloneDX
-        GeneratorSchema resultSchema = GeneratorSchema.CycloneDX;
-        try { resultSchema = GeneratorSchema.valueOfArgument(schema.toUpperCase()); }
-        catch (IllegalArgumentException ignored) { }
 
-        // Get format from parameters, if not valid, default to JSON
-        GeneratorSchema.GeneratorFormat resultFormat = resultSchema.getDefaultFormat();
+        GeneratorSchema resultSchema;
+        try { resultSchema = GeneratorSchema.valueOfArgument(schema.toUpperCase()); }
+        catch (IllegalArgumentException i) { return null;}
+
+        GeneratorSchema.GeneratorFormat resultFormat;
         try { resultFormat = GeneratorSchema.GeneratorFormat.valueOf(format.toUpperCase()); }
-        catch (IllegalArgumentException ignored) {}
+        catch (IllegalArgumentException i) { return null;}
 
         return Map.of(resultSchema, resultFormat);
 
