@@ -19,18 +19,12 @@ import org.svip.sbomanalysis.qualityattributes.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.QualityReport;
 import org.svip.sbomfactory.generators.ParserController;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
-import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXSerializer;
-import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXStore;
-import org.svip.sbomfactory.generators.generators.spdx.SPDXSerializer;
-import org.svip.sbomfactory.generators.generators.spdx.SPDXStore;
+
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.osi.OSI;
-import org.svip.sbomfactory.translators.Translator;
 import org.svip.sbomfactory.translators.TranslatorPlugFest;
-import org.svip.sbomfactory.translators.TranslatorSPDX;
-import org.svip.sbomvex.VEXFactory;
-import org.svip.visualizer.NodeFactory;
+
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -278,7 +272,7 @@ public class SVIPApiController {
 
         Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = configureSchema(schema, format); // get schema enumerations from call
         GeneratorSchema generatorSchema = (GeneratorSchema) m.keySet().toArray()[0];
-        GeneratorSchema.GeneratorFormat generatorFormat = (GeneratorSchema.GeneratorFormat) m.entrySet().toArray()[0];
+        GeneratorSchema.GeneratorFormat generatorFormat = m.get(generatorSchema);
 
         if(generatorSchema == GeneratorSchema.SPDX) // spdx schema implies spdx format
             generatorFormat = GeneratorSchema.GeneratorFormat.SPDX;
@@ -286,9 +280,9 @@ public class SVIPApiController {
         SBOMGenerator generator = new SBOMGenerator(result, generatorSchema);
 
         String dir = System.getProperty("user.dir");
-        String fileName = dir + "tmp" + generatorFormat.toString().toLowerCase(); // create file to re-translate
+        String fileName = dir + "/tmp"; // create file to re-translate
         generator.writeFile(fileName, generatorFormat);
-        result = Translator.translate(fileName); // translate the new SBOM into the desired format then delete
+        result = TranslatorPlugFest.translate(fileName); // translate the new SBOM into the desired format then delete
         Files.deleteIfExists(Path.of(fileName));
 
         // encode and send result

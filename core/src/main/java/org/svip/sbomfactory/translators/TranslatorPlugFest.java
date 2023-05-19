@@ -1,10 +1,10 @@
 package org.svip.sbomfactory.translators;
 
-import org.json.JSONObject;
-import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.*;
 
-import java.nio.file.Paths;
 import java.nio.file.Files;
+import java.nio.file.Paths;
+
 
 /**
  * file: Translator.java
@@ -14,6 +14,7 @@ import java.nio.file.Files;
  * @author Matt London
  */
 public class TranslatorPlugFest {
+
     /**
      * Parse an SBOM using the appropriate translator and return the object
      *
@@ -43,34 +44,22 @@ public class TranslatorPlugFest {
 
         SBOM sbom = null;
 
-        // TODO check the contents of the file rather than trusting the file extension
-        // TODO address the parser exception rather than ignoring it
+        try {
 
-        final String extension = filePath.substring(filePath.toLowerCase().lastIndexOf('.'));
+            String ext = filePath.substring(filePath.lastIndexOf('.') + 1);
 
-//        try {
-//
-//            //call the appropriate translator based on the file extension
-//            switch (extension) {
-//
-//                case ".xml"  -> sbom = TranslatorCDXXML.translatorCDXXMLContents(contents, filePath);
-//
-//                case ".json" -> {
-//                    if (new JSONObject(new String(Files.readAllBytes(Paths.get(filePath)))).toMap().get("bomFormat").equals("CycloneDX")) {
-//                        sbom = TranslatorCDXJSON.translateContents(contents, filePath);
-//                    }
-//                }
-//
-//                case ".spdx" -> sbom = TranslatorSPDX.translatorSPDXContents(contents, filePath);
-//
-//                default      -> System.err.println("\nInvalid SBOM format found at: " + filePath);
-//
-//            }
-//
-//        }
-//        catch (Exception e) {
-//            System.err.println("Error: " + e.getMessage());
-//        }
+            switch (ext) {
+                case "xml" -> sbom =  new TranslatorCDXXML().translate(filePath);
+                case "json" -> sbom =  new TranslatorCDXJSON().translate(filePath);
+                case "spdx" -> sbom =  new TranslatorSPDX().translate(filePath);
+                default -> System.err.println("\nError: Invalid SBOM format found in: " + filePath);
+
+            }
+
+        }
+        catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
 
         return sbom;
     }
