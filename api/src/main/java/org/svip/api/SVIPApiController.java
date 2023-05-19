@@ -268,7 +268,6 @@ public class SVIPApiController {
             , @RequestParam("schema") String schema, @RequestParam("format") String format) throws IOException {
 
         // deserialize SBOMs, merge them and return the unified SBOM
-        boolean optionalParams = schema.length() > 0 || format.length() > 0;
 
         ArrayList<SBOM> sboms = translateMultiple(fileContents, fileNames);
 
@@ -279,24 +278,22 @@ public class SVIPApiController {
         Merger merger = new Merger();
         SBOM result = merger.merge(sboms); // report to return
 
-        if(optionalParams){ // if call has schema or format
-            Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = configureSchema(schema, format);
-            GeneratorSchema generatorSchema = (GeneratorSchema) m.keySet().toArray()[0];
-            GeneratorSchema.GeneratorFormat generatorFormat = (GeneratorSchema.GeneratorFormat) m.entrySet().toArray()[0];
+        Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = configureSchema(schema, format);
+        GeneratorSchema generatorSchema = (GeneratorSchema) m.keySet().toArray()[0];
+        GeneratorSchema.GeneratorFormat generatorFormat = (GeneratorSchema.GeneratorFormat) m.entrySet().toArray()[0];
 
-            if(generatorSchema == GeneratorSchema.SPDX) // spdx schema implies spdx file extension
-                generatorFormat = GeneratorSchema.GeneratorFormat.SPDX;
+        if(generatorSchema == GeneratorSchema.SPDX)
+            generatorFormat = GeneratorSchema.GeneratorFormat.SPDX;
 
-            SBOMGenerator generator = new SBOMGenerator(result, generatorSchema);
-            String dir = System.getProperty("user.dir");
-            String fileName = dir + generatorFormat.toString().toLowerCase();
+        SBOMGenerator generator = new SBOMGenerator(result, generatorSchema);
 
-            generator.writeFile(fileName, generatorFormat);
-            result = Translator.translate(fileName);
-            Files.deleteIfExists(Path.of(fileName));
-        }
+        String dir = System.getProperty("user.dir");
+        String fileName = dir + generatorFormat.toString().toLowerCase();
+        generator.writeFile(fileName, generatorFormat);
+        result = Translator.translate(fileName);
+        Files.deleteIfExists(Path.of(fileName));
 
-        // encode and send merged SBOM
+        //encode and send result
         try {
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
