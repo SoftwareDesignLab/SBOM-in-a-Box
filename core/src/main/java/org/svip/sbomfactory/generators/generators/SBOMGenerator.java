@@ -216,8 +216,8 @@ public class SBOMGenerator {
      * @param component The component that will be added to the BOMStore.
      * @param recursive Whether to recursively add children of {@code component} to the BOMStore.
      */
-    protected void addComponent(BOMStore bomStore, ParserComponent component, boolean recursive) {
-        bomStore.addComponent(component);
+    protected void addComponent(BOMStore bomStore, Component component, boolean recursive) {
+        bomStore.addComponent(resolveComponent(component));
 
         if(recursive) {
             // Note: We can't make addComponent recursive because the specific BOMStore may not want the component added
@@ -234,15 +234,14 @@ public class SBOMGenerator {
      * @param bomStore The BOMStore to add the component to.
      * @param component The component whose children will be added to the BOMStore.
      */
-    protected void addChildren(BOMStore bomStore, ParserComponent component) {
+    protected void addChildren(BOMStore bomStore, Component component) {
         // Get set of all children from the internal SBOM
-        Set<ParserComponent> children = (Set<ParserComponent>) (Set<?>) internalSBOM
-                .getComponentChildren(component.getUUID());
+        Set<Component> children = internalSBOM.getComponentChildren(component.getUUID());
 
         // Loop through children and add the child and its children recursively to the CycloneDXStore
-        for (ParserComponent internal : children) {
+        for (Component internal : children) {
             try {
-                bomStore.addChild(component, internal);
+                bomStore.addChild(resolveComponent(component), resolveComponent(internal));
             } catch(GeneratorException e) {
                 Debug.log(Debug.LOG_TYPE.WARN, "BOMStore: " + e.getMessage());
             }
@@ -313,5 +312,20 @@ public class SBOMGenerator {
                 '}';
     }
 
+    //#endregion
+
+    //#region Helper Methods
+
+    /**
+     * Private helper method to resolve a Component instance to a ParserComponent instance.
+     *
+     * @param component The Component to safely resolve to a ParserComponent.
+     * @return A ParserComponent instance containing all component data.
+     */
+    private ParserComponent resolveComponent(Component component) {
+        if(!(component instanceof ParserComponent))
+            return new ParserComponent(component);
+        else return (ParserComponent) component;
+    }
     //#endregion
 }

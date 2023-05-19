@@ -5,7 +5,7 @@ All notable changes to the Generators sub-system will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v4.4.2-alpha] - (05/18/2023)
+## [v4.4.2-alpha] - (05/19/2023)
 
 This update focuses mainly on adding several test cases for most generator classes and fixing bugs in the stores, 
 serializers, and translators.
@@ -37,6 +37,8 @@ serializers, and translators.
     - This is a simple recursive method that uses indentations
       to represent how an individual component is nested, thus removing a reliance on UUIDs.
     - Each component can then be compared by checking its string representation (which is currently just the component name)
+- Added "copy" constructor to `ParserComponent` Class to construct an instance from a `Component` instance.
+  - Updated `SBOMGenerator` to allow processing SBOMs that contain `Component` instances.
 
 ### Changed
 - All tests in `SBOMGeneratorTest` now use `Debug.log()` instead of default system I/O.

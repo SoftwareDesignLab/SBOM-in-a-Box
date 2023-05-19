@@ -36,6 +36,8 @@ serializers, and translators.
         - This is a simple recursive method that uses indentations
           to represent how an individual component is nested, thus removing a reliance on UUIDs.
         - Each component can then be compared by checking its string representation (which is currently just the component name)
+- Added "copy" constructor to `ParserComponent` Class to construct an instance from a `Component` instance.
+    - Updated `SBOMGenerator` to allow processing SBOMs that contain `Component` instances.
 
 ### Changed
 - All tests in `SBOMGeneratorTest` now use `Debug.log()` instead of default system I/O.
