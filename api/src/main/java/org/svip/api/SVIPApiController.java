@@ -1,5 +1,6 @@
 package org.svip.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
@@ -103,45 +104,39 @@ public class SVIPApiController {
     }
 
 
+    // TODO Docstring, explain how
     @PostMapping("/generateSBOM")
-    public ResponseEntity<String> generate(@RequestParam("contents") String contentsArray,
+    public ResponseEntity<String> generate(@RequestParam("fileContents") String contentsArray,
                                            @RequestParam("fileNames") String fileArray,
                                            @RequestParam("schemaName") String schemaName,
-                                           @RequestParam("formatName") String formatName) throws IOException {
+                                           @RequestParam("formatName") String formatName) {
 
         // todo OSI
         final ObjectMapper objectMapper = new ObjectMapper();
-        final List<String> fileContents = objectMapper.readValue(contentsArray, new TypeReference<>(){});
-        final List<String> filePaths = objectMapper.readValue(fileArray, new TypeReference<>(){});
+        List<String> fileContents;
+        List<String> filePaths;
 
-        final ParserController controller = new ParserController(null); // TODO: Get root directory and use it here
+        try {
+            fileContents = objectMapper.readValue(contentsArray, new TypeReference<>(){});
+        } catch (JsonProcessingException e) {
+            return new ResponseEntity<>("Malformed fileContents list.", HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            filePaths = objectMapper.readValue(fileArray, new TypeReference<>(){});
+        } catch (JsonProcessingException e) {
+            return new ResponseEntity<>("Malformed fileNames list.", HttpStatus.BAD_REQUEST);
+        }
+
+        final String projectName = filePaths.get(0);
+        final ParserController controller = new ParserController(projectName); // TODO get proper root?
 
         for (int i = 0; i < filePaths.size(); i++) {
             final String path = filePaths.get(i);
             final String contents = fileContents.get(i);
             controller.setPWD(path);
-            controller.parse(path, contents); // TODO: Fix
+            controller.parse(path, contents);
         }
-
-//        // Parse the root directory with the controller
-//        try (final Stream<String> stream = filePaths.stream()) {
-//            stream.forEach(filepath -> {
-//                try {
-//                    // Set pwd to formatted filepath if it is actually a directory
-//                    if (Files.isDirectory(filepath)) {
-//                        controller.setPWD(filepath);
-//                        controller.incrementDirCounter(); // TODO: Remove
-//                    } else { // Otherwise, it is a file, try to parse
-//                        controller.setPWD(filepath);
-//                        controller.parse(filepath, fileContents); // TODO: Fix
-//                    }
-//                } catch (Exception e) {
-////                    log(Debug.LOG_TYPE.EXCEPTION, e);
-//                }
-//            });
-//        } catch (Exception e) {
-////            log(Debug.LOG_TYPE.EXCEPTION, e);
-//        }
 
         // Get schema from parameters, if not valid, default to CycloneDX
         GeneratorSchema schema = GeneratorSchema.CycloneDX;
@@ -163,7 +158,8 @@ public class SVIPApiController {
         try {
             return new ResponseEntity<>(controller.toFile(null, schema, format), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            // TODO Filter e.getMessage(), probably not a good idea to send the entire error back to the client
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
