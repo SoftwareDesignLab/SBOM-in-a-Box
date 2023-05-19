@@ -5,6 +5,7 @@ import org.svip.sbomfactory.generators.generators.utils.License;
 import org.svip.sbomfactory.generators.generators.utils.LicenseManager;
 import org.svip.sbomfactory.generators.generators.utils.Tool;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.translators.TranslatorSPDX;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -54,25 +55,28 @@ public class SPDXTagValueWriter {
         StringBuilder out = new StringBuilder();
 
         out.append(getDocumentHeader());
-        out.append("## Creation Information\n").append(getCreationInformation());
-        out.append("## Extracted License Information\n").append(getExtractedLicenseInformation());
+        out.append(TranslatorSPDX.TAG + " Creation Information\n").append(getCreationInformation());
+
+        String extractedLicenseInformation = getExtractedLicenseInformation();
+        if(!extractedLicenseInformation.equals(""))
+            out.append(TranslatorSPDX.TAG + " Extracted Licensing Information\n").append(extractedLicenseInformation);
 
         if(spdxStore.getFiles().size() > 0) {
-            out.append("## File Information\n");
+            out.append(TranslatorSPDX.UNPACKAGED_TAG + "\n\n");
             for (Map.Entry<String, String> entry : spdxStore.getFiles().entrySet()) {
                 out.append(getFile(entry.getKey(), entry.getValue()));
             }
         }
 
-        out.append("## Packages\n");
         for(ParserComponent pkg : spdxStore.getPackages()) {
+            out.append(TranslatorSPDX.PACKAGE_TAG + ": ").append(pkg.getName()).append("\n\n");
             out.append(getPackage(pkg));
         }
 
         if(spdxStore.getRelationships().size() > 0) {
-            out.append("## Relationships\n");
+            out.append(TranslatorSPDX.RELATIONSHIP_TAG + "\n\n");
             for(Relationship relationship : spdxStore.getRelationships()) {
-                out.append("Relationship: ").append(relationship.toString()).append("\n");
+                out.append(TranslatorSPDX.RELATIONSHIP_KEY).append(relationship.toString()).append("\n");
             }
         }
 
@@ -101,12 +105,12 @@ public class SPDXTagValueWriter {
      */
     private String getDocumentHeader() {
         StringBuilder out = new StringBuilder();
-        out.append("SPDXVersion: ").append(spdxStore.getSpecVersion()).append("\n");
+        out.append(TranslatorSPDX.SPEC_VERSION_TAG).append(spdxStore.getSpecVersion()).append("\n");
         out.append("DataLicense: ")
                 .append(LicenseManager.getConcatenatedLicenseString(spdxStore.getToolLicenses())).append("\n");
-        out.append("SPDXID: ").append(spdxStore.getDocumentId()).append("\n");
+        out.append(TranslatorSPDX.ID_TAG).append(spdxStore.getDocumentId()).append("\n");
         out.append("DocumentName: ").append(spdxStore.getHeadComponent().getName()).append("\n");
-        out.append("DocumentNamespace: ").append(spdxStore.getSerialNumber()).append("\n\n");
+        out.append(TranslatorSPDX.DOCUMENT_NAMESPACE_TAG).append(spdxStore.getSerialNumber()).append("\n\n");
 //        out.append("LicenseListVersion: ").append(spdxStore.getSpecVersion()).append("\n");
 
         return out.toString();
@@ -120,9 +124,9 @@ public class SPDXTagValueWriter {
     private String getCreationInformation() {
         StringBuilder out = new StringBuilder();
         for(Tool tool : spdxStore.getTools()) {
-            out.append("Creator: ").append(tool.getToolInfo()).append("\n");
+            out.append(TranslatorSPDX.AUTHOR_TAG).append(tool.getToolInfo()).append("\n");
         }
-        out.append("Created: ").append(spdxStore.getTimestamp()).append("\n\n");
+        out.append(TranslatorSPDX.TIMESTAMP_TAG).append(spdxStore.getTimestamp()).append("\n\n");
 
         return out.toString();
     }
@@ -153,7 +157,7 @@ public class SPDXTagValueWriter {
         StringBuilder out = new StringBuilder();
 
         out.append("FileName: ").append(file).append("\n");
-        out.append("SPDXID: ").append(spdxId).append("\n");
+        out.append(TranslatorSPDX.ID_TAG).append(spdxId).append("\n");
         out.append("FileType: SOURCE\n\n"); // TODO we currently only analyze source files??
 
         return out.toString();
@@ -169,7 +173,7 @@ public class SPDXTagValueWriter {
         StringBuilder out = new StringBuilder();
 
         out.append("PackageName: ").append(component.getName()).append("\n");
-        out.append("SPDXID: ").append(component.getSPDXID()).append("\n");
+        out.append(TranslatorSPDX.ID_TAG).append(component.getSPDXID()).append("\n");
         if(component.getVersion() != null) out.append("PackageVersion: ").append(component.getVersion()).append("\n");
         if(component.getGroup() != null) out.append("PackageFileName: ").append(component.getGroup()).append("\n");
 

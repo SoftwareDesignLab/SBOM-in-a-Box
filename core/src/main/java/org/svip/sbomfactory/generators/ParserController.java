@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
+import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.parsers.Parser;
 import org.svip.sbomfactory.generators.parsers.contexts.ContextParser;
@@ -264,20 +265,24 @@ public class ParserController {
         // Create generator based on schema
         final SBOMGenerator generator = new SBOMGenerator(this.SBOM, outSchema);
 
-        if(outPath != null) {
-            // Make new out directory if none exist
-            final File outDir = new File(outPath);
-            if(outDir.mkdirs())
-                log(LOG_TYPE.SUMMARY, "New Output Directory created [ " + outPath + " ]");
+        try {
+            if(outPath != null) {
+                // Make new out directory if none exist
+                final File outDir = new File(outPath);
+                if(outDir.mkdirs())
+                    log(LOG_TYPE.SUMMARY, "New Output Directory created [ " + outPath + " ]");
 
-            // Write SBOM to file according to schema and file format
-            generator.writeFile(outPath, outFormat);
-        } else {
-            String fileString = generator.writeFileToString(outFormat, true);
-            log(Debug.LOG_TYPE.INFO, "SBOM String:\n" + fileString);
-            return fileString;
+                // Write SBOM to file according to schema and file format
+                generator.writeFile(outPath, outFormat);
+                return null;
+            } else {
+                String fileString = generator.writeFileToString(outFormat, true);
+                log(Debug.LOG_TYPE.INFO, "SBOM String:\n" + fileString);
+                return fileString;
+            }
+        } catch (GeneratorException e) {
+            throw new IOException(e);
         }
-        return null;
     }
 
     //#endregion

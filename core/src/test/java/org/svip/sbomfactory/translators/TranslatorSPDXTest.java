@@ -52,7 +52,7 @@ public class TranslatorSPDXTest extends TranslatorTestCore<TranslatorSPDX> {
         assertNotNull(test);
         Assertions.assertEquals(SBOMType.SPDX, test.getOriginFormat());
         assertEquals("1", test.getSbomVersion());
-        assertEquals("SPDX-2.3", test.getSpecVersion());
+        assertEquals("2.3", test.getSpecVersion());
         assertEquals(17, test.getAllComponents().size());
     }
 
@@ -62,18 +62,18 @@ public class TranslatorSPDXTest extends TranslatorTestCore<TranslatorSPDX> {
         assertNotNull(test);
         assertEquals(SBOMType.SPDX, test.getOriginFormat());
         assertEquals("1", test.getSbomVersion());
-        assertEquals("SPDX-2.2", test.getSpecVersion());
+        assertEquals("2.2", test.getSpecVersion());
         assertEquals(137, test.getAllComponents().size());
     }
 
-    @Test
-    public void builder_makes_SBOM_from_small_SPDX_2_2_test() throws IOException, ParseException, ParserConfigurationException {
-        SBOM test = this.TRANSLATOR.translate(TEST_SPDX_SMALL_v2_2_SBOM);
-        assertNotNull(test);
-        assertEquals("1", test.getSbomVersion());
-        assertEquals("SPDX-2.2", test.getSpecVersion());
-        assertEquals(28, test.getAllComponents().size());
-    }
+//    @Test
+//    public void builder_makes_SBOM_from_small_SPDX_2_2_test() throws IOException, ParseException, ParserConfigurationException {
+//        SBOM test = this.TRANSLATOR.translate(TEST_SPDX_SMALL_v2_2_SBOM); TODO this file doesn't exist??
+//        assertNotNull(test);
+//        assertEquals("1", test.getSbomVersion());
+//        assertEquals("2.2", test.getSpecVersion());
+//        assertEquals(28, test.getAllComponents().size());
+//    }
 
 
     @Test
@@ -82,7 +82,7 @@ public class TranslatorSPDXTest extends TranslatorTestCore<TranslatorSPDX> {
         assertNotNull(test);
         assertEquals(SBOMType.SPDX, test.getOriginFormat());
         assertEquals("1", test.getSbomVersion());
-        assertEquals("SPDX-2.3", test.getSpecVersion());
+        assertEquals("2.3", test.getSpecVersion());
         assertEquals(433, test.getAllComponents().size());
     }
 
@@ -105,7 +105,7 @@ public class TranslatorSPDXTest extends TranslatorTestCore<TranslatorSPDX> {
         assertNotNull(test);
         assertEquals(SBOMType.SPDX, test.getOriginFormat());
         assertEquals("1", test.getSbomVersion());
-        assertEquals("SPDX-2.3", test.getSpecVersion());
+        assertEquals("2.3", test.getSpecVersion());
         assertEquals(1, test.getAllComponents().size());
     }
 

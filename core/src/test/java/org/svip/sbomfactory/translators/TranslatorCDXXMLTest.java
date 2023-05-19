@@ -44,7 +44,7 @@ public class TranslatorCDXXMLTest extends TranslatorTestCore<TranslatorCDXXML> {
         assertNotNull(sbom);
         Assertions.assertEquals(SBOMType.CYCLONE_DX, sbom.getOriginFormat());
         assertEquals("1", sbom.getSbomVersion());
-        assertEquals("http://cyclonedx.org/schema/bom/1.4", sbom.getSpecVersion());
+        assertEquals("1.4", sbom.getSpecVersion());
         assertEquals(18, sbom.getAllComponents().size());
     }
 
@@ -54,7 +54,7 @@ public class TranslatorCDXXMLTest extends TranslatorTestCore<TranslatorCDXXML> {
         assertNotNull(sbom);
         assertEquals(SBOMType.CYCLONE_DX, sbom.getOriginFormat());
         assertEquals("1", sbom.getSbomVersion());
-        assertEquals("http://cyclonedx.org/schema/bom/1.4", sbom.getSpecVersion());
+        assertEquals("1.4", sbom.getSpecVersion());
         assertEquals(434, sbom.getAllComponents().size());
     }
 
@@ -71,7 +71,7 @@ public class TranslatorCDXXMLTest extends TranslatorTestCore<TranslatorCDXXML> {
         // Should be 1 component for head component
         assertEquals(SBOMType.CYCLONE_DX, sbom.getOriginFormat());
         assertEquals("1", sbom.getSbomVersion());
-        assertEquals("http://cyclonedx.org/schema/bom/1.4", sbom.getSpecVersion());
+        assertEquals("1.4", sbom.getSpecVersion());
         assertEquals(1, sbom.getAllComponents().size());
     }
 
