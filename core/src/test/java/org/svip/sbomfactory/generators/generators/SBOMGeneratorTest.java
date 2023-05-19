@@ -79,7 +79,7 @@ public class SBOMGeneratorTest {
 
     @Test
     @DisplayName("writeFile()")
-    void writeFileTest() throws IOException { // TODO Will need to test file output with a string
+    void writeFileTest() throws IOException, GeneratorException { // TODO Will need to test file output with a string
         OUT_PATH.toFile().mkdir();
 
         List<String> expectedFilePaths = new ArrayList<>();

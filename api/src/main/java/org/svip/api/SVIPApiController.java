@@ -20,15 +20,22 @@ import org.svip.sbomanalysis.qualityattributes.QualityReport;
 import org.svip.sbomfactory.generators.ParserController;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 
+import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.osi.OSI;
+import org.svip.sbomfactory.translators.TranslatorCDXJSON;
+import org.svip.sbomfactory.translators.TranslatorCDXXML;
 import org.svip.sbomfactory.translators.TranslatorPlugFest;
+import org.svip.sbomfactory.translators.TranslatorSPDX;
 
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -259,7 +266,7 @@ public class SVIPApiController {
      */
     @PostMapping("merge")
     public ResponseEntity<SBOM> merge(@RequestParam("fileContents") String fileContents, @RequestParam("fileNames") String fileNames
-            , @RequestParam("schema") String schema, @RequestParam("format") String format) throws IOException {
+            , @RequestParam("schema") String schema, @RequestParam("format") String format) throws IOException, GeneratorException, ParseException, ParserConfigurationException, ParseException, ParseException, ParseException, ParseException {
 
         ArrayList<SBOM> sboms = translateMultiple(fileContents, fileNames);
 
@@ -279,18 +286,53 @@ public class SVIPApiController {
 
         SBOMGenerator generator = new SBOMGenerator(result, generatorSchema);
 
-        String dir = System.getProperty("user.dir");
-        String fileName = dir + "/tmp"; // create file to re-translate
-        generator.writeFile(fileName, generatorFormat);
-        result = TranslatorPlugFest.translate(fileName); // translate the new SBOM into the desired format then delete
-        Files.deleteIfExists(Path.of(fileName));
+        String dir = System.getProperty("user.dir"); // create file to re-translate
+        File g = generator.writeFile(dir, generatorFormat);
+        String path = g.getPath();
 
-        // encode and send result
-        try {
-            return new ResponseEntity<>(result, HttpStatus.OK);
-        } catch (Exception e) {
+        try{
+            switch (generatorSchema){
+                case SPDX: { //spdx, json, xml, yaml
+
+                  //  switch (generatorFormat){
+                      //  case JSON:
+                      //      result = new TranslatorCDXJSON().translate(path);
+                     //     break;
+                     //   case XML:
+                     //       result = new TranslatorCDXXML().translate(path);
+                    //          break;
+                     //   case YAML:
+                     //       result = new TranslatorCDXXML().translate(path);
+                    //     break;
+                    //    case SPDX:
+                            result = new TranslatorSPDX().translate(path); //.spdx
+                    //break;
+                  //  }
+
+                    break;
+                }
+                default:{ //CDX
+                    // json xml
+
+                    switch (generatorFormat){
+                        case JSON:
+                            result = new TranslatorCDXJSON().translate(path);
+                            break;
+                        case XML:
+                            result = new TranslatorCDXXML().translate(path);
+                            break;
+                    }
+
+                }
+            }
+        }catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        Files.deleteIfExists(Path.of(path));
+
+        // encode and send result
+        return new ResponseEntity<>(result, HttpStatus.OK);
 
     }
 

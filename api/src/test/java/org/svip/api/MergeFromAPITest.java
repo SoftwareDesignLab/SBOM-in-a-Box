@@ -5,12 +5,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import org.svip.sbom.model.SBOM;
+import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
+import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 
 /**
@@ -43,7 +49,7 @@ public class MergeFromAPITest {
      * @throws IOException If the SBOM merging is broken
      */
     @Test
-    public void mergeTest() throws IOException {
+    public void mergeTest() throws IOException, GeneratorException, ParserConfigurationException, ParseException {
         List<String> contentsArray = new ArrayList<>();
         List<String> fileNamesArray = new ArrayList<>();
 
@@ -61,9 +67,19 @@ public class MergeFromAPITest {
 
         String fileNamesString = objectMapper.writeValueAsString(fileNamesArray);
 
-        ResponseEntity<SBOM> report = ctrl.merge(contentsString, fileNamesString, "SPDX", "SPDX");
 
-        int x = 0;
+        for(GeneratorSchema schema : GeneratorSchema.values()) {
+            // Test all possible formats
+            for(GeneratorSchema.GeneratorFormat format : GeneratorSchema.GeneratorFormat.values()) {
+                if(schema.supportsFormat(format)) {
+                    // Test logic per merge
+                    System.out.println("-----------------\ntesting " + schema + " " + format);
+                    ResponseEntity<SBOM> report = ctrl.merge(contentsString, fileNamesString, schema.toString().toUpperCase(), format.toString().toUpperCase());
+                    assertNotEquals(null, report);
+                    System.out.println("PASSED " + schema + " " + format + "!!\n-----------------\n");
+                }
+            }
+        }
 
     }
 
