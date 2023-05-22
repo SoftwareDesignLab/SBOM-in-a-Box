@@ -27,23 +27,21 @@ public class Test {
         this.message = message;
     }
 
-    /**
-     * Get status of the test
-     *
-     * @return The status of the test - true=PASSED, false=FAILED
-     */
+    ///
+    /// getters and setters
+    ///
+
     public boolean getStatus() {
         return status;
     }
 
-    /**
-     * Get the test output message.
-     *
-     * @return The message of the test output.
-     */
     public String getMessage() {
         return String.join("", message);
     }
+
+    ///
+    /// Overrides
+    ///
 
     @Override
     public String toString() {

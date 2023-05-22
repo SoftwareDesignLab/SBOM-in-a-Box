@@ -1,12 +1,9 @@
 package org.svip.sbom.model;
 
 import org.svip.sbomanalysis.comparison.conflicts.ComponentConflict;
-import org.svip.sbomvex.model.VEX;
+import org.svip.sbomvex.model.Vulnerability;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * File: Component.java
@@ -28,10 +25,6 @@ public class Component {
      * Name of the component
      */
     private String name;
-    /**
-     * Group of the component
-     */
-    protected String group;
 
     /**
      * Publisher of this component
@@ -70,7 +63,7 @@ public class Component {
     /**
      * List of vulnerabilities found (created by NVIP)
      */
-    private final Set<VEX> vulnerabilities;
+    private final Set<Vulnerability> vulnerabilities;
 
     /**
      * Represent the license of the component
@@ -93,7 +86,6 @@ public class Component {
         this.cpes = new HashSet<>();
         this.purls = new HashSet<>();
         this.swids = new HashSet<>();
-        this.licenses = new HashSet<>();
         this.componentConflicts = new HashSet<>();
         this.unpackaged = false;
     }
@@ -154,11 +146,6 @@ public class Component {
         this.swids = SWID;
     }
 
-    // TODO: Docstring
-    public Component(String name) {
-        this(name, null);
-    }
-
     /**
      * Copy a component's attributes to this component
      *
@@ -167,7 +154,6 @@ public class Component {
     public void copyFrom(Component component) {
         this.name = component.name;
         this.publisher = component.publisher;
-        this.group = component.group;
         this.uuid = component.uuid;
         this.cpes = new HashSet<>(component.cpes);
         this.purls = new HashSet<>(component.purls);
@@ -194,14 +180,6 @@ public class Component {
         this.name = name;
     }
 
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String group) {
-        this.group = group;
-    }
-
     public String getPublisher() {
         return publisher;
     }
@@ -219,6 +197,9 @@ public class Component {
     }
 
     public void addLicense(String license) {
+        if (licenses == null) {
+            licenses = new HashSet<>();
+        }
         licenses.add(license);
     }
 
@@ -309,30 +290,12 @@ public class Component {
         componentConflicts.add(componentConflict);
     }
 
-    public void addVulnerability(VEX VEX) {
-        vulnerabilities.add(VEX);
+    public void addVulnerability(Vulnerability vulnerability) {
+        vulnerabilities.add(vulnerability);
     }
 
-    public Set<VEX> getVulnerabilities() {
+    public Set<Vulnerability> getVulnerabilities() {
         return vulnerabilities;
-    }
-
-    // TODO: Docstring
-    public UUID generateUUID() {
-        // Return this.uuid if one is already assigned
-        if(this.uuid != null) return this.uuid;
-
-        // Convert unique Component identifiers to byte representation
-        byte[] uuidBytes = (this.getName() + this.getVersion()).getBytes();
-
-        // Generate UUID
-        final UUID uuid = UUID.nameUUIDFromBytes(uuidBytes);
-
-        // Set generated UUID
-        this.setUUID(uuid);
-
-        // Return generated UUID
-        return uuid;
     }
 
     ///
@@ -360,8 +323,8 @@ public class Component {
     public int hashCode() {
         //multiply the hash of every vulnerability together
         int vulnerabilitiesHash = 1;
-        for (VEX VEX : vulnerabilities) {
-            vulnerabilitiesHash *= VEX.hashCode();
+        for (Vulnerability vulnerability : vulnerabilities) {
+            vulnerabilitiesHash *= vulnerability.hashCode();
         }
         return Objects.hash(name, publisher, cpes, purls, swids, children, version, licenses) * vulnerabilitiesHash;
     }
@@ -431,5 +394,4 @@ public class Component {
         }
         return false;
     }
-
 }

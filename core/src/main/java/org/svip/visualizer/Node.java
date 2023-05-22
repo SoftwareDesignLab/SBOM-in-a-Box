@@ -2,7 +2,7 @@ package org.svip.visualizer;
 
 
 import org.svip.sbomanalysis.comparison.conflicts.ComponentConflict;
-import org.svip.sbomvex.model.VEX;
+import org.svip.sbomvex.model.Vulnerability;
 
 import java.util.Set;
 
@@ -16,7 +16,7 @@ public class Node {
     private final String name;
     private final String sbomId;
     private final String version;
-    private final Set<VEX> vulnerabilities;
+    private final Set<Vulnerability> vulnerabilities;
     private final Set<ComponentConflict> conflicts;
     private final Node[] children;
 
@@ -30,7 +30,7 @@ public class Node {
      * @param conflicts Conflicts of the node
      * @param nodeChildren Array of Children
      */
-    public Node(String nodeName, String nodeSbomId, String nodeVersion, Set<VEX> vulnerabilities, Set<ComponentConflict> conflicts, Node[] nodeChildren) {
+    public Node(String nodeName, String nodeSbomId, String nodeVersion, Set<Vulnerability> vulnerabilities, Set<ComponentConflict> conflicts, Node[] nodeChildren) {
         this.name = nodeName;
         this.sbomId = nodeSbomId;
         this.version = nodeVersion;
@@ -59,7 +59,7 @@ public class Node {
         return children;
     }
 
-    public Set<VEX> getVulnerabilities() {
+    public Set<Vulnerability> getVulnerabilities() {
         return vulnerabilities;
     }
 

@@ -7,6 +7,11 @@ import java.util.ArrayList;
 
 /**
  * QualityReport is a collection of TestResults objects that relate to a particular SBOM
+ *
+ * @author Dylan Mulligan
+ * @author Matt London
+ * @author Ian Dunn
+ * @author Derek Garcia
  */
 public class QualityReport {
     /** Test results from the QAPipeline */

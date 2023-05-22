@@ -1,8 +1,8 @@
 package org.svip.sbomanalysis.qualityattributes.tests.testresults;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.jaxrs.json.annotation.JSONP;
 import org.svip.sbom.model.Component;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 
@@ -11,6 +11,7 @@ import java.util.ArrayList;
  * A class to store organized and formatted test results for an individual component.
  *
  * @author Ian Dunn
+ * @author Matt London
  */
 public class TestResults {
     /**
@@ -21,30 +22,11 @@ public class TestResults {
 
     /**
      * Initialize a new instance of TestResults
-     * @param c The component that the Tests belong to
+     * @param component The component that the Tests belong to
      */
-
-    public TestResults(Component c) {
-        this.component = c;
+    public TestResults(Component component) {
+        this.component = component;
         this.tests = new ArrayList<>();
-    }
-
-    /**
-     * Get the component that the tests belong to.
-     *
-     * @return The component that the tests belong to
-     */
-    public Component getComponent() {
-        return this.component;
-    }
-
-    /**
-     * Get a list of all tests, regardless of passing or failing.
-     *
-     * @return An ArrayList of all tests performed
-     */
-    public ArrayList<Test> getTests() {
-        return this.tests;
     }
 
     /**
@@ -89,6 +71,22 @@ public class TestResults {
     public boolean isSuccessful() {
         return getSuccessfulTests() == tests.size();
     }
+
+    ///
+    /// getters and setters
+    ///
+
+    public Component getComponent() {
+        return this.component;
+    }
+
+    public ArrayList<Test> getTests() {
+        return this.tests;
+    }
+
+    ///
+    /// Overrides
+    ///
 
     /**
      * Prints the component name, final status, and number of tests passed vs total tests.

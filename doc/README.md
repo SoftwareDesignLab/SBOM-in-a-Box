@@ -31,3 +31,8 @@
 
 run: ```npm run dev```
 > If the backend is out of date, run: `npm run packageJar` and try again
+
+##Insomnia file Instructions
+>To open the insomnia file download insomnia from https://insomnia.rest/download/
+> 
+>When the program opens go to Application -> preferences -> data -> import and drag the JSON file in.

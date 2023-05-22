@@ -1,13 +1,12 @@
 package org.svip.sbomanalysis.differ;
 
+import org.svip.sbom.model.*;
+import org.svip.sbomanalysis.comparison.conflicts.*;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import org.svip.sbom.model.*;
-import org.svip.sbomanalysis.differ.DiffReport;
-import org.svip.sbomanalysis.comparison.conflicts.*;
 
 import java.util.Arrays;
 import java.util.HashSet;

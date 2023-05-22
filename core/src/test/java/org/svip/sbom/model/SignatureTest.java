@@ -1,26 +1,23 @@
-/**
- * @file SignatureTest.java
- *
- * Test set for Signature.java
- *
- * @author Tyler Drake
- */
-
 package org.svip.sbom.model;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.svip.sbom.model.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+/**
+ * File: SignatureTest.java
+ * Tests for Signature
+ *
+ * @author Tyler Drake
+ */
 public class SignatureTest {
-
 
     /**
      * Test signatures

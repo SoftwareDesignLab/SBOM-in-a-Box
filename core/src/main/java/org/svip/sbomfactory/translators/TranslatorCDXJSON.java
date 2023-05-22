@@ -1,5 +1,7 @@
 package org.svip.sbomfactory.translators;
 
+import org.svip.sbom.model.*;
+
 import org.cyclonedx.exception.ParseException;
 import org.cyclonedx.model.Bom;
 import org.cyclonedx.model.BomReference;

@@ -4,7 +4,7 @@ import org.svip.sbomvex.database.mockNetworking.*;
 
 import org.svip.sbom.model.*;
 import org.svip.sbomvex.VEXFactory;
-import org.svip.sbomvex.model.VEX;
+import org.svip.sbomvex.model.Vulnerability;
 
 import org.junit.jupiter.api.Test;
 
@@ -100,7 +100,7 @@ public class VEXFactoryTest {
         c.setCpes(new HashSet<>(List.of(new String[]{"thisisacpe"})));
 
         //add duplicate
-        c.addVulnerability(new VEX("100", "CVE-0000-1000", "somethingFunny", "N/A", "null", "1970-01-01 00:00:01", "null", "1980-01-01 00:00:01", "N/A", true, true, 0, 0, -1, "SVIP-VEX", "SVIP Auto-Generated", "N/A", "thisisacpe", "Under Review"));
+        c.addVulnerability(new Vulnerability("100", "CVE-0000-1000", "somethingFunny", "N/A", "null", "1970-01-01 00:00:01", "null", "1980-01-01 00:00:01", "N/A", true, true, 0, 0, -1, "SVIP-VEX", "SVIP Auto-Generated", "N/A", "thisisacpe", "Under Review"));
 
         try {
             factory.doLogin("username", "realPassword123!!!");

@@ -27,13 +27,20 @@ public class UniqueIdOccurrence {
      */
     private UniqueIdentifierType uniqueIdType;
 
+    /**
+     * initializes a UniqueIdOccurrence with an empty appearance Set.
+     * @param uID The unique ID
+     * @param type The type of unique ID (CPE/PURL/SWID/etc)
+     */
     public UniqueIdOccurrence (String uID, UniqueIdentifierType type) {
         this.uniqueIdentifier = uID;
         this.uniqueIdType = type;
         this.appearances = new HashSet<>();
     }
 
-    // getters
+    ///
+    /// getters and setters
+    ///
 
     public String getUniqueId() {
         return this.uniqueIdentifier;
@@ -54,6 +61,10 @@ public class UniqueIdOccurrence {
     public void addAppearance(int a){
         appearances.add(a);
     }
+
+    ///
+    /// Overrides
+    ///
 
     @Override
     public boolean equals(Object o) {

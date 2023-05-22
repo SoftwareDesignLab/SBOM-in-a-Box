@@ -8,17 +8,40 @@ import java.util.Set;
  *
  * @author Matt London
  */
-
+enum SignatureAlgorithm {
+    RS256,
+    RS384,
+    RS512,
+    PS256,
+    PS384,
+    PS512,
+    ES256,
+    ES384,
+    ES512,
+    Ed25519,
+    Ed448,
+    HS256,
+    HS384,
+    HS512
+}
 
 /**
  * Satisfy the KTY parameter for CDX signatures
  */
-
+enum SignatureKTY {
+    EC,
+    OKP,
+    RSA
+}
 
 /**
  * EC curve name
  */
-
+enum SignatureCRV {
+    P_256,
+    P_384,
+    P_521
+}
 
 /**
  * Represents one signature for an SBOM. The SBOM class will hold a set of these signatures

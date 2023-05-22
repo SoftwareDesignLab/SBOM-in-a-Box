@@ -30,6 +30,7 @@ public class ParserComponent extends Component {
         LANGUAGE,
         INTERNAL,
         APPLICATION,
+        DEAD_IMPORT, // Internal type used to determine whether to remove a component
         EXTERNAL;
 
         /**
@@ -64,6 +65,11 @@ public class ParserComponent extends Component {
      */
     private String SPDXid;
 
+    /**
+     * Group of the component
+     */
+    protected String group;
+
     //#endregion
 
     //#region Constructors
@@ -83,7 +89,6 @@ public class ParserComponent extends Component {
      */
     public ParserComponent(Component component) {
         this(component.getName());
-        this.setGroup(component.getGroup());
         this.setUUID(component.getUUID());
         this.setPublisher(component.getPublisher());
         this.setVersion(component.getVersion());
@@ -111,11 +116,21 @@ public class ParserComponent extends Component {
 
     public Type getType() { return this.type; }
     public int getDepth() { return this.depth; }
-    public String getAlias() { return this.alias; }
+    public String getAlias() { if(Objects.equals(alias, ""))return null; return this.alias; }
     public List<String> getFiles() { return this.files; }
 
     public Set<License> getResolvedLicenses() { return resolvedLicenses; }
     public String getSPDXID() { return SPDXid; }
+
+    public String getGroup() {
+        if(Objects.equals(group, ""))
+            return null;
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
 
     //#endregion
 
@@ -145,6 +160,7 @@ public class ParserComponent extends Component {
      * multiple licenses.
      */
     public void resolveLicenses() {
+        if(getLicenses() == null || getLicenses().isEmpty()) return;
         for(String licenseName : getLicenses()) {
             Debug.log(Debug.LOG_TYPE.DEBUG, String.format("Attempting to resolve license \"%s\"", licenseName));
 
@@ -248,7 +264,6 @@ public class ParserComponent extends Component {
      *
      * @return A UUID unique to this Component.
      */
-    @Override
     public UUID generateUUID() {
         // Convert unique Component identifiers to byte representation
         byte[] uuidBytes = (generateHash()).getBytes();

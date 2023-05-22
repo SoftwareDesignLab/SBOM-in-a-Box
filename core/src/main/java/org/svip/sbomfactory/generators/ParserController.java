@@ -9,6 +9,7 @@ import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.parsers.Parser;
+import org.svip.sbomfactory.generators.parsers.contexts.CommentParser;
 import org.svip.sbomfactory.generators.parsers.contexts.ContextParser;
 import org.svip.sbomfactory.generators.parsers.contexts.DeadImportParser;
 import org.svip.sbomfactory.generators.parsers.contexts.SubprocessParser;
@@ -181,23 +182,23 @@ public class ParserController {
         parser.setPWD(new VirtualPath(parentDir));
         parser.setSRC(new VirtualPath(this.SRC));
 
+        final ArrayList<ContextParser> contextParsers = new ArrayList<>();
+        if(parser instanceof LanguageParser) {
+//            contextParsers.add(new CommentParser());
+            contextParsers.add(new SubprocessParser());
+            contextParsers.add(new DeadImportParser());
+            // Add new ContextParser
+        }
+
         // Init Component list
         ArrayList<ParserComponent> components = new ArrayList<>();
 
         // Parse components
         parser.parse(components, fileContents);
 
-        // List to store any duplicates/dead imports we find to avoid concurrent arraylist modification
-        ArrayList<ParserComponent> toRemove = new ArrayList<>();
-
         // If file being parsed is a language file, execute contextParsers
-        if(parser instanceof LanguageParser) {
-            ContextParser deadImportParser = new DeadImportParser();
-            deadImportParser.parse(toRemove, fileContents); // Add dead imports to list of components to remove
-
-            ContextParser subprocessParser = new SubprocessParser();
-            subprocessParser.parse(components, fileContents); // Add subprocesses called to list of components
-        }
+        if(parser instanceof LanguageParser)
+            for(final ContextParser cp : contextParsers) cp.parse(components, fileContents);
 
         // If file being parsed is a package manager file
         if(parser instanceof PackageManagerParser) { // Parsing an EXTERNAL dependency
@@ -212,16 +213,38 @@ public class ParserController {
             componentMap.put(c.getName(), (ParserComponent) c);
         }
 
-        // Check for duplicate named components
+        // List to store any duplicates/dead imports we find to avoid concurrent arraylist modification
+        ArrayList<ParserComponent> toRemove = new ArrayList<>();
+
+        // Get list of all components that have dead imports and remove from main components array
+        List<String> deadImportNames = components.stream()
+                .filter(c -> {
+                    if(c != null && c.getType() == ParserComponent.Type.DEAD_IMPORT) {
+                        toRemove.add(c); // Remove dead import component parsed by DeadImportParser
+                        return true;
+                    }
+                    return false;
+                }).map(Component::getName).toList();
+
+        components.removeAll(toRemove);
+        toRemove.clear(); // Clear components to remove for below loop
+
+        int deadImportCounter = 0;
+        // Check for duplicate named components & dead imports
         for(ParserComponent component : components) {
-            // If a component name doesn't exist, there are no duplicates
-            if(componentMap.get(component.getName()) == null) {
-                // Add the component to the map to avoid
-                componentMap.put(component.getName(), component);
+            if(deadImportNames.contains(component.getName())) {
+                toRemove.add(component);
+                Debug.log(LOG_TYPE.DEBUG, "Removed dead import " + component.getName());
+                deadImportCounter++;
                 continue;
             }
 
             ParserComponent old = componentMap.get(component.getName());
+            // If a component name doesn't exist, there are no duplicates
+            if(old == null) continue;
+
+            // Add the component to the map to avoid further duplicates from THIS FILE
+            componentMap.put(component.getName(), component);
 
             // Compare important fields and update old component
             old.setGroup(component.getGroup());
@@ -229,11 +252,16 @@ public class ParserController {
 
             // TODO possibly more assignments?
 
-            toRemove.add(component); // Remove new component directly since TODO we can't remove old component
-            Debug.log(LOG_TYPE.WARN, "Found and removed duplicate component " + component.getName());
+            toRemove.add(component); // Remove new component directly
+            Debug.log(LOG_TYPE.DEBUG, "Found and removed duplicate component " + component.getName());
         }
 
-        components.removeAll(toRemove); // Remove all duplicates TODO make sure dead imports are removed
+        components.removeAll(toRemove); // Remove all duplicates
+
+        String removedComponentsLog = "Removed " + toRemove.size() + " Components parsed from file " + filename;
+        if(deadImportCounter > 0) removedComponentsLog += " (" + deadImportCounter + "/" + toRemove.size()
+                + " were dead imports)";
+        Debug.log(LOG_TYPE.DEBUG, removedComponentsLog);
 
         // Add Components to SBOM
         this.SBOM.addComponents(parent, components);

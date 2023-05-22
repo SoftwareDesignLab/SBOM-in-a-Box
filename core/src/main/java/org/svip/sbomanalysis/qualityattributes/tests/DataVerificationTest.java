@@ -4,9 +4,9 @@ import org.svip.sbomanalysis.qualityattributes.tests.testresults.*;
 import org.svip.sbom.model.*;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.Set;
@@ -21,6 +21,10 @@ import java.util.Set;
 public class DataVerificationTest extends MetricTest {
 
     private static final int MAX_CONNECTION_TIMEOUT = 1000;
+
+    /**
+     * Constructor for DataVerificationTest
+     */
     public DataVerificationTest() {
         super("Data Verification Test");
     }
@@ -36,27 +40,26 @@ public class DataVerificationTest extends MetricTest {
 
         final TestResults testResults = new TestResults(c); // Init TestResults for this component
 
+        //check if the component is missing a purl
         Set<PURL> purls = c.getPurls();
         if(purls.isEmpty()){
             testResults.addTest(new Test(false, "Component has no PURL"));
             return testResults;
         }
+        //if not run the test
         for (PURL p: c.getPurls()
-             ) {
+        ) {
 
             try{
-
+                //pull the data from the purl and from the package manager
                 String[] fromOnline = extractedFromPURL(p);
                 String packageManagerName = p.getPackageManager().name().toLowerCase();
-
                 String name = p.getName();
                 String nameFoundOnline = fromOnline[0].toLowerCase();
-
                 String version = p.getVersion();
                 String versionFoundOnline = fromOnline[1].toLowerCase();
 
                 String publisher;
-
                 if (c.getPublisher() == null) {
                     publisher = "";
                 }
@@ -76,7 +79,7 @@ public class DataVerificationTest extends MetricTest {
                             packageManagerName, " database"));
 
                 if(!((publisher.contains(publisherFoundOnline)|| publisherFoundOnline.contains(publisher))))
-                    testResults.addTest(new Test(false,"Publisher Name", publisher,
+                    testResults.addTest(new Test(false,"Publisher Name ", publisher,
                             " does not match ", publisherFoundOnline," in ", packageManagerName, " database"));
             }
             catch(IOException e){
@@ -94,19 +97,19 @@ public class DataVerificationTest extends MetricTest {
     }
 
     /**
-         Extract name, version, and publisher from package manager online
-         @param purl in the form of a string
-         @return component name, version(s), publisher name found online. Empty strings if not found
-    */
+     Extract name, version, and publisher from package manager online
+     @param purl in the form of a string
+     @return component name, version(s), publisher name found online. Empty strings if not found
+     */
     private static String[] extractedFromPURL(PURL purl) throws IOException {
         return extractFromAlpine(purl.toString());
         // todo: we don't test for Debian or Python pm yet
     }
 
     /**
-        Extract name, version, and publisher from Alpine linux package manager online
-        @param p PURl in the form of a string
-        @return component name, version(s), publisher name found online. Empty strings if not found
+     Extract name, version, and publisher from Alpine linux package manager online
+     @param p PURl in the form of a string
+     @return component name, version(s), publisher name found online. Empty strings if not found
      */
     private static String[] extractFromAlpine(String p) throws IOException {
 
@@ -127,10 +130,10 @@ public class DataVerificationTest extends MetricTest {
         String[] columns = row.split("<td");
 
         String nameColumn = "";
-        String publisherColumn = "";//
+        String publisherColumn = "";
 
         for (String column: columns
-             ) {
+        ) {
 
             if(column.contains("package\">"))
                 nameColumn = column;
@@ -144,19 +147,19 @@ public class DataVerificationTest extends MetricTest {
     }
 
     /**
-      @param table in the form of a string
-      @return all version numbers from query
+     @param table in the form of a string
+     @return all version numbers from query
      */
     private static String checkVersions(String table){
 
         StringBuilder versions = new StringBuilder();
         String[] rows = table.split("<tr>");
         for (String row: rows
-             ) {
+        ) {
 
             String[] columns = row.split("<td");
             for (String col: columns
-                 ) {
+            ) {
                 if(col.contains("version\">"))
                     versions.append(getSpecific(col)).append(", ");
 
@@ -175,9 +178,9 @@ public class DataVerificationTest extends MetricTest {
     }
 
     /**
-        From the last HTML element we narrow down to, find what we are looking for at the top of the table
-        @param column table column in the form of a string
-        @return specific word at the end of the column, right before '/a>'
+     From the last HTML element we narrow down to, find what we are looking for at the top of the table
+     @param column table column in the form of a string
+     @return specific word at the end of the column, right before '/a>'
      */
     private static String getSpecific(String column) {
         String[] elements = column.split("[<>]");
@@ -191,12 +194,12 @@ public class DataVerificationTest extends MetricTest {
         return found;
     }
     /**
-        Given an http connection, return the HTML
-        @param q HTML connection
-        @return the HTML
+     Given an http connection, return the HTML
+     @param q HTML connection
+     @return the HTML
      */
     private static htmlResult getHtmlResult(HttpURLConnection q) throws IOException {
-        BufferedReader in = new BufferedReader(new InputStreamReader(q.getInputStream()));
+        BufferedReader in = new BufferedReader(new InputStreamReader(q.getInputStream(), "UTF-8"));
         String inputLine;
         StringBuffer response = new StringBuffer();
         while ((inputLine = in.readLine()) != null) {
@@ -206,21 +209,22 @@ public class DataVerificationTest extends MetricTest {
     }
 
     /**
-        Created by IDE for readability
+     Created by IDE for readability
      */
     private record htmlResult(BufferedReader in, StringBuffer response) {
     }
 
     /**
-        Adapted from queryURL() from Parser.java in BenchmarkParser
-        @param urlString the URL
-        @return HTTP connection
+     Adapted from queryURL() from Parser.java in BenchmarkParser
+     @param urlString the URL
+     @return HTTP connection
      */
     protected static HttpURLConnection queryURL(String urlString) throws IOException {
         try {
             final URL url = new URL(urlString);
             final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
+            connection.setRequestProperty("Accept-Charset", "UTF-8");
             connection.setInstanceFollowRedirects(true);
             connection.setConnectTimeout(MAX_CONNECTION_TIMEOUT);
             connection.connect();
@@ -231,5 +235,6 @@ public class DataVerificationTest extends MetricTest {
         }
     }
 }
+
 
 
