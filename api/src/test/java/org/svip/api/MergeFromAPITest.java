@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
-import org.svip.sbomfactory.translators.TranslatorCDXXML;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;

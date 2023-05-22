@@ -27,10 +27,7 @@ import org.svip.sbomfactory.translators.TranslatorSPDX;
 
 
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +42,7 @@ import java.util.Map;
  * @author Justin Jantzi
  * @author Matt London
  * @author Ian Dunn
+ * @author Juan Francisco Patino
  */
 
 @RestController
