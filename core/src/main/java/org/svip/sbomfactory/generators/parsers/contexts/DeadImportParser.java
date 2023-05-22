@@ -69,7 +69,7 @@ public class DeadImportParser extends ContextParser {
         for(final String deadImport: this.context) {
             // Create ParserComponent
             final ParserComponent c = new ParserComponent(deadImport);
-            c.setType(ParserComponent.Type.EXTERNAL);
+            c.setType(ParserComponent.Type.DEAD_IMPORT);
             // Add dead imports to components
             components.add(c);
         }

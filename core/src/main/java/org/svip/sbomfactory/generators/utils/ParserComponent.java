@@ -30,6 +30,7 @@ public class ParserComponent extends Component {
         LANGUAGE,
         INTERNAL,
         APPLICATION,
+        DEAD_IMPORT, // Internal type used to determine whether to remove a component
         EXTERNAL;
 
         /**
