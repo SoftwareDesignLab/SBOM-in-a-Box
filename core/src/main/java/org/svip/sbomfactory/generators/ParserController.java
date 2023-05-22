@@ -9,7 +9,6 @@ import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.parsers.Parser;
-import org.svip.sbomfactory.generators.parsers.contexts.CommentParser;
 import org.svip.sbomfactory.generators.parsers.contexts.ContextParser;
 import org.svip.sbomfactory.generators.parsers.contexts.DeadImportParser;
 import org.svip.sbomfactory.generators.parsers.contexts.SubprocessParser;

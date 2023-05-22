@@ -1,7 +1,6 @@
 package org.svip.sbomfactory.generators.utils.virtualtree;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class VirtualNode {
@@ -16,5 +15,9 @@ public class VirtualNode {
         this.leafs = new HashSet<>();
         this.fileContents = fileContents;
         this.path = path;
+    }
+
+    public void addNode(VirtualPath filePath, String fileContents) {
+        // TODO
     }
 }

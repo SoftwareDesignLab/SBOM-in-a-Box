@@ -1,17 +1,21 @@
 package org.svip.sbomfactory.generators.utils.virtualtree;
 
+import org.svip.sbomfactory.generators.utils.Debug;
+
 import java.util.Arrays;
 
 public class VirtualPath {
     private final String[] pathParts;
 
     public VirtualPath(String path) {
-        this.pathParts = path.split("\\\\");
-        if(this.pathParts.length == 0) throw new IllegalArgumentException("Invalid path string provided");
+        this(path.split("\\\\"));
     }
 
     private VirtualPath(String[] pathParts) {
         if(pathParts.length == 0) throw new IllegalArgumentException("Invalid path string provided");
+        if(pathParts.length == 1 && pathParts[0].equals(""))
+            throw new IllegalArgumentException("Invalid path string provided");
+
         this.pathParts = pathParts;
     }
 
@@ -32,19 +36,31 @@ public class VirtualPath {
     }
 
     public static void main(String[] args) {
-        final VirtualPath v1 = new VirtualPath("");
+        // TODO move this into test
+        Debug.enableDebug();
+//        final VirtualPath v1 = new VirtualPath("");
+//        final String v1Constructor = "new VirtualPath(\"\")";
+//        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getParent(); %s", v1Constructor, v1.getParent()));
+//        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getFileName(); %s", v1Constructor, v1.getFileName()));
+
 //        final VirtualPath v2 = new VirtualPath(new String[]{});
+//        final String v2Constructor = "new VirtualPath(new String[]{})";
+//        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getParent(); %s", v2Constructor, v2.getParent()));
+//        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getFileName(); %s", v2Constructor, v2.getFileName()));
+
         final VirtualPath v3 = new VirtualPath("a/b/c");
+        final String v3Constructor = "new VirtualPath(\"a/b/c\")";
+        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getParent(); %s", v3Constructor, v3.getParent()));
+        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getFileName(); %s", v3Constructor, v3.getFileName()));
+
         final VirtualPath v4 = new VirtualPath("a\\b\\c");
-        final VirtualPath v5 = new VirtualPath(new String[]{"", ""});
-        v1.getParent();
-        v1.getFileName();
-        v3.getParent();
-        v3.getFileName();
-        v4.getParent();
-        v4.getFileName();
-        v5.getParent();
-        v5.getFileName();
-        final String a = "";
+        final String v4Constructor = "new VirtualPath(\"a\\\\b\\\\c\")";
+        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getParent(); %s", v4Constructor, v4.getParent()));
+        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getFileName(); %s", v4Constructor, v4.getFileName()));
+
+//        final VirtualPath v5 = new VirtualPath(new String[]{"", ""});
+//        final String v5Constructor = "new VirtualPath(new String[]{\"\", \"\"})";
+//        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getParent(); %s", v5Constructor, v5.getParent()));
+//        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getFileName(); %s", v5Constructor, v5.getFileName()));
     }
 }
