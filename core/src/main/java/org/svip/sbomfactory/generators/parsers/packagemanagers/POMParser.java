@@ -1,23 +1,12 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
-<<<<<<< HEAD
-import org.svip.sbom.model.CPE;
-import org.svip.sbom.model.PURL;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.sbomfactory.generators.utils.QueryWorker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-=======
-import org.svip.sbomfactory.generators.utils.ParserComponent;
-
-import java.util.*;
 import java.util.stream.Collectors;
->>>>>>> origin/dev-Generators-PackageManagers
 
 import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
 import static org.svip.sbomfactory.generators.utils.Debug.log;

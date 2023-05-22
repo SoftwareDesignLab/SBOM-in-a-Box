@@ -1,19 +1,11 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
-<<<<<<< HEAD
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-=======
-import org.cyclonedx.model.Hash;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
-
-import java.lang.reflect.Array;
-import java.util.*;
->>>>>>> origin/dev-Generators-PackageManagers
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

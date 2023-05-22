@@ -82,7 +82,6 @@ public class ParserComponent extends Component {
         this.resolvedLicenses = new HashSet<>();
     }
 
-<<<<<<< HEAD
     /**
      * "Copy" constructor that allows us to construct a ParserComponent from an existing Component. This is for use in
      * the generators, which operate solely with ParserComponents.
@@ -108,8 +107,6 @@ public class ParserComponent extends Component {
         component.getVulnerabilities().forEach(this::addVulnerability);
     }
 
-=======
->>>>>>> origin/dev-Generators-PackageManagers
     //#endregion
 
     //#region Getters

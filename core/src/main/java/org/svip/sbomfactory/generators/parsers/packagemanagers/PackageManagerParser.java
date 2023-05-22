@@ -1,19 +1,14 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
-<<<<<<< HEAD
-=======
 import org.svip.sbom.model.CPE;
 import org.svip.sbom.model.PURL;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.QueryWorker;
 import org.svip.sbomfactory.generators.parsers.Parser;
->>>>>>> origin/dev-Generators-PackageManagers
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.svip.sbomfactory.generators.parsers.Parser;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.sbomfactory.generators.utils.QueryWorker;
 
 import java.io.IOException;
 import java.util.*;
