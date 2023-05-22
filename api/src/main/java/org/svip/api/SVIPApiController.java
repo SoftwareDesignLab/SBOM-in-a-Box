@@ -280,10 +280,7 @@ public class SVIPApiController {
             generatorFormat = GeneratorSchema.GeneratorFormat.SPDX;
 
         SBOMGenerator generator = new SBOMGenerator(result, generatorSchema);
-
-        String dir = System.getProperty("user.dir"); // create file to re-translate
-        File g = generator.writeFile(dir, generatorFormat);
-        String path = g.getPath();
+        String contents = generator.writeFileToString(generatorFormat, true);
 
         try{
             switch (generatorSchema){
@@ -300,7 +297,7 @@ public class SVIPApiController {
                      //       result = new TranslatorCDXXML().translate(path);
                     //     break;
                     //    case SPDX:
-                            result = new TranslatorSPDX().translate(path); //.spdx
+                    result = new TranslatorSPDX().translateContents(contents, ""); //.spdx
                     //break;
                   //  }
 
@@ -311,10 +308,11 @@ public class SVIPApiController {
 
                     switch (generatorFormat){
                         case JSON:
-                            result = new TranslatorCDXJSON().translate(path);
+                            result = new TranslatorCDXJSON().translateContents(contents, "");
                             break;
                         case XML:
-                            result = new TranslatorCDXXML().translate(path);
+                            generator.writeFileToString(generatorFormat, false);
+                            result = new TranslatorCDXXML().translateContents(contents, "");
                             break;
                     }
 
@@ -323,8 +321,6 @@ public class SVIPApiController {
         }catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        Files.deleteIfExists(Path.of(path));
 
         // encode and send result
         return new ResponseEntity<>(result, HttpStatus.OK);

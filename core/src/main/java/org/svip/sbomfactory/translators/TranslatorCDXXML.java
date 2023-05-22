@@ -37,7 +37,7 @@ public class TranslatorCDXXML extends TranslatorCore {
      * @throws ParserConfigurationException if the DocumentBuilder cannot be created
      */
     @Override
-    protected SBOM translateContents(String contents, String file_path) throws ParserConfigurationException {
+    public SBOM translateContents(String contents, String file_path) throws ParserConfigurationException {
 
         // Data for author
         String author = "";

@@ -65,7 +65,7 @@ public class TranslatorSPDX extends TranslatorCore {
      */
     // TODO: Break into sub-methods
     @Override
-    protected SBOM translateContents(String fileContents, String file_path) throws IOException, ParseException {
+    public SBOM translateContents(String fileContents, String file_path) throws IOException, ParseException {
 
         // Top level component information
         String sbom_serial_number;

@@ -66,7 +66,7 @@ public abstract class TranslatorCore {
      * @param filePath path to the bom
      * @return SBOM object, null if failed
      */
-    protected abstract SBOM translateContents(String contents, String filePath) throws IOException, ParseException, ParserConfigurationException;
+    public abstract SBOM translateContents(String contents, String filePath) throws IOException, ParseException, ParserConfigurationException;
 
     /**
      * Builds an SBOM with the parsed top level information. It will also attempt to
@@ -265,5 +265,6 @@ public abstract class TranslatorCore {
         return this.sbom;
 
     }
+
 
 }

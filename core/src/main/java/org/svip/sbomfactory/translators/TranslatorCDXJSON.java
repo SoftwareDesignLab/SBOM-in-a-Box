@@ -31,7 +31,7 @@ public class TranslatorCDXJSON extends TranslatorCore {
      * @throws ParseException If file is not valid JSON
      */
     @Override
-    protected SBOM translateContents(String fileContents, String file_path) throws ParseException {
+    public SBOM translateContents(String fileContents, String file_path) throws ParseException {
 
         // Initialize JSON Parser
         JsonParser parser = new JsonParser();
