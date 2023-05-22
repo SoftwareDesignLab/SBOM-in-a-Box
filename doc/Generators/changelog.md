@@ -5,6 +5,7 @@ All notable changes to the Generators sub-system will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<<<<<<< HEAD:doc/Generators/changelog.md
 ## [v4.4.2-alpha] - (05/19/2023)
 
 This update focuses mainly on adding several test cases for most generator classes and fixing bugs in the stores, 
@@ -71,15 +72,30 @@ serializers, and translators.
 
 ### Changed
 - Updated `LicenseManager.parseLicense()` Method to more accurately and efficiently match an arbitrary license string to
+=======
+## [v4.4.1-alpha] - (05/XX/2023)
+
+### Added
+
+- `NugetParser` which parses the main configuration file of Nuget projects, and queries the Nuget package-manager for any existing licenses. 
+
+### Changed
+- Updated `LicenseManager.parseLicense()` method to more accurately and efficiently match an arbitrary license string to
+>>>>>>> origin/dev-Generators-PackageManagers:core/src/main/java/org/svip/sbomfactory/generators/changelog.md
   an SPDX short identifier.
   - This is done by quantifying the number of token matches per license string and then choosing the string with the 
     most matches.
   - It also contains checks for common license keywords and short identifiers to increase speed.
+<<<<<<< HEAD:doc/Generators/changelog.md
 - Updated `ParserComponent.resolveLicenses()` Method to support finding multiple licenses in a single, comma-separated
+=======
+- Updated `ParserComponent.resolveLicenses()` method to support finding multiple licenses in a single, comma-separated
+>>>>>>> origin/dev-Generators-PackageManagers:core/src/main/java/org/svip/sbomfactory/generators/changelog.md
   string.
   - This increases the license parsing accuracy, as one string can now be separated into multiple licenses.
   - However, any invalid license after the first one is found will be discarded to avoid "garbage" licenses occuring in
     the SBOM.
+<<<<<<< HEAD:doc/Generators/changelog.md
 - Updated `LanguageParser` Class to check for and handle import wildcards.
   - If any import wildcards are found while parsing a file, the component name will be replaced with the 
     next-highest-level package in the import statement and the component group will be changed to reflect that.
@@ -88,6 +104,8 @@ serializers, and translators.
 - Fixed components generated from subprocess calls not containing the files they were found in.
 - Fixed duplicates being added to the internal SBOM in `ParserController.parse()` Method because of the way the 
   `ContextParser`s were set up to store components.
+=======
+>>>>>>> origin/dev-Generators-PackageManagers:core/src/main/java/org/svip/sbomfactory/generators/changelog.md
 
 ## [v4.4.0-alpha] - (05/15/2023)
 

@@ -9,9 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.svip.sbomfactory.generators.utils.Debug.log;
+
 
 public class RequirementsParserTest extends ParseDepFileTestCore {
     /**
@@ -20,9 +19,10 @@ public class RequirementsParserTest extends ParseDepFileTestCore {
      */
     protected RequirementsParserTest() throws IOException {
         super(new RequirementsParser(),
-                Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/generators/TestData/Python/Absolute/requirements.txt")),
+        Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/generators/TestData/Python/Absolute/requirements.txt")),
                 "src/test/java/org/svip/sbomfactory/generators/TestData/Python/Absolute");
         }
+
 
     @Test
     @DisplayName("Test Componemts")
@@ -38,6 +38,15 @@ public class RequirementsParserTest extends ParseDepFileTestCore {
         for(ParserComponent pc : components) {
             ValueSet.add(pc.getName());
         }
+
+//        //Check component's name
+//        String str = "contourpy" ;
+//        assertTrue(ValueSet.contains(str));
+//        //Check component's version
+//        String version = getComponent(str).getVersion();
+//        int r = version.compareTo("1.0.6");
+//        //version is less than 1.0.6:
+//        if (r < 0) assertEquals("1.0.6", version);
 
         //Check component's name
         final String[] str = new String[]{"contourpy"} ;
