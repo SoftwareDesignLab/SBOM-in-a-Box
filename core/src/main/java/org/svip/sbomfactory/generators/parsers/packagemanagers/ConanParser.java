@@ -60,8 +60,8 @@ public class ConanParser extends PackageManagerParser {
                         // Get page contents
                         final String contents = getUrlContents(queryURL(this.url, true));
                         // Parse license with content in the form : //license = \"Zlib\"
-                        // https://regex101.com/r/LKcQrx/1
-                        Matcher m = Pattern.compile("license\\s*=\\s*[\\\\]*\"([a-zA-Z0-9.\\-_]*)[\\\\]*\"", Pattern.MULTILINE).matcher(contents);
+                        // example: https://regex101.com/r/EJMxrF/1
+                        Matcher m = Pattern.compile("license\\s*=\\s*[\\\\]*\"([\\w.\\-]*)[\\\\]*\"", Pattern.MULTILINE).matcher(contents);
                         String r;
                         if(m.find()) {
                             r = m.group(1).trim();
@@ -85,7 +85,8 @@ public class ConanParser extends PackageManagerParser {
                             //        ]
                             //      }
                             //    </script>    <----- matching this also
-                            m = Pattern.compile(String.format("<script.*\"name\"\\s*:\\s*\"%s\".*\"license\"\\s*:\\s*\"([a-zA-Z0-9.\\\\-_]*)\".*</script>",name), Pattern.MULTILINE).matcher(contents);
+                            // example : https://regex101.com/r/OIM0dl/1
+                            m = Pattern.compile(String.format("<script.*\"name\"\\s*:\\s*\"%s\".*\"license\"\\s*:\\s*\"([\\w.\\\\-]*)\".*</script>",name), Pattern.MULTILINE).matcher(contents);
                             if(m.find()) {
                                 r = m.group(1).trim();
                                 this.component.addLicense(r);
@@ -115,13 +116,14 @@ public class ConanParser extends PackageManagerParser {
 
         fileContents = removeComments(fileContents);
 
-        // Init main Matcher for conanfile.txt(default)   // Regex101: https://regex101.com/r/a3rIlp/3
-        Matcher m = Pattern.compile("(^|\\s*)(\\[[a-z_-]*\\])\\s*(((?!.*\\[([a-z_-]*)\\]).*\\s*)*)", Pattern.MULTILINE).matcher(fileContents);
+        // Init main Matcher for conanfile.txt(default)   // Regex101: https://regex101.com/r/p5wIc9/1
+        Matcher m = Pattern.compile("(^|\\s*)(\\[[\\w]*\\])\\s*(((?!.*\\[([\\w]*)\\]).*\\s*)*)", Pattern.MULTILINE).matcher(fileContents);
 
         //Check file content to see if it is a conanfile.py
-        if (fileContents.contains(" requirements(self):") && fileContents.contains("self.requires(")) {
+        if (fileContents.contains(" requirements(self") && fileContents.contains("self.requires(")) {
             //System.out.println("conanfile.py content found!");
-            m = Pattern.compile("(^|\\s*)(def\\s+[a-z_]+\\(self\\)\\:)\\s*(((?!.*def\\s+[a-z_]+\\(self\\)\\:).*\\s*)*)",Pattern.MULTILINE)
+            //example: https://regex101.com/r/vYtDIV/1
+            m = Pattern.compile("(^|\\s*)(def\\s+[\\w]+\\(self.*\\)\\:)\\s*(((?!.*def\\s+[\\w]+\\(self.*\\)\\:).*\\s*)*)",Pattern.MULTILINE)
                     .matcher(fileContents);
         }
 
@@ -134,6 +136,7 @@ public class ConanParser extends PackageManagerParser {
             //keys:  "[requires]" from conanfile.txt files or "defrequirements(self):" from conanfile.py files
             //remove all white spaces in the key for conanfile.py files so that it becomes uniq
             key = key.replaceAll("\\s+","");
+            key = key.replaceAll("\\(self.*","(self):");
 
             // Dependencies will need to be parsed further, so pass raw string
             switch(key) {
@@ -155,7 +158,7 @@ public class ConanParser extends PackageManagerParser {
                         if(line.contains("self.requires(\"") || line.contains("self.requires('")) {
                             final LinkedHashMap<String, String> dep = new LinkedHashMap<>();
                             //getting the value in quotes by removing the rest
-                            String tline = line.trim().replaceAll("self\\.requires\\([\"']|[\"']\\)", "");
+                            String tline = line.trim().replaceAll(".*self\\.requires\\([\"']|[\"']\\).*", "");
                             procline(dep,  tline);
                             // Insert value
                             deps.add(dep);

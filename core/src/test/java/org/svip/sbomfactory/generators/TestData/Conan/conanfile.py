@@ -5,12 +5,12 @@ class Engine(ConanFile):
     name = "engine"
     settings = "arch"
 
-    def requirements(self):
+    def requirements(self, other, parameters):
         self.requires("matrix/[>=1.0 <2.0]")
         if self.settings.arch == "x86":
             self.requires("sound32/[>=1.0 <2.0]")
             self.requires('zlib/1.7.0')
-            self.requires('imgui/1.7.0#revision1')
+            self.requires('imgui/1.7.0#revision1')#comment? yes
             self.requires("mysql-connector-c/6.1.11")
             self.requires("libmysqlclient/8.0.31")
             self.requires("libmodbus/3.1.8")
@@ -70,4 +70,4 @@ class helloRecipe(ConanFile):
     def package_info(self):
         self.cpp_info.libs = ["hello"]
         # Hello comment from a blank like
-        self.c_pingliu = ["empty string"]#not_a_comment     #but this is a comment
+        self.c_something = ["empty string"]#not_a_comment?     #but this is a comment
