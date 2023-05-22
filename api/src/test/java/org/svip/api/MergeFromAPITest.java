@@ -68,10 +68,6 @@ public class MergeFromAPITest {
 
         String fileNamesString = objectMapper.writeValueAsString(fileNamesArray);
 
-        //todo remove after debug
-        SBOM deb = new TranslatorCDXXML().translate(System.getProperty("user.dir")
-                + "/src/test/java/org/svip/api/sample_sboms/sbom.alpine.xml");
-
         for(GeneratorSchema schema : GeneratorSchema.values()) {
             // Test all possible formats
             for(GeneratorSchema.GeneratorFormat format : GeneratorSchema.GeneratorFormat.values()) {
@@ -83,8 +79,6 @@ public class MergeFromAPITest {
                         }
                     }
 
-                if(format == GeneratorSchema.GeneratorFormat.JSON)
-                    continue; //todo get rid, this is for debug
 
                 if(schema.supportsFormat(format)) {
                     // Test logic per merge
