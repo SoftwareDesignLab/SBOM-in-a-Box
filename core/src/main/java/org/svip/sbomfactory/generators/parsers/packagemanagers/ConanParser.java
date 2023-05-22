@@ -85,7 +85,7 @@ public class ConanParser extends PackageManagerParser {
                             //        ]
                             //      }
                             //    </script>    <----- matching this also
-                            // example : https://regex101.com/r/OIM0dl/1
+                            // examples : https://regex101.com/r/OIM0dl/1 and https://regex101.com/r/OIM0dl/2
                             m = Pattern.compile(String.format("<script.*\"name\"\\s*:\\s*\"%s\".*\"license\"\\s*:\\s*\"([\\w.\\\\-]*)\".*</script>",name), Pattern.MULTILINE).matcher(contents);
                             if(m.find()) {
                                 r = m.group(1).trim();
