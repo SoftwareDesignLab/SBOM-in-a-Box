@@ -1,9 +1,6 @@
 package org.svip.sbomfactory.generators.parsers;
 
-import org.svip.sbomfactory.generators.utils.VirtualPath;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
 
 public abstract class ParserTestCore<T extends Parser> {
     protected T PARSER;

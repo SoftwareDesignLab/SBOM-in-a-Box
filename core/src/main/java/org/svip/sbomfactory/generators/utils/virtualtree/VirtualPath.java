@@ -1,4 +1,4 @@
-package org.svip.sbomfactory.generators.utils;
+package org.svip.sbomfactory.generators.utils.virtualtree;
 
 import java.util.Arrays;
 

@@ -1,7 +1,7 @@
 package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.sbomfactory.generators.utils.VirtualPath;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
 
 import java.util.ArrayList;
 import java.util.Arrays;
