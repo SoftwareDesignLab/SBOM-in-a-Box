@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
+import org.svip.sbomfactory.translators.TranslatorCDXXML;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
@@ -49,7 +50,7 @@ public class MergeFromAPITest {
      * @throws IOException If the SBOM merging is broken
      */
     @Test
-    public void mergeTest() throws IOException, GeneratorException, ParserConfigurationException, ParseException {
+    public void mergeTest() throws IOException, GeneratorException, ParserConfigurationException, ParseException, org.cyclonedx.exception.ParseException {
         List<String> contentsArray = new ArrayList<>();
         List<String> fileNamesArray = new ArrayList<>();
 
@@ -67,6 +68,9 @@ public class MergeFromAPITest {
 
         String fileNamesString = objectMapper.writeValueAsString(fileNamesArray);
 
+        //todo remove after debug
+        SBOM deb = new TranslatorCDXXML().translate(System.getProperty("user.dir")
+                + "/src/test/java/org/svip/api/sample_sboms/sbom.alpine.xml");
 
         for(GeneratorSchema schema : GeneratorSchema.values()) {
             // Test all possible formats
@@ -79,7 +83,7 @@ public class MergeFromAPITest {
                         }
                     }
 
-                if(format == GeneratorSchema.GeneratorFormat.XML)
+                if(format == GeneratorSchema.GeneratorFormat.JSON)
                     continue; //todo get rid, this is for debug
 
                 if(schema.supportsFormat(format)) {

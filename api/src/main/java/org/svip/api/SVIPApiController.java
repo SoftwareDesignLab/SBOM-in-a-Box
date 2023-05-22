@@ -311,8 +311,7 @@ public class SVIPApiController {
                             result = new TranslatorCDXJSON().translateContents(contents, "");
                             break;
                         case XML:
-                            generator.writeFileToString(generatorFormat, false);
-                            result = new TranslatorCDXXML().translateContents(contents, "");
+                            result = new TranslatorCDXXML().translateContents(contents, " ");
                             break;
                     }
 
