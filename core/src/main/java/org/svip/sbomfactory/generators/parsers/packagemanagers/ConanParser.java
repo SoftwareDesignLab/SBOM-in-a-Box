@@ -145,9 +145,10 @@ public class ConanParser extends PackageManagerParser {
                     // Process line by line
                     for (String line : lines) {
                         final LinkedHashMap<String, String> dep = new LinkedHashMap<>();
-                        procline(dep,  line);
-                        // Insert value
-                        deps.add(dep);
+                        if(procline(dep,  line) != null) {
+                            // Insert value
+                            deps.add(dep);
+                        }
                     }
                     // Add to data
                     data.put("dependencies", deps);
@@ -159,9 +160,10 @@ public class ConanParser extends PackageManagerParser {
                             final LinkedHashMap<String, String> dep = new LinkedHashMap<>();
                             //getting the value in quotes by removing the rest
                             String tline = line.trim().replaceAll(".*self\\.requires\\([\"']|[\"']\\).*", "");
-                            procline(dep,  tline);
-                            // Insert value
-                            deps.add(dep);
+                            if(procline(dep,  tline) != null) {
+                                // Insert value
+                                deps.add(dep);
+                            }
                         }
                     }
                     // Store results in data
@@ -232,8 +234,14 @@ public class ConanParser extends PackageManagerParser {
      */
     public LinkedHashMap<String, String> procline(LinkedHashMap<String, String> dep,  String line) {
         final String[] linei = line.trim().split("/");
-        dep.put("artifactId", linei[0]);
-        dep.put("version", linei[1]);
+        if(linei.length > 0 && !linei[0].isEmpty()) {
+            dep.put("artifactId", linei[0]);
+        }
+        else
+            return null;
+
+        if(linei.length > 1 ) dep.put("version", linei[1]);
+
         return dep;
     }
 }
