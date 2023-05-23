@@ -48,7 +48,7 @@ public class VirtualTree {
 
     public VirtualNode getCommonDirectory() {
         VirtualNode ptr = root;
-        while(ptr.getChildren().size() == 1) {
+        while(ptr.getChildren().size() == 1 && ptr.getLeafs().size() == 0) {
             ptr = ptr.getChildren().toArray(new VirtualNode[0])[0];
         }
 

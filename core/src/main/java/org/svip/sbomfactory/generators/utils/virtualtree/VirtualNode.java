@@ -86,7 +86,7 @@ public class VirtualNode {
 
         if(node.leafs.size() > 0) {
             for(VirtualNode file : node.leafs) {
-                out.append(indent).append(file.path).append(": ").append(file.getFileContents()).append("\n");
+                out.append(indent).append(file.path)/*.append(": ").append(file.getFileContents())*/.append("\n");
             }
         }
 
