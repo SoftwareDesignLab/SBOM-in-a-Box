@@ -17,7 +17,6 @@ import org.svip.sbomanalysis.qualityattributes.QualityReport;
 import org.svip.sbomfactory.generators.ParserController;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 
-import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.osi.OSI;
 import org.svip.sbomfactory.translators.TranslatorCDXJSON;
@@ -26,9 +25,7 @@ import org.svip.sbomfactory.translators.TranslatorPlugFest;
 import org.svip.sbomfactory.translators.TranslatorSPDX;
 
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -153,6 +150,7 @@ public class SVIPApiController {
 //        }
 
         Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = configureSchema(schemaName, formatName);
+        assert m != null;
         GeneratorSchema schema = (GeneratorSchema) m.keySet().toArray()[0];
         GeneratorSchema.GeneratorFormat format = (GeneratorSchema.GeneratorFormat) m.entrySet().toArray()[0];
 
@@ -259,7 +257,7 @@ public class SVIPApiController {
      */
     @PostMapping("merge")
     public ResponseEntity<SBOM> merge(@RequestParam("fileContents") String fileContents, @RequestParam("fileNames") String fileNames
-            , @RequestParam("schema") String schema, @RequestParam("format") String format) throws IOException, GeneratorException, ParseException, ParserConfigurationException, ParseException, ParseException, ParseException, ParseException {
+            , @RequestParam("schema") String schema, @RequestParam("format") String format) throws IOException{
 
         ArrayList<SBOM> sboms = translateMultiple(fileContents, fileNames);
 
@@ -271,6 +269,7 @@ public class SVIPApiController {
         SBOM result = merger.merge(sboms); // report to return
 
         Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = configureSchema(schema, format); // get schema enumerations from call
+        assert m != null;
         GeneratorSchema generatorSchema = (GeneratorSchema) m.keySet().toArray()[0];
         GeneratorSchema.GeneratorFormat generatorFormat = m.get(generatorSchema);
 
@@ -284,25 +283,12 @@ public class SVIPApiController {
             switch (generatorSchema){
                 case SPDX: { //spdx, json, xml, yaml
 
-                  //  switch (generatorFormat){
-                      //  case JSON:
-                      //      result = new TranslatorCDXJSON().translate(path);
-                     //     break;
-                     //   case XML:
-                     //       result = new TranslatorCDXXML().translate(path);
-                    //          break; // todo once the other SPDX formats are done, uncomment
-                     //   case YAML:
-                     //       result = new TranslatorCDXXML().translate(path);
-                    //     break;
-                    //    case SPDX:
-                    result = new TranslatorSPDX().translateContents(contents, ""); //.spdx
-                    //break;
-                  //  }
+                    // todo once the other SPDX formats are done, account for cases
 
+                    result = new TranslatorSPDX().translateContents(contents, ""); //.spdx
                     break;
                 }
-                default:{ //CDX
-                    // json xml
+                case CycloneDX: {
 
                     switch (generatorFormat){
                         case JSON:
@@ -354,8 +340,8 @@ public class SVIPApiController {
      */
     private static ArrayList<SBOM> translateMultiple(String fileContents, String fileNames) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        List<String> contents = objectMapper.readValue(fileContents, new TypeReference<List<String>>(){});
-        List<String> fNames = objectMapper.readValue(fileNames, new TypeReference<List<String>>(){});
+        List<String> contents = objectMapper.readValue(fileContents, new TypeReference<>(){});
+        List<String> fNames = objectMapper.readValue(fileNames, new TypeReference<>(){});
 
         // Convert the SBOMs to SBOM objects
         ArrayList<SBOM> sboms = new ArrayList<>();

@@ -20,6 +20,7 @@ import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXXMLSerializ
 import org.svip.sbomfactory.generators.generators.spdx.SPDXSerializer;
 import org.svip.sbomfactory.generators.generators.spdx.SPDXStore;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 
@@ -93,7 +94,7 @@ public enum GeneratorSchema {
          */
         public String getExtension() { return extension; }
 
-        public ObjectMapper getObjectMapper(GeneratorSchema schema) throws GeneratorException {
+        public ObjectMapper getObjectMapper(GeneratorSchema schema) throws IOException {
             // Configure a new pretty printer
             PrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
             if(this == XML) prettyPrinter = new DefaultXmlPrettyPrinter();
@@ -110,7 +111,7 @@ public enum GeneratorSchema {
                 case SPDX -> {
                     module.addSerializer(SPDXStore.class, new SPDXSerializer());
                 }
-                default -> throw new GeneratorException("No serializer registered in getObjectMapper() for schema " +
+                default -> throw new IOException("No serializer registered in getObjectMapper() for schema " +
                         schema + ".");
             }
             objectMapper.registerModule(module);

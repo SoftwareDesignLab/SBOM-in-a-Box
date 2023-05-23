@@ -1,15 +1,12 @@
 package org.svip.sbomfactory.generators.generators;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.ParserController;
 import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXStore;
-import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
-import org.svip.sbomfactory.generators.parsers.Parser;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.generators.utils.Tool;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
@@ -79,7 +76,7 @@ public class SBOMGeneratorTest {
 
     @Test
     @DisplayName("writeFile()")
-    void writeFileTest() throws IOException, GeneratorException { // TODO Will need to test file output with a string
+    void writeFileTest() throws IOException { // TODO Will need to test file output with a string
         OUT_PATH.toFile().mkdir();
 
         List<String> expectedFilePaths = new ArrayList<>();
@@ -117,7 +114,7 @@ public class SBOMGeneratorTest {
     @Test
     @DisplayName("Correct BOMStore Type")
     void buildBOMStoreTypeTest() throws InvocationTargetException, InstantiationException, IllegalAccessException,
-            NoSuchMethodException, GeneratorException {
+            NoSuchMethodException, IOException {
 
         for(SBOMGenerator generator : generators) {
             BOMStore bomStore = generator.buildBOMStore();
@@ -130,7 +127,7 @@ public class SBOMGeneratorTest {
     @Test
     @DisplayName("Correct BOMStore Tool")
     void buildBOMStoreToolTest() throws InvocationTargetException, InstantiationException, IllegalAccessException,
-            NoSuchMethodException, GeneratorException {
+            NoSuchMethodException, IOException {
 
         SBOMGenerator generator = generators.get(0);
         BOMStore bomStore = generator.buildBOMStore();
@@ -142,7 +139,7 @@ public class SBOMGeneratorTest {
     @Test
     @DisplayName("BOMStore Contains ALL SBOM Components")
     void buildBOMStoreComponentTest() throws InvocationTargetException, InstantiationException, IllegalAccessException,
-            NoSuchMethodException, GeneratorException {
+            NoSuchMethodException, IOException {
 
         for(SBOMGenerator generator : generators) { // TODO do we need to do for each type of generator?
             BOMStore bomStore = generator.buildBOMStore();

@@ -1,6 +1,5 @@
 package org.svip.sbomfactory.generators;
 
-import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.utils.Debug;
 
@@ -426,8 +425,6 @@ public class GeneratorsTestMain {
         } catch(IOException e) {
             log(Debug.LOG_TYPE.EXCEPTION, e);
             log(Debug.LOG_TYPE.ERROR, "Error writing to file " + path);
-        } catch (GeneratorException e) {
-            throw new RuntimeException(e);
         }
     }
 }

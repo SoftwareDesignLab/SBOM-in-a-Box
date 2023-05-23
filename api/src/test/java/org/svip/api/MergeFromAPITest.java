@@ -5,14 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import org.svip.sbom.model.SBOM;
-import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,15 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
  * @author Juan Francisco Patino
  */
 public class MergeFromAPITest {
-    /**
-     *  Example SBOMs to use for testing
-     */
-    private final String alpineSBOM = System.getProperty("user.dir")
-            + "/src/test/java/org/svip/api/sample_sboms/sbom.alpine-compare.2-3.spdx";
-    private final String pythonSBOM = System.getProperty("user.dir")
-            + "/src/test/java/org/svip/api/sample_sboms/sbom.python.2-3.spdx";
-    private final String dockerSBOM = System.getProperty("user.dir")
-            + "/src/test/java/org/svip/api/sample_sboms/sbom.docker.2-2.spdx";
 
     /**
      * Controller to test
@@ -45,20 +33,27 @@ public class MergeFromAPITest {
     private SVIPApiController ctrl;
 
     /**
+     * Example SBOMs to use for testing
+     */
+    private final static String alpineSBOM = "src/test/java/org/svip/api/sample_sboms/sbom.python.2-3.spdx";
+    private final static String pythonSBOM = "src/test/java/org/svip/api/sample_sboms/sbom.python.2-3.spdx";
+    private final static String dockerSBOM =  "src/test/java/org/svip/api/sample_sboms/sbom.docker.2-2.spdx";
+
+    /**
      * Test that the API can Merge three SBOMs
      * @throws IOException If the SBOM merging is broken
      */
     @Test
-    public void mergeTest() throws IOException, GeneratorException, ParserConfigurationException, ParseException, org.cyclonedx.exception.ParseException {
+    public void mergeTest() throws IOException{
         List<String> contentsArray = new ArrayList<>();
         List<String> fileNamesArray = new ArrayList<>();
+
 
         contentsArray.add(new String(Files.readAllBytes(Paths.get(alpineSBOM))));
         contentsArray.add(new String(Files.readAllBytes(Paths.get(pythonSBOM))));
         contentsArray.add(new String(Files.readAllBytes(Paths.get(dockerSBOM))));
 
         ObjectMapper objectMapper = new ObjectMapper();
-
         String contentsString = objectMapper.writeValueAsString(contentsArray);
 
         fileNamesArray.add(alpineSBOM);
@@ -84,7 +79,7 @@ public class MergeFromAPITest {
                     System.out.println("-----------------\ntesting " + schema + " " + format);
                     ResponseEntity<SBOM> report = ctrl.merge(contentsString, fileNamesString, schema.toString().toUpperCase(), format.toString().toUpperCase());
                     assertNotEquals(null, report.getBody());
-                    System.out.println("PASSED " + schema + " " + format + "!!\n-----------------\n");
+                    System.out.println("PASSED " + schema + " " + format + "!\n-----------------\n");
                 }
             }
         }

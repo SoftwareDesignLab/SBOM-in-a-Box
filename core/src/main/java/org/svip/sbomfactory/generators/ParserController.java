@@ -1,6 +1,5 @@
 package org.svip.sbomfactory.generators;
 
-import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.parsers.languages.*;
@@ -17,8 +16,6 @@ import org.svip.sbomfactory.generators.utils.VirtualPath;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -90,7 +87,7 @@ public class ParserController {
     /**
      * Create a new ParserController with a path to the PWD.
      *
-     * @param String a Path to the present working directory
+     * @param PWD a Path to the present working directory
      */
     public ParserController(String PWD) {
         // Set attributes
@@ -214,7 +211,7 @@ public class ParserController {
      *
      * @param outPath Path to write file to
      */
-    public String toFile(String outPath, GeneratorSchema outSchema, GeneratorSchema.GeneratorFormat outFormat) throws IOException, GeneratorException {
+    public String toFile(String outPath, GeneratorSchema outSchema, GeneratorSchema.GeneratorFormat outFormat) throws IOException {
         // If format is not supported by schema
         if(!outSchema.supportsFormat(outFormat)) {
             // Acquire default format from schema
