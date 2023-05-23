@@ -18,15 +18,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 /**
- * File: MergeFromAPITest.java
- * Unit test for API regarding Merging SBOMs
+ * File: GenerateFromAPITest.java
+ * Unit test for API regarding the parsing of SBOMs
  * <p>
  * Tests:<br>
- * - mergeTest: Test that the API can merge three SBOMs
+ * - generateTest: Test that the API can generate three SBOMs
  *
  * @author Juan Francisco Patino
  */
-public class MergeFromAPITest {
+public class GenerateFromAPITest {
 
     /**
      * Controller to test
@@ -43,13 +43,12 @@ public class MergeFromAPITest {
     private final static List<String> fileNamesArray = new ArrayList<>();
     private final static ObjectMapper objectMapper = new ObjectMapper();
 
-
     /**
      * Test that the API can Merge three SBOMs
      * @throws IOException If the SBOM merging is broken
      */
     @Test
-    public void mergeTest() throws IOException{
+    public void generateTest() throws IOException{
 
         contentsArray.add(new String(Files.readAllBytes(Paths.get(alpineSBOM))));
         contentsArray.add(new String(Files.readAllBytes(Paths.get(pythonSBOM))));
@@ -75,8 +74,8 @@ public class MergeFromAPITest {
 
                 if(schema.supportsFormat(format)) {
                     // Test logic per merge
-                    Debug.log(Debug.LOG_TYPE.SUMMARY, "testing " + schema + " " + format);
-                    ResponseEntity<SBOM> report = ctrl.merge(contentsString, fileNamesString, schema.toString().toUpperCase(), format.toString().toUpperCase());
+                    Debug.log(Debug.LOG_TYPE.SUMMARY, "generating " + schema + " " + format);
+                    ResponseEntity<String> report = ctrl.generate(contentsString, fileNamesString, schema.toString().toUpperCase(), format.toString().toUpperCase());
                     assertNotNull(report.getBody());
                     Debug.log(Debug.LOG_TYPE.SUMMARY, "PASSED " + schema + " " + format + "!\n-----------------\n");
                 }

@@ -37,7 +37,7 @@ public class ParseFromAPITest {
     /**
      * Example SBOMs to use for testing
      */
-    private final static String alpineSBOM = "src/test/java/org/svip/api/sample_sboms/sbom.python.2-3.spdx";
+    private final static String alpineSBOM = "src/test/java/org/svip/api/sample_sboms/sbom.alpine-compare.2-3.spdx";
     private final static String pythonSBOM = "src/test/java/org/svip/api/sample_sboms/sbom.python.2-3.spdx";
     private final static String dockerSBOM =  "src/test/java/org/svip/api/sample_sboms/sbom.docker.2-2.spdx";
     private final static List<String> contentsArray = new ArrayList<>();

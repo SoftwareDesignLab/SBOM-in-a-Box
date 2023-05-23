@@ -71,6 +71,11 @@ public class SVIPApiController {
     private static String dockerPath = "/core/src/main/java/org/svip/sbomfactory/osi/Dockerfile";
 
     /**
+     * Current working directory
+     */
+    private static String pwd = "/src/test/java/org/svip/api";
+
+    /**
      * buildOSI runs on startup to build the OSI container independent of the front-end.
      */
     @PostConstruct
@@ -120,7 +125,7 @@ public class SVIPApiController {
         final List<String> fileContents = objectMapper.readValue(contentsArray, new TypeReference<>(){});
         final List<String> filePaths = objectMapper.readValue(fileArray, new TypeReference<>(){});
 
-        final ParserController controller = new ParserController(null); // TODO: Get root directory and use it here
+        final ParserController controller = new ParserController(pwd); // TODO: Get root directory and use it here
 
         for (int i = 0; i < filePaths.size(); i++) {
             final String path = filePaths.get(i);
@@ -152,7 +157,7 @@ public class SVIPApiController {
         Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = configureSchema(schemaName, formatName);
         assert m != null;
         GeneratorSchema schema = (GeneratorSchema) m.keySet().toArray()[0];
-        GeneratorSchema.GeneratorFormat format = (GeneratorSchema.GeneratorFormat) m.entrySet().toArray()[0];
+        GeneratorSchema.GeneratorFormat format =  m.get(schema);
 
         //encode and send report
         try {
