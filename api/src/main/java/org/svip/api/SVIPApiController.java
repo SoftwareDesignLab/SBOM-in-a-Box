@@ -131,28 +131,8 @@ public class SVIPApiController {
             final String path = filePaths.get(i);
             final String contents = fileContents.get(i);
             controller.setPWD(path);
-            controller.parse(path, contents); // TODO: Fix
+            controller.parse(path, contents);
         }
-
-//        // Parse the root directory with the controller
-//        try (final Stream<String> stream = filePaths.stream()) {
-//            stream.forEach(filepath -> {
-//                try {
-//                    // Set pwd to formatted filepath if it is actually a directory
-//                    if (Files.isDirectory(filepath)) {
-//                        controller.setPWD(filepath);
-//                        controller.incrementDirCounter(); // TODO: Remove
-//                    } else { // Otherwise, it is a file, try to parse
-//                        controller.setPWD(filepath);
-//                        controller.parse(filepath, fileContents); // TODO: Fix
-//                    }
-//                } catch (Exception e) {
-////                    log(Debug.LOG_TYPE.EXCEPTION, e);
-//                }
-//            });
-//        } catch (Exception e) {
-////            log(Debug.LOG_TYPE.EXCEPTION, e);
-//        }
 
         Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = configureSchema(schemaName, formatName);
         assert m != null;
