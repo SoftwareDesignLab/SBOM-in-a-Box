@@ -14,6 +14,17 @@ public class VirtualTree implements Iterable<VirtualNode> {
         this.root = root;
     }
 
+    // Initialize with a file
+    public VirtualTree(VirtualPath filePath, String fileContents) {
+        // TODO do we support a single file being added?
+        this.root = new VirtualNode(filePath.getRoot(), null);
+        this.addNode(filePath.removeRoot(), fileContents);
+    }
+
+    public VirtualTree(VirtualPath directoryPath) {
+        this(directoryPath, null);
+    }
+
     public void addNode(VirtualPath filePath, String fileContents) {
         if(filePath.getRoot().equals(root.getPath())) {
             root.addNode(filePath.removeRoot(), fileContents);
@@ -32,15 +43,22 @@ public class VirtualTree implements Iterable<VirtualNode> {
         return findLeafNodesRecursive(root).iterator(); // TODO remove will not work, does it matter?
     }
 
+    public int getTotalFiles() {
+        return findLeafNodesRecursive(root).size();
+    }
+
     private List<VirtualNode> findLeafNodesRecursive(VirtualNode node) {
-        List<VirtualNode> leafs = new ArrayList<>();
+        List<VirtualNode> leafs = new ArrayList<>(node.getLeafs());
 
-        leafs.addAll(node.getLeafs());
-
-        for(VirtualNode child : root.getChildren()) {
+        for(VirtualNode child : node.getChildren()) {
             leafs.addAll(findLeafNodesRecursive(child));
         }
 
         return leafs;
+    }
+
+    @Override
+    public String toString() {
+        return root.toString();
     }
 }

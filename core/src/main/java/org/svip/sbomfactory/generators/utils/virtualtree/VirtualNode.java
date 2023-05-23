@@ -64,10 +64,7 @@ public class VirtualNode {
         if (this == o) return true;
         if (!(o instanceof VirtualNode that)) return false;
 
-        if (!children.equals(that.children)) return false;
-        if (!leafs.equals(that.leafs)) return false;
-        if (!Objects.equals(fileContents, that.fileContents)) return false;
-        return Objects.equals(path, that.path);
+        return path.equals(that.path);
     }
 
     @Override
@@ -81,11 +78,24 @@ public class VirtualNode {
 
     @Override
     public String toString() {
-        return "VirtualNode{" +
-                "children=" + children +
-                ", leafs=" + leafs +
-                ", fileContents='" + fileContents + '\'' +
-                ", path=" + path +
-                '}';
+        return toString(this, "-");
+    }
+
+    private String toString(VirtualNode node, String indent) {
+        StringBuilder out = new StringBuilder(node.path + "\n");
+
+        if(node.leafs.size() > 0) {
+            for(VirtualNode file : node.leafs) {
+                out.append(indent).append(file.path).append(": ").append(file.getFileContents()).append("\n");
+            }
+        }
+
+        if(node.children.size() > 0) {
+            for(VirtualNode child : node.children) {
+                out.append(indent).append(toString(child, indent + "-")).append("\n");
+            }
+        }
+
+        return out.toString();
     }
 }
