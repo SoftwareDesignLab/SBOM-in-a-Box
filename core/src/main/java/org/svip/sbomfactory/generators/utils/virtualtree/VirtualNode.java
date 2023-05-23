@@ -55,7 +55,7 @@ public class VirtualNode {
         return fileContents;
     }
 
-    protected VirtualPath getPath() {
+    public VirtualPath getPath() {
         return path;
     }
 

@@ -46,6 +46,15 @@ public class VirtualTree {
         return root;
     }
 
+    public VirtualNode getCommonDirectory() {
+        VirtualNode ptr = root;
+        while(ptr.getChildren().size() == 1) {
+            ptr = ptr.getChildren().toArray(new VirtualNode[0])[0];
+        }
+
+        return ptr;
+    }
+
     public boolean contains(VirtualPath fileName) {
         for(VirtualPath file : getAllFiles()) {
             if(file.endsWith(fileName)) return true;
@@ -58,6 +67,10 @@ public class VirtualTree {
         return findLeafNodesRecursive(root, root.getPath());
     }
 
+    public int getNumDirectories() {
+        return getNumDirectoriesRecursive(root);
+    }
+
     private List<VirtualPath> findLeafNodesRecursive(VirtualNode node, VirtualPath previousPath) {
         List<VirtualPath> leafs = new ArrayList<>(
                 node.getLeafs().stream().map(n -> previousPath.concatenate(n.getPath())).toList()
@@ -68,6 +81,16 @@ public class VirtualTree {
         }
 
         return leafs;
+    }
+
+    private int getNumDirectoriesRecursive(VirtualNode node) {
+        int total = node.getChildren().size();
+
+        for(VirtualNode child : node.getChildren()) {
+            total += getNumDirectoriesRecursive(child);
+        }
+
+        return total;
     }
 
     @Override

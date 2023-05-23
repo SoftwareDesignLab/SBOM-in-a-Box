@@ -17,6 +17,7 @@ import org.svip.sbomfactory.generators.parsers.packagemanagers.*;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,11 +39,8 @@ public class ParserController {
 
     //#region Attributes
     private final String projectName;
-    private String PWD;
-    private final String SRC;
     private final SBOM SBOM;
-    private final AtomicInteger dirCount;
-    private final AtomicInteger fileCount;
+    private final VirtualTree fileTree;
     private static final ObjectMapper OM = new ObjectMapper(new JsonFactory()); // ObjectMapper Initialization
     static { OM.setSerializationInclusion(JsonInclude.Include.NON_NULL); } // ObjectMapper Configuration
     private static final HashMap<String, Parser> EXTENSION_MAP = new HashMap<>() {{
@@ -88,22 +86,12 @@ public class ParserController {
     /**
      * Create a new ParserController with a path to the PWD.
      *
-     * @param PWD a Path to the present working directory
+     * @param fileTree A VirtualTree representation of the filesystem to parse
      */
-    public ParserController(String PWD) {
-        // Set attributes
-        // Get filename
-        String[] pathParts = PWD.split("/");
-        final String os = System.getProperty("os.name").toLowerCase();
-        if(os.contains("win")) pathParts = PWD.split("\\\\");
-
+    public ParserController(VirtualTree fileTree) {
         // Set project name to root filename
-        this.projectName = pathParts[pathParts.length - 1];
-        this.PWD = PWD;
-        this.SRC = PWD; // A new ParserController is created in the source directory, this shouldn't need to be changed
-        this.dirCount = new AtomicInteger();
-        this.fileCount = new AtomicInteger();
-//        this.outputFileType = outputFileType;
+        this.fileTree = fileTree;
+        this.projectName = this.fileTree.getCommonDirectory().getPath().toString();
 
         // Create new SBOM Object
         ParserComponent headComponent = new ParserComponent(this.projectName);
@@ -115,19 +103,8 @@ public class ParserController {
     //#region Getters
 
     public String getProjectName() { return this.projectName; }
-    public String getPWD() { return this.PWD; }
-    public String getSRC() { return this.SRC; }
-    public int getDirCount() { return this.dirCount.intValue(); }
-    public int getFileCount() { return this.fileCount.intValue(); }
     public int getDepCount() { return this.SBOM.getAllComponents().size(); }
     public SBOM getSBOM() { return this.SBOM; }
-
-    //#endregion
-
-    //#region Setters
-
-    public void setPWD(String PWD) { this.PWD = PWD; }
-    public void incrementDirCounter() { this.dirCount.getAndIncrement(); }
 
     //#endregion
 
@@ -173,12 +150,6 @@ public class ParserController {
             log(LOG_TYPE.DEBUG, "Skipping file with ignored filetype: " + filename);
             return;
         } else log(LOG_TYPE.SUMMARY, "Parsing file '" + filename + "'");
-
-        final String parentDir = String.join("/", Arrays.copyOfRange(pathParts, 0, pathParts.length - 1));
-
-        // Set parser details
-        parser.setPWD(new VirtualPath(parentDir));
-        parser.setSRC(new VirtualPath(this.SRC));
 
         final ArrayList<ContextParser> contextParsers = new ArrayList<>();
         if(parser instanceof LanguageParser) {
@@ -263,7 +234,6 @@ public class ParserController {
 
         // Add Components to SBOM
         this.SBOM.addComponents(parent, components);
-        this.fileCount.getAndIncrement();
     }
 
     /**
