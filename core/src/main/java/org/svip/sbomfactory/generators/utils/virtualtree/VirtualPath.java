@@ -4,10 +4,12 @@ import org.svip.sbomfactory.generators.utils.Debug;
 
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class VirtualPath {
-    private final String[] pathParts;
+    private final List<String> pathParts;
 
     public VirtualPath(Path path) {
         this(path.toString());
@@ -16,31 +18,40 @@ public class VirtualPath {
     public VirtualPath(String path) {
         // This statement first splits the path by the \ character, then joins it with / and separates it by /.
         // This achieves the goal of splitting the path into an OS-independent representation.
-        this(String.join("/", path.split("\\\\")).split("/"));
+        this(Arrays.stream(String.join("/", path.split("\\\\")).split("/")).toList());
     }
 
-    private VirtualPath(String[] pathParts) {
-        if(pathParts.length == 0) throw new IllegalArgumentException("Invalid path string provided");
-        if(pathParts.length == 1 && pathParts[0].equals(""))
+    private VirtualPath(List<String> pathParts) {
+        if(pathParts.size() == 0) throw new IllegalArgumentException("Empty path string provided");
+        if(pathParts.size() == 1 && pathParts.get(0).equals(""))
+            throw new IllegalArgumentException("Empty path string provided");
+
+        List<String> tempPathParts = new ArrayList<>(pathParts);
+        // Remove / at beginning if something like /SVIP/...
+        if(tempPathParts.get(0).equals("")) tempPathParts.remove(0);
+        // Remove / at end if something like SVIP/core/
+        if(tempPathParts.get(tempPathParts.size() - 1).equals("")) tempPathParts.remove(tempPathParts.size() - 1);
+
+        if(String.join("", tempPathParts).equals(""))
             throw new IllegalArgumentException("Invalid path string provided");
 
-        this.pathParts = pathParts;
+        this.pathParts = tempPathParts;
     }
 
     public VirtualPath getParent() {
-        if(this.pathParts.length > 1)
-            return new VirtualPath(Arrays.copyOfRange(this.pathParts, 0, this.pathParts.length - 1));
+        if(this.pathParts.size() > 1)
+            return new VirtualPath(this.pathParts.subList(0, this.pathParts.size() - 1));
         else
             return this;
     }
 
     @Override
     public String toString() {
-        return String.join("\\\\", this.pathParts);
+        return String.join("/", this.pathParts);
     }
 
     public VirtualPath getFileName() {
-        return new VirtualPath(this.pathParts[pathParts.length - 1]);
+        return new VirtualPath(this.pathParts.get(pathParts.size() - 1));
     }
 
     public Path getPath() {
@@ -61,34 +72,5 @@ public class VirtualPath {
             System.err.println("note: invalid path" + other);
         }
         return false;
-    }
-
-    public static void main(String[] args) {
-        // TODO move this into test
-        Debug.enableDebug();
-//        final VirtualPath v1 = new VirtualPath("");
-//        final String v1Constructor = "new VirtualPath(\"\")";
-//        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getParent(); %s", v1Constructor, v1.getParent()));
-//        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getFileName(); %s", v1Constructor, v1.getFileName()));
-
-//        final VirtualPath v2 = new VirtualPath(new String[]{});
-//        final String v2Constructor = "new VirtualPath(new String[]{})";
-//        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getParent(); %s", v2Constructor, v2.getParent()));
-//        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getFileName(); %s", v2Constructor, v2.getFileName()));
-
-        final VirtualPath v3 = new VirtualPath("a/b/c");
-        final String v3Constructor = "new VirtualPath(\"a/b/c\")";
-        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getParent(); %s", v3Constructor, v3.getParent()));
-        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getFileName(); %s", v3Constructor, v3.getFileName()));
-
-        final VirtualPath v4 = new VirtualPath("a\\b\\c/d");
-        final String v4Constructor = "new VirtualPath(\"a\\b\\c/d\")";
-        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getParent(); %s", v4Constructor, v4.getParent()));
-        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getFileName(); %s", v4Constructor, v4.getFileName()));
-
-//        final VirtualPath v5 = new VirtualPath(new String[]{"", ""});
-//        final String v5Constructor = "new VirtualPath(new String[]{\"\", \"\"})";
-//        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getParent(); %s", v5Constructor, v5.getParent()));
-//        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getFileName(); %s", v5Constructor, v5.getFileName()));
     }
 }
