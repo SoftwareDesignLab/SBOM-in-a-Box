@@ -43,12 +43,28 @@ public abstract class LanguageParser extends Parser {
      * @return true if internal, false otherwise
      */
     protected boolean isInternalComponent(ParserComponent component) {
+        String name = component.getName();
+        String group = component.getGroup();
+
         for(VirtualPath internalComponent : internalFiles) {
-            if(component.getName() != null && internalComponent.endsWith(new VirtualPath(component.getName()))){
+            VirtualPath noExtension = new VirtualPath(internalComponent.toString().substring(0, internalComponent.toString().indexOf(".")));
+            VirtualPath internalPath = new VirtualPath((group == null ? "" : group) + "/" + name);
+
+            if(internalComponent.endsWith(internalPath) || noExtension.endsWith(internalPath))
                 return true;
-            } else if (component.getGroup() != null && internalComponent.endsWith(new VirtualPath(component.getGroup()))) {
+
+            if(internalComponent.getParent().endsWith(internalPath) || noExtension.getParent().endsWith(internalPath))
                 return true;
-            }
+
+            if(group != null && (internalPath.endsWith(new VirtualPath(group)) || noExtension.endsWith(new VirtualPath(group)))) return true;
+
+//            if(noExtension.endsWith(new VirtualPath(component.getName())))
+//                return true;
+//            if(noExtension.getParent().endsWith(new VirtualPath(name)))
+//                return true;
+//            if (component.getGroup() != null && noExtension.endsWith(new VirtualPath(component.getGroup()))) {
+//                return true;
+//            }
         }
 
         return false;
