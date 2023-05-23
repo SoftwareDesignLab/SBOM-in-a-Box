@@ -350,7 +350,7 @@ public class SBOMGeneratorCLI {
         if (optArgs.containsKey("-d")) Debug.enableDebug();
 
         // Build filesystem representation
-        VirtualTree tree = buildVirtualTree(new VirtualPath(reqArgs.get(0)));
+        VirtualTree tree = VirtualTree.buildVirtualTree(new VirtualPath(reqArgs.get(0)));
 
         // Instantiate controller with the VirtualTree representation
         final ParserController controller = new ParserController(tree);
@@ -400,40 +400,5 @@ public class SBOMGeneratorCLI {
             log(Debug.LOG_TYPE.EXCEPTION, e);
             log(Debug.LOG_TYPE.ERROR, "Error writing to file " + outPath);
         }
-    }
-
-    private static VirtualTree buildVirtualTree(VirtualPath src) {
-        VirtualTree tree = new VirtualTree(src);
-
-        final long buildT1 = System.currentTimeMillis();
-
-        // Build the tree by finding each file and adding to the virtual tree
-        try (Stream<Path> stream = Files.walk(src.getPath())) {
-            stream.forEach(filepath -> {
-                // Only add the directory + files of the path if the file is found - no empty directories
-                if (!Files.isDirectory(filepath)) {
-                    try {
-                        tree.addNode(new VirtualPath(filepath), Files.readString(filepath));
-                    } catch (IOException e) {
-                        Debug.log(LOG_TYPE.ERROR, "Unable to read file contents of: " + filepath);
-                        Debug.log(LOG_TYPE.EXCEPTION, e.getMessage());
-                    }
-                }
-            });
-        } catch (Exception e) {
-            Debug.log(LOG_TYPE.ERROR, "Unable to access file");
-            Debug.log(LOG_TYPE.EXCEPTION, e.getMessage());
-        }
-
-        final long buildT2 = System.currentTimeMillis();
-
-        // Report stats
-        log(LOG_TYPE.SUMMARY, String.format("VirtualTree construction complete. " +
-                        "Found %s Directories and %s Files in %.2f seconds",
-                tree.getNumDirectories(),
-                tree.getAllFiles().size(),
-                (float)(buildT2 - buildT1) / 1000));
-
-        return tree;
     }
 }

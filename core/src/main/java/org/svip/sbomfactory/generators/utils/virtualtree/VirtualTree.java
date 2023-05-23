@@ -1,10 +1,18 @@
 package org.svip.sbomfactory.generators.utils.virtualtree;
 
+import org.svip.sbomfactory.generators.utils.Debug;
+
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
+
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 public class VirtualTree {
 
@@ -101,5 +109,40 @@ public class VirtualTree {
     @Override
     public String toString() {
         return root.toString();
+    }
+
+    public static VirtualTree buildVirtualTree(VirtualPath src) {
+        VirtualTree tree = new VirtualTree(src);
+
+        final long buildT1 = System.currentTimeMillis();
+
+        // Build the tree by finding each file and adding to the virtual tree
+        try (Stream<Path> stream = Files.walk(src.getPath())) {
+            stream.forEach(filepath -> {
+                // Only add the directory + files of the path if the file is found - no empty directories
+                if (!Files.isDirectory(filepath)) {
+                    try {
+                        tree.addNode(new VirtualPath(filepath), Files.readString(filepath));
+                    } catch (IOException e) {
+                        Debug.log(Debug.LOG_TYPE.ERROR, "Unable to read file contents of: " + filepath);
+                        Debug.log(Debug.LOG_TYPE.EXCEPTION, e.getMessage());
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Debug.log(Debug.LOG_TYPE.ERROR, "Unable to access file");
+            Debug.log(Debug.LOG_TYPE.EXCEPTION, e.getMessage());
+        }
+
+        final long buildT2 = System.currentTimeMillis();
+
+        // Report stats
+        log(Debug.LOG_TYPE.SUMMARY, String.format("VirtualTree construction complete. " +
+                        "Found %s Directories and %s Files in %.2f seconds",
+                tree.getNumDirectories(),
+                tree.getAllFiles().size(),
+                (float)(buildT2 - buildT1) / 1000));
+
+        return tree;
     }
 }
