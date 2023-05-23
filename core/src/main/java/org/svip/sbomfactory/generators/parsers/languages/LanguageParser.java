@@ -3,6 +3,8 @@ package org.svip.sbomfactory.generators.parsers.languages;
 import org.svip.sbomfactory.generators.parsers.Parser;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,15 +36,25 @@ public abstract class LanguageParser extends Parser {
         super(STD_LIB_URL);
     }
 
-    //#region Abstract Methods For Language Specific Implementation
-
     /**
      * Determines if the component is Internal
      *
      * @param component component to search for
      * @return true if internal, false otherwise
-     */ // TODO: Pass list of filenames instead of letting implementations walk files
-    protected abstract boolean isInternalComponent(ParserComponent component);
+     */
+    protected boolean isInternalComponent(ParserComponent component) {
+        for(VirtualPath internalComponent : internalFiles) {
+            if(component.getName() != null && internalComponent.endsWith(new VirtualPath(component.getName()))){
+                return true;
+            } else if (component.getGroup() != null && internalComponent.endsWith(new VirtualPath(component.getGroup()))) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
+    //#region Abstract Methods For Language Specific Implementation
 
     /**
      * Determines if the component is from the language maintainers

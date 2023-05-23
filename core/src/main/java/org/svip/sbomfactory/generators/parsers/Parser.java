@@ -1,13 +1,16 @@
 package org.svip.sbomfactory.generators.parsers;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualNode;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
 import static org.svip.sbomfactory.generators.utils.Debug.log;
@@ -25,6 +28,7 @@ public abstract class Parser {
     //#region Attributes
     private static final int MAX_CONNECTION_TIMEOUT = 1000;
     protected VirtualPath PWD; // Filepath to target directory
+    protected List<VirtualPath> internalFiles;
     protected final String STD_LIB_URL;
 
     //#endregion
@@ -48,6 +52,9 @@ public abstract class Parser {
     //#region Setters
 
     public void setPWD(VirtualPath PWD) { this.PWD = PWD; }
+    public void setInternalTree(VirtualTree internalTree) {
+        this.internalFiles = internalTree.getAllFiles().stream().map(VirtualNode::getPath).toList();
+    }
 
     //#endregion
 

@@ -162,6 +162,7 @@ public class ParserController {
 
         // Configure parser
         parser.setPWD(filepath);
+        parser.setInternalTree(fileTree);
 
         // Parse components
         parser.parse(components, fileContents);
