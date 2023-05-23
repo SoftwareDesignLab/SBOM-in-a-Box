@@ -19,6 +19,13 @@ public class VirtualNode {
         this.path = path;
     }
 
+    public VirtualNode(VirtualNode old) {
+        this.children = old.children;
+        this.leafs = old.leafs;
+        this.fileContents = old.fileContents;
+        this.path = old.path;
+    }
+
     public boolean isDirectory() {
         return fileContents == null;
     }

@@ -72,8 +72,14 @@ public class VirtualTree {
     }
 
     private List<VirtualNode> findLeafNodesRecursive(VirtualNode node, VirtualPath previousPath) {
-        List<VirtualNode> leafs = new ArrayList<>(node.getLeafs());
-        leafs.forEach(n -> n.setPath(previousPath.concatenate(n.getPath())));
+        // Duplicates all leafs and then appends their path to the previous node's path
+        List<VirtualNode> leafs = new ArrayList<>(node.getLeafs().stream().map(n -> {
+            // TODO is there an easier way to do this?
+            VirtualNode newPath = new VirtualNode(n);
+            newPath.setPath(previousPath.concatenate(n.getPath()));
+            return newPath;
+        }).toList());
+//        leafs.stream().map(n -> n.setPath(previousPath.concatenate(n.getPath())));
 
         for(VirtualNode child : node.getChildren()) {
             leafs.addAll(findLeafNodesRecursive(child, previousPath.concatenate(child.getPath())));

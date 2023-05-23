@@ -160,6 +160,9 @@ public class ParserController {
         // Init Component list
         ArrayList<ParserComponent> components = new ArrayList<>();
 
+        // Configure parser
+        parser.setPWD(filepath);
+
         // Parse components
         parser.parse(components, fileContents);
 

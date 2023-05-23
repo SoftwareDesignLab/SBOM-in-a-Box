@@ -25,7 +25,6 @@ public abstract class Parser {
     //#region Attributes
     private static final int MAX_CONNECTION_TIMEOUT = 1000;
     protected VirtualPath PWD; // Filepath to target directory
-    protected VirtualPath SRC; // Filepath to src directory
     protected final String STD_LIB_URL;
 
     //#endregion
@@ -49,8 +48,6 @@ public abstract class Parser {
     //#region Setters
 
     public void setPWD(VirtualPath PWD) { this.PWD = PWD; }
-
-    public void setSRC(VirtualPath SRC) { this.SRC = SRC; }
 
     //#endregion
 

@@ -18,7 +18,6 @@ public abstract class ParserTestCore<T extends Parser> {
      */
     private void setDummyParser(T parser, String src) {
         parser.setPWD(new VirtualPath(src));
-        parser.setSRC(new VirtualPath(src));
         this.PARSER = parser;
     }
 }
