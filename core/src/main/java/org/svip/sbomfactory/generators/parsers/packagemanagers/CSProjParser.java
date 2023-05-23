@@ -97,7 +97,7 @@ public class CSProjParser extends PackageManagerParser {
         // Ensure include was found
         if(include == null) return;
 
-        final ParserComponent c = new ParserComponent();
+        final ParserComponent c = new ParserComponent("CSProjParserComponent");
 
         // Convert hashmap to parser component
         switch(type) {

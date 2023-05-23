@@ -1,5 +1,6 @@
 package org.svip.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
@@ -14,16 +15,20 @@ import org.svip.sbomanalysis.comparison.Merger;
 import org.svip.sbomanalysis.qualityattributes.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.QualityReport;
 import org.svip.sbomfactory.generators.ParserController;
+import org.svip.sbomfactory.generators.generators.SBOMGenerator;
+
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.osi.OSI;
-import org.svip.sbomfactory.translators.Translator;
+import org.svip.sbomfactory.translators.TranslatorCDXJSON;
+import org.svip.sbomfactory.translators.TranslatorCDXXML;
 import org.svip.sbomfactory.translators.TranslatorPlugFest;
-import org.svip.sbomvex.VEXFactory;
-import org.svip.visualizer.NodeFactory;
+import org.svip.sbomfactory.translators.TranslatorSPDX;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * API Controller for handling requests to SVIP
@@ -34,6 +39,7 @@ import java.util.List;
  * @author Justin Jantzi
  * @author Matt London
  * @author Ian Dunn
+ * @author Juan Francisco Patino
  */
 
 @RestController
@@ -143,21 +149,10 @@ public class SVIPApiController {
 ////            log(Debug.LOG_TYPE.EXCEPTION, e);
 //        }
 
-        // Get schema from parameters, if not valid, default to CycloneDX
-        GeneratorSchema schema = GeneratorSchema.CycloneDX;
-        try { schema = GeneratorSchema.valueOfArgument(schemaName.toUpperCase()); }
-        catch (IllegalArgumentException ignored) { }
-
-        // Get format from parameters, if not valid, default to JSON
-        GeneratorSchema.GeneratorFormat format = schema.getDefaultFormat();
-        try { format = GeneratorSchema.GeneratorFormat.valueOf(formatName.toUpperCase()); }
-        catch (IllegalArgumentException ignored) {
-//            log(Debug.LOG_TYPE.WARN, String.format(
-//                    "Invalid format type provided: '%s', defaulting to '%s'",
-//                    optArgs.get("-f").toUpperCase(),
-//                    format
-//            ));
-        }
+        Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = configureSchema(schemaName, formatName);
+        assert m != null;
+        GeneratorSchema schema = (GeneratorSchema) m.keySet().toArray()[0];
+        GeneratorSchema.GeneratorFormat format = (GeneratorSchema.GeneratorFormat) m.entrySet().toArray()[0];
 
         //encode and send report
         try {
@@ -180,17 +175,7 @@ public class SVIPApiController {
     @PostMapping("/compare")
     public ResponseEntity<Comparison> compare(@RequestParam("contents") String contentArray, @RequestParam("fileNames") String fileArray) throws IOException {
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<String> contents = objectMapper.readValue(contentArray, new TypeReference<List<String>>(){});
-        List<String> fileNames = objectMapper.readValue(fileArray, new TypeReference<List<String>>(){});
-
-        // Convert the SBOMs to SBOM objects
-        ArrayList<SBOM> sboms = new ArrayList<>();
-
-        for (int i = 0; i < contents.size(); i++) {
-            // Get contents of the file
-            sboms.add(TranslatorPlugFest.translateContents(contents.get(i), fileNames.get(i)));
-        }
+        ArrayList<SBOM> sboms = translateMultiple(contentArray, fileArray);
 
         if(sboms.size() < 2){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -246,6 +231,7 @@ public class SVIPApiController {
      */
     @PostMapping("/parse")
     public ResponseEntity<SBOM> parse(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
+
         SBOM sbom = TranslatorPlugFest.translateContents(contents, fileName);
 
         try {
@@ -257,6 +243,114 @@ public class SVIPApiController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+
+    /**
+     * Merge 2 SBOMs together, regardless of origin format
+     *
+     * @param fileContents JSON string array of the contents of all provided SBOMs
+     * @param fileNames JSON string array of the filenames of all provided SBOMs
+     * @param schema String value of expected output schema (SPDX/CycloneDX)
+     * @param format String value of expected output format (JSON/XML/YAML)
+     * @return merged result SBOM
+     */
+    @PostMapping("merge")
+    public ResponseEntity<SBOM> merge(@RequestParam("fileContents") String fileContents, @RequestParam("fileNames") String fileNames
+            , @RequestParam("schema") String schema, @RequestParam("format") String format) throws IOException{
+
+        ArrayList<SBOM> sboms = translateMultiple(fileContents, fileNames);
+
+        if(sboms.size() < 2){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Merger merger = new Merger();
+        SBOM result = merger.merge(sboms); // report to return
+
+        Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = configureSchema(schema, format); // get schema enumerations from call
+        assert m != null;
+        GeneratorSchema generatorSchema = (GeneratorSchema) m.keySet().toArray()[0];
+        GeneratorSchema.GeneratorFormat generatorFormat = m.get(generatorSchema);
+
+        if(generatorSchema == GeneratorSchema.SPDX) // spdx schema implies spdx format
+            generatorFormat = GeneratorSchema.GeneratorFormat.SPDX;
+
+        SBOMGenerator generator = new SBOMGenerator(result, generatorSchema);
+        String contents = generator.writeFileToString(generatorFormat, true);
+
+        try{
+            switch (generatorSchema){
+                case SPDX: { //spdx, json, xml, yaml
+
+                    // todo once the other SPDX formats are done, account for cases
+
+                    result = new TranslatorSPDX().translateContents(contents, ""); //.spdx
+                    break;
+                }
+                case CycloneDX: {
+
+                    switch (generatorFormat){
+                        case JSON:
+                            result = new TranslatorCDXJSON().translateContents(contents, "");
+                            break;
+                        case XML:
+                            result = new TranslatorCDXXML().translateContents(contents, " ");
+                            break;
+                    }
+
+                }
+            }
+        }catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // encode and send result
+        return new ResponseEntity<>(result, HttpStatus.OK);
+
+    }
+
+    /**
+     * Code shared by /compare and /merge used to configure optional parameters
+     *
+     * @param schema schema string value
+     * @param format format string value
+     */
+    private static Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> configureSchema(String schema, String format) {
+
+        GeneratorSchema resultSchema;
+        try { resultSchema = GeneratorSchema.valueOfArgument(schema.toUpperCase()); }
+        catch (IllegalArgumentException i) { return null;}
+
+        GeneratorSchema.GeneratorFormat resultFormat;
+        try { resultFormat = GeneratorSchema.GeneratorFormat.valueOf(format.toUpperCase()); }
+        catch (IllegalArgumentException i) { return null;}
+
+        return Map.of(resultSchema, resultFormat);
+
+    }
+
+    /**
+     * Code shared by /compare and /merge used to deserialize multiple SBOMs
+     *
+     * @param fileContents JSON string array of the contents of all provided SBOMs
+     * @param fileNames JSON string array of the filenames of all provided SBOMs
+     * @return list of SBOM objects
+     * @throws JsonProcessingException
+     */
+    private static ArrayList<SBOM> translateMultiple(String fileContents, String fileNames) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<String> contents = objectMapper.readValue(fileContents, new TypeReference<>(){});
+        List<String> fNames = objectMapper.readValue(fileNames, new TypeReference<>(){});
+
+        // Convert the SBOMs to SBOM objects
+        ArrayList<SBOM> sboms = new ArrayList<>();
+
+        for (int i = 0; i < contents.size(); i++) {
+            // Get contents of the file
+            sboms.add(TranslatorPlugFest.translateContents(contents.get(i), fNames.get(i)));
+        }
+        return sboms;
     }
 
 

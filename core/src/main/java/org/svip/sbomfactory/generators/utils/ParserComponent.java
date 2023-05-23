@@ -77,10 +77,30 @@ public class ParserComponent extends Component {
     }
 
     /**
-     * Placeholder constructor that enables instances of
-     * Component to be created dynamically by an ObjectMapper.
+     * "Copy" constructor that allows us to construct a ParserComponent from an existing Component. This is for use in
+     * the generators, which operate solely with ParserComponents.
      */
-    public ParserComponent() { }
+    public ParserComponent(Component component) {
+        this(component.getName());
+        this.setGroup(component.getGroup());
+        this.setUUID(component.getUUID());
+        this.setPublisher(component.getPublisher());
+        this.setVersion(component.getVersion());
+        this.setLicenses(component.getLicenses());
+        this.setCpes(component.getCpes());
+        this.setPurls(component.getPurls());
+        this.setSwids(component.getSwids());
+        this.setUniqueID(component.getUniqueID());
+
+        // Add children TODO needed?
+        component.getChildren().forEach(this::addChild);
+
+        // Add conflicts
+        component.getConflicts().forEach(this::addConflict);
+
+        // Add vulnerabilities
+        component.getVulnerabilities().forEach(this::addVulnerability);
+    }
 
     //#endregion
 
