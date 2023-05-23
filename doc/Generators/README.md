@@ -140,31 +140,34 @@ the file will not be parsed.
   - `.csproj`
 
 ## Building Project Locally
-This installation is through Intellij and runs the project through Intellij's configuration files
+This installation is through IntelliJ and builds the project into a JAR through IntelliJ's configuration files.
 1. Clone repo
 2. `File` > `Project Structure` > `Project`
-   - Choose SDK (Openjdk 19 or similar)
-   - Make sure Compiler output is set. (`BenchmarkParser/target`)
-   - `APPLY`
-3. `Project Structure` > `Modules` > `Source` > Navigate to `BenchmarkParser`
-   - Select `src` and click `Mark as: Sources`.
-   - Select `test` and click `Mark as: Tests`.
-   - Select `TestData` and click `Mark as: Test Resources`.
-   - The `target` folder should already be marked as `Excluded`
-   - `APPLY`
+    - Choose SDK (OpenJDK 19 or similar)
+    - `APPLY`
+3. `Project Structure` > `Modules` > `Source` > Navigate to `SVIP`
+    - Select `core/src/main` and click `Mark as: Sources`.
+    - Select `core/src/test` and click `Mark as: Tests`.
+    - Select `core/src/test/java/org/svip/sbomfactory/generators/TestData` and click `Mark as: Test Resources`.
+    - The `target` folder should already be marked as `Excluded`
+    - `APPLY`
 4. `Project Structure` > `Modules` > `Dependencies` > `+` > `From Maven` and import the following
-   - `com.fasterxml.jackson.svip:jackson-databind:2.13.3`
-   - `com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.01`
-   - `com.google.guava:guava:31.1-jre`
-   - `com.googlecode.json-simple:json-simple:1.1.11`
-   - `org.junit.jupiter:junit-jupiter:5.9.1`
-   - `APPLY`
+    - `com.fasterxml.jackson.svip:jackson-databind:2.13.3`
+    - `com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.01`
+    - `com.google.guava:guava:31.1-jre`
+    - `com.googlecode.json-simple:json-simple:1.1.11`
+    - `org.junit.jupiter:junit-jupiter:5.9.1`
+    - `APPLY`
 > NOTE: Once Installed the scope should all be set to `Compile`
-5. Building and running Main.java should work
-6. Running tests should fail
-   - After running, set click the config drop down (in between build and run) > `edit configurations`
-   - change `Working directory` to `BenchmarkParser` and re-run
-> NOTE: If running program doesn't find necessary files the above is most likely the issue
+5. To configure a build for a JAR artifact:
+    1. `File` > `Project Settings` > `Artifacts`
+    2. Click the plus sign in the top left and select `JAR` > `From modules with dependencies...`
+    3. Set `Module` to `SVIP.core.main`
+    4. Set `Main Class` to `SBOMGeneratorCLI (org.svip.sbomfactory.generators`
+    5. Select the `copy to the output directory and link via manifest` option under `JAR files from libraries`
+6. To build the JAR artifact:
+    - `Build` > `Artifacts`
+    - The JAR artifact will appear in the default directory specifed (`SVIP\out\artifacts\SVIP_core_main_jar`)
 
 ## Structure
 The project is structured around an Abstract Parser Core, which handles basic file recursion and other generics. From
