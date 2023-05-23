@@ -23,43 +23,6 @@ public class CppParser extends LanguageParser {
     ///
 
     /**
-     * Determines if the component is Internal
-     *
-     * @param component component to search for
-     * @return true if found, false otherwise
-     */
-    @Override
-    protected boolean isInternalComponent(ParserComponent component) {
-        // break path into parts,
-        String[] path = component.getName().toLowerCase().replace("\\", "/").split("/");
-        String target = path[path.length - 1];  // file to search for
-
-        // TODO
-//        /*
-//        Since Makefile can specify which directories to use, can't use string manipulation. Search all directories in
-//        parallel for the target header file.
-//         */
-//        try (Stream<Path> stream = Files.walk(this.SRC)) {
-//            return stream.anyMatch(file -> {
-//                if(file.toFile().isDirectory()) return false; // Exclude directory names
-//
-//                String fileName = file.getFileName().toString().toLowerCase();
-//
-//                // Since .in files are possible, check .h files
-//                if(fileName.endsWith(".in"))
-//                    fileName = fileName.substring(0, fileName.indexOf(".in"));
-//
-//                return fileName.equals(target);
-//            });
-//        } catch (Exception e){
-//            log(LOG_TYPE.EXCEPTION, e);
-//        }
-
-        // Exception
-        return false;
-    }
-
-    /**
      * Query C++ Reference to see if component is from the library
      *
      * @param component component to search for
