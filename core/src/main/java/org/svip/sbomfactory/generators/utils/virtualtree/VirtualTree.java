@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class VirtualTree implements Iterable<VirtualNode> {
+public class VirtualTree {
 
     VirtualNode root;
 
@@ -38,20 +38,25 @@ public class VirtualTree implements Iterable<VirtualNode> {
         return root;
     }
 
-    @Override
-    public Iterator<VirtualNode> iterator() {
-        return findLeafNodesRecursive(root).iterator(); // TODO remove will not work, does it matter?
+    public boolean contains(VirtualPath fileName) {
+        for(VirtualPath file : getAllFiles()) {
+            if(file.endsWith(fileName)) return true;
+        }
+
+        return false;
     }
 
-    public int getTotalFiles() {
-        return findLeafNodesRecursive(root).size();
+    public List<VirtualPath> getAllFiles() {
+        return findLeafNodesRecursive(root, root.getPath());
     }
 
-    private List<VirtualNode> findLeafNodesRecursive(VirtualNode node) {
-        List<VirtualNode> leafs = new ArrayList<>(node.getLeafs());
+    private List<VirtualPath> findLeafNodesRecursive(VirtualNode node, VirtualPath previousPath) {
+        List<VirtualPath> leafs = new ArrayList<>(
+                node.getLeafs().stream().map(n -> previousPath.concatenate(n.getPath())).toList()
+        );
 
         for(VirtualNode child : node.getChildren()) {
-            leafs.addAll(findLeafNodesRecursive(child));
+            leafs.addAll(findLeafNodesRecursive(child, previousPath.concatenate(child.getPath())));
         }
 
         return leafs;

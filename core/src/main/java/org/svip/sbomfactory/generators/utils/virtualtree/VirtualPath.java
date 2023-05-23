@@ -57,6 +57,12 @@ public class VirtualPath {
         return new VirtualPath(newPathParts);
     }
 
+    public VirtualPath concatenate(VirtualPath path) {
+        List<String> concatenatedPath = new ArrayList<>(pathParts);
+        concatenatedPath.addAll(path.pathParts);
+        return new VirtualPath(concatenatedPath);
+    }
+
     public int getLength() {
         return pathParts.size();
     }
