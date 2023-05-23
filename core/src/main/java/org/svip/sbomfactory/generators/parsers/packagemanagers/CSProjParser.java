@@ -92,11 +92,11 @@ public class CSProjParser extends PackageManagerParser {
         // Ensure include was found
         if(include == null) return;
 
-<<<<<<< HEAD
-        final ParserComponent c = new ParserComponent("CSProjParserComponent");
-=======
+//<<<<<<< HEAD
+//        final ParserComponent c = new ParserComponent("CSProjParserComponent");
+//=======
         final ParserComponent c = new ParserComponent(component.get("Include")); // TODO is this a correct default name?
->>>>>>> origin/dev-Generators-PackageManagers
+//>>>>>>> origin/dev-Generators-PackageManagers
 
         // Convert hashmap to parser component
         switch(type) {
