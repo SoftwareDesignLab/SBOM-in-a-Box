@@ -92,9 +92,18 @@ public class Comparison {
                 // Get all ComponentVersions that match the temporary ComponentVersion's version
                 List<ComponentVersion> matching_cv_list = current_cv_list
                         .stream()
-                        .filter(x -> (Objects.equals(x.getComponentVersion(), current_component.getVersion()) || x.getComponentVersion().contains(current_component.getVersion())))
+                        .filter(x -> {
+                            boolean objEqual = Objects.equals(x.getComponentVersion(), current_component.getVersion());
+                            boolean someNull = x.getComponentVersion() == null || current_component.getVersion() == null;
+                            // This means one of the versions is null and the other is not
+                            if (someNull && !objEqual) {
+                                return false;
+                            }
+                            boolean containsCurrent = x.getComponentVersion() != null && x.getComponentVersion().contains(current_component.getVersion());
+                            boolean containsX = current_component.getVersion() != null && current_component.getVersion().contains(x.getComponentVersion());
+                            return objEqual || containsCurrent || containsX;
+                        })
                         .toList();
-
                 // If there are no matching ComponentVersion objects in the Set for that package name
                 // Else, find all matching ComponentVersion objects and add relevant information
                 if (matching_cv_list.isEmpty()) {

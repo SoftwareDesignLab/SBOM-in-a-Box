@@ -48,7 +48,7 @@ public class SVIPApiController {
     /**
      *  Hold a pipeline object for QAReports
      */
-    private static QAPipeline pipeline;
+    private static QAPipeline pipeline = new QAPipeline();
 
     /**
      * Http headers of Spring boot application
