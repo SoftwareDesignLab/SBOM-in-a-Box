@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class VirtualPath {
     private final List<String> pathParts;
@@ -21,7 +22,7 @@ public class VirtualPath {
         this(Arrays.stream(String.join("/", path.split("\\\\")).split("/")).toList());
     }
 
-    private VirtualPath(List<String> pathParts) {
+    protected VirtualPath(List<String> pathParts) {
         if(pathParts.size() == 0) throw new IllegalArgumentException("Empty path string provided");
         if(pathParts.size() == 1 && pathParts.get(0).equals(""))
             throw new IllegalArgumentException("Empty path string provided");
@@ -50,12 +51,20 @@ public class VirtualPath {
         return String.join("/", this.pathParts);
     }
 
+    protected List<String> getPathParts() {
+        return this.pathParts;
+    }
+
     public VirtualPath getFileName() {
         return new VirtualPath(this.pathParts.get(pathParts.size() - 1));
     }
 
     public Path getPath() {
         return Path.of(this.toString());
+    }
+
+    public boolean isFile() {
+        return this.getFileName().toString().contains(".");
     }
 
     /**
@@ -72,5 +81,18 @@ public class VirtualPath {
             System.err.println("note: invalid path" + other);
         }
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof VirtualPath that)) return false;
+
+        return Objects.equals(pathParts, that.pathParts);
+    }
+
+    @Override
+    public int hashCode() {
+        return pathParts != null ? pathParts.hashCode() : 0;
     }
 }
