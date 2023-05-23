@@ -56,14 +56,14 @@ public class VirtualTree {
     }
 
     public boolean contains(VirtualPath fileName) {
-        for(VirtualPath file : getAllFiles()) {
-            if(file.endsWith(fileName)) return true;
+        for(VirtualNode file : getAllFiles()) {
+            if(file.getPath().endsWith(fileName)) return true;
         }
 
         return false;
     }
 
-    public List<VirtualPath> getAllFiles() {
+    public List<VirtualNode> getAllFiles() {
         return findLeafNodesRecursive(root, root.getPath());
     }
 
@@ -71,10 +71,9 @@ public class VirtualTree {
         return getNumDirectoriesRecursive(root);
     }
 
-    private List<VirtualPath> findLeafNodesRecursive(VirtualNode node, VirtualPath previousPath) {
-        List<VirtualPath> leafs = new ArrayList<>(
-                node.getLeafs().stream().map(n -> previousPath.concatenate(n.getPath())).toList()
-        );
+    private List<VirtualNode> findLeafNodesRecursive(VirtualNode node, VirtualPath previousPath) {
+        List<VirtualNode> leafs = new ArrayList<>(node.getLeafs());
+        leafs.forEach(n -> n.setPath(previousPath.concatenate(n.getPath())));
 
         for(VirtualNode child : node.getChildren()) {
             leafs.addAll(findLeafNodesRecursive(child, previousPath.concatenate(child.getPath())));

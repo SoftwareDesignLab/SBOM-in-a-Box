@@ -16,6 +16,7 @@ import org.svip.sbomfactory.generators.parsers.languages.*;
 import org.svip.sbomfactory.generators.parsers.packagemanagers.*;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualNode;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
 
@@ -111,11 +112,13 @@ public class ParserController {
     //#region Core Methods
 
     /**
-     * Parses the given filepath recursively.
-     *
-     * @param filepath path to file or root directory to be parsed
+     * Parses all files passed into the ParserController
      */
-    public void parse(String filepath, String fileContents) { parse(this.SBOM.getHeadUUID(), filepath, fileContents); }
+    public void parseAll() {
+        for(VirtualNode file : fileTree.getAllFiles()) {
+            parse(this.SBOM.getHeadUUID(), file.getPath(), file.getFileContents());
+        }
+    }
 
 
     /**
@@ -126,14 +129,9 @@ public class ParserController {
      * @param filepath path to file or root directory to be parsed
      * @param parent parent Component to be appended to
      */
-    public void parse(UUID parent, String filepath, String fileContents) {
-        // Get filename
-        String[] pathParts = filepath.split("/");
-        final String os = System.getProperty("os.name").toLowerCase();
-        if(os.contains("win")) pathParts = filepath.split("\\\\");
-
+    public void parse(UUID parent, VirtualPath filepath, String fileContents) {
         // Set project name to root filename
-        final String filename = pathParts[pathParts.length - 1];
+        final String filename = filepath.getFileName().toString();
 
         // Extract extn from filename
         String extn = filename.substring(filename.lastIndexOf('.') + 1);
@@ -174,7 +172,7 @@ public class ParserController {
             components.forEach(ParserComponent::setPackaged); // Sets it to packaged and EXTERNAL
         } // Otherwise it will be unpackaged and INTERNAL (LIBRARY if it has been parsed as such)
 
-        components.forEach(c -> c.addFile(filepath.replaceAll("\\\\", "/")));
+        components.forEach(c -> c.addFile(filepath.toString()));
 
         // componentMap contains a map from a component's name to itself
         Map<String, ParserComponent> componentMap = new HashMap<>();

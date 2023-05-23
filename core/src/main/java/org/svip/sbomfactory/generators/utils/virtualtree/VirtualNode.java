@@ -10,7 +10,7 @@ public class VirtualNode {
     private final Set<VirtualNode> children;
     private final Set<VirtualNode> leafs;
     private final String fileContents;
-    private final VirtualPath path;
+    private VirtualPath path;
 
     public VirtualNode(VirtualPath path, String fileContents) {
         this.children = new HashSet<>();
@@ -57,6 +57,10 @@ public class VirtualNode {
 
     public VirtualPath getPath() {
         return path;
+    }
+
+    public void setPath(VirtualPath path) {
+        this.path = path;
     }
 
     @Override

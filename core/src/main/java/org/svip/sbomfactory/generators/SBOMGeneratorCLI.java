@@ -354,6 +354,7 @@ public class SBOMGeneratorCLI {
 
         // Instantiate controller with the VirtualTree representation
         final ParserController controller = new ParserController(tree);
+        controller.parseAll(); // Parse all files
 
         // Build outPath
         String outPath = PWD;
