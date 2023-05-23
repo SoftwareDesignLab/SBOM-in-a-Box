@@ -218,11 +218,18 @@ public abstract class PackageManagerParser extends Parser {
         // Iterate over unresolved map and store resolved values
         map.forEach(
                 (k, v) -> {
+                    final String keyString = (String) k;
                     if(v instanceof String) {
-                        final String keyString = (String) k;
                         final String valueString = (String) v;
                         resolvedMap.put(keyString, this.resolveString(valueString, props));
-                    } else log(LOG_TYPE.WARN, String.format("Could not resolve illegal value of type: %s (Expected type: String)", v.getClass().getSimpleName()));
+                    } else if(v instanceof HashMap) {
+                        final HashMap valueMap = (HashMap) v;
+                        this.resolveMap(valueMap, props);
+                    } else if(v instanceof List) {
+                        ((List<HashMap>) v).forEach(m -> resolveMap(m, props));
+                    } else {
+                        log(LOG_TYPE.WARN, String.format("Could not resolve illegal value of type: %s (Expected type: String)", v.getClass().getSimpleName()));
+                    }
                 });
 
         // Return resolved map
