@@ -2,13 +2,21 @@ package org.svip.sbomfactory.generators.utils.virtualtree;
 
 import org.svip.sbomfactory.generators.utils.Debug;
 
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 import java.util.Arrays;
 
 public class VirtualPath {
     private final String[] pathParts;
 
+    public VirtualPath(Path path) {
+        this(path.toString());
+    }
+
     public VirtualPath(String path) {
-        this(path.split("\\\\"));
+        // This statement first splits the path by the \ character, then joins it with / and separates it by /.
+        // This achieves the goal of splitting the path into an OS-independent representation.
+        this(String.join("/", path.split("\\\\")).split("/"));
     }
 
     private VirtualPath(String[] pathParts) {
@@ -35,6 +43,26 @@ public class VirtualPath {
         return new VirtualPath(this.pathParts[pathParts.length - 1]);
     }
 
+    public Path getPath() {
+        return Path.of(this.toString());
+    }
+
+    /**
+     * Mirrors the Path.endsWith() method. Note the path being passed in must be a subpath of this path. Not the
+     * other way around.
+     *
+     * @param other - the path to be checked
+     * @return - true if this path ends with other, false otherwise
+     */
+    public boolean endsWith(VirtualPath other){
+        try{
+            return this.getPath().endsWith(other.getPath());
+        } catch (InvalidPathException e){
+            System.err.println("note: invalid path" + other);
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
         // TODO move this into test
         Debug.enableDebug();
@@ -53,8 +81,8 @@ public class VirtualPath {
         Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getParent(); %s", v3Constructor, v3.getParent()));
         Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getFileName(); %s", v3Constructor, v3.getFileName()));
 
-        final VirtualPath v4 = new VirtualPath("a\\b\\c");
-        final String v4Constructor = "new VirtualPath(\"a\\\\b\\\\c\")";
+        final VirtualPath v4 = new VirtualPath("a\\b\\c/d");
+        final String v4Constructor = "new VirtualPath(\"a\\b\\c/d\")";
         Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getParent(); %s", v4Constructor, v4.getParent()));
         Debug.log(Debug.LOG_TYPE.DEBUG, String.format("%s.getFileName(); %s", v4Constructor, v4.getFileName()));
 
