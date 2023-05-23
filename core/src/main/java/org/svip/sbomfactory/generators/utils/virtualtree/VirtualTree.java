@@ -10,6 +10,10 @@ public class VirtualTree {
 
     VirtualNode root;
 
+    public VirtualTree() {
+        this.root = null;
+    }
+
     public VirtualTree(VirtualNode root) {
         this.root = root;
     }
@@ -26,6 +30,10 @@ public class VirtualTree {
     }
 
     public void addNode(VirtualPath filePath, String fileContents) {
+        if(this.root == null) {
+            root = new VirtualNode(filePath.getRoot(), fileContents);
+        }
+
         if(filePath.getRoot().equals(root.getPath())) {
             root.addNode(filePath.removeRoot(), fileContents);
             return;

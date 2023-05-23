@@ -10,6 +10,13 @@ public class VirtualTreeTest {
     }
 
     @Test
+    void initWithNoRootTest() {
+        VirtualTree tree = new VirtualTree();
+        tree.addNode(new VirtualPath("/a/b/c/d.txt"), "test");
+        assertEquals(1, tree.getAllFiles().size());
+    }
+
+    @Test
     void initWithFileTest() {
         VirtualTree tree = new VirtualTree(new VirtualPath("/a/b/c/d.txt"), "test");
         assertEquals(1, tree.getAllFiles().size());
