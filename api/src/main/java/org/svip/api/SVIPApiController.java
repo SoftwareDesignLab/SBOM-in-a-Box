@@ -311,6 +311,10 @@ public class SVIPApiController {
     }
 
     /**
+     * Helper functions
+     */
+
+    /**
      * Code shared by /compare and /merge used to configure optional parameters
      *
      * @param schema schema string value

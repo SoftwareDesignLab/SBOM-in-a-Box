@@ -14,19 +14,20 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 /**
- * File: MergeFromAPITest.java
- * Unit test for API regarding Merging SBOMs
+ * File: ParseFromAPITest.java
+ * Unit test for API regarding the parsing of SBOMs
  * <p>
  * Tests:<br>
- * - mergeTest: Test that the API can merge three SBOMs
+ * - parseTest: Test that the API can merge three SBOMs
  *
  * @author Juan Francisco Patino
  */
-public class MergeFromAPITest {
+public class ParseFromAPITest {
 
     /**
      * Controller to test
@@ -41,46 +42,28 @@ public class MergeFromAPITest {
     private final static String dockerSBOM =  "src/test/java/org/svip/api/sample_sboms/sbom.docker.2-2.spdx";
     private final static List<String> contentsArray = new ArrayList<>();
     private final static List<String> fileNamesArray = new ArrayList<>();
-    private final static ObjectMapper objectMapper = new ObjectMapper();
-
 
     /**
      * Test that the API can Merge three SBOMs
      * @throws IOException If the SBOM merging is broken
      */
     @Test
-    public void mergeTest() throws IOException{
+    public void parseTest() throws IOException{
 
         contentsArray.add(new String(Files.readAllBytes(Paths.get(alpineSBOM))));
         contentsArray.add(new String(Files.readAllBytes(Paths.get(pythonSBOM))));
         contentsArray.add(new String(Files.readAllBytes(Paths.get(dockerSBOM))));
-        String contentsString = objectMapper.writeValueAsString(contentsArray);
 
         fileNamesArray.add(alpineSBOM);
         fileNamesArray.add(pythonSBOM);
         fileNamesArray.add(dockerSBOM);
-        String fileNamesString = objectMapper.writeValueAsString(fileNamesArray);
 
-        for(GeneratorSchema schema : GeneratorSchema.values()) {
-            // Test all possible formats
-            for(GeneratorSchema.GeneratorFormat format : GeneratorSchema.GeneratorFormat.values()) {
-
-                if(schema == GeneratorSchema.SPDX)
-                    switch (format) {
-                        case XML, JSON, YAML -> { // todo we don't support SPDX with these formats yet
-                            continue;
-                        }
-                    }
-
-
-                if(schema.supportsFormat(format)) {
-                    // Test logic per merge
-                    Debug.log(Debug.LOG_TYPE.SUMMARY, "testing " + schema + " " + format);
-                    ResponseEntity<SBOM> report = ctrl.merge(contentsString, fileNamesString, schema.toString().toUpperCase(), format.toString().toUpperCase());
-                    assertNotNull(report.getBody());
-                    Debug.log(Debug.LOG_TYPE.SUMMARY, "PASSED " + schema + " " + format + "!\n-----------------\n");
-                }
-            }
+        int i = 0;
+        for (String c: contentsArray
+             ) {
+            SBOM res = ctrl.parse(c, fileNamesArray.get(i)).getBody();
+            assertNotNull(res);
+            i++;
         }
 
     }
