@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
+import org.svip.sbomfactory.generators.utils.Debug;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,6 +39,10 @@ public class MergeFromAPITest {
     private final static String alpineSBOM = "src/test/java/org/svip/api/sample_sboms/sbom.python.2-3.spdx";
     private final static String pythonSBOM = "src/test/java/org/svip/api/sample_sboms/sbom.python.2-3.spdx";
     private final static String dockerSBOM =  "src/test/java/org/svip/api/sample_sboms/sbom.docker.2-2.spdx";
+    private final static List<String> contentsArray = new ArrayList<>();
+    private final static List<String> fileNamesArray = new ArrayList<>();
+    private final static ObjectMapper objectMapper = new ObjectMapper();
+
 
     /**
      * Test that the API can Merge three SBOMs
@@ -45,21 +50,15 @@ public class MergeFromAPITest {
      */
     @Test
     public void mergeTest() throws IOException{
-        List<String> contentsArray = new ArrayList<>();
-        List<String> fileNamesArray = new ArrayList<>();
-
 
         contentsArray.add(new String(Files.readAllBytes(Paths.get(alpineSBOM))));
         contentsArray.add(new String(Files.readAllBytes(Paths.get(pythonSBOM))));
         contentsArray.add(new String(Files.readAllBytes(Paths.get(dockerSBOM))));
-
-        ObjectMapper objectMapper = new ObjectMapper();
         String contentsString = objectMapper.writeValueAsString(contentsArray);
 
         fileNamesArray.add(alpineSBOM);
         fileNamesArray.add(pythonSBOM);
         fileNamesArray.add(dockerSBOM);
-
         String fileNamesString = objectMapper.writeValueAsString(fileNamesArray);
 
         for(GeneratorSchema schema : GeneratorSchema.values()) {
@@ -76,10 +75,10 @@ public class MergeFromAPITest {
 
                 if(schema.supportsFormat(format)) {
                     // Test logic per merge
-                    System.out.println("-----------------\ntesting " + schema + " " + format);
+                    Debug.log(Debug.LOG_TYPE.SUMMARY, "testing " + schema + " " + format);
                     ResponseEntity<SBOM> report = ctrl.merge(contentsString, fileNamesString, schema.toString().toUpperCase(), format.toString().toUpperCase());
                     assertNotEquals(null, report.getBody());
-                    System.out.println("PASSED " + schema + " " + format + "!\n-----------------\n");
+                    Debug.log(Debug.LOG_TYPE.SUMMARY, "PASSED " + schema + " " + format + "!\n-----------------\n");
                 }
             }
         }
