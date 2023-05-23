@@ -46,13 +46,24 @@ public class VirtualPath {
             return this;
     }
 
+    public VirtualPath getRoot() {
+        return new VirtualPath(this.pathParts.get(0));
+    }
+
+    public VirtualPath removeRoot() {
+        List<String> newPathParts = this.pathParts.subList(1, this.pathParts.size());
+        if(newPathParts.size() == 0) return null;
+
+        return new VirtualPath(newPathParts);
+    }
+
+    public int getLength() {
+        return pathParts.size();
+    }
+
     @Override
     public String toString() {
         return String.join("/", this.pathParts);
-    }
-
-    protected List<String> getPathParts() {
-        return this.pathParts;
     }
 
     public VirtualPath getFileName() {

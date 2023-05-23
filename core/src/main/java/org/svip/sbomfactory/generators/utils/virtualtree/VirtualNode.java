@@ -24,10 +24,10 @@ public class VirtualNode {
     }
 
     public void addNode(VirtualPath filePath, String fileContents) {
-        List<String> pathParts = filePath.getPathParts();
-        VirtualPath current = new VirtualPath(pathParts.remove(0));
+        VirtualPath current = filePath.getRoot();
+        VirtualPath remaining = filePath.removeRoot();
 
-        if(pathParts.size() == 0) { // If no more remaining parts, we have reached either a file or end directory
+        if(remaining == null) { // If no more remaining parts, we have reached either a file or end directory
             if(current.isFile())
                 this.leafs.add(new VirtualNode(current, fileContents));
             else
@@ -38,21 +38,25 @@ public class VirtualNode {
         children.add(new VirtualNode(current, null)); // Since this is a set, we're fine adding duplicates
         for(VirtualNode subDir : children) {
             if(subDir.path.equals(current)) { // Find the current directory and add node
-                subDir.addNode(new VirtualPath(pathParts), fileContents);
+                subDir.addNode(remaining, fileContents);
             }
         }
     }
 
-    public Set<VirtualNode> getChildren() {
+    protected Set<VirtualNode> getChildren() {
         return children;
     }
 
-    public Set<VirtualNode> getLeafs() {
+    protected Set<VirtualNode> getLeafs() {
         return leafs;
     }
 
     public String getFileContents() {
         return fileContents;
+    }
+
+    protected VirtualPath getPath() {
+        return path;
     }
 
     @Override
