@@ -66,6 +66,19 @@ public class VirtualPath {
         return new VirtualPath(newPathParts);
     }
 
+    public String getFileExtension() {
+        if(!this.isFile()) return null;
+
+        String fileName = this.getFileName().toString();
+        return fileName.substring(fileName.lastIndexOf('.') + 1);
+    }
+
+    public VirtualPath removeFileExtension() {
+        if(!this.isFile()) return this;
+
+        return new VirtualPath(this.toString().substring(0, this.toString().lastIndexOf('.')));
+    }
+
     public VirtualPath concatenate(VirtualPath path) {
         List<String> concatenatedPath = new ArrayList<>(pathParts);
         concatenatedPath.addAll(path.pathParts);
