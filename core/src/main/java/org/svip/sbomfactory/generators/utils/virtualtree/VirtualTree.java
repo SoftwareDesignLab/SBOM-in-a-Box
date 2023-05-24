@@ -59,6 +59,7 @@ public class VirtualTree {
      */
     public VirtualTree(VirtualPath filePath, String fileContents) {
         this.root = new VirtualNode(filePath.getRoot(), fileContents);
+        this.addNode(filePath, fileContents);
     }
 
     /**

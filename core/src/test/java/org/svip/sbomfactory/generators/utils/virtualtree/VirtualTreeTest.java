@@ -20,6 +20,7 @@ public class VirtualTreeTest {
     void initWithFileTest() {
         VirtualTree tree = new VirtualTree(new VirtualPath("/a/b/c/d.txt"), "test");
         assertEquals(1, tree.getAllFiles().size());
+        assertEquals("test", tree.getAllFiles().get(0).getFileContents());
         System.out.println(tree);
     }
 
