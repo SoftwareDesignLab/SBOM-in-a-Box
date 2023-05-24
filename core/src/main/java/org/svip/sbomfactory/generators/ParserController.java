@@ -47,7 +47,7 @@ public class ParserController {
     private static final HashMap<String, Parser> EXTENSION_MAP = new HashMap<>() {{
         //
         // New Parsers
-        //
+        // TODO use pointers to call address of c parser, etc
 
         final CParser cParser = new CParser();
         put("c", cParser);
