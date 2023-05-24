@@ -1,6 +1,7 @@
 package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -21,6 +22,25 @@ public class CppParser extends LanguageParser {
     ///
     /// Abstract Method Implementation
     ///
+
+    /**
+     * Determines if the component is Internal
+     *
+     * @param component component to search for
+     * @return true if internal, false otherwise
+     */
+    @Override
+    protected boolean isInternalComponent(ParserComponent component) {
+        for(VirtualPath internalComponent : internalFiles) {
+            if(component.getName() != null && internalComponent.endsWith(new VirtualPath(component.getName()))){
+                return true;
+            } else if (component.getGroup() != null && internalComponent.endsWith(new VirtualPath(component.getGroup()))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     /**
      * Query C++ Reference to see if component is from the library

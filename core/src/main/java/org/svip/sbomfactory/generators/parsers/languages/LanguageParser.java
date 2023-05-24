@@ -68,7 +68,7 @@ public abstract class LanguageParser extends Parser {
         }
 
         return false;
-    };
+    }
 
     //#region Abstract Methods For Language Specific Implementation
 
