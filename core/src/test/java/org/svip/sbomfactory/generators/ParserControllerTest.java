@@ -1,20 +1,5 @@
 package org.svip.sbomfactory.generators;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.svip.sbomfactory.generators.generators.SBOMGenerator;
-import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
-
-import javax.xml.stream.XMLStreamException;
-import java.io.*;
-import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-
-import java.util.Calendar;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

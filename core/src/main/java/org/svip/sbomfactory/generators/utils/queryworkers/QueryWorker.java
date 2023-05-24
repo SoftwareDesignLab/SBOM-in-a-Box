@@ -1,4 +1,7 @@
-package org.svip.sbomfactory.generators.utils;
+package org.svip.sbomfactory.generators.utils.queryworkers;
+
+import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.BufferedReader;
 import java.io.IOException;

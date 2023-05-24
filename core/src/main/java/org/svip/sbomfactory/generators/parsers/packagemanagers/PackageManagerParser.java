@@ -3,7 +3,7 @@ package org.svip.sbomfactory.generators.parsers.packagemanagers;
 import org.svip.sbom.model.CPE;
 import org.svip.sbom.model.PURL;
 import org.svip.sbomfactory.generators.utils.Debug;
-import org.svip.sbomfactory.generators.utils.QueryWorker;
+import org.svip.sbomfactory.generators.utils.queryworkers.QueryWorker;
 import org.svip.sbomfactory.generators.parsers.Parser;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
