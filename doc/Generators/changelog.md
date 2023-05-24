@@ -5,7 +5,34 @@ All notable changes to the Generators sub-system will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-<<<<<<< HEAD:doc/Generators/changelog.md
+## [v4.5.0-alpha] - (5/24/2023)
+
+This update focuses on caching the filesystem at program start via the `VirtualTree` implementation and using this to 
+enable fixing all unit tests.
+
+### Added
+- `VirtualTree` implementation. This covers the following classes:
+  - `VirtualNode` - Represents a node in a `VirtualTree`. This is either a file or directory. If a VirtualNode is a file,
+  it contains the contents of the file internally. It uses `VirtualPaths` to store the name of each file/directory, and
+  can then be concatenated recursively by `VirtualTree` to retrieve the whole filepath.
+  - `VirtualTree` - A complete, internal, in-memory representation of any file tree. A VirtualTree is constructed by 
+  adding a several file paths, and an internal structure of VirtualNodes is created to represent each directory and
+  file. It also stores the file contents, and can return a list of all files in the file tree.
+- Unit tests for `VirtualPath`, `VirtualNode`, and `VirtualTree`.
+- Added `Parser.setVirtualTree()` method to pass in a `VirtualTree` and convert it to the list `internalFiles` to use
+  when checking internal files.
+
+### Changed
+- `ParserController` now holds a `VirtualTree` representation of an arbitrary filesystem on construction.
+  - Now, each file can be parsed by looping through all files in the `VirtualTree` and parsing their contents,
+    completely in-memory.
+  - This allows a list of `VirtualPaths` to be constructed in each Parser to check for internal components.
+- `LanguageParser.isInternalComponent()` refactored to use the `internalFiles` field instead of using `Files.walk()`
+- Moved all utilities in `sbomfactory.generators` to a single `utils` package with organized sub-packages.
+- Renamed `GeneratorsTestMain` to `SBOMGeneratorCLI` and moved it to the `svip` package along with the other main classes.
+- Changed `SBOMGeneratorCLI` to use the `VirtualTree.buildTree()` static method to read all files and file contents from 
+  a source directory into a `VirtualTree`, which can then be passed into a `ParserController` instance.
+
 ## [v4.4.2-alpha] - (05/19/2023)
 
 This update focuses mainly on adding several test cases for most generator classes and fixing bugs in the stores, 
