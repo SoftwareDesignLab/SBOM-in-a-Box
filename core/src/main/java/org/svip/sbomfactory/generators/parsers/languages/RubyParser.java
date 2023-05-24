@@ -1,6 +1,7 @@
 package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -112,22 +113,14 @@ public class RubyParser extends LanguageParser {
      */
     @Override
     protected boolean isInternalComponent(ParserComponent component) {
-        String name = component.getName().toLowerCase();
-        log(LOG_TYPE.DEBUG, "NAME: " + name);
+        String name = component.getName();
+        String group = component.getGroup();
 
-        // Append file extension if one is not present
-        name += name.contains(".") ? "" : ".rb";
+        VirtualPath internalPath = new VirtualPath((group == null ? "" : group) + "/" + name);
 
-        // Assign value to final string to appease the lamba function's requirements
-        final String target = name;
-
-        // TODO
-//        // Get project path from this.src and walk files to find component
-//        try (Stream<Path> stream = Files.walk(this.PWD)) {
-//            return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
-//        } catch (Exception e){
-//            log(LOG_TYPE.EXCEPTION, e);
-//        }
+        for(VirtualPath internalComponent : internalFiles) {
+            if(internalComponent.removeFileExtension().endsWith(internalPath)) return true;
+        }
 
         return false;
     }
