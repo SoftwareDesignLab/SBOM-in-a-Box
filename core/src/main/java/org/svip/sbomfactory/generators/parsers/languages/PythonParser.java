@@ -121,7 +121,7 @@ public class PythonParser extends LanguageParser {
         // 3. Parse tokens
         // Ex: import foo, bar -> "foo" and "bar"
         final VirtualPath tempPwd = this.PWD;
-        boolean external = false; // Checks for any .. filesystem references in case we can't see the outer directory
+        boolean internal = false; // Checks for any .. filesystem references in case we can't see the outer directory
         for (String token : tokens) {
             token = token.trim();   // remove leading/trailing whitespace
 
@@ -133,7 +133,7 @@ public class PythonParser extends LanguageParser {
 
             // If import is in the form "import foo"|"import foo as f"|"import foo.bar.baz as b"|"import (foo, bar, baz)"
             if(matcher.group(1) == null) {
-                if(token.contains("..")) external = true;
+                if(token.contains("..")) internal = true;
                 token = formatPath(token);
 
                 final String[] innerTokens = token.split("\\."); // Split on "."
@@ -146,7 +146,7 @@ public class PythonParser extends LanguageParser {
                 // Set name to last token
                 name = innerTokens[innerTokens.length - 1];
             } else { // Otherwise: "from foo import bar"|"from foo.fee import bar as b"|"from foo import (fee, bar, baz)"
-                if(matcher.group(1).equals(".") || matcher.group(1).equals("..")) external = true;
+                if(matcher.group(1).equals(".") || matcher.group(1).equals("..")) internal = true;
                 // Set name to token
                 name = token;
                 // Set from to Group 1 after replacing '.' with '/'
@@ -175,7 +175,7 @@ public class PythonParser extends LanguageParser {
             if(alias != null) c.setAlias(alias);
 
             // Check if internal
-            if (isInternalComponent(c) || external) {
+            if (isInternalComponent(c) || internal) {
                 c.setType(ParserComponent.Type.INTERNAL);
 
                 // Otherwise check if Language
