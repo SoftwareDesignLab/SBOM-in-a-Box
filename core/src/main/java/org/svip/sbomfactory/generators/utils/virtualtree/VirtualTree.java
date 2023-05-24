@@ -127,7 +127,8 @@ public class VirtualTree {
             root = new VirtualNode(filePath.getRoot(), fileContents);
         }
 
-        if(filePath.getRoot().equals(root.getPath())) {
+        // If root can be removed and root is part of the filepath, remove it to avoid having multiple root children
+        if(filePath.removeRoot() != null && filePath.getRoot().equals(root.getPath())) {
             root.addNode(filePath.removeRoot(), fileContents);
             return;
         }

@@ -1,6 +1,5 @@
 package org.svip.sbomfactory.generators.parsers;
 
-import org.svip.sbomfactory.generators.SBOMGeneratorCLI;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
 
