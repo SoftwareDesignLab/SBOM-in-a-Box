@@ -115,9 +115,21 @@ public class ParserController {
      * Parses all files passed into the ParserController
      */
     public void parseAll() {
+        final long parseT1 = System.currentTimeMillis();
+
+        int parseCounter = 0;
         for(VirtualNode file : fileTree.getAllFiles()) {
             parse(this.SBOM.getHeadUUID(), file.getPath(), file.getFileContents());
+            parseCounter++;
         }
+
+        final long parseT2 = System.currentTimeMillis();
+
+        // Report stats
+        log(Debug.LOG_TYPE.SUMMARY, String.format("Component parsing complete. " +
+                        "Parsed %d components in %.2f seconds.",
+                parseCounter,
+                (float)(parseT2 - parseT1) / 1000));
     }
 
 
