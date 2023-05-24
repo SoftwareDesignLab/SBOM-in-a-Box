@@ -9,6 +9,8 @@ to either the CycloneDX or SPDX schema, and the XML, JSON, or YAML format.
 This update focuses on caching the filesystem at program start via the `VirtualTree` implementation and using this to
 enable fixing all unit tests.
 
+**ALL UNIT TESTS ARE NOW PASSING**
+
 ### Added
 - `VirtualTree` implementation. This covers the following classes:
     - `VirtualNode` - Represents a node in a `VirtualTree`. This is either a file or directory. If a VirtualNode is a file,
@@ -35,6 +37,7 @@ enable fixing all unit tests.
 - Renamed `GeneratorsTestMain` to `SBOMGeneratorCLI` and moved it to the `svip` package along with the other main classes.
 - Changed `SBOMGeneratorCLI` to use the `VirtualTree.buildTree()` static method to read all files and file contents from
   a source directory into a `VirtualTree`, which can then be passed into a `ParserController` instance.
+- Updated `OSITest` to check if Docker is running, and if not simply ignore the tests.
 
 
 ## Usage

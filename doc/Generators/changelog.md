@@ -7,21 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v4.5.0-alpha] - (5/24/2023)
 
-This update focuses on caching the filesystem at program start via the `VirtualTree` implementation and using this to 
+This update focuses on caching the filesystem at program start via the `VirtualTree` implementation and using this to
 enable fixing all unit tests.
+
+**ALL UNIT TESTS ARE NOW PASSING**
 
 ### Added
 - `VirtualTree` implementation. This covers the following classes:
   - `VirtualNode` - Represents a node in a `VirtualTree`. This is either a file or directory. If a VirtualNode is a file,
-  it contains the contents of the file internally. It uses `VirtualPaths` to store the name of each file/directory, and
-  can then be concatenated recursively by `VirtualTree` to retrieve the whole filepath.
-  - `VirtualTree` - A complete, internal, in-memory representation of any file tree. A VirtualTree is constructed by 
-  adding a several file paths, and an internal structure of VirtualNodes is created to represent each directory and
-  file. It also stores the file contents, and can return a list of all files in the file tree.
+    it contains the contents of the file internally. It uses `VirtualPaths` to store the name of each file/directory, and
+    can then be concatenated recursively by `VirtualTree` to retrieve the whole filepath.
+  - `VirtualTree` - A complete, internal, in-memory representation of any file tree. A VirtualTree is constructed by
+    adding a several file paths, and an internal structure of VirtualNodes is created to represent each directory and
+    file. It also stores the file contents, and can return a list of all files in the file tree.
 - Unit tests for `VirtualPath`, `VirtualNode`, and `VirtualTree`.
 - Added `ParserController.parseAll()` method to parse all files in the internal `VirtualTree`, as well as cache the list
   of files to pass into `parse()`.
-- Added `Parser.setInternalFiles()` method to pass in a `List<VirtualNode>` of internal files to the `internalFiles` 
+- Added `Parser.setInternalFiles()` method to pass in a `List<VirtualNode>` of internal files to the `internalFiles`
   field to use when checking internal files.
   - This is derived from the `VirtualTree.getAllFiles()` method.
 
@@ -34,8 +36,9 @@ enable fixing all unit tests.
 - `LanguageParser.isInternalComponent()` refactored to use the `internalFiles` field instead of using `Files.walk()`.
 - Moved all utilities in `sbomfactory.generators` to a single `utils` package with organized sub-packages.
 - Renamed `GeneratorsTestMain` to `SBOMGeneratorCLI` and moved it to the `svip` package along with the other main classes.
-- Changed `SBOMGeneratorCLI` to use the `VirtualTree.buildTree()` static method to read all files and file contents from 
+- Changed `SBOMGeneratorCLI` to use the `VirtualTree.buildTree()` static method to read all files and file contents from
   a source directory into a `VirtualTree`, which can then be passed into a `ParserController` instance.
+- Updated `OSITest` to check if Docker is running, and if not simply ignore the tests.
 
 ## [v4.4.2-alpha] - (05/19/2023)
 
