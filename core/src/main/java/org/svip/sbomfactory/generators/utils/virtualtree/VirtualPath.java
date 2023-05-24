@@ -115,7 +115,9 @@ public class VirtualPath {
      */
     public boolean endsWith(VirtualPath other){
         try{
-            return this.toString().endsWith(other.toString());
+            if(this.toString().endsWith(other.toString())) {
+                return this.getFileName().equals(other.getFileName()); // Ensure last part of path is fully complete
+            };
         } catch (InvalidPathException e){
             Debug.log(Debug.LOG_TYPE.ERROR, "Invalid Path");
             Debug.log(Debug.LOG_TYPE.EXCEPTION, e.getMessage());

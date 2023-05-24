@@ -30,6 +30,7 @@ public class PythonParser extends LanguageParser {
      * @return a formatted path
      */
     private String formatPath(String rawPath) {
+        // TODO this entire method **should** be able to be replaced by a VirtualPath instance
         int dirNum;
         if(rawPath.startsWith("..")) dirNum = 2; // Up one directory (second to last)
         else if(rawPath.startsWith(".")) dirNum = 1; // Current directory (last)
@@ -47,57 +48,6 @@ public class PythonParser extends LanguageParser {
         if(rawPath.equals(".") || rawPath.equals("..")) return dir;
             // Otherwise, prepend directory name and a slash
         else return dir + "." + rawPath.substring(dirNum);
-    }
-
-    /**
-     * Determines if the component is Internal
-     *
-     * @param component component to search for
-     * @return true if internal, false otherwise
-     */
-    @Override
-    protected boolean isInternalComponent(ParserComponent component) {
-        // TODO not sure if this top if statement is necessary since we switched to checking the src directory
-        // Ensure PWD is pointed at the correct directory
-        if(component.getGroup() != null) {
-            // Split from into parts
-            final String[] parts = component.getGroup().split("/");
-            // If root of from is contained in PWD
-            final String PWDString = this.PWD.toString().replace('\\', '/');
-            if(PWDString.contains(parts[0])) {
-                // If PWD is too deep, back it up a directory
-                final String[] pathParts = PWDString.split("/");
-                if(!pathParts[pathParts.length - 1].equals(parts[0])) {
-                    this.PWD = this.PWD.getParent();
-                }
-            }
-        }
-
-        // TODO
-//        // Get project path from this.src and walk files to find component
-//        try (Stream<Path> stream = Files.walk(this.PWD)) {
-//            return stream.anyMatch(file -> {
-//                final String fileName = file.getFileName().toString().toLowerCase().split("\\.")[0];
-//                // Check all targets for match
-//                if(fileName.equals(component.getName().toLowerCase())) {
-//                    final String from = component.getGroup();
-//                    // If from exists, ensure it is part of the path
-//                    if(from != null) {
-//                        final String path = file.toAbsolutePath().toString();
-//                        if(!from.contains("/")) return path.contains(from);
-//                        else return path.replace('\\', '/').contains(from);
-//                    }
-//                    return true;
-//                }
-//                else if(component.getGroup() != null)
-//                    return fileName.equals(component.getGroup().split("/")[0].toLowerCase());
-//                return false;
-//            });
-//        } catch (Exception e){
-//            log(LOG_TYPE.EXCEPTION, e);
-//        }
-
-        return false;
     }
 
     /**
@@ -171,6 +121,7 @@ public class PythonParser extends LanguageParser {
         // 3. Parse tokens
         // Ex: import foo, bar -> "foo" and "bar"
         final VirtualPath tempPwd = this.PWD;
+        boolean external = false; // Checks for any .. filesystem references in case we can't see the outer directory
         for (String token : tokens) {
             token = token.trim();   // remove leading/trailing whitespace
 
@@ -182,6 +133,7 @@ public class PythonParser extends LanguageParser {
 
             // If import is in the form "import foo"|"import foo as f"|"import foo.bar.baz as b"|"import (foo, bar, baz)"
             if(matcher.group(1) == null) {
+                if(token.contains("..")) external = true;
                 token = formatPath(token);
 
                 final String[] innerTokens = token.split("\\."); // Split on "."
@@ -194,6 +146,7 @@ public class PythonParser extends LanguageParser {
                 // Set name to last token
                 name = innerTokens[innerTokens.length - 1];
             } else { // Otherwise: "from foo import bar"|"from foo.fee import bar as b"|"from foo import (fee, bar, baz)"
+                if(matcher.group(1).equals(".") || matcher.group(1).equals("..")) external = true;
                 // Set name to token
                 name = token;
                 // Set from to Group 1 after replacing '.' with '/'
@@ -222,7 +175,7 @@ public class PythonParser extends LanguageParser {
             if(alias != null) c.setAlias(alias);
 
             // Check if internal
-            if (isInternalComponent(c)) {
+            if (isInternalComponent(c) || external) {
                 c.setType(ParserComponent.Type.INTERNAL);
 
                 // Otherwise check if Language
