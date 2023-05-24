@@ -15,6 +15,7 @@ import static org.svip.sbomfactory.generators.utils.Debug.log;
  * Description: Language specific implementation of the Parser (C++)
  *
  * @author Derek Garcia
+ * @author Ian Dunn
  */
 public class CppParser extends LanguageParser {
     public CppParser() { super("https://cplusplus.com/reference/"); }

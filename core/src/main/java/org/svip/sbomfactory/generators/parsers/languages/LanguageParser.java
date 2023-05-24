@@ -22,6 +22,7 @@ import static org.svip.sbomfactory.generators.utils.Debug.log;
  *
  * @author Dylan Mulligan
  * @author Derek Garcia
+ * @author Ian Dunn
  */
 public abstract class LanguageParser extends Parser {
     /**
@@ -37,7 +38,8 @@ public abstract class LanguageParser extends Parser {
     }
 
     /**
-     * Determines if the component is Internal
+     * Determines if the component is Internal. This generic implementation should cover most cases, but if necessary
+     * this method can be overridden.
      *
      * @param component component to search for
      * @return true if internal, false otherwise

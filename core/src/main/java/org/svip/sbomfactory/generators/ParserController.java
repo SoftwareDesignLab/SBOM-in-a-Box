@@ -35,6 +35,7 @@ import static org.svip.sbomfactory.generators.utils.Debug.log;
  *
  * @author Dylan Mulligan
  * @author Derek Garcia
+ * @author Ian Dunn
  */
 public class ParserController {
 
@@ -85,13 +86,15 @@ public class ParserController {
     //#region Constructors
 
     /**
-     * Create a new ParserController with a path to the PWD.
+     * Create a new ParserController with a VirtualTree representation of the filesystem to parse.
      *
      * @param fileTree A VirtualTree representation of the filesystem to parse
      */
     public ParserController(VirtualTree fileTree) {
         // Set project name to root filename
         this.fileTree = fileTree;
+
+        // Set project name to the common directory of the project.
         this.projectName = this.fileTree.getCommonDirectory().getPath().toString();
 
         // Create new SBOM Object
@@ -103,8 +106,6 @@ public class ParserController {
 
     //#region Getters
 
-    public String getProjectName() { return this.projectName; }
-    public int getDepCount() { return this.SBOM.getAllComponents().size(); }
     public SBOM getSBOM() { return this.SBOM; }
 
     //#endregion
@@ -112,7 +113,7 @@ public class ParserController {
     //#region Core Methods
 
     /**
-     * Parses all files passed into the ParserController
+     * Parses all files passed into the ParserController via the VirtualTree and logs the amount of time taken.
      */
     public void parseAll() {
         final long parseT1 = System.currentTimeMillis();
@@ -251,9 +252,11 @@ public class ParserController {
     }
 
     /**
-     * Write this core to a dep.yml file
+     * Write the parsed SBOM object to an SBOM file with a given schema and format.
      *
      * @param outPath Path to write file to
+     * @param outSchema The schema of the SBOM file to write to.
+     * @param outFormat The format of the SBOM file to write to.
      */
     public String toFile(String outPath, GeneratorSchema outSchema, GeneratorSchema.GeneratorFormat outFormat) throws IOException {
         // If format is not supported by schema

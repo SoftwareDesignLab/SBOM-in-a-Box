@@ -23,12 +23,32 @@ import static org.svip.sbomfactory.generators.utils.Debug.log;
  *
  * @author Dylan Mulligan
  * @author Derek Garcia
+ * @author Ian Dunn
  */
 public abstract class Parser {
+
     //#region Attributes
+
+    /**
+     * The maximum connection timeout of each URL query (in milliseconds).
+     */
     private static final int MAX_CONNECTION_TIMEOUT = 1000;
-    protected VirtualPath PWD; // Filepath to target directory
+
+    /**
+     * The VirtualPath to the target directory of the Parser.
+     */
+    protected VirtualPath PWD;
+
+    /**
+     * A list of file paths from the set VirtualTree. Setting a VirtualTree enables the parser to check for internal
+     * components.
+     */
+
     protected List<VirtualPath> internalFiles;
+
+    /**
+     * The standard library URL of the parser.
+     */
     protected final String STD_LIB_URL;
 
     //#endregion
@@ -51,7 +71,19 @@ public abstract class Parser {
 
     //#region Setters
 
+    /**
+     * Sets the current working directory of the parser.
+     *
+     * @param PWD The current working directory of the parser.
+     */
     public void setPWD(VirtualPath PWD) { this.PWD = PWD; }
+
+    /**
+     * Sets the current internal VirtualTree of the parser. Setting a VirtualTree enables the parser to check for
+     * internal components. The VirtualTree is cached into a list of all files in the tree, with full paths.
+     *
+     * @param internalTree The current internal VirtualTree of the parser.
+     */
     public void setInternalTree(VirtualTree internalTree) {
         this.internalFiles = internalTree.getAllFiles().stream().map(VirtualNode::getPath).toList();
     }

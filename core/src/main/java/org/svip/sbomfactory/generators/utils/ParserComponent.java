@@ -14,6 +14,7 @@ import java.util.*;
  *
  * @author Dylan Mulligan
  * @author Derek Garcia
+ * @author Ian Dunn
  */
 public class ParserComponent extends Component {
     //#region Enums

@@ -23,6 +23,7 @@ import static org.svip.sbomfactory.generators.utils.Debug.log;
  * Description: Language specific implementation of the ParserCore (Ruby)
  *
  * @author Dylan Mulligan
+ * @author Ian Dunn
  */
 public class RubyParser extends LanguageParser {
     public RubyParser() { super("https://docs.ruby-lang.org/en/2.1.0/"); }

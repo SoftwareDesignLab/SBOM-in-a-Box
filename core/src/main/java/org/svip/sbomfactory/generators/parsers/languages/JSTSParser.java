@@ -15,6 +15,7 @@ import static org.svip.sbomfactory.generators.utils.Debug.log;
  * Description: Language specific implementation of the ParserCore (JavaScript/TypeScript)
  *
  * @author Dylan Mulligan
+ * @author Ian Dunn
  */
 public class JSTSParser extends LanguageParser {
     public JSTSParser() { super(""); }

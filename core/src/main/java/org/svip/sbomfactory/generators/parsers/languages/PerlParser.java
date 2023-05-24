@@ -18,6 +18,7 @@ import static org.svip.sbomfactory.generators.utils.Debug.log;
  * Description: Language specific implementation of the ParserCore (Perl)
  *
  * @author Dylan Mulligan
+ * @author Ian Dunn
  */
 public class PerlParser extends LanguageParser {
     public PerlParser() { super("https://perldoc.perl.org/"); }
