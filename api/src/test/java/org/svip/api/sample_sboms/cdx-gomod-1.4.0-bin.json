@@ -1,0 +1,217 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.4.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4",
+  "serialNumber": "urn:uuid:c7c5960d-02ce-450e-8854-9a93dec23884",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2023-05-10T15:28:43-04:00",
+    "tools": [
+      {
+        "vendor": "CycloneDX",
+        "name": "cyclonedx-gomod",
+        "version": "v1.4.0",
+        "hashes": [
+          {
+            "alg": "MD5",
+            "content": "169a92227d363c0d4f92be133c5c233b"
+          },
+          {
+            "alg": "SHA-1",
+            "content": "e2f6a39c3f17dc8ff945a47f082837055e57560d"
+          },
+          {
+            "alg": "SHA-256",
+            "content": "d20b0eeaebca24a0eb27c01b8395b5dab89a0538394155cce3d47504cca173fb"
+          },
+          {
+            "alg": "SHA-384",
+            "content": "4e5125bee6348f1e5dd7deb4a286366562717c9888ba2263cbd122d1df46f61fde3fa8c6ba818bf3603b53426c343d2e"
+          },
+          {
+            "alg": "SHA-512",
+            "content": "2c566675699111ca5821dbbbb828da2da61307a6c72cc4f28b2af57df67285f2405065ff3e26da78bd7623091d345e5cbde40e89f275949034c201034b89ae5f"
+          }
+        ],
+        "externalReferences": [
+          {
+            "url": "https://github.com/CycloneDX/cyclonedx-gomod",
+            "type": "vcs"
+          },
+          {
+            "url": "https://cyclonedx.org",
+            "type": "website"
+          }
+        ]
+      }
+    ],
+    "component": {
+      "bom-ref": "pkg:golang/example.com/main?type=module",
+      "type": "application",
+      "name": "example.com/main",
+      "purl": "pkg:golang/example.com/main?type=module\u0026goos=windows\u0026goarch=amd64"
+    },
+    "properties": [
+      {
+        "name": "cdx:gomod:binary:hash:MD5",
+        "value": "9f4e58091cc6f5d091135b405f3009f7"
+      },
+      {
+        "name": "cdx:gomod:binary:hash:SHA-1",
+        "value": "76849b6376c5892c98b1ac95471ff3c1238cf6e2"
+      },
+      {
+        "name": "cdx:gomod:binary:hash:SHA-256",
+        "value": "4e6aea3eac75a3a0a3c7b616e0250de48a4d4e384dec2a5c7063b6924a3f4061"
+      },
+      {
+        "name": "cdx:gomod:binary:hash:SHA-384",
+        "value": "74d0bdbc65693f04a384625e59aa66e9116b75f6d1db6c6e9d16d7e617349084917fd661dd4ec75a787379785ddcce23"
+      },
+      {
+        "name": "cdx:gomod:binary:hash:SHA-512",
+        "value": "9e60800b726795ae0286547780f46fc959a5355e9a491ae260f1bbcd82e71bb4bc47d3f29c0accc961ac9bd10df780d8f5eebbbd3ca040b1dcd99b7f573f2368"
+      },
+      {
+        "name": "cdx:gomod:binary:name",
+        "value": "main.exe"
+      },
+      {
+        "name": "cdx:gomod:build:compiler",
+        "value": "gc"
+      },
+      {
+        "name": "cdx:gomod:build:env:CGO_ENABLED",
+        "value": "0"
+      },
+      {
+        "name": "cdx:gomod:build:env:GOARCH",
+        "value": "amd64"
+      },
+      {
+        "name": "cdx:gomod:build:env:GOOS",
+        "value": "windows"
+      },
+      {
+        "name": "cdx:gomod:build:env:GOVERSION",
+        "value": "go1.20.4"
+      }
+    ]
+  },
+  "components": [
+    {
+      "bom-ref": "pkg:golang/github.com/markcheno/go-quote@v0.0.0-20220624214117-555891babbf1?type=module",
+      "type": "library",
+      "name": "github.com/markcheno/go-quote",
+      "version": "v0.0.0-20220624214117-555891babbf1",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "49f482fb6c7c07bd60e4ff3ff855684a2fe3cdf4bd65a3b8d3a2e5511327443d"
+        }
+      ],
+      "purl": "pkg:golang/github.com/markcheno/go-quote@v0.0.0-20220624214117-555891babbf1?type=module\u0026goos=windows\u0026goarch=amd64",
+      "externalReferences": [
+        {
+          "url": "https://github.com/markcheno/go-quote",
+          "type": "vcs"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:golang/golang.org/x/text@v0.0.0-20170915032832-14c0d48ead0c?type=module",
+      "type": "library",
+      "name": "golang.org/x/text",
+      "version": "v0.0.0-20170915032832-14c0d48ead0c",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "aa0398e9681939a4e4208322563050730f77111044e26df48819b4d2790bd22f"
+        }
+      ],
+      "purl": "pkg:golang/golang.org/x/text@v0.0.0-20170915032832-14c0d48ead0c?type=module\u0026goos=windows\u0026goarch=amd64"
+    },
+    {
+      "bom-ref": "pkg:golang/rsc.io/quote@v1.5.2?type=module",
+      "type": "library",
+      "name": "rsc.io/quote",
+      "version": "v1.5.2",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "c397dccac8ebc7bcaab43fda3be43046361938a9da33d521d9be34b44953b376"
+        }
+      ],
+      "purl": "pkg:golang/rsc.io/quote@v1.5.2?type=module\u0026goos=windows\u0026goarch=amd64"
+    },
+    {
+      "bom-ref": "pkg:golang/rsc.io/sampler@v1.3.0?type=module",
+      "type": "library",
+      "name": "rsc.io/sampler",
+      "version": "v1.3.0",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "eee56420599e06a1df7630fe819c2d5d723e44e0c9d967383bb30f121fd0896e"
+        }
+      ],
+      "purl": "pkg:golang/rsc.io/sampler@v1.3.0?type=module\u0026goos=windows\u0026goarch=amd64"
+    },
+    {
+      "bom-ref": "pkg:golang/std@go1.20.4?type=module",
+      "type": "library",
+      "name": "std",
+      "version": "go1.20.4",
+      "scope": "required",
+      "purl": "pkg:golang/std@go1.20.4?type=module\u0026goos=windows\u0026goarch=amd64"
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "pkg:golang/example.com/main?type=module",
+      "dependsOn": [
+        "pkg:golang/github.com/markcheno/go-quote@v0.0.0-20220624214117-555891babbf1?type=module",
+        "pkg:golang/golang.org/x/text@v0.0.0-20170915032832-14c0d48ead0c?type=module",
+        "pkg:golang/rsc.io/quote@v1.5.2?type=module",
+        "pkg:golang/rsc.io/sampler@v1.3.0?type=module"
+      ]
+    },
+    {
+      "ref": "pkg:golang/github.com/markcheno/go-quote@v0.0.0-20220624214117-555891babbf1?type=module"
+    },
+    {
+      "ref": "pkg:golang/golang.org/x/text@v0.0.0-20170915032832-14c0d48ead0c?type=module"
+    },
+    {
+      "ref": "pkg:golang/rsc.io/quote@v1.5.2?type=module"
+    },
+    {
+      "ref": "pkg:golang/rsc.io/sampler@v1.3.0?type=module"
+    },
+    {
+      "ref": "pkg:golang/std@go1.20.4?type=module"
+    }
+  ],
+  "compositions": [
+    {
+      "aggregate": "complete",
+      "dependencies": [
+        "pkg:golang/example.com/main?type=module"
+      ]
+    },
+    {
+      "aggregate": "unknown",
+      "dependencies": [
+        "pkg:golang/github.com/markcheno/go-quote@v0.0.0-20220624214117-555891babbf1?type=module",
+        "pkg:golang/golang.org/x/text@v0.0.0-20170915032832-14c0d48ead0c?type=module",
+        "pkg:golang/rsc.io/quote@v1.5.2?type=module",
+        "pkg:golang/rsc.io/sampler@v1.3.0?type=module",
+        "pkg:golang/std@go1.20.4?type=module"
+      ]
+    }
+  ]
+}

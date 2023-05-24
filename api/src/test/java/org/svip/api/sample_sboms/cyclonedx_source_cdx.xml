@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bom xmlns="http://cyclonedx.org/schema/bom/1.4" version="1" serialNumber="urn:uuid:e3f19946-25e3-4dc9-8f86-472762c4c819">
+   <metadata>
+      <timestamp>2023-05-16T13:30:02.554129+00:00</timestamp>
+      <tools>
+         <tool>
+            <vendor>CycloneDX</vendor>
+            <name>cyclonedx-bom</name>
+            <version>3.11.0</version>
+         </tool>
+         <tool>
+            <vendor>CycloneDX</vendor>
+            <name>cyclonedx-python-lib</name>
+            <version>3.1.5</version>
+            <externalReferences>
+               <reference type="build-system">
+                  <url>https://github.com/CycloneDX/cyclonedx-python-lib/actions</url>
+               </reference>
+               <reference type="distribution">
+                  <url>https://pypi.org/project/cyclonedx-python-lib/</url>
+               </reference>
+               <reference type="documentation">
+                  <url>https://cyclonedx.github.io/cyclonedx-python-lib/</url>
+               </reference>
+               <reference type="issue-tracker">
+                  <url>https://github.com/CycloneDX/cyclonedx-python-lib/issues</url>
+               </reference>
+               <reference type="license">
+                  <url>https://github.com/CycloneDX/cyclonedx-python-lib/blob/main/LICENSE</url>
+               </reference>
+               <reference type="release-notes">
+                  <url>https://github.com/CycloneDX/cyclonedx-python-lib/blob/main/CHANGELOG.md</url>
+               </reference>
+               <reference type="vcs">
+                  <url>https://github.com/CycloneDX/cyclonedx-python-lib</url>
+               </reference>
+               <reference type="website">
+                  <url>https://cyclonedx.org</url>
+               </reference>
+            </externalReferences>
+         </tool>
+      </tools>
+   </metadata>
+   <components>
+      <component type="library" bom-ref="d822b184-a574-46ef-b616-99a1d17c4d7d">
+         <name>numpy</name>
+         <version>1.23.5</version>
+         <purl>pkg:pypi/numpy@1.23.5</purl>
+      </component>
+      <component type="library" bom-ref="fb5dab22-f9df-4a28-adce-19e75618242d">
+         <name>tensorflow</name>
+         <version>2.12.0</version>
+         <purl>pkg:pypi/tensorflow@2.12.0</purl>
+      </component>
+      <component type="library" bom-ref="118f0f7b-4c77-4dfa-97e7-a944839197a0">
+         <name>tensorflow_intel</name>
+         <version>2.12.0</version>
+         <purl>pkg:pypi/tensorflow-intel@2.12.0</purl>
+      </component>
+   </components>
+   <dependencies>
+      <dependency ref="d822b184-a574-46ef-b616-99a1d17c4d7d" />
+      <dependency ref="fb5dab22-f9df-4a28-adce-19e75618242d" />
+      <dependency ref="118f0f7b-4c77-4dfa-97e7-a944839197a0" />
+   </dependencies>
+</bom>

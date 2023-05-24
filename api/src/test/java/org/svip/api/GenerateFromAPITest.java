@@ -1,6 +1,5 @@
 package org.svip.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
@@ -8,10 +7,6 @@ import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.generators.utils.Debug;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -33,31 +28,16 @@ public class GenerateFromAPITest {
     private SVIPApiController ctrl;
 
     /**
-     * Example SBOMs to use for testing
-     */
-    private final static String alpineSBOM = "src/test/java/org/svip/api/sample_sboms/sbom.alpine-compare.2-3.spdx";
-    private final static String pythonSBOM = "src/test/java/org/svip/api/sample_sboms/sbom.python.2-3.spdx";
-    private final static String dockerSBOM =  "src/test/java/org/svip/api/sample_sboms/sbom.docker.2-2.spdx";
-    private final static List<String> contentsArray = new ArrayList<>();
-    private final static List<String> fileNamesArray = new ArrayList<>();
-    private final static ObjectMapper objectMapper = new ObjectMapper();
-
-    /**
      * Test that the API can Merge three SBOMs
      * @throws IOException If the SBOM merging is broken
      */
     @Test
     public void generateTest() throws IOException{
 
-        contentsArray.add(new String(Files.readAllBytes(Paths.get(alpineSBOM))));
-        contentsArray.add(new String(Files.readAllBytes(Paths.get(pythonSBOM))));
-        contentsArray.add(new String(Files.readAllBytes(Paths.get(dockerSBOM))));
-        String contentsString = objectMapper.writeValueAsString(contentsArray);
+        String[] input = APITestInputInitializer.testInput();
 
-        fileNamesArray.add(alpineSBOM);
-        fileNamesArray.add(pythonSBOM);
-        fileNamesArray.add(dockerSBOM);
-        String fileNamesString = objectMapper.writeValueAsString(fileNamesArray);
+        String contentsString = input[0];
+        String fileNamesString = input[1];
 
         for(GeneratorSchema schema : GeneratorSchema.values()) {
             // Test all possible formats

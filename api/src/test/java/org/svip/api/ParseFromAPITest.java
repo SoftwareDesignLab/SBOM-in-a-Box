@@ -1,13 +1,12 @@
 package org.svip.api;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.SBOM;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -30,33 +29,24 @@ public class ParseFromAPITest {
     private SVIPApiController ctrl;
 
     /**
-     * Example SBOMs to use for testing
-     */
-    private final static String alpineSBOM = "src/test/java/org/svip/api/sample_sboms/sbom.alpine-compare.2-3.spdx";
-    private final static String pythonSBOM = "src/test/java/org/svip/api/sample_sboms/sbom.python.2-3.spdx";
-    private final static String dockerSBOM =  "src/test/java/org/svip/api/sample_sboms/sbom.docker.2-2.spdx";
-    private final static List<String> contentsArray = new ArrayList<>();
-    private final static List<String> fileNamesArray = new ArrayList<>();
-
-    /**
      * Test that the API can Merge three SBOMs
      * @throws IOException If the SBOM merging is broken
      */
     @Test
     public void parseTest() throws IOException{
 
-        contentsArray.add(new String(Files.readAllBytes(Paths.get(alpineSBOM))));
-        contentsArray.add(new String(Files.readAllBytes(Paths.get(pythonSBOM))));
-        contentsArray.add(new String(Files.readAllBytes(Paths.get(dockerSBOM))));
+        String[] input = APITestInputInitializer.testInput();
+        String contentsString = input[0];
+        String fileNamesString = input[1];
+        ObjectMapper objectMapper = new ObjectMapper();
 
-        fileNamesArray.add(alpineSBOM);
-        fileNamesArray.add(pythonSBOM);
-        fileNamesArray.add(dockerSBOM);
+        List<String> contents = objectMapper.readValue(contentsString, new TypeReference<>(){});
+        List<String> fNames = objectMapper.readValue(fileNamesString, new TypeReference<>(){});
 
         int i = 0;
-        for (String c: contentsArray
+        for (String c: contents
              ) {
-            SBOM res = ctrl.parse(c, fileNamesArray.get(i)).getBody();
+            SBOM res = ctrl.parse(c, fNames.get(i)).getBody();
             assertNotNull(res);
             i++;
         }

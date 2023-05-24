@@ -1,0 +1,142 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4",
+  "serialNumber": "urn:uuid:53aa8117-6a22-45d0-a444-d1613bf0c57b",
+  "version": 1,
+  "metadata": {
+    "tools": [
+      {
+        "vendor": "CycloneDX",
+        "name": "CycloneDX module for .NET",
+        "version": "2.7.0.0"
+      }
+    ],
+    "component": {
+      "type": "application",
+      "bom-ref": "BenchmarkProject-CSharpNuget@0.0.0",
+      "name": "BenchmarkProject-CSharpNuget",
+      "version": "0.0.0"
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "bom-ref": "pkg:nuget/AWSSDK.Core@3.7.106.22",
+      "publisher": "Amazon Web Services",
+      "name": "AWSSDK.Core",
+      "version": "3.7.106.22",
+      "description": "The Amazon Web Services SDK for .NET - Core Runtime",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-512",
+          "content": "73679CEC5F34A7A14C00B24BECF8AD8C07E703F10B0809537467898827C0A58550B257D8FCE9B134ADE16C3E28BCC8288F09FF397F547D44AB0DAB5D5E6E96F3"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0",
+            "url": "https://github.com/aws/aws-sdk-net/blob/master/License.txt"
+          }
+        }
+      ],
+      "purl": "pkg:nuget/AWSSDK.Core@3.7.106.22",
+      "externalReferences": [
+        {
+          "url": "https://github.com/aws/aws-sdk-net/",
+          "type": "website"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:nuget/Newtonsoft.Json@13.0.3",
+      "publisher": "James Newton-King",
+      "name": "Newtonsoft.Json",
+      "version": "13.0.3",
+      "description": "Json.NET is a popular high-performance JSON framework for .NET",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-512",
+          "content": "99B252BC77D1C5F5F7B51FD4EA7D5653E9961D7B3061CF9207F8643A9C7CC9965EEBC84D6467F2989BB4723B1A244915CC232A78F894E8B748CA882A7C89FB92"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "copyright": "Copyright \u00A9 James Newton-King 2008",
+      "purl": "pkg:nuget/Newtonsoft.Json@13.0.3",
+      "externalReferences": [
+        {
+          "url": "https://www.newtonsoft.com/json",
+          "type": "website"
+        },
+        {
+          "url": "https://github.com/JamesNK/Newtonsoft.Json",
+          "type": "vcs"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:nuget/Serilog@2.12.0",
+      "publisher": "Serilog Contributors",
+      "name": "Serilog",
+      "version": "2.12.0",
+      "description": "Simple .NET logging with fully-structured events",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-512",
+          "content": "3546B98340B8399A8CA778B9B82072833ADE67B2A016FE261F5A93A3F9AFDA222A1F432B146DC06EDDDB68E6BD32BFFA4A9AACAAE03205C365B43F88044111FD"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "purl": "pkg:nuget/Serilog@2.12.0",
+      "externalReferences": [
+        {
+          "url": "https://serilog.net/",
+          "type": "website"
+        },
+        {
+          "url": "https://github.com/serilog/serilog.git",
+          "type": "vcs"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "BenchmarkProject-CSharpNuget@0.0.0",
+      "dependsOn": [
+        "pkg:nuget/AWSSDK.Core@3.7.106.22",
+        "pkg:nuget/Newtonsoft.Json@13.0.3",
+        "pkg:nuget/Serilog@2.12.0"
+      ]
+    },
+    {
+      "ref": "pkg:nuget/AWSSDK.Core@3.7.106.22",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:nuget/Newtonsoft.Json@13.0.3",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:nuget/Serilog@2.12.0",
+      "dependsOn": []
+    }
+  ]
+}
