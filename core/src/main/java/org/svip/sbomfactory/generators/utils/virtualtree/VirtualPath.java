@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class VirtualPath {
-    private final List<String> pathParts;
+    private List<String> pathParts;
 
     public VirtualPath(Path path) {
         this(path.toString());
@@ -36,7 +36,16 @@ public class VirtualPath {
         if(String.join("", tempPathParts).equals(""))
             throw new IllegalArgumentException("Invalid path string provided");
 
-        this.pathParts = tempPathParts;
+        this.pathParts = new ArrayList<>();
+
+        // Handle any . or .. path elements passed in and modify the path accordingly
+        for(int i = 0; i < tempPathParts.size(); i++) {
+            switch(tempPathParts.get(i)) {
+                case "." -> { continue; }
+//                case ".." -> { this.pathParts.remove(i); } TODO
+                default -> { this.pathParts.add(tempPathParts.get(i)); }
+            }
+        }
     }
 
     public VirtualPath getParent() {
