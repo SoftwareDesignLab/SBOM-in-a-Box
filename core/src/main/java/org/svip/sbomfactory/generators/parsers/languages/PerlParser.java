@@ -1,6 +1,7 @@
 package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,15 +66,15 @@ public class PerlParser extends LanguageParser {
      */
     @Override
     protected boolean isInternalComponent(ParserComponent component) {
-        // Target is component name + ".pm"
-        final String target = component.getName() + ".pm";
-        // TODO
-//        // Get project path from this.src and walk files to find component
-//        try (Stream<Path> stream = Files.walk(this.PWD)) {
-//            return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
-//        } catch (Exception e){
-//            log(LOG_TYPE.EXCEPTION, e);
-//        }
+        String name = component.getName();
+        String group = component.getGroup();
+
+        VirtualPath internalPath = new VirtualPath((group == null ? "" : group) + "/" + name);
+
+        for(VirtualPath internalComponent : internalFiles) {
+            VirtualPath noExtension = new VirtualPath(internalComponent.toString().substring(0, internalComponent.toString().indexOf(".")));
+            if(noExtension.endsWith(internalPath)) return true;
+        }
 
         return false;
     }
