@@ -80,6 +80,8 @@ public class ParserController {
         put("csproj", new CSProjParser());
         put("requirements.txt", new RequirementsParser());
         put("gradle", new GradleParser());
+        //search for the string conanfile.py in this file to see the additional processing logic.
+        put("conanfile.txt", new ConanParser());
         // ADD NEW PARSER HERE: put("fileExtn", new Parser);
     }};
 
@@ -196,10 +198,13 @@ public class ParserController {
         // Parse components
         parser.parse(components, fileContents);
 
-        // If file being parsed is a language file, execute contextParsers
-        if(parser instanceof LanguageParser)
-            for(final ContextParser cp : contextParsers) cp.parse(components, fileContents);
-
+        // If file being parsed is a language file, execute the following additionally
+        if(parser instanceof LanguageParser) {
+            for (final ContextParser cp : contextParsers) cp.parse(components, fileContents);
+            switch (filename) {
+                case "conanfile.py": new ConanParser().parse(components, fileContents);
+            }
+        }
         // If file being parsed is a package manager file
         if(parser instanceof PackageManagerParser) { // Parsing an EXTERNAL dependency
             components.forEach(ParserComponent::setPackaged); // Sets it to packaged and EXTERNAL

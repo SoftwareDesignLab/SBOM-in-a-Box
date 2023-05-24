@@ -24,12 +24,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author pliu
  */
 public class ParserControllerTest {
+
+    static String[] argv = {"src/test/java/org/svip/sbomfactory/generators/TestData/Conan", "-d"};
+
+    //assertTrue(flag);
+
+    final ParserController controller = new ParserController(argv[0]);
+
+    @Test
+    @DisplayName("Conan Parser Tests")
+    void conanParserTest() {
+        controller.setPWD(argv[0]);
+        GeneratorsTestMain.main(argv);
+    }
 //
-//    static String[] argv = {"src/test/java/org/svip/sbomfactory/generators/TestData/Java", "-s"};
-//
-//    //assertTrue(flag);
-//
-//    final ParserController controller = new ParserController(Paths.get(argv[0]) /*, SBOMGenerator.FORMAT.JSON*/);
 //
 //    @Test
 //    @DisplayName("Source Code Comment Test")

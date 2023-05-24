@@ -1,0 +1,342 @@
+{
+  "bomFormat" : "CycloneDX",
+  "specVersion" : "1.4",
+  "serialNumber" : "urn:uuid:ee81a3b9-ae86-3271-ab33-d77bd3804091",
+  "version" : 1,
+  "metadata" : {
+    "timestamp" : "2023-05-24T16:06:37Z",
+    "tools" : [ {
+      "vendor" : "SVIP",
+      "name" : "BenchmarkGenerator",
+      "version" : "v4.4.2-alpha",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "651327353b4280707621a7d82e9b73ab0a339c082c19de88011c52687f6261e2"
+      } ]
+    } ],
+    "component" : {
+      "name" : "Conan",
+      "hashes" : [ {
+        "alg" : "SHA-256",
+        "content" : "4c833893fa1232a7f915fe6cbdf2d73de1fe9ea9060983f7f42635ca8c503ed4"
+      } ],
+      "licenses" : [ {
+        "license" : {
+          "id" : "MIT",
+          "url" : "https://opensource.org/license/mit/"
+        }
+      } ],
+      "type" : "library"
+    }
+  },
+  "components" : [ {
+    "name" : "CMakeToolchain",
+    "group" : "conan/tools/cmake",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "7138198765d187eb17128abf4fe73ccf95717f6190e5b0df34cb539868f8a497"
+    } ],
+    "type" : "library",
+    "properties" : [ {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.py"
+    } ]
+  }, {
+    "name" : "opencv",
+    "version" : "2.4.13.7",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "7e6ed6d17da38039a402496b603e7d5312a413f1d59bdb53648305e8f5579e38"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "Apache-2.0"
+      }
+    } ],
+    "type" : "library",
+    "properties" : [ {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.txt"
+    } ]
+  }, {
+    "name" : "openssl",
+    "version" : "1.1.1k",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "88f5cfe3bdfb46b01d29a736cfbdaf82c3b2c6cae396eed420dbc53344363796"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "Apache-2.0"
+      }
+    } ],
+    "type" : "library",
+    "properties" : [ {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.txt"
+    } ]
+  }, {
+    "name" : "libmysqlclient",
+    "version" : "8.0.31",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "b06b978fd8f400a1ef588fe56af389aec5dd46249d3121d32cea7ecae7d57a23"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0"
+      }
+    } ],
+    "type" : "library",
+    "properties" : [ {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.py"
+    } ]
+  }, {
+    "name" : "boost",
+    "version" : "1.70.0#revision2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "fcced95907a52a141e618634e86945046fbc502ea8093e95b14fc55931540521"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSL-1.0"
+      }
+    } ],
+    "type" : "library",
+    "properties" : [ {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.txt"
+    } ]
+  }, {
+    "name" : "folly",
+    "version" : "2020.08.10.00",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "177f07aa377a6753448d8ac7184fb556ab596bb8110fd9078706d60785f7f0b3"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "Apache-2.0"
+      }
+    } ],
+    "type" : "library",
+    "properties" : [ {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.txt"
+    } ]
+  }, {
+    "name" : "matrix",
+    "version" : "[>=1.0 <2.0]",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "7409de08597b60793ebe78cdc6264e05b928bcca1be806a1600dbb1797796c91"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "Apache-2.0"
+      }
+    } ],
+    "type" : "library",
+    "properties" : [ {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.py"
+    } ]
+  }, {
+    "name" : "mysql-connector-c",
+    "version" : "6.1.11",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "5270d33f2e10bdef7c93cfbff846ae7c50653e683d5e0d4eadd47decffddc77d"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "GPL-2.0"
+      }
+    } ],
+    "type" : "library",
+    "properties" : [ {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.py"
+    } ]
+  }, {
+    "name" : "imgui",
+    "version" : "1.7.0#revision1",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "4d9f819ad447ba9c148a1726b43674485fe4f5066db25e0d7f1985e0fdca3d9f"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "MIT"
+      }
+    } ],
+    "type" : "library",
+    "properties" : [ {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.py"
+    }, {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.txt"
+    } ]
+  }, {
+    "name" : "ConanFile",
+    "group" : "conan",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "acf226e84c5b67072acad8f9dbbb1c949becf3dc0af8856a9914ca10e979e557"
+    } ],
+    "type" : "library",
+    "properties" : [ {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.py"
+    } ]
+  }, {
+    "name" : "glfw",
+    "version" : "3.3.2",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "b975055b7ae35a63ab98c3d9310e33f52bb0ee7d6a2df25fbb9935c368003ba5"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "Zlib"
+      }
+    } ],
+    "type" : "library",
+    "properties" : [ {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.txt"
+    } ]
+  }, {
+    "name" : "cmake_layout",
+    "group" : "conan/tools/cmake",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "455dd4d3ad3e92b6cb993b819e7ef6874144ba9d051fa72d42c3423ddb889b93"
+    } ],
+    "type" : "library",
+    "properties" : [ {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.py"
+    } ]
+  }, {
+    "name" : "poco",
+    "version" : "[>1.0,<1.9]",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "93f159ddc9d9bbdfed8698b3671fe9ddbfeee95e2eee4a0fbaabd51b5656959a"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSL-1.0"
+      }
+    } ],
+    "type" : "library",
+    "properties" : [ {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.txt"
+    } ]
+  }, {
+    "name" : "zlib",
+    "version" : "1.7.0",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "f4eafe8753644e2fb864d0f32bdf36a7914a51cfe9d12e0acd62b190d2220890"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "Zlib"
+      }
+    } ],
+    "type" : "library",
+    "properties" : [ {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.py"
+    }, {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.txt"
+    } ]
+  }, {
+    "name" : "sound32",
+    "version" : "[>=1.0 <2.0]",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "a24d698a19751ba69bf1ffdaa46a6786f5c1103c7d3eec52e095370f635a895b"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "name" : "LGPL-2.1-or-later"
+      }
+    } ],
+    "type" : "library",
+    "properties" : [ {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.py"
+    } ]
+  }, {
+    "name" : "CMake",
+    "group" : "conan/tools/cmake",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "36696684cfadd6890e05a0a305fa0c403288808d74a2304d3b95fc86a09f290a"
+    } ],
+    "type" : "library",
+    "properties" : [ {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.py"
+    } ]
+  }, {
+    "name" : "os compiler build_type arch",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "a1d4b84bbebf33ed1ec07013851ef3c0f0cf0f1a14bea31987ad70bdcb6d4420"
+    } ],
+    "type" : "application",
+    "properties" : [ {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.py"
+    } ]
+  }, {
+    "name" : "cmake",
+    "version" : "3.26.3",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "b77dbd63f3b269e36d6b4beb2751af1c2317e3c1299a53498d019a00309af7ac"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "BSD-3-Clause"
+      }
+    } ],
+    "type" : "library",
+    "properties" : [ {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.py"
+    } ]
+  }, {
+    "name" : "libmodbus",
+    "version" : "3.1.8",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "8c95f3f8f17fe91da2519dc0d66c0f37e4670e4a5eea0f4466174a3e4cd30683"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "LGPL-2.1"
+      }
+    } ],
+    "type" : "library",
+    "properties" : [ {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.py"
+    } ]
+  }, {
+    "name" : "get",
+    "group" : "conan/tools/files",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "603e47851f8a451397d7588618414b89415cef6e6920058e5e9dbaf9082a9966"
+    } ],
+    "type" : "library",
+    "properties" : [ {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.py"
+    } ]
+  }, {
+    "name" : "glew",
+    "version" : "2.1.0",
+    "hashes" : [ {
+      "alg" : "SHA-256",
+      "content" : "29e75a67bf9db8ad5fda9d933b2c1b69b2ce179a368605de4a98d2d200873802"
+    } ],
+    "licenses" : [ {
+      "license" : {
+        "id" : "MIT"
+      }
+    } ],
+    "type" : "library",
+    "properties" : [ {
+      "fileAnalyzed" : "/home/pliu/NetBeansProjects/sviprep/conanpc/SVIP/core/src/test/java/org/svip/sbomfactory/generators/TestData/Conan/conanfile.txt"
+    } ]
+  } ]
+}
