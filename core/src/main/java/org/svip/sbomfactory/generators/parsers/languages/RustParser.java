@@ -27,29 +27,6 @@ public class RustParser extends LanguageParser {
     ///
 
     /**
-     * Determines if the component is Internal
-     *
-     * @param component component to search for
-     * @return true if internal, false otherwise
-     */
-    @Override
-    protected boolean isInternalComponent(ParserComponent component) {
-        // Build file name
-        final String target = component.getName().toLowerCase() + ".rs";
-
-        // TODO
-//        // Get project path from this.src and walk files to find component
-//        try (Stream<Path> stream = Files.walk(this.PWD)) {
-//            return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
-//        } catch (Exception e){
-//            log(LOG_TYPE.EXCEPTION, e);
-//        }
-
-        return false;
-    }
-
-
-    /**
      * Determines if the component is Language
      *
      * @param component component to search for
