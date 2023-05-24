@@ -79,13 +79,13 @@ public abstract class Parser {
     public void setPWD(VirtualPath PWD) { this.PWD = PWD; }
 
     /**
-     * Sets the current internal VirtualTree of the parser. Setting a VirtualTree enables the parser to check for
-     * internal components. The VirtualTree is cached into a list of all files in the tree, with full paths.
+     * Sets the current internal files list of the parser, enabling the parser to check for internal components. The
+     * list of VirtualNodes is converted to a list of all full file paths.
      *
-     * @param internalTree The current internal VirtualTree of the parser.
+     * @param internalFiles The current internal VirtualTree of the parser.
      */
-    public void setInternalTree(VirtualTree internalTree) {
-        this.internalFiles = internalTree.getAllFiles().stream().map(VirtualNode::getPath).toList();
+    public void setInternalFiles(List<VirtualNode> internalFiles) {
+        this.internalFiles = internalFiles.stream().map(VirtualNode::getPath).toList();
     }
 
     //#endregion

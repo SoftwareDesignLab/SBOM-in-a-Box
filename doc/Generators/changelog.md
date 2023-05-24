@@ -19,15 +19,19 @@ enable fixing all unit tests.
   adding a several file paths, and an internal structure of VirtualNodes is created to represent each directory and
   file. It also stores the file contents, and can return a list of all files in the file tree.
 - Unit tests for `VirtualPath`, `VirtualNode`, and `VirtualTree`.
-- Added `Parser.setVirtualTree()` method to pass in a `VirtualTree` and convert it to the list `internalFiles` to use
-  when checking internal files.
+- Added `ParserController.parseAll()` method to parse all files in the internal `VirtualTree`, as well as cache the list
+  of files to pass into `parse()`.
+- Added `Parser.setInternalFiles()` method to pass in a `List<VirtualNode>` of internal files to the `internalFiles` 
+  field to use when checking internal files.
+  - This is derived from the `VirtualTree.getAllFiles()` method.
 
 ### Changed
 - `ParserController` now holds a `VirtualTree` representation of an arbitrary filesystem on construction.
   - Now, each file can be parsed by looping through all files in the `VirtualTree` and parsing their contents,
     completely in-memory.
-  - This allows a list of `VirtualPaths` to be constructed in each Parser to check for internal components.
-- `LanguageParser.isInternalComponent()` refactored to use the `internalFiles` field instead of using `Files.walk()`
+  - `parse()` now accepts an additional parameter `internalFiles` to pass into each parser, regenerated once per call to
+    `parseAll()` from the `VirtualTree` representation.
+- `LanguageParser.isInternalComponent()` refactored to use the `internalFiles` field instead of using `Files.walk()`.
 - Moved all utilities in `sbomfactory.generators` to a single `utils` package with organized sub-packages.
 - Renamed `GeneratorsTestMain` to `SBOMGeneratorCLI` and moved it to the `svip` package along with the other main classes.
 - Changed `SBOMGeneratorCLI` to use the `VirtualTree.buildTree()` static method to read all files and file contents from 

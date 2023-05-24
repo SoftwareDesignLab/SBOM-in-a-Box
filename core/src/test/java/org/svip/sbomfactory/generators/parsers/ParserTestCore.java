@@ -19,7 +19,8 @@ public abstract class ParserTestCore<T extends Parser> {
      */
     private void setDummyParser(T parser, String src) {
         parser.setPWD(new VirtualPath(src));
-        parser.setInternalTree(VirtualTree.buildVirtualTree(new VirtualPath(src)));
+        VirtualTree dummyFileTree = VirtualTree.buildVirtualTree(new VirtualPath(src));
+        parser.setInternalFiles(dummyFileTree.getAllFiles());
         this.PARSER = parser;
     }
 }

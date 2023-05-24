@@ -115,11 +115,12 @@ public class ParserController {
      * Parses all files passed into the ParserController via the VirtualTree and logs the amount of time taken.
      */
     public void parseAll() {
+        List<VirtualNode> internalFiles = fileTree.getAllFiles();
         final long parseT1 = System.currentTimeMillis();
 
         int parseCounter = 0;
         for(VirtualNode file : fileTree.getAllFiles()) {
-            parse(this.SBOM.getHeadUUID(), file.getPath(), file.getFileContents());
+            parse(this.SBOM.getHeadUUID(), file.getPath(), file.getFileContents(), internalFiles);
             parseCounter++;
         }
 
@@ -141,7 +142,7 @@ public class ParserController {
      * @param filepath path to file or root directory to be parsed
      * @param parent parent Component to be appended to
      */
-    public void parse(UUID parent, VirtualPath filepath, String fileContents) {
+    public void parse(UUID parent, VirtualPath filepath, String fileContents, List<VirtualNode> internalFiles) {
         // Set project name to root filename
         final String filename = filepath.getFileName().toString();
 
@@ -174,7 +175,7 @@ public class ParserController {
 
         // Configure parser
         parser.setPWD(filepath);
-        parser.setInternalTree(fileTree);
+        parser.setInternalFiles(internalFiles);
 
         // Parse components
         parser.parse(components, fileContents);
