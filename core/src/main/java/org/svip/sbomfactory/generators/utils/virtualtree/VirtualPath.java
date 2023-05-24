@@ -85,17 +85,18 @@ public class VirtualPath {
     }
 
     /**
-     * Mirrors the Path.endsWith() method. Note the path being passed in must be a subpath of this path. Not the
-     * other way around.
+     * Checks if a path ends with another path. The path being passed in must be a subpath of this path. Not the other
+     * way around.
      *
      * @param other - the path to be checked
      * @return - true if this path ends with other, false otherwise
      */
     public boolean endsWith(VirtualPath other){
         try{
-            return this.getPath().endsWith(other.getPath());
+            return this.toString().endsWith(other.toString());
         } catch (InvalidPathException e){
-            System.err.println("note: invalid path" + other);
+            Debug.log(Debug.LOG_TYPE.ERROR, "Invalid Path");
+            Debug.log(Debug.LOG_TYPE.EXCEPTION, e.getMessage());
         }
         return false;
     }

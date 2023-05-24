@@ -31,12 +31,12 @@ public class CppParser extends LanguageParser {
      */
     @Override
     protected boolean isInternalComponent(ParserComponent component) {
+        String name = component.getName();
+        String group = component.getGroup();
+
         for(VirtualPath internalComponent : internalFiles) {
-            if(component.getName() != null && internalComponent.endsWith(new VirtualPath(component.getName()))){
-                return true;
-            } else if (component.getGroup() != null && internalComponent.endsWith(new VirtualPath(component.getGroup()))) {
-                return true;
-            }
+            if(internalComponent.endsWith(new VirtualPath(name))) return true;
+            if(group != null && internalComponent.endsWith(new VirtualPath(group))) return true;
         }
 
         return false;
