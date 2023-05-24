@@ -30,7 +30,6 @@ public class VirtualTree {
     public VirtualTree(VirtualPath filePath, String fileContents) {
         // TODO do we support a single file being added?
         this.root = new VirtualNode(filePath.getRoot(), null);
-        this.addNode(filePath.removeRoot(), fileContents);
     }
 
     public VirtualTree(VirtualPath directoryPath) {
