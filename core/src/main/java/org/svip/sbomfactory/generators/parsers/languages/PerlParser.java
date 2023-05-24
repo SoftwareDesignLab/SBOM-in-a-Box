@@ -72,8 +72,8 @@ public class PerlParser extends LanguageParser {
         VirtualPath internalPath = new VirtualPath((group == null ? "" : group) + "/" + name);
 
         for(VirtualPath internalComponent : internalFiles) {
-            VirtualPath noExtension = new VirtualPath(internalComponent.toString().substring(0, internalComponent.toString().indexOf(".")));
-            if(noExtension.endsWith(internalPath)) return true;
+            if(internalComponent.getFileExtension().equals("pl")) continue;
+            if(internalComponent.removeFileExtension().endsWith(internalPath)) return true;
         }
 
         return false;

@@ -45,10 +45,10 @@ public abstract class LanguageParser extends Parser {
     protected boolean isInternalComponent(ParserComponent component) {
         String name = component.getName();
         String group = component.getGroup();
+        VirtualPath internalPath = new VirtualPath((group == null ? "" : group) + "/" + name);
 
         for(VirtualPath internalComponent : internalFiles) {
-            VirtualPath noExtension = new VirtualPath(internalComponent.toString().substring(0, internalComponent.toString().indexOf(".")));
-            VirtualPath internalPath = new VirtualPath((group == null ? "" : group) + "/" + name);
+            VirtualPath noExtension = internalComponent.removeFileExtension();
 
             if(internalComponent.endsWith(internalPath) || noExtension.endsWith(internalPath)) return true;
 
