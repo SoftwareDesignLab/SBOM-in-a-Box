@@ -1,16 +1,31 @@
 package org.svip.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.Nested;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.event.annotation.BeforeTestExecution;
+import org.springframework.test.context.event.annotation.BeforeTestMethod;
+import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualNode;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
+import org.svip.sbomfactory.translators.TranslatorController;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -41,13 +56,33 @@ public class GenerateFromAPITest {
     private final static String INVALID_SCHEMA = "Invalid Test Schema";
     private final static String JSON_FORMAT = "JSON";
     private final static String INVALID_FORMAT = "GIF";
+    private final static VirtualPath TEST_PROJECT_PATH = new VirtualPath(System.getProperty("user.dir") +
+            "/src/test/java/org/svip/api/sample_projects/Java");
 
-    public GenerateFromAPITest() {
+    private final String fileContents;
+    private final String fileNames;
+
+    public GenerateFromAPITest() throws JsonProcessingException {
         Debug.enableSummary();
         ctrl = new SVIPApiController();
+
+        // Build fileContents and fileNames for testing
+        VirtualTree fileTree = VirtualTree.buildVirtualTree(TEST_PROJECT_PATH);
+        List<String> fileContents = new ArrayList<>();
+        List<String> fileNames = new ArrayList<>();
+        for(VirtualNode file : fileTree.getAllFiles()) {
+            fileContents.add(file.getFileContents());
+            fileNames.add(file.getPath().toString());
+        }
+
+        // Save contents and names as JSON strings
+        ObjectMapper mapper = new ObjectMapper();
+        this.fileContents = mapper.writeValueAsString(fileContents);
+        this.fileNames = mapper.writeValueAsString(fileNames);
     }
 
     @ParameterizedTest
+    @DisplayName("Null/Empty File Contents Array")
     @NullAndEmptySource
     void emptyContentsArrayTest(String fileContents) {
         ResponseEntity<String> response = ctrl.generate(fileContents, TESTFILEARRAY_LENGTH1, CDX_SCHEMA, JSON_FORMAT);
@@ -56,6 +91,7 @@ public class GenerateFromAPITest {
     }
 
     @ParameterizedTest
+    @DisplayName("Null/Empty File Names Array")
     @NullAndEmptySource
     void emptyFileNamesArrayTest(String fileNames) {
         ResponseEntity<String> response = ctrl.generate(TESTCONTENTSARRAY_LENGTH1, fileNames, CDX_SCHEMA, JSON_FORMAT);
@@ -64,68 +100,74 @@ public class GenerateFromAPITest {
     }
 
     @Test
+    @DisplayName("Mismatched File Contents/Names Array Length")
     void mismatchedFileInfoTest() {
+        // Longer contents array
         ResponseEntity<String> response = ctrl.generate(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH1, CDX_SCHEMA, JSON_FORMAT);
         logTestRequest(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH1, CDX_SCHEMA, JSON_FORMAT);
-//        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+        // Longer file names array
+        response = ctrl.generate(TESTCONTENTSARRAY_LENGTH1, TESTFILEARRAY_LENGTH2, CDX_SCHEMA, JSON_FORMAT);
+        logTestRequest(TESTCONTENTSARRAY_LENGTH1, TESTFILEARRAY_LENGTH2, CDX_SCHEMA, JSON_FORMAT);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
-    @Test
-    void invalidSchemaNameTest() {
-        ResponseEntity<String> response = ctrl.generate(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, INVALID_SCHEMA, JSON_FORMAT);
-        logTestRequest(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, INVALID_SCHEMA, JSON_FORMAT);
-//        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode()); TODO test nulls, empty string, default to CDX
+    @ParameterizedTest
+    @DisplayName("Null/Empty/Invalid Schema")
+    @NullAndEmptySource
+    @ValueSource(strings = { INVALID_SCHEMA })
+    void invalidSchemaNameTest(String schemaName) {
+        ResponseEntity<String> response = ctrl.generate(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, schemaName, JSON_FORMAT);
+        logTestRequest(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, schemaName, JSON_FORMAT);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        assertEquals(GeneratorSchema.CycloneDX, getSchemaFromSBOM(response.getBody()));
     }
 
-    @Test
-    void invalidFormatNameTest() {
-        ResponseEntity<String> response = ctrl.generate(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, CDX_SCHEMA, INVALID_FORMAT);
-        logTestRequest(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, CDX_SCHEMA, INVALID_FORMAT);
-//        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode()); TODO test nulls, empty string, test default to schema default, check if valid format/can be used in schema
-    }
+    @ParameterizedTest
+    @DisplayName("Null/Empty/Invalid/Unsupported Schema")
+    @NullAndEmptySource
+    @ValueSource(strings = { INVALID_FORMAT, "SPDX" })
+    void invalidFormatNameTest(String formatName) {
+        ResponseEntity<String> response = ctrl.generate(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, CDX_SCHEMA, formatName);
+        logTestRequest(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, CDX_SCHEMA, formatName);
 
-    @Test
-    void malformedContentsArrayTest() {
-        // TODO
-    }
-
-    @Test
-    void malformedFileArrayTest() {
-        // TODO
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        assertEquals(GeneratorSchema.CycloneDX.getDefaultFormat(), getFormatFromSBOM(response.getBody()));
     }
 
     /**
-     * Test that the API can Merge three SBOMs
+     * Test that the API can generate an SBOM from a test project
+     *
      * @throws IOException If the SBOM merging is broken
      */
     @Test
+    @DisplayName("Generate SBOMs")
     public void generateTest() throws IOException {
-
-        String[] input = APITestInputInitializer.testInput();
-
-        String contentsString = input[0];
-        String fileNamesString = input[1];
-
         for(GeneratorSchema schema : GeneratorSchema.values()) {
             // Test all possible formats
             for(GeneratorSchema.GeneratorFormat format : GeneratorSchema.GeneratorFormat.values()) {
-
-                if(schema == GeneratorSchema.SPDX)
-                    switch (format) {
-                        case XML, JSON, YAML -> { // todo we don't support SPDX with these formats yet
-                            continue;
-                        }
-                    }
-
-
                 if(schema.supportsFormat(format)) {
                     // Test logic per merge
-                    Debug.log(Debug.LOG_TYPE.SUMMARY, "generating " + schema + " " + format);
-                    ResponseEntity<String> report = ctrl.generate(contentsString, fileNamesString, schema.toString().toUpperCase(), format.toString().toUpperCase());
+                    Debug.log(Debug.LOG_TYPE.SUMMARY, "Generating " + schema + " " + format);
+                    ResponseEntity<String> report =
+                            ctrl.generate(this.fileContents, this.fileNames, schema.toString(), format.toString());
+
+                    assertEquals(HttpStatus.OK, report.getStatusCode());
                     assertNotNull(report.getBody());
+
                     Debug.log(Debug.LOG_TYPE.SUMMARY, "PASSED " + schema + " " + format + "!\n-----------------\n");
-                    Debug.log(Debug.LOG_TYPE.SUMMARY, "Generated SBOM:\n" + report.getBody());
-                    // TODO assert translators can parse this back in
+//                    Debug.log(Debug.LOG_TYPE.SUMMARY, "Generated SBOM:\n" + report.getBody());
+
+                    // TODO figure out translator filetype
+//                    // TODO unsupported translator formats for SPDX
+//                    if(schema == GeneratorSchema.SPDX &&
+//                            (format == GeneratorSchema.GeneratorFormat.XML ||
+//                                    format == GeneratorSchema.GeneratorFormat.JSON ||
+//                                    format == GeneratorSchema.GeneratorFormat.YAML)) continue;
+//                    SBOM translated = TranslatorController.toSBOM(report.getBody(), "");
+//                    assertNotNull(translated);
                 }
             }
         }
@@ -142,4 +184,14 @@ public class GenerateFromAPITest {
                 """, fileContents, fileNames, schema, format);
         Debug.log(Debug.LOG_TYPE.SUMMARY, "POST /SVIP/generateSBOM:\n" + parameters);
     }
+
+//    private GeneratorSchema getSchemaFromSBOM(String sbom) {
+//        SBOM translated = TranslatorController.toSBOM(sbom, "");
+//        return GeneratorSchema.valueOf(translated.getOriginFormat().toString());
+//    }
+
+//    private GeneratorSchema.GeneratorFormat getFormatFromSBOM(String sbom) {
+//        SBOM translated = TranslatorController.toSBOM(sbom, "");
+//        return translate.getFileFormat(); TODO how do we do this?????
+//    }
 }

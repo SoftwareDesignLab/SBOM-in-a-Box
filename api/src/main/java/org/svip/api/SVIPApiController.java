@@ -124,11 +124,13 @@ public class SVIPApiController {
                                            @RequestParam("schemaName") String schemaName,
                                            @RequestParam("formatName") String formatName) {
 
+        // VALIDATE/PARSE INPUT DATA
         // todo OSI
         final ObjectMapper objectMapper = new ObjectMapper();
         List<String> fileContents = null;
         List<String> filePaths = null;
 
+        // Parse file contents/paths
         try {
             fileContents = objectMapper.readValue(contentsArray, new TypeReference<>(){});
             filePaths = objectMapper.readValue(fileArray, new TypeReference<>(){});
@@ -139,28 +141,36 @@ public class SVIPApiController {
             return new ResponseEntity<>(output, HttpStatus.BAD_REQUEST);
         }
 
-        // TODO talk to front-end and figure out what the project name should be
+        // Get schema/format from parameters, if not valid, default to CycloneDX/JSON
+        GeneratorSchema schema = GeneratorSchema.CycloneDX;
+        GeneratorSchema.GeneratorFormat format = schema.getDefaultFormat();
+
+        // Parse schema/format
+        try {
+            if(schemaName != null) schema = GeneratorSchema.valueOfArgument(schemaName);
+            if(formatName != null) format = GeneratorSchema.GeneratorFormat.valueOf(formatName);
+            if(!schema.supportsFormat(format)) format = schema.getDefaultFormat();
+        } catch (IllegalArgumentException ignored) {}
+
+        // Ensure equal lengths of file contents & paths
+        if(fileContents.size() != filePaths.size()) return new ResponseEntity<>("File contents & file names are " +
+                "different lengths.", HttpStatus.BAD_REQUEST);
+
+
+        // BUILD FILE TREE REPRESENTATION
+        // TODO talk to front-end and figure out what the project name should be, currently SVIP. Common directory?
         VirtualTree fileTree = new VirtualTree(new VirtualPath("SVIP"));
         for (int i = 0; i < filePaths.size(); i++) {
-            final VirtualPath path = new VirtualPath(filePaths.get(i));
-            final String contents = fileContents.get(i);
-            fileTree.addNode(path, contents);
+            fileTree.addNode(
+                    new VirtualPath(filePaths.get(i)),
+                    fileContents.get(i));
         }
 
+        // PARSE FILES INTO SBOM
         final ParserController controller = new ParserController(fileTree);
         controller.parseAll();
 
-        // Get schema from parameters, if not valid, default to CycloneDX
-        GeneratorSchema schema = GeneratorSchema.CycloneDX;
-        try { schema = GeneratorSchema.valueOfArgument(schemaName); } // TODO make sure we can accept null
-        catch (IllegalArgumentException ignored) {}
-
-        // Get format from parameters, if not valid, default to JSON
-        GeneratorSchema.GeneratorFormat format = schema.getDefaultFormat();
-        try { format = GeneratorSchema.GeneratorFormat.valueOf(formatName); } // TODO make sure schema is allowed
-        catch (IllegalArgumentException ignored) {}
-
-        //encode and send report
+        // Generate SBOM to string and send
         try {
             return new ResponseEntity<>(controller.toFile(null, schema, format), HttpStatus.OK);
         } catch (Exception e) {
