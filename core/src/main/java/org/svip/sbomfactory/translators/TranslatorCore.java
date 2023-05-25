@@ -1,8 +1,8 @@
 package org.svip.sbomfactory.translators;
 
 import org.cyclonedx.exception.ParseException;
-import org.svip.sbom.model.*;
-
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.SBOM;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
@@ -85,7 +85,7 @@ public abstract class TranslatorCore {
         } catch (Exception e) {
             System.err.println(
                     "Error: Internal SBOM could not be created. Cancelling translation for this SBOM. \n " +
-                    "File: " + this.FILE_EXTN + "\n"
+                            "File: " + this.FILE_EXTN + "\n"
             );
             e.printStackTrace();
             sbom = null;

@@ -124,7 +124,7 @@ public class TranslatorCDXJSON extends TranslatorCore {
                 new_component.setUniqueID(cdx_component.getBomRef());
 
                 // Add component to component list
-                this.loadComponent(new_component.getUniqueID(), new_component);
+                components.put(new_component.getUniqueID(), new_component);
 
                 // If a top component doesn't exist, make this new component the top component
                 this.product = product == null ? new_component : product;
@@ -149,7 +149,7 @@ public class TranslatorCDXJSON extends TranslatorCore {
                                         // Returns dependencies as strings
                                         return x.getDependencies().stream().map(
                                                 y -> y.getRef()).collect(
-                                                        Collectors.toCollection(ArrayList::new));
+                                                Collectors.toCollection(ArrayList::new));
                                     },
                                     (x,y) -> y,
                                     HashMap::new

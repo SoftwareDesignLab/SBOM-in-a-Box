@@ -17,14 +17,12 @@ import org.svip.sbomanalysis.qualityattributes.QualityReport;
 import org.svip.sbomfactory.generators.ParserController;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 
-import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
+import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
 import org.svip.sbomfactory.osi.OSI;
-import org.svip.sbomfactory.translators.TranslatorController;
-import org.svip.sbomvex.VEXFactory;
-import org.svip.visualizer.NodeFactory;
 import org.svip.sbomfactory.translators.TranslatorCDXJSON;
 import org.svip.sbomfactory.translators.TranslatorCDXXML;
-import org.svip.sbomfactory.translators.TranslatorPlugFest;
+import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomfactory.translators.TranslatorSPDX;
 
 
@@ -123,32 +121,32 @@ public class SVIPApiController {
                                            @RequestParam("schemaName") String schemaName,
                                            @RequestParam("formatName") String formatName) throws IOException {
 
-        // todo OSI
-        final ObjectMapper objectMapper = new ObjectMapper();
-        final List<String> fileContents = objectMapper.readValue(contentsArray, new TypeReference<>(){});
-        final List<String> filePaths = objectMapper.readValue(fileArray, new TypeReference<>(){});
-
-        final ParserController controller = new ParserController(pwd); // TODO: Get root directory and use it here
-
-        for (int i = 0; i < filePaths.size(); i++) {
-            final String path = filePaths.get(i);
-            final String contents = fileContents.get(i);
-            controller.setPWD(path);
-            controller.parse(path, contents);
-        }
-
-        Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = configureSchema(schemaName, formatName);
-        assert m != null;
-        GeneratorSchema schema = (GeneratorSchema) m.keySet().toArray()[0];
-        GeneratorSchema.GeneratorFormat format =  m.get(schema);
-
-        //encode and send report
-        try {
-            return new ResponseEntity<>(controller.toFile(null, schema, format), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
+//        // todo OSI
+//        final ObjectMapper objectMapper = new ObjectMapper();
+//        final List<String> fileContents = objectMapper.readValue(contentsArray, new TypeReference<>(){});
+//        final List<String> filePaths = objectMapper.readValue(fileArray, new TypeReference<>(){});
+//
+//        final ParserController controller = new ParserController(new VirtualTree()); // TODO: Get root directory and use it here
+//
+//        for (int i = 0; i < filePaths.size(); i++) {
+//            final String path = filePaths.get(i);
+//            final String contents = fileContents.get(i);
+////            controller.setPWD(path);
+////            controller.parse(path, contents);
+//        }
+//
+//        Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = configureSchema(schemaName, formatName);
+//        assert m != null;
+//        GeneratorSchema schema = (GeneratorSchema) m.keySet().toArray()[0];
+//        GeneratorSchema.GeneratorFormat format =  m.get(schema);
+//
+//        //encode and send report
+//        try {
+//            return new ResponseEntity<>(controller.toFile(null, schema, format), HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+        return null;
     }
 
     /**
@@ -192,7 +190,7 @@ public class SVIPApiController {
     @PostMapping("/qa")
     public ResponseEntity<QualityReport> qa(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
 
-        SBOM sbom = TranslatorPlugFest.translateContents(contents, fileName);
+        SBOM sbom = TranslatorController.toSBOM(contents, fileName);
 
         // Check if the sbom is null
         if (sbom == null) {
@@ -220,7 +218,7 @@ public class SVIPApiController {
     @PostMapping("/parse")
     public ResponseEntity<SBOM> parse(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
 
-        SBOM sbom = TranslatorPlugFest.translateContents(contents, fileName);
+        SBOM sbom = TranslatorController.toSBOM(contents, fileName);
 
         try {
             // Explicitly return null if failed
@@ -245,7 +243,7 @@ public class SVIPApiController {
      */
     @PostMapping("merge")
     public ResponseEntity<SBOM> merge(@RequestParam("fileContents") String fileContents, @RequestParam("fileNames") String fileNames
-            , @RequestParam("schema") String schema, @RequestParam("format") String format) throws IOException{
+            , @RequestParam("schema") String schema, @RequestParam("format") String format) throws IOException {
 
         ArrayList<SBOM> sboms = translateMultiple(fileContents, fileNames);
 
@@ -340,7 +338,7 @@ public class SVIPApiController {
 
         for (int i = 0; i < contents.size(); i++) {
             // Get contents of the file
-            sboms.add(TranslatorPlugFest.translateContents(contents.get(i), fNames.get(i)));
+            sboms.add(TranslatorController.toSBOM(contents.get(i), fNames.get(i)));
         }
         return sboms;
     }

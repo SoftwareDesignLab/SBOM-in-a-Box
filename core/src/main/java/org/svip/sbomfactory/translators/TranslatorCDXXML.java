@@ -13,11 +13,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 /**
@@ -207,7 +202,7 @@ public class TranslatorCDXXML extends TranslatorCore {
 
         product_data.put("name" , sbom_component.get("name"));
         product_data.put("publisher", sbom_component.get("publisher") == null
-                        ? sbom_materials.get("author") : sbom_component.get("publisher"));
+                ? sbom_materials.get("author") : sbom_component.get("publisher"));
         product_data.put("version", sbom_component.get("version"));
         product_data.put("id", sbom_component.get("bom-ref"));
 

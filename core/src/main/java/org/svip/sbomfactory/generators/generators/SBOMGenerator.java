@@ -154,7 +154,7 @@ public class SBOMGenerator {
      *
      * @return A string representation of an SBOM file.
      */
-    public String writeFileToString(GeneratorSchema.GeneratorFormat format, boolean prettyPrint) throws GeneratorException, JsonProcessingException {
+    public String writeFileToString(GeneratorSchema.GeneratorFormat format, boolean prettyPrint) throws IOException {
         log(Debug.LOG_TYPE.DEBUG, "Building " + schema.name() + " SBOM object");
 
         BOMStore bomStore = buildBOMStore();
