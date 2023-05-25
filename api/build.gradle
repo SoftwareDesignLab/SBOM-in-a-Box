@@ -20,6 +20,8 @@ repositories {
 dependencies {
     implementation project(':core')
     implementation ('org.springframework.boot:spring-boot-starter-web:3.0.2')
+    implementation 'com.mikemybytes:junit5-formatted-source:0.2.0'
+    implementation 'com.mikemybytes:junit5-formatted-source:0.2.0'
     testImplementation ('org.springframework.boot:spring-boot-starter-web:3.0.2')
     implementation('org.springframework:spring-web:6.0.7')
     implementation('org.springframework.boot:spring-boot-autoconfigure:3.0.4')

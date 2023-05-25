@@ -2,15 +2,13 @@ package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
-import static org.svip.sbomfactory.generators.utils.Debug.*;
+import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 
 /**
@@ -26,45 +24,6 @@ public class CSharpParser extends LanguageParser {
     ///
     /// Abstract Method Implementation
     ///
-
-    /**
-     * Determines if the component is Internal
-     *
-     * @param component component to search for
-     * @return true if internal, false otherwise
-     */
-    @Override
-    protected boolean isInternalComponent(ParserComponent component) {
-        // TODO
-//        // Get project path from this.src and walk files to find component
-//        try (Stream<Path> stream = Files.walk(this.SRC)) {
-//            return stream.anyMatch(file -> {
-//                final String fileName = file.getFileName().toString().toLowerCase().split("\\.")[0];
-//                // Check if Component name is a match
-//                if(fileName.equals(component.getName().toLowerCase())) {
-//                    final String from = component.getGroup();
-//                    // If from exists, ensure it is part of the path
-//                    if(from != null) {
-//                        final String path = file.toAbsolutePath().toString();
-//                        if(!from.contains("/")) return path.contains(from);
-//                        else return path.replace('\\', '/').contains(from);
-//                    }
-//                    return true;
-//                }
-//                // If Component name is not a match and "from" is defined
-//                else if(component.getGroup() != null) {
-//                    // Check the last part of "from"
-//                    final String[] parts = component.getGroup().split("/");
-//                    return fileName.equals(parts[parts.length - 1].toLowerCase());
-//                }
-//                return false;
-//            });
-//        } catch (Exception e){
-//            log(LOG_TYPE.EXCEPTION, e);
-//        }
-
-        return false;
-    }
 
     /**
      * Using the .NET api to check if the component is base C#

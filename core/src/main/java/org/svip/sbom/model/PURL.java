@@ -7,6 +7,7 @@ import java.util.Objects;
  * <b>Description</b>: Object representation of the Package URl for a component
  *
  * @author Juan Francisco Patino
+ * @author Matt London
  */
 public class PURL {
 
@@ -41,18 +42,21 @@ public class PURL {
             setPackageManager(ComponentPackageManager.ALPINE);
         else if(p.contains("debian"))
             setPackageManager(ComponentPackageManager.DEBIAN);
-        else // add cases here as PMs are added
+        else if(p.contains("python"))
             setPackageManager(ComponentPackageManager.PYTHON);
+        else
+            setPackageManager(ComponentPackageManager.NUGET); // add cases here as PMs are added
 
-        switch (this.pm){
-            case ALPINE:
-                String[] purlSplit = p.split("[/@]");
-                this.name = purlSplit[2];
-                purlSplit = p.split("[@?]");
-                this.version = purlSplit[1];
-                break;
-            case DEBIAN:
+
+        try{
+            String[] purlSplit = p.split("[/@]");
+            this.name = purlSplit[2];
+            purlSplit = p.split("[@?]");
+            this.version = purlSplit[1];
+        }catch (IndexOutOfBoundsException e){
+            // some PURLS don't have version / this is just for convenience
         }
+
 
     }
 
@@ -86,6 +90,10 @@ public class PURL {
 
     public void setPURLString(String PURLString) {
         this.PURLString = PURLString;
+    }
+
+    public String getPURLString() {
+        return PURLString;
     }
 
     ///

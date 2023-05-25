@@ -1,15 +1,14 @@
 package org.svip.sbomfactory.generators.generators.cyclonedx;
 
-import org.svip.sbom.model.PURL;
-import org.svip.sbomfactory.generators.generators.utils.License;
-import org.svip.sbomfactory.generators.generators.utils.Tool;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import org.svip.sbom.model.PURL;
+import org.svip.sbomfactory.generators.utils.generators.License;
+import org.svip.sbomfactory.generators.utils.generators.Tool;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -132,6 +131,8 @@ public class CycloneDXSerializer extends StdSerializer<CycloneDXStore> {
         jsonGenerator.writeStringField("name", component.getName());
         writeFieldIfExists(jsonGenerator,"group", component.getGroup());
         writeFieldIfExists(jsonGenerator,"version", component.getVersion());
+        if(component.getPublisher() != null && component.getPublisher().length() > 0 && !component.getPublisher().equals("Unknown"))
+            jsonGenerator.writeStringField("publisher", "Organization: " + component.getPublisher());
 
         //
         // Package Hash
@@ -306,6 +307,7 @@ public class CycloneDXSerializer extends StdSerializer<CycloneDXStore> {
         switch(type) {
             case LANGUAGE -> { return "framework"; }
             case INTERNAL -> { return "file"; }
+            case APPLICATION -> { return "application"; }
             default -> { return "library"; }
         }
     }

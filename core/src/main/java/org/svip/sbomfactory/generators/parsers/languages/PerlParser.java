@@ -1,17 +1,16 @@
 package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
-import static org.svip.sbomfactory.generators.utils.Debug.*;
+import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 
 /**
@@ -19,6 +18,7 @@ import static org.svip.sbomfactory.generators.utils.Debug.*;
  * Description: Language specific implementation of the ParserCore (Perl)
  *
  * @author Dylan Mulligan
+ * @author Ian Dunn
  */
 public class PerlParser extends LanguageParser {
     public PerlParser() { super("https://perldoc.perl.org/"); }
@@ -67,15 +67,15 @@ public class PerlParser extends LanguageParser {
      */
     @Override
     protected boolean isInternalComponent(ParserComponent component) {
-        // Target is component name + ".pm"
-        final String target = component.getName() + ".pm";
-        // TODO
-//        // Get project path from this.src and walk files to find component
-//        try (Stream<Path> stream = Files.walk(this.PWD)) {
-//            return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
-//        } catch (Exception e){
-//            log(LOG_TYPE.EXCEPTION, e);
-//        }
+        String name = component.getName();
+        String group = component.getGroup();
+
+        VirtualPath internalPath = new VirtualPath((group == null ? "" : group) + "/" + name);
+
+        for(VirtualPath internalComponent : internalFiles) {
+            if(internalComponent.getFileExtension().equals("pl")) continue;
+            if(internalComponent.removeFileExtension().endsWith(internalPath)) return true;
+        }
 
         return false;
     }

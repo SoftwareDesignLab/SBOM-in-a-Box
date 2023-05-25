@@ -1,15 +1,13 @@
 package org.svip.sbomfactory.generators.generators.spdx;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.svip.sbomfactory.generators.generators.BOMStore;
-import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
-import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
-import org.svip.sbomfactory.generators.generators.utils.License;
+import org.svip.sbomfactory.generators.utils.generators.GeneratorException;
+import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
+import org.svip.sbomfactory.generators.utils.generators.License;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.svip.sbomfactory.generators.utils.Debug.log;
 
@@ -79,7 +77,11 @@ public class SPDXStore extends BOMStore {
 
         this.packages = new ArrayList<>();
         this.documentDescribes = new ArrayList<>();
+
         this.relationships = new ArrayList<>();
+        this.relationships.add(new Relationship("SPDXRef-DOCUMENT", "SPDXRef-DOCUMENT",
+                Relationship.RELATIONSHIP_TYPE.DESCRIBES)); // TODO translator needs this, is this correct?
+
         this.files = new HashMap<>();
         this.externalLicenses = new HashSet<>();
 

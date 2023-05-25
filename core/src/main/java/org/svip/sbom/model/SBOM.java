@@ -1,9 +1,6 @@
 package org.svip.sbom.model;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * File: SBOM.java
@@ -170,7 +167,7 @@ public class SBOM {
      * @return UUID of added component (null if failed)
      */
     public void addComponents(UUID parent, List<? extends Component> toAdd) {
-        dependencyTree.addComponents(parent, toAdd);
+        toAdd.forEach(c -> dependencyTree.addComponent(parent, c));
     }
 
     /**
@@ -319,10 +316,28 @@ public class SBOM {
     @Override
     public String toString() {
         return "\nSBOM Information\n" +
+                "  + Origin Format: " + getOriginFormat() + "\n" +
+                "  + Specification Version: " + getSpecVersion() + "\n" +
+                "  + SBOM Version: " + getSbomVersion() + "\n" +
                 "  + Serial Number: " + getSerialNumber() + "\n" +
-                "  + Version: " + getSpecVersion() + "\n" +
-                "  + Tool Version: " + getSbomVersion() + "\n" +
-                "  + Time Stamp: " + getTimestamp() + "\n";
+                "  + Supplier: " + getSupplier() + "\n" +
+                "  + Time Stamp: " + getTimestamp() + "\n" +
+                "  + Dependency Tree: " + dependencyTree + "\n";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SBOM sbom)) return false;
+
+        if (!Objects.equals(dependencyTree, sbom.dependencyTree))
+            return false;
+        if (originFormat != sbom.originFormat) return false;
+        if (!Objects.equals(specVersion, sbom.specVersion)) return false;
+        if (!Objects.equals(sbomVersion, sbom.sbomVersion)) return false;
+        if (!Objects.equals(serialNumber, sbom.serialNumber)) return false;
+        if (!Objects.equals(supplier, sbom.supplier)) return false;
+        return Objects.equals(timestamp, sbom.timestamp);
     }
 
     /**

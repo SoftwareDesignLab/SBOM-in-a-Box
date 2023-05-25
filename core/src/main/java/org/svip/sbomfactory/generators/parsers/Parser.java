@@ -1,16 +1,19 @@
 package org.svip.sbomfactory.generators.parsers;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.sbomfactory.generators.utils.VirtualPath;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualNode;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 
-import static org.svip.sbomfactory.generators.utils.Debug.*;
+import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
  * <b>File</b>: Parser.java<br>
@@ -20,12 +23,32 @@ import static org.svip.sbomfactory.generators.utils.Debug.*;
  *
  * @author Dylan Mulligan
  * @author Derek Garcia
+ * @author Ian Dunn
  */
 public abstract class Parser {
+
     //#region Attributes
+
+    /**
+     * The maximum connection timeout of each URL query (in milliseconds).
+     */
     private static final int MAX_CONNECTION_TIMEOUT = 1000;
-    protected VirtualPath PWD; // Filepath to target directory
-    protected VirtualPath SRC; // Filepath to src directory
+
+    /**
+     * The VirtualPath to the target directory of the Parser.
+     */
+    protected VirtualPath PWD;
+
+    /**
+     * A list of file paths from the set VirtualTree. Setting a VirtualTree enables the parser to check for internal
+     * components.
+     */
+
+    protected List<VirtualPath> internalFiles;
+
+    /**
+     * The standard library URL of the parser.
+     */
     protected final String STD_LIB_URL;
 
     //#endregion
@@ -48,9 +71,22 @@ public abstract class Parser {
 
     //#region Setters
 
+    /**
+     * Sets the current working directory of the parser.
+     *
+     * @param PWD The current working directory of the parser.
+     */
     public void setPWD(VirtualPath PWD) { this.PWD = PWD; }
 
-    public void setSRC(VirtualPath SRC) { this.SRC = SRC; }
+    /**
+     * Sets the current internal files list of the parser, enabling the parser to check for internal components. The
+     * list of VirtualNodes is converted to a list of all full file paths.
+     *
+     * @param internalFiles The current internal VirtualTree of the parser.
+     */
+    public void setInternalFiles(List<VirtualNode> internalFiles) {
+        this.internalFiles = internalFiles.stream().map(VirtualNode::getPath).toList();
+    }
 
     //#endregion
 

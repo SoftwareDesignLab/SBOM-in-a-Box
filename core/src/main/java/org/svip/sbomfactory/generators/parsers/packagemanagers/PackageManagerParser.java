@@ -1,21 +1,23 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
-import org.svip.sbomfactory.generators.utils.QueryWorker;
+import org.svip.sbom.model.CPE;
+import org.svip.sbom.model.PURL;
+import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.sbomfactory.generators.utils.queryworkers.QueryWorker;
 import org.svip.sbomfactory.generators.parsers.Parser;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
@@ -39,7 +41,7 @@ public abstract class PackageManagerParser extends Parser {
 
     protected final ArrayList<QueryWorker> queryWorkers;
     protected HashMap<String, String> properties;
-    protected ArrayList<LinkedHashMap<String, String>> dependencies;
+    protected HashMap<String, LinkedHashMap<String, String>> dependencies;
 
     protected final Pattern TOKEN_PATTERN;
 
@@ -174,24 +176,73 @@ public abstract class PackageManagerParser extends Parser {
     protected abstract void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data);
 
     // TODO: Docstring
-    protected void resolveProperties(HashMap<String, String> props) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    protected void resolveProperties(HashMap resolvedMap, HashMap<String, String> rawMap) {
         // Iterate over keys
-        props.keySet().forEach(key -> {
+        rawMap.keySet().forEach(key -> {
             // Resolve property
-            this.properties.put(key, resolveProperty(props.get(key), props));
+            resolvedMap.put(key, this.resolveProperty(rawMap.get(key), rawMap));
         });
     }
 
     // TODO: Docstring
-    protected String resolveProperty(String value, HashMap<String, String> props) {
-        // Ingore value if null or blank
-        if(value == null || value.isBlank()) return value;
+    @SuppressWarnings({"unchecked"})
+    protected Object resolveProperty(Object value, HashMap<String, String> props) {
+        // Ingore value if null
+        if(value == null) return value;
 
+        // If value contains multiple values (is a map), store it as such
+        if(value instanceof HashMap) {
+            // Get map of properties to resolve
+            final HashMap<String, String> rawProperties = (HashMap<String, String>) value;
+
+            // Resolve properties
+            return resolveMap(rawProperties, props);
+        }
+        // Otherwise, value is a string
+        else {
+            // Cast value to string
+            final String valueString = (String) value;
+
+            // If value is empty, return null
+            if (valueString.isBlank()) return null;
+
+            // Otherwise, resolve string
+            return resolveString(valueString, props);
+        }
+    }
+
+    private HashMap<String, String> resolveMap(HashMap map, HashMap<String, String> props) {
+        // Init resolved map
+        final HashMap<String, String> resolvedMap = new HashMap<>(map.size());
+
+        // Iterate over unresolved map and store resolved values
+        map.forEach(
+                (k, v) -> {
+                    final String keyString = (String) k;
+                    if(v instanceof String) {
+                        final String valueString = (String) v;
+                        resolvedMap.put(keyString, this.resolveString(valueString, props));
+                    } else if(v instanceof HashMap) {
+                        final HashMap valueMap = (HashMap) v;
+                        this.resolveMap(valueMap, props);
+                    } else if(v instanceof List) {
+                        ((List<HashMap>) v).forEach(m -> resolveMap(m, props));
+                    } else {
+                        log(LOG_TYPE.WARN, String.format("Could not resolve illegal value of type: %s (Expected type: String)", v.getClass().getSimpleName()));
+                    }
+                });
+
+        // Return resolved map
+        return resolvedMap;
+    }
+
+    private String resolveString(String string, HashMap<String, String> props) {
         // Get results
-        final List<MatchResult> results =  this.TOKEN_PATTERN.matcher(value).results().toList();
+        final List<MatchResult> results =  this.TOKEN_PATTERN.matcher(string).results().toList();
 
         // Init resolved value to raw value
-        String resolvedValue = value;
+        String resolvedValue = string;
 
         // Iterate over match results
         for (MatchResult result : results) {
@@ -203,15 +254,15 @@ public abstract class PackageManagerParser extends Parser {
             if(varValue == null || this.TOKEN_PATTERN.matcher(varValue).find()) {
                 varValue = props.get(varKey);
                 // If value is null, this property cannot be resolved, store original value
-                if(varValue == null)  resolvedValue = value;
+                if(varValue == null)  resolvedValue = string;
                     // Otherwise, recurse resolution
                 else {
-                    resolvedValue = value.substring(0, result.start()) + varValue + value.substring(result.end());
-                    resolveProperty(resolvedValue, props);
+                    resolvedValue = string.substring(0, result.start()) + varValue + string.substring(result.end());
+                    resolveString(resolvedValue, props);
                 }
             }
             // Otherwise, this property can be resolved
-            else resolvedValue = value.substring(0, result.start()) + varValue + value.substring(result.end());
+            else resolvedValue = string.substring(0, result.start()) + varValue + string.substring(result.end());
         }
 
 
@@ -232,6 +283,125 @@ public abstract class PackageManagerParser extends Parser {
             final HashMap<String, Object> data = this.OM.readValue(fileContents, HashMap.class);
             this.parseData(components, data);
         } catch (IOException e) { log(LOG_TYPE.EXCEPTION, e); }
+    }
+
+    /**
+     * Builds URLs and instantiates ParserComponent objects
+     *
+     * @param components the ParserComponent array to fill
+     * @param parser the package-manager parser
+     * @param packageManager the package manager
+     */
+    public static void buildURLs(ArrayList<ParserComponent> components, PackageManagerParser parser, String packageManager) {
+        // Iterate and build URLs
+
+        boolean nugetParser = packageManager.equals("nuget");
+
+        for (String id : parser.dependencies.keySet()) { //todo this shares a lot of code with POMParser. Maybe make static method
+            // Get value from map
+            final HashMap<String, String> d = parser.dependencies.get(id);
+
+            // Format all property keys -> values
+            String licenseRegex = "<li data-test=\\\"license\\\">(.*?)</li>"; // Regex101: https://regex101.com/r/FUOPSK/1
+
+            // Refactor variables if Nuget parser
+            parserConfig result = getParserConfig(nugetParser, d, licenseRegex);
+
+            String version = d.get("version");
+
+            final ParserComponent c = new ParserComponent(id);
+
+            //framework assemblies use assemblyName + targetFramework
+            if (result.groupId() != null) c.setGroup(result.groupId());
+            if (version != null) c.setVersion(version);
+
+            // TODO: Find this PURL regex a home (Translator?): https://regex101.com/r/sbFd7Z/2
+            //  "^pkg:([^/]+)/([^#\n@]+)(?:@([^\?\n]+))?(?:\?([^#\n]+))?(?:#([^\n]+))?"
+
+            // is this a .NET assembly
+            boolean frameworkAssembly = //todo ensure these are the only cases
+                    nugetParser && id != null && (id.toLowerCase().contains("system") || id.toLowerCase().contains("microsoft"));
+
+            // Build PURL String
+            final HashMap<String, String> PURLData = new HashMap<>();
+            PURLData.put("type", packageManager);
+            PURLData.put("name", id);
+            if (result.groupId() != null) PURLData.put("namespace", result.groupId());
+            if (version != null) PURLData.put("version", version);
+
+            if (frameworkAssembly) {
+                c.setPublisher("Microsoft");
+                id = d.get("assemblyName");
+                c.setType(ParserComponent.Type.LANGUAGE);
+            }
+            String PURLString = PackageManagerParser.buildPURL(PURLData);
+
+            // Add built PURL
+            c.addPURL(new PURL(PURLString));
+            log(Debug.LOG_TYPE.DEBUG, String.format("Dependency Found with PURL: %s", PURLString));
+
+            // Build CPE
+            CPE cpe = new CPE(packageManager, id, version);
+            String cpeFormatString = cpe.bindToFS();
+            c.addCPE(cpeFormatString);
+            log(Debug.LOG_TYPE.DEBUG, String.format("Dependency Found with CPE: %s", cpeFormatString));
+
+            // Build URL and worker object
+            if (result.groupId() != null) {
+                String url = parser.STD_LIB_URL;
+                if(!nugetParser)
+                    url += result.groupId();
+                url += "/" + id;
+                if (version != null) url += "/" + version;
+                // Create and add QueryWorker with Component reference and URL
+                String finalLicenseRegex = result.licenseRegex();
+                parser.queryWorkers.add(new QueryWorker(c, url) {
+                    @Override
+                    public void run() {
+                        // Get page contents
+                        final String contents = getUrlContents(queryURL(this.url, false));
+
+                        if(contents.length() > 0){
+                            // Parse license(s)
+                            final Matcher m = Pattern.compile(finalLicenseRegex,
+                                    Pattern.MULTILINE).matcher(contents);
+
+                            // Add all found licenses
+                            while (m.find()) {
+                                this.component.addLicense(m.group(1).trim());
+                            }
+                        }
+
+                    }
+                });
+            }
+
+            // Add ParserComponent to components
+            components.add(c);
+        }
+    }
+
+    /**
+     * Configures the buildURL method for either parser
+     * @param nugetParser whether this is NugetParser
+     * @param d data
+     * @param licenseRegex license regex for parsing
+     * @return this variable configuration
+     */
+    private static parserConfig getParserConfig(boolean nugetParser, HashMap<String, String> d, String licenseRegex) {
+        String groupId;
+        if(nugetParser){
+            licenseRegex = ">(.*?)</a>(?: *)license"; // Regex101: https://regex101.com/r/tskCMf/1
+            groupId = d.get("id");
+            if(groupId == null)
+                groupId = d.get("targetFramework").split("[.]")[0]; // framework assembly name
+        }
+        else
+            groupId = d.get("groupId");
+        return new parserConfig(groupId, licenseRegex);
+    }
+
+    private record parserConfig(String groupId, String licenseRegex) {
     }
 
     //#endregion

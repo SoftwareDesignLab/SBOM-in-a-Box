@@ -1,22 +1,19 @@
 package org.svip.sbomfactory.generators.generators.spdx;
 
-import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
-import org.svip.sbom.model.PURL;
-import org.svip.sbomfactory.generators.generators.utils.License;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.svip.sbomfactory.generators.generators.utils.LicenseManager;
-import org.svip.sbomfactory.generators.generators.utils.Tool;
+import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
+import org.svip.sbom.model.PURL;
+import org.svip.sbomfactory.generators.utils.generators.License;
+import org.svip.sbomfactory.generators.utils.generators.LicenseManager;
+import org.svip.sbomfactory.generators.utils.generators.Tool;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import javax.xml.namespace.QName;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * File: SPDXSerializer.java

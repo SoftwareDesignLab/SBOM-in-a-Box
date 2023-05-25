@@ -1,22 +1,21 @@
 package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
-import static org.svip.sbomfactory.generators.utils.Debug.*;
+import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
+import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 
 /**
@@ -24,6 +23,7 @@ import static org.svip.sbomfactory.generators.utils.Debug.*;
  * Description: Language specific implementation of the ParserCore (Ruby)
  *
  * @author Dylan Mulligan
+ * @author Ian Dunn
  */
 public class RubyParser extends LanguageParser {
     public RubyParser() { super("https://docs.ruby-lang.org/en/2.1.0/"); }
@@ -114,22 +114,14 @@ public class RubyParser extends LanguageParser {
      */
     @Override
     protected boolean isInternalComponent(ParserComponent component) {
-        String name = component.getName().toLowerCase();
-        log(LOG_TYPE.DEBUG, "NAME: " + name);
+        String name = component.getName();
+        String group = component.getGroup();
 
-        // Append file extension if one is not present
-        name += name.contains(".") ? "" : ".rb";
+        VirtualPath internalPath = new VirtualPath((group == null ? "" : group) + "/" + name);
 
-        // Assign value to final string to appease the lamba function's requirements
-        final String target = name;
-
-        // TODO
-//        // Get project path from this.src and walk files to find component
-//        try (Stream<Path> stream = Files.walk(this.PWD)) {
-//            return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
-//        } catch (Exception e){
-//            log(LOG_TYPE.EXCEPTION, e);
-//        }
+        for(VirtualPath internalComponent : internalFiles) {
+            if(internalComponent.removeFileExtension().endsWith(internalPath)) return true;
+        }
 
         return false;
     }

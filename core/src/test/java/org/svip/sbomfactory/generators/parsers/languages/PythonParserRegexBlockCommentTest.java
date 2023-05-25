@@ -24,7 +24,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
     public PythonParserRegexBlockCommentTest() {
         super(new PythonParser(),
                 "(?:(?=\"\"\")\"\"\"[\\S\\s]*?\"\"\"|^import (.*)$|^from (.*) import (?:(?=.*\\($)([\\S\\s]*?\\))|(.*)))",
-                "milan");
+                "src/test/java/org/svip/sbomfactory/generators/TestData/Python/Absolute/ifoo");
     }
 
     final String openBlockComment = "\"\"\"\n";

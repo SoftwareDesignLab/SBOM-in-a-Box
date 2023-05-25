@@ -1,9 +1,11 @@
 package org.svip.sbomfactory.generators.parsers.contexts;
 
 // Declares Imports
+
+import org.apache.commons.lang3.StringUtils;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 
 import static org.svip.sbomfactory.generators.utils.Debug.log;
@@ -23,7 +25,7 @@ public class DeadImportParser extends ContextParser {
      * @param fileContents file contents to be parsed
      */
     public void parseDeadImports(ArrayList<ParserComponent> components, String fileContents) {
-        System.out.println("Detecting Dead Code & Imports...\n");
+        Debug.log(Debug.LOG_TYPE.DEBUG, "Detecting Dead Code & Imports...");
         // Splits source file to be read line by line
         final String[] lines = fileContents.split("\n");
         // Iterates through each component of the source file
@@ -67,7 +69,7 @@ public class DeadImportParser extends ContextParser {
         for(final String deadImport: this.context) {
             // Create ParserComponent
             final ParserComponent c = new ParserComponent(deadImport);
-            c.setType(ParserComponent.Type.EXTERNAL);
+            c.setType(ParserComponent.Type.DEAD_IMPORT);
             // Add dead imports to components
             components.add(c);
         }

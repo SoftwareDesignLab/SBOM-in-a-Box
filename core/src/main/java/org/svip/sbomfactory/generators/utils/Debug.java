@@ -2,6 +2,7 @@ package org.svip.sbomfactory.generators.utils;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 
 /**
  * <b>File</b>: Debug.java<br>
@@ -89,11 +90,12 @@ public class Debug {
                     if (e.getMessage() != null)
                         out += " | " + e.getMessage();
                     // Append root of stack trace if one exists
-                    // TODO: Test this? debugMode was marked as broken and commented out, but it appears functional
-                    //  This should expand exceptions logged to include the root of their stack trace (when debug mode
-                    //  is enabled)
-                    if(Debug.debugMode && e.getStackTrace() != null)
-                        out += " | " + e.getStackTrace()[0];
+                    if(Debug.debugMode) {
+                        final StackTraceElement[] stackTrace = e.getStackTrace();
+                        final String[] shortStack = Arrays.stream(Arrays.copyOfRange(stackTrace, 0, 5)).map(StackTraceElement::toString).toArray(String[]::new);
+                        if(shortStack.length > 0)
+                            out += " | " + String.join("\n", shortStack);
+                    }
                     System.err.println(out);
                 }
                 // Print ERROR to stderr

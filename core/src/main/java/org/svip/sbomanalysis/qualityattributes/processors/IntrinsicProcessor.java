@@ -4,6 +4,8 @@ import org.svip.sbomanalysis.qualityattributes.tests.*;
 
 /**
  * Metrics that relate specifically to the data stored in the SBOM
+ *
+ * @author Dylan Mulligan
  */
 public class IntrinsicProcessor extends AttributeProcessor {
     /**

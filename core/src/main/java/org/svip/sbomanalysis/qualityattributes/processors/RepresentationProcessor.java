@@ -4,6 +4,8 @@ import org.svip.sbomanalysis.qualityattributes.tests.*;
 
 /**
  * Metrics that will assess how well the data in the SBOM represents the SBOM as a whole
+ *
+ * @author Dylan Mulligan
  */
 public class RepresentationProcessor extends AttributeProcessor {
     /**

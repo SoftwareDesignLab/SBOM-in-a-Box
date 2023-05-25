@@ -1,7 +1,7 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.sbomfactory.generators.utils.QueryWorker;
+import org.svip.sbomfactory.generators.utils.queryworkers.QueryWorker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,7 +43,6 @@ public class RequirementsParser extends PackageManagerParser {
                     public void run() {
                         // Get page contents
                         final String contents = getUrlContents(queryURL(this.url, true));
-
                         // Parse license
                         // https://regex101.com/r/LKcQrx/1
                         final Matcher m = Pattern.compile("<p><strong>License:</strong>(.*?)</p>", Pattern.MULTILINE).matcher(contents);

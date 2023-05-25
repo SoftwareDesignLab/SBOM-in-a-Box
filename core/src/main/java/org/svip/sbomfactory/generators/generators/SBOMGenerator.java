@@ -3,14 +3,14 @@ package org.svip.sbomfactory.generators.generators;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.svip.sbom.model.Component;
+import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.generators.spdx.SPDXStore;
 import org.svip.sbomfactory.generators.generators.spdx.SPDXTagValueWriter;
-import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
-import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
-import org.svip.sbomfactory.generators.generators.utils.License;
-import org.svip.sbomfactory.generators.generators.utils.Tool;
+import org.svip.sbomfactory.generators.utils.generators.GeneratorException;
+import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
+import org.svip.sbomfactory.generators.utils.generators.License;
+import org.svip.sbomfactory.generators.utils.generators.Tool;
 import org.svip.sbomfactory.generators.utils.Debug;
-import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.File;
@@ -42,7 +42,7 @@ public class SBOMGenerator {
     /**
      * The version of our SBOMGenerator tool.
      */
-    public static final String TOOL_VERSION = "v4.4.0-alpha";
+    public static final String TOOL_VERSION = "v4.4.2-alpha";
 
     /**
      * The license of our SBOMGenerator tool.
@@ -100,6 +100,9 @@ public class SBOMGenerator {
         UUID uuid = UUID.nameUUIDFromBytes(hash.getBytes());
         internalSBOM.setSerialNumber(String.format("urn:uuid:%s", uuid));
 
+        // Set sbom version TODO figure out how to increment this for the same project
+        internalSBOM.setSbomVersion("1");
+
         /*
             SBOM specific settings
          */
@@ -151,29 +154,24 @@ public class SBOMGenerator {
      *
      * @return A string representation of an SBOM file.
      */
-    public String writeFileToString(GeneratorSchema.GeneratorFormat format, boolean prettyPrint) {
+    public String writeFileToString(GeneratorSchema.GeneratorFormat format, boolean prettyPrint) throws GeneratorException, JsonProcessingException {
         log(Debug.LOG_TYPE.DEBUG, "Building " + schema.name() + " SBOM object");
 
-        try {
-            BOMStore bomStore = buildBOMStore();
-            ObjectMapper mapper = format.getObjectMapper(schema);
-            if(!prettyPrint) mapper.setDefaultPrettyPrinter(null);
+        BOMStore bomStore = buildBOMStore();
+        ObjectMapper mapper = format.getObjectMapper(schema);
+        if(!prettyPrint) mapper.setDefaultPrettyPrinter(null);
 
-            String out;
+        String out;
 
-            if(format == GeneratorSchema.GeneratorFormat.SPDX) {
-                SPDXTagValueWriter writer = new SPDXTagValueWriter((SPDXStore) bomStore);
-                out = writer.writeToString(); // TODO should we support pretty-printing?
-            } else {
-                out = mapper.writeValueAsString(bomStore);
-            }
-            log(Debug.LOG_TYPE.SUMMARY, schema.name() + " SBOM successfully written to string");
-            return out;
-        } catch (IOException e) {
-            log(Debug.LOG_TYPE.ERROR, "Unable to write " + schema.name() + " SBOM to a string");
+        if(format == GeneratorSchema.GeneratorFormat.SPDX) {
+            SPDXTagValueWriter writer = new SPDXTagValueWriter((SPDXStore) bomStore);
+            out = writer.writeToString();
+        } else {
+            out = mapper.writeValueAsString(bomStore);
         }
 
-        return null;
+        log(Debug.LOG_TYPE.SUMMARY, schema.name() + " SBOM successfully written to string");
+        return out;
     }
 
     //#endregion
@@ -186,15 +184,15 @@ public class SBOMGenerator {
      *
      * @return A BOMStore containing all transformed data of the SBOM.
      */
-    protected BOMStore buildBOMStore() throws IOException{
+    protected BOMStore buildBOMStore() throws IOException {
         ParserComponent headComponent = resolveComponent(internalSBOM.getComponent(internalSBOM.getHeadUUID()));
         String serialNumber = internalSBOM.getSerialNumber();
-        int version = 1; // TODO should we have to increment this?
+        int version = Integer.parseInt(internalSBOM.getSbomVersion());
 
         Object[] parameters = {serialNumber, version, headComponent};
         Class<?>[] parameterTypes = Arrays.stream(parameters).map(Object::getClass).toArray(Class<?>[]::new);
 
-        BOMStore bomStore = null;
+        BOMStore bomStore;
         try {
             bomStore = schema.getBomStoreType().getDeclaredConstructor(parameterTypes).newInstance(parameters);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -202,6 +200,8 @@ public class SBOMGenerator {
         }
 
         bomStore.addTool(tool); // Add our tool as info
+        internalSBOM.setSupplier(tool.getToolInfo()); // Add our tool to internal SBOM for testing
+        internalSBOM.setTimestamp(bomStore.getTimestamp()); // Update internal SBOM with new timestamp for testing
 
         // Add all depth 0 components as packages
         final Set<Component> componentSet = internalSBOM
@@ -263,7 +263,7 @@ public class SBOMGenerator {
      * @param format The format of the SBOM that will be written.
      * @return The complete filepath including file name and extension.
      */
-    protected String generatePathToSBOM(String directory, GeneratorSchema.GeneratorFormat format) {
+    public String generatePathToSBOM(String directory, GeneratorSchema.GeneratorFormat format) {
         // Get project name from head component of the SBOM
         StringBuilder path = new StringBuilder(directory);
 
@@ -273,7 +273,7 @@ public class SBOMGenerator {
         if(os.contains("mac") || os.contains("nix") || os.contains("nux") || os.contains("aix")) path.append('/');
 
         String projectName = internalSBOM.getComponent(internalSBOM.getHeadUUID()).getName();
-        path.append(projectName) // Append project name
+        path.append(projectName)
                 .append("_").append(this.schema) // Append origin format for transparency
                 .append('.').append(format.getExtension()); // Append file extension
 

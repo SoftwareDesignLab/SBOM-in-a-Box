@@ -29,7 +29,10 @@ jobs:
         
       - name: Store Report
         uses: actions/upload-artifact@v3
+<<<<<<< HEAD
         if: always()
+=======
+>>>>>>> origin/dev-Generators-PackageManagers
         with:
           name: reports
           path: "**/build/reports/"

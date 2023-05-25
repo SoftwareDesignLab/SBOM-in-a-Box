@@ -19,6 +19,9 @@ import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 
 import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
 import org.svip.sbomfactory.osi.OSI;
+import org.svip.sbomfactory.translators.TranslatorController;
+import org.svip.sbomvex.VEXFactory;
+import org.svip.visualizer.NodeFactory;
 import org.svip.sbomfactory.translators.TranslatorCDXJSON;
 import org.svip.sbomfactory.translators.TranslatorCDXXML;
 import org.svip.sbomfactory.translators.TranslatorPlugFest;

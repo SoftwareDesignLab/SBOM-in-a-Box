@@ -3,8 +3,12 @@ package org.svip.sbomfactory.generators.parsers.languages;
 import org.svip.sbomfactory.generators.parsers.Parser;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +22,7 @@ import static org.svip.sbomfactory.generators.utils.Debug.log;
  *
  * @author Dylan Mulligan
  * @author Derek Garcia
+ * @author Ian Dunn
  */
 public abstract class LanguageParser extends Parser {
     /**
@@ -32,15 +37,35 @@ public abstract class LanguageParser extends Parser {
         super(STD_LIB_URL);
     }
 
-    //#region Abstract Methods For Language Specific Implementation
-
     /**
-     * Determines if the component is Internal
+     * Determines if the component is Internal. This generic implementation should cover most cases, but if necessary
+     * this method can be overridden.
      *
      * @param component component to search for
      * @return true if internal, false otherwise
-     */ // TODO: Pass list of filenames instead of letting implementations walk files
-    protected abstract boolean isInternalComponent(ParserComponent component);
+     */
+    protected boolean isInternalComponent(ParserComponent component) {
+        String name = component.getName();
+        String group = component.getGroup();
+        VirtualPath internalPath = new VirtualPath((group == null ? "" : group) + "/" + name);
+
+        for(VirtualPath internalComponent : internalFiles) {
+            VirtualPath noExtension = internalComponent.removeFileExtension();
+
+            if(internalComponent.endsWith(internalPath) || noExtension.endsWith(internalPath)) return true;
+
+            if(internalComponent.getParent().endsWith(internalPath) || noExtension.getParent().endsWith(internalPath))
+                return true;
+
+            if(group != null && (internalPath.endsWith(new VirtualPath(group))
+                    || noExtension.endsWith(new VirtualPath(group))))
+                return true;
+        }
+
+        return false;
+    }
+
+    //#region Abstract Methods For Language Specific Implementation
 
     /**
      * Determines if the component is from the language maintainers
@@ -83,6 +108,35 @@ public abstract class LanguageParser extends Parser {
             final long t1 = System.currentTimeMillis();
 
             parseRegexMatch(components, m);
+
+            List<ParserComponent> componentsToRemove = new ArrayList<>();
+
+            for(ParserComponent component : components) {
+                if(component.getName().equals("*")) {
+                    Debug.log(Debug.LOG_TYPE.DEBUG, String.format("Import wildcard found in component %s with group %s",
+                            component.getName(), component.getGroup()));
+
+                    if(component.getGroup() != null) {
+                        // Get list of all subgroups in the component group
+                        List<String> groups = new ArrayList<>(Arrays.stream(component.getGroup().split("/"))
+                                .toList());
+
+                        // Set name to last group of component TODO is this correct behavior?
+                        component.setName(groups.remove(groups.size() - 1));
+
+                        // Set new component group, exclude last element
+                        component.setGroup(String.join("/", groups));
+
+                        Debug.log(Debug.LOG_TYPE.DEBUG, String.format("Component renamed to %s with group %s",
+                                component.getName(), component.getGroup()));
+                    } else {
+                        componentsToRemove.add(component); // This is an invalid component (something like import *)
+                        Debug.log(Debug.LOG_TYPE.DEBUG, "Component has no group, removing from SBOM.");
+                    }
+                }
+            }
+
+            components.removeAll(componentsToRemove);
 
             final long t2 = System.currentTimeMillis();
             log(Debug.LOG_TYPE.DEBUG, String.format("Component parsing done in %s ms.", t2 - t1));
