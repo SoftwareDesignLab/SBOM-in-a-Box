@@ -47,7 +47,12 @@ public class APITestInputInitializer {
     private final static ObjectMapper objectMapper = new ObjectMapper();
 
     /**
-     * Test that the API can Merge three SBOMs
+     * Constructs a String array with three elements:
+     * <ul>
+     *     <li>A JSON array of SBOM contents as a string</li>
+     *     <li>A JSON array of corresponding SBOM filenames as a string</li>
+     *     <li>Total number of test input SBOMs</li>
+     * </ul>
      *
      * @throws IOException If the SBOM merging is broken
      */
