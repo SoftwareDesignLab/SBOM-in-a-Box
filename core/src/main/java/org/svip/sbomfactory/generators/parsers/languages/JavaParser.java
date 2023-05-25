@@ -1,6 +1,7 @@
 package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -88,34 +89,6 @@ public class JavaParser extends LanguageParser {
     ///
     /// Abstract Method Implementation
     ///
-
-    /**
-     * Determines if the component is Internal
-     *
-     * @param component component to search for
-     * @return true if internal, false otherwise
-     */
-    @Override
-    protected boolean isInternalComponent(ParserComponent component) {
-        String from = component.getGroup();
-        log(LOG_TYPE.DEBUG, "FROM: " + from);
-
-        // If "." contained within from, it is a path
-        if(from != null && from.contains("/")) {
-            // Get path terminus
-            final String target = component.getName().toLowerCase() + ".java";
-
-            // TODO
-//            // Get project path from this.src and walk files to find component
-//            try (Stream<Path> stream = Files.walk(this.SRC)) {
-//                return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
-//            } catch (Exception e){
-//                log(LOG_TYPE.EXCEPTION, e);
-//            }
-        }
-
-        return false;
-    }
 
 
     /**

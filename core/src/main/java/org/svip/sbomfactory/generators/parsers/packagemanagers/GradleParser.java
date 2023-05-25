@@ -1,6 +1,5 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
-
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
@@ -11,7 +10,7 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.svip.sbomfactory.generators.utils.QueryWorker;
+import org.svip.sbomfactory.generators.utils.queryworkers.QueryWorker;
 
 import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
 import static org.svip.sbomfactory.generators.utils.Debug.log;
@@ -87,8 +86,10 @@ public class GradleParser extends PackageManagerParser {
             }
             if (d.containsKey("version")) c.setVersion(d.get("version"));
 
+            if(c.getGroup() == null) continue; // Prevent null groups in URL
 
-            String url = STD_LIB_URL + c.getGroup() + "/" + c.getName() + "/" + c.getVersion();
+            String url = STD_LIB_URL + c.getGroup() + "/" + c.getName() + "/" +
+                    (c.getVersion() == null ? "" : c.getVersion());
             this.queryWorkers.add(new QueryWorker(c, url) {
                 @Override
                 public void run() {
@@ -110,7 +111,7 @@ public class GradleParser extends PackageManagerParser {
                 }
             });
 
-            queryURLs(this.queryWorkers);
+            queryURLs(this.queryWorkers); // TODO is thsi correct?
             // Add ParserComponent to components
             components.add(c);
             log(LOG_TYPE.DEBUG, String.format("New Component: %s", c.toReadableString()));

@@ -9,12 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.svip.sbomfactory.generators.ParserController;
-import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
+import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/svip")
@@ -32,8 +30,8 @@ public class SBOMFactoryApiController {
         for (int i = 0; i < filePaths.size(); i++) {
             final String path = filePaths.get(i);
             final String contents = fileContents.get(i);
-            controller.setPWD(path);
-            controller.parse(path, contents); // TODO: Fix
+//            controller.setPWD(path);
+//            controller.parse(path, contents); // TODO: Fix
         }
 
 //        // Parse the root directory with the controller

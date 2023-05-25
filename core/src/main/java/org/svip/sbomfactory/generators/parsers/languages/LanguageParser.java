@@ -3,6 +3,8 @@ package org.svip.sbomfactory.generators.parsers.languages;
 import org.svip.sbomfactory.generators.parsers.Parser;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +22,7 @@ import static org.svip.sbomfactory.generators.utils.Debug.log;
  *
  * @author Dylan Mulligan
  * @author Derek Garcia
+ * @author Ian Dunn
  */
 public abstract class LanguageParser extends Parser {
     /**
@@ -34,15 +37,35 @@ public abstract class LanguageParser extends Parser {
         super(STD_LIB_URL);
     }
 
-    //#region Abstract Methods For Language Specific Implementation
-
     /**
-     * Determines if the component is Internal
+     * Determines if the component is Internal. This generic implementation should cover most cases, but if necessary
+     * this method can be overridden.
      *
      * @param component component to search for
      * @return true if internal, false otherwise
-     */ // TODO: Pass list of filenames instead of letting implementations walk files
-    protected abstract boolean isInternalComponent(ParserComponent component);
+     */
+    protected boolean isInternalComponent(ParserComponent component) {
+        String name = component.getName();
+        String group = component.getGroup();
+        VirtualPath internalPath = new VirtualPath((group == null ? "" : group) + "/" + name);
+
+        for(VirtualPath internalComponent : internalFiles) {
+            VirtualPath noExtension = internalComponent.removeFileExtension();
+
+            if(internalComponent.endsWith(internalPath) || noExtension.endsWith(internalPath)) return true;
+
+            if(internalComponent.getParent().endsWith(internalPath) || noExtension.getParent().endsWith(internalPath))
+                return true;
+
+            if(group != null && (internalPath.endsWith(new VirtualPath(group))
+                    || noExtension.endsWith(new VirtualPath(group))))
+                return true;
+        }
+
+        return false;
+    }
+
+    //#region Abstract Methods For Language Specific Implementation
 
     /**
      * Determines if the component is from the language maintainers

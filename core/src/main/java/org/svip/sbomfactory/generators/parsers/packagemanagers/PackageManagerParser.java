@@ -1,18 +1,15 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
-
 import org.svip.sbom.model.CPE;
 import org.svip.sbom.model.PURL;
 import org.svip.sbomfactory.generators.utils.Debug;
-import org.svip.sbomfactory.generators.utils.QueryWorker;
+import org.svip.sbomfactory.generators.utils.queryworkers.QueryWorker;
 import org.svip.sbomfactory.generators.parsers.Parser;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.svip.sbomfactory.generators.parsers.Parser;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.sbomfactory.generators.utils.QueryWorker;
 
 import java.io.IOException;
 import java.util.*;
@@ -222,11 +219,18 @@ public abstract class PackageManagerParser extends Parser {
         // Iterate over unresolved map and store resolved values
         map.forEach(
                 (k, v) -> {
+                    final String keyString = (String) k;
                     if(v instanceof String) {
-                        final String keyString = (String) k;
                         final String valueString = (String) v;
                         resolvedMap.put(keyString, this.resolveString(valueString, props));
-                    } else log(LOG_TYPE.WARN, String.format("Could not resolve illegal value of type: %s (Expected type: String)", v.getClass().getSimpleName()));
+                    } else if(v instanceof HashMap) {
+                        final HashMap valueMap = (HashMap) v;
+                        this.resolveMap(valueMap, props);
+                    } else if(v instanceof List) {
+                        ((List<HashMap>) v).forEach(m -> resolveMap(m, props));
+                    } else {
+                        log(LOG_TYPE.WARN, String.format("Could not resolve illegal value of type: %s (Expected type: String)", v.getClass().getSimpleName()));
+                    }
                 });
 
         // Return resolved map

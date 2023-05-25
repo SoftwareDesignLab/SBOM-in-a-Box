@@ -1,30 +1,31 @@
-package org.svip.sbomfactory.generators;
+package org.svip;
 
-import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
+import org.svip.sbomfactory.generators.ParserController;
+import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.stream.Stream;
 
 import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
 import static org.svip.sbomfactory.generators.utils.Debug.log;
 
 /**
  * file: GeneratorsTestMain.java
- * Description: Entry for Generators code
+ * Description: SBOM Generation CLI Code
  *
  * @author Dylan Mulligan
  * @author Derek Garcia
  */
-public class GeneratorsTestMain {
+public class SBOMGeneratorCLI {
 
     //#region Exceptions
 
@@ -115,7 +116,7 @@ public class GeneratorsTestMain {
 
         // Check correct number of required args
         if (reqArgs.size() < 1)
-            throw new InvalidArgumentException("Incorrect number of arguments; Expecting at least 1 but got " + reqArgs.size());
+            throw new InvalidArgumentException("Incorrect number of arguments; Expecting at least 1 but got 0.");
 
         String targetPath = reqArgs.get(0);
 
@@ -342,46 +343,17 @@ public class GeneratorsTestMain {
             return;
         }
 
-        // Path
-        Path path = Path.of(reqArgs.get(0));
-
-        // Instantiate controller with verified path and default output as JSON
-        final ParserController controller = new ParserController(path.toString());
-
         // Enable summary run if indicated
         if (optArgs.containsKey("-s")) Debug.enableSummary();
         // Enable debug console logging if indicated
         if (optArgs.containsKey("-d")) Debug.enableDebug();
 
-        final long parseT1 = System.currentTimeMillis();
+        // Build filesystem representation
+        VirtualTree tree = VirtualTree.buildVirtualTree(new VirtualPath(reqArgs.get(0)));
 
-        // TODO: Remove reliance on Files.walk
-        // Parse the root directory with the controller
-        try (Stream<Path> stream = Files.walk(path)) {
-            stream.forEach(filepath -> {
-                try {
-                    // Set pwd to formatted filepath if it is actually a directory
-                    if (Files.isDirectory(filepath)) {
-                        controller.setPWD(filepath.toString());
-                        controller.incrementDirCounter();
-                    } else { // Otherwise, it is a file
-                        controller.parse(filepath.toAbsolutePath().toString(), Files.readString(filepath));
-                    }
-                } catch (Exception e) {
-                    log(LOG_TYPE.EXCEPTION, e);
-                }
-            });
-        } catch (Exception e) {
-            log(LOG_TYPE.EXCEPTION, e);
-        }
-
-        final long parseT2 = System.currentTimeMillis();
-        // Report stats
-        log(LOG_TYPE.SUMMARY, String.format("Parsing complete. Parsed %s Components from %s Directories and %s Files in %.2f seconds",
-                controller.getDepCount(),
-                controller.getDirCount(),
-                controller.getFileCount(),
-                (float)(parseT2 - parseT1) / 1000));
+        // Instantiate controller with the VirtualTree representation
+        final ParserController controller = new ParserController(tree);
+        controller.parseAll(); // Parse all files
 
         // Build outPath
         String outPath = PWD;
@@ -425,7 +397,7 @@ public class GeneratorsTestMain {
             controller.toFile(outPath, schema, format);
         } catch(IOException e) {
             log(Debug.LOG_TYPE.EXCEPTION, e);
-            log(Debug.LOG_TYPE.ERROR, "Error writing to file " + path);
+            log(Debug.LOG_TYPE.ERROR, "Error writing to file " + outPath);
         }
     }
 }

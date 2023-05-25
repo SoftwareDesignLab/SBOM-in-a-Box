@@ -97,7 +97,7 @@ public class OSI {
      *
      * @return 0 if docker is installed and available, 1 if docker is not running but installed, 2 if docker is not installed
      */
-    private static int dockerCheck() {
+    protected static int dockerCheck() {
         try {
             // Check if docker is installed
             Process process = Runtime.getRuntime().exec("docker --version");

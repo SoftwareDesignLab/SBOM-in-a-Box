@@ -1,8 +1,8 @@
-package org.svip.sbomfactory.generators.generators.utils;
+package org.svip.sbomfactory.generators.utils.generators;
 
 import org.svip.sbomfactory.generators.utils.Debug;
-import org.svip.sbomfactory.generators.utils.QueryWorker;
-import org.svip.sbomfactory.generators.utils.SPDXLicenseQueryWorker;
+import org.svip.sbomfactory.generators.utils.queryworkers.QueryWorker;
+import org.svip.sbomfactory.generators.utils.queryworkers.SPDXLicenseQueryWorker;
 
 import java.util.*;
 import java.util.regex.Matcher;

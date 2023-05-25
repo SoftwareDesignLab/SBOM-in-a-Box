@@ -1,9 +1,9 @@
 package org.svip.sbomfactory.generators.generators.spdx;
 
 import org.svip.sbom.model.PURL;
-import org.svip.sbomfactory.generators.generators.utils.License;
-import org.svip.sbomfactory.generators.generators.utils.LicenseManager;
-import org.svip.sbomfactory.generators.generators.utils.Tool;
+import org.svip.sbomfactory.generators.utils.generators.License;
+import org.svip.sbomfactory.generators.utils.generators.LicenseManager;
+import org.svip.sbomfactory.generators.utils.generators.Tool;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.translators.TranslatorSPDX;
 

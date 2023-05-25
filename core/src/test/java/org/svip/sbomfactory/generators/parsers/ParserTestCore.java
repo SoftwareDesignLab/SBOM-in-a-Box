@@ -1,9 +1,7 @@
 package org.svip.sbomfactory.generators.parsers;
 
-import org.svip.sbomfactory.generators.utils.VirtualPath;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
 
 public abstract class ParserTestCore<T extends Parser> {
     protected T PARSER;
@@ -21,7 +19,8 @@ public abstract class ParserTestCore<T extends Parser> {
      */
     private void setDummyParser(T parser, String src) {
         parser.setPWD(new VirtualPath(src));
-        parser.setSRC(new VirtualPath(src));
+        VirtualTree dummyFileTree = VirtualTree.buildVirtualTree(new VirtualPath(src));
+        parser.setInternalFiles(dummyFileTree.getAllFiles());
         this.PARSER = parser;
     }
 }

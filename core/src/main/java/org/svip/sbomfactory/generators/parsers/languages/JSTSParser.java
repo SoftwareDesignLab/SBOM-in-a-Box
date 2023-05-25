@@ -1,6 +1,7 @@
 package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -14,6 +15,7 @@ import static org.svip.sbomfactory.generators.utils.Debug.log;
  * Description: Language specific implementation of the ParserCore (JavaScript/TypeScript)
  *
  * @author Dylan Mulligan
+ * @author Ian Dunn
  */
 public class JSTSParser extends LanguageParser {
     public JSTSParser() { super(""); }
@@ -26,23 +28,12 @@ public class JSTSParser extends LanguageParser {
      */
     @Override
     protected boolean isInternalComponent(ParserComponent component) {
-        String from = component.getGroup();
-        log(LOG_TYPE.DEBUG, "FROM: " + from);
+        String name = component.getName();
+        String group = component.getGroup();
 
-        // If "." contained within from, it is a path to a file
-        if(from != null && from.contains(".")) {
-            // Split path on "/"
-            final String[] pathParts = from.split("/");
-            // Get path terminus
-            final String target = pathParts[pathParts.length - 1];
-
-            // TODO
-//            // Get project path from this.src and walk files to find component
-//            try (Stream<Path> stream = Files.walk(this.PWD)) {
-//                return stream.anyMatch(file -> file.getFileName().toString().toLowerCase().equals(target));
-//            } catch (Exception e){
-//                log(LOG_TYPE.EXCEPTION, e);
-//            }
+        for(VirtualPath internalComponent : internalFiles) {
+            if(internalComponent.endsWith(new VirtualPath(name))) return true;
+            if(group != null && internalComponent.endsWith(new VirtualPath(group))) return true;
         }
 
         return false;

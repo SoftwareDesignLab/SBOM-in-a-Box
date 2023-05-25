@@ -2,7 +2,7 @@ package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.sbomfactory.generators.utils.QueryWorker;
+import org.svip.sbomfactory.generators.utils.queryworkers.QueryWorker;
 
 import java.util.*;
 
@@ -92,11 +92,7 @@ public class CSProjParser extends PackageManagerParser {
         // Ensure include was found
         if(include == null) return;
 
-//<<<<<<< HEAD
-//        final ParserComponent c = new ParserComponent("CSProjParserComponent");
-//=======
         final ParserComponent c = new ParserComponent(component.get("Include")); // TODO is this a correct default name?
-//>>>>>>> origin/dev-Generators-PackageManagers
 
         // Convert hashmap to parser component
         switch(type) {

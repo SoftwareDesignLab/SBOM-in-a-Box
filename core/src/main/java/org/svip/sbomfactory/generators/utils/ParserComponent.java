@@ -2,8 +2,8 @@ package org.svip.sbomfactory.generators.utils;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.svip.sbom.model.Component;
-import org.svip.sbomfactory.generators.generators.utils.License;
-import org.svip.sbomfactory.generators.generators.utils.LicenseManager;
+import org.svip.sbomfactory.generators.utils.generators.License;
+import org.svip.sbomfactory.generators.utils.generators.LicenseManager;
 
 import java.util.*;
 
@@ -14,6 +14,7 @@ import java.util.*;
  *
  * @author Dylan Mulligan
  * @author Derek Garcia
+ * @author Ian Dunn
  */
 public class ParserComponent extends Component {
     //#region Enums

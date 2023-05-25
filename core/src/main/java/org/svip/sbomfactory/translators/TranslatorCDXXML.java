@@ -1,11 +1,7 @@
 package org.svip.sbomfactory.translators;
 
 import org.svip.sbom.model.*;
-import org.svip.sbomfactory.generators.generators.SBOMGenerator;
-import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
-import org.svip.sbomfactory.generators.generators.utils.License;
-import org.svip.sbomfactory.generators.generators.utils.Tool;
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.sbomfactory.generators.utils.generators.Tool;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

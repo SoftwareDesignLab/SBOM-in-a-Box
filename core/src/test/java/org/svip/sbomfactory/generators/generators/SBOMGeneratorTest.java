@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXStore;
-import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
-import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
+import org.svip.sbomfactory.generators.utils.generators.GeneratorException;
+import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 import org.svip.sbomfactory.generators.utils.Debug;
-import org.svip.sbomfactory.generators.generators.utils.Tool;
+import org.svip.sbomfactory.generators.utils.generators.Tool;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.File;

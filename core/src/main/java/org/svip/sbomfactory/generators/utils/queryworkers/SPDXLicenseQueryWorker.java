@@ -1,4 +1,4 @@
-package org.svip.sbomfactory.generators.utils;
+package org.svip.sbomfactory.generators.utils.queryworkers;
 
 import java.util.Map;
 import java.util.regex.Matcher;

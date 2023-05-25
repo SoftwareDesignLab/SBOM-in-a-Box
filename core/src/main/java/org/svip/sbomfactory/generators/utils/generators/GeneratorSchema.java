@@ -1,4 +1,4 @@
-package org.svip.sbomfactory.generators.generators.utils;
+package org.svip.sbomfactory.generators.utils.generators;
 
 
 import com.fasterxml.jackson.core.JsonFactory;

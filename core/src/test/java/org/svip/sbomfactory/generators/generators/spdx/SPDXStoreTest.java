@@ -3,12 +3,11 @@ package org.svip.sbomfactory.generators.generators.spdx;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.svip.sbomfactory.generators.generators.BOMStoreTestCore;
-import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
-import org.svip.sbomfactory.generators.generators.utils.License;
+import org.svip.sbomfactory.generators.utils.generators.GeneratorException;
+import org.svip.sbomfactory.generators.utils.generators.License;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;

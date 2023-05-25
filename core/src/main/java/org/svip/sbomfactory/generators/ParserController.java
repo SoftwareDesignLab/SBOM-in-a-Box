@@ -6,10 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
-import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
-import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
+import org.svip.sbomfactory.generators.utils.generators.GeneratorException;
+import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 import org.svip.sbomfactory.generators.parsers.Parser;
-import org.svip.sbomfactory.generators.parsers.contexts.CommentParser;
 import org.svip.sbomfactory.generators.parsers.contexts.ContextParser;
 import org.svip.sbomfactory.generators.parsers.contexts.DeadImportParser;
 import org.svip.sbomfactory.generators.parsers.contexts.SubprocessParser;
@@ -17,13 +16,13 @@ import org.svip.sbomfactory.generators.parsers.languages.*;
 import org.svip.sbomfactory.generators.parsers.packagemanagers.*;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.sbomfactory.generators.utils.VirtualPath;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualNode;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
 import static org.svip.sbomfactory.generators.utils.Debug.log;
@@ -35,22 +34,20 @@ import static org.svip.sbomfactory.generators.utils.Debug.log;
  *
  * @author Dylan Mulligan
  * @author Derek Garcia
+ * @author Ian Dunn
  */
 public class ParserController {
 
     //#region Attributes
     private final String projectName;
-    private String PWD;
-    private final String SRC;
     private final SBOM SBOM;
-    private final AtomicInteger dirCount;
-    private final AtomicInteger fileCount;
+    private final VirtualTree fileTree;
     private static final ObjectMapper OM = new ObjectMapper(new JsonFactory()); // ObjectMapper Initialization
     static { OM.setSerializationInclusion(JsonInclude.Include.NON_NULL); } // ObjectMapper Configuration
     private static final HashMap<String, Parser> EXTENSION_MAP = new HashMap<>() {{
         //
         // New Parsers
-        //
+        // TODO use pointers to call address of c parser, etc
 
         final CParser cParser = new CParser();
         put("c", cParser);
@@ -90,24 +87,16 @@ public class ParserController {
     //#region Constructors
 
     /**
-     * Create a new ParserController with a path to the PWD.
+     * Create a new ParserController with a VirtualTree representation of the filesystem to parse.
      *
-     * @param PWD a Path to the present working directory
+     * @param fileTree A VirtualTree representation of the filesystem to parse
      */
-    public ParserController(String PWD) {
-        // Set attributes
-        // Get filename
-        String[] pathParts = PWD.split("/");
-        final String os = System.getProperty("os.name").toLowerCase();
-        if(os.contains("win")) pathParts = PWD.split("\\\\");
-
+    public ParserController(VirtualTree fileTree) {
         // Set project name to root filename
-        this.projectName = pathParts[pathParts.length - 1];
-        this.PWD = PWD;
-        this.SRC = PWD; // A new ParserController is created in the source directory, this shouldn't need to be changed
-        this.dirCount = new AtomicInteger();
-        this.fileCount = new AtomicInteger();
-//        this.outputFileType = outputFileType;
+        this.fileTree = fileTree;
+
+        // Set project name to the common directory of the project.
+        this.projectName = this.fileTree.getCommonDirectory().getPath().toString();
 
         // Create new SBOM Object
         ParserComponent headComponent = new ParserComponent(this.projectName);
@@ -118,31 +107,33 @@ public class ParserController {
 
     //#region Getters
 
-    public String getProjectName() { return this.projectName; }
-    public String getPWD() { return this.PWD; }
-    public String getSRC() { return this.SRC; }
-    public int getDirCount() { return this.dirCount.intValue(); }
-    public int getFileCount() { return this.fileCount.intValue(); }
-    public int getDepCount() { return this.SBOM.getAllComponents().size(); }
     public SBOM getSBOM() { return this.SBOM; }
-
-    //#endregion
-
-    //#region Setters
-
-    public void setPWD(String PWD) { this.PWD = PWD; }
-    public void incrementDirCounter() { this.dirCount.getAndIncrement(); }
 
     //#endregion
 
     //#region Core Methods
 
     /**
-     * Parses the given filepath recursively.
-     *
-     * @param filepath path to file or root directory to be parsed
+     * Parses all files passed into the ParserController via the VirtualTree and logs the amount of time taken.
      */
-    public void parse(String filepath, String fileContents) { parse(this.SBOM.getHeadUUID(), filepath, fileContents); }
+    public void parseAll() {
+        List<VirtualNode> internalFiles = fileTree.getAllFiles();
+        final long parseT1 = System.currentTimeMillis();
+
+        int parseCounter = 0;
+        for(VirtualNode file : fileTree.getAllFiles()) {
+            parse(this.SBOM.getHeadUUID(), file.getPath(), file.getFileContents(), internalFiles);
+            parseCounter++;
+        }
+
+        final long parseT2 = System.currentTimeMillis();
+
+        // Report stats
+        log(Debug.LOG_TYPE.SUMMARY, String.format("Component parsing complete. " +
+                        "Parsed %d components in %.2f seconds.",
+                parseCounter,
+                (float)(parseT2 - parseT1) / 1000));
+    }
 
 
     /**
@@ -153,14 +144,9 @@ public class ParserController {
      * @param filepath path to file or root directory to be parsed
      * @param parent parent Component to be appended to
      */
-    public void parse(UUID parent, String filepath, String fileContents) {
-        // Get filename
-        String[] pathParts = filepath.split("/");
-        final String os = System.getProperty("os.name").toLowerCase();
-        if(os.contains("win")) pathParts = filepath.split("\\\\");
-
+    public void parse(UUID parent, VirtualPath filepath, String fileContents, List<VirtualNode> internalFiles) {
         // Set project name to root filename
-        final String filename = pathParts[pathParts.length - 1];
+        final String filename = filepath.getFileName().toString();
 
         // Extract extn from filename
         String extn = filename.substring(filename.lastIndexOf('.') + 1);
@@ -178,12 +164,6 @@ public class ParserController {
             return;
         } else log(LOG_TYPE.SUMMARY, "Parsing file '" + filename + "'");
 
-        final String parentDir = String.join("/", Arrays.copyOfRange(pathParts, 0, pathParts.length - 1));
-
-        // Set parser details
-        parser.setPWD(new VirtualPath(parentDir));
-        parser.setSRC(new VirtualPath(this.SRC));
-
         final ArrayList<ContextParser> contextParsers = new ArrayList<>();
         if(parser instanceof LanguageParser) {
 //            contextParsers.add(new CommentParser());
@@ -194,6 +174,10 @@ public class ParserController {
 
         // Init Component list
         ArrayList<ParserComponent> components = new ArrayList<>();
+
+        // Configure parser
+        parser.setPWD(filepath);
+        parser.setInternalFiles(internalFiles);
 
         // Parse components
         parser.parse(components, fileContents);
@@ -210,7 +194,7 @@ public class ParserController {
             components.forEach(ParserComponent::setPackaged); // Sets it to packaged and EXTERNAL
         } // Otherwise it will be unpackaged and INTERNAL (LIBRARY if it has been parsed as such)
 
-        components.forEach(c -> c.addFile(filepath.replaceAll("\\\\", "/")));
+        components.forEach(c -> c.addFile(filepath.toString()));
 
         // componentMap contains a map from a component's name to itself
         Map<String, ParserComponent> componentMap = new HashMap<>();
@@ -270,13 +254,14 @@ public class ParserController {
 
         // Add Components to SBOM
         this.SBOM.addComponents(parent, components);
-        this.fileCount.getAndIncrement();
     }
 
     /**
-     * Write this core to a dep.yml file
+     * Write the parsed SBOM object to an SBOM file with a given schema and format.
      *
      * @param outPath Path to write file to
+     * @param outSchema The schema of the SBOM file to write to.
+     * @param outFormat The format of the SBOM file to write to.
      */
     public String toFile(String outPath, GeneratorSchema outSchema, GeneratorSchema.GeneratorFormat outFormat) throws IOException {
         // If format is not supported by schema

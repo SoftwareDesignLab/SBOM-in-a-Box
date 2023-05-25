@@ -1,23 +1,14 @@
 package org.svip.sbomfactory.translators;
 
-import org.svip.sbom.model.*;
-
 import org.cyclonedx.exception.ParseException;
 import org.cyclonedx.model.Bom;
-import org.cyclonedx.model.BomReference;
 import org.cyclonedx.model.Dependency;
-import org.cyclonedx.model.Hash;
 import org.cyclonedx.parsers.JsonParser;
 import org.svip.sbom.model.Component;
 import org.svip.sbom.model.PURL;
 import org.svip.sbom.model.SBOM;
-import org.svip.sbomfactory.generators.generators.SBOMGenerator;
-import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
-import org.svip.sbomfactory.generators.generators.utils.License;
-import org.svip.sbomfactory.generators.generators.utils.Tool;
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.sbomfactory.generators.utils.generators.Tool;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;

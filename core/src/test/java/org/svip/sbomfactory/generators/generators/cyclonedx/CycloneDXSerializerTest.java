@@ -1,15 +1,12 @@
 package org.svip.sbomfactory.generators.generators.cyclonedx;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.cyclonedx.exception.ParseException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
-import org.svip.sbomfactory.generators.generators.SBOMGeneratorTest;
-import org.svip.sbomfactory.generators.generators.utils.GeneratorException;
-import org.svip.sbomfactory.generators.generators.utils.GeneratorSchema;
+import org.svip.sbomfactory.generators.utils.generators.GeneratorException;
+import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.translators.TranslatorCDXJSON;

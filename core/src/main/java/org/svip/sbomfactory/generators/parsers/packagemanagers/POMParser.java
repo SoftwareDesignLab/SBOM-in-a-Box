@@ -1,14 +1,12 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
-
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
-
 
 import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
 import static org.svip.sbomfactory.generators.utils.Debug.log;
