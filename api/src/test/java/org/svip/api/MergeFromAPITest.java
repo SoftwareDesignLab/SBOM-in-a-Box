@@ -58,6 +58,7 @@ public class MergeFromAPITest {
                     Debug.log(Debug.LOG_TYPE.SUMMARY, "testing " + schema + " " + format);
                     ResponseEntity<SBOM> report = ctrl.merge(contentsString, fileNamesString, schema.toString().toUpperCase(), format.toString().toUpperCase());
                     assertNotNull(report.getBody());
+                    Debug.log(Debug.LOG_TYPE.SUMMARY, "Merged SBOM:\n" + report.getBody());
                     Debug.log(Debug.LOG_TYPE.SUMMARY, "PASSED " + schema + " " + format + "!\n-----------------\n");
                 }
             }

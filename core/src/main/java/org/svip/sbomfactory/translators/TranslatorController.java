@@ -79,6 +79,39 @@ public class TranslatorController {
     }
 
     /**
+     * Parse an SBOM using the appropriate translator and
+     * return the object based on the contents of the file
+     *
+     * @param fileName path to the bom
+     * @return SBOM object, null if failed
+     */
+    public static SBOM toSBOM(String contents, String fileName, boolean fromString) {
+
+        SBOM sbom = null;
+
+        try {
+            // Get the respective translator based on the file's extension
+            final TranslatorCore translator = TranslatorSchema.getTranslator(
+                    fileName.substring(fileName.lastIndexOf('.') + 1)
+            ).translator;
+
+            // If the translator exists and is an actual translator, translate and add the SBOM to the list
+            // Otherwise, print out an error stating that the SBOM is not a correct format
+            if(translator != null && translator instanceof TranslatorCore) {
+                sbom = translator.translateContents(contents, "");
+            } else {
+                System.err.println("\nError: Invalid SBOM format found in: " + fileName);
+            }
+
+        }
+        catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+
+        return sbom;
+    }
+
+    /**
      * Takes in a filepath leading to SBOMs then coverts every
      * matching SBOM file into an internal SBOM object. Once
      * complete, then returns an ArrayList of Internal SBOMs.

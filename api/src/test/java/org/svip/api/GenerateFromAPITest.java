@@ -7,8 +7,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
+import org.svip.sbomfactory.translators.TranslatorController;
 
 import java.io.IOException;
 
@@ -123,9 +125,11 @@ public class GenerateFromAPITest {
                     Debug.log(Debug.LOG_TYPE.SUMMARY, "generating " + schema + " " + format);
                     ResponseEntity<String> report = ctrl.generate(contentsString, fileNamesString, schema.toString().toUpperCase(), format.toString().toUpperCase());
                     assertNotNull(report.getBody());
-                    Debug.log(Debug.LOG_TYPE.SUMMARY, "PASSED " + schema + " " + format + "!\n-----------------\n");
                     Debug.log(Debug.LOG_TYPE.SUMMARY, "Generated SBOM:\n" + report.getBody());
+                    Debug.log(Debug.LOG_TYPE.SUMMARY, "PASSED " + schema + " " + format + "!\n-----------------\n");
+
                     // TODO assert translators can parse this back in
+
                 }
             }
         }
