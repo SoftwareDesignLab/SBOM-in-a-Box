@@ -132,7 +132,7 @@ public class SVIPApiController {
         try {
             fileContents = objectMapper.readValue(contentsArray, new TypeReference<>(){});
             filePaths = objectMapper.readValue(fileArray, new TypeReference<>(){});
-        } catch (JsonProcessingException e) {
+        } catch (JsonProcessingException | IllegalArgumentException e) {
             // TODO what does front-end want for errors?
             String output = (fileContents == null ? "Malformed fileContents List.\n" : "");
             if(filePaths == null) output += "Malformed fileNames List.";
