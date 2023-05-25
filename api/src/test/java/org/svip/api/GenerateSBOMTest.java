@@ -21,7 +21,7 @@ public class GenerateSBOMTest {
     private final static String TESTCONTENTSARRAY_LENGTH1 = "[\"Example File Contents\"]";
     private final static String TESTFILEARRAY_LENGTH1 = "[\"TestFileName1.java\"]";
     private final static String TESTCONTENTSARRAY_LENGTH2 = "[\"Example File Contents 1\", \"Example File Contents 2\"]";
-    private final static String TESTFILEARRAY_LENGTH2 = "[\"TestFileName1.java\", \"TestFileName2.java\"]";
+    private final static String TESTFILEARRAY_LENGTH2 = "[\"src/java/SBOM/sbom2/TestFileName1.java\", \"src/java/SBOM/TestFileName2.java\"]";
     private final static String CDX_SCHEMA = "CycloneDX";
     private final static String INVALID_SCHEMA = "Invalid Test Schema";
     private final static String JSON_FORMAT = "JSON";
@@ -77,6 +77,13 @@ public class GenerateSBOMTest {
     @Test
     void malformedFileArrayTest() {
         // TODO
+    }
+
+    @Test
+    void testOutputTest() {
+        ResponseEntity<String> response = controller.generate(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, CDX_SCHEMA, JSON_FORMAT);
+        logTestRequest(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, CDX_SCHEMA, JSON_FORMAT);
+        System.out.println(response.getBody());
     }
 
     // TODO Use translators to translate the result of calling generate on actual files to see if we get a valid SBOM back

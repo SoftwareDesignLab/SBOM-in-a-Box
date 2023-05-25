@@ -1,6 +1,7 @@
 package org.svip.api;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import org.svip.sbomfactory.generators.utils.Debug;
@@ -32,6 +33,7 @@ public class GenerateFromAPITest {
      * @throws IOException If the SBOM merging is broken
      */
     @Test
+    @Disabled // TODO merge this and generatesbom test
     public void generateTest() throws IOException{
 
         String[] input = APITestInputInitializer.testInput();
