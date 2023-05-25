@@ -178,7 +178,81 @@ public class ConanParser extends PackageManagerParser {
     }
 
     /**
-     * Removing any comments in the given text and returns the text without comments
+     * <p><b>Removing any comments in the given text and returns the text without comments</b></p>
+     * <!DOCTYPE html>
+     * <html>
+     * <head>
+     * <style>
+     * table {
+     *   font-family: arial, sans-serif;
+     *   border-collapse: collapse;
+     *   width: 100%;
+     * }
+     *
+     * td, th {
+     *   border: 1px solid #dddddd;
+     *   text-align: left;
+     *   padding: 8px;
+     * }
+     *
+     * tr:nth-child(even) {
+     *   background-color: #dddddd;
+     * }
+     * </style>
+     * </head>
+     * <body>
+     * <table>
+     *   <tr>
+     *     <th>Block comment(Pyrhon)</th>
+     *     <th>Cases(... denotes content)</th>
+     *     <th>Note</th>
+     *   </tr>
+     *   <tr>
+     *     <td>1</td>
+     *     <td> <p>""" or '''</p>
+     *          <p>...</p>
+     *          <p> """ or '''</p>
+     *     </td>
+     *     <td>Quotes on different lines</td>
+     *   </tr>
+     *   <tr>
+     *     <td>2</td>
+     *     <td>
+     *       <p>""" or '''</p>
+     *       <p>...   """ or '''</p>
+     *     </td>
+     *     <td>Quotes on different lines</td>
+     *   </tr>
+     *   <tr>
+     *     <td>3</td>
+     *     <td><p>""" or '''   ...   """ or '''</p>
+     *     </td>
+     *     <td>Quotes on the line</td>
+     *   </tr>
+     *   <tr>
+     *     <th>Line comment</th>
+     *     <th>Cases</th>
+     *     <th>Note</th>
+     *   </tr>
+     *   <tr>
+     *     <td>A</td>
+     *     <td><p>#  ...</p></td>
+     *     <td>The comment takes up a whole line</td>
+     *   </tr>
+     *   <tr>
+     *     <td>B</td>
+     *     <td><p>...  # ...</p></td>
+     *     <td>
+     *       <p>The comment takes up a portion
+     *         of a line at lease 1 space
+     *         between the content and
+     *         the # sign(confile.txt)</p>
+     *     </td>
+     *   </tr>
+     * </table>
+     *
+     * </body>
+     * </html>
      * @param text A file content from conanfile.txt or conanfile.py
      * @return The text without comments
      */
@@ -230,7 +304,7 @@ public class ConanParser extends PackageManagerParser {
      * Split the data {@code line} into key-value pair and store the pair in the param {@code dep} and returned
      * @param dep  Data storage to contain key-value pair to be returned
      * @param line Data source
-     * @return The populated {@code dep} data storage
+     * @return The populated {@code dep} data storage, or {@code null} if no valid key in the {@code line} data source
      */
     public LinkedHashMap<String, String> procline(LinkedHashMap<String, String> dep,  String line) {
         final String[] linei = line.trim().split("/");
