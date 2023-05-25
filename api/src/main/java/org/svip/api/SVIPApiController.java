@@ -316,6 +316,10 @@ public class SVIPApiController {
 
                 }
             }
+            // todo this doesn't work properly
+           // result = TranslatorController.toSBOM(contents,result.getSerialNumber() + "." + format.toLowerCase(), true);
+
+
         }catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
