@@ -1,49 +1,60 @@
 package org.svip.sbomfactory.generators.utils.virtualtree;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.svip.sbomfactory.generators.utils.Debug;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class VirtualTreeTest {
-    public VirtualTreeTest() {
+    private static final VirtualPath FILE_PATH_1 = new VirtualPath("/a/b/c/d.txt");
+    private static final VirtualPath FILE_PATH_2 = new VirtualPath("a/b/README.md");
+    private static final VirtualPath FILE_2 = new VirtualPath("README.md");
+    private static final VirtualPath SUB_FILE_2 = new VirtualPath("/b/README.md");
 
+    private static final VirtualPath DIR_PATH = new VirtualPath("/a/b/c/d");
+    private static final String FILE_CONTENTS_1 = "test";
+    private static final String FILE_CONTENTS_2 = "# Test";
+
+    private VirtualTree tree;
+
+    @AfterEach
+    void printTree() {
+        Debug.log(Debug.LOG_TYPE.SUMMARY, "Resulting VirtualTree:\n" + tree);
     }
 
     @Test
     void initWithNoRootTest() {
-        VirtualTree tree = new VirtualTree();
-        tree.addNode(new VirtualPath("/a/b/c/d.txt"), "test");
+        tree = new VirtualTree();
+        tree.addNode(FILE_PATH_1, FILE_CONTENTS_1);
         assertEquals(1, tree.getAllFiles().size());
     }
 
     @Test
     void initWithFileTest() {
-        VirtualTree tree = new VirtualTree(new VirtualPath("/a/b/c/d.txt"), "test");
+        tree = new VirtualTree(FILE_PATH_1, FILE_CONTENTS_1);
         assertEquals(1, tree.getAllFiles().size());
-        assertEquals("test", tree.getAllFiles().get(0).getFileContents());
-        System.out.println(tree);
+        assertEquals(FILE_CONTENTS_1, tree.getAllFiles().get(0).getFileContents());
     }
 
     @Test
     void initWithDirectoryTest() {
-        VirtualTree tree = new VirtualTree(new VirtualPath("/a/b/c/d"));
+        tree = new VirtualTree(DIR_PATH);
         assertEquals(0, tree.getAllFiles().size());
-        System.out.println(tree);
     }
 
     @Test
     void addMultipleFilesTest() {
-        VirtualTree tree = new VirtualTree(new VirtualPath("/a/b/c/d.txt"), "test");
-        tree.addNode(new VirtualPath("a/b/README.md"), "# Test");
-        System.out.println(tree);
-        // TODO assertions
+        tree = new VirtualTree(FILE_PATH_1, FILE_CONTENTS_1);
+        tree.addNode(FILE_PATH_2, FILE_CONTENTS_2);
+        assertEquals(2, tree.getAllFiles().size());
     }
 
     @Test
     void containsTest() {
-        VirtualTree tree = new VirtualTree(new VirtualPath("/a/b/c/d.txt"), "test");
-        tree.addNode(new VirtualPath("a/b/README.md"), "# Test");
-        assertTrue(tree.contains(new VirtualPath("README.md")));
-        assertTrue(tree.contains(new VirtualPath("/b/README.md")));
+        tree = new VirtualTree(FILE_PATH_1, FILE_CONTENTS_1);
+        tree.addNode(FILE_PATH_2, FILE_CONTENTS_2);
+        assertTrue(tree.contains(FILE_2));
+        assertTrue(tree.contains(SUB_FILE_2));
     }
 }
