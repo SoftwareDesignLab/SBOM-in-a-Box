@@ -127,7 +127,7 @@ public class SBOMGenerator {
         if (sbom.contains("#####")) {
             return GeneratorSchema.GeneratorFormat.SPDX;
         }
-        else if (Pattern.compile("^<\\?xml version='1\\.[0,1]' encoding='UTF-8'\\?>$").matcher(sbom).find()) {
+        else if (Pattern.compile("<\\?xml version='1\\.[0,1]' encoding='UTF-8'\\?>").matcher(sbom).find()) {
             return GeneratorSchema.GeneratorFormat.XML;
         }
         else if (sbom.contains("---")) {
