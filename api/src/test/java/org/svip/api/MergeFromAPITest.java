@@ -1,6 +1,5 @@
 package org.svip.api;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,11 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 /**
- * File: MergeFromAPITest.java
- * Unit test for API regarding merging SBOMs
- * <p>
- * Tests:<br>
- * - mergeTest: Test that the API can merge three SBOMs
+ * Unit tests for the merge API endpoint that cover input validation and merging.
  *
  * @author Juan Francisco Patino
  */
@@ -33,7 +28,12 @@ public class MergeFromAPITest extends APITest{
     /**
      * Controller to test
      */
-    private SVIPApiController ctrl;
+    private final SVIPApiController ctrl;
+
+    public MergeFromAPITest() {
+        ctrl = new SVIPApiController();
+    }
+
 
     @ParameterizedTest
     @DisplayName("Null/Empty File Contents Array")
@@ -88,9 +88,9 @@ public class MergeFromAPITest extends APITest{
      * @throws IOException If the SBOM merging is broken
      */
     @Test
-    public void mergeTest() throws IOException{
-
-        String[] input = APITestInputInitializer.testInput();
+    @DisplayName("Merge SBOMs Test")
+    public void mergeTest() throws IOException {
+        String[] input = APITest.testInput();
 
         String contentsString = input[0];
         String fileNamesString = input[1];
@@ -127,19 +127,5 @@ public class MergeFromAPITest extends APITest{
                 }
             }
         }
-
     }
-
-
-
-    /**
-     * SETUP: Start API before testing
-     */
-    @BeforeEach
-    public void setup(){
-        Debug.enableSummary();
-        ctrl = new SVIPApiController();
-
-    }
-
 }

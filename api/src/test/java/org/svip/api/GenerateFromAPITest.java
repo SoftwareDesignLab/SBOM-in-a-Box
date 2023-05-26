@@ -27,11 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 /**
- * File: GenerateFromAPITest.java
- * Unit test for API regarding the generation of SBOMs
- * <p>
- * Tests:<br>
- * - generateTest: Test that the API can generate three SBOMs
+ * Unit tests for the generateSBOM API endpoint that cover input validation and generation.
  *
  * @author Juan Francisco Patino
  * @author Ian Dunn
@@ -41,10 +37,9 @@ public class GenerateFromAPITest extends APITest {
     /**
      * Controller to test
      */
-    private SVIPApiController ctrl;
+    private final SVIPApiController ctrl;
 
     public GenerateFromAPITest() {
-        Debug.enableSummary();
         ctrl = new SVIPApiController();
     }
 

@@ -9,7 +9,9 @@ import org.svip.sbomfactory.translators.TranslatorController;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A static class containing helpful utilities for API calls and testing responses.
@@ -90,15 +92,18 @@ public class Utils {
     }
 
     /**
-     * Convert file contents and file names JSON arrays to two {@code List<String>}s stored in a string array of
-     * length 2.
+     * Convert file contents and file names JSON arrays to a {@code Map<String, List<String>>} containing two keys:
+     * <ul>
+     *     <li>"fileContents": A parsed {@code List<String>} of the file contents.</li>
+     *     <li>"filePaths": A parsed {@code List<String>} of the file paths.</li>
+     * </ul>
      *
      * @param contentsArray The string representation of the JSON contents array.
      * @param fileArray The string representation of the JSON file array.
-     * @return A string array with the contents list stored in position 0 and the files list stored in position 1.
-     * Null if malformed arrays or mismatching lengths.
+     * @return A {@code Map<String, List<String>>} containing keys of the fileContents and filePaths. Null if there is
+     * an error parsing either array or if the sizes are unequal.
      */
-    public static List<String>[] validateContentsAndNamesArrays(String contentsArray, String fileArray) {
+    public static Map<String, List<String>> validateContentsAndNamesArrays(String contentsArray, String fileArray) {
         // Resolve JSON arrays
         List<String> fileContents = Resolver.resolveJSONStringArray(contentsArray);
         List<String> filePaths = Resolver.resolveJSONStringArray(fileArray);
@@ -107,7 +112,10 @@ public class Utils {
 
         if(fileContents.size() != filePaths.size()) return null;
 
-        return new List[] { fileContents, filePaths };
+        return new HashMap<>(){{
+            this.put("fileContents", fileContents);
+            this.put("filePaths", filePaths);
+        }};
     }
 
     /**

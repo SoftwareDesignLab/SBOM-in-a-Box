@@ -1,7 +1,5 @@
 package org.svip.api;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +20,7 @@ import org.svip.sbomfactory.translators.TranslatorController;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * API Controller for handling requests to SVIP
@@ -34,7 +33,6 @@ import java.util.List;
  * @author Ian Dunn
  * @author Juan Francisco Patino
  */
-
 @RestController
 @RequestMapping("/svip")
 public class SVIPApiController {
@@ -68,28 +66,28 @@ public class SVIPApiController {
      */
     private static String pwd = "/src/test/java/org/svip/api";
 
-    /**
+    /** TODO OSI
      * buildOSI runs on startup to build the OSI container independent of the front-end.
      */
-    @PostConstruct
-    public void buildOSI() {
-        // TODO: For SVIP v3, refactor to move OSI building operations into another class
-        osiContainer = new OSI(osiBoundDir, dockerPath);
-    }
+//    @PostConstruct
+//    public void buildOSI() {
+//        // TODO: For SVIP v3, refactor to move OSI building operations into another class
+//        osiContainer = new OSI(osiBoundDir, dockerPath);
+//    }
 
     public SVIPApiController() {
         headers = new HttpHeaders();
         headers.add("AccessControlAllowOrigin", "http://localhost:4200");
     }
 
-    /**
+    /** TODO OSI
      * To be called when the object is released by the garbage collector. DO NOT CALL MANUALLY
      */
-    @PreDestroy
-    public void close() {
-        // Close the osi container so that we delete the instance
-        osiContainer.close();
-    }
+//    @PreDestroy
+//    public void close() {
+//        // Close the osi container so that we delete the instance
+//        osiContainer.close();
+//    }
 
     /**
      * TODO Creates a Node Graph from the master SBOM
@@ -104,7 +102,17 @@ public class SVIPApiController {
     }
 
 
-    // TODO Docstring, explain how
+    /**
+     * USAGE. Send POST request to /generateSBOM with one or more files. If a schema or format is not provided or is
+     * invalid, it will default to CycloneDX JSON.
+     * The API will respond with an HTTP 200 and an SBOM string in the given schema and format (if applicable).
+     *
+     * @param contentsArray JSON array of project file contents (the source files) as a string.
+     * @param fileArray JSON array of corresponding project file names as a string.
+     * @param schemaName The name of the schema to output to.
+     * @param formatName The name of the format to output to.
+     * @return A ResponseEntity with code HTTP 200 and the SBOM file in string format.
+     */
     @PostMapping("/generateSBOM")
     public ResponseEntity<String> generate(@RequestParam("fileContents") String contentsArray,
                                            @RequestParam("fileNames") String fileArray,
@@ -113,27 +121,22 @@ public class SVIPApiController {
 
         // VALIDATE/PARSE INPUT DATA
         // todo OSI
-        List<String>[] contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
+        Map<String, List<String>> contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
         if(contentsAndFiles == null) return new ResponseEntity<>("Invalid contents or filenames array.",
                 HttpStatus.BAD_REQUEST);
-        List<String> fileContents = contentsAndFiles[0];
-        List<String> filePaths = contentsAndFiles[1];
 
         // Get schema/format from parameters, if not valid, default to CycloneDX/JSON
         GeneratorSchema schema = Resolver.resolveSchema(schemaName, true);
         GeneratorSchema.GeneratorFormat format = Resolver.resolveFormat(formatName, true);
         if(!schema.supportsFormat(format)) format = schema.getDefaultFormat();
 
-        // Ensure equal lengths of file contents & paths
-
-
         // BUILD FILE TREE REPRESENTATION
         // TODO talk to front-end and figure out what the project name should be, currently SVIP. Common directory?
         VirtualTree fileTree = new VirtualTree(new VirtualPath("SVIP"));
-        for (int i = 0; i < filePaths.size(); i++) {
+        for (int i = 0; i < contentsAndFiles.get("filePaths").size(); i++) {
             fileTree.addNode(
-                    new VirtualPath(filePaths.get(i)),
-                    fileContents.get(i));
+                    new VirtualPath(contentsAndFiles.get("filePaths").get(i)),
+                    contentsAndFiles.get("fileContents").get(i));
         }
 
         // PARSE FILES INTO SBOM
@@ -160,12 +163,11 @@ public class SVIPApiController {
     @PostMapping("/compare")
     public ResponseEntity<Comparison> compare(@RequestParam("contents") String contentsArray,
                                               @RequestParam("fileNames") String fileArray) {
-        List<String>[] contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
+        Map<String, List<String>> contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
         if(contentsAndFiles == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        List<String> fileContents = contentsAndFiles[0];
-        List<String> filePaths = contentsAndFiles[1];
 
-        List<SBOM> sboms = Utils.translateMultiple(fileContents, filePaths);
+        List<SBOM> sboms = Utils.translateMultiple(contentsAndFiles.get("fileContents"), contentsAndFiles.get(
+                "filePaths"));
 
         if(sboms.size() < 2) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
@@ -233,12 +235,11 @@ public class SVIPApiController {
                                    @RequestParam("fileNames") String fileArray
             , @RequestParam("schema") String schema, @RequestParam("format") String format) {
 
-        List<String>[] contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
+        Map<String, List<String>> contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
         if(contentsAndFiles == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        List<String> fileContents = contentsAndFiles[0];
-        List<String> filePaths = contentsAndFiles[1];
 
-        List<SBOM> sboms = Utils.translateMultiple(fileContents, filePaths);
+        List<SBOM> sboms = Utils.translateMultiple(contentsAndFiles.get("fileContents"), contentsAndFiles.get(
+                "filePaths"));
         if(sboms.size() < 2) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         GeneratorSchema generatorSchema = Resolver.resolveSchema(schema, false);
