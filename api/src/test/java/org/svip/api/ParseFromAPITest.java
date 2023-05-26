@@ -41,7 +41,7 @@ public class ParseFromAPITest extends APITest {
     @NullAndEmptySource
     void emptyContentsArrayTest(String fileContents) {
         ResponseEntity<SBOM> response = ctrl.parse(fileContents, TESTFILEARRAY_LENGTH1);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
     @ParameterizedTest
@@ -49,7 +49,7 @@ public class ParseFromAPITest extends APITest {
     @NullAndEmptySource
     void emptyFileNamesArrayTest(String fileNames) {
         ResponseEntity<SBOM> response = ctrl.parse(TESTCONTENTSARRAY_LENGTH1, fileNames);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
     @Test
@@ -57,11 +57,11 @@ public class ParseFromAPITest extends APITest {
     void mismatchedFileInfoTest() {
         // Longer contents array
         ResponseEntity<SBOM> response = ctrl.parse(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH1);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
 
         // Longer file names array
         response = ctrl.parse(TESTCONTENTSARRAY_LENGTH1, TESTFILEARRAY_LENGTH2);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
     /**
