@@ -213,7 +213,7 @@ public class SVIPApiController {
 
         SBOM sbom = TranslatorController.toSBOM(contents, fileName);
         // Explicitly return null if failed
-        if (sbom == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST); // todo should this be INTERNAL_SERVER err?
+        if (sbom == null) return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 
         return Utils.encodeResponse(sbom);
     }
