@@ -22,7 +22,6 @@ import org.svip.sbomfactory.translators.TranslatorController;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * API Controller for handling requests to SVIP
@@ -92,11 +91,8 @@ public class SVIPApiController {
         osiContainer.close();
     }
 
-
-
-
     /**
-     * Creates a Node Graph from the master SBOM
+     * TODO Creates a Node Graph from the master SBOM
      * and returns a JSON String representation of the Node Graph.
      *
      * @return JSON String representation of the Node Graph
@@ -150,9 +146,9 @@ public class SVIPApiController {
 
         // Generate SBOM to string and send
         try {
-            return new ResponseEntity<>(controller.toFile(null, schema, format), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Error sending output to SBOM.", HttpStatus.INTERNAL_SERVER_ERROR);
+            return Utils.encodeResponse(controller.toFile(null, schema, format));
+        } catch (IOException e) {
+            return new ResponseEntity<>("Error generating SBOM.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -161,33 +157,40 @@ public class SVIPApiController {
      * The first SBOM will be the baseline, and the rest will be compared to it.
      * The API will respond with an HTTP 200 and a serialized DiffReport object.
      *
-     * @param contentArray Array of SBOM file contents (the actual cyclonedx/spdx files) as a JSON string
+     * @param contentsArray Array of SBOM file contents (the actual cyclonedx/spdx files) as a JSON string
      * @param fileArray Array of file names as a JSON string
      * @return Wrapped Comparison object
      */
     @PostMapping("/compare")
-    public ResponseEntity<Comparison> compare(@RequestParam("contents") String contentArray, @RequestParam("fileNames") String fileArray) throws IOException {
+    public ResponseEntity<Comparison> compare(@RequestParam("contents") String contentsArray,
+                                              @RequestParam("fileNames") String fileArray) {
 
-        List<SBOM> sboms = Utils.translateMultiple(contentArray, fileArray);
+        List<String> fileContents = Resolver.resolveJSONStringArray(contentsArray);
+        List<String> filePaths = Resolver.resolveJSONStringArray(fileArray);
 
-        if(sboms.size() < 2){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        // TODO figure out how to return error messages
+        if (fileContents == null) {
+            return new ResponseEntity<>(/*"Malformed fileContents JSON Array.",*/ HttpStatus.BAD_REQUEST);
+        } else if (filePaths == null) {
+            return new ResponseEntity<>(/*"Malformed fileNames JSON Array.",*/ HttpStatus.BAD_REQUEST);
         }
+
+        if(fileContents.size() != filePaths.size()) return new ResponseEntity<>(/*"File contents & file names are " +
+                "different lengths.", */HttpStatus.BAD_REQUEST);
+
+        List<SBOM> sboms = Utils.translateMultiple(fileContents, filePaths);
+
+        if(sboms.size() < 2) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         Comparison report = new Comparison(sboms); // report to return
         report.runComparison();
 
         //encode and send report
-        try {
-            return new ResponseEntity<>(report, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
+        return Utils.encodeResponse(report);
     }
 
     /**
-     * USAGE. Send POST request to /qa with a single sbom file
+     * TODO USAGE. Send POST request to /qa with a single sbom file
      * The API will respond with an HTTP 200 and a serialized report in the body.
      *
      * @param contents - File content of the SBOM to run metrics on
@@ -208,11 +211,7 @@ public class SVIPApiController {
         QualityReport report = pipeline.process(sbom);
 
         //encode and send report
-        try {
-            return new ResponseEntity<>(report, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return Utils.encodeResponse(report);
     }
 
     /**
@@ -224,36 +223,42 @@ public class SVIPApiController {
      */
     @PostMapping("/parse")
     public ResponseEntity<SBOM> parse(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
-
         SBOM sbom = TranslatorController.toSBOM(contents, fileName);
 
-        try {
-            // Explicitly return null if failed
-            if (sbom == null) {
-                return new ResponseEntity<>(null, HttpStatus.OK);
-            }
-            return new ResponseEntity<>(sbom, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        // Explicitly return null if failed
+        if (sbom == null) return new ResponseEntity<>(null, HttpStatus.OK);
+
+        return Utils.encodeResponse(sbom);
     }
 
 
     /**
      * Merge 2 SBOMs together, regardless of origin format
      *
-     * @param fileContents JSON string array of the contents of all provided SBOMs
-     * @param fileNames JSON string array of the filenames of all provided SBOMs
+     * @param contentsArray JSON string array of the contents of all provided SBOMs
+     * @param fileArray JSON string array of the filenames of all provided SBOMs
      * @param schema String value of expected output schema (SPDX/CycloneDX)
      * @param format String value of expected output format (JSON/XML/YAML)
      * @return merged result SBOM
      */
     @PostMapping("merge")
-    public ResponseEntity<String> merge(@RequestParam("fileContents") String fileContents,
-                                   @RequestParam("fileNames") String fileNames
-            , @RequestParam("schema") String schema, @RequestParam("format") String format) throws IOException {
+    public ResponseEntity<String> merge(@RequestParam("fileContents") String contentsArray,
+                                   @RequestParam("fileNames") String fileArray
+            , @RequestParam("schema") String schema, @RequestParam("format") String format) {
 
-        List<SBOM> sboms = Utils.translateMultiple(fileContents, fileNames);
+        List<String> fileContents = Resolver.resolveJSONStringArray(contentsArray);
+        List<String> filePaths = Resolver.resolveJSONStringArray(fileArray);
+
+        if (fileContents == null) {
+            return new ResponseEntity<>("Malformed fileContents JSON Array.", HttpStatus.BAD_REQUEST);
+        } else if (filePaths == null) {
+            return new ResponseEntity<>("Malformed fileNames JSON Array.", HttpStatus.BAD_REQUEST);
+        }
+
+        if(fileContents.size() != filePaths.size()) return new ResponseEntity<>("File contents & file names are " +
+                "different lengths.", HttpStatus.BAD_REQUEST);
+
+        List<SBOM> sboms = Utils.translateMultiple(fileContents, filePaths);
 
         if(sboms.size() < 2){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -262,19 +267,14 @@ public class SVIPApiController {
         Merger merger = new Merger();
         SBOM result = merger.merge(sboms); // report to return
 
-        Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = Utils.configureSchema(schema, format); // get schema enumerations from call
-        assert m != null;
-        GeneratorSchema generatorSchema = (GeneratorSchema) m.keySet().toArray()[0];
-        GeneratorSchema.GeneratorFormat generatorFormat = m.get(generatorSchema);
+        GeneratorSchema generatorSchema = Resolver.resolveSchema(schema, false);
+        GeneratorSchema.GeneratorFormat generatorFormat = Resolver.resolveFormat(format, false);
 
-        if(generatorSchema == GeneratorSchema.SPDX) // spdx schema implies spdx format
-            generatorFormat = GeneratorSchema.GeneratorFormat.SPDX;
-
-        String resultString = Utils.generateSBOM(result, generatorSchema, generatorFormat);
-
-        // encode and send result
-        return new ResponseEntity<>(resultString, HttpStatus.OK);
+        try {
+            String resultString = Utils.generateSBOM(result, generatorSchema, generatorFormat);
+            return Utils.encodeResponse(resultString);
+        } catch (IOException e) {
+            return new ResponseEntity<>("Error generating SBOM.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
-
 }
