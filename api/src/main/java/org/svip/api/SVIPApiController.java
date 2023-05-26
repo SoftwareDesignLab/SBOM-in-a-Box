@@ -21,8 +21,6 @@ import org.svip.sbomfactory.osi.OSI;
 import org.svip.sbomfactory.translators.TranslatorController;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -241,14 +239,14 @@ public class SVIPApiController {
         List<String> filePaths = contentsAndFiles[1];
 
         List<SBOM> sboms = Utils.translateMultiple(fileContents, filePaths);
-
         if(sboms.size() < 2) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-        Merger merger = new Merger();
-        SBOM result = merger.merge(sboms); // report to return
 
         GeneratorSchema generatorSchema = Resolver.resolveSchema(schema, false);
         GeneratorSchema.GeneratorFormat generatorFormat = Resolver.resolveFormat(format, false);
+        if(generatorSchema == null || generatorFormat == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        Merger merger = new Merger();
+        SBOM result = merger.merge(sboms); // report to return
 
         String resultString = Utils.generateSBOM(result, generatorSchema, generatorFormat);
         return Utils.encodeResponse(resultString);

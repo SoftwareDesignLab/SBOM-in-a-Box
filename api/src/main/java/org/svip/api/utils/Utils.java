@@ -107,8 +107,7 @@ public class Utils {
 
         if(fileContents.size() != filePaths.size()) return null;
 
-        List<String>[] result = new List[] { fileContents, filePaths };
-        return result;
+        return new List[] { fileContents, filePaths };
     }
 
     /**
