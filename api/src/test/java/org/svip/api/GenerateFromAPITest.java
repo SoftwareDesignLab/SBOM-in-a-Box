@@ -36,21 +36,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @author Juan Francisco Patino
  * @author Ian Dunn
  */
-public class GenerateFromAPITest {
+public class GenerateFromAPITest extends APITest {
 
     /**
      * Controller to test
      */
     private SVIPApiController ctrl;
-
-    private final static String TESTCONTENTSARRAY_LENGTH1 = "[\"Example File Contents\"]";
-    private final static String TESTFILEARRAY_LENGTH1 = "[\"TestFileName1.java\"]";
-    private final static String TESTCONTENTSARRAY_LENGTH2 = "[\"Example File Contents 1\", \"Example File Contents 2\"]";
-    private final static String TESTFILEARRAY_LENGTH2 = "[\"src/java/SBOM/sbom2/TestFileName1.java\", \"src/java/SBOM/TestFileName2.java\"]";
-    private final static String CDX_SCHEMA = "CycloneDX";
-    private final static String INVALID_SCHEMA = "Invalid Test Schema";
-    private final static String JSON_FORMAT = "JSON";
-    private final static String INVALID_FORMAT = "GIF";
 
     public GenerateFromAPITest() {
         Debug.enableSummary();

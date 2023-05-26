@@ -153,7 +153,7 @@ public enum GeneratorSchema {
      */
     public GeneratorFormat getDefaultFormat() { return this.validFormats.toArray(new GeneratorFormat[0])[0]; }
 
-    public static GeneratorSchema valueOfArgument(String argument) {
+    public static GeneratorSchema valueOfArgument(String argument) throws IllegalArgumentException {
         // Ensure argument is not null, throw an exception if it is
         assert argument != null;
 

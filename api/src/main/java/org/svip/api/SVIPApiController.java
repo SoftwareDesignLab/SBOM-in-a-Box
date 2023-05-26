@@ -1,14 +1,12 @@
 package org.svip.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.svip.api.utils.Resolver;
 import org.svip.api.utils.Utils;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomanalysis.comparison.Comparison;
@@ -16,7 +14,6 @@ import org.svip.sbomanalysis.comparison.Merger;
 import org.svip.sbomanalysis.qualityattributes.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.QualityReport;
 import org.svip.sbomfactory.generators.ParserController;
-import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
@@ -24,7 +21,6 @@ import org.svip.sbomfactory.osi.OSI;
 import org.svip.sbomfactory.translators.TranslatorController;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -121,36 +117,23 @@ public class SVIPApiController {
 
         // VALIDATE/PARSE INPUT DATA
         // todo OSI
-        final ObjectMapper objectMapper = new ObjectMapper();
-        List<String> fileContents = null;
-        List<String> filePaths = null;
+        List<String> fileContents = Resolver.resolveJSONStringArray(contentsArray);
+        List<String> filePaths = Resolver.resolveJSONStringArray(fileArray);
 
-        // Parse file contents/paths
-        try {
-            fileContents = objectMapper.readValue(contentsArray, new TypeReference<>(){});
-            filePaths = objectMapper.readValue(fileArray, new TypeReference<>(){});
-        } catch (JsonProcessingException | IllegalArgumentException e) {
-            // TODO what does front-end want for errors?
-            String output = (fileContents == null ? "Malformed fileContents List.\n" : "");
-            if(filePaths == null) output += "Malformed fileNames List.";
-            return new ResponseEntity<>(output, HttpStatus.BAD_REQUEST);
+        if (fileContents == null) {
+            return new ResponseEntity<>("Malformed fileContents JSON Array.", HttpStatus.BAD_REQUEST);
+        } else if (filePaths == null) {
+            return new ResponseEntity<>("Malformed fileNames JSON Array.", HttpStatus.BAD_REQUEST);
         }
 
         // Get schema/format from parameters, if not valid, default to CycloneDX/JSON
-        GeneratorSchema schema = GeneratorSchema.CycloneDX;
-        GeneratorSchema.GeneratorFormat format = schema.getDefaultFormat();
-
-        // Parse schema/format
-        try {
-            if(schemaName != null) schema = GeneratorSchema.valueOfArgument(schemaName);
-            if(formatName != null) format = GeneratorSchema.GeneratorFormat.valueOf(formatName);
-            if(!schema.supportsFormat(format)) format = schema.getDefaultFormat();
-        } catch (IllegalArgumentException ignored) {}
+        GeneratorSchema schema = Resolver.resolveSchema(schemaName, true);
+        GeneratorSchema.GeneratorFormat format = Resolver.resolveFormat(formatName, true);
+        if(!schema.supportsFormat(format)) format = schema.getDefaultFormat();
 
         // Ensure equal lengths of file contents & paths
         if(fileContents.size() != filePaths.size()) return new ResponseEntity<>("File contents & file names are " +
                 "different lengths.", HttpStatus.BAD_REQUEST);
-
 
         // BUILD FILE TREE REPRESENTATION
         // TODO talk to front-end and figure out what the project name should be, currently SVIP. Common directory?
@@ -185,7 +168,7 @@ public class SVIPApiController {
     @PostMapping("/compare")
     public ResponseEntity<Comparison> compare(@RequestParam("contents") String contentArray, @RequestParam("fileNames") String fileArray) throws IOException {
 
-        ArrayList<SBOM> sboms = Utils.translateMultiple(contentArray, fileArray);
+        List<SBOM> sboms = Utils.translateMultiple(contentArray, fileArray);
 
         if(sboms.size() < 2){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -270,7 +253,7 @@ public class SVIPApiController {
                                    @RequestParam("fileNames") String fileNames
             , @RequestParam("schema") String schema, @RequestParam("format") String format) throws IOException {
 
-        ArrayList<SBOM> sboms = Utils.translateMultiple(fileContents, fileNames);
+        List<SBOM> sboms = Utils.translateMultiple(fileContents, fileNames);
 
         if(sboms.size() < 2){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -287,8 +270,7 @@ public class SVIPApiController {
         if(generatorSchema == GeneratorSchema.SPDX) // spdx schema implies spdx format
             generatorFormat = GeneratorSchema.GeneratorFormat.SPDX;
 
-        SBOMGenerator generator = new SBOMGenerator(result, generatorSchema);
-        String resultString = generator.writeFileToString(generatorFormat, true);
+        String resultString = Utils.generateSBOM(result, generatorSchema, generatorFormat);
 
         // encode and send result
         return new ResponseEntity<>(resultString, HttpStatus.OK);

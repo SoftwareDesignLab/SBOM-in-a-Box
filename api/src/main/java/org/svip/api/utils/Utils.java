@@ -13,9 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 /**
  * A static class containing helpful utilities for API calls and testing responses.
  *
@@ -85,7 +82,7 @@ public class Utils {
      * @param fileNames JSON string array of the filenames of all provided SBOMs
      * @return list of SBOM objects
      */
-    public static ArrayList<SBOM> translateMultiple(String fileContents, String fileNames) throws JsonProcessingException {
+    public static List<SBOM> translateMultiple(String fileContents, String fileNames) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         List<String> contents = objectMapper.readValue(fileContents, new TypeReference<>(){});
         List<String> fNames = objectMapper.readValue(fileNames, new TypeReference<>(){});
@@ -101,29 +98,33 @@ public class Utils {
     }
 
     /**
-     * Take an SBOM object and serialize it given a schema and format
+     * Take an SBOM object and serialize it to a pretty-printed string given a schema and format.
+     *
      * @param result SBOM to serialize
      * @param generatorSchema Document schema
      * @param generatorFormat Document format
      * @return Serialized SBOM document
      */
-    public static String serializeFromSbom(SBOM result, GeneratorSchema generatorSchema, GeneratorSchema.GeneratorFormat generatorFormat) throws IOException {
+    public static String generateSBOM(SBOM result, GeneratorSchema generatorSchema,
+                           GeneratorSchema.GeneratorFormat generatorFormat) throws IOException {
         SBOMGenerator generator = new SBOMGenerator(result, generatorSchema);
-        String contents = generator.writeFileToString(generatorFormat, true);
-        return contents;
+        return generator.writeFileToString(generatorFormat, true);
     }
 
-    /**
-     * assert SBOM object can be serialized and then translated back
-     * @param schema SBOM schema
-     * @param format SBOM format
-     * @param sbom SBOM object
-     */
-    public static void assertSerializationAndTranslation(GeneratorSchema schema, GeneratorSchema.GeneratorFormat format, SBOM sbom) throws IOException {
-        String serialized = Utils.serializeFromSbom(sbom, schema, format);
-        SBOM translated = Utils.buildSBOMFromString(serialized);
-        assertNotNull(translated);
-        assertEquals(schema, GeneratorSchema.valueOfArgument(translated.getOriginFormat().toString()));
-    }
+//    /**
+//     * assert SBOM object can be serialized and then translated back
+//     * @param schema SBOM schema
+//     * @param format SBOM format
+//     * @param sbom SBOM object
+//     */
+//    public static boolean sbomCanBeBackTranslated(SBOM sbom, GeneratorSchema schema,
+//                                                  GeneratorSchema.GeneratorFormat format) throws IOException {
+//
+//        String serialized = Utils.generateSBOM(sbom, schema, format);
+//        SBOM translated = Utils.buildSBOMFromString(serialized);
+//
+//        assertNotNull(translated);
+//        assertEquals(schema, GeneratorSchema.valueOfArgument(translated.getOriginFormat().toString()));
+//    }
 
 }
