@@ -164,11 +164,12 @@ public class SVIPApiController {
     public ResponseEntity<Comparison> compare(@RequestParam("contents") String contentsArray,
                                               @RequestParam("fileNames") String fileArray) {
         Map<String, List<String>> contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
+        // TODO figure out how to return a response message
         if(contentsAndFiles == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         List<SBOM> sboms = Utils.translateMultiple(contentsAndFiles.get("fileContents"), contentsAndFiles.get(
                 "filePaths"));
-
+        // TODO figure out how to return a response message
         if(sboms.size() < 2) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         Comparison report = new Comparison(sboms); // report to return
@@ -214,7 +215,7 @@ public class SVIPApiController {
     public ResponseEntity<SBOM> parse(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
 
         SBOM sbom = TranslatorController.toSBOM(contents, fileName);
-        // Explicitly return null if failed
+        // Explicitly return null if failed TODO figure out how to return a response message
         if (sbom == null) return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 
         return Utils.encodeResponse(sbom);
@@ -236,16 +237,19 @@ public class SVIPApiController {
             , @RequestParam("schema") String schema, @RequestParam("format") String format) {
 
         Map<String, List<String>> contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
-        if(contentsAndFiles == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(contentsAndFiles == null) return new ResponseEntity<>("Invalid contents or filenames array.",
+                HttpStatus.BAD_REQUEST);
 
         List<SBOM> sboms = Utils.translateMultiple(contentsAndFiles.get("fileContents"), contentsAndFiles.get(
                 "filePaths"));
-        if(sboms.size() < 2) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(sboms.size() < 2) return new ResponseEntity<>("At least 2 SBOMs required to merge", HttpStatus.BAD_REQUEST);
 
         GeneratorSchema generatorSchema = Resolver.resolveSchema(schema, false);
         GeneratorSchema.GeneratorFormat generatorFormat = Resolver.resolveFormat(format, false);
         if(generatorSchema == null || generatorFormat == null ||
-                !generatorSchema.supportsFormat(generatorFormat)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                !generatorSchema.supportsFormat(generatorFormat)) return new ResponseEntity<>("Invalid schema/format " +
+                "combination",
+                HttpStatus.BAD_REQUEST);
 
         Merger merger = new Merger();
         SBOM result = merger.merge(sboms); // report to return
