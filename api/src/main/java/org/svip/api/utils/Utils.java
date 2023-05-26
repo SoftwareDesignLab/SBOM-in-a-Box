@@ -15,6 +15,7 @@ import java.util.List;
  * A static class containing helpful utilities for API calls and testing responses.
  *
  * @author Ian Dunn
+ * @author Juan Francisco Patino
  */
 public class Utils {
 
