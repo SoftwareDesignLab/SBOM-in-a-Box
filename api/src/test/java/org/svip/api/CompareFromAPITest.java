@@ -27,7 +27,7 @@ public class CompareFromAPITest {
     private SVIPApiController ctrl;
 
     /**
-     * Test that the API can compare three SBOMs
+     * Test that the API can compare multiple SBOMs
      * @throws IOException If the SBOM parsing is broken
      */
     @Test
@@ -42,6 +42,7 @@ public class CompareFromAPITest {
         assertEquals(HttpStatus.OK, report.getStatusCode());
         assertEquals(inputLength - 1, Objects.requireNonNull(report.getBody()).getDiffReports().size());
         assertNotEquals(0,report.getBody().getComparisons().size());
+
     }
 
     /**

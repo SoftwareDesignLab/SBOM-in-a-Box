@@ -1,6 +1,7 @@
 package org.svip.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -44,6 +45,9 @@ public class APITestInputInitializer {
     // class level variables
     private final static List<String> contentsArray = new ArrayList<>();
     private final static List<String> fileNamesArray = new ArrayList<>();
+    private final static List<String> schemaArray = new ArrayList<>();
+    private final static List<String> formatArray = new ArrayList<>();
+
     private final static ObjectMapper objectMapper = new ObjectMapper();
 
     /**
@@ -84,7 +88,21 @@ public class APITestInputInitializer {
         fileNamesArray.add(gradleSBOM);
         String fileNamesString = objectMapper.writeValueAsString(fileNamesArray);
 
-        return new String[]{contentsString,fileNamesString, String.valueOf(fileNamesArray.size())};
+
+        for(int i = 0; i < 3; i++) {
+            schemaArray.add(GeneratorSchema.SPDX.name());
+            formatArray.add(GeneratorSchema.GeneratorFormat.SPDX.name());
+        }
+        for(int i = 0; i < 6; i++)
+            schemaArray.add(GeneratorSchema.CycloneDX.name());
+        for(int i = 0; i < 3; i++)
+            formatArray.add(GeneratorSchema.GeneratorFormat.XML.name());
+        for(int i = 0; i < 3; i++)
+            formatArray.add(GeneratorSchema.GeneratorFormat.JSON.name());
+        String schemaString = objectMapper.writeValueAsString(schemaArray);
+        String formatString = objectMapper.writeValueAsString(formatArray);
+
+        return new String[]{contentsString,fileNamesString, String.valueOf(fileNamesArray.size()), schemaString, formatString};
 
     }
 

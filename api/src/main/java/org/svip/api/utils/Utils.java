@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 /**
  * A static class containing helpful utilities for API calls and testing responses.
  *
@@ -109,4 +112,18 @@ public class Utils {
         String contents = generator.writeFileToString(generatorFormat, true);
         return contents;
     }
+
+    /**
+     * assert SBOM object can be serialized and then translated back
+     * @param schema SBOM schema
+     * @param format SBOM format
+     * @param sbom SBOM object
+     */
+    public static void assertSerializationAndTranslation(GeneratorSchema schema, GeneratorSchema.GeneratorFormat format, SBOM sbom) throws IOException {
+        String serialized = Utils.serializeFromSbom(sbom, schema, format);
+        SBOM translated = Utils.buildSBOMFromString(serialized);
+        assertNotNull(translated);
+        assertEquals(schema, GeneratorSchema.valueOfArgument(translated.getOriginFormat().toString()));
+    }
+
 }

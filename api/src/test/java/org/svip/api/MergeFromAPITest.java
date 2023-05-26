@@ -3,6 +3,7 @@ package org.svip.api;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
+import org.svip.api.utils.Utils;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
@@ -55,9 +56,15 @@ public class MergeFromAPITest {
 
                 if(schema.supportsFormat(format)) {
                     // Test logic per merge
-                    Debug.log(Debug.LOG_TYPE.SUMMARY, "testing " + schema + " " + format);
+                    Debug.logBlockTitle(schema + " " + format);
                     ResponseEntity<SBOM> report = ctrl.merge(contentsString, fileNamesString, schema.toString().toUpperCase(), format.toString().toUpperCase());
+                    SBOM sbom = report.getBody();
                     assertNotNull(report.getBody());
+
+                    //assert merged SBOM can be serialized and then translated back
+                    Utils.assertSerializationAndTranslation(schema, format, sbom);
+
+                    Debug.logBlock();
                     Debug.log(Debug.LOG_TYPE.SUMMARY, "Merged SBOM:\n" + report.getBody());
                     Debug.log(Debug.LOG_TYPE.SUMMARY, "PASSED " + schema + " " + format + "!\n-----------------\n");
                 }
@@ -65,6 +72,8 @@ public class MergeFromAPITest {
         }
 
     }
+
+
 
     /**
      * SETUP: Start API before testing
