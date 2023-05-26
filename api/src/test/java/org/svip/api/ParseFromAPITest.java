@@ -91,10 +91,15 @@ public class ParseFromAPITest extends APITest {
             SBOM res = ctrl.parse(c, fNames.get(i)).getBody();
             assertNotNull(res);
 
-//            GeneratorSchema generatorSchema = Resolver.resolveSchema(schemas.get(i), false);  // todo uncomment once below is resolved
-//            GeneratorSchema.GeneratorFormat generatorFormat = Resolver.resolveFormat(formats.get(i), false);
+            GeneratorSchema generatorSchema = Resolver.resolveSchema(schemas.get(i), false);
+            GeneratorSchema.GeneratorFormat generatorFormat = Resolver.resolveFormat(formats.get(i), false);
 
-//            Utils.assertSerializationAndTranslation(generatorSchema, generatorFormat, res); // todo, this messes up in translation
+            // TODO translators break these
+//            String sbom = Utils.generateSBOM(res, generatorSchema, generatorFormat);
+//            assertNotNull(sbom);
+
+//            SBOM backTranslate = Utils.buildSBOMFromString(sbom);
+//            assertNotNull(backTranslate);
 
             i++;
         }
