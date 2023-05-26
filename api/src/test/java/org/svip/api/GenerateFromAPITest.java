@@ -141,7 +141,7 @@ public class GenerateFromAPITest {
             for(GeneratorSchema.GeneratorFormat format : GeneratorSchema.GeneratorFormat.values()) {
                 if(schema.supportsFormat(format)) {
                     // Test logic per merge
-                    Debug.log(Debug.LOG_TYPE.SUMMARY, "Generating " + schema + " " + format);
+                    Debug.logBlockTitle(schema + " " + format);
                     ResponseEntity<String> report =
                             ctrl.generate(this.fileContents, this.fileNames, schema.toString(), format.toString());
                     String sbom = report.getBody();
@@ -157,6 +157,7 @@ public class GenerateFromAPITest {
                                     format == GeneratorSchema.GeneratorFormat.YAML)) {
                         Debug.log(Debug.LOG_TYPE.WARN, "Unsupported SPDX translator format: " + format + ", skipping " +
                                 "translator portion of test.");
+                        Debug.logBlock();
                         continue;
                     }
 
@@ -164,8 +165,7 @@ public class GenerateFromAPITest {
                     assertNotNull(translated);
                     assertEquals(schema, GeneratorSchema.valueOfArgument(translated.getOriginFormat().toString()));
 
-                    Debug.log(Debug.LOG_TYPE.SUMMARY, "PASSED " + schema + " " + format + "!\n-----------------\n");
-//                    Debug.log(Debug.LOG_TYPE.SUMMARY, "Generated SBOM:\n" + sbom);
+                    Debug.logBlock();
                 }
             }
         }

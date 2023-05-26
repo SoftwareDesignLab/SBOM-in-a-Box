@@ -41,8 +41,11 @@ public class Debug {
             return shortName;
         }
     }
+    private static final String blockChar = "="; // Block character to use
+    private static final int defaultBlockLength = 50;
     private static boolean debugMode = false; // Boolean toggle to allow debug logs
     private static boolean summaryMode = false; // Boolean toggle to suppress all but SUMMARY logs
+    private static int blockLength = -1; // The size of the open block to match when closing
 
     /**
      * Internal Logging system for printing information
@@ -106,6 +109,32 @@ public class Debug {
         } catch (Exception e) {
             System.err.println(header + " | LOGGING ERROR");
         }
+    }
+
+    public static void logBlock() {
+        if(blockLength != -1) {
+            System.out.println(blockChar.repeat(blockLength) + "\n");
+            blockLength = -1;
+        } else {
+            System.out.println("\n" + blockChar.repeat(defaultBlockLength));
+            blockLength = defaultBlockLength;
+        }
+    }
+
+    public static void logBlockTitle(String title) {
+        if(title == null || title.equals("")) {
+            logBlock();
+            return;
+        }
+
+        String formattedTitle = "( " + title + " )";
+        String block = blockChar.repeat((defaultBlockLength - formattedTitle.length()) / 2);
+        String logBlock = block + formattedTitle + block;
+
+        if(logBlock.length() == 49) logBlock += blockChar; // Test for uneven blocks
+
+        System.out.println("\n" + logBlock);
+        blockLength = logBlock.length();
     }
 
     /**
