@@ -1,9 +1,13 @@
 package org.svip.api;
+
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.svip.sbomanalysis.comparison.Comparison;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.svip.sbomanalysis.comparison.Comparison;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -20,11 +24,39 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
  *
  * @author Juan Francisco Patino
  */
-public class CompareFromAPITest {
+public class CompareFromAPITest extends APITest {
     /**
      * Controller to test
      */
     private SVIPApiController ctrl;
+
+    @ParameterizedTest
+    @DisplayName("Null/Empty File Contents Array")
+    @NullAndEmptySource
+    void emptyContentsArrayTest(String fileContents) {
+        ResponseEntity<Comparison> response = ctrl.compare(fileContents, TESTFILEARRAY_LENGTH1);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @ParameterizedTest
+    @DisplayName("Null/Empty File Names Array")
+    @NullAndEmptySource
+    void emptyFileNamesArrayTest(String fileNames) {
+        ResponseEntity<Comparison> response = ctrl.compare(TESTCONTENTSARRAY_LENGTH1, fileNames);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Mismatched File Contents/Names Array Length")
+    void mismatchedFileInfoTest() {
+        // Longer contents array
+        ResponseEntity<Comparison> response = ctrl.compare(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH1);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+        // Longer file names array
+        response = ctrl.compare(TESTCONTENTSARRAY_LENGTH1, TESTFILEARRAY_LENGTH2);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
 
     /**
      * Test that the API can compare multiple SBOMs
