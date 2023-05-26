@@ -77,12 +77,38 @@ public class Utils {
      * @param result SBOM to serialize
      * @param generatorSchema Document schema
      * @param generatorFormat Document format
-     * @return Serialized SBOM document
+     * @return Serialized SBOM document. Null if there was an error serializing.
      */
     public static String generateSBOM(SBOM result, GeneratorSchema generatorSchema,
-                           GeneratorSchema.GeneratorFormat generatorFormat) throws IOException {
-        SBOMGenerator generator = new SBOMGenerator(result, generatorSchema);
-        return generator.writeFileToString(generatorFormat, true);
+                           GeneratorSchema.GeneratorFormat generatorFormat) {
+        try {
+            SBOMGenerator generator = new SBOMGenerator(result, generatorSchema);
+            return generator.writeFileToString(generatorFormat, true);
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Convert file contents and file names JSON arrays to two {@code List<String>}s stored in a string array of
+     * length 2.
+     *
+     * @param contentsArray The string representation of the JSON contents array.
+     * @param fileArray The string representation of the JSON file array.
+     * @return A string array with the contents list stored in position 0 and the files list stored in position 1.
+     * Null if malformed arrays or mismatching lengths.
+     */
+    public static List<String>[] validateContentsAndNamesArrays(String contentsArray, String fileArray) {
+        // Resolve JSON arrays
+        List<String> fileContents = Resolver.resolveJSONStringArray(contentsArray);
+        List<String> filePaths = Resolver.resolveJSONStringArray(fileArray);
+
+        if (fileContents == null || filePaths == null) return null;
+
+        if(fileContents.size() != filePaths.size()) return null;
+
+        List<String>[] result = new List[] { fileContents, filePaths };
+        return result;
     }
 
     /**
@@ -91,9 +117,11 @@ public class Utils {
      * thrown.
      *
      * @param response The response to encode.
-     * @return The encoded ResponseEntity.
+     * @return The encoded ResponseEntity. Null if the response is null or if there was an error encoding.
      */
     public static <T> ResponseEntity<T> encodeResponse(T response) {
+        if(response == null) return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
         try {
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {

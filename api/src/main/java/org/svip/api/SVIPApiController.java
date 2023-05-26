@@ -113,14 +113,11 @@ public class SVIPApiController {
 
         // VALIDATE/PARSE INPUT DATA
         // todo OSI
-        List<String> fileContents = Resolver.resolveJSONStringArray(contentsArray);
-        List<String> filePaths = Resolver.resolveJSONStringArray(fileArray);
-
-        if (fileContents == null) {
-            return new ResponseEntity<>("Malformed fileContents JSON Array.", HttpStatus.BAD_REQUEST);
-        } else if (filePaths == null) {
-            return new ResponseEntity<>("Malformed fileNames JSON Array.", HttpStatus.BAD_REQUEST);
-        }
+        List<String>[] contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
+        if(contentsAndFiles == null) return new ResponseEntity<>("Invalid contents or filenames array.",
+                HttpStatus.BAD_REQUEST);
+        List<String> fileContents = contentsAndFiles[0];
+        List<String> filePaths = contentsAndFiles[1];
 
         // Get schema/format from parameters, if not valid, default to CycloneDX/JSON
         GeneratorSchema schema = Resolver.resolveSchema(schemaName, true);
@@ -128,8 +125,7 @@ public class SVIPApiController {
         if(!schema.supportsFormat(format)) format = schema.getDefaultFormat();
 
         // Ensure equal lengths of file contents & paths
-        if(fileContents.size() != filePaths.size()) return new ResponseEntity<>("File contents & file names are " +
-                "different lengths.", HttpStatus.BAD_REQUEST);
+
 
         // BUILD FILE TREE REPRESENTATION
         // TODO talk to front-end and figure out what the project name should be, currently SVIP. Common directory?
@@ -164,19 +160,10 @@ public class SVIPApiController {
     @PostMapping("/compare")
     public ResponseEntity<Comparison> compare(@RequestParam("contents") String contentsArray,
                                               @RequestParam("fileNames") String fileArray) {
-
-        List<String> fileContents = Resolver.resolveJSONStringArray(contentsArray);
-        List<String> filePaths = Resolver.resolveJSONStringArray(fileArray);
-
-        // TODO figure out how to return error messages
-        if (fileContents == null) {
-            return new ResponseEntity<>(/*"Malformed fileContents JSON Array.",*/ HttpStatus.BAD_REQUEST);
-        } else if (filePaths == null) {
-            return new ResponseEntity<>(/*"Malformed fileNames JSON Array.",*/ HttpStatus.BAD_REQUEST);
-        }
-
-        if(fileContents.size() != filePaths.size()) return new ResponseEntity<>(/*"File contents & file names are " +
-                "different lengths.", */HttpStatus.BAD_REQUEST);
+        List<String>[] contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
+        if(contentsAndFiles == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        List<String> fileContents = contentsAndFiles[0];
+        List<String> filePaths = contentsAndFiles[1];
 
         List<SBOM> sboms = Utils.translateMultiple(fileContents, filePaths);
 
@@ -246,23 +233,14 @@ public class SVIPApiController {
                                    @RequestParam("fileNames") String fileArray
             , @RequestParam("schema") String schema, @RequestParam("format") String format) {
 
-        List<String> fileContents = Resolver.resolveJSONStringArray(contentsArray);
-        List<String> filePaths = Resolver.resolveJSONStringArray(fileArray);
-
-        if (fileContents == null) {
-            return new ResponseEntity<>("Malformed fileContents JSON Array.", HttpStatus.BAD_REQUEST);
-        } else if (filePaths == null) {
-            return new ResponseEntity<>("Malformed fileNames JSON Array.", HttpStatus.BAD_REQUEST);
-        }
-
-        if(fileContents.size() != filePaths.size()) return new ResponseEntity<>("File contents & file names are " +
-                "different lengths.", HttpStatus.BAD_REQUEST);
+        List<String>[] contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
+        if(contentsAndFiles == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        List<String> fileContents = contentsAndFiles[0];
+        List<String> filePaths = contentsAndFiles[1];
 
         List<SBOM> sboms = Utils.translateMultiple(fileContents, filePaths);
 
-        if(sboms.size() < 2){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        if(sboms.size() < 2) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         Merger merger = new Merger();
         SBOM result = merger.merge(sboms); // report to return
@@ -270,11 +248,7 @@ public class SVIPApiController {
         GeneratorSchema generatorSchema = Resolver.resolveSchema(schema, false);
         GeneratorSchema.GeneratorFormat generatorFormat = Resolver.resolveFormat(format, false);
 
-        try {
-            String resultString = Utils.generateSBOM(result, generatorSchema, generatorFormat);
-            return Utils.encodeResponse(resultString);
-        } catch (IOException e) {
-            return new ResponseEntity<>("Error generating SBOM.", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        String resultString = Utils.generateSBOM(result, generatorSchema, generatorFormat);
+        return Utils.encodeResponse(resultString);
     }
 }
