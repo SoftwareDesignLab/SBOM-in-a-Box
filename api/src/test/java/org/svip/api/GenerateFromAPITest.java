@@ -141,7 +141,7 @@ public class GenerateFromAPITest {
      */
     @Test
     @DisplayName("Generate SBOMs")
-    public void generateTest() throws IOException {
+    public void generateTest() {
         for(GeneratorSchema schema : GeneratorSchema.values()) {
             // Test all possible formats
             for(GeneratorSchema.GeneratorFormat format : GeneratorSchema.GeneratorFormat.values()) {
@@ -154,14 +154,21 @@ public class GenerateFromAPITest {
 
                     assertEquals(HttpStatus.OK, report.getStatusCode());
                     assertNotNull(sbom);
+                    assertEquals(format, SBOMGenerator.assumeSBOMFormat(sbom));
 
                     // TODO unsupported translator formats for SPDX
                     if(schema == GeneratorSchema.SPDX &&
                             (format == GeneratorSchema.GeneratorFormat.XML ||
                                     format == GeneratorSchema.GeneratorFormat.JSON ||
-                                    format == GeneratorSchema.GeneratorFormat.YAML)) continue;
-                    SBOM translated = TranslatorController.toSBOM(report.getBody(), buildTestFilepath(sbom));
+                                    format == GeneratorSchema.GeneratorFormat.YAML)) {
+                        Debug.log(Debug.LOG_TYPE.WARN, "Unsupported SPDX translator format: " + format + ", skipping " +
+                                "translator portion of test.");
+                        continue;
+                    }
+
+                    SBOM translated = TranslatorController.toSBOM(sbom.replaceAll("\r", ""), buildTestFilepath(sbom));
                     assertNotNull(translated);
+                    assertEquals(schema, GeneratorSchema.valueOfArgument(translated.getOriginFormat().toString()));
 
                     Debug.log(Debug.LOG_TYPE.SUMMARY, "PASSED " + schema + " " + format + "!\n-----------------\n");
 //                    Debug.log(Debug.LOG_TYPE.SUMMARY, "Generated SBOM:\n" + sbom);
