@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * File: GenerateFromAPITest.java
- * Unit test for API regarding the parsing of SBOMs
+ * Unit test for API regarding the generation of SBOMs
  * <p>
  * Tests:<br>
  * - generateTest: Test that the API can generate three SBOMs

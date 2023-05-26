@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.utils.Utils;
 import org.svip.sbom.model.SBOM;
-import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 
@@ -22,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * File: MergeFromAPITest.java
- * Unit test for API regarding Merging SBOMs
+ * Unit test for API regarding merging SBOMs
  * <p>
  * Tests:<br>
  * - mergeTest: Test that the API can merge three SBOMs
@@ -39,7 +38,7 @@ public class MergeFromAPITest extends APITest{
     @ParameterizedTest
     @DisplayName("Null/Empty File Contents Array")
     @NullAndEmptySource
-    void emptyContentsArrayTest(String fileContents) throws IOException {
+    void emptyContentsArrayTest(String fileContents){
         ResponseEntity<String> response = ctrl.merge(fileContents, TESTFILEARRAY_LENGTH1, CDX_SCHEMA, JSON_FORMAT);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
@@ -47,14 +46,14 @@ public class MergeFromAPITest extends APITest{
     @ParameterizedTest
     @DisplayName("Null/Empty File Names Array")
     @NullAndEmptySource
-    void emptyFileNamesArrayTest(String fileNames) throws IOException {
+    void emptyFileNamesArrayTest(String fileNames){
         ResponseEntity<String> response = ctrl.merge(TESTCONTENTSARRAY_LENGTH1, fileNames, CDX_SCHEMA, JSON_FORMAT);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
     @DisplayName("Mismatched File Contents/Names Array Length")
-    void mismatchedFileInfoTest() throws IOException {
+    void mismatchedFileInfoTest(){
         // Longer contents array
         ResponseEntity<String> response = ctrl.merge(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH1, CDX_SCHEMA, JSON_FORMAT);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -68,7 +67,7 @@ public class MergeFromAPITest extends APITest{
     @DisplayName("Null/Empty/Invalid Schema")
     @NullAndEmptySource
     @ValueSource(strings = { INVALID_SCHEMA })
-    void invalidSchemaNameTest(String schemaName) throws IOException {
+    void invalidSchemaNameTest(String schemaName){
         ResponseEntity<String> response = ctrl.merge(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, schemaName, JSON_FORMAT);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -78,7 +77,7 @@ public class MergeFromAPITest extends APITest{
     @DisplayName("Null/Empty/Invalid/Unsupported Schema")
     @NullAndEmptySource
     @ValueSource(strings = { INVALID_FORMAT, "SPDX" })
-    void invalidFormatNameTest(String formatName) throws IOException {
+    void invalidFormatNameTest(String formatName){
         ResponseEntity<String> response = ctrl.merge(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, CDX_SCHEMA, formatName);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -114,6 +113,7 @@ public class MergeFromAPITest extends APITest{
                             schema.toString().toUpperCase(), format.toString().toUpperCase());
                     String sbom = report.getBody();
                     assertNotNull(sbom);
+                    Debug.log(Debug.LOG_TYPE.SUMMARY, "Merged SBOM:\n" + report.getBody());
 
                     SBOM translated = Utils.buildSBOMFromString(sbom);
                     assertNotNull(translated);
@@ -123,7 +123,6 @@ public class MergeFromAPITest extends APITest{
                     assertEquals(schema, assumedSchema);
                     Debug.log(Debug.LOG_TYPE.SUMMARY, "SBOM generated in expected schema: " + assumedSchema);
 
-                    Debug.log(Debug.LOG_TYPE.SUMMARY, "Merged SBOM:\n" + report.getBody());
                     Debug.logBlock();
                 }
             }

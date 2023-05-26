@@ -210,10 +210,10 @@ public class SVIPApiController {
      */
     @PostMapping("/parse")
     public ResponseEntity<SBOM> parse(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
-        SBOM sbom = TranslatorController.toSBOM(contents, fileName);
 
+        SBOM sbom = TranslatorController.toSBOM(contents, fileName);
         // Explicitly return null if failed
-        if (sbom == null) return new ResponseEntity<>(null, HttpStatus.OK);
+        if (sbom == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST); // todo should this be INTERNAL_SERVER err?
 
         return Utils.encodeResponse(sbom);
     }
@@ -243,7 +243,8 @@ public class SVIPApiController {
 
         GeneratorSchema generatorSchema = Resolver.resolveSchema(schema, false);
         GeneratorSchema.GeneratorFormat generatorFormat = Resolver.resolveFormat(format, false);
-        if(generatorSchema == null || generatorFormat == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(generatorSchema == null || generatorFormat == null ||
+                !generatorSchema.supportsFormat(generatorFormat)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         Merger merger = new Merger();
         SBOM result = merger.merge(sboms); // report to return

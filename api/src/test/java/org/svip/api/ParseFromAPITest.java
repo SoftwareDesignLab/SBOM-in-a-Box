@@ -9,7 +9,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.svip.api.utils.Resolver;
 import org.svip.sbom.model.SBOM;
+import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 
 import java.io.IOException;
 import java.util.List;
@@ -89,11 +91,8 @@ public class ParseFromAPITest extends APITest {
             SBOM res = ctrl.parse(c, fNames.get(i)).getBody();
             assertNotNull(res);
 
-//            Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> configured = Utils.configureSchema(schemas.get(i), formats.get(i)); // todo, this works just waste of computation until we figure out below
-//            assert configured != null;
-//            GeneratorSchema generatorSchema = (GeneratorSchema) configured.keySet().toArray()[0];
-//            GeneratorSchema.GeneratorFormat generatorFormat = configured.get(generatorSchema);
-
+//            GeneratorSchema generatorSchema = Resolver.resolveSchema(schemas.get(i), false);  // todo uncomment once below is resolved
+//            GeneratorSchema.GeneratorFormat generatorFormat = Resolver.resolveFormat(formats.get(i), false);
 
 //            Utils.assertSerializationAndTranslation(generatorSchema, generatorFormat, res); // todo, this messes up in translation
 
