@@ -292,8 +292,7 @@ public class SVIPApiController {
         if(generatorSchema == GeneratorSchema.SPDX) // spdx schema implies spdx format
             generatorFormat = GeneratorSchema.GeneratorFormat.SPDX;
 
-        SBOMGenerator generator = new SBOMGenerator(result, generatorSchema);
-        String contents = generator.writeFileToString(generatorFormat, true);
+        String contents = Utils.serializeFromSbom(result, generatorSchema, generatorFormat);
 
         try{
             switch (generatorSchema){
@@ -329,5 +328,6 @@ public class SVIPApiController {
         return new ResponseEntity<>(result, HttpStatus.OK);
 
     }
+
 
 }

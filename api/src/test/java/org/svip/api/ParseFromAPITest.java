@@ -49,6 +49,9 @@ public class ParseFromAPITest {
             SBOM res = ctrl.parse(c, fNames.get(i)).getBody();
             assertNotNull(res);
             i++;
+
+
+
         }
 
     }

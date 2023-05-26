@@ -8,6 +8,7 @@ import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 import org.svip.sbomfactory.translators.TranslatorController;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -94,5 +95,18 @@ public class Utils {
             sboms.add(TranslatorController.toSBOM(contents.get(i), fNames.get(i)));
         }
         return sboms;
+    }
+
+    /**
+     * Take an SBOM object and serialize it given a schema and format
+     * @param result SBOM to serialize
+     * @param generatorSchema Document schema
+     * @param generatorFormat Document format
+     * @return Serialized SBOM document
+     */
+    public static String serializeFromSbom(SBOM result, GeneratorSchema generatorSchema, GeneratorSchema.GeneratorFormat generatorFormat) throws IOException {
+        SBOMGenerator generator = new SBOMGenerator(result, generatorSchema);
+        String contents = generator.writeFileToString(generatorFormat, true);
+        return contents;
     }
 }
