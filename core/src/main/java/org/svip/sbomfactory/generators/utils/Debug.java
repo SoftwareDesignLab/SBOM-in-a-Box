@@ -11,6 +11,7 @@ import java.util.Arrays;
  *
  * @author Dylan Mulligan
  * @author Derek Garcia
+ * @author Ian Dunn
  */
 public class Debug {
     /**
@@ -111,6 +112,10 @@ public class Debug {
         }
     }
 
+    /**
+     * Log the beginning or end of a log block. A beginning log block will be preceded by a newline; an ending log
+     * block will be concluded by a newline. An ending log block will match the length of its preceding log block.
+     */
     public static void logBlock() {
         if(blockLength != -1) {
             System.out.println(blockChar.repeat(blockLength) + "\n");
@@ -121,6 +126,12 @@ public class Debug {
         }
     }
 
+    /**
+     * Log a beginning log block with a title (remaining the default length). The title will be centered in the log
+     * block and preceded by a newline.
+     *
+     * @param title The title of the log block.
+     */
     public static void logBlockTitle(String title) {
         if(title == null || title.equals("")) {
             logBlock();
@@ -131,7 +142,9 @@ public class Debug {
         String block = blockChar.repeat((defaultBlockLength - formattedTitle.length()) / 2);
         String logBlock = block + formattedTitle + block;
 
-        if(logBlock.length() == 49) logBlock += blockChar; // Test for uneven blocks
+        // Test for uneven blocks
+        if(logBlock.length() == defaultBlockLength - 1) logBlock += blockChar;
+        if(logBlock.length() == defaultBlockLength + 1) logBlock = logBlock.substring(0, logBlock.length() - 1);
 
         System.out.println("\n" + logBlock);
         blockLength = logBlock.length();
