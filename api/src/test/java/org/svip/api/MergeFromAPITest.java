@@ -1,10 +1,16 @@
 package org.svip.api;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.utils.Utils;
 import org.svip.sbom.model.SBOM;
+import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 
@@ -23,13 +29,60 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  *
  * @author Juan Francisco Patino
  */
-public class MergeFromAPITest {
+public class MergeFromAPITest extends APITest{
 
     /**
      * Controller to test
      */
     private SVIPApiController ctrl;
 
+    @ParameterizedTest
+    @DisplayName("Null/Empty File Contents Array")
+    @NullAndEmptySource
+    void emptyContentsArrayTest(String fileContents) throws IOException {
+        ResponseEntity<String> response = ctrl.merge(fileContents, TESTFILEARRAY_LENGTH1, CDX_SCHEMA, JSON_FORMAT);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @ParameterizedTest
+    @DisplayName("Null/Empty File Names Array")
+    @NullAndEmptySource
+    void emptyFileNamesArrayTest(String fileNames) throws IOException {
+        ResponseEntity<String> response = ctrl.merge(TESTCONTENTSARRAY_LENGTH1, fileNames, CDX_SCHEMA, JSON_FORMAT);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Mismatched File Contents/Names Array Length")
+    void mismatchedFileInfoTest() throws IOException {
+        // Longer contents array
+        ResponseEntity<String> response = ctrl.merge(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH1, CDX_SCHEMA, JSON_FORMAT);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+        // Longer file names array
+        response = ctrl.merge(TESTCONTENTSARRAY_LENGTH1, TESTFILEARRAY_LENGTH2, CDX_SCHEMA, JSON_FORMAT);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @ParameterizedTest
+    @DisplayName("Null/Empty/Invalid Schema")
+    @NullAndEmptySource
+    @ValueSource(strings = { INVALID_SCHEMA })
+    void invalidSchemaNameTest(String schemaName) throws IOException {
+        ResponseEntity<String> response = ctrl.merge(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, schemaName, JSON_FORMAT);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @ParameterizedTest
+    @DisplayName("Null/Empty/Invalid/Unsupported Schema")
+    @NullAndEmptySource
+    @ValueSource(strings = { INVALID_FORMAT, "SPDX" })
+    void invalidFormatNameTest(String formatName) throws IOException {
+        ResponseEntity<String> response = ctrl.merge(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, CDX_SCHEMA, formatName);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
 
     /**
      * Test that the API can Merge three SBOMs

@@ -21,6 +21,8 @@ import org.svip.sbomfactory.osi.OSI;
 import org.svip.sbomfactory.translators.TranslatorController;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -253,19 +255,40 @@ public class SVIPApiController {
                                    @RequestParam("fileNames") String fileNames
             , @RequestParam("schema") String schema, @RequestParam("format") String format) throws IOException {
 
-        List<SBOM> sboms = Utils.translateMultiple(fileContents, fileNames);
+        String[] params = new String[]{fileContents, fileNames, schema, format};
+        for (String p: params
+             ) {
+
+            if(p == null || p.length() == 0)
+                return new ResponseEntity<>("Parameter " + p + " invalid.", HttpStatus.BAD_REQUEST);
+
+        }
+
+        List<SBOM> sboms = new ArrayList<>();
+        try{
+            sboms = Utils.translateMultiple(fileContents, fileNames);
+        }
+        catch (Exception e){
+            //ignore, sbom array size = 0
+        }
 
         if(sboms.size() < 2){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Malformed file input.", HttpStatus.BAD_REQUEST);
         }
+
+        Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = Utils.configureSchema(schema, format); // get schema enumerations from call
+        if(m == null)
+            return new ResponseEntity<>("Invalid Schema/Format", HttpStatus.BAD_REQUEST);
+
+        GeneratorSchema generatorSchema = (GeneratorSchema) m.keySet().toArray()[0];
+        GeneratorSchema.GeneratorFormat generatorFormat = m.get(generatorSchema);
+
+        if(!generatorSchema.supportsFormat(GeneratorSchema.GeneratorFormat.valueOf(format)))
+                    return new ResponseEntity<>("Invalid format for SPDX: " + format, HttpStatus.BAD_REQUEST);
+
 
         Merger merger = new Merger();
         SBOM result = merger.merge(sboms); // report to return
-
-        Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = Utils.configureSchema(schema, format); // get schema enumerations from call
-        assert m != null;
-        GeneratorSchema generatorSchema = (GeneratorSchema) m.keySet().toArray()[0];
-        GeneratorSchema.GeneratorFormat generatorFormat = m.get(generatorSchema);
 
         if(generatorSchema == GeneratorSchema.SPDX) // spdx schema implies spdx format
             generatorFormat = GeneratorSchema.GeneratorFormat.SPDX;
