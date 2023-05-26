@@ -1,9 +1,16 @@
 package org.svip.api.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 import org.svip.sbomfactory.translators.TranslatorController;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A static class containing helpful utilities for API calls and testing responses.
@@ -44,5 +51,48 @@ public class Utils {
     private static String buildTestFilepath(String sbom) {
         GeneratorSchema.GeneratorFormat format = SBOMGenerator.assumeSBOMFormat(sbom);
         return "/SBOMOut/SBOM." + format.toString().toLowerCase();
+    }
+
+
+    /**
+     * Code shared by /compare and /merge used to configure optional parameters
+     *
+     * @param schema schema string value
+     * @param format format string value
+     */
+    public static Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> configureSchema(String schema, String format) {
+
+        GeneratorSchema resultSchema;
+        try { resultSchema = GeneratorSchema.valueOfArgument(schema.toUpperCase()); }
+        catch (IllegalArgumentException i) { return null;}
+
+        GeneratorSchema.GeneratorFormat resultFormat;
+        try { resultFormat = GeneratorSchema.GeneratorFormat.valueOf(format.toUpperCase()); }
+        catch (IllegalArgumentException i) { return null;}
+
+        return Map.of(resultSchema, resultFormat);
+
+    }
+
+    /**
+     * Code shared by /compare and /merge used to deserialize multiple SBOMs
+     *
+     * @param fileContents JSON string array of the contents of all provided SBOMs
+     * @param fileNames JSON string array of the filenames of all provided SBOMs
+     * @return list of SBOM objects
+     */
+    public static ArrayList<SBOM> translateMultiple(String fileContents, String fileNames) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<String> contents = objectMapper.readValue(fileContents, new TypeReference<>(){});
+        List<String> fNames = objectMapper.readValue(fileNames, new TypeReference<>(){});
+
+        // Convert the SBOMs to SBOM objects
+        ArrayList<SBOM> sboms = new ArrayList<>();
+
+        for (int i = 0; i < contents.size(); i++) {
+            // Get contents of the file
+            sboms.add(TranslatorController.toSBOM(contents.get(i), fNames.get(i)));
+        }
+        return sboms;
     }
 }
