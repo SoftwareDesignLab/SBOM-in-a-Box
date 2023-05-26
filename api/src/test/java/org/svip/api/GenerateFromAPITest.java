@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.svip.api.utils.Utils;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.utils.Debug;
@@ -118,7 +119,7 @@ public class GenerateFromAPITest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(GeneratorSchema.CycloneDX, getSchemaFromSBOM(response.getBody()));
+        assertEquals(GeneratorSchema.CycloneDX, Utils.getSchemaFromSBOM(response.getBody()));
     }
 
     @ParameterizedTest
@@ -166,7 +167,7 @@ public class GenerateFromAPITest {
                         continue;
                     }
 
-                    SBOM translated = TranslatorController.toSBOM(sbom.replaceAll("\r", ""), buildTestFilepath(sbom));
+                    SBOM translated = Utils.buildSBOMFromString(sbom);
                     assertNotNull(translated);
                     assertEquals(schema, GeneratorSchema.valueOfArgument(translated.getOriginFormat().toString()));
 
@@ -175,27 +176,5 @@ public class GenerateFromAPITest {
                 }
             }
         }
-    }
-
-    private void logTestRequest(String fileContents, String fileNames, String schema, String format) {
-        String parameters = String.format("""
-                {
-                    fileContents: "%s",
-                    fileNames: "%s",
-                    schema: "%s",
-                    format: "%s",
-                }
-                """, fileContents, fileNames, schema, format);
-        Debug.log(Debug.LOG_TYPE.SUMMARY, "POST /SVIP/generateSBOM:\n" + parameters);
-    }
-
-    private GeneratorSchema getSchemaFromSBOM(String sbom) {
-        SBOM translated = TranslatorController.toSBOM(sbom, buildTestFilepath(sbom));
-        return GeneratorSchema.valueOfArgument(translated.getOriginFormat().toString());
-    }
-
-    private String buildTestFilepath(String sbom) {
-        GeneratorSchema.GeneratorFormat format = SBOMGenerator.assumeSBOMFormat(sbom);
-        return "/SBOMOut/SBOM." + format.toString().toLowerCase();
     }
 }
