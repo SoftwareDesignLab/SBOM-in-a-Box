@@ -16,6 +16,7 @@ import org.svip.sbomanalysis.qualityattributes.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.QualityReport;
 import org.svip.sbomfactory.generators.ParserController;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
+import org.svip.api.utils.Utils;
 
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualNode;
@@ -190,7 +191,7 @@ public class SVIPApiController {
     @PostMapping("/compare")
     public ResponseEntity<Comparison> compare(@RequestParam("contents") String contentArray, @RequestParam("fileNames") String fileArray) throws IOException {
 
-        ArrayList<SBOM> sboms = translateMultiple(contentArray, fileArray);
+        ArrayList<SBOM> sboms = Utils.translateMultiple(contentArray, fileArray);
 
         if(sboms.size() < 2){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -274,7 +275,7 @@ public class SVIPApiController {
     public ResponseEntity<SBOM> merge(@RequestParam("fileContents") String fileContents, @RequestParam("fileNames") String fileNames
             , @RequestParam("schema") String schema, @RequestParam("format") String format) throws IOException {
 
-        ArrayList<SBOM> sboms = translateMultiple(fileContents, fileNames);
+        ArrayList<SBOM> sboms = Utils.translateMultiple(fileContents, fileNames);
 
         if(sboms.size() < 2){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -283,7 +284,7 @@ public class SVIPApiController {
         Merger merger = new Merger();
         SBOM result = merger.merge(sboms); // report to return
 
-        Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = configureSchema(schema, format); // get schema enumerations from call
+        Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> m = Utils.configureSchema(schema, format); // get schema enumerations from call
         assert m != null;
         GeneratorSchema generatorSchema = (GeneratorSchema) m.keySet().toArray()[0];
         GeneratorSchema.GeneratorFormat generatorFormat = m.get(generatorSchema);
@@ -328,53 +329,5 @@ public class SVIPApiController {
         return new ResponseEntity<>(result, HttpStatus.OK);
 
     }
-
-    /**
-     * Helper functions
-     */
-
-    /**
-     * Code shared by /compare and /merge used to configure optional parameters
-     *
-     * @param schema schema string value
-     * @param format format string value
-     */
-    private static Map<GeneratorSchema, GeneratorSchema.GeneratorFormat> configureSchema(String schema, String format) {
-
-        GeneratorSchema resultSchema;
-        try { resultSchema = GeneratorSchema.valueOfArgument(schema.toUpperCase()); }
-        catch (IllegalArgumentException i) { return null;}
-
-        GeneratorSchema.GeneratorFormat resultFormat;
-        try { resultFormat = GeneratorSchema.GeneratorFormat.valueOf(format.toUpperCase()); }
-        catch (IllegalArgumentException i) { return null;}
-
-        return Map.of(resultSchema, resultFormat);
-
-    }
-
-    /**
-     * Code shared by /compare and /merge used to deserialize multiple SBOMs
-     *
-     * @param fileContents JSON string array of the contents of all provided SBOMs
-     * @param fileNames JSON string array of the filenames of all provided SBOMs
-     * @return list of SBOM objects
-     * @throws JsonProcessingException
-     */
-    private static ArrayList<SBOM> translateMultiple(String fileContents, String fileNames) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<String> contents = objectMapper.readValue(fileContents, new TypeReference<>(){});
-        List<String> fNames = objectMapper.readValue(fileNames, new TypeReference<>(){});
-
-        // Convert the SBOMs to SBOM objects
-        ArrayList<SBOM> sboms = new ArrayList<>();
-
-        for (int i = 0; i < contents.size(); i++) {
-            // Get contents of the file
-            sboms.add(TranslatorController.toSBOM(contents.get(i), fNames.get(i)));
-        }
-        return sboms;
-    }
-
 
 }
