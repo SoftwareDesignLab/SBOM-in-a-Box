@@ -3,6 +3,7 @@ package org.svip.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -18,7 +19,6 @@ import org.svip.sbomfactory.generators.utils.virtualtree.VirtualNode;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,29 +51,10 @@ public class GenerateFromAPITest {
     private final static String INVALID_SCHEMA = "Invalid Test Schema";
     private final static String JSON_FORMAT = "JSON";
     private final static String INVALID_FORMAT = "GIF";
-    private final static VirtualPath TEST_PROJECT_PATH = new VirtualPath(System.getProperty("user.dir") +
-            "/src/test/java/org/svip/api/sample_projects/Java");
 
-    private final String fileContents;
-    private final String fileNames;
-
-    public GenerateFromAPITest() throws JsonProcessingException {
+    public GenerateFromAPITest() {
         Debug.enableSummary();
         ctrl = new SVIPApiController();
-
-        // Build fileContents and fileNames for testing
-        VirtualTree fileTree = VirtualTree.buildVirtualTree(TEST_PROJECT_PATH);
-        List<String> fileContents = new ArrayList<>();
-        List<String> fileNames = new ArrayList<>();
-        for(VirtualNode file : fileTree.getAllFiles()) {
-            fileContents.add(file.getFileContents());
-            fileNames.add(file.getPath().toString());
-        }
-
-        // Save contents and names as JSON strings
-        ObjectMapper mapper = new ObjectMapper();
-        this.fileContents = mapper.writeValueAsString(fileContents);
-        this.fileNames = mapper.writeValueAsString(fileNames);
     }
 
     @ParameterizedTest
@@ -129,43 +110,79 @@ public class GenerateFromAPITest {
     }
 
     /**
-     * Test that the API can generate an SBOM from a test project
+     * Nested test class to generate SBOMs from the API endpoint and then back-translate them to ensure correctness.
      *
-     * @throws IOException If the SBOM merging is broken
+     * This is a nested class due to the file parsing and setup required for the single test method.
      */
-    @Test
-    @DisplayName("Generate SBOMs")
-    public void generateTest() {
-        for(GeneratorSchema schema : GeneratorSchema.values()) {
-            // Test all possible formats
-            for(GeneratorSchema.GeneratorFormat format : GeneratorSchema.GeneratorFormat.values()) {
-                if(schema.supportsFormat(format)) {
-                    // Test logic per merge
-                    Debug.logBlockTitle(schema + " " + format);
-                    ResponseEntity<String> report =
-                            ctrl.generate(this.fileContents, this.fileNames, schema.toString(), format.toString());
-                    String sbom = report.getBody();
+    @Nested
+    @DisplayName("Generate and Back-Translate SBOMs")
+    class GenerateSBOMTest {
+        private final static VirtualPath TEST_PROJECT_PATH = new VirtualPath(System.getProperty("user.dir") +
+                "/src/test/java/org/svip/api/sample_projects/Java");
 
-                    assertEquals(HttpStatus.OK, report.getStatusCode());
-                    assertNotNull(sbom);
-                    assertEquals(format, SBOMGenerator.assumeSBOMFormat(sbom));
+        private final String fileContents;
+        private final String fileNames;
 
-                    // TODO unsupported translator formats for SPDX
-                    if(schema == GeneratorSchema.SPDX &&
-                            (format == GeneratorSchema.GeneratorFormat.XML ||
-                                    format == GeneratorSchema.GeneratorFormat.JSON ||
-                                    format == GeneratorSchema.GeneratorFormat.YAML)) {
-                        Debug.log(Debug.LOG_TYPE.WARN, "Unsupported SPDX translator format: " + format + ", skipping " +
-                                "translator portion of test.");
+        public GenerateSBOMTest() throws JsonProcessingException {
+            // Build fileContents and fileNames for testing
+            VirtualTree fileTree = VirtualTree.buildVirtualTree(TEST_PROJECT_PATH);
+            List<String> fileContents = new ArrayList<>();
+            List<String> fileNames = new ArrayList<>();
+            for(VirtualNode file : fileTree.getAllFiles()) {
+                fileContents.add(file.getFileContents());
+                fileNames.add(file.getPath().toString());
+            }
+
+            // Save contents and names as JSON strings
+            ObjectMapper mapper = new ObjectMapper();
+            this.fileContents = mapper.writeValueAsString(fileContents);
+            this.fileNames = mapper.writeValueAsString(fileNames);
+        }
+
+        /**
+         * Test that the API can generate an SBOM from a test project
+         */
+        @Test
+        @DisplayName("Generate SBOMs")
+        public void generateTest() {
+            for(GeneratorSchema schema : GeneratorSchema.values()) {
+                // Test all possible formats
+                for(GeneratorSchema.GeneratorFormat format : GeneratorSchema.GeneratorFormat.values()) {
+                    if(schema.supportsFormat(format)) {
+                        // Test logic per merge
+                        Debug.logBlockTitle(schema + " " + format);
+                        ResponseEntity<String> report =
+                                ctrl.generate(this.fileContents, this.fileNames, schema.toString(), format.toString());
+                        String sbom = report.getBody();
+
+                        assertEquals(HttpStatus.OK, report.getStatusCode());
+                        assertNotNull(sbom);
+
+                        GeneratorSchema.GeneratorFormat assumedFormat = SBOMGenerator.assumeSBOMFormat(sbom);
+                        assertEquals(format, assumedFormat);
+                        Debug.log(Debug.LOG_TYPE.SUMMARY, "SBOM generated in expected format: " + assumedFormat);
+
+                        // TODO unsupported translator formats for SPDX
+                        if(schema == GeneratorSchema.SPDX &&
+                                (format == GeneratorSchema.GeneratorFormat.XML ||
+                                        format == GeneratorSchema.GeneratorFormat.JSON ||
+                                        format == GeneratorSchema.GeneratorFormat.YAML)) {
+                            Debug.log(Debug.LOG_TYPE.WARN, "Unsupported SPDX translator format: " + format + ", skipping " +
+                                    "translator portion of test.");
+                            Debug.logBlock();
+                            continue;
+                        }
+
+                        SBOM translated = Utils.buildSBOMFromString(sbom);
+                        assertNotNull(translated);
+                        Debug.log(Debug.LOG_TYPE.SUMMARY, "SBOM back-translated successfully without any errors");
+
+                        GeneratorSchema assumedSchema = GeneratorSchema.valueOfArgument(translated.getOriginFormat().toString());
+                        assertEquals(schema, assumedSchema);
+                        Debug.log(Debug.LOG_TYPE.SUMMARY, "SBOM generated in expected schema: " + assumedSchema);
+
                         Debug.logBlock();
-                        continue;
                     }
-
-                    SBOM translated = Utils.buildSBOMFromString(sbom);
-                    assertNotNull(translated);
-                    assertEquals(schema, GeneratorSchema.valueOfArgument(translated.getOriginFormat().toString()));
-
-                    Debug.logBlock();
                 }
             }
         }
