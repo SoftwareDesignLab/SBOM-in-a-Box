@@ -3,15 +3,18 @@ package org.svip.api;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.svip.api.utils.Utils;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.svip.sbom.model.SBOM;
-import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
@@ -24,12 +27,40 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  *
  * @author Juan Francisco Patino
  */
-public class ParseFromAPITest {
+public class ParseFromAPITest extends APITest {
 
     /**
      * Controller to test
      */
     private SVIPApiController ctrl;
+
+    @ParameterizedTest
+    @DisplayName("Null/Empty File Contents Array")
+    @NullAndEmptySource
+    void emptyContentsArrayTest(String fileContents) {
+        ResponseEntity<SBOM> response = ctrl.parse(fileContents, TESTFILEARRAY_LENGTH1);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @ParameterizedTest
+    @DisplayName("Null/Empty File Names Array")
+    @NullAndEmptySource
+    void emptyFileNamesArrayTest(String fileNames) {
+        ResponseEntity<SBOM> response = ctrl.parse(TESTCONTENTSARRAY_LENGTH1, fileNames);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Mismatched File Contents/Names Array Length")
+    void mismatchedFileInfoTest() {
+        // Longer contents array
+        ResponseEntity<SBOM> response = ctrl.parse(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH1);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+        // Longer file names array
+        response = ctrl.parse(TESTCONTENTSARRAY_LENGTH1, TESTFILEARRAY_LENGTH2);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
 
     /**
      * Test that the API can parse multiple SBOMs
