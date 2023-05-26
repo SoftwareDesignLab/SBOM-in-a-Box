@@ -158,7 +158,7 @@ public enum GeneratorSchema {
         assert argument != null;
 
         switch (argument.toUpperCase()) {
-            case "CDX", "CYCLONEDX" -> { return CycloneDX; }
+            case "CDX", "CYCLONEDX", "CYCLONE_DX" -> { return CycloneDX; }
             case "SPDX" -> { return SPDX; }
             default -> throw new IllegalArgumentException();
         }

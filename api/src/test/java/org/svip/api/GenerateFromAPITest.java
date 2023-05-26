@@ -2,16 +2,15 @@ package org.svip.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.Nested;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.svip.sbom.model.SBOM;
+import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualNode;
@@ -21,7 +20,6 @@ import org.svip.sbomfactory.translators.TranslatorController;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -119,7 +117,8 @@ public class GenerateFromAPITest {
         logTestRequest(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, schemaName, JSON_FORMAT);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertEquals(GeneratorSchema.CycloneDX, getSchemaFromSBOM(response.getBody()));
+        assertNotNull(response.getBody());
+        assertEquals(GeneratorSchema.CycloneDX, getSchemaFromSBOM(response.getBody()));
     }
 
     @ParameterizedTest
@@ -131,7 +130,8 @@ public class GenerateFromAPITest {
         logTestRequest(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, CDX_SCHEMA, formatName);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertEquals(GeneratorSchema.CycloneDX.getDefaultFormat(), getFormatFromSBOM(response.getBody()));
+        assertNotNull(response.getBody());
+        assertEquals(GeneratorSchema.CycloneDX.getDefaultFormat(), SBOMGenerator.assumeSBOMFormat(response.getBody()));
     }
 
     /**
@@ -150,21 +150,21 @@ public class GenerateFromAPITest {
                     Debug.log(Debug.LOG_TYPE.SUMMARY, "Generating " + schema + " " + format);
                     ResponseEntity<String> report =
                             ctrl.generate(this.fileContents, this.fileNames, schema.toString(), format.toString());
+                    String sbom = report.getBody();
 
                     assertEquals(HttpStatus.OK, report.getStatusCode());
-                    assertNotNull(report.getBody());
+                    assertNotNull(sbom);
+
+                    // TODO unsupported translator formats for SPDX
+                    if(schema == GeneratorSchema.SPDX &&
+                            (format == GeneratorSchema.GeneratorFormat.XML ||
+                                    format == GeneratorSchema.GeneratorFormat.JSON ||
+                                    format == GeneratorSchema.GeneratorFormat.YAML)) continue;
+                    SBOM translated = TranslatorController.toSBOM(report.getBody(), buildTestFilepath(sbom));
+                    assertNotNull(translated);
 
                     Debug.log(Debug.LOG_TYPE.SUMMARY, "PASSED " + schema + " " + format + "!\n-----------------\n");
-//                    Debug.log(Debug.LOG_TYPE.SUMMARY, "Generated SBOM:\n" + report.getBody());
-
-                    // TODO figure out translator filetype
-//                    // TODO unsupported translator formats for SPDX
-//                    if(schema == GeneratorSchema.SPDX &&
-//                            (format == GeneratorSchema.GeneratorFormat.XML ||
-//                                    format == GeneratorSchema.GeneratorFormat.JSON ||
-//                                    format == GeneratorSchema.GeneratorFormat.YAML)) continue;
-//                    SBOM translated = TranslatorController.toSBOM(report.getBody(), "");
-//                    assertNotNull(translated);
+//                    Debug.log(Debug.LOG_TYPE.SUMMARY, "Generated SBOM:\n" + sbom);
                 }
             }
         }
@@ -182,13 +182,13 @@ public class GenerateFromAPITest {
         Debug.log(Debug.LOG_TYPE.SUMMARY, "POST /SVIP/generateSBOM:\n" + parameters);
     }
 
-//    private GeneratorSchema getSchemaFromSBOM(String sbom) {
-//        SBOM translated = TranslatorController.toSBOM(sbom, "");
-//        return GeneratorSchema.valueOf(translated.getOriginFormat().toString());
-//    }
+    private GeneratorSchema getSchemaFromSBOM(String sbom) {
+        SBOM translated = TranslatorController.toSBOM(sbom, buildTestFilepath(sbom));
+        return GeneratorSchema.valueOfArgument(translated.getOriginFormat().toString());
+    }
 
-//    private GeneratorSchema.GeneratorFormat getFormatFromSBOM(String sbom) {
-//        SBOM translated = TranslatorController.toSBOM(sbom, "");
-//        return translate.getFileFormat(); TODO how do we do this?????
-//    }
+    private String buildTestFilepath(String sbom) {
+        GeneratorSchema.GeneratorFormat format = SBOMGenerator.assumeSBOMFormat(sbom);
+        return "/SBOMOut/SBOM." + format.toString().toLowerCase();
+    }
 }
