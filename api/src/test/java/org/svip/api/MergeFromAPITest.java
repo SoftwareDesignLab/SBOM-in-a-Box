@@ -10,6 +10,7 @@ import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
@@ -46,27 +47,31 @@ public class MergeFromAPITest {
             // Test all possible formats
             for(GeneratorSchema.GeneratorFormat format : GeneratorSchema.GeneratorFormat.values()) {
 
-                if(schema == GeneratorSchema.SPDX)
-                    switch (format) {
-                        case XML, JSON, YAML -> { // todo we don't support SPDX with these formats yet
-                            continue;
-                        }
-                    }
+                // TODO unsupported translator formats for SPDX
+                if(schema == GeneratorSchema.SPDX &&
+                        (format == GeneratorSchema.GeneratorFormat.XML ||
+                                format == GeneratorSchema.GeneratorFormat.JSON ||
+                                format == GeneratorSchema.GeneratorFormat.YAML)) continue;
 
 
                 if(schema.supportsFormat(format)) {
                     // Test logic per merge
                     Debug.logBlockTitle(schema + " " + format);
-                    ResponseEntity<SBOM> report = ctrl.merge(contentsString, fileNamesString, schema.toString().toUpperCase(), format.toString().toUpperCase());
-                    SBOM sbom = report.getBody();
-                    assertNotNull(report.getBody());
+                    ResponseEntity<String> report = ctrl.merge(contentsString, fileNamesString,
+                            schema.toString().toUpperCase(), format.toString().toUpperCase());
+                    String sbom = report.getBody();
+                    assertNotNull(sbom);
 
-                    //assert merged SBOM can be serialized and then translated back
-                    Utils.assertSerializationAndTranslation(schema, format, sbom);
+                    SBOM translated = Utils.buildSBOMFromString(sbom);
+                    assertNotNull(translated);
+                    Debug.log(Debug.LOG_TYPE.SUMMARY, "SBOM back-translated successfully without any errors");
 
-                    Debug.logBlock();
+                    GeneratorSchema assumedSchema = GeneratorSchema.valueOfArgument(translated.getOriginFormat().toString());
+                    assertEquals(schema, assumedSchema);
+                    Debug.log(Debug.LOG_TYPE.SUMMARY, "SBOM generated in expected schema: " + assumedSchema);
+
                     Debug.log(Debug.LOG_TYPE.SUMMARY, "Merged SBOM:\n" + report.getBody());
-                    Debug.log(Debug.LOG_TYPE.SUMMARY, "PASSED " + schema + " " + format + "!\n-----------------\n");
+                    Debug.logBlock();
                 }
             }
         }
@@ -80,7 +85,7 @@ public class MergeFromAPITest {
      */
     @BeforeEach
     public void setup(){
-
+        Debug.enableSummary();
         ctrl = new SVIPApiController();
 
     }

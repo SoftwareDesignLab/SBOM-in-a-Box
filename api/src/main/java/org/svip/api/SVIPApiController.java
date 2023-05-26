@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.svip.api.utils.Utils;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomanalysis.comparison.Comparison;
 import org.svip.sbomanalysis.comparison.Merger;
@@ -16,18 +17,11 @@ import org.svip.sbomanalysis.qualityattributes.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.QualityReport;
 import org.svip.sbomfactory.generators.ParserController;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
-import org.svip.api.utils.Utils;
-
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
-import org.svip.sbomfactory.generators.utils.virtualtree.VirtualNode;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
 import org.svip.sbomfactory.osi.OSI;
-import org.svip.sbomfactory.translators.TranslatorCDXJSON;
-import org.svip.sbomfactory.translators.TranslatorCDXXML;
 import org.svip.sbomfactory.translators.TranslatorController;
-import org.svip.sbomfactory.translators.TranslatorSPDX;
-
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -272,7 +266,8 @@ public class SVIPApiController {
      * @return merged result SBOM
      */
     @PostMapping("merge")
-    public ResponseEntity<SBOM> merge(@RequestParam("fileContents") String fileContents, @RequestParam("fileNames") String fileNames
+    public ResponseEntity<String> merge(@RequestParam("fileContents") String fileContents,
+                                   @RequestParam("fileNames") String fileNames
             , @RequestParam("schema") String schema, @RequestParam("format") String format) throws IOException {
 
         ArrayList<SBOM> sboms = Utils.translateMultiple(fileContents, fileNames);
@@ -292,41 +287,11 @@ public class SVIPApiController {
         if(generatorSchema == GeneratorSchema.SPDX) // spdx schema implies spdx format
             generatorFormat = GeneratorSchema.GeneratorFormat.SPDX;
 
-        String contents = Utils.serializeFromSbom(result, generatorSchema, generatorFormat);
-
-        try{
-            switch (generatorSchema){
-                case SPDX: { //spdx, json, xml, yaml
-
-                    // todo once the other SPDX formats are done, account for cases
-
-                    result = new TranslatorSPDX().translateContents(contents, ""); //.spdx
-                    break;
-                }
-                case CycloneDX: {
-
-                    switch (generatorFormat){
-                        case JSON:
-                            result = new TranslatorCDXJSON().translateContents(contents, "");
-                            break;
-                        case XML:
-                            result = new TranslatorCDXXML().translateContents(contents, " ");
-                            break;
-                    }
-
-                }
-            }
-            // todo this doesn't work properly
-           // result = TranslatorController.toSBOM(contents,result.getSerialNumber() + "." + format.toLowerCase(), true);
-
-
-        }catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        SBOMGenerator generator = new SBOMGenerator(result, generatorSchema);
+        String resultString = generator.writeFileToString(generatorFormat, true);
 
         // encode and send result
-        return new ResponseEntity<>(result, HttpStatus.OK);
-
+        return new ResponseEntity<>(resultString, HttpStatus.OK);
     }
 
 
