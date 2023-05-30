@@ -187,6 +187,7 @@ public class Merger {
         // Loop through a's children and add them to the map
         for (UUID childUUID : a.getChildren()) {
             Component child = aBom.getComponent(childUUID);
+            if(child == null) continue; // TODO temp fix for translators
 
             // Add the name of the child to the aSet
             aChildren.add(child.getName());
@@ -197,6 +198,7 @@ public class Merger {
         // Loop through b's children and add them to the map
         for (UUID childUUID : b.getChildren()) {
             Component child = bBom.getComponent(childUUID);
+            if(child == null) continue; // TODO temp fix for translators
 
             // Let's add it to b's children in the set
             // Add the name of the child to the bSet

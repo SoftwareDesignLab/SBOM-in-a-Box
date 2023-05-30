@@ -1,82 +1,76 @@
 package org.svip.api;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.svip.sbomanalysis.comparison.Comparison;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.svip.sbomanalysis.comparison.Comparison;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /**
- * File: CompareFromAPITest.java
- * Unit test for API regarding Comparisons
- * <p>
- * Tests:<br>
- * - compareTest: Test that the API can compare three SBOMs
+ * Unit tests for the compare API endpoint that cover input validation and comparison.
  *
  * @author Juan Francisco Patino
  */
-public class CompareFromAPITest {
-    /**
-     *  Example SBOMs to use for testing
-     */
-    private final String alpineSBOM = System.getProperty("user.dir")
-            + "/src/test/java/org/svip/api/sample_sboms/sbom.alpine-compare.2-3.spdx";
-    private final String pythonSBOM = System.getProperty("user.dir")
-            + "/src/test/java/org/svip/api/sample_sboms/sbom.python.2-3.spdx";
-    private final String dockerSBOM = System.getProperty("user.dir")
-            + "/src/test/java/org/svip/api/sample_sboms/sbom.docker.2-2.spdx";
+public class CompareFromAPITest extends APITest {
 
     /**
      * Controller to test
      */
-    private PlugFestApiController ctrl;
+    private final SVIPApiController ctrl;
 
-    /**
-     * Test that the API can compare three SBOMs
-     * @throws IOException If the SBOM parsing is broken
-     */
+    public CompareFromAPITest() {
+        ctrl = new SVIPApiController();
+    }
+
+    @ParameterizedTest
+    @DisplayName("Null/Empty File Contents Array")
+    @NullAndEmptySource
+    void emptyContentsArrayTest(String fileContents) {
+        ResponseEntity<Comparison> response = ctrl.compare(fileContents, TESTFILEARRAY_LENGTH1);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @ParameterizedTest
+    @DisplayName("Null/Empty File Names Array")
+    @NullAndEmptySource
+    void emptyFileNamesArrayTest(String fileNames) {
+        ResponseEntity<Comparison> response = ctrl.compare(TESTCONTENTSARRAY_LENGTH1, fileNames);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
     @Test
+    @DisplayName("Mismatched File Contents/Names Array Length")
+    void mismatchedFileInfoTest() {
+        // Longer contents array
+        ResponseEntity<Comparison> response = ctrl.compare(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH1);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+        // Longer file names array
+        response = ctrl.compare(TESTCONTENTSARRAY_LENGTH1, TESTFILEARRAY_LENGTH2);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Compare SBOMs Test")
     public void compareTest() throws IOException {
-        List<String> contentsArray = new ArrayList<>();
-        List<String> fileNamesArray = new ArrayList<>();
+        String[] input = APITest.testInput();
 
-        contentsArray.add(new String(Files.readAllBytes(Paths.get(alpineSBOM))));
-        contentsArray.add(new String(Files.readAllBytes(Paths.get(pythonSBOM))));
-        contentsArray.add(new String(Files.readAllBytes(Paths.get(dockerSBOM))));
-
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        String contentsString = objectMapper.writeValueAsString(contentsArray);
-
-        fileNamesArray.add(alpineSBOM);
-        fileNamesArray.add(pythonSBOM);
-        fileNamesArray.add(dockerSBOM);
-
-        String fileNamesString = objectMapper.writeValueAsString(fileNamesArray);
+        String contentsString = input[0];
+        String fileNamesString = input[1];
+        int inputLength = Integer.parseInt(input[2]);
 
         ResponseEntity<Comparison> report = ctrl.compare(contentsString, fileNamesString);
-        assertEquals(report.getStatusCode(), HttpStatus.OK);
-        assertEquals(report.getBody().getDiffReports().size(), 2);
-        assertNotEquals(report.getBody().getComparisons().size(),0);
-    }
-
-    /**
-     * SETUP: Start API before testing
-     */
-    @BeforeEach
-    public void setup(){
-
-        ctrl = new PlugFestApiController();
+        assertEquals(HttpStatus.OK, report.getStatusCode());
+        assertEquals(inputLength - 1, Objects.requireNonNull(report.getBody()).getDiffReports().size());
+        assertNotEquals(0, report.getBody().getComparisons().size());
 
     }
-
 }

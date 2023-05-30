@@ -35,7 +35,7 @@ public class TranslatorCDXXML extends TranslatorCore {
      * @throws ParserConfigurationException if the DocumentBuilder cannot be created
      */
     @Override
-    protected SBOM translateContents(String contents, String file_path) throws ParserConfigurationException {
+    public SBOM translateContents(String contents, String file_path) throws ParserConfigurationException {
 
         // Data for author
         String author = "";
@@ -202,7 +202,7 @@ public class TranslatorCDXXML extends TranslatorCore {
 
         product_data.put("name" , sbom_component.get("name"));
         product_data.put("publisher", sbom_component.get("publisher") == null
-                        ? sbom_materials.get("author") : sbom_component.get("publisher"));
+                ? sbom_materials.get("author") : sbom_component.get("publisher"));
         product_data.put("version", sbom_component.get("version"));
         product_data.put("id", sbom_component.get("bom-ref"));
 

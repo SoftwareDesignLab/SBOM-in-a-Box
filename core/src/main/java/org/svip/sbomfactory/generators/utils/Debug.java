@@ -11,6 +11,7 @@ import java.util.Arrays;
  *
  * @author Dylan Mulligan
  * @author Derek Garcia
+ * @author Ian Dunn
  */
 public class Debug {
     /**
@@ -41,8 +42,11 @@ public class Debug {
             return shortName;
         }
     }
+    private static final String blockChar = "="; // Block character to use
+    private static final int defaultBlockLength = 50;
     private static boolean debugMode = false; // Boolean toggle to allow debug logs
     private static boolean summaryMode = false; // Boolean toggle to suppress all but SUMMARY logs
+    private static int blockLength = -1; // The size of the open block to match when closing
 
     /**
      * Internal Logging system for printing information
@@ -106,6 +110,44 @@ public class Debug {
         } catch (Exception e) {
             System.err.println(header + " | LOGGING ERROR");
         }
+    }
+
+    /**
+     * Log the beginning or end of a log block. A beginning log block will be preceded by a newline; an ending log
+     * block will be concluded by a newline. An ending log block will match the length of its preceding log block.
+     */
+    public static void logBlock() {
+        if(blockLength != -1) {
+            System.out.println(blockChar.repeat(blockLength) + "\n");
+            blockLength = -1;
+        } else {
+            System.out.println("\n" + blockChar.repeat(defaultBlockLength));
+            blockLength = defaultBlockLength;
+        }
+    }
+
+    /**
+     * Log a beginning log block with a title (remaining the default length). The title will be centered in the log
+     * block and preceded by a newline.
+     *
+     * @param title The title of the log block.
+     */
+    public static void logBlockTitle(String title) {
+        if(title == null || title.equals("")) {
+            logBlock();
+            return;
+        }
+
+        String formattedTitle = "( " + title + " )";
+        String block = blockChar.repeat((defaultBlockLength - formattedTitle.length()) / 2);
+        String logBlock = block + formattedTitle + block;
+
+        // Test for uneven blocks
+        if(logBlock.length() == defaultBlockLength - 1) logBlock += blockChar;
+        if(logBlock.length() == defaultBlockLength + 1) logBlock = logBlock.substring(0, logBlock.length() - 1);
+
+        System.out.println("\n" + logBlock);
+        blockLength = logBlock.length();
     }
 
     /**

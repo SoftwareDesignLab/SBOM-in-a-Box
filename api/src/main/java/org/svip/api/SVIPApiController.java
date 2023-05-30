@@ -1,24 +1,29 @@
 package org.svip.api;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.svip.api.utils.Resolver;
+import org.svip.api.utils.Utils;
 import org.svip.sbom.model.SBOM;
+import org.svip.sbomanalysis.comparison.Comparison;
 import org.svip.sbomanalysis.comparison.Merger;
+import org.svip.sbomanalysis.qualityattributes.QAPipeline;
+import org.svip.sbomanalysis.qualityattributes.QualityReport;
+import org.svip.sbomfactory.generators.ParserController;
+import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
 import org.svip.sbomfactory.osi.OSI;
 import org.svip.sbomfactory.translators.TranslatorController;
-import org.svip.sbomvex.VEXFactory;
-import org.svip.visualizer.NodeFactory;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
- * file: SVIP.java
- * <p>
- * Driver to launch SVIP and acts as Master Controller
+ * API Controller for handling requests to SVIP
  *
  * @author Derek Garcia
  * @author Kevin Laporte
@@ -26,28 +31,15 @@ import java.util.ArrayList;
  * @author Justin Jantzi
  * @author Matt London
  * @author Ian Dunn
+ * @author Juan Francisco Patino
  */
-
 @RestController
 @RequestMapping("/svip")
 public class SVIPApiController {
     /**
-     * NVIP Login Credentials username
+     *  Hold a pipeline object for QAReports
      */
-    private static String NVIPUsername;
-    /**
-     * NVIP Login Credentials password
-     */
-    private static String NVIPPassword;
-    /**
-     * NVIP Endpoint (Entire URL without resource and arguments)
-     */
-    private static String NVIPEndpoint;
-
-    /**
-     * SVIP VexFactory instance
-     */
-    private VEXFactory factory;
+    private static QAPipeline pipeline = new QAPipeline();
 
     /**
      * Http headers of Spring boot application
@@ -70,121 +62,199 @@ public class SVIPApiController {
     private static String dockerPath = "/core/src/main/java/org/svip/sbomfactory/osi/Dockerfile";
 
     /**
+     * Current working directory
+     */
+    private static String pwd = "/src/test/java/org/svip/api";
+
+    /** TODO OSI
      * buildOSI runs on startup to build the OSI container independent of the front-end.
      */
-    @PostConstruct
-    public void buildOSI() {
-        // TODO: For SVIP v3, refactor to move OSI building operations into another class
-        osiContainer = new OSI(osiBoundDir, dockerPath);
-    }
+//    @PostConstruct
+//    public void buildOSI() {
+//        // TODO: For SVIP v3, refactor to move OSI building operations into another class
+//        osiContainer = new OSI(osiBoundDir, dockerPath);
+//    }
 
     public SVIPApiController() {
         headers = new HttpHeaders();
         headers.add("AccessControlAllowOrigin", "http://localhost:4200");
     }
 
-    /**
+    /** TODO OSI
      * To be called when the object is released by the garbage collector. DO NOT CALL MANUALLY
      */
-    @PreDestroy
-    public void close() {
-        // Close the osi container so that we delete the instance
-        osiContainer.close();
-    }
+//    @PreDestroy
+//    public void close() {
+//        // Close the osi container so that we delete the instance
+//        osiContainer.close();
+//    }
 
     /**
-     * Generator a report for the given filePath
-     *
-     * @param filePath Path to target Directory
-     * @return JSON String
-     * @throws Exception Error when generating the report
-     */
-    public String generateReport(String filePath) throws Exception {
-        // 1. osi container generates SBOMs
-        if(osiContainer.generateSBOMs(filePath) != 0)
-            throw new Exception("Failed to Generate SBOMs with OSI");
-
-        // 2. call translators
-        ArrayList<SBOM> SBOMs;
-        try{
-            SBOMs = TranslatorController.toReport(osiBoundDir + "/sboms");
-        } catch (Exception e){
-            throw new Exception("Unable to Translate SBOMs");
-        }
-
-        // 3. Merge SBOMs
-        Merger merger = new Merger();
-        SBOM master = merger.merge(SBOMs);
-
-        if(master == null)
-            throw new Exception("Failed to merge SBOMs");
-
-        // 4. Apply Vex
-        if (NVIPUsername == null || NVIPPassword == null)
-            System.err.println("NVIP Login Credentials not set. Call setNVIPLogin() first. No VEX will be applied.");
-        else if (NVIPEndpoint == null)
-            System.err.println("NVIP Endpoint not set. Call setNVIPEndpoint() first. No VEX will be applied.");
-        else {
-            try {
-                factory.applyVex(master);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        // 5. Convert to D3 and return result
-        return new NodeFactory().CreateNodeGraphJSON(master);
-    }
-
-
-    /**
-     * Creates a Node Graph from the master SBOM
+     * TODO Creates a Node Graph from the master SBOM
      * and returns a JSON String representation of the Node Graph.
      *
      * @return JSON String representation of the Node Graph
      */
     @GetMapping("/sbom-node-graph")
     public ResponseEntity<String> getNodeGraph(@RequestParam String filePath) {
+        // todo redo
+        return null;
+    }
+
+
+    /**
+     * USAGE. Send POST request to /generateSBOM with one or more files. If a schema or format is not provided or is
+     * invalid, it will default to CycloneDX JSON.
+     * The API will respond with an HTTP 200 and an SBOM string in the given schema and format (if applicable).
+     *
+     * @param contentsArray JSON array of project file contents (the source files) as a string.
+     * @param fileArray JSON array of corresponding project file names as a string.
+     * @param schemaName The name of the schema to output to.
+     * @param formatName The name of the format to output to.
+     * @return A ResponseEntity with code HTTP 200 and the SBOM file in string format.
+     */
+    @PostMapping("/generateSBOM")
+    public ResponseEntity<String> generate(@RequestParam("fileContents") String contentsArray,
+                                           @RequestParam("fileNames") String fileArray,
+                                           @RequestParam("schemaName") String schemaName,
+                                           @RequestParam("formatName") String formatName) {
+
+        // VALIDATE/PARSE INPUT DATA
+        // todo OSI
+        Map<String, List<String>> contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
+        if(contentsAndFiles == null) return new ResponseEntity<>("Invalid contents or filenames array.",
+                HttpStatus.BAD_REQUEST);
+
+        // Get schema/format from parameters, if not valid, default to CycloneDX/JSON
+        GeneratorSchema schema = Resolver.resolveSchema(schemaName, true);
+        GeneratorSchema.GeneratorFormat format = Resolver.resolveFormat(formatName, true);
+        if(!schema.supportsFormat(format)) format = schema.getDefaultFormat();
+
+        // BUILD FILE TREE REPRESENTATION
+        // TODO talk to front-end and figure out what the project name should be, currently SVIP. Common directory?
+        VirtualTree fileTree = new VirtualTree(new VirtualPath("SVIP"));
+        for (int i = 0; i < contentsAndFiles.get("filePaths").size(); i++) {
+            fileTree.addNode(
+                    new VirtualPath(contentsAndFiles.get("filePaths").get(i)),
+                    contentsAndFiles.get("fileContents").get(i));
+        }
+
+        // PARSE FILES INTO SBOM
+        final ParserController controller = new ParserController(fileTree);
+        controller.parseAll();
+
+        // Generate SBOM to string and send
         try {
-            String data = generateReport(filePath);
-            return new ResponseEntity<>(data, headers, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
+            return Utils.encodeResponse(controller.toFile(null, schema, format));
+        } catch (IOException e) {
+            return new ResponseEntity<>("Error generating SBOM.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     /**
-     * Sets the NVIP Login Credentials for the VEXFactory
+     * USAGE. Send POST request to /compare with two+ SBOM files.
+     * The first SBOM will be the baseline, and the rest will be compared to it.
+     * The API will respond with an HTTP 200 and a serialized DiffReport object.
      *
-     * @param username - NVIP Username
-     * @param password - NVIP Password in plain text
+     * @param contentsArray Array of SBOM file contents (the actual cyclonedx/spdx files) as a JSON string
+     * @param fileArray Array of file names as a JSON string
+     * @return Wrapped Comparison object
      */
-    @PostMapping(value = "/login", params = {"username", "password"})
-    public ResponseEntity<Boolean> login(@RequestParam("username") String username, @RequestParam("password") String password){
-        NVIPUsername = username;
-        NVIPPassword = password;
+    @PostMapping("/compare")
+    public ResponseEntity<Comparison> compare(@RequestParam("contents") String contentsArray,
+                                              @RequestParam("fileNames") String fileArray) {
+        Map<String, List<String>> contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
+        // TODO figure out how to return a response message
+        if(contentsAndFiles == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        try {
-            factory = new VEXFactory(NVIPEndpoint, username, password);
-            return new ResponseEntity<>(true, headers, HttpStatus.OK);
-        } catch (VEXFactory.InvalidLoginException e) {
-            return new ResponseEntity<>(false, headers, HttpStatus.OK);
-        }
+        List<SBOM> sboms = Utils.translateMultiple(contentsAndFiles.get("fileContents"), contentsAndFiles.get(
+                "filePaths"));
+        // TODO figure out how to return a response message
+        if(sboms.size() < 2) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        Comparison report = new Comparison(sboms); // report to return
+        report.runComparison();
+
+        //encode and send report
+        return Utils.encodeResponse(report);
     }
 
     /**
-     * Sets the NVIP Endpoint for the VEXFactory. This is the bit of the URL before the specific resource.
-     * For example if the URL is http://localhost:8080/nvip_ui_war_exploded/searchServelet then the endpoint is http://localhost:8080/nvip_ui_war_exploded
-     * If you are getting errors ensure
-     *      A. The endpoint is correct (you can connect to it in a browser)
-     *      B. You have logged in to NVIP and have a valid token
-     *      C. You have specified the protocol (http:// or https://)
+     * TODO USAGE. Send POST request to /qa with a single sbom file
+     * The API will respond with an HTTP 200 and a serialized report in the body.
      *
-     * @param endpoint - NVIP Endpoint
+     * @param contents - File content of the SBOM to run metrics on
+     * @param fileName - Name of the SBOM file
+     * @return - wrapped QualityReport object, null if failed
      */
-    @PostMapping(value = "/endpoint", params = {"endpoint"})
-    public ResponseEntity<Boolean> setNVIPEndpoint(@RequestParam("endpoint") String endpoint){
-        NVIPEndpoint = endpoint;
-        return new ResponseEntity<>(true, headers, HttpStatus.OK);
+    @PostMapping("/qa")
+    public ResponseEntity<QualityReport> qa(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
+
+        SBOM sbom = TranslatorController.toSBOM(contents, fileName);
+
+        // Check if the sbom is null
+        if (sbom == null) {
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        }
+
+        //run the QA
+        QualityReport report = pipeline.process(sbom);
+
+        //encode and send report
+        return Utils.encodeResponse(report);
+    }
+
+    /**
+     * Send post request to /parse and it will convert the file contents to an SBOM object, returns null if failed to parse
+     *
+     * @param contents File contents of the SBOM file to parse
+     * @param fileName Name of the file that the SBOM contents came from
+     * @return SBOM object, null if failed to parse
+     */
+    @PostMapping("/parse")
+    public ResponseEntity<SBOM> parse(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
+
+        SBOM sbom = TranslatorController.toSBOM(contents, fileName);
+        // Explicitly return null if failed TODO figure out how to return a response message
+        if (sbom == null) return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        return Utils.encodeResponse(sbom);
+    }
+
+
+    /**
+     * Merge 2 SBOMs together, regardless of origin format
+     *
+     * @param contentsArray JSON string array of the contents of all provided SBOMs
+     * @param fileArray JSON string array of the filenames of all provided SBOMs
+     * @param schema String value of expected output schema (SPDX/CycloneDX)
+     * @param format String value of expected output format (JSON/XML/YAML)
+     * @return merged result SBOM
+     */
+    @PostMapping("merge")
+    public ResponseEntity<String> merge(@RequestParam("fileContents") String contentsArray,
+                                   @RequestParam("fileNames") String fileArray
+            , @RequestParam("schema") String schema, @RequestParam("format") String format) {
+
+        Map<String, List<String>> contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
+        if(contentsAndFiles == null) return new ResponseEntity<>("Invalid contents or filenames array.",
+                HttpStatus.BAD_REQUEST);
+
+        List<SBOM> sboms = Utils.translateMultiple(contentsAndFiles.get("fileContents"), contentsAndFiles.get(
+                "filePaths"));
+        if(sboms.size() < 2) return new ResponseEntity<>("At least 2 SBOMs required to merge", HttpStatus.BAD_REQUEST);
+
+        GeneratorSchema generatorSchema = Resolver.resolveSchema(schema, false);
+        GeneratorSchema.GeneratorFormat generatorFormat = Resolver.resolveFormat(format, false);
+        if(generatorSchema == null || generatorFormat == null ||
+                !generatorSchema.supportsFormat(generatorFormat)) return new ResponseEntity<>("Invalid schema/format " +
+                "combination",
+                HttpStatus.BAD_REQUEST);
+
+        Merger merger = new Merger();
+        SBOM result = merger.merge(sboms); // report to return
+
+        String resultString = Utils.generateSBOM(result, generatorSchema, generatorFormat);
+        return Utils.encodeResponse(resultString);
     }
 }

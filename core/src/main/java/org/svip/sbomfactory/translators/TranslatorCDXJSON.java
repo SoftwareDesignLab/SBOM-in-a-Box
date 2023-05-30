@@ -34,7 +34,7 @@ public class TranslatorCDXJSON extends TranslatorCore {
      * @throws ParseException If file is not valid JSON
      */
     @Override
-    protected SBOM translateContents(String fileContents, String file_path) throws ParseException {
+    public SBOM translateContents(String fileContents, String file_path) throws ParseException {
 
         // Initialize JSON Parser
         JsonParser parser = new JsonParser();
@@ -149,7 +149,7 @@ public class TranslatorCDXJSON extends TranslatorCore {
                                         // Returns dependencies as strings
                                         return x.getDependencies().stream().map(
                                                 y -> y.getRef()).collect(
-                                                        Collectors.toCollection(ArrayList::new));
+                                                Collectors.toCollection(ArrayList::new));
                                     },
                                     (x,y) -> y,
                                     HashMap::new

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bom xmlns="http://cyclonedx.org/schema/bom/1.4" version="1" serialNumber="urn:uuid:70bf7f30-d567-4557-bcc3-1b3f84f63e4a">
+   <metadata>
+      <timestamp>2023-05-16T13:40:08.497370+00:00</timestamp>
+      <tools>
+         <tool>
+            <vendor>CycloneDX</vendor>
+            <name>cyclonedx-python-lib</name>
+            <version>3.1.5</version>
+            <externalReferences>
+               <reference type="build-system">
+                  <url>https://github.com/CycloneDX/cyclonedx-python-lib/actions</url>
+               </reference>
+               <reference type="distribution">
+                  <url>https://pypi.org/project/cyclonedx-python-lib/</url>
+               </reference>
+               <reference type="documentation">
+                  <url>https://cyclonedx.github.io/cyclonedx-python-lib/</url>
+               </reference>
+               <reference type="issue-tracker">
+                  <url>https://github.com/CycloneDX/cyclonedx-python-lib/issues</url>
+               </reference>
+               <reference type="license">
+                  <url>https://github.com/CycloneDX/cyclonedx-python-lib/blob/main/LICENSE</url>
+               </reference>
+               <reference type="release-notes">
+                  <url>https://github.com/CycloneDX/cyclonedx-python-lib/blob/main/CHANGELOG.md</url>
+               </reference>
+               <reference type="vcs">
+                  <url>https://github.com/CycloneDX/cyclonedx-python-lib</url>
+               </reference>
+               <reference type="website">
+                  <url>https://cyclonedx.org</url>
+               </reference>
+            </externalReferences>
+         </tool>
+         <tool>
+            <vendor>Sonatype Nexus Community</vendor>
+            <name>jake</name>
+            <version>3.0.0</version>
+            <externalReferences>
+               <reference type="build-system">
+                  <url>https://app.circleci.com/pipelines/github/sonatype-nexus-community/jake</url>
+               </reference>
+               <reference type="distribution">
+                  <url>https://pypi.org/project/jake/</url>
+               </reference>
+               <reference type="issue-tracker">
+                  <url>https://github.com/sonatype-nexus-community/jake/issues</url>
+               </reference>
+               <reference type="license">
+                  <url>https://github.com/sonatype-nexus-community/jake/blob/main/LICENSE</url>
+               </reference>
+               <reference type="release-notes">
+                  <url>https://github.com/sonatype-nexus-community/jake/blob/main/CHANGELOG.md</url>
+               </reference>
+               <reference type="vcs">
+                  <url>https://github.com/sonatype-nexus-community/jake</url>
+               </reference>
+               <reference type="website">
+                  <url>https://www.sonatype.com/products/free-developer-tools</url>
+               </reference>
+            </externalReferences>
+         </tool>
+      </tools>
+   </metadata>
+   <components>
+      <component type="library" bom-ref="87efba0a-9b55-4fe1-978a-cbd224c6418b">
+         <name>numpy</name>
+         <version>1.23.5</version>
+         <purl>pkg:pypi/numpy@1.23.5</purl>
+      </component>
+      <component type="library" bom-ref="5839b9b5-ced0-4e05-91a1-38c7ec3ff9d3">
+         <name>tensorflow</name>
+         <version>2.12.0</version>
+         <purl>pkg:pypi/tensorflow@2.12.0</purl>
+      </component>
+      <component type="library" bom-ref="a03491c0-3963-435f-aa3c-d98853e36652">
+         <name>tensorflow_intel</name>
+         <version>2.12.0</version>
+         <purl>pkg:pypi/tensorflow-intel@2.12.0</purl>
+      </component>
+   </components>
+   <dependencies>
+      <dependency ref="87efba0a-9b55-4fe1-978a-cbd224c6418b" />
+      <dependency ref="5839b9b5-ced0-4e05-91a1-38c7ec3ff9d3" />
+      <dependency ref="a03491c0-3963-435f-aa3c-d98853e36652" />
+   </dependencies>
+</bom>

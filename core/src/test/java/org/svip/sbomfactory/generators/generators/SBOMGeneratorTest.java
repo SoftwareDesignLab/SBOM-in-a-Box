@@ -86,7 +86,7 @@ public class SBOMGeneratorTest {
 
     @Test
     @DisplayName("writeFileToString() (NO PRETTY-PRINTING)")
-    void writeFileToStringNoPrettyPrintingTest() throws GeneratorException, JsonProcessingException {
+    void writeFileToStringNoPrettyPrintingTest() throws IOException {
         for(SBOMGenerator generator : generators) {
             // Test all possible formats
             for(GeneratorSchema.GeneratorFormat format : GeneratorSchema.GeneratorFormat.values()) {
@@ -112,7 +112,7 @@ public class SBOMGeneratorTest {
 
     @Test
     @DisplayName("writeFileToString() (PRETTY-PRINTING)")
-    void writeFileToStringPrettyPrintingTest() throws GeneratorException, JsonProcessingException {
+    void writeFileToStringPrettyPrintingTest() throws IOException {
         for(SBOMGenerator generator : generators) {
             // Test all possible formats
             for(GeneratorSchema.GeneratorFormat format : GeneratorSchema.GeneratorFormat.values()) {
@@ -135,7 +135,7 @@ public class SBOMGeneratorTest {
 
     @Test
     @DisplayName("Correct BOMStore Type")
-    void buildBOMStoreTypeTest() throws GeneratorException {
+    void buildBOMStoreTypeTest() throws IOException {
         for(SBOMGenerator generator : generators) {
             BOMStore bomStore = generator.buildBOMStore();
             Debug.log(Debug.LOG_TYPE.SUMMARY, "BOMStore Type: " + bomStore.getClass().getName());
@@ -148,7 +148,7 @@ public class SBOMGeneratorTest {
 
     @Test
     @DisplayName("Correct BOMStore Tool")
-    void buildBOMStoreToolTest() throws GeneratorException {
+    void buildBOMStoreToolTest() throws IOException {
         SBOMGenerator generator = generators.get(0);
         BOMStore bomStore = generator.buildBOMStore();
         List<Tool> bomStoreTools = bomStore.getTools();
@@ -158,7 +158,7 @@ public class SBOMGeneratorTest {
 
     @Test
     @DisplayName("BOMStore Contains ALL SBOM Components")
-    void buildBOMStoreComponentTest() throws GeneratorException {
+    void buildBOMStoreComponentTest() throws IOException {
         for(SBOMGenerator generator : generators) { // TODO do we need to do for each type of generator?
             BOMStore bomStore = generator.buildBOMStore();
             String bomStoreType = bomStore.getClass().getSimpleName();

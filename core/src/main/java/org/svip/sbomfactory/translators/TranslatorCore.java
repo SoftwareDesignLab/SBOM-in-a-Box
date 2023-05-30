@@ -85,7 +85,7 @@ public abstract class TranslatorCore {
         } catch (Exception e) {
             System.err.println(
                     "Error: Internal SBOM could not be created. Cancelling translation for this SBOM. \n " +
-                    "File: " + this.FILE_EXTN + "\n"
+                            "File: " + this.FILE_EXTN + "\n"
             );
             e.printStackTrace();
             sbom = null;

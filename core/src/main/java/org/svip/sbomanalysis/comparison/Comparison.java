@@ -108,7 +108,6 @@ public class Comparison {
                             return objEqual || containsCurrent || containsX;
                         })
                         .toList();
-
                 // If there are no matching ComponentVersion objects in the Set for that package name
                 // Else, find all matching ComponentVersion objects and add relevant information
                 if (matching_cv_list.isEmpty()) {

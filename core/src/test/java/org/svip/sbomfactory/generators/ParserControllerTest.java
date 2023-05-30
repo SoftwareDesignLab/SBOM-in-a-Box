@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.svip.SBOMGeneratorCLI;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
+import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
 
 /**
  *
@@ -13,15 +16,10 @@ public class ParserControllerTest {
 
     static String[] argv = {"src/test/java/org/svip/sbomfactory/generators/TestData/Conan", "-d"};
 
-    //assertTrue(flag);
-
-    final ParserController controller = new ParserController(argv[0]);
-
     @Test
     @DisplayName("Conan Parser Tests")
-    void conanParserTest() {
-        controller.setPWD(argv[0]);
-        GeneratorsTestMain.main(argv);
+    void conanParserTest() { // TODO is this needed?
+        SBOMGeneratorCLI.main(argv);
     }
 //
 //

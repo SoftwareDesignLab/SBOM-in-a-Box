@@ -65,7 +65,7 @@ public class TranslatorController {
             // If the translator exists and is an actual translator, translate and add the SBOM to the list
             // Otherwise, print out an error stating that the SBOM is not a correct format
             if(translator != null && translator instanceof TranslatorCore) {
-                sbom = translator.translate(filePath);
+                sbom = translator.translateContents(contents, filePath);
             } else {
                 System.err.println("\nError: Invalid SBOM format found in: " + filePath);
             }

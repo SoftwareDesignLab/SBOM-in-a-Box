@@ -283,23 +283,19 @@ public class ParserController {
         // Create generator based on schema
         final SBOMGenerator generator = new SBOMGenerator(this.SBOM, outSchema);
 
-        try {
-            if(outPath != null) {
-                // Make new out directory if none exist
-                final File outDir = new File(outPath);
-                if(outDir.mkdirs())
-                    log(LOG_TYPE.SUMMARY, "New Output Directory created [ " + outPath + " ]");
+        if(outPath != null) {
+            // Make new out directory if none exist
+            final File outDir = new File(outPath);
+            if(outDir.mkdirs())
+                log(LOG_TYPE.SUMMARY, "New Output Directory created [ " + outPath + " ]");
 
-                // Write SBOM to file according to schema and file format
-                generator.writeFile(outPath, outFormat);
-                return null;
-            } else {
-                String fileString = generator.writeFileToString(outFormat, true);
-                log(Debug.LOG_TYPE.INFO, "SBOM String:\n" + fileString);
-                return fileString;
-            }
-        } catch (GeneratorException e) {
-            throw new IOException(e);
+            // Write SBOM to file according to schema and file format
+            generator.writeFile(outPath, outFormat);
+            return null;
+        } else {
+            String fileString = generator.writeFileToString(outFormat, true);
+            log(Debug.LOG_TYPE.INFO, "SBOM String:\n" + fileString);
+            return fileString;
         }
     }
 
