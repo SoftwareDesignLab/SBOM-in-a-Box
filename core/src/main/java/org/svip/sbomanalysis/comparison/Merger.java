@@ -1,7 +1,7 @@
 package org.svip.sbomanalysis.comparison;
 
 import org.svip.sbom.model.*;
-import org.svip.sbomanalysis.comparison.conflicts.ComponentConflict;
+import org.svip.sbomanalysis.old.comparison.conflicts.ComponentConflict;
 
 import java.util.*;
 

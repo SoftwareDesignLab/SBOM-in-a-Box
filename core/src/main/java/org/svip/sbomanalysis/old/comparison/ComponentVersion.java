@@ -1,6 +1,6 @@
-package org.svip.sbomanalysis.comparison;
+package org.svip.sbomanalysis.old.comparison;
 
-import org.svip.sbomanalysis.differ.UniqueIdOccurrence;
+import org.svip.sbomanalysis.old.differ.UniqueIdOccurrence;
 
 import java.util.HashMap;
 import java.util.HashSet;

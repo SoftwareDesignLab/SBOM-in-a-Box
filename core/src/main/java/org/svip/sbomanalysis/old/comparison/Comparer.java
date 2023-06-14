@@ -1,8 +1,9 @@
-package org.svip.sbomanalysis.comparison;
+package org.svip.sbomanalysis.old.comparison;
 
-import org.svip.sbomanalysis.comparison.conflicts.*;
 import org.svip.sbom.model.*;
-import org.svip.sbomanalysis.differ.DiffReport;
+import org.svip.sbomanalysis.old.comparison.conflicts.ComponentConflict;
+import org.svip.sbomanalysis.old.comparison.conflicts.SBOMConflict;
+import org.svip.sbomanalysis.old.differ.DiffReport;
 
 import java.util.HashMap;
 import java.util.HashSet;

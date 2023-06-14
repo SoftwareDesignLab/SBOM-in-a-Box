@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.svip.sbom.model.*;
+import org.svip.sbomanalysis.old.comparison.conflicts.SBOMConflict;
 
 import java.util.*;
 

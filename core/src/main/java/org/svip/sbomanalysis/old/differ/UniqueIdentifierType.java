@@ -1,4 +1,4 @@
-package org.svip.sbomanalysis.differ;
+package org.svip.sbomanalysis.old.differ;
 
 /**
  * Enum to represent the different types of unique identifiers
@@ -8,6 +8,5 @@ package org.svip.sbomanalysis.differ;
 public enum UniqueIdentifierType {
     CPE,
     PURL,
-    SWID,
-    HASH
+    SWID
 }

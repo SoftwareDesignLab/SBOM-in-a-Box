@@ -3,6 +3,8 @@ package org.svip.sbomanalysis.comparison.conflicts;
 import org.junit.jupiter.api.*;
 
 import org.svip.sbom.model.*;
+import org.svip.sbomanalysis.old.comparison.conflicts.ComponentConflict;
+import org.svip.sbomanalysis.old.comparison.conflicts.ComponentConflictType;
 
 import java.util.*;
 

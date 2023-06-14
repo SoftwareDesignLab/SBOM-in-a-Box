@@ -1,8 +1,9 @@
-package org.svip.sbomanalysis.comparison;
+package org.svip.sbomanalysis.old.comparison;
 
-import org.svip.sbomanalysis.differ.*;
-import org.svip.sbomanalysis.differ.UniqueIdOccurrence;
+import org.svip.sbomanalysis.old.differ.DiffReport;
+import org.svip.sbomanalysis.old.differ.UniqueIdOccurrence;
 import org.svip.sbom.model.*;
+import org.svip.sbomanalysis.old.differ.UniqueIdentifierType;
 
 import java.util.*;
 

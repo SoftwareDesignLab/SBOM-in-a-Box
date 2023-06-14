@@ -1,4 +1,4 @@
-package org.svip.sbomanalysis.comparison.conflicts;
+package org.svip.sbomanalysis.old.comparison.conflicts;
 
 /**
  * Enum to represent the type of conflict between two components
@@ -25,8 +25,6 @@ public enum ComponentConflictType {
     COMPONENT_SWID_MISMATCH,
     /** Component found in both SBOMs, but has different SPDX ID */
     COMPONENT_SPDXID_MISMATCH,
-    /** Component found in both SBOMs, but has different Hashes */
-    COMPONENT_HASH_MISMATCH,
     /** Component found in both SBOMs, conflict was called, but cannot be determined */
     COMPONENT_UNKNOWN_MISMATCH
 }

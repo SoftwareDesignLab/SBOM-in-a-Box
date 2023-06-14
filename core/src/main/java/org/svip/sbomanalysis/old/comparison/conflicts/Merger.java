@@ -1,4 +1,4 @@
-package org.svip.sbomanalysis.comparison.conflicts;
+package org.svip.sbomanalysis.old.comparison.conflicts;
 
 import org.svip.sbom.model.*;
 

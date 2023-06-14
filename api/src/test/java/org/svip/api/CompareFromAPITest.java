@@ -6,7 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.svip.sbomanalysis.comparison.Comparison;
+import org.svip.sbomanalysis.old.comparison.Comparison;
 
 import java.io.IOException;
 import java.util.Objects;
