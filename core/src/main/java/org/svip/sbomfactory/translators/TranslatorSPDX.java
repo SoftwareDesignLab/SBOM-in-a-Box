@@ -209,7 +209,7 @@ public class TranslatorSPDX extends TranslatorCore {
                 // Temporary component collection of materials
                 HashMap<String, String> component_materials = new HashMap<>();
                 Set<String> cpes = new HashSet<>();
-                Set<PURL> purls = new HashSet<>();
+                Set<String> purls = new HashSet<>();
                 Set<String> swids = new HashSet<>();
 
 
@@ -237,7 +237,7 @@ public class TranslatorSPDX extends TranslatorCore {
                         // Last element is the PURL
                         String purl = lineSplit[lineSplit.length - 1];
 
-                        purls.add(new PURL(purl));
+                        purls.add(purl);
 
                         // Don't continue parsing after we add the special cases
                         continue;

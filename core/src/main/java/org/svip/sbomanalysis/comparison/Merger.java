@@ -162,7 +162,7 @@ public class Merger {
         cpes.addAll(headRefA.getCpes());
         cpes.addAll(headRefB.getCpes());
 
-        Set<PURL> purls = new HashSet<>();
+        Set<String> purls = new HashSet<>();
         purls.addAll(headRefA.getPurls());
         purls.addAll(headRefB.getPurls());
 

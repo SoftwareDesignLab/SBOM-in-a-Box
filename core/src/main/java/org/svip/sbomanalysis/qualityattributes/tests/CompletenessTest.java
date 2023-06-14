@@ -1,7 +1,6 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
 import org.svip.sbom.model.Component;
-import org.svip.sbom.model.uids.PURL;
 import org.svip.sbomanalysis.qualityattributes.tests.testresults.Test;
 import org.svip.sbomanalysis.qualityattributes.tests.testresults.TestResults;
 
@@ -238,8 +237,7 @@ public class CompletenessTest extends MetricTest {
      */
     private Test testPURLs(Component c) {
         // Check PURLs and return a number of invalid PURLs
-        Set<String> purlStrings = new HashSet<>();
-        for (PURL p: c.getPurls()) {purlStrings.add(p.toString());}
+        Set<String> purlStrings = new HashSet<>(c.getPurls());
         final int invalid = getNumInvalidStrings(purlStrings, purlRegex);
         if (invalid > 0) // If there are invalid PURLs, mark as failed
             return new Test(false, "Had ", Integer.toString(invalid), " PURL(s) with Invalid Format.");

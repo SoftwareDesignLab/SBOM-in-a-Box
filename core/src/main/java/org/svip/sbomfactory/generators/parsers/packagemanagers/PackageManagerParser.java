@@ -339,7 +339,7 @@ public abstract class PackageManagerParser extends Parser {
             String PURLString = PackageManagerParser.buildPURL(PURLData);
 
             // Add built PURL
-            c.addPURL(new PURL(PURLString));
+            c.addPURL(PURLString);
             log(Debug.LOG_TYPE.DEBUG, String.format("Dependency Found with PURL: %s", PURLString));
 
             // Build CPE

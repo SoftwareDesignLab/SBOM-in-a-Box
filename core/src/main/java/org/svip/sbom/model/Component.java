@@ -13,6 +13,7 @@ import java.util.*;
  *
  * @author Matt London
  * @author Kevin Laporte
+ * @author Ian Dunn
  */
 public class Component {
 
