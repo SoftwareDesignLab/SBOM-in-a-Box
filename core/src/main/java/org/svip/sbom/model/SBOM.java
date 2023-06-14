@@ -8,6 +8,7 @@ import java.util.*;
  *
  * @author Matt London
  * @author Kevin LaPorte
+ * @author Ian Dunn
  */
 public class SBOM {
 
@@ -151,6 +152,19 @@ public class SBOM {
     public SBOM(SBOM from) {
         // This sets the dependencytree to null so it does not allow copying of dependencies
         this(from.getOriginFormat(), from.getSpecVersion(), from.getSbomVersion(), from.getSupplier(), from.getSerialNumber(), from.getTimestamp(), from.getSignature(), null);
+    }
+
+    /**
+     * Constructs an SBOM with null values, except for the DependencyTree head component.
+     *
+     * @param headComponent The head component of the SBOM.
+     */
+    public SBOM(Component headComponent) {
+        // Creates an empty SBOM Object with a new DependencyTree for ParserController
+        this((String) null, null, null, null, null, null, null, new DependencyTree());
+
+        // Creates a head component for the dependencies to exist in
+        this.dependencyTree.addComponent(null, headComponent);
     }
 
     /**
