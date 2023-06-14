@@ -386,6 +386,21 @@ public class SBOM {
                 "  + Dependency Tree: " + dependencyTree + "\n";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SBOM sbom)) return false;
+
+        if (!Objects.equals(dependencyTree, sbom.dependencyTree))
+            return false;
+        if (originFormat != sbom.originFormat) return false;
+        if (!Objects.equals(specVersion, sbom.specVersion)) return false;
+        if (!Objects.equals(sbomVersion, sbom.sbomVersion)) return false;
+        if (!Objects.equals(serialNumber, sbom.serialNumber)) return false;
+        if (!Objects.equals(supplier, sbom.supplier)) return false;
+        return Objects.equals(timestamp, sbom.timestamp);
+    }
+
     /**
      * Traverse the tree and add the name of the component times the depth of it and sum that together
      *

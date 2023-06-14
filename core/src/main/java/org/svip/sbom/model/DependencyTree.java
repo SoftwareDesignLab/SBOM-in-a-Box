@@ -143,6 +143,21 @@ public class DependencyTree {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DependencyTree that)) return false;
+
+        return this.toString().equals(that.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = components.hashCode();
+        result = 31 * result + (headComponent != null ? headComponent.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         String componentMap = dependencyMapToString(headComponent, "  ");
 
