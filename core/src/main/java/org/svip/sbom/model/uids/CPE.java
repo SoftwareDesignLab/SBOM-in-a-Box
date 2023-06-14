@@ -4,7 +4,11 @@ import jregex.Matcher;
 import jregex.Pattern;
 import org.svip.sbomfactory.generators.utils.Debug;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * file: CPE.java
@@ -14,6 +18,7 @@ import java.util.Arrays;
  * <a href="https://nvlpubs.nist.gov/nistpubs/Legacy/IR/nistir7695.pdf">...</a>
  *
  * @author Derek Garcia
+ * @author Ian Dunn
  */
 public class CPE {
 
@@ -39,41 +44,41 @@ public class CPE {
     private final Type part;
 
     // "Values for this attribute SHOULD describe or identify the person or organization that manufactured or created the product."
-    private final String vendor;
+    private String vendor;
 
     // "Values for this attribute SHOULD describe or identify the most common and recognizable title or name of the product."
-    private final String product;
+    private String product;
 
     // "Values for this attribute SHOULD be vendor-specific alphanumeric strings characterizing the particular release
     // version of the product."
-    private final String version;
+    private String version;
 
     // "Values for this attribute SHOULD be vendor-specific alphanumeric strings characterizing the particular update,
     // service pack, or point release of the product."
-    private final String update;
+    private String update;
 
     // "The edition attribute is considered deprecated in [the 2.3] specification, and it SHOULD be assigned the logical
     // value ANY except where required for backward compatibility with version 2.2 of the CPE specification. "
-    private final String edition;
+    private String edition;
 
     // "Values for this attribute SHALL be valid language tags as defined by [RFC5646], and SHOULD be used to define the
     // language supported in the user interface of the product being described"
-    private final String language;
+    private String language;
 
     // "Values for this attribute SHOULD characterize how the product is tailored to a particular market or class
     //of end users."
-    private final String sw_edition;
+    private String sw_edition;
 
     // "Values for this attribute SHOULD characterize the software computing environment within which the product operates"
-    private final String target_sw;
+    private String target_sw;
 
     // "Values for this attribute SHOULD characterize the instruction set architecture (e.g., x86) on which the
     // product being described or identified by the WFN operates"
-    private final String target_hw;
+    private String target_hw;
 
     // "Values for this attribute SHOULD capture any other general descriptive or identifying information which
     // is vendor- or product-specific and which does not logically fit in any other attribute value."
-    private final String other;
+    private String other;
 
 
     /**
@@ -95,7 +100,7 @@ public class CPE {
 
         // Check for missing fields
         if(Arrays.stream(matcher.groups()).toList().contains(null)){
-            throw new Exception("Invalid purl, missing the following: "+
+            throw new Exception("Invalid CPE, missing the following: "+
                     ( matcher.group(1) == null ? "Type " : "" ) +
                     ( matcher.group(2) == null ? "Vendor " : "" ) +
                     ( matcher.group(3) == null ? "Product " : "" ) +
@@ -129,6 +134,30 @@ public class CPE {
         this.target_sw = matcher.group(9);
         this.target_hw = matcher.group(10);
         this.other = matcher.group(11);
+    }
+
+    /**
+     * Create a new CPE object from a given vendor and product.
+     *
+     * @param vendor
+     * @param product
+     */
+    public CPE(String vendor, String product) {
+        this.part = Type.APPLICATION;
+        this.vendor = vendor;
+        this.product = product;
+    }
+
+    /**
+     * Create a new CPE object from a given vendor, product, and version.
+     *
+     * @param vendor
+     * @param product
+     * @param version
+     */
+    public CPE(String vendor, String product, String version) {
+        this(vendor, product);
+        this.version = version;
     }
 
     /**
@@ -240,17 +269,73 @@ public class CPE {
             case OPERATING_SYSTEMS -> typeString = "o";
         }
 
-        return "cpe:" + this.cpeVersion +
-                ":" + typeString +
-                ":" + this.vendor +
-                ":" + this.product +
-                ":" + this.version +
-                ":" + this.update +
-                ":" + this.edition  +
-                ":" + this.language +
-                ":" + this.sw_edition  +
-                ":" + this.target_sw +
-                ":" + this.target_hw +
-                ":" + this.other;
+        List<String> values = new ArrayList<>(Stream.of(
+                "cpe",
+                cpeVersion,
+                typeString,
+                vendor,
+                product,
+                version,
+                update,
+                edition,
+                language,
+                sw_edition,
+                target_sw,
+                target_hw,
+                other
+        ).toList());
+
+        values = values.stream().map(v -> {
+            if(v == null) v = "ANY";
+            return bindValueForFS(v);
+        }).collect(Collectors.toList());
+
+        return String.join(":", values);
+    }
+
+    /**
+     * Binds a value to its "safe" characters for a format string. Replaces "ANY" & "NA" wildcards with "*" & "-",
+     * respectively.
+     *
+     * @param value
+     * @return
+     */
+    private String bindValueForFS(String value) {
+        switch(value) {
+            case "ANY" -> { return "*"; }
+            case "NA" -> { return "-"; }
+            default -> { return processQuotedChars(value); }
+        }
+    }
+
+    /**
+     * Processes quoted characters to construct a CPE format string.
+     *
+     * @param value
+     * @return The formatted quoted characters string.
+     */
+    private String processQuotedChars(String value) {
+        String formattedValue = value.trim().replaceAll(" ", "_");
+        StringBuilder processed = new StringBuilder();
+
+        int idx = 0;
+        while(idx < value.length()) {
+            char c = value.charAt(idx);
+            if(c != '\\') {
+                processed.append(c);
+            } else {
+                char next = value.charAt(idx + 1);
+                if(next == '.' || next == '-' || next == '_') {
+                    processed.append(next);
+                } else {
+                    processed.append('\\').append(next);
+                }
+                idx += 2;
+            }
+
+            idx++;
+        }
+
+        return processed.toString();
     }
 }

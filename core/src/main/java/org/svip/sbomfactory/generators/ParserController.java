@@ -252,7 +252,9 @@ public class ParserController {
         Debug.log(LOG_TYPE.DEBUG, removedComponentsLog);
 
         // Add Components to SBOM
-        this.SBOM.addComponents(parent, components);
+        for (Component c : components) {
+            this.SBOM.addComponent(parent, c);
+        }
     }
 
     /**

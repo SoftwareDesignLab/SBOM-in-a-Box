@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.sbom.model.uids.CPE;
-import org.svip.sbom.model.uids.PURL;
 import org.svip.sbomfactory.generators.parsers.Parser;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
@@ -344,7 +343,7 @@ public abstract class PackageManagerParser extends Parser {
 
             // Build CPE
             CPE cpe = new CPE(packageManager, id, version);
-            String cpeFormatString = cpe.bindToFS();
+            String cpeFormatString = cpe.toString();
             c.addCPE(cpeFormatString);
             log(Debug.LOG_TYPE.DEBUG, String.format("Dependency Found with CPE: %s", cpeFormatString));
 
