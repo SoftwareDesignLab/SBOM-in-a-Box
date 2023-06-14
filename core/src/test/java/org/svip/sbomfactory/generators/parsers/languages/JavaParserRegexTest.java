@@ -2,7 +2,6 @@ package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.svip.sbomfactory.generators.parsers.packagemanagers.POMParser;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;

@@ -1,12 +1,8 @@
 package org.svip.sbomfactory.generators;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.svip.SBOMGeneratorCLI;
-import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
-import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
 
 /**
  *

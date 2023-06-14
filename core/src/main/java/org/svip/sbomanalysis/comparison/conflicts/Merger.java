@@ -3,7 +3,6 @@ package org.svip.sbomanalysis.comparison.conflicts;
 import org.svip.sbom.model.Component;
 import org.svip.sbom.model.DependencyTree;
 import org.svip.sbom.model.SBOM;
-import org.svip.sbom.model.uids.PURL;
 
 import java.util.*;
 

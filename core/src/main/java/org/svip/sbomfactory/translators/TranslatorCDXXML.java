@@ -2,7 +2,6 @@ package org.svip.sbomfactory.translators;
 
 import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
-import org.svip.sbom.model.uids.PURL;
 import org.svip.sbomfactory.generators.utils.generators.Tool;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
