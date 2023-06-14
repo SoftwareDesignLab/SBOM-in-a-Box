@@ -1,7 +1,7 @@
 package org.svip.sbomanalysis.comparison.conflicts;
 
 import org.svip.sbom.model.Component;
-import org.svip.sbom.model.PURL;
+import org.svip.sbom.model.uids.PURL;
 
 import java.util.Arrays;
 import java.util.HashSet;

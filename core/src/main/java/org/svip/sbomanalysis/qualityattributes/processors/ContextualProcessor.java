@@ -1,5 +1,8 @@
 package org.svip.sbomanalysis.qualityattributes.processors;
-import org.svip.sbomanalysis.qualityattributes.tests.*;
+
+import org.svip.sbomanalysis.qualityattributes.tests.CompletenessTest;
+import org.svip.sbomanalysis.qualityattributes.tests.DataVerificationTest;
+import org.svip.sbomanalysis.qualityattributes.tests.MetricTest;
 
 /**
  * Metrics that measure the relevance of data in the context of the SBOM

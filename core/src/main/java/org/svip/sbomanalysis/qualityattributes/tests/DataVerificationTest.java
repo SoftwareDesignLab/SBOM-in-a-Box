@@ -1,12 +1,14 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
-import org.svip.sbomanalysis.qualityattributes.tests.testresults.*;
-import org.svip.sbom.model.*;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.uids.PURL;
+import org.svip.sbomanalysis.qualityattributes.tests.testresults.Test;
+import org.svip.sbomanalysis.qualityattributes.tests.testresults.TestResults;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.Set;

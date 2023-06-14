@@ -1,6 +1,8 @@
 package org.svip.sbomfactory.translators;
 
-import org.svip.sbom.model.*;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.uids.PURL;
 import org.svip.sbomfactory.generators.utils.generators.Tool;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
@@ -11,7 +13,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 

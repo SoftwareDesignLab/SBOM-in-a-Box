@@ -1,10 +1,10 @@
 package org.svip.sbomfactory.generators.generators.spdx;
 
-import org.svip.sbom.model.PURL;
+import org.svip.sbom.model.uids.PURL;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.generators.License;
 import org.svip.sbomfactory.generators.utils.generators.LicenseManager;
 import org.svip.sbomfactory.generators.utils.generators.Tool;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.translators.TranslatorSPDX;
 
 import java.io.IOException;

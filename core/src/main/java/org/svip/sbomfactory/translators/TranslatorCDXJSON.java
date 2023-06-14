@@ -5,7 +5,7 @@ import org.cyclonedx.model.Bom;
 import org.cyclonedx.model.Dependency;
 import org.cyclonedx.parsers.JsonParser;
 import org.svip.sbom.model.Component;
-import org.svip.sbom.model.PURL;
+import org.svip.sbom.model.uids.PURL;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.utils.generators.Tool;
 

@@ -2,14 +2,13 @@ package org.svip.sbomfactory.translators;
 
 import org.cyclonedx.exception.ParseException;
 import org.svip.sbom.model.Component;
-import org.svip.sbom.model.PURL;
+import org.svip.sbom.model.uids.PURL;
 import org.svip.sbom.model.SBOM;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.*;
-import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 /**

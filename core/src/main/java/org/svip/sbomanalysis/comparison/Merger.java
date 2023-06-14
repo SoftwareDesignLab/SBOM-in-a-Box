@@ -1,6 +1,9 @@
 package org.svip.sbomanalysis.comparison;
 
-import org.svip.sbom.model.*;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.DependencyTree;
+import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.uids.PURL;
 import org.svip.sbomanalysis.comparison.conflicts.ComponentConflict;
 
 import java.util.*;
