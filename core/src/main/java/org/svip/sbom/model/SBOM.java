@@ -377,10 +377,13 @@ public class SBOM {
     @Override
     public String toString() {
         return "\nSBOM Information\n" +
+                "  + Origin Format: " + getOriginFormat() + "\n" +
+                "  + Specification Version: " + getSpecVersion() + "\n" +
+                "  + SBOM Version: " + getSbomVersion() + "\n" +
                 "  + Serial Number: " + getSerialNumber() + "\n" +
-                "  + Version: " + getSpecVersion() + "\n" +
-                "  + Tool Version: " + getSbomVersion() + "\n" +
-                "  + Time Stamp: " + getTimestamp() + "\n";
+                "  + Supplier: " + getSupplier() + "\n" +
+                "  + Time Stamp: " + getTimestamp() + "\n" +
+                "  + Dependency Tree: " + dependencyTree + "\n";
     }
 
     /**
