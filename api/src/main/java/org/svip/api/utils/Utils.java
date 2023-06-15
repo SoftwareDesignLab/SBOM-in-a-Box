@@ -1,5 +1,6 @@
 package org.svip.api.utils;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.sbom.model.SBOM;
@@ -20,6 +21,31 @@ import java.util.Map;
  * @author Juan Francisco Patino
  */
 public class Utils {
+
+    /**
+     * Utility Class for sending SBOM JSON objects. Contains {@code fileName} & {@code contents} fields that are capable
+     * of being automatically serialized to and from JSON.
+     */
+    public static class SBOMFile {
+        @JsonProperty
+        public String fileName;
+        @JsonProperty
+        public String contents;
+        public boolean hasNullProperties;
+
+        /**
+         * Default constructor for SBOMFile. Used for test purposes.
+         *
+         * @param fileName The name of the SBOM file.
+         * @param contents The contents of the SBOM file.
+         */
+        public SBOMFile(String fileName, String contents) {
+            this.fileName = fileName;
+            this.contents = contents;
+            this.hasNullProperties = fileName == null || contents == null
+                    || fileName.length() == 0 || contents.length() == 0;
+        }
+    }
 
     /**
      * Helper method to get the schema of an SBOM string by translating it in and finding the SBOM object origin format.
@@ -116,6 +142,24 @@ public class Utils {
             this.put("fileContents", fileContents);
             this.put("filePaths", filePaths);
         }};
+    }
+
+    /**
+     * Checks an array of {@code SBOMFile} objects for one containing any null properties.
+     *
+     * @param arr The array of {@code SBOMFile} objects to check.
+     * @return -1 if no SBOMFiles have null properties. Otherwise, return the index of the first SBOM with null
+     * properties.
+     */
+    public static int sbomFileArrNullCheck(SBOMFile[] arr){
+        int i = 0;
+        for (SBOMFile a: arr
+        ) {
+            if(a == null || a.hasNullProperties)
+                return i;
+            i++;
+        }
+        return -1;
     }
 
     /**

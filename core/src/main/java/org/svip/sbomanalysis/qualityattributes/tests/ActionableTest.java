@@ -1,6 +1,7 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
 import org.svip.sbom.model.Component;
+import org.svip.sbom.model.SBOM;
 import org.svip.sbomanalysis.qualityattributes.tests.testresults.Test;
 import org.svip.sbomanalysis.qualityattributes.tests.testresults.TestResults;
 
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * File: ActionableTest.java
@@ -177,5 +179,10 @@ public class ActionableTest extends MetricTest{
             this.undefinedBehavior = true;
             return("UNDEFINED: %s identifier may or may not be valid. The lookup service returned an unexpected response code: " + status);
         }
+    }
+
+    @Override
+    public List<Result> test(SBOM sbom) {
+        return null;
     }
 }

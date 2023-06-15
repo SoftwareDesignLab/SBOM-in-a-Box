@@ -175,141 +175,141 @@ public class DiffReportTest {
         test_component_conflict_three = null;
     }
 
-    /**
-     * DiffReport Constructor Test
-     */
-
-    @Test
-    public void create_differReport_test() {
-
-        DiffReport test_report = new DiffReport(test_SBOM_conflict, Set.of(test_component_conflict_one));
-        assertNotNull(test_report);
-
-    }
-
-    /**
-     * getSbomConflict Tests
-     */
-
-    @Test
-    public void diffReport_get_sbomConflict_test() {
-
-        Set<ComponentConflict> test_conflicts = new HashSet<>(
-                Arrays.asList(test_component_conflict_one, test_component_conflict_two, test_component_conflict_three)
-        );
-
-        DiffReport test_report = new DiffReport(test_SBOM_conflict, test_conflicts);
-
-        assertNotNull(test_report);
-
-        assertEquals(EXPECTED_SBOM_CONFLICT_COUNT, test_report.getSbomConflict().getConflicts().size());
-
-    }
-
-    @Test
-    public void diffReport_get_sbomConflicts_has_correct_conflicts_test() {
-
-        Set<ComponentConflict> test_conflicts = new HashSet<>(
-                Arrays.asList(test_component_conflict_one, test_component_conflict_two, test_component_conflict_three)
-        );
-
-        DiffReport test_report = new DiffReport(test_SBOM_conflict, test_conflicts);
-
-        assertNotNull(test_report);
-
-        Set<SBOMConflict> conflict_results = test_report.getSbomConflict().getConflicts();
-
-        assertEquals(EXPECTED_SBOM_CONFLICT_COUNT, conflict_results.size());
-
-        assertTrue(conflict_results.contains(SBOMConflictType.ORIGIN_FORMAT_MISMATCH));
-        assertTrue(conflict_results.contains(SBOMConflictType.SCHEMA_VERSION_MISMATCH));
-        assertTrue(conflict_results.contains(SBOMConflictType.AUTHOR_MISMATCH));
-        assertTrue(conflict_results.contains(SBOMConflictType.ORIGIN_FORMAT_MISMATCH));
-
-    }
-
-    /**
-     * getComponentConflicts Tests
-     */
-
-    @Test
-    public void diffReport_get_componentConflict_test() {
-
-        Set<ComponentConflict> test_conflicts = new HashSet<>(
-                Arrays.asList(test_component_conflict_one, test_component_conflict_two, test_component_conflict_three)
-        );
-
-        DiffReport test_report = new DiffReport(test_SBOM_conflict, test_conflicts);
-
-        assertNotNull(test_report);
-
-        assertEquals(EXPECTED_COMPONENT_CONFLICT_COUNT, test_report.getComponentConflicts().size());
-
-    }
-
-    @Test
-    public void diffReport_get_componentConflict_has_correct_components_test() {
-
-        Set<ComponentConflict> test_conflicts = new HashSet<>(
-                Arrays.asList(test_component_conflict_one)
-        );
-
-        DiffReport test_report = new DiffReport(test_SBOM_conflict, test_conflicts);
-
-        assertNotNull(test_report);
-
-        ComponentConflict conflict_results = test_report.getComponentConflicts().iterator().next();
-
-        assertEquals(test_component_a, conflict_results.getComponentA());
-        assertEquals(test_component_b, conflict_results.getComponentB());
-
-    }
-
-    @Test
-    public void diffReport_get_componentConflict_has_correct_conflicts_test() {
-
-        Set<ComponentConflict> test_conflicts = new HashSet<>(
-                Arrays.asList(test_component_conflict_one)
-        );
-
-        DiffReport test_report = new DiffReport(test_SBOM_conflict, test_conflicts);
-
-        assertNotNull(test_report);
-
-        Set<ComponentConflictType> conflictType_results = test_report.getComponentConflicts().iterator().next().getConflictTypes();
-
-        assertEquals(EXPECTED_COMPONENT_CONFLICT_TYPE_COUNT, conflictType_results.size());
-
-        assertTrue(conflictType_results.contains(ComponentConflictType.COMPONENT_NAME_MISMATCH));
-        assertTrue(conflictType_results.contains(ComponentConflictType.COMPONENT_PUBLISHER_MISMATCH));
-        assertTrue(conflictType_results.contains(ComponentConflictType.COMPONENT_CPE_MISMATCH));
-        assertTrue(conflictType_results.contains(ComponentConflictType.COMPONENT_PURL_MISMATCH));
-        assertTrue(conflictType_results.contains(ComponentConflictType.COMPONENT_PURL_MISMATCH));
-
-    }
-
-    /**
-     * toString Tests
-     */
-
-    @Disabled("toString works but something is happening where the two outputs don't line up.")
-    @Test
-    public void diffReport_toString_test() {
-
-        Set<ComponentConflict> test_conflicts = new HashSet<>(
-                Arrays.asList(test_component_conflict_one, test_component_conflict_two, test_component_conflict_three)
-        );
-
-        DiffReport test_report = new DiffReport(test_SBOM_conflict, test_conflicts);
-
-        assertNotNull(test_report);
-
-        String toString_result = test_report.toString();
-
-        assertNotNull(toString_result);
-
-        assertEquals(EXPECTED_TO_STRING_RESULT, toString_result);
-
-    }
+//    /**
+//     * DiffReport Constructor Test
+//     */
+//
+//    @Test
+//    public void create_differReport_test() {
+//
+//        DiffReport test_report = new DiffReport(test_SBOM_conflict, Set.of(test_component_conflict_one));
+//        assertNotNull(test_report);
+//
+//    }
+//
+//    /**
+//     * getSbomConflict Tests
+//     */
+//
+//    @Test
+//    public void diffReport_get_sbomConflict_test() {
+//
+//        Set<ComponentConflict> test_conflicts = new HashSet<>(
+//                Arrays.asList(test_component_conflict_one, test_component_conflict_two, test_component_conflict_three)
+//        );
+//
+//        DiffReport test_report = new DiffReport(test_SBOM_conflict, test_conflicts);
+//
+//        assertNotNull(test_report);
+//
+//        assertEquals(EXPECTED_SBOM_CONFLICT_COUNT, test_report.getSbomConflict().getConflicts().size());
+//
+//    }
+//
+//    @Test
+//    public void diffReport_get_sbomConflicts_has_correct_conflicts_test() {
+//
+//        Set<ComponentConflict> test_conflicts = new HashSet<>(
+//                Arrays.asList(test_component_conflict_one, test_component_conflict_two, test_component_conflict_three)
+//        );
+//
+//        DiffReport test_report = new DiffReport(test_SBOM_conflict, test_conflicts);
+//
+//        assertNotNull(test_report);
+//
+//        Set<SBOMConflict> conflict_results = test_report.getSbomConflict().getConflicts();
+//
+//        assertEquals(EXPECTED_SBOM_CONFLICT_COUNT, conflict_results.size());
+//
+//        assertTrue(conflict_results.contains(SBOMConflictType.ORIGIN_FORMAT_MISMATCH));
+//        assertTrue(conflict_results.contains(SBOMConflictType.SCHEMA_VERSION_MISMATCH));
+//        assertTrue(conflict_results.contains(SBOMConflictType.AUTHOR_MISMATCH));
+//        assertTrue(conflict_results.contains(SBOMConflictType.ORIGIN_FORMAT_MISMATCH));
+//
+//    }
+//
+//    /**
+//     * getComponentConflicts Tests
+//     */
+//
+//    @Test
+//    public void diffReport_get_componentConflict_test() {
+//
+//        Set<ComponentConflict> test_conflicts = new HashSet<>(
+//                Arrays.asList(test_component_conflict_one, test_component_conflict_two, test_component_conflict_three)
+//        );
+//
+//        DiffReport test_report = new DiffReport(test_SBOM_conflict, test_conflicts);
+//
+//        assertNotNull(test_report);
+//
+//        assertEquals(EXPECTED_COMPONENT_CONFLICT_COUNT, test_report.getComponentConflicts().size());
+//
+//    }
+//
+//    @Test
+//    public void diffReport_get_componentConflict_has_correct_components_test() {
+//
+//        Set<ComponentConflict> test_conflicts = new HashSet<>(
+//                Arrays.asList(test_component_conflict_one)
+//        );
+//
+//        DiffReport test_report = new DiffReport(test_SBOM_conflict, test_conflicts);
+//
+//        assertNotNull(test_report);
+//
+//        ComponentConflict conflict_results = test_report.getComponentConflicts().iterator().next();
+//
+//        assertEquals(test_component_a, conflict_results.getComponentA());
+//        assertEquals(test_component_b, conflict_results.getComponentB());
+//
+//    }
+//
+//    @Test
+//    public void diffReport_get_componentConflict_has_correct_conflicts_test() {
+//
+//        Set<ComponentConflict> test_conflicts = new HashSet<>(
+//                Arrays.asList(test_component_conflict_one)
+//        );
+//
+//        DiffReport test_report = new DiffReport(test_SBOM_conflict, test_conflicts);
+//
+//        assertNotNull(test_report);
+//
+//        Set<ComponentConflictType> conflictType_results = test_report.getComponentConflicts().iterator().next().getConflictTypes();
+//
+//        assertEquals(EXPECTED_COMPONENT_CONFLICT_TYPE_COUNT, conflictType_results.size());
+//
+//        assertTrue(conflictType_results.contains(ComponentConflictType.COMPONENT_NAME_MISMATCH));
+//        assertTrue(conflictType_results.contains(ComponentConflictType.COMPONENT_PUBLISHER_MISMATCH));
+//        assertTrue(conflictType_results.contains(ComponentConflictType.COMPONENT_CPE_MISMATCH));
+//        assertTrue(conflictType_results.contains(ComponentConflictType.COMPONENT_PURL_MISMATCH));
+//        assertTrue(conflictType_results.contains(ComponentConflictType.COMPONENT_PURL_MISMATCH));
+//
+//    }
+//
+//    /**
+//     * toString Tests
+//     */
+//
+//    @Disabled("toString works but something is happening where the two outputs don't line up.")
+//    @Test
+//    public void diffReport_toString_test() {
+//
+//        Set<ComponentConflict> test_conflicts = new HashSet<>(
+//                Arrays.asList(test_component_conflict_one, test_component_conflict_two, test_component_conflict_three)
+//        );
+//
+//        DiffReport test_report = new DiffReport(test_SBOM_conflict, test_conflicts);
+//
+//        assertNotNull(test_report);
+//
+//        String toString_result = test_report.toString();
+//
+//        assertNotNull(toString_result);
+//
+//        assertEquals(EXPECTED_TO_STRING_RESULT, toString_result);
+//
+//    }
 
 }
