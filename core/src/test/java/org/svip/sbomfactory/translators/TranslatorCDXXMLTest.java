@@ -21,14 +21,14 @@ import static org.svip.sbomfactory.translators.Utils.*;
  */
 public class TranslatorCDXXMLTest extends TranslatorTestCore<TranslatorCDXXML> {
 
-    public static final String test_small_cdx = "src/test/java/org/nvip/plugfest/tooling/sample_boms/sbom.alpine.xml";
-    public static final String test_large_cdx = "src/test/java/org/nvip/plugfest/tooling/sample_boms/sbom.python.xml";
-    public static final String test_no_metadata_cdx = "src/test/java/org/nvip/plugfest/tooling/sample_boms/sbom.alpine.nometadata.xml";
-    public static final String test_no_metadata_cdx_two = "src/test/java/org/nvip/plugfest/tooling/sample_boms/gobom-source.xml";
-    public static final String test_no_components_cdx = "src/test/java/org/nvip/plugfest/tooling/sample_boms/sbom.nocomponents.xml";
-    public static final String TEST_CDX_SBOM_1_2_DEPENDENCIES = "src/test/java/org/nvip/plugfest/tooling/sample_boms/proton-bridge-v1.8.0.bom.xml";
+    public static final String test_small_cdx = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.alpine.xml";
+    public static final String test_large_cdx = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.python.xml";
+    public static final String test_no_metadata_cdx = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.alpine.nometadata.xml";
+    public static final String test_no_metadata_cdx_two = "src/test/java/org/svip/sbomfactory/translators/sample_boms/gobom-source.xml";
+    public static final String test_no_components_cdx = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.nocomponents.xml";
+    public static final String TEST_CDX_SBOM_1_2_DEPENDENCIES = "src/test/java/org/svip/sbomfactory/translators/sample_boms/proton-bridge-v1.8.0.bom.xml";
 
-    public static final String TEST_CDX_SBOM_1_4_DEPENDENCIES = "src/test/java/org/nvip/plugfest/tooling/sample_boms/sbom.cdxgen.1-4.xml";
+    public static final String TEST_CDX_SBOM_1_4_DEPENDENCIES = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.cdxgen.1-4.xml";
 
 
     protected TranslatorCDXXMLTest() {

@@ -23,11 +23,11 @@ public class TranslatorControllerTest {
     /**
      * Test Constants
      */
-    private static final String TEST_JSON ="src/test/java/org/nvip/plugfest/tooling/sample_boms/cdx_json/trivy-0.39.0_celery-3.1.cdx.json";
+    private static final String TEST_JSON ="src/test/java/org/svip/sbomfactory/translators/sample_boms/cdx_json/trivy-0.39.0_celery-3.1.cdx.json";
 
-    private static final String TEST_XML = "src/test/java/org/nvip/plugfest/tooling/sample_boms/sbom.alpine.xml";
+    private static final String TEST_XML = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.alpine.xml";
 
-    private static final String TEST_SPDX = "src/test/java/org/nvip/plugfest/tooling/sample_boms/sbom.docker.2-2.spdx";
+    private static final String TEST_SPDX = "src/test/java/org/svip/sbomfactory/translators/sample_boms/sbom.docker.2-2.spdx";
 
     /**
      * Expected Results
