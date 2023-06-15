@@ -11,6 +11,7 @@ import org.svip.api.utils.Utils;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
+import org.svip.sbomfactory.translators.TranslatorException;
 
 import java.io.IOException;
 
@@ -89,7 +90,7 @@ public class MergeFromAPITest extends APITest{
      */
     @Test
     @DisplayName("Merge SBOMs Test")
-    public void mergeTest() throws IOException {
+    public void mergeTest() throws IOException, TranslatorException {
         String[] input = APITest.testInput();
 
         String contentsString = input[0];

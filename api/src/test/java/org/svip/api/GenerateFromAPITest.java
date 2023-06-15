@@ -18,6 +18,7 @@ import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualNode;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
+import org.svip.sbomfactory.translators.TranslatorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ public class GenerateFromAPITest extends APITest {
     @DisplayName("Null/Empty File Contents Array")
     @NullAndEmptySource
     void emptyContentsArrayTest(String fileContents) {
-        ResponseEntity<String> response = ctrl.generate(fileContents, TESTFILEARRAY_LENGTH1, CDX_SCHEMA, JSON_FORMAT);
+        ResponseEntity<?> response = ctrl.generate(fileContents, TESTFILEARRAY_LENGTH1, CDX_SCHEMA, JSON_FORMAT);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
@@ -55,7 +56,7 @@ public class GenerateFromAPITest extends APITest {
     @DisplayName("Null/Empty File Names Array")
     @NullAndEmptySource
     void emptyFileNamesArrayTest(String fileNames) {
-        ResponseEntity<String> response = ctrl.generate(TESTCONTENTSARRAY_LENGTH1, fileNames, CDX_SCHEMA, JSON_FORMAT);
+        ResponseEntity<?> response = ctrl.generate(TESTCONTENTSARRAY_LENGTH1, fileNames, CDX_SCHEMA, JSON_FORMAT);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
@@ -63,7 +64,8 @@ public class GenerateFromAPITest extends APITest {
     @DisplayName("Mismatched File Contents/Names Array Length")
     void mismatchedFileInfoTest() {
         // Longer contents array
-        ResponseEntity<String> response = ctrl.generate(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH1, CDX_SCHEMA, JSON_FORMAT);
+        ResponseEntity<?> response = ctrl.generate(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH1, CDX_SCHEMA,
+                JSON_FORMAT);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
         // Longer file names array
@@ -75,12 +77,13 @@ public class GenerateFromAPITest extends APITest {
     @DisplayName("Null/Empty/Invalid Schema")
     @NullAndEmptySource
     @ValueSource(strings = { INVALID_SCHEMA })
-    void invalidSchemaNameTest(String schemaName) {
-        ResponseEntity<String> response = ctrl.generate(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, schemaName, JSON_FORMAT);
+    void invalidSchemaNameTest(String schemaName) throws TranslatorException {
+        ResponseEntity<?> response = ctrl.generate(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, schemaName,
+                JSON_FORMAT);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(GeneratorSchema.CycloneDX, Utils.getSchemaFromSBOM(response.getBody()));
+        assertEquals(GeneratorSchema.CycloneDX, Utils.getSchemaFromSBOM((String) response.getBody()));
     }
 
     @ParameterizedTest
@@ -88,11 +91,12 @@ public class GenerateFromAPITest extends APITest {
     @NullAndEmptySource
     @ValueSource(strings = { INVALID_FORMAT, "SPDX" })
     void invalidFormatNameTest(String formatName) {
-        ResponseEntity<String> response = ctrl.generate(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, CDX_SCHEMA, formatName);
+        ResponseEntity<?> response = ctrl.generate(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, CDX_SCHEMA,
+                formatName);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(GeneratorSchema.CycloneDX.getDefaultFormat(), SBOMGenerator.assumeSBOMFormat(response.getBody()));
+        assertEquals(GeneratorSchema.CycloneDX.getDefaultFormat(), SBOMGenerator.assumeSBOMFormat((String) response.getBody()));
     }
 
     /**
@@ -130,18 +134,18 @@ public class GenerateFromAPITest extends APITest {
          */
         @Test
         @DisplayName("Generate SBOMs")
-        public void generateTest() {
+        public void generateTest() throws TranslatorException {
             for(GeneratorSchema schema : GeneratorSchema.values()) {
                 // Test all possible formats
                 for(GeneratorSchema.GeneratorFormat format : GeneratorSchema.GeneratorFormat.values()) {
                     if(schema.supportsFormat(format)) {
                         // Test logic per merge
                         Debug.logBlockTitle(schema + " " + format);
-                        ResponseEntity<String> report =
+                        ResponseEntity<?> response =
                                 ctrl.generate(this.fileContents, this.fileNames, schema.toString(), format.toString());
-                        String sbom = report.getBody();
+                        String sbom = (String) response.getBody();
 
-                        assertEquals(HttpStatus.OK, report.getStatusCode());
+                        assertEquals(HttpStatus.OK, response.getStatusCode());
                         assertNotNull(sbom);
 
                         GeneratorSchema.GeneratorFormat assumedFormat = SBOMGenerator.assumeSBOMFormat(sbom);
