@@ -26,39 +26,39 @@ public class TranslatorSPDX extends TranslatorCore {
 
     //#region Constants
 
-    private static final String TAG = "#####";
+    public static final String TAG = "#####";
 
-    private static final String UNPACKAGED_TAG = "##### Unpackaged files";
+    public static final String UNPACKAGED_TAG = "##### Unpackaged files";
 
-    private static final String PACKAGE_TAG = "##### Package";
+    public static final String PACKAGE_TAG = "##### Package";
 
-    private static final String RELATIONSHIP_TAG = "##### Relationships";
+    public static final String RELATIONSHIP_TAG = "##### Relationships";
 
-    private static final String EXTRACTED_LICENSE_TAG = "##### Extracted"; // starts with
+    public static final String EXTRACTED_LICENSE_TAG = "##### Extracted"; // starts with
 
-    private static final String EXTRACTED_LICENSE_ID = "LicenseID";
+    public static final String EXTRACTED_LICENSE_ID = "LicenseID";
 
-    private static final String EXTRACTED_LICENSE_NAME = "LicenseName";
+    public static final String EXTRACTED_LICENSE_NAME = "LicenseName";
 
-    private static final String EXTRACTED_LICENSE_TEXT = "ExtractedText";
+    public static final String EXTRACTED_LICENSE_TEXT = "ExtractedText";
 
-    private static final String EXTRACTED_LICENSE_CROSSREF = "LicenseCrossReference";
+    public static final String EXTRACTED_LICENSE_CROSSREF = "LicenseCrossReference";
 
-    private static final String RELATIONSHIP_KEY = "Relationship";
+    public static final String RELATIONSHIP_KEY = "Relationship";
 
-    private static final String SPEC_VERSION_TAG = "SPDXVersion";
+    public static final String SPEC_VERSION_TAG = "SPDXVersion";
 
-    private static final String ID_TAG = "SPDXID";
+    public static final String ID_TAG = "SPDXID";
 
-    private static final String TIMESTAMP_TAG = "Created";
+    public static final String TIMESTAMP_TAG = "Created";
 
-    private static final String DOCUMENT_NAMESPACE_TAG = "DocumentNamespace";
+    public static final String DOCUMENT_NAMESPACE_TAG = "DocumentNamespace";
 
-    private static final String AUTHOR_TAG = "Creator";
+    public static final String AUTHOR_TAG = "Creator";
 
     // Used as an identifier for main SBOM information. Sometimes used as reference in relationships to show header contains main component.
-    private static final String DOCUMENT_REFERENCE_TAG = "SPDXRef-DOCUMENT";
-    private static final String EXTERNAL_REFERENCE_TAG = "ExternalRef";
+    public static final String DOCUMENT_REFERENCE_TAG = "SPDXRef-DOCUMENT";
+    public static final String EXTERNAL_REFERENCE_TAG = "ExternalRef";
 
     private static final Pattern TAG_VALUE_PATTERN = Pattern.compile("(\\S+): (.+)");
     private static final Pattern EXTERNAL_REF_PATTERN = Pattern.compile(EXTERNAL_REFERENCE_TAG + ": (\\S*) (\\S*) (\\S*)");
