@@ -1,12 +1,14 @@
 package org.svip.sbomanalysis.qualityattributes.tests.testresults;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * File: Test.java
  * Container to hold results of an individual test.
  *
  * @author Ian Dunn
  */
-public class Test {
+public class Result {
     /**
      * Status of the test. true=PASSED, false=FAILED
      */
@@ -17,14 +19,19 @@ public class Test {
      */
     private final String[] message;
 
+
+    @JsonIgnore
+    private final String testName;
+
     /**
      * Initialize a new Test.
      * @param status The test status - true=PASSED, false=FAILED
      * @param message Multiple string parameters with the message of the test
      */
-    public Test(boolean status, String... message) {
+    public Result(boolean status, String... message) {
         this.status = status;
         this.message = message;
+        this.testName = "temp";
     }
 
     ///
@@ -38,6 +45,8 @@ public class Test {
     public String getMessage() {
         return String.join("", message);
     }
+
+    public String getTestName(){ return testName;}
 
     ///
     /// Overrides
@@ -53,10 +62,10 @@ public class Test {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Test test = (Test) o;
+        Result result = (Result) o;
 
-        if (status != test.status) return false;
+        if (status != result.status) return false;
         // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        return getMessage().equals(test.getMessage());
+        return getMessage().equals(result.getMessage());
     }
 }

@@ -204,7 +204,9 @@ public class SVIPApiController {
         }
 
         //run the QA
-        QualityReport report = pipeline.process(sbom);
+        // Disabled for now, will be fixed with other merges
+        //QualityReport report = pipeline.process(sbom);
+        QualityReport report = null;
 
         //encode and send report
         return Utils.encodeResponse(report);
