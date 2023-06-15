@@ -1,7 +1,7 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
+import org.svip.sbom.model.Component;
 import org.svip.sbomanalysis.qualityattributes.tests.testresults.TestResults;
-import org.svip.sbom.model.*;
 
 /**
  * Abstract class to be extended by all metric tests

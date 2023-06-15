@@ -1,8 +1,5 @@
 package org.svip.sbomfactory.translators;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 public abstract class TranslatorTestCore<T extends TranslatorCore> {
     protected T TRANSLATOR;
 

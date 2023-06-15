@@ -2,13 +2,13 @@ package org.svip.sbomanalysis.comparison.conflicts;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.model.DependencyTree;
+import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.Signature;
+
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import org.svip.sbom.model.*;
-import org.svip.sbomanalysis.old.comparison.conflicts.SBOMConflict;
-
-import java.util.*;
 
 /**
  * File: SBOMConflictTest.java
@@ -74,7 +74,7 @@ public class SBOMConflictTest {
     public void two_SBOMs_with_conflicts_test() {
 
         SBOM a = new SBOM(
-                SBOMType.CYCLONE_DX,
+                SBOM.Type.CYCLONE_DX,
                 SB_SPEC_VER_ONE,
                 SB_SBOM_VER_ONE,
                 SB_AUTHOR_ONE,
@@ -84,7 +84,7 @@ public class SBOMConflictTest {
                 new DependencyTree());
 
         SBOM b = new SBOM(
-                SBOMType.CYCLONE_DX,
+                SBOM.Type.CYCLONE_DX,
                 SB_SPEC_VER_TWO,
                 SB_SBOM_VER_TWO,
                 SB_AUTHOR_TWO,
@@ -104,7 +104,7 @@ public class SBOMConflictTest {
     public void same_SBOM_should_have_zero_conflicts() {
 
         SBOM a = new SBOM(
-                SBOMType.CYCLONE_DX,
+                SBOM.Type.CYCLONE_DX,
                 SB_SPEC_VER_ONE,
                 SB_SBOM_VER_ONE,
                 SB_AUTHOR_ONE,
@@ -114,7 +114,7 @@ public class SBOMConflictTest {
                 new DependencyTree());
 
         SBOM b = new SBOM(
-                SBOMType.CYCLONE_DX,
+                SBOM.Type.CYCLONE_DX,
                 SB_SPEC_VER_ONE,
                 SB_SBOM_VER_ONE,
                 SB_AUTHOR_ONE,
@@ -140,7 +140,7 @@ public class SBOMConflictTest {
     public void sbom_with_conflicts_should_have_right_toString() {
 
         SBOM a = new SBOM(
-                SBOMType.CYCLONE_DX,
+                SBOM.Type.CYCLONE_DX,
                 SB_SPEC_VER_ONE,
                 SB_SBOM_VER_ONE,
                 SB_AUTHOR_ONE,
@@ -150,7 +150,7 @@ public class SBOMConflictTest {
                 new DependencyTree());
 
         SBOM b = new SBOM(
-                SBOMType.CYCLONE_DX,
+                SBOM.Type.CYCLONE_DX,
                 SB_SPEC_VER_TWO,
                 SB_SBOM_VER_TWO,
                 SB_AUTHOR_TWO,

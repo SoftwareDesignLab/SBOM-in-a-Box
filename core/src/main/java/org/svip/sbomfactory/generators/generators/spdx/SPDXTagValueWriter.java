@@ -1,10 +1,9 @@
 package org.svip.sbomfactory.generators.generators.spdx;
 
-import org.svip.sbom.model.PURL;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.generators.License;
 import org.svip.sbomfactory.generators.utils.generators.LicenseManager;
 import org.svip.sbomfactory.generators.utils.generators.Tool;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.translators.TranslatorSPDX;
 
 import java.io.IOException;
@@ -197,8 +196,8 @@ public class SPDXTagValueWriter {
             out.append("ExternalRef: SECURITY cpe23Type ").append(cpe).append("\n");
         }
 
-        for(PURL purl : component.getPurls()) {
-            out.append("ExternalRef: SECURITY purl ").append(purl.toString()).append("\n");
+        for(String purl : component.getPurls()) {
+            out.append("ExternalRef: SECURITY purl ").append(purl).append("\n");
         }
 
         if(component.getFiles().size() > 0) {

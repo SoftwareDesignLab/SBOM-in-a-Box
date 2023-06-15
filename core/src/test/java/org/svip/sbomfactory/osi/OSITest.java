@@ -11,8 +11,6 @@ package org.svip.sbomfactory.osi;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.svip.sbomfactory.generators.utils.Debug;
-import org.svip.sbomfactory.osi.OSI;
 
 /**
  * Tests for the OSI class

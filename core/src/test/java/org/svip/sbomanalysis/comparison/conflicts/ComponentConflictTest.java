@@ -1,12 +1,14 @@
 package org.svip.sbomanalysis.comparison.conflicts;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.svip.sbom.model.Component;
 
-import org.svip.sbom.model.*;
-import org.svip.sbomanalysis.old.comparison.conflicts.ComponentConflict;
-import org.svip.sbomanalysis.old.comparison.conflicts.ComponentConflictType;
-
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 

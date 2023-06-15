@@ -1,12 +1,14 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
-import org.svip.sbomanalysis.qualityattributes.tests.testresults.*;
-import org.svip.sbom.model.*;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.uids.PURL;
+import org.svip.sbomanalysis.qualityattributes.tests.testresults.Test;
+import org.svip.sbomanalysis.qualityattributes.tests.testresults.TestResults;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.Set;
@@ -41,19 +43,27 @@ public class DataVerificationTest extends MetricTest {
         final TestResults testResults = new TestResults(c); // Init TestResults for this component
 
         //check if the component is missing a purl
-        Set<PURL> purls = c.getPurls();
+        Set<String> purls = c.getPurls();
         if(purls.isEmpty()){
             testResults.addTest(new Test(false, "Component has no PURL"));
             return testResults;
         }
         //if not run the test
-        for (PURL p: c.getPurls()
+        for (String purlString: c.getPurls()
         ) {
+            PURL p = null;
+            try {
+                p = new PURL(purlString);
+            } catch (Exception e) {
+                // TODO is this a correct error message?
+                testResults.addTest(new Test(false,"Invalid PURL String: " + e.getMessage()));
+                continue;
+            }
 
             try{
                 //pull the data from the purl and from the package manager
                 String[] fromOnline = extractedFromPURL(p);
-                String packageManagerName = p.getPackageManager().name().toLowerCase();
+                String packageManagerName = p.getType().toLowerCase(); // TODO was p.getPackageManager()
                 String name = p.getName();
                 String nameFoundOnline = fromOnline[0].toLowerCase();
                 String version = p.getVersion();
@@ -84,7 +94,7 @@ public class DataVerificationTest extends MetricTest {
             }
             catch(IOException e){
                 testResults.addTest(new Test(true,"Error accessing ",
-                        p.getPackageManager().name().toLowerCase(),
+                        p.getType().toLowerCase(), // TODO was p.getPackageManager()
                         " database\n", e.getMessage()));
 
             }

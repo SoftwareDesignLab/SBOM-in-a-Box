@@ -6,9 +6,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.svip.sbomanalysis.old.differ.UniqueIdOccurrence;
-import org.svip.sbomanalysis.old.differ.UniqueIdentifierType;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 

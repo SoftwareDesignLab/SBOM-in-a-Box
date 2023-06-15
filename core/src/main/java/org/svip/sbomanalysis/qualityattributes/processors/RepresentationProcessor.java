@@ -1,6 +1,6 @@
 package org.svip.sbomanalysis.qualityattributes.processors;
 
-import org.svip.sbomanalysis.qualityattributes.tests.*;
+import org.svip.sbomanalysis.qualityattributes.tests.MetricTest;
 
 /**
  * Metrics that will assess how well the data in the SBOM represents the SBOM as a whole

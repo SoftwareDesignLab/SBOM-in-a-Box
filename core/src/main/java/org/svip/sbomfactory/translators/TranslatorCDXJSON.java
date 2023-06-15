@@ -5,7 +5,6 @@ import org.cyclonedx.model.Bom;
 import org.cyclonedx.model.Dependency;
 import org.cyclonedx.parsers.JsonParser;
 import org.svip.sbom.model.Component;
-import org.svip.sbom.model.PURL;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.utils.generators.Tool;
 
@@ -96,7 +95,7 @@ public class TranslatorCDXJSON extends TranslatorCore {
 
                 // Get CPE, PURL, and SWIDs
                 String cpe = cdx_component.getCpe() == null ? null : cdx_component.getCpe();
-                PURL purl = cdx_component.getPurl() == null ? null : new PURL(cdx_component.getPurl());
+                String purl = cdx_component.getPurl() == null ? null : cdx_component.getPurl();
                 String swid = cdx_component.getSwid() == null ? null : String.valueOf(cdx_component.getSwid());
 
                 // Create new component with a name, publisher, version along with CPEs/PURLs/SWIDs
