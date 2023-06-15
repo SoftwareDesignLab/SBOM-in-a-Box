@@ -360,6 +360,7 @@ public class TranslatorCDXXML extends TranslatorCore {
 
         // Collected data
         StringBuilder author = new StringBuilder();
+        StringBuilder tool = new StringBuilder("Tool: ");
         HashMap<String, String> sbom_materials = new HashMap<>();
         HashMap<String, String> sbom_component = new HashMap<>();
 
@@ -407,6 +408,18 @@ public class TranslatorCDXXML extends TranslatorCore {
                         author.append(sbomMeta.item(b).getTextContent() + "]");
                     }
                 }
+            } else if (sbomMeta.item(b).getParentNode().getNodeName().contains("tool")) {
+                if(!(sbomMeta.item(b).getParentNode().getNodeName().contains("tools"))) {
+                    if (sbomMeta.item(b).getNodeName().contains("vendor")) {
+                        tool.append(sbomMeta.item(b).getTextContent() + " ");
+                    } else if (sbomMeta.item(b).getNodeName().contains("name")) {
+                        tool.append(sbomMeta.item(b).getTextContent() + "-");
+                    } else if (sbomMeta.item(b).getNodeName().contains("version")) {
+                        tool.append(sbomMeta.item(b).getTextContent());
+                    }
+
+                    // TODO this does not find the hash of any metadata tools
+                }
             } else {
                 sbom_materials.put(
                         sbomMeta.item(b).getNodeName(),
@@ -421,7 +434,10 @@ public class TranslatorCDXXML extends TranslatorCore {
 
         // Update data used to construct SBOM
 
-        bom_data.put("author", author.toString().equals("") ? sbom_materials.get("vendor") : author.toString());
+        bom_data.put("author",
+                author.toString().equals("") ?
+                        tool.toString() :
+                        author.toString());
         bom_data.put("timestamp", sbom_materials.get("timestamp"));
 
         if (sbom_component.isEmpty()) return result;

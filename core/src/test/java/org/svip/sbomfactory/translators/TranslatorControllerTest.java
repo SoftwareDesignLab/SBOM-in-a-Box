@@ -17,8 +17,8 @@ public class TranslatorControllerTest {
 
     @Test
     @Disabled("This test is broken. TODO: Import the new tests from plugfest")
-    public void controller_builds_cdx_json_test() {
-        SBOM sbom = TranslatorController.toSBOM("", TEST_SMALL_CDX_JSON);
+    public void controller_builds_cdx_json_test() throws TranslatorException {
+        SBOM sbom = TranslatorController.translate(TEST_SMALL_CDX_JSON);
         assertNotNull(sbom);
         assertEquals(SBOM.Type.CYCLONE_DX, sbom.getOriginFormat());
         assertEquals("1", sbom.getSbomVersion());
@@ -28,8 +28,8 @@ public class TranslatorControllerTest {
 
     @Test
     @Disabled("This test is broken. TODO: Import the new tests from plugfest")
-    public void controller_builds_cdx_xml_test() {
-        SBOM sbom = TranslatorController.toSBOM("", TEST_SMALL_CDX_XML);
+    public void controller_builds_cdx_xml_test() throws TranslatorException {
+        SBOM sbom = TranslatorController.translate(TEST_SMALL_CDX_XML);
         assertNotNull(sbom);
         assertEquals(SBOM.Type.CYCLONE_DX, sbom.getOriginFormat());
         assertEquals("1", sbom.getSbomVersion());
@@ -39,8 +39,8 @@ public class TranslatorControllerTest {
 
     @Test
     @Disabled("This test is broken. TODO: Import the new tests from plugfest")
-    public void controller_builds_spdx_tag_test() {
-        SBOM sbom = TranslatorController.toSBOM("", TEST_SMALL_SPDX_TAG);
+    public void controller_builds_spdx_tag_test() throws TranslatorException {
+        SBOM sbom = TranslatorController.translate(TEST_SMALL_SPDX_TAG);
         assertNotNull(sbom);
         assertEquals(SBOM.Type.SPDX, sbom.getOriginFormat());
         assertEquals("1", sbom.getSbomVersion());

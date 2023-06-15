@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
  */
 public class TranslatorCDXJSON extends TranslatorCore {
 
-    public static final String PLUGFEST_UID = "org.nvip.plugfest.tooling.sbom.uids";
     public TranslatorCDXJSON() {
         super("json");
     }
@@ -86,7 +85,7 @@ public class TranslatorCDXJSON extends TranslatorCore {
             }
 
             Date timestamp = json_sbom.getMetadata().getTimestamp();
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss:SSS'Z'");
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
             format.setTimeZone(TimeZone.getTimeZone("UTC"));
             bom_data.put("timestamp" , format.format(timestamp));
             authorAndTimestamp[1] = "[" + timestamp + "]";

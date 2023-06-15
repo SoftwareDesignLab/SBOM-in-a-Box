@@ -37,7 +37,7 @@ public class TranslatorCDXXMLTest extends TranslatorTestCore<TranslatorCDXXML> {
 
 
     @Test
-    public void translatorcdx_small_file_test() throws ParserConfigurationException, IOException, ParseException {
+    public void translatorcdx_small_file_test() throws ParserConfigurationException, IOException, ParseException, TranslatorException {
         SBOM sbom = this.TRANSLATOR.translate(TEST_SMALL_CDX);
         assertNotNull(sbom);
         Assertions.assertEquals(SBOM.Type.CYCLONE_DX, sbom.getOriginFormat());
@@ -47,7 +47,7 @@ public class TranslatorCDXXMLTest extends TranslatorTestCore<TranslatorCDXXML> {
     }
 
     @Test
-    public void translatorcdx_large_file_test() throws ParserConfigurationException, IOException, ParseException {
+    public void translatorcdx_large_file_test() throws ParserConfigurationException, IOException, ParseException, TranslatorException {
         SBOM sbom = this.TRANSLATOR.translate(TEST_LARGE_CDX);
         assertNotNull(sbom);
         assertEquals(SBOM.Type.CYCLONE_DX, sbom.getOriginFormat());
@@ -57,13 +57,13 @@ public class TranslatorCDXXMLTest extends TranslatorTestCore<TranslatorCDXXML> {
     }
 
     @Test
-    public void translatorcdx_no_metadata_test() throws ParserConfigurationException, IOException, ParseException {
+    public void translatorcdx_no_metadata_test() throws ParserConfigurationException, IOException, ParseException, TranslatorException {
         SBOM sbom = this.TRANSLATOR.translate(TEST_NO_METADATA_CDX);
         assertNull(sbom);
     }
 
     @Test
-    public void translatorcdx_no_components_test() throws ParserConfigurationException, IOException, ParseException {
+    public void translatorcdx_no_components_test() throws ParserConfigurationException, IOException, ParseException, TranslatorException {
         SBOM sbom = this.TRANSLATOR.translate(TEST_NO_COMPONENTS_CDX);
         assertNotNull(sbom);
         // Should be 1 component for head component
