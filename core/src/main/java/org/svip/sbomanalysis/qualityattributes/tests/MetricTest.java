@@ -2,6 +2,9 @@ package org.svip.sbomanalysis.qualityattributes.tests;
 
 import org.svip.sbomanalysis.qualityattributes.tests.testresults.TestResults;
 import org.svip.sbom.model.*;
+import org.svip.sbomanalysis.qualityattributes.tests.testresults.Result;
+
+import java.util.List;
 
 /**
  * Abstract class to be extended by all metric tests
@@ -34,5 +37,8 @@ public abstract class MetricTest {
     public String getName() { return this.name; }
 
     //#endregion
+
+
+    public abstract List<Result> test(SBOM sbom);
 
 }
