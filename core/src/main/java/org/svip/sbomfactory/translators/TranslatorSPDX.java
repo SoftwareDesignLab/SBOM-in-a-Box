@@ -28,6 +28,8 @@ public class TranslatorSPDX extends TranslatorCore {
 
     public static final String TAG = "#####";
 
+    public static final String SEPARATOR = ": ";
+
     public static final String UNPACKAGED_TAG = "##### Unpackaged files";
 
     public static final String PACKAGE_TAG = "##### Package";
@@ -60,9 +62,11 @@ public class TranslatorSPDX extends TranslatorCore {
     public static final String DOCUMENT_REFERENCE_TAG = "SPDXRef-DOCUMENT";
     public static final String EXTERNAL_REFERENCE_TAG = "ExternalRef";
 
-    private static final Pattern TAG_VALUE_PATTERN = Pattern.compile("(\\S+): (.+)");
-    private static final Pattern EXTERNAL_REF_PATTERN = Pattern.compile(EXTERNAL_REFERENCE_TAG + ": (\\S*) (\\S*) (\\S*)");
-    private static final Pattern RELATIONSHIP_PATTERN = Pattern.compile(RELATIONSHIP_KEY + ": (\\S*) (\\S*) (\\S*)");
+    private static final Pattern TAG_VALUE_PATTERN = Pattern.compile("(\\S+)" + SEPARATOR + "(.+)");
+    private static final Pattern EXTERNAL_REF_PATTERN = Pattern.compile(EXTERNAL_REFERENCE_TAG + SEPARATOR +
+            "(\\S*) (\\S*) (\\S*)");
+    private static final Pattern RELATIONSHIP_PATTERN = Pattern.compile(RELATIONSHIP_KEY + SEPARATOR +
+            "(\\S*) (\\S*) (\\S*)");
 
     //#endregion
 
@@ -256,7 +260,8 @@ public class TranslatorSPDX extends TranslatorCore {
         while(m.find()) {
             switch (m.group(1)) {
                 case DOCUMENT_NAMESPACE_TAG -> bom_data.put("serialNumber", m.group(2));
-                case SPEC_VERSION_TAG -> bom_data.put("specVersion", m.group(2));
+                case SPEC_VERSION_TAG -> bom_data.put("specVersion",
+                        m.group(2).substring(m.group(2).lastIndexOf('-') + 1)); // Get text after "SPDX-"
                 case AUTHOR_TAG -> {
                     if (!bom_data.containsKey("author")) bom_data.put("author", m.group(2));
                     else bom_data.put("author", bom_data.get("author") + " " + m.group(2));

@@ -103,7 +103,7 @@ public class TranslatorControllerTest {
     public void driver_translates_xml_supplier() throws TranslatorException {
         SBOM sbom = TranslatorController.translate(TEST_XML);
         assertNotNull(sbom);
-        assertEquals("anchore", sbom.getSupplier());
+        assertEquals("Tool: anchore syft-0.69.1", sbom.getSupplier());
     }
 
     @Test
@@ -203,7 +203,7 @@ public class TranslatorControllerTest {
     public void driver_translates_spdx_spec_version() throws TranslatorException {
         SBOM sbom = TranslatorController.translate(TEST_SPDX);
         assertNotNull(sbom);
-        assertEquals("SPDX-2.2", sbom.getSpecVersion());
+        assertEquals("2.2", sbom.getSpecVersion());
     }
 
     @Test

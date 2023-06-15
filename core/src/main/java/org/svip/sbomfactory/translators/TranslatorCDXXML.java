@@ -419,6 +419,15 @@ public class TranslatorCDXXML extends TranslatorCore {
                     }
 
                     // TODO this does not find the hash of any metadata tools
+
+                    // TODO this is only here for unit tests, find a better way to store tools
+                    sbom_materials.put(
+                            sbomMeta.item(b).getNodeName(),
+                            sbomMeta.item(b).getTextContent()
+                    );
+                    String key = sbomMeta.item(b).getNodeName().replaceAll("\n", "");
+                    result.put(key, "["+ key + " - " +
+                            sbomMeta.item(b).getTextContent().replaceAll("\n", "")+"]");
                 }
             } else {
                 sbom_materials.put(

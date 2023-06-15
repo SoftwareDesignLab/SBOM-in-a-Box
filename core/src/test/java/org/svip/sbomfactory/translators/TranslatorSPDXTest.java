@@ -65,7 +65,7 @@ public class TranslatorSPDXTest extends TranslatorTestCore<TranslatorSPDX> {
         assertNotNull(test);
         assertEquals(SBOM.Type.SPDX, test.getOriginFormat());
         assertEquals("1", test.getSbomVersion());
-        assertEquals("SPDX-2.2", test.getSpecVersion());
+        assertEquals("2.2", test.getSpecVersion());
         assertEquals(138, test.getAllComponents().size());
         assertTrue(noLicensesCheck(test));
     }
@@ -77,7 +77,7 @@ public class TranslatorSPDXTest extends TranslatorTestCore<TranslatorSPDX> {
         assertNotNull(test);
         assertEquals(SBOM.Type.SPDX, test.getOriginFormat());
         assertEquals("1", test.getSbomVersion());
-        assertEquals("SPDX-2.3", test.getSpecVersion());
+        assertEquals("2.3", test.getSpecVersion());
         assertEquals(433, test.getAllComponents().size());
     }
 
@@ -100,7 +100,7 @@ public class TranslatorSPDXTest extends TranslatorTestCore<TranslatorSPDX> {
         assertNotNull(test);
         assertEquals(SBOM.Type.SPDX, test.getOriginFormat());
         assertEquals("1", test.getSbomVersion());
-        assertEquals("SPDX-2.3", test.getSpecVersion());
+        assertEquals("2.3", test.getSpecVersion());
         assertEquals(1, test.getAllComponents().size());
     }
 
