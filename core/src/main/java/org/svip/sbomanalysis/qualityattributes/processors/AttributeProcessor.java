@@ -1,14 +1,11 @@
 package org.svip.sbomanalysis.qualityattributes.processors;
 
-import org.svip.sbomanalysis.qualityattributes.QualityReport;
+import org.svip.sbom.model.SBOM;
 import org.svip.sbomanalysis.qualityattributes.tests.MetricTest;
 import org.svip.sbomanalysis.qualityattributes.tests.testresults.Result;
-import org.svip.sbom.model.SBOM;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * file: AttributeProcessor.java
