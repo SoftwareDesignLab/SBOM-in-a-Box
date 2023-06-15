@@ -1,7 +1,9 @@
 package org.svip.sbomanalysis.comparison;
 
-import org.svip.sbom.model.*;
-import org.svip.sbomanalysis.old.comparison.conflicts.ComponentConflict;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.DependencyTree;
+import org.svip.sbom.model.SBOM;
+import org.svip.sbomanalysis.comparison.conflicts.ComponentConflict;
 
 import java.util.*;
 
@@ -159,7 +161,7 @@ public class Merger {
         cpes.addAll(headRefA.getCpes());
         cpes.addAll(headRefB.getCpes());
 
-        Set<PURL> purls = new HashSet<>();
+        Set<String> purls = new HashSet<>();
         purls.addAll(headRefA.getPurls());
         purls.addAll(headRefB.getPurls());
 
@@ -187,7 +189,6 @@ public class Merger {
         // Loop through a's children and add them to the map
         for (UUID childUUID : a.getChildren()) {
             Component child = aBom.getComponent(childUUID);
-            if(child == null) continue; // TODO temp fix for translators
 
             // Add the name of the child to the aSet
             aChildren.add(child.getName());
@@ -198,7 +199,6 @@ public class Merger {
         // Loop through b's children and add them to the map
         for (UUID childUUID : b.getChildren()) {
             Component child = bBom.getComponent(childUUID);
-            if(child == null) continue; // TODO temp fix for translators
 
             // Let's add it to b's children in the set
             // Add the name of the child to the bSet

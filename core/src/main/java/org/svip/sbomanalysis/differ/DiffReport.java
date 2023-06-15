@@ -2,16 +2,17 @@ package org.svip.sbomanalysis.differ;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.nvip.plugfest.tooling.differ.conflicts.ComponentConflict;
-import org.nvip.plugfest.tooling.differ.conflicts.ComponentConflictType;
-import org.nvip.plugfest.tooling.differ.conflicts.SBOMConflict;
-import org.nvip.plugfest.tooling.differ.conflicts.SBOMConflictType;
-import org.nvip.plugfest.tooling.sbom.Component;
-import org.nvip.plugfest.tooling.sbom.SBOM;
+import org.svip.sbom.model.*;
+import org.svip.sbomanalysis.comparison.conflicts.ComponentConflict;
+import org.svip.sbomanalysis.comparison.conflicts.ComponentConflictType;
+import org.svip.sbomanalysis.comparison.conflicts.SBOMConflict;
+import org.svip.sbomanalysis.comparison.conflicts.SBOMConflictType;
+
 
 import java.util.*;
 
-import static org.nvip.plugfest.tooling.differ.conflicts.ComponentConflictType.*;
+import static org.svip.sbomanalysis.comparison.conflicts.ComponentConflictType.*;
+
 
 /**
  * Class to hold results of a diff comparison between two SBOMs

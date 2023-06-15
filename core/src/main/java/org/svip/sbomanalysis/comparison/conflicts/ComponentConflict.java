@@ -1,7 +1,7 @@
 package org.svip.sbomanalysis.comparison.conflicts;
 
-import org.nvip.plugfest.tooling.sbom.Component;
-import org.nvip.plugfest.tooling.sbom.uids.Hash;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.uids.Hash;
 
 import java.util.Arrays;
 import java.util.HashSet;
