@@ -1,6 +1,6 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
-import org.nvip.plugfest.tooling.sbom.SBOM;
+import org.svip.sbom.model.SBOM;
 
 import java.util.ArrayList;
 import java.util.List;

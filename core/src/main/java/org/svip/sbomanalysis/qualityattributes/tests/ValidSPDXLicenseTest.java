@@ -5,9 +5,8 @@ import jregex.Matcher;
 import jregex.Pattern;
 import jregex.REFlags;
 import org.apache.commons.io.IOUtils;
-import org.nvip.plugfest.tooling.Debug;
-import org.nvip.plugfest.tooling.sbom.Component;
-import org.nvip.plugfest.tooling.sbom.SBOM;
+import org.svip.sbom.model.*;
+import org.svip.sbomfactory.generators.utils.Debug;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;

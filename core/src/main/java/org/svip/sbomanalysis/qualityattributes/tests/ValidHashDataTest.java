@@ -1,9 +1,8 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
 
-import org.nvip.plugfest.tooling.sbom.Component;
-import org.nvip.plugfest.tooling.sbom.SBOM;
-import org.nvip.plugfest.tooling.sbom.uids.Hash;
+import org.svip.sbom.model.*;
+import org.svip.sbom.model.uids.Hash;
 
 import java.util.ArrayList;
 import java.util.List;

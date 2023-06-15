@@ -1,10 +1,13 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
+import org.bouncycastle.util.test.TestResult;
 import org.svip.sbom.model.Component;
+import org.svip.sbom.model.SBOM;
 import org.svip.sbomanalysis.qualityattributes.tests.testresults.Test;
 import org.svip.sbomanalysis.qualityattributes.tests.testresults.TestResults;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -42,7 +45,6 @@ public class CompletenessTest extends MetricTest {
      * Constructor to build the regex patterns used to test the format of a component information
      */
     public CompletenessTest() {
-        super("Completeness Test"); // Test name
 
         /*
             Checks if publisher email is in form: "email@mail.com"
@@ -82,8 +84,7 @@ public class CompletenessTest extends MetricTest {
      * @param c The component to test for completeness
      * @return A TestResults instance containing the results of all the above tests
      */
-    @Override
-    public TestResults test(Component c) {
+    public List<Result> test(Component c) {
         // Init StringBuilder
         final TestResults testResults = new TestResults(c); // Init TestResults for this component
 
@@ -261,4 +262,5 @@ public class CompletenessTest extends MetricTest {
         }
         return stringCounter;
     }
+
 }

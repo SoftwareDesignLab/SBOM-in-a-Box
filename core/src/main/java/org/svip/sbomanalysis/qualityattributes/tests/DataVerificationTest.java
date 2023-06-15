@@ -1,5 +1,6 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
+import org.bouncycastle.util.test.TestResult;
 import org.svip.sbom.model.Component;
 import org.svip.sbom.model.uids.PURL;
 import org.svip.sbomanalysis.qualityattributes.tests.testresults.Test;
@@ -11,7 +12,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <b>File</b>: DataVerificationTest.java<br>
@@ -28,7 +29,7 @@ public class DataVerificationTest extends MetricTest {
      * Constructor for DataVerificationTest
      */
     public DataVerificationTest() {
-        super("Data Verification Test");
+
     }
 
     /**
@@ -37,8 +38,7 @@ public class DataVerificationTest extends MetricTest {
      * @param c component to test
      * @return test results
      */
-    @Override
-    public TestResults test(Component c) {
+    public List<Result> test(Component c) {
 
         final TestResults testResults = new TestResults(c); // Init TestResults for this component
 
@@ -46,7 +46,7 @@ public class DataVerificationTest extends MetricTest {
         Set<String> purls = c.getPurls();
         if(purls.isEmpty()){
             testResults.addTest(new Test(false, "Component has no PURL"));
-            return testResults;
+            return Collections.singletonList(testResults);
         }
         //if not run the test
         for (String purlString: c.getPurls()
@@ -103,7 +103,7 @@ public class DataVerificationTest extends MetricTest {
 
         if(testResults.getTests().size() == 0) testResults.addTest(new Test(true,"Component was " +
                 "found online"));
-        return testResults;
+        return Collections.singletonList(testResults);
     }
 
     /**

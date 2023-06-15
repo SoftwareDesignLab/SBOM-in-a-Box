@@ -1,8 +1,7 @@
 package org.svip.sbomanalysis.qualityattributes.processors;
 
-
-import org.nvip.plugfest.tooling.qa.tests.HasLicenseDataTest;
-import org.nvip.plugfest.tooling.qa.tests.ValidSPDXLicenseTest;
+import org.svip.sbomanalysis.qualityattributes.tests.HasLicenseDataTest;
+import org.svip.sbomanalysis.qualityattributes.tests.ValidSPDXLicenseTest;
 
 /**
  * file: LicensingProcessor.java

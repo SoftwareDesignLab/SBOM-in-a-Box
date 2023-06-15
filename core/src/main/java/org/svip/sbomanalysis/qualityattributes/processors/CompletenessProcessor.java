@@ -1,6 +1,9 @@
 package org.svip.sbomanalysis.qualityattributes.processors;
 
-import org.nvip.plugfest.tooling.qa.tests.*;
+
+import org.svip.sbomanalysis.qualityattributes.tests.MinElementTest;
+import org.svip.sbomanalysis.qualityattributes.tests.ValidCPETest;
+import org.svip.sbomanalysis.qualityattributes.tests.ValidPurlTest;
 
 /**
  * file: CompletenessProcessor.java

@@ -1,9 +1,10 @@
 package org.svip.sbomanalysis.qualityattributes.processors;
 
-import org.nvip.plugfest.tooling.qa.tests.AccurateCPETest;
-import org.nvip.plugfest.tooling.qa.tests.AccuratePURLTest;
-import org.nvip.plugfest.tooling.qa.tests.HasHashDataTest;
-import org.nvip.plugfest.tooling.qa.tests.ValidHashDataTest;
+
+import org.svip.sbomanalysis.qualityattributes.tests.AccurateCPETest;
+import org.svip.sbomanalysis.qualityattributes.tests.AccuratePURLTest;
+import org.svip.sbomanalysis.qualityattributes.tests.HasHashDataTest;
+import org.svip.sbomanalysis.qualityattributes.tests.ValidHashDataTest;
 
 /**
  * file: UniquenessProcessor.java

@@ -1,7 +1,7 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
-import org.nvip.plugfest.tooling.sbom.Component;
-import org.nvip.plugfest.tooling.sbom.SBOM;
+import org.svip.sbom.model.*;
+
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

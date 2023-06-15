@@ -4,6 +4,8 @@ package org.svip.sbomanalysis.qualityattributes;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomanalysis.qualityattributes.processors.AttributeProcessor;
 
+import java.util.Set;
+
 /**
  * Pipeline that will run all tests against a given SBOM
  *

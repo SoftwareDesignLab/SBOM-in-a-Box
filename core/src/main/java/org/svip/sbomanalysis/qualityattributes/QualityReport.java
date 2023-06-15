@@ -2,7 +2,7 @@ package org.svip.sbomanalysis.qualityattributes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.nvip.plugfest.tooling.qa.tests.Result;
+import org.svip.sbomanalysis.qualityattributes.tests.Result;
 
 import java.util.ArrayList;
 import java.util.HashMap;

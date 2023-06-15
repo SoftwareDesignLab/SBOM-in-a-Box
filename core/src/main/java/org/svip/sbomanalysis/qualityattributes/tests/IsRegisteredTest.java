@@ -1,10 +1,10 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
 
-import org.nvip.plugfest.tooling.Debug;
-import org.nvip.plugfest.tooling.sbom.Component;
-import org.nvip.plugfest.tooling.sbom.SBOM;
-import org.nvip.plugfest.tooling.sbom.uids.PURL;
+import org.svip.sbom.model.*;
+import org.svip.sbom.model.uids.PURL;
+import org.svip.sbomanalysis.qualityattributes.tests.testresults.TestResults;
+import org.svip.sbomfactory.generators.utils.Debug;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
@@ -28,6 +28,7 @@ import java.util.Set;
 public class IsRegisteredTest extends MetricTest{
     // name of the test for results
     private static final String TEST_NAME = "IsRegistered";
+
 
     /**
      * Run the test for all components in the SBOM

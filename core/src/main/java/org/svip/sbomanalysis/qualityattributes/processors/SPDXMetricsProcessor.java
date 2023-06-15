@@ -1,6 +1,7 @@
 package org.svip.sbomanalysis.qualityattributes.processors;
 
-import org.nvip.plugfest.tooling.qa.tests.*;
+
+import org.svip.sbomanalysis.qualityattributes.tests.*;
 
 /**
  * file: SPDXMetricsProcessor.java

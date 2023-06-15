@@ -9,11 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomanalysis.differ.DiffReport;
+import org.svip.sbomanalysis.qualityattributes.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.QualityReport;
-import org.svip.sbomanalysis.qualityattributes.processors.AttributeProcessor;
+import org.svip.sbomanalysis.qualityattributes.processors.*;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.translators.TranslatorController;
-import org.svip.sbomfactory.translators.TranslatorException;
 
 import java.util.*;
 
@@ -56,11 +56,11 @@ public class PlugFestApiController {
         // Attempt to load comparison queue
         List<SBOM> compareQueue = new ArrayList<>();
         for (Utils.SBOMFile sbom : sboms){
-            try {
+//            try {
                 compareQueue.add(TranslatorController.toSBOM(sbom.contents, sbom.fileName));
-            } catch (TranslatorException e){
-                return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+//            } catch (TranslatorException e){
+//                return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR); // todo uncomment once translators are moved
+//            }
         }
         // Get target from queue
         SBOM targetSBOM = compareQueue.get(targetIndex);
@@ -101,11 +101,11 @@ public class PlugFestApiController {
 
         SBOM sbom;
 
-        try {
-            sbom = TranslatorPlugFest.translateContents(sbomFile.contents, sbomFile.fileName);
-        } catch (TranslatorException e) {
-            return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+//        try {
+            sbom = TranslatorController.toSBOM(sbomFile.contents, sbomFile.fileName);
+//        } catch (TranslatorException e) {
+//            return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR); // todo uncomment once translators are moved
+//        }
 
         // todo get tests/processors from user that they want to run?
         Set<AttributeProcessor> processors = new HashSet<>();
@@ -140,11 +140,11 @@ public class PlugFestApiController {
     {
         SBOM sbom;
 
-        try {
-            sbom = TranslatorPlugFest.translateContents(sbomFile.contents, sbomFile.fileName);
-        } catch (TranslatorException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST); // TODO better status code?
-        }
+//        try {
+            sbom = TranslatorController.toSBOM(sbomFile.contents, sbomFile.fileName);
+//        } catch (TranslatorException e) {
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST); // TODO better status code? // todo uncomment once translators are moved
+//        }
 
         return Utils.encodeResponse(sbom);
     }
