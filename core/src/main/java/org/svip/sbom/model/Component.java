@@ -1,7 +1,9 @@
 package org.svip.sbom.model;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import org.svip.sbom.model.uids.Hash;
 import org.svip.sbomanalysis.comparison.conflicts.ComponentConflict;
-import org.svip.sbomvex.model.Vulnerability;
 
 import java.util.*;
 
@@ -11,6 +13,7 @@ import java.util.*;
  *
  * @author Matt London
  * @author Kevin Laporte
+ * @author Ian Dunn
  */
 public class Component {
 
@@ -32,16 +35,31 @@ public class Component {
     private String publisher;
 
     /**
+     * Group name of this component
+     */
+    private String group;
+
+    /**
      * If the component is unpackaged (not included in SPDX notation)
      */
     private boolean unpackaged;
 
     /**
+     * If files were analyzed to create the component.
+     */
+    private boolean filesAnalyzed;
+
+    /**
      * Unique identifiers of the component (ex: CDX uses purl and/or cpe)
      */
     private Set<String> cpes;
-    private Set<PURL> purls;
+    private Set<String> purls;
     private Set<String> swids;
+
+    /**
+     * Stored Hash values for Components
+     */
+    private Set<Hash> hashes;
 
     /**
      * Unique identifier for a component in an SBOM
@@ -53,7 +71,7 @@ public class Component {
     /**
      * UUIDs for the children of the given component
      */
-    private final Set<UUID> children;
+    private Set<UUID> children;
 
     /**
      * Version of the component (version assigned by publisher)
@@ -63,7 +81,7 @@ public class Component {
     /**
      * List of vulnerabilities found (created by NVIP)
      */
-    private final Set<Vulnerability> vulnerabilities;
+    private Set<Vulnerability> vulnerabilities;
 
     /**
      * Represent the license of the component
@@ -71,23 +89,62 @@ public class Component {
     private Set<String> licenses;
 
     /**
+     * All extracted licenses found in this component.
+     * <ul>
+     *     <li>The key of the first map is the ID of the license.</li>
+     *     <li>The value of the first map is another map that contains all license data with the following keys:
+     *          <ul>
+     *              <li>{@code name}     - The name of the license.</li>
+     *              <li>{@code text}     - The extracted text of the license (if any).</li>
+     *              <li>{@code crossRef} - The cross reference of the license (if any).</li>
+     *          </ul>
+     *     </li>
+     * </ul>
+     */
+    private Map<String, Map<String, String>> extractedLicenses;
+
+    /**
      * Represent the conflicts of the component with other components
      * Note: This should ONLY be used in the master SBOM and never in individual sboms
      */
-    private final Set<ComponentConflict> componentConflicts;
+    private Set<ComponentConflict> componentConflicts;
+
+    /**
+     * Download location for the package. This field is exclusive to SPDX.
+     */
+    private String downloadLocation;
+
+    /**
+     * Unique verification code for the package. This field is exclusive to SPDX. See
+     * <a href="https://spdx.github.io/spdx-spec/v2.3/package-information/#79-package-verification-code-field">
+     *     the specification</a> for more. Note that this is not the same as a hash.
+     */
+    private String verificationCode;
 
     /**
      * Constructs a component with no attributes
      */
     public Component() {
         // This should not be a parameter passed as children will not be instantiated first
-        this.children = new HashSet<>();
-        this.vulnerabilities = new HashSet<>();
+        this.uuid = UUID.randomUUID();
+        this.name = null;
+        this.publisher = "Unknown";
+        this.group = null;
+        this.unpackaged = false;
+        this.filesAnalyzed = false;
         this.cpes = new HashSet<>();
         this.purls = new HashSet<>();
         this.swids = new HashSet<>();
+        this.hashes = new HashSet<>();
+        this.uniqueID = null;
+        this.children = new HashSet<>();
+        this.version = null;
+        this.vulnerabilities = new HashSet<>();
+        this.licenses = new HashSet<>();
+        this.extractedLicenses = new HashMap<>();
         this.componentConflicts = new HashSet<>();
-        this.unpackaged = false;
+        this.downloadLocation = null;
+        this.verificationCode = null;
     }
 
     /**
@@ -101,7 +158,6 @@ public class Component {
         this();
         this.name = name;
         this.version = version;
-        this.publisher = "Unknown";
     }
 
     /**
@@ -139,7 +195,8 @@ public class Component {
      * @param PURL      Set of PURLs of the component
      * @param SWID      SWID of the component
      */
-    public Component(String name, String publisher, String version, Set<String> CPE, Set<PURL> PURL, Set<String> SWID) {
+    public Component(String name, String publisher, String version, Set<String> CPE, Set<String> PURL,
+                     Set<String> SWID) {
         this(name, publisher, version);
         this.cpes = CPE;
         this.purls = PURL;
@@ -152,16 +209,23 @@ public class Component {
      * @param component Component to copy from
      */
     public void copyFrom(Component component) {
+        this.uuid = component.uuid;
         this.name = component.name;
         this.publisher = component.publisher;
-        this.uuid = component.uuid;
-        this.cpes = new HashSet<>(component.cpes);
-        this.purls = new HashSet<>(component.purls);
-        this.swids = new HashSet<>(component.swids);
-        this.children.addAll(component.children);
+        this.unpackaged = component.unpackaged;
+        this.filesAnalyzed = component.filesAnalyzed;
+        this.cpes = component.cpes;
+        this.purls = component.purls;
+        this.swids = component.swids;
+        this.hashes = component.hashes;
+        this.uniqueID = component.uniqueID;
+        this.children = component.children;
         this.version = component.version;
-        this.vulnerabilities.addAll(component.vulnerabilities);
+        this.vulnerabilities = component.vulnerabilities;
         this.licenses = component.licenses;
+        this.componentConflicts = component.componentConflicts;
+        this.downloadLocation = component.downloadLocation;
+        this.verificationCode = component.verificationCode;
     }
 
     ///
@@ -170,7 +234,7 @@ public class Component {
 
     public UUID getUUID() { return uuid; }
 
-    protected void setUUID(UUID componentUUID) { this.uuid = componentUUID; }
+    public void setUUID(UUID componentUUID) { this.uuid = componentUUID; }
 
     public String getName() {
         return name;
@@ -188,6 +252,14 @@ public class Component {
         this.publisher = publisher;
     }
 
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
     public String getVersion() {
         return version;
     }
@@ -197,9 +269,6 @@ public class Component {
     }
 
     public void addLicense(String license) {
-        if (licenses == null) {
-            licenses = new HashSet<>();
-        }
         licenses.add(license);
     }
 
@@ -207,7 +276,7 @@ public class Component {
         return licenses;
     }
 
-    public void setLicenses(Set<String> licenses) {
+    public void setLicenses(HashSet<String> licenses) {
         this.licenses = licenses;
     }
 
@@ -250,18 +319,28 @@ public class Component {
         this.cpes.add(cpe);
     }
 
-    public Set<PURL> getPurls() {
+    public Set<String> getPurls() {
         return purls;
     }
 
-    public void setPurls(Set<PURL> purls) {
+    public void setPurls(Set<String> purls) {
         this.purls = purls;
     }
 
-    public void addPURL(PURL purl) {
+    public void addPURL(String purl) {
         this.purls.add(purl);
     }
 
+    public Set<Hash> getHashes() {
+        return this.hashes;
+    }
+
+    public void setHashes(Set<Hash> hashes) {
+        this.hashes = hashes;
+    }
+    public void addHash(Hash hash) {
+        this.hashes.add(hash);
+    }
     public Set<String> getSwids() {
         return swids;
     }
@@ -296,6 +375,68 @@ public class Component {
 
     public Set<Vulnerability> getVulnerabilities() {
         return vulnerabilities;
+    }
+
+    public boolean areFilesAnalyzed() {
+        return filesAnalyzed;
+    }
+
+    public void setFilesAnalyzed(boolean filesAnalyzed) {
+        this.filesAnalyzed = filesAnalyzed;
+    }
+
+    public String getDownloadLocation() {
+        return downloadLocation;
+    }
+
+    public void setDownloadLocation(String downloadLocation) {
+        this.downloadLocation = downloadLocation;
+    }
+
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+    }
+
+    /**
+     * Add an extracted license to this component with the following properties.
+     *
+     * @param id The ID of the license.
+     * @param name The name of the license.
+     * @param text The text of the license (if any).
+     * @param crossRef The cross-reference of the license (if any).
+     */
+    public void addExtractedLicense(@Nonnull String id, @Nonnull String name, @Nullable String text,
+                                    @Nullable String crossRef) {
+        Map<String, String> licenseContents = new HashMap<>() {{
+            this.put("name", name);
+            if(text != null) this.put("text", text);
+            if(crossRef != null) this.put("crossRef", crossRef);
+        }};
+
+        extractedLicenses.put(id, licenseContents);
+    }
+
+    /**
+     * Returns all extracted licenses in a {@code Map<String, Map<String, String>>}.
+     * <ul>
+     *     <li>The key of the first map is the ID of the license.</li>
+     *     <li>The value of the first map is another map that contains all license data with the following keys:
+     *          <ul>
+     *              <li>{@code name}     - The name of the license.</li>
+     *              <li>{@code text}     - The extracted text of the license (if any).</li>
+     *              <li>{@code crossRef} - The cross reference of the license (if any).</li>
+     *          </ul>
+     *     </li>
+     * </ul>
+     *
+     * @return All extracted licenses.
+     */
+    public Map<String, Map<String, String>> getExtractedLicenses() {
+        return extractedLicenses;
     }
 
     ///
@@ -358,6 +499,12 @@ public class Component {
                 retval = retval && otherComponent.purls.equals(this.purls);
             } else {
                 retval = retval && this.purls == null;
+            }
+
+            if (otherComponent.hashes != null) {
+                retval = retval && otherComponent.hashes.equals(this.hashes);
+            } else {
+                retval = retval && this.hashes == null;
             }
 
             if (otherComponent.swids != null) {

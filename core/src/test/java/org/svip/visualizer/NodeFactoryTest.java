@@ -7,9 +7,14 @@
  */
 
 package org.svip.visualizer;
-import org.svip.sbom.model.*;
+
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.DependencyTree;
+import org.svip.sbom.model.SBOM;
+
 import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class NodeFactoryTest {
@@ -41,7 +46,7 @@ public class NodeFactoryTest {
      */
     @Test
     public void CreateNodeGraph_ValidSBOMEmptyDependencyBuilt_False() {
-        SBOM sbom = new SBOM(SBOMType.CYCLONE_DX, "1.4", "1", null, "2023", null, null, new DependencyTree());
+        SBOM sbom = new SBOM(SBOM.Type.CYCLONE_DX, "1.4", "1", null, "2023", null, null, new DependencyTree());
 
         assertEquals("null",nodeFactory.CreateNodeGraphJSON(sbom));
     }
@@ -52,7 +57,7 @@ public class NodeFactoryTest {
     @Test
     public void CreateNodeGraph_ValidSBOMOnlyRootDependantBuilt_True()
     {
-        SBOM sbom = new SBOM(SBOMType.CYCLONE_DX, "1.4", "1", null, "2023", null, null, new DependencyTree());
+        SBOM sbom = new SBOM(SBOM.Type.CYCLONE_DX, "1.4", "1", null, "2023", null, null, new DependencyTree());
         UUID headNodeId = sbom.addComponent(null, new Component("Component A", "1.1"));
 
         String expectedString = "{" +
@@ -74,7 +79,7 @@ public class NodeFactoryTest {
     @Test
     public void CreateNodeGraph_ValidSBOMDepth2Built_True()
     {
-        SBOM sbom = new SBOM(SBOMType.CYCLONE_DX, "1.4", "1", null, "2023", null, null, new DependencyTree());
+        SBOM sbom = new SBOM(SBOM.Type.CYCLONE_DX, "1.4", "1", null, "2023", null, null, new DependencyTree());
         UUID depthZeroNode = sbom.addComponent(null, new Component("Component A", "0"));
         UUID depthOneNode = sbom.addComponent(depthZeroNode, new Component("Component B", "1"));
         UUID depthTwoNode = sbom.addComponent(depthOneNode, new Component("Component C", "2"));
@@ -117,7 +122,7 @@ public class NodeFactoryTest {
     @Test
     public void CreateNodeGraph_ValidSBOMDepth2MultipleChildrenBuilt_True()
     {
-        SBOM sbom = new SBOM(SBOMType.CYCLONE_DX, "1.4", "1", null, "2023", null, null, new DependencyTree());
+        SBOM sbom = new SBOM(SBOM.Type.CYCLONE_DX, "1.4", "1", null, "2023", null, null, new DependencyTree());
         UUID depthZeroNode = sbom.addComponent(null, new Component("Component A", "0"));
         UUID depthOneANode = sbom.addComponent(depthZeroNode, new Component("Component B.1", "1"));
         UUID depthOneBNode = sbom.addComponent(depthZeroNode, new Component("Component B.2", "1"));

@@ -9,12 +9,6 @@ import org.svip.sbomfactory.generators.utils.ParserComponent;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * file: NugetParserDependencyGroupsAndFrameworkAssembliesTest.java //todo

@@ -1,6 +1,7 @@
 package org.svip.sbomfactory.translators;
 
-import org.svip.sbom.model.*;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.utils.generators.Tool;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
@@ -11,7 +12,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -251,7 +255,7 @@ public class TranslatorCDXXML extends TranslatorCore {
                     Element elem = (Element) compItem;
                     NodeList component_elements = elem.getElementsByTagName("*");
 
-                    Set<PURL> purls = new HashSet<>();
+                    Set<String> purls = new HashSet<>();
                     Set<String> cpes = new HashSet<>();
 
                     // Iterate through each element in that component
@@ -267,7 +271,7 @@ public class TranslatorCDXXML extends TranslatorCore {
                             cpes.add(component_elements.item(j).getTextContent());
                         }
                         else if (component_elements.item(j).getNodeName().equalsIgnoreCase("purl")) {
-                            purls.add(new PURL(component_elements.item(j).getTextContent()));
+                            purls.add(component_elements.item(j).getTextContent());
                         }
                         else {
                             component_items.put(

@@ -4,11 +4,10 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
-import org.svip.sbom.model.PURL;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.generators.License;
 import org.svip.sbomfactory.generators.utils.generators.LicenseManager;
 import org.svip.sbomfactory.generators.utils.generators.Tool;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import javax.xml.namespace.QName;
 import java.io.IOException;
@@ -231,7 +230,7 @@ public class SPDXSerializer extends StdSerializer<SPDXStore> {
 
             // If any PURLs exist
             if(pkg.getPurls().size() > 0) { // TODO Do this for SWIDs once we support them
-                for(PURL purl : pkg.getPurls())
+                for(String purl : pkg.getPurls())
                     // Write the external reference data of the PURL to an object
                     writeExternalRef(jsonGenerator, REFERENCE_CATEGORY.SECURITY, "purl", purl.toString());
             }

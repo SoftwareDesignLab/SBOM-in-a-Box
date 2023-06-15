@@ -28,13 +28,13 @@ public class SignatureTest {
     /**
      * Basic test signature items: Set 1
      */
-    SignatureAlgorithm test_signature_algorithm = SignatureAlgorithm.ES256;
+    Signature.Algorithm test_signature_algorithm = Signature.Algorithm.ES256;
 
     String keyId = "test_key_id";
 
-    SignatureKTY test_signature_kty = SignatureKTY.EC;
+    Signature.KTY test_signature_kty = Signature.KTY.EC;
 
-    SignatureCRV test_signature_crv = SignatureCRV.P_256;
+    Signature.CRV test_signature_crv = Signature.CRV.P_256;
 
     String test_x = "5";
 
@@ -76,7 +76,7 @@ public class SignatureTest {
 
     @Test
     public void getAlgorithm_test() {
-        assertEquals(SignatureAlgorithm.ES256, test_signature.getAlgorithm());
+        assertEquals(Signature.Algorithm.ES256, test_signature.getAlgorithm());
     }
 
     @Test
@@ -86,12 +86,12 @@ public class SignatureTest {
 
     @Test
     public void getKty_test() {
-        assertEquals(SignatureKTY.EC, test_signature.getKty());
+        assertEquals(Signature.KTY.EC, test_signature.getKty());
     }
 
     @Test
     public void getCRV_test() {
-        assertEquals(SignatureCRV.P_256, test_signature.getCRV());
+        assertEquals(Signature.CRV.P_256, test_signature.getCRV());
     }
 
     @Test

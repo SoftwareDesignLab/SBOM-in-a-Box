@@ -1,7 +1,8 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
-import org.svip.sbomanalysis.qualityattributes.tests.testresults.*;
-import org.svip.sbom.model.*;
+import org.svip.sbom.model.Component;
+import org.svip.sbomanalysis.qualityattributes.tests.testresults.Test;
+import org.svip.sbomanalysis.qualityattributes.tests.testresults.TestResults;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

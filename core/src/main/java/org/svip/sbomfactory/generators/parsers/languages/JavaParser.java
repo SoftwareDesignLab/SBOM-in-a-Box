@@ -1,7 +1,6 @@
 package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

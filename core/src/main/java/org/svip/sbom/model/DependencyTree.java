@@ -10,6 +10,7 @@ import java.util.UUID;
  * Tracks a SBOM's dependency tree
  *
  * @author Matt London
+ * @author Ian Dunn
  */
 public class DependencyTree {
 

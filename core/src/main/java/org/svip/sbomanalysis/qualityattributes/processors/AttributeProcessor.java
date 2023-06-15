@@ -1,9 +1,10 @@
 package org.svip.sbomanalysis.qualityattributes.processors;
 
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.SBOM;
 import org.svip.sbomanalysis.qualityattributes.QualityReport;
 import org.svip.sbomanalysis.qualityattributes.tests.MetricTest;
 import org.svip.sbomanalysis.qualityattributes.tests.testresults.TestResults;
-import org.svip.sbom.model.*;
 
 import java.util.HashSet;
 import java.util.List;

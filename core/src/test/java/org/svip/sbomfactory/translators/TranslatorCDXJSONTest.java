@@ -2,7 +2,6 @@ package org.svip.sbomfactory.translators;
 
 import org.cyclonedx.exception.ParseException;
 import org.junit.jupiter.api.Test;
-
 import org.svip.sbom.model.SBOM;
 
 import javax.xml.parsers.ParserConfigurationException;

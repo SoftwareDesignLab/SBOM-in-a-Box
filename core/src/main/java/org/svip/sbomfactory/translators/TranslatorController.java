@@ -1,6 +1,6 @@
 package org.svip.sbomfactory.translators;
 
-import org.svip.sbom.model.*;
+import org.svip.sbom.model.SBOM;
 
 import java.io.IOException;
 import java.nio.file.Files;

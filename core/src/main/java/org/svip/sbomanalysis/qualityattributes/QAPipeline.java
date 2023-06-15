@@ -1,8 +1,11 @@
 package org.svip.sbomanalysis.qualityattributes;
 
 
-import org.svip.sbom.model.*;
-import org.svip.sbomanalysis.qualityattributes.processors.*;
+import org.svip.sbom.model.SBOM;
+import org.svip.sbomanalysis.qualityattributes.processors.AttributeProcessor;
+import org.svip.sbomanalysis.qualityattributes.processors.ContextualProcessor;
+import org.svip.sbomanalysis.qualityattributes.processors.IntrinsicProcessor;
+import org.svip.sbomanalysis.qualityattributes.processors.RepresentationProcessor;
 
 import java.util.HashSet;
 import java.util.Set;

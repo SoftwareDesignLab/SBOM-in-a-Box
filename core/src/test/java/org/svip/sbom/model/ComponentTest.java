@@ -1,7 +1,5 @@
 package org.svip.sbom.model;
 
-import org.svip.sbomvex.model.Vulnerability;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +37,7 @@ public class ComponentTest {
 
     Set<String> test_cpe = new HashSet<>(List.of(new String[]{"cpe:2.3:a:python_software_foundation:python:3.11.2:*:*:*:*:*:*:*"}));
 
-    Set<PURL> test_purl = new HashSet<>(List.of(new PURL[]{new PURL("pkg:generic/python@3.11.2")}));
+    Set<String> test_purl = new HashSet<>(List.of("pkg:generic/python@3.11.2"));
 
     Set<String> test_swid = new HashSet<>(List.of(new String[]{"python_software_identification_number"}));
 
@@ -56,7 +54,7 @@ public class ComponentTest {
 
     Set<String> test_cpe_two = new HashSet<>(List.of(new String[]{"cpe:2.3:a:nohtyp_software_foundation:nohtyp:3.11.2:*:*:*:*:*:*:*"}));
 
-    Set<PURL> test_purl_two = new HashSet<>(List.of(new PURL[]{new PURL("pkg:generic/nohtyp@3.11.2")}));
+    Set<String> test_purl_two = new HashSet<>(List.of("pkg:generic/nohtyp@3.11.2"));
 
     Set<String> test_swid_two = new HashSet<>(List.of(new String[]{"nohtyp_software_identification_number"}));
 
@@ -84,7 +82,7 @@ public class ComponentTest {
 
     String test_random_cpe = "cpe:2.3:a:random_test_cpe:random:3.11.2:*:*:*:*:*:*:*";
 
-    PURL test_random_purl = new PURL("pkg:random/test@2.0.0");
+    String test_random_purl = "pkg:random/test@2.0.0";
 
     String test_random_swid = "random_test_identification_number";
 
@@ -263,7 +261,7 @@ public class ComponentTest {
 
     @Test
     public void getPurl_test() {
-        assertEquals(new HashSet<>(List.of(new PURL[]{new PURL("pkg:generic/python@3.11.2")})), test_component.getPurls());
+        assertEquals(new HashSet<>(List.of("pkg:generic/python@3.11.2")), test_component.getPurls());
     }
 
     @Test

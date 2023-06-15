@@ -12,7 +12,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import org.svip.sbom.model.SBOMType;
+import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.generators.BOMStore;
 import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXSerializer;
 import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXStore;
@@ -35,13 +35,13 @@ import java.util.LinkedHashSet;
 public enum GeneratorSchema {
     // This mapping ensures that any schema has a set of valid formats to compare
     // against and/or choose from.
-    CycloneDX("1.4", SBOMType.CYCLONE_DX, CycloneDXStore.class,
+    CycloneDX("1.4", SBOM.Type.CYCLONE_DX, CycloneDXStore.class,
             new LinkedHashSet<>(Arrays.asList(GeneratorFormat.JSON, GeneratorFormat.XML))),
-    SPDX("2.3", SBOMType.SPDX, SPDXStore.class,
+    SPDX("2.3", SBOM.Type.SPDX, SPDXStore.class,
             new LinkedHashSet<>(Arrays.asList(GeneratorFormat.JSON, GeneratorFormat.SPDX, GeneratorFormat.YAML, GeneratorFormat.XML)));
 
     private final String version;
-    private final SBOMType internalType;
+    private final SBOM.Type internalType;
 
     private final Class<? extends BOMStore> bomStoreType;
     // Internal HashSet to store valid formats
@@ -54,7 +54,7 @@ public enum GeneratorSchema {
      * @param validFormats a HashSet of valid file formats that the schema can
      *        be written to
      */
-    GeneratorSchema(String version, SBOMType internalType, Class<? extends BOMStore> bomStoreType,
+    GeneratorSchema(String version, SBOM.Type internalType, Class<? extends BOMStore> bomStoreType,
                     LinkedHashSet<GeneratorFormat> validFormats) {
         this.version = version;
         this.internalType = internalType;
@@ -130,7 +130,7 @@ public enum GeneratorSchema {
         return this.version;
     }
 
-    public SBOMType getInternalType() {
+    public SBOM.Type getInternalType() {
         return internalType;
     }
 
