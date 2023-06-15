@@ -7,11 +7,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.svip.api.utils.Utils;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomanalysis.comparison.Comparison;
 import org.svip.sbomanalysis.qualityattributes.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.QualityReport;
 import org.svip.sbomfactory.translators.TranslatorController;
+import org.svip.sbomfactory.translators.TranslatorException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,7 +51,8 @@ public class PlugFestApiController {
      * @return Wrapped Comparison object
      */
     @PostMapping("compare")
-    public ResponseEntity<Comparison> compare(@RequestParam("contents") String contentArray, @RequestParam("fileNames") String fileArray) throws IOException {
+    public ResponseEntity<?> compare(@RequestParam("contents") String contentArray,
+                                     @RequestParam("fileNames") String fileArray) throws IOException {
 
         ObjectMapper objectMapper = new ObjectMapper();
         List<String> contents = objectMapper.readValue(contentArray, new TypeReference<List<String>>(){});
@@ -60,23 +63,20 @@ public class PlugFestApiController {
 
         for (int i = 0; i < contents.size(); i++) {
             // Get contents of the file
-            sboms.add(TranslatorController.toSBOM(contents.get(i), fileNames.get(i)));
+            try {
+                sboms.add(TranslatorController.translateContents(contents.get(i), fileNames.get(i)));
+            } catch (TranslatorException e) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
 
-        if(sboms.size() < 2){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        if(sboms.size() < 2) return new ResponseEntity<>("Must provide 2 or more SBOMs.", HttpStatus.BAD_REQUEST);
 
         Comparison report = new Comparison(sboms); // report to return
         report.runComparison();
 
         //encode and send report
-        try {
-            return new ResponseEntity<>(report, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
+        return Utils.encodeResponse(report);
     }
 
     /**
@@ -88,24 +88,19 @@ public class PlugFestApiController {
      * @return - wrapped QualityReport object, null if failed
      */
     @PostMapping("qa")
-    public ResponseEntity<QualityReport> qa(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
-
-        SBOM sbom = TranslatorController.toSBOM(contents, fileName);
-
-        // Check if the sbom is null
-        if (sbom == null) {
-            return new ResponseEntity<>(null, HttpStatus.OK);
+    public ResponseEntity<?> qa(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
+        SBOM sbom;
+        try {
+            sbom = TranslatorController.translateContents(contents, fileName);
+        } catch (TranslatorException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         //run the QA
         QualityReport report = pipeline.process(sbom);
 
         //encode and send report
-        try {
-            return new ResponseEntity<>(report, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return Utils.encodeResponse(report);
     }
 
     /**
@@ -116,17 +111,15 @@ public class PlugFestApiController {
      * @return SBOM object, null if failed to parse
      */
     @PostMapping("parse")
-    public ResponseEntity<SBOM> parse(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
-        SBOM sbom = TranslatorController.toSBOM(contents, fileName);
-
+    public ResponseEntity<?> parse(@RequestParam("contents") String contents,
+                                   @RequestParam("fileName") String fileName) {
+        SBOM sbom;
         try {
-            // Explicitly return null if failed
-            if (sbom == null) {
-                return new ResponseEntity<>(null, HttpStatus.OK);
-            }
-            return new ResponseEntity<>(sbom, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            sbom = TranslatorController.translateContents(contents, fileName);
+        } catch (TranslatorException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        return Utils.encodeResponse(sbom);
     }
 }
