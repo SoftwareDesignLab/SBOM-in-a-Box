@@ -4,7 +4,7 @@ package org.svip.sbomanalysis.qualityattributes.tests;
 import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbom.model.uids.CPE;
-import org.svip.sbomanalysis.qualityattributes.tests.testresults.Result;
+import org.svip.sbomfactory.generators.utils.Debug;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,8 +96,7 @@ public class AccurateCPETest extends MetricTest{
 
             } catch (Exception e){
                 // Failed to parse cpeObj string
-                // disabled for now
-                // Debug.log(Debug.LOG_TYPE.DEBUG, "Unable to parse CPE \"" + cpe + "\"");
+                Debug.log(Debug.LOG_TYPE.DEBUG, "Unable to parse CPE \"" + cpe + "\"");
                 r = new Result(TEST_NAME, Result.STATUS.FAIL, e.getMessage());
 
                 r.updateInfo(Result.Context.FIELD_NAME, "CPE");

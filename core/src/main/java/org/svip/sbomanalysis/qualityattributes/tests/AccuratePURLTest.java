@@ -4,7 +4,7 @@ package org.svip.sbomanalysis.qualityattributes.tests;
 import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbom.model.uids.PURL;
-import org.svip.sbomanalysis.qualityattributes.tests.testresults.Result;
+import org.svip.sbomfactory.generators.utils.Debug;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +95,7 @@ public class AccuratePURLTest extends MetricTest{
 
             } catch (Exception e){
                 // Failed to parse purl string
-                //Debug.log(Debug.LOG_TYPE.DEBUG, "Unable to parse PURL \"" + p + "\"");
+                Debug.log(Debug.LOG_TYPE.DEBUG, "Unable to parse PURL \"" + p + "\"");
                 r = new Result(TEST_NAME, Result.STATUS.FAIL, e.getMessage());
 
                 r.updateInfo(Result.Context.FIELD_NAME, "PURL");
