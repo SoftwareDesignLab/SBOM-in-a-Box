@@ -1,9 +1,13 @@
 package org.svip.visualizer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.svip.sbom.model.*;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.SBOM;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * file: NodeFactory

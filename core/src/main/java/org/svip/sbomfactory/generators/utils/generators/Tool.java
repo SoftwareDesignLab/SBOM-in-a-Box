@@ -132,7 +132,7 @@ public class Tool {
      * @return The tool info of the generator.
      */
     public String getToolInfo() {
-        return "Tool: " + name + " " + version;
+        return "Tool: " + vendor + " " + name + "-" + version;
     }
 
     //#endregion

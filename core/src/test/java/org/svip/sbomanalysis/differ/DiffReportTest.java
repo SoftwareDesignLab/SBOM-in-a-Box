@@ -1,12 +1,16 @@
 package org.svip.sbomanalysis.differ;
 
-import org.svip.sbom.model.*;
-import org.svip.sbomanalysis.comparison.conflicts.*;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.DependencyTree;
+import org.svip.sbom.model.SBOM;
+import org.svip.sbomanalysis.comparison.conflicts.ComponentConflict;
+import org.svip.sbomanalysis.comparison.conflicts.ComponentConflictType;
+import org.svip.sbomanalysis.comparison.conflicts.SBOMConflict;
+import org.svip.sbomanalysis.comparison.conflicts.SBOMConflictType;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -105,11 +109,11 @@ public class DiffReportTest {
     public void setup() {
 
         // Initialize two SBOM objects
-        test_SBOM_a = new SBOM(SBOMType.CYCLONE_DX, "1.2", "2", "supplier_two",
+        test_SBOM_a = new SBOM(SBOM.Type.CYCLONE_DX, "1.2", "2", "supplier_two",
                 "urn:uuid:1b53623d-b96b-4660-8d25-f84b7f617c54", "2023-01-02T02:36:00-05:00",
                 new HashSet<>(), new DependencyTree());
 
-        test_SBOM_b = new SBOM(SBOMType.SPDX, "2", "2", "supplier",
+        test_SBOM_b = new SBOM(SBOM.Type.SPDX, "2", "2", "supplier",
                 "b9fc484b-41c4-4589-b3ef-c57bba20078c", "2023-01-02T02:36:00-05:00",
                 new HashSet<>(), new DependencyTree());
 
@@ -118,27 +122,27 @@ public class DiffReportTest {
         // Initialize components and create component conflicts
         test_component_a = new Component(
                 "red", "red_publisher", "1.1.0",
-                Set.of("cpe2.3::test_red_cpe"), Set.of(new PURL("pkg:redpackage/red@1.1.0")), Set.of("random_red_swid")
+                Set.of("cpe2.3::test_red_cpe"), Set.of("pkg:redpackage/red@1.1.0"), Set.of("random_red_swid")
         );
 
         test_component_b = new Component(
                 "blue", "blue_publisher", "1.1.0",
-                Set.of("cpe2.3::test_blue_cpe"), Set.of(new PURL("pkg:bluepackage/blue@1.1.0")), Set.of("random_blue_swid")
+                Set.of("cpe2.3::test_blue_cpe"), Set.of("pkg:bluepackage/blue@1.1.0"), Set.of("random_blue_swid")
         );
 
         test_component_c = new Component(
                 "yellow", "yellow_publisher", "2.3.7",
-                Set.of("cpe2.3::test_yellow_cpe"), Set.of(new PURL("pkg:yellowpackage/yellow@2.3.7")), Set.of("random_yellow_swid")
+                Set.of("cpe2.3::test_yellow_cpe"), Set.of("pkg:yellowpackage/yellow@2.3.7"), Set.of("random_yellow_swid")
         );
 
         test_component_d = new Component(
                 "green", "green_publisher", "4.4.5",
-                Set.of("cpe2.3::test_green_cpe"), Set.of(new PURL("pkg:greenpackage/yellow@2.3.7")), Set.of("random_green_swid")
+                Set.of("cpe2.3::test_green_cpe"), Set.of("pkg:greenpackage/yellow@2.3.7"), Set.of("random_green_swid")
         );
 
         test_component_e = new Component(
                 "purple", "purple_publisher", "2.1.2",
-                Set.of("cpe2.3::test_purple_cpe"), Set.of(new PURL("pkg:purplepackage/yellow@2.3.7")), Set.of("random_purple_swid")
+                Set.of("cpe2.3::test_purple_cpe"), Set.of("pkg:purplepackage/yellow@2.3.7"), Set.of("random_purple_swid")
         );
 
         // Conflict with two different components

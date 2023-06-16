@@ -11,16 +11,20 @@ import org.svip.sbomanalysis.comparison.Comparison;
 import org.svip.sbomanalysis.comparison.Merger;
 import org.svip.sbomanalysis.qualityattributes.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.QualityReport;
+import org.svip.sbomanalysis.qualityattributes.processors.*;
 import org.svip.sbomfactory.generators.ParserController;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
 import org.svip.sbomfactory.osi.OSI;
 import org.svip.sbomfactory.translators.TranslatorController;
+import org.svip.sbomfactory.translators.TranslatorException;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * API Controller for handling requests to SVIP
@@ -96,7 +100,7 @@ public class SVIPApiController {
      * @return JSON String representation of the Node Graph
      */
     @GetMapping("/sbom-node-graph")
-    public ResponseEntity<String> getNodeGraph(@RequestParam String filePath) {
+    public ResponseEntity<?> getNodeGraph(@RequestParam String filePath) {
         // todo redo
         return null;
     }
@@ -114,7 +118,7 @@ public class SVIPApiController {
      * @return A ResponseEntity with code HTTP 200 and the SBOM file in string format.
      */
     @PostMapping("/generateSBOM")
-    public ResponseEntity<String> generate(@RequestParam("fileContents") String contentsArray,
+    public ResponseEntity<?> generate(@RequestParam("fileContents") String contentsArray,
                                            @RequestParam("fileNames") String fileArray,
                                            @RequestParam("schemaName") String schemaName,
                                            @RequestParam("formatName") String formatName) {
@@ -161,16 +165,21 @@ public class SVIPApiController {
      * @return Wrapped Comparison object
      */
     @PostMapping("/compare")
-    public ResponseEntity<Comparison> compare(@RequestParam("contents") String contentsArray,
+    public ResponseEntity<?> compare(@RequestParam("contents") String contentsArray,
                                               @RequestParam("fileNames") String fileArray) {
         Map<String, List<String>> contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
-        // TODO figure out how to return a response message
-        if(contentsAndFiles == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(contentsAndFiles == null) return new ResponseEntity<>("Invalid contents and/or files.",
+                HttpStatus.BAD_REQUEST);
 
-        List<SBOM> sboms = Utils.translateMultiple(contentsAndFiles.get("fileContents"), contentsAndFiles.get(
-                "filePaths"));
-        // TODO figure out how to return a response message
-        if(sboms.size() < 2) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        List<SBOM> sboms;
+        try {
+            sboms = Utils.translateMultiple(contentsAndFiles.get("fileContents"), contentsAndFiles.get(
+                    "filePaths"));
+        } catch (TranslatorException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if(sboms.size() < 2) return new ResponseEntity<>("Must provide 2 or more SBOMs.", HttpStatus.BAD_REQUEST);
 
         Comparison report = new Comparison(sboms); // report to return
         report.runComparison();
@@ -188,17 +197,32 @@ public class SVIPApiController {
      * @return - wrapped QualityReport object, null if failed
      */
     @PostMapping("/qa")
-    public ResponseEntity<QualityReport> qa(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
-
-        SBOM sbom = TranslatorController.toSBOM(contents, fileName);
-
-        // Check if the sbom is null
-        if (sbom == null) {
-            return new ResponseEntity<>(null, HttpStatus.OK);
+    public ResponseEntity<?> qa(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
+        // TODO ensure contents & fileName not null
+        SBOM sbom;
+        try {
+            sbom = TranslatorController.translateContents(contents, fileName);
+        } catch (TranslatorException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+
+        Set<AttributeProcessor> processors = new HashSet<>();
+        processors.add(new CompletenessProcessor());
+        processors.add(new UniquenessProcessor());
+        processors.add(new RegisteredProcessor());
+        processors.add(new LicensingProcessor());   // Add origin specific processors
+
+        // Add CDX processor if relevant
+        if(sbom.getOriginFormat() == SBOM.Type.CYCLONE_DX)
+            processors.add(new CDXMetricsProcessor());
+
+        // Add SPDX Processor if relevant
+        if(sbom.getOriginFormat() == SBOM.Type.SPDX)
+            processors.add(new SPDXMetricsProcessor());
+
         //run the QA
-        QualityReport report = pipeline.process(sbom);
+        QualityReport report = QAPipeline.process(fileName, sbom, processors);
 
         //encode and send report
         return Utils.encodeResponse(report);
@@ -212,11 +236,15 @@ public class SVIPApiController {
      * @return SBOM object, null if failed to parse
      */
     @PostMapping("/parse")
-    public ResponseEntity<SBOM> parse(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
-
-        SBOM sbom = TranslatorController.toSBOM(contents, fileName);
-        // Explicitly return null if failed TODO figure out how to return a response message
-        if (sbom == null) return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<?> parse(@RequestParam("contents") String contents,
+                                   @RequestParam("fileName") String fileName) {
+        // TODO ensure contents & fileName not null
+        SBOM sbom;
+        try {
+            sbom = TranslatorController.translateContents(contents, fileName);
+        } catch (TranslatorException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return Utils.encodeResponse(sbom);
     }
@@ -240,16 +268,21 @@ public class SVIPApiController {
         if(contentsAndFiles == null) return new ResponseEntity<>("Invalid contents or filenames array.",
                 HttpStatus.BAD_REQUEST);
 
-        List<SBOM> sboms = Utils.translateMultiple(contentsAndFiles.get("fileContents"), contentsAndFiles.get(
-                "filePaths"));
+        List<SBOM> sboms;
+        try {
+            sboms = Utils.translateMultiple(contentsAndFiles.get("fileContents"), contentsAndFiles.get(
+                    "filePaths"));
+        } catch (TranslatorException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
         if(sboms.size() < 2) return new ResponseEntity<>("At least 2 SBOMs required to merge", HttpStatus.BAD_REQUEST);
 
         GeneratorSchema generatorSchema = Resolver.resolveSchema(schema, false);
         GeneratorSchema.GeneratorFormat generatorFormat = Resolver.resolveFormat(format, false);
         if(generatorSchema == null || generatorFormat == null ||
-                !generatorSchema.supportsFormat(generatorFormat)) return new ResponseEntity<>("Invalid schema/format " +
-                "combination",
-                HttpStatus.BAD_REQUEST);
+                !generatorSchema.supportsFormat(generatorFormat))
+            return new ResponseEntity<>("Invalid schema/format combination", HttpStatus.BAD_REQUEST);
 
         Merger merger = new Merger();
         SBOM result = merger.merge(sboms); // report to return

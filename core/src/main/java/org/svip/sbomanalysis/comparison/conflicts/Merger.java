@@ -1,6 +1,8 @@
 package org.svip.sbomanalysis.comparison.conflicts;
 
-import org.svip.sbom.model.*;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.DependencyTree;
+import org.svip.sbom.model.SBOM;
 
 import java.util.*;
 
@@ -158,7 +160,7 @@ public class Merger {
         cpes.addAll(headRefA.getCpes());
         cpes.addAll(headRefB.getCpes());
 
-        Set<PURL> purls = new HashSet<>();
+        Set<String> purls = new HashSet<>();
         purls.addAll(headRefA.getPurls());
         purls.addAll(headRefB.getPurls());
 

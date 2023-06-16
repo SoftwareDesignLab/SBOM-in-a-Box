@@ -1,8 +1,10 @@
 package org.svip.sbomanalysis.comparison;
 
-import org.svip.sbomanalysis.differ.*;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.SBOM;
+import org.svip.sbomanalysis.differ.DiffReport;
 import org.svip.sbomanalysis.differ.UniqueIdOccurrence;
-import org.svip.sbom.model.*;
+import org.svip.sbomanalysis.differ.UniqueIdentifierType;
 
 import java.util.*;
 
@@ -224,10 +226,10 @@ public class Comparison {
             new_cv.addCPE(new_cpe_uid);
 
         }
-        for (PURL purl : component.getPurls()) {
+        for (String purl : component.getPurls()) {
 
             // Create new UniqueIDOccurrence object for the PURL, then add it to the ComponentVersion object
-            UniqueIdOccurrence new_purl_uid = new UniqueIdOccurrence(purl.toString(), UniqueIdentifierType.PURL);
+            UniqueIdOccurrence new_purl_uid = new UniqueIdOccurrence(purl, UniqueIdentifierType.PURL);
             new_purl_uid.addAppearance(SBOM_index);
             new_cv.addPURL(new_purl_uid);
 

@@ -32,7 +32,7 @@ public class SBOMTest {
     /**
      * Basic test SBOM items: Set 1
      */
-    SBOMType test_originFormat = SBOMType.CYCLONE_DX;
+    SBOM.Type test_originFormat = SBOM.Type.CYCLONE_DX;
 
     String test_specVersion = "1";
 
@@ -59,7 +59,7 @@ public class SBOMTest {
 
     Set<String> test_cpe = new HashSet<>(List.of(new String[]{"cpe:2.3:a:python_software_foundation:python:3.11.2:*:*:*:*:*:*:*"}));
 
-    Set<PURL> test_purl = new HashSet<>(List.of(new PURL[]{new PURL("pkg:generic/python@3.11.2")}));
+    Set<String> test_purl = new HashSet<>(List.of("pkg:generic/python@3.11.2"));
 
     Set<String> test_swid = new HashSet<>(List.of(new String[]{"python_software_identification_number"}));
 
@@ -77,7 +77,7 @@ public class SBOMTest {
 
     Set<String> test_cpe_two = new HashSet<>(List.of(new String[]{"cpe:2.3:a:nohtyp_software_foundation:nohtyp:3.11.2:*:*:*:*:*:*:*"}));
 
-    Set<PURL> test_purl_two = new HashSet<>(List.of(new PURL[]{new PURL("pkg:generic/nohtyp@3.11.2")}));
+    Set<String> test_purl_two = new HashSet<>(List.of("pkg:generic/nohtyp@3.11.2"));
 
     Set<String> test_swid_two = new HashSet<>(List.of(new String[]{"nohtyp_software_identification_number"}));
 
@@ -87,13 +87,13 @@ public class SBOMTest {
     /**
      * Basic test signature items: Set 1
      */
-    SignatureAlgorithm test_signature_algorithm = SignatureAlgorithm.ES256;
+    Signature.Algorithm test_signature_algorithm = Signature.Algorithm.ES256;
 
     String keyId = "test_key_id";
 
-    SignatureKTY test_signature_kty = SignatureKTY.EC;
+    Signature.KTY test_signature_kty = Signature.KTY.EC;
 
-    SignatureCRV test_signature_crv = SignatureCRV.P_256;
+    Signature.CRV test_signature_crv = Signature.CRV.P_256;
 
     String test_x = "5";
 
@@ -221,61 +221,61 @@ public class SBOMTest {
 
     @Test
     public void assignOriginFormat_is_cyclone_dx_test() {
-        assertEquals(SBOMType.CYCLONE_DX, test_sbom.assignOriginFormat("cyclonedx"));
+        assertEquals(SBOM.Type.CYCLONE_DX, test_sbom.assignOriginFormat("cyclonedx"));
     }
 
     @Test
     public void assignOriginFormat_is_SPDX_test() {
-        assertEquals(SBOMType.SPDX, test_sbom.assignOriginFormat("spdx"));
+        assertEquals(SBOM.Type.SPDX, test_sbom.assignOriginFormat("spdx"));
     }
 
     @Test
     public void assignOriginFormat_is_other_when_null_test() {
-        assertEquals(SBOMType.Other, test_sbom.assignOriginFormat(null));
+        assertEquals(SBOM.Type.Other, test_sbom.assignOriginFormat(null));
     }
 
     @Test
     public void assignOriginFormat_is_not_cyclone_dx_when_null_test() {
-        assertNotEquals(SBOMType.CYCLONE_DX, test_sbom.assignOriginFormat(null));
+        assertNotEquals(SBOM.Type.CYCLONE_DX, test_sbom.assignOriginFormat(null));
     }
 
     @Test
     public void assignOriginFormat_is_not_SPDX_when_null_test() {
-        assertNotEquals(SBOMType.SPDX, test_sbom.assignOriginFormat(null));
+        assertNotEquals(SBOM.Type.SPDX, test_sbom.assignOriginFormat(null));
     }
 
     @Test
     public void assignOriginFormat_is_other_when_empty_test() {
-        assertEquals(SBOMType.Other, test_sbom.assignOriginFormat(""));
+        assertEquals(SBOM.Type.Other, test_sbom.assignOriginFormat(""));
     }
 
     @Test
     public void assignOriginFormat_is_not_cyclone_dx_when_empty_test() {
-        assertNotEquals(SBOMType.CYCLONE_DX, test_sbom.assignOriginFormat(""));
+        assertNotEquals(SBOM.Type.CYCLONE_DX, test_sbom.assignOriginFormat(""));
 
     }
 
     @Test
     public void assignOriginFormat_is_not_SPDX_when_empty_test() {
-        assertNotEquals(SBOMType.SPDX, test_sbom.assignOriginFormat(""));
+        assertNotEquals(SBOM.Type.SPDX, test_sbom.assignOriginFormat(""));
     }
 
     @Test
     public void setOriginFormat_getOriginFormat_cyclone_dx_test() {
-        test_sbom.setOriginFormat(SBOMType.CYCLONE_DX);
-        assertEquals(SBOMType.CYCLONE_DX, test_sbom.getOriginFormat());
+        test_sbom.setOriginFormat(SBOM.Type.CYCLONE_DX);
+        assertEquals(SBOM.Type.CYCLONE_DX, test_sbom.getOriginFormat());
     }
 
     @Test
     public void setOriginFormat_getOriginFormat_SPDX_test() {
-        test_sbom.setOriginFormat(SBOMType.SPDX);
-        assertEquals(SBOMType.SPDX, test_sbom.getOriginFormat());
+        test_sbom.setOriginFormat(SBOM.Type.SPDX);
+        assertEquals(SBOM.Type.SPDX, test_sbom.getOriginFormat());
     }
 
     @Test
     public void setOriginFormat_getOriginFormat_other_test() {
-        test_sbom.setOriginFormat(SBOMType.Other);
-        assertEquals(SBOMType.Other, test_sbom.getOriginFormat());
+        test_sbom.setOriginFormat(SBOM.Type.Other);
+        assertEquals(SBOM.Type.Other, test_sbom.getOriginFormat());
     }
 
     @Test

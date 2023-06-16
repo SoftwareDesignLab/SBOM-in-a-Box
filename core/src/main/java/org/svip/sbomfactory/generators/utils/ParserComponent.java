@@ -92,7 +92,7 @@ public class ParserComponent extends Component {
         this.setUUID(component.getUUID());
         this.setPublisher(component.getPublisher());
         this.setVersion(component.getVersion());
-        this.setLicenses(component.getLicenses());
+        this.setLicenses(new HashSet<>(component.getLicenses()));
         this.setCpes(component.getCpes());
         this.setPurls(component.getPurls());
         this.setSwids(component.getSwids());

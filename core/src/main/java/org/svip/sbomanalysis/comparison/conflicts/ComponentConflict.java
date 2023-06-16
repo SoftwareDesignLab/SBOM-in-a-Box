@@ -1,7 +1,6 @@
 package org.svip.sbomanalysis.comparison.conflicts;
 
 import org.svip.sbom.model.Component;
-import org.svip.sbom.model.PURL;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -222,16 +221,16 @@ public class ComponentConflict {
                 case COMPONENT_PURL_MISMATCH:
                     conflictString.append("    PURL:\n");
                     // Get differences
-                    Set<PURL> purlA = new HashSet<>(componentA.getPurls());
-                    Set<PURL> purlB = new HashSet<>(componentB.getPurls());
+                    Set<String> purlA = new HashSet<>(componentA.getPurls());
+                    Set<String> purlB = new HashSet<>(componentB.getPurls());
                     purlA.removeAll(componentB.getPurls());
                     purlB.removeAll(componentA.getPurls());
 
-                    for (PURL purl : purlA) {
+                    for (String purl : purlA) {
                         conflictString.append("      + ").append(purl).append("\n");
                     }
 
-                    for (PURL purl : purlB) {
+                    for (String purl : purlB) {
                         conflictString.append("      - ").append(purl).append("\n");
                     }
 

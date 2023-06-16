@@ -1,38 +1,49 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
-import org.svip.sbomanalysis.qualityattributes.tests.testresults.TestResults;
-import org.svip.sbom.model.*;
+
+import org.svip.sbom.model.SBOM;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
- * Abstract class to be extended by all metric tests
+ * file: MetricTest.java
  *
- * @author Dylan Mulligan
+ * Template for MetricTests
+ *
+ * @author Derek Garcia
  */
 public abstract class MetricTest {
-    //#region Attributes
 
-    private final String name;
+    /**
+     * Utility function that checks if an object is null, a string is blank or a collection is empty
+     *
+     * todo maybe remove?
+     * @param o Object to test
+     * @return true if empty, false otherwise
+     */
+    protected boolean isEmptyOrNull(Object o){
+        // Object is null
+        if(o == null)
+            return true;
 
-    //#endregion
+        // Check for empty string
+        if(o instanceof String)
+            return o.equals("");
 
-    //#region Constructors
+        // Check for empty collection
+        if(o instanceof Collection<?>)
+            return ((Collection<?>) o).isEmpty();
 
-    protected MetricTest(String name) {
-        this.name = name;
+        // Object that isn't null
+        return false;
     }
 
-    //#endregion
-
-    //#region Abstract Methods
-
-    public abstract TestResults test(Component c);
-
-    //#endregion
-
-    //#region Getters
-
-    public String getName() { return this.name; }
-
-    //#endregion
-
+    /**
+     * Test the given SBOM
+     *
+     * @param sbom SBOM to test
+     * @return Collection of Results
+     */
+    public abstract List<Result> test(SBOM sbom);
 }

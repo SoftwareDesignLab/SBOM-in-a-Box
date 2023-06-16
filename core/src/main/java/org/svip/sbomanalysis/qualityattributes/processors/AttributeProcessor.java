@@ -1,67 +1,64 @@
 package org.svip.sbomanalysis.qualityattributes.processors;
 
-import org.svip.sbomanalysis.qualityattributes.QualityReport;
+import org.svip.sbom.model.SBOM;
 import org.svip.sbomanalysis.qualityattributes.tests.MetricTest;
-import org.svip.sbomanalysis.qualityattributes.tests.testresults.TestResults;
-import org.svip.sbom.model.*;
+import org.svip.sbomanalysis.qualityattributes.tests.Result;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
- * Abstract class to be extended by all metric processors
+ * file: AttributeProcessor.java
  *
- * @author Dylan Mulligan
- * @author Matt London
- * @author Ian Dunn
+ * Template for AttributeProcessors
+ *
+ * @author Derek Garcia
  */
 public abstract class AttributeProcessor {
-    /** Set of metric tests to run */
-    private final Set<MetricTest> tests;
+
+    protected List<MetricTest> metricTests = new ArrayList<>();
+    protected String attributeName;
 
     /**
-     * Constructor for AttributeProcessor
-     *
-     * @param metricTests Array of MetricTests to perform
+     * Default constructor for prebuilt attribute processors
      */
-    public AttributeProcessor(MetricTest[] metricTests) {
-        this.tests = new HashSet<>();
-        this.tests.addAll(List.of(metricTests));
+    protected AttributeProcessor(){}
+
+    /**
+     * Constructor for custom processors
+     *
+     * @param attributeName Name of processor
+     * @param metricTests Collection of tests to run
+     */
+    protected AttributeProcessor(String attributeName, List<MetricTest> metricTests){
+        this.attributeName = attributeName;
+        this.metricTests = metricTests;
     }
 
+
     /**
-     * Process the SBOM, run against all tests, and return a QualityReport
+     * Run tests against given SBOM
      *
-     * @param sbom SBOM to process
-     * @return QualityReport
+     * @param sbom sbom to test
+     * @return Collection of test results
      */
-    public QualityReport process(SBOM sbom) {
-        // Init quality report
-        QualityReport qr = new QualityReport();
+    public List<Result> process(SBOM sbom){
+        List<Result> results = new ArrayList<>();
+        // run each test
+        for(MetricTest test : this.metricTests)
+            results.addAll(test.test(sbom));
 
-        // Run all Components through each test individually
-        final Component[] components = sbom.getAllComponents().toArray(new Component[0]);
+        return results;
+    }
 
-        for(Component c : components) { // Loop through all components in SBOM
-            if(c.isUnpackaged()) continue; // Skip component if it's a local file
+    ///
+    /// Getters
+    ///
 
-            // Get array of MetricTests to perform
-            final MetricTest[] metricTests = this.tests.toArray(new MetricTest[0]);
-
-            // Store TestResults for each component
-            TestResults results = new TestResults(c);
-
-            // Loop through all MetricTests
-            for(MetricTest mt : metricTests){
-                results.addTests(mt.test(c)); // Add the TestResults from each metric to the component TestResults
-            }
-
-            // Add test results to QualityReport
-            qr.addTestResult(results);
-        }
-
-        // Return built QualityReport
-        return qr;
+    public String getAttributeName() {
+        return this.attributeName;
     }
 }
+
+
+

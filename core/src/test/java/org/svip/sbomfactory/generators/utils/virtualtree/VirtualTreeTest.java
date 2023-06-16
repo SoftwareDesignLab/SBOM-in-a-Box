@@ -4,7 +4,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.svip.sbomfactory.generators.utils.Debug;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class VirtualTreeTest {
     private static final VirtualPath FILE_PATH_1 = new VirtualPath("/a/b/c/d.txt");
