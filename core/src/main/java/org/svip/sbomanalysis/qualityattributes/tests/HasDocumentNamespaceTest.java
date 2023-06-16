@@ -14,9 +14,13 @@ import java.util.List;
  * and follows scheme "https:"
  * @author Matthew Morrison
  */
-public class HasDocumentNamespaceTest extends MetricTest{
+public abstract class HasDocumentNamespaceTest extends MetricTest{
 
     public static final String TEST_NAME = "HasDocumentNamespace";
+
+    protected HasDocumentNamespaceTest() {
+        super("Has Document Namespace Test");
+    }
 
     /**
      * Test the sbom's metadata for a valid document namespace

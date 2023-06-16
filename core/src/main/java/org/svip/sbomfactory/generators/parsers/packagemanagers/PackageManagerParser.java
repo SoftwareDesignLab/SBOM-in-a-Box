@@ -1,18 +1,19 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
-import org.svip.sbom.model.CPE;
-import org.svip.sbom.model.PURL;
-import org.svip.sbomfactory.generators.utils.Debug;
-import org.svip.sbomfactory.generators.utils.queryworkers.QueryWorker;
-import org.svip.sbomfactory.generators.parsers.Parser;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.svip.sbom.model.uids.CPE;
+import org.svip.sbomfactory.generators.parsers.Parser;
+import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.queryworkers.QueryWorker;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -342,7 +343,7 @@ public abstract class PackageManagerParser extends Parser {
 
             // Build CPE
             CPE cpe = new CPE(packageManager, id, version);
-            String cpeFormatString = cpe.bindToFS();
+            String cpeFormatString = cpe.toString();
             c.addCPE(cpeFormatString);
             log(Debug.LOG_TYPE.DEBUG, String.format("Dependency Found with CPE: %s", cpeFormatString));
 

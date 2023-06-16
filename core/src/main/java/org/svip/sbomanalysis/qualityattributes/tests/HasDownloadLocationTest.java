@@ -13,8 +13,12 @@ import java.util.List;
  * a download location
  * @author Matthew Morrison
  */
-public class HasDownloadLocationTest extends MetricTest{
+public abstract class HasDownloadLocationTest extends MetricTest{
     private static final String TEST_NAME = "HasDownloadLocation";
+
+    protected HasDownloadLocationTest() {
+        super("Has Download Location Test");
+    }
 
     /**
      * Test every component in the sbom for the PackageDownloadLocation field

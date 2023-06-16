@@ -11,9 +11,13 @@ import java.util.List;
  * For a given SBOM, check if it has a version number declared
  * @author Matthew Morrison
  */
-public class HasBomVersionTest extends MetricTest{
+public abstract class HasBomVersionTest extends MetricTest {
+
     private static final String TEST_NAME = "HasBomVersion";
 
+    protected HasBomVersionTest() {
+        super("HasBomVersion Test");
+    }
     /**
      * Given an SBOM, test if is it contains a version number
      * @param sbom SBOM to test

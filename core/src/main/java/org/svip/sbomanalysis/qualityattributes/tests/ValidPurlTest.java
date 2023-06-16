@@ -2,7 +2,7 @@ package org.svip.sbomanalysis.qualityattributes.tests;
 
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbom.model.Component;
-import org.svip.sbom.model.PURL;
+import org.svip.sbom.model.uids.PURL;
 import org.svip.sbom.model.SBOM;
 
 
@@ -16,9 +16,12 @@ import java.util.List;
  *
  * @author Derek Garcia
  */
-public class ValidPurlTest extends MetricTest {
+public abstract class ValidPurlTest extends MetricTest {
     private static final String TEST_NAME = "ValidPurl";
 
+    protected ValidPurlTest() {
+        super("Valid Purl Test");
+    }
     /**
      * Validates the PURL
      *

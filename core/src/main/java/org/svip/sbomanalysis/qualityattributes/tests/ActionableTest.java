@@ -1,12 +1,13 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
-import org.svip.sbomanalysis.qualityattributes.tests.testresults.*;
-import org.svip.sbom.model.*;
+import org.svip.sbom.model.Component;
+import org.svip.sbomanalysis.qualityattributes.tests.testresults.Test;
+import org.svip.sbomanalysis.qualityattributes.tests.testresults.TestResults;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * File: ActionableTest.java
@@ -14,7 +15,7 @@ import java.util.ArrayList;
  *
  * @author Asa Horn
  */
-public class ActionableTest extends MetricTest{
+public abstract class ActionableTest extends MetricTest{
     /**
      * URL to lookup CPEs. Should be the whole URL which just needs the search term appended to the end.
      * Should return 404 for a non-existant CPE, and 200 for a existing CPE.
@@ -55,6 +56,7 @@ public class ActionableTest extends MetricTest{
     public TestResults test(Component c) {
         // Init StringBuilder
         TestResults testResults = new TestResults(c);
+
 
         // Preform subtests
         testResults.addTest(testUniqueIdentifiers(c));

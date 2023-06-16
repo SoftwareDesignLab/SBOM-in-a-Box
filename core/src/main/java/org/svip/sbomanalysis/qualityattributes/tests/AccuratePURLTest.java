@@ -2,7 +2,7 @@ package org.svip.sbomanalysis.qualityattributes.tests;
 
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbom.model.Component;
-import org.svip.sbom.model.PURL;
+import org.svip.sbom.model.uids.PURL;
 import org.svip.sbom.model.SBOM;
 
 import java.util.ArrayList;
@@ -17,10 +17,13 @@ import java.util.Set;
  * @author Matthew Morrison
  * @author Derek Garcia
  */
-public class AccuratePURLTest extends MetricTest{
+public abstract class AccuratePURLTest extends MetricTest{
     // the test name for the results
     private static final String TEST_NAME = "AccuratePURL";
 
+    protected AccuratePURLTest() {
+        super("Accurate PURL Test");
+    }
     /**
      * Test every component for purls. If they are present, test if
      * PURLs match the component's stored data

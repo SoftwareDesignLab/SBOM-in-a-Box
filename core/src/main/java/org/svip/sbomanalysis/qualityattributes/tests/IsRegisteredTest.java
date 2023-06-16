@@ -2,7 +2,7 @@ package org.svip.sbomanalysis.qualityattributes.tests;
 
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbom.model.Component;
-import org.svip.sbom.model.PURL;
+import org.svip.sbom.model.uids.PURL;
 import org.svip.sbom.model.SBOM;
 
 
@@ -24,9 +24,13 @@ import java.util.Set;
  * given package manager through its PURL
  * @author Matthew Morrison
  */
-public class IsRegisteredTest extends MetricTest{
+public abstract class IsRegisteredTest extends MetricTest{
     // name of the test for results
     private static final String TEST_NAME = "IsRegistered";
+
+    protected IsRegisteredTest() {
+        super("Is Registered Test");
+    }
 
     /**
      * Run the test for all components in the SBOM

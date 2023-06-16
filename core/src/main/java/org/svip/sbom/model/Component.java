@@ -2,9 +2,9 @@ package org.svip.sbom.model;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.svip.sbomanalysis.comparison.conflicts.ComponentConflict;
-import org.svip.sbom.model.Hash;
-import org.svip.sbom.model.PURL;
-import org.svip.sbomvex.model.Vulnerability;
+import org.svip.sbom.model.uids.Hash;
+import org.svip.sbom.model.uids.PURL;
+import org.svip.sbom.model.Vulnerability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -13,9 +13,13 @@ import java.util.Map;
  * DataLicense field with a license of CC0-1.0
  * @author Matthew Morrison
  */
-public class HasDataLicenseSPDXTest extends MetricTest{
+public abstract class HasDataLicenseSPDXTest extends MetricTest{
 
     private static final String TEST_NAME = "HasDataLicenseSPDX";
+
+    protected HasDataLicenseSPDXTest() {
+        super("Has Data LicenseSPDX Test");
+    }
 
     /**
      * Test the SPDX SBOM Metadata to see if it contains a data license of

@@ -6,6 +6,7 @@ import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 import org.svip.sbomfactory.translators.TranslatorController;
+import org.svip.sbomfactory.translators.TranslatorException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,8 +28,8 @@ public class Utils {
      * @param sbom The SBOM string to get the schema of.
      * @return The schema of the SBOM string.
      */
-    public static GeneratorSchema getSchemaFromSBOM(String sbom) {
-        SBOM translated = TranslatorController.toSBOM(sbom, buildTestFilepath(sbom));
+    public static GeneratorSchema getSchemaFromSBOM(String sbom) throws TranslatorException {
+        SBOM translated = TranslatorController.translateContents(sbom, buildTestFilepath(sbom));
         return GeneratorSchema.valueOfArgument(translated.getOriginFormat().toString());
     }
 
@@ -39,8 +40,8 @@ public class Utils {
      * @param sbom The SBOM string to convert to an object.
      * @return The SBOM object containing all the details from the SBOM string.
      */
-    public static SBOM buildSBOMFromString(String sbom) {
-        return TranslatorController.toSBOM(sbom, buildTestFilepath(sbom));
+    public static SBOM buildSBOMFromString(String sbom) throws TranslatorException {
+        return TranslatorController.translateContents(sbom, buildTestFilepath(sbom));
     }
 
     /**
@@ -62,13 +63,13 @@ public class Utils {
      * @param fileNames JSON string array of the filenames of all provided SBOMs
      * @return list of SBOM objects
      */
-    public static List<SBOM> translateMultiple(List<String> fileContents, List<String> fileNames) {
+    public static List<SBOM> translateMultiple(List<String> fileContents, List<String> fileNames) throws TranslatorException {
         // Convert the SBOMs to SBOM objects
         ArrayList<SBOM> sboms = new ArrayList<>();
 
         for (int i = 0; i < fileContents.size(); i++) {
             // Get contents of the file
-            sboms.add(TranslatorController.toSBOM(fileContents.get(i), fileNames.get(i)));
+            sboms.add(TranslatorController.translateContents(fileContents.get(i), fileNames.get(i)));
         }
         return sboms;
     }

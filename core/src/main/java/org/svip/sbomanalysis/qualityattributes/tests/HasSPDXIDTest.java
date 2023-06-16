@@ -13,8 +13,12 @@ import java.util.List;
  * valid SPDXID (SPDXID: "SPDXRef-[idstring]")
  * @author Matthew Morrison
  */
-public class HasSPDXIDTest extends MetricTest{
+public abstract class HasSPDXIDTest extends MetricTest{
     public static final String TEST_NAME = "HasSPDXID";
+
+    protected HasSPDXIDTest() {
+        super("Has SPDXID Test");
+    }
 
     /**
      * Test every component in a given SBOM for a valid SPDXID

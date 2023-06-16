@@ -8,10 +8,10 @@
 
 package org.svip.sbomanalysis.comparison;
 
-import org.svip.sbom.model.*;
-import org.svip.sbomanalysis.comparison.Merger;
-
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.DependencyTree;
+import org.svip.sbom.model.SBOM;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class MergerTest {
     @Test
     public void mergeBlankBOM() {
         // SBOM 1
-        SBOM sbom1 = new SBOM(SBOMType.CYCLONE_DX, "1.4", "1", null, "2021-05-01T00:00:00Z", null, null, new DependencyTree());
+        SBOM sbom1 = new SBOM(SBOM.Type.CYCLONE_DX, "1.4", "1", null, "2021-05-01T00:00:00Z", null, null, new DependencyTree());
 
         // Build components
         UUID mainComponent = sbom1.addComponent(null, new Component("HelloWorld", "1.0.0"));
@@ -37,7 +37,7 @@ public class MergerTest {
         UUID subSubComponent2 = sbom1.addComponent(subComponent, new Component("psutil", "0.1.2"));
 
         // Blank bom
-        SBOM blank = new SBOM(SBOMType.CYCLONE_DX, "1.4", "1", null, "2021-05-01T00:00:00Z", null, null, new DependencyTree());
+        SBOM blank = new SBOM(SBOM.Type.CYCLONE_DX, "1.4", "1", null, "2021-05-01T00:00:00Z", null, null, new DependencyTree());
 
         List<SBOM> sboms = new ArrayList<SBOM>();
         sboms.add(sbom1);
@@ -56,7 +56,7 @@ public class MergerTest {
     @Test
     public void mergeOneBOM() {
         // SBOM 1
-        SBOM sbom1 = new SBOM(SBOMType.CYCLONE_DX, "1.4", "1", null, "2021-05-01T00:00:00Z", null, null, new DependencyTree());
+        SBOM sbom1 = new SBOM(SBOM.Type.CYCLONE_DX, "1.4", "1", null, "2021-05-01T00:00:00Z", null, null, new DependencyTree());
 
         // Build components
         UUID mainComponent = sbom1.addComponent(null, new Component("HelloWorld", "1.0.0"));
@@ -83,7 +83,7 @@ public class MergerTest {
     @Test
     public void mergeTwoBOM() {
         // SBOM 1
-        SBOM sbom1 = new SBOM(SBOMType.CYCLONE_DX, "1.4", "1", null, "2021-05-01T00:00:00Z", null, null, new DependencyTree());
+        SBOM sbom1 = new SBOM(SBOM.Type.CYCLONE_DX, "1.4", "1", null, "2021-05-01T00:00:00Z", null, null, new DependencyTree());
 
         // Build components
         UUID mainComponent = sbom1.addComponent(null, new Component("HelloWorld", "1.0.0"));
@@ -96,7 +96,7 @@ public class MergerTest {
 
 
         // SBOM 2
-        SBOM sbom2 = new SBOM(SBOMType.CYCLONE_DX, "1.4", "1", null, "2021-05-01T00:00:00Z", null, null, new DependencyTree());
+        SBOM sbom2 = new SBOM(SBOM.Type.CYCLONE_DX, "1.4", "1", null, "2021-05-01T00:00:00Z", null, null, new DependencyTree());
 
         // Build components
         UUID helloName = sbom2.addComponent(null, new Component("HelloWorld", "1.0.0"));
@@ -108,7 +108,7 @@ public class MergerTest {
         // SBOM 2 is now built out with components
 
         // Build resulting SBOM hardcoded to test the merger
-        SBOM resultBom = new SBOM(SBOMType.CYCLONE_DX, "1.4", "1", null, "2021-05-01T00:00:00Z", null, null, new DependencyTree());
+        SBOM resultBom = new SBOM(SBOM.Type.CYCLONE_DX, "1.4", "1", null, "2021-05-01T00:00:00Z", null, null, new DependencyTree());
         UUID resultHead = resultBom.addComponent(null, new Component("HelloWorld", "1.0.0"));
         resultBom.addComponent(resultHead, new Component("pandas", "1.0.0"));
         UUID resultNumpy = resultBom.addComponent(resultHead, new Component("numpy", "1.2.0"));
@@ -140,7 +140,7 @@ public class MergerTest {
     @Test
     public void mergeThreeBOM() {
         // SBOM 1
-        SBOM sbom1 = new SBOM(SBOMType.CYCLONE_DX, "1.4", "1", null, "2021-05-01T00:00:00Z", null, null, new DependencyTree());
+        SBOM sbom1 = new SBOM(SBOM.Type.CYCLONE_DX, "1.4", "1", null, "2021-05-01T00:00:00Z", null, null, new DependencyTree());
 
         // Build components
         UUID mainComponent = sbom1.addComponent(null, new Component("HelloWorld", "1.0.0"));
@@ -153,7 +153,7 @@ public class MergerTest {
 
 
         // SBOM 2
-        SBOM sbom2 = new SBOM(SBOMType.CYCLONE_DX, "1.4", "1", null, "2021-05-01T00:00:00Z", null, null, new DependencyTree());
+        SBOM sbom2 = new SBOM(SBOM.Type.CYCLONE_DX, "1.4", "1", null, "2021-05-01T00:00:00Z", null, null, new DependencyTree());
 
         // Build components
         UUID helloName = sbom2.addComponent(null, new Component("HelloWorld", "1.0.0"));
@@ -165,14 +165,14 @@ public class MergerTest {
         // SBOM 2 is now built out with components
 
         // SBOM 3
-        SBOM sbom3 = new SBOM(SBOMType.CYCLONE_DX, "1.4", "1", null, "2021-05-01T00:00:00Z", null, null, new DependencyTree());
+        SBOM sbom3 = new SBOM(SBOM.Type.CYCLONE_DX, "1.4", "1", null, "2021-05-01T00:00:00Z", null, null, new DependencyTree());
         UUID bom3World = sbom3.addComponent(null, new Component("HelloWorld", "1.0.0"));
         sbom3.addComponent(bom3World, new Component("pandas", "1.0.0"));
         UUID matplot3 = sbom3.addComponent(bom3World, new Component("matplotlib", "1.0.0"));
         UUID graph3 = sbom3.addComponent(matplot3, new Component("graph", "1.0.0"));
 
         // Build resulting SBOM hardcoded to test the merger
-        SBOM resultBom = new SBOM(SBOMType.CYCLONE_DX, "1.4", "1", null, "2021-05-01T00:00:00Z", null, null, new DependencyTree());
+        SBOM resultBom = new SBOM(SBOM.Type.CYCLONE_DX, "1.4", "1", null, "2021-05-01T00:00:00Z", null, null, new DependencyTree());
         UUID resultHead = resultBom.addComponent(null, new Component("HelloWorld", "1.0.0"));
         resultBom.addComponent(resultHead, new Component("pandas", "1.0.0"));
         UUID resultNumpy = resultBom.addComponent(resultHead, new Component("numpy", "1.2.0"));

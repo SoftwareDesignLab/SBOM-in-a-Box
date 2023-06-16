@@ -16,10 +16,13 @@ import java.util.List;
  * @author Derek Garcia
  * @author Matthew Morrison
  */
-public class AccurateCPETest extends MetricTest{
+public abstract class AccurateCPETest extends MetricTest{
     // the test name for the results
     private static final String TEST_NAME = "AccurateCPE";
 
+    protected AccurateCPETest() {
+        super("Accurate CPE Test");
+    }
     /**
      * Test every component for CPEs. If they are present, test if
      * CPEs match the component's stored data

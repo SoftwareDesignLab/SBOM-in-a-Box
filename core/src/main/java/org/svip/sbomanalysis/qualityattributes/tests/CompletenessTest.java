@@ -1,10 +1,13 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
-import org.svip.sbomanalysis.qualityattributes.tests.testresults.*;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.SBOM;
+import org.svip.sbomanalysis.qualityattributes.tests.testresults.Test;
+import org.svip.sbomanalysis.qualityattributes.tests.testresults.TestResults;
 
-import org.svip.sbom.model.*;
-
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -16,7 +19,7 @@ import java.util.regex.Pattern;
  * @author Dylan Mulligan
  * @author Ian Dunn
  */
-public class CompletenessTest extends MetricTest {
+public class CompletenessTest  extends  MetricTest {
 
     /**
      * The Regex used to test the format of a component publisher email.
@@ -75,6 +78,10 @@ public class CompletenessTest extends MetricTest {
                 "[a-zA-Z0-9-~._%]*\\/)+[a-zA-Z0-9-~._%]*)?", Pattern.MULTILINE);
     }
 
+    @Override
+    public List<Result> test(SBOM sbom) {
+        return new ArrayList<>();
+    }
     /**
      * Test a single Component's publisher name, component name, component version, all CPEs, and all PURLs
      * to determine if they are not empty and formatted correctly (if applicable).
@@ -237,8 +244,7 @@ public class CompletenessTest extends MetricTest {
      */
     private Test testPURLs(Component c) {
         // Check PURLs and return a number of invalid PURLs
-        Set<String> purlStrings = new HashSet<>();
-        for (PURL p: c.getPurls()) {purlStrings.add(p.toString());}
+        Set<String> purlStrings = new HashSet<>(c.getPurls());
         final int invalid = getNumInvalidStrings(purlStrings, purlRegex);
         if (invalid > 0) // If there are invalid PURLs, mark as failed
             return new Test(false, "Had ", Integer.toString(invalid), " PURL(s) with Invalid Format.");

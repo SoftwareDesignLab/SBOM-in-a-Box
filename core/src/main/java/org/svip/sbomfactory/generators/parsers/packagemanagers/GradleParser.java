@@ -1,6 +1,7 @@
 package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.generators.utils.queryworkers.QueryWorker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,7 +11,6 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.svip.sbomfactory.generators.utils.queryworkers.QueryWorker;
 
 import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
 import static org.svip.sbomfactory.generators.utils.Debug.log;

@@ -17,9 +17,12 @@ import java.util.Map;
  * minimum fields: LicenseName, LicenseID, LicenseCrossReference
  * @author Matthew Morrison
  */
-public class ExtractedLicenseMinElementTest extends MetricTest{
+public abstract class ExtractedLicenseMinElementTest extends MetricTest{
     public static final String TEST_NAME = "ExtractedLicenseMinElements";
 
+    protected ExtractedLicenseMinElementTest() {
+        super("Extracted License Min Element Test");
+    }
     /**
      * Check all components in a given SBOM for extracted licenses not on
      * the SPDX license list

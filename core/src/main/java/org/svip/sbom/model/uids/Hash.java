@@ -1,10 +1,10 @@
-package org.svip.sbom.model;
+package org.svip.sbom.model.uids;
 
 import jregex.Pattern;
 
 import java.util.Objects;
 
-import static org.svip.sbom.model.Hash.Algorithm.*;
+import static org.svip.sbom.model.uids.Hash.Algorithm.*;
 
 /**
  * Hash Object to hold Hash values
@@ -88,11 +88,11 @@ public class Hash {
      */
     public static boolean isSPDXExclusive(Algorithm a){
         return a == SHA224 ||
-                a == BLAKE2b512 ||
-                a == MD2 ||
-                a == MD4 ||
-                a == MD6 ||
-                a == ADLER32;
+               a == BLAKE2b512 ||
+               a == MD2 ||
+               a == MD4 ||
+               a == MD6 ||
+               a == ADLER32;
     }
 
     /**

@@ -1,8 +1,7 @@
 package org.svip.sbomanalysis.qualityattributes.tests.testresults;
 
-import org.svip.sbom.model.Component;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.svip.sbom.model.Component;
 
 import java.util.ArrayList;
 

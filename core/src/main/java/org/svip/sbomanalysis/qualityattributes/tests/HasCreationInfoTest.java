@@ -12,8 +12,12 @@ import java.util.List;
  * Creation Info (Creator and Created)
  * @author Matthew Morrison
  */
-public class HasCreationInfoTest extends MetricTest{
+public abstract class HasCreationInfoTest extends MetricTest{
     public static final String TEST_NAME = "HasCreationInfo";
+
+    protected HasCreationInfoTest() {
+        super("Has Creation Info Test");
+    }
 
     /**
      * Given an SPDX SBOM, check that it has creator and created info

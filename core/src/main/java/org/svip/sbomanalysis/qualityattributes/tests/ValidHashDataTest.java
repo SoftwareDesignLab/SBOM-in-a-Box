@@ -1,8 +1,8 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
 import org.svip.sbom.model.Component;
-import org.svip.sbom.model.Hash;
 import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.uids.Hash;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +14,13 @@ import java.util.List;
  * @author Matthew Morrison
  * @author Derek Garcia
  */
-public class ValidHashDataTest extends MetricTest{
+public abstract class ValidHashDataTest extends MetricTest{
 
     private static final String TEST_NAME = "ValidHashData";
+
+    protected ValidHashDataTest() {
+        super("Valid Hash Data Test");
+    }
 
     /**
      * Test all component's hashes if they are a valid schema (if present)

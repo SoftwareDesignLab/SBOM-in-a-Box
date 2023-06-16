@@ -15,9 +15,12 @@ import java.util.List;
  *
  * @author Derek Garcia
  */
-public class ValidCPETest extends MetricTest {
+public abstract class ValidCPETest extends MetricTest {
     private static final String TEST_NAME = "ValidCPE";
 
+    protected ValidCPETest() {
+        super("Valid CPE Test");
+    }
     /**
      * Validates the CPE
      *

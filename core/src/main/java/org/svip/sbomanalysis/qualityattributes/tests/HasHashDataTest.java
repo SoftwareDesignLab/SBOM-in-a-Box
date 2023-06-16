@@ -2,7 +2,7 @@ package org.svip.sbomanalysis.qualityattributes.tests;
 
 import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
-import org.svip.sbom.model.Hash;
+import org.svip.sbom.model.uids.Hash;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +13,14 @@ import java.util.List;
  * Test each component if hash values are present
  * @author Matthew Morrison
  */
-public class HasHashDataTest extends MetricTest{
+public abstract class HasHashDataTest extends MetricTest{
 
     private static final String TEST_NAME = "HasHashData";
+
+    protected HasHashDataTest() {
+        super("Has Hash Data Test");
+    }
+
     /**
      * Test all SBOM components for hashes
      * @param sbom SBOM to test

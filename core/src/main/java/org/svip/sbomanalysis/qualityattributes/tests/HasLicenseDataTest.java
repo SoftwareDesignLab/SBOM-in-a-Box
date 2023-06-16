@@ -12,9 +12,13 @@ import java.util.*;
  * @author Matthew Morrison
  * @author Derek Garcia
  */
-public class HasLicenseDataTest extends MetricTest{
+public abstract class HasLicenseDataTest extends MetricTest{
 
     private static final String TEST_NAME = "HasLicenseData";
+
+    protected HasLicenseDataTest() {
+        super("Has License Data Test");
+    }
 
     /**
      * Test all SBOM components for their licenses and if their data is present

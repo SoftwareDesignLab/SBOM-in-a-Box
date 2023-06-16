@@ -1,6 +1,7 @@
 package org.svip.sbomanalysis.differ;
 
-import org.svip.sbomanalysis.comparison.conflicts.*;
+import org.svip.sbomanalysis.comparison.conflicts.ComponentConflict;
+import org.svip.sbomanalysis.comparison.conflicts.SBOMConflict;
 
 import java.util.Set;
 

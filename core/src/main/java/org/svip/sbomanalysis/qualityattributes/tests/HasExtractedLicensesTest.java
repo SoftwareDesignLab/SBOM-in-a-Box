@@ -14,8 +14,12 @@ import java.util.Map;
  * licenses not on the SPDX license list and list them
  * @author Matthew Morrison
  */
-public class HasExtractedLicensesTest extends MetricTest{
+public abstract class HasExtractedLicensesTest extends MetricTest{
     public static final String TEST_NAME = "HasExtractedLicenses";
+
+    protected HasExtractedLicensesTest() {
+        super("Has Extracted Licenses Test");
+    }
 
     /**
      * Check all components in a given SBOM for extracted licenses not on

@@ -1,13 +1,13 @@
 package org.svip.sbomanalysis.comparison;
 
+import org.junit.jupiter.api.Test;
 import org.svip.sbomanalysis.differ.UniqueIdOccurrence;
 import org.svip.sbomanalysis.differ.UniqueIdentifierType;
 
-import org.junit.jupiter.api.Test;
-
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /**
  * File: ComponentVersionTest.java

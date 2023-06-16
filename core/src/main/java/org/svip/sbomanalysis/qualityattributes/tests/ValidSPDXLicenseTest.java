@@ -23,7 +23,7 @@ import java.util.*;
  * @author Matthew Morrison
  * @author Derek Garcia
  */
-public class ValidSPDXLicenseTest extends MetricTest{
+public abstract class ValidSPDXLicenseTest extends MetricTest{
 
     private static final String TEST_NAME = "ValidSPDXLicense";
     private static final String SPDX_LICENSE_LIST_URL = "https://spdx.org/licenses/";
@@ -39,6 +39,9 @@ public class ValidSPDXLicenseTest extends MetricTest{
     private final Set<String> DEPRECIATED_SPDX_LICENSE_NAMES = new HashSet<>();
 
 
+    protected ValidSPDXLicenseTest() {
+        super("Valid SPDX License Test");
+    }
 
     /**
      * Test all SBOM components for their licenses and if they are a valid SPDX

@@ -16,8 +16,12 @@ import java.util.Set;
  *
  * @author Derek Garcia
  */
-public class MinElementTest extends MetricTest {
+public abstract class MinElementTest extends MetricTest {
     private static final String TEST_NAME = "MinimumElements";
+
+    protected MinElementTest() {
+        super("Min Element Test");
+    }
 
     /**
      * Test for minimum Elements
