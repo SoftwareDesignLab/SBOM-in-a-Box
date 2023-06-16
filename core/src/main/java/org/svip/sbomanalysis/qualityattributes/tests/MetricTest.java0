@@ -1,0 +1,38 @@
+package org.svip.sbomanalysis.qualityattributes.tests;
+
+import org.svip.sbom.model.Component;
+import org.svip.sbomanalysis.qualityattributes.tests.testresults.TestResults;
+
+/**
+ * Abstract class to be extended by all metric tests
+ *
+ * @author Dylan Mulligan
+ */
+public abstract class MetricTest0 {
+    //#region Attributes
+
+    private final String name;
+
+    //#endregion
+
+    //#region Constructors
+
+    protected MetricTest0(String name) {
+        this.name = name;
+    }
+
+    //#endregion
+
+    //#region Abstract Methods
+
+    public abstract TestResults test(Component c);
+
+    //#endregion
+
+    //#region Getters
+
+    public String getName() { return this.name; }
+
+    //#endregion
+
+}

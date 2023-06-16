@@ -1,35 +1,148 @@
 package org.svip.sbom.model;
 
+import jregex.Matcher;
+import jregex.Pattern;
+import org.svip.sbomfactory.generators.utils.Debug;
+
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * File: CPE.java
- * <p>
- * CPE stores all relevant information about a WFN (well-formed CPE name) and can construct a formatted string binding.
- * All documentation on how this works can be found
- * <a href="https://nvlpubs.nist.gov/nistpubs/Legacy/IR/nistir7695.pdf">here</a>.
- * </p>
- * @author Ian Dunn
+ * file: CPE.java
+ *
+ * Class representation of a CPE
+ * Specifications can be found in NIST's Common Platform Enumeration: Naming Specification Version 2.3
+ * <a href="https://nvlpubs.nist.gov/nistpubs/Legacy/IR/nistir7695.pdf">...</a>
+ *
+ * @author Derek Garcia
  */
 public class CPE {
-    private static final String CPE_V2_3_PREFIX = "cpe:2.3";
-    private final String part;
-    private String vendor;
-    private String product;
+
+
+    /*
+    CPE's conform to the following structure:
+    cpe:<cpe_version>:<part>:<vendor>:<product>:<version>:<update>:<edition>:<language>:<sw_edition>:<target_sw>:<target_hw>:<other>
+     TODO: Only temporary regex, this has no built in string value checking and only for 2.3
+     */
+    private static final String CPE_REGEX = "cpe:2\\.3:([aho]?):(.*?):(.*?):(.*?):(.*?):(.*?):(.*?):(.*?):(.*?):(.*?):(.*?)$";
+    private static final String WILDCARD = "*";
+    private static final String WILDCARD_REGEX = ".*";
+
+    // Supported types for CPE
+    public enum Type{
+        APPLICATION,
+        HARDWARE,
+        OPERATING_SYSTEMS
+    }
+
+    // todo required fields?
+    private final String cpeVersion = "2.3";    // todo fix to support more versions
+    private final Type part;
+
+    // "Values for this attribute SHOULD describe or identify the person or organization that manufactured or created the product."
+    private  String vendor;
+
+    // "Values for this attribute SHOULD describe or identify the most common and recognizable title or name of the product."
+    private  String product;
+
+    // "Values for this attribute SHOULD be vendor-specific alphanumeric strings characterizing the particular release
+    // version of the product."
     private String version;
+
+    // "Values for this attribute SHOULD be vendor-specific alphanumeric strings characterizing the particular update,
+    // service pack, or point release of the product."
     private String update;
-    private String edition;
+
+    // "The edition attribute is considered deprecated in [the 2.3] specification, and it SHOULD be assigned the logical
+    // value ANY except where required for backward compatibility with version 2.2 of the CPE specification. "
+    private  String edition;
+
+    // "Values for this attribute SHALL be valid language tags as defined by [RFC5646], and SHOULD be used to define the
+    // language supported in the user interface of the product being described"
+    private  String language;
+
+    // "Values for this attribute SHOULD characterize how the product is tailored to a particular market or class
+    //of end users."
+    private  String sw_edition;
+
+    // "Values for this attribute SHOULD characterize the software computing environment within which the product operates"
+    private  String target_sw;
+
+    // "Values for this attribute SHOULD characterize the instruction set architecture (e.g., x86) on which the
+    // product being described or identified by the WFN operates"
+    private  String target_hw;
+
+    // "Values for this attribute SHOULD capture any other general descriptive or identifying information which
+    // is vendor- or product-specific and which does not logically fit in any other attribute value."
+    private  String other;
+
     private String swEdition;
     private String targetSw;
     private String targetHw;
-    private String language;
-    private String other;
+    private static final String CPE_V2_3_PREFIX = "cpe:2.3";
+
+
+
+    /**
+     * Create new cpe object from a given cpe identifier string
+     *
+     * @param cpe cpe string to use to make objects
+     * @throws Exception cpe given is invalid
+     */
+    public CPE(String cpe) throws Exception {
+        // Build regex
+        Pattern cpePattern = new Pattern(CPE_REGEX, Pattern.MULTILINE);
+        Matcher matcher = cpePattern.matcher(cpe);
+
+        // Regex fails to match to string
+        if(!matcher.find()){
+            Debug.log(Debug.LOG_TYPE.DEBUG, "Unable to parse cpe \"" + cpe + "\"");
+            throw new Exception("Unable to parse cpe \"" + cpe + "\"");
+        }
+
+        // Check for missing fields
+        if(Arrays.stream(matcher.groups()).toList().contains(null)){
+            throw new Exception("Invalid purl, missing the following: "+
+                    ( matcher.group(1) == null ? "Type " : "" ) +
+                    ( matcher.group(2) == null ? "Vendor " : "" ) +
+                    ( matcher.group(3) == null ? "Product " : "" ) +
+                    ( matcher.group(4) == null ? "Version " : "" ) +
+                    ( matcher.group(5) == null ? "Update " : "" ) +
+                    ( matcher.group(6) == null ? "Edition " : "" ) +
+                    ( matcher.group(7) == null ? "Language " : "" ) +
+                    ( matcher.group(8) == null ? "sw_edition " : "" ) +
+                    ( matcher.group(9) == null ? "target_sw " : "" ) +
+                    ( matcher.group(10) == null ? "target_hw " : "" ) +
+                    ( matcher.group(11) == null ? "other " : "" )
+            );
+        }
+
+        // get type
+        switch (matcher.group(1)) {
+            case "a" -> this.part = Type.APPLICATION;
+            case "h" -> this.part = Type.HARDWARE;
+            case "o" -> this.part = Type.OPERATING_SYSTEMS;
+            default -> throw new Exception("\"" + matcher.group(1) + "\" is not a valid type");
+        }
+
+        // Fill in fields
+        this.vendor = matcher.group(2);
+        this.product = matcher.group(3);
+        this.version = matcher.group(4);
+        this.update = matcher.group(5);
+        this.edition = matcher.group(6);
+        this.language = matcher.group(7);
+        this.sw_edition = matcher.group(8);
+        this.target_sw = matcher.group(9);
+        this.target_hw = matcher.group(10);
+        this.other = matcher.group(11);
+    }
 
     public CPE(String vendor, String product) {
-        this.part = "a";
+        this.part = Type.APPLICATION; //"a";
         this.vendor = vendor;
         this.product = product;
     }
@@ -37,39 +150,6 @@ public class CPE {
     public CPE(String vendor, String product, String version) {
         this(vendor, product);
         this.version = version;
-    }
-
-    public String bindToFS() {
-        List<String> values = new ArrayList<>(Stream.of(
-                part,
-                vendor,
-                product,
-                version,
-                update,
-                edition,
-                swEdition,
-                targetSw,
-                targetHw,
-                language,
-                other
-        ).toList());
-
-        values = values.stream().map(v -> {
-            if(v == null) v = "ANY";
-            return bindValueForFS(v);
-        }).collect(Collectors.toList());
-
-        values.add(0, CPE_V2_3_PREFIX);
-
-        return String.join(":", values);
-    }
-
-    private String bindValueForFS(String value) {
-        switch(value) {
-            case "ANY" -> { return "*"; }
-            case "NA" -> { return "-"; }
-            default -> { return processQuotedChars(value); }
-        }
     }
 
     private String processQuotedChars(String value) {
@@ -97,7 +177,80 @@ public class CPE {
         return processed.toString();
     }
 
-    public String getPart() {
+    private String bindValueForFS(String value) {
+        switch(value) {
+            case "ANY" -> { return "*"; }
+            case "NA" -> { return "-"; }
+            default -> { return processQuotedChars(value); }
+        }
+    }
+
+    public String bindToFS() {
+        List<String> values = new ArrayList<>(Stream.of(
+                part.toString(),
+                vendor,
+                product,
+                version,
+                update,
+                edition,
+                swEdition,
+                targetSw,
+                targetHw,
+                language,
+                other
+        ).toList());
+
+        values = values.stream().map(v -> {
+            if(v == null) v = "ANY";
+            return bindValueForFS(v);
+        }).collect(Collectors.toList());
+
+        values.add(0, CPE_V2_3_PREFIX);
+
+        return String.join(":", values);
+    }
+
+    /**
+     * Compares 2 strings to test for equivalence and accounts for wildcard characters
+     *
+     * @param a String a
+     * @param b String b
+     * @return if a and b are equivalent
+     */
+    public static boolean isEqualWildcard(String a, String b){
+        // Check for direct equivalence first
+        if(a.equals(b))
+            return true;
+
+        String wildCardString = "";
+        String other = "";
+
+        // Get wildcard and target string
+        if(a.contains(WILDCARD)){
+            wildCardString = a;
+            other = b;
+        } else {
+            wildCardString = b;
+            other = a;
+        }
+
+        // Convert wildCardString to regex
+        String regex = wildCardString.replace(WILDCARD, WILDCARD_REGEX);
+        Pattern pattern = new Pattern(regex, Pattern.MULTILINE);
+
+        // Test regex
+        return pattern.matches(other);
+    }
+
+    ///
+    /// Getters
+    ///
+
+    public String getCpeVersion() {
+        return cpeVersion;
+    }
+
+    public Type getPart() {
         return part;
     }
 
@@ -105,97 +258,78 @@ public class CPE {
         return vendor;
     }
 
-    public void setVendor(String vendor) {
-        this.vendor = vendor;
-    }
-
     public String getProduct() {
         return product;
-    }
-
-    public void setProduct(String product) {
-        this.product = product;
     }
 
     public String getVersion() {
         return version;
     }
 
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
     public String getUpdate() {
         return update;
-    }
-
-    public void setUpdate(String update) {
-        this.update = update;
     }
 
     public String getEdition() {
         return edition;
     }
 
-    public void setEdition(String edition) {
-        this.edition = edition;
-    }
-
-    public String getSwEdition() {
-        return swEdition;
-    }
-
-    public void setSwEdition(String sw_edition) {
-        this.swEdition = sw_edition;
-    }
-
-    public String getTargetSw() {
-        return targetSw;
-    }
-
-    public void setTargetSw(String targetSw) {
-        this.targetSw = targetSw;
-    }
-
-    public String getTargetHw() {
-        return targetHw;
-    }
-
-    public void setTargetHw(String targetHw) {
-        this.targetHw = targetHw;
-    }
-
     public String getLanguage() {
         return language;
     }
 
-    public void setLanguage(String language) {
-        this.language = language;
+    public String getSw_edition() {
+        return sw_edition;
+    }
+
+    public String getTarget_sw() {
+        return target_sw;
+    }
+
+    public String getTarget_hw() {
+        return target_hw;
     }
 
     public String getOther() {
         return other;
     }
+    @Override
+    public boolean equals(Object o) {
+        // Check if same object
+        if (this == o)
+            return true;
 
-    public void setOther(String other) {
-        this.other = other;
+        // Check if null or different class
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        // Compare CPE strings to check for equivalence
+        return isEqualWildcard(this.toString(), o.toString());
     }
 
     @Override
     public String toString() {
-        StringBuilder out = new StringBuilder("wfn:[");
-        out.append(String.format("part=\"%s\"", processQuotedChars(part)));
-        if(vendor != null) out.append(String.format("vendor=\"%s\"", processQuotedChars(vendor)));
-        if(product != null) out.append(String.format("product=\"%s\"", processQuotedChars(product)));
-        if(version != null) out.append(String.format("version=\"%s\"", processQuotedChars(version)));
-        if(update != null) out.append(String.format("update=\"%s\"", processQuotedChars(update)));
-        if(edition != null) out.append(String.format("edition=\"%s\"", processQuotedChars(edition)));
-        if(swEdition != null) out.append(String.format("sw_edition=\"%s\"", processQuotedChars(swEdition)));
-        if(targetSw != null) out.append(String.format("target_sw=\"%s\"", processQuotedChars(targetSw)));
-        if(targetHw != null) out.append(String.format("target_hw=\"%s\"", processQuotedChars(targetHw)));
-        if(language != null) out.append(String.format("language=\"%s\"", processQuotedChars(language)));
-        if(other != null) out.append(String.format("other=\"%s\"", processQuotedChars(other)));
+        // cpe:<cpe_version>:<part>:<vendor>:<product>:<version>:<update>:<edition>:<language>:<sw_edition>:<target_sw>:<target_hw>:<other>
 
-        return out.append("]").toString();
+        // Get application string
+        String typeString = "";
+        switch (this.part) {
+            case APPLICATION -> typeString = "a";
+            case HARDWARE -> typeString = "h";
+            case OPERATING_SYSTEMS -> typeString = "o";
+        }
+
+        return "cpe:" + this.cpeVersion +
+                ":" + typeString +
+                ":" + this.vendor +
+                ":" + this.product +
+                ":" + this.version +
+                ":" + this.update +
+                ":" + this.edition  +
+                ":" + this.language +
+                ":" + this.sw_edition  +
+                ":" + this.target_sw +
+                ":" + this.target_hw +
+                ":" + this.other;
     }
 }
