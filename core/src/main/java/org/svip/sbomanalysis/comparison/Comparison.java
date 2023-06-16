@@ -224,10 +224,10 @@ public class Comparison {
             new_cv.addCPE(new_cpe_uid);
 
         }
-        for (PURL purl : component.getPurls()) {
+        for (String purl : component.getPurls()) {
 
             // Create new UniqueIDOccurrence object for the PURL, then add it to the ComponentVersion object
-            UniqueIdOccurrence new_purl_uid = new UniqueIdOccurrence(purl.toString(), UniqueIdentifierType.PURL);
+            UniqueIdOccurrence new_purl_uid = new UniqueIdOccurrence(purl, UniqueIdentifierType.PURL);
             new_purl_uid.addAppearance(SBOM_index);
             new_cv.addPURL(new_purl_uid);
 

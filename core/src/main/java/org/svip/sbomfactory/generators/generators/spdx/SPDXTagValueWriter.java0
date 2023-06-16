@@ -197,8 +197,8 @@ public class SPDXTagValueWriter {
             out.append("ExternalRef: SECURITY cpe23Type ").append(cpe).append("\n");
         }
 
-        for(String purl : component.getPurls()) {
-            out.append("ExternalRef: SECURITY purl ").append(purl).append("\n");
+        for(PURL purl : component.getPurls()) {
+            out.append("ExternalRef: SECURITY purl ").append(purl.toString()).append("\n");
         }
 
         if(component.getFiles().size() > 0) {

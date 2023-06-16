@@ -231,9 +231,9 @@ public class SPDXSerializer extends StdSerializer<SPDXStore> {
 
             // If any PURLs exist
             if(pkg.getPurls().size() > 0) { // TODO Do this for SWIDs once we support them
-                for(String purl : pkg.getPurls())
+                for(PURL purl : pkg.getPurls())
                     // Write the external reference data of the PURL to an object
-                    writeExternalRef(jsonGenerator, REFERENCE_CATEGORY.SECURITY, "purl", purl);
+                    writeExternalRef(jsonGenerator, REFERENCE_CATEGORY.SECURITY, "purl", purl.toString());
             }
 
             // If any CPEs exist

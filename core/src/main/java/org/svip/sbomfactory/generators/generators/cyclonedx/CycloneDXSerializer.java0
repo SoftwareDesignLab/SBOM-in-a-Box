@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.svip.sbom.model.PURL;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.generators.License;
 import org.svip.sbomfactory.generators.utils.generators.Tool;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,21 +21,21 @@ import java.util.Set;
  * </p>
  * @author Ian Dunn
  */
-public class CycloneDXSerializer extends StdSerializer<CycloneDXStore> {
+public class CycloneDXSerializer0 extends StdSerializer<CycloneDXStore> {
 
     //#region Constructors
 
     /**
      * The default serializer constructor that takes in no arguments and serializes a null CycloneDXStore class.
      */
-    public CycloneDXSerializer() { super((Class<CycloneDXStore>) null); }
+    public CycloneDXSerializer0() { super((Class<CycloneDXStore>) null); }
 
     /**
      * A serializer constructor that takes in a CycloneDXStore class to serialize.
      *
      * @param t The CycloneDXStore class object.
      */
-    protected CycloneDXSerializer(Class<CycloneDXStore> t) {
+    protected CycloneDXSerializer0(Class<CycloneDXStore> t) {
         super(t);
     }
 
@@ -159,7 +159,7 @@ public class CycloneDXSerializer extends StdSerializer<CycloneDXStore> {
         //
 
         writeFieldIfExists(jsonGenerator, "purl",
-                String.join(", ", component.getPurls().stream().map(toString->toString).toList()));
+                String.join(", ", component.getPurls().stream().map(PURL::toString).toList()));
         writeFieldIfExists(jsonGenerator, "cpe", String.join(", ", component.getCpes()));
         // TODO Do this for SWIDs once we support them
 

@@ -250,7 +250,7 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
         //
 
         writeFieldIfExists(xmlGenerator,"purl",
-                String.join(", ", component.getPurls().stream().map(toString->toString).toList()));
+                String.join(", ", component.getPurls().stream().map(PURL::toString).toList()));
         writeFieldIfExists(xmlGenerator,"cpe", String.join(", ", component.getCpes()));
         // TODO Do this for SWIDs once we support them
 
