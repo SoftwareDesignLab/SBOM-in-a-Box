@@ -2,7 +2,9 @@ package org.svip.sbomanalysis.qualityattributes.tests;
 
 import org.bouncycastle.util.test.TestResult;
 import org.svip.sbom.model.Component;
+import org.svip.sbom.model.SBOM;
 import org.svip.sbom.model.uids.PURL;
+import org.svip.sbomanalysis.qualityattributes.tests.Utils.ResultTranslator;
 import org.svip.sbomanalysis.qualityattributes.tests.testresults.Test;
 import org.svip.sbomanalysis.qualityattributes.tests.testresults.TestResults;
 
@@ -33,6 +35,13 @@ public class DataVerificationTest extends MetricTest {
     }
 
     /**
+     * Helper test function
+     */
+    public List<Result> test(SBOM s){
+        return test((Component) s.getAllComponents().toArray()[0]);
+    }
+
+    /**
      * General test to verify component data
      *
      * @param c component to test
@@ -46,7 +55,7 @@ public class DataVerificationTest extends MetricTest {
         Set<String> purls = c.getPurls();
         if(purls.isEmpty()){
             testResults.addTest(new Test(false, "Component has no PURL"));
-            return Collections.singletonList(testResults);
+            return ResultTranslator.fromTestResult(testResults);
         }
         //if not run the test
         for (String purlString: c.getPurls()
@@ -103,7 +112,7 @@ public class DataVerificationTest extends MetricTest {
 
         if(testResults.getTests().size() == 0) testResults.addTest(new Test(true,"Component was " +
                 "found online"));
-        return Collections.singletonList(testResults);
+        return ResultTranslator.fromTestResult(testResults);
     }
 
     /**

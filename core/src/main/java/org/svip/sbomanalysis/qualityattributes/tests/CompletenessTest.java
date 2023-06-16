@@ -3,6 +3,7 @@ package org.svip.sbomanalysis.qualityattributes.tests;
 import org.bouncycastle.util.test.TestResult;
 import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
+import org.svip.sbomanalysis.qualityattributes.tests.Utils.ResultTranslator;
 import org.svip.sbomanalysis.qualityattributes.tests.testresults.Test;
 import org.svip.sbomanalysis.qualityattributes.tests.testresults.TestResults;
 
@@ -78,6 +79,13 @@ public class CompletenessTest extends MetricTest {
     }
 
     /**
+     * Helper test function
+     */
+    public List<Result> test(SBOM s){
+        return test((Component) s.getAllComponents().toArray()[0]);
+    }
+
+    /**
      * Test a single Component's publisher name, component name, component version, all CPEs, and all PURLs
      * to determine if they are not empty and formatted correctly (if applicable).
      *
@@ -109,7 +117,7 @@ public class CompletenessTest extends MetricTest {
             testResults.addTest(testPURLs(c));
 
         // Return result
-        return testResults;
+        return ResultTranslator.fromTestResult(testResults);
     }
 
     // TODO: Update translator to have publisherName and publisherEmail fields so we don't have to do it in this class
