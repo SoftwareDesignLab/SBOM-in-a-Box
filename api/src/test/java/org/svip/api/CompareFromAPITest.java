@@ -34,7 +34,7 @@ public class CompareFromAPITest extends APITest {
     @DisplayName("Null/Empty File Contents Array")
     @NullAndEmptySource
     void emptyContentsArrayTest(String fileContents) {
-        ResponseEntity<Comparison> response = ctrl.compare(fileContents, TESTFILEARRAY_LENGTH1);
+        ResponseEntity<?> response = ctrl.compare(fileContents, TESTFILEARRAY_LENGTH1);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
@@ -42,7 +42,7 @@ public class CompareFromAPITest extends APITest {
     @DisplayName("Null/Empty File Names Array")
     @NullAndEmptySource
     void emptyFileNamesArrayTest(String fileNames) {
-        ResponseEntity<Comparison> response = ctrl.compare(TESTCONTENTSARRAY_LENGTH1, fileNames);
+        ResponseEntity<?> response = ctrl.compare(TESTCONTENTSARRAY_LENGTH1, fileNames);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
@@ -50,7 +50,7 @@ public class CompareFromAPITest extends APITest {
     @DisplayName("Mismatched File Contents/Names Array Length")
     void mismatchedFileInfoTest() {
         // Longer contents array
-        ResponseEntity<Comparison> response = ctrl.compare(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH1);
+        ResponseEntity<?> response = ctrl.compare(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH1);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 
         // Longer file names array
@@ -67,10 +67,11 @@ public class CompareFromAPITest extends APITest {
         String fileNamesString = input[1];
         int inputLength = Integer.parseInt(input[2]);
 
-        ResponseEntity<Comparison> report = ctrl.compare(contentsString, fileNamesString);
-        assertEquals(HttpStatus.OK, report.getStatusCode());
-        assertEquals(inputLength - 1, Objects.requireNonNull(report.getBody()).getDiffReports().size());
-        assertNotEquals(0, report.getBody().getComparisons().size());
+        ResponseEntity<?> response = ctrl.compare(contentsString, fileNamesString);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        Comparison comparison = (Comparison) response.getBody();
 
+        assertEquals(inputLength - 1, Objects.requireNonNull(comparison).getDiffReports().size());
+        assertNotEquals(0, comparison.getComparisons().size());
     }
 }

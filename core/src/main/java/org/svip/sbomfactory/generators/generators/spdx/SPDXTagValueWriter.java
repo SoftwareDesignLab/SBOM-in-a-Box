@@ -54,7 +54,8 @@ public class SPDXTagValueWriter {
         StringBuilder out = new StringBuilder();
 
         out.append(getDocumentHeader());
-        out.append(TranslatorSPDX.TAG + " Creation Information\n").append(getCreationInformation());
+//        out.append(TranslatorSPDX.TAG + " Creation Information\n").append(getCreationInformation());
+        out.append(getCreationInformation());
 
         String extractedLicenseInformation = getExtractedLicenseInformation();
         if(!extractedLicenseInformation.equals(""))
@@ -68,14 +69,14 @@ public class SPDXTagValueWriter {
         }
 
         for(ParserComponent pkg : spdxStore.getPackages()) {
-            out.append(TranslatorSPDX.PACKAGE_TAG + ": ").append(pkg.getName()).append("\n\n");
+            out.append(buildTag(TranslatorSPDX.PACKAGE_TAG)).append(pkg.getName()).append("\n\n");
             out.append(getPackage(pkg));
         }
 
         if(spdxStore.getRelationships().size() > 0) {
             out.append(TranslatorSPDX.RELATIONSHIP_TAG + "\n\n");
             for(Relationship relationship : spdxStore.getRelationships()) {
-                out.append(TranslatorSPDX.RELATIONSHIP_KEY).append(relationship.toString()).append("\n");
+                out.append(buildTag(TranslatorSPDX.RELATIONSHIP_KEY)).append(relationship.toString()).append("\n");
             }
         }
 
@@ -104,12 +105,14 @@ public class SPDXTagValueWriter {
      */
     private String getDocumentHeader() {
         StringBuilder out = new StringBuilder();
-        out.append(TranslatorSPDX.SPEC_VERSION_TAG).append(spdxStore.getSpecVersion()).append("\n");
-        out.append("DataLicense: ")
+        out.append(buildTag(TranslatorSPDX.SPEC_VERSION_TAG)).append(spdxStore.getSpecVersion()).append(
+                "\n");
+        out.append(buildTag("DataLicense")) // TODO put this as a constant in TranslatorSPDX
                 .append(LicenseManager.getConcatenatedLicenseString(spdxStore.getToolLicenses())).append("\n");
-        out.append(TranslatorSPDX.ID_TAG).append(spdxStore.getDocumentId()).append("\n");
-        out.append("DocumentName: ").append(spdxStore.getHeadComponent().getName()).append("\n");
-        out.append(TranslatorSPDX.DOCUMENT_NAMESPACE_TAG).append(spdxStore.getSerialNumber()).append("\n\n");
+        out.append(buildTag(TranslatorSPDX.ID_TAG)).append(spdxStore.getDocumentId()).append("\n");
+        out.append(buildTag("DocumentName")).append(spdxStore.getHeadComponent().getName()).append("\n");
+        out.append(buildTag(TranslatorSPDX.DOCUMENT_NAMESPACE_TAG)).append(spdxStore.getSerialNumber()).append("\n\n");
+        // TODO store license list version
 //        out.append("LicenseListVersion: ").append(spdxStore.getSpecVersion()).append("\n");
 
         return out.toString();
@@ -123,9 +126,9 @@ public class SPDXTagValueWriter {
     private String getCreationInformation() {
         StringBuilder out = new StringBuilder();
         for(Tool tool : spdxStore.getTools()) {
-            out.append(TranslatorSPDX.AUTHOR_TAG).append(tool.getToolInfo()).append("\n");
+            out.append(buildTag(TranslatorSPDX.AUTHOR_TAG)).append(tool.getToolInfo()).append("\n");
         }
-        out.append(TranslatorSPDX.TIMESTAMP_TAG).append(spdxStore.getTimestamp()).append("\n\n");
+        out.append(buildTag(TranslatorSPDX.TIMESTAMP_TAG)).append(spdxStore.getTimestamp()).append("\n\n");
 
         return out.toString();
     }
@@ -138,8 +141,8 @@ public class SPDXTagValueWriter {
     private String getExtractedLicenseInformation() {
         StringBuilder out = new StringBuilder();
         for(License license : spdxStore.getExternalLicenses()) {
-            out.append("LicenseID: ").append(license.getSpdxLicense()).append("\n");
-            out.append("LicenseName: ").append(license.getLicenseName()).append("\n\n");
+            out.append(buildTag(TranslatorSPDX.EXTRACTED_LICENSE_ID)).append(license.getSpdxLicense()).append("\n");
+            out.append(buildTag(TranslatorSPDX.EXTRACTED_LICENSE_NAME)).append(license.getLicenseName()).append("\n\n");
         }
 
         return out.toString();
@@ -155,7 +158,7 @@ public class SPDXTagValueWriter {
     private String getFile(String file, String spdxId) {
         StringBuilder out = new StringBuilder();
 
-        out.append("FileName: ").append(file).append("\n");
+        out.append(buildTag("FileName")).append(file).append("\n");
         out.append(TranslatorSPDX.ID_TAG).append(spdxId).append("\n");
         out.append("FileType: SOURCE\n\n"); // TODO we currently only analyze source files??
 
@@ -171,10 +174,10 @@ public class SPDXTagValueWriter {
     private String getPackage(ParserComponent component) {
         StringBuilder out = new StringBuilder();
 
-        out.append("PackageName: ").append(component.getName()).append("\n");
+        out.append(buildTag("PackageName")).append(component.getName()).append("\n");
         out.append(TranslatorSPDX.ID_TAG).append(component.getSPDXID()).append("\n");
-        if(component.getVersion() != null) out.append("PackageVersion: ").append(component.getVersion()).append("\n");
-        if(component.getGroup() != null) out.append("PackageFileName: ").append(component.getGroup()).append("\n");
+        if(component.getVersion() != null) out.append(buildTag("PackageVersion")).append(component.getVersion()).append("\n");
+        if(component.getGroup() != null) out.append(buildTag("PackageFileName")).append(component.getGroup()).append("\n");
 
         if(component.getPublisher() != null && component.getPublisher().length() > 0
                 && !component.getPublisher().equals("Unknown")) // TODO is this correct? See SPDXSerializer as well
@@ -212,6 +215,16 @@ public class SPDXTagValueWriter {
         }
 
         return out.append("\n").toString();
+    }
+
+    /**
+     * Builds a tag using the separator specified in TranslatorSPDX.
+     *
+     * @param tagName
+     * @return The full tag to write to.
+     */
+    private String buildTag(String tagName) {
+        return tagName + TranslatorSPDX.SEPARATOR;
     }
 
     //#endregion

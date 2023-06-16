@@ -1,19 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bom xmlns="http://cyclonedx.org/schema/bom/1.4" serialNumber="urn:uuid:f057a217-e332-4981-94dc-799d6a776f58" version="1">
-  <metadata>
-    <timestamp>2023-02-21T08:50:33-05:00</timestamp>
-    <tools>
-      <tool>
-        <vendor>anchore</vendor>
-        <name>syft</name>
-        <version>0.69.1</version>
-      </tool>
-    </tools>
-      <component bom-ref="5339058ca5e06f8a" type="container">
-      <name>alpine:latest</name>
-      <version>sha256:e2e16842c9b54d985bf1ef9242a313f36b856181f188de21313820e177002501</version>
-    </component>
-  </metadata>
   <components>
     <component bom-ref="pkg:apk/alpine/alpine-baselayout@3.4.0-r0?arch=x86_64&amp;upstream=alpine-baselayout&amp;distro=alpine-3.17.2&amp;package-id=92b19c7750fb559d" type="library">
       <publisher>Natanael Copa &lt;ncopa@alpinelinux.org&gt;</publisher>

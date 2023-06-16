@@ -1,0 +1,28 @@
+SPDXVersion: SPDX-2.3
+DataLicense: CC0-1.0
+SPDXID: SPDXRef-DOCUMENT
+DocumentName: test:latest
+DocumentNamespace: https://rit.edu/test/test-latest-a0aa000a-00a0-0000-a0aa-a00aaa00000a
+LicenseListVersion: 3.19
+Creator: Organization: RIT
+Created: 2023-03-10T00:00:00Z
+
+##### Package: test-package
+
+PackageName: test-package
+SPDXID: SPDXRef-Package-Random-Test-Package
+PackageVersion: 1.0.0-r0
+PackageOriginator: Person: Test Developer <test@rit.edu>
+FilesAnalyzed: false
+PackageChecksum: SHA256: b1f8f3b5f2b528b0b6fbd6c511cbd7403d292c3cd52cb135cba270835e80c6ad
+PackageSourceInfo: acquired package info from APK DB: /lib/apk/db/installed
+PackageLicenseConcluded: TEST_LICENSE
+PackageLicenseDeclared: TEST_LICENSE
+PackageCopyrightText: NOASSERTION
+PackageDescription: A simple test package
+ExternalRef: SECURITY cpe23Type cpe:2.3:a:test:test:1.0.0-r0:*:*:*:*:*:*:*
+ExternalRef: PACKAGE-MANAGER purl pkg:rit/test/test@1.0.0-r0?arch=x86_64&upstream=test&distro=test-0.0.0
+
+Relationship: SPDXRef-Document DESCRIBES SPDXRef-Package-Random-Test-Package
+
+NOTE: This is a test file and not an official Software Bill of Materials.
