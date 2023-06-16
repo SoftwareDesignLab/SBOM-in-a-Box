@@ -1,9 +1,10 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
-import org.svip.sbomfactory.generators.utils.Debug;
+
 import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
-import org.svip.sbom.model.CPE;
+import org.svip.sbom.model.uids.CPE;
+import org.svip.sbomfactory.generators.utils.Debug;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +17,10 @@ import java.util.List;
  * @author Derek Garcia
  * @author Matthew Morrison
  */
-public abstract class AccurateCPETest extends MetricTest{
+public class AccurateCPETest extends MetricTest{
     // the test name for the results
     private static final String TEST_NAME = "AccurateCPE";
 
-    protected AccurateCPETest() {
-        super("Accurate CPE Test");
-    }
     /**
      * Test every component for CPEs. If they are present, test if
      * CPEs match the component's stored data
@@ -125,31 +123,17 @@ public abstract class AccurateCPETest extends MetricTest{
         Result r;
         // Check if cpe value is different, if so, test fails
         if(!CPE.isEqualWildcard(cpeValue, componentValue)){
-            // for some value (mainly publisher), CPE cannot hold email info,
-            // so check if at least the cpeValue is within componentValue
-            if(componentValue.contains(cpeValue)){
-                r = new Result(TEST_NAME, Result.STATUS.PASS, "CPE matches " + field);
-                r.updateInfo(Result.Context.STRING_VALUE, cpeValue);
-            }
-            // values are different and componentValue does not contain
-            // cpeValue, test fails
-            else{
-                r = new Result(TEST_NAME, Result.STATUS.FAIL,
-                        "CPE does not match " + field);
-                String errorMessage = String.format("Expected: %s. " +
-                        "Actual: %s", componentValue, cpeValue);
-                r.updateInfo(Result.Context.STRING_VALUE, errorMessage);
-            }
+            r = new Result(TEST_NAME, Result.STATUS.FAIL,
+                    "CPE does not match " + field);
+            r.updateInfo(Result.Context.STRING_VALUE, componentValue);
 
-        // Else they both match, test passes
+            // Else they both match, test passes
         } else {
             r = new Result(TEST_NAME, Result.STATUS.PASS, "CPE matches " + field);
-            r.updateInfo(Result.Context.STRING_VALUE, cpeValue);
         }
 
         // Add context and return
-        r.addContext(c, "CPE: " + field);
-        r.updateInfo(Result.Context.FIELD_NAME, field);
+        r.addContext(c, "CPE:" + field);
         return r;
     }
 

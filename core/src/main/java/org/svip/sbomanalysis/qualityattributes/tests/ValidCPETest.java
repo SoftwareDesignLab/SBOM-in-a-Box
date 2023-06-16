@@ -1,9 +1,9 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
-import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbom.model.Component;
-import org.svip.sbom.model.CPE;
 import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.uids.CPE;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +15,11 @@ import java.util.List;
  *
  * @author Derek Garcia
  */
-public abstract class ValidCPETest extends MetricTest {
+public class ValidCPETest extends MetricTest {
     private static final String TEST_NAME = "ValidCPE";
 
-    protected ValidCPETest() {
-        super("Valid CPE Test");
-    }
     /**
-     * Validates the CPE
+     * Validates the PURL
      *
      * @param sbom SBOM to test
      * @return Collection of results
@@ -44,12 +41,12 @@ public abstract class ValidCPETest extends MetricTest {
                     new CPE(cpe);    // throws error if given purl string is invalid
                     r = new Result(TEST_NAME, Result.STATUS.PASS, "Valid CPE String");
                 } catch (Exception e){
-                    Debug.log(Debug.LOG_TYPE.WARN, "Failed to parse CPE \"" + cpe +"\" | " + e.getMessage());    // log incase regex fails
+                    //Debug disabled for now
+                    //Debug.log(Debug.LOG_TYPE.WARN, "Failed to parse CPE \"" + cpe +"\" | " + e.getMessage());    // log incase regex fails
                     r = new Result(TEST_NAME, Result.STATUS.FAIL, "Invalid CPE String");
                 }
-                r.addContext(c, "Valid CPE String");
-                r.updateInfo(Result.Context.FIELD_NAME, "cpe");
-                r.updateInfo(Result.Context.STRING_VALUE, cpe);
+
+                r.addContext(c, "cpe");
                 results.add(r);
             }
         }

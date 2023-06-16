@@ -1,16 +1,13 @@
-// pliu package org.nvip.plugfest.tooling.qa.tests;
 package org.svip.sbomanalysis.qualityattributes.tests;
 
-// pliu import org.nvip.plugfest.tooling.sbom.SBOM;
-import org.svip.sbom.model.SBOM;
 
+import org.svip.sbom.model.SBOM;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 /**
- * file: MetricTest0.java
+ * file: MetricTest.java
  *
  * Template for MetricTests
  *

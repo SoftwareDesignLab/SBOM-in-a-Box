@@ -1,102 +1,58 @@
 package org.svip.sbomanalysis.qualityattributes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.svip.sbomanalysis.qualityattributes.tests.testresults.TestResults;
+import org.svip.sbomanalysis.qualityattributes.tests.Result;
 
 import java.util.ArrayList;
+import com.fasterxml.jackson.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+
+
+
 
 /**
- * QualityReport is a collection of TestResults objects that relate to a particular SBOM
+ * JSON-friendly object to report Metric findings
  *
  * @author Dylan Mulligan
  * @author Matt London
  * @author Ian Dunn
  * @author Derek Garcia
  */
+@JsonPropertyOrder({"uid", "attributeResults" })
 public class QualityReport {
-    /** Test results from the QAPipeline */
-    @JsonProperty("testResults") private final ArrayList<TestResults> testResults;
-    /**
-     * The serial number of the SBOM that was tested
-     */
-    @JsonProperty("serialNumber") private final String serialNumber;
+    @JsonProperty
+    private final String uid;
+    @JsonProperty
+    private final HashMap<String, HashMap<String, ArrayList<Result>>> attributeResults = new HashMap<>();
+
 
     /**
-     * Create new QualityReport object with the SBOM serialNumber.
-     * @param serialNumber the SBOM serialNumber
-     */
-    public QualityReport(String serialNumber){
-        this.testResults = new ArrayList<>();
-        this.serialNumber = serialNumber;
-    }
-
-    /**
-     * Create new QualityReport object without a serialNumber.
-     * This object should be intended to be combined with another
-     * that does have a valid serialNumber.
-     */
-    public QualityReport(){
-        this.testResults = new ArrayList<>();
-        this.serialNumber = "INVALID_SN";
-    }
-
-    /**
-     * Add results from a TestResults instance to the QualityReport.
+     * Create new QualityReport object with a form of UID
      *
-     * @param testResults The TestResults to add
+     * @param uid unique identifier for the quality report
      */
-    public void addTestResult(TestResults testResults) {
-        this.testResults.add(testResults);
+    public QualityReport(String uid){
+        this.uid = uid;
     }
 
     /**
-     * Append another QualityReport object to this one. This
-     * adds other.testResults to this.testResults (absorbing
-     * the other object's data).
+     * Update an attribute with result details
      *
-     * @param other QualityReport object to be appended
+     * @param attributeName Name of attribute
+     * @param results List of test results
      */
-    public void append(QualityReport other) {
-        this.testResults.addAll(other.testResults);
-    }
+    public void updateAttribute(String attributeName, List<Result> results){
+        // init test results
+        HashMap<String, ArrayList<Result>> testResults =
+                this.attributeResults.computeIfAbsent(attributeName, k -> new HashMap<>());
 
-    /**
-     * Get total number of passed components in the quality report.
-     *
-     * @return Total number of passed components in the quality report
-     */
-    public int getPassedComponents() {
-        int passed = 0;
-        for(TestResults tr : testResults) {
-            if(tr.isSuccessful())
-                passed++;
+        // Add each test and result to the attribute
+        for(Result r : results){
+            testResults.computeIfAbsent(r.getTestName(), k -> new ArrayList<>());
+            testResults.get(r.getTestName()).add(r);
         }
-        return passed;
-    }
-
-    /**
-     * Remove empty TestResults from the QualityReport.
-     */
-    public void removeEmpty() {
-        // Remove testResults that are empty
-        testResults.removeIf(tr -> tr.getTests().isEmpty());
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("QualityReport{");
-        sb.append("serialNumber=");
-        sb.append(this.serialNumber);
-        sb.append(",\n\n");
-        sb.append(String.format("TEST RESULTS - TOTAL COMPONENTS PASSED: %d/%d\n\n", getPassedComponents(), testResults.size()));
-
-        // Loop through all TestResults in the QualityReport
-        for(TestResults result : testResults) {
-            sb.append(result.toString());
-        }
-
-        sb.append("]}");
-
-        return sb.toString();
     }
 }
+

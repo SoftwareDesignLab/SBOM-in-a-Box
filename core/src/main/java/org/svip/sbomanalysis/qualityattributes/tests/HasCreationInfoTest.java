@@ -12,12 +12,8 @@ import java.util.List;
  * Creation Info (Creator and Created)
  * @author Matthew Morrison
  */
-public abstract class HasCreationInfoTest extends MetricTest{
+public class HasCreationInfoTest extends MetricTest{
     public static final String TEST_NAME = "HasCreationInfo";
-
-    protected HasCreationInfoTest() {
-        super("Has Creation Info Test");
-    }
 
     /**
      * Given an SPDX SBOM, check that it has creator and created info
@@ -35,8 +31,6 @@ public abstract class HasCreationInfoTest extends MetricTest{
         if(isEmptyOrNull(sbom.getSupplier())){
             r = new Result(TEST_NAME, Result.STATUS.FAIL, "SBOM did " +
                     "not include creator info");
-            r.updateInfo(Result.Context.STRING_VALUE,
-                    "Creator Info is Missing");
         }
         // creator info has some value, test passes
         else{
@@ -54,8 +48,6 @@ public abstract class HasCreationInfoTest extends MetricTest{
         if(isEmptyOrNull(sbom.getTimestamp())){
             r = new Result(TEST_NAME, Result.STATUS.FAIL, "SBOM did " +
                     "not include created time info");
-            r.updateInfo(Result.Context.STRING_VALUE,
-                    "Created Time Info is Missing");
         }
         // created time info has some value, test passes
         else{

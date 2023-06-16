@@ -14,13 +14,9 @@ import java.util.List;
  * @author Matthew Morrison
  * @author Derek Garcia
  */
-public abstract class ValidHashDataTest extends MetricTest{
+public class ValidHashDataTest extends MetricTest{
 
     private static final String TEST_NAME = "ValidHashData";
-
-    protected ValidHashDataTest() {
-        super("Valid Hash Data Test");
-    }
 
     /**
      * Test all component's hashes if they are a valid schema (if present)
@@ -38,13 +34,6 @@ public abstract class ValidHashDataTest extends MetricTest{
             // Skip if no hashes
             if(c.getHashes().isEmpty())
                 continue;
-            // hold how many hashes are valid or not
-            int validHashes = 0;
-            int failedHashes = 0;
-
-            // keep a list of which hashes were valid or not
-            ArrayList<String> validHashList = new ArrayList<>();
-            ArrayList<String> failHashList = new ArrayList<>();
 
             // Check all stored hashes
             // todo switch to strings
@@ -61,44 +50,24 @@ public abstract class ValidHashDataTest extends MetricTest{
 
                 // Check for unsupported hash
                 if(sbom.getOriginFormat() == SBOM.Type.CYCLONE_DX && Hash.isSPDXExclusive(hash.getAlgorithm())){
-                    failedHashes++;
-                    failHashList.add(hash.getAlgorithm().toString());
+                    r = new Result(TEST_NAME, Result.STATUS.FAIL, "CycloneDX SBOM has an unsupported Hash");
+                    r.addContext(c, "Hash");
+                    r.updateInfo(Result.Context.STRING_VALUE, hash.getValue());
+                    results.add(r);
                 }
 
                 // Check if hash is valid
                 if(!Hash.validateHash(hash.getAlgorithm(), hash.getValue())){
-                    failedHashes++;
-                    failHashList.add(hash.getAlgorithm().toString());
+                    r = new Result(TEST_NAME, Result.STATUS.FAIL, "Invalid " + hash.getAlgorithm() + " hash");
                 } else {
-                    validHashes++;
-                    validHashList.add(hash.getAlgorithm().toString());
+                    r = new Result(TEST_NAME, Result.STATUS.PASS, "Valid " + hash.getAlgorithm() + " hash");
                 }
 
+                r.addContext(c, "Hash");
+                r.updateInfo(Result.Context.STRING_VALUE, hash.getValue());
+                results.add(r);
             }
-            String message;
-            String string_value;
-
-            if(failedHashes != 0){
-                message = String.format("Component has %d invalid hashes " +
-                        "and %d valid hashes", failedHashes, validHashes);
-                r = new Result(TEST_NAME, Result.STATUS.FAIL, message);
-                string_value = "Invalid: " + String.join(", ", failHashList)
-                        + "| Valid: " + String.join(", ", validHashList);
-                r.updateInfo(Result.Context.STRING_VALUE, string_value);
-            }
-            else{
-                message = String.format("Component's %d hashes are valid",
-                        validHashes);
-                r = new Result(TEST_NAME, Result.STATUS.PASS, message);
-                string_value = "Valid: " + String.join(", ", validHashList);
-                r.updateInfo(Result.Context.STRING_VALUE, string_value);
-
-            }
-            r.addContext(c, "Hash");
-            results.add(r);
         }
-
-
 
         // return list of results for all components
         return results;

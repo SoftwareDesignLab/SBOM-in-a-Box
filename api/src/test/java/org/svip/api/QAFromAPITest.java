@@ -1,7 +1,7 @@
 package org.svip.api;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.svip.sbomanalysis.qualityattributes.QualityReport;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -30,14 +30,13 @@ public class QAFromAPITest {
             + "/src/test/java/org/svip/api/sample_sboms/sbom.python.2-3.spdx";
     private SVIPApiController ctrl;
 
-    /**
 
     @Test
     public void qaTest() {
         try {
             String contents = new String(Files.readAllBytes(Paths.get(smallDockerSBOM)));
 
-            ResponseEntity<QualityReport> qa = ctrl.qa(contents, smallDockerSBOM);
+            ResponseEntity<?> qa = ctrl.qa(contents, smallDockerSBOM);
             assertEquals(qa.getStatusCode(), HttpStatus.OK);
         }
         catch (Exception e) {
@@ -45,13 +44,12 @@ public class QAFromAPITest {
             assertEquals(1, 0);
         }
     }
-                                                        // todo wait for metrics restructure
     @Test
     public void qaFastTest() {
         try {
             String contents = new String(Files.readAllBytes(Paths.get(pythonSBOM)));
 
-            ResponseEntity<QualityReport> qa = ctrl.qa(contents, pythonSBOM);
+            ResponseEntity<?> qa = ctrl.qa(contents, pythonSBOM);
             assertEquals(qa.getStatusCode(), HttpStatus.OK);
         }
         catch (Exception e) {
@@ -60,7 +58,7 @@ public class QAFromAPITest {
         }
     }
 
-     **/
+
 
     @BeforeEach
     public void setup(){

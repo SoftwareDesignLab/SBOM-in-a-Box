@@ -1,5 +1,6 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
+
 import org.svip.sbom.model.SBOM;
 
 import java.util.ArrayList;
@@ -11,13 +12,9 @@ import java.util.List;
  * For a given SBOM, check if it has a version number declared
  * @author Matthew Morrison
  */
-public abstract class HasBomVersionTest extends MetricTest {
-
+public class HasBomVersionTest extends MetricTest{
     private static final String TEST_NAME = "HasBomVersion";
 
-    protected HasBomVersionTest() {
-        super("HasBomVersion Test");
-    }
     /**
      * Given an SBOM, test if is it contains a version number
      * @param sbom SBOM to test
@@ -33,19 +30,16 @@ public abstract class HasBomVersionTest extends MetricTest {
         if(isEmptyOrNull(sbom.getSbomVersion())){
             r = new Result(TEST_NAME, Result.STATUS.FAIL, "SBOM " +
                     "does not have version number declared");
-            r.updateInfo(Result.Context.STRING_VALUE, "SBOM Version Number " +
-                    "is Missing");
         }
         // sbom version is present, test passes
         else{
             r = new Result(TEST_NAME, Result.STATUS.PASS, "SBOM " +
-                    "has a version number declared");
-            r.updateInfo(Result.Context.STRING_VALUE, sbom.getSbomVersion());
+                    "has version number declared");
         }
-        r.addContext(sbom,"SBOM Version Number");
-        r.updateInfo(Result.Context.FIELD_NAME, "version");
+        r.addContext(sbom,"SBOM Version Presence");
         result.add(r);
 
         return result;
     }
 }
+
