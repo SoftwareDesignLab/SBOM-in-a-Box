@@ -36,6 +36,8 @@ public class CompareFromAPITest extends APITest {
         ctrl = new PlugFestApiController();
     }
 
+    // TODO ENSURE ALL TESTS WORK
+
     @ParameterizedTest
     @DisplayName("Null/Empty File Contents Array")
     @NullAndEmptySource
