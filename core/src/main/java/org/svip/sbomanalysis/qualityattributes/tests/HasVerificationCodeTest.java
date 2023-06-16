@@ -2,7 +2,7 @@ package org.svip.sbomanalysis.qualityattributes.tests;
 
 import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
-import org.svip.sbomanalysis.qualityattributes.tests.testresults.Result;
+
 import java.util.ArrayList;
 import java.util.List;
 

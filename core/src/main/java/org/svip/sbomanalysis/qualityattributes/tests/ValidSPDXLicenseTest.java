@@ -7,13 +7,15 @@ import jregex.REFlags;
 import org.apache.commons.io.IOUtils;
 import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
-import org.svip.sbomanalysis.qualityattributes.tests.testresults.Result;
-
+import org.svip.sbomfactory.generators.utils.Debug;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * file: ValidSPDXLicenseTest.java
@@ -111,8 +113,7 @@ public class ValidSPDXLicenseTest extends MetricTest{
             }
         } catch (Exception e){
             // failure
-            // Debug Disabled for now
-            //Debug.log(Debug.LOG_TYPE.ERROR, e);
+            Debug.log(Debug.LOG_TYPE.ERROR, e);
             return false;
         }
         // success

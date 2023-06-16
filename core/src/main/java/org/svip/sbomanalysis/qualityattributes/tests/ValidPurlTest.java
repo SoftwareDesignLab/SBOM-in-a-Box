@@ -3,7 +3,7 @@ package org.svip.sbomanalysis.qualityattributes.tests;
 import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbom.model.uids.PURL;
-import org.svip.sbomanalysis.qualityattributes.tests.testresults.Result;
+import org.svip.sbomfactory.generators.utils.Debug;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +40,7 @@ public class ValidPurlTest extends MetricTest {
                     new PURL(p);    // throws error if given purl string is invalid
                     r = new Result(TEST_NAME, Result.STATUS.PASS, "Valid Purl String");
                 } catch (Exception e){
-                    //Debug Disabled for now
-                    //Debug.log(Debug.LOG_TYPE.WARN, "Failed to parse PURL \"" + p +"\" | " + e.getMessage());    // log incase regex fails
+                    Debug.log(Debug.LOG_TYPE.WARN, "Failed to parse PURL \"" + p +"\" | " + e.getMessage());    // log incase regex fails
                     r = new Result(TEST_NAME, Result.STATUS.FAIL, "Invalid Purl String");
                 }
 

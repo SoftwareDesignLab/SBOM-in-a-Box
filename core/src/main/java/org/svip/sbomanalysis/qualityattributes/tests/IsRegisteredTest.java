@@ -3,7 +3,6 @@ package org.svip.sbomanalysis.qualityattributes.tests;
 import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbom.model.uids.PURL;
-import org.svip.sbomanalysis.qualityattributes.tests.testresults.Result;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package org.svip.sbomanalysis.qualityattributes.tests.testresults;
+package org.svip.sbomanalysis.qualityattributes.tests;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
