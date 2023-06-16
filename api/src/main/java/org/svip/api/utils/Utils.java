@@ -1,6 +1,9 @@
 package org.svip.api.utils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.sbom.model.SBOM;
@@ -178,5 +181,23 @@ public class Utils {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public static SBOMFile[] fromJSONString(String fileNames, String contents) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        TypeFactory typeFactory = objectMapper.getTypeFactory();
+        List<String> contentsList = objectMapper.readValue(contents, typeFactory.constructCollectionType(List.class, String.class));
+        List<String> filenamesList = objectMapper.readValue(fileNames, typeFactory.constructCollectionType(List.class, String.class));
+
+        Utils.SBOMFile[] arr = new Utils.SBOMFile[contentsList.size()];
+
+        for (int i = 0; i < contentsList.size(); i++) {
+
+            arr[i] = new Utils.SBOMFile(filenamesList.get(i), contentsList.get(i));
+
+        }
+
+        return arr;
+
     }
 }
