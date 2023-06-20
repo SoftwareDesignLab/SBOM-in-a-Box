@@ -1,5 +1,6 @@
 package org.svip.sbomanalysis.qualityattributes.processors;
 
+
 import org.svip.sbomanalysis.qualityattributes.tests.HasLicenseDataTest;
 import org.svip.sbomanalysis.qualityattributes.tests.ValidSPDXLicenseTest;
 

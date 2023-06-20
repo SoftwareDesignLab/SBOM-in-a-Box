@@ -6,6 +6,7 @@ import org.svip.sbomanalysis.qualityattributes.processors.AttributeProcessor;
 
 import java.util.Set;
 
+
 /**
  * Pipeline that will run all tests against a given SBOM
  *
@@ -24,14 +25,15 @@ public class QAPipeline {
      * @return QualityReport containing all results
      */
     public static QualityReport process(String uid, SBOM sbom, Set<AttributeProcessor> processors){
-         // Init QualityReport
-         QualityReport qr = new QualityReport(uid);
+        // Init QualityReport
+        QualityReport qr = new QualityReport(uid);
 
-         // Run all added processors
-         for (AttributeProcessor p : processors)
-             qr.updateAttribute(p.getAttributeName(), p.process(sbom));
+        // Run all added processors
+        for (AttributeProcessor p : processors)
+            qr.updateAttribute(p.getAttributeName(), p.process(sbom));
 
-         // Return Master QR
-         return qr;
+        // Return Master QR
+        return qr;
     }
 }
+

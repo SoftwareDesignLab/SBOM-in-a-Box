@@ -1,12 +1,16 @@
 package org.svip.sbomanalysis.qualityattributes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.svip.sbomanalysis.qualityattributes.tests.Result;
 
 import java.util.ArrayList;
+import com.fasterxml.jackson.annotation.*;
+
 import java.util.HashMap;
 import java.util.List;
+
+
+
 
 /**
  * JSON-friendly object to report Metric findings
@@ -51,3 +55,4 @@ public class QualityReport {
         }
     }
 }
+

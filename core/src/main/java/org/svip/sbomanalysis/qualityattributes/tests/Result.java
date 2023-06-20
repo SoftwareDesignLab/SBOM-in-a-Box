@@ -3,7 +3,8 @@ package org.svip.sbomanalysis.qualityattributes.tests;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.svip.sbom.model.*;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.SBOM;
 
 import java.util.HashMap;
 

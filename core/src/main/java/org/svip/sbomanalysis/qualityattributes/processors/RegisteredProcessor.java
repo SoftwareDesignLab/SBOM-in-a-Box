@@ -1,7 +1,7 @@
 package org.svip.sbomanalysis.qualityattributes.processors;
 
-
 import org.svip.sbomanalysis.qualityattributes.tests.IsRegisteredTest;
+
 
 /**
  * file: RegisteredProcessor.java

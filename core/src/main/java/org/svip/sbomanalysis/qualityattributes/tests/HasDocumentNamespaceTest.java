@@ -1,6 +1,6 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
-import org.svip.sbom.model.*;
+import org.svip.sbom.model.SBOM;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +37,6 @@ public class HasDocumentNamespaceTest extends MetricTest{
         if(isEmptyOrNull(documentNamespace)) {
             r = new Result(TEST_NAME, Result.STATUS.FAIL, "SPDX SBOM " +
                     "does not contain Document Namespace");
-            r.updateInfo(Result.Context.STRING_VALUE,
-                    "DocumentNamespace is empty and missing");
 
         }
         // documentNamespace has a value, check if it follows teh valid format
@@ -80,18 +78,17 @@ public class HasDocumentNamespaceTest extends MetricTest{
         // one or more checks failed, so the test fails
         if(!validNamespace){
             r = new Result(TEST_NAME, Result.STATUS.FAIL,
-                    "DocumentNamespace is invalid.");
-            r.updateInfo(Result.Context.STRING_VALUE, "Failed checks: " +
-            failMessage);
+                    "DocumentNamespace is invalid. Failed checks: " +
+                            failMessage);
         }
         // all checks passes, so the test passes
         else{
             r = new Result(TEST_NAME, Result.STATUS.PASS,
                     "DocumentNamespace is valid");
-            r.updateInfo(Result.Context.STRING_VALUE, documentNamespace);
         }
         // add context for the result
         r.updateInfo(Result.Context.FIELD_NAME, "DocumentNamespace");
+        r.updateInfo(Result.Context.STRING_VALUE, documentNamespace);
         return r;
     }
 

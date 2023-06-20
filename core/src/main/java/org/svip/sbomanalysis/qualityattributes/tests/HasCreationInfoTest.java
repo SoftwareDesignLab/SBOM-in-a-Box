@@ -31,8 +31,6 @@ public class HasCreationInfoTest extends MetricTest{
         if(isEmptyOrNull(sbom.getSupplier())){
             r = new Result(TEST_NAME, Result.STATUS.FAIL, "SBOM did " +
                     "not include creator info");
-            r.updateInfo(Result.Context.STRING_VALUE,
-                    "Creator Info is Missing");
         }
         // creator info has some value, test passes
         else{
@@ -50,8 +48,6 @@ public class HasCreationInfoTest extends MetricTest{
         if(isEmptyOrNull(sbom.getTimestamp())){
             r = new Result(TEST_NAME, Result.STATUS.FAIL, "SBOM did " +
                     "not include created time info");
-            r.updateInfo(Result.Context.STRING_VALUE,
-                    "Created Time Info is Missing");
         }
         // created time info has some value, test passes
         else{

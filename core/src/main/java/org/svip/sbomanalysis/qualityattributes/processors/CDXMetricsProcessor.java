@@ -1,6 +1,5 @@
 package org.svip.sbomanalysis.qualityattributes.processors;
 
-
 import org.svip.sbomanalysis.qualityattributes.tests.HasBomRefTest;
 import org.svip.sbomanalysis.qualityattributes.tests.HasBomVersionTest;
 

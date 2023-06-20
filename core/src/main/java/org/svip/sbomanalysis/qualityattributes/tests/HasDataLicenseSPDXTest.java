@@ -1,6 +1,7 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
-import org.svip.sbom.model.*;
+import org.svip.sbom.model.SBOM;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +42,8 @@ public class HasDataLicenseSPDXTest extends MetricTest{
         // metadata is not present in the SBOM, test automatically fails
         else{
             r = new Result(TEST_NAME, Result.STATUS.FAIL, "SBOM does not " +
-                    "contain metadata, so no DataLicense included in SBOM");
+                    "contain metadata");
             r.addContext(sbom, "Metadata DataLicense");
-            r.updateInfo(Result.Context.STRING_VALUE,
-                    "No DataLicense is in SBOM");
             result.add(r);
         }
         return result;
@@ -82,9 +81,8 @@ public class HasDataLicenseSPDXTest extends MetricTest{
         // data license is not in the metadata, test fails
         else{
             r = new Result(TEST_NAME, Result.STATUS.FAIL, "Metadata does " +
-                    "not contain a DataLicense");
+                    "not contain DataLicense");
             r.updateInfo(Result.Context.FIELD_NAME, "DataLicense");
-            r.updateInfo(Result.Context.STRING_VALUE, "DataLicense is Missing");
         }
         return r;
     }

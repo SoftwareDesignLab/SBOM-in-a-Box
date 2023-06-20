@@ -1,6 +1,5 @@
 package org.svip.sbomanalysis.qualityattributes.processors;
 
-
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomanalysis.qualityattributes.tests.MetricTest;
 import org.svip.sbomanalysis.qualityattributes.tests.Result;
@@ -60,3 +59,6 @@ public abstract class AttributeProcessor {
         return this.attributeName;
     }
 }
+
+
+

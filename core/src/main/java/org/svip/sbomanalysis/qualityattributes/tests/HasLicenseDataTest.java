@@ -1,11 +1,10 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
-import org.svip.sbom.model.*;
-
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.SBOM;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * file: HasLicenseDataTest.java
@@ -31,27 +30,13 @@ public class HasLicenseDataTest extends MetricTest{
 
         // Check for components
         for(Component c : sbom.getAllComponents()){
-            Result r;
-            Set<String> licenses = c.getLicenses();
             // Check if licenses exist
-            // licenses are not present
-            if(isEmptyOrNull(licenses)){
-                r = new Result(TEST_NAME, Result.STATUS.FAIL,
-                        "No Licenses Found");
-                r.updateInfo(Result.Context.STRING_VALUE,
-                        "No Licenses Found for Component");
-            }
-            // licenses are present
-            else{
-                r = new Result(TEST_NAME, Result.STATUS.PASS,
-                        c.getLicenses().size() + " Licenses Found");
-                String licenseList = String.join(", ", licenses);
-                r.updateInfo(Result.Context.STRING_VALUE,
-                        "Licenses: " + licenseList);
-            }
+            Result r = isEmptyOrNull(c.getLicenses())
+                    ? new Result(TEST_NAME, Result.STATUS.FAIL, "No Licenses Found")
+                    : new Result(TEST_NAME, Result.STATUS.PASS, c.getLicenses().size() + " Licenses Found");
 
             r.addContext(c, "licenses");
-            r.updateInfo(Result.Context.FIELD_NAME, "licenses");
+
             results.add(r);
         }
 
