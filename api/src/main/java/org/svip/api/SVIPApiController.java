@@ -215,9 +215,9 @@ public class SVIPApiController {
      */
     @PostMapping("/parse")
     public ResponseEntity<SBOM> parse(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName){
-        SBOM sbom = null;
+        SBOM sbom;
         try{
-            TranslatorController.translateContents(contents, fileName);
+            sbom = TranslatorController.translateContents(contents, fileName);
         }
         catch (TranslatorException e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

@@ -98,7 +98,7 @@ public class ParseFromAPITest extends APITest {
             for(int i = 0; i < contents.size(); i++) {
                 String c = contents.get(i);
 
-                SBOM res = (SBOM) ctrl.parse(c, fNames.get(i)).getBody();
+                SBOM res = ctrl.parse(c, fNames.get(i)).getBody();
                 assertNotNull(res);
 
                 GeneratorSchema generatorSchema = Resolver.resolveSchema(schemas.get(i), false);
