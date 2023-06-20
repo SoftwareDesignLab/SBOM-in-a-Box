@@ -1,13 +1,10 @@
 package org.svip.sbom.model;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.svip.sbomanalysis.comparison.conflicts.ComponentConflict;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.svip.sbom.model.uids.Hash;
-import org.svip.sbom.model.uids.PURL;
-import org.svip.sbom.model.Vulnerability;
+import org.svip.sbomanalysis.comparison.conflicts.ComponentConflict;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -16,6 +13,7 @@ import java.util.*;
  *
  * @author Matt London
  * @author Kevin Laporte
+ * @author Ian Dunn
  */
 public class Component {
 
@@ -271,10 +269,6 @@ public class Component {
     }
 
     public void addLicense(String license) {
-
-        if (licenses == null) {
-            licenses = new HashSet<>();
-        }
         licenses.add(license);
     }
 
@@ -282,8 +276,7 @@ public class Component {
         return licenses;
     }
 
-    // pliu public void setLicenses(HashSet<String> licenses) {this.licenses = licenses;}
-    public void setLicenses(Set<String> licenses) {
+    public void setLicenses(HashSet<String> licenses) {
         this.licenses = licenses;
     }
 
@@ -292,10 +285,6 @@ public class Component {
                 .filter(license::equals)
                 .findAny()
                 .orElse(null);
-    }
-
-    public Set<String> getLicense() {
-        return this.licenses;
     }
 
     public void setUnpackaged(boolean unpackaged) {
@@ -420,7 +409,7 @@ public class Component {
      * @param text The text of the license (if any).
      * @param crossRef The cross-reference of the license (if any).
      */
-    public void addExtractedLicense(@NonNull String id, @NonNull String name, @Nullable String text,
+    public void addExtractedLicense(@Nonnull String id, @Nonnull String name, @Nullable String text,
                                     @Nullable String crossRef) {
         Map<String, String> licenseContents = new HashMap<>() {{
             this.put("name", name);

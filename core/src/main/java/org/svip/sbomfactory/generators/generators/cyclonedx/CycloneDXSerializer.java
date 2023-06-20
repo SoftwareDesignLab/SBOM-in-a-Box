@@ -3,10 +3,9 @@ package org.svip.sbomfactory.generators.generators.cyclonedx;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.svip.sbom.model.uids.PURL;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.generators.License;
 import org.svip.sbomfactory.generators.utils.generators.Tool;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.IOException;
 import java.util.List;
@@ -158,8 +157,7 @@ public class CycloneDXSerializer extends StdSerializer<CycloneDXStore> {
         // External identifiers
         //
 
-        writeFieldIfExists(jsonGenerator, "purl",
-                String.join(", ", component.getPurls().stream().map(toString->toString).toList()));
+        writeFieldIfExists(jsonGenerator, "purl", String.join(", ", component.getPurls()));
         writeFieldIfExists(jsonGenerator, "cpe", String.join(", ", component.getCpes()));
         // TODO Do this for SWIDs once we support them
 

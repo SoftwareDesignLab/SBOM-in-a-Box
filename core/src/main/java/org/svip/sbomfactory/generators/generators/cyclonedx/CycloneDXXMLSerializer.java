@@ -5,10 +5,9 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
-import org.svip.sbom.model.uids.PURL;
+import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.generators.License;
 import org.svip.sbomfactory.generators.utils.generators.Tool;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -249,8 +248,7 @@ public class CycloneDXXMLSerializer extends StdSerializer<CycloneDXStore> {
         // External identifiers
         //
 
-        writeFieldIfExists(xmlGenerator,"purl",
-                String.join(", ", component.getPurls().stream().map(toString->toString).toList()));
+        writeFieldIfExists(xmlGenerator,"purl", String.join(", ", component.getPurls()));
         writeFieldIfExists(xmlGenerator,"cpe", String.join(", ", component.getCpes()));
         // TODO Do this for SWIDs once we support them
 
