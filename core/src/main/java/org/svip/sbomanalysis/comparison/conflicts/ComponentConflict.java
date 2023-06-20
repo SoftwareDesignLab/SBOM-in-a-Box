@@ -1,6 +1,9 @@
 package org.svip.sbomanalysis.comparison.conflicts;
 
 import org.svip.sbom.model.Component;
+import org.svip.sbom.model.uids.PURL;
+import org.svip.sbom.model.uids.Hash;
+
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -48,8 +51,15 @@ public class ComponentConflict {
                 componentConflictTypes.add(ComponentConflictType.COMPONENT_SWID_MISMATCH);
             }
         }
+
+        /*
         if (componentA.getUniqueID() != null && !componentA.getUniqueID().equals(componentB.getUniqueID())) {
             componentConflictTypes.add(ComponentConflictType.COMPONENT_SPDXID_MISMATCH);
+        }
+        */
+
+        if (componentA.getHashes() != null && !componentA.getHashes().equals(componentB.getHashes())) {
+            componentConflictTypes.add(ComponentConflictType.COMPONENT_HASH_MISMATCH);
         }
         if (componentA.getLicenses() != null && !componentA.getLicenses().equals(componentB.getLicenses())) {
             componentConflictTypes.add(ComponentConflictType.COMPONENT_LICENSE_MISMATCH);
@@ -250,6 +260,23 @@ public class ComponentConflict {
 
                     for (String swid : swidB) {
                         conflictString.append("      - ").append(swid).append("\n");
+                    }
+                    break;
+                case COMPONENT_HASH_MISMATCH:
+                    conflictString.append("    Hashes:\n");
+                    // Get differences
+                    Set<Hash> hashA = new HashSet<>(componentA.getHashes());
+                    Set<Hash> hashB = new HashSet<>(componentB.getHashes());
+
+                    hashA.removeAll(componentB.getHashes());
+                    hashB.removeAll(componentA.getHashes());
+
+                    for (Hash hash : hashA) {
+                        conflictString.append("      + ").append(hash).append("\n");
+                    }
+
+                    for (Hash hash : hashB) {
+                        conflictString.append("      - ").append(hash).append("\n");
                     }
                     break;
                 case COMPONENT_SPDXID_MISMATCH:

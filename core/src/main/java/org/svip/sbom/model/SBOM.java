@@ -2,6 +2,8 @@ package org.svip.sbom.model;
 
 import java.util.*;
 
+
+
 /**
  * File: SBOM.java
  * Represents a single component inside an SBOM

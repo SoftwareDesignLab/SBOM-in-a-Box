@@ -1,11 +1,7 @@
 package org.svip.sbomfactory.translators;
 
 import org.cyclonedx.exception.ParseException;
-import org.cyclonedx.model.Bom;
-import org.cyclonedx.model.Dependency;
-import org.cyclonedx.model.Metadata;
-import org.cyclonedx.model.OrganizationalContact;
-import org.cyclonedx.model.Tool;
+import org.cyclonedx.model.*;
 import org.cyclonedx.parsers.JsonParser;
 import org.svip.sbom.model.AppTool;
 import org.svip.sbom.model.Component;
