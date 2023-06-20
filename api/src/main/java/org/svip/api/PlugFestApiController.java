@@ -14,6 +14,7 @@ import org.svip.sbomanalysis.qualityattributes.QualityReport;
 import org.svip.sbomanalysis.qualityattributes.processors.*;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.translators.TranslatorController;
+import org.svip.sbomfactory.translators.TranslatorException;
 
 import java.util.*;
 
@@ -39,8 +40,7 @@ public class PlugFestApiController {
      * @return Wrapped Comparison object or error message
      */
     @PostMapping("/compare")
-    public ResponseEntity<?> compare(@RequestParam("targetIndex") Integer targetIndex, @RequestBody SBOMFile[] sboms)
-    {
+    public ResponseEntity<?> compare(@RequestParam("targetIndex") Integer targetIndex, @RequestBody SBOMFile[] sboms) throws TranslatorException {
         // null/empty sboms check
         int nullCheck = Utils.sbomFileArrNullCheck(sboms);
         if(nullCheck > -1)
@@ -57,7 +57,7 @@ public class PlugFestApiController {
         List<SBOM> compareQueue = new ArrayList<>();
         for (Utils.SBOMFile sbom : sboms){
 //            try {
-                compareQueue.add(TranslatorController.toSBOM(sbom.contents, sbom.fileName));
+                compareQueue.add(TranslatorController.translateContents(sbom.contents, sbom.fileName));
 //            } catch (TranslatorException e){
 //                return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR); // todo uncomment once translators are moved
 //            }
@@ -90,7 +90,7 @@ public class PlugFestApiController {
      * @return - wrapped QualityReport object, null if failed
      */
     @PostMapping("/qa")
-    public ResponseEntity<?> qa(HttpServletRequest servletRequest, @RequestBody SBOMFile sbomFile) {
+    public ResponseEntity<?> qa(HttpServletRequest servletRequest, @RequestBody SBOMFile sbomFile) throws TranslatorException {
         try {
             servletRequest.setCharacterEncoding("UTF-8");
         }
@@ -102,7 +102,7 @@ public class PlugFestApiController {
         SBOM sbom;
 
 //        try {
-            sbom = TranslatorController.toSBOM(sbomFile.contents, sbomFile.fileName);
+            sbom = TranslatorController.translateContents(sbomFile.contents, sbomFile.fileName);
 //        } catch (TranslatorException e) {
 //            return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR); // todo uncomment once translators are moved
 //        }
@@ -136,12 +136,11 @@ public class PlugFestApiController {
      * @return SBOM object, null if failed to parse
      */
     @PostMapping("/parse")
-    public ResponseEntity<?> parse(@RequestBody SBOMFile sbomFile)
-    {
+    public ResponseEntity<?> parse(@RequestBody SBOMFile sbomFile) throws TranslatorException {
         SBOM sbom;
 
 //        try {
-            sbom = TranslatorController.toSBOM(sbomFile.contents, sbomFile.fileName);
+            sbom = TranslatorController.translateContents(sbomFile.contents, sbomFile.fileName);
 //        } catch (TranslatorException e) {
 //            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST); // TODO better status code? // todo uncomment once translators are moved
 //        }

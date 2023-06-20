@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.utils.Utils;
 import org.svip.sbomanalysis.differ.DiffReport;
+import org.svip.sbomfactory.translators.TranslatorException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class CompareFromAPITest extends APITest {
     @DisplayName("Null/Empty File Contents Array")
     @Disabled
     @NullAndEmptySource
-    void emptyContentsArrayTest(String fileContents) throws JsonProcessingException {
+    void emptyContentsArrayTest(String fileContents) throws JsonProcessingException, TranslatorException {
         ResponseEntity<?> response = ctrl.compare(0, Utils.fromJSONString(TESTFILEARRAY_LENGTH1,fileContents));
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -53,7 +54,7 @@ public class CompareFromAPITest extends APITest {
     @DisplayName("Null/Empty File Names Array")
     @Disabled
     @NullAndEmptySource
-    void emptyFileNamesArrayTest(String fileNames) throws JsonProcessingException {
+    void emptyFileNamesArrayTest(String fileNames) throws JsonProcessingException, TranslatorException {
         ResponseEntity<?> response = ctrl.compare(0, Utils.fromJSONString(fileNames,TESTCONTENTSARRAY_LENGTH1));
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -62,7 +63,7 @@ public class CompareFromAPITest extends APITest {
     @Test
     @DisplayName("Mismatched File Contents/Names Array Length")
     @Disabled
-    void mismatchedFileInfoTest() throws JsonProcessingException {
+    void mismatchedFileInfoTest() throws JsonProcessingException, TranslatorException {
         // Longer contents array
         ResponseEntity<?> response = ctrl.compare(0, Utils.fromJSONString(TESTFILEARRAY_LENGTH1,TESTCONTENTSARRAY_LENGTH2));
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -75,7 +76,7 @@ public class CompareFromAPITest extends APITest {
     @Test
     @DisplayName("Compare SBOMs Test")
     @Disabled
-    public void compareTest() throws IOException {
+    public void compareTest() throws IOException, TranslatorException {
         String[] input = APITest.testInput();
 
         String contentsString = input[0];

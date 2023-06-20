@@ -41,7 +41,7 @@ public class ParseFromAPITest extends APITest {
     @ParameterizedTest
     @DisplayName("Null/Empty File Contents Array")
     @NullAndEmptySource
-    void emptyContentsArrayTest(String fileContents) {
+    void emptyContentsArrayTest(String fileContents) throws TranslatorException {
         ResponseEntity<?> response = ctrl.parse(fileContents, TESTFILEARRAY_LENGTH1);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
@@ -49,14 +49,14 @@ public class ParseFromAPITest extends APITest {
     @ParameterizedTest
     @DisplayName("Null/Empty File Names Array")
     @NullAndEmptySource
-    void emptyFileNamesArrayTest(String fileNames) {
+    void emptyFileNamesArrayTest(String fileNames) throws TranslatorException {
         ResponseEntity<?> response = ctrl.parse(TESTCONTENTSARRAY_LENGTH1, fileNames);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
     @Test
     @DisplayName("Mismatched File Contents/Names Array Length")
-    void mismatchedFileInfoTest() {
+    void mismatchedFileInfoTest() throws TranslatorException {
         // Longer contents array
         ResponseEntity<?> response = ctrl.parse(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH1);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());

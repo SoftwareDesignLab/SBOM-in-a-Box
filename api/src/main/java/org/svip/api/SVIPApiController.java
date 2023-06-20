@@ -17,6 +17,7 @@ import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
 import org.svip.sbomfactory.osi.OSI;
 import org.svip.sbomfactory.translators.TranslatorController;
+import org.svip.sbomfactory.translators.TranslatorException;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -186,9 +187,9 @@ public class SVIPApiController {
      * @return - wrapped QualityReport object, null if failed
      */
     @PostMapping("/qa")
-    public ResponseEntity<QualityReport> qa(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
+    public ResponseEntity<QualityReport> qa(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) throws TranslatorException {
 
-        SBOM sbom = TranslatorController.toSBOM(contents, fileName);
+        SBOM sbom = TranslatorController.translateContents(contents, fileName);
 
         // Check if the sbom is null
         if (sbom == null) {
@@ -216,9 +217,9 @@ public class SVIPApiController {
      * @return SBOM object, null if failed to parse
      */
     @PostMapping("/parse")
-    public ResponseEntity<SBOM> parse(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) {
+    public ResponseEntity<SBOM> parse(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) throws TranslatorException {
 
-        SBOM sbom = TranslatorController.toSBOM(contents, fileName);
+        SBOM sbom = TranslatorController.translateContents(contents, fileName);
         // Explicitly return null if failed TODO figure out how to return a response message
         if (sbom == null) return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 
@@ -238,7 +239,7 @@ public class SVIPApiController {
     @PostMapping("merge")
     public ResponseEntity<String> merge(@RequestParam("fileContents") String contentsArray,
                                    @RequestParam("fileNames") String fileArray
-            , @RequestParam("schema") String schema, @RequestParam("format") String format) {
+            , @RequestParam("schema") String schema, @RequestParam("format") String format) throws TranslatorException {
 
         Map<String, List<String>> contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
         if(contentsAndFiles == null) return new ResponseEntity<>("Invalid contents or filenames array.",
