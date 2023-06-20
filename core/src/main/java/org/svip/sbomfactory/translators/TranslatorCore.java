@@ -1,10 +1,10 @@
 package org.svip.sbomfactory.translators;
 
-import org.cyclonedx.exception.ParseException;
+
 import org.svip.sbom.model.Component;
 import org.svip.sbom.model.SBOM;
+import org.svip.sbomfactory.generators.utils.Debug;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -28,7 +28,7 @@ public abstract class TranslatorCore {
     protected SBOM sbom;
 
     // The top level component (what the SBOM is about)
-    protected Component product;
+    protected Component topComponent;
 
     // Top level SBOM data
     protected HashMap<String, String> bom_data;
@@ -37,10 +37,13 @@ public abstract class TranslatorCore {
     protected HashMap<String, String> product_data;
 
     // Map holding all components found
-    protected HashMap<String, String> components;
+    protected HashMap<String, Component> components;
 
     // Map of dependencies in SBOM between components
     protected HashMap<String, ArrayList<String>> dependencies;
+
+    // Collection containing all remaining components not added to the dependencyTree
+    protected HashSet<String> remainder;
 
     /**
      * Generic Translator core constructor.
@@ -53,6 +56,7 @@ public abstract class TranslatorCore {
         product_data = new HashMap<>();
         components = new HashMap<>();
         dependencies = new HashMap<>();
+        remainder = new HashSet<>();
     }
 
     /**
@@ -62,14 +66,14 @@ public abstract class TranslatorCore {
      * @param filePath path to the bom
      * @return SBOM object, null if failed
      */
-    protected abstract SBOM translateContents(String contents, String filePath) throws IOException, ParseException, ParserConfigurationException;
+    protected abstract SBOM translateContents(String contents, String filePath) throws TranslatorException;
 
     /**
      * Builds an SBOM with the parsed top level information. It will also attempt to
      * create a top level component (the product the SBOM is for) with the available
      * information.
      */
-    protected void createSBOM() {
+    protected void createSBOM() throws TranslatorException {
 
         // Attempt to create the SBOM with top level data, if an error is thrown return null and exit
         try {
@@ -83,33 +87,25 @@ public abstract class TranslatorCore {
                     null
             );
         } catch (Exception e) {
-            System.err.println(
-                    "Error: Internal SBOM could not be created. Cancelling translation for this SBOM. \n " +
-                            "File: " + this.FILE_EXTN + "\n"
-            );
-            e.printStackTrace();
-            sbom = null;
-            System.exit(0);
+            throw new TranslatorException("Error: Internal SBOM could not be created. Cancelling translation for this" +
+                    " SBOM. File: " + this.FILE_EXTN);
         }
+
+        if (bom_data.get("DataLicense") != null)
+            sbom.addMetadata("datalicense", "[dataLicense " + bom_data.get("DataLicense") + "]");
 
         // If there is no top component (product) already, try to create it
         // Otherwise, make sure it's in the SBOM
-        if (product == null) {
-            try {
-                product = new Component(
-                        product_data.get("name"),
-                        product_data.get("publisher"),
-                        product_data.get("version"),
-                        product_data.get("id")
-                );
-                sbom.addComponent(null, product);
-            } catch (Exception e) {
-                System.err.println("Error: Could not create top component from SBOM metadata. File: " + this.FILE_EXTN);
-            }
-        } else {
-            sbom.addComponent(null, product);
+        if (topComponent == null) {
+            topComponent = new Component(
+                    product_data.get("name"),
+                    product_data.get("publisher"),
+                    product_data.get("version"),
+                    product_data.get("id")
+            );
         }
 
+        sbom.addComponent(null, topComponent);
     }
 
     /**
@@ -154,6 +150,8 @@ public abstract class TranslatorCore {
                     sbom.addComponent(parent.getUUID(), child);
                 }
 
+                this.remainder.remove(child);
+
                 if (visited == null) {
                     // This means we are in the top level component
                     // Pass in a new hashset instead of the visited set
@@ -173,25 +171,22 @@ public abstract class TranslatorCore {
     /**
      * Defaults all dependencies in the SBOM by adding them as children to the current parent component.
      *
-     * @param components Components to be added as the children
      * @param parent     Parent (product) component
      */
-    protected void defaultDependencies(HashMap<String, Component> components, Component parent) {
+    protected void defaultDependencies(Component parent) {
 
-        // If there are no dependencies there is no reason to default, return.
-        if (dependencies == null) { return; }
+        // If there are no components left there is no reason to default, return.
+        if (this.remainder == null) { return; }
+
+        List<String> list = this.remainder.stream().toList();
 
         // Loop through all dependencies. If it is not null and is not present in the SBOM already, add it.
-        for(ArrayList<String> defaults : dependencies.values()) {
-            defaults.stream().forEach(
-                    x -> {
-                        if(components.get(x) != null && !sbom.hasComponent(components.get(x).getUUID())) {
-                            sbom.addComponent(parent.getUUID(), components.get(x));
-                        }
-                    }
-            );
+        for(String comp : list) {
+            if (comp != null && this.components.get(comp) != null && !sbom.hasComponent(this.components.get(comp).getUUID())) {
+                this.sbom.addComponent(parent.getUUID(), this.components.get(comp));
+                this.remainder.remove(comp.toString());
+            }
         }
-
     }
 
     /**
@@ -214,6 +209,11 @@ public abstract class TranslatorCore {
 
     }
 
+    protected void loadComponent(Component component) {
+        components.put(component.getUUID().toString(), component);
+        remainder.add(component.getUUID().toString());
+    }
+
     /**
      * Defaults the dependency list. Asserts the given 'key' as the product or 'top component'
      * and then sets all other 'values' as the children components.
@@ -233,11 +233,9 @@ public abstract class TranslatorCore {
      *
      * @param filePath path leading to the current SBOM file
      * @return an SBOM object if translation is successful
-     * @throws IOException
-     * @throws ParseException
-     * @throws ParserConfigurationException
+     * @throws TranslatorException
      */
-    public SBOM translate(String filePath) throws IOException, ParseException, ParserConfigurationException {
+    public SBOM translate(String filePath) throws TranslatorException {
 
         // File contents
         String contents;
@@ -246,7 +244,7 @@ public abstract class TranslatorCore {
         try {
             contents = new String(Files.readAllBytes(Paths.get(filePath)));
         } catch (IOException e) {
-            System.err.println("Could not read file: " + filePath);
+            Debug.log(Debug.LOG_TYPE.ERROR, "Could not read file: " + filePath);
             return null;
         }
 

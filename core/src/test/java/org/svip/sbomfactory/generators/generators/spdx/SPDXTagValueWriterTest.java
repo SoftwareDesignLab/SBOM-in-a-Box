@@ -9,6 +9,7 @@ import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorException;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
+import org.svip.sbomfactory.translators.TranslatorException;
 import org.svip.sbomfactory.translators.TranslatorSPDX;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -35,7 +36,7 @@ public class SPDXTagValueWriterTest {
 
     @Test
     @DisplayName("SPDX Tag-Value Writer Output Test")
-    void serializeTest() throws GeneratorException, IOException, ParseException, ParserConfigurationException {
+    void serializeTest() throws GeneratorException, IOException, ParseException, ParserConfigurationException, TranslatorException {
         OUT_PATH.toFile().mkdir();
 
         Debug.log(Debug.LOG_TYPE.INFO, String.format("generator.writeFile(\"%s\", GeneratorSchema.GeneratorFormat.SPDX)",

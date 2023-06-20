@@ -10,6 +10,7 @@ import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorException;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 import org.svip.sbomfactory.translators.TranslatorCDXXML;
+import org.svip.sbomfactory.translators.TranslatorException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
@@ -33,7 +34,7 @@ public class CycloneDXXMLSerializerTest {
 
     @Test
     @DisplayName("CDX XML Serializer Output Test")
-    void serializeTest() throws GeneratorException, IOException, ParseException, ParserConfigurationException {
+    void serializeTest() throws GeneratorException, IOException, ParseException, ParserConfigurationException, TranslatorException {
         OUT_PATH.toFile().mkdir();
 
         Debug.log(Debug.LOG_TYPE.INFO, String.format("generator.writeFile(\"%s\", GeneratorSchema.GeneratorFormat.XML)",
