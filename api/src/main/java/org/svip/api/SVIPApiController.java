@@ -20,10 +20,7 @@ import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomfactory.translators.TranslatorException;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * API Controller for handling requests to SVIP
@@ -217,9 +214,14 @@ public class SVIPApiController {
      * @return SBOM object, null if failed to parse
      */
     @PostMapping("/parse")
-    public ResponseEntity<SBOM> parse(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName) throws TranslatorException {
-
-        SBOM sbom = TranslatorController.translateContents(contents, fileName);
+    public ResponseEntity<SBOM> parse(@RequestParam("contents") String contents, @RequestParam("fileName") String fileName){
+        SBOM sbom = null;
+        try{
+            TranslatorController.translateContents(contents, fileName);
+        }
+        catch (TranslatorException e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         // Explicitly return null if failed TODO figure out how to return a response message
         if (sbom == null) return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 
@@ -239,14 +241,19 @@ public class SVIPApiController {
     @PostMapping("merge")
     public ResponseEntity<String> merge(@RequestParam("fileContents") String contentsArray,
                                    @RequestParam("fileNames") String fileArray
-            , @RequestParam("schema") String schema, @RequestParam("format") String format) throws TranslatorException {
+            , @RequestParam("schema") String schema, @RequestParam("format") String format){
 
         Map<String, List<String>> contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
         if(contentsAndFiles == null) return new ResponseEntity<>("Invalid contents or filenames array.",
                 HttpStatus.BAD_REQUEST);
+        List<SBOM> sboms = new ArrayList<>();
+        try{
+            sboms = Utils.translateMultiple(contentsAndFiles.get("fileContents"), contentsAndFiles.get(
+                    "filePaths"));
+        }catch (TranslatorException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
 
-        List<SBOM> sboms = Utils.translateMultiple(contentsAndFiles.get("fileContents"), contentsAndFiles.get(
-                "filePaths"));
         if(sboms.size() < 2) return new ResponseEntity<>("At least 2 SBOMs required to merge", HttpStatus.BAD_REQUEST);
 
         GeneratorSchema generatorSchema = Resolver.resolveSchema(schema, false);
