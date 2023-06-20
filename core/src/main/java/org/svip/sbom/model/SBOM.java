@@ -10,6 +10,7 @@ import java.util.*;
  *
  * @author Matt London
  * @author Kevin LaPorte
+ * @author Ian Dunn
  */
 public class SBOM {
 
@@ -153,6 +154,19 @@ public class SBOM {
     public SBOM(SBOM from) {
         // This sets the dependencytree to null so it does not allow copying of dependencies
         this(from.getOriginFormat(), from.getSpecVersion(), from.getSbomVersion(), from.getSupplier(), from.getSerialNumber(), from.getTimestamp(), from.getSignature(), null);
+    }
+
+    /**
+     * Constructs an SBOM with null values, except for the DependencyTree head component.
+     *
+     * @param headComponent The head component of the SBOM.
+     */
+    public SBOM(Component headComponent) {
+        // Creates an empty SBOM Object with a new DependencyTree for ParserController
+        this((String) null, null, null, null, null, null, null, new DependencyTree());
+
+        // Creates a head component for the dependencies to exist in
+        this.dependencyTree.addComponent(null, headComponent);
     }
 
     /**
@@ -369,6 +383,21 @@ public class SBOM {
                 "  + Version: " + getSpecVersion() + "\n" +
                 "  + Tool Version: " + getSbomVersion() + "\n" +
                 "  + Time Stamp: " + getTimestamp() + "\n";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SBOM sbom)) return false;
+
+        if (!Objects.equals(dependencyTree, sbom.dependencyTree))
+            return false;
+        if (originFormat != sbom.originFormat) return false;
+        if (!Objects.equals(specVersion, sbom.specVersion)) return false;
+        if (!Objects.equals(sbomVersion, sbom.sbomVersion)) return false;
+        if (!Objects.equals(serialNumber, sbom.serialNumber)) return false;
+        if (!Objects.equals(supplier, sbom.supplier)) return false;
+        return Objects.equals(timestamp, sbom.timestamp);
     }
 
     /**
