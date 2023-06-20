@@ -13,12 +13,8 @@ import java.util.List;
  * valid SPDXID (SPDXID: "SPDXRef-[idstring]")
  * @author Matthew Morrison
  */
-public abstract class HasSPDXIDTest extends MetricTest{
+public class HasSPDXIDTest extends MetricTest{
     public static final String TEST_NAME = "HasSPDXID";
-
-    protected HasSPDXIDTest() {
-        super("Has SPDXID Test");
-    }
 
     /**
      * Test every component in a given SBOM for a valid SPDXID
@@ -55,7 +51,6 @@ public abstract class HasSPDXIDTest extends MetricTest{
         if(isEmptyOrNull(spdxID)){
             r = new Result(TEST_NAME, Result.STATUS.FAIL, "Component does " +
                     "not contain a SPDXID");
-            r.updateInfo(Result.Context.STRING_VALUE, "SPDXID is Missing");
         }
         // SPDXID is present, continue test
         else{
@@ -65,18 +60,15 @@ public abstract class HasSPDXIDTest extends MetricTest{
             if(spdxID.startsWith("SPDXRef-")){
                 r = new Result(TEST_NAME, Result.STATUS.PASS, "Component has " +
                         "a valid SPDXID");
-                r.updateInfo(Result.Context.STRING_VALUE, spdxID);
             }
             // SPDX starts with an invalid format, test fails
             else{
                 r = new Result(TEST_NAME, Result.STATUS.FAIL, "Component has " +
                         "an invalid SPDXID format");
-                r.updateInfo(Result.Context.STRING_VALUE,
-                        "SPDXID does not start with \"SPDXRef-\". " +
-                                "SPDXID Found: " + spdxID);
             }
             // add context when a SPDXID is present
             r.updateInfo(Result.Context.FIELD_NAME, "SPDXID");
+            r.updateInfo(Result.Context.STRING_VALUE, spdxID);
         }
         r.addContext(c, "SPDXID");
         return r;

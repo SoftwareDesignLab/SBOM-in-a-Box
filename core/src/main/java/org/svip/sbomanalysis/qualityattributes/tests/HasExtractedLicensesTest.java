@@ -14,12 +14,8 @@ import java.util.Map;
  * licenses not on the SPDX license list and list them
  * @author Matthew Morrison
  */
-public abstract class HasExtractedLicensesTest extends MetricTest{
+public class HasExtractedLicensesTest extends MetricTest{
     public static final String TEST_NAME = "HasExtractedLicenses";
-
-    protected HasExtractedLicensesTest() {
-        super("Has Extracted Licenses Test");
-    }
 
     /**
      * Check all components in a given SBOM for extracted licenses not on
@@ -38,19 +34,13 @@ public abstract class HasExtractedLicensesTest extends MetricTest{
             Map<String, Map<String, String>>  extractedLicenses = c.getExtractedLicenses();
             // skip if no extracted licenses are found for the component
             if(!extractedLicenses.isEmpty()){
-                ArrayList<String> licenseStrings = new ArrayList<>();
-                for(String licenseRef : extractedLicenses.keySet()){{
-                    licenseStrings.add(licenseRef);
-                }}
-                    String message = "Extracted Licenses Found:  "
-                            + String.join(", ", licenseStrings);
-                    r = new Result(TEST_NAME, Result.STATUS.PASS, "Extracted licenses found for component "
-                            + c.getName());
+                for(String licenseRef : extractedLicenses.keySet()){
+                    String message = "Extracted license found for component "
+                            + c.getName() + ": " + licenseRef;
+                    r = new Result(TEST_NAME, Result.STATUS.PASS, message);
                     r.addContext(c, "Extracted Licenses");
-                    r.updateInfo(Result.Context.FIELD_NAME, "ExtractedLicenses");
-                    r.updateInfo(Result.Context.STRING_VALUE, message);
                     results.add(r);
-
+                }
             }
         }
 
@@ -58,9 +48,6 @@ public abstract class HasExtractedLicensesTest extends MetricTest{
             r = new Result(TEST_NAME, Result.STATUS.PASS, "No Extracted " +
                     "Licenses found in SBOM");
             r.addContext(sbom, "Extracted Licenses");
-            r.updateInfo(Result.Context.FIELD_NAME, "ExtractedLicenses");
-            r.updateInfo(Result.Context.STRING_VALUE,
-                    "No Extracted Licenses Found in SBOM");
             results.add(r);
         }
 

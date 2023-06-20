@@ -1,14 +1,15 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
-import org.svip.sbomfactory.generators.utils.Debug;
+
 import org.svip.sbom.model.Component;
-import org.svip.sbom.model.uids.PURL;
 import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.uids.PURL;
+import org.svip.sbomfactory.generators.utils.Debug;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
+// Debug to be reimplemented later
 
 /**
  * file: AccuratePURLTest.java
@@ -17,13 +18,10 @@ import java.util.Set;
  * @author Matthew Morrison
  * @author Derek Garcia
  */
-public abstract class AccuratePURLTest extends MetricTest{
+public class AccuratePURLTest extends MetricTest{
     // the test name for the results
     private static final String TEST_NAME = "AccuratePURL";
 
-    protected AccuratePURLTest() {
-        super("Accurate PURL Test");
-    }
     /**
      * Test every component for purls. If they are present, test if
      * PURLs match the component's stored data
@@ -79,6 +77,20 @@ public abstract class AccuratePURLTest extends MetricTest{
 
                 // Check namespace
                 //TODO determine how namespace is used? Per package manager?
+//                if(purl.getNamespace().size() == 1){
+//                    // Test if purl and/or component is missing publisher info
+//                    r = hasNullValues(c, purl.getNamespace().get(0), c.getPublisher(), "Publisher");
+//
+//                    // both component and purl have publisher info, continue to comparison test
+//                    if(r == null){
+//                        purlResults.add(isEqual(c, "Publisher",
+//                                purl.getNamespace().get(0), c.getPublisher()));
+//                    }
+//                    // CPE and/or Component is missing vendor info, add result to list
+//                    else{
+//                        purlResults.add(r);
+//                    }
+//                }
 
 
             } catch (Exception e){
@@ -111,9 +123,7 @@ public abstract class AccuratePURLTest extends MetricTest{
         // Check if purl value is different
         if(!purlValue.equals(componentValue)){
             r = new Result(TEST_NAME, Result.STATUS.FAIL, "PURL does not match " + field);
-            String errorMessage = String.format("Expected: %s. " +
-                    "Actual: %s", componentValue, purlValue);
-            r.updateInfo(Result.Context.STRING_VALUE, errorMessage);
+            r.updateInfo(Result.Context.STRING_VALUE, componentValue);
 
             // Else they both match
         } else {
@@ -121,8 +131,7 @@ public abstract class AccuratePURLTest extends MetricTest{
         }
 
         // Add context and return
-        r.addContext(c, "PURL: " + field);
-        r.updateInfo(Result.Context.FIELD_NAME, field);
+        r.addContext(c, "PURL:" + field);
         return r;
     }
 

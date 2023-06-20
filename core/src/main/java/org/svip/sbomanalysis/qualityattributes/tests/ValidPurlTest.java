@@ -1,10 +1,9 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
-import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbom.model.Component;
-import org.svip.sbom.model.uids.PURL;
 import org.svip.sbom.model.SBOM;
-
+import org.svip.sbom.model.uids.PURL;
+import org.svip.sbomfactory.generators.utils.Debug;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +15,9 @@ import java.util.List;
  *
  * @author Derek Garcia
  */
-public abstract class ValidPurlTest extends MetricTest {
+public class ValidPurlTest extends MetricTest {
     private static final String TEST_NAME = "ValidPurl";
 
-    protected ValidPurlTest() {
-        super("Valid Purl Test");
-    }
     /**
      * Validates the PURL
      *
@@ -47,9 +43,8 @@ public abstract class ValidPurlTest extends MetricTest {
                     Debug.log(Debug.LOG_TYPE.WARN, "Failed to parse PURL \"" + p +"\" | " + e.getMessage());    // log incase regex fails
                     r = new Result(TEST_NAME, Result.STATUS.FAIL, "Invalid Purl String");
                 }
-                r.addContext(c, "Valid PURL String");
-                r.updateInfo(Result.Context.FIELD_NAME, "purl");
-                r.updateInfo(Result.Context.STRING_VALUE, p);
+
+                r.addContext(c, "purl");
                 results.add(r);
             }
         }

@@ -1,19 +1,21 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
-import org.svip.sbomfactory.generators.utils.Debug;
-import org.svip.sbom.model.Component;
-import org.svip.sbom.model.SBOM;
-
 
 import jregex.Matcher;
 import jregex.Pattern;
 import jregex.REFlags;
 import org.apache.commons.io.IOUtils;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.SBOM;
+import org.svip.sbomfactory.generators.utils.Debug;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * file: ValidSPDXLicenseTest.java
@@ -23,7 +25,7 @@ import java.util.*;
  * @author Matthew Morrison
  * @author Derek Garcia
  */
-public abstract class ValidSPDXLicenseTest extends MetricTest{
+public class ValidSPDXLicenseTest extends MetricTest{
 
     private static final String TEST_NAME = "ValidSPDXLicense";
     private static final String SPDX_LICENSE_LIST_URL = "https://spdx.org/licenses/";
@@ -39,9 +41,6 @@ public abstract class ValidSPDXLicenseTest extends MetricTest{
     private final Set<String> DEPRECIATED_SPDX_LICENSE_NAMES = new HashSet<>();
 
 
-    protected ValidSPDXLicenseTest() {
-        super("Valid SPDX License Test");
-    }
 
     /**
      * Test all SBOM components for their licenses and if they are a valid SPDX

@@ -13,14 +13,9 @@ import java.util.List;
  * Test each component if hash values are present
  * @author Matthew Morrison
  */
-public abstract class HasHashDataTest extends MetricTest{
+public class HasHashDataTest extends MetricTest{
 
     private static final String TEST_NAME = "HasHashData";
-
-    protected HasHashDataTest() {
-        super("Has Hash Data Test");
-    }
-
     /**
      * Test all SBOM components for hashes
      * @param sbom SBOM to test
@@ -53,25 +48,18 @@ public abstract class HasHashDataTest extends MetricTest{
         if(hashList.isEmpty()){
             r = new Result(TEST_NAME, Result.STATUS.FAIL, "Component does " +
                     "not contain hashes");
-            r.updateInfo(Result.Context.STRING_VALUE, "No Hashes Present");
         }
         // hashes are present for the component, count how many hashes
         // the component has
         else{
-            ArrayList<String> hashAlgos = new ArrayList<>();
-            for(Hash h : hashList){
-                hashAlgos.add(h.getAlgorithm().toString());
-            }
             String message = String.format("Component contains %d hashes",
                     hashList.size());
             r = new Result(TEST_NAME, Result.STATUS.PASS, message);
-            r.updateInfo(Result.Context.STRING_VALUE, "Hashes Present: " +
-                    String.join(", ", hashAlgos));
         }
-        r.updateInfo(Result.Context.TYPE, "Component");
-        r.updateInfo(Result.Context.IDENTIFIER, c.getName());
-        r.updateInfo(Result.Context.FIELD_NAME, "hashes");
+        r.addContext(c, "Contains Hashes");
+        r.updateInfo(Result.Context.FIELD_NAME, "Hashes");
         return r;
 
     }
 }
+

@@ -14,12 +14,9 @@ import java.util.Set;
  * unique identifier to reference inside the BOM (bom-ref for CDX)
  * @author Matthew Morrison
  */
-public abstract class HasBomRefTest extends MetricTest{
+public class HasBomRefTest extends MetricTest{
     private static final String TEST_NAME = "HasBomRef";
 
-    protected HasBomRefTest() {
-        super("Has Bom Ref Test");
-    }
     /**
      * Test every component for a bom-ref
      * @param sbom SBOM to test
@@ -37,7 +34,6 @@ public abstract class HasBomRefTest extends MetricTest{
             Result r = new Result(TEST_NAME, Result.STATUS.ERROR, "SBOM " +
                     "does not have any components to test");
             r.addContext(sbom, "Component bom-refs");
-            r.updateInfo(Result.Context.STRING_VALUE, "No components present");
             results.add(r);
             return results;
         }
@@ -62,7 +58,6 @@ public abstract class HasBomRefTest extends MetricTest{
         if(isEmptyOrNull(c.getUniqueID())){
             r = new Result(TEST_NAME, Result.STATUS.FAIL, "Component " +
                     "does not have bom-ref identifier");
-            r.updateInfo(Result.Context.STRING_VALUE, "Bom-Ref is Missing");
         }
         // a bom-ref is present
         else{
@@ -70,7 +65,7 @@ public abstract class HasBomRefTest extends MetricTest{
                     "has bom-ref identifier");
             r.updateInfo(Result.Context.STRING_VALUE, c.getUniqueID());
         }
-        r.addContext(c,"Bom-Ref");
+        r.addContext(c,"Bom-Ref Presence");
         r.updateInfo(Result.Context.FIELD_NAME, "bom-ref");
         return r;
     }

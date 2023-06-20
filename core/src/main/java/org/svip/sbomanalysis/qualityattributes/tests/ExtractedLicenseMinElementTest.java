@@ -17,12 +17,9 @@ import java.util.Map;
  * minimum fields: LicenseName, LicenseID, LicenseCrossReference
  * @author Matthew Morrison
  */
-public abstract class ExtractedLicenseMinElementTest extends MetricTest{
+public class ExtractedLicenseMinElementTest extends MetricTest{
     public static final String TEST_NAME = "ExtractedLicenseMinElements";
 
-    protected ExtractedLicenseMinElementTest() {
-        super("Extracted License Min Element Test");
-    }
     /**
      * Check all components in a given SBOM for extracted licenses not on
      * the SPDX license list
@@ -50,8 +47,6 @@ public abstract class ExtractedLicenseMinElementTest extends MetricTest{
             r = new Result(TEST_NAME, Result.STATUS.PASS, "No Extracted " +
                     "Licenses found in SBOM");
             r.addContext(sbom, "Extracted Licenses Minimum Elements");
-            r.updateInfo(Result.Context.STRING_VALUE,
-                    "No Extracted Licenses to Test");
             results.add(r);
         }
 
@@ -103,8 +98,6 @@ public abstract class ExtractedLicenseMinElementTest extends MetricTest{
         if(isEmptyOrNull(licenseName)){
             r = new Result(TEST_NAME, Result.STATUS.FAIL, "Extracted " +
                     "License did not include license name");
-            r.updateInfo(Result.Context.STRING_VALUE,
-                    "License Name is Missing");
         }
         // license name is present, test passes
         else{
@@ -127,8 +120,6 @@ public abstract class ExtractedLicenseMinElementTest extends MetricTest{
         if(isEmptyOrNull(licenseText)){
             r = new Result(TEST_NAME, Result.STATUS.FAIL, "Extracted " +
                     "License did not include text description");
-            r.updateInfo(Result.Context.STRING_VALUE,
-                    "License Description is Missing");
         }
         // text description is present, test passes
         else{
@@ -152,8 +143,6 @@ public abstract class ExtractedLicenseMinElementTest extends MetricTest{
         if(isEmptyOrNull(crossRef)){
             r = new Result(TEST_NAME, Result.STATUS.FAIL, "Extracted " +
                     "License did not include cross reference link");
-            r.updateInfo(Result.Context.STRING_VALUE,
-                    "License Reference Link is Missing");
         }
         // text description is present, check if valid link
         else{

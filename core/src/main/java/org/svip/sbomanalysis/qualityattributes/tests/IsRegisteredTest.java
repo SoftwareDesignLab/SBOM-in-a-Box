@@ -1,17 +1,16 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
-import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbom.model.Component;
-import org.svip.sbom.model.uids.PURL;
 import org.svip.sbom.model.SBOM;
-
+import org.svip.sbom.model.uids.PURL;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,13 +23,9 @@ import java.util.Set;
  * given package manager through its PURL
  * @author Matthew Morrison
  */
-public abstract class IsRegisteredTest extends MetricTest{
+public class IsRegisteredTest extends MetricTest{
     // name of the test for results
     private static final String TEST_NAME = "IsRegistered";
-
-    protected IsRegisteredTest() {
-        super("Is Registered Test");
-    }
 
     /**
      * Run the test for all components in the SBOM
@@ -50,7 +45,7 @@ public abstract class IsRegisteredTest extends MetricTest{
 
     /**
      * Given a component, get all purls and test if the package is
-     * registered through its specified type/package manager
+     * registered thorugh its specified type/package manager
      * @param c the component to test
      * @return a collection of results for each PURL associated with
      * the component
@@ -67,7 +62,7 @@ public abstract class IsRegisteredTest extends MetricTest{
                     "Component has no PURLs to test");
             r.addContext(c, "PURL Validation");
             r.updateInfo(Result.Context.FIELD_NAME, "PURL");
-            r.updateInfo(Result.Context.STRING_VALUE, "Component has no PURLs");
+            r.updateInfo(Result.Context.STRING_VALUE, c.getName());
             purlResults.add(r);
         }
         else{
@@ -76,10 +71,9 @@ public abstract class IsRegisteredTest extends MetricTest{
                 // purl is null, test cannot run, add result as an error
                 if(isEmptyOrNull(purlString)){
                     r = new Result(TEST_NAME, Result.STATUS.ERROR,
-                            "PURL is an Empty Value, Test Cannot Run");
+                            "PURL is null, test cannot run");
                     r.addContext(c, "PURL Validation");
                     r.updateInfo(Result.Context.FIELD_NAME, "PURL");
-                    r.updateInfo(Result.Context.STRING_VALUE, "PURL is an Empty Value");
                     purlResults.add(r);
                     continue;
                 }
@@ -89,13 +83,10 @@ public abstract class IsRegisteredTest extends MetricTest{
                 try {
                     p = new PURL(purlString);
                 } catch (Exception e) {
-                    Debug.log(Debug.LOG_TYPE.WARN,
-                            "Failed to parse PURL \"" + purlString +"\" | "
-                                    + e.getMessage());    // log incase regex fails
-                    r = new Result(TEST_NAME, Result.STATUS.FAIL, "Invalid Purl String");
+                    r = new Result(TEST_NAME, Result.STATUS.ERROR,
+                            "PURL is invalid, test cannot run");
                     r.addContext(c, "PURL Validation");
                     r.updateInfo(Result.Context.FIELD_NAME, "PURL");
-                    r.updateInfo(Result.Context.STRING_VALUE, purlString);
                     purlResults.add(r);
                     continue;
                 }
@@ -141,7 +132,7 @@ public abstract class IsRegisteredTest extends MetricTest{
                             r.updateInfo(Result.Context.FIELD_NAME,
                                     "PURL Package Manager");
                             r.updateInfo(Result.Context.STRING_VALUE,
-                                    packageManager + " is Currently Not Supported");
+                                    packageManager);
                             purlResults.add(r);
                             // error number to skip other results
                             response = -1;
@@ -157,8 +148,7 @@ public abstract class IsRegisteredTest extends MetricTest{
                             r.updateInfo(Result.Context.FIELD_NAME,
                                     "PURL Package Manager");
                             r.updateInfo(Result.Context.STRING_VALUE,
-                                    packageManager +
-                                            " is an Invalid Package Manager");
+                                    p.toString());
                             purlResults.add(r);
                             // error number to skip other results
                             response = -1;
@@ -180,12 +170,11 @@ public abstract class IsRegisteredTest extends MetricTest{
                 // no errors occurred in checking the PURL through the URL
                 // so some response code was returned
                 if (response != 0 && response != -1) {
-                    r = checkResponseCode(response, packageManager);
+                    r =checkResponseCode(response, packageManager);
                     r.addContext(c, "PURL Package Validation");
                     r.updateInfo(Result.Context.FIELD_NAME, "PURL");
                     r.updateInfo(Result.Context.STRING_VALUE,
-                            "Package Manager: " + packageManager +
-                                    " | PURL: " + p);
+                            p.toString());
                     purlResults.add(r);
                 }
                 // some tests will throw a 0 if a different error occurs
@@ -195,8 +184,7 @@ public abstract class IsRegisteredTest extends MetricTest{
                     r.addContext(c, "PURL Package Validation");
                     r.updateInfo(Result.Context.FIELD_NAME, "PURL");
                     r.updateInfo(Result.Context.STRING_VALUE,
-                            "Package Manager: " + packageManager +
-                                    " | PURL: " + p);
+                            p.toString());
                     purlResults.add(r);
                 }
             }
@@ -231,7 +219,6 @@ public abstract class IsRegisteredTest extends MetricTest{
                 p.getName().toLowerCase() +
                 "/" + p.getVersion());
         HttpsURLConnection huc = (HttpsURLConnection) url.openConnection();
-        huc.connect();
         // get the response code from this url
         int responseCode = huc.getResponseCode();
         huc.disconnect();
@@ -251,7 +238,7 @@ public abstract class IsRegisteredTest extends MetricTest{
                 p.getName().toLowerCase() +
                 (p.getVersion() != null ? "/" + p.getVersion() : ""));
         HttpsURLConnection huc = (HttpsURLConnection) url.openConnection();
-        huc.connect();
+
         // get the response code from this url
         int responseCode = huc.getResponseCode();
         huc.disconnect();
@@ -273,7 +260,6 @@ public abstract class IsRegisteredTest extends MetricTest{
                 p.getName().toLowerCase() +
                 (p.getVersion() != null ? "/" + p.getVersion() : ""));
         HttpsURLConnection huc = (HttpsURLConnection) url.openConnection();
-        huc.connect();
         // get the response code from this url
         int responseCode = huc.getResponseCode();
         huc.disconnect();
@@ -295,7 +281,6 @@ public abstract class IsRegisteredTest extends MetricTest{
                 p.getName().toLowerCase() +
                 (p.getVersion() != null ? "/" + p.getVersion() : ""));
         HttpsURLConnection huc = (HttpsURLConnection) url.openConnection();
-        huc.connect();
         // get the response code from this url
         int responseCode = huc.getResponseCode();
         huc.disconnect();
@@ -320,7 +305,6 @@ public abstract class IsRegisteredTest extends MetricTest{
                 p.getName().toLowerCase() + "@" +
                 p.getVersion());
         HttpsURLConnection huc = (HttpsURLConnection) url.openConnection();
-        huc.connect();
         // get the response code from this url
         int responseCode = huc.getResponseCode();
         huc.disconnect();
@@ -342,7 +326,6 @@ public abstract class IsRegisteredTest extends MetricTest{
                 p.getName().toLowerCase() +
                 (p.getVersion() != null ? "/" + p.getVersion() : ""));
         HttpsURLConnection huc = (HttpsURLConnection) url.openConnection();
-        huc.connect();
         // get the response code from this url
         int responseCode = huc.getResponseCode();
         huc.disconnect();
@@ -369,7 +352,6 @@ public abstract class IsRegisteredTest extends MetricTest{
                 p.getName().toLowerCase() +
                 (p.getVersion() != null ? "#v" + p.getVersion() : ""));
         HttpsURLConnection huc = (HttpsURLConnection) url.openConnection();
-        huc.connect();
         // get the response code from this url
         int responseCode = huc.getResponseCode();
         huc.disconnect();
@@ -391,7 +373,6 @@ public abstract class IsRegisteredTest extends MetricTest{
                 p.getName().toLowerCase() + "/" +
                 (p.getVersion() != null ? "versions/" + p.getVersion() : ""));
         HttpsURLConnection huc = (HttpsURLConnection) url.openConnection();
-        huc.connect();
         // get the response code from this url
         int responseCode = huc.getResponseCode();
         huc.disconnect();
@@ -413,7 +394,6 @@ public abstract class IsRegisteredTest extends MetricTest{
                 p.getName().toLowerCase() + "/" +
                 (p.getVersion() != null ? "-" + p.getVersion() : ""));
         HttpsURLConnection huc = (HttpsURLConnection) url.openConnection();
-        huc.connect();
         // get the response code from this url
         int responseCode = huc.getResponseCode();
         huc.disconnect();
@@ -435,7 +415,6 @@ public abstract class IsRegisteredTest extends MetricTest{
                 p.getName().toLowerCase() + "/" +
                 (p.getVersion() != null ? "/" + p.getVersion() : ""));
         HttpsURLConnection huc = (HttpsURLConnection) url.openConnection();
-        huc.connect();
         // get the response code from this url
         int responseCode = huc.getResponseCode();
         huc.disconnect();
@@ -459,7 +438,6 @@ public abstract class IsRegisteredTest extends MetricTest{
                 p.getName().toLowerCase() +
                 (p.getVersion() != null ? "?version=" + p.getVersion() : ""));
         HttpsURLConnection huc = (HttpsURLConnection) url.openConnection();
-        huc.connect();
         // get the response code from this url
         int responseCode = huc.getResponseCode();
         huc.disconnect();
@@ -486,7 +464,6 @@ public abstract class IsRegisteredTest extends MetricTest{
                 p.getName().toLowerCase() +
                 (p.getVersion() != null ? "?version=" + p.getVersion() : ""));
         HttpsURLConnection huc = (HttpsURLConnection) url.openConnection();
-        huc.connect();
         // get the response code from this url
         int responseCode = huc.getResponseCode();
         huc.disconnect();
@@ -512,9 +489,9 @@ public abstract class IsRegisteredTest extends MetricTest{
             byte[] digest = md.digest(componentName.getBytes());
             BigInteger bigInt = new BigInteger(1,digest);
             // convert the bytes to a string (hexadecimal form)
-            String hashText = bigInt.toString(16);
+            String hashtext = bigInt.toString(16);
             // split up the characters and concat the first three
-            String[] hashTextSplit = hashText.split("");
+            String[] hashTextSplit = hashtext.split("");
             firstThreeString = hashTextSplit[0] + "/" + hashTextSplit[1] +
                     "/" + hashTextSplit[2] + "/";
         }catch(NoSuchAlgorithmException e){
@@ -531,7 +508,6 @@ public abstract class IsRegisteredTest extends MetricTest{
                 p.getVersion() + "/" +
                 p.getName() + ".podspec.json") ;
         HttpsURLConnection huc = (HttpsURLConnection) url.openConnection();
-        huc.connect();
         // get the response code from this url
         int responseCode = huc.getResponseCode();
         huc.disconnect();
@@ -556,7 +532,6 @@ public abstract class IsRegisteredTest extends MetricTest{
                 (p.getVersion() != null ? "?version=" + p.getVersion() : "") +
                 "/index.html");
         HttpsURLConnection huc = (HttpsURLConnection) url.openConnection();
-        huc.connect();
         // get the response code from this url
         int responseCode = huc.getResponseCode();
         huc.disconnect();
@@ -578,7 +553,6 @@ public abstract class IsRegisteredTest extends MetricTest{
                 p.getName().toLowerCase() +
                 (p.getVersion() != null ? "/versions/" + p.getVersion() : ""));
         HttpsURLConnection huc = (HttpsURLConnection) url.openConnection();
-        huc.connect();
         // get the response code from this url
         int responseCode = huc.getResponseCode();
         huc.disconnect();
@@ -611,7 +585,6 @@ public abstract class IsRegisteredTest extends MetricTest{
                 p.getName().toLowerCase() + "-" + p.getVersion() + "-" +
                 build + "." + type);
         HttpsURLConnection huc = (HttpsURLConnection) url.openConnection();
-        huc.connect();
         // get the response code from this url
         int responseCode = huc.getResponseCode();
         huc.disconnect();
@@ -619,14 +592,6 @@ public abstract class IsRegisteredTest extends MetricTest{
     }
 
 
-    /**
-     * Check a given response code and if it is a successful code (200)
-     * @param response the response code to check
-     * @param packageManager the package manager associated with the
-     * response code
-     * @return a result of if the result is 200 (the connection was
-     * successful) or not
-     */
     private Result checkResponseCode(int response, String packageManager){
         Result r;
 
@@ -645,5 +610,5 @@ public abstract class IsRegisteredTest extends MetricTest{
                             packageManager);
         }
         return r;
-        }
     }
+}

@@ -11,6 +11,7 @@ import org.svip.sbomanalysis.comparison.Comparison;
 import org.svip.sbomanalysis.comparison.Merger;
 import org.svip.sbomanalysis.qualityattributes.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.QualityReport;
+import org.svip.sbomanalysis.qualityattributes.processors.*;
 import org.svip.sbomfactory.generators.ParserController;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
@@ -20,8 +21,10 @@ import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomfactory.translators.TranslatorException;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * API Controller for handling requests to SVIP
@@ -203,8 +206,23 @@ public class SVIPApiController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+
+        Set<AttributeProcessor> processors = new HashSet<>();
+        processors.add(new CompletenessProcessor());
+        processors.add(new UniquenessProcessor());
+        processors.add(new RegisteredProcessor());
+        processors.add(new LicensingProcessor());   // Add origin specific processors
+
+        // Add CDX processor if relevant
+        if(sbom.getOriginFormat() == SBOM.Type.CYCLONE_DX)
+            processors.add(new CDXMetricsProcessor());
+
+        // Add SPDX Processor if relevant
+        if(sbom.getOriginFormat() == SBOM.Type.SPDX)
+            processors.add(new SPDXMetricsProcessor());
+
         //run the QA
-        QualityReport report = pipeline.process(sbom);
+        QualityReport report = QAPipeline.process(fileName, sbom, processors);
 
         //encode and send report
         return Utils.encodeResponse(report);

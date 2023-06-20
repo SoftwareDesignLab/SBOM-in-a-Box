@@ -13,12 +13,8 @@ import java.util.List;
  * a download location
  * @author Matthew Morrison
  */
-public abstract class HasDownloadLocationTest extends MetricTest{
+public class HasDownloadLocationTest extends MetricTest{
     private static final String TEST_NAME = "HasDownloadLocation";
-
-    protected HasDownloadLocationTest() {
-        super("Has Download Location Test");
-    }
 
     /**
      * Test every component in the sbom for the PackageDownloadLocation field
@@ -53,8 +49,6 @@ public abstract class HasDownloadLocationTest extends MetricTest{
         if(isEmptyOrNull(c.getDownloadLocation())){
             r = new Result(TEST_NAME, Result.STATUS.FAIL, "Component did " +
                     "not include download location");
-            r.updateInfo(Result.Context.STRING_VALUE,
-                    "Download Location is Missing");
         }
         // downloadLocation has a value, test passes
         else{
