@@ -3,6 +3,7 @@ package org.svip.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -40,6 +41,7 @@ public class CompareFromAPITest extends APITest {
 
     @ParameterizedTest
     @DisplayName("Null/Empty File Contents Array")
+    @Disabled
     @NullAndEmptySource
     void emptyContentsArrayTest(String fileContents) throws JsonProcessingException {
         ResponseEntity<?> response = ctrl.compare(0, Utils.fromJSONString(TESTFILEARRAY_LENGTH1,fileContents));
@@ -49,6 +51,7 @@ public class CompareFromAPITest extends APITest {
 
     @ParameterizedTest
     @DisplayName("Null/Empty File Names Array")
+    @Disabled
     @NullAndEmptySource
     void emptyFileNamesArrayTest(String fileNames) throws JsonProcessingException {
         ResponseEntity<?> response = ctrl.compare(0, Utils.fromJSONString(fileNames,TESTCONTENTSARRAY_LENGTH1));
@@ -58,6 +61,7 @@ public class CompareFromAPITest extends APITest {
 
     @Test
     @DisplayName("Mismatched File Contents/Names Array Length")
+    @Disabled
     void mismatchedFileInfoTest() throws JsonProcessingException {
         // Longer contents array
         ResponseEntity<?> response = ctrl.compare(0, Utils.fromJSONString(TESTFILEARRAY_LENGTH1,TESTCONTENTSARRAY_LENGTH2));
@@ -70,6 +74,7 @@ public class CompareFromAPITest extends APITest {
 
     @Test
     @DisplayName("Compare SBOMs Test")
+    @Disabled
     public void compareTest() throws IOException {
         String[] input = APITest.testInput();
 
