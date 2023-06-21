@@ -2,10 +2,10 @@ package org.svip.sbomvex;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.svip.sbom.model.*;
-import org.svip.sbomvex.model.*;
 import org.apache.http.HttpException;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.Vulnerability;
 
 import java.io.IOException;
 import java.net.HttpRetryException;

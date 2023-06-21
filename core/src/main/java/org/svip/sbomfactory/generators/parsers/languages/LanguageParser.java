@@ -4,7 +4,6 @@ import org.svip.sbomfactory.generators.parsers.Parser;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
-import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
 
 import java.util.ArrayList;
 import java.util.Arrays;

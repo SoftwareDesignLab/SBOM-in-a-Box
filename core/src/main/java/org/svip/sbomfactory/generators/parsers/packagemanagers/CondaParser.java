@@ -6,7 +6,6 @@ import org.svip.sbomfactory.generators.utils.ParserComponent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.stream.Collectors;
 
 public class CondaParser extends PackageManagerParser{
 

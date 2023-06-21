@@ -1,7 +1,10 @@
 package org.svip.sbomfactory.translators;
 
-import org.svip.sbom.model.*;
-import org.svip.sbomfactory.generators.utils.generators.Tool;
+import org.svip.sbom.model.AppTool;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.uids.Hash;
+import org.svip.sbomfactory.generators.utils.Debug;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -12,6 +15,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
@@ -35,24 +40,20 @@ public class TranslatorCDXXML extends TranslatorCore {
      * @throws ParserConfigurationException if the DocumentBuilder cannot be created
      */
     @Override
-    public SBOM translateContents(String contents, String file_path) throws ParserConfigurationException {
-
-        // Data for author
-        String author = "";
-
+    protected SBOM translateContents(String contents, String file_path) throws TranslatorException {
         // Top level SBOM materials
         HashMap<String, String> header_materials = new HashMap<>();
-        HashMap<String, String> sbom_materials = new HashMap<>();
-        HashMap<String, String> sbom_component = new HashMap<>();
-
-        // Components collections
-        // Key = unique id (bom-ref), Value = Component Object
-        HashMap<String, Component> components = new HashMap<>();
 
         // Initialize Document Builder
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setIgnoringElementContentWhitespace(true);
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+
+        DocumentBuilder documentBuilder;
+        try {
+            documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            throw new TranslatorException(e.getMessage());
+        }
 
         // Get parsed XML SBOM file and normalize
         Document sbom_xml_file;
@@ -60,18 +61,18 @@ public class TranslatorCDXXML extends TranslatorCore {
         try {
             sbom_xml_file = documentBuilder.parse(new InputSource(new StringReader(contents)));
         } catch (NullPointerException nullPointerException) {
-            System.err.println("Error: NullPointerException found. File contents may be null in: " + file_path);
-            return null;
+            Debug.log(Debug.LOG_TYPE.EXCEPTION, nullPointerException);
+            throw new TranslatorException("File contents may be null." + nullPointerException.getMessage());
         } catch (SAXException saxException) {
-            System.err.println("Error: SAXException found. File must be a properly formatted Cyclone-DX XML file: " + file_path);
-            return null;
+            Debug.log(Debug.LOG_TYPE.EXCEPTION, saxException);
+            throw new TranslatorException("File must be a properly formatted CycloneDX XML file: " + saxException.getMessage());
         } catch (IOException ioException) {
-            System.err.println("Error: IOException found. File information could not be found in: " + file_path);
-            return null;
+            Debug.log(Debug.LOG_TYPE.EXCEPTION, ioException);
+            throw new TranslatorException("File information could not be found: " + ioException.getMessage());
         } catch (Exception e) {
-            System.err.println("Error: Issue detected with file: " + file_path);
-            e.printStackTrace();
-            return null;
+            Debug.log(Debug.LOG_TYPE.ERROR, "Issue detected with file: " + file_path);
+            Debug.log(Debug.LOG_TYPE.EXCEPTION, e);
+            throw new TranslatorException("Issue detected with file.");
         }
 
         sbom_xml_file.getDocumentElement().normalize();
@@ -81,40 +82,44 @@ public class TranslatorCDXXML extends TranslatorCore {
         NodeList sbomMeta;
         NodeList sbomComp;
         NodeList sbomDependencies;
+        NodeList appTools;
 
         // Get SBOM Metadata and Components
         try {
             sbomHead = sbom_xml_file.getElementsByTagName("bom").item(0).getAttributes();
         } catch (Exception e) {
-            System.err.println("Error: Invalid format, 'bom' not found in: " + file_path);
-            return null;
+            throw new TranslatorException("Invalid format, 'bom' not found in: " + file_path);
         }
 
         try {
             sbomMeta = ((Element) (sbom_xml_file.getElementsByTagName("metadata")).item(0)).getElementsByTagName("*");
         } catch (Exception e) {
-            System.err.println("Error: Invalid format, 'metadata' not found in: " + file_path);
-            return null;
+            Debug.log(Debug.LOG_TYPE.WARN, "'metadata' not found in: " + file_path);
+            sbomMeta = null;
         }
 
         try {
             sbomComp = ((Element) (sbom_xml_file.getElementsByTagName("components")).item(0)).getElementsByTagName("component");
         } catch (Exception e) {
-            System.err.println(
-                    "Warning: no components found. If this is not intended, please check file format. " +
-                            "File: " + file_path
-            );
+            Debug.log(Debug.LOG_TYPE.WARN, "No components found. If this is not intended, please check file " +
+                    "format. File: " + file_path);
             sbomComp = null;
         }
 
         try {
             sbomDependencies = ((Element) (sbom_xml_file.getElementsByTagName("dependencies")).item(0)).getElementsByTagName("dependency");
         } catch (Exception e) {
-            System.err.println(
-                    "Warning: No dependencies found. Dependency Tree may not build correctly. " +
-                            "File: " + file_path
-            );
+            Debug.log(Debug.LOG_TYPE.WARN, "No dependencies found. Dependency Tree may not build correctly. " +
+                    "File: " + file_path);
             sbomDependencies = null;
+        }
+
+        try {
+            appTools = ((Element) (sbom_xml_file.getElementsByTagName("tools")).item(0)).getElementsByTagName("tool");
+        } catch (Exception e) {
+            Debug.log(Debug.LOG_TYPE.WARN, "No tools found yet. Components with no author will be assumed as tools. " +
+                    "File: " + file_path);
+            appTools = null;
         }
 
         // Get important SBOM items from header (schema, serial, version)
@@ -126,88 +131,18 @@ public class TranslatorCDXXML extends TranslatorCore {
         }
 
         // Get important SBOM items from meta  (timestamp, tool info)
-        for (int b = 0; b < sbomMeta.getLength(); b++) {
-
-            if (sbomMeta.item(b).getNodeName().contains("component")) {
-                // If component has attributes
-
-                if (sbomMeta.item(b).hasAttributes()) {
-
-                    NamedNodeMap topCompAttributes = sbomMeta.item(b).getAttributes();
-
-                    // Cycle through each attribute node for that component node
-                    for (int x = 0; x < topCompAttributes.getLength(); x++) {
-
-
-                        // If package id is found, set it as the component's identifier
-                        if (topCompAttributes.item(x).getNodeName().equalsIgnoreCase("bom-ref")) {
-                            sbom_component.put("bom-ref", topCompAttributes.item(x).getTextContent().replaceAll("@", ""));
-                        }
-
-                    }
-
-                }
-                if(sbomMeta.item(b).hasChildNodes()) {
-
-                    NodeList topCompNodes = sbomMeta.item(b).getChildNodes();
-
-                    for(int y = 0; y < topCompNodes.getLength(); y++) {
-                        sbom_component.put(
-                                topCompNodes.item(y).getNodeName(),
-                                topCompNodes.item(y).getTextContent()
-                        );
-                    }
-                }
-            } else if (sbomMeta.item(b).getParentNode().getNodeName().contains("author")) {
-                if(author != "") { author += " , "; }
-                author += sbomMeta.item(b).getTextContent();
-            } else {
-                sbom_materials.put(
-                        sbomMeta.item(b).getNodeName(),
-                        sbomMeta.item(b).getTextContent()
-                );
-            }
+        Map<String, String> resolvedMetadata = resolveMetadata(sbomMeta);
+        Pattern specVersionPattern = Pattern.compile(".*/(\\d+\\.\\d+)");
+        Matcher specVersionMathcher = specVersionPattern.matcher(header_materials.get("xmlns"));
+        if(specVersionMathcher.matches()) {
+            bom_data.put("specVersion", specVersionMathcher.group(1));
         }
-
+        else{
+            Debug.log(Debug.LOG_TYPE.WARN, "Invalid specVersion format.");
+        }
         bom_data.put("format", "cyclonedx");
-        bom_data.put("specVersion", header_materials.get("xmlns")
-                .replace("http://cyclonedx.org/schema/bom/", ""));
         bom_data.put("sbomVersion", header_materials.get("version"));
-
-        if(author.equals("")) {
-            String[] toolInfo = sbom_materials.get("tool").trim().split("\n");
-            Tool tool = new Tool(sbom_materials.get("vendor"), toolInfo[1].trim(), sbom_materials.get("version"));
-
-            // TODO this may not be necessary
-//            try {
-//                tool.addHash(toolInfo[4].trim(), "SHA-256"); // TODO figure out alg
-//            } catch (GeneratorException e) {
-//                Debug.log(Debug.LOG_TYPE.ERROR, "Error adding hash to SBOM tool");
-//            }
-//
-//            // If this SBOM is generated by our tool, apply the top component license to the tool
-//            if(sbom_component.get("licenses") != null
-//                    && tool.getName().equals(SBOMGenerator.TOOL_NAME)) {
-//                tool.addLicense(new License(sbom_component.get("licenses").trim().split("\n")[0]));
-//            }
-
-            bom_data.put("author", tool.getToolInfo());
-        } else {
-            // TODO do the same thing as tool above, currently returns empty sbom
-            bom_data.put("author", author);
-        }
-
         bom_data.put("serialNumber", header_materials.get("serialNumber"));
-        bom_data.put("timestamp", sbom_materials.get("timestamp"));
-
-        product_data.put("name" , sbom_component.get("name"));
-        product_data.put("publisher", sbom_component.get("publisher") == null
-                ? sbom_materials.get("author") : sbom_component.get("publisher"));
-        product_data.put("version", sbom_component.get("version"));
-        product_data.put("id", sbom_component.get("bom-ref"));
-
-        // Create the new SBOM Object with top level data
-        this.createSBOM();
 
         /*
          * Cycle through all components and correctly attach them to Java SBOM object
@@ -251,8 +186,9 @@ public class TranslatorCDXXML extends TranslatorCore {
                     Element elem = (Element) compItem;
                     NodeList component_elements = elem.getElementsByTagName("*");
 
-                    Set<PURL> purls = new HashSet<>();
+                    Set<String> purls = new HashSet<>();
                     Set<String> cpes = new HashSet<>();
+                    Set<Hash> hashes = new HashSet<>();
 
                     // Iterate through each element in that component
                     for (int j = 0; j < component_elements.getLength(); j++) {
@@ -267,7 +203,18 @@ public class TranslatorCDXXML extends TranslatorCore {
                             cpes.add(component_elements.item(j).getTextContent());
                         }
                         else if (component_elements.item(j).getNodeName().equalsIgnoreCase("purl")) {
-                            purls.add(new PURL(component_elements.item(j).getTextContent()));
+                            purls.add(component_elements.item(j).getTextContent());
+                        }
+                        else if (component_elements.item(j).getNodeName().equalsIgnoreCase("group")) {
+                            component_items.put("group", component_elements.item(j).getTextContent());
+                        }
+                        else if (component_elements.item(j).getNodeName().equalsIgnoreCase("hash")) {
+                            hashes.add(
+                                    new Hash(
+                                            component_elements.item(j).getAttributes().item(0).getTextContent(),
+                                            component_elements.item(j).getTextContent()
+                                    )
+                            );
                         }
                         else {
                             component_items.put(
@@ -278,30 +225,50 @@ public class TranslatorCDXXML extends TranslatorCore {
                         }
                     }
 
-                    // Create a new component with required information
-                    Component component = new Component(
-                            component_items.get("name"),
-                            component_items.get("publisher"),
-                            component_items.get("version"),
-                            component_items.get("bom-ref")
-                    );
+                    // No apparent publisher means this is most likely an application tool
+                    Component component;
+                    if(component_items.containsKey("type") && component_items.get("type").equalsIgnoreCase("application")){
+                        AppTool t = new AppTool();
+                        t.setName(component_items.get("name"));
+                        t.setVersion(component_items.get("version"));
+                        sbom.addAppTool(t);
+                        continue;}
+                    else
+                        // Create a new component with required information
+                        component = new Component(
+                                component_items.get("name"),
+                                component_items.get("publisher"),
+                                component_items.get("version"),
+                                component_items.get("bom-ref")
+                        );
 
-                    // Set CPEs and PURLs
+                    // Set CPEs, PURLs, and Hashes
                     component.setCpes(cpes);
                     component.setPurls(purls);
+                    component.setHashes(hashes);
 
                     // Set licenses for component
                     component.setLicenses(component_licenses);
 
-                    components.put(component.getUniqueID(), component);
+                    this.loadComponent(component);
 
-                    this.product = product == null ? component : product;
+                    // If we don't have any product data to use for a topComponent,
+                    // then default this component as the top component
+                    this.topComponent = product_data.isEmpty() ? component : null;
 
                 }
 
             }
 
         }
+
+        if (this.product_data.isEmpty())
+            this.topComponent = new Component(file_path, "Unknown");
+
+        // Create the new SBOM Object with top level data
+        this.createSBOM();
+        if(resolvedMetadata != null)
+            sbom.setMetadata(resolvedMetadata);
 
         if (sbomDependencies!=null) {
 
@@ -334,28 +301,162 @@ public class TranslatorCDXXML extends TranslatorCore {
             }
         } else {
             dependencies.put(
-                    this.product.getUniqueID(),
+                    this.topComponent.getUniqueID(),
                     components.values().stream().map(x->x.getUniqueID()).collect(Collectors.toCollection(ArrayList::new))
             );
         }
 
+        if(appTools != null){
+            for(int i = 0; i < appTools.getLength(); i++){
+                Node tool = appTools.item(i);
+                // Get all elements from that node
+                Element elem = (Element) tool;
+                NodeList component_elements = elem.getElementsByTagName("*");
+
+                AppTool t = new AppTool();
+
+                // Iterate through each element in that component
+                for (int j = 0; j < component_elements.getLength(); j++) {
+
+                    if (component_elements.item(j).getNodeName().equalsIgnoreCase("vendor")) {
+                        t.setVendor(component_elements.item(j).getTextContent());
+                    }
+                    else if (component_elements.item(j).getNodeName().equalsIgnoreCase("name")) {
+                        t.setName(component_elements.item(j).getTextContent());
+                    }
+                    else if (component_elements.item(j).getNodeName().equalsIgnoreCase("version")) {
+                        t.setVersion(component_elements.item(j).getTextContent());
+                    }
+                }
+
+                sbom.addAppTool(t);
+
+            }
+        }
 
         // Create the top level component
         // Build the dependency tree using dependencyBuilder
         try {
-            dependencyBuilder(components, this.product,null);
+            dependencyBuilder(components, this.topComponent,null);
         } catch (Exception e) {
-            System.err.println("Error processing dependency tree.");
+            Debug.log(Debug.LOG_TYPE.WARN, "Error processing dependency tree.");
         }
 
         try {
-            defaultDependencies(components, this.product);
+            defaultDependencies(this.topComponent);
         } catch (Exception e) {
-            System.err.println("Something went wrong with defaulting dependencies. A dependency tree may not exist.");
+            Debug.log(Debug.LOG_TYPE.WARN, "Something went wrong with defaulting dependencies. A dependency tree may" +
+                    " not exist.");
         }
 
         // Return complete SBOM object
         return this.sbom;
     }
 
+    private Map<String, String> resolveMetadata(NodeList sbomMeta) {
+        if(sbomMeta == null) return null;
+
+        HashMap<String, String> result = new HashMap<>();
+
+        // Collected data
+        StringBuilder author = new StringBuilder();
+        StringBuilder tool = new StringBuilder("Tool: ");
+        HashMap<String, String> sbom_materials = new HashMap<>();
+        HashMap<String, String> sbom_component = new HashMap<>();
+
+        for (int b = 0; b < sbomMeta.getLength(); b++) {
+
+            if (sbomMeta.item(b).getNodeName().contains("component")) {
+                // If component has attributes
+
+                if (sbomMeta.item(b).hasAttributes()) {
+
+                    NamedNodeMap topCompAttributes = sbomMeta.item(b).getAttributes();
+
+                    // Cycle through each attribute node for that component node
+                    for (int x = 0; x < topCompAttributes.getLength(); x++) {
+
+
+                        // If package id is found, set it as the component's identifier
+                        if (topCompAttributes.item(x).getNodeName().equalsIgnoreCase("bom-ref")) {
+                            sbom_component.put("bom-ref", topCompAttributes.item(x).getTextContent().replaceAll("@", ""));
+                        }
+
+                    }
+
+                }
+                if(sbomMeta.item(b).hasChildNodes()) {
+
+                    NodeList topCompNodes = sbomMeta.item(b).getChildNodes();
+
+                    for(int y = 0; y < topCompNodes.getLength(); y++) {
+                        sbom_component.put(
+                                topCompNodes.item(y).getNodeName(),
+                                topCompNodes.item(y).getTextContent()
+                        );
+                    }
+                }
+            } else if (sbomMeta.item(b).getParentNode().getNodeName().contains("author")) {
+                if(!(sbomMeta.item(b).getParentNode().getNodeName().contains("authors"))) {
+                    if (!author.toString().equals("")) {
+                        author.append(", ");
+                    }
+                    if (sbomMeta.item(b).getNodeName().contains("name")){
+                        author.append("[" + sbomMeta.item(b).getTextContent());
+                    }
+                    else{
+                        author.append(sbomMeta.item(b).getTextContent() + "]");
+                    }
+                }
+            } else if (sbomMeta.item(b).getParentNode().getNodeName().contains("tool")) {
+                if(!(sbomMeta.item(b).getParentNode().getNodeName().contains("tools"))) {
+                    if (sbomMeta.item(b).getNodeName().contains("vendor")) {
+                        tool.append(sbomMeta.item(b).getTextContent() + " ");
+                    } else if (sbomMeta.item(b).getNodeName().contains("name")) {
+                        tool.append(sbomMeta.item(b).getTextContent() + "-");
+                    } else if (sbomMeta.item(b).getNodeName().contains("version")) {
+                        tool.append(sbomMeta.item(b).getTextContent());
+                    }
+
+                    // TODO this does not find the hash of any metadata tools
+
+                    // TODO this is only here for unit tests, find a better way to store tools
+                    sbom_materials.put(
+                            sbomMeta.item(b).getNodeName(),
+                            sbomMeta.item(b).getTextContent()
+                    );
+                    String key = sbomMeta.item(b).getNodeName().replaceAll("\n", "");
+                    result.put(key, "["+ key + " - " +
+                            sbomMeta.item(b).getTextContent().replaceAll("\n", "")+"]");
+                }
+            } else {
+                sbom_materials.put(
+                        sbomMeta.item(b).getNodeName(),
+                        sbomMeta.item(b).getTextContent()
+                );
+                String key = sbomMeta.item(b).getNodeName().replaceAll("\n", "");
+                result.put(key, "["+ key + " - " +
+                        sbomMeta.item(b).getTextContent().replaceAll("\n", "")+"]");
+            }
+        }
+
+
+        // Update data used to construct SBOM
+
+        bom_data.put("author",
+                author.toString().equals("") ?
+                        tool.toString() :
+                        author.toString());
+        bom_data.put("timestamp", sbom_materials.get("timestamp"));
+
+        if (sbom_component.isEmpty()) return result;
+
+        product_data.put("name" , sbom_component.get("name"));
+        product_data.put("publisher", sbom_component.get("publisher") == null
+                ? sbom_materials.get("author") : sbom_component.get("publisher"));
+        product_data.put("version", sbom_component.get("version"));
+        product_data.put("id", sbom_component.get("bom-ref"));
+
+        return result;
+    }
 }

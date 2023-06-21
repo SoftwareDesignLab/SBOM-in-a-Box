@@ -1,11 +1,16 @@
 package org.svip.api.utils;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 import org.svip.sbomfactory.translators.TranslatorController;
+import org.svip.sbomfactory.translators.TranslatorException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,13 +27,38 @@ import java.util.Map;
 public class Utils {
 
     /**
+     * Utility Class for sending SBOM JSON objects. Contains {@code fileName} & {@code contents} fields that are capable
+     * of being automatically serialized to and from JSON.
+     */
+    public static class SBOMFile {
+        @JsonProperty
+        public String fileName;
+        @JsonProperty
+        public String contents;
+        public boolean hasNullProperties;
+
+        /**
+         * Default constructor for SBOMFile. Used for test purposes.
+         *
+         * @param fileName The name of the SBOM file.
+         * @param contents The contents of the SBOM file.
+         */
+        public SBOMFile(String fileName, String contents) {
+            this.fileName = fileName;
+            this.contents = contents;
+            this.hasNullProperties = fileName == null || contents == null
+                    || fileName.length() == 0 || contents.length() == 0;
+        }
+    }
+
+    /**
      * Helper method to get the schema of an SBOM string by translating it in and finding the SBOM object origin format.
      *
      * @param sbom The SBOM string to get the schema of.
      * @return The schema of the SBOM string.
      */
-    public static GeneratorSchema getSchemaFromSBOM(String sbom) {
-        SBOM translated = TranslatorController.toSBOM(sbom, buildTestFilepath(sbom));
+    public static GeneratorSchema getSchemaFromSBOM(String sbom) throws TranslatorException {
+        SBOM translated = TranslatorController.translateContents(sbom, buildTestFilepath(sbom));
         return GeneratorSchema.valueOfArgument(translated.getOriginFormat().toString());
     }
 
@@ -39,8 +69,8 @@ public class Utils {
      * @param sbom The SBOM string to convert to an object.
      * @return The SBOM object containing all the details from the SBOM string.
      */
-    public static SBOM buildSBOMFromString(String sbom) {
-        return TranslatorController.toSBOM(sbom, buildTestFilepath(sbom));
+    public static SBOM buildSBOMFromString(String sbom) throws TranslatorException {
+        return TranslatorController.translateContents(sbom, buildTestFilepath(sbom));
     }
 
     /**
@@ -62,13 +92,13 @@ public class Utils {
      * @param fileNames JSON string array of the filenames of all provided SBOMs
      * @return list of SBOM objects
      */
-    public static List<SBOM> translateMultiple(List<String> fileContents, List<String> fileNames) {
+    public static List<SBOM> translateMultiple(List<String> fileContents, List<String> fileNames) throws TranslatorException {
         // Convert the SBOMs to SBOM objects
         ArrayList<SBOM> sboms = new ArrayList<>();
 
         for (int i = 0; i < fileContents.size(); i++) {
             // Get contents of the file
-            sboms.add(TranslatorController.toSBOM(fileContents.get(i), fileNames.get(i)));
+            sboms.add(TranslatorController.translateContents(fileContents.get(i), fileNames.get(i)));
         }
         return sboms;
     }
@@ -119,6 +149,24 @@ public class Utils {
     }
 
     /**
+     * Checks an array of {@code SBOMFile} objects for one containing any null properties.
+     *
+     * @param arr The array of {@code SBOMFile} objects to check.
+     * @return -1 if no SBOMFiles have null properties. Otherwise, return the index of the first SBOM with null
+     * properties.
+     */
+    public static int sbomFileArrNullCheck(SBOMFile[] arr){
+        int i = 0;
+        for (SBOMFile a: arr
+        ) {
+            if(a == null || a.hasNullProperties)
+                return i;
+            i++;
+        }
+        return -1;
+    }
+
+    /**
      * Utility method to encode a response into a {@code ResponseEntity} of the same generic type. If there is an error
      * encoding the response, an empty ResponseEntity with the {@code HttpStatus.INTERNAL_SERVER_ERROR} code will be
      * thrown.
@@ -134,5 +182,23 @@ public class Utils {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public static SBOMFile[] fromJSONString(String fileNames, String contents) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        TypeFactory typeFactory = objectMapper.getTypeFactory();
+        List<String> contentsList = objectMapper.readValue(contents, typeFactory.constructCollectionType(List.class, String.class));
+        List<String> filenamesList = objectMapper.readValue(fileNames, typeFactory.constructCollectionType(List.class, String.class));
+
+        Utils.SBOMFile[] arr = new Utils.SBOMFile[contentsList.size()];
+
+        for (int i = 0; i < contentsList.size(); i++) {
+
+            arr[i] = new Utils.SBOMFile(filenamesList.get(i), contentsList.get(i));
+
+        }
+
+        return arr;
+
     }
 }

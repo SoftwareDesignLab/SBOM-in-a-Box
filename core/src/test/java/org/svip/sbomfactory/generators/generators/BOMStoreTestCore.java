@@ -5,8 +5,6 @@ import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 public abstract class BOMStoreTestCore<T extends BOMStore> {
     protected T bomStore;
     protected static SBOM internalSBOM;

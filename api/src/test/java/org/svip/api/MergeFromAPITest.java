@@ -11,6 +11,7 @@ import org.svip.api.utils.Utils;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
+import org.svip.sbomfactory.translators.TranslatorException;
 
 import java.io.IOException;
 
@@ -38,7 +39,7 @@ public class MergeFromAPITest extends APITest{
     @ParameterizedTest
     @DisplayName("Null/Empty File Contents Array")
     @NullAndEmptySource
-    void emptyContentsArrayTest(String fileContents){
+    void emptyContentsArrayTest(String fileContents) throws TranslatorException {
         ResponseEntity<String> response = ctrl.merge(fileContents, TESTFILEARRAY_LENGTH1, CDX_SCHEMA, JSON_FORMAT);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
@@ -46,14 +47,14 @@ public class MergeFromAPITest extends APITest{
     @ParameterizedTest
     @DisplayName("Null/Empty File Names Array")
     @NullAndEmptySource
-    void emptyFileNamesArrayTest(String fileNames){
+    void emptyFileNamesArrayTest(String fileNames) throws TranslatorException {
         ResponseEntity<String> response = ctrl.merge(TESTCONTENTSARRAY_LENGTH1, fileNames, CDX_SCHEMA, JSON_FORMAT);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
     @DisplayName("Mismatched File Contents/Names Array Length")
-    void mismatchedFileInfoTest(){
+    void mismatchedFileInfoTest() throws TranslatorException {
         // Longer contents array
         ResponseEntity<String> response = ctrl.merge(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH1, CDX_SCHEMA, JSON_FORMAT);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -67,7 +68,7 @@ public class MergeFromAPITest extends APITest{
     @DisplayName("Null/Empty/Invalid Schema")
     @NullAndEmptySource
     @ValueSource(strings = { INVALID_SCHEMA })
-    void invalidSchemaNameTest(String schemaName){
+    void invalidSchemaNameTest(String schemaName) throws TranslatorException {
         ResponseEntity<String> response = ctrl.merge(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, schemaName, JSON_FORMAT);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -77,7 +78,7 @@ public class MergeFromAPITest extends APITest{
     @DisplayName("Null/Empty/Invalid/Unsupported Schema")
     @NullAndEmptySource
     @ValueSource(strings = { INVALID_FORMAT, "SPDX" })
-    void invalidFormatNameTest(String formatName){
+    void invalidFormatNameTest(String formatName) throws TranslatorException {
         ResponseEntity<String> response = ctrl.merge(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, CDX_SCHEMA, formatName);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -89,7 +90,7 @@ public class MergeFromAPITest extends APITest{
      */
     @Test
     @DisplayName("Merge SBOMs Test")
-    public void mergeTest() throws IOException {
+    public void mergeTest() throws IOException, TranslatorException {
         String[] input = APITest.testInput();
 
         String contentsString = input[0];

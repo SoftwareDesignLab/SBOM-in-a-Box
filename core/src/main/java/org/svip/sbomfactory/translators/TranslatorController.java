@@ -1,6 +1,6 @@
 package org.svip.sbomfactory.translators;
 
-import org.svip.sbom.model.*;
+import org.svip.sbom.model.SBOM;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 
@@ -17,65 +18,61 @@ import java.util.stream.Stream;
  * Driver class for SPDX and CDX Translators
  * @author Tyler Drake
  * @author Matt London
+ * @author Ian Dunn
  */
 public class TranslatorController {
-
-    public enum TranslatorSchema {
-        XML("xml", new TranslatorCDXXML()),
-        JSON("json", new TranslatorCDXJSON()),
-        SPDX("spdx", new TranslatorSPDX());
-
-        private final String extension;
-
-        private TranslatorCore translator;
-
-        TranslatorSchema(String extension, TranslatorCore translator) {
-            this.extension = extension;
-            this.translator = translator;
-        }
-
-        public static TranslatorSchema getTranslator(String extension) {
-            switch (extension) {
-                case "xml" -> { return XML; }
-                case "json" -> { return JSON; }
-                case "spdx" -> { return SPDX; }
-            }
-            return null;
-        }
-    }
-
+    private final static String INVALID_FILE_CONTENTS = "Invalid SBOM file contents (could not assume schema).";
+    private final static Function<String, String> INVALID_FILE_TYPE = (ext) -> "File type " + ext + " not supported.";
 
     /**
-     * Parse an SBOM using the appropriate translator and
-     * return the object based on the contents of the file
+     * Parse an SBOM using the appropriate translator and return the object
      *
-     * @param filePath path to the bom
-     * @return SBOM object, null if failed
+     * @param path Path to the SBOM to translate
+     * @return SBOM object
+     * @throws TranslatorException if translation failed
      */
-    public static SBOM toSBOM(String contents, String filePath) {
-
-        SBOM sbom = null;
-
+    public static SBOM translate(String path) throws TranslatorException {
+        // Read the contents at path into a string
+        String contents = null;
         try {
-            // Get the respective translator based on the file's extension
-            final TranslatorCore translator = TranslatorSchema.getTranslator(
-                    filePath.substring(filePath.lastIndexOf('.') + 1)
-            ).translator;
-
-            // If the translator exists and is an actual translator, translate and add the SBOM to the list
-            // Otherwise, print out an error stating that the SBOM is not a correct format
-            if(translator != null && translator instanceof TranslatorCore) {
-                sbom = translator.translateContents(contents, filePath);
-            } else {
-                System.err.println("\nError: Invalid SBOM format found in: " + filePath);
-            }
-
-        }
-        catch (Exception e) {
-            System.err.println("Error: " + e.getMessage());
+            contents = new String(Files.readAllBytes(Paths.get(path)));
+        } catch (Exception e) {
+            throw new TranslatorException(e.getMessage());
         }
 
-        return sbom;
+        return translateContents(contents, path);
+    }
+
+    /**
+     * Parse an SBOM using the appropriate translator and return the object based on the contents of the file
+     *
+     * @param contents contents of the bom
+     * @param filePath path to the bom
+     * @return SBOM object
+     * @throws TranslatorException if translation failed
+     */
+    public static SBOM translateContents(String contents, String filePath) throws TranslatorException {
+        TranslatorCore translator = getTranslator(filePath);
+
+        SBOM result = translator.translateContents(contents, filePath);
+        if (result == null) throw new TranslatorException("Unknown error while translating.");
+        return result;
+    }
+
+    private static TranslatorCore getTranslator(String filePath) throws TranslatorException {
+        String ext;
+        try{
+            ext = filePath.substring(filePath.lastIndexOf('.') + 1).trim().toLowerCase();
+        }catch (NullPointerException e){
+            throw new TranslatorException("File path is empty or null");
+        }
+
+        switch (ext.toLowerCase()) {
+            case "json" -> { return new TranslatorCDXJSON(); }
+            case "xml" -> { return new TranslatorCDXXML(); }
+            case "spdx" -> { return new TranslatorSPDX(); }
+            default -> { throw new TranslatorException(INVALID_FILE_TYPE.apply(ext)); }
+        }
     }
 
     /**
@@ -111,9 +108,7 @@ public class TranslatorController {
             try {
 
                 // Get the respective translator based on the file's extension
-                final TranslatorCore translator = TranslatorSchema.getTranslator(
-                        sbom_item.substring(sbom_item.lastIndexOf('.') + 1)
-                ).translator;
+                final TranslatorCore translator = getTranslator(sbom_item.substring(sbom_item.lastIndexOf('.') + 1));
 
                 // If the translator exists and is an actual translator, translate and add the SBOM to the list
                 // Otherwise, print out an error stating that the SBOM is not a correct format
@@ -142,5 +137,4 @@ public class TranslatorController {
         // Return ArrayList of Java SBOM Objects
         return sbom_objects;
     }
-
 }

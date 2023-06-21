@@ -1,14 +1,14 @@
 package org.svip.sbomvex;
 
-import org.svip.sbomvex.database.mockNetworking.*;
-
-import org.svip.sbom.model.*;
-import org.svip.sbomvex.VEXFactory;
-import org.svip.sbomvex.model.Vulnerability;
-
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.model.Component;
+import org.svip.sbom.model.DependencyTree;
+import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.Vulnerability;
+import org.svip.sbomvex.database.mockNetworking.mockHTTPConversation;
+import org.svip.sbomvex.database.mockNetworking.mockHttpResponse;
+import org.svip.sbomvex.database.mockNetworking.mockVEXFactory;
 
-import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.time.Duration;
@@ -17,7 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class VEXFactoryTest {
 

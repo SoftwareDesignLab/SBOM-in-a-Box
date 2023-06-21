@@ -87,7 +87,11 @@ public class Debug {
                 // Format Exception
                 case EXCEPTION -> {
                     // convert msg to exception and get name
-                    Exception e = (Exception) msg;
+                    if (!(msg instanceof Exception e)) {
+                        log(LOG_TYPE.ERROR, msg);
+                        break;
+                    }
+
                     String out = header + e.getClass().getSimpleName();
 
                     // Append msg if one exists
@@ -108,7 +112,7 @@ public class Debug {
                 default -> System.err.println(header + " | UNKNOWN LOG TYPE");
             }
         } catch (Exception e) {
-            System.err.println(header + " | LOGGING ERROR");
+            System.err.println(header + "LOGGING ERROR: " + e.getMessage());
         }
     }
 

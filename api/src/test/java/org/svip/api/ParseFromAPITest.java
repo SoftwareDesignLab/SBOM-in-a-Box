@@ -10,8 +10,10 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.utils.Resolver;
+import org.svip.api.utils.Utils;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
+import org.svip.sbomfactory.translators.TranslatorException;
 
 import java.io.IOException;
 import java.util.List;
@@ -39,24 +41,24 @@ public class ParseFromAPITest extends APITest {
     @ParameterizedTest
     @DisplayName("Null/Empty File Contents Array")
     @NullAndEmptySource
-    void emptyContentsArrayTest(String fileContents) {
-        ResponseEntity<SBOM> response = ctrl.parse(fileContents, TESTFILEARRAY_LENGTH1);
+    void emptyContentsArrayTest(String fileContents) throws TranslatorException {
+        ResponseEntity<?> response = ctrl.parse(fileContents, TESTFILEARRAY_LENGTH1);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
     @ParameterizedTest
     @DisplayName("Null/Empty File Names Array")
     @NullAndEmptySource
-    void emptyFileNamesArrayTest(String fileNames) {
-        ResponseEntity<SBOM> response = ctrl.parse(TESTCONTENTSARRAY_LENGTH1, fileNames);
+    void emptyFileNamesArrayTest(String fileNames) throws TranslatorException {
+        ResponseEntity<?> response = ctrl.parse(TESTCONTENTSARRAY_LENGTH1, fileNames);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
     @Test
     @DisplayName("Mismatched File Contents/Names Array Length")
-    void mismatchedFileInfoTest() {
+    void mismatchedFileInfoTest() throws TranslatorException {
         // Longer contents array
-        ResponseEntity<SBOM> response = ctrl.parse(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH1);
+        ResponseEntity<?> response = ctrl.parse(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH1);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
 
         // Longer file names array
@@ -92,7 +94,7 @@ public class ParseFromAPITest extends APITest {
         }
 
         @Test
-        public void parseTest() {
+        public void parseTest() throws TranslatorException {
             for(int i = 0; i < contents.size(); i++) {
                 String c = contents.get(i);
 
@@ -102,12 +104,11 @@ public class ParseFromAPITest extends APITest {
                 GeneratorSchema generatorSchema = Resolver.resolveSchema(schemas.get(i), false);
                 GeneratorSchema.GeneratorFormat generatorFormat = Resolver.resolveFormat(formats.get(i), false);
 
-                // TODO translators break these
-//                String sbom = Utils.generateSBOM(res, generatorSchema, generatorFormat);
-//                assertNotNull(sbom);
-//
-//                SBOM backTranslate = Utils.buildSBOMFromString(sbom);
-//                assertNotNull(backTranslate);
+                String sbom = Utils.generateSBOM(res, generatorSchema, generatorFormat);
+                assertNotNull(sbom);
+
+                SBOM backTranslate = Utils.buildSBOMFromString(sbom);
+                assertNotNull(backTranslate);
             }
         }
     }
