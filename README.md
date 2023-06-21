@@ -31,18 +31,17 @@ This is a list of all "features", or sub-systems that SVIP contains. Each links 
 
 **Senior Project Manager:** [Chris Enoch](mailto:ctevse@rit.edu)
 
-
 **Senior Developer Team Lead:** [Derek Garcia](mailto:dlg1206@rit.edu)
 
 **Developer Team Leads**
 - [Schuyler Dillon](mailto:sdd4181@rit.edu)
 - [Tina DiLorenzo](mailto:tnd3015@rit.edu)
+- [Tyler Drake](mailto:txd3634@rit.edu)
 - [Matt London](mailto:mrl2534@rit.edu)
 - [Dylan Mulligan](mailto:dtm5568@rit.edu)
 
 **Developer Team**
 - [Michael Alfonzetti](mailto:michael.alfonzetti93@gmail.com)
-- [Tyler Drake](mailto:txd3634@rit.edu)
 - [Ian Dunn](mailto:itd3516@g.rit.edu)
 - [Asa Horn](mailto:aoh9470@rit.edu)
 - [Justin Jantzi](mailto:jwj7297@rit.edu)
