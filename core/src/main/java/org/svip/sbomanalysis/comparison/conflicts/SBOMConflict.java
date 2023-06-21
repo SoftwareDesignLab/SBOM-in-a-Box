@@ -1,5 +1,6 @@
 package org.svip.sbomanalysis.comparison.conflicts;
 
+
 import org.svip.sbom.model.SBOM;
 
 import java.util.HashSet;
@@ -50,7 +51,7 @@ public class SBOMConflict {
             conflictTypes.add(SBOMConflictType.TIMESTAMP_MISMATCH);
         }
         if (aSBOM.getSupplier() != null && !aSBOM.getSupplier().equals(bSBOM.getSupplier())) {
-            conflictTypes.add(SBOMConflictType.AUTHOR_MISMATCH);
+            conflictTypes.add(SBOMConflictType.SUPPLIER_MISMATCH);
         }
         if (aSBOM.getSbomVersion() != null && !aSBOM.getSbomVersion().equals(bSBOM.getSbomVersion())) {
             conflictTypes.add(SBOMConflictType.SBOM_VERSION_MISMATCH);
@@ -109,7 +110,7 @@ public class SBOMConflict {
     /// Getters and Setters
     ///
 
-    public Set getConflicts() {
+    public Set<SBOMConflictType> getConflicts() {
         return this.conflictTypes;
     }
 

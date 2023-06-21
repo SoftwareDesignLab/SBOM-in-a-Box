@@ -60,7 +60,12 @@ public class TranslatorController {
     }
 
     private static TranslatorCore getTranslator(String filePath) throws TranslatorException {
-        String ext = filePath.substring(filePath.lastIndexOf('.') + 1).trim().toLowerCase();
+        String ext;
+        try{
+            ext = filePath.substring(filePath.lastIndexOf('.') + 1).trim().toLowerCase();
+        }catch (NullPointerException e){
+            throw new TranslatorException("File path is empty or null");
+        }
 
         switch (ext.toLowerCase()) {
             case "json" -> { return new TranslatorCDXJSON(); }
