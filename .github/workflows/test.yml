@@ -4,10 +4,16 @@ on:
       branches:  
       - 'dev'   # todo: replace with vars
       - 'main'  # todo: replace with vars
+      paths-ignore:
+        - '**/sample_boms/**'
+        - '**/sample_sboms/**'
   pull_request:
     branches:  
       - 'dev'   # todo: replace with vars
       - 'main'  # todo: replace with vars
+    paths-ignore:
+      - '**/sample_boms/**'
+      - '**/sample_sboms/**'
 jobs:
   build-test:
     runs-on: windows-latest
