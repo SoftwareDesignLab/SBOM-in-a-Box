@@ -16,3 +16,4 @@ _Description Here_
 
 ## Acceptance Criteria
 - [ ] _Acceptance Criteria Here_
+- [ ] ~80% Code Coverage
