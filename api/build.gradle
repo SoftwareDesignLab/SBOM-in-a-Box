@@ -8,9 +8,8 @@ group 'org.svip'
 version '1.0.0-alpha'
 
 application {
-    mainClassName = 'org.svip.api.UnifiedApplication'
-    mainClass = 'org.svip.api.UnifiedApplication'
-
+    mainClassName = 'org.svip.api.SVIPApplication'
+    mainClass = 'org.svip.api.SVIPApplication'
 }
 
 repositories {
