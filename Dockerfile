@@ -1,3 +1,5 @@
+# docker build -t svip .
+# docker run -p 8080:8080 svip
 FROM gradle:8.1.1-jdk17 AS build
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
