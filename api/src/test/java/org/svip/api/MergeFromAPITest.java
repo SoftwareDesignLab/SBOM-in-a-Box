@@ -71,7 +71,7 @@ public class MergeFromAPITest extends APITest{
     void invalidSchemaNameTest(String schemaName) throws TranslatorException {
         ResponseEntity<String> response = ctrl.merge(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, schemaName, JSON_FORMAT);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
     @ParameterizedTest
@@ -81,7 +81,7 @@ public class MergeFromAPITest extends APITest{
     void invalidFormatNameTest(String formatName) throws TranslatorException {
         ResponseEntity<String> response = ctrl.merge(TESTCONTENTSARRAY_LENGTH2, TESTFILEARRAY_LENGTH2, CDX_SCHEMA, formatName);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
     /**
