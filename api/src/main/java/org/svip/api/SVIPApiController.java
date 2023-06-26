@@ -4,26 +4,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.svip.api.utils.Resolver;
 import org.svip.api.utils.Utils;
-import org.svip.sbom.model.SBOM;
-import org.svip.sbomanalysis.comparison.Merger;
-import org.svip.sbomanalysis.qualityattributes.QAPipeline;
-import org.svip.sbomanalysis.qualityattributes.QualityReport;
-import org.svip.sbomanalysis.qualityattributes.processors.*;
-import org.svip.sbomfactory.generators.ParserController;
-import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
-import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
-import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
 import org.svip.sbomfactory.osi.OSI;
-import org.svip.sbomfactory.translators.TranslatorController;
-import org.svip.sbomfactory.translators.TranslatorException;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * API Controller for handling requests to SVIP
@@ -65,6 +50,8 @@ public class SVIPApiController {
      */
     private static String pwd = "/src/test/java/org/svip/api";
 
+    private final Map<String, String> files;
+
     /** TODO OSI
      * buildOSI runs on startup to build the OSI container independent of the front-end.
      */
@@ -77,6 +64,8 @@ public class SVIPApiController {
     public SVIPApiController() {
         headers = new HttpHeaders();
         headers.add("AccessControlAllowOrigin", "http://localhost:4200");
+
+        files = new HashMap<>();
     }
 
     /** TODO OSI
@@ -94,12 +83,68 @@ public class SVIPApiController {
      *
      * @return JSON String representation of the Node Graph
      */
-    @GetMapping("/sbom-node-graph")
-    public ResponseEntity<?> getNodeGraph(@RequestBody String filePath) {
-        // todo redo
-        return null;
+//    @GetMapping("/sbom-node-graph")
+//    public ResponseEntity<?> getNodeGraph(@RequestBody String filePath) {
+//        // todo redo
+//        return null;
+//    }
+
+    /**
+     * USAGE. Send POST request to /upload with one SBOM file.
+     *   The SBOM file is made up of 2 JSON key-value pairs in the request body: fileName and contents.
+     *
+     * The API will respond with an HTTP 200 and the uploaded filename used to identify the SBOM file.
+     *
+     * @param sbomFile 2 JSON key-value pairs in the request body: fileName and contents.
+     * @return The uploaded filename used to identify the SBOM file.
+     */
+    @PostMapping("/upload")
+    public ResponseEntity<String> upload(@RequestBody Utils.SBOMFile sbomFile) {
+        // Validate
+        if (sbomFile.hasNullProperties)
+            return new ResponseEntity<>("SBOM filename and/or contents may not be empty", HttpStatus.BAD_REQUEST);
+
+        // Upload
+        files.put(sbomFile.fileName, sbomFile.contents);
+
+        // Return ID
+        return Utils.encodeResponse(sbomFile.fileName);
     }
 
+    /**
+     * USAGE. Send GET request to /view with a URL parameter filename to get the contents of.
+     *
+     * The API will respond with an HTTP 200 and the contents of the SBOM file.
+     *
+     * @param fileName The filename of the SBOM contents to retrieve.
+     * @return The contents of the SBOM file.
+     */
+    @GetMapping("/view")
+    public ResponseEntity<String> view(@RequestParam("fileName") String fileName) {
+        // Get SBOM
+        String sbomFile = files.get(fileName);
+
+        // Return SBOM or invalid ID
+        if (sbomFile == null)
+            return new ResponseEntity<>("Invalid SBOM ID.", HttpStatus.BAD_REQUEST);
+
+        return Utils.encodeResponse(sbomFile);
+    }
+
+    /**
+     * USAGE. Send GET request to /viewFiles.
+     * The API will respond with an HTTP 200 and a JSON array of all currently uploaded SBOM files.
+     *
+     * @return A JSON array of all currently uploaded SBOM files.
+     */
+    @GetMapping("/viewFiles")
+    public ResponseEntity<String[]> viewFiles() {
+        // Get file names
+        String[] fileNames = files.keySet().toArray(new String[0]);
+
+        // Return file names
+        return Utils.encodeResponse(fileNames);
+    }
 
     /**
      * USAGE. Send POST request to /generateSBOM with one or more files. If a schema or format is not provided or is
@@ -112,43 +157,43 @@ public class SVIPApiController {
      * @param formatName The name of the format to output to.
      * @return A ResponseEntity with code HTTP 200 and the SBOM file in string format.
      */
-    @PostMapping("/generateSBOM")
-    public ResponseEntity<?> generate(@RequestBody String contentsArray,
-                                      @RequestBody String fileArray,
-                                      @RequestBody String schemaName,
-                                      @RequestBody String formatName) {
-
-        // VALIDATE/PARSE INPUT DATA
-        // todo OSI
-        Map<String, List<String>> contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
-        if(contentsAndFiles == null) return new ResponseEntity<>("Invalid contents or filenames array.",
-                HttpStatus.BAD_REQUEST);
-
-        // Get schema/format from parameters, if not valid, default to CycloneDX/JSON
-        GeneratorSchema schema = Resolver.resolveSchema(schemaName, true);
-        GeneratorSchema.GeneratorFormat format = Resolver.resolveFormat(formatName, true);
-        if(!schema.supportsFormat(format)) format = schema.getDefaultFormat();
-
-        // BUILD FILE TREE REPRESENTATION
-        // TODO talk to front-end and figure out what the project name should be, currently SVIP. Common directory?
-        VirtualTree fileTree = new VirtualTree(new VirtualPath("SVIP"));
-        for (int i = 0; i < contentsAndFiles.get("filePaths").size(); i++) {
-            fileTree.addNode(
-                    new VirtualPath(contentsAndFiles.get("filePaths").get(i)),
-                    contentsAndFiles.get("fileContents").get(i));
-        }
-
-        // PARSE FILES INTO SBOM
-        final ParserController controller = new ParserController(fileTree);
-        controller.parseAll();
-
-        // Generate SBOM to string and send
-        try {
-            return Utils.encodeResponse(controller.toFile(null, schema, format));
-        } catch (IOException e) {
-            return new ResponseEntity<>("Error generating SBOM.", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @PostMapping("/generateSBOM")
+//    public ResponseEntity<?> generate(@RequestBody String contentsArray,
+//                                      @RequestBody String fileArray,
+//                                      @RequestBody String schemaName,
+//                                      @RequestBody String formatName) {
+//
+//        // VALIDATE/PARSE INPUT DATA
+//        // todo OSI
+//        Map<String, List<String>> contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
+//        if(contentsAndFiles == null) return new ResponseEntity<>("Invalid contents or filenames array.",
+//                HttpStatus.BAD_REQUEST);
+//
+//        // Get schema/format from parameters, if not valid, default to CycloneDX/JSON
+//        GeneratorSchema schema = Resolver.resolveSchema(schemaName, true);
+//        GeneratorSchema.GeneratorFormat format = Resolver.resolveFormat(formatName, true);
+//        if(!schema.supportsFormat(format)) format = schema.getDefaultFormat();
+//
+//        // BUILD FILE TREE REPRESENTATION
+//        // TODO talk to front-end and figure out what the project name should be, currently SVIP. Common directory?
+//        VirtualTree fileTree = new VirtualTree(new VirtualPath("SVIP"));
+//        for (int i = 0; i < contentsAndFiles.get("filePaths").size(); i++) {
+//            fileTree.addNode(
+//                    new VirtualPath(contentsAndFiles.get("filePaths").get(i)),
+//                    contentsAndFiles.get("fileContents").get(i));
+//        }
+//
+//        // PARSE FILES INTO SBOM
+//        final ParserController controller = new ParserController(fileTree);
+//        controller.parseAll();
+//
+//        // Generate SBOM to string and send
+//        try {
+//            return Utils.encodeResponse(controller.toFile(null, schema, format));
+//        } catch (IOException e) {
+//            return new ResponseEntity<>("Error generating SBOM.", HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     /**
      * USAGE. Send POST request to /compare with two+ SBOM files.
@@ -191,50 +236,28 @@ public class SVIPApiController {
      * @param fileName - Name of the SBOM file
      * @return - wrapped QualityReport object, null if failed
      */
-    @PostMapping("/qa")
-    public ResponseEntity<?> qa(@RequestBody String contents, @RequestBody String fileName) {
-        // TODO ensure contents & fileName not null
-        SBOM sbom;
-        try {
-            sbom = TranslatorController.translateContents(contents, fileName);
-        } catch (TranslatorException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        Set<AttributeProcessor> processors = new HashSet<>();
-        processors.add(new CompletenessProcessor());
-        processors.add(new UniquenessProcessor());
-        processors.add(new RegisteredProcessor());
-        processors.add(new LicensingProcessor());   // Add origin specific processors
-
-        //run the QA
-        QualityReport report = QAPipeline.process(sbom.getHeadUUID().toString(), sbom, processors);
-
-        //encode and send report
-        return Utils.encodeResponse(report);
-    }
-
-    /**
-     * Send post request to /parse and it will convert the file contents to an SBOM object, returns null if failed to parse
-     *
-     * @param contents File contents of the SBOM file to parse
-     * @param fileName Name of the file that the SBOM contents came from
-     * @return SBOM object, null if failed to parse
-     */
-    @PostMapping("/parse")
-    public ResponseEntity<?> parse(@RequestBody Utils.SBOMFile sbomFile) {
-        if (sbomFile.hasNullProperties)
-            return new ResponseEntity<>("SBOM filename and/or contents may not be empty", HttpStatus.BAD_REQUEST);
-
-        SBOM sbom;
-        try {
-            sbom = TranslatorController.translateContents(sbomFile.contents, sbomFile.fileName);
-        } catch (TranslatorException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        return Utils.encodeResponse(sbom);
-    }
+//    @PostMapping("/qa")
+//    public ResponseEntity<?> qa(@RequestBody String contents, @RequestBody String fileName) {
+//        // TODO ensure contents & fileName not null
+//        SBOM sbom;
+//        try {
+//            sbom = TranslatorController.translateContents(contents, fileName);
+//        } catch (TranslatorException e) {
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//
+//        Set<AttributeProcessor> processors = new HashSet<>();
+//        processors.add(new CompletenessProcessor());
+//        processors.add(new UniquenessProcessor());
+//        processors.add(new RegisteredProcessor());
+//        processors.add(new LicensingProcessor());   // Add origin specific processors
+//
+//        //run the QA
+//        QualityReport report = QAPipeline.process(sbom.getHeadUUID().toString(), sbom, processors);
+//
+//        //encode and send report
+//        return Utils.encodeResponse(report);
+//    }
 
 
     /**
@@ -246,35 +269,57 @@ public class SVIPApiController {
      * @param format String value of expected output format (JSON/XML/YAML)
      * @return merged result SBOM
      */
-    @PostMapping("merge")
-    public ResponseEntity<String> merge(@RequestParam("fileContents") String contentsArray,
-                                   @RequestParam("fileNames") String fileArray
-            , @RequestParam("schema") String schema, @RequestParam("format") String format){
+//    @PostMapping("merge")
+//    public ResponseEntity<String> merge(@RequestParam("fileContents") String contentsArray,
+//                                   @RequestParam("fileNames") String fileArray
+//            , @RequestParam("schema") String schema, @RequestParam("format") String format){
+//
+//        Map<String, List<String>> contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
+//        if(contentsAndFiles == null) return new ResponseEntity<>("Invalid contents or filenames array.",
+//                HttpStatus.BAD_REQUEST);
+//
+//        List<SBOM> sboms;
+//        try {
+//            sboms = Utils.translateMultiple(contentsAndFiles.get("fileContents"), contentsAndFiles.get(
+//                    "filePaths"));
+//        } catch (TranslatorException e) {
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//
+//        if(sboms.size() < 2) return new ResponseEntity<>("At least 2 SBOMs required to merge", HttpStatus.BAD_REQUEST);
+//
+//        GeneratorSchema generatorSchema = Resolver.resolveSchema(schema, false);
+//        GeneratorSchema.GeneratorFormat generatorFormat = Resolver.resolveFormat(format, false);
+//        if(generatorSchema == null || generatorFormat == null ||
+//                !generatorSchema.supportsFormat(generatorFormat))
+//            return new ResponseEntity<>("Invalid schema/format combination", HttpStatus.BAD_REQUEST);
+//
+//        Merger merger = new Merger();
+//        SBOM result = merger.merge(sboms); // report to return
+//
+//        String resultString = Utils.generateSBOM(result, generatorSchema, generatorFormat);
+//        return Utils.encodeResponse(resultString);
+//    }
 
-        Map<String, List<String>> contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
-        if(contentsAndFiles == null) return new ResponseEntity<>("Invalid contents or filenames array.",
-                HttpStatus.BAD_REQUEST);
-
-        List<SBOM> sboms;
-        try {
-            sboms = Utils.translateMultiple(contentsAndFiles.get("fileContents"), contentsAndFiles.get(
-                    "filePaths"));
-        } catch (TranslatorException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        if(sboms.size() < 2) return new ResponseEntity<>("At least 2 SBOMs required to merge", HttpStatus.BAD_REQUEST);
-
-        GeneratorSchema generatorSchema = Resolver.resolveSchema(schema, false);
-        GeneratorSchema.GeneratorFormat generatorFormat = Resolver.resolveFormat(format, false);
-        if(generatorSchema == null || generatorFormat == null ||
-                !generatorSchema.supportsFormat(generatorFormat))
-            return new ResponseEntity<>("Invalid schema/format combination", HttpStatus.BAD_REQUEST);
-
-        Merger merger = new Merger();
-        SBOM result = merger.merge(sboms); // report to return
-
-        String resultString = Utils.generateSBOM(result, generatorSchema, generatorFormat);
-        return Utils.encodeResponse(resultString);
-    }
+    /**
+     * Send post request to /parse and it will convert the file contents to an SBOM object, returns null if failed to parse
+     *
+     * @param contents File contents of the SBOM file to parse
+     * @param fileName Name of the file that the SBOM contents came from
+     * @return SBOM object, null if failed to parse
+     */
+//    @PostMapping("/parse")
+//    public ResponseEntity<?> parse(@RequestBody Utils.SBOMFile sbomFile) {
+//        if (sbomFile.hasNullProperties)
+//            return new ResponseEntity<>("SBOM filename and/or contents may not be empty", HttpStatus.BAD_REQUEST);
+//
+//        SBOM sbom;
+//        try {
+//            sbom = TranslatorController.translateContents(sbomFile.contents, sbomFile.fileName);
+//        } catch (TranslatorException e) {
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//
+//        return Utils.encodeResponse(sbom);
+//    }
 }
