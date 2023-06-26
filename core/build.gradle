@@ -1,9 +1,18 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 group 'org.svip'
 version '1.0.0-alpha'
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'org.svip.SBOMGeneratorCLI'
+        )
+    }
+}
 
 repositories {
     mavenCentral()

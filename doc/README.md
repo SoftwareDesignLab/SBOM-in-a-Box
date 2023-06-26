@@ -4,6 +4,10 @@
 ## Index
 
 - [**System Requirements**](#system-requirements)
+- [**SVIP API**](#svip-api)
+  - [Quick Start](#quick-start)
+    - [Quick Start (Docker)](#quick-start-docker)
+  - [Usage](#usage)
 - [**SBOM Generator CLI**](#sbom-generator-cli)
   - [Quick Start](#quick-start)
   - [Usage](#usage)
@@ -26,6 +30,26 @@
 - Docker
 
 ---
+# SVIP API
+> 
+
+## Quick Start
+```
+$ ./gradlew build
+$ java -jar api/build/libs/api-1.0.0-alpha.jar
+```
+
+### Quick Start (Docker)
+
+## Usage
+The API is located on `localhost:8080`.
+
+Current Endpoints (`/svip`):
+- `/upload`    - Upload an SBOM to the server.
+- `/view`      - View the raw contents of an SBOM file.
+- `/viewFiles` - View all file IDs uploaded to the server.
+
+---
 
 # SBOM Generator CLI
 > Generate SBOMs using Regex and Natural Language Processing techniques to analyze and enhance information found in 
@@ -34,7 +58,12 @@
 ## Quick Start
 > CLI Driver can be found [here](../core/src/main/java/org/svip/SBOMGeneratorCLI.java)
 
-Usage: `java SBOMGeneratorCLI <targetPath>`
+To build from scratch, use:
+```
+$ ./gradlew build
+$ cd core/build/libs && move core-1.0.0-alpha.jar SBOMGeneratorCLI.jar
+$ java -jar SBOMGeneratorCLI.jar <targetPath>
+```
 
 ## Usage
 ```
