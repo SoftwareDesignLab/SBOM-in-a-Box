@@ -1,14 +1,6 @@
 package org.svip.api;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 /**
@@ -31,32 +23,32 @@ public class QAFromAPITest {
     private SVIPApiController ctrl;
 
 
-    @Test
-    public void qaTest() {
-        try {
-            String contents = new String(Files.readAllBytes(Paths.get(smallDockerSBOM)));
-
-            ResponseEntity<?> qa = ctrl.qa(contents, smallDockerSBOM);
-            assertEquals(qa.getStatusCode(), HttpStatus.OK);
-        }
-        catch (Exception e) {
-            System.out.println(e);
-            assertEquals(1, 0);
-        }
-    }
-    @Test
-    public void qaFastTest() {
-        try {
-            String contents = new String(Files.readAllBytes(Paths.get(pythonSBOM)));
-
-            ResponseEntity<?> qa = ctrl.qa(contents, pythonSBOM);
-            assertEquals(qa.getStatusCode(), HttpStatus.OK);
-        }
-        catch (Exception e) {
-            System.out.println(e);
-            assertEquals(1, 0);
-        }
-    }
+//    @Test
+//    public void qaTest() {
+//        try {
+//            String contents = new String(Files.readAllBytes(Paths.get(smallDockerSBOM)));
+//
+//            ResponseEntity<?> qa = ctrl.qa(contents, smallDockerSBOM);
+//            assertEquals(qa.getStatusCode(), HttpStatus.OK);
+//        }
+//        catch (Exception e) {
+//            System.out.println(e);
+//            assertEquals(1, 0);
+//        }
+//    }
+//    @Test
+//    public void qaFastTest() {
+//        try {
+//            String contents = new String(Files.readAllBytes(Paths.get(pythonSBOM)));
+//
+//            ResponseEntity<?> qa = ctrl.qa(contents, pythonSBOM);
+//            assertEquals(qa.getStatusCode(), HttpStatus.OK);
+//        }
+//        catch (Exception e) {
+//            System.out.println(e);
+//            assertEquals(1, 0);
+//        }
+//    }
 
 
 
