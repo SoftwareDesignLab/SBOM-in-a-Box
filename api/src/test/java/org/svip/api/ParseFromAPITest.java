@@ -1,43 +1,21 @@
-//package org.svip.api;
-//
-//import com.fasterxml.jackson.core.type.TypeReference;
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Nested;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.params.ParameterizedTest;
-//import org.junit.jupiter.params.provider.NullAndEmptySource;
-//import org.springframework.http.HttpStatus;
-//import org.springframework.http.ResponseEntity;
-//import org.svip.api.utils.Resolver;
-//import org.svip.api.utils.Utils;
-//import org.svip.sbom.model.SBOM;
-//import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
-//import org.svip.sbomfactory.translators.TranslatorException;
-//
-//import java.io.IOException;
-//import java.util.List;
-//
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.junit.jupiter.api.Assertions.assertNotNull;
-//
-//
-///**
-// * Unit tests for the parse API endpoint that cover input validation and parsing.
-// *
-// * @author Juan Francisco Patino
-// */
-//public class ParseFromAPITest extends APITest {
-//
-//    /**
-//     * Controller to test
-//     */
-//    private SVIPApiController ctrl;
-//
-//    public ParseFromAPITest() {
-//        ctrl = new SVIPApiController();
-//    }
-//
+package org.svip.api;
+
+/**
+ * Unit tests for the parse API endpoint that cover input validation and parsing.
+ *
+ * @author Juan Francisco Patino
+ */
+public class ParseFromAPITest extends APITest {
+
+    /**
+     * Controller to test
+     */
+    private SVIPApiController ctrl;
+
+    public ParseFromAPITest() {
+        ctrl = new SVIPApiController();
+    }
+
 //    @ParameterizedTest
 //    @DisplayName("Null/Empty File Contents Array")
 //    @NullAndEmptySource
@@ -112,4 +90,4 @@
 //            }
 //        }
 //    }
-//}
+}
