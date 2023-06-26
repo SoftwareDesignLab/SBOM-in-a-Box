@@ -12,10 +12,23 @@ v1.0.0 - alpha (2/27/23)
 _Full sub-system READMEs & changelogs can be found in the `doc` directory_
 
 ## Quick Start
-- Core:
-  - run SVIPApplication.java
-- API:
-  - run UnifiedApplication.java
+
+### SBOM Generator CLI:
+```
+$ TODO
+```
+
+### API:
+```
+$ TODO
+```
+
+### API (Docker Container):
+First ensure Docker is installed and running.
+```
+$ docker build -t svip .
+$ docker run -p 8080:8080 svip
+```
 
 ## Features
 This is a list of all "features", or sub-systems that SVIP contains. Each links to their respective README.md file.
