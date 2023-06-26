@@ -12,15 +12,19 @@ v1.0.0 - alpha (2/27/23)
 _Full sub-system READMEs & changelogs can be found in the `doc` directory_
 
 ## Quick Start
+Build the project using:
+```
+$ ./gradlew build
+```
 
 ### SBOM Generator CLI:
 ```
-$ TODO
+$ java -jar core/build/libs/core-1.0.0-alpha.jar
 ```
 
 ### API:
 ```
-$ TODO
+$ java -jar api/build/libs/api-1.0.0-alpha.jar
 ```
 
 ### API (Docker Container):

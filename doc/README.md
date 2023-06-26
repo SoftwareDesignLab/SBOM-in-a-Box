@@ -18,12 +18,17 @@
 
 ## Building Project Locally
 ### Launch Backend
-1. ```mvn compile exec:java```
+```
+$ ./gradlew build
+$ java -jar api/build/libs/api-1.0.0-alpha.jar
+```
 > The server is located on localhost:8080
 
 ### Launch Frontend
-1. `cd src/WebApp`
-2. `ng serve`
+```
+$ cd src/WebApp
+$ ng serve
+```
 > The server is located on localhost:4200
 
 ## Deploy Development Version

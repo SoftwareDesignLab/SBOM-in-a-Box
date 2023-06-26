@@ -45,5 +45,5 @@ sourceSets {
 }
 
 bootJar {
-    mainClassName = 'org.svip.api.UnifiedApplication'
+    mainClassName = 'org.svip.api.SVIPApplication'
 }
