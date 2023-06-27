@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.svip.api.utils.Utils;
 import org.svip.sbomfactory.osi.OSI;
+import org.svip.sbomfactory.translators.TranslatorController;
+import org.svip.sbomfactory.translators.TranslatorException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -103,6 +105,12 @@ public class SVIPApiController {
         // Validate
         if (sbomFile.hasNullProperties)
             return new ResponseEntity<>("SBOM filename and/or contents may not be empty", HttpStatus.BAD_REQUEST);
+
+        try {
+            TranslatorController.translateContents(sbomFile.contents, sbomFile.fileName);
+        } catch (TranslatorException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
 
         // Upload
         files.put(sbomFile.fileName, sbomFile.contents);
