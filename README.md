@@ -30,6 +30,10 @@ $ java -jar api/build/libs/api-1.0.0-alpha.jar
 ### API (Docker Container):
 First ensure Docker is installed and running.
 ```
+$ docker ps
+```
+Then build and run the container. The API can be accessed at `localhost:8080/svip`.
+```
 $ docker build -t svip .
 $ docker run -p 8080:8080 svip
 ```
