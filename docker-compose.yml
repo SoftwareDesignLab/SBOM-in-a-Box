@@ -1,17 +1,14 @@
-version: "3.8"
-
 services:
 
   # MySQL server
   mysql:
     image: mysql:5
     restart: unless-stopped
-    env_file: .env
     environment:
-      - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
-      - MYSQL_DATABASE=$MYSQLDB_DATABASE
+      - MYSQL_ROOT_PASSWORD=toor
+      - MYSQL_DATABASE=svip
     ports:
-      - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+      - "3306:3306"
     volumes:
       - db:/var/lib/mysql
 
@@ -21,18 +18,8 @@ services:
       - mysql
     build: .    # Build from Dockerfile located in root directory
     restart: on-failure
-    env_file: .env
     ports:
-      - $SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT
-    environment:
-      # spring-boot configuration - could go in an application.properties file, but it's more intuitive to have it here
-      SPRING_APPLICATION_JSON: '{
-        "spring.datasource.url"                   : "jdbc:mysql://mysql:$MYSQLDB_DOCKER_PORT/$MYSQLDB_DATABASE?useSSL=false",
-        "spring.datasource.username"              : "$MYSQLDB_USER",
-        "spring.datasource.password"              : "$MYSQLDB_ROOT_PASSWORD",
-        "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.MySQLDialect",
-        "spring.jpa.hibernate.ddl-auto"           : "update"
-      }'
+      - "8080:8080"
     volumes:
       - .m2:/root/.m2
     stdin_open: true
