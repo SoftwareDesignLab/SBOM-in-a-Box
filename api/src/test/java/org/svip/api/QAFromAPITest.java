@@ -1,6 +1,7 @@
 package org.svip.api;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.svip.api.controller.SVIPApiController;
 
 
 /**

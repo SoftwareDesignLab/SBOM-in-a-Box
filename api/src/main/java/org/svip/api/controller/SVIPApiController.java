@@ -1,4 +1,4 @@
-package org.svip.api;
+package org.svip.api.controller;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
