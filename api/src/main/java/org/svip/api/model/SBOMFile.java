@@ -34,6 +34,7 @@ public class SBOMFile {
      * The string contents of the SBOM file.
      */
     @JsonProperty
+    @Lob
     @Column(name = "contents")
     private String contents;
 
