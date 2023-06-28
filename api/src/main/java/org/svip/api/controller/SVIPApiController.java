@@ -137,7 +137,7 @@ public class SVIPApiController {
      * @return The contents of the SBOM file.
      */
     @GetMapping("/view")
-    public ResponseEntity<String> view(@RequestParam("fileName") long id) {
+    public ResponseEntity<String> view(@RequestParam("id") long id) {
         // Get SBOM
 //        String sbomFile = files.get(fileName);
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
@@ -157,7 +157,7 @@ public class SVIPApiController {
      * @return A JSON array of all currently uploaded SBOM files.
      */
     @GetMapping("/viewFiles")
-    public ResponseEntity<String[]> viewFiles() {
+    public ResponseEntity<Long[]> viewFiles() {
         // Get file names
 //        String[] fileNames = files.keySet().toArray(new String[0]);
         List<SBOMFile> sbomFiles = sbomFileRepository.findAll();
@@ -166,7 +166,7 @@ public class SVIPApiController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
         // Return file names
-        return Utils.encodeResponse((String[]) sbomFiles.stream().map(SBOMFile::getId).toArray());
+        return Utils.encodeResponse(sbomFiles.stream().map(SBOMFile::getId).toList().toArray(new Long[0]));
     }
 
     /**
