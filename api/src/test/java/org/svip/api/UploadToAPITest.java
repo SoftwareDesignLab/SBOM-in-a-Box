@@ -7,7 +7,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.controller.SVIPApiController;
-import org.svip.api.utils.Utils;
+import org.svip.api.model.SBOMFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,14 +24,14 @@ public class UploadToAPITest extends APITest {
     @Test
     @DisplayName("Upload File")
     public void uploadFileTest() throws IOException {
-        List<Utils.SBOMFile> files = testFileMap().entrySet().stream()
-                .map(e -> new Utils.SBOMFile(e.getKey(), e.getValue())).toList();
+        List<SBOMFile> files = testFileMap().entrySet().stream()
+                .map(e -> new SBOMFile(e.getKey(), e.getValue())).toList();
 
-        for (Utils.SBOMFile file : files) {
+        for (SBOMFile file : files) {
             ResponseEntity<String> response = ctrl.upload(file);
 
             assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertEquals(file.fileName, response.getBody());
+            assertEquals(file.getFileName(), response.getBody());
         }
     }
 
@@ -39,7 +39,7 @@ public class UploadToAPITest extends APITest {
     @DisplayName("Upload Empty File Name")
     @NullAndEmptySource
     public void uploadEmptyFileNameTest(String fileName) {
-        Utils.SBOMFile file = new Utils.SBOMFile(fileName, "test contents");
+        SBOMFile file = new SBOMFile(fileName, "test contents");
 
         ResponseEntity<String> response = ctrl.upload(file);
 
@@ -50,7 +50,7 @@ public class UploadToAPITest extends APITest {
     @DisplayName("Upload Empty File Contents")
     @NullAndEmptySource
     public void uploadEmptyFileContentsTest(String fileContents) {
-        Utils.SBOMFile file = new Utils.SBOMFile("filename", fileContents);
+        SBOMFile file = new SBOMFile("filename", fileContents);
 
         ResponseEntity<String> response = ctrl.upload(file);
 

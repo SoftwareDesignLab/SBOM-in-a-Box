@@ -1,11 +1,11 @@
 package org.svip.api.utils;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.svip.api.model.SBOMFile;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
@@ -25,31 +25,6 @@ import java.util.Map;
  * @author Juan Francisco Patino
  */
 public class Utils {
-
-    /**
-     * Utility Class for sending SBOM JSON objects. Contains {@code fileName} & {@code contents} fields that are capable
-     * of being automatically serialized to and from JSON.
-     */
-    public static class SBOMFile {
-        @JsonProperty
-        public String fileName;
-        @JsonProperty
-        public String contents;
-        public boolean hasNullProperties;
-
-        /**
-         * Default constructor for SBOMFile. Used for test purposes.
-         *
-         * @param fileName The name of the SBOM file.
-         * @param contents The contents of the SBOM file.
-         */
-        public SBOMFile(String fileName, String contents) {
-            this.fileName = fileName;
-            this.contents = contents;
-            this.hasNullProperties = fileName == null || contents == null
-                    || fileName.length() == 0 || contents.length() == 0;
-        }
-    }
 
     /**
      * Helper method to get the schema of an SBOM string by translating it in and finding the SBOM object origin format.
@@ -156,13 +131,12 @@ public class Utils {
      * properties.
      */
     public static int sbomFileArrNullCheck(SBOMFile[] arr){
-        int i = 0;
-        for (SBOMFile a: arr
-        ) {
-            if(a == null || a.hasNullProperties)
+        for (int i = 0; i < arr.length; i++) {
+            SBOMFile file = arr[i];
+            if(file == null || file.hasNullProperties())
                 return i;
-            i++;
         }
+
         return -1;
     }
 
@@ -190,11 +164,11 @@ public class Utils {
         List<String> contentsList = objectMapper.readValue(contents, typeFactory.constructCollectionType(List.class, String.class));
         List<String> filenamesList = objectMapper.readValue(fileNames, typeFactory.constructCollectionType(List.class, String.class));
 
-        Utils.SBOMFile[] arr = new Utils.SBOMFile[contentsList.size()];
+        SBOMFile[] arr = new SBOMFile[contentsList.size()];
 
         for (int i = 0; i < contentsList.size(); i++) {
 
-            arr[i] = new Utils.SBOMFile(filenamesList.get(i), contentsList.get(i));
+            arr[i] = new SBOMFile(filenamesList.get(i), contentsList.get(i));
 
         }
 

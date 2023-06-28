@@ -4,6 +4,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.svip.api.model.SBOMFile;
 import org.svip.api.utils.Utils;
 import org.svip.sbomfactory.osi.OSI;
 import org.svip.sbomfactory.translators.TranslatorController;
@@ -101,22 +102,22 @@ public class SVIPApiController {
      * @return The uploaded filename used to identify the SBOM file.
      */
     @PostMapping("/upload")
-    public ResponseEntity<String> upload(@RequestBody Utils.SBOMFile sbomFile) {
+    public ResponseEntity<String> upload(@RequestBody SBOMFile sbomFile) {
         // Validate
-        if (sbomFile.hasNullProperties)
+        if (sbomFile.hasNullProperties())
             return new ResponseEntity<>("SBOM filename and/or contents may not be empty", HttpStatus.BAD_REQUEST);
 
         try {
-            TranslatorController.translateContents(sbomFile.contents, sbomFile.fileName);
+            TranslatorController.translateContents(sbomFile.getContents(), sbomFile.getFileName());
         } catch (TranslatorException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
         // Upload
-        files.put(sbomFile.fileName, sbomFile.contents);
+        files.put(sbomFile.getFileName(), sbomFile.getContents());
 
         // Return ID
-        return Utils.encodeResponse(sbomFile.fileName);
+        return Utils.encodeResponse(sbomFile.getFileName());
     }
 
     /**

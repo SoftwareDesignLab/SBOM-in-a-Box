@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.controller.SVIPApiController;
-import org.svip.api.utils.Utils;
+import org.svip.api.model.SBOMFile;
 
 import java.io.IOException;
 import java.util.Map;
@@ -22,7 +22,7 @@ public class ViewAllFromAPITest extends APITest {
         ctrl = new SVIPApiController();
 
         testFiles = testFileMap();
-        testFiles.forEach((k, v) -> ctrl.upload(new Utils.SBOMFile(k, v)));
+        testFiles.forEach((k, v) -> ctrl.upload(new SBOMFile(k, v)));
     }
 
     @Test
