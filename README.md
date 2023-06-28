@@ -12,28 +12,35 @@ v1.0.0 - alpha (2/27/23)
 _Full sub-system READMEs & changelogs can be found in the `doc` directory_
 
 ## Quick Start
-Build the project using:
-```
-$ ./gradlew build
-```
 
 ### SBOM Generator CLI:
-```
-$ java -jar core/build/libs/core-1.0.0-alpha.jar
+> CLI Driver can be found [here](../core/src/main/java/org/svip/SBOMGeneratorCLI.java)
+
+To build from scratch, use:
+```shell
+$ ./gradlew build
+$ cd core/build/libs && move core-1.0.0-alpha.jar SBOMGeneratorCLI.jar
+$ java -jar SBOMGeneratorCLI.jar <targetPath>
 ```
 
+See the SBOM Generator CLI section of [doc/README.md](doc/README.md) for detailed usage.
+
 ### API:
+```shell
+$ ./gradlew build
+$ cd api/build/libs && move api-1.0.0-alpha.jar SVIP_API.jar
+$ java -jar SVIP_API.jar
 ```
-$ java -jar api/build/libs/api-1.0.0-alpha.jar
-```
+
+See the SVIP API section of [doc/README.md](doc/README.md) for detailed usage.
 
 ### API (Docker Container):
 First ensure Docker is installed and running.
-```
+```shell
 $ docker ps
 ```
 Then build and run the container. The API can be accessed at `localhost:8080/svip`.
-```
+```shell
 $ docker build -t svip .
 $ docker run -p 8080:8080 svip
 ```

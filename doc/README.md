@@ -10,7 +10,7 @@
   - [Usage](#usage)
 - [**SBOM Generator CLI**](#sbom-generator-cli)
   - [Quick Start](#quick-start)
-  - [Usage](#usage)
+  - [Usage](#usage-1)
   - [Supported Source Files](#supported-source-files)
   - [NLP Techniques](#nlp-techniques)
 - [**Open Source Intergration (OSI)**](#open-source-integration)
@@ -31,20 +31,29 @@
 
 ---
 # SVIP API
-> 
+> The SVIP back-end API. See [Usage](#usage) for more details of the endpoints.
 
 ## Quick Start
-```
+```shell
 $ ./gradlew build
-$ java -jar api/build/libs/api-1.0.0-alpha.jar
+$ cd api/build/libs && move api-1.0.0-alpha.jar SVIP_API.jar
+$ java -jar SVIP_API.jar
 ```
 
 ### Quick Start (Docker)
+First ensure Docker is installed and running.
+```shell
+$ docker ps
+```
+```shell
+$ docker build -t svip .
+$ docker run -p 8080:8080 svip
+```
 
 ## Usage
-The API is located on `localhost:8080`.
+The API is located on `localhost:8080/svip`.
 
-Current Endpoints (`/svip`):
+Current Endpoints (`/svip/`):
 - `/upload`    - Upload an SBOM to the server.
 - `/view`      - View the raw contents of an SBOM file.
 - `/viewFiles` - View all file IDs uploaded to the server.
@@ -59,7 +68,7 @@ Current Endpoints (`/svip`):
 > CLI Driver can be found [here](../core/src/main/java/org/svip/SBOMGeneratorCLI.java)
 
 To build from scratch, use:
-```
+```shell
 $ ./gradlew build
 $ cd core/build/libs && move core-1.0.0-alpha.jar SBOMGeneratorCLI.jar
 $ java -jar SBOMGeneratorCLI.jar <targetPath>
