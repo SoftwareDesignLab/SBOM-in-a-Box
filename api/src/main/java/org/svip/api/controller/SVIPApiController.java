@@ -1,17 +1,19 @@
 package org.svip.api.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.svip.api.model.SBOMFile;
+import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.utils.Utils;
 import org.svip.sbomfactory.osi.OSI;
 import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomfactory.translators.TranslatorException;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * API Controller for handling requests to SVIP
@@ -53,7 +55,12 @@ public class SVIPApiController {
      */
     private static String pwd = "/src/test/java/org/svip/api";
 
-    private final Map<String, String> files;
+    /**
+     * File storage
+     */
+    //    private final Map<String, String> files;
+    @Autowired
+    private SBOMFileRepository sbomFileRepository;
 
     /** TODO OSI
      * buildOSI runs on startup to build the OSI container independent of the front-end.
@@ -68,7 +75,7 @@ public class SVIPApiController {
         headers = new HttpHeaders();
         headers.add("AccessControlAllowOrigin", "http://localhost:4200");
 
-        files = new HashMap<>();
+//        files = new HashMap<>();
     }
 
     /** TODO OSI
@@ -102,7 +109,7 @@ public class SVIPApiController {
      * @return The uploaded filename used to identify the SBOM file.
      */
     @PostMapping("/upload")
-    public ResponseEntity<String> upload(@RequestBody SBOMFile sbomFile) {
+    public ResponseEntity<?> upload(@RequestBody SBOMFile sbomFile) {
         // Validate
         if (sbomFile.hasNullProperties())
             return new ResponseEntity<>("SBOM filename and/or contents may not be empty", HttpStatus.BAD_REQUEST);
@@ -114,30 +121,33 @@ public class SVIPApiController {
         }
 
         // Upload
-        files.put(sbomFile.getFileName(), sbomFile.getContents());
+//        files.put(sbomFile.getFileName(), sbomFile.getContents());
+        sbomFileRepository.save(sbomFile);
 
         // Return ID
-        return Utils.encodeResponse(sbomFile.getFileName());
+        return Utils.encodeResponse(sbomFile.getId());
     }
 
     /**
-     * USAGE. Send GET request to /view with a URL parameter filename to get the contents of.
+     * USAGE. Send GET request to /view with a URL parameter id to get the contents of.
      *
      * The API will respond with an HTTP 200 and the contents of the SBOM file.
      *
-     * @param fileName The filename of the SBOM contents to retrieve.
+     * @param id The id of the SBOM contents to retrieve.
      * @return The contents of the SBOM file.
      */
     @GetMapping("/view")
-    public ResponseEntity<String> view(@RequestParam("fileName") String fileName) {
+    public ResponseEntity<String> view(@RequestParam("fileName") long id) {
         // Get SBOM
-        String sbomFile = files.get(fileName);
+//        String sbomFile = files.get(fileName);
+        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
         // Return SBOM or invalid ID
-        if (sbomFile == null)
+//        if (sbomFile == null)
+        if (sbomFile.isEmpty())
             return new ResponseEntity<>("Invalid SBOM ID.", HttpStatus.BAD_REQUEST);
 
-        return Utils.encodeResponse(sbomFile);
+        return Utils.encodeResponse(sbomFile.get().getContents());
     }
 
     /**
@@ -149,10 +159,14 @@ public class SVIPApiController {
     @GetMapping("/viewFiles")
     public ResponseEntity<String[]> viewFiles() {
         // Get file names
-        String[] fileNames = files.keySet().toArray(new String[0]);
+//        String[] fileNames = files.keySet().toArray(new String[0]);
+        List<SBOMFile> sbomFiles = sbomFileRepository.findAll();
+
+        if (sbomFiles.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
         // Return file names
-        return Utils.encodeResponse(fileNames);
+        return Utils.encodeResponse((String[]) sbomFiles.stream().map(SBOMFile::getId).toArray());
     }
 
     /**
