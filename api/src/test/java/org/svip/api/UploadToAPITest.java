@@ -1,5 +1,6 @@
 package org.svip.api;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,7 +16,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UploadToAPITest extends APITest {
-    private SVIPApiController ctrl;
+    private final SVIPApiController ctrl;
 
     public UploadToAPITest() {
         ctrl = new SVIPApiController();
@@ -23,12 +24,13 @@ public class UploadToAPITest extends APITest {
 
     @Test
     @DisplayName("Upload File")
+    @Disabled("Need to figure out how to simulate a MySQL instance")
     public void uploadFileTest() throws IOException {
         List<SBOMFile> files = testFileMap().entrySet().stream()
                 .map(e -> new SBOMFile(e.getKey(), e.getValue())).toList();
 
         for (SBOMFile file : files) {
-            ResponseEntity<String> response = ctrl.upload(file);
+            ResponseEntity<?> response = ctrl.upload(file);
 
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertEquals(file.getFileName(), response.getBody());
@@ -41,7 +43,7 @@ public class UploadToAPITest extends APITest {
     public void uploadEmptyFileNameTest(String fileName) {
         SBOMFile file = new SBOMFile(fileName, "test contents");
 
-        ResponseEntity<String> response = ctrl.upload(file);
+        ResponseEntity<?> response = ctrl.upload(file);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
@@ -52,7 +54,7 @@ public class UploadToAPITest extends APITest {
     public void uploadEmptyFileContentsTest(String fileContents) {
         SBOMFile file = new SBOMFile("filename", fileContents);
 
-        ResponseEntity<String> response = ctrl.upload(file);
+        ResponseEntity<?> response = ctrl.upload(file);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
