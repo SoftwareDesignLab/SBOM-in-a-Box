@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.svip.api.controller.old.APITest;
 
 import java.io.IOException;
 import java.util.Map;
@@ -13,14 +12,10 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ViewAllFromAPITest extends APITest {
-    private SVIPApiController ctrl;
-
     private final Map<String, String> testFiles;
 
     public ViewAllFromAPITest() throws IOException {
-//        ctrl = new SVIPApiController();
-
-        testFiles = testFileMap();
+        testFiles = getTestFileMap();
 //        testFiles.forEach((k, v) -> ctrl.upload(new SBOMFile(k, v)));
     }
 
@@ -28,7 +23,7 @@ public class ViewAllFromAPITest extends APITest {
     @DisplayName("View All Files")
     @Disabled("Need to figure out how to simulate a MySQL instance")
     public void viewAllFilesTest() {
-        ResponseEntity<Long[]> response = ctrl.viewFiles();
+        ResponseEntity<Long[]> response = controller.viewFiles();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 

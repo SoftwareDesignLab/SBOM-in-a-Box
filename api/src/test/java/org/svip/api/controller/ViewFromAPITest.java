@@ -6,21 +6,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.svip.api.controller.old.APITest;
 
 import java.io.IOException;
 import java.util.Map;
 
 public class ViewFromAPITest extends APITest {
-    private SVIPApiController ctrl;
 
     private final Map<String, String> testFiles;
 
     public ViewFromAPITest() throws IOException {
-//        ctrl = new SVIPApiController();
-
-        testFiles = testFileMap();
-//        testFiles.forEach((k, v) -> ctrl.upload(new SBOMFile(k, v)));
+        testFiles = getTestFileMap();
+//        testFiles.forEach((k, v) -> controller.upload(new SBOMFile(k, v)));
     }
 
     @Test
@@ -29,7 +25,7 @@ public class ViewFromAPITest extends APITest {
     public void viewFileTest() {
 
         for (String fileName : testFiles.keySet()) {
-//            ResponseEntity<String> response = ctrl.view(fileName);
+//            ResponseEntity<String> response = controller.view(fileName);
 //
 //            assertEquals(HttpStatus.OK, response.getStatusCode());
 //            assertEquals(testFiles.get(fileName), response.getBody());

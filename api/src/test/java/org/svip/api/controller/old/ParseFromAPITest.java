@@ -1,7 +1,5 @@
 package org.svip.api.controller.old;
 
-import org.svip.api.controller.SVIPApiController;
-
 /**
  * Unit tests for the parse API endpoint that cover input validation and parsing.
  *
@@ -12,11 +10,11 @@ public class ParseFromAPITest extends APITest {
     /**
      * Controller to test
      */
-    private SVIPApiController ctrl;
-
-    public ParseFromAPITest() {
-        ctrl = new SVIPApiController();
-    }
+//    private SVIPApiController ctrl;
+//
+//    public ParseFromAPITest() {
+//        ctrl = new SVIPApiController();
+//    }
 
 //    @ParameterizedTest
 //    @DisplayName("Null/Empty File Contents Array")

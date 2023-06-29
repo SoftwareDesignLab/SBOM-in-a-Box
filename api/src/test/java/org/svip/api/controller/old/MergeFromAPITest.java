@@ -1,7 +1,5 @@
 package org.svip.api.controller.old;
 
-import org.svip.api.controller.SVIPApiController;
-
 /**
  * Unit tests for the merge API endpoint that cover input validation and merging.
  *
@@ -12,11 +10,11 @@ public class MergeFromAPITest extends APITest{
     /**
      * Controller to test
      */
-    private final SVIPApiController ctrl;
-
-    public MergeFromAPITest() {
-        ctrl = new SVIPApiController();
-    }
+//    private final SVIPApiController ctrl;
+//
+//    public MergeFromAPITest() {
+//        ctrl = new SVIPApiController();
+//    }
 
 
 //    @ParameterizedTest

@@ -59,8 +59,7 @@ public class SVIPApiController {
      * File storage
      */
     //    private final Map<String, String> files;
-    @Autowired
-    private SBOMFileRepository sbomFileRepository;
+    private final SBOMFileRepository sbomFileRepository;
 
     /** TODO OSI
      * buildOSI runs on startup to build the OSI container independent of the front-end.
@@ -71,11 +70,13 @@ public class SVIPApiController {
 //        osiContainer = new OSI(osiBoundDir, dockerPath);
 //    }
 
-    public SVIPApiController() {
+    @Autowired
+    public SVIPApiController(final SBOMFileRepository sbomFileRepository) {
         headers = new HttpHeaders();
         headers.add("AccessControlAllowOrigin", "http://localhost:4200");
 
 //        files = new HashMap<>();
+        this.sbomFileRepository = sbomFileRepository;
     }
 
     /** TODO OSI

@@ -1,7 +1,5 @@
 package org.svip.api.controller.old;
 
-import org.svip.api.controller.SVIPApiController;
-
 /**
  * Unit tests for the generateSBOM API endpoint that cover input validation and generation.
  *
@@ -13,11 +11,11 @@ public class GenerateFromAPITest extends APITest {
     /**
      * Controller to test
      */
-    private final SVIPApiController ctrl;
-
-    public GenerateFromAPITest() {
-        ctrl = new SVIPApiController();
-    }
+//    private final SVIPApiController ctrl;
+//
+//    public GenerateFromAPITest() {
+//        ctrl = new SVIPApiController();
+//    }
 
 //    @ParameterizedTest
 //    @DisplayName("Null/Empty File Contents Array")

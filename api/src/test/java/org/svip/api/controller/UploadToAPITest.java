@@ -1,39 +1,35 @@
 package org.svip.api.controller;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.svip.api.controller.old.APITest;
 import org.svip.api.model.SBOMFile;
 
 import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 public class UploadToAPITest extends APITest {
-    private final SVIPApiController ctrl;
-
-    public UploadToAPITest() {
-        ctrl = new SVIPApiController();
-    }
 
     @Test
     @DisplayName("Upload File")
-    @Disabled("Need to figure out how to simulate a MySQL instance")
     public void uploadFileTest() throws IOException {
-        List<SBOMFile> files = testFileMap().entrySet().stream()
+        List<SBOMFile> files = getTestFileMap().entrySet().stream()
                 .map(e -> new SBOMFile(e.getKey(), e.getValue())).toList();
 
+        when(repository.save(any(SBOMFile.class))).thenAnswer(i -> i.getArgument(0));
+
         for (SBOMFile file : files) {
-            ResponseEntity<?> response = ctrl.upload(file);
+            ResponseEntity<?> response = controller.upload(file);
 
             assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertEquals(file.getFileName(), response.getBody());
+            assertEquals(file.getId(), response.getBody());
         }
     }
 
@@ -43,7 +39,7 @@ public class UploadToAPITest extends APITest {
     public void uploadEmptyFileNameTest(String fileName) {
         SBOMFile file = new SBOMFile(fileName, "test contents");
 
-        ResponseEntity<?> response = ctrl.upload(file);
+        ResponseEntity<?> response = controller.upload(file);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
@@ -54,7 +50,7 @@ public class UploadToAPITest extends APITest {
     public void uploadEmptyFileContentsTest(String fileContents) {
         SBOMFile file = new SBOMFile("filename", fileContents);
 
-        ResponseEntity<?> response = ctrl.upload(file);
+        ResponseEntity<?> response = controller.upload(file);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }

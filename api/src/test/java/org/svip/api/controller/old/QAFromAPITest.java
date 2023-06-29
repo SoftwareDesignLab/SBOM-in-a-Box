@@ -1,9 +1,5 @@
 package org.svip.api.controller.old;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.svip.api.controller.SVIPApiController;
-
-
 /**
  * File: QAFromAPITest.java
  * Unit tests for API regarding QA
@@ -21,7 +17,7 @@ public class QAFromAPITest {
             + "/src/test/java/org/svip/api/sample_sboms/sbom.docker.2-2_small.spdx";
     private final String pythonSBOM = System.getProperty("user.dir")
             + "/src/test/java/org/svip/api/sample_sboms/sbom.python.2-3.spdx";
-    private SVIPApiController ctrl;
+//    private SVIPApiController ctrl;
 
 
 //    @Test
@@ -53,9 +49,9 @@ public class QAFromAPITest {
 
 
 
-    @BeforeEach
-    public void setup(){
-        ctrl = new SVIPApiController();
-    }
+//    @BeforeEach
+//    public void setup(){
+//        ctrl = new SVIPApiController();
+//    }
 
 }
