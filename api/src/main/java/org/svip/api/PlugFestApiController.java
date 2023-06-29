@@ -7,7 +7,7 @@ import org.svip.api.utils.Utils.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.old.SBOM;
 import org.svip.sbomanalysis.differ.DiffReport;
 import org.svip.sbomanalysis.qualityattributes.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.QualityReport;

@@ -1,7 +1,7 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
 
-import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.old.SBOM;
 
 import java.util.ArrayList;
 import java.util.List;

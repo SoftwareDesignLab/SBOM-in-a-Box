@@ -3,9 +3,9 @@ package org.svip.sbomfactory.translators;
 import org.cyclonedx.exception.ParseException;
 import org.cyclonedx.model.*;
 import org.cyclonedx.parsers.JsonParser;
-import org.svip.sbom.model.AppTool;
-import org.svip.sbom.model.Component;
-import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.old.AppTool;
+import org.svip.sbom.model.old.Component;
+import org.svip.sbom.model.old.SBOM;
 import org.svip.sbom.model.uids.Hash;
 import org.svip.sbomfactory.generators.utils.Debug;
 

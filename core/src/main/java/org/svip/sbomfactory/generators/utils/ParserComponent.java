@@ -1,7 +1,7 @@
 package org.svip.sbomfactory.generators.utils;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.svip.sbom.model.Component;
+import org.svip.sbom.model.old.Component;
 import org.svip.sbomfactory.generators.utils.generators.License;
 import org.svip.sbomfactory.generators.utils.generators.LicenseManager;
 

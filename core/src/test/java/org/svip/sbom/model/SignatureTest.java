@@ -3,6 +3,7 @@ package org.svip.sbom.model;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.model.old.Signature;
 
 import java.util.Arrays;
 import java.util.HashSet;

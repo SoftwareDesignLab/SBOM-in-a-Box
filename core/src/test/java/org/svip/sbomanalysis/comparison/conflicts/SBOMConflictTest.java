@@ -2,9 +2,9 @@ package org.svip.sbomanalysis.comparison.conflicts;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.model.DependencyTree;
-import org.svip.sbom.model.SBOM;
-import org.svip.sbom.model.Signature;
+import org.svip.sbom.model.old.DependencyTree;
+import org.svip.sbom.model.old.SBOM;
+import org.svip.sbom.model.old.Signature;
 
 import java.util.Collections;
 

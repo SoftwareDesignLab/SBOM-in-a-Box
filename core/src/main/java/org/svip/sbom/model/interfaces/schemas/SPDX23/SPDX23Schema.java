@@ -1,6 +1,6 @@
-package org.svip.sbom.model.schemas;
+package org.svip.sbom.model.interfaces.generics.schemas;
 
-import org.svip.sbom.model.generics.SBOM;
+import org.svip.sbom.model.interfaces.generics.SBOM;
 
 /**
  * File: SPDX23Schema.java

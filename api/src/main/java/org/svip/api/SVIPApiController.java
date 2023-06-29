@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.svip.api.utils.Resolver;
 import org.svip.api.utils.Utils;
-import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.old.SBOM;
 import org.svip.sbomanalysis.comparison.Merger;
 import org.svip.sbomanalysis.qualityattributes.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.QualityReport;

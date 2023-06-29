@@ -3,6 +3,10 @@ package org.svip.sbom.model;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.model.old.Component;
+import org.svip.sbom.model.old.DependencyTree;
+import org.svip.sbom.model.old.SBOM;
+import org.svip.sbom.model.old.Signature;
 
 import java.util.*;
 

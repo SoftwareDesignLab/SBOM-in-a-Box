@@ -1,7 +1,7 @@
 package org.svip.visualizer;
 
 
-import org.svip.sbom.model.Vulnerability;
+import org.svip.sbom.model.old.Vulnerability;
 import org.svip.sbomanalysis.comparison.conflicts.ComponentConflict;
 
 import java.util.Set;

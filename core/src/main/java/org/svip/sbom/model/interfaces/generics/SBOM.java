@@ -1,6 +1,6 @@
-package org.svip.sbom.model.generics;
+package org.svip.sbom.model.interfaces.generics;
 
-import org.svip.sbom.model.Relationship;
+import org.svip.sbom.model.old.Relationship;
 import org.svip.sbom.model.metadata.CreationData;
 import org.svip.sbom.model.util.ExternalReference;
 

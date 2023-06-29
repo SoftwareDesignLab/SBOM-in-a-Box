@@ -1,4 +1,4 @@
-package org.svip.sbom.model;
+package org.svip.sbom.model.old;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
