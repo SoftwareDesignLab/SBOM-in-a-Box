@@ -1,8 +1,8 @@
 package org.svip.sbom.model.interfaces.generics;
 
-import org.svip.sbom.model.Relationship;
-import org.svip.sbom.model.metadata.CreationData;
-import org.svip.sbom.model.util.ExternalReference;
+import org.svip.sbom.model.shared.Relationship;
+import org.svip.sbom.model.shared.metadata.CreationData;
+import org.svip.sbom.model.shared.util.ExternalReference;
 
 import java.util.Map;
 import java.util.Set;

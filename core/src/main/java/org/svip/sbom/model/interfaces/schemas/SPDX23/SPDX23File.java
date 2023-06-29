@@ -9,7 +9,7 @@ package org.svip.sbom.model.interfaces.schemas.SPDX23;
  *
  * @author Derek Garcia
  */
-interface SPDX23File extends SPDX23Component{
+public interface SPDX23File extends SPDX23Component{
 
     /**
      * @return License notices or other such related notices

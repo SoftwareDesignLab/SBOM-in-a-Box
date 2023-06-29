@@ -1,4 +1,4 @@
-package org.svip.sbom.model.metadata;
+package org.svip.sbom.model.shared.metadata;
 
 import java.util.HashMap;
 import java.util.Map;

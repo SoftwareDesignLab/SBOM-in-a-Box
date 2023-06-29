@@ -1,6 +1,6 @@
 package org.svip.sbom.model.interfaces.generics;
 
-import org.svip.sbom.model.util.LicenseCollection;
+import org.svip.sbom.model.shared.util.LicenseCollection;
 
 import java.util.Map;
 
