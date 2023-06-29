@@ -1,45 +1,48 @@
 package org.svip.api.controller;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.svip.api.model.SBOMFile;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 public class ViewFromAPITest extends APITest {
 
-    private final Map<String, String> testFiles;
+    private Map<Long, SBOMFile> testMap;
 
     public ViewFromAPITest() throws IOException {
-        testFiles = getTestFileMap();
-//        testFiles.forEach((k, v) -> controller.upload(new SBOMFile(k, v)));
+        testMap = getTestFileMap();
     }
 
     @Test
     @DisplayName("View File")
-    @Disabled("Fix API ID parameter")
     public void viewFileTest() {
+        // Mock a map of test files in the DB
+        when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
 
-        for (String fileName : testFiles.keySet()) {
-//            ResponseEntity<String> response = controller.view(fileName);
-//
-//            assertEquals(HttpStatus.OK, response.getStatusCode());
-//            assertEquals(testFiles.get(fileName), response.getBody());
+        for (Long id : testMap.keySet()) {
+            ResponseEntity<String> response = controller.view(id);
+            assertEquals(testMap.get(id).getContents(), response.getBody());
         }
     }
 
-    @ParameterizedTest
+    @Test
     @DisplayName("View Empty/Invalid File")
-    @NullAndEmptySource
-    @ValueSource(strings = { "INVALID FILE NAME" })
-    @Disabled("Fix API ID parameter")
-    public void viewFileEmptyTest(String fileName) {
-//        ResponseEntity<String> response = ctrl.view(fileName);
-//
-//        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    public void viewFileEmptyTest() {
+        long testId = 0;
+
+        // Simulate empty DB
+        when(repository.findById(any())).thenAnswer(i -> Optional.empty());
+
+        ResponseEntity<String> response = controller.view(testId);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 }

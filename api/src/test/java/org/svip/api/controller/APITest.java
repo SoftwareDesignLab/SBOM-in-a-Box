@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
 
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class APITest {
         controller = new SVIPApiController(repository);
     }
 
-    public static Map<String, String> getTestFileMap() throws IOException {
+    public static Map<Long, SBOMFile> getTestFileMap() throws IOException {
         final List<String> contentsArray = new ArrayList<>();
         final List<String> fileNamesArray = new ArrayList<>();
 
@@ -75,9 +76,10 @@ public class APITest {
         fileNamesArray.add(goSBOM);
         fileNamesArray.add(gradleSBOM);
 
-        final Map<String, String> resultMap = new HashMap<>();
+        final Map<Long, SBOMFile> resultMap = new HashMap<>();
         for (int i = 0; i < contentsArray.size(); i++) {
-            resultMap.put(fileNamesArray.get(i), contentsArray.get(i));
+            resultMap.put((long) i, new SBOMFile(fileNamesArray.get(i), contentsArray.get(i)));
+            resultMap.get((long) i).setId(i); // Set ID for testing purposes
         }
 
         return resultMap;

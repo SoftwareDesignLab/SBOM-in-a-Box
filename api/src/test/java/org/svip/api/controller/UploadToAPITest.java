@@ -20,9 +20,11 @@ public class UploadToAPITest extends APITest {
     @Test
     @DisplayName("Upload File")
     public void uploadFileTest() throws IOException {
-        List<SBOMFile> files = getTestFileMap().entrySet().stream()
-                .map(e -> new SBOMFile(e.getKey(), e.getValue())).toList();
+        List<SBOMFile> files = getTestFileMap().values().stream()
+                .map(sbomFile -> new SBOMFile(sbomFile.getFileName(), sbomFile.getContents()))
+                .toList();
 
+        // Mock repository output (returns SBOMFile that it recieived)
         when(repository.save(any(SBOMFile.class))).thenAnswer(i -> i.getArgument(0));
 
         for (SBOMFile file : files) {
