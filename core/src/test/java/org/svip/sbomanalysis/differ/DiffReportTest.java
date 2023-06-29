@@ -2,21 +2,14 @@ package org.svip.sbomanalysis.differ;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.svip.sbom.model.Component;
-import org.svip.sbom.model.DependencyTree;
-import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.old.Component;
+import org.svip.sbom.model.old.DependencyTree;
+import org.svip.sbom.model.old.SBOM;
 import org.svip.sbomanalysis.comparison.conflicts.ComponentConflict;
-import org.svip.sbomanalysis.comparison.conflicts.ComponentConflictType;
 import org.svip.sbomanalysis.comparison.conflicts.SBOMConflict;
-import org.svip.sbomanalysis.comparison.conflicts.SBOMConflictType;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * File: DiffReportTest.java

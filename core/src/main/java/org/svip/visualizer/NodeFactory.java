@@ -1,8 +1,8 @@
 package org.svip.visualizer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.svip.sbom.model.Component;
-import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.old.Component;
+import org.svip.sbom.model.old.SBOM;
 
 import java.util.HashSet;
 import java.util.Iterator;

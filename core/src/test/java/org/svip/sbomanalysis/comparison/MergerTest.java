@@ -9,9 +9,9 @@
 package org.svip.sbomanalysis.comparison;
 
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.model.Component;
-import org.svip.sbom.model.DependencyTree;
-import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.old.Component;
+import org.svip.sbom.model.old.DependencyTree;
+import org.svip.sbom.model.old.SBOM;
 
 import java.util.ArrayList;
 import java.util.List;

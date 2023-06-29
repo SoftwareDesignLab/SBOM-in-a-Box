@@ -4,7 +4,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.model.Component;
+import org.svip.sbom.model.old.Component;
 
 import java.util.Arrays;
 import java.util.HashSet;

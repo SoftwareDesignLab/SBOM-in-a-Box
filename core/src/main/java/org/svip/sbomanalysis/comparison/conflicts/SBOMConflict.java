@@ -1,7 +1,7 @@
 package org.svip.sbomanalysis.comparison.conflicts;
 
 
-import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.old.SBOM;
 
 import java.util.HashSet;
 import java.util.Set;

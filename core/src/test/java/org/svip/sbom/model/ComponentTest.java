@@ -3,6 +3,8 @@ package org.svip.sbom.model;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.model.old.Component;
+import org.svip.sbom.model.old.Vulnerability;
 
 import java.util.HashSet;
 import java.util.List;

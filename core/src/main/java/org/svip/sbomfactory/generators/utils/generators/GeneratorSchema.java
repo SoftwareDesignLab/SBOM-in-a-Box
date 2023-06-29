@@ -12,7 +12,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.old.SBOM;
 import org.svip.sbomfactory.generators.generators.BOMStore;
 import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXSerializer;
 import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXStore;

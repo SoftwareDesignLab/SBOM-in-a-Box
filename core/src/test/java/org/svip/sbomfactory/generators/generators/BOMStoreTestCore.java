@@ -1,6 +1,6 @@
 package org.svip.sbomfactory.generators.generators;
 
-import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.old.SBOM;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.List;

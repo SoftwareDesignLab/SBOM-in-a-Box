@@ -1,6 +1,6 @@
 package org.svip.sbomfactory.generators.generators.cyclonedx;
 
-import org.svip.sbom.model.Component;
+import org.svip.sbom.model.old.Component;
 import org.svip.sbomfactory.generators.generators.BOMStore;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;

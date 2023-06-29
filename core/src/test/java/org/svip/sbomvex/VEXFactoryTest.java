@@ -1,10 +1,10 @@
 package org.svip.sbomvex;
 
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.model.Component;
-import org.svip.sbom.model.DependencyTree;
-import org.svip.sbom.model.SBOM;
-import org.svip.sbom.model.Vulnerability;
+import org.svip.sbom.model.old.Component;
+import org.svip.sbom.model.old.DependencyTree;
+import org.svip.sbom.model.old.SBOM;
+import org.svip.sbom.model.old.Vulnerability;
 import org.svip.sbomvex.database.mockNetworking.mockHTTPConversation;
 import org.svip.sbomvex.database.mockNetworking.mockHttpResponse;
 import org.svip.sbomvex.database.mockNetworking.mockVEXFactory;

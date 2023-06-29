@@ -1,8 +1,8 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
 
-import org.svip.sbom.model.Component;
-import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.old.Component;
+import org.svip.sbom.model.old.SBOM;
 import org.svip.sbom.model.uids.CPE;
 import org.svip.sbomfactory.generators.utils.Debug;
 
