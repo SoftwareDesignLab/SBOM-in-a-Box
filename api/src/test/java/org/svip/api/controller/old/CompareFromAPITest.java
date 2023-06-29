@@ -1,4 +1,4 @@
-package org.svip.api.controller;
+package org.svip.api.controller.old;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Disabled;
@@ -8,6 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.svip.api.controller.PlugFestApiController;
 import org.svip.api.utils.Utils;
 import org.svip.sbomanalysis.differ.DiffReport;
 import org.svip.sbomfactory.translators.TranslatorException;

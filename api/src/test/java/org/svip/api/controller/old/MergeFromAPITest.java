@@ -1,4 +1,6 @@
-package org.svip.api.controller;
+package org.svip.api.controller.old;
+
+import org.svip.api.controller.SVIPApiController;
 
 /**
  * Unit tests for the merge API endpoint that cover input validation and merging.
