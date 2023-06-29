@@ -26,23 +26,18 @@ $ java -jar SBOMGeneratorCLI.jar <targetPath>
 See the SBOM Generator CLI section of [doc/README.md](doc/README.md) for detailed usage.
 
 ### API:
+> Currently does not work due to the API's dependence on the MySQL docker container.
 ```shell
 $ ./gradlew build
 $ cd api/build/libs && move api-1.0.0-alpha.jar SVIP_API.jar
 $ java -jar SVIP_API.jar
 ```
 
-See the SVIP API section of [doc/README.md](doc/README.md) for detailed usage.
-
-### API (Docker Container):
-First ensure Docker is installed and running.
+### API (Docker)
+First ensure Docker is installed and running and then deploy using the docker-compose script.
 ```shell
 $ docker ps
-```
-Then build and run the container. The API can be accessed at `localhost:8080/svip`.
-```shell
-$ docker build -t svip .
-$ docker run -p 8080:8080 svip
+$ docker compose up
 ```
 
 ## Features
