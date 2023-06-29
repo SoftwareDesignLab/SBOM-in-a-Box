@@ -39,6 +39,13 @@ First ensure Docker is installed and running and then deploy using the docker-co
 $ docker ps
 $ docker compose up
 ```
+Use the `--build` flag when running `docker compose` to force the images to rebuild (rebuild the Gradle project
+without manually removing the images).
+
+To run the MySQL container only (to allow running the API outside of its container), use the following command.
+```shell
+$ docker compose up -d mysql
+```
 
 ## Features
 This is a list of all "features", or sub-systems that SVIP contains. Each links to their respective README.md file.
