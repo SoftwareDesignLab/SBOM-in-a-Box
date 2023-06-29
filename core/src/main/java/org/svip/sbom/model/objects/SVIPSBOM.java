@@ -1,15 +1,16 @@
 package org.svip.sbom.model.objects;
 
-import org.svip.sbom.model.interfaces.generics.schemas.CDX14Schema;
-import org.svip.sbom.model.interfaces.generics.schemas.SPDX23Schema;
-import org.svip.sbom.model.metadata.CreationData;
-import org.svip.sbom.model.Relationship;
-import org.svip.sbom.model.util.ExternalReference;
+import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Schema;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
+import org.svip.sbom.model.shared.metadata.CreationData;
+import org.svip.sbom.model.shared.Relationship;
+import org.svip.sbom.model.shared.util.ExternalReference;
 
 import java.util.Map;
 import java.util.Set;
 // todo
 public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
+
     @Override
     public String getFormat() {
         return null;

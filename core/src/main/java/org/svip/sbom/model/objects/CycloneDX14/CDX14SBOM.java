@@ -1,15 +1,15 @@
-package org.svip.sbom.model.objects;
+package org.svip.sbom.model.objects.CycloneDX14;
 
-import org.svip.sbom.model.metadata.CreationData;
-import org.svip.sbom.model.Relationship;
-import org.svip.sbom.model.util.ExternalReference;
+import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Schema;
+import org.svip.sbom.model.shared.metadata.CreationData;
+import org.svip.sbom.model.shared.Relationship;
+import org.svip.sbom.model.shared.util.ExternalReference;
+import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Schema;
 
 import java.util.Map;
 import java.util.Set;
-
-import org.svip.sbom.model.interfaces.generics.schemas.SPDX23Schema;
 // todo
-public class SPDX23SBOM implements SPDX23Schema{
+public class CDX14SBOM implements CDX14Schema {
     @Override
     public String getFormat() {
         return null;
@@ -57,11 +57,6 @@ public class SPDX23SBOM implements SPDX23Schema{
 
     @Override
     public Set<ExternalReference> getExternalReferences() {
-        return null;
-    }
-
-    @Override
-    public String getSPDXLicenseListVersion() {
         return null;
     }
 }

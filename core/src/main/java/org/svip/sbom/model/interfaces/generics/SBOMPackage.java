@@ -1,8 +1,8 @@
 package org.svip.sbom.model.interfaces.generics;
 
-import org.svip.sbom.model.metadata.Organization;
-import org.svip.sbom.model.util.Description;
-import org.svip.sbom.model.util.ExternalReference;
+import org.svip.sbom.model.shared.metadata.Organization;
+import org.svip.sbom.model.shared.util.Description;
+import org.svip.sbom.model.shared.util.ExternalReference;
 
 import java.util.Set;
 

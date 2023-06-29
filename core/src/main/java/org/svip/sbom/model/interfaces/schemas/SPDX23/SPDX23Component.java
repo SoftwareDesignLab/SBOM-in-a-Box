@@ -1,5 +1,7 @@
 package org.svip.sbom.model.interfaces.schemas.SPDX23;
 
+import org.svip.sbom.model.interfaces.generics.Component;
+
 /**
  * File: SPDX23Component.java
  * <p>
@@ -9,7 +11,7 @@ package org.svip.sbom.model.interfaces.schemas.SPDX23;
  *
  * @author Derek Garcia
  */
-interface SPDX23Component {
+public interface SPDX23Component extends Component {
     /**
      * @return General comments about the component
      */

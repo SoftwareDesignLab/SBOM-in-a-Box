@@ -1,4 +1,4 @@
-package org.svip.sbom.model;
+package org.svip.sbom.model.shared;
 
 /**
  * File: Relationship.java
