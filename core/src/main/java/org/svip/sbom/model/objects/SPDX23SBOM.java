@@ -1,7 +1,7 @@
 package org.svip.sbom.model.objects;
 
 import org.svip.sbom.model.metadata.CreationData;
-import org.svip.sbom.model.old.Relationship;
+import org.svip.sbom.model.Relationship;
 import org.svip.sbom.model.util.ExternalReference;
 
 import java.util.Map;
