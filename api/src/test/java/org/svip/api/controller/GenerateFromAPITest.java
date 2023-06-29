@@ -1,6 +1,4 @@
-package org.svip.api;
-
-import org.svip.api.controller.SVIPApiController;
+package org.svip.api.controller;
 
 /**
  * Unit tests for the generateSBOM API endpoint that cover input validation and generation.

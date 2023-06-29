@@ -103,7 +103,7 @@ public class SVIPApiController {
      * USAGE. Send POST request to /upload with one SBOM file.
      *   The SBOM file is made up of 2 JSON key-value pairs in the request body: fileName and contents.
      *
-     * The API will respond with an HTTP 200 and the uploaded filename used to identify the SBOM file.
+     * The API will respond with an HTTP 200 and the ID used to identify the SBOM file.
      *
      * @param sbomFile 2 JSON key-value pairs in the request body: fileName and contents.
      * @return The uploaded filename used to identify the SBOM file.
@@ -129,7 +129,7 @@ public class SVIPApiController {
     }
 
     /**
-     * USAGE. Send GET request to /view with a URL parameter id to get the contents of.
+     * USAGE. Send GET request to /view with a URL parameter id to get the contents of the SBOM with the specified ID.
      *
      * The API will respond with an HTTP 200 and the contents of the SBOM file.
      *
@@ -152,9 +152,9 @@ public class SVIPApiController {
 
     /**
      * USAGE. Send GET request to /viewFiles.
-     * The API will respond with an HTTP 200 and a JSON array of all currently uploaded SBOM files.
+     * The API will respond with an HTTP 200 and a JSON array of all IDs of currently uploaded SBOM files.
      *
-     * @return A JSON array of all currently uploaded SBOM files.
+     * @return A JSON array of IDs of all currently uploaded SBOM files.
      */
     @GetMapping("/viewFiles")
     public ResponseEntity<Long[]> viewFiles() {
@@ -167,6 +167,31 @@ public class SVIPApiController {
 
         // Return file names
         return Utils.encodeResponse(sbomFiles.stream().map(SBOMFile::getId).toList().toArray(new Long[0]));
+    }
+
+    /**
+     * USAGE. Send DELETE request to /delete with a URL parameter id to get the contents of the SBOM with the specified
+     * ID.
+     *
+     * The API will respond with an HTTP 200 and the ID of the deleted SBOM file (if found).
+     *
+     * @param id The id of the SBOM contents to retrieve.
+     * @return The ID of the deleted file.
+     */
+    @DeleteMapping("/delete")
+    public ResponseEntity<Long> delete(@RequestParam("id") long id) {
+        // Get SBOM to be deleted
+        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
+
+        // Check if it exists
+        if (sbomFile.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        // Delete
+        sbomFileRepository.delete(sbomFile.get());
+
+        // Return deleted ID as confirmation
+        return Utils.encodeResponse(sbomFile.get().getId());
     }
 
     /**

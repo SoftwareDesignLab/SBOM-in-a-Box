@@ -1,11 +1,10 @@
-package org.svip.api;
+package org.svip.api.controller;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.svip.api.controller.SVIPApiController;
 
 import java.io.IOException;
 import java.util.Map;

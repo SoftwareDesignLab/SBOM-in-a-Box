@@ -1,4 +1,4 @@
-package org.svip.api;
+package org.svip.api.controller;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.svip.api.controller.SVIPApiController;
 
 import java.io.IOException;
 import java.util.Map;

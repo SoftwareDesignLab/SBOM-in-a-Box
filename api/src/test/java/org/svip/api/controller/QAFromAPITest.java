@@ -1,4 +1,4 @@
-package org.svip.api;
+package org.svip.api.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.svip.api.controller.SVIPApiController;

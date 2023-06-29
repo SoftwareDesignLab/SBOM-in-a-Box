@@ -1,4 +1,4 @@
-package org.svip.api;
+package org.svip.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.sbomfactory.generators.utils.Debug;
