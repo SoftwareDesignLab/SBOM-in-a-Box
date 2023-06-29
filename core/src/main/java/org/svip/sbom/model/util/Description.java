@@ -1,5 +1,11 @@
 package org.svip.sbom.model.util;
 
+/**
+ * File: Description.java
+ * Utility object to hold description information
+ *
+ * @author Derek Garcia
+ */
 public class Description {
     private final String summary;
     private String description;
