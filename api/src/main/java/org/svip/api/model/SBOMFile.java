@@ -27,15 +27,14 @@ public class SBOMFile {
      * The name of the SBOM file.
      */
     @JsonProperty
-    @Column(name = "fileName")
+    @Column(name = "fileName", columnDefinition="TEXT")
     private String fileName;
 
     /**
      * The string contents of the SBOM file.
      */
     @JsonProperty
-    @Lob
-    @Column(name = "contents")
+    @Column(name = "contents", columnDefinition="LONGTEXT")
     private String contents;
 
     /**
