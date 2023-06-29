@@ -1,5 +1,7 @@
 package org.svip.sbom.model.interfaces.generics;
 
+import org.svip.sbom.model.util.LicenseCollection;
+
 import java.util.Map;
 
 /**
@@ -31,10 +33,9 @@ public interface Component {
     String getName();
 
     /**
-     * todo
      * @return component Licenses
      */
-//    LicenseCollection getLicenses();
+    LicenseCollection getLicenses();
 
 
     /**
