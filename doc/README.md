@@ -34,11 +34,11 @@
 > The SVIP back-end API. See [Usage](#usage) for more details of the endpoints.
 
 ## Quick Start
-> Currently does not work due to the API's dependence on the MySQL docker container.
 ```shell
-$ ./gradlew build
-$ cd api/build/libs && move api-1.0.0-alpha.jar SVIP_API.jar
-$ java -jar SVIP_API.jar
+$ ./gradlew build                                            # Build API jar (can also be ran using IDE debug mode as well)
+$ docker compose up -d mysql                                 # Start MySQL server ONLY
+$ cd api/build/libs && move api-1.0.0-alpha.jar SVIP_API.jar # Rename jar file
+$ java -jar SVIP_API.jar                                     # Run jar file
 ```
 
 ### Quick Start (Docker)
