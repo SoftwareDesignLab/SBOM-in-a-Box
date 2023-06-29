@@ -8,7 +8,7 @@ import org.svip.sbom.model.util.ExternalReference;
 
 import java.util.Map;
 import java.util.Set;
-
+// todo
 public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
     @Override
     public String getFormat() {
