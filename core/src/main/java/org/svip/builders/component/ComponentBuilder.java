@@ -6,7 +6,7 @@ import org.svip.sbom.model.shared.util.LicenseCollection;
 
 /**
  * file: ComponentBuilder.java
- * Generic inteface for components in an SBOM that are common to both
+ * Generic interface for components in an SBOM that are common to both
  * SPDX and CycloneDX SBOMs
  *
  * @author Matthew Morrison
