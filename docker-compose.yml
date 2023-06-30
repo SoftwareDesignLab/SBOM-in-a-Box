@@ -16,28 +16,32 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
     ports:
-      - ${MYSQL_DOCKER_PORT}:${MYSQL_LOCAL_PORT}
-    volumes:
+      - ${MYSQL_LOCAL_PORT}:${MYSQL_DOCKER_PORT}
+    volumes: # Stores mysql data in a persistent volume to persist across container restarts
       - db:/var/lib/mysql
-    healthcheck:
-      # TODO: Find a more accurate health test. This usually fails on the first deployment of the container since it has to restart.
-      test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p${MYSQL_ROOT_PASSWORD}' ]
-      interval: 10s
+    healthcheck: # How to determine it's safe to start the api container. Pings the MySQL server until it has a response
+      test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p$MYSQL_ROOT_PASSWORD' ]
+      interval: 10s # Wait in case of the first build, server restarts once mid-way through to init
       timeout: 2s
 
   # SVIP API spring-boot application
   api:
     depends_on: # Start mysql server before starting API
       mysql:
-        condition: service_healthy
+        condition: service_healthy # Only start once the health check has passed
     build: .    # Build from Dockerfile located in root directory
     restart: on-failure
     ports:
-      - ${SPRING_DOCKER_PORT}:${SPRING_LOCAL_PORT}
+      - ${SPRING_LOCAL_PORT}:${SPRING_DOCKER_PORT}
     volumes:
       - .m2:/root/.m2
     stdin_open: true
     tty: true
-
+    environment: # Define environment variables for spring-boot application.properties
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_LOCAL_PORT=${MYSQL_LOCAL_PORT}
+      - SPRING_DOCKER_PORT=${SPRING_DOCKER_PORT}
 volumes:
   db: # Volume to store persistent data from MySQL server
