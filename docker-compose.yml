@@ -10,6 +10,7 @@ services:
 
   # MySQL server
   mysql:
+    container_name: svip-mysql
     image: mysql:5
     restart: unless-stopped
     environment:
@@ -26,6 +27,7 @@ services:
 
   # SVIP API spring-boot application
   api:
+    container_name: svip-api
     depends_on: # Start mysql server before starting API
       mysql:
         condition: service_healthy # Only start once the health check has passed
@@ -38,6 +40,7 @@ services:
     stdin_open: true
     tty: true
     environment: # Define environment variables for spring-boot application.properties
+      - MYSQL_HOST=${MYSQL_HOST}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}

@@ -7,20 +7,20 @@
 ### Deploy API with Docker
 First ensure Docker is installed and running and then deploy using the docker-compose script.
 ```shell
-# Ensure Docker is installed and running
+# Ensure Docker is installed and running.
 $ docker ps
-# Build image & deploy and link containers
+# Build images & deploy and link API & MySQL containers.
 $ docker compose up
 ```
 See the SVIP API section of [doc/README.md](doc/README.md#svip-api) for detailed usage.
 
 ### SBOM Generator CLI:
 ```shell
-# Build project from scratc
+# Build project from scratch.
 $ ./gradlew build
- # Find and rename JAR file
+ # Find and rename JAR file.
 $ cd core/build/libs && move core-1.0.0-alpha.jar SBOMGeneratorCLI.jar
-# Run JAR file and generate a CycloneDX JSON SBOM from the target path
+# Run JAR file and generate a CycloneDX JSON SBOM from the target path.
 $ java -jar SBOMGeneratorCLI.jar <targetPath>
 ```
 See the SBOM Generator CLI section of [doc/README.md](doc/README.md#sbom-generator-cli) for detailed usage.
