@@ -26,11 +26,11 @@ $ java -jar SBOMGeneratorCLI.jar <targetPath>
 See the SBOM Generator CLI section of [doc/README.md](doc/README.md) for detailed usage.
 
 ### API:
-> Currently does not work due to the API's dependence on the MySQL docker container.
 ```shell
-$ ./gradlew build
-$ cd api/build/libs && move api-1.0.0-alpha.jar SVIP_API.jar
-$ java -jar SVIP_API.jar
+$ ./gradlew build                                            # Build API jar (can also be ran using IDE debug mode as well)
+$ docker compose up -d mysql                                 # Start MySQL server ONLY
+$ cd api/build/libs && move api-1.0.0-alpha.jar SVIP_API.jar # Rename jar file
+$ java -jar SVIP_API.jar                                     # Run jar file
 ```
 
 ### API (Docker)
@@ -39,6 +39,8 @@ First ensure Docker is installed and running and then deploy using the docker-co
 $ docker ps
 $ docker compose up
 ```
+Use the `--build` flag when running `docker compose` to force the images to rebuild (rebuild the Gradle project
+without manually removing the images).
 
 ## Features
 This is a list of all "features", or sub-systems that SVIP contains. Each links to their respective README.md file.

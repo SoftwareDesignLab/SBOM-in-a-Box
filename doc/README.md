@@ -34,11 +34,11 @@
 > The SVIP back-end API. See [Usage](#usage) for more details of the endpoints.
 
 ## Quick Start
-> Currently does not work due to the API's dependence on the MySQL docker container.
 ```shell
-$ ./gradlew build
-$ cd api/build/libs && move api-1.0.0-alpha.jar SVIP_API.jar
-$ java -jar SVIP_API.jar
+$ ./gradlew build                                            # Build API jar (can also be ran using IDE debug mode as well)
+$ docker compose up -d mysql                                 # Start MySQL server ONLY
+$ cd api/build/libs && move api-1.0.0-alpha.jar SVIP_API.jar # Rename jar file
+$ java -jar SVIP_API.jar                                     # Run jar file
 ```
 
 ### Quick Start (Docker)
@@ -48,13 +48,38 @@ $ docker ps
 $ docker compose up
 ```
 
+Use the `--build` flag when running `docker compose` to force the images to rebuild (rebuild the Gradle project 
+without manually removing the images).
+
+To run the MySQL container only (to allow running the API outside of its container), use the following command.
+```shell
+$ docker compose up -d mysql
+```
+
+To edit the MySQL configuration/Docker port mappings, edit the `.env` file in the repository root.
+
 ## Usage
 The API is located on `localhost:8080/svip`.
 
 Current Endpoints (`/svip/`):
-- `/upload`    - Upload an SBOM to the server.
-- `/view`      - View the raw contents of an SBOM file.
+- `/upload` - Upload an SBOM to the server.
+- `/view` - View the raw contents of an SBOM file.
 - `/viewFiles` - View all file IDs uploaded to the server.
+- `/delete` - Delete a file from the server.
+
+### MySQL Database
+Located at `localhost:3306` while the `svip-mysql-1` Docker container is running.
+
+Use the following command to interact with the MySQL server instance:
+```shell
+$ docker exec -it svip-mysql-1 mysql -uroot -ptoor -D svip -e "<YOUR SQL STATEMENT HERE>"
+```
+#### Table `files` Schema:
+| Field     | Type       | Null | Key | Default | Extra |
+|:---------:|:----------:|:----:|:---:|:-------:|:-----:|
+| id        | bigint(20) | NO   | PRI | NULL    |       |
+| contents  | longtext   | YES  |     | NULL    |       |
+| file_name | text       | YES  |     | NULL    |       |
 
 ---
 

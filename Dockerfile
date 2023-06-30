@@ -1,3 +1,10 @@
+#
+# File: Dockerfile
+# The Dockerfile to build and run the SVIP API inside of a Docker container.
+#
+# Author: Ian Dunn
+#
+
 FROM gradle:8.1.1-jdk17 AS build
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
