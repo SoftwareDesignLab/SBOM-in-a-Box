@@ -11,11 +11,16 @@ services:
       - "3306:3306"
     volumes:
       - db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD' ]
+      interval: 10s
+      timeout: 2s
 
   # SVIP API spring-boot application
   api:
     depends_on: # Start mysql server before starting API
-      - mysql
+      mysql:
+        condition: service_healthy
     build: .    # Build from Dockerfile located in root directory
     restart: on-failure
     ports:
