@@ -8,7 +8,7 @@ import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
  *
  * @author Thomas Roman
  */
-public interface CDX14SBOMBuilder {
+public interface CDX14SBOMBuilder extends SBOMBuilder{
     /**
      * add a CDX 1.4 package to the CDX 1.4 SBOM builder
      * @param cdx14Package the CDX 1.4 package

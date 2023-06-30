@@ -9,7 +9,7 @@ import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
  *
  * @author Thomas Roman
  */
-public interface SPDX23SBOMBuilder {
+public interface SPDX23SBOMBuilder extends SBOMBuilder{
     /**
      * add a license list version to the SPDX 2.3 SBOM builder
      * @param licenseListVersion the SPDX 2.3 package
