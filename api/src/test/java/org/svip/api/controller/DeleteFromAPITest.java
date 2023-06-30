@@ -31,7 +31,7 @@ public class DeleteFromAPITest extends APITest {
         when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.empty());
 
         ResponseEntity<?> response = controller.delete(id);
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test

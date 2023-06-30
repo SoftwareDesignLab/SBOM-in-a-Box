@@ -43,6 +43,6 @@ public class ViewFromAPITest extends APITest {
         when(repository.findById(any())).thenAnswer(i -> Optional.empty());
 
         ResponseEntity<String> response = controller.view(testId);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 }
