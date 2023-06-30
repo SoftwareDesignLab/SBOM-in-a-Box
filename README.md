@@ -2,54 +2,58 @@
 > The SBOM Visualization and Integration Platform (**SVIP**) is a unified platform to promote the 
 > production, consumption, and utilization of Software Bills of Materials.
 
-## Latest Release
-v1.0.0 - alpha (2/27/23)
+## Quick Start
 
-- Electron.js App for Front end
-- Spring-Boot backend to handle API requests
-- SVIP Core that uses a Docker Container to generate SBOMs, merge them, and create a D3 JSON Visual
+### Deploy API with Docker
+First ensure Docker is installed and running and then deploy using the docker-compose script.
+```shell
+# Ensure Docker is installed and running
+$ docker ps
+# Build image & deploy and link containers
+$ docker compose up
+```
+See the SVIP API section of [doc/README.md](doc/README.md#svip-api) for detailed usage.
+
+### SBOM Generator CLI:
+```shell
+# Build project from scratc
+$ ./gradlew build
+ # Find and rename JAR file
+$ cd core/build/libs && move core-1.0.0-alpha.jar SBOMGeneratorCLI.jar
+# Run JAR file and generate a CycloneDX JSON SBOM from the target path
+$ java -jar SBOMGeneratorCLI.jar <targetPath>
+```
+See the SBOM Generator CLI section of [doc/README.md](doc/README.md#sbom-generator-cli) for detailed usage.
+
+## Latest Release
+### [v5.0.0-alpha] - (6/29/2023)
+
+#### Added
+- `Dockerfile` & `docker-compose.yml` to build the API and run a MySQL server with persistent storage in separate
+  Docker containers.
+    - `application.properties` & `.env` files created to setup Spring and Docker configuration.
+- `repository.SBOMFileRepository` Class to interact with the MySQL database.
+- New API endpoints (`upload`, `view`, `viewAll`, `delete`) to run CRUD operations on the `files` table.
+    - Added unit tests that mock the `repository.SBOMFileRepository` to avoid any local storage during testing.
+
+#### Changed
+- Refactored `NVIPApiController`, `PlugFestApiController`, & `NVIPApiController` Classes into `controller` package.
+- Refactored `utils.Utils.SBOMFile` into its own class `model.SBOMFile`
+    - Uses Hibernate decorators to automatically create a custom `files` table on the MySQL server.
+
+#### Removed
+- Old API endpoints & tests (`compare`, `generateSBOM`, `merge`, `parse`, & `qa`)
 
 _Full sub-system READMEs & changelogs can be found in the `doc` directory_
 
-## Quick Start
-
-### SBOM Generator CLI:
-> CLI Driver can be found [here](../core/src/main/java/org/svip/SBOMGeneratorCLI.java)
-
-To build from scratch, use:
-```shell
-$ ./gradlew build
-$ cd core/build/libs && move core-1.0.0-alpha.jar SBOMGeneratorCLI.jar
-$ java -jar SBOMGeneratorCLI.jar <targetPath>
-```
-
-See the SBOM Generator CLI section of [doc/README.md](doc/README.md) for detailed usage.
-
-### API:
-```shell
-$ ./gradlew build                                            # Build API jar (can also be ran using IDE debug mode as well)
-$ docker compose up -d mysql                                 # Start MySQL server ONLY
-$ cd api/build/libs && move api-1.0.0-alpha.jar SVIP_API.jar # Rename jar file
-$ java -jar SVIP_API.jar                                     # Run jar file
-```
-
-### API (Docker)
-First ensure Docker is installed and running and then deploy using the docker-compose script.
-```shell
-$ docker ps
-$ docker compose up
-```
-Use the `--build` flag when running `docker compose` to force the images to rebuild (rebuild the Gradle project
-without manually removing the images).
-
 ## Features
 This is a list of all "features", or sub-systems that SVIP contains. Each links to their respective README.md file.
-#### [Open Source Integrated SBOM Generation](doc/OSI/README.md) - Makes use of open source libraries to generate SBOMs
-#### [SBOM Generation](doc/Generators/README.md) - Custom SBOM generation via source file and package manager file analysis
-#### [SBOM VEX Generation](doc/VEX/README.md) - 
-#### [SBOM Metrics](doc/Metrics/README.md) - 
-#### [SBOM Comparison](doc/Comparer/README.md) - 
-#### [SBOM Merging](doc/Merger/README.md) - 
+- **Open Source Integrated SBOM Generation:** Makes use of open source libraries to generate SBOMs
+- **SBOM Generation:** Custom SBOM generation via source file and package manager file analysis
+- **SBOM VEX Generation:** 
+- **SBOM Metrics:** 
+- **SBOM Comparison:**
+- **SBOM Merging:**
 
 ## Contributors
 **Principal Investigator:** [Mehdi Mirakhorli](mailto:mxmvse@rit.edu)

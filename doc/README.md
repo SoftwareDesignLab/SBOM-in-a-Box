@@ -5,8 +5,6 @@
 
 - [**System Requirements**](#system-requirements)
 - [**SVIP API**](#svip-api)
-  - [Quick Start](#quick-start)
-    - [Quick Start (Docker)](#quick-start-docker)
   - [Usage](#usage)
 - [**SBOM Generator CLI**](#sbom-generator-cli)
   - [Quick Start](#quick-start)
@@ -33,28 +31,34 @@
 # SVIP API
 > The SVIP back-end API. See [Usage](#usage) for more details of the endpoints.
 
-## Quick Start
-```shell
-$ ./gradlew build                                            # Build API jar (can also be ran using IDE debug mode as well)
-$ docker compose up -d mysql                                 # Start MySQL server ONLY
-$ cd api/build/libs && move api-1.0.0-alpha.jar SVIP_API.jar # Rename jar file
-$ java -jar SVIP_API.jar                                     # Run jar file
-```
-
-### Quick Start (Docker)
-First ensure Docker is installed and running and then deploy the docker-compose script.
+## Deployment
+First ensure Docker is installed and running, then deploy the docker-compose script.
 ```shell
 $ docker ps
 $ docker compose up
 ```
 
-Use the `--build` flag when running `docker compose` to force the images to rebuild (rebuild the Gradle project 
-without manually removing the images).
+### Development
+> **WARNING:** Currently only works when changing the address of the Spring URL from `mysql` to `localhost`
 
-To run the MySQL container only (to allow running the API outside of its container), use the following command.
+To modify and test this project, you will need to run the MySQL server in a Docker container and the API as either a 
+compiled JAR file or with your IDE of choice.
+
 ```shell
+# Build API jar (skip if running in IDE)
+$ ./gradlew build
+# Build and deploy MySQL server ONLY to allow running API outside of its container
 $ docker compose up -d mysql
+# Rename jar file
+$ move api/build/libs/<api|core>-1.0.0-alpha.jar SVIP_API.jar
+# Run jar file or in IDE
+$ java -jar SVIP_API.jar
 ```
+#### Tips
+- Use the `--build` flag when running `docker compose` to force the API image to rebuild with any changes to the 
+  source code.
+- Uncomment the line in the Dockerfile to skip Gradle tests. This makes it much faster as skipping the tests saves 
+  1-2 minutes per build.
 
 To edit the MySQL configuration/Docker port mappings, edit the `.env` file in the repository root.
 
