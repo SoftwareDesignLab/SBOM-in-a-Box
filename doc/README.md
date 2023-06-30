@@ -5,6 +5,8 @@
 
 - [**System Requirements**](#system-requirements)
 - [**SVIP API**](#svip-api)
+  - [Deployment](#deployment)
+    - [Development](#development)
   - [Usage](#usage)
 - [**SBOM Generator CLI**](#sbom-generator-cli)
   - [Quick Start](#quick-start)
@@ -50,7 +52,7 @@ $ ./gradlew build
 # Build and deploy MySQL server ONLY to allow running API outside of its container
 $ docker compose up -d mysql
 # Rename jar file
-$ move api/build/libs/<api|core>-1.0.0-alpha.jar SVIP_API.jar
+$ move api/build/libs/api-1.0.0-alpha.jar SVIP_API.jar
 # Run jar file or in IDE
 $ java -jar SVIP_API.jar
 ```
@@ -96,14 +98,17 @@ $ docker exec -it svip-mysql-1 mysql -uroot -ptoor -D svip -e "<YOUR SQL STATEME
 
 To build from scratch, use:
 ```shell
+# Build core jar
 $ ./gradlew build
-$ cd core/build/libs && move core-1.0.0-alpha.jar SBOMGeneratorCLI.jar
+# Rename jar file
+$ move core/build/libs/core-1.0.0-alpha.jar SBOMGeneratorCLI.jar
+# Run jar file or in IDE
 $ java -jar SBOMGeneratorCLI.jar <targetPath>
 ```
 
 ## Usage
 ```
-java SBOMGeneratorCLI <targetPath> <additionalArgs>
+java -jar SBOMGeneratorCLI.jar <targetPath> [-d|-s|-h] [-o=<CDX|SPDX>] [-f=<JSON|XML|YAML|SPDX>]
 ```
 #### Required Arguments
 - `<targetPath>`: Required. Path to a target file or root directory to parse.
@@ -112,27 +117,24 @@ java SBOMGeneratorCLI <targetPath> <additionalArgs>
 - `-d`: Show additional debug information, overrides Summary when combined with `-s`.
 - `-s`: Show Summary information, disabling ALL default messages.
 - `-h`: Display this usage information.
-- `-o=<specification>`: Output specification. Select a supported format (`CycloneDX` or `SPDX`).
-  > Will default to CycloneDX if not specified.
-- `-f=formats`:  Output format. Select a supported format (`JSON`, `XML`, `YAML`).
-  > Output specification defaults to JSON if not specified.
+- `-o=<CYCLONEDX|CDX|SPDX>`: Output specification. Defaults to CycloneDX.
+- `-f=<JSON|XML|YAML|SPDX>`: Output file format. Defaults to JSON.
 
 #### Examples
 ```
-Display usages:  java -jar parser.jar -hs
-Basic: java -jar parser.jar MyProject/src
-Debug: java -jar parser.jar MyProject/src -d
-Summary: java -jar parser.jar MyProject/src -s
-Debug (Overrides Summary): java -jar parser.jar MyProject/src -d -s
-Debug, Output as JSON: java -jar parser.jar MyProject/src -o=json -d
+Display usages:               java -jar SBOMGeneratorCLI.jar -h
+Basic:                        java -jar SBOMGeneratorCLI.jar MyProject/src
+Debug:                        java -jar SBOMGeneratorCLI.jar MyProject/src -d
+Summary:                      java -jar SBOMGeneratorCLI.jar MyProject/src -s
+Debug, Output as JSON:        java -jar SBOMGeneratorCLI.jar MyProject/src -f=json -d
 
 CycloneDX:
-  - CycloneDX JSON:           java -jar parser.jar MyProject/src -d
-  - CycloneDX XML (no debug): java -jar parser.jar MyProject/src -o=CycloneDX -f=XML
+  - CycloneDX JSON:           java -jar SBOMGeneratorCLI.jar MyProject/src -d
+  - CycloneDX XML (no debug): java -jar SBOMGeneratorCLI.jar MyProject/src -o=CycloneDX -f=XML
 
 SPDX:
-  - SPDX JSON:            java -jar parser.jar MyProject/src -d -o=SPDX
-  - SPDX YAML (no debug): java -jar parser.jar MyProject/src -o=SPDX -f=YAML
+  - SPDX JSON:                java -jar SBOMGeneratorCLI.jar MyProject/src -d -o=SPDX
+  - SPDX YAML (no debug):     java -jar SBOMGeneratorCLI.jar MyProject/src -o=SPDX -f=YAML
 ```
 
 ## Supported Source Files
