@@ -1,5 +1,7 @@
 package org.svip.api.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -8,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.utils.Utils;
-import org.svip.sbomfactory.osi.OSI;
 import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomfactory.translators.TranslatorException;
 
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * API Controller for handling requests to SVIP
+ * Spring API Controller for handling requests to the SVIP backend.
  *
  * @author Derek Garcia
  * @author Kevin Laporte
@@ -31,35 +32,41 @@ import java.util.Optional;
 public class SVIPApiController {
 
     /**
+     * Spring-configured logger
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(SVIPApiController.class);
+
+    /**
      * Http headers of Spring boot application
      */
     private HttpHeaders headers;
 
     /**
+     * MySQL server interface
+     */
+    private final SBOMFileRepository sbomFileRepository;
+
+    //#region OSI (unused)
+
+    /**
      * OSI docker container representation
      */
-    private OSI osiContainer;
+//    private OSI osiContainer;
 
     /**
      * Default OSI Bound Directory location
      */
-    private static String osiBoundDir = "src/main/java/com/svip/osi/core/bound_dir";
+//    private static String osiBoundDir = "src/main/java/com/svip/osi/core/bound_dir";
 
     /**
      * Default path to where dockerfile is located
      */
-    private static String dockerPath = "/core/src/main/java/org/svip/sbomfactory/osi/Dockerfile";
+//    private static String dockerPath = "/core/src/main/java/org/svip/sbomfactory/osi/Dockerfile";
 
     /**
      * Current working directory
      */
-    private static String pwd = "/src/test/java/org/svip/api";
-
-    /**
-     * File storage
-     */
-    //    private final Map<String, String> files;
-    private final SBOMFileRepository sbomFileRepository;
+//    private static String pwd = "/src/test/java/org/svip/api";
 
     /** TODO OSI
      * buildOSI runs on startup to build the OSI container independent of the front-end.
@@ -70,6 +77,17 @@ public class SVIPApiController {
 //        osiContainer = new OSI(osiBoundDir, dockerPath);
 //    }
 
+    /** TODO OSI
+     * To be called when the object is released by the garbage collector. DO NOT CALL MANUALLY
+     */
+    //    @PreDestroy
+    //    public void close() {
+    //        // Close the osi container so that we delete the instance
+    //        osiContainer.close();
+    //    }
+
+    //#endregion
+
     @Autowired
     public SVIPApiController(final SBOMFileRepository sbomFileRepository) {
         headers = new HttpHeaders();
@@ -78,27 +96,6 @@ public class SVIPApiController {
 //        files = new HashMap<>();
         this.sbomFileRepository = sbomFileRepository;
     }
-
-    /** TODO OSI
-     * To be called when the object is released by the garbage collector. DO NOT CALL MANUALLY
-     */
-//    @PreDestroy
-//    public void close() {
-//        // Close the osi container so that we delete the instance
-//        osiContainer.close();
-//    }
-
-    /**
-     * TODO Creates a Node Graph from the master SBOM
-     * and returns a JSON String representation of the Node Graph.
-     *
-     * @return JSON String representation of the Node Graph
-     */
-//    @GetMapping("/sbom-node-graph")
-//    public ResponseEntity<?> getNodeGraph(@RequestBody String filePath) {
-//        // todo redo
-//        return null;
-//    }
 
     /**
      * USAGE. Send POST request to /upload with one SBOM file.
@@ -118,12 +115,14 @@ public class SVIPApiController {
         try {
             TranslatorController.translateContents(sbomFile.getContents(), sbomFile.getFileName());
         } catch (TranslatorException e) {
+            LOGGER.info("POST /svip/upload - Error translating file: " + sbomFile.getFileName());
+            LOGGER.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
         // Upload
-//        files.put(sbomFile.getFileName(), sbomFile.getContents());
         sbomFileRepository.save(sbomFile);
+        LOGGER.info("POST /svip/upload - Uploaded SBOM with ID " + sbomFile.getId() + ": " + sbomFile.getFileName());
 
         // Return ID
         return Utils.encodeResponse(sbomFile.getId());
@@ -140,13 +139,16 @@ public class SVIPApiController {
     @GetMapping("/view")
     public ResponseEntity<String> view(@RequestParam("id") long id) {
         // Get SBOM
-//        String sbomFile = files.get(fileName);
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
         // Return SBOM or invalid ID
-//        if (sbomFile == null)
-        if (sbomFile.isEmpty())
-            return new ResponseEntity<>("Invalid SBOM ID.", HttpStatus.BAD_REQUEST);
+        if (sbomFile.isEmpty()) {
+            LOGGER.info("GET /svip/view?id=" + id + " - FILE NOT FOUND");
+            return new ResponseEntity<>("Invalid SBOM ID.", HttpStatus.NOT_FOUND);
+        }
+
+        // Log
+        LOGGER.info("GET /svip/view?id=" + id + " - File: " + sbomFile.get().getFileName());
 
         return Utils.encodeResponse(sbomFile.get().getContents());
     }
@@ -162,6 +164,9 @@ public class SVIPApiController {
         // Get file names
 //        String[] fileNames = files.keySet().toArray(new String[0]);
         List<SBOMFile> sbomFiles = sbomFileRepository.findAll();
+
+        // Log
+        LOGGER.info("GET /svip/viewFiles - Found " + sbomFiles.size() + " file(s).");
 
         if (sbomFiles.isEmpty())
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -185,15 +190,33 @@ public class SVIPApiController {
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
         // Check if it exists
-        if (sbomFile.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if (sbomFile.isEmpty()) {
+            LOGGER.info("DELETE /svip/delete?id=" + id + " - FILE NOT FOUND");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
         // Delete
         sbomFileRepository.delete(sbomFile.get());
 
+        // Log
+        LOGGER.info("DELETE /svip/delete?id=" + id + " - File: " + sbomFile.get().getFileName());
+
         // Return deleted ID as confirmation
         return Utils.encodeResponse(sbomFile.get().getId());
     }
+
+    //#region Deprecated Endpoints
+
+    /**
+     * Creates a Node Graph from the master SBOM and returns a JSON String representation of the Node Graph.
+     *
+     * @return JSON String representation of the Node Graph
+     */
+    //    @GetMapping("/sbom-node-graph")
+    //    public ResponseEntity<?> getNodeGraph(@RequestBody String filePath) {
+    //        // TODO
+    //        return null;
+    //    }
 
     /**
      * USAGE. Send POST request to /generateSBOM with one or more files. If a schema or format is not provided or is
@@ -371,4 +394,6 @@ public class SVIPApiController {
 //
 //        return Utils.encodeResponse(sbom);
 //    }
+
+    //#endregion
 }
