@@ -3,7 +3,12 @@ package org.svip.sbombuilder;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
-
+/**
+ * file: SPDX23SBOMBuilder.java
+ * Interface for SPDX 2.3 SBOM Builder
+ *
+ * @author Thomas Roman
+ */
 public interface SPDX23SBOMBuilder {
     /**
      * add a license list version to the SPDX 2.3 SBOM builder

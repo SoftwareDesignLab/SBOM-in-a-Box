@@ -6,6 +6,12 @@ import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
 
+/**
+ * file: SBOMBuilder.java
+ * Interface for SBOM Builder
+ *
+ * @author Thomas Roman
+ */
 public interface SBOMBuilder {
     /**
      * Set the SBOM's format
