@@ -20,6 +20,7 @@ services:
     volumes:
       - db:/var/lib/mysql
     healthcheck:
+      # TODO: Find a more accurate health test. This usually fails on the first deployment of the container since it has to restart.
       test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p${MYSQL_ROOT_PASSWORD}' ]
       interval: 10s
       timeout: 2s
