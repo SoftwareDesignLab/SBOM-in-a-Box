@@ -12,13 +12,6 @@ import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 public interface SPDX23PackageBuilder_I extends SPDX23ComponentBuilder, SBOMComponentBuilder{
 
     /**
-     * Set the file notice of the package
-     * @param fileNotice the package's file notice
-     * @return an SPDX23PackageBuilder_I
-     */
-    SPDX23PackageBuilder_I setFileNotice(String fileNotice);
-
-    /**
      * Set the download location of the package
      * @param downloadLocation the package's download location
      * @return an SPDX23PackageBuilder_I
