@@ -14,17 +14,6 @@ $ docker compose up
 ```
 See the SVIP API section of [doc/README.md](doc/README.md#svip-api) for detailed usage.
 
-### SBOM Generator CLI:
-```shell
-# Build project from scratch.
-$ ./gradlew build
- # Find and rename JAR file.
-$ cd core/build/libs && move core-1.0.0-alpha.jar SBOMGeneratorCLI.jar
-# Run JAR file and generate a CycloneDX JSON SBOM from the target path.
-$ java -jar SBOMGeneratorCLI.jar <targetPath>
-```
-See the SBOM Generator CLI section of [doc/README.md](doc/README.md#sbom-generator-cli) for detailed usage.
-
 ## Latest Release
 ### [v5.0.0-alpha] - (6/29/2023)
 
