@@ -4,9 +4,13 @@
 ## Index
 
 - [**System Requirements**](#system-requirements)
+- [**SVIP API**](#svip-api)
+  - [Deployment](#deployment)
+    - [Development](#development)
+  - [Usage](#usage)
 - [**SBOM Generator CLI**](#sbom-generator-cli)
   - [Quick Start](#quick-start)
-  - [Usage](#usage)
+  - [Usage](#usage-1)
   - [Supported Source Files](#supported-source-files)
   - [NLP Techniques](#nlp-techniques)
 - [**Open Source Intergration (OSI)**](#open-source-integration)
@@ -26,6 +30,61 @@
 - Docker
 
 ---
+# SVIP API
+> The SVIP back-end API. See [Usage](#usage) for more details of the endpoints.
+
+## Deployment
+First ensure Docker is installed and running and then deploy using the docker-compose script.
+```shell
+# Ensure Docker is installed and running
+$ docker ps
+# Start API & MySQL containers. Use --build to force rebuild the image with any updated source code
+$ docker compose up
+```
+
+### Development
+To modify and test this project, you will need to run the MySQL server in a Docker container and the API detached as 
+either a compiled JAR file or with your IDE of choice.
+
+```shell
+# Build detached API jar (skip if running in IDE)
+$ ./gradlew build
+# Build and deploy MySQL server ONLY to allow running API outside of its container. Use -d to run detached.
+$ docker compose up mysql
+# Rename jar file
+$ move api/build/libs/api-1.0.0-alpha.jar SVIP_API.jar
+# Run detached jar file or in IDE
+$ java -jar SVIP_API.jar
+```
+#### Tips
+- Append `-x test` to the Gradle build command in the Dockerfile to skip Gradle tests. This makes it much faster as 
+  skipping the tests saves 1-2 minutes per build.
+- To edit the MySQL configuration/Docker port mappings, edit the `.env` file in the repository root.
+
+## Usage
+The API is located on `localhost:8080/svip`.
+
+Current Endpoints (`/svip/`):
+- `/upload` - Upload an SBOM to the server.
+- `/view` - View the raw contents of an SBOM file.
+- `/viewFiles` - View all file IDs uploaded to the server.
+- `/delete` - Delete a file from the server.
+
+### MySQL Database
+Located at `localhost:3306` while the `svip-mysql` Docker container is running.
+
+Use the following command to interact with the MySQL server instance:
+```shell
+$ docker exec -it svip-mysql mysql -uroot -psvipMySQL -D svip -e "<YOUR SQL STATEMENT HERE>"
+```
+#### Table `files` Schema:
+| Field     | Type       | Null | Key | Default | Extra |
+|:---------:|:----------:|:----:|:---:|:-------:|:-----:|
+| id        | bigint(20) | NO   | PRI | NULL    |       |
+| contents  | longtext   | YES  |     | NULL    |       |
+| file_name | text       | YES  |     | NULL    |       |
+
+---
 
 # SBOM Generator CLI
 > Generate SBOMs using Regex and Natural Language Processing techniques to analyze and enhance information found in 
@@ -34,11 +93,19 @@
 ## Quick Start
 > CLI Driver can be found [here](../core/src/main/java/org/svip/SBOMGeneratorCLI.java)
 
-Usage: `java SBOMGeneratorCLI <targetPath>`
+To build from scratch, use:
+```shell
+# Build core jar
+$ ./gradlew build
+# Rename jar file
+$ move core/build/libs/core-1.0.0-alpha.jar SBOMGeneratorCLI.jar
+# Run jar file or in IDE
+$ java -jar SBOMGeneratorCLI.jar <targetPath>
+```
 
 ## Usage
 ```
-java SBOMGeneratorCLI <targetPath> <additionalArgs>
+java -jar SBOMGeneratorCLI.jar <targetPath> [-d|-s|-h] [-o=<CDX|SPDX>] [-f=<JSON|XML|YAML|SPDX>]
 ```
 #### Required Arguments
 - `<targetPath>`: Required. Path to a target file or root directory to parse.
@@ -47,27 +114,24 @@ java SBOMGeneratorCLI <targetPath> <additionalArgs>
 - `-d`: Show additional debug information, overrides Summary when combined with `-s`.
 - `-s`: Show Summary information, disabling ALL default messages.
 - `-h`: Display this usage information.
-- `-o=<specification>`: Output specification. Select a supported format (`CycloneDX` or `SPDX`).
-  > Will default to CycloneDX if not specified.
-- `-f=formats`:  Output format. Select a supported format (`JSON`, `XML`, `YAML`).
-  > Output specification defaults to JSON if not specified.
+- `-o=<CYCLONEDX|CDX|SPDX>`: Output specification. Defaults to CycloneDX.
+- `-f=<JSON|XML|YAML|SPDX>`: Output file format. Defaults to JSON.
 
 #### Examples
 ```
-Display usages:  java -jar parser.jar -hs
-Basic: java -jar parser.jar MyProject/src
-Debug: java -jar parser.jar MyProject/src -d
-Summary: java -jar parser.jar MyProject/src -s
-Debug (Overrides Summary): java -jar parser.jar MyProject/src -d -s
-Debug, Output as JSON: java -jar parser.jar MyProject/src -o=json -d
+Display usages:               java -jar SBOMGeneratorCLI.jar -h
+Basic:                        java -jar SBOMGeneratorCLI.jar MyProject/src
+Debug:                        java -jar SBOMGeneratorCLI.jar MyProject/src -d
+Summary:                      java -jar SBOMGeneratorCLI.jar MyProject/src -s
+Debug, Output as JSON:        java -jar SBOMGeneratorCLI.jar MyProject/src -f=json -d
 
 CycloneDX:
-  - CycloneDX JSON:           java -jar parser.jar MyProject/src -d
-  - CycloneDX XML (no debug): java -jar parser.jar MyProject/src -o=CycloneDX -f=XML
+  - CycloneDX JSON:           java -jar SBOMGeneratorCLI.jar MyProject/src -d
+  - CycloneDX XML (no debug): java -jar SBOMGeneratorCLI.jar MyProject/src -o=CycloneDX -f=XML
 
 SPDX:
-  - SPDX JSON:            java -jar parser.jar MyProject/src -d -o=SPDX
-  - SPDX YAML (no debug): java -jar parser.jar MyProject/src -o=SPDX -f=YAML
+  - SPDX JSON:                java -jar SBOMGeneratorCLI.jar MyProject/src -d -o=SPDX
+  - SPDX YAML (no debug):     java -jar SBOMGeneratorCLI.jar MyProject/src -o=SPDX -f=YAML
 ```
 
 ## Supported Source Files

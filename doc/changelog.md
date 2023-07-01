@@ -1,9 +1,25 @@
 # Changelog
 
-All notable changes to the Generators sub-system will be documented in this file.
-
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [v5.0.0-alpha] - (6/29/2023)
+
+### Added
+- `Dockerfile` & `docker-compose.yml` to build the API and run a MySQL server with persistent storage in separate 
+  Docker containers.
+  - `application.properties` & `.env` files created to setup Spring and Docker configuration.
+- `repository.SBOMFileRepository` Class to interact with the MySQL database.
+- New API endpoints (`upload`, `view`, `viewAll`, `delete`) to run CRUD operations on the `files` table.
+  - Added unit tests that mock the `repository.SBOMFileRepository` to avoid any local storage during testing.
+
+### Changed
+- Refactored `NVIPApiController`, `PlugFestApiController`, & `NVIPApiController` Classes into `controller` package.
+- Refactored `utils.Utils.SBOMFile` into its own class `model.SBOMFile`
+  - Uses Hibernate decorators to automatically create a custom `files` table on the MySQL server.
+
+### Removed
+- Old API endpoints & tests (`compare`, `generateSBOM`, `merge`, `parse`, & `qa`)
 
 ## [v4.5.0-alpha] - (5/24/2023)
 

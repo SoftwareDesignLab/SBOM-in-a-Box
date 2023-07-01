@@ -1,12 +1,11 @@
-package org.svip.api;
+package org.svip.api.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-
-import org.svip.api.utils.Utils;
-import org.svip.api.utils.Utils.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.svip.api.model.SBOMFile;
+import org.svip.api.utils.Utils;
 import org.svip.sbom.model.SBOM;
 import org.svip.sbomanalysis.differ.DiffReport;
 import org.svip.sbomanalysis.qualityattributes.QAPipeline;
@@ -16,7 +15,10 @@ import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomfactory.translators.TranslatorException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * File: APIController.java
@@ -55,9 +57,9 @@ public class PlugFestApiController {
 
         // Attempt to load comparison queue
         List<SBOM> compareQueue = new ArrayList<>();
-        for (Utils.SBOMFile sbom : sboms){
+        for (SBOMFile sbom : sboms){
 //            try {
-                compareQueue.add(TranslatorController.translateContents(sbom.contents, sbom.fileName));
+                compareQueue.add(TranslatorController.translateContents(sbom.getContents(), sbom.getFileName()));
 //            } catch (TranslatorException e){
 //                return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR); // todo uncomment once translators are moved
 //            }
@@ -66,14 +68,14 @@ public class PlugFestApiController {
         SBOM targetSBOM = compareQueue.get(targetIndex);
 
         // Run comparison
-        DiffReport dr = new DiffReport(sboms[targetIndex].fileName, targetSBOM);
+        DiffReport dr = new DiffReport(sboms[targetIndex].getFileName(), targetSBOM);
 
         // Compare against all sboms in the queue
         for(int i = 0; i < compareQueue.size(); i++){
             // skip target
             if(targetSBOM.equals(compareQueue.get(i)))
                 continue;
-            dr.compare(sboms[i].fileName, compareQueue.get(i));
+            dr.compare(sboms[i].getFileName(), compareQueue.get(i));
         }
 
 
@@ -102,7 +104,7 @@ public class PlugFestApiController {
         SBOM sbom;
 
 //        try {
-            sbom = TranslatorController.translateContents(sbomFile.contents, sbomFile.fileName);
+            sbom = TranslatorController.translateContents(sbomFile.getContents(), sbomFile.getFileName());
 //        } catch (TranslatorException e) {
 //            return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR); // todo uncomment once translators are moved
 //        }
@@ -123,7 +125,7 @@ public class PlugFestApiController {
             processors.add(new SPDXMetricsProcessor());
 
         //run the QA
-        QualityReport report = QAPipeline.process(sbomFile.fileName, sbom, processors);
+        QualityReport report = QAPipeline.process(sbomFile.getFileName(), sbom, processors);
 
         //encode and send report
         return Utils.encodeResponse(report);
@@ -140,7 +142,7 @@ public class PlugFestApiController {
         SBOM sbom;
 
 //        try {
-            sbom = TranslatorController.translateContents(sbomFile.contents, sbomFile.fileName);
+            sbom = TranslatorController.translateContents(sbomFile.getContents(), sbomFile.getFileName());
 //        } catch (TranslatorException e) {
 //            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST); // TODO better status code? // todo uncomment once translators are moved
 //        }

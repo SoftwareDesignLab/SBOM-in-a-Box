@@ -1,0 +1,50 @@
+#
+# File: docker-compose.yml
+# Builds and deploys two Docker containers: a MySQL server and the SVIP API from ./Dockerfile.
+# Uses ./.env for MySQL/networking configuration.
+#
+# Author: Ian Dunn
+#
+
+services:
+
+  # MySQL server
+  mysql:
+    container_name: svip-mysql
+    image: mysql:5
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    ports:
+      - ${MYSQL_LOCAL_PORT}:${MYSQL_DOCKER_PORT}
+    volumes: # Stores mysql data in a persistent volume to persist across container restarts
+      - db:/var/lib/mysql
+    healthcheck: # How to determine it's safe to start the api container. Pings the MySQL server until it has a response
+      test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p$MYSQL_ROOT_PASSWORD' ]
+      interval: 10s # Wait in case of the first build, server restarts once mid-way through to init
+      timeout: 2s
+
+  # SVIP API spring-boot application
+  api:
+    container_name: svip-api
+    depends_on: # Start mysql server before starting API
+      mysql:
+        condition: service_healthy # Only start once the health check has passed
+    build: .    # Build from Dockerfile located in root directory
+    restart: on-failure
+    ports:
+      - ${SPRING_LOCAL_PORT}:${SPRING_DOCKER_PORT}
+    volumes:
+      - .m2:/root/.m2
+    stdin_open: true
+    tty: true
+    environment: # Define environment variables for spring-boot application.properties
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_LOCAL_PORT=${MYSQL_LOCAL_PORT}
+      - SPRING_DOCKER_PORT=${SPRING_DOCKER_PORT}
+volumes:
+  db: # Volume to store persistent data from MySQL server
