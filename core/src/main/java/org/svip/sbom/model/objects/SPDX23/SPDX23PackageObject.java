@@ -215,6 +215,5 @@ public class SPDX23PackageObject implements SPDX23Package {
         this.releaseDate = releaseDate;
         this.builtDate = builtDate;
         this.validUntilDate = validUntilDate;
-
     }
 }

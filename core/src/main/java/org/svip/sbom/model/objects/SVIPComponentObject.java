@@ -8,6 +8,7 @@ import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -95,6 +96,11 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     @Override
     public String getGroup() {
+        return null;
+    }
+
+    @Override
+    public HashMap<String, Set<String>> getProperties() {
         return null;
     }
 
