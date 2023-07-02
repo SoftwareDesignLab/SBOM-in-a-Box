@@ -13,75 +13,132 @@ import java.util.Map;
  * @author Derek Garcia
  * @author Matthew Morrison
  */
-// todo
 public class SPDX23FileObject implements SPDX23File {
 
-    private String type;
+    /**File's type*/
+    private final String type;
 
-    private String uid;
+    /**File's uid*/
+    private final String uid;
 
-    private String author;
+    /**File's author*/
+    private final String author;
 
-    private String name;
+    /**File's name*/
+    private final String name;
 
-    private LicenseCollection licenses;
+    /**File's licenses*/
+    private final LicenseCollection licenses;
 
-    private String copyright;
+    /**File's copyright*/
+    private final String copyright;
 
-    private HashMap<String, String> hashes;
+    /**File's hashes*/
+    private final HashMap<String, String> hashes;
 
-    private String fileNotice;
+    /**File's file notice*/
+    private final String fileNotice;
 
+    /**
+     * Get the file's comment
+     * @return the file's comment
+     */
     @Override
     public String getComment() {
         return null;
     }
 
+    /**
+     * Get the file's attribution text
+     * @return the file's attribution text
+     */
     @Override
     public String getAttributionText() {
         return null;
     }
 
+    /**
+     * Get the file's file notice
+     * @return the file's file notice
+     */
     @Override
     public String getFileNotice() {
-        return null;
+        return this.fileNotice;
     }
-
+    /**
+     * Get the file's type
+     * @return the file's type
+     */
     @Override
     public String getType() {
         return this.type;
     }
 
+    /**
+     * Get the file's uid
+     * @return the file's uid
+     */
     @Override
     public String getUID() {
         return this.uid;
     }
 
+    /**
+     * Get the file's author
+     * @return the file's author
+     */
     @Override
     public String getAuthor() {
         return this.author;
     }
 
+    /**
+     * Get the file's name
+     * @return the file's name
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Get the file's licenses
+     * @return the file's licenses
+     */
     @Override
     public LicenseCollection getLicenses() {
         return this.licenses;
     }
 
+    /**
+     * Get the file's copyright info
+     * @return the file's copyright info
+     */
     @Override
     public String getCopyright() {
         return this.copyright;
     }
 
+    /**
+     * Get the file's hashes
+     * @return the file's hashes
+     */
     @Override
     public Map<String, String> getHashes() {
         return this.hashes;
     }
 
+    /**
+     * Constructor to build a new SPDX 2.3 File Object
+     * @param type file type
+     * @param uid file uid
+     * @param author file author
+     * @param name file name
+     * @param licenses file licenses
+     * @param copyright file copyright
+     * @param hashes file hashes
+     * @param fileNotice file's file notice
+     */
     public SPDX23FileObject(String type, String uid, String author, String name,
                       LicenseCollection licenses, String copyright,
                       HashMap<String, String> hashes, String fileNotice){
