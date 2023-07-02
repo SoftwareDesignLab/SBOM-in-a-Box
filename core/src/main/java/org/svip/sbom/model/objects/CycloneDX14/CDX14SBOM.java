@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * file:CDX14SBOM.java
- * USed to file for CycloneDX 1.4 SBOM information
+ * file: CDX14SBOM.java
+ * Used to file for CycloneDX 1.4 SBOM information
  *
  * @author Derek Garcia
  * @author Matthew Morrison
