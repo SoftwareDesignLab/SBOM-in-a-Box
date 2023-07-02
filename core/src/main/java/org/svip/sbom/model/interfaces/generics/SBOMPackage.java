@@ -12,7 +12,7 @@ import java.util.Set;
  *
  * @author Derek Garcia
  */
-public interface SBOMPackage {
+public interface SBOMPackage extends Component{
     /**
      * @return Supplier of the package
      */
