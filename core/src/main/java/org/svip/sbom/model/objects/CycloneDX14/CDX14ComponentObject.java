@@ -7,6 +7,7 @@ import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -19,41 +20,77 @@ import java.util.Set;
 // todo
 public class CDX14ComponentObject implements CDX14Package {
 
-    private String type;
+    private final String type;
 
-    private String uid;
+    private final String uid;
 
-    private String author;
+    private final String author;
 
-    private String name;
+    private final String name;
 
-    private LicenseCollection licenses;
+    private final LicenseCollection licenses;
 
-    private String copyright;
+    private final String copyright;
 
-    private HashMap<String, String> hashes;
+    private final HashMap<String, String> hashes;
 
-    private Organization supplier;
+    private final Organization supplier;
 
-    private String version;
+    private final String version;
 
-    private Description description;
+    private final Description description;
 
-    private Set<String> cpes;
+    private final Set<String> cpes;
 
-    private Set<String> purls;
+    private final Set<String> purls;
 
-    private String mimeType;
+    private final String mimeType;
 
-    private String publisher;
+    private final String publisher;
 
-    private String scope;
+    private final String scope;
 
-    private String group;
+    private final String group;
 
-    private Set<ExternalReference> externalReferences;
+    private final Set<ExternalReference> externalReferences;
 
-    private HashMap<String, Set<String>> properties;
+    private final HashMap<String, Set<String>> properties;
+
+
+    @Override
+    public String getType() {
+        return this.type;
+    }
+
+    @Override
+    public String getUID() {
+        return this.uid;
+    }
+
+    @Override
+    public String getAuthor() {
+        return this.author;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public LicenseCollection getLicenses() {
+        return this.licenses;
+    }
+
+    @Override
+    public String getCopyright() {
+        return this.copyright;
+    }
+
+    @Override
+    public Map<String, String> getHashes() {
+        return this.hashes;
+    }
 
     @Override
     public Organization getSupplier() {
@@ -137,4 +174,5 @@ public class CDX14ComponentObject implements CDX14Package {
         this.properties = properties;
 
     }
+
 }

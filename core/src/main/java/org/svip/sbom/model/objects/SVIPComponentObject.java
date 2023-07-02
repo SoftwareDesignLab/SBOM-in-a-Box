@@ -22,59 +22,59 @@ import java.util.Set;
 //todo
 public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23File {
 
-    private String type;
+    private final String type;
 
-    private String uid;
+    private final String uid;
 
-    private String author;
+    private final String author;
 
-    private String name;
+    private final String name;
 
-    private LicenseCollection licenses;
-    private String copyright;
+    private final LicenseCollection licenses;
+    private final String copyright;
 
-    private HashMap<String, String> hashes;
-    private String fileNotice;
+    private final HashMap<String, String> hashes;
+    private final String fileNotice;
 
-    private Organization supplier;
+    private final Organization supplier;
 
-    private String version;
+    private final String version;
 
-    private Description description;
+    private final Description description;
 
-    private Set<String> cpes;
+    private final Set<String> cpes;
 
-    private Set<String> purls;
+    private final Set<String> purls;
 
-    private String downloadLocation;
+    private final String downloadLocation;
 
-    private String fileName;
+    private final String fileName;
 
-    private Boolean filesAnalyzed;
+    private final Boolean filesAnalyzed;
 
-    private String verificationCode;
+    private final String verificationCode;
 
-    private String homePage;
+    private final String homePage;
 
-    private String sourceInfo;
+    private final String sourceInfo;
 
-    private String releaseDate;
+    private final String releaseDate;
 
-    private String builtDate;
+    private final String builtDate;
 
-    private String validUntilDate;
+    private final String validUntilDate;
 
-    private String mimeType;
+    private final String mimeType;
 
-    private String publisher;
+    private final String publisher;
 
-    private String scope;
+    private final String scope;
 
-    private String group;
+    private final String group;
 
-    private Set<ExternalReference> externalReferences;
+    private final Set<ExternalReference> externalReferences;
 
-    private HashMap<String, Set<String>> properties;
+    private final HashMap<String, Set<String>> properties;
 
     @Override
     public String getType() {
@@ -235,7 +235,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
                                String verificationCode, String homePage, String sourceInfo,
                                String releaseDate, String builtDate, String validUntilDate,
                                String mimeType, String publisher, String scope, String group,
-                               HashMap<String, Set<String>> properties){
+                               HashMap<String, Set<String>> properties, String fileNotice){
         this.type = type;
         this.uid = uid;
         this.author = author;
@@ -263,5 +263,6 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         this.scope = scope;
         this.group = group;
         this.properties = properties;
+        this.fileNotice = fileNotice;
     }
 }

@@ -20,49 +20,49 @@ import java.util.Set;
 // todo
 public class SPDX23PackageObject implements SPDX23Package {
 
-    private String type;
+    private final String type;
 
-    private String uid;
+    private final String uid;
 
-    private String author;
+    private final String author;
 
-    private String name;
+    private final String name;
 
-    private LicenseCollection licenses;
+    private final LicenseCollection licenses;
 
-    private String copyright;
+    private final String copyright;
 
-    private HashMap<String, String> hashes;
+    private final HashMap<String, String> hashes;
 
-    private Organization supplier;
+    private final Organization supplier;
 
-    private String version;
+    private final String version;
 
-    private Description description;
+    private final Description description;
 
-    private Set<String> cpes;
+    private final Set<String> cpes;
 
-    private Set<String> purls;
+    private final Set<String> purls;
 
-    private Set<ExternalReference> externalReferences;
+    private final Set<ExternalReference> externalReferences;
 
-    private String downloadLocation;
+    private final String downloadLocation;
 
-    private String fileName;
+    private final String fileName;
 
-    private boolean filesAnalysed;
+    private final boolean filesAnalyzed;
 
-    private String verificationCode;
+    private final String verificationCode;
 
-    private String homePage;
+    private final String homePage;
 
-    private String sourceInfo;
+    private final String sourceInfo;
 
-    private String releaseDate;
+    private final String releaseDate;
 
-    private String builtDate;
+    private final String builtDate;
 
-    private String validUntilDate;
+    private final String validUntilDate;
 
     @Override
     public String getType() {
@@ -151,7 +151,7 @@ public class SPDX23PackageObject implements SPDX23Package {
 
     @Override
     public Boolean getFilesAnalyzed() {
-        return this.filesAnalysed;
+        return this.filesAnalyzed;
     }
 
     @Override
@@ -190,7 +190,7 @@ public class SPDX23PackageObject implements SPDX23Package {
                                HashMap<String, String> hashes, Organization supplier,
                                String version, Description description, Set<String> cpes,
                                Set<String> purls, Set<ExternalReference> externalReferences,
-                               String downloadLocation, String fileName, Boolean filesAnalysed,
+                               String downloadLocation, String fileName, Boolean filesAnalyzed,
                                String verificationCode, String homePage, String sourceInfo,
                                String releaseDate, String builtDate, String validUntilDate){
         this.type = type;
@@ -208,7 +208,7 @@ public class SPDX23PackageObject implements SPDX23Package {
         this.externalReferences = externalReferences;
         this.downloadLocation =downloadLocation;
         this.fileName = fileName;
-        this.filesAnalysed = filesAnalysed;
+        this.filesAnalyzed = filesAnalyzed;
         this.verificationCode = verificationCode;
         this.homePage = homePage;
         this.sourceInfo = sourceInfo;
