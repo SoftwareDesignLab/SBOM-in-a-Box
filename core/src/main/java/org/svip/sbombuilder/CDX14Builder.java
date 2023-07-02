@@ -1,7 +1,5 @@
 package org.svip.sbombuilder;
 
-import org.cyclonedx.model.Composition;
-import org.cyclonedx.model.Signature;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
@@ -21,7 +19,7 @@ import java.util.Set;
  *
  * @author Matthew Morrison
  */
-public class CDX14Builder implements CDX14SBOMBuilder{
+public class CDX14Builder implements CDX14SBOMBuilder {
 
     /**Holds the format of the SBOM*/
     private String format;
@@ -169,6 +167,10 @@ public class CDX14Builder implements CDX14SBOMBuilder{
 
     @Override
     public SBOM Build() {
+        return null;
+    }
+
+    public CDX14Builder CDX14Builder(){
         return null;
     }
 }
