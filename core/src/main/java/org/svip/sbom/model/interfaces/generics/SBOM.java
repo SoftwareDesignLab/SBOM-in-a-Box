@@ -44,7 +44,7 @@ public interface SBOM {
     /**
      * @return SBOM Licenses
      */
-    String getLicenses();
+    Set<String> getLicenses();
 
     /**
      * @return Creation data about the SBOM
