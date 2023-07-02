@@ -1,67 +1,141 @@
 package org.svip.sbom.model.objects.SPDX23;
 
+import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.util.ExternalReference;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
+
+/**
+ * file: SPDX23SBOM.java
+ * Used to file for SPDX 2.3 SBOM information
+ *
+ * @author Derek Garcia
+ * @author Matthew Morrison
+ */
 // todo
 public class SPDX23SBOM implements SPDX23Schema{
+
+    private String format;
+
+    private String name;
+
+    private String uid;
+
+    private String version;
+
+    private String specVersion;
+
+    private Set<String> licenses;
+
+    private CreationData creationData;
+
+    private String documentComment;
+
+    private Component rootComponent;
+
+    private Set<Component> components;
+
+    private HashMap<String, Set<Relationship>> relationships;
+
+    private Set<ExternalReference> externalReferences;
+
+    // TODO VEX needs implementation
+    // private Set<VEX> vulnerabilities;
+
+    // TODO Snippet needs implementation
+    // private Set<Snippet> snippets;
+
+    // TODO LicenseInfo needs implementation
+    // private Set<LicenseInfo> additionalLicenseInformation;
+
+    // TODO Annotation needs implementation
+    // private Set<Annotation> annotationInformation;
+
+    private String SPDXLicenseListVersion;
+
     @Override
     public String getFormat() {
-        return null;
+        return this.format;
     }
 
     @Override
     public String getName() {
-        return null;
+        return this.name;
     }
 
     @Override
     public String getUID() {
-        return null;
+        return this.uid;
     }
 
     @Override
     public String getVersion() {
-        return null;
+        return this.version;
     }
 
     @Override
     public String getSpecVersion() {
-        return null;
+        return this.specVersion;
     }
 
     @Override
-    public String getLicenses() {
-        return null;
+    public Set<String> getLicenses() {
+        return this.licenses;
     }
 
     @Override
     public CreationData getCreationData() {
-        return null;
+        return this.creationData;
     }
 
     @Override
     public String getDocumentComment() {
-        return null;
+        return this.documentComment;
     }
 
     @Override
     public Map<String, Set<Relationship>> getRelationships() {
-        return null;
+        return this.relationships;
     }
 
     @Override
     public Set<ExternalReference> getExternalReferences() {
-        return null;
+        return this.externalReferences;
     }
 
     @Override
     public String getSPDXLicenseListVersion() {
-        return null;
+        return this.SPDXLicenseListVersion;
+    }
+
+
+    //TODO add missing fields when implemented (VEX, Snippet, LicenseInfo, Annotation)
+    public SPDX23SBOM(String format, String name, String uid, String version,
+                      String specVersion, Set<String> licenses,
+                      CreationData creationData, String documentComment,
+                      Component rootComponent, Set<Component> components,
+                      HashMap<String, Set<Relationship>> relationships,
+                      Set<ExternalReference> externalReferences,
+                      String spdxLicenseListVersion){
+        this.format = format;
+        this.name = name;
+        this.uid = uid;
+        this.version = version;
+        this.specVersion = specVersion;
+        this.licenses = licenses;
+        this.creationData = creationData;
+        this.documentComment = documentComment;
+        this.rootComponent = rootComponent;
+        this.components = components;
+        this.relationships = relationships;
+        this.externalReferences = externalReferences;
+        this.SPDXLicenseListVersion = spdxLicenseListVersion;
+
     }
 }
