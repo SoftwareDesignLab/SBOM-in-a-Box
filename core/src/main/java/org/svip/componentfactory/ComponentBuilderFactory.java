@@ -8,7 +8,7 @@ import org.svip.builders.component.ComponentBuilder;
  *
  * @author Matthew Morrison
  */
-public interface ComponentBuilderFactory {
+public interface ComponentBuilderFactory extends ComponentBuilder {
 
     /**
      * Create a new ComponentBuilder object
