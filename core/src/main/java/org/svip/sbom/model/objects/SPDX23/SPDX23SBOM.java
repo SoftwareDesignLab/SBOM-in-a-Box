@@ -18,32 +18,43 @@ import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
  * @author Derek Garcia
  * @author Matthew Morrison
  */
-// todo
 public class SPDX23SBOM implements SPDX23Schema{
 
-    private String format;
+    /**SBOM's format*/
+    private final String format;
 
-    private String name;
+    /**SBOM's name*/
+    private final String name;
 
-    private String uid;
+    /**SBOM's uid*/
+    private final String uid;
 
-    private String version;
+    /**SBOM's version*/
+    private final String version;
 
-    private String specVersion;
+    /**SBOM's spec version*/
+    private final String specVersion;
 
-    private Set<String> licenses;
+    /**SBOM's licenses*/
+    private final Set<String> licenses;
 
-    private CreationData creationData;
+    /**SBOM's creation data*/
+    private final CreationData creationData;
 
-    private String documentComment;
+    /**SBOM's document comment*/
+    private final String documentComment;
 
-    private Component rootComponent;
+    /**SBOM's root component*/
+    private final Component rootComponent;
 
-    private Set<Component> components;
+    /**SBOM's component's*/
+    private final Set<Component> components;
 
-    private HashMap<String, Set<Relationship>> relationships;
+    /**SBOM's relationships*/
+    private final HashMap<String, Set<Relationship>> relationships;
 
-    private Set<ExternalReference> externalReferences;
+    /**SBOM's external references*/
+    private final Set<ExternalReference> externalReferences;
 
     // TODO VEX needs implementation
     // private Set<VEX> vulnerabilities;
@@ -57,64 +68,126 @@ public class SPDX23SBOM implements SPDX23Schema{
     // TODO Annotation needs implementation
     // private Set<Annotation> annotationInformation;
 
-    private String SPDXLicenseListVersion;
+    /**SBOM's license list version*/
+    private final String SPDXLicenseListVersion;
 
+    /**
+     * Get the SBOM's format
+     * @return the SBOM's format
+     */
     @Override
     public String getFormat() {
         return this.format;
     }
 
+    /**
+     * Get the SBOM's name
+     * @return the SBOM's name
+     */
     @Override
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Get the SBOM's UID
+     * @return the SBOM's UID
+     */
     @Override
     public String getUID() {
         return this.uid;
     }
 
+    /**
+     * Get the SBOM's version
+     * @return the SBOM's version
+     */
     @Override
     public String getVersion() {
         return this.version;
     }
 
+    /**
+     * Get the SBOM's spec version
+     * @return the SBOM's spec version
+     */
     @Override
     public String getSpecVersion() {
         return this.specVersion;
     }
 
+    /**
+     * Get the SBOM's licenses
+     * @return the SBOM's licenses
+     */
     @Override
     public Set<String> getLicenses() {
         return this.licenses;
     }
 
+    /**
+     * Get the SBOM's creation data
+     * @return the SBOM's creation data
+     */
     @Override
     public CreationData getCreationData() {
         return this.creationData;
     }
 
+    /**
+     * Get the SBOM's document comment
+     * @return the SBOM's document comment
+     */
     @Override
     public String getDocumentComment() {
         return this.documentComment;
     }
 
+    /**
+     * Get the SBOM's relationships
+     * @return the SBOM's relationships
+     */
     @Override
     public Map<String, Set<Relationship>> getRelationships() {
         return this.relationships;
     }
 
+    /**
+     * Get the SBOM's external references
+     * @return the SBOM's external references
+     */
     @Override
     public Set<ExternalReference> getExternalReferences() {
         return this.externalReferences;
     }
 
+    /**
+     * Get the SBOM's SPDX license list version
+     * @return the SBOM's SPDX license list version
+     */
     @Override
     public String getSPDXLicenseListVersion() {
         return this.SPDXLicenseListVersion;
     }
 
+    //TODO add getRootComponent, getComponents
 
+    /**
+     * Constructor to make a new SPDX 2.3 SBOM
+     * @param format SBOM format
+     * @param name SBOM name
+     * @param uid SBOM uid
+     * @param version SBOM version
+     * @param specVersion SBOM spec version
+     * @param licenses SBOM licenses
+     * @param creationData SBOM creation data
+     * @param documentComment SBOM document comment
+     * @param rootComponent SBOM root component
+     * @param components SBOM components
+     * @param relationships SBOM relationships
+     * @param externalReferences SBOM external references
+     * @param spdxLicenseListVersion SBOM spdx license list version
+     */
     //TODO add missing fields when implemented (VEX, Snippet, LicenseInfo, Annotation)
     public SPDX23SBOM(String format, String name, String uid, String version,
                       String specVersion, Set<String> licenses,
