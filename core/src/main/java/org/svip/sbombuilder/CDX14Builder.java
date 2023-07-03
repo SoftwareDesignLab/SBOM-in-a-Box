@@ -58,22 +58,27 @@ public class CDX14Builder implements CDX14SBOMBuilder {
     private Set<ExternalReference> externalReferences;
 
     //TODO VEX needs implementation
-    /**Holds the vulnerabilities expressed in the SBOM*/
+    // /**Holds the vulnerabilities expressed in the SBOM*/
     // private Set<VEX> vulnerabilities
 
     //TODO Service need implementation
-    /**Holds the services of the SBOM*/
+    // /**Holds the services of the SBOM*/
     // private Set<Service> services;
 
-    //TODO addComposition needs implementation
-    /**Holds the compositions of the SBOM*/
+    //TODO Composition needs implementation
+    // /**Holds the compositions of the SBOM*/
     // private Set<Composition> compositions;
 
-    //TODO addSignature method needs implementation
-    /**Holds the Signature of the SBOM*/
+    //TODO Signature method needs implementation
+    // /**Holds the Signature of the SBOM*/
     // private Signature signature;
 
 
+    /**
+     * Add a CycloneDX 1.4 package
+     * @param cdx14Package the CDX 1.4 package
+     * @return a CDX14SBOMBuilder
+     */
     @Override
     public CDX14SBOMBuilder addCDX14Package(CDX14Package cdx14Package) {
         return null;
@@ -87,61 +92,61 @@ public class CDX14Builder implements CDX14SBOMBuilder {
     @Override
     public SBOMBuilder setFormat(String format) {
         this.format = format;
-        return null;
+        return this;
     }
 
     @Override
     public SBOMBuilder setName(String name) {
         this.name = name;
-        return null;
+        return this;
     }
 
     @Override
     public SBOMBuilder setUID(String uid) {
         this.uid = uid;
-        return null;
+        return this;
     }
 
     @Override
     public SBOMBuilder setVersion(String version) {
         this.version = version;
-        return null;
+        return this;
     }
 
     @Override
     public SBOMBuilder setSpecVersion(String specVersion) {
         this.specVersion = specVersion;
-        return null;
+        return this;
     }
 
     @Override
     public SBOMBuilder addLicense(String license) {
         this.licenses.add(license);
-        return null;
+        return this;
     }
 
     @Override
     public SBOMBuilder setCreationData(CreationData creationData) {
         this.creationData = creationData;
-        return null;
+        return this;
     }
 
     @Override
     public SBOMBuilder setDocumentComment(String documentComment) {
         this.documentComment = documentComment;
-        return null;
+        return this;
     }
 
     @Override
     public SBOMBuilder setRootComponent(Component rootComponent) {
         this.rootComponent = rootComponent;
-        return null;
+        return this;
     }
 
     @Override
     public SBOMBuilder addComponent(Component component) {
         this.components.add(component);
-        return null;
+        return this;
     }
 
     @Override
@@ -156,13 +161,13 @@ public class CDX14Builder implements CDX14SBOMBuilder {
         relationships.add(relationship);
         this.relationships.put(componentName, relationships);
 
-        return null;
+        return this;
     }
 
     @Override
     public SBOMBuilder addExternalReference(ExternalReference externalReference) {
         this.externalReferences.add(externalReference);
-        return null;
+        return this;
     }
 
     @Override
@@ -170,7 +175,4 @@ public class CDX14Builder implements CDX14SBOMBuilder {
         return null;
     }
 
-    public CDX14Builder CDX14Builder(){
-        return null;
-    }
 }
