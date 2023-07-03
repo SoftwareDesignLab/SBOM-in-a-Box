@@ -361,6 +361,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
         return this;
     }
 
+    //TODO implement after SBOM refactor
     /**
      * Build an SPDX23PackageObject
      * @return a Component
@@ -370,6 +371,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
         return null;
     }
 
+    //TODO implement after SBOM refactor
     /**
      * Build and flush the SPDX23PackageObject
      * @return a Component

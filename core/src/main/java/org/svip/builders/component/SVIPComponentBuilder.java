@@ -268,6 +268,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
         return this;
     }
 
+    //TODO implement after SBOM refactor
     /**
      * Build an SVIPComponent
      * @return a Component
@@ -277,6 +278,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
         return null;
     }
 
+    //TODO implement after SBOM refactor
     /**
      * Build and flush an SVIP component
      * @return a Component
