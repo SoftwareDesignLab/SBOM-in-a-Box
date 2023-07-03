@@ -4,7 +4,9 @@ import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
+import org.svip.sbom.model.shared.util.LicenseCollection;
 
+import java.util.Map;
 import java.util.Set;
 
 // todo
@@ -56,6 +58,41 @@ public class CDX14ComponentObject implements CDX14Package {
 
     @Override
     public String getGroup() {
+        return null;
+    }
+
+    @Override
+    public String getType() {
+        return null;
+    }
+
+    @Override
+    public String getUID() {
+        return null;
+    }
+
+    @Override
+    public String getAuthor() {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public LicenseCollection getLicenses() {
+        return null;
+    }
+
+    @Override
+    public String getCopyright() {
+        return null;
+    }
+
+    @Override
+    public Map<String, String> getHashes() {
         return null;
     }
 }

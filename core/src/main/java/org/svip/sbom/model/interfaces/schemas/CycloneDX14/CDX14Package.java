@@ -1,5 +1,6 @@
 package org.svip.sbom.model.interfaces.schemas.CycloneDX14;
 
+import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 
 /**
@@ -11,7 +12,7 @@ import org.svip.sbom.model.interfaces.generics.SBOMPackage;
  *
  * @author Derek Garcia
  */
-public interface CDX14Package extends SBOMPackage {
+public interface CDX14Package extends SBOMPackage, Component {
     /**
      * @return Mime type of package
      */
