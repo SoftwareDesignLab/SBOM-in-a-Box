@@ -77,18 +77,6 @@ public class CDX14Builder implements CDX14SBOMBuilder{
     /**Holds the Signature of the SBOM*/
     // private Signature signature;
 
-
-    /**
-     * Add a CycloneDX 1.4 package
-     * @param cdx14Package the CDX 1.4 package
-     * @return a CDX14SBOMBuilder
-     */
-    @Override
-    public CDX14SBOMBuilder addCDX14Package(CDX14Package cdx14Package) {
-        this.components.add((Component) cdx14Package);
-        return this;
-    }
-
     /**
      * Set the SBOM's format
      * @param format the SBOM format
@@ -207,16 +195,13 @@ public class CDX14Builder implements CDX14SBOMBuilder{
      */
     @Override
     public SBOMBuilder addRelationship(String componentName, Relationship relationship) {
-        Set<Relationship> relationships;
-        if(this.relationships.containsKey(componentName)){
-            relationships = this.relationships.get(componentName);
+        if (this.relationships == null)
+            this.relationships = new HashMap<>();
 
-        } else{
-            relationships = new HashSet<>();
-        }
-        relationships.add(relationship);
-        this.relationships.put(componentName, relationships);
+        if( !relationships.containsKey(componentName))
+            this.relationships.put(componentName, new HashSet<>());
 
+        this.relationships.get(componentName).add(relationship);
         return this;
     }
 
