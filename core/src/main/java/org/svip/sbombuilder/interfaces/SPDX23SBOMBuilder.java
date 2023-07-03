@@ -12,13 +12,16 @@ import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
  * @author Thomas Roman
  */
 public interface SPDX23SBOMBuilder extends SBOMBuilder {
-    SPDX23SBOMBuilder setRootComponent(SPDX23Component rootComponent);
-
-    SPDX23SBOMBuilder addComponent(SPDX23Component component);
+    /**
+     * add a component to the SPDX 2.3 SBOM builder
+     * @param component the SPDX 2.3 component
+     * @return a SPDX 2.3 SBOM builder
+     */
+    SPDX23SBOMBuilder addSPDX23Component(SPDX23Component component);
 
     /**
      * add a license list version to the SPDX 2.3 SBOM builder
-     * @param licenseListVersion the SPDX 2.3 package
+     * @param licenseListVersion
      * @return a SPDX 2.3 SBOM builder
      */
     SPDX23SBOMBuilder setSPDXLicenseListVersion(String licenseListVersion);
