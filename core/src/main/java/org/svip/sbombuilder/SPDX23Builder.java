@@ -132,7 +132,7 @@ public abstract class SPDX23Builder implements SPDX23SBOMBuilder {
 
     @Override
     public SPDX23Builder setSPDXLicenseListVersion(String licenseListVersion) {
-        this.version = version;
+        this.SPDXLicenseListVersion = licenseListVersion;
         return this;
     }
 
