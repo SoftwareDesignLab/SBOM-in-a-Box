@@ -58,6 +58,12 @@ public class SPDX23PackageObject implements SPDX23Package {
     /**Package's external references*/
     private final Set<ExternalReference> externalReferences;
 
+    /**Package's comment*/
+    private final String comment;
+
+    /**Package's attribution text*/
+    private final String attributionText;
+
     /**Package's download location*/
     private final String downloadLocation;
 
@@ -289,7 +295,7 @@ public class SPDX23PackageObject implements SPDX23Package {
      */
     @Override
     public String getComment() {
-        return null;
+        return this.comment;
     }
 
     /**
@@ -298,33 +304,34 @@ public class SPDX23PackageObject implements SPDX23Package {
      */
     @Override
     public String getAttributionText() {
-        return null;
+        return this.attributionText;
     }
 
     /**
      * Constructor to build new SPDX 2.3 Package Object
-     * @param type component type
-     * @param uid component uid
-     * @param author component author
-     * @param name component name
-     * @param licenses component licenses
-     * @param copyright component copyright
-     * @param hashes component hashes
-     * @param supplier component supplier
-     * @param version component version
-     * @param description component description
-     * @param cpes component CPEs
-     * @param purls component PURLs
-     * @param externalReferences component external references
-     * @param downloadLocation component download location
-     * @param fileName component file name
-     * @param filesAnalyzed if component's files were analyzed
-     * @param verificationCode component verification code
-     * @param homePage component home page
-     * @param sourceInfo component source info
-     * @param releaseDate component release date
-     * @param builtDate component build date
-     * @param validUntilDate component valid until date
+     * @param type package type
+     * @param uid package uid
+     * @param author package author
+     * @param name package name
+     * @param licenses package licenses
+     * @param copyright package copyright
+     * @param hashes package hashes
+     * @param supplier package supplier
+     * @param version package version
+     * @param description package description
+     * @param cpes package CPEs
+     * @param purls package PURLs
+     * @param externalReferences package external references
+     * @param downloadLocation package download location
+     * @param fileName package file name
+     * @param filesAnalyzed if package's files were analyzed
+     * @param verificationCode package verification code
+     * @param homePage package home page
+     * @param sourceInfo package source info
+     * @param releaseDate package release date
+     * @param builtDate package build date
+     * @param validUntilDate package valid until date
+     *
      */
     public SPDX23PackageObject(String type, String uid, String author, String name,
                                LicenseCollection licenses, String copyright,
@@ -333,7 +340,8 @@ public class SPDX23PackageObject implements SPDX23Package {
                                Set<String> purls, Set<ExternalReference> externalReferences,
                                String downloadLocation, String fileName, Boolean filesAnalyzed,
                                String verificationCode, String homePage, String sourceInfo,
-                               String releaseDate, String builtDate, String validUntilDate){
+                               String releaseDate, String builtDate, String validUntilDate,
+                               String comment, String attributionText){
         this.type = type;
         this.uid = uid;
         this.author = author;
@@ -356,6 +364,8 @@ public class SPDX23PackageObject implements SPDX23Package {
         this.releaseDate = releaseDate;
         this.builtDate = builtDate;
         this.validUntilDate = validUntilDate;
+        this.comment = comment;
+        this.attributionText = attributionText;
     }
 
 }

@@ -39,13 +39,19 @@ public class SPDX23FileObject implements SPDX23File {
     /**File's file notice*/
     private final String fileNotice;
 
+    /**File's comment*/
+    private final String comment;
+
+    /**File's attribution text*/
+    private final String attributionText;
+
     /**
      * Get the file's comment
      * @return the file's comment
      */
     @Override
     public String getComment() {
-        return null;
+        return this.comment;
     }
 
     /**
@@ -54,7 +60,7 @@ public class SPDX23FileObject implements SPDX23File {
      */
     @Override
     public String getAttributionText() {
-        return null;
+        return this.attributionText;
     }
 
     /**
@@ -138,10 +144,12 @@ public class SPDX23FileObject implements SPDX23File {
      * @param copyright file copyright
      * @param hashes file hashes
      * @param fileNotice file's file notice
+     * @param comment file's comment
      */
     public SPDX23FileObject(String type, String uid, String author, String name,
                       LicenseCollection licenses, String copyright,
-                      HashMap<String, String> hashes, String fileNotice){
+                      HashMap<String, String> hashes, String fileNotice,
+                            String comment, String attributionText){
         this.type = type;
         this.uid = uid;
         this.author = author;
@@ -150,8 +158,8 @@ public class SPDX23FileObject implements SPDX23File {
         this.copyright = copyright;
         this.hashes = hashes;
         this.fileNotice = fileNotice;
-
-
+        this.comment = comment;
+        this.attributionText = attributionText;
 
     }
 }
