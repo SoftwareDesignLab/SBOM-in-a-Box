@@ -114,13 +114,13 @@ public class SVIPSBOMBuilder implements CDX14SBOMBuilder, SPDX23SBOMBuilder {
 
     @Override
     public SVIPSBOMBuilder addRelationship(String componentName, Relationship relationship) {
-        /** create a temporary list to maintain all the previously established relationships*/
-        Set<Relationship> relationshipList = new HashSet<Relationship>();
-        if (relationships.containsKey(componentName)) {
-            relationshipList.addAll(relationships.get(componentName));
-        }
-        relationshipList.add(relationship);
-        this.relationships.put(componentName, relationshipList);
+        if (this.relationships == null)
+            this.relationships = new HashMap<>();
+
+        if( !relationships.containsKey(componentName))
+            this.relationships.put(componentName, new HashSet<>());
+
+        this.relationships.get(componentName).add(relationship);
         return this;
     }
 
@@ -147,17 +147,17 @@ public class SVIPSBOMBuilder implements CDX14SBOMBuilder, SPDX23SBOMBuilder {
         this.components.add(spdx23File);
         return this;
     }
-
+    /** TO DO: add constructors to SBOM */
     @Override
     public SBOM Build() {
         return null;
     }
-
+    /** TO DO: add constructors to SPDX23SBOM */
     @Override
     public SPDX23SBOM buildSPDX23SBOM() {
         return null;
     }
-
+    /** TO DO: add constructors to CDX14SBOM */
     @Override
     public CDX14SBOM buildCDX14SBOM() {
         return null;
