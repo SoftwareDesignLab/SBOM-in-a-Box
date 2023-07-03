@@ -48,8 +48,8 @@ public class SVIPSBOMBuilder implements CDX14SBOMBuilder, SPDX23SBOMBuilder {
     private String SPDXLicenseListVersion;
     @Override
     public SVIPSBOMBuilder addCDX14Package(CDX14Package cdx14Package) {
-        /** cannot be added to components list because the CDX14Package does not inherit Component */
-        return null;
+        this.components.add(cdx14Package);
+        return this;
     }
 
     @Override
