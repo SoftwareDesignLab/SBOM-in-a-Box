@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * file: SPDX23FileObject.java
- * Holds information for a single SPDX 2.3 File object
+ * Holds information for an SPDX 2.3 File object
  *
  * @author Derek Garcia
  * @author Matthew Morrison

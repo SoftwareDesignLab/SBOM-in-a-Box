@@ -12,7 +12,7 @@ import java.util.Set;
 
 /**
  * file: SPDX23PackageObject.java
- * Holds information for a single SPDX 2.3 Package object
+ * Holds information for an SPDX 2.3 Package object
  *
  * @author Derek Garcia
  * @author Matthew Morrison

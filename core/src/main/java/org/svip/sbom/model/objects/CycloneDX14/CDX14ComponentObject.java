@@ -12,7 +12,7 @@ import java.util.Set;
 
 /**
  * file: CDX14ComponentObject.java
- * Holds information for a single CycloneDX 1.4 component object
+ * Holds information for a CycloneDX 1.4 component object
  *
  * @author Derek Garcia
  * @author Matthew Morrison

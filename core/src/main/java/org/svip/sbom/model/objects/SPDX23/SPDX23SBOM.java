@@ -13,7 +13,7 @@ import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
 
 /**
  * file: SPDX23SBOM.java
- * Used to file for SPDX 2.3 SBOM information
+ * Used to file for an SPDX 2.3 SBOM information
  *
  * @author Derek Garcia
  * @author Matthew Morrison

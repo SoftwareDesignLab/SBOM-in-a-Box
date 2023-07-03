@@ -14,7 +14,7 @@ import java.util.Set;
 
 /**
  * file: SVIPComponentObject.java
- * Holds information for a single SVIP Component Object
+ * Holds information for an SVIP Component Object
  *
  * @author Derek Garcia
  * @author Matthew Morrison
