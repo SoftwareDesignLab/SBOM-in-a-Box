@@ -278,11 +278,6 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
      * @return the component's comment
      */
     @Override
-    public HashMap<String, Set<String>> getProperties() {
-        return null;
-    }
-
-    @Override
     public String getComment() {
         return this.comment;
     }

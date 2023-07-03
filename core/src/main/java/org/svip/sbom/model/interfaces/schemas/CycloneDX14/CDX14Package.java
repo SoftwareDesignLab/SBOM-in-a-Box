@@ -1,5 +1,6 @@
 package org.svip.sbom.model.interfaces.schemas.CycloneDX14;
 
+
 import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 
 import java.util.HashMap;

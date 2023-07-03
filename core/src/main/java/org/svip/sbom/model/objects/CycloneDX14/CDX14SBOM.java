@@ -139,16 +139,6 @@ public class CDX14SBOM implements CDX14Schema {
         return this.documentComment;
     }
 
-    @Override
-    public Component getRootComponent() {
-        return this.rootComponent;
-    }
-
-    @Override
-    public Set<Component> getComponents() {
-        return this.components;
-    }
-
     /**
      * Get the SBOM's root component
      * @return the SBOM's root component
