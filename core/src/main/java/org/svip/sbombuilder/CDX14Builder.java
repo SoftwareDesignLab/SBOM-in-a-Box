@@ -1,5 +1,7 @@
 package org.svip.sbombuilder;
 
+import org.cyclonedx.model.Composition;
+import org.cyclonedx.model.Signature;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
@@ -21,7 +23,7 @@ import java.util.Set;
  *
  * @author Matthew Morrison
  */
-public class CDX14Builder implements CDX14SBOMBuilder {
+public class CDX14Builder implements CDX14SBOMBuilder{
 
     /**Holds the format of the SBOM*/
     private String format;
@@ -60,19 +62,19 @@ public class CDX14Builder implements CDX14SBOMBuilder {
     private Set<ExternalReference> externalReferences;
 
     //TODO VEX needs implementation
-    // /**Holds the vulnerabilities expressed in the SBOM*/
+    /**Holds the vulnerabilities expressed in the SBOM*/
     // private Set<VEX> vulnerabilities
 
-    //TODO Service need implementation
-    // /**Holds the services of the SBOM*/
+    //TODO Service needs implementation
+    /**Holds the services of the SBOM*/
     // private Set<Service> services;
 
     //TODO Composition needs implementation
-    // /**Holds the compositions of the SBOM*/
+    /**Holds the compositions of the SBOM*/
     // private Set<Composition> compositions;
 
-    //TODO Signature method needs implementation
-    // /**Holds the Signature of the SBOM*/
+    //TODO Signature needs implementation
+    /**Holds the Signature of the SBOM*/
     // private Signature signature;
 
 
@@ -85,15 +87,6 @@ public class CDX14Builder implements CDX14SBOMBuilder {
     public CDX14SBOMBuilder addCDX14Package(CDX14Package cdx14Package) {
         this.components.add((Component) cdx14Package);
         return this;
-    }
-
-    /**
-     * Build the CycloneDX 1.4 SBOM
-     * @return a CDX14SBOM object
-     */
-    @Override
-    public CDX14SBOM buildCDX14SBOM() {
-        return null;
     }
 
     /**
@@ -227,16 +220,31 @@ public class CDX14Builder implements CDX14SBOMBuilder {
         return this;
     }
 
-    //TODO implement once SBOM refactor is complete
     @Override
     public SBOMBuilder addExternalReference(ExternalReference externalReference) {
         this.externalReferences.add(externalReference);
         return this;
     }
 
+    //TODO add addService, addVulnerability, addComposition, addSignature when implemented
+
+    /**
+     * Build a new SBOM
+     * @return an SBOM Object
+     */
+    //TODO implement once SBOM refactor is complete
     @Override
     public SBOM Build() {
         return null;
     }
 
+    /**
+     * Build the CycloneDX 1.4 SBOM
+     * @return a CDX14SBOM object
+     */
+    //TODO implement once SBOM refactor is complete
+    @Override
+    public CDX14SBOM buildCDX14SBOM() {
+        return null;
+    }
 }
