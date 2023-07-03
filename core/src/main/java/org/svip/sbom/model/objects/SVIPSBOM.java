@@ -56,26 +56,26 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
     /**SBOM's external references*/
     private final Set<ExternalReference> externalReferences;
 
-    // TODO VEX needs implementation
+    //TODO VEX needs implementation
     // private Set<VEX> vulnerabilities;
 
-    // TODO Service needs implementation
+    //TODO Service needs implementation
     // private Set<Service> services;
 
-    // TODO Composition needs implementation
+    //TODO Composition needs implementation
     // private Set<Composition> compositions;
 
-    // TODO Signature needs implementation
+    //TODO Signature needs implementation
     // private Signature signature;
 
 
-    // TODO Snippet needs implementation
+    //TODO Snippet needs implementation
     // private Set<Snippet> snippets;
 
-    // TODO LicenseInfo needs implementation
+    //TODO LicenseInfo needs implementation
     // private Set<LicenseInfo> additionalLicenseInformation;
 
-    // TODO Annotation needs implementation
+    //TODO Annotation needs implementation
     // private Set<Annotation> annotationInformation;
 
     /**SBOM's license list version*/
