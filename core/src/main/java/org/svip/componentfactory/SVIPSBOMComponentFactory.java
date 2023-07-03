@@ -1,6 +1,8 @@
 package org.svip.componentfactory;
 
-import org.svip.builders.component.ComponentBuilder;
+import org.svip.builders.component.SVIPComponentBuilder;
+import org.svip.builders.component.interfaces.generics.ComponentBuilder;
+import org.svip.componentfactory.interfaces.ComponentBuilderFactory;
 
 /**
  * file: SVIPSBOMComponentFactory.java
@@ -8,7 +10,7 @@ import org.svip.builders.component.ComponentBuilder;
  *
  * @author Matthew Morrison
  */
-public class SVIPSBOMComponentFactory implements ComponentBuilderFactory{
+public class SVIPSBOMComponentFactory implements ComponentBuilderFactory {
 
     /**
      * Create a new SVIP SBOM Builder
@@ -16,6 +18,6 @@ public class SVIPSBOMComponentFactory implements ComponentBuilderFactory{
      */
     @Override
     public ComponentBuilder createBuilder() {
-        return null;
+        return new SVIPComponentBuilder();
     }
 }

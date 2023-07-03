@@ -1,6 +1,7 @@
-package org.svip.componentfactory;
+package org.svip.componentfactory.interfaces;
 
-import org.svip.builders.component.ComponentBuilder;
+
+import org.svip.builders.component.interfaces.generics.ComponentBuilder;
 
 /**
  * file: ComponentBuilderFactory.java
