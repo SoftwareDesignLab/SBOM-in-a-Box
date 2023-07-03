@@ -105,6 +105,12 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
     /**Component's properties*/
     private final HashMap<String, Set<String>> properties;
 
+    /**Component's comment*/
+    private final String comment;
+
+    /**Component's attribution text*/
+    private final String attributionText;
+
     /**
      * Get the component's type
      * @return the component's type
@@ -273,7 +279,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
      */
     @Override
     public String getComment() {
-        return null;
+        return this.comment;
     }
 
     /**
@@ -282,7 +288,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
      */
     @Override
     public String getAttributionText() {
-        return null;
+        return this.attributionText;
     }
 
     /**
@@ -415,7 +421,8 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
                                String verificationCode, String homePage, String sourceInfo,
                                String releaseDate, String builtDate, String validUntilDate,
                                String mimeType, String publisher, String scope, String group,
-                               HashMap<String, Set<String>> properties, String fileNotice){
+                               HashMap<String, Set<String>> properties, String fileNotice,
+                               String comment, String attributionText){
         this.type = type;
         this.uid = uid;
         this.author = author;
@@ -444,5 +451,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         this.group = group;
         this.properties = properties;
         this.fileNotice = fileNotice;
+        this.comment = comment;
+        this.attributionText = attributionText;
     }
 }
