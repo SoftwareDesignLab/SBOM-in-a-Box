@@ -1,10 +1,17 @@
 package org.svip.builders.component;
 
+import org.svip.builders.component.interfaces.CycloneDX14.CDX14PackageBuilder_I;
+import org.svip.builders.component.interfaces.generics.ComponentBuilder;
+import org.svip.builders.component.interfaces.generics.SBOMComponentBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * file: CDX14PackageBuilder.java
@@ -12,110 +19,298 @@ import org.svip.sbom.model.shared.util.LicenseCollection;
  *
  * @author Matthew Morrison
  */
-public class CDX14PackageBuilder implements CDX14PackageBuilder_I{
+public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
+
+    /**Component type*/
+    private String type;
+
+    /**Component uid*/
+    private String uid;
+
+    /**Component author*/
+    private String author;
+
+    /**Component name*/
+    private String name;
+
+    /**Component licenses*/
+    private LicenseCollection licenses;
+
+    /**Component copyright*/
+    private String copyright;
+
+    /**Component hashes*/
+    private HashMap<String, String> hashes;
+
+    /**Component supplier*/
+    private Organization supplier;
+
+    /**Component version*/
+    private String version;
+
+    /**Component description*/
+    private Description description;
+
+    /**Component CPEs*/
+    private Set<String> cpes;
+
+    /**Component PURLs*/
+    private Set<String> purls;
+
+    /**Component external references*/
+    private Set<ExternalReference> externalReferences;
+
+    /**Component mime type*/
+    private String mimeType;
+
+    /**Component publisher*/
+    private String publisher;
+
+    /**Component scope*/
+    private String scope;
+
+    /**Component group*/
+    private String group;
+
+    /**Component properties*/
+    private HashMap<String, Set<String>> properties;
+
+    /**
+     * Set the component's mime type
+     * @param mimeType the package's mime type
+     * @return a CDX14PackageBuilder_I
+     */
     @Override
     public CDX14PackageBuilder_I setMimeType(String mimeType) {
-        return null;
+        this.mimeType = mimeType;
+        return this;
     }
 
+    /**
+     * Set the component's publisher
+     * @param publisher the package's publisher
+     * @return a CDX14PackageBuilder_I
+     */
     @Override
     public CDX14PackageBuilder_I setPublisher(String publisher) {
-        return null;
+        this.publisher = publisher;
+        return this;
     }
 
+    /**
+     * Set the component's scope
+     * @param scope the package's scope
+     * @return a CDX14PackageBuilder_I
+     */
     @Override
     public CDX14PackageBuilder_I setScope(String scope) {
-        return null;
+        this.scope = scope;
+        return this;
     }
 
+    /**
+     * Set the component's group
+     * @param group the package's group
+     * @return a CDX14PackageBuilder_I
+     */
     @Override
     public CDX14PackageBuilder_I setGroup(String group) {
-        return null;
+        this.group = group;
+        return this;
     }
 
+    /**
+     * Add an external references to the component
+     * @param externalReference a package's external reference
+     * @return a CDX14PackageBuilder_I
+     */
     @Override
     public CDX14PackageBuilder_I addExternalReferences(ExternalReference externalReference) {
-        return null;
+        this.externalReferences.add(externalReference);
+        return this;
     }
 
+    /**
+     * Add a property to the component
+     * @param name the name of the property
+     * @param value the value of the property
+     * @return a CDX14PackageBuilder_I
+     */
     @Override
     public CDX14PackageBuilder_I addProperty(String name, String value) {
-        return null;
+        Set<String> values;
+        if(this.properties.containsKey(name)){
+            values = this.properties.get(name);
+        }
+        else{
+            values = new HashSet<>();
+        }
+        values.add(value);
+        this.properties.put(name, values);
+
+        return this;
     }
 
+    /**
+     * Set the component's type
+     * @param type the designated type of component
+     * @return a ComponentBuilder
+     */
     @Override
     public ComponentBuilder setType(String type) {
-        return null;
+        this.type = type;
+        return this;
     }
 
+    /**
+     * Set the component's uid
+     * @param uid the uid of the component
+     * @return a ComponentBuilder
+     */
     @Override
     public ComponentBuilder setUID(String uid) {
-        return null;
+        this.uid = uid;
+        return this;
     }
 
+    /**
+     * Set the component's author
+     * @param author the author of the component
+     * @return a ComponentBuilder
+     */
     @Override
     public ComponentBuilder setAuthor(String author) {
-        return null;
+        this.author = author;
+        return this;
     }
 
+    /**
+     * Set the component's name
+     * @param name the name of the component
+     * @return a ComponentBuilder
+     */
     @Override
     public ComponentBuilder setName(String name) {
-        return null;
+        this.name = name;
+        return this;
     }
 
+    /**
+     * Set the component's licenses
+     * @param licenses a collection of licenses
+     * @return a ComponentBuilder
+     */
     @Override
     public ComponentBuilder setLicenses(LicenseCollection licenses) {
-        return null;
+        this.licenses = licenses;
+        return this;
     }
 
+    /**
+     * Set the component's copyright info
+     * @param copyright the copyright info of the component
+     * @return a ComponentBuilder
+     */
     @Override
     public ComponentBuilder setCopyright(String copyright) {
-        return null;
+        this.copyright = copyright;
+        return this;
     }
 
+    /**
+     * Add a hash value to the component
+     * @param algorithm the algorithm of the hash
+     * @param hash the value of the hash
+     * @return a ComponentBuilder
+     */
     @Override
     public ComponentBuilder addHash(String algorithm, String hash) {
-        return null;
+        this.hashes.put(algorithm, hash);
+        return this;
     }
 
+    /**
+     * Set the component's supplier
+     * @param supplier the component's supplier
+     * @return an SBOMComponentBuilder
+     */
+    @Override
+    public SBOMComponentBuilder setSupplier(Organization supplier) {
+        this.supplier = supplier;
+        return this;
+    }
+
+    /**
+     * Set the component's version
+     * @param version the component's version
+     * @return an SBOMComponentBuilder
+     */
+    @Override
+    public SBOMComponentBuilder setVersion(String version) {
+        this.version = version;
+        return this;
+    }
+
+    /**
+     * Set the component's description
+     * @param description the component's description
+     * @return an SBOMComponentBuilder
+     */
+    @Override
+    public SBOMComponentBuilder setDescription(Description description) {
+        this.description = description;
+        return this;
+    }
+
+    /**
+     * Add a cpe to the component
+     * @param cpe the cpe string to add
+     * @return an SBOMComponentBuilder
+     */
+    @Override
+    public SBOMComponentBuilder addCPE(String cpe) {
+        this.cpes.add(cpe);
+        return this;
+    }
+
+    /**
+     * Add a purl to the component
+     * @param purl the purl string to add
+     * @return an SBOMComponentBuilder
+     */
+    @Override
+    public SBOMComponentBuilder addPURL(String purl) {
+        this.purls.add(purl);
+        return this;
+    }
+
+    /**
+     * Add an external reference to the component
+     * @param externalReference the external component to add
+     * @return an SBOMComponentBuilder
+     */
+    @Override
+    public SBOMComponentBuilder addExternalReference(ExternalReference externalReference) {
+        this.externalReferences.add(externalReference);
+        return this;
+    }
+
+    /**
+     * Build a CDX14PackageObject
+     * @return a Component
+     */
     @Override
     public Component build() {
         return null;
     }
 
+    /**
+     * Build and flush a CDX14PackageObject
+     * @return a Component
+     */
     @Override
     public Component buildAndFlush() {
-        return null;
-    }
-
-    @Override
-    public SBOMComponentBuilder setSupplier(Organization supplier) {
-        return null;
-    }
-
-    @Override
-    public SBOMComponentBuilder setVersion(String version) {
-        return null;
-    }
-
-    @Override
-    public SBOMComponentBuilder setDescription(Description description) {
-        return null;
-    }
-
-    @Override
-    public SBOMComponentBuilder addCPE(String cpe) {
-        return null;
-    }
-
-    @Override
-    public SBOMComponentBuilder addPURL(String purl) {
-        return null;
-    }
-
-    @Override
-    public SBOMComponentBuilder addExternalReference(ExternalReference externalReference) {
         return null;
     }
 }
