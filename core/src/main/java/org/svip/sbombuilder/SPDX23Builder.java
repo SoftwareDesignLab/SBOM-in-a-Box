@@ -1,8 +1,8 @@
 package org.svip.sbombuilder;
 
-import jdk.jshell.Snippet;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
@@ -10,7 +10,6 @@ import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbombuilder.interfaces.SPDX23SBOMBuilder;
-import org.svip.sbomvex.VEXFactory;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -98,14 +97,14 @@ public abstract class SPDX23Builder implements SPDX23SBOMBuilder {
     }
 
     @Override
-    public SPDX23Builder setRootComponent(Component rootComponent)
+    public SPDX23Builder setRootComponent(SPDX23Component rootComponent)
     {
         this.rootComponent = rootComponent;
         return this;
     }
 
     @Override
-    public SPDX23Builder addComponent(Component component)
+    public SPDX23Builder addComponent(SPDX23Component component)
     {
         this.components.add(component);
         return this;
@@ -134,20 +133,6 @@ public abstract class SPDX23Builder implements SPDX23SBOMBuilder {
     @Override
     public SPDX23Builder setSPDXLicenseListVersion(String licenseListVersion) {
         this.version = version;
-        return this;
-    }
-
-    /** adds an SPDX 2.3 package to the components list */
-    @Override
-    public SPDX23Builder addSPDX23Package(SPDX23Package spdx23Package) {
-        this.components.add(spdx23Package);
-        return this;
-    }
-
-    /** adds an SPDX 2.3 file to the components list */
-    @Override
-    public SPDX23Builder addSPDX23File(SPDX23File spdx23File) {
-        this.components.add(spdx23File);
         return this;
     }
 
