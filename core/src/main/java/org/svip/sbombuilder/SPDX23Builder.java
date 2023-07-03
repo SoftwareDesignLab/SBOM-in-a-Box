@@ -39,16 +39,7 @@ public abstract class SPDX23Builder implements SPDX23SBOMBuilder {
     Set<LicenseInfo> additionalLicenseInformation;
      Set<Annotation> annotationInformation;</Annotation>*/
     private String SPDXLicenseListVersion;
-
-    /**
-     * Constructor
-     */
-    public SPDX23Builder()
-    {
-
-    }
-
-
+    
     @Override
     public SBOMBuilder setFormat(String format)
     {
