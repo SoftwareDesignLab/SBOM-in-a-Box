@@ -139,6 +139,16 @@ public class CDX14SBOM implements CDX14Schema {
         return this.documentComment;
     }
 
+    @Override
+    public Component getRootComponent() {
+        return this.rootComponent;
+    }
+
+    @Override
+    public Set<Component> getComponents() {
+        return this.components;
+    }
+
     /**
      * Get the SBOM's relationships
      * @return the SBOM's relationships
@@ -156,8 +166,6 @@ public class CDX14SBOM implements CDX14Schema {
     public Set<ExternalReference> getExternalReferences() {
         return this.externalReferences;
     }
-
-    //TODO add getRootComponent, getComponents
 
     /**
      * Constructor to make a new CycloneDX 1.4 SBOM

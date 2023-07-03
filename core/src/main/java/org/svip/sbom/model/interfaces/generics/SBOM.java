@@ -56,9 +56,15 @@ public interface SBOM {
      */
     String getDocumentComment();
 
-    // todo
-    //    Component getRootComponent();
-    //    Component getComponents();
+    /**
+     * @return Get SBOM root component
+     */
+    Component getRootComponent();
+
+    /**
+     * @return Get SBOM components
+     */
+    Set<Component> getComponents();
 
     /**
      * @return Component relationship details
