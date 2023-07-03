@@ -143,6 +143,16 @@ public class SPDX23SBOM implements SPDX23Schema{
         return this.documentComment;
     }
 
+    @Override
+    public Component getRootComponent() {
+        return this.rootComponent;
+    }
+
+    @Override
+    public Set<Component> getComponents() {
+        return this.components;
+    }
+
     /**
      * Get the SBOM's relationships
      * @return the SBOM's relationships
@@ -169,8 +179,6 @@ public class SPDX23SBOM implements SPDX23Schema{
     public String getSPDXLicenseListVersion() {
         return this.SPDXLicenseListVersion;
     }
-
-    //TODO add getRootComponent, getComponents
 
     /**
      * Constructor to make a new SPDX 2.3 SBOM
