@@ -1,6 +1,5 @@
-package org.svip.sbombuilder;
+package org.svip.sbombuilders;
 
-import jdk.jshell.Snippet;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
@@ -10,7 +9,6 @@ import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbombuilder.interfaces.SPDX23SBOMBuilder;
-import org.svip.sbomvex.VEXFactory;
 
 import java.util.HashMap;
 import java.util.HashSet;
