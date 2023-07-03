@@ -124,6 +124,7 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I{
         return this;
     }
 
+    //TODO implement after SBOM refactor
     /**
      * Build an SPDX23FileObject
      * @return a Component
@@ -133,6 +134,7 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I{
         return null;
     }
 
+    //TODO implement after SBOM refactor
     /**
      * Build and flush an SPDX23FileObject
      * @return a Component

@@ -296,6 +296,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
         return this;
     }
 
+    //TODO implement after SBOM refactor
     /**
      * Build a CDX14PackageObject
      * @return a Component
@@ -305,6 +306,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
         return null;
     }
 
+    //TODO implement after SBOM refactor
     /**
      * Build and flush a CDX14PackageObject
      * @return a Component
