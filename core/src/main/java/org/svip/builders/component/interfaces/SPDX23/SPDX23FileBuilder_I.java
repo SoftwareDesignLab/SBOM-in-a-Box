@@ -1,4 +1,4 @@
-package org.svip.builders.component;
+package org.svip.builders.component.interfaces.SPDX23;
 
 /**
  * file: SPDX23FileBuilder_I.java
@@ -7,7 +7,7 @@ package org.svip.builders.component;
  *
  * @author Matthew Morrison
  */
-public interface SPDX23FileBuilder_I extends SPDX23ComponentBuilder{
+public interface SPDX23FileBuilder_I extends SPDX23ComponentBuilder {
 
     /**
      * Set the file notice of the SPDX File

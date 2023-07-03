@@ -1,4 +1,6 @@
-package org.svip.builders.component;
+package org.svip.builders.component.interfaces.SPDX23;
+
+import org.svip.builders.component.interfaces.generics.ComponentBuilder;
 
 /**
  * file: SPDX23ComponentBuilder.java

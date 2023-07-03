@@ -1,4 +1,4 @@
-package org.svip.builders.component;
+package org.svip.builders.component.interfaces.generics;
 
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
@@ -11,7 +11,7 @@ import org.svip.sbom.model.shared.util.ExternalReference;
  *
  * @author Matthew Morrison
  */
-public interface SBOMComponentBuilder extends ComponentBuilder{
+public interface SBOMComponentBuilder extends ComponentBuilder {
 
     /**
      * Set the supplier of the component
