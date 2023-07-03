@@ -153,6 +153,16 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
         return this.documentComment;
     }
 
+    @Override
+    public Component getRootComponent() {
+        return this.rootComponent;
+    }
+
+    @Override
+    public Set<Component> getComponents() {
+        return this.components;
+    }
+
     /**
      * Get the SBOM's root component
      * @return the SBOM's root component
