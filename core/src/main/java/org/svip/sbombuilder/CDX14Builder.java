@@ -7,6 +7,8 @@ import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
+import org.svip.sbombuilder.interfaces.CDX14SBOMBuilder;
+import org.svip.sbombuilder.interfaces.SBOMBuilder;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -81,74 +83,135 @@ public class CDX14Builder implements CDX14SBOMBuilder {
      */
     @Override
     public CDX14SBOMBuilder addCDX14Package(CDX14Package cdx14Package) {
-        return null;
+        this.components.add((Component) cdx14Package);
+        return this;
     }
 
+    /**
+     * Build the CycloneDX 1.4 SBOM
+     * @return a CDX14SBOM object
+     */
     @Override
     public CDX14SBOM buildCDX14SBOM() {
         return null;
     }
 
+    /**
+     * Set the SBOM's format
+     * @param format the SBOM format
+     * @return an SBOMBuilder
+     */
     @Override
     public SBOMBuilder setFormat(String format) {
         this.format = format;
         return this;
     }
 
+    /**
+     * Set the SBOM's name
+     * @param name the name
+     * @return an SBOMBuilder
+     */
     @Override
     public SBOMBuilder setName(String name) {
         this.name = name;
         return this;
     }
 
+    /**
+     * Set the SBOM's UID
+     * @param uid the UID
+     * @return an SBOMBuilder
+     */
     @Override
     public SBOMBuilder setUID(String uid) {
         this.uid = uid;
         return this;
     }
 
+    /**
+     * Set the SBOM's version
+     * @param version the version
+     * @return an SBOMBuilder
+     */
     @Override
     public SBOMBuilder setVersion(String version) {
         this.version = version;
         return this;
     }
 
+    /**
+     * Set the SBOM's spec version
+     * @param specVersion the spec version
+     * @return an SBOMBuilder
+     */
     @Override
     public SBOMBuilder setSpecVersion(String specVersion) {
         this.specVersion = specVersion;
         return this;
     }
 
+    /**
+     * Add a license to the SBOM
+     * @param license the license to add
+     * @return an SBOMBuilder
+     */
     @Override
     public SBOMBuilder addLicense(String license) {
         this.licenses.add(license);
         return this;
     }
 
+    /**
+     * Set the SBOM's creation data
+     * @param creationData the creation data
+     * @return an SBOMBuilder
+     */
     @Override
     public SBOMBuilder setCreationData(CreationData creationData) {
         this.creationData = creationData;
         return this;
     }
 
+    /**
+     * Set the SBOM's document comment
+     * @param documentComment the document comment
+     * @return an SBOMBuilder
+     */
     @Override
     public SBOMBuilder setDocumentComment(String documentComment) {
         this.documentComment = documentComment;
         return this;
     }
 
+    /**
+     * Set the root component of the SBOM
+     * @param rootComponent the root component
+     * @return an SBOMBuilder
+     */
     @Override
     public SBOMBuilder setRootComponent(Component rootComponent) {
         this.rootComponent = rootComponent;
         return this;
     }
 
+    /**
+     * Add a component to an SBOM
+     * @param component the component to add
+     * @return an SBOMBuilder
+     */
     @Override
     public SBOMBuilder addComponent(Component component) {
         this.components.add(component);
         return this;
     }
 
+    /**
+     * Add a relationship to the SBOM
+     * @param componentName the component name
+     * @param relationship the relationship
+     * @return an SBOMBuilder
+     */
     @Override
     public SBOMBuilder addRelationship(String componentName, Relationship relationship) {
         Set<Relationship> relationships;
@@ -164,6 +227,7 @@ public class CDX14Builder implements CDX14SBOMBuilder {
         return this;
     }
 
+    //TODO implement once SBOM refactor is complete
     @Override
     public SBOMBuilder addExternalReference(ExternalReference externalReference) {
         this.externalReferences.add(externalReference);
