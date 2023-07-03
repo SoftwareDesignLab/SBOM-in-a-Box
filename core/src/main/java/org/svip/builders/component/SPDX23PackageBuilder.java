@@ -1,10 +1,17 @@
 package org.svip.builders.component;
 
+import org.svip.builders.component.interfaces.SPDX23.SPDX23ComponentBuilder;
+import org.svip.builders.component.interfaces.SPDX23.SPDX23PackageBuilder_I;
+import org.svip.builders.component.interfaces.generics.ComponentBuilder;
+import org.svip.builders.component.interfaces.generics.SBOMComponentBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+
+import java.util.HashMap;
+import java.util.Set;
 
 /**
  * file: SPDX23PackageBuilder.java
@@ -12,134 +19,363 @@ import org.svip.sbom.model.shared.util.LicenseCollection;
  *
  * @author Matthew Morrison
  */
-public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I{
+public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
+    /**File type*/
+    private String type;
+
+    /**File uid*/
+    private String uid;
+
+    /**File author*/
+    private String author;
+
+    /**File name*/
+    private String name;
+
+    /**File licenses*/
+    private LicenseCollection licenses;
+
+    /**File copyright*/
+    private String copyright;
+
+    /**File hashes*/
+    private HashMap<String, String> hashes;
+
+    /**File comment*/
+    private String comment;
+
+    /**File attribution text*/
+    private String attributionText;
+
+    /**File's file notice*/
+    private String fileNotice;
+
+    /**Component download location*/
+    private String downloadLocation;
+
+    /**Component file name*/
+    private String fileName;
+
+    /**If the component's files were analyzed*/
+    private Boolean filesAnalyzed;
+
+    /**Component verification code*/
+    private String verificationCode;
+
+    /**Component home page*/
+    private String homePage;
+
+    /**Component source info*/
+    private String sourceInfo;
+
+    /**Component release date*/
+    private String releaseDate;
+
+    /**Component built date*/
+    private String builtDate;
+
+    /**Component valid until date*/
+    private String validUntilDate;
+
+    /**Component supplier*/
+    private Organization supplier;
+
+    /**Component version*/
+    private String version;
+
+    /**Component description*/
+    private Description description;
+
+    /**Component CPEs*/
+    private Set<String> cpes;
+
+    /**Component PURLs*/
+    private Set<String> purls;
+
+    /**Component external references*/
+    private Set<ExternalReference> externalReferences;
+
+    /**
+     * Set the component's type
+     * @param type the designated type of component
+     * @return a ComponentBuilder
+     */
     @Override
     public ComponentBuilder setType(String type) {
-        return null;
+        this.type = type;
+        return this;
     }
 
+    /**
+     * Set the component's uid
+     * @param uid the uid of the component
+     * @return a ComponentBuilder
+     */
     @Override
     public ComponentBuilder setUID(String uid) {
-        return null;
+        this.uid = uid;
+        return this;
     }
 
+    /**
+     * Set the component's author
+     * @param author the author of the component
+     * @return a ComponentBuilder
+     */
     @Override
     public ComponentBuilder setAuthor(String author) {
-        return null;
+        this.author = author;
+        return this;
     }
 
+    /**
+     * Set the component's name
+     * @param name the name of the component
+     * @return a ComponentBuilder
+     */
     @Override
     public ComponentBuilder setName(String name) {
-        return null;
+        this.name = name;
+        return this;
     }
 
+    /**
+     * Set the component's licenses
+     * @param licenses a collection of licenses
+     * @return a ComponentBuilder
+     */
     @Override
     public ComponentBuilder setLicenses(LicenseCollection licenses) {
-        return null;
+        this.licenses = licenses;
+        return this;
     }
 
+    /**
+     * Set the component's copyright info
+     * @param copyright the copyright info of the component
+     * @return a ComponentBuilder
+     */
     @Override
     public ComponentBuilder setCopyright(String copyright) {
-        return null;
+        this.copyright = copyright;
+        return this;
     }
 
+    /**
+     * Add a hash value to the component
+     * @param algorithm the algorithm of the hash
+     * @param hash the value of the hash
+     * @return a ComponentBuilder
+     */
     @Override
     public ComponentBuilder addHash(String algorithm, String hash) {
-        return null;
+        this.hashes.put(algorithm, hash);
+        return this;
     }
 
+    /**
+     * Set the component's comment
+     * @param comment the comment for the component
+     * @return an SPDX23ComponentBuilder
+     */
+    @Override
+    public SPDX23ComponentBuilder setComment(String comment) {
+        this.comment = comment;
+        return this;
+    }
+
+    /**
+     * Set the component's attribution text
+     * @param attributionText the attribution text of the component
+     * @return an SPDX23ComponentBuilder
+     */
+    @Override
+    public SPDX23ComponentBuilder setAttributionText(String attributionText) {
+        this.attributionText = attributionText;
+        return this;
+    }
+
+    /**
+     * Set the component's download location
+     * @param downloadLocation the package's download location
+     * @return an SPDX23PackageBuilder_I
+     */
+    @Override
+    public SPDX23PackageBuilder_I setDownloadLocation(String downloadLocation) {
+        this.downloadLocation = downloadLocation;
+        return this;
+    }
+
+    /**
+     * Set the component's file name
+     * @param fileName the package's file name
+     * @return an SPDX23PackageBuilder_I
+     */
+    @Override
+    public SPDX23PackageBuilder_I setFileName(String fileName) {
+        this.fileName = fileName;
+        return this;
+    }
+
+    /**
+     * Set if the component's files were analyzed
+     * @param filesAnalyzed a boolean if the files were analyzed
+     * @return an SPDX23PackageBuilder_I
+     */
+    @Override
+    public SPDX23PackageBuilder_I setFilesAnalyzed(Boolean filesAnalyzed) {
+        this.filesAnalyzed = filesAnalyzed;
+        return this;
+    }
+
+    /**
+     * Set the component's verification code
+     * @param verificationCode the package's verification code
+     * @return an SPDX23PackageBuilder_I
+     *
+     */
+    @Override
+    public SPDX23PackageBuilder_I setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+        return this;
+    }
+
+    /**
+     * Set the component's home page
+     * @param homePage the package's home page
+     * @return an SPDX23PackageBuilder_I
+     */
+    @Override
+    public SPDX23PackageBuilder_I setHomePage(String homePage) {
+        this.homePage = homePage;
+        return this;
+    }
+
+    /**
+     * Set the component's source information
+     * @param sourceInfo the package's source information
+     * @return an SPDX23PackageBuilder_I
+     */
+    @Override
+    public SPDX23PackageBuilder_I setSourceInfo(String sourceInfo) {
+        this.sourceInfo = sourceInfo;
+        return this;
+    }
+
+    /**
+     * Set the component's release date
+     * @param releaseDate the package's release date
+     * @return an SPDX23PackageBuilder_I
+     */
+    @Override
+    public SPDX23PackageBuilder_I setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+        return this;
+    }
+
+    /**
+     * Set the component's build date
+     * @param buildDate the package's build date
+     * @return an SPDX23PackageBuilder_I
+     */
+    @Override
+    public SPDX23PackageBuilder_I setBuildDate(String buildDate) {
+        this.builtDate = buildDate;
+        return this;
+    }
+
+    /**
+     * Set the component's valid until date
+     * @param validUntilDate the package's valid until date
+     * @return an SPDX23PackageBuilder_I
+     */
+    @Override
+    public SPDX23PackageBuilder_I setValidUntilDate(String validUntilDate) {
+        this.validUntilDate = validUntilDate;
+        return this;
+    }
+
+    /**
+     * Set the component's supplier
+     * @param supplier the component's supplier
+     * @return an SBOMComponentBuilder
+     */
+    @Override
+    public SBOMComponentBuilder setSupplier(Organization supplier) {
+        this.supplier = supplier;
+        return this;
+    }
+
+    /**
+     * Set the component's version
+     * @param version the component's version
+     * @return an SBOMComponentBuilder
+     */
+    @Override
+    public SBOMComponentBuilder setVersion(String version) {
+        this.version = version;
+        return this;
+    }
+
+    /**
+     * Set the component's description
+     * @param description the component's description
+     * @return an SBOMComponentBuilder
+     */
+    @Override
+    public SBOMComponentBuilder setDescription(Description description) {
+        this.description = description;
+        return this;
+    }
+
+    /**
+     * Add a cpe to the component
+     * @param cpe the cpe string to add
+     * @return an SBOMComponentBuilder
+     */
+    @Override
+    public SBOMComponentBuilder addCPE(String cpe) {
+        this.cpes.add(cpe);
+        return this;
+    }
+
+    /**
+     * Add a purl to the component
+     * @param purl the purl string to add
+     * @return an SBOMComponentBuilder
+     */
+    @Override
+    public SBOMComponentBuilder addPURL(String purl) {
+        this.purls.add(purl);
+        return this;
+    }
+
+    /**
+     * Add an external reference to the component
+     * @param externalReference the external component to add
+     * @return an SBOMComponentBuilder
+     */
+    @Override
+    public SBOMComponentBuilder addExternalReference(ExternalReference externalReference) {
+        this.externalReferences.add(externalReference);
+        return this;
+    }
+
+    /**
+     * Build an SPDX23PackageObject
+     * @return a Component
+     */
     @Override
     public Component build() {
         return null;
     }
 
+    /**
+     * Build and flush the SPDX23PackageObject
+     * @return a Component
+     */
     @Override
     public Component buildAndFlush() {
-        return null;
-    }
-
-    @Override
-    public SBOMComponentBuilder setSupplier(Organization supplier) {
-        return null;
-    }
-
-    @Override
-    public SBOMComponentBuilder setVersion(String version) {
-        return null;
-    }
-
-    @Override
-    public SBOMComponentBuilder setDescription(Description description) {
-        return null;
-    }
-
-    @Override
-    public SBOMComponentBuilder addCPE(String cpe) {
-        return null;
-    }
-
-    @Override
-    public SBOMComponentBuilder addPURL(String purl) {
-        return null;
-    }
-
-    @Override
-    public SBOMComponentBuilder addExternalReference(ExternalReference externalReference) {
-        return null;
-    }
-
-    @Override
-    public SPDX23ComponentBuilder setComment(String comment) {
-        return null;
-    }
-
-    @Override
-    public SPDX23ComponentBuilder setAttributionText(String attributionText) {
-        return null;
-    }
-
-    @Override
-    public SPDX23PackageBuilder_I setDownloadLocation(String downloadLocation) {
-        return null;
-    }
-
-    @Override
-    public SPDX23PackageBuilder_I setFileName(String fileName) {
-        return null;
-    }
-
-    @Override
-    public SPDX23PackageBuilder_I setFilesAnalyzed(Boolean filesAnalyzed) {
-        return null;
-    }
-
-    @Override
-    public SPDX23PackageBuilder_I setVerificationCode(String verificationCode) {
-        return null;
-    }
-
-    @Override
-    public SPDX23PackageBuilder_I setHomePage(String homePage) {
-        return null;
-    }
-
-    @Override
-    public SPDX23PackageBuilder_I setSourceInfo(String sourceInfo) {
-        return null;
-    }
-
-    @Override
-    public SPDX23PackageBuilder_I setReleaseDate(String releaseDate) {
-        return null;
-    }
-
-    @Override
-    public SPDX23PackageBuilder_I setBuildDate(String buildDate) {
-        return null;
-    }
-
-    @Override
-    public SPDX23PackageBuilder_I setValidUntilDate(String validUntilDate) {
         return null;
     }
 }
