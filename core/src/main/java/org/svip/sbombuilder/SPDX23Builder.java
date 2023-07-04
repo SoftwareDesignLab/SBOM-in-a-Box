@@ -1,10 +1,8 @@
-package org.svip.sbombuilders;
+package org.svip.sbombuilder;
 
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
@@ -104,23 +102,11 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
     }
 
     @Override
-    public SPDX23Builder setRootComponent(SPDX23Component rootComponent)
-    {
-        this.rootComponent = rootComponent;
-        return this;
-    }
-
-    @Override
-    public SBOMBuilder addComponent(Component component) {
+    public SPDX23Builder addComponent(Component component) {
         this.components.add(component);
         return this;
     }
-
-    @Override
-    public SPDX23SBOMBuilder addComponent(SPDX23Component component) {
-        this.components.add(component);
-        return this;
-    }
+    
 
     @Override
     public SPDX23Builder addRelationship(String componentName, Relationship relationship)
@@ -140,6 +126,11 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
     {
         this.externalReferences.add(externalReference);
         return this;
+    }
+
+    @Override
+    public SPDX23SBOMBuilder addComponent(SPDX23Component component) {
+        return null;
     }
 
     @Override

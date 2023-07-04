@@ -80,10 +80,10 @@ public class CDX14Builder implements CDX14SBOMBuilder{
     /**
      * Set the SBOM's format
      * @param format the SBOM format
-     * @return an SBOMBuilder
+     * @return a CDX14Builder
      */
     @Override
-    public SBOMBuilder setFormat(String format) {
+    public CDX14Builder setFormat(String format) {
         this.format = format;
         return this;
     }
@@ -91,10 +91,10 @@ public class CDX14Builder implements CDX14SBOMBuilder{
     /**
      * Set the SBOM's name
      * @param name the name
-     * @return an SBOMBuilder
+     * @return a CDX14Builder
      */
     @Override
-    public SBOMBuilder setName(String name) {
+    public CDX14Builder setName(String name) {
         this.name = name;
         return this;
     }
@@ -102,10 +102,10 @@ public class CDX14Builder implements CDX14SBOMBuilder{
     /**
      * Set the SBOM's UID
      * @param uid the UID
-     * @return an SBOMBuilder
+     * @return a CDX14Builder
      */
     @Override
-    public SBOMBuilder setUID(String uid) {
+    public CDX14Builder setUID(String uid) {
         this.uid = uid;
         return this;
     }
@@ -113,10 +113,10 @@ public class CDX14Builder implements CDX14SBOMBuilder{
     /**
      * Set the SBOM's version
      * @param version the version
-     * @return an SBOMBuilder
+     * @return a CDX14Builder
      */
     @Override
-    public SBOMBuilder setVersion(String version) {
+    public CDX14Builder setVersion(String version) {
         this.version = version;
         return this;
     }
@@ -124,10 +124,10 @@ public class CDX14Builder implements CDX14SBOMBuilder{
     /**
      * Set the SBOM's spec version
      * @param specVersion the spec version
-     * @return an SBOMBuilder
+     * @return a CDX14Builder
      */
     @Override
-    public SBOMBuilder setSpecVersion(String specVersion) {
+    public CDX14Builder setSpecVersion(String specVersion) {
         this.specVersion = specVersion;
         return this;
     }
@@ -135,10 +135,10 @@ public class CDX14Builder implements CDX14SBOMBuilder{
     /**
      * Add a license to the SBOM
      * @param license the license to add
-     * @return an SBOMBuilder
+     * @return a CDX14Builder
      */
     @Override
-    public SBOMBuilder addLicense(String license) {
+    public CDX14Builder addLicense(String license) {
         this.licenses.add(license);
         return this;
     }
@@ -146,10 +146,10 @@ public class CDX14Builder implements CDX14SBOMBuilder{
     /**
      * Set the SBOM's creation data
      * @param creationData the creation data
-     * @return an SBOMBuilder
+     * @return a CDX14Builder
      */
     @Override
-    public SBOMBuilder setCreationData(CreationData creationData) {
+    public CDX14Builder setCreationData(CreationData creationData) {
         this.creationData = creationData;
         return this;
     }
@@ -157,10 +157,10 @@ public class CDX14Builder implements CDX14SBOMBuilder{
     /**
      * Set the SBOM's document comment
      * @param documentComment the document comment
-     * @return an SBOMBuilder
+     * @return a CDX14Builder
      */
     @Override
-    public SBOMBuilder setDocumentComment(String documentComment) {
+    public CDX14Builder setDocumentComment(String documentComment) {
         this.documentComment = documentComment;
         return this;
     }
@@ -168,10 +168,10 @@ public class CDX14Builder implements CDX14SBOMBuilder{
     /**
      * Set the root component of the SBOM
      * @param rootComponent the root component
-     * @return an SBOMBuilder
+     * @return a CDX14Builder
      */
     @Override
-    public SBOMBuilder setRootComponent(Component rootComponent) {
+    public CDX14Builder setRootComponent(Component rootComponent) {
         this.rootComponent = rootComponent;
         return this;
     }
@@ -179,10 +179,10 @@ public class CDX14Builder implements CDX14SBOMBuilder{
     /**
      * Add a component to an SBOM
      * @param component the component to add
-     * @return an SBOMBuilder
+     * @return a CDX14Builder
      */
     @Override
-    public SBOMBuilder addComponent(Component component) {
+    public CDX14Builder addComponent(Component component) {
         this.components.add(component);
         return this;
     }
@@ -191,10 +191,10 @@ public class CDX14Builder implements CDX14SBOMBuilder{
      * Add a relationship to the SBOM
      * @param componentName the component name
      * @param relationship the relationship
-     * @return an SBOMBuilder
+     * @return a CDX14Builder
      */
     @Override
-    public SBOMBuilder addRelationship(String componentName, Relationship relationship) {
+    public CDX14Builder addRelationship(String componentName, Relationship relationship) {
         if (this.relationships == null)
             this.relationships = new HashMap<>();
 
@@ -205,8 +205,13 @@ public class CDX14Builder implements CDX14SBOMBuilder{
         return this;
     }
 
+    /**
+     * Add an external reference to the SBOM
+     * @param externalReference the external reference
+     * @return a CDX14Builder
+     */
     @Override
-    public SBOMBuilder addExternalReference(ExternalReference externalReference) {
+    public CDX14Builder addExternalReference(ExternalReference externalReference) {
         this.externalReferences.add(externalReference);
         return this;
     }

@@ -12,7 +12,6 @@ import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
  * @author Thomas Roman
  */
 public interface SPDX23SBOMBuilder extends SBOMBuilder {
-    SPDX23SBOMBuilder setRootComponent(SPDX23Component rootComponent);
 
     SPDX23SBOMBuilder addComponent(SPDX23Component component);
 
