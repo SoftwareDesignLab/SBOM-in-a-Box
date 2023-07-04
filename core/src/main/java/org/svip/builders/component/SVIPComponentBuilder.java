@@ -1,11 +1,8 @@
 package org.svip.builders.component;
 
 import org.svip.builders.component.interfaces.CycloneDX14.CDX14PackageBuilder_I;
-import org.svip.builders.component.interfaces.SPDX23.SPDX23ComponentBuilder;
 import org.svip.builders.component.interfaces.SPDX23.SPDX23FileBuilder_I;
 import org.svip.builders.component.interfaces.SPDX23.SPDX23PackageBuilder_I;
-import org.svip.builders.component.interfaces.generics.ComponentBuilder;
-import org.svip.builders.component.interfaces.generics.SBOMComponentBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
@@ -117,10 +114,10 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
     /**
      * Set the component's mime type
      * @param mimeType the package's mime type
-     * @return a CDX14PackageBuilder_I
+     * @return an SVIPComponentBuilder
      */
     @Override
-    public CDX14PackageBuilder_I setMimeType(String mimeType) {
+    public SVIPComponentBuilder setMimeType(String mimeType) {
         this.mimeType = mimeType;
         return this;
     }
@@ -128,10 +125,10 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
     /**
      * Set the component's publisher
      * @param publisher the package's publisher
-     * @return a CDX14PackageBuilder_I
+     * @return an SVIPComponentBuilder
      */
     @Override
-    public CDX14PackageBuilder_I setPublisher(String publisher) {
+    public SVIPComponentBuilder setPublisher(String publisher) {
         this.publisher = publisher;
         return this;
     }
@@ -139,10 +136,10 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
     /**
      * Set the component's scope
      * @param scope the package's scope
-     * @return a CDX14PackageBuilder_I
+     * @return an SVIPComponentBuilder
      */
     @Override
-    public CDX14PackageBuilder_I setScope(String scope) {
+    public SVIPComponentBuilder setScope(String scope) {
         this.scope = scope;
         return this;
     }
@@ -150,10 +147,10 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
     /**
      * Set the component's group
      * @param group the package's group
-     * @return a CDX14PackageBuilder_I
+     * @return an SVIPComponentBuilder
      */
     @Override
-    public CDX14PackageBuilder_I setGroup(String group) {
+    public SVIPComponentBuilder setGroup(String group) {
         this.group = group;
         return this;
     }
@@ -161,10 +158,10 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
     /**
      * Add an external references to the component
      * @param externalReference a package's external reference
-     * @return a CDX14PackageBuilder_I
+     * @return an SVIPComponentBuilder
      */
     @Override
-    public CDX14PackageBuilder_I addExternalReferences(ExternalReference externalReference) {
+    public SVIPComponentBuilder addExternalReferences(ExternalReference externalReference) {
         this.externalReferences.add(externalReference);
         return this;
     }
@@ -173,10 +170,10 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
      * Add a property to the component
      * @param name the name of the property
      * @param value the value of the property
-     * @return a CDX14PackageBuilder_I
+     * @return an SVIPComponentBuilder
      */
     @Override
-    public CDX14PackageBuilder_I addProperty(String name, String value) {
+    public SVIPComponentBuilder addProperty(String name, String value) {
         Set<String> values;
         if(this.properties.containsKey(name)){
             values = this.properties.get(name);
@@ -193,10 +190,10 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
     /**
      * Set the component's type
      * @param type the designated type of component
-     * @return a ComponentBuilder
+     * @return an SVIPComponentBuilder
      */
     @Override
-    public ComponentBuilder setType(String type) {
+    public SVIPComponentBuilder setType(String type) {
         this.type = type;
         return this;
     }
@@ -204,10 +201,10 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
     /**
      * Set the component's uid
      * @param uid the uid of the component
-     * @return a ComponentBuilder
+     * @return an SVIPComponentBuilder
      */
     @Override
-    public ComponentBuilder setUID(String uid) {
+    public SVIPComponentBuilder setUID(String uid) {
         this.uid = uid;
         return this;
     }
@@ -215,10 +212,10 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
     /**
      * Set the component's author
      * @param author the author of the component
-     * @return a ComponentBuilder
+     * @return an SVIPComponentBuilder
      */
     @Override
-    public ComponentBuilder setAuthor(String author) {
+    public SVIPComponentBuilder setAuthor(String author) {
         this.author = author;
         return this;
     }
@@ -226,10 +223,10 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
     /**
      * Set the component's name
      * @param name the name of the component
-     * @return a ComponentBuilder
+     * @return an SVIPComponentBuilder
      */
     @Override
-    public ComponentBuilder setName(String name) {
+    public SVIPComponentBuilder setName(String name) {
         this.name = name;
         return this;
     }
@@ -237,10 +234,10 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
     /**
      * Set the component's licenses
      * @param licenses a collection of licenses
-     * @return a ComponentBuilder
+     * @return an SVIPComponentBuilder
      */
     @Override
-    public ComponentBuilder setLicenses(LicenseCollection licenses) {
+    public SVIPComponentBuilder setLicenses(LicenseCollection licenses) {
         this.licenses = licenses;
         return this;
     }
@@ -248,10 +245,10 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
     /**
      * Set the component's copyright info
      * @param copyright the copyright info of the component
-     * @return a ComponentBuilder
+     * @return an SVIPComponentBuilder
      */
     @Override
-    public ComponentBuilder setCopyright(String copyright) {
+    public SVIPComponentBuilder setCopyright(String copyright) {
         this.copyright = copyright;
         return this;
     }
@@ -260,11 +257,210 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
      * Add a hash value to the component
      * @param algorithm the algorithm of the hash
      * @param hash the value of the hash
-     * @return a ComponentBuilder
+     * @return an SVIPComponentBuilder
      */
     @Override
-    public ComponentBuilder addHash(String algorithm, String hash) {
+    public SVIPComponentBuilder addHash(String algorithm, String hash) {
         this.hashes.put(algorithm, hash);
+        return this;
+    }
+
+    /**
+     * Set the component's supplier
+     * @param supplier the component's supplier
+     * @return an SVIPComponentBuilder
+     */
+    @Override
+    public SVIPComponentBuilder setSupplier(Organization supplier) {
+        this.supplier = supplier;
+        return this;
+    }
+
+    /**
+     * Set the component's version
+     * @param version the component's version
+     * @return an SVIPComponentBuilder
+     */
+    @Override
+    public SVIPComponentBuilder setVersion(String version) {
+        this.version = version;
+        return this;
+    }
+
+    /**
+     * Set the component's description
+     * @param description the component's description
+     * @return an SVIPComponentBuilder
+     */
+    @Override
+    public SVIPComponentBuilder setDescription(Description description) {
+        this.description = description;
+        return this;
+    }
+
+    /**
+     * Add a cpe to the component
+     * @param cpe the cpe string to add
+     * @return an SVIPComponentBuilder
+     */
+    @Override
+    public SVIPComponentBuilder addCPE(String cpe) {
+        this.cpes.add(cpe);
+        return this;
+    }
+
+    /**
+     * Add a purl to the component
+     * @param purl the purl string to add
+     * @return an SVIPComponentBuilder
+     */
+    @Override
+    public SVIPComponentBuilder addPURL(String purl) {
+        this.purls.add(purl);
+        return this;
+    }
+
+    /**
+     * Add an external reference to the component
+     * @param externalReference the external component to add
+     * @return an SVIPComponentBuilder
+     */
+    @Override
+    public SVIPComponentBuilder addExternalReference(ExternalReference externalReference) {
+        this.externalReferences.add(externalReference);
+        return this;
+    }
+
+    /**
+     * Set the component's comment
+     * @param comment the comment for the component
+     * @return an SVIPComponentBuilder
+     */
+    @Override
+    public SVIPComponentBuilder setComment(String comment) {
+        this.comment = comment;
+        return this;
+    }
+
+    /**
+     * Set the component's attribution text
+     * @param attributionText the attribution text of the component
+     * @return an SVIPComponentBuilder
+     */
+    @Override
+    public SVIPComponentBuilder setAttributionText(String attributionText) {
+        this.attributionText = attributionText;
+        return this;
+    }
+
+    /**
+     * Set the component's download location
+     * @param downloadLocation the package's download location
+     * @return an SVIPComponentBuilder
+     */
+    @Override
+    public SVIPComponentBuilder setDownloadLocation(String downloadLocation) {
+        this.downloadLocation = downloadLocation;
+        return this;
+    }
+
+    /**
+     * Set the component's file name
+     * @param fileName the package's file name
+     * @return an SVIPComponentBuilder
+     */
+    @Override
+    public SVIPComponentBuilder setFileName(String fileName) {
+        this.fileName = fileName;
+        return this;
+    }
+
+    /**
+     * Set if the component's files were analyzed
+     * @param filesAnalyzed a boolean if the files were analyzed
+     * @return an SVIPComponentBuilder
+     */
+    @Override
+    public SVIPComponentBuilder setFilesAnalyzed(Boolean filesAnalyzed) {
+        this.filesAnalyzed = filesAnalyzed;
+        return this;
+    }
+
+    /**
+     * Set the component's verification code
+     * @param verificationCode the package's verification code
+     * @return an SVIPComponentBuilder
+     *
+     */
+    @Override
+    public SVIPComponentBuilder setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+        return this;
+    }
+
+    /**
+     * Set the component's home page
+     * @param homePage the package's home page
+     * @return an SVIPComponentBuilder
+     */
+    @Override
+    public SVIPComponentBuilder setHomePage(String homePage) {
+        this.homePage = homePage;
+        return this;
+    }
+
+    /**
+     * Set the component's source information
+     * @param sourceInfo the package's source information
+     * @return an SVIPComponentBuilder
+     */
+    @Override
+    public SVIPComponentBuilder setSourceInfo(String sourceInfo) {
+        this.sourceInfo = sourceInfo;
+        return this;
+    }
+
+    /**
+     * Set the component's release date
+     * @param releaseDate the package's release date
+     * @return an SVIPComponentBuilder
+     */
+    @Override
+    public SVIPComponentBuilder setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+        return this;
+    }
+
+    /**
+     * Set the component's build date
+     * @param buildDate the package's build date
+     * @return an SVIPComponentBuilder
+     */
+    @Override
+    public SVIPComponentBuilder setBuildDate(String buildDate) {
+        this.builtDate = buildDate;
+        return this;
+    }
+
+    /**
+     * Set the component's valid until date
+     * @param validUntilDate the package's valid until date
+     * @return an SVIPComponentBuilder
+     */
+    @Override
+    public SVIPComponentBuilder setValidUntilDate(String validUntilDate) {
+        this.validUntilDate = validUntilDate;
+        return this;
+    }
+
+    /**
+     * Set the file's file notice
+     * @param fileNotice the file notice
+     * @return an SVIPComponentBuilder
+     */
+    @Override
+    public SVIPComponentBuilder setFileNotice(String fileNotice) {
+        this.fileNotice = fileNotice;
         return this;
     }
 
@@ -286,204 +482,5 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
     @Override
     public Component buildAndFlush() {
         return null;
-    }
-
-    /**
-     * Set the component's supplier
-     * @param supplier the component's supplier
-     * @return an SBOMComponentBuilder
-     */
-    @Override
-    public SBOMComponentBuilder setSupplier(Organization supplier) {
-        this.supplier = supplier;
-        return this;
-    }
-
-    /**
-     * Set the component's version
-     * @param version the component's version
-     * @return an SBOMComponentBuilder
-     */
-    @Override
-    public SBOMComponentBuilder setVersion(String version) {
-        this.version = version;
-        return this;
-    }
-
-    /**
-     * Set the component's description
-     * @param description the component's description
-     * @return an SBOMComponentBuilder
-     */
-    @Override
-    public SBOMComponentBuilder setDescription(Description description) {
-        this.description = description;
-        return this;
-    }
-
-    /**
-     * Add a cpe to the component
-     * @param cpe the cpe string to add
-     * @return an SBOMComponentBuilder
-     */
-    @Override
-    public SBOMComponentBuilder addCPE(String cpe) {
-        this.cpes.add(cpe);
-        return this;
-    }
-
-    /**
-     * Add a purl to the component
-     * @param purl the purl string to add
-     * @return an SBOMComponentBuilder
-     */
-    @Override
-    public SBOMComponentBuilder addPURL(String purl) {
-        this.purls.add(purl);
-        return this;
-    }
-
-    /**
-     * Add an external reference to the component
-     * @param externalReference the external component to add
-     * @return an SBOMComponentBuilder
-     */
-    @Override
-    public SBOMComponentBuilder addExternalReference(ExternalReference externalReference) {
-        this.externalReferences.add(externalReference);
-        return this;
-    }
-
-    /**
-     * Set the component's comment
-     * @param comment the comment for the component
-     * @return an SPDX23ComponentBuilder
-     */
-    @Override
-    public SPDX23ComponentBuilder setComment(String comment) {
-        this.comment = comment;
-        return this;
-    }
-
-    /**
-     * Set the component's attribution text
-     * @param attributionText the attribution text of the component
-     * @return an SPDX23ComponentBuilder
-     */
-    @Override
-    public SPDX23ComponentBuilder setAttributionText(String attributionText) {
-        this.attributionText = attributionText;
-        return this;
-    }
-
-    /**
-     * Set the component's download location
-     * @param downloadLocation the package's download location
-     * @return an SPDX23PackageBuilder_I
-     */
-    @Override
-    public SPDX23PackageBuilder_I setDownloadLocation(String downloadLocation) {
-        this.downloadLocation = downloadLocation;
-        return this;
-    }
-
-    /**
-     * Set the component's file name
-     * @param fileName the package's file name
-     * @return an SPDX23PackageBuilder_I
-     */
-    @Override
-    public SPDX23PackageBuilder_I setFileName(String fileName) {
-        this.fileName = fileName;
-        return this;
-    }
-
-    /**
-     * Set if the component's files were analyzed
-     * @param filesAnalyzed a boolean if the files were analyzed
-     * @return an SPDX23PackageBuilder_I
-     */
-    @Override
-    public SPDX23PackageBuilder_I setFilesAnalyzed(Boolean filesAnalyzed) {
-        this.filesAnalyzed = filesAnalyzed;
-        return this;
-    }
-
-    /**
-     * Set the component's verification code
-     * @param verificationCode the package's verification code
-     * @return an SPDX23PackageBuilder_I
-     *
-     */
-    @Override
-    public SPDX23PackageBuilder_I setVerificationCode(String verificationCode) {
-        this.verificationCode = verificationCode;
-        return this;
-    }
-
-    /**
-     * Set the component's home page
-     * @param homePage the package's home page
-     * @return an SPDX23PackageBuilder_I
-     */
-    @Override
-    public SPDX23PackageBuilder_I setHomePage(String homePage) {
-        this.homePage = homePage;
-        return this;
-    }
-
-    /**
-     * Set the component's source information
-     * @param sourceInfo the package's source information
-     * @return an SPDX23PackageBuilder_I
-     */
-    @Override
-    public SPDX23PackageBuilder_I setSourceInfo(String sourceInfo) {
-        this.sourceInfo = sourceInfo;
-        return this;
-    }
-
-    /**
-     * Set the component's release date
-     * @param releaseDate the package's release date
-     * @return an SPDX23PackageBuilder_I
-     */
-    @Override
-    public SPDX23PackageBuilder_I setReleaseDate(String releaseDate) {
-        this.releaseDate = releaseDate;
-        return this;
-    }
-
-    /**
-     * Set the component's build date
-     * @param buildDate the package's build date
-     * @return an SPDX23PackageBuilder_I
-     */
-    @Override
-    public SPDX23PackageBuilder_I setBuildDate(String buildDate) {
-        this.builtDate = buildDate;
-        return this;
-    }
-
-    /**
-     * Set the component's valid until date
-     * @param validUntilDate the package's valid until date
-     * @return an SPDX23PackageBuilder_I
-     */
-    @Override
-    public SPDX23PackageBuilder_I setValidUntilDate(String validUntilDate) {
-        this.validUntilDate = validUntilDate;
-        return this;
-    }
-
-    /**
-     * Set the file's file notice
-     * @param fileNotice the file notice
-     * @return an SPDX23FileBuilder_I
-     */
-    @Override
-    public SPDX23FileBuilder_I setFileNotice(String fileNotice) {
-        this.fileNotice = fileNotice;
-        return this;
     }
 }

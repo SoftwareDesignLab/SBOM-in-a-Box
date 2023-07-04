@@ -18,7 +18,7 @@ public class SPDX23FileBuilderFactory implements ComponentBuilderFactory {
      * @return a new SPDX23FileBuilder
      */
     @Override
-    public ComponentBuilder createBuilder() {
+    public SPDX23FileBuilder createBuilder() {
         return new SPDX23FileBuilder();
     }
 }

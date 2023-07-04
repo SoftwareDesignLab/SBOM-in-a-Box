@@ -2,6 +2,7 @@ package org.svip.componentfactory;
 
 
 import org.svip.builders.component.SPDX23FileBuilder;
+import org.svip.builders.component.SPDX23PackageBuilder;
 import org.svip.builders.component.interfaces.generics.ComponentBuilder;
 import org.svip.componentfactory.interfaces.ComponentBuilderFactory;
 
@@ -18,7 +19,7 @@ public class SPDX23PackageBuilderFactory implements ComponentBuilderFactory {
      * @return a new SPDX23PackageBuilder
      */
     @Override
-    public ComponentBuilder createBuilder() {
-        return new SPDX23FileBuilder();
+    public SPDX23PackageBuilder createBuilder() {
+        return new SPDX23PackageBuilder();
     }
 }

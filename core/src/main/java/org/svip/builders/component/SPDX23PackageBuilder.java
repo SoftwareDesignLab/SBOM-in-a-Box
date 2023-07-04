@@ -1,9 +1,6 @@
 package org.svip.builders.component;
 
-import org.svip.builders.component.interfaces.SPDX23.SPDX23ComponentBuilder;
 import org.svip.builders.component.interfaces.SPDX23.SPDX23PackageBuilder_I;
-import org.svip.builders.component.interfaces.generics.ComponentBuilder;
-import org.svip.builders.component.interfaces.generics.SBOMComponentBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
@@ -98,10 +95,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Set the component's type
      * @param type the designated type of component
-     * @return a ComponentBuilder
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public ComponentBuilder setType(String type) {
+    public SPDX23PackageBuilder setType(String type) {
         this.type = type;
         return this;
     }
@@ -109,10 +106,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Set the component's uid
      * @param uid the uid of the component
-     * @return a ComponentBuilder
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public ComponentBuilder setUID(String uid) {
+    public SPDX23PackageBuilder setUID(String uid) {
         this.uid = uid;
         return this;
     }
@@ -120,10 +117,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Set the component's author
      * @param author the author of the component
-     * @return a ComponentBuilder
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public ComponentBuilder setAuthor(String author) {
+    public SPDX23PackageBuilder setAuthor(String author) {
         this.author = author;
         return this;
     }
@@ -131,10 +128,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Set the component's name
      * @param name the name of the component
-     * @return a ComponentBuilder
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public ComponentBuilder setName(String name) {
+    public SPDX23PackageBuilder setName(String name) {
         this.name = name;
         return this;
     }
@@ -142,10 +139,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Set the component's licenses
      * @param licenses a collection of licenses
-     * @return a ComponentBuilder
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public ComponentBuilder setLicenses(LicenseCollection licenses) {
+    public SPDX23PackageBuilder setLicenses(LicenseCollection licenses) {
         this.licenses = licenses;
         return this;
     }
@@ -153,10 +150,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Set the component's copyright info
      * @param copyright the copyright info of the component
-     * @return a ComponentBuilder
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public ComponentBuilder setCopyright(String copyright) {
+    public SPDX23PackageBuilder setCopyright(String copyright) {
         this.copyright = copyright;
         return this;
     }
@@ -165,10 +162,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
      * Add a hash value to the component
      * @param algorithm the algorithm of the hash
      * @param hash the value of the hash
-     * @return a ComponentBuilder
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public ComponentBuilder addHash(String algorithm, String hash) {
+    public SPDX23PackageBuilder addHash(String algorithm, String hash) {
         this.hashes.put(algorithm, hash);
         return this;
     }
@@ -176,10 +173,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Set the component's comment
      * @param comment the comment for the component
-     * @return an SPDX23ComponentBuilder
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public SPDX23ComponentBuilder setComment(String comment) {
+    public SPDX23PackageBuilder setComment(String comment) {
         this.comment = comment;
         return this;
     }
@@ -187,10 +184,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Set the component's attribution text
      * @param attributionText the attribution text of the component
-     * @return an SPDX23ComponentBuilder
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public SPDX23ComponentBuilder setAttributionText(String attributionText) {
+    public SPDX23PackageBuilder setAttributionText(String attributionText) {
         this.attributionText = attributionText;
         return this;
     }
@@ -198,10 +195,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Set the component's download location
      * @param downloadLocation the package's download location
-     * @return an SPDX23PackageBuilder_I
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public SPDX23PackageBuilder_I setDownloadLocation(String downloadLocation) {
+    public SPDX23PackageBuilder setDownloadLocation(String downloadLocation) {
         this.downloadLocation = downloadLocation;
         return this;
     }
@@ -209,10 +206,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Set the component's file name
      * @param fileName the package's file name
-     * @return an SPDX23PackageBuilder_I
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public SPDX23PackageBuilder_I setFileName(String fileName) {
+    public SPDX23PackageBuilder setFileName(String fileName) {
         this.fileName = fileName;
         return this;
     }
@@ -220,10 +217,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Set if the component's files were analyzed
      * @param filesAnalyzed a boolean if the files were analyzed
-     * @return an SPDX23PackageBuilder_I
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public SPDX23PackageBuilder_I setFilesAnalyzed(Boolean filesAnalyzed) {
+    public SPDX23PackageBuilder setFilesAnalyzed(Boolean filesAnalyzed) {
         this.filesAnalyzed = filesAnalyzed;
         return this;
     }
@@ -231,11 +228,11 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Set the component's verification code
      * @param verificationCode the package's verification code
-     * @return an SPDX23PackageBuilder_I
+     * @return an SPDX23PackageBuilder
      *
      */
     @Override
-    public SPDX23PackageBuilder_I setVerificationCode(String verificationCode) {
+    public SPDX23PackageBuilder setVerificationCode(String verificationCode) {
         this.verificationCode = verificationCode;
         return this;
     }
@@ -243,10 +240,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Set the component's home page
      * @param homePage the package's home page
-     * @return an SPDX23PackageBuilder_I
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public SPDX23PackageBuilder_I setHomePage(String homePage) {
+    public SPDX23PackageBuilder setHomePage(String homePage) {
         this.homePage = homePage;
         return this;
     }
@@ -254,10 +251,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Set the component's source information
      * @param sourceInfo the package's source information
-     * @return an SPDX23PackageBuilder_I
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public SPDX23PackageBuilder_I setSourceInfo(String sourceInfo) {
+    public SPDX23PackageBuilder setSourceInfo(String sourceInfo) {
         this.sourceInfo = sourceInfo;
         return this;
     }
@@ -265,10 +262,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Set the component's release date
      * @param releaseDate the package's release date
-     * @return an SPDX23PackageBuilder_I
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public SPDX23PackageBuilder_I setReleaseDate(String releaseDate) {
+    public SPDX23PackageBuilder setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
         return this;
     }
@@ -276,10 +273,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Set the component's build date
      * @param buildDate the package's build date
-     * @return an SPDX23PackageBuilder_I
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public SPDX23PackageBuilder_I setBuildDate(String buildDate) {
+    public SPDX23PackageBuilder setBuildDate(String buildDate) {
         this.builtDate = buildDate;
         return this;
     }
@@ -287,10 +284,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Set the component's valid until date
      * @param validUntilDate the package's valid until date
-     * @return an SPDX23PackageBuilder_I
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public SPDX23PackageBuilder_I setValidUntilDate(String validUntilDate) {
+    public SPDX23PackageBuilder setValidUntilDate(String validUntilDate) {
         this.validUntilDate = validUntilDate;
         return this;
     }
@@ -298,10 +295,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Set the component's supplier
      * @param supplier the component's supplier
-     * @return an SBOMComponentBuilder
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public SBOMComponentBuilder setSupplier(Organization supplier) {
+    public SPDX23PackageBuilder setSupplier(Organization supplier) {
         this.supplier = supplier;
         return this;
     }
@@ -309,10 +306,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Set the component's version
      * @param version the component's version
-     * @return an SBOMComponentBuilder
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public SBOMComponentBuilder setVersion(String version) {
+    public SPDX23PackageBuilder setVersion(String version) {
         this.version = version;
         return this;
     }
@@ -320,10 +317,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Set the component's description
      * @param description the component's description
-     * @return an SBOMComponentBuilder
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public SBOMComponentBuilder setDescription(Description description) {
+    public SPDX23PackageBuilder setDescription(Description description) {
         this.description = description;
         return this;
     }
@@ -331,10 +328,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Add a cpe to the component
      * @param cpe the cpe string to add
-     * @return an SBOMComponentBuilder
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public SBOMComponentBuilder addCPE(String cpe) {
+    public SPDX23PackageBuilder addCPE(String cpe) {
         this.cpes.add(cpe);
         return this;
     }
@@ -342,10 +339,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Add a purl to the component
      * @param purl the purl string to add
-     * @return an SBOMComponentBuilder
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public SBOMComponentBuilder addPURL(String purl) {
+    public SPDX23PackageBuilder addPURL(String purl) {
         this.purls.add(purl);
         return this;
     }
@@ -353,10 +350,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Add an external reference to the component
      * @param externalReference the external component to add
-     * @return an SBOMComponentBuilder
+     * @return an SPDX23PackageBuilder
      */
     @Override
-    public SBOMComponentBuilder addExternalReference(ExternalReference externalReference) {
+    public SPDX23PackageBuilder addExternalReference(ExternalReference externalReference) {
         this.externalReferences.add(externalReference);
         return this;
     }

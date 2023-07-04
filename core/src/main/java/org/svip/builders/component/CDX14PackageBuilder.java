@@ -1,8 +1,6 @@
 package org.svip.builders.component;
 
 import org.svip.builders.component.interfaces.CycloneDX14.CDX14PackageBuilder_I;
-import org.svip.builders.component.interfaces.generics.ComponentBuilder;
-import org.svip.builders.component.interfaces.generics.SBOMComponentBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
@@ -79,10 +77,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Set the component's mime type
      * @param mimeType the package's mime type
-     * @return a CDX14PackageBuilder_I
+     * @return a CDX14PackageBuilder
      */
     @Override
-    public CDX14PackageBuilder_I setMimeType(String mimeType) {
+    public CDX14PackageBuilder setMimeType(String mimeType) {
         this.mimeType = mimeType;
         return this;
     }
@@ -90,10 +88,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Set the component's publisher
      * @param publisher the package's publisher
-     * @return a CDX14PackageBuilder_I
+     * @return a CDX14PackageBuilder
      */
     @Override
-    public CDX14PackageBuilder_I setPublisher(String publisher) {
+    public CDX14PackageBuilder setPublisher(String publisher) {
         this.publisher = publisher;
         return this;
     }
@@ -101,10 +99,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Set the component's scope
      * @param scope the package's scope
-     * @return a CDX14PackageBuilder_I
+     * @return a CDX14PackageBuilder
      */
     @Override
-    public CDX14PackageBuilder_I setScope(String scope) {
+    public CDX14PackageBuilder setScope(String scope) {
         this.scope = scope;
         return this;
     }
@@ -112,10 +110,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Set the component's group
      * @param group the package's group
-     * @return a CDX14PackageBuilder_I
+     * @return a CDX14PackageBuilder
      */
     @Override
-    public CDX14PackageBuilder_I setGroup(String group) {
+    public CDX14PackageBuilder setGroup(String group) {
         this.group = group;
         return this;
     }
@@ -123,10 +121,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Add an external references to the component
      * @param externalReference a package's external reference
-     * @return a CDX14PackageBuilder_I
+     * @return a CDX14PackageBuilder
      */
     @Override
-    public CDX14PackageBuilder_I addExternalReferences(ExternalReference externalReference) {
+    public CDX14PackageBuilder addExternalReferences(ExternalReference externalReference) {
         this.externalReferences.add(externalReference);
         return this;
     }
@@ -135,10 +133,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      * Add a property to the component
      * @param name the name of the property
      * @param value the value of the property
-     * @return a CDX14PackageBuilder_I
+     * @return a CDX14PackageBuilder
      */
     @Override
-    public CDX14PackageBuilder_I addProperty(String name, String value) {
+    public CDX14PackageBuilder addProperty(String name, String value) {
         if (this.properties == null)
             this.properties = new HashMap<>();
 
@@ -153,10 +151,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Set the component's type
      * @param type the designated type of component
-     * @return a ComponentBuilder
+     * @return a CDX14PackageBuilder
      */
     @Override
-    public ComponentBuilder setType(String type) {
+    public CDX14PackageBuilder setType(String type) {
         this.type = type;
         return this;
     }
@@ -164,10 +162,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Set the component's uid
      * @param uid the uid of the component
-     * @return a ComponentBuilder
+     * @return a CDX14PackageBuilder
      */
     @Override
-    public ComponentBuilder setUID(String uid) {
+    public CDX14PackageBuilder setUID(String uid) {
         this.uid = uid;
         return this;
     }
@@ -175,10 +173,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Set the component's author
      * @param author the author of the component
-     * @return a ComponentBuilder
+     * @return a CDX14PackageBuilder
      */
     @Override
-    public ComponentBuilder setAuthor(String author) {
+    public CDX14PackageBuilder setAuthor(String author) {
         this.author = author;
         return this;
     }
@@ -186,10 +184,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Set the component's name
      * @param name the name of the component
-     * @return a ComponentBuilder
+     * @return a CDX14PackageBuilder
      */
     @Override
-    public ComponentBuilder setName(String name) {
+    public CDX14PackageBuilder setName(String name) {
         this.name = name;
         return this;
     }
@@ -197,10 +195,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Set the component's licenses
      * @param licenses a collection of licenses
-     * @return a ComponentBuilder
+     * @return a CDX14PackageBuilder
      */
     @Override
-    public ComponentBuilder setLicenses(LicenseCollection licenses) {
+    public CDX14PackageBuilder setLicenses(LicenseCollection licenses) {
         this.licenses = licenses;
         return this;
     }
@@ -208,10 +206,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Set the component's copyright info
      * @param copyright the copyright info of the component
-     * @return a ComponentBuilder
+     * @return a CDX14PackageBuilder
      */
     @Override
-    public ComponentBuilder setCopyright(String copyright) {
+    public CDX14PackageBuilder setCopyright(String copyright) {
         this.copyright = copyright;
         return this;
     }
@@ -220,10 +218,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      * Add a hash value to the component
      * @param algorithm the algorithm of the hash
      * @param hash the value of the hash
-     * @return a ComponentBuilder
+     * @return a CDX14PackageBuilder
      */
     @Override
-    public ComponentBuilder addHash(String algorithm, String hash) {
+    public CDX14PackageBuilder addHash(String algorithm, String hash) {
         this.hashes.put(algorithm, hash);
         return this;
     }
@@ -231,10 +229,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Set the component's supplier
      * @param supplier the component's supplier
-     * @return an SBOMComponentBuilder
+     * @return a CDX14PackageBuilder
      */
     @Override
-    public SBOMComponentBuilder setSupplier(Organization supplier) {
+    public CDX14PackageBuilder setSupplier(Organization supplier) {
         this.supplier = supplier;
         return this;
     }
@@ -242,10 +240,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Set the component's version
      * @param version the component's version
-     * @return an SBOMComponentBuilder
+     * @return a CDX14PackageBuilder
      */
     @Override
-    public SBOMComponentBuilder setVersion(String version) {
+    public CDX14PackageBuilder setVersion(String version) {
         this.version = version;
         return this;
     }
@@ -253,10 +251,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Set the component's description
      * @param description the component's description
-     * @return an SBOMComponentBuilder
+     * @return a CDX14PackageBuilder
      */
     @Override
-    public SBOMComponentBuilder setDescription(Description description) {
+    public CDX14PackageBuilder setDescription(Description description) {
         this.description = description;
         return this;
     }
@@ -264,10 +262,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Add a cpe to the component
      * @param cpe the cpe string to add
-     * @return an SBOMComponentBuilder
+     * @return a CDX14PackageBuilder
      */
     @Override
-    public SBOMComponentBuilder addCPE(String cpe) {
+    public CDX14PackageBuilder addCPE(String cpe) {
         this.cpes.add(cpe);
         return this;
     }
@@ -275,10 +273,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Add a purl to the component
      * @param purl the purl string to add
-     * @return an SBOMComponentBuilder
+     * @return a CDX14PackageBuilder
      */
     @Override
-    public SBOMComponentBuilder addPURL(String purl) {
+    public CDX14PackageBuilder addPURL(String purl) {
         this.purls.add(purl);
         return this;
     }
@@ -286,10 +284,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Add an external reference to the component
      * @param externalReference the external component to add
-     * @return an SBOMComponentBuilder
+     * @return a CDX14PackageBuilder
      */
     @Override
-    public SBOMComponentBuilder addExternalReference(ExternalReference externalReference) {
+    public CDX14PackageBuilder addExternalReference(ExternalReference externalReference) {
         this.externalReferences.add(externalReference);
         return this;
     }

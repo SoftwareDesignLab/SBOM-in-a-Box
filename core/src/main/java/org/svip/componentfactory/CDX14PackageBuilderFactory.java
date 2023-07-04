@@ -1,7 +1,6 @@
 package org.svip.componentfactory;
 
 import org.svip.builders.component.CDX14PackageBuilder;
-import org.svip.builders.component.interfaces.generics.ComponentBuilder;
 import org.svip.componentfactory.interfaces.ComponentBuilderFactory;
 
 
@@ -18,7 +17,7 @@ public class CDX14PackageBuilderFactory implements ComponentBuilderFactory {
      * @return a new CDX14PackageBuilder
      */
     @Override
-    public ComponentBuilder createBuilder() {
+    public CDX14PackageBuilder createBuilder() {
         return new CDX14PackageBuilder();
     }
 }

@@ -17,7 +17,7 @@ public class SVIPSBOMComponentFactory implements ComponentBuilderFactory {
      * @return a new SVIPSBOMComponentBuilder
      */
     @Override
-    public ComponentBuilder createBuilder() {
+    public SVIPComponentBuilder createBuilder() {
         return new SVIPComponentBuilder();
     }
 }
