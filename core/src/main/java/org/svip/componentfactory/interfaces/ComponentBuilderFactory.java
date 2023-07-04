@@ -1,6 +1,5 @@
 package org.svip.componentfactory.interfaces;
 
-
 import org.svip.builders.component.interfaces.generics.ComponentBuilder;
 
 /**
