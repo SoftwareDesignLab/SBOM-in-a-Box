@@ -45,7 +45,7 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
     private final String documentComment;
 
     /**SBOM's root component*/
-    private final Component rootComponent;
+    private final SVIPComponentObject rootComponent;
 
     /**SBOM's component's*/
     private final Set<Component> components;
@@ -158,7 +158,7 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
      * @return the SBOM's root component
      */
     @Override
-    public Component getRootComponent() {
+    public SVIPComponentObject getRootComponent() {
         return this.rootComponent;
     }
 
@@ -218,7 +218,7 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
     public SVIPSBOM(String format, String name, String uid, String version,
                       String specVersion, Set<String> licenses,
                       CreationData creationData, String documentComment,
-                      Component rootComponent, Set<Component> components,
+                      SVIPComponentObject rootComponent, Set<Component> components,
                       HashMap<String, Set<Relationship>> relationships,
                       Set<ExternalReference> externalReferences,
                       String spdxLicenseListVersion){

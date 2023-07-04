@@ -44,7 +44,7 @@ public class CDX14SBOM implements CDX14Schema {
     private final String documentComment;
 
     /**SBOM's root component*/
-    private final Component rootComponent;
+    private final CDX14ComponentObject rootComponent;
 
     /**SBOM's component's*/
     private final Set<Component> components;
@@ -144,7 +144,7 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's root component
      */
     @Override
-    public Component getRootComponent() {
+    public CDX14ComponentObject getRootComponent() {
         return this.rootComponent;
     }
 
@@ -194,7 +194,7 @@ public class CDX14SBOM implements CDX14Schema {
     public CDX14SBOM(String format, String name, String uid, String version,
                      String specVersion, Set<String> licenses,
                      CreationData creationData, String documentComment,
-                     Component rootComponent, Set<Component> components,
+                     CDX14ComponentObject rootComponent, Set<Component> components,
                      HashMap<String, Set<Relationship>> relationships,
                      Set<ExternalReference> externalReferences){
         this.format = format;

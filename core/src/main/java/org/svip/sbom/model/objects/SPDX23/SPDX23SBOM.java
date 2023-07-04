@@ -45,7 +45,7 @@ public class SPDX23SBOM implements SPDX23Schema{
     private final String documentComment;
 
     /**SBOM's root component*/
-    private final Component rootComponent;
+    private final SPDX23PackageObject rootComponent;
 
     /**SBOM's component's*/
     private final Set<Component> components;
@@ -148,12 +148,13 @@ public class SPDX23SBOM implements SPDX23Schema{
      * @return the SBOM's root component
      */
     @Override
-    public Component getRootComponent() {
+    public SPDX23PackageObject getRootComponent() {
         return this.rootComponent;
     }
 
     /**
      * Get the SBOM's components
+     *
      * @return the SBOM's components
      */
     @Override
@@ -208,7 +209,7 @@ public class SPDX23SBOM implements SPDX23Schema{
     public SPDX23SBOM(String format, String name, String uid, String version,
                       String specVersion, Set<String> licenses,
                       CreationData creationData, String documentComment,
-                      Component rootComponent, Set<Component> components,
+                      SPDX23PackageObject rootComponent, Set<Component> components,
                       HashMap<String, Set<Relationship>> relationships,
                       Set<ExternalReference> externalReferences,
                       String spdxLicenseListVersion){
