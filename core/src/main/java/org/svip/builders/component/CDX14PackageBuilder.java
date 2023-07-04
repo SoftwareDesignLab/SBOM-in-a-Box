@@ -139,15 +139,13 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14PackageBuilder_I addProperty(String name, String value) {
-        Set<String> values;
-        if(this.properties.containsKey(name)){
-            values = this.properties.get(name);
-        }
-        else{
-            values = new HashSet<>();
-        }
-        values.add(value);
-        this.properties.put(name, values);
+        if (this.properties == null)
+            this.properties = new HashMap<>();
+
+        if( !this.properties.containsKey(name))
+            this.properties.put(name, new HashSet<>());
+
+        this.properties.get(name).add(value);
 
         return this;
     }
