@@ -13,8 +13,6 @@ import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
  */
 public interface SPDX23SBOMBuilder extends SBOMBuilder {
 
-    SPDX23SBOMBuilder addComponent(SPDX23Component component);
-
     /**
      * add a license list version to the SPDX 2.3 SBOM builder
      * @param licenseListVersion the SPDX 2.3 package

@@ -96,7 +96,7 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
     }
 
     @Override
-    public SBOMBuilder setRootComponent(Component rootComponent) {
+    public SPDX23Builder setRootComponent(Component rootComponent) {
         this.rootComponent = rootComponent;
         return this;
     }
@@ -106,7 +106,7 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
         this.components.add(component);
         return this;
     }
-    
+
 
     @Override
     public SPDX23Builder addRelationship(String componentName, Relationship relationship)
@@ -128,10 +128,6 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
         return this;
     }
 
-    @Override
-    public SPDX23SBOMBuilder addComponent(SPDX23Component component) {
-        return null;
-    }
 
     @Override
     public SPDX23Builder setSPDXLicenseListVersion(String licenseListVersion) {
