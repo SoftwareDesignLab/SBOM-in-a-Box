@@ -2,8 +2,9 @@ package org.svip.sbomvex.vexstatement;
 
 /**
  * file: Product.java
- * A record class that holds information of one product
- * in a VEX statement
+ * Record class that defines a single product in a VEX Statement
+ * @param productID the product's ID
+ * @param supplier the product's supplier
  *
  * @author Matthew Morrison
  */
