@@ -3,6 +3,9 @@ package org.svip.sbom.model.interfaces.schemas.CycloneDX14;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 
+import java.util.HashMap;
+import java.util.Set;
+
 /**
  * File: CDX14Package.java
  *  <p>
@@ -32,6 +35,12 @@ public interface CDX14Package extends SBOMPackage, Component {
      * @return grouping name or identifier
      */
     String getGroup();
+
+    /**
+     * @return grouping name or identifier
+     */
+    HashMap<String, Set<String>> getProperties();
+
     /*
     todo
     pedigree

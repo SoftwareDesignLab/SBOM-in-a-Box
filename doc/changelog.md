@@ -1,9 +1,55 @@
 # Changelog
 
-All notable changes to the Generators sub-system will be documented in this file.
-
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [v5.0.1-alpha] - (7/3/2023)
+
+### Added
+- New SBOM Refactor and Implementation. This covers the following files: 
+    - `SBOM` - An interface that covers SBOM information that is similar to both CycloneDX and SPDX formats
+    - `CDX14Schema` - An interface that covers SBOM information specific to CycloneDX 1.4 SBOMs
+    - `SPDX23Schema` - An interface that covers SBOM information specific to SPDX 2.3 SBOMs
+    - `CDX14SBOM` - A class that is used to file for CycloneDX 1.4 SBOM information
+    - `SVIPSBOM` - A class that is used to file for SVIP SBOM Generation
+    - `SPDX23SBOM` - A class that is used to file for SPDX 2.3 SBOM information
+    - `Relationship` - A class that holds relationship information between SBOM components
+    - `ExternalReferences` - A class that holds external reference information for an SBOM
+  - New Component Refactor and Implementation. This covers the following files:
+    - `Component` - An interface that holds shared component data regardless of SBOM format
+    - `LicenseCollection` - A class that holds the licenses of the component
+    - `SPDX23Component` - An interface that covers SPDX 2.3 specific package/file information
+    - `SPDX23File` - An interface that covers SPDX 2.3 file specific information
+    - `SPDX23Package` - An interface that covers SPDX 2.3 package specific information
+    - `SBOMPackage` - An interface that covers SPDX 2.3 and CycloneDX 1.4 package information
+    - `Description` - A class that holds a package's description
+    - `SPDX23FileObject` - A class that is used to file an SPDX 2.3 File
+    - `SPDX23PackageObject` - A class that is used to file for an SPDX 2.3 package
+    - `SVIPComponentObject` - A class that is used to file for an SVIP component
+    - `CDX14ComponentObject` - A class that is used to file for a CycloneDX 1.4 component
+
+### Changed
+
+### Removed
+
+
+## [v5.0.0-alpha] - (6/29/2023)
+
+### Added
+- `Dockerfile` & `docker-compose.yml` to build the API and run a MySQL server with persistent storage in separate 
+  Docker containers.
+  - `application.properties` & `.env` files created to setup Spring and Docker configuration.
+- `repository.SBOMFileRepository` Class to interact with the MySQL database.
+- New API endpoints (`upload`, `view`, `viewAll`, `delete`) to run CRUD operations on the `files` table.
+  - Added unit tests that mock the `repository.SBOMFileRepository` to avoid any local storage during testing.
+
+### Changed
+- Refactored `NVIPApiController`, `PlugFestApiController`, & `NVIPApiController` Classes into `controller` package.
+- Refactored `utils.Utils.SBOMFile` into its own class `model.SBOMFile`
+  - Uses Hibernate decorators to automatically create a custom `files` table on the MySQL server.
+
+### Removed
+- Old API endpoints & tests (`compare`, `generateSBOM`, `merge`, `parse`, & `qa`)
 
 ## [v4.5.0-alpha] - (5/24/2023)
 

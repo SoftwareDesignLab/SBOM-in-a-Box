@@ -62,3 +62,6 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/angular
 *.icloud
 *.PIDS
+
+# MySQL docker bind directory
+.m2

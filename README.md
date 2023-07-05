@@ -2,29 +2,29 @@
 > The SBOM Visualization and Integration Platform (**SVIP**) is a unified platform to promote the 
 > production, consumption, and utilization of Software Bills of Materials.
 
-## Latest Release
-v1.0.0 - alpha (2/27/23)
-
-- Electron.js App for Front end
-- Spring-Boot backend to handle API requests
-- SVIP Core that uses a Docker Container to generate SBOMs, merge them, and create a D3 JSON Visual
-
-_Full sub-system READMEs & changelogs can be found in the `doc` directory_
+### Latest Release: [[v5.0.0-alpha] - (6/29/2023)](doc/changelog.md)
 
 ## Quick Start
-- Core:
-  - run SVIPApplication.java
-- API:
-  - run UnifiedApplication.java
+
+### Deploy API with Docker
+First ensure Docker is installed and running and then deploy using the docker-compose script.
+```shell
+# Ensure Docker is installed and running.
+$ docker ps
+# Build images & deploy and link API & MySQL containers.
+$ docker compose up
+```
+See the SVIP API section of [doc/API.md](doc/API.md) for detailed usage.
 
 ## Features
-This is a list of all "features", or sub-systems that SVIP contains. Each links to their respective README.md file.
-#### [Open Source Integrated SBOM Generation](doc/OSI/README.md) - Makes use of open source libraries to generate SBOMs
-#### [SBOM Generation](doc/Generators/README.md) - Custom SBOM generation via source file and package manager file analysis
-#### [SBOM VEX Generation](doc/VEX/README.md) - 
-#### [SBOM Metrics](doc/Metrics/README.md) - 
-#### [SBOM Comparison](doc/Comparer/README.md) - 
-#### [SBOM Merging](doc/Merger/README.md) - 
+This is a list of all "features", or sub-systems that SVIP contains. See [doc/README.md](doc/README.md) for 
+detailed usage.
+- **Open Source Integrated SBOM Generation:** Makes use of open source libraries to generate SBOMs
+- **SBOM Generation:** Custom SBOM generation via source file and package manager file analysis
+- **SBOM VEX Generation:** 
+- **SBOM Metrics:** 
+- **SBOM Comparison:**
+- **SBOM Merging:**
 
 ## Contributors
 **Principal Investigator:** [Mehdi Mirakhorli](mailto:mxmvse@rit.edu)
