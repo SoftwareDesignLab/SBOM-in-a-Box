@@ -1,4 +1,4 @@
-package org.svip.sbomvex;
+package org.svip.sbomvex.model;
 
 /**
  * file: VEX.java
@@ -191,7 +191,7 @@ public class VEX {
      * @param builder the Builder
      */
     //TODO add vexStatement when VEXStatement is implemented
-    private VEX(Builder builder){
+    public VEX(Builder builder){
         this.vexIdentifier = builder.vexIdentifier;
         this.originType = builder.originType;
         this.specVersion = builder.specVersion;

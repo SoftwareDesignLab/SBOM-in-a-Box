@@ -1,4 +1,4 @@
-package org.svip.sbomvex;
+package org.svip.sbomvex.model;
 
 public enum VEXType {
     CSAF,
