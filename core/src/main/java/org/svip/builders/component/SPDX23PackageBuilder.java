@@ -1,6 +1,7 @@
 package org.svip.builders.component;
 
-import org.svip.builders.component.interfaces.SPDX23.SPDX23PackageBuilder_I;
+
+import org.svip.sbom.builder.interfaces.schemas.SPDX23.SPDX23PackageBuilder_I;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
