@@ -1,6 +1,10 @@
 package org.svip.builders.component;
 
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.model.shared.metadata.Organization;
+import org.svip.sbom.model.shared.util.Description;
+import org.svip.sbom.model.shared.util.ExternalReference;
+import org.svip.sbom.model.shared.util.LicenseCollection;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -9,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * File to test CDX14PackageBuilder
  */
 class CDX14PackageBuilderTest {
-    CDX14PackageBuilder test_package;
+    CDX14PackageBuilder test_packageBuilder;
 
     String test_mimeType = "image/jpeg";
 
@@ -57,78 +61,104 @@ class CDX14PackageBuilderTest {
 
     @Test
     void setMimeType() {
+        test_packageBuilder.setMimeType(test_mimeType);
     }
 
     @Test
     void setPublisher() {
+        test_packageBuilder.setPublisher(test_publisher);
     }
 
     @Test
     void setScope() {
+        test_packageBuilder.setScope(test_scope);
     }
 
     @Test
     void setGroup() {
+        test_packageBuilder.setGroup(test_group);
     }
 
     @Test
     void addExternalReferences() {
+        ExternalReference test_extRef = new ExternalReference(
+                test_extRef_url, test_extTef_type);
+        test_packageBuilder.addExternalReferences(test_extRef);
     }
 
     @Test
     void addProperty() {
+        test_packageBuilder.addProperty(test_property_name, test_property_value);
     }
 
     @Test
     void setType() {
+        test_packageBuilder.setType(test_type);
     }
 
     @Test
     void setUID() {
+        test_packageBuilder.setUID(test_uid);
     }
 
     @Test
     void setAuthor() {
+        test_packageBuilder.setAuthor(test_author);
     }
 
     @Test
     void setName() {
+        test_packageBuilder.setName(test_name);
     }
 
     @Test
     void setLicenses() {
+        LicenseCollection licenseCollection = new LicenseCollection();
+        licenseCollection.addDeclaredLicense(test_license1);
+        test_packageBuilder.setLicenses(licenseCollection);
     }
 
     @Test
     void setCopyright() {
+        test_packageBuilder.setCopyright(test_copyright);
     }
 
     @Test
     void addHash() {
+        test_packageBuilder.addHash(test_hash_algo, test_hash_value);
     }
 
     @Test
     void setSupplier() {
+        Organization supplier = new Organization(test_supplier, "www.python.com");
+        test_packageBuilder.setSupplier(supplier);
     }
 
     @Test
     void setVersion() {
+        test_packageBuilder.setVersion(test_version);
     }
 
     @Test
     void setDescription() {
+        Description description = new Description(test_description);
+        test_packageBuilder.setDescription(description);
     }
 
     @Test
     void addCPE() {
+        test_packageBuilder.addCPE(test_random_cpe);
     }
 
     @Test
     void addPURL() {
+        test_packageBuilder.addPURL(test_random_purl);
     }
 
     @Test
     void addExternalReference() {
+        ExternalReference externalReference = new ExternalReference(test_extRef_url, test_extTef_type);
+        test_packageBuilder.addExternalReference(externalReference);
     }
 
     @Test
