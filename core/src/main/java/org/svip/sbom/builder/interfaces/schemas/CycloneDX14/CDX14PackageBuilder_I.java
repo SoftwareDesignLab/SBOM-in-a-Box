@@ -1,6 +1,6 @@
-package org.svip.builders.component.interfaces.CycloneDX14;
+package org.svip.sbom.builder.interfaces.schemas.CycloneDX14;
 
-import org.svip.builders.component.interfaces.generics.PackageBuilder;
+import org.svip.sbom.builder.interfaces.generics.PackageBuilder;
 import org.svip.sbom.model.shared.util.ExternalReference;
 
 /**

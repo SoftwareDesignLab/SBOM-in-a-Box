@@ -1,4 +1,4 @@
-package org.svip.builders.component.interfaces.SPDX23;
+package org.svip.sbom.builder.interfaces.schemas.SPDX23;
 
 /**
  * file: SPDX23FileBuilder_I.java

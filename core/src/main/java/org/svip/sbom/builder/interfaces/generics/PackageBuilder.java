@@ -1,4 +1,4 @@
-package org.svip.builders.component.interfaces.generics;
+package org.svip.sbom.builder.interfaces.generics;
 
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
