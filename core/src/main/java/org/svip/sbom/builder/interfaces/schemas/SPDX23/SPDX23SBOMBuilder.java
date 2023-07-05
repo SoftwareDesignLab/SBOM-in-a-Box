@@ -4,6 +4,7 @@ import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.builder.interfaces.generics.SBOMBuilder;
 
+
 /**
  * file: SPDX23SBOMBuilder.java
  * Interface for SPDX 2.3 SBOM Builder
@@ -11,6 +12,7 @@ import org.svip.sbom.builder.interfaces.generics.SBOMBuilder;
  * @author Thomas Roman
  */
 public interface SPDX23SBOMBuilder extends SBOMBuilder {
+
     /**
      * add a component to the SPDX 2.3 SBOM builder
      * @param component the SPDX 2.3 component
@@ -20,7 +22,7 @@ public interface SPDX23SBOMBuilder extends SBOMBuilder {
 
     /**
      * add a license list version to the SPDX 2.3 SBOM builder
-     * @param licenseListVersion
+     * @param licenseListVersion the SPDX 2.3 license list version
      * @return a SPDX 2.3 SBOM builder
      */
     SPDX23SBOMBuilder setSPDXLicenseListVersion(String licenseListVersion);

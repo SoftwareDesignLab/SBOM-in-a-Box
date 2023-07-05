@@ -1,6 +1,7 @@
 package org.svip.builders.component;
 
-import org.svip.builders.component.interfaces.SPDX23.SPDX23FileBuilder_I;
+
+import org.svip.sbom.builder.interfaces.schemas.SPDX23.SPDX23FileBuilder_I;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
@@ -12,7 +13,7 @@ import java.util.HashMap;
  *
  * @author Matthew Morrison
  */
-public class SPDX23FileBuilder implements SPDX23FileBuilder_I{
+public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
 
     /**File type*/
     private String type;
