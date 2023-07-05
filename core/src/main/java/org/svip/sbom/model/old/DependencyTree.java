@@ -1,4 +1,4 @@
-package org.svip.sbom.model;
+package org.svip.sbom.model.old;
 
 import java.util.HashMap;
 import java.util.HashSet;

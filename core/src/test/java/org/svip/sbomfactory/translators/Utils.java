@@ -1,7 +1,7 @@
 package org.svip.sbomfactory.translators;
 
-import org.svip.sbom.model.Component;
-import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.old.Component;
+import org.svip.sbom.model.old.SBOM;
 
 /**
  * File: Utils.java

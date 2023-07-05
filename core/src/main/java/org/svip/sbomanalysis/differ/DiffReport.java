@@ -2,7 +2,8 @@ package org.svip.sbomanalysis.differ;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.svip.sbom.model.*;
+import org.svip.sbom.model.old.Component;
+import org.svip.sbom.model.old.SBOM;
 import org.svip.sbomanalysis.comparison.conflicts.ComponentConflict;
 import org.svip.sbomanalysis.comparison.conflicts.ComponentConflictType;
 import org.svip.sbomanalysis.comparison.conflicts.SBOMConflict;

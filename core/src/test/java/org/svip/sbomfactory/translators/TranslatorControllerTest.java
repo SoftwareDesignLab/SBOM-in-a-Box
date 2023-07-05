@@ -2,7 +2,7 @@ package org.svip.sbomfactory.translators;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.old.SBOM;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;

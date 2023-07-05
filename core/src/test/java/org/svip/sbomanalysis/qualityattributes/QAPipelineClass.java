@@ -2,9 +2,9 @@ package org.svip.sbomanalysis.qualityattributes;
 
 
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.model.Component;
-import org.svip.sbom.model.DependencyTree;
-import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.old.Component;
+import org.svip.sbom.model.old.DependencyTree;
+import org.svip.sbom.model.old.SBOM;
 import org.svip.sbomanalysis.qualityattributes.processors.AttributeProcessor;
 import org.svip.sbomanalysis.qualityattributes.processors.CompletenessProcessor;
 

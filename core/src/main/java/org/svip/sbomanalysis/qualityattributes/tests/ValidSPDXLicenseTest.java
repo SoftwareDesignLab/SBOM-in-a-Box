@@ -5,8 +5,8 @@ import jregex.Matcher;
 import jregex.Pattern;
 import jregex.REFlags;
 import org.apache.commons.io.IOUtils;
-import org.svip.sbom.model.Component;
-import org.svip.sbom.model.SBOM;
+import org.svip.sbom.model.old.Component;
+import org.svip.sbom.model.old.SBOM;
 import org.svip.sbomfactory.generators.utils.Debug;
 
 import java.io.InputStream;
