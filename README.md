@@ -2,6 +2,8 @@
 > The SBOM Visualization and Integration Platform (**SVIP**) is a unified platform to promote the 
 > production, consumption, and utilization of Software Bills of Materials.
 
+### Latest Release: [[v5.0.0-alpha] - (6/29/2023)](doc/changelog.md)
+
 ## Quick Start
 
 ### Deploy API with Docker
@@ -12,31 +14,11 @@ $ docker ps
 # Build images & deploy and link API & MySQL containers.
 $ docker compose up
 ```
-See the SVIP API section of [doc/README.md](doc/README.md#svip-api) for detailed usage.
-
-## Latest Release
-### [v5.0.0-alpha] - (6/29/2023)
-
-#### Added
-- `Dockerfile` & `docker-compose.yml` to build the API and run a MySQL server with persistent storage in separate
-  Docker containers.
-    - `application.properties` & `.env` files created to setup Spring and Docker configuration.
-- `repository.SBOMFileRepository` Class to interact with the MySQL database.
-- New API endpoints (`upload`, `view`, `viewAll`, `delete`) to run CRUD operations on the `files` table.
-    - Added unit tests that mock the `repository.SBOMFileRepository` to avoid any local storage during testing.
-
-#### Changed
-- Refactored `NVIPApiController`, `PlugFestApiController`, & `NVIPApiController` Classes into `controller` package.
-- Refactored `utils.Utils.SBOMFile` into its own class `model.SBOMFile`
-    - Uses Hibernate decorators to automatically create a custom `files` table on the MySQL server.
-
-#### Removed
-- Old API endpoints & tests (`compare`, `generateSBOM`, `merge`, `parse`, & `qa`)
-
-_Full sub-system READMEs & changelogs can be found in the `doc` directory_
+See the SVIP API section of [doc/API.md](doc/API.md) for detailed usage.
 
 ## Features
-This is a list of all "features", or sub-systems that SVIP contains. Each links to their respective README.md file.
+This is a list of all "features", or sub-systems that SVIP contains. See [doc/README.md](doc/README.md) for 
+detailed usage.
 - **Open Source Integrated SBOM Generation:** Makes use of open source libraries to generate SBOMs
 - **SBOM Generation:** Custom SBOM generation via source file and package manager file analysis
 - **SBOM VEX Generation:** 
