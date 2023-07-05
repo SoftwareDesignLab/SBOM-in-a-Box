@@ -1,6 +1,6 @@
 package org.svip.builders.component.interfaces.CycloneDX14;
 
-import org.svip.builders.component.interfaces.generics.SBOMComponentBuilder;
+import org.svip.builders.component.interfaces.generics.PackageBuilder;
 import org.svip.sbom.model.shared.util.ExternalReference;
 
 /**
@@ -10,7 +10,7 @@ import org.svip.sbom.model.shared.util.ExternalReference;
  *
  * @author Matthew Morrison
  */
-public interface CDX14PackageBuilder_I extends SBOMComponentBuilder {
+public interface CDX14PackageBuilder_I extends PackageBuilder {
 
     /**
      * Set the mime type of the package
