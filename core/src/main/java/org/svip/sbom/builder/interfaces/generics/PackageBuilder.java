@@ -1,4 +1,4 @@
-package org.svip.builders.component.interfaces.generics;
+package org.svip.sbom.builder.interfaces.generics;
 
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
@@ -11,47 +11,47 @@ import org.svip.sbom.model.shared.util.ExternalReference;
  *
  * @author Matthew Morrison
  */
-public interface SBOMComponentBuilder extends ComponentBuilder {
+public interface PackageBuilder extends ComponentBuilder {
 
     /**
      * Set the supplier of the component
      * @param supplier the component's supplier
      * @return an SBOMComponentBuilder
      */
-    SBOMComponentBuilder setSupplier(Organization supplier);
+    PackageBuilder setSupplier(Organization supplier);
 
     /**
      * Set the version of the component
      * @param version the component's version
      * @return an SBOMComponentBuilder
      */
-    SBOMComponentBuilder setVersion(String version);
+    PackageBuilder setVersion(String version);
 
     /**
      * Set teh description of the component
      * @param description the component's description
      * @return an SBOMComponentBuilder
      */
-    SBOMComponentBuilder setDescription(Description description);
+    PackageBuilder setDescription(Description description);
 
     /**
      * Add a CPE to the component
      * @param cpe the cpe string to add
      * @return an SBOMComponentBuilder
      */
-    SBOMComponentBuilder addCPE(String cpe);
+    PackageBuilder addCPE(String cpe);
 
     /**
      * Add a PURL to the component
      * @param purl the purl string to add
      * @return an SBOMComponentBuilder
      */
-    SBOMComponentBuilder addPURL(String purl);
+    PackageBuilder addPURL(String purl);
 
     /**
      * Ann an external reference to the component
      * @param externalReference the external component to add
      * @return an SBOMComponentBuilder
      */
-    SBOMComponentBuilder addExternalReference(ExternalReference externalReference);
+    PackageBuilder addExternalReference(ExternalReference externalReference);
 }
