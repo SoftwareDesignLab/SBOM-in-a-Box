@@ -11,6 +11,7 @@ services:
   # MySQL server
   mysql:
     container_name: svip-mysql
+    platform: linux/amd64
     image: mysql:5
     restart: unless-stopped
     environment:
