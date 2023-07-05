@@ -205,6 +205,18 @@ public class SVIPApiController {
         return Utils.encodeResponse(sbomFile.get().getId());
     }
 
+    /**
+     * todo docstring
+     * @param id
+     * @param schema
+     * @return
+     */
+    @GetMapping("/convert")
+    public ResponseEntity<String> convert(@RequestParam("id") long id, @RequestParam("schema") String schema){
+        // todo
+        return null;
+    }
+
     //#region Deprecated Endpoints
 
     /**
