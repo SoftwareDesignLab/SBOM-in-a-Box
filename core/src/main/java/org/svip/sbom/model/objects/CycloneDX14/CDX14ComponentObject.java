@@ -226,42 +226,6 @@ public class CDX14ComponentObject implements CDX14Package {
         return this.group;
     }
 
-    @Override
-    public String getType() {
-        return null;
-    }
-
-    @Override
-    public String getUID() {
-        return null;
-    }
-
-    @Override
-    public String getAuthor() {
-        return null;
-    }
-
-    @Override
-    public String getName() {
-        return null;
-    }
-
-    @Override
-    public LicenseCollection getLicenses() {
-        return null;
-    }
-
-    @Override
-    public String getCopyright() {
-        return null;
-    }
-
-    @Override
-    public Map<String, String> getHashes() {
-        return null;
-    }
-}
-
     /**
      * Get the component's properties
      * @return the component's properties
