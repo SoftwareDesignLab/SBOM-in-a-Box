@@ -187,6 +187,12 @@ public class CDX14Builder implements CDX14SBOMBuilder{
         return this;
     }
 
+    @Override
+    public CDX14Builder addCDX14Package(CDX14Package cdx14Package) {
+        this.components.add(cdx14Package);
+        return this;
+    }
+
     /**
      * Add a relationship to the SBOM
      * @param componentName the component name
@@ -227,6 +233,7 @@ public class CDX14Builder implements CDX14SBOMBuilder{
     public SBOM Build() {
         return null;
     }
+
 
     /**
      * Build the CycloneDX 1.4 SBOM

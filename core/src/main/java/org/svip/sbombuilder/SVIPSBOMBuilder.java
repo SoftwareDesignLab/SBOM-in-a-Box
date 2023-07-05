@@ -1,8 +1,9 @@
-package org.svip.sbombuilders;
+package org.svip.sbombuilder;
 
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
@@ -11,7 +12,6 @@ import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbombuilder.interfaces.CDX14SBOMBuilder;
-import org.svip.sbombuilder.interfaces.SBOMBuilder;
 import org.svip.sbombuilder.interfaces.SPDX23SBOMBuilder;
 
 import java.util.HashMap;
@@ -137,16 +137,11 @@ public class SVIPSBOMBuilder implements CDX14SBOMBuilder, SPDX23SBOMBuilder {
     }
 
     @Override
-    public SVIPSBOMBuilder addSPDX23Package(SPDX23Package spdx23Package) {
-        this.components.add(spdx23Package);
+    public SVIPSBOMBuilder addSPDX23Component(SPDX23Component spdx23Component) {
+        this.components.add(spdx23Component);
         return this;
     }
 
-    @Override
-    public SVIPSBOMBuilder addSPDX23File(SPDX23File spdx23File) {
-        this.components.add(spdx23File);
-        return this;
-    }
     /** TO DO: add constructors to SBOM */
     @Override
     public SBOM Build() {
