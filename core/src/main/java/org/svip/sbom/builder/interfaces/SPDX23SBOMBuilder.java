@@ -1,5 +1,6 @@
 package org.svip.sbom.builder.interfaces;
 
+import org.svip.sbom.builder.interfaces.schemas.SPDX23.SBOMBuilder;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 
