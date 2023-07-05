@@ -1,7 +1,8 @@
-package org.svip.sbombuilder.interfaces;
+package org.svip.sbombuilder.interfaces.schemas.CycloneDX14;
 
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbombuilder.interfaces.generics.SBOMBuilder;
 
 /**
  * file: CDX14SBOMBuilder.java

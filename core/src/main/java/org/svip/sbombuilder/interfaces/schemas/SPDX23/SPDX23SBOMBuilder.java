@@ -1,9 +1,8 @@
-package org.svip.sbombuilder.interfaces;
+package org.svip.sbombuilder.interfaces.schemas.SPDX23;
 
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbombuilder.interfaces.generics.SBOMBuilder;
 
 /**
  * file: SPDX23SBOMBuilder.java

@@ -1,4 +1,4 @@
-package org.svip.sbombuilder.interfaces;
+package org.svip.sbombuilder.interfaces.generics;
 
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;

@@ -1,16 +1,16 @@
-package org.svip.sbombuilders;
+package org.svip.sbombuilder.objects;
 
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
-import org.svip.sbombuilder.interfaces.SBOMBuilder;
-import org.svip.sbombuilder.interfaces.SPDX23SBOMBuilder;
+import org.svip.sbombuilder.interfaces.schemas.CycloneDX14.CDX14SBOMBuilder;
+import org.svip.sbombuilder.interfaces.schemas.SPDX23.SPDX23SBOMBuilder;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,11 +18,12 @@ import java.util.Set;
 
 /**
  * file: SPDX23Builder.java
- * Class for the SPDX 2.3 SBOM Builder
+ * Class for the SVIP SBOM Builder
  *
  * @author Thomas Roman
  */
-public class SPDX23Builder implements SPDX23SBOMBuilder {
+public class SVIPSBOMBuilder implements CDX14SBOMBuilder, SPDX23SBOMBuilder {
+
     private String format;
     private String name;
     private String uid;
@@ -36,88 +37,81 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
     private HashMap<String, Set<Relationship>> relationships;
     private Set<ExternalReference> externalReferences;
     /** Set<VEX> vulnerabilities;
-    Set<Snippet> snippets;
-    Set<LicenseInfo> additionalLicenseInformation;
+     Set<Service> services;
+     Set<Composition> compositions;
+     Signature signature;
+     Set<Snippet> snippets;
+     Set<LicenseInfo> additionalLicenseInformation;
      Set<Annotation> annotationInformation;</Annotation>*/
     private String SPDXLicenseListVersion;
-    
     @Override
-    public SPDX23Builder setFormat(String format)
-    {
+    public SVIPSBOMBuilder addCDX14Package(CDX14Package cdx14Package) {
+        this.components.add(cdx14Package);
+        return this;
+    }
+
+    @Override
+    public SVIPSBOMBuilder setFormat(String format) {
         this.format = format;
         return this;
     }
 
     @Override
-    public SPDX23Builder setName(String name)
-    {
+    public SVIPSBOMBuilder setName(String name) {
         this.name = name;
         return this;
     }
 
     @Override
-    public SPDX23Builder setUID(String uid)
-    {
+    public SVIPSBOMBuilder setUID(String uid) {
         this.uid = uid;
         return this;
     }
 
     @Override
-    public SPDX23Builder setVersion(String version)
-    {
+    public SVIPSBOMBuilder setVersion(String version) {
         this.version = version;
         return this;
     }
 
     @Override
-    public SPDX23Builder setSpecVersion(String specVersion)
-    {
+    public SVIPSBOMBuilder setSpecVersion(String specVersion) {
         this.specVersion = specVersion;
         return this;
     }
 
     @Override
-    public SPDX23Builder addLicense(String license)
-    {
+    public SVIPSBOMBuilder addLicense(String license) {
         this.licenses.add(license);
         return this;
     }
 
     @Override
-    public SPDX23Builder setCreationData(CreationData creationData)
-    {
+    public SVIPSBOMBuilder setCreationData(CreationData creationData) {
         this.creationData = creationData;
         return this;
     }
 
     @Override
-    public SPDX23Builder setDocumentComment(String documentComment)
-    {
+    public SVIPSBOMBuilder setDocumentComment(String documentComment) {
         this.documentComment = documentComment;
         return this;
     }
 
     @Override
-    public SBOMBuilder setRootComponent(Component rootComponent) {
+    public SVIPSBOMBuilder setRootComponent(Component rootComponent) {
         this.rootComponent = rootComponent;
         return this;
     }
 
     @Override
-    public SBOMBuilder addComponent(Component component) {
+    public SVIPSBOMBuilder addComponent(Component component) {
         this.components.add(component);
         return this;
     }
 
     @Override
-    public SPDX23SBOMBuilder addSPDX23Component(SPDX23Component component) {
-        this.components.add(component);
-        return this;
-    }
-
-    @Override
-    public SPDX23Builder addRelationship(String componentName, Relationship relationship)
-    {
+    public SVIPSBOMBuilder addRelationship(String componentName, Relationship relationship) {
         if (this.relationships == null)
             this.relationships = new HashMap<>();
 
@@ -129,23 +123,36 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
     }
 
     @Override
-    public SPDX23Builder addExternalReference(ExternalReference externalReference)
-    {
+    public SVIPSBOMBuilder addExternalReference(ExternalReference externalReference) {
         this.externalReferences.add(externalReference);
         return this;
     }
 
     @Override
-    public SPDX23Builder setSPDXLicenseListVersion(String licenseListVersion) {
+    public SVIPSBOMBuilder setSPDXLicenseListVersion(String licenseListVersion) {
         this.SPDXLicenseListVersion = licenseListVersion;
+        return this;
+    }
+
+    @Override
+    public SVIPSBOMBuilder addSPDX23Component(SPDX23Component component) {
+        this.components.add(component);
         return this;
     }
 
     /** TO DO: add constructors to SBOM */
     @Override
-    public SBOM Build() {return null;}
-
+    public SBOM Build() {
+        return null;
+    }
     /** TO DO: add constructors to SPDX23SBOM */
     @Override
-    public SPDX23SBOM buildSPDX23SBOM() {return null;}
+    public SPDX23SBOM buildSPDX23SBOM() {
+        return null;
+    }
+    /** TO DO: add constructors to CDX14SBOM */
+    @Override
+    public CDX14SBOM buildCDX14SBOM() {
+        return null;
+    }
 }
