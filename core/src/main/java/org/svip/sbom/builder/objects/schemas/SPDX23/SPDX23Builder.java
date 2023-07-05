@@ -7,7 +7,7 @@ import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
-import org.svip.sbom.builder.interfaces.SPDX23SBOMBuilder;
+import org.svip.sbom.builder.interfaces.schemas.SPDX23.SPDX23SBOMBuilder;
 
 import java.util.HashMap;
 import java.util.HashSet;

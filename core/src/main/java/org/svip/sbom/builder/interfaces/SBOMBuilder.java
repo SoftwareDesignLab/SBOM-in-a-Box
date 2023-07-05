@@ -1,4 +1,4 @@
-package org.svip.sbom.builder.interfaces.schemas.SPDX23;
+package org.svip.sbom.builder.interfaces;
 
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
