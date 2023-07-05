@@ -135,8 +135,8 @@ public class SVIPSBOMBuilder implements CDX14SBOMBuilder, SPDX23SBOMBuilder {
     }
 
     @Override
-    public SVIPSBOMBuilder addSPDX23Component(SPDX23Component spdx23Component) {
-        this.components.add(spdx23Component);
+    public SVIPSBOMBuilder addSPDX23Component(SPDX23Component component) {
+        this.components.add(component);
         return this;
     }
 

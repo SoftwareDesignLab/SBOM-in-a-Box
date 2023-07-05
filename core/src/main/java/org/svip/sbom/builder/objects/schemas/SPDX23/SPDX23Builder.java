@@ -106,6 +106,11 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
         return this;
     }
 
+    @Override
+    public SPDX23Builder addSPDX23Component(SPDX23Component component) {
+        this.components.add(component);
+        return this;
+    }
 
     @Override
     public SPDX23Builder addRelationship(String componentName, Relationship relationship)
@@ -131,12 +136,6 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
     @Override
     public SPDX23Builder setSPDXLicenseListVersion(String licenseListVersion) {
         this.SPDXLicenseListVersion = licenseListVersion;
-        return this;
-    }
-
-    @Override
-    public SPDX23Builder addSPDX23Component(SPDX23Component spdx23Component) {
-        this.addComponent(spdx23Component);
         return this;
     }
 
