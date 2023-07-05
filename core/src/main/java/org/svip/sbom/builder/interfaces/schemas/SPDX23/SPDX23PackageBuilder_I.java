@@ -1,6 +1,6 @@
-package org.svip.builders.component.interfaces.SPDX23;
+package org.svip.sbom.builder.interfaces.schemas.SPDX23;
 
-import org.svip.builders.component.interfaces.generics.SBOMComponentBuilder;
+import org.svip.sbom.builder.interfaces.generics.PackageBuilder;
 
 /**
  * file: SPDX23PackageBuilder_I.java
@@ -9,7 +9,7 @@ import org.svip.builders.component.interfaces.generics.SBOMComponentBuilder;
  *
  * @author Matthew Morrison
  */
-public interface SPDX23PackageBuilder_I extends SPDX23ComponentBuilder, SBOMComponentBuilder {
+public interface SPDX23PackageBuilder_I extends SPDX23ComponentBuilder, PackageBuilder {
 
     /**
      * Set the download location of the package
