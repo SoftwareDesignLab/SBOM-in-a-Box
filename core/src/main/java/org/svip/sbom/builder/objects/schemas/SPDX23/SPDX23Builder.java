@@ -96,19 +96,19 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
     }
 
     @Override
-    public SBOMBuilder setRootComponent(Component rootComponent) {
+    public SPDX23Builder setRootComponent(Component rootComponent) {
         this.rootComponent = rootComponent;
         return this;
     }
 
     @Override
-    public SBOMBuilder addComponent(Component component) {
+    public SPDX23Builder addComponent(Component component) {
         this.components.add(component);
         return this;
     }
 
     @Override
-    public SPDX23SBOMBuilder addSPDX23Component(SPDX23Component component) {
+    public SPDX23Builder addSPDX23Component(SPDX23Component component) {
         this.components.add(component);
         return this;
     }
