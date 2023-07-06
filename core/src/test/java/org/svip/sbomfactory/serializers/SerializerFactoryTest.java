@@ -5,10 +5,7 @@ import org.svip.sbomfactory.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.sbomfactory.serializers.deserializer.Deserializer;
 import org.svip.sbomfactory.serializers.deserializer.SPDX23JSONDeserializer;
 import org.svip.sbomfactory.serializers.deserializer.SPDX23TagValueDeserializer;
-import org.svip.sbomfactory.serializers.serializer.CDX14JSONSerializer;
-import org.svip.sbomfactory.serializers.serializer.SPDX23JSONSerializer;
-import org.svip.sbomfactory.serializers.serializer.SPDX23TagValueSerializer;
-import org.svip.sbomfactory.serializers.serializer.Serializer;
+import org.svip.sbomfactory.serializers.serializer.*;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -42,6 +39,16 @@ public class SerializerFactoryTest {
                 true);
 
         assertTrue(serializer instanceof SPDX23TagValueSerializer);
+    }
+
+    @Test
+    public void SVIPSBOMJSONSerializerTest() {
+        Serializer serializer = SerializerFactory.createSerializer(
+                SerializerFactory.Schema.SVIP,
+                SerializerFactory.Format.JSON,
+                true);
+
+        assertTrue(serializer instanceof SVIPSBOMJSONSerializer);
     }
 
     @Test
