@@ -32,8 +32,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
      */
     @Override
     public ObjectMapper getObjectMapper() {
-        // TODO we don't need an objectmapper for tag value, is there any way to get rid of this? Currently breaks tests
-        //  if set to null
+        // We don't need an objectmapper for tag value but removing this breaks tests
         return new ObjectMapper();
     }
 }

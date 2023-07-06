@@ -56,7 +56,7 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
         module.addSerializer(SVIPSBOM.class, this);
         mapper.registerModule(module);
 
-        return mapper; // TODO ensure this returns the correct mapper instance
+        return mapper;
     }
 
     /**
@@ -71,6 +71,6 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
 
     @Override
     public void serialize(SVIPSBOM sbom, JsonGenerator jsonGenerator, SerializerProvider provider) throws IOException {
-
+        // TODO
     }
 }

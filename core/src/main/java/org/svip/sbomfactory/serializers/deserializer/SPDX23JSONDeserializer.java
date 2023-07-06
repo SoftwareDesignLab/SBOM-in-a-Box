@@ -51,12 +51,13 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
         module.addDeserializer(SPDX23SBOM.class, this);
         mapper.registerModule(module);
 
-        return mapper; // TODO ensure this returns the correct mapper instance
+        return mapper;
     }
 
     @Override
     public SPDX23SBOM deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException,
             JacksonException {
+        // TODO
         return null;
     }
 }

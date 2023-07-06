@@ -43,7 +43,7 @@ public class SVIPSBOMJSONSerializer implements Serializer {
 //        module.addSerializer(SVIPSBOM.class, this);
 //        mapper.registerModule(module);
 
-        return mapper; // TODO ensure this returns the correct mapper instance
+        return mapper;
     }
 
     /**

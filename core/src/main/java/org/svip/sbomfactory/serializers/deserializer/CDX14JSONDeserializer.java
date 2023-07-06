@@ -52,7 +52,7 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
         module.addDeserializer(CDX14SBOM.class, this);
         mapper.registerModule(module);
 
-        return mapper; // TODO ensure this returns the correct mapper instance
+        return mapper;
     }
 
     @Override

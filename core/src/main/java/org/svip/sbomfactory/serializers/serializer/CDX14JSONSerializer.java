@@ -56,7 +56,7 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         module.addSerializer(SVIPSBOM.class, this);
         mapper.registerModule(module);
 
-        return mapper; // TODO ensure this returns the correct mapper instance
+        return mapper;
     }
 
     /**
@@ -71,6 +71,6 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
 
     @Override
     public void serialize(SVIPSBOM sbom, JsonGenerator jsonGenerator, SerializerProvider provider) throws IOException {
-
+        // TODO
     }
 }
