@@ -211,9 +211,29 @@ public class SVIPApiController {
      * @param schema
      * @return
      */
+    /*
+    This is more frontend, we kinda do it implicitly with the new sbom. The workflow would look like this:
+        The user selects an SBOM
+        The user chooses a schema ( format, json.xml etc can be done at write time)
+        Frontend sends schema + sbomid (or however we're ID'ing sboms) to backend
+        We take the SBOM and convert it to ours to the schema                                                   // todo delete
+        Should be fairly straight forward, we'll have to write converters to handle CDX only / SPDX only fields
+        This might require some brainstorming to figure out how to best handle this
+        We return the converted sbom to front end
+        Frontend asks if the user wants to overwrite / new sbom
+        based on decision, we upload a new/overwrite existing sbom on backend bd
+     */
     @GetMapping("/convert")
     public ResponseEntity<String> convert(@RequestParam("id") long id, @RequestParam("schema") String schema){
-        // todo
+        // Get SBOM to be converted
+        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
+
+        // Check if it exists
+        if (sbomFile.isEmpty()) {
+            LOGGER.info("DELETE /svip/convert?id=" + id + " - FILE NOT FOUND");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
         return null;
     }
 
