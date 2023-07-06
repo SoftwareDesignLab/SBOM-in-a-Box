@@ -237,7 +237,8 @@ public class SVIPApiController {
 
         SBOMFile toConvert = sbomFile.get();
 
-        SBOMFile converted = Utils.convert(toConvert, schema);
+        SBOMFile converted = Utils.convert(toConvert, schema); // todo in Utils
+                                                                // todo ensure has the same ID
 
         // Check if it exists
         if (converted == null || converted.hasNullProperties()) {
@@ -247,6 +248,30 @@ public class SVIPApiController {
 
         return Utils.encodeResponse(converted.getContents());
     }
+
+    /**
+     * Overwrite a particular SBOM given contents
+     * @param id ID of SBOM to overwrite
+     * @param sbomFile contents to overwrite with
+     * @return success/failure
+     */
+    @GetMapping("/overwrite")
+    public ResponseEntity<?> overwrite(@RequestParam("id") long id, @RequestBody SBOMFile sbomFile){
+        // Get SBOM to be converted
+        Optional<SBOMFile> exists = sbomFileRepository.findById(id);
+
+        // Check if it exists
+        if (exists.isEmpty()) {
+            LOGGER.info("DELETE /svip/convert?id=" + id + " - FILE NOT FOUND");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        sbomFileRepository.deleteById(id);
+        sbomFileRepository.save(sbomFile);
+
+        return Utils.encodeResponse(HttpStatus.OK);
+    }
+
 
     //#region Deprecated Endpoints
 
