@@ -330,10 +330,8 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     @Override
     public CDX14ComponentObject buildAndFlush() {
         // build the component
-        CDX14ComponentObject component = new CDX14ComponentObject(type, uid, author, name,
-                licenses, copyright, hashes, supplier, version, description, cpes,
-                purls, mimeType, publisher, scope, group,
-                externalReferences, properties);
+        CDX14ComponentObject component = build();
+        
         // clear all the data in the builder
         this.type = null;
         this.uid = null;
