@@ -12,7 +12,7 @@ import java.util.Map;
 
 import static org.svip.sbomfactory.serializers.SerializerFactory.Format.JSON;
 import static org.svip.sbomfactory.serializers.SerializerFactory.Format.TAGVALUE;
-import static org.svip.sbomfactory.serializers.SerializerFactory.Schema.CDX14;
+import static org.svip.sbomfactory.serializers.SerializerFactory.Schema.*;
 
 /**
  * File: SerializerFactory.java
@@ -119,8 +119,19 @@ public class SerializerFactory {
      * @throws IllegalArgumentException If a schema and/or format cannot be determined.
      */
     public static Deserializer createDeserializer(String fileContents) throws IllegalArgumentException {
-        // TODO figure out a 100% correct way of determining file schema and format
-        return CDX14.getDeserializer(JSON); // TODO currently defaults to CDX14JSONDeserializer
+        // TODO figure out a 100% correct way of determining file schema and format, this was my quick and dirty soln
+
+        // Defaults to CDX14JSONDeserializer
+        Schema schema = CDX14;
+        Format format = JSON;
+
+        if (fileContents.contains("SPDX")) schema = SPDX23;
+        else if (fileContents.contains("SVIP")) schema = SVIP;
+
+        if (fileContents.contains("DocumentName:")) format = TAGVALUE;
+
+        // TODO what if we still have an incorrect deserializer?
+        return schema.getDeserializer(format);
     }
 
     /**
