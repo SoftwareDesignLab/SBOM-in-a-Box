@@ -2,9 +2,11 @@ package org.svip.sbomfactory.serializers.deserializer;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 
@@ -19,7 +21,7 @@ import java.io.IOException;
  */
 public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implements Deserializer {
     public SPDX23JSONDeserializer() {
-        super((Class<SPDX23SBOM>) null);
+        super(SPDX23SBOM.class);
     }
 
     protected SPDX23JSONDeserializer(Class<SPDX23SBOM> t) {
@@ -33,8 +35,8 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
      * @return The deserialized SPDX 2.3 SBOM object.
      */
     @Override
-    public SBOM readFromString(String fileContents) {
-        return null;
+    public SBOM readFromString(String fileContents) throws JsonProcessingException {
+        return getObjectMapper().readValue(fileContents, SPDX23SBOM.class);
     }
 
     /**
@@ -44,7 +46,12 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
      */
     @Override
     public ObjectMapper getObjectMapper() {
-        return null;
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(SPDX23SBOM.class, this);
+        mapper.registerModule(module);
+
+        return mapper; // TODO ensure this returns the correct mapper instance
     }
 
     @Override

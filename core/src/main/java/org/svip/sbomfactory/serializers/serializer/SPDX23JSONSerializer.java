@@ -1,10 +1,11 @@
 package org.svip.sbomfactory.serializers.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 
 import java.io.IOException;
@@ -16,12 +17,12 @@ import java.io.IOException;
  *
  * @author Ian Dunn
  */
-public class SPDX23JSONSerializer extends StdSerializer<SPDX23SBOM> implements Serializer {
+public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Serializer {
     public SPDX23JSONSerializer() {
-        super((Class<SPDX23SBOM>) null);
+        super(SVIPSBOM.class);
     }
 
-    protected SPDX23JSONSerializer(Class<SPDX23SBOM> t) {
+    protected SPDX23JSONSerializer(Class<SVIPSBOM> t) {
         super(t);
     }
 
@@ -32,8 +33,8 @@ public class SPDX23JSONSerializer extends StdSerializer<SPDX23SBOM> implements S
      * @return A string containing the final SBOM file.
      */
     @Override
-    public String writeToString(SVIPSBOM sbom) {
-        return null;
+    public String writeToString(SVIPSBOM sbom) throws JsonProcessingException {
+        return getObjectMapper().writeValueAsString(sbom);
     }
 
     /**
@@ -43,11 +44,16 @@ public class SPDX23JSONSerializer extends StdSerializer<SPDX23SBOM> implements S
      */
     @Override
     public ObjectMapper getObjectMapper() {
-        return null;
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule();
+        module.addSerializer(SVIPSBOM.class, this);
+        mapper.registerModule(module);
+
+        return mapper; // TODO ensure this returns the correct mapper instance
     }
 
     @Override
-    public void serialize(SPDX23SBOM sbom, JsonGenerator jsonGenerator, SerializerProvider provider) throws IOException {
+    public void serialize(SVIPSBOM sbom, JsonGenerator jsonGenerator, SerializerProvider provider) throws IOException {
 
     }
 }

@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.serializers.serializer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.sbom.model.objects.SVIPSBOM;
 
@@ -17,7 +18,7 @@ public interface Serializer {
      * @param sbom The SBOM to serialize.
      * @return A string containing the final SBOM file.
      */
-    public String writeToString(SVIPSBOM sbom);
+    public String writeToString(SVIPSBOM sbom) throws JsonProcessingException;
 
     /**
      * Gets the ObjectMapper of the serializer to expose configuration.

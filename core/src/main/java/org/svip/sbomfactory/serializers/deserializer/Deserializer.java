@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.serializers.deserializer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 
@@ -17,7 +18,7 @@ public interface Deserializer {
      * @param fileContents The file contents of the SBOM to deserialize.
      * @return The deserialized SBOM object.
      */
-    public abstract SBOM readFromString(String fileContents);
+    public abstract SBOM readFromString(String fileContents) throws JsonProcessingException;
 
     /**
      * Gets the ObjectMapper of the serializer to expose configuration.

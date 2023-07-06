@@ -2,11 +2,14 @@ package org.svip.sbomfactory.serializers.deserializer;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 
 import java.io.IOException;
 
@@ -19,7 +22,7 @@ import java.io.IOException;
  */
 public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements Deserializer {
     public CDX14JSONDeserializer() {
-        super((Class<CDX14SBOM>) null);
+        super(CDX14SBOM.class);
     }
 
     protected CDX14JSONDeserializer(Class<CDX14SBOM> t) {
@@ -33,8 +36,8 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
      * @return The deserialized CDX 1.4 SBOM object.
      */
     @Override
-    public SBOM readFromString(String fileContents) {
-        return null;
+    public SBOM readFromString(String fileContents) throws JsonProcessingException {
+        return getObjectMapper().readValue(fileContents, SPDX23SBOM.class);
     }
 
     /**
@@ -44,12 +47,18 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
      */
     @Override
     public ObjectMapper getObjectMapper() {
-        return null;
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(CDX14SBOM.class, this);
+        mapper.registerModule(module);
+
+        return mapper; // TODO ensure this returns the correct mapper instance
     }
 
     @Override
     public CDX14SBOM deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException,
             JacksonException {
+        // TODO
         return null;
     }
 }
