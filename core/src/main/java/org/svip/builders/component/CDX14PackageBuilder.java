@@ -3,6 +3,7 @@ package org.svip.builders.component;
 
 import org.svip.sbom.builder.interfaces.schemas.CycloneDX14.CDX14PackageBuilder_I;
 import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
@@ -293,23 +294,29 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
         return this;
     }
 
-    //TODO implement after SBOM refactor
     /**
-     * Build a CDX14PackageObject
+     * Build a CDX14ComponentObject
      * @return a Component
      */
     @Override
-    public Component build() {
-        return null;
+    public CDX14ComponentObject build() {
+        return new CDX14ComponentObject(type, uid, author, name,
+                licenses, copyright, hashes, supplier, version, description, cpes,
+                purls, mimeType, publisher, scope, group,
+                externalReferences, properties);
     }
 
     //TODO implement after SBOM refactor
     /**
-     * Build and flush a CDX14PackageObject
+     * Build and flush a CDX14ComponentObject
      * @return a Component
      */
     @Override
-    public Component buildAndFlush() {
-        return null;
+    public CDX14ComponentObject buildAndFlush() {
+        return new CDX14ComponentObject(
+                null, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, scope,
+                null, null, null);
+
     }
 }

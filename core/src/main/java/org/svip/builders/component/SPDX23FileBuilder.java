@@ -3,6 +3,7 @@ package org.svip.builders.component;
 
 import org.svip.sbom.builder.interfaces.schemas.SPDX23.SPDX23FileBuilder_I;
 import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
 import java.util.HashMap;
@@ -156,23 +157,23 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
         return this;
     }
 
-    //TODO implement after SBOM refactor
     /**
      * Build an SPDX23FileObject
-     * @return a Component
+     * @return an SPDX23FileObject
      */
     @Override
-    public Component build() {
-        return null;
+    public SPDX23FileObject build() {
+        return new SPDX23FileObject(type, uid, author, name, licenses,
+                copyright, hashes, fileNotice, comment, attributionText);
     }
 
-    //TODO implement after SBOM refactor
     /**
      * Build and flush an SPDX23FileObject
      * @return a Component
      */
     @Override
-    public Component buildAndFlush() {
-        return null;
+    public SPDX23FileObject buildAndFlush() {
+        return new SPDX23FileObject(null, null, null, null, null,
+                null, null, null, null, null);
     }
 }

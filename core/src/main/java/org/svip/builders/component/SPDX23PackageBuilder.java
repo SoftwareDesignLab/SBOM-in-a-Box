@@ -3,6 +3,7 @@ package org.svip.builders.component;
 
 import org.svip.sbom.builder.interfaces.schemas.SPDX23.SPDX23PackageBuilder_I;
 import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
@@ -359,23 +360,29 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
         return this;
     }
 
-    //TODO implement after SBOM refactor
     /**
      * Build an SPDX23PackageObject
-     * @return a Component
+     * @return an SPDX23PackageObject
      */
     @Override
-    public Component build() {
-        return null;
+    public SPDX23PackageObject build() {
+        return new SPDX23PackageObject(type, uid, author, name, licenses,
+                copyright, hashes, supplier, version, description, cpes,
+                purls, externalReferences, downloadLocation, fileName,
+                filesAnalyzed, verificationCode, homePage, sourceInfo,
+                releaseDate, builtDate, validUntilDate,
+                 comment, attributionText);
     }
 
-    //TODO implement after SBOM refactor
     /**
      * Build and flush the SPDX23PackageObject
-     * @return a Component
+     * @return an SPDX23PackageObject
      */
     @Override
     public Component buildAndFlush() {
-        return null;
+        return new SPDX23PackageObject(null, null, null, null,
+                null, null, null, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null,
+                null, null, null);
     }
 }
