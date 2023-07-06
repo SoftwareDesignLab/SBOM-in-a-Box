@@ -20,7 +20,9 @@ public class SPDX23TagValueDeserializer implements Deserializer {
      */
     @Override
     public SBOM readFromString(String fileContents) {
+        // TODO replace with code from TranslatorSPDX
         return null;
+//        return new SPDX23SBOM();
     }
 
     /**
@@ -30,6 +32,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
      */
     @Override
     public ObjectMapper getObjectMapper() {
+        // TODO we don't need an objectmapper for tag value, is there any way to get rid of this?
         return null;
     }
 }

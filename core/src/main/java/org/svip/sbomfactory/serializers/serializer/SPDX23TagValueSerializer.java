@@ -20,7 +20,8 @@ public class SPDX23TagValueSerializer implements Serializer {
      */
     @Override
     public String writeToString(SVIPSBOM sbom) {
-        return null;
+        // TODO add tag-value generator code here
+        return "";
     }
 
     /**
@@ -30,6 +31,7 @@ public class SPDX23TagValueSerializer implements Serializer {
      */
     @Override
     public ObjectMapper getObjectMapper() {
+        // TODO we don't need an objectmapper for tag value, is there any way to get rid of this?
         return null;
     }
 }
