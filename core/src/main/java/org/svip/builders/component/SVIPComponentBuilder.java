@@ -20,6 +20,7 @@ import java.util.Set;
  * Builder class for SVIP components
  *
  * @author Matthew Morrison
+ * @author Thomas Roman
  */
 public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14PackageBuilder_I, SPDX23FileBuilder_I {
 
@@ -164,6 +165,10 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
      */
     @Override
     public SVIPComponentBuilder addExternalReferences(ExternalReference externalReference) {
+        // initialize the hash set
+        if (this.externalReferences == null) {
+            this.externalReferences = new HashSet<ExternalReference>();
+        }
         this.externalReferences.add(externalReference);
         return this;
     }
@@ -176,6 +181,11 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
      */
     @Override
     public SVIPComponentBuilder addProperty(String name, String value) {
+        // initialize the hash set
+        if (this.properties == null) {
+            this.properties = new HashMap<String, Set<String>>();
+        }
+
         Set<String> values;
         if(this.properties.containsKey(name)){
             values = this.properties.get(name);
@@ -263,6 +273,10 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
      */
     @Override
     public SVIPComponentBuilder addHash(String algorithm, String hash) {
+        // initialize the hash set
+        if (this.hashes == null) {
+            this.hashes = new HashMap<String, String>();
+        }
         this.hashes.put(algorithm, hash);
         return this;
     }
@@ -307,6 +321,10 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
      */
     @Override
     public SVIPComponentBuilder addCPE(String cpe) {
+        // initialize the hash set
+        if (this.cpes == null) {
+            this.cpes = new HashSet<String>();
+        }
         this.cpes.add(cpe);
         return this;
     }
@@ -318,6 +336,10 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
      */
     @Override
     public SVIPComponentBuilder addPURL(String purl) {
+        // initialize the hash set
+        if (this.purls == null) {
+            this.purls = new HashSet<String>();
+        }
         this.purls.add(purl);
         return this;
     }
@@ -329,6 +351,10 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
      */
     @Override
     public SVIPComponentBuilder addExternalReference(ExternalReference externalReference) {
+        // initialize the hash set
+        if (this.externalReferences == null) {
+            this.externalReferences = new HashSet<ExternalReference>();
+        }
         this.externalReferences.add(externalReference);
         return this;
     }
@@ -487,6 +513,45 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
      */
     @Override
     public SVIPComponentObject buildAndFlush() {
+        // build the component
+        SVIPComponentObject component = new SVIPComponentObject(type, uid, author, name, licenses,
+                copyright, hashes, supplier, version, description, cpes,
+                purls, externalReferences, downloadLocation, fileName,
+                filesAnalyzed, verificationCode, homePage, sourceInfo,
+                releaseDate, builtDate, validUntilDate, mimeType,
+                publisher, scope, group, properties, fileNotice,
+                comment, attributionText);
+        // clear all the data in the builder
+        this.type = null;
+        this.uid = null;
+        this.author = null;
+        this.name = null;
+        this.licenses = null;
+        this.copyright = null;
+        this.hashes = null;
+        this.supplier = null;
+        this.version = null;
+        this.description = null;
+        this.cpes = null;
+        this.purls = null;
+        this.externalReferences = null;
+        this.downloadLocation = null;
+        this.fileName = null;
+        this.filesAnalyzed = null;
+        this.verificationCode = null;
+        this.homePage = null;
+        this.sourceInfo = null;
+        this.releaseDate = null;
+        this.builtDate = null;
+        this.validUntilDate = null;
+        this.mimeType = null;
+        this.publisher = null;
+        this.scope = null;
+        this.group = null;
+        this.properties = null;
+        this.fileNotice = null;
+        this.comment = null;
+        this.attributionText = null;
         return new SVIPComponentObject(null, null, null, null,null, null,
                 null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null, null, null,

@@ -3,6 +3,7 @@ package org.svip.sbom.builder.objects.schemas.CDX14;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
@@ -19,6 +20,7 @@ import java.util.Set;
  * CDX14SBOMBuilder interface
  *
  * @author Matthew Morrison
+ * @author Thomas Roman
  */
 public class CDX14Builder implements CDX14SBOMBuilder{
 
@@ -136,6 +138,10 @@ public class CDX14Builder implements CDX14SBOMBuilder{
      */
     @Override
     public CDX14Builder addLicense(String license) {
+        // initialize the hash set
+        if (this.licenses == null) {
+            this.licenses = new HashSet<String>();
+        }
         this.licenses.add(license);
         return this;
     }
@@ -180,12 +186,20 @@ public class CDX14Builder implements CDX14SBOMBuilder{
      */
     @Override
     public CDX14Builder addComponent(Component component) {
+        // initialize the hash set
+        if (this.components == null) {
+            this.components = new HashSet<Component>();
+        }
         this.components.add(component);
         return this;
     }
 
     @Override
     public CDX14Builder addCDX14Package(CDX14Package cdx14Package) {
+        // initialize the hash set
+        if (this.components == null) {
+            this.components = new HashSet<Component>();
+        }
         this.components.add(cdx14Package);
         return this;
     }
@@ -225,10 +239,13 @@ public class CDX14Builder implements CDX14SBOMBuilder{
      * Build a new SBOM
      * @return an SBOM Object
      */
-    //TODO implement once SBOM refactor is complete
     @Override
     public SBOM Build() {
-        return null;
+        return new CDX14SBOM(format, name, uid, version,
+                specVersion, licenses,
+                creationData, documentComment,
+                (CDX14ComponentObject) rootComponent, components,
+                relationships, externalReferences);
     }
 
 
@@ -236,9 +253,12 @@ public class CDX14Builder implements CDX14SBOMBuilder{
      * Build the CycloneDX 1.4 SBOM
      * @return a CDX14SBOM object
      */
-    //TODO implement once SBOM refactor is complete
     @Override
     public CDX14SBOM buildCDX14SBOM() {
-        return null;
+        return new CDX14SBOM(format, name, uid, version,
+                specVersion, licenses,
+                creationData, documentComment,
+                (CDX14ComponentObject) rootComponent, components,
+                relationships, externalReferences);
     }
 }

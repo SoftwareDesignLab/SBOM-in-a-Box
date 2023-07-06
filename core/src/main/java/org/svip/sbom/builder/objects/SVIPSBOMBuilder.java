@@ -4,8 +4,12 @@ import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
@@ -46,6 +50,10 @@ public class SVIPSBOMBuilder implements CDX14SBOMBuilder, SPDX23SBOMBuilder {
     private String SPDXLicenseListVersion;
     @Override
     public SVIPSBOMBuilder addCDX14Package(CDX14Package cdx14Package) {
+        // initialize the hash set
+        if (this.components == null) {
+            this.components = new HashSet<Component>();
+        }
         this.components.add(cdx14Package);
         return this;
     }
@@ -82,6 +90,10 @@ public class SVIPSBOMBuilder implements CDX14SBOMBuilder, SPDX23SBOMBuilder {
 
     @Override
     public SVIPSBOMBuilder addLicense(String license) {
+        // initialize the hash set
+        if (this.licenses == null) {
+            this.licenses = new HashSet<String>();
+        }
         this.licenses.add(license);
         return this;
     }
@@ -106,6 +118,10 @@ public class SVIPSBOMBuilder implements CDX14SBOMBuilder, SPDX23SBOMBuilder {
 
     @Override
     public SVIPSBOMBuilder addComponent(Component component) {
+        // initialize the hash set
+        if (this.components == null) {
+            this.components = new HashSet<Component>();
+        }
         this.components.add(component);
         return this;
     }
@@ -136,6 +152,10 @@ public class SVIPSBOMBuilder implements CDX14SBOMBuilder, SPDX23SBOMBuilder {
 
     @Override
     public SVIPSBOMBuilder addSPDX23Component(SPDX23Component component) {
+        // initialize the hash set
+        if (this.components == null) {
+            this.components = new HashSet<Component>();
+        }
         this.components.add(component);
         return this;
     }
@@ -143,16 +163,20 @@ public class SVIPSBOMBuilder implements CDX14SBOMBuilder, SPDX23SBOMBuilder {
     /** TO DO: add constructors to SBOM */
     @Override
     public SBOM Build() {
-        return null;
+        return new SVIPSBOM(format, name, uid, version, specVersion, licenses, creationData, documentComment, (SVIPComponentObject) rootComponent, components, relationships,
+                externalReferences, SPDXLicenseListVersion);
     }
-    /** TO DO: add constructors to SPDX23SBOM */
     @Override
     public SPDX23SBOM buildSPDX23SBOM() {
-        return null;
+        return new SPDX23SBOM(format, name, uid, version, specVersion, licenses, creationData, documentComment,
+                (SPDX23PackageObject) rootComponent, components, relationships, externalReferences, SPDXLicenseListVersion);
     }
-    /** TO DO: add constructors to CDX14SBOM */
     @Override
     public CDX14SBOM buildCDX14SBOM() {
-        return null;
+        return new CDX14SBOM(format, name, uid, version,
+                specVersion, licenses,
+                creationData, documentComment,
+                (CDX14ComponentObject) rootComponent, components,
+                relationships, externalReferences);
     }
 }
