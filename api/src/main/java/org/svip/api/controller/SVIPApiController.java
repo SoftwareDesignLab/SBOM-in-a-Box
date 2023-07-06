@@ -1,8 +1,11 @@
 package org.svip.api.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +16,18 @@ import org.svip.api.utils.Utils;
 import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomfactory.translators.TranslatorException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import static java.lang.Integer.parseInt;
+import static java.lang.Long.parseLong;
+import static java.lang.Math.ceil;
+//import static sun.security.util.KnownOIDs.ContentType;
+//
+//import org.springframework.boot.configurationprocessor.json.JSONException;
+//import org.springframework.boot.jackson.JsonComponent; //   .configurationprocessor.json.JSONObject;
 
 /**
  * Spring API Controller for handling requests to the SVIP backend.
@@ -227,11 +240,20 @@ public class SVIPApiController {
     tpn: total package number for this file generated in the download method: file size / 10,000.
 
      */
-//    @GetMapping("/download")
+
     @PostMapping("/download")
-    public ResponseEntity<String> download(@RequestParam("id") long id) {
+    //public ResponseEntity<String> download(@RequestParam("id") long id) throws JsonProcessingException {
+
+    public ResponseEntity<String> download(@RequestParam Map<String,String> requestParams) throws Exception {
+        Long id = parseLong(requestParams.get("id"));
+        String filename=requestParams.get("filename");
+        int cpn = parseInt(requestParams.get("cpn"));
+        int tpn; //=requestParams.get("tpn");
+        int packetsize = 10000;
+
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
+
 
         // Return SBOM or invalid ID
         if (sbomFile.isEmpty()) {
@@ -246,7 +268,26 @@ public class SVIPApiController {
         // get file contents into a variable
         // tpn = content/10000
         // get the coresponding file content by the received cpn and send it back all in json string
-        return Utils.encodeResponse(sbomFile.get().getContents());
+        String content = sbomFile.get().getContents();
+        tpn = (int) ceil(content.length()/(double)packetsize) ;
+        content = content.substring((cpn-1)*packetsize, (cpn)*packetsize);
+
+
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("id", id.toString());
+        map.put("filename", filename);
+        map.put("content", content);
+        map.put("cpn", Integer.toString(cpn));
+        map.put("tpn", Integer.toString(tpn));
+        try {
+            String resp = new ObjectMapper().writeValueAsString(map);
+            return Utils.encodeResponse(resp);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            assert HttpStatus.resolve(500) != null;
+            return new ResponseEntity<>(e.toString(), HttpStatus.resolve(500));
+        }
     }
 
 
