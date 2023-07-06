@@ -205,6 +205,24 @@ public class SVIPApiController {
         return Utils.encodeResponse(sbomFile.get().getId());
     }
 
+    @GetMapping("/download")
+    public ResponseEntity<String> download(@RequestParam("id") long id) {
+        // Get SBOM
+        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
+
+        // Return SBOM or invalid ID
+        if (sbomFile.isEmpty()) {
+            LOGGER.info("GET /svip/download?id=" + id + " - FILE NOT FOUND");
+            return new ResponseEntity<>("Invalid SBOM ID.", HttpStatus.NOT_FOUND);
+        }
+
+        // Log
+        LOGGER.info("GET /svip/download?id=" + id + " - File: " + sbomFile.get().getFileName());
+
+        return Utils.encodeResponse(sbomFile.get().getContents());
+    }
+
+
     //#region Deprecated Endpoints
 
     /**
