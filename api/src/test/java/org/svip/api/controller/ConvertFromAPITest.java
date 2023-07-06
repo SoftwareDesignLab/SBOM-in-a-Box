@@ -34,7 +34,7 @@ public class ConvertFromAPITest extends APITest{
         for (String schema: schemas
              ) {
             for (Long id : testMap.keySet()) {
-                ResponseEntity<String> response = controller.convert(id, schema);
+                ResponseEntity<String> response = controller.convert(id, schema, true);
                 assertEquals(testMap.get(id).getContents(), response.getBody());
                 assertTrue(Objects.requireNonNull(response.getBody()).contains(schema));
             }
