@@ -226,7 +226,7 @@ public class SVIPApiController {
      */
     @GetMapping("/convert")
     public ResponseEntity<String> convert(@RequestParam("id") long id, @RequestParam("schema") String schema){
-        // Get SBOM to be converted
+        // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
         // Check if it exists
