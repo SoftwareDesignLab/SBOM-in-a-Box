@@ -3,6 +3,8 @@ package org.svip.sbom.builder.objects.schemas.SPDX23;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
+import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
@@ -77,6 +79,10 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
     @Override
     public SPDX23Builder addLicense(String license)
     {
+        // initialize the hash set
+        if (this.licenses == null) {
+            this.licenses = new HashSet<String>();
+        }
         this.licenses.add(license);
         return this;
     }
@@ -103,6 +109,10 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
 
     @Override
     public SPDX23Builder addComponent(Component component) {
+        // initialize the hash set
+        if (this.components == null) {
+            this.components = new HashSet<Component>();
+        }
         this.components.add(component);
         return this;
     }
@@ -139,11 +149,15 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
         return this;
     }
 
-    /** TO DO: add constructors to SBOM */
     @Override
-    public SBOM Build() {return null;}
+    public SBOM Build() {
+        return new SPDX23SBOM(format, name, uid, version, specVersion, licenses, creationData, documentComment,
+                (SPDX23PackageObject) rootComponent, components, relationships, externalReferences, SPDXLicenseListVersion);
+    }
 
-    /** TO DO: add constructors to SPDX23SBOM */
     @Override
-    public SPDX23SBOM buildSPDX23SBOM() {return null;}
+    public SPDX23SBOM buildSPDX23SBOM() {
+        return new SPDX23SBOM(format, name, uid, version, specVersion, licenses, creationData, documentComment,
+                (SPDX23PackageObject) rootComponent, components, relationships, externalReferences, SPDXLicenseListVersion);
+    }
 }

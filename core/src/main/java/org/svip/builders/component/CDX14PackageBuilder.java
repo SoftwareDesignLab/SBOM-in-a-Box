@@ -1,8 +1,6 @@
 package org.svip.builders.component;
 
-
 import org.svip.sbom.builder.interfaces.schemas.CycloneDX14.CDX14PackageBuilder_I;
-import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
@@ -18,6 +16,7 @@ import java.util.Set;
  * Builder class for CycloneDX 1.4 Packages
  *
  * @author Matthew Morrison
+ * @author Thomas Roman
  */
 public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
@@ -127,6 +126,9 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14PackageBuilder addExternalReferences(ExternalReference externalReference) {
+        if (this.externalReferences == null) {
+            this.externalReferences = new HashSet<ExternalReference>();
+        }
         this.externalReferences.add(externalReference);
         return this;
     }
@@ -224,6 +226,9 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14PackageBuilder addHash(String algorithm, String hash) {
+        if (this.hashes == null) {
+            this.hashes = new HashMap<String, String>();
+        }
         this.hashes.put(algorithm, hash);
         return this;
     }
@@ -268,6 +273,9 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14PackageBuilder addCPE(String cpe) {
+        if (this.cpes == null) {
+            this.cpes = new HashSet<String>();
+        }
         this.cpes.add(cpe);
         return this;
     }
@@ -279,6 +287,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14PackageBuilder addPURL(String purl) {
+        // initialize the hash set
+        if (this.purls == null) {
+            this.purls = new HashSet<String>();
+        }
         this.purls.add(purl);
         return this;
     }
@@ -290,6 +302,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14PackageBuilder addExternalReference(ExternalReference externalReference) {
+        // initialize the hash set
+        if (this.externalReferences == null) {
+            this.externalReferences = new HashSet<ExternalReference>();
+        }
         this.externalReferences.add(externalReference);
         return this;
     }
@@ -313,10 +329,30 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14ComponentObject buildAndFlush() {
-        return new CDX14ComponentObject(
-                null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, scope,
-                null, null, null);
-
+        // build the component
+        CDX14ComponentObject component = new CDX14ComponentObject(type, uid, author, name,
+                licenses, copyright, hashes, supplier, version, description, cpes,
+                purls, mimeType, publisher, scope, group,
+                externalReferences, properties);
+        // clear all the data in the builder
+        this.type = null;
+        this.uid = null;
+        this.author = null;
+        this.name = null;
+        this.licenses = null;
+        this.copyright = null;
+        this.hashes = null;
+        this.supplier = null;
+        this.version = null;
+        this.description = null;
+        this.cpes = null;
+        this.purls = null;
+        this.mimeType = null;
+        this.publisher = null;
+        this.scope = null;
+        this.group = null;
+        this.externalReferences = null;
+        this.properties = null;
+        return component;
     }
 }

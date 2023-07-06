@@ -7,12 +7,14 @@ import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * file: SPDX23FileBuilder.java
  * Builder class for SPDX 2.3 file specifics
  *
  * @author Matthew Morrison
+ * @author Thomas Roman
  */
 public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
 
@@ -120,6 +122,10 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
      */
     @Override
     public SPDX23FileBuilder addHash(String algorithm, String hash) {
+        // initialize the hash set
+        if (this.hashes == null) {
+            this.hashes = new HashMap<String, String>();
+        }
         this.hashes.put(algorithm, hash);
         return this;
     }
@@ -173,7 +179,20 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
      */
     @Override
     public SPDX23FileObject buildAndFlush() {
-        return new SPDX23FileObject(null, null, null, null, null,
-                null, null, null, null, null);
+        // build the component
+        SPDX23FileObject fileObject = new SPDX23FileObject(type, uid, author, name, licenses,
+                copyright, hashes, fileNotice, comment, attributionText);
+        // clear all the data in the builder
+        this.type = null;
+        this.uid = null;
+        this.author = null;
+        this.name = null;
+        this.licenses = null;
+        this.copyright = null;
+        this.hashes = null;
+        this.fileNotice = null;
+        this.comment = null;
+        this.attributionText = null;
+        return fileObject;
     }
 }

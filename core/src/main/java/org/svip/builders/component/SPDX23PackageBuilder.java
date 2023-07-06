@@ -3,6 +3,7 @@ package org.svip.builders.component;
 
 import org.svip.sbom.builder.interfaces.schemas.SPDX23.SPDX23PackageBuilder_I;
 import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
@@ -10,6 +11,7 @@ import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -17,6 +19,7 @@ import java.util.Set;
  * Builder class for SPDX 2.3 specific packages
  *
  * @author Matthew Morrison
+ * @author Thomas Roman
  */
 public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**File type*/
@@ -168,6 +171,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
      */
     @Override
     public SPDX23PackageBuilder addHash(String algorithm, String hash) {
+        // initialize the hash set
+        if (this.hashes == null) {
+            this.hashes = new HashMap<String, String>();
+        }
         this.hashes.put(algorithm, hash);
         return this;
     }
@@ -334,6 +341,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
      */
     @Override
     public SPDX23PackageBuilder addCPE(String cpe) {
+        // initialize the hash set
+        if (this.cpes == null) {
+            this.cpes = new HashSet<String>();
+        }
         this.cpes.add(cpe);
         return this;
     }
@@ -345,6 +356,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
      */
     @Override
     public SPDX23PackageBuilder addPURL(String purl) {
+        // initialize the hash set
+        if (this.purls == null) {
+            this.purls = new HashSet<String>();
+        }
         this.purls.add(purl);
         return this;
     }
@@ -356,6 +371,10 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
      */
     @Override
     public SPDX23PackageBuilder addExternalReference(ExternalReference externalReference) {
+        // initialize the hash set
+        if (this.externalReferences == null) {
+            this.externalReferences = new HashSet<ExternalReference>();
+        }
         this.externalReferences.add(externalReference);
         return this;
     }
@@ -379,10 +398,39 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
      * @return an SPDX23PackageObject
      */
     @Override
-    public Component buildAndFlush() {
-        return new SPDX23PackageObject(null, null, null, null,
-                null, null, null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, null,
-                null, null, null);
+    public SPDX23PackageObject buildAndFlush() {
+        // build the component
+        SPDX23PackageObject component = new SPDX23PackageObject(type, uid, author, name, licenses,
+                copyright, hashes, supplier, version, description, cpes,
+                purls, externalReferences, downloadLocation, fileName,
+                filesAnalyzed, verificationCode, homePage, sourceInfo,
+                releaseDate, builtDate, validUntilDate,
+                comment, attributionText);
+        // clear all the data in the builder
+        this.type = null;
+        this.uid = null;
+        this.author = null;
+        this.name = null;
+        this.licenses = null;
+        this.copyright = null;
+        this.hashes = null;
+        this.supplier = null;
+        this.version = null;
+        this.description = null;
+        this.cpes = null;
+        this.purls = null;
+        this.externalReferences = null;
+        this.downloadLocation = null;
+        this.fileName = null;
+        this.filesAnalyzed = null;
+        this.verificationCode = null;
+        this.homePage = null;
+        this.sourceInfo = null;
+        this.releaseDate = null;
+        this.builtDate = null;
+        this.validUntilDate = null;
+        this.comment = null;
+        this.attributionText = null;
+        return component;
     }
 }
