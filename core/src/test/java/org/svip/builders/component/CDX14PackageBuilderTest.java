@@ -1,7 +1,6 @@
 package org.svip.builders.component;
 
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
@@ -23,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class CDX14PackageBuilderTest {
     CDX14PackageBuilder test_packageBuilder = new CDX14PackageBuilder();
-    CDX14ComponentObject test_componentObj;
+    CDX14ComponentObject test_package;
 
     String test_mimeType = "image/jpeg";
 
@@ -72,29 +71,29 @@ class CDX14PackageBuilderTest {
     @Test
     void setMimeType() {
         test_packageBuilder.setMimeType(test_mimeType);
-        test_componentObj = test_packageBuilder.build();
-        assertEquals(test_mimeType, test_componentObj.getMimeType());
+        test_package = test_packageBuilder.build();
+        assertEquals(test_mimeType, test_package.getMimeType());
     }
 
     @Test
     void setPublisher() {
         test_packageBuilder.setPublisher(test_publisher);
-        test_componentObj = test_packageBuilder.buildAndFlush();
-        assertEquals(test_publisher, test_componentObj.getPublisher());
+        test_package = test_packageBuilder.buildAndFlush();
+        assertEquals(test_publisher, test_package.getPublisher());
     }
 
     @Test
     void setScope() {
         test_packageBuilder.setScope(test_scope);
-        test_componentObj = test_packageBuilder.buildAndFlush();
-        assertEquals(test_scope, test_componentObj.getScope());
+        test_package = test_packageBuilder.buildAndFlush();
+        assertEquals(test_scope, test_package.getScope());
     }
 
     @Test
     void setGroup() {
         test_packageBuilder.setGroup(test_group);
-        test_componentObj = test_packageBuilder.buildAndFlush();
-        assertEquals(test_group, test_componentObj.getGroup());
+        test_package = test_packageBuilder.buildAndFlush();
+        assertEquals(test_group, test_package.getGroup());
     }
 
     @Test
@@ -103,45 +102,45 @@ class CDX14PackageBuilderTest {
                 test_extRef_url, test_extTef_type);
         test_packageBuilder.addExternalReferences(test_extRef);
 
-        test_componentObj = test_packageBuilder.buildAndFlush();
-        assertTrue(test_componentObj.getExternalReferences().contains(test_extRef));
+        test_package = test_packageBuilder.buildAndFlush();
+        assertTrue(test_package.getExternalReferences().contains(test_extRef));
     }
 
     @Test
     void addProperty() {
         test_packageBuilder.addProperty(test_property_name, test_property_value);
 
-        test_componentObj = test_packageBuilder.buildAndFlush();
+        test_package = test_packageBuilder.buildAndFlush();
 
         HashMap<String, Set<String>> test_propertyMap = new HashMap<String, Set<String>>();
         test_propertyMap.put(test_property_name, new HashSet<String>());
         test_propertyMap.get(test_property_name).add(test_property_value);
 
-        assertEquals(test_propertyMap, test_componentObj.getProperties());
+        assertEquals(test_propertyMap, test_package.getProperties());
     }
 
     @Test
     void setType() {
         test_packageBuilder.setType(test_type);
 
-        test_componentObj = test_packageBuilder.buildAndFlush();
-        assertEquals(test_type, test_componentObj.getType());
+        test_package = test_packageBuilder.buildAndFlush();
+        assertEquals(test_type, test_package.getType());
     }
 
     @Test
     void setUID() {
         test_packageBuilder.setUID(test_uid);
 
-        test_componentObj = test_packageBuilder.buildAndFlush();
-        assertEquals(test_uid, test_componentObj.getUID());
+        test_package = test_packageBuilder.buildAndFlush();
+        assertEquals(test_uid, test_package.getUID());
     }
 
     @Test
     void setAuthor() {
         test_packageBuilder.setAuthor(test_author);
 
-        test_componentObj = test_packageBuilder.buildAndFlush();
-        assertEquals(test_author, test_componentObj.getAuthor());
+        test_package = test_packageBuilder.buildAndFlush();
+        assertEquals(test_author, test_package.getAuthor());
 
     }
 
@@ -149,38 +148,39 @@ class CDX14PackageBuilderTest {
     void setName() {
         test_packageBuilder.setName(test_name);
 
-        test_componentObj = test_packageBuilder.buildAndFlush();
-        assertEquals(test_name, test_componentObj.getName());
+        test_package = test_packageBuilder.buildAndFlush();
+        assertEquals(test_name, test_package.getName());
     }
 
     @Test
     void setLicenses() {
         LicenseCollection licenseCollection = new LicenseCollection();
         licenseCollection.addDeclaredLicense(test_license1);
+        licenseCollection.addDeclaredLicense(test_license2);
         test_packageBuilder.setLicenses(licenseCollection);
 
-        test_componentObj = test_packageBuilder.buildAndFlush();
-        assertEquals(licenseCollection, test_componentObj.getLicenses());
+        test_package = test_packageBuilder.buildAndFlush();
+        assertEquals(licenseCollection, test_package.getLicenses());
     }
 
     @Test
     void setCopyright() {
         test_packageBuilder.setCopyright(test_copyright);
 
-        test_componentObj = test_packageBuilder.buildAndFlush();
-        assertEquals(test_copyright, test_componentObj.getCopyright());
+        test_package = test_packageBuilder.buildAndFlush();
+        assertEquals(test_copyright, test_package.getCopyright());
     }
 
     @Test
     void addHash() {
         test_packageBuilder.addHash(test_hash_algo, test_hash_value);
 
-        test_componentObj = test_packageBuilder.buildAndFlush();
+        test_package = test_packageBuilder.buildAndFlush();
 
         HashMap<String, String> test_map = new HashMap<String, String>();
         test_map.put(test_hash_algo, test_hash_value);
 
-        assertEquals(test_map, test_componentObj.getHashes());
+        assertEquals(test_map, test_package.getHashes());
     }
 
     @Test
@@ -188,16 +188,16 @@ class CDX14PackageBuilderTest {
         Organization supplier = new Organization(test_supplier, "www.python.com");
         test_packageBuilder.setSupplier(supplier);
 
-        test_componentObj = test_packageBuilder.buildAndFlush();
-        assertEquals(supplier, test_componentObj.getSupplier());
+        test_package = test_packageBuilder.buildAndFlush();
+        assertEquals(supplier, test_package.getSupplier());
     }
 
     @Test
     void setVersion() {
         test_packageBuilder.setVersion(test_version);
 
-        test_componentObj = test_packageBuilder.buildAndFlush();
-        assertEquals(test_version, test_componentObj.getVersion());
+        test_package = test_packageBuilder.buildAndFlush();
+        assertEquals(test_version, test_package.getVersion());
     }
 
     @Test
@@ -205,24 +205,24 @@ class CDX14PackageBuilderTest {
         Description description = new Description(test_description);
         test_packageBuilder.setDescription(description);
 
-        test_componentObj = test_packageBuilder.buildAndFlush();
-        assertEquals(description, test_componentObj.getDescription());
+        test_package = test_packageBuilder.buildAndFlush();
+        assertEquals(description, test_package.getDescription());
     }
 
     @Test
     void addCPE() {
         test_packageBuilder.addCPE(test_random_cpe);
 
-        test_componentObj = test_packageBuilder.buildAndFlush();
-        assertTrue(test_componentObj.getCPEs().contains(test_random_cpe));
+        test_package = test_packageBuilder.buildAndFlush();
+        assertTrue(test_package.getCPEs().contains(test_random_cpe));
     }
 
     @Test
     void addPURL() {
         test_packageBuilder.addPURL(test_random_purl);
 
-        test_componentObj = test_packageBuilder.buildAndFlush();
-        assertTrue(test_componentObj.getPURLs().contains(test_random_purl));
+        test_package = test_packageBuilder.buildAndFlush();
+        assertTrue(test_package.getPURLs().contains(test_random_purl));
     }
 
     @Test
@@ -230,7 +230,7 @@ class CDX14PackageBuilderTest {
         ExternalReference externalReference = new ExternalReference(test_extRef_url, test_extTef_type);
         test_packageBuilder.addExternalReference(externalReference);
 
-        test_componentObj = test_packageBuilder.buildAndFlush();
-        assertTrue(test_componentObj.getExternalReferences().contains(externalReference));
+        test_package = test_packageBuilder.buildAndFlush();
+        assertTrue(test_package.getExternalReferences().contains(externalReference));
     }
 }
