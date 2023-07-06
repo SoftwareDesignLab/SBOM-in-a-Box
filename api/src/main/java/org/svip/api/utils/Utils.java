@@ -175,4 +175,13 @@ public class Utils {
         return arr;
 
     }
+
+    /**
+     * Temporary stubbed out
+     * @param schema
+     * @return
+     */
+    public static SBOMFile convert(SBOMFile sbom, String schema){
+        return null;
+    }
 }

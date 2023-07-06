@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.utils.Utils;
+import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomfactory.translators.TranslatorException;
 
@@ -234,7 +235,17 @@ public class SVIPApiController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return null;
+        SBOMFile toConvert = sbomFile.get();
+
+        SBOMFile converted = Utils.convert(toConvert, schema);
+
+        // Check if it exists
+        if (converted == null || converted.hasNullProperties()) {
+            LOGGER.info("DELETE /svip/convert?id=" + id + " - ERROR IN CONVERSION TO " + schema);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return Utils.encodeResponse(converted.getContents());
     }
 
     //#region Deprecated Endpoints
