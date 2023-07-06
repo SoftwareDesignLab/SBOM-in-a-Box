@@ -35,4 +35,15 @@ public class SPDX23TagValueSerializer implements Serializer {
         //  if set to null
         return new ObjectMapper();
     }
+
+    /**
+     * Sets the ObjectMapper of the serializer to enable or disable pretty printing.
+     *
+     * @param prettyPrint True to pretty-print, false otherwise.
+     */
+    @Override
+    public void setPrettyPrinting(boolean prettyPrint) {
+        // TODO we don't need pretty printing for tag value either
+        return;
+    }
 }

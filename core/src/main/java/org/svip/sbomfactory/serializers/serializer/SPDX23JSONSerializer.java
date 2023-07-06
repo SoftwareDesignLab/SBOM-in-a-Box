@@ -3,6 +3,7 @@ package org.svip.sbomfactory.serializers.serializer;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
@@ -18,6 +19,9 @@ import java.io.IOException;
  * @author Ian Dunn
  */
 public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Serializer {
+
+    private boolean prettyPrint = false;
+
     public SPDX23JSONSerializer() {
         super(SVIPSBOM.class);
     }
@@ -34,7 +38,10 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
      */
     @Override
     public String writeToString(SVIPSBOM sbom) throws JsonProcessingException {
-        return getObjectMapper().writeValueAsString(sbom);
+        if (prettyPrint)
+            return getObjectMapper().writer().with(SerializationFeature.INDENT_OUTPUT).writeValueAsString(sbom);
+        else
+            return getObjectMapper().writer().writeValueAsString(sbom);
     }
 
     /**
@@ -50,6 +57,16 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
         mapper.registerModule(module);
 
         return mapper; // TODO ensure this returns the correct mapper instance
+    }
+
+    /**
+     * Sets the ObjectMapper of the serializer to enable or disable pretty printing.
+     *
+     * @param prettyPrint True to pretty-print, false otherwise.
+     */
+    @Override
+    public void setPrettyPrinting(boolean prettyPrint) {
+        this.prettyPrint = prettyPrint;
     }
 
     @Override

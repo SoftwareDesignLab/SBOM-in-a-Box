@@ -26,4 +26,11 @@ public interface Serializer {
      * @return A reference to the ObjectMapper of the serializer.
      */
     public ObjectMapper getObjectMapper();
+
+    /**
+     * Sets the ObjectMapper of the serializer to enable or disable pretty printing.
+     *
+     * @param prettyPrint True to pretty-print, false otherwise.
+     */
+    public void setPrettyPrinting(boolean prettyPrint);
 }
