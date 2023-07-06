@@ -5,10 +5,7 @@ import org.svip.sbomfactory.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.sbomfactory.serializers.deserializer.Deserializer;
 import org.svip.sbomfactory.serializers.deserializer.SPDX23JSONDeserializer;
 import org.svip.sbomfactory.serializers.deserializer.SPDX23TagValueDeserializer;
-import org.svip.sbomfactory.serializers.serializer.CDX14JSONSerializer;
-import org.svip.sbomfactory.serializers.serializer.SPDX23JSONSerializer;
-import org.svip.sbomfactory.serializers.serializer.SPDX23TagValueSerializer;
-import org.svip.sbomfactory.serializers.serializer.Serializer;
+import org.svip.sbomfactory.serializers.serializer.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,6 +47,12 @@ public class SerializerFactory {
         }}, new HashMap<>() {{
             this.put(JSON, new SPDX23JSONDeserializer());
             this.put(TAGVALUE, new SPDX23TagValueDeserializer());
+        }}),
+
+        SVIP(new HashMap<>() {{
+            this.put(JSON, new SVIPSBOMJSONSerializer());
+        }}, new HashMap<>() {{
+            // No deserialization supported
         }});
 
         /**
