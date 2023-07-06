@@ -180,8 +180,7 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
     @Override
     public SPDX23FileObject buildAndFlush() {
         // build the component
-        SPDX23FileObject fileObject = new SPDX23FileObject(type, uid, author, name, licenses,
-                copyright, hashes, fileNotice, comment, attributionText);
+        SPDX23FileObject fileObject = build();
         // clear all the data in the builder
         this.type = null;
         this.uid = null;
