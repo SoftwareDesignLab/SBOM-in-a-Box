@@ -205,6 +205,28 @@ public class SVIPApiController {
         return Utils.encodeResponse(sbomFile.get().getId());
     }
 
+    /*
+    POST method.
+
+    max number of bytes in the content field in response: 10,000-characters/bytes
+
+    SVIP API backend and UI protocol for file size larger than 10000 bytes:
+
+    request from UI:
+    ========================
+    id :  from mysql DB
+    filename : from mysql DB
+    cpn: current package number, 1 as the very first request from UI
+
+    response to UI:
+    ==============
+    id :  from mysql DB
+    filename : from mysql DB
+    content : content coresponding to the packet number
+    cpn: current package number requested
+    tpn: total package number for this file generated in the download method: file size / 10,000.
+
+     */
 //    @GetMapping("/download")
     @PostMapping("/download")
     public ResponseEntity<String> download(@RequestParam("id") long id) {
