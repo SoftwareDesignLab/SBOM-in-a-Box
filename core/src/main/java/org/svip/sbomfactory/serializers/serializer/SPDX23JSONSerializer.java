@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
@@ -113,6 +114,14 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
         jsonGenerator.writeArrayFieldStart("files");
         for (SVIPComponentObject file : files)
             writeFile(jsonGenerator, file);
+        jsonGenerator.writeEndArray();
+
+        jsonGenerator.writeArrayFieldStart("relationships");
+        for (Map.Entry<String, Set<Relationship>> rel : sbom.getRelationships().entrySet()) {
+            for (Relationship r : rel.getValue()) {
+                writeRelationship(jsonGenerator, rel.getKey(), r);
+            }
+        }
         jsonGenerator.writeEndArray();
 
         jsonGenerator.writeEndObject();
@@ -247,6 +256,17 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
         jsonGenerator.writeStringField("attributionText", file.getAttributionText());
 
         writeChecksums(jsonGenerator, file.getHashes());
+
+        jsonGenerator.writeEndObject();
+    }
+
+    private void writeRelationship(JsonGenerator jsonGenerator, String elementId, Relationship rel) throws IOException {
+        jsonGenerator.writeStartObject();
+
+        jsonGenerator.writeStringField("spdxElementId", elementId);
+        jsonGenerator.writeStringField("relationshipType", rel.getRelationshipType());
+        jsonGenerator.writeStringField("relatedSpdxElement", rel.getOtherUID());
+        jsonGenerator.writeStringField("comment", rel.getComment());
 
         jsonGenerator.writeEndObject();
     }
