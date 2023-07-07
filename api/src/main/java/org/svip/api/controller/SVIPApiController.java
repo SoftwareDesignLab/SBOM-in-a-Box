@@ -227,29 +227,78 @@ public class SVIPApiController {
 
     request from UI:
     ========================
-    id :  from mysql DB
-    filename : from mysql DB
-    cpn: current package number, 1 as the very first request from UI
+    id      : from mysql DB
+    filename: from mysql DB
+    cpn     : current packet number, 1 as the very first request from UI
+        logic: if cpn < tpn: cpn++ and request next of the file, else done request
 
     response to UI:
     ==============
-    id :  from mysql DB
-    filename : from mysql DB
-    content : content coresponding to the packet number
-    cpn: current package number requested
-    tpn: total package number for this file generated in the download method: file size / 10,000.
+    id      : from mysql DB
+    filename: from mysql DB
+    content : content corresponding to the packet number
+    cpn     : current packet number requested
+    tpn     : total packet number for this file generated and responded
+              in the download method: ceiling (file size / 10,000 ).
 
      */
 
     @PostMapping("/download")
-    //public ResponseEntity<String> download(@RequestParam("id") long id) throws JsonProcessingException {
-
     public ResponseEntity<String> download(@RequestParam Map<String,String> requestParams) throws Exception {
-        Long id = parseLong(requestParams.get("id"));
-        String filename=requestParams.get("filename");
-        int cpn = parseInt(requestParams.get("cpn"));
-        int tpn; //=requestParams.get("tpn");
-        int packetsize = 10000;
+        Long id = -1L;
+        String filename = "";
+
+        //if the requested file size is greater than the packetsize below,
+        //then tell the UI the total number of packages, tpn below,  needed to send the complete file
+        //content eventually
+        int packetsize = 100000; // this can be put in a configuration file later.
+                                   // UI can not ask for this field, if so it could halt the system.
+        //current packet number
+        int cpn = -1;
+        //total packet number
+        int tpn;
+        boolean error = false ;
+        String errormsg = "";
+
+        //validate id
+        String sid = requestParams.get("id");
+        try {
+            if (sid == null) {
+                throw new Exception("value : " + sid);
+            } else {
+                id = parseLong(sid);
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            error = true;
+            errormsg = errormsg + "Invalid value for id field : " + e.toString() + "!";
+        }
+
+        //validate cpn
+        String scpn = requestParams.get("cpn");
+        try {
+            if (scpn == null) {
+                throw new Exception("value : " + scpn);
+            } else {
+                cpn = parseInt(scpn);
+                if (cpn < 1) {
+                    throw new Exception("value less than 1 : " + scpn);
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            error = true;
+            errormsg = errormsg + " Invalid value for cpn field : " + e.toString() + "!";
+        }
+
+        if (error) {
+            LOGGER.info("POST /svip/download?id=" + id + " - BAD REQUEST with in valid value :" + errormsg);
+            return new ResponseEntity<>(errormsg, HttpStatus.BAD_REQUEST);
+        }
+
+        filename = requestParams.get("filename");
 
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
@@ -264,15 +313,20 @@ public class SVIPApiController {
         // Log
         LOGGER.info("POST /svip/download?id=" + id + " - File: " + sbomFile.get().getFileName());
 
-        //TODO: details
+
         // get file contents into a variable
         // tpn = content/10000
-        // get the coresponding file content by the received cpn and send it back all in json string
+        // get the corresponding file content by the received cpn and send it back all in json string
         String content = sbomFile.get().getContents();
         tpn = (int) ceil(content.length()/(double)packetsize) ;
-        content = content.substring((cpn-1)*packetsize, (cpn)*packetsize);
 
-
+        if(cpn == tpn) {
+            //if only 1 packet or the last packet
+            content = content.substring((cpn - 1) * packetsize);
+        }
+        else {
+            content = content.substring((cpn - 1) * packetsize, (cpn) * packetsize);
+        }
         Map<String, String> map = new HashMap<String, String>();
         map.put("id", id.toString());
         map.put("filename", filename);
