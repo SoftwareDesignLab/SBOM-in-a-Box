@@ -15,6 +15,7 @@ import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
@@ -23,6 +24,7 @@ import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
+import javax.management.relation.Relation;
 import java.io.IOException;
 
 /**
@@ -254,6 +256,27 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
                     componentBuilder.addProperty(node.get("component").get("properties").get(i).get("name").asText(), node.get("component").get("properties").get(i).get("value").asText());
                 }
             }
+            // ROOT COMPONENT RELATIONSHIPS
+            if (node.get("metadata").get("component").get("pedigree") != null) {
+                if (node.get("metadata").get("component").get("ancestors") != null) {
+                    for (int i = 0; i < node.get("metadata").get("component").get("ancestors").size(); i++) {
+                        Relationship relationship = new Relationship(node.get("metadata").get("component").get("ancestors").get(i).asText(),
+                                "ancestor");
+                    }
+                }
+                if (node.get("metadata").get("component").get("descendants") != null) {
+                    for (int i = 0; i < node.get("metadata").get("component").get("descendants").size(); i++) {
+                        Relationship relationship = new Relationship(node.get("metadata").get("component").get("descendants").get(i).asText(),
+                                "descendant");
+                    }
+                }
+                if (node.get("metadata").get("component").get("variants") != null) {
+                    for (int i = 0; i < node.get("metadata").get("component").get("variants").size(); i++) {
+                        Relationship relationship = new Relationship(node.get("metadata").get("component").get("variants").get(i).asText(),
+                                "variant");
+                    }
+                }
+            }
             // add the component to the sbom builder
             sbomBuilder.setRootComponent(componentBuilder.buildAndFlush());
         }
@@ -302,7 +325,7 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
                 }
                 // GROUP
                 if (node.get("components").get(i).get("group") != null) {
-                    componentBuilder.setGroup(node.get("metadata").get("component").get(i).get("group").asText());
+                    componentBuilder.setGroup(node.get("component").get(i).get("group").asText());
                 }
                 // NAME
                 if (node.get("components").get(i).get("name") != null) {
@@ -372,7 +395,27 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
                         componentBuilder.addProperty(node.get("components").get(i).get("properties").get(j).get("name").asText(), node.get("components").get(i).get("properties").get(j).get("value").asText());
                     }
                 }
-                // TO DO: Add relationship data
+                // RELATIONSHIPS
+                if (node.get("components").get(i).get("pedigree") != null) {
+                    if (node.get("components").get(i).get("ancestors") != null) {
+                        for (int j = 0; j < node.get("components").get(i).get("ancestors").size(); j++) {
+                            Relationship relationship = new Relationship(node.get("components").get(i).get("ancestors").get(j).asText(),
+                                    "ancestor");
+                        }
+                    }
+                    if (node.get("components").get(i).get("descendants") != null) {
+                        for (int j = 0; j < node.get("components").get(i).get("descendants").size(); j++) {
+                            Relationship relationship = new Relationship(node.get("components").get(i).get("descendants").get(j).asText(),
+                                    "descendant");
+                        }
+                    }
+                    if (node.get("components").get(i).get("variants") != null) {
+                        for (int j = 0; j < node.get("components").get(i).get("variants").size(); j++) {
+                            Relationship relationship = new Relationship(node.get("components").get(i).get("variants").get(j).asText(),
+                                    "variant");
+                        }
+                    }
+                }
                 // add the component to the sbom builder
                 sbomBuilder.addCDX14Package(componentBuilder.buildAndFlush());
             }
