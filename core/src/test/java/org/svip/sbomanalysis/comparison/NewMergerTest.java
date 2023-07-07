@@ -6,20 +6,12 @@ import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 
-import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
-
-import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
-import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
-import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.sbom.model.uids.CPE;
-import org.svip.sbom.model.uids.PURL;
 
 import java.util.*;
 
@@ -190,7 +182,7 @@ public class NewMergerTest {
 
         List<SBOM> sboms = new ArrayList<>(Arrays.asList(SBOM_one, SBOM_two));
 
-        Merger merger = new Merger();
+        OldMerger merger = new OldMerger();
 
         //merger.merge(sboms);
 
