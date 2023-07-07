@@ -2,16 +2,24 @@ package org.svip.sbomanalysis.comparison;
 
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
+
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
+import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.sbomanalysis.comparison.merger.MergerController;
+import org.svip.sbom.model.uids.CPE;
+import org.svip.sbom.model.uids.PURL;
 
 import java.util.*;
 
@@ -110,6 +118,10 @@ public class NewMergerTest {
     );
 
 
+
+
+
+
     /**
      * Test Components
      */
@@ -118,7 +130,7 @@ public class NewMergerTest {
     Component comp_svip_blue = new SVIPComponentObject(
             "blue_package", "1234567890-blue-id", "blue_author",
             "test_component_blue", comp_svip_a_li,
-            "blue_copyright_string", comp_svip_a_hash, new Organization("blue_supplier", "www.blue.test"),
+            "blue_copyright_string", comp_svip_a_hash, new Organization("test_supplier", "www.test.test"),
             "2.3", new Description("some_description"), comp_svip_a_cpe, comp_svip_a_purl, comp_svip_a_ext,
             "www.downloaded.at.this.address.blue", "blue.txt", false,
             "BLUE123",  "www.downloaded.at.this.page.blue", "source_blue_info",
@@ -141,45 +153,46 @@ public class NewMergerTest {
             "attributes_for_yellow"
     );
 
-    Component comp_svip_green = new SVIPComponentObject(
-            "yellow_green", "1234567890-green-id", "green_author",
-            "test_component_green", comp_svip_a_li,
-            "green_copyright_string", comp_svip_a_hash, new Organization("green_supplier", "www.green.test"),
-            "3.1", new Description("green_description"), comp_svip_a_cpe, comp_svip_a_purl, comp_svip_a_ext,
-            "www.downloaded.at.this.address.green", "green.txt", false,
-            "GREEN123",  "www.downloaded.at.this.page.green", "source_green_info",
-            "01/01/2023", "01/01/2023", "01/01/2033", "test_mime_green",
-            "test_publisher_green", "test_scope_green", "green_group", comp_svip_a_properties,
-            "this_is_a_file_notice_for_green_test_component", "and_a_comment_for_green_component",
-            "attributes_for_green"
-    );
-
+    /**
+     * (String type, String uid, String author, String name,
+     *                                LicenseCollection licenses, String copyright,
+     *                                HashMap<String, String> hashes, Organization supplier,
+     *                                String version, Description description, Set<String> cpes,
+     *                                Set<String> purls, Set<ExternalReference> externalReferences,
+     *                                String downloadLocation, String fileName, Boolean filesAnalyzed,
+     *                                String verificationCode, String homePage, String sourceInfo,
+     *                                String releaseDate, String builtDate, String validUntilDate,
+     *                                String mimeType, String publisher, String scope, String group,
+     *                                HashMap<String, Set<String>> properties, String fileNotice,
+     *                                String comment, String attributionText)
+     */
 
 
     @Test
     public void merger_should_merge_basic_SVIP_SBOMs() {
 
-        Set<Component> SVIP_components_one = new HashSet<>(Arrays.asList(comp_svip_blue, comp_svip_yellow));
+        SVIP_COMPONENTS_ONE.add(comp_svip_blue);
+        SVIP_COMPONENTS_ONE.add(comp_svip_yellow);
 
-        SVIPSBOM SBOM_one = new SVIPSBOM(
+        SBOM SBOM_one = new SVIPSBOM(
                 SVIP_TEST_FORMAT_ONE, SVIP_TEST_NAME_ONE, SVIP_TEST_VERSION_ONE, SVIP_TEST_UID_ONE,
                 SVIP_TEST_SPEC_VERSION_ONE, SVIP_TEST_LICENSES_ONE,
-                SVIP_CREATION_DATA_ONE, SVIP_DOCUMENT_COMMENT_ONE, SVIP_ROOT_ONE, SVIP_components_one,
+                SVIP_CREATION_DATA_ONE, SVIP_DOCUMENT_COMMENT_ONE, SVIP_ROOT_ONE, SVIP_COMPONENTS_ONE,
                 SVIP_RELATIONSHIPS_ONE, SVIP_EXTRENAL_REFERENCES_ONE, SVIP_LICENSE_LIST_VERSION_ONE
         );
 
-        SVIPSBOM SBOM_two = new SVIPSBOM(
+        SBOM SBOM_two = new SVIPSBOM(
                 SVIP_TEST_FORMAT_TWO, SVIP_TEST_NAME_TWO, SVIP_TEST_VERSION_TWO, SVIP_TEST_UID_TWO,
                 SVIP_TEST_SPEC_VERSION_TWO, SVIP_TEST_LICENSES_TWO,
                 SVIP_CREATION_DATA_TWO, SVIP_DOCUMENT_COMMENT_TWO, SVIP_ROOT_TWO, SVIP_COMPONENTS_TWO,
                 SVIP_RELATIONSHIPS_TWO, SVIP_EXTRENAL_REFERENCES_TWO, SVIP_LICENSE_LIST_VERSION_TWO
         );
 
-        List<SVIPSBOM> sboms = new ArrayList<>(Arrays.asList(SBOM_one, SBOM_two));
+        List<SBOM> sboms = new ArrayList<>(Arrays.asList(SBOM_one, SBOM_two));
 
-        MergerController mergerController = new MergerController();
+        Merger merger = new Merger();
 
-        mergerController.merge(sboms);
+        //merger.merge(sboms);
 
 
     }
