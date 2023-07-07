@@ -199,6 +199,7 @@ public class Utils {
                     e.getMessage());
         }
 
+        // ensure schema is valid
         SerializerFactory.Schema schema;
         try{
             schema = SerializerFactory.Schema.valueOf(schemaString);
