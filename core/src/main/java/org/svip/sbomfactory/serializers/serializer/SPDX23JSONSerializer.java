@@ -15,10 +15,7 @@ import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * File: SPDX23JSONSerializer.java
@@ -113,6 +110,11 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
             writePackage(jsonGenerator, pkg);
         jsonGenerator.writeEndArray();
 
+        jsonGenerator.writeArrayFieldStart("files");
+        for (SVIPComponentObject file : files)
+            writeFile(jsonGenerator, file);
+        jsonGenerator.writeEndArray();
+
         jsonGenerator.writeEndObject();
     }
 
@@ -149,6 +151,18 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
             return String.format("Tool: %s-%s", primaryId, secondaryId);
 
         return String.format("%s: %s (%s)", type, primaryId, secondaryId);
+    }
+
+    private void writeChecksums(JsonGenerator jsonGenerator, Map<String, String> checksums) throws IOException {
+        jsonGenerator.writeFieldName("checksums");
+        jsonGenerator.writeStartArray();
+        for (Map.Entry<String, String> cs : checksums.entrySet()) {
+            jsonGenerator.writeStartObject();
+            jsonGenerator.writeStringField("algorithm", cs.getKey());
+            jsonGenerator.writeStringField("checksumValue", cs.getValue());
+            jsonGenerator.writeEndObject();
+        }
+        jsonGenerator.writeEndArray();
     }
 
     private void writePackage(JsonGenerator jsonGenerator, SVIPComponentObject pkg) throws IOException {
@@ -192,15 +206,7 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
         // TODO may need to be an object
         jsonGenerator.writeStringField("packageVerificationCode", pkg.getVerificationCode());
 
-        jsonGenerator.writeFieldName("checksums");
-        jsonGenerator.writeStartArray();
-        for (Map.Entry<String, String> hash : pkg.getHashes().entrySet()) {
-            jsonGenerator.writeStartObject();
-            jsonGenerator.writeStringField("algorithm", hash.getKey());
-            jsonGenerator.writeStringField("checksumValue", hash.getValue());
-            jsonGenerator.writeEndObject();
-        }
-        jsonGenerator.writeEndArray();
+        writeChecksums(jsonGenerator, pkg.getHashes());
 
         jsonGenerator.writeFieldName("externalRefs");
         jsonGenerator.writeStartArray();
@@ -222,6 +228,26 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
         }
 
         jsonGenerator.writeEndArray();
+        jsonGenerator.writeEndObject();
+    }
+
+    private void writeFile(JsonGenerator jsonGenerator, SVIPComponentObject file) throws IOException {
+        jsonGenerator.writeStartObject();
+
+        jsonGenerator.writeStringField("SPDXID", file.getUID());
+        jsonGenerator.writeStringField("fileName", file.getFileName());
+        jsonGenerator.writeObjectField("fileTypes", List.of(file.getType()));
+        jsonGenerator.writeObjectField("fileContributors", List.of(file.getAuthor()));
+        jsonGenerator.writeStringField("licenseComments", file.getLicenses().getComment());
+        jsonGenerator.writeObjectField("licenseConcluded", file.getLicenses().getConcluded());
+        jsonGenerator.writeObjectField("licenseInfoInFiles", file.getLicenses().getInfoFromFiles());
+        jsonGenerator.writeStringField("copyrightText", file.getCopyright());
+        jsonGenerator.writeStringField("comment", file.getComment());
+        jsonGenerator.writeStringField("noticeText", file.getFileNotice());
+        jsonGenerator.writeStringField("attributionText", file.getAttributionText());
+
+        writeChecksums(jsonGenerator, file.getHashes());
+
         jsonGenerator.writeEndObject();
     }
 }
