@@ -183,9 +183,10 @@ public class Utils {
     /**
      * Convert an SBOM to a desired schema
      * @param schemaString the desired schema
+     * @param formatString the desired format
      * @return converted SBOMFile and error message, if any
      */
-    public static Map<SBOMFile, String> convert(SBOMFile sbom, String schemaString) throws JsonProcessingException {
+    public static Map<SBOMFile, String> convert(SBOMFile sbom, String schemaString, String formatString) throws JsonProcessingException {
 
         // deserialize into SBOM object
         Deserializer d;
@@ -208,12 +209,19 @@ public class Utils {
                     e.getMessage());
         }
 
+        // ensure format is valid
+        SerializerFactory.Format format;
+        try{
+            format = SerializerFactory.Format.valueOf(formatString);
+        }catch (Exception e){
+            return Map.of(new SBOMFile("",""), "FORMAT " + formatString + " NOT VALID: " +
+                    e.getMessage());
+        }
+
         // serialize into desired format
         Serializer s;
         try{
-            s = SerializerFactory.createSerializer(schema,
-                    SerializerFactory.Format.valueOf("JSON"),// todo not just JSON
-                    true);
+            s = SerializerFactory.createSerializer(schema, format, true);
         }catch (Exception e){
             return Map.of(new SBOMFile("",""), "DURING SERIALIZATION: " +
                     e.getMessage());

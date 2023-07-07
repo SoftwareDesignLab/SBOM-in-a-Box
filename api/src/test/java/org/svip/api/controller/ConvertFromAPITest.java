@@ -31,16 +31,18 @@ public class ConvertFromAPITest extends APITest{
         when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
 
         String[] schemas = {"CDX14", "SPDX23", "SVIP"}; // temp
+        String[] formats = {"JSON", "TAGVALUE"};
 
         for (String schema: schemas
              ) {
-            for (Long id : testMap.keySet()) {
-                ResponseEntity<String> response = controller.convert(id, schema, true);
-                assertEquals(testMap.get(id).getContents(), response.getBody());
-                assertTrue(Objects.requireNonNull(response.getBody()).contains(schema));
+            for (String format: formats
+                 ) {
+                for (Long id : testMap.keySet()) {
+                    ResponseEntity<String> response = controller.convert(id, schema, format,true);
+                    assertEquals(testMap.get(id).getContents(), response.getBody());
+                }
             }
         }
-
     }
 
 

@@ -213,11 +213,13 @@ public class SVIPApiController {
      *
      * @param id of the SBOM
      * @param schema to convert to
+     * @param format to convert to
+     * @param overwrite whether to overwrite original
      * @return converted SBOM
      */
 
     @GetMapping("/convert")
-    public ResponseEntity<String> convert(@RequestParam("id") long id, @RequestParam("schema") String schema,
+    public ResponseEntity<String> convert(@RequestParam("id") long id, @RequestParam("schema") String schema, String format,
                                           @RequestParam("schema") Boolean overwrite) throws JsonProcessingException {
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
@@ -230,7 +232,7 @@ public class SVIPApiController {
 
         SBOMFile toConvert = sbomFile.get();
 
-        HashMap<SBOMFile, String> conversionResult = (HashMap<SBOMFile, String>) Utils.convert(toConvert, schema);
+        HashMap<SBOMFile, String> conversionResult = (HashMap<SBOMFile, String>) Utils.convert(toConvert, schema, format);
         String message = (String) conversionResult.values().toArray()[0];
         SBOMFile converted = (SBOMFile) conversionResult.keySet().toArray()[0];
 
