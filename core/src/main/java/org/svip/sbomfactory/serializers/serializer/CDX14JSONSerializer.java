@@ -7,14 +7,18 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
+import org.svip.sbom.model.shared.util.ExternalReference;
+import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbomfactory.serializers.Metadata;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -93,7 +97,7 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         //
         // Metadata
         //
-        writeCreationData(jsonGenerator, sbom.getCreationData());
+        writeCreationData(jsonGenerator, sbom.getCreationData(), sbom.getRootComponent());
 
         //
         // Components
@@ -126,7 +130,7 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
 
     //#region Helper Methods
 
-    private void writeCreationData(JsonGenerator jsonGenerator, CreationData data) throws IOException {
+    private void writeCreationData(JsonGenerator jsonGenerator, CreationData data, SVIPComponentObject rootComponent) throws IOException {
         jsonGenerator.writeFieldName("metadata");
         jsonGenerator.writeStartObject();
 
@@ -173,13 +177,13 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         /* Supplier */
 
         if (data.getSupplier() != null) {
-            jsonGenerator.writeFieldName("manufacture");
+            jsonGenerator.writeFieldName("supplier");
             writeOrganization(jsonGenerator, data.getSupplier());
         }
 
         /* Comment / Properties */
         if (data.getProperties() != null) {
-            if (data.getProperties().get("creatorComment") != null &&
+            if (data.getProperties().get("creatorComment") == null ||
                     !data.getProperties().get("creatorComment").contains(Metadata.SERIALIZED_COMMENT)) {
                 data.addProperty("creatorComment", Metadata.SERIALIZED_COMMENT);
             }
@@ -194,21 +198,12 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         /* Licenses */
         Set<String> licenses = data.getLicenses();
         if (licenses != null) {
-            jsonGenerator.writeFieldName("licenses");
-            jsonGenerator.writeStartArray();
 
-            for (String license : licenses) {
-                jsonGenerator.writeStartObject();
-                jsonGenerator.writeStringField("name", license);
-                jsonGenerator.writeEndObject();
-            }
-
-            jsonGenerator.writeEndArray();
         }
 
         /* Root Component */
-//        jsonGenerator.writeFieldName("component");
-//        writeComponent(jsonGenerator, cycloneDXStore, cycloneDXStore.getHeadComponent());
+        jsonGenerator.writeFieldName("component");
+        writeComponent(jsonGenerator, rootComponent);
         jsonGenerator.writeEndObject(); // }
     }
 
@@ -219,20 +214,7 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         jsonGenerator.writeStringField("name", tool.getName());
         jsonGenerator.writeStringField("version", tool.getVersion());
 
-        jsonGenerator.writeFieldName("hashes");
-        jsonGenerator.writeStartArray(); // [
-
-        // Loop through hashes and print the algorithm and content
-        for (Map.Entry<String, String> hash : tool.getHashes().entrySet()) {
-            jsonGenerator.writeStartObject(); // {
-
-            jsonGenerator.writeStringField("alg", hash.getKey());
-            jsonGenerator.writeStringField("content", hash.getValue());
-
-            jsonGenerator.writeEndObject(); // }
-        }
-
-        jsonGenerator.writeEndArray(); // ]
+        writeHashes(jsonGenerator, tool.getHashes());
 
         // TODO external references (we don't store this on a per tool basis)
 
@@ -286,146 +268,93 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         jsonGenerator.writeEndArray();
     }
 
-//    private void writeComponent(JsonGenerator jsonGenerator, SVIPComponentObject component) throws IOException {
-//        jsonGenerator.writeStartObject();
-//
-//        jsonGenerator.writeStringField("type", );
-//        jsonGenerator.writeStringField("mime-type", );
-//        jsonGenerator.writeStringField("bom-ref", );
-//        jsonGenerator.writeStringField("supplier", );
-//        jsonGenerator.writeStringField("author", );
-//        jsonGenerator.writeStringField("publisher", );
-//        jsonGenerator.writeStringField("group", );
-//        jsonGenerator.writeStringField("name", );
-//        jsonGenerator.writeStringField("version", );
-//        jsonGenerator.writeStringField("description", );
-//        jsonGenerator.writeStringField("scope", );
-//        jsonGenerator.writeStringField("hashes", );
-//        jsonGenerator.writeStringField("copyright", );
-//        jsonGenerator.writeStringField("cpe", );
-//        jsonGenerator.writeStringField("purl", );
-//        jsonGenerator.writeStringField("swid", );
+    private void writeHashes(JsonGenerator jsonGenerator, Map<String, String> hashes) throws IOException {
+        jsonGenerator.writeFieldName("hashes");
+        jsonGenerator.writeStartArray(); // [
+
+        // Loop through hashes and print the algorithm and content
+        for (Map.Entry<String, String> hash : hashes.entrySet()) {
+            jsonGenerator.writeStartObject(); // {
+
+            jsonGenerator.writeStringField("alg", hash.getKey());
+            jsonGenerator.writeStringField("content", hash.getValue());
+
+            jsonGenerator.writeEndObject(); // }
+        }
+
+        jsonGenerator.writeEndArray(); // ]
+    }
+
+    private void writeLicenses(JsonGenerator jsonGenerator, Set<String> licenses) throws IOException {
+        jsonGenerator.writeFieldName("licenses");
+        jsonGenerator.writeStartArray();
+
+        for (String license : licenses) {
+            jsonGenerator.writeStartObject();
+            jsonGenerator.writeStringField("name", license);
+            jsonGenerator.writeEndObject();
+        }
+
+        jsonGenerator.writeEndArray();
+    }
+
+    private void writeComponent(JsonGenerator jsonGenerator, SVIPComponentObject component) throws IOException {
+        jsonGenerator.writeStartObject();
+
+        jsonGenerator.writeStringField("name", component.getName());
+        jsonGenerator.writeStringField("type", component.getType());
+        jsonGenerator.writeStringField("mime-type", component.getMimeType());
+        jsonGenerator.writeStringField("bom-ref", component.getUID());
+        jsonGenerator.writeStringField("group", component.getGroup());
+        jsonGenerator.writeStringField("version", component.getVersion());
+        jsonGenerator.writeStringField("scope", component.getScope());
+        jsonGenerator.writeStringField("copyright", component.getCopyright());
+        // TODO is this the right way to represent multiple CPEs/PURLs?
+        jsonGenerator.writeStringField("cpe", String.join(", ", component.getCPEs()));
+        jsonGenerator.writeStringField("purl", String.join(", ", component.getPURLs()));
+
+        jsonGenerator.writeFieldName("supplier");
+        writeOrganization(jsonGenerator, component.getSupplier());
+        jsonGenerator.writeStringField("author", component.getAuthor());
+        jsonGenerator.writeStringField("publisher", component.getPublisher());
+
+        jsonGenerator.writeStringField("description",
+                "Summary: " + component.getDescription().getSummary() + " | Details: " + component.getDescription().getDescription());
+
+        writeHashes(jsonGenerator, component.getHashes());
+
+        // Licenses
+        LicenseCollection licenses = component.getLicenses();
+        Set<String> allLicenses = new HashSet<>();
+        allLicenses.addAll(licenses.getConcluded());
+        allLicenses.addAll(licenses.getDeclared());
+        allLicenses.addAll(licenses.getInfoFromFiles());
+        writeLicenses(jsonGenerator, allLicenses);
+
+        // External Refs
+        jsonGenerator.writeFieldName("externalReferences");
+        jsonGenerator.writeStartArray();
+        for (ExternalReference ref : component.getExternalReferences()) {
+            jsonGenerator.writeStartObject();
+
+            jsonGenerator.writeStringField("url", ref.getUrl());
+            jsonGenerator.writeStringField("comment", "Category: " + ref.getCategory());
+            jsonGenerator.writeStringField("type", ref.getType());
+            writeHashes(jsonGenerator, ref.getHashes());
+
+            jsonGenerator.writeEndObject();
+        }
+        jsonGenerator.writeEndArray();
+
+        jsonGenerator.writeStringField("releaseNotes", "Release Date: " + component.getReleaseDate());
+        writeProperties(jsonGenerator, component.getProperties());
+
+//        jsonGenerator.writeStringField("swid", String.join(", ", component.getSWID()));
 //        jsonGenerator.writeStringField("pedigree", );
-//        jsonGenerator.writeStringField("externalReferences", );
-//        jsonGenerator.writeStringField("components", );
 //        jsonGenerator.writeStringField("evidence", );
-//        jsonGenerator.writeStringField("releaseNotes", );
-//        jsonGenerator.writeStringField("properties", );
-//        jsonGenerator.writeStringField("signature", );
-//
-//        jsonGenerator.writeEndObject();
-//    }
+//        jsonGenerator.writeStringField("signature");
+//        jsonGenerator.writeStringField("components", );
 
-//    private void writeLicenses(JsonGenerator jsonGenerator, Set<License> licenses) throws IOException {
-//        if (licenses.size() == 0) return; // If no licenses, do not write anything
-//
-//        jsonGenerator.writeFieldName("licenses");
-//        jsonGenerator.writeStartArray(); // [
-//
-//        for (License license : licenses) {
-//            jsonGenerator.writeStartObject();
-//            jsonGenerator.writeFieldName("license");
-//            jsonGenerator.writeStartObject(); // {
-//
-//            if (license.getSpdxLicense() != null) {
-//                jsonGenerator.writeStringField("id", license.getSpdxLicense());
-//            } else {
-//                jsonGenerator.writeStringField("name", license.getLicenseName());
-//            }
-//            writeFieldIfExists(jsonGenerator, "url", license.getUrl());
-//
-//            jsonGenerator.writeEndObject(); // }
-//            jsonGenerator.writeEndObject();
-//        }
-//
-//        jsonGenerator.writeEndArray(); // ]
-//    }
-
-//    private void writeComponent(JsonGenerator jsonGenerator, CycloneDXStore cycloneDXStore, ParserComponent component) throws IOException {
-//        jsonGenerator.writeStartObject(); // {
-//
-//        //
-//        // Package information
-//        //
-//
-//        jsonGenerator.writeStringField("name", component.getName());
-//        writeFieldIfExists(jsonGenerator, "group", component.getGroup());
-//        writeFieldIfExists(jsonGenerator, "version", component.getVersion());
-//        if (component.getPublisher() != null && component.getPublisher().length() > 0 && !component.getPublisher().equals("Unknown"))
-//            jsonGenerator.writeStringField("publisher", "Organization: " + component.getPublisher());
-//
-//        //
-//        // Package Hash
-//        //
-//
-//        jsonGenerator.writeFieldName("hashes");
-//        jsonGenerator.writeStartArray();
-//        jsonGenerator.writeStartObject();
-//
-//        jsonGenerator.writeStringField("alg", "SHA-256"); // ParserComponent only returns SHA-256 hashes
-//        jsonGenerator.writeStringField("content", component.generateHash());
-//
-//        jsonGenerator.writeEndObject();
-//        jsonGenerator.writeEndArray();
-//
-//        //
-//        // Licenses
-//        //
-//
-//        writeLicenses(jsonGenerator, component.getResolvedLicenses());
-//
-//        //
-//        // External identifiers
-//        //
-//
-//        writeFieldIfExists(jsonGenerator, "purl", String.join(", ", component.getPurls()));
-//        writeFieldIfExists(jsonGenerator, "cpe", String.join(", ", component.getCpes()));
-//        // TODO Do this for SWIDs once we support them
-//
-//        //
-//        // Type
-//        //
-//
-//        jsonGenerator.writeStringField("type", getCDXType(component.getType()));
-//
-//        //
-//        // Properties (files analyzed)
-//        //
-//
-//        if (component.getFiles().size() > 0) {
-//            jsonGenerator.writeFieldName("properties");
-//            jsonGenerator.writeStartArray();
-//
-//            for (String file : component.getFiles()) {
-//                jsonGenerator.writeStartObject();
-//
-//                // https://cyclonedx.org/docs/1.4/json/#components_items_properties_items_name
-//                // The value must be a string, but duplicate names with different values are explicitly allowed
-//                writeFieldIfExists(jsonGenerator, "fileAnalyzed", file);
-//
-//                jsonGenerator.writeEndObject();
-//            }
-//
-//            jsonGenerator.writeEndArray();
-//        }
-//
-//        //
-//        // Nested child components
-//        //
-//
-//        // Write children
-//        List<ParserComponent> children = cycloneDXStore.getChildren(component.getUUID());
-//        if (children.size() > 0) {
-//            jsonGenerator.writeFieldName("components");
-//            jsonGenerator.writeStartArray();
-//
-//            for (ParserComponent child : children) {
-//                writeComponent(jsonGenerator, cycloneDXStore, child);
-//            }
-//
-//            jsonGenerator.writeEndArray();
-//        }
-//
-//        jsonGenerator.writeEndObject(); // }
-//    }
+        jsonGenerator.writeEndObject();
+    }
 }
