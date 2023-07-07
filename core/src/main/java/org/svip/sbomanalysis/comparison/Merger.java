@@ -6,16 +6,8 @@ import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 
 import org.svip.sbom.model.shared.Relationship;
-import org.svip.sbom.model.shared.metadata.CreationData;
-import org.svip.sbom.model.shared.metadata.Organization;
-import org.svip.sbom.model.shared.util.Description;
-import org.svip.sbom.model.shared.util.ExternalReference;
-import org.svip.sbom.model.shared.util.LicenseCollection;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Merges two SBOMs of any type together into one SVIP type SBOM
@@ -61,9 +53,38 @@ public class Merger {
     }
 
     public SBOM merge(SBOM A, SBOM B) {
+
+        Set<Component> componentsA = A.getComponents();
+
+        Set<Component> componentsB = B.getComponents();
+
+        Set<Component> merged_components = mergeComponents(componentsA, componentsB);
+
+        HashMap<String, HashSet<String>> merged_relationships = mergeRelationships(A.getRelationships(), B.getRelationships());
+
         return new SVIPSBOM(A.getFormat(), A.getName(), A.getUID(), A.getVersion(), A.getSpecVersion(),
                 A.getLicenses(), A.getCreationData(), A.getDocumentComment(), (SVIPComponentObject) A.getRootComponent(),
-                A.getComponents(), (HashMap<String, Set<Relationship>>) A.getRelationships(),
-                A.getExternalReferences(), "");
+                merged_components, (HashMap<String, Set<Relationship>>) A.getRelationships(),
+                A.getExternalReferences(), "Unavailable.");
+    }
+
+    public Set<Component> mergeComponents(Set<Component> compA, Set<Component> compB) {
+        Set<Component> merged_components = new HashSet<>();
+
+        for(Component current_A : compA) {
+            for(Component current_B : compB) {
+                // //new ComponentConflict(current_A, current_B);
+            }
+        }
+
+        return merged_components;
+    }
+
+    public HashMap<String, HashSet<String>> mergeRelationships(
+            Map<String, Set<Relationship>> relationshipsA,
+            Map<String, Set<Relationship>> relationshipsB
+    ) {
+        HashMap<String, HashSet<String>> merged_relationships = new HashMap<>();
+        return merged_relationships;
     }
 }
