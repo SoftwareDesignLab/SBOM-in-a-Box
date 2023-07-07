@@ -17,6 +17,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+/**
+ * Merges two SBOMs of any type together into one SVIP type SBOM
+ *
+ * @author tyler_drake
+ * @author Matt London
+ */
+
 public class Merger {
     /**
      * Merge a collection of SBOMs into one main SBOM
