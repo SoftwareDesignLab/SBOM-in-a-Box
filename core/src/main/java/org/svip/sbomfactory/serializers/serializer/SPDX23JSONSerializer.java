@@ -7,9 +7,15 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.sbom.model.shared.metadata.Contact;
+import org.svip.sbom.model.shared.metadata.CreationData;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * File: SPDX23JSONSerializer.java
@@ -71,6 +77,55 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
 
     @Override
     public void serialize(SVIPSBOM sbom, JsonGenerator jsonGenerator, SerializerProvider provider) throws IOException {
-        // TODO
+        jsonGenerator.writeStartObject();
+
+        jsonGenerator.writeStringField("SPDXID", "SPDXRef-DOCUMENT");
+        jsonGenerator.writeStringField("spdxVersion", "SPDX-" + sbom.getSpecVersion());
+        jsonGenerator.writeStringField("name", sbom.getName());
+        jsonGenerator.writeStringField("documentNamespace", sbom.getUID());
+        jsonGenerator.writeStringField("comment", sbom.getDocumentComment());
+        jsonGenerator.writeStringField("dataLicense", "CC0-1.0"); // TODO where should we get this from
+
+        jsonGenerator.writeFieldName("documentDescribes");
+        jsonGenerator.writeObject(sbom.getComponents().stream().map(Component::getUID).toList());
+
+        writeCreationData(jsonGenerator, sbom.getCreationData(), sbom.getSPDXLicenseListVersion());
+
+        jsonGenerator.writeEndObject();
+    }
+
+    private void writeCreationData(JsonGenerator jsonGenerator, CreationData data, String licenseListVersion) throws IOException {
+        jsonGenerator.writeFieldName("creationInfo");
+        jsonGenerator.writeStartObject();
+
+        jsonGenerator.writeStringField("comment", data.getCreatorComment());
+        jsonGenerator.writeStringField("created", data.getCreationTime());
+        jsonGenerator.writeStringField("licenseListVersion", licenseListVersion);
+
+        // Process creators
+
+        jsonGenerator.writeFieldName("creators");
+
+        Set<String> creators = new HashSet<>(data.getAuthors().stream()
+                .map(a -> getCreatorString("Person", a.getName(), a.getEmail())).toList());
+        creators.addAll(data.getCreationTools().stream()
+                .map(t -> getCreatorString("Tool", t.getName(), t.getVersion())).toList());
+
+        Optional<Contact> supplierContact = data.getSupplier().getContacts().stream().findFirst();
+        String supplierEmail = "";
+        if (supplierContact.isPresent())
+            supplierEmail = supplierContact.get().getEmail();
+        creators.add(getCreatorString("Organization", data.getSupplier().getName(), supplierEmail));
+
+        jsonGenerator.writeObject(creators);
+
+        jsonGenerator.writeEndObject();
+    }
+
+    private String getCreatorString(String type, String primaryId, String secondaryId) {
+        if (type.equalsIgnoreCase("tool"))
+            return String.format("Tool: %s-%s", primaryId, secondaryId);
+
+        return String.format("%s: %s (%s)", type, primaryId, secondaryId);
     }
 }
