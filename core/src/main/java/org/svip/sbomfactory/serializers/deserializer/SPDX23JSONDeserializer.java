@@ -34,6 +34,7 @@ import java.io.IOException;
  * read an SPDX 2.3 SBOM object from an SPDX 2.3 JSON file string.
  *
  * @author Ian Dunn
+ * @author Thomas Roman
  */
 public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implements Deserializer {
     public SPDX23JSONDeserializer() {
