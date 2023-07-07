@@ -22,6 +22,7 @@ import org.svip.sbomfactory.serializers.Metadata;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -87,6 +88,9 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
     public void serialize(SVIPSBOM sbom, JsonGenerator jsonGenerator, SerializerProvider provider) throws IOException {
         jsonGenerator.writeStartObject();
 
+        Set<Component> allComponents = sbom.getComponents();
+        allComponents.add(sbom.getRootComponent());
+
         //
         // Top-level info
         //
@@ -125,12 +129,25 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
 
         for (Map.Entry<String, Set<Relationship>> dep : sbom.getRelationships().entrySet()) {
             jsonGenerator.writeStartObject();
-            jsonGenerator.writeStringField("ref", dep.getKey());
+
+            // Find the UID of the component by name if one exists
+            Optional<Component> found = allComponents.stream().filter(c -> c.getName().equals(dep.getKey())).findFirst();
+            String bomRef = dep.getKey();
+            if (found.isPresent() && found.get().getUID() != null)
+                bomRef = found.get().getUID();
+
+            jsonGenerator.writeStringField("ref", bomRef);
 
             jsonGenerator.writeFieldName("dependsOn");
             jsonGenerator.writeStartArray();
             for(Relationship rel : dep.getValue()) {
-                jsonGenerator.writeString(rel.getOtherUID());
+                // Find the UID of the component by name if one exists
+                found = allComponents.stream().filter(c -> c.getName().equals(rel.getOtherUID())).findFirst();
+                bomRef = rel.getOtherUID();
+                if (found.isPresent() && found.get().getUID() != null)
+                    bomRef = found.get().getUID();
+
+                jsonGenerator.writeString(bomRef);
             }
             jsonGenerator.writeEndArray();
             jsonGenerator.writeEndObject();
