@@ -1,5 +1,5 @@
 /**
- * @file MergerTest.java
+ * @file NewMergerTest.java
  *
  * Contains test class for the Merger class
  *
@@ -20,7 +20,7 @@ import java.util.UUID;
 /**
  * Tests for the Merge class
  */
-public class MergerTest {
+public class OldMergerTest {
     /**
      * Merges a bom with a blank bom and makes sure that the resultant SBOM is the same as the original
      */
