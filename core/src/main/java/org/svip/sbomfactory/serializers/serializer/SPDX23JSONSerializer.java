@@ -8,12 +8,15 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
+import org.svip.sbom.model.shared.util.ExternalReference;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -91,6 +94,25 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
 
         writeCreationData(jsonGenerator, sbom.getCreationData(), sbom.getSPDXLicenseListVersion());
 
+        // TODO we don't store extracted licensing info or external document refs
+
+        // TODO find a way to differentiate that works
+        Set<SVIPComponentObject> files = new HashSet<>();
+        Set<SVIPComponentObject> packages = new HashSet<>();
+
+        for (Component component : sbom.getComponents()) {
+            SVIPComponentObject c = (SVIPComponentObject) component;
+            if (c.getFileName() != null && !c.getFileName().isEmpty())
+                files.add(c);
+            else
+                packages.add(c);
+        }
+
+        jsonGenerator.writeArrayFieldStart("packages");
+        for (SVIPComponentObject pkg : files)
+            writePackage(jsonGenerator, pkg);
+        jsonGenerator.writeEndArray();
+
         jsonGenerator.writeEndObject();
     }
 
@@ -127,5 +149,79 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
             return String.format("Tool: %s-%s", primaryId, secondaryId);
 
         return String.format("%s: %s (%s)", type, primaryId, secondaryId);
+    }
+
+    private void writePackage(JsonGenerator jsonGenerator, SVIPComponentObject pkg) throws IOException {
+        jsonGenerator.writeStartObject();
+
+        Optional<Contact> supplierContact = pkg.getSupplier().getContacts().stream().findFirst();
+        String supplierEmail = "";
+        if (supplierContact.isPresent())
+            supplierEmail = supplierContact.get().getEmail();
+        getCreatorString("Organization", pkg.getSupplier().getName(), supplierEmail);
+
+
+
+        // Identifiers
+        jsonGenerator.writeStringField("name", pkg.getName());
+        jsonGenerator.writeStringField("SPDXID", pkg.getUID());
+        jsonGenerator.writeStringField("primaryPackagePurpose", pkg.getType());
+
+        jsonGenerator.writeStringField("comment", pkg.getComment()); // TODO may need to be an object
+
+        jsonGenerator.writeStringField("versionInfo", pkg.getVersion());
+        jsonGenerator.writeStringField("packageFileName", pkg.getFileName()); // TODO is this correct?
+        jsonGenerator.writeStringField("supplier",
+                getCreatorString("Organization", pkg.getSupplier().getName(), supplierEmail));
+        jsonGenerator.writeStringField("originator", pkg.getAuthor());
+        jsonGenerator.writeStringField("downloadLocation", pkg.getDownloadLocation());
+        jsonGenerator.writeBooleanField("filesAnalyzed", pkg.getFilesAnalyzed());
+        jsonGenerator.writeStringField("homepage", pkg.getHomePage());
+        jsonGenerator.writeStringField("sourceInfo", pkg.getSourceInfo());
+        jsonGenerator.writeObjectField("licenseConcluded", pkg.getLicenses().getConcluded());
+        jsonGenerator.writeObjectField("licenseDeclared", pkg.getLicenses().getDeclared());
+        jsonGenerator.writeObjectField("licenseInfoFromFiles", pkg.getLicenses().getInfoFromFiles());
+        jsonGenerator.writeStringField("licenseComments", pkg.getLicenses().getComment());
+        jsonGenerator.writeStringField("copyright", pkg.getCopyright());
+        jsonGenerator.writeStringField("summary", pkg.getDescription().getSummary());
+        jsonGenerator.writeStringField("description", pkg.getDescription().getDescription());
+        jsonGenerator.writeObjectField("attributionText", pkg.getAttributionText()); // TODO may need to be a list
+        jsonGenerator.writeStringField("builtDate", pkg.getBuiltDate());
+        jsonGenerator.writeStringField("releaseDate", pkg.getReleaseDate());
+        jsonGenerator.writeStringField("validUntilDate", pkg.getValidUntilDate());
+        // TODO may need to be an object
+        jsonGenerator.writeStringField("packageVerificationCode", pkg.getVerificationCode());
+
+        jsonGenerator.writeFieldName("checksums");
+        jsonGenerator.writeStartArray();
+        for (Map.Entry<String, String> hash : pkg.getHashes().entrySet()) {
+            jsonGenerator.writeStartObject();
+            jsonGenerator.writeStringField("algorithm", hash.getKey());
+            jsonGenerator.writeStringField("checksumValue", hash.getValue());
+            jsonGenerator.writeEndObject();
+        }
+        jsonGenerator.writeEndArray();
+
+        jsonGenerator.writeFieldName("externalRefs");
+        jsonGenerator.writeStartArray();
+
+        Set<ExternalReference> refs = pkg.getExternalReferences();
+        refs.addAll(pkg.getCPEs().stream()
+                .map(cpe -> new ExternalReference("SECURITY", "cpe23", cpe))
+                .toList());
+        refs.addAll(pkg.getPURLs().stream()
+                .map(purl -> new ExternalReference("PACKAGE-MANAGER", "purl", purl))
+                .toList());
+
+        for (ExternalReference ref : refs) {
+            jsonGenerator.writeStartObject();
+            jsonGenerator.writeStringField("referenceCategory", ref.getCategory());
+            jsonGenerator.writeStringField("referenceLocator", ref.getUrl());
+            jsonGenerator.writeStringField("referenceType", ref.getType());
+            jsonGenerator.writeEndObject();
+        }
+
+        jsonGenerator.writeEndArray();
+        jsonGenerator.writeEndObject();
     }
 }
