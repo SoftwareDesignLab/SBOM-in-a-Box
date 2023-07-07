@@ -1,3 +1,4 @@
+/*
 package org.svip.sbomanalysis.comparison;
 
 import org.svip.sbom.model.old.Component;
@@ -7,24 +8,28 @@ import org.svip.sbomanalysis.comparison.conflicts.ComponentConflict;
 
 import java.util.*;
 
+*/
 /**
  * file: Merger.java
  * <p>
  * Merge class collects all methods associated with merging a group of SBOMs together
  *
  * @author Matt London
- */
+ *//*
+
 public class OldMerger {
     public OldMerger() {
 
     }
 
-    /**
+    */
+/**
      * Merge a collection of SBOMs into one main SBOM
      *
      * @param SBOMs Collection of SBOM objects to merge together
      * @return Resulting merged bom
-     */
+     *//*
+
     public SBOM merge(Collection<SBOM> SBOMs) {
         // Loop through and merge into a master SBOM
         if (SBOMs.size() == 0) {
@@ -54,13 +59,15 @@ public class OldMerger {
         return mainBom;
     }
 
-    /**
+    */
+/**
      * Merge two sboms together and return a result bom
      *
      * @param sbomA First bom to merge
      * @param sbomB Second bom to merge
      * @return Merged SBOM
-     */
+     *//*
+
     private SBOM merge(SBOM sbomA, SBOM sbomB) {
         // Call recursive class on the root components
         UUID aHead = sbomA.getHeadUUID();
@@ -78,7 +85,8 @@ public class OldMerger {
                 sbomA.getSupplier(), sbomA.getSerialNumber(), sbomA.getTimestamp(), sbomA.getSignature(), dest);
     }
 
-    /**
+    */
+/**
      * Loop through the components on an sbom and insert them into the DependencyTree
      * This is called by merge when it has a component in one bom but not the other
      *
@@ -87,7 +95,8 @@ public class OldMerger {
      * @param component First component to merge
      * @param parent    Parent component within the dest tree to add the merged component to
      * @param visited   Set of visited components to prevent cycles
-     */
+     *//*
+
     private void solo_assemble(DependencyTree dest, SBOM sbom, UUID component, UUID parent, Set<UUID> visited) {
         // Whenever we hit solo_assemble we have a conflict
         ComponentConflict con = new ComponentConflict(sbom.getComponent(component), null);
@@ -118,7 +127,8 @@ public class OldMerger {
         }
     }
 
-    /**
+    */
+/**
      * Recursive merge call that is called by the two sbom merger method
      *
      * @param dest   DependencyTree to merge into
@@ -127,7 +137,8 @@ public class OldMerger {
      * @param aUUID  UUID of the A component currently being merged
      * @param bBom   Second SBOM to merge from
      * @param bUUID  UUID of the B component currently being merged
-     */
+     *//*
+
     private void merge_recurse(DependencyTree dest, UUID parent, SBOM aBom, UUID aUUID, SBOM bBom, UUID bUUID) {
         // Get the components from the SBOMs
         Component a = aBom.getComponent(aUUID);
@@ -227,4 +238,4 @@ public class OldMerger {
 
     }
 
-}
+}*/
