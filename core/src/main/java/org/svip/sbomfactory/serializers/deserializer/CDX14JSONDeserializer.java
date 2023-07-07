@@ -213,7 +213,7 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
             if (node.get("metadata").get("component").get("licenses") != null) {
                 LicenseCollection componentLicenses = new LicenseCollection();
                 for (int i = 0; i < node.get("metadata").get("component").get("licenses").size(); i++) {
-                    componentLicenses.addDeclaredLicense(node.get("metadata").get("component").get("licenses").get(i).asText());
+                    componentLicenses.addLicenseInfoFromFile(node.get("metadata").get("component").get("licenses").get(i).asText());
                 }
                 componentBuilder.setLicenses(componentLicenses);
             }
@@ -254,6 +254,7 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
                     componentBuilder.addProperty(node.get("component").get("properties").get(i).get("name").asText(), node.get("component").get("properties").get(i).get("value").asText());
                 }
             }
+            // add the component to the sbom builder
             sbomBuilder.setRootComponent(componentBuilder.buildAndFlush());
         }
 
@@ -330,7 +331,7 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
                 if (node.get("components").get(i).get("licenses") != null) {
                     LicenseCollection componentLicenses = new LicenseCollection();
                     for (int j = 0; j < node.get("components").get(i).get("licenses").size(); j++) {
-                        componentLicenses.addDeclaredLicense(node.get("components").get(i).get("licenses").get(j).asText());
+                        componentLicenses.addLicenseInfoFromFile(node.get("components").get(i).get("licenses").get(j).asText());
                     }
                     componentBuilder.setLicenses(componentLicenses);
                 }
@@ -371,6 +372,8 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
                         componentBuilder.addProperty(node.get("components").get(i).get("properties").get(j).get("name").asText(), node.get("components").get(i).get("properties").get(j).get("value").asText());
                     }
                 }
+                // TO DO: Add relationship data
+                // add the component to the sbom builder
                 sbomBuilder.addCDX14Package(componentBuilder.buildAndFlush());
             }
         }
