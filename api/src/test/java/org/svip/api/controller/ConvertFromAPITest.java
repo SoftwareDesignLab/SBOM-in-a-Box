@@ -29,7 +29,7 @@ public class ConvertFromAPITest extends APITest{
 
         when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
 
-        String[] schemas = {"spdx", "cdx"}; // temp
+        String[] schemas = {"CDX14", "SPDX23", "SVIP"}; // temp
 
         for (String schema: schemas
              ) {

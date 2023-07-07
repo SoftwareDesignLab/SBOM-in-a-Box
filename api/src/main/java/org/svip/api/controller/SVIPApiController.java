@@ -240,8 +240,10 @@ public class SVIPApiController {
         }
 
         SBOMFile toConvert = sbomFile.get();
-        SBOMFile converted = Utils.convert(toConvert, schema); // todo in Utils
-                                                                // todo ensure has the same ID
+        String currentSchema = Utils.assumeSchema(toConvert);
+
+        SBOMFile converted = Utils.convert(toConvert, currentSchema, schema); // todo ensure has the same ID
+
         // Check if it exists
         if (converted == null || converted.hasNullProperties()) {
             LOGGER.info("DELETE /svip/convert?id=" + id + " - ERROR IN CONVERSION TO " + schema);

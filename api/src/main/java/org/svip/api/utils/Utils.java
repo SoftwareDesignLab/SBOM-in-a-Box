@@ -9,6 +9,9 @@ import org.svip.api.model.SBOMFile;
 import org.svip.sbom.model.old.SBOM;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
+import org.svip.sbomfactory.serializers.SerializerFactory;
+import org.svip.sbomfactory.serializers.deserializer.Deserializer;
+import org.svip.sbomfactory.serializers.serializer.Serializer;
 import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomfactory.translators.TranslatorException;
 
@@ -178,10 +181,18 @@ public class Utils {
 
     /**
      * Temporary stubbed out
-     * @param schema
+     * @param fromSchema
      * @return
      */
-    public static SBOMFile convert(SBOMFile sbom, String schema){
+    public static SBOMFile convert(SBOMFile sbom, String fromSchema, String toSchema){
+        Serializer s = SerializerFactory.createSerializer(SerializerFactory.Schema.valueOf(fromSchema),
+                SerializerFactory.Format.valueOf("JSON"),// todo not just JSON
+                true);
+        Deserializer d = SerializerFactory.createDeserializer(sbom.getContents());
         return null;
+    }
+
+    public static String assumeSchema(SBOMFile sbom){
+        return sbom.getContents().contains("cdx") ? "CDX23" : "SPDX"; // todo there's a better way
     }
 }
