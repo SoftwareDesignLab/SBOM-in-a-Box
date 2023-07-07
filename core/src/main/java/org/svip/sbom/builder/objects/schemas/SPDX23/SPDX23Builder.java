@@ -119,6 +119,10 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
 
     @Override
     public SPDX23Builder addSPDX23Component(SPDX23Component component) {
+        // initialize the hash set
+        if (this.components == null) {
+            this.components = new HashSet<Component>();
+        }
         this.components.add(component);
         return this;
     }
