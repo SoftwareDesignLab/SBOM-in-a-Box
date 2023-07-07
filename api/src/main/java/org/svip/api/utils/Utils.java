@@ -188,6 +188,8 @@ public class Utils {
      */
     public static Map<SBOMFile, String> convert(SBOMFile sbom, String schemaString, String formatString) throws JsonProcessingException {
 
+        HashMap<SBOMFile, String> ret = new HashMap<>();
+
         // deserialize into SBOM object
         Deserializer d;
         SVIPSBOM deserialized;
@@ -196,8 +198,9 @@ public class Utils {
             d = SerializerFactory.createDeserializer(sbom.getContents());
             deserialized = (SVIPSBOM) d.readFromString(sbom.getContents());
         }catch (Exception e){
-            return Map.of(new SBOMFile("",""), "DURING DESERIALIZATION: " +
+            ret.put(new SBOMFile("",""), "DURING DESERIALIZATION: " +
                     e.getMessage());
+            return ret;
         }
 
         // ensure schema is valid
@@ -205,8 +208,9 @@ public class Utils {
         try{
             schema = SerializerFactory.Schema.valueOf(schemaString);
         }catch (Exception e){
-            return Map.of(new SBOMFile("",""), "SCHEMA " + schemaString + " NOT VALID: " +
+            ret.put(new SBOMFile("",""), "SCHEMA " + schemaString + " NOT VALID: " +
                     e.getMessage());
+            return ret;
         }
 
         // ensure format is valid
@@ -214,8 +218,9 @@ public class Utils {
         try{
             format = SerializerFactory.Format.valueOf(formatString);
         }catch (Exception e){
-            return Map.of(new SBOMFile("",""), "FORMAT " + formatString + " NOT VALID: " +
+            ret.put(new SBOMFile("",""), "FORMAT " + formatString + " NOT VALID: " +
                     e.getMessage());
+            return ret;
         }
 
         // serialize into desired format
@@ -223,11 +228,13 @@ public class Utils {
         try{
             s = SerializerFactory.createSerializer(schema, format, true);
         }catch (Exception e){
-            return Map.of(new SBOMFile("",""), "DURING SERIALIZATION: " +
+            ret.put(new SBOMFile("",""), "DURING SERIALIZATION: " +
                     e.getMessage());
+            return ret;
         }
 
-        return Map.of(new SBOMFile("SUCCESS", s.writeToString(deserialized)), "");
+        ret.put(new SBOMFile("SUCCESS", s.writeToString(deserialized)), "");
+        return ret;
 
     }
 
