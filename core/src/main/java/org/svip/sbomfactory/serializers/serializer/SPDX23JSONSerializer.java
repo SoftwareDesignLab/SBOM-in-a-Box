@@ -102,14 +102,14 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
 
         for (Component component : sbom.getComponents()) {
             SVIPComponentObject c = (SVIPComponentObject) component;
-            if (c.getFileName() != null && !c.getFileName().isEmpty())
+            if (c.getFileNotice() != null && !c.getFileNotice().isEmpty())
                 files.add(c);
             else
                 packages.add(c);
         }
 
         jsonGenerator.writeArrayFieldStart("packages");
-        for (SVIPComponentObject pkg : files)
+        for (SVIPComponentObject pkg : packages)
             writePackage(jsonGenerator, pkg);
         jsonGenerator.writeEndArray();
 
