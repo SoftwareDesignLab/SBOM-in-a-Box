@@ -7,8 +7,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
@@ -105,17 +107,36 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         jsonGenerator.writeFieldName("components");
         jsonGenerator.writeStartArray(); // [
 
-//        for (ParserComponent c : cycloneDXStore.getComponents()) {
-//            writeComponent(jsonGenerator, cycloneDXStore, c);
-//        }
+        for (Component component : sbom.getComponents()) {
+            SVIPComponentObject svipComponent = (SVIPComponentObject) component;
+            writeComponent(jsonGenerator, svipComponent);
+        }
 
         jsonGenerator.writeEndArray(); // ]
 
         // Services
 
         // External References
+        writeExternalRefs(jsonGenerator, sbom.getExternalReferences());
 
         // Dependencies
+        jsonGenerator.writeFieldName("dependencies");
+        jsonGenerator.writeStartArray();
+
+        for (Map.Entry<String, Set<Relationship>> dep : sbom.getRelationships().entrySet()) {
+            jsonGenerator.writeStartObject();
+            jsonGenerator.writeStringField("ref", dep.getKey());
+
+            jsonGenerator.writeFieldName("dependsOn");
+            jsonGenerator.writeStartArray();
+            for(Relationship rel : dep.getValue()) {
+                jsonGenerator.writeString(rel.getOtherUID());
+            }
+            jsonGenerator.writeEndArray();
+            jsonGenerator.writeEndObject();
+        }
+
+        jsonGenerator.writeEndArray();
 
         // Compositions
 
@@ -198,7 +219,7 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         /* Licenses */
         Set<String> licenses = data.getLicenses();
         if (licenses != null) {
-
+            writeLicenses(jsonGenerator, data.getLicenses());
         }
 
         /* Root Component */
@@ -298,13 +319,31 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         jsonGenerator.writeEndArray();
     }
 
+    private void writeExternalRefs(JsonGenerator jsonGenerator, Set<ExternalReference> refs) throws IOException {
+        jsonGenerator.writeFieldName("externalReferences");
+        jsonGenerator.writeStartArray();
+        for (ExternalReference ref : refs) {
+            jsonGenerator.writeStartObject();
+
+            jsonGenerator.writeStringField("url", ref.getUrl());
+            jsonGenerator.writeStringField("comment", "Category: " + ref.getCategory());
+            jsonGenerator.writeStringField("type", ref.getType());
+            writeHashes(jsonGenerator, ref.getHashes());
+
+            jsonGenerator.writeEndObject();
+        }
+        jsonGenerator.writeEndArray();
+    }
+
     private void writeComponent(JsonGenerator jsonGenerator, SVIPComponentObject component) throws IOException {
         jsonGenerator.writeStartObject();
 
+        // Identifiers
+        jsonGenerator.writeStringField("bom-ref", component.getUID());
         jsonGenerator.writeStringField("name", component.getName());
+
         jsonGenerator.writeStringField("type", component.getType());
         jsonGenerator.writeStringField("mime-type", component.getMimeType());
-        jsonGenerator.writeStringField("bom-ref", component.getUID());
         jsonGenerator.writeStringField("group", component.getGroup());
         jsonGenerator.writeStringField("version", component.getVersion());
         jsonGenerator.writeStringField("scope", component.getScope());
@@ -332,19 +371,7 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         writeLicenses(jsonGenerator, allLicenses);
 
         // External Refs
-        jsonGenerator.writeFieldName("externalReferences");
-        jsonGenerator.writeStartArray();
-        for (ExternalReference ref : component.getExternalReferences()) {
-            jsonGenerator.writeStartObject();
-
-            jsonGenerator.writeStringField("url", ref.getUrl());
-            jsonGenerator.writeStringField("comment", "Category: " + ref.getCategory());
-            jsonGenerator.writeStringField("type", ref.getType());
-            writeHashes(jsonGenerator, ref.getHashes());
-
-            jsonGenerator.writeEndObject();
-        }
-        jsonGenerator.writeEndArray();
+        writeExternalRefs(jsonGenerator, component.getExternalReferences());
 
         jsonGenerator.writeStringField("releaseNotes", "Release Date: " + component.getReleaseDate());
         writeProperties(jsonGenerator, component.getProperties());
