@@ -161,21 +161,21 @@ public class NewMergerTest {
 
         Set<Component> SVIP_components_one = new HashSet<>(Arrays.asList(comp_svip_blue, comp_svip_yellow));
 
-        SBOM SBOM_one = new SVIPSBOM(
+        SVIPSBOM SBOM_one = new SVIPSBOM(
                 SVIP_TEST_FORMAT_ONE, SVIP_TEST_NAME_ONE, SVIP_TEST_VERSION_ONE, SVIP_TEST_UID_ONE,
                 SVIP_TEST_SPEC_VERSION_ONE, SVIP_TEST_LICENSES_ONE,
                 SVIP_CREATION_DATA_ONE, SVIP_DOCUMENT_COMMENT_ONE, SVIP_ROOT_ONE, SVIP_components_one,
                 SVIP_RELATIONSHIPS_ONE, SVIP_EXTRENAL_REFERENCES_ONE, SVIP_LICENSE_LIST_VERSION_ONE
         );
 
-        SBOM SBOM_two = new SVIPSBOM(
+        SVIPSBOM SBOM_two = new SVIPSBOM(
                 SVIP_TEST_FORMAT_TWO, SVIP_TEST_NAME_TWO, SVIP_TEST_VERSION_TWO, SVIP_TEST_UID_TWO,
                 SVIP_TEST_SPEC_VERSION_TWO, SVIP_TEST_LICENSES_TWO,
                 SVIP_CREATION_DATA_TWO, SVIP_DOCUMENT_COMMENT_TWO, SVIP_ROOT_TWO, SVIP_COMPONENTS_TWO,
                 SVIP_RELATIONSHIPS_TWO, SVIP_EXTRENAL_REFERENCES_TWO, SVIP_LICENSE_LIST_VERSION_TWO
         );
 
-        List<SBOM> sboms = new ArrayList<>(Arrays.asList(SBOM_one, SBOM_two));
+        List<SVIPSBOM> sboms = new ArrayList<>(Arrays.asList(SBOM_one, SBOM_two));
 
         Merger merger = new Merger();
 
