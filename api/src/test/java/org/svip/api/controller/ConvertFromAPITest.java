@@ -1,5 +1,6 @@
 package org.svip.api.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class ConvertFromAPITest extends APITest{
 
     @Test
     @DisplayName("Convert Sbom")
-    public void convertTest(){
+    public void convertTest() throws JsonProcessingException {
 
         when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
 

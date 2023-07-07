@@ -1,5 +1,6 @@
 package org.svip.api.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomfactory.translators.TranslatorException;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -225,11 +227,9 @@ public class SVIPApiController {
         based on decision, we upload a new/overwrite existing sbom on backend bd
      */
 
-    // todo ask frontend how they want convert to be parametrized
-
     @GetMapping("/convert")
     public ResponseEntity<String> convert(@RequestParam("id") long id, @RequestParam("schema") String schema,
-                                          @RequestParam("schema") Boolean overwrite){
+                                          @RequestParam("schema") Boolean overwrite) throws JsonProcessingException {
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
@@ -240,15 +240,22 @@ public class SVIPApiController {
         }
 
         SBOMFile toConvert = sbomFile.get();
-        String currentSchema = Utils.assumeSchema(toConvert);
 
-        SBOMFile converted = Utils.convert(toConvert, currentSchema, schema); // todo ensure has the same ID
+        HashMap<SBOMFile, String> conversionResult = (HashMap<SBOMFile, String>) Utils.convert(toConvert, schema);
+        String message = (String) conversionResult.values().toArray()[0];
+        SBOMFile converted = (SBOMFile) conversionResult.keySet().toArray()[0];
 
-        // Check if it exists
-        if (converted == null || converted.hasNullProperties()) {
-            LOGGER.info("DELETE /svip/convert?id=" + id + " - ERROR IN CONVERSION TO " + schema);
+        // if anything went wrong, an SBOMFILE with a blank name and contents will be returned,
+        // paired with the message String
+        if (converted.hasNullProperties()) {
+            LOGGER.info("DELETE /svip/convert?id=" + id + " - ERROR IN CONVERSION TO " + schema
+            + ((message.length() == 0) ? (": " + message) : ""));
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        // assign appropriate id and name
+        converted.setId(id);
+        converted.setFileName(toConvert.getFileName());
 
         if(overwrite){
             sbomFileRepository.deleteById(id);

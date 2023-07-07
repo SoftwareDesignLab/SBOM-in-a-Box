@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.model.SBOMFile;
+import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.old.SBOM;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
@@ -180,19 +181,45 @@ public class Utils {
     }
 
     /**
-     * Temporary stubbed out
-     * @param fromSchema
-     * @return
+     * Convert an SBOM to a desired schema
+     * @param schemaString the desired schema
+     * @return converted SBOMFile and error message, if any
      */
-    public static SBOMFile convert(SBOMFile sbom, String fromSchema, String toSchema){
-        Serializer s = SerializerFactory.createSerializer(SerializerFactory.Schema.valueOf(fromSchema),
-                SerializerFactory.Format.valueOf("JSON"),// todo not just JSON
-                true);
-        Deserializer d = SerializerFactory.createDeserializer(sbom.getContents());
-        return null;
+    public static Map<SBOMFile, String> convert(SBOMFile sbom, String schemaString) throws JsonProcessingException {
+
+        // deserialize into SBOM object
+        Deserializer d;
+        SVIPSBOM deserialized;
+
+        try{
+            d = SerializerFactory.createDeserializer(sbom.getContents());
+            deserialized = (SVIPSBOM) d.readFromString(sbom.getContents());
+        }catch (Exception e){
+            return Map.of(new SBOMFile("",""), "DURING DESERIALIZATION: " +
+                    e.getMessage());
+        }
+
+        SerializerFactory.Schema schema;
+        try{
+            schema = SerializerFactory.Schema.valueOf(schemaString);
+        }catch (Exception e){
+            return Map.of(new SBOMFile("",""), "SCHEMA " + schemaString + " NOT VALID: " +
+                    e.getMessage());
+        }
+
+        // serialize into desired format
+        Serializer s;
+        try{
+            s = SerializerFactory.createSerializer(schema,
+                    SerializerFactory.Format.valueOf("JSON"),// todo not just JSON
+                    true);
+        }catch (Exception e){
+            return Map.of(new SBOMFile("",""), "DURING SERIALIZATION: " +
+                    e.getMessage());
+        }
+
+        return Map.of(new SBOMFile("SUCCESS", s.writeToString(deserialized)), "");
+
     }
 
-    public static String assumeSchema(SBOMFile sbom){
-        return sbom.getContents().contains("cdx") ? "CDX23" : "SPDX"; // todo there's a better way
-    }
 }
