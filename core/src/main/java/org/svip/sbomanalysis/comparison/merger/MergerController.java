@@ -1,4 +1,4 @@
-package org.svip.sbomanalysis.comparison;
+package org.svip.sbomanalysis.comparison.merger;
 
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
@@ -7,7 +7,6 @@ import org.svip.sbom.model.objects.SVIPComponentObject;
 
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.util.ExternalReference;
-import org.svip.sbom.model.uids.CPE;
 
 import java.util.*;
 
@@ -18,7 +17,7 @@ import java.util.*;
  * @author Matt London
  */
 
-public class Merger {
+public class MergerController {
     /**
      * Merge a collection of SBOMs into one main SBOM
      *
