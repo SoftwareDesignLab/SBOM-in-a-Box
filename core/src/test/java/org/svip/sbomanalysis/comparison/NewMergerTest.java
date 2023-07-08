@@ -2,7 +2,6 @@ package org.svip.sbomanalysis.comparison;
 
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.interfaces.generics.Component;
-import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 
@@ -12,6 +11,7 @@ import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+import org.svip.sbomanalysis.comparison.merger.MergerController;
 
 import java.util.*;
 
@@ -177,9 +177,9 @@ public class NewMergerTest {
 
         List<SVIPSBOM> sboms = new ArrayList<>(Arrays.asList(SBOM_one, SBOM_two));
 
-        Merger merger = new Merger();
+        MergerController mergerController = new MergerController();
 
-        merger.merge(sboms);
+        mergerController.merge(sboms);
 
 
     }
