@@ -5,9 +5,7 @@ import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,6 +40,7 @@ class SPDX23FileBuilderTest {
     String test_hash_value = "da39a3ee5e6b4b0d3255bfef95601890afd80709";
 
     String test_comment = "This is a test comment";
+
     String test_attributionText = "All advertising materials mentioning features or use of this software" +
             "must display this test acknowledgement";
 
