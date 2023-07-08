@@ -8,16 +8,16 @@ package org.svip.sbomvex.vexstatement.status;
  */
 public class Status {
     /**The statement's vulnerability status*/
-    private VulnStatus vulnStatus;
+    private final VulnStatus vulnStatus;
 
     /**The statement's justification (NOT_AFFECTED only)*/
-    private Justification justification;
+    private final Justification justification;
 
     /**The statement's action statement (AFFECTED only)*/
-    private String actionStatement;
+    private final String actionStatement;
 
     /**The statement's impact statement (AFFECTED and NOT_AFFECTED only)*/
-    private String impactStatement;
+    private final String impactStatement;
 
     /**
      * Constructor to build a single VEX Statement status
