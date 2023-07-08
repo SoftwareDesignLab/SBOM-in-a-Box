@@ -1,5 +1,9 @@
 package org.svip.sbomvex.model;
 
+import org.svip.sbomvex.vexstatement.VEXStatement;
+
+import java.util.Set;
+
 /**
  * file: VEX.java
  * Class that builds a VEX document
@@ -26,8 +30,8 @@ public class VEX {
     /**The document's last updated time*/
     private final String timeLastUpdated;
 
-    //TODO add when VEX Statement is implemented
-    //private Set<VEXStatement> vexStatements;
+    /**The document's VEX Statements*/
+    private final Set<VEXStatement> vexStatements;
 
     /**
      * Get the document's VEX Identifier
@@ -78,11 +82,12 @@ public class VEX {
     }
 
     /**
-     * TODO Add when VEXStatement is implemented
-     * public Set<VEXStatement> getVEXStatements(){
-     *     return this.vexStatements
-     * }
+     * Get the VEX Statements of this VEX document
+     * @return the document's vexStatements
      */
+     public Set<VEXStatement> getVEXStatements() {
+        return this.vexStatements;
+    }
 
     public static class Builder{
 
@@ -106,8 +111,7 @@ public class VEX {
         /**The document's last updated time*/
         private String timeLastUpdated;
 
-        //TODO add when VEX Statement is implemented
-        //private Set<VEXStatement> vexStatements;
+        private Set<VEXStatement> vexStatements;
 
         /**
          * Set the document's VEX Identifier
@@ -170,12 +174,14 @@ public class VEX {
         }
 
         /**
-         * TODO Add when VEX statement is implemented
-         * public Builder addVEXStatement(VEXStatement vexStatement){
-         *     this.vexStatements.add(vexStatement);
-         *     return this;
-         * }
+         * Add a VEX Statement to the document
+         * @param vexStatement the VEX Statement to add
+         * @return a Builder
          */
+        public Builder addVEXStatement(VEXStatement vexStatement){
+            this.vexStatements.add(vexStatement);
+            return this;
+        }
 
         /**
          * Build a new VEX document
@@ -198,6 +204,6 @@ public class VEX {
         this.docVersion = builder.docVersion;
         this.timeFirstIssued = builder.timeFirstIssued;
         this.timeLastUpdated = builder.timeLastUpdated;
-        // this.vexStatements = builder.vexStatements
+        this.vexStatements = builder.vexStatements;
     }
 }
