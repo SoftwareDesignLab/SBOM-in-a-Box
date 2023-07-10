@@ -97,8 +97,40 @@ public class SPDX23TagValueSerializer implements Serializer {
                 packages.add(c);
         }
 
+        out.append("\n");
         for (SVIPComponentObject pkg : packages)
             out.append(getPackageInfo(pkg));
+
+        out.append("\n### Unpackaged Files\n\n");
+        for (SVIPComponentObject file : files)
+            out.append(getFileInfo(file));
+
+        return out.toString();
+    }
+
+    private String getChecksum(Map<String, String> hashes) {
+        StringBuilder out = new StringBuilder();
+        for (Map.Entry<String, String> hash : hashes.entrySet())
+            out.append(buildTagValue("PackageChecksum", hash.getKey() + ": " + hash.getValue()));
+
+        return out.toString();
+    }
+
+    private String getLicenseInfo(LicenseCollection licenses, boolean file) {
+        StringBuilder out = new StringBuilder();
+
+        for (String concluded : licenses.getConcluded())
+            out.append(buildTagValue("PackageLicenseConcluded", concluded));
+        for (String fromFile : licenses.getInfoFromFiles()) {
+            if (!file)
+                out.append(buildTagValue("PackageLicenseInfoFromFiles", fromFile));
+            else
+                out.append(buildTagValue("LicenseInfoInFile", fromFile));
+        }
+
+        for (String declared : licenses.getInfoFromFiles())
+            out.append(buildTagValue("PackageLicenseDeclared", declared));
+        out.append(buildTagValue("PackageLicenseComments", licenses.getComment()));
 
         return out.toString();
     }
@@ -106,7 +138,7 @@ public class SPDX23TagValueSerializer implements Serializer {
     private String getPackageInfo(SVIPComponentObject pkg) {
         StringBuilder out = new StringBuilder();
 
-        out.append("### Package: " + pkg.getName());
+        out.append("### Package: " + pkg.getName() + "\n\n");
         out.append(buildTagValue("SPDXID", pkg.getUID()));
         out.append(buildTagValue("PackageName", pkg.getName()));
         out.append(buildTagValue("PackageVersiom", pkg.getVersion()));
@@ -127,23 +159,10 @@ public class SPDX23TagValueSerializer implements Serializer {
         out.append(buildTagValue("PackageDownloadLocation", pkg.getDownloadLocation()));
         out.append(buildTagValue("FilesAnalyzed", pkg.getFilesAnalyzed().toString()));
         out.append(buildTagValue("PackageVerificationCode", pkg.getVerificationCode()));
-
-        for (Map.Entry<String, String> hash : pkg.getHashes().entrySet()) {
-            out.append(buildTagValue("PackageChecksum", hash.getKey() + ": " + hash.getValue()));
-        }
-
+        out.append(getChecksum(pkg.getHashes()));
         out.append(buildTagValue("PackageHomePage", pkg.getHomePage()));
         out.append(buildTagValue("PackageSourceInfo", pkg.getSourceInfo()));
-
-        LicenseCollection licenses = pkg.getLicenses();
-        for (String concluded : licenses.getConcluded())
-            out.append(buildTagValue("PackageLicenseConcluded", concluded));
-        for (String fromFile : licenses.getInfoFromFiles())
-            out.append(buildTagValue("PackageLicenseInfoFromFiles", fromFile));
-        for (String declared : licenses.getInfoFromFiles())
-            out.append(buildTagValue("PackageLicenseDeclared", declared));
-        out.append(buildTagValue("PackageLicenseComments", licenses.getComment()));
-
+        out.append(getLicenseInfo(pkg.getLicenses(), false));
         out.append(buildTagValue("PackageCopyrightText", pkg.getCopyright()));
 
         Set<ExternalReference> references = pkg.getExternalReferences();
@@ -173,7 +192,16 @@ public class SPDX23TagValueSerializer implements Serializer {
     private String getFileInfo(SVIPComponentObject file) {
         StringBuilder out = new StringBuilder();
 
-        out.append(buildTagValue("FileName", file.getUID()));
+        out.append(buildTagValue("SPDXID", file.getUID()));
+        out.append(buildTagValue("FileName", file.getName()));
+        out.append(buildTagValue("FileType", file.getType()));
+        out.append(buildTagValue("FileComment", file.getComment()));
+        out.append(getChecksum(file.getHashes()));
+        out.append(getLicenseInfo(file.getLicenses(), true));
+        out.append(buildTagValue("FileCopyrightText", file.getCopyright()));
+        out.append(buildTagValue("FileNotice", file.getFileNotice()));
+        out.append(buildTagValue("FileContributor", file.getAuthor()));
+        out.append(buildTagValue("FileAttributionText", file.getAttributionText()));
 
         return out.append("\n").toString();
     }

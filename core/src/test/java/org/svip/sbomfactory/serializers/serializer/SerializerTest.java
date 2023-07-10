@@ -121,7 +121,6 @@ public class SerializerTest {
         componentBuilder.setSourceInfo(nameAttribute.apply("sourceInfo"));
         componentBuilder.setReleaseDate(nameAttribute.apply("releaseDate"));
         componentBuilder.setBuildDate(nameAttribute.apply("buildDate"));
-        componentBuilder.setFileNotice(nameAttribute.apply("fileNotice"));
         componentBuilder.setValidUntilDate(nameAttribute.apply("validUntilDate"));
         componentBuilder.setComment(nameAttribute.apply("comment"));
 
