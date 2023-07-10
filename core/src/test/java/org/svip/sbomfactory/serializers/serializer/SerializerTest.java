@@ -86,8 +86,10 @@ public class SerializerTest {
         sbomBuilder.addComponent(buildTestComponent(3, false));
 
         Relationship relationship = new Relationship("uid3", "DESCRIBES");
+        Relationship relationship = new Relationship("COMPONENT 1", "DESCRIBES");
         relationship.setComment("Test Relationship Comment");
         sbomBuilder.addRelationship("uid1", relationship);
+        sbomBuilder.addRelationship("COMPONENT 0", relationship);
 
         return (SVIPSBOM) sbomBuilder.Build();
     }
