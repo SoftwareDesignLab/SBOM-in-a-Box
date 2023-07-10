@@ -14,7 +14,6 @@ import org.svip.componentfactory.CDX14PackageBuilderFactory;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
-import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
@@ -250,8 +249,8 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
             }
             // ROOT COMPONENT PROPERTIES
             if (node.get("metadata").get("component").get("properties") != null) {
-                for (int i = 0; i < node.get("component").get("properties").size(); i++) {
-                    componentBuilder.addProperty(node.get("component").get("properties").get(i).get("name").asText(), node.get("component").get("properties").get(i).get("value").asText());
+                for (int i = 0; i < node.get("metadata").get("component").get("properties").size(); i++) {
+                    componentBuilder.addProperty(node.get("metadata").get("component").get("properties").get(i).get("name").asText(), node.get("metadata").get("component").get("properties").get(i).get("value").asText());
                 }
             }
             // add the component to the sbom builder
@@ -302,7 +301,7 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
                 }
                 // GROUP
                 if (node.get("components").get(i).get("group") != null) {
-                    componentBuilder.setGroup(node.get("metadata").get("component").get(i).get("group").asText());
+                    componentBuilder.setGroup(node.get("components").get(i).get("group").asText());
                 }
                 // NAME
                 if (node.get("components").get(i).get("name") != null) {

@@ -15,6 +15,7 @@ import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.serializers.Metadata;
 
 import java.util.function.Function;
@@ -34,6 +35,8 @@ public class SerializerTest {
         this.componentFactory = new SVIPSBOMComponentFactory();
 
         this.testSBOM = buildTestSBOM();
+
+        Debug.enableDebug();
     }
 
     private SVIPSBOM buildTestSBOM() {
