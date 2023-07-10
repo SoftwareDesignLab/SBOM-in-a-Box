@@ -18,10 +18,12 @@ public class CDX14JSONDeserializerTest extends DeserializerTest {
     @Test
     public void readFromStringTest() throws IOException {
         SBOM sbom = getDeserializer().readFromString(Files.readString(Path.of(CDX_14_JSON_SBOM)));
+
+        // TODO more assertions
         assertNotNull(sbom);
         assertEquals("1", sbom.getVersion());
         assertEquals("1.4", sbom.getSpecVersion());
-        assertEquals(17, sbom.getComponents().size()); // TODO ensure no duplicates added?
+        assertEquals(17, sbom.getComponents().size());
         assertEquals("container", sbom.getRootComponent().getType());
     }
 }
