@@ -8,7 +8,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.svip.builderfactory.SPDX23SBOMBuilderFactory;
+import org.svip.builders.component.SPDX23FileBuilder;
 import org.svip.builders.component.SPDX23PackageBuilder;
+import org.svip.componentfactory.SPDX23FileBuilderFactory;
 import org.svip.componentfactory.SPDX23PackageBuilderFactory;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.model.interfaces.generics.SBOM;
@@ -75,8 +77,10 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
         // initialize builders
         SPDX23SBOMBuilderFactory sbomFactory = new SPDX23SBOMBuilderFactory();
         SPDX23Builder sbomBuilder = sbomFactory.createBuilder();
-        SPDX23PackageBuilderFactory componentFactory = new SPDX23PackageBuilderFactory();
-        SPDX23PackageBuilder componentBuilder = componentFactory.createBuilder();
+        SPDX23PackageBuilderFactory packageFactory = new SPDX23PackageBuilderFactory();
+        SPDX23PackageBuilder packageBuilder = packageFactory.createBuilder();
+        SPDX23FileBuilderFactory fileFactory = new SPDX23FileBuilderFactory();
+        SPDX23FileBuilder fileBuilder = fileFactory.createBuilder();
 
         // NAME
         if (node.get("name") != null) {
@@ -139,37 +143,37 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
             for (int i = 0; i < node.get("packages").size(); i++) {
                 // TYPE
                 if (node.get("packages").get(i).get("primaryPackagePurpose") != null) {
-                    componentBuilder.setType(node.get("packages").get(i).get("primaryPackagePurpose").asText());
+                    packageBuilder.setType(node.get("packages").get(i).get("primaryPackagePurpose").asText());
                 }
                 // UID
                 if (node.get("packages").get(i).get("SPDXID") != null) {
-                    componentBuilder.setUID(node.get("packages").get(i).get("SPDXID").asText());
+                    packageBuilder.setUID(node.get("packages").get(i).get("SPDXID").asText());
                 }
                 // AUTHOR
                 if (node.get("packages").get(i).get("originator") != null) {
-                    componentBuilder.setAuthor(node.get("packages").get(i).get("originator").asText());
+                    packageBuilder.setAuthor(node.get("packages").get(i).get("originator").asText());
                 }
                 // NAME
                 if (node.get("packages").get(i).get("name") != null) {
-                    componentBuilder.setName(node.get("packages").get(i).get("name").asText());
+                    packageBuilder.setName(node.get("packages").get(i).get("name").asText());
                 }
                 // VERSION
                 if (node.get("packages").get(i).get("versionInfo") != null) {
-                    componentBuilder.setVersion(node.get("packages").get(i).get("versionInfo").asText());
+                    packageBuilder.setVersion(node.get("packages").get(i).get("versionInfo").asText());
                 }
                 // DOWNLOAD LOCATION
                 if (node.get("packages").get(i).get("downloadLocation") != null) {
-                    componentBuilder.setDownloadLocation(node.get("packages").get(i).get("downloadLocation").asText());
+                    packageBuilder.setDownloadLocation(node.get("packages").get(i).get("downloadLocation").asText());
                 }
                 // DESCRIPTION
                 if (node.get("packages").get(i).get("summary") != null) {
                     Description description = new Description(node.get("packages").get(i).get("summary").asText());
-                    componentBuilder.setDescription(description);
+                    packageBuilder.setDescription(description);
                 }
                 // HASHES
                 if (node.get("packages").get(i).get("checksums") != null) {
                     for (int j = 0; j < node.get("packages").get(i).get("checksums").size(); j++) {
-                        componentBuilder.addHash(node.get("packages").get(i).get("checksums").get(j).get("algorithm").asText(),
+                        packageBuilder.addHash(node.get("packages").get(i).get("checksums").get(j).get("algorithm").asText(),
                                 node.get("packages").get(i).get("checksums").get(j).get("checksumValue").asText());
                     }
                 }
@@ -185,10 +189,10 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
                     componentLicenses.addLicenseInfoFromFile(node.get("packages").get(i).get("licenseInfoFromFiles").asText());
                 }
                 // add license collection to component builder
-                componentBuilder.setLicenses(componentLicenses);
+                packageBuilder.setLicenses(componentLicenses);
                 // COPYRIGHT
                 if (node.get("packages").get(i).get("copyright") != null) {
-                    componentBuilder.setCopyright(node.get("packages").get(i).get("copyright").asText());
+                    packageBuilder.setCopyright(node.get("packages").get(i).get("copyright").asText());
                 }
                 // EXTERNAL REFERENCES
                 if (node.get("packages").get(i).get("externalRefs") != null) {
@@ -201,12 +205,12 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
                                     node.get("packages").get(i).get("externalRefs").get(j).get("referenceLocator").asText(),
                                     node.get("packages").get(i).get("externalRefs").get(j).get("referenceType").asText());
                             // add the external reference to the component builder
-                            componentBuilder.addExternalReference(externalReference);
+                            packageBuilder.addExternalReference(externalReference);
                         }
                     }
                 }
                 // add the component to the sbom builder
-                sbomBuilder.addSPDX23Component(componentBuilder.buildAndFlush());
+                sbomBuilder.addSPDX23Component(packageBuilder.buildAndFlush());
             }
         }
         // Files
@@ -215,24 +219,24 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
                 // TYPE
                 if (node.get("files").get(i).get("fileTypes") != null && node.get("files").get(i).get("fileTypes").size() > 0) {
                     // TODO get more filetypes
-                    componentBuilder.setType(node.get("files").get(i).get("fileTypes").get(0).asText());
+                    fileBuilder.setType(node.get("files").get(i).get("fileTypes").get(0).asText());
                 }
                 // UID
                 if (node.get("files").get(i).get("SPDXID") != null) {
-                    componentBuilder.setUID(node.get("files").get(i).get("SPDXID").asText());
+                    fileBuilder.setUID(node.get("files").get(i).get("SPDXID").asText());
                 }
                 // AUTHOR
                 if (node.get("files").get(i).get("fileContributors") != null) {
-                    componentBuilder.setAuthor(node.get("files").get(i).get("fileContributors").asText());
+                    fileBuilder.setAuthor(node.get("files").get(i).get("fileContributors").asText());
                 }
                 // NAME
                 if (node.get("files").get(i).get("fileName") != null) {
-                    componentBuilder.setName(node.get("files").get(i).get("fileName").asText());
+                    fileBuilder.setName(node.get("files").get(i).get("fileName").asText());
                 }
                 // HASHES
                 if (node.get("files").get(i).get("checksums") != null) {
                     for (int j = 0; j < node.get("files").get(i).get("checksums").size(); j++) {
-                        componentBuilder.addHash(node.get("files").get(i).get("checksums").get(j).get("algorithm").asText(),
+                        fileBuilder.addHash(node.get("files").get(i).get("checksums").get(j).get("algorithm").asText(),
                                 node.get("files").get(i).get("checksums").get(j).get("checksumValue").asText());
                     }
                 }
@@ -245,13 +249,13 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
                     componentLicenses.addLicenseInfoFromFile(node.get("files").get(i).get("licenseInfoInFiles").asText());
                 }
                 // add license collection to component builder
-                componentBuilder.setLicenses(componentLicenses);
+                fileBuilder.setLicenses(componentLicenses);
                 // COPYRIGHT
                 if (node.get("files").get(i).get("copyrightText") != null) {
-                    componentBuilder.setCopyright(node.get("files").get(i).get("copyrightText").asText());
+                    fileBuilder.setCopyright(node.get("files").get(i).get("copyrightText").asText());
                 }
                 // add the component to the sbom builder
-                sbomBuilder.addSPDX23Component(componentBuilder.buildAndFlush());
+                sbomBuilder.addSPDX23Component(fileBuilder.buildAndFlush());
             }
         }
         // Relationships:
