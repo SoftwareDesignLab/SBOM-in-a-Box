@@ -1,9 +1,9 @@
 package org.svip.sbomanalysis.qualityattributes.pipelines;
 
 import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbomanalysis.qualityattributes.QualityReport;
-import org.svip.sbomanalysis.qualityattributes.interfaces.schemas.CycloneDX14.CDX14Tests;
-import org.svip.sbomanalysis.qualityattributes.interfaces.schemas.SPDX23.SPDX23Tests;
+import org.svip.sbomanalysis.qualityattributes.oldpipeline.QualityReport;
+import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.schemas.CycloneDX14.CDX14Tests;
+import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.schemas.SPDX23.SPDX23Tests;
 import org.svip.sbomanalysis.qualityattributes.oldtests.Result;
 
 import java.util.Set;
