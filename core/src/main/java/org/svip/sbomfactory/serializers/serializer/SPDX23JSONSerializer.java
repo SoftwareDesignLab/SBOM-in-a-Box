@@ -85,7 +85,7 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
         jsonGenerator.writeStringField("name", sbom.getName());
         jsonGenerator.writeStringField("documentNamespace", sbom.getUID());
         jsonGenerator.writeStringField("comment", sbom.getDocumentComment());
-        jsonGenerator.writeStringField("dataLicense", "CC0-1.0"); // TODO where should we get this from
+        jsonGenerator.writeStringField("dataLicense", "CC0-1.0");
 
         jsonGenerator.writeFieldName("documentDescribes");
         jsonGenerator.writeObject(sbom.getComponents().stream().map(Component::getUID).toList());
@@ -94,7 +94,6 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
 
         // TODO we don't store extracted licensing info or external document refs
 
-        // TODO find a way to differentiate that works
         Set<SVIPComponentObject> files = new HashSet<>();
         Set<SVIPComponentObject> packages = new HashSet<>();
 
