@@ -1,10 +1,11 @@
-package org.svip.sbomanalysis.qualityattributes.interfaces.generics;
+package org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.generics;
 
 import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbomanalysis.qualityattributes.QualityReport;
-import org.svip.sbomanalysis.qualityattributes.oldtests.Result;
+import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
+import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 
 import java.util.Set;
+
 
 /**
  * file: QAPipeline.java

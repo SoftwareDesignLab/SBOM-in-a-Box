@@ -1,4 +1,4 @@
-package org.svip.sbomanalysis.qualityattributes;
+package org.svip.sbomanalysis.qualityattributes.oldpipeline;
 
 
 import org.svip.sbom.model.old.SBOM;

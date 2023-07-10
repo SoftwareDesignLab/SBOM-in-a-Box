@@ -1,4 +1,4 @@
-package org.svip.sbomanalysis.qualityattributes;
+package org.svip.sbomanalysis.qualityattributes.oldpipeline;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.svip.sbomanalysis.qualityattributes.oldtests.Result;
