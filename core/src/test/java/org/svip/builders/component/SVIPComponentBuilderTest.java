@@ -97,7 +97,7 @@ public class SVIPComponentBuilderTest {
     @Test
     void setMimeType() {
         test_packageBuilder.setMimeType(test_mimeType);
-        test_file = test_packageBuilder.build();
+        test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_mimeType, test_file.getMimeType());
     }
 
