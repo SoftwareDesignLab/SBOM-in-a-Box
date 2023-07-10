@@ -13,6 +13,7 @@ import org.svip.componentfactory.SPDX23PackageBuilderFactory;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
@@ -204,7 +205,6 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
                         }
                     }
                 }
-                // TO DO: Add relationship data
                 // add the component to the sbom builder
                 sbomBuilder.addSPDX23Component(componentBuilder.buildAndFlush());
             }
@@ -252,6 +252,15 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
                 }
                 // add the component to the sbom builder
                 sbomBuilder.addSPDX23Component(componentBuilder.buildAndFlush());
+            }
+        }
+        // Relationships:
+        if (node.get("relationships") != null) {
+            for (int i = 0; i < node.get("relationships").size(); i++) {
+                Relationship relationship = new Relationship(
+                        node.get("relationships").get(i).get("relatedSpdxElement").asText(),
+                        node.get("relationships").get(i).get("relationshipType").asText());
+                sbomBuilder.addRelationship(node.get("relationships").get(i).get("spdxElementId").asText(), relationship);
             }
         }
         // Build the SBOM
