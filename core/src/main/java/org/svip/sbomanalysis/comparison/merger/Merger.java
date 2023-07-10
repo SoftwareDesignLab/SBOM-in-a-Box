@@ -8,7 +8,9 @@ import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public abstract class Merger {
@@ -20,6 +22,7 @@ public abstract class Merger {
     protected abstract SBOM mergeSBOM(SBOM A, SBOM B);
 
     protected Set<Component> mergeComponents(Set<Component> A, Set<Component> B) {
+
         Set<Component> merged_components = new HashSet<>();
 
         for(Component current_A : A) {
@@ -36,8 +39,21 @@ public abstract class Merger {
     }
 
     protected Component mergeComponent(Component A, Component B) {
-        Component C = null;
-        return C;
-    }
 
+        for(String concluded : B.getLicenses().getConcluded().stream().toList()) {
+            A.getLicenses().addConcludedLicenseString(concluded);
+        }
+        for(String declared : B.getLicenses().getDeclared().stream().toList()) {
+            A.getLicenses().addDeclaredLicense(declared);
+        }
+        for(String info : B.getLicenses().getInfoFromFiles().stream().toList()) {
+            A.getLicenses().addLicenseInfoFromFile(info);
+        }
+
+        for(Map.Entry hash : B.getHashes().entrySet()) {
+            //A.getHashes().putAll();
+        }
+
+        return A;
+    }
 }
