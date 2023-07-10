@@ -1,9 +1,8 @@
 package org.svip.sbomanalysis.qualityattributes.interfaces.schemas.SPDX23;
 
 import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbomanalysis.qualityattributes.interfaces.generics.QAPipeline;
-import org.svip.sbomanalysis.qualityattributes.tests.Result;
+import org.svip.sbomanalysis.qualityattributes.oldtests.Result;
 
 import java.util.Set;
 

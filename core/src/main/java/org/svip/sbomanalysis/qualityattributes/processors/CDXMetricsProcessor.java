@@ -1,7 +1,7 @@
 package org.svip.sbomanalysis.qualityattributes.processors;
 
-import org.svip.sbomanalysis.qualityattributes.tests.HasBomRefTest;
-import org.svip.sbomanalysis.qualityattributes.tests.HasBomVersionTest;
+import org.svip.sbomanalysis.qualityattributes.oldtests.HasBomRefTest;
+import org.svip.sbomanalysis.qualityattributes.oldtests.HasBomVersionTest;
 
 /**
  * file: CDXMetricsProcessor.java

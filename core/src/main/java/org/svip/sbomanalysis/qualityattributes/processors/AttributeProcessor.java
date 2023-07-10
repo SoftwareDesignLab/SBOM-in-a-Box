@@ -1,8 +1,8 @@
 package org.svip.sbomanalysis.qualityattributes.processors;
 
 import org.svip.sbom.model.old.SBOM;
-import org.svip.sbomanalysis.qualityattributes.tests.MetricTest;
-import org.svip.sbomanalysis.qualityattributes.tests.Result;
+import org.svip.sbomanalysis.qualityattributes.oldtests.MetricTest;
+import org.svip.sbomanalysis.qualityattributes.oldtests.Result;
 
 import java.util.ArrayList;
 import java.util.List;

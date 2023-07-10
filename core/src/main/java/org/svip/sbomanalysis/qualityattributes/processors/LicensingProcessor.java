@@ -1,8 +1,8 @@
 package org.svip.sbomanalysis.qualityattributes.processors;
 
 
-import org.svip.sbomanalysis.qualityattributes.tests.HasLicenseDataTest;
-import org.svip.sbomanalysis.qualityattributes.tests.ValidSPDXLicenseTest;
+import org.svip.sbomanalysis.qualityattributes.oldtests.HasLicenseDataTest;
+import org.svip.sbomanalysis.qualityattributes.oldtests.ValidSPDXLicenseTest;
 
 /**
  * file: LicensingProcessor.java
