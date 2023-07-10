@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
@@ -105,6 +106,8 @@ public class SPDX23TagValueSerializer implements Serializer {
         for (SVIPComponentObject file : files)
             out.append(getFileInfo(file));
 
+        out.append(getRelationships(sbom.getRelationships()));
+
         return out.toString();
     }
 
@@ -204,6 +207,20 @@ public class SPDX23TagValueSerializer implements Serializer {
         out.append(buildTagValue("FileAttributionText", file.getAttributionText()));
 
         return out.append("\n").toString();
+    }
+
+    private String getRelationships(Map<String, Set<Relationship>> relationships) {
+        StringBuilder out = new StringBuilder();
+
+        for (Map.Entry<String, Set<Relationship>> rMap : relationships.entrySet()) {
+            for (Relationship rel : rMap.getValue()) {
+                out.append(buildTagValue("Relationship",
+                        String.format("%s %s %s", rMap.getKey(), rel.getRelationshipType(), rel.getOtherUID())));
+                out.append(buildTagValue("RelationshipComment", rel.getComment()));
+            }
+        }
+
+        return out.toString();
     }
 
     /**
