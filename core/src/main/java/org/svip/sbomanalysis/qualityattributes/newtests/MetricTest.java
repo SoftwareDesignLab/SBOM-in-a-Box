@@ -1,10 +1,12 @@
 package org.svip.sbomanalysis.qualityattributes.newtests;
 
+import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
-import org.svip.sbomanalysis.qualityattributes.oldtests.Result;
+import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 
 import java.util.List;
 import java.util.Set;
+
 
 /**
  * file: MetricTest.java
@@ -16,7 +18,7 @@ import java.util.Set;
 public abstract class MetricTest {
 
     /**The list of attributes used for the Metric Tests*/
-    private List<ATTRIBUTE> attributes;
+    List<ATTRIBUTE> attributes;
 
     /**
      * Constructor to create a new MetricTest
@@ -30,8 +32,8 @@ public abstract class MetricTest {
     /**
      * Test the given SBOM
      *
-     * @param field the field to test
-     * @param value the value to test
+     * @param field the field being tested
+     * @param value the value being tested
      * @return Collection of Results
      */
     public abstract Set<Result> test(String field, String value);
