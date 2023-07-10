@@ -256,23 +256,23 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
             }
             // ROOT COMPONENT RELATIONSHIPS
             if (node.get("metadata").get("component").get("pedigree") != null && node.get("metadata").get("component").get("bom-ref") != null) {
-                if (node.get("metadata").get("component").get("ancestors") != null) {
-                    for (int i = 0; i < node.get("metadata").get("component").get("ancestors").size(); i++) {
-                        Relationship relationship = new Relationship(node.get("metadata").get("component").get("ancestors").get(i).asText(),
+                if (node.get("metadata").get("component").get("pedigree").get("ancestors") != null) {
+                    for (int i = 0; i < node.get("metadata").get("component").get("pedigree").get("ancestors").size(); i++) {
+                        Relationship relationship = new Relationship(node.get("metadata").get("component").get("pedigree").get("ancestors").get(i).asText(),
                                 "ancestor");
                         sbomBuilder.addRelationship(node.get("metadata").get("component").get("bom-ref").asText(), relationship);
                     }
                 }
-                if (node.get("metadata").get("component").get("descendants") != null) {
-                    for (int i = 0; i < node.get("metadata").get("component").get("descendants").size(); i++) {
-                        Relationship relationship = new Relationship(node.get("metadata").get("component").get("descendants").get(i).asText(),
+                if (node.get("metadata").get("component").get("pedigree").get("descendants") != null) {
+                    for (int i = 0; i < node.get("metadata").get("component").get("pedigree").get("descendants").size(); i++) {
+                        Relationship relationship = new Relationship(node.get("metadata").get("component").get("pedigree").get("descendants").get(i).asText(),
                                 "descendant");
                         sbomBuilder.addRelationship(node.get("metadata").get("component").get("bom-ref").asText(), relationship);
                     }
                 }
-                if (node.get("metadata").get("component").get("variants") != null) {
-                    for (int i = 0; i < node.get("metadata").get("component").get("variants").size(); i++) {
-                        Relationship relationship = new Relationship(node.get("metadata").get("component").get("variants").get(i).asText(),
+                if (node.get("metadata").get("component").get("pedigree").get("variants") != null) {
+                    for (int i = 0; i < node.get("metadata").get("component").get("pedigree").get("variants").size(); i++) {
+                        Relationship relationship = new Relationship(node.get("metadata").get("component").get("pedigree").get("variants").get(i).asText(),
                                 "variant");
                         sbomBuilder.addRelationship(node.get("metadata").get("component").get("bom-ref").asText(), relationship);
                     }
@@ -398,23 +398,23 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
                 }
                 // RELATIONSHIPS
                 if (node.get("components").get(i).get("pedigree") != null && node.get("components").get(i).get("bom-ref") != null) {
-                    if (node.get("components").get(i).get("ancestors") != null) {
-                        for (int j = 0; j < node.get("components").get(i).get("ancestors").size(); j++) {
-                            Relationship relationship = new Relationship(node.get("components").get(i).get("ancestors").get(j).asText(),
+                    if (node.get("components").get(i).get("pedigree").get("ancestors") != null) {
+                        for (int j = 0; j < node.get("components").get(i).get("pedigree").get("ancestors").size(); j++) {
+                            Relationship relationship = new Relationship(node.get("components").get(i).get("pedigree").get("ancestors").get(j).asText(),
                                     "ancestor");
                             sbomBuilder.addRelationship(node.get("components").get(i).get("bom-ref").asText(), relationship);
                         }
                     }
-                    if (node.get("components").get(i).get("descendants") != null) {
-                        for (int j = 0; j < node.get("components").get(i).get("descendants").size(); j++) {
-                            Relationship relationship = new Relationship(node.get("components").get(i).get("descendants").get(j).asText(),
+                    if (node.get("components").get(i).get("pedigree").get("descendants") != null) {
+                        for (int j = 0; j < node.get("components").get(i).get("pedigree").get("descendants").size(); j++) {
+                            Relationship relationship = new Relationship(node.get("components").get(i).get("pedigree").get("descendants").get(j).asText(),
                                     "descendant");
                             sbomBuilder.addRelationship(node.get("components").get(i).get("bom-ref").asText(), relationship);
                         }
                     }
-                    if (node.get("components").get(i).get("variants") != null) {
-                        for (int j = 0; j < node.get("components").get(i).get("variants").size(); j++) {
-                            Relationship relationship = new Relationship(node.get("components").get(i).get("variants").get(j).asText(),
+                    if (node.get("components").get(i).get("pedigree").get("variants") != null) {
+                        for (int j = 0; j < node.get("components").get(i).get("pedigree").get("variants").size(); j++) {
+                            Relationship relationship = new Relationship(node.get("components").get(i).get("pedigree").get("variants").get(j).asText(),
                                     "variant");
                             sbomBuilder.addRelationship(node.get("components").get(i).get("bom-ref").asText(), relationship);
                         }
