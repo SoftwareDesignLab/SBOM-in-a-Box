@@ -77,35 +77,35 @@ public class SPDX23PackageBuilderTest {
     String test_extTef_type = "website";
 
     @Test
-    void setType() {
+    void setType_is_library_value_test() {
         test_packageBuilder.setType(test_type);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_type, test_file.getType());
     }
 
     @Test
-    void setUID() {
+    void setUID_is_test_UID_value_test() {
         test_packageBuilder.setUID(test_uid);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_uid, test_file.getUID());
     }
 
     @Test
-    void setAuthor() {
+    void setAuthor_is_test_author_value_test() {
         test_packageBuilder.setAuthor(test_author);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_author, test_file.getAuthor());
     }
 
     @Test
-    void setName() {
+    void setName_is_test_name_value_test() {
         test_packageBuilder.setName(test_name);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_name, test_file.getName());
     }
 
     @Test
-    void setLicenses() {
+    void setLicenses_has_test_licenses_test() {
         LicenseCollection licenseCollection = new LicenseCollection();
         licenseCollection.addDeclaredLicense(test_license1);
         licenseCollection.addDeclaredLicense(test_license2);
@@ -117,14 +117,14 @@ public class SPDX23PackageBuilderTest {
     }
 
     @Test
-    void setCopyright() {
+    void setCopyright_is_test_copyright_value_test() {
         test_packageBuilder.setCopyright(test_copyright);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_copyright, test_file.getCopyright());
     }
 
     @Test
-    void addHash() {
+    void addHash_contains_test_hash_info_in_hashmap_test() {
         test_packageBuilder.addHash(test_hash_algo, test_hash_value);
 
         test_file = test_packageBuilder.buildAndFlush();
@@ -136,7 +136,7 @@ public class SPDX23PackageBuilderTest {
     }
 
     @Test
-    void setComment() {
+    void setComment_is_test_comment_value_test() {
         test_packageBuilder.setComment(test_comment);
 
         test_file = test_packageBuilder.buildAndFlush();
@@ -145,7 +145,7 @@ public class SPDX23PackageBuilderTest {
     }
 
     @Test
-    void setAttributionText() {
+    void setAttributionText_is_test_attribution_text_value_test() {
         test_packageBuilder.setAttributionText(test_attributionText);
 
         test_file = test_packageBuilder.buildAndFlush();
@@ -154,70 +154,70 @@ public class SPDX23PackageBuilderTest {
     }
 
     @Test
-    void setDownloadLocation() {
+    void setDownloadLocation_is_test_download_location_value_test() {
         test_packageBuilder.setDownloadLocation(test_downloadLocation);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_downloadLocation, test_file.getDownloadLocation());
     }
 
     @Test
-    void setFileName() {
+    void setFileName_is_file_name_value_test() {
         test_packageBuilder.setFileName(test_fileName);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_fileName, test_file.getFileName());
     }
 
     @Test
-    void setFilesAnalyzed() {
+    void setFilesAnalyzed_is_true_test() {
         test_packageBuilder.setFilesAnalyzed(test_filesAnalyzed);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_filesAnalyzed, test_file.getFilesAnalyzed());
     }
 
     @Test
-    void setVerificationCode() {
+    void setVerificationCode_is_test_verification_code_value_test() {
         test_packageBuilder.setVerificationCode(test_verificationCode);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_verificationCode, test_file.getVerificationCode());
     }
 
     @Test
-    void setHomePage() {
+    void setHomePage_is_test_home_page_value_test() {
         test_packageBuilder.setHomePage(test_homePage);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_homePage, test_file.getHomePage());
     }
 
     @Test
-    void setSourceInfo() {
+    void setSourceInfo_is_test_source_info_value_test() {
         test_packageBuilder.setSourceInfo(test_sourceInfo);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_sourceInfo, test_file.getSourceInfo());
     }
 
     @Test
-    void setReleaseDate() {
+    void setReleaseDate_is_test_release_date_value_test() {
         test_packageBuilder.setReleaseDate(test_releaseDate);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_releaseDate, test_file.getReleaseDate());
     }
 
     @Test
-    void setBuildDate() {
+    void setBuildDate_is_test_built_date_value_test() {
         test_packageBuilder.setBuildDate(test_builtDate);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_builtDate, test_file.getBuiltDate());
     }
 
     @Test
-    void setValidUntilDate() {
+    void setValidUntilDate_is_test_valid_until_date_value_test() {
         test_packageBuilder.setValidUntilDate(test_validUntilDate);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_validUntilDate, test_file.getValidUntilDate());
     }
 
     @Test
-    void setSupplier() {
+    void setSupplier_is_test_supplier_value_test() {
         Organization supplier = new Organization(test_supplier, "www.python.com");
         test_packageBuilder.setSupplier(supplier);
 
@@ -226,7 +226,7 @@ public class SPDX23PackageBuilderTest {
     }
 
     @Test
-    void setVersion() {
+    void setVersion_is_test_version_value_test() {
         test_packageBuilder.setVersion(test_version);
 
         test_file = test_packageBuilder.buildAndFlush();
@@ -234,7 +234,7 @@ public class SPDX23PackageBuilderTest {
     }
 
     @Test
-    void setDescription() {
+    void setDescription_is_test_description_test() {
         Description description = new Description(test_description);
         test_packageBuilder.setDescription(description);
 
@@ -243,7 +243,7 @@ public class SPDX23PackageBuilderTest {
     }
 
     @Test
-    void addCPE() {
+    void addCPE_has_test_random_cpe_value_test() {
         test_packageBuilder.addCPE(test_random_cpe);
 
         test_file = test_packageBuilder.buildAndFlush();
@@ -251,7 +251,7 @@ public class SPDX23PackageBuilderTest {
     }
 
     @Test
-    void addPURL() {
+    void addPURL_has_test_random_purl_value_test() {
         test_packageBuilder.addPURL(test_random_purl);
 
         test_file = test_packageBuilder.buildAndFlush();
@@ -259,7 +259,7 @@ public class SPDX23PackageBuilderTest {
     }
 
     @Test
-    void addExternalReference() {
+    void addExternalReference_has_test_external_reference_test() {
         ExternalReference externalReference = new ExternalReference(test_extRef_url, test_extTef_type);
         test_packageBuilder.addExternalReference(externalReference);
 

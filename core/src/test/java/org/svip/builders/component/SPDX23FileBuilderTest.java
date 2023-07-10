@@ -47,7 +47,7 @@ class SPDX23FileBuilderTest {
     String fileNotice = "This file is licensed under GPL";
 
     @Test
-    void setType() {
+    void setType_is_test_type_value_test() {
         test_fileBuilder.setType(test_type);
 
         test_file = test_fileBuilder.buildAndFlush();
@@ -57,7 +57,7 @@ class SPDX23FileBuilderTest {
     }
 
     @Test
-    void setUID() {
+    void setUID_is_test_UID_value_test() {
         test_fileBuilder.setUID(test_uid);
 
         test_file = test_fileBuilder.buildAndFlush();
@@ -66,7 +66,7 @@ class SPDX23FileBuilderTest {
     }
 
     @Test
-    void setAuthor() {
+    void setAuthor_is_test_author_value_test() {
         test_fileBuilder.setAuthor(test_author);
 
         test_file = test_fileBuilder.buildAndFlush();
@@ -75,7 +75,7 @@ class SPDX23FileBuilderTest {
     }
 
     @Test
-    void setName() {
+    void setName_is_test_name_value_test() {
         test_fileBuilder.setName(test_name);
 
         test_file = test_fileBuilder.buildAndFlush();
@@ -84,7 +84,7 @@ class SPDX23FileBuilderTest {
     }
 
     @Test
-    void setLicenses() {
+    void setLicenses_contains_test_licenses_values_test() {
         LicenseCollection licenseCollection = new LicenseCollection();
         licenseCollection.addDeclaredLicense(test_license1);
         licenseCollection.addDeclaredLicense(test_license2);
@@ -96,7 +96,7 @@ class SPDX23FileBuilderTest {
     }
 
     @Test
-    void setCopyright() {
+    void setCopyright_is_test_copyright_value_test() {
         test_fileBuilder.setCopyright(test_copyright);
 
         test_file = test_fileBuilder.buildAndFlush();
@@ -105,19 +105,19 @@ class SPDX23FileBuilderTest {
     }
 
     @Test
-    void addHash() {
+    void addHash_contains_test_hash_info_test() {
         test_fileBuilder.addHash(test_hash_algo, test_hash_value);
 
         test_file = test_fileBuilder.buildAndFlush();
 
-        HashMap<String, String> test_map = new HashMap<String, String>();
+        HashMap<String, String> test_map = new HashMap<>();
         test_map.put(test_hash_algo, test_hash_value);
 
         assertEquals(test_map, test_file.getHashes());
     }
 
     @Test
-    void setComment() {
+    void setComment_is_test_comment_value_test() {
         test_fileBuilder.setComment(test_comment);
 
         test_file = test_fileBuilder.buildAndFlush();
@@ -126,7 +126,7 @@ class SPDX23FileBuilderTest {
     }
 
     @Test
-    void setAttributionText() {
+    void setAttributionText_is_test_attribution_text_value_test() {
         test_fileBuilder.setAttributionText(test_attributionText);
 
         test_file = test_fileBuilder.buildAndFlush();
@@ -135,7 +135,7 @@ class SPDX23FileBuilderTest {
     }
 
     @Test
-    void setFileNotice() {
+    void setFileNotice_is_test_file_notice_value_test() {
         test_fileBuilder.setFileNotice(fileNotice);
 
         test_file = test_fileBuilder.buildAndFlush();
