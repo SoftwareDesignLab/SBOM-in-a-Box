@@ -12,7 +12,7 @@ import java.util.List;
  * For a given SBOM, check if it has a version number declared
  * @author Matthew Morrison
  */
-public class HasBomVersionTest extends MetricTest{
+public class HasBomVersionTest extends MetricTest {
     private static final String TEST_NAME = "HasBomVersion";
 
     /**

@@ -12,7 +12,7 @@ import java.util.List;
  * Creation Info (Creator and Created)
  * @author Matthew Morrison
  */
-public class HasCreationInfoTest extends MetricTest{
+public class HasCreationInfoTest extends MetricTest {
     public static final String TEST_NAME = "HasCreationInfo";
 
     /**

@@ -14,7 +14,7 @@ import java.util.Map;
  * DataLicense field with a license of CC0-1.0
  * @author Matthew Morrison
  */
-public class HasDataLicenseSPDXTest extends MetricTest{
+public class HasDataLicenseSPDXTest extends MetricTest {
 
     private static final String TEST_NAME = "HasDataLicenseSPDX";
 

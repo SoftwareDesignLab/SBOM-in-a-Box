@@ -25,7 +25,7 @@ import java.util.Set;
  * @author Matthew Morrison
  * @author Derek Garcia
  */
-public class ValidSPDXLicenseTest extends MetricTest{
+public class ValidSPDXLicenseTest extends MetricTest {
 
     private static final String TEST_NAME = "ValidSPDXLicense";
     private static final String SPDX_LICENSE_LIST_URL = "https://spdx.org/licenses/";

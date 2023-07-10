@@ -23,7 +23,7 @@ import java.util.Set;
  * given package manager through its PURL
  * @author Matthew Morrison
  */
-public class IsRegisteredTest extends MetricTest{
+public class IsRegisteredTest extends MetricTest {
     // name of the test for results
     private static final String TEST_NAME = "IsRegistered";
 

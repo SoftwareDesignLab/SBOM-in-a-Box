@@ -14,7 +14,7 @@ import java.util.List;
  * and follows scheme "https:"
  * @author Matthew Morrison
  */
-public class HasDocumentNamespaceTest extends MetricTest{
+public class HasDocumentNamespaceTest extends MetricTest {
 
     public static final String TEST_NAME = "HasDocumentNamespace";
 
