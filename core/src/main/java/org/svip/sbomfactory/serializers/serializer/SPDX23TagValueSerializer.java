@@ -107,8 +107,8 @@ public class SPDX23TagValueSerializer implements Serializer {
         StringBuilder out = new StringBuilder();
 
         out.append("### Package: " + pkg.getName());
-        out.append(buildTagValue("SPDXID", pkg.getName()));
-        out.append(buildTagValue("PackageName", pkg.getUID()));
+        out.append(buildTagValue("SPDXID", pkg.getUID()));
+        out.append(buildTagValue("PackageName", pkg.getName()));
         out.append(buildTagValue("PackageVersiom", pkg.getVersion()));
         out.append(buildTagValue("PackageSummary", pkg.getDescription().getSummary()));
         out.append(buildTagValue("PackageDescription", pkg.getDescription().getDescription()));
@@ -167,15 +167,15 @@ public class SPDX23TagValueSerializer implements Serializer {
         out.append(buildTagValue("BuiltDate", pkg.getBuiltDate()));
         out.append(buildTagValue("ValidUntilDate", pkg.getValidUntilDate()));
 
-        return out.toString();
+        return out.append("\n").toString();
     }
 
     private String getFileInfo(SVIPComponentObject file) {
         StringBuilder out = new StringBuilder();
 
+        out.append(buildTagValue("FileName", file.getUID()));
 
-
-        return out.toString();
+        return out.append("\n").toString();
     }
 
     /**
