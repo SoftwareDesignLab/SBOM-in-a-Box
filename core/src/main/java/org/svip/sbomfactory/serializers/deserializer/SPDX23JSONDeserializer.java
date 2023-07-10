@@ -257,10 +257,14 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
         // Relationships:
         if (node.get("relationships") != null) {
             for (int i = 0; i < node.get("relationships").size(); i++) {
-                Relationship relationship = new Relationship(
-                        node.get("relationships").get(i).get("relatedSpdxElement").asText(),
-                        node.get("relationships").get(i).get("relationshipType").asText());
-                sbomBuilder.addRelationship(node.get("relationships").get(i).get("spdxElementId").asText(), relationship);
+                if (node.get("relationships").get(i).get("relatedSpdxElement") != null
+                 && node.get("relationships").get(i).get("relationshipType") != null
+                 && node.get("relationships").get(i).get("spdxElementId") != null) {
+                    Relationship relationship = new Relationship(
+                            node.get("relationships").get(i).get("relatedSpdxElement").asText(),
+                            node.get("relationships").get(i).get("relationshipType").asText());
+                    sbomBuilder.addRelationship(node.get("relationships").get(i).get("spdxElementId").asText(), relationship);
+                }
             }
         }
         // Build the SBOM
