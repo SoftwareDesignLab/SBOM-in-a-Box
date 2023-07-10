@@ -1,5 +1,6 @@
 package org.svip.componentfactory;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.svip.builders.component.SPDX23FileBuilder;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
@@ -45,40 +46,106 @@ public class SPDX23FileBuilderFactoryTest {
 
     SPDX23FileObject test_file;
 
-    @Test
-    void create_SPDX_file_builder_test() {
+    @BeforeEach
+    public void create_test_file_builder(){
         SPDX23FileBuilderFactory spdx23FileBuilderFactory = new SPDX23FileBuilderFactory();
         test_fileBuilder = spdx23FileBuilderFactory.createBuilder();
+    }
 
-        LicenseCollection licenseCollection = new LicenseCollection();
-        licenseCollection.addDeclaredLicense(test_license1);
-        licenseCollection.addDeclaredLicense(test_license2);
-
-        HashMap<String, String> test_map = new HashMap<>();
-        test_map.put(test_hash_algo, test_hash_value);
-
+    @Test
+    void setType_is_test_type_value_test() {
         test_fileBuilder.setType(test_type);
-        test_fileBuilder.setUID(test_uid);
-        test_fileBuilder.setAuthor(test_author);
-        test_fileBuilder.setName(test_name);
-        test_fileBuilder.setLicenses(licenseCollection);
-        test_fileBuilder.setCopyright(test_copyright);
-        test_fileBuilder.addHash(test_hash_algo, test_hash_value);
-        test_fileBuilder.setComment(test_comment);
-        test_fileBuilder.setAttributionText(test_attributionText);
-        test_fileBuilder.setFileNotice(fileNotice);
 
         test_file = test_fileBuilder.buildAndFlush();
 
         assertEquals(test_type, test_file.getType());
+
+    }
+
+    @Test
+    void setUID_is_test_UID_value_test() {
+        test_fileBuilder.setUID(test_uid);
+
+        test_file = test_fileBuilder.buildAndFlush();
+
         assertEquals(test_uid, test_file.getUID());
+    }
+
+    @Test
+    void setAuthor_is_test_author_value_test() {
+        test_fileBuilder.setAuthor(test_author);
+
+        test_file = test_fileBuilder.buildAndFlush();
+
         assertEquals(test_author, test_file.getAuthor());
+    }
+
+    @Test
+    void setName_is_test_name_value_test() {
+        test_fileBuilder.setName(test_name);
+
+        test_file = test_fileBuilder.buildAndFlush();
+
         assertEquals(test_name, test_file.getName());
+    }
+
+    @Test
+    void setLicenses_contains_test_licenses_values_test() {
+        LicenseCollection licenseCollection = new LicenseCollection();
+        licenseCollection.addDeclaredLicense(test_license1);
+        licenseCollection.addDeclaredLicense(test_license2);
+        test_fileBuilder.setLicenses(licenseCollection);
+
+        test_file = test_fileBuilder.buildAndFlush();
+
         assertEquals(licenseCollection, test_file.getLicenses());
+    }
+
+    @Test
+    void setCopyright_is_test_copyright_value_test() {
+        test_fileBuilder.setCopyright(test_copyright);
+
+        test_file = test_fileBuilder.buildAndFlush();
+
         assertEquals(test_copyright, test_file.getCopyright());
+    }
+
+    @Test
+    void addHash_contains_test_hash_info_test() {
+        test_fileBuilder.addHash(test_hash_algo, test_hash_value);
+
+        test_file = test_fileBuilder.buildAndFlush();
+
+        HashMap<String, String> test_map = new HashMap<>();
+        test_map.put(test_hash_algo, test_hash_value);
+
         assertEquals(test_map, test_file.getHashes());
+    }
+
+    @Test
+    void setComment_is_test_comment_value_test() {
+        test_fileBuilder.setComment(test_comment);
+
+        test_file = test_fileBuilder.buildAndFlush();
+
         assertEquals(test_comment, test_file.getComment());
+    }
+
+    @Test
+    void setAttributionText_is_test_attribution_text_value_test() {
+        test_fileBuilder.setAttributionText(test_attributionText);
+
+        test_file = test_fileBuilder.buildAndFlush();
+
         assertEquals(test_attributionText, test_file.getAttributionText());
+    }
+
+    @Test
+    void setFileNotice_is_test_file_notice_value_test() {
+        test_fileBuilder.setFileNotice(fileNotice);
+
+        test_file = test_fileBuilder.buildAndFlush();
+
         assertEquals(fileNotice, test_file.getFileNotice());
     }
 }
