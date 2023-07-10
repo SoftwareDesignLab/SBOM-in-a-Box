@@ -398,12 +398,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     @Override
     public SPDX23PackageObject buildAndFlush() {
         // build the component
-        SPDX23PackageObject component = new SPDX23PackageObject(type, uid, author, name, licenses,
-                copyright, hashes, supplier, version, description, cpes,
-                purls, externalReferences, downloadLocation, fileName,
-                filesAnalyzed, verificationCode, homePage, sourceInfo,
-                releaseDate, builtDate, validUntilDate,
-                comment, attributionText);
+        SPDX23PackageObject component = build();
         // clear all the data in the builder
         this.type = null;
         this.uid = null;
