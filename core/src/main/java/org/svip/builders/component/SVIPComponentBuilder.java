@@ -552,9 +552,6 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
         this.fileNotice = null;
         this.comment = null;
         this.attributionText = null;
-        return new SVIPComponentObject(null, null, null, null,null, null,
-                null, null, null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, null, null, null, null,
-                null, null, null, null);
+        return component;
     }
 }
