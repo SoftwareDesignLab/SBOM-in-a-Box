@@ -14,7 +14,7 @@ import java.util.List;
  * @author Matthew Morrison
  * @author Derek Garcia
  */
-public class ValidHashDataTest extends MetricTest{
+public class ValidHashDataTest extends MetricTest {
 
     private static final String TEST_NAME = "ValidHashData";
 

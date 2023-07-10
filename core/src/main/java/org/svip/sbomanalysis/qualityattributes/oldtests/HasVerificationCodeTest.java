@@ -14,7 +14,7 @@ import java.util.List;
  * If FilesAnalyzed is false, test that the verification code is omitted
  * @author Matthew Morrison
  */
-public class HasVerificationCodeTest extends MetricTest{
+public class HasVerificationCodeTest extends MetricTest {
     public static final String TEST_NAME = "HasVerificationCode";
 
     /**

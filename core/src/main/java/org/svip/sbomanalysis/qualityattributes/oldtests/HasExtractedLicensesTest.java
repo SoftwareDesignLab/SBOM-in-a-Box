@@ -14,7 +14,7 @@ import java.util.Map;
  * licenses not on the SPDX license list and list them
  * @author Matthew Morrison
  */
-public class HasExtractedLicensesTest extends MetricTest{
+public class HasExtractedLicensesTest extends MetricTest {
     public static final String TEST_NAME = "HasExtractedLicenses";
 
     /**

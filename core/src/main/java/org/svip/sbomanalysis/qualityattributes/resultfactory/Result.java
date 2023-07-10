@@ -1,4 +1,36 @@
 package org.svip.sbomanalysis.qualityattributes.resultfactory;
 
+import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
+import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.STATUS;
+
+import java.util.List;
+
+/**
+ * File: Result.java
+ * Storage for the result of a Test
+ *
+ * @author Derek Garcia
+ * @author Matthew Morrison
+ */
 public class Result {
+
+    private List<ATTRIBUTE> attributes;
+
+    private String test;
+
+    private String message;
+
+    private String details;
+
+    private STATUS status;
+
+    public Result(List<ATTRIBUTE> attributes, String test,
+                  String message, String details, STATUS status){
+        this.attributes = attributes;
+        this.test = test;
+        this.message = message;
+        this.details = details;
+        this.status = status;
+    }
+
 }

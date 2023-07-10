@@ -13,7 +13,7 @@ import java.util.List;
  * @author Matthew Morrison
  * @author Derek Garcia
  */
-public class HasLicenseDataTest extends MetricTest{
+public class HasLicenseDataTest extends MetricTest {
 
     private static final String TEST_NAME = "HasLicenseData";
 

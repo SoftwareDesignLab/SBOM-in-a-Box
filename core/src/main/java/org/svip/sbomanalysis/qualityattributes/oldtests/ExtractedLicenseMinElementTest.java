@@ -17,7 +17,7 @@ import java.util.Map;
  * minimum fields: LicenseName, LicenseID, LicenseCrossReference
  * @author Matthew Morrison
  */
-public class ExtractedLicenseMinElementTest extends MetricTest{
+public class ExtractedLicenseMinElementTest extends MetricTest {
     public static final String TEST_NAME = "ExtractedLicenseMinElements";
 
     /**

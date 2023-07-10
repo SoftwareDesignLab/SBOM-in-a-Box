@@ -18,7 +18,7 @@ import java.util.List;
  * @author Matthew Morrison
  * @author Derek Garcia
  */
-public class AccuratePURLTest extends MetricTest{
+public class AccuratePURLTest extends MetricTest {
     // the test name for the results
     private static final String TEST_NAME = "AccuratePURL";
 

@@ -14,7 +14,7 @@ import java.util.Set;
  * unique identifier to reference inside the BOM (bom-ref for CDX)
  * @author Matthew Morrison
  */
-public class HasBomRefTest extends MetricTest{
+public class HasBomRefTest extends MetricTest {
     private static final String TEST_NAME = "HasBomRef";
 
     /**

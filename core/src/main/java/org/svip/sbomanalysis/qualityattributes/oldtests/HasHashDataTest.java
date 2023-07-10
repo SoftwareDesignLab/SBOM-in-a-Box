@@ -13,7 +13,7 @@ import java.util.List;
  * Test each component if hash values are present
  * @author Matthew Morrison
  */
-public class HasHashDataTest extends MetricTest{
+public class HasHashDataTest extends MetricTest {
 
     private static final String TEST_NAME = "HasHashData";
     /**

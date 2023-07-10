@@ -13,7 +13,7 @@ import java.util.List;
  * valid SPDXID (SPDXID: "SPDXRef-[idstring]")
  * @author Matthew Morrison
  */
-public class HasSPDXIDTest extends MetricTest{
+public class HasSPDXIDTest extends MetricTest {
     public static final String TEST_NAME = "HasSPDXID";
 
     /**
