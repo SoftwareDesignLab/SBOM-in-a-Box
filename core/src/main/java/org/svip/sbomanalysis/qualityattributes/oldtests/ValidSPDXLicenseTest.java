@@ -1,4 +1,4 @@
-package org.svip.sbomanalysis.qualityattributes.tests;
+package org.svip.sbomanalysis.qualityattributes.oldtests;
 
 
 import jregex.Matcher;

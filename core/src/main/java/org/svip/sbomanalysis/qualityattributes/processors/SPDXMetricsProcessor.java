@@ -1,6 +1,6 @@
 package org.svip.sbomanalysis.qualityattributes.processors;
 
-import org.svip.sbomanalysis.qualityattributes.tests.*;
+import org.svip.sbomanalysis.qualityattributes.oldtests.*;
 
 
 /**

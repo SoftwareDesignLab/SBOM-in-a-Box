@@ -1,10 +1,10 @@
 package org.svip.sbomanalysis.qualityattributes.processors;
 
 
-import org.svip.sbomanalysis.qualityattributes.tests.AccurateCPETest;
-import org.svip.sbomanalysis.qualityattributes.tests.AccuratePURLTest;
-import org.svip.sbomanalysis.qualityattributes.tests.HasHashDataTest;
-import org.svip.sbomanalysis.qualityattributes.tests.ValidHashDataTest;
+import org.svip.sbomanalysis.qualityattributes.oldtests.AccurateCPETest;
+import org.svip.sbomanalysis.qualityattributes.oldtests.AccuratePURLTest;
+import org.svip.sbomanalysis.qualityattributes.oldtests.HasHashDataTest;
+import org.svip.sbomanalysis.qualityattributes.oldtests.ValidHashDataTest;
 
 
 /**

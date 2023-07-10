@@ -2,7 +2,7 @@ package org.svip.sbomanalysis.qualityattributes.interfaces.schemas.CycloneDX14;
 
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbomanalysis.qualityattributes.interfaces.generics.QAPipeline;
-import org.svip.sbomanalysis.qualityattributes.tests.Result;
+import org.svip.sbomanalysis.qualityattributes.oldtests.Result;
 
 import java.util.Set;
 
