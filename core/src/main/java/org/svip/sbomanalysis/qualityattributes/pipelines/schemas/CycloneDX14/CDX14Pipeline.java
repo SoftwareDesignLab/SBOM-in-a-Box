@@ -1,9 +1,10 @@
 package org.svip.sbomanalysis.qualityattributes.pipelines.schemas.CycloneDX14;
 
 import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbomanalysis.qualityattributes.oldpipeline.QualityReport;
+import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
 import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.schemas.CycloneDX14.CDX14Tests;
-import org.svip.sbomanalysis.qualityattributes.oldtests.Result;
+import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
+
 
 import java.util.Set;
 
