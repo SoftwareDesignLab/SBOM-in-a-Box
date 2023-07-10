@@ -13,10 +13,10 @@ import java.util.Collection;
 public class Text {
 
     /**Holds the context of the result*/
-    private String context;
+    private final String context;
 
     /**The field that is correlated to the result*/
-    private String field;
+    private final String field;
 
     /**
      * Constructor to build a new Text object
@@ -34,6 +34,7 @@ public class Text {
      * @param values a collection of values to get messages for
      * @return a String of messages
      */
+    //TODO implement
     public String getMessage(INFO info, Collection<String> values){
         return null;
     }
@@ -44,6 +45,7 @@ public class Text {
      * @param value a value to get messages for
      * @return a String message
      */
+    //TODO implement
     public String getMessage(INFO info, String value){
         return null;
     }
@@ -54,6 +56,7 @@ public class Text {
      * @param values a collection of values to get details for
      * @return a String of details
      */
+    //TODO implement
     public String getDetails(INFO info, Collection<String> values){
         return null;
     }
@@ -64,6 +67,7 @@ public class Text {
      * @param value a value to get details for
      * @return a String of details
      */
+    //TODO implement
     public String getDetails(INFO info, String value){
         return null;
     }
