@@ -7,10 +7,12 @@ import org.svip.builders.component.SPDX23PackageBuilder;
 import org.svip.componentfactory.SPDX23PackageBuilderFactory;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.old.Component;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
+import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
@@ -67,7 +69,13 @@ public class SPDX23TagValueDeserializer implements Deserializer {
 
     public static final String TIMESTAMP_TAG = "Created";
 
+    public static final String DOCUMENT_NAME_TAG = "DocumentName";
+
     public static final String DOCUMENT_NAMESPACE_TAG = "DocumentNamespace";
+
+    public static final String DATA_LICENSE_TAG = "DataLicense";
+
+    public static final String LICENSE_LIST_VERSION_TAG = "LicenseListVersion";
 
     public static final String AUTHOR_TAG = "Creator";
 
@@ -90,7 +98,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
      * @return The deserialized SPDX 2.3 SBOM object.
      */
     @Override
-    public SBOM readFromString(String fileContents) {
+    public SPDX23SBOM readFromString(String fileContents) {
         // Map of external licenses to mirror Component.externalLicenses attribute
         Map<String, Map<String, String>> externalLicenses = new HashMap<>();
 
@@ -119,10 +127,16 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         CreationData creationData = new CreationData();
         while(mHeader.find()) {
             switch (mHeader.group(1)) {
+                // NAME
+                case DOCUMENT_NAME_TAG -> sbomBuilder.setName(mHeader.group(2));
                 // UID
                 case DOCUMENT_NAMESPACE_TAG -> sbomBuilder.setUID(mHeader.group(2));
                 // SPEC VERSION
                 case SPEC_VERSION_TAG -> sbomBuilder.setSpecVersion(mHeader.group(2).substring(mHeader.group(2).lastIndexOf('-') + 1)); // Get text after "SPDX-"
+                // LICENSE
+                case DATA_LICENSE_TAG -> sbomBuilder.addLicense(mHeader.group(2));
+                // LICENSE LIST VERSION
+                case LICENSE_LIST_VERSION_TAG -> sbomBuilder.setSPDXLicenseListVersion(mHeader.group(2));
                 // AUTHORS
                 case AUTHOR_TAG -> {
                     String authorName = "";
@@ -137,8 +151,34 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                     while(mAuthorEmail.find()) {
                         authorEmail = mAuthorEmail.group();
                     }
-                    Contact author = new Contact(authorName, authorEmail, "");
-                    creationData.addAuthor(author);
+                    if (authorName != "") {
+                        Contact author = new Contact(authorName, authorEmail, "");
+                        creationData.addAuthor(author);
+                    }
+                    // TOOLS
+                    String tool = "";
+                    Pattern toolPattern = Pattern.compile("\"Tool: \" name 0*1( \" \" DASH \" \" version)", Pattern.CASE_INSENSITIVE);
+                    Matcher mTool = toolPattern.matcher(mHeader.group(2));
+                    while(mTool.find()) {
+                        tool = mTool.group();
+                    }
+                    if (tool != "") {
+                        CreationTool creationTool = new CreationTool();
+                        creationTool.setName(tool);
+                        // add vendor to the tool data if it's listed
+                        String org = "";
+                        Pattern orgPattern = Pattern.compile("\"Organization: \" name 0*1contact-info", Pattern.CASE_INSENSITIVE);
+                        Matcher mOrg = orgPattern.matcher(mHeader.group(2));
+                        while(mOrg.find()) {
+                            org = mOrg.group();
+                        }
+                        if (org != "") {
+                            creationTool.setVendor(org);
+                        }
+                        creationData.addCreationTool(creationTool);
+                    }
+
+
                 }
                 // TIMESTAMP
                 case TIMESTAMP_TAG -> creationData.setCreationTime(mHeader.group(2));
