@@ -69,35 +69,35 @@ class CDX14PackageBuilderTest {
     String test_random_purl = "pkg:random/test@2.0.0";
 
     @Test
-    void setMimeType() {
+    void getMimeType_is_test_mimeType_when_setMimeType_is_used_test() {
         test_packageBuilder.setMimeType(test_mimeType);
         test_package = test_packageBuilder.build();
         assertEquals(test_mimeType, test_package.getMimeType());
     }
 
     @Test
-    void setPublisher() {
+    void getPublisher_is_test_publisher_setPublisher_is_used_test() {
         test_packageBuilder.setPublisher(test_publisher);
         test_package = test_packageBuilder.buildAndFlush();
         assertEquals(test_publisher, test_package.getPublisher());
     }
 
     @Test
-    void setScope() {
+    void getScope_is_test_scope_when_setScope_is_used_test() {
         test_packageBuilder.setScope(test_scope);
         test_package = test_packageBuilder.buildAndFlush();
         assertEquals(test_scope, test_package.getScope());
     }
 
     @Test
-    void setGroup() {
+    void getGroup_is_test_group_when_setGroup_is_used_test() {
         test_packageBuilder.setGroup(test_group);
         test_package = test_packageBuilder.buildAndFlush();
         assertEquals(test_group, test_package.getGroup());
     }
 
     @Test
-    void addExternalReferences() {
+    void getExternalReferences_contains_test_extRef_when_addExternalReferences_is_used_test() {
         ExternalReference test_extRef = new ExternalReference(
                 test_extRef_url, test_extTef_type);
         test_packageBuilder.addExternalReferences(test_extRef);
@@ -107,7 +107,7 @@ class CDX14PackageBuilderTest {
     }
 
     @Test
-    void addProperty() {
+    void getProperties_is_test_propertyMap_when_addProperty_is_used_test() {
         test_packageBuilder.addProperty(test_property_name, test_property_value);
 
         test_package = test_packageBuilder.buildAndFlush();
@@ -120,7 +120,7 @@ class CDX14PackageBuilderTest {
     }
 
     @Test
-    void setType() {
+    void getType_is_test_type_when_setType_is_used_test() {
         test_packageBuilder.setType(test_type);
 
         test_package = test_packageBuilder.buildAndFlush();
@@ -128,7 +128,7 @@ class CDX14PackageBuilderTest {
     }
 
     @Test
-    void setUID() {
+    void getUID_is_test_uid_when_setUID_is_used_test() {
         test_packageBuilder.setUID(test_uid);
 
         test_package = test_packageBuilder.buildAndFlush();
@@ -136,7 +136,7 @@ class CDX14PackageBuilderTest {
     }
 
     @Test
-    void setAuthor() {
+    void getAuthor_is_test_author_when_setAuthor_is_used_test() {
         test_packageBuilder.setAuthor(test_author);
 
         test_package = test_packageBuilder.buildAndFlush();
@@ -145,7 +145,7 @@ class CDX14PackageBuilderTest {
     }
 
     @Test
-    void setName() {
+    void getName_is_test_name_when_setName_is_used_test() {
         test_packageBuilder.setName(test_name);
 
         test_package = test_packageBuilder.buildAndFlush();
@@ -153,7 +153,7 @@ class CDX14PackageBuilderTest {
     }
 
     @Test
-    void setLicenses() {
+    void getLicenses_is_licenseCollection_when_setLicenses_is_used_test() {
         LicenseCollection licenseCollection = new LicenseCollection();
         licenseCollection.addDeclaredLicense(test_license1);
         licenseCollection.addDeclaredLicense(test_license2);
@@ -164,7 +164,7 @@ class CDX14PackageBuilderTest {
     }
 
     @Test
-    void setCopyright() {
+    void getCopyright_is_test_copyright_when_setCopyright_is_used_test() {
         test_packageBuilder.setCopyright(test_copyright);
 
         test_package = test_packageBuilder.buildAndFlush();
@@ -172,7 +172,7 @@ class CDX14PackageBuilderTest {
     }
 
     @Test
-    void addHash() {
+    void getHashes_is_test_map_when_addHash_is_used_test() {
         test_packageBuilder.addHash(test_hash_algo, test_hash_value);
 
         test_package = test_packageBuilder.buildAndFlush();
@@ -184,7 +184,7 @@ class CDX14PackageBuilderTest {
     }
 
     @Test
-    void setSupplier() {
+    void getSupplier_is_test_supplier_when_setSupplier_is_used_test() {
         Organization supplier = new Organization(test_supplier, "www.python.com");
         test_packageBuilder.setSupplier(supplier);
 
@@ -193,7 +193,7 @@ class CDX14PackageBuilderTest {
     }
 
     @Test
-    void setVersion() {
+    void getVersion_is_test_version_when_setVersion_is_used_test() {
         test_packageBuilder.setVersion(test_version);
 
         test_package = test_packageBuilder.buildAndFlush();
@@ -201,7 +201,7 @@ class CDX14PackageBuilderTest {
     }
 
     @Test
-    void setDescription() {
+    void getDescription_is_test_description_when_setDescription_is_used_test() {
         Description description = new Description(test_description);
         test_packageBuilder.setDescription(description);
 
@@ -210,7 +210,7 @@ class CDX14PackageBuilderTest {
     }
 
     @Test
-    void addCPE() {
+    void getCPEs_contains_test_random_cpe_when_addCPE_is_used_test() {
         test_packageBuilder.addCPE(test_random_cpe);
 
         test_package = test_packageBuilder.buildAndFlush();
@@ -218,7 +218,7 @@ class CDX14PackageBuilderTest {
     }
 
     @Test
-    void addPURL() {
+    void getPURLs_contains_test_random_purl_when_addPURL_is_used_test() {
         test_packageBuilder.addPURL(test_random_purl);
 
         test_package = test_packageBuilder.buildAndFlush();
@@ -226,7 +226,7 @@ class CDX14PackageBuilderTest {
     }
 
     @Test
-    void addExternalReference() {
+    void getExternalReferences_contains_externalReference_when_addExternalReference_is_used_test() {
         ExternalReference externalReference = new ExternalReference(test_extRef_url, test_extTef_type);
         test_packageBuilder.addExternalReference(externalReference);
 
