@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * file: CDX14SBOMBuilderFactoryTest.java
- * File to test CDX14SBOMBuilderFactory
+ * File to test CDX14SBOMBuilderFactory and CDX14Builder Object
  *
  * @author Kevin Laporte
  */
@@ -57,10 +57,6 @@ public class CDX14SBOMBuilderFactoryTest {
 
     Set<CDX14ComponentObject> test_componentsCDX = new HashSet<CDX14ComponentObject>();
     Set<Component> test_components = new HashSet<Component>();
-
-    HashMap<String, Set<Relationship>> test_relationships;
-
-    Set<ExternalReference> test_externalReferences;
 
 
     @Test
