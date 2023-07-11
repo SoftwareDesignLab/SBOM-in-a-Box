@@ -12,6 +12,7 @@ import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.Organization;
+import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbom.model.uids.Hash;
 import org.svip.sbom.model.uids.PURL;
@@ -38,17 +39,17 @@ public class SPDX23TagValueDeserializer implements Deserializer {
 
     //#region Constants
 
-    public static final String TAG = "#####";
+    public static final String TAG = "###";
 
     public static final String SEPARATOR = ": ";
 
-    public static final String UNPACKAGED_TAG = "##### Unpackaged files";
+    public static final String UNPACKAGED_TAG = "### Unpackaged files";
 
-    public static final String PACKAGE_TAG = "##### Package";
+    public static final String PACKAGE_TAG = "### Package";
 
-    public static final String RELATIONSHIP_TAG = "##### Relationships";
+    public static final String RELATIONSHIP_TAG = "### Relationships";
 
-    public static final String EXTRACTED_LICENSE_TAG = "##### Extracted"; // starts with
+    public static final String EXTRACTED_LICENSE_TAG = "### Extracted"; // starts with
 
     public static final String EXTRACTED_LICENSE_ID = "LicenseID";
 
@@ -204,7 +205,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                 // Special case for external references
                 Matcher externalRef = EXTERNAL_REF_PATTERN.matcher(mPackages.group());
                 if (!externalRef.find()) continue;
-
+                ExternalReference externalReference = new ExternalReference("","","");
                 switch(externalRef.group(2).toLowerCase()) {
                     case "cpe23type" -> {
                         // CPE
@@ -214,7 +215,18 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                         // PURL
                         packageBuilder.addPURL(externalRef.group(3));
                     }
+                    // EXTERNAL REFERENCES
+                    case "referenceCategory" -> {
+                        externalReference = new ExternalReference(externalRef.group(3), externalReference.getUrl(), externalReference.getType());
+                    }
+                    case "referenceLocator" -> {
+                        externalReference = new ExternalReference(externalReference.getCategory(), externalRef.group(3), externalReference.getType());
+                    }
+                    case "referenceType" -> {
+                        externalReference = new ExternalReference(externalReference.getCategory(), externalReference.getUrl(), externalRef.group(3));
+                    }
                 }
+                packageBuilder.addExternalReference(externalReference);
             }
             // SUPPLIER
             // Cleanup package originator
@@ -257,27 +269,22 @@ public class SPDX23TagValueDeserializer implements Deserializer {
             packageBuilder.setVersion(componentMaterials.get("PackageVersion"));
             packageBuilder.setUID(componentMaterials.get("SPDXID"));
 
-            // License materials map
-            HashSet<String> licenses = new HashSet<>();
-
-            // Get licenses from component materials and split them by 'AND' tag, store them into HashSet and add them to component object
-            if (componentMaterials.get("PackageLicenseConcluded") != null)
-                licenses.addAll(Arrays.asList(componentMaterials.get("PackageLicenseConcluded").split(" AND ")));
-            if (componentMaterials.get("PackageLicenseDeclared") != null)
-                licenses.addAll(Arrays.asList(componentMaterials.get("PackageLicenseDeclared").split(" AND ")));
-
-            // LICENSES
-            // Add external licenses found
+            // LICENSE EXPRESSION
             LicenseCollection licenseCollection = new LicenseCollection();
-            List<String> externalLicensesToRemove = new ArrayList<>();
-            for(String license : licenses) {
-                Map<String, String> attributes = externalLicenses.get(license);
-                if (attributes != null) {
-                    licenseCollection.addLicenseInfoFromFile(license);
-                    externalLicensesToRemove.add(license);
+            if (componentMaterials.get("PackageLicenseConcluded") != null) {
+                Pattern licensePattern = Pattern.compile("(simple-expression / compound-expression)", Pattern.CASE_INSENSITIVE);
+                Matcher mLicense = licensePattern.matcher(componentMaterials.get("PackageLicenseConcluded"));
+                while (mLicense.find()) {
+                    licenseCollection.addLicenseInfoFromFile(mLicense.group());
                 }
             }
-            externalLicensesToRemove.forEach(licenses::remove); // Remove all found external licenses
+            if (componentMaterials.get("PackageLicenseDeclared") != null) {
+                Pattern licensePattern = Pattern.compile("(simple-expression / compound-expression)", Pattern.CASE_INSENSITIVE);
+                Matcher mLicense = licensePattern.matcher(componentMaterials.get("PackageLicenseDeclared"));
+                while (mLicense.find()) {
+                    licenseCollection.addLicenseInfoFromFile(mLicense.group());
+                }
+            }
             packageBuilder.setLicenses(licenseCollection);
 
             // HASHES
