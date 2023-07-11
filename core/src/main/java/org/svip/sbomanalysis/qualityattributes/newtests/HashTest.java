@@ -14,6 +14,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * file: HashTest.java
+ * Series of tests for hash string and hash objects
+ *
+ * @author Matthew Morrison
+ */
 public class HashTest extends MetricTest{
     private final String TEST_NAME = "HashTest";
     private ResultFactory resultFactory;
@@ -48,7 +54,7 @@ public class HashTest extends MetricTest{
         // Hash has a null algo or value, tests cannot be run
         // return missing Result
         else{
-            Text text = new Text("Testing for valid hash data", field);
+            Text text = new Text("Hash Object could not be built", field);
             String message;
             String details;
             if(value == null){
@@ -80,27 +86,32 @@ public class HashTest extends MetricTest{
 
             // Check if hash algorithm is unknown
             if(hash.getAlgorithm() == Hash.Algorithm.UNKNOWN){
-                r = resultFactory.fail(field, INFO.INVALID, value);
+                r = resultFactory.fail(field, INFO.INVALID, value,
+                        "Unknown Hash algorithm");
                 return r;
             }
 
-            // Check for unsupported hash in CycloneDX component's
+            // Check for unsupported hash in CycloneDX components
             if(component.getType().equals("CycloneDX") && Hash.isSPDXExclusive(hash.getAlgorithm())){
-                r = resultFactory.fail(field, INFO.INVALID, value);
+                r = resultFactory.fail(field, INFO.INVALID, value,
+                        "Hash algorithm is not supported in CycloneDX components");
                 return r;
             }
 
             // Check if hash is valid
             if(!Hash.validateHash(hash.getAlgorithm(), hash.getValue())){
-                r = resultFactory.fail(field, INFO.INVALID, value);
+                r = resultFactory.fail(field, INFO.INVALID, value,
+                        "Invalid " + hash.getAlgorithm() + " hash");
             } else {
-                r = resultFactory.pass(field, INFO.VALID, value);
+                r = resultFactory.pass(field, INFO.VALID, value,
+                        "Valid " + hash.getAlgorithm() + " hash");
             }
 
         }
         // failed to create a new Hash object, test automatically fails
         catch(Exception e){
-            r = resultFactory.fail(field, INFO.INVALID, value);
+            r = resultFactory.fail(field, INFO.INVALID, value,
+                    "Hash Object was unsuccessfully built");
             return r;
         }
 

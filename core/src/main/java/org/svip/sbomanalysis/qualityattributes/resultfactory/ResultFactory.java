@@ -16,10 +16,10 @@ import java.util.List;
 public class ResultFactory {
 
     /**List of attributes associated with result*/
-    private List<ATTRIBUTE> attributes;
+    private final List<ATTRIBUTE> attributes;
 
     /**Test name*/
-    private String test;
+    private final String test;
 
     /**
      * Constructor to create a new ResultFactory
@@ -38,9 +38,8 @@ public class ResultFactory {
      * @param values the values of the test
      * @return a new Result with a pass status
      */
-    public Result pass(String field, INFO info, Collection<String> values){
-        //TODO add context? What is context?
-        Text text = new Text(null, field);
+    public Result pass(String field, INFO info, Collection<String> values, String context){
+        Text text = new Text(context, field);
         String message = text.getMessage(info, values);
         String details = text.getDetails(info, values);
         return new Result(this.attributes, this.test, message,
@@ -54,9 +53,8 @@ public class ResultFactory {
      * @param value the value of the test
      * @return a new Result with a pass status
      */
-    public Result pass(String field, INFO info, String value){
-        //TODO add context? What is context?
-        Text text = new Text(null, field);
+    public Result pass(String field, INFO info, String value, String context){
+        Text text = new Text(context, field);
         String message = text.getMessage(info, value);
         String details = text.getDetails(info, value);
         return new Result(this.attributes, this.test, message,
@@ -70,9 +68,8 @@ public class ResultFactory {
      * @param values the values of the test
      * @return a new Result with a pass status
      */
-    public Result fail(String field, INFO info, Collection<String> values){
-        //TODO add context? What is context?
-        Text text = new Text(null, field);
+    public Result fail(String field, INFO info, Collection<String> values, String context){
+        Text text = new Text(context, field);
         String message = text.getMessage(info, values);
         String details = text.getDetails(info, values);
         return new Result(this.attributes, this.test, message,
@@ -86,9 +83,8 @@ public class ResultFactory {
      * @param value the value of the test
      * @return a new Result with a fail status
      */
-    public Result fail(String field, INFO info, String value){
-        //TODO add context? What is context?
-        Text text = new Text(null, field);
+    public Result fail(String field, INFO info, String value, String context){
+        Text text = new Text(context, field);
         String message = text.getMessage(info, value);
         String details = text.getDetails(info, value);
         return new Result(this.attributes, this.test, message,

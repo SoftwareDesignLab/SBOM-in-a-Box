@@ -23,9 +23,10 @@ import java.util.Set;
 
 /**
  * file: PURLTest.java
- * Test class for PURL strings in a component
+ * Series of tests for purl strings and purl objects
  *
  * @author Matthew Morrison
+ * @author Derek Garcia
  */
 public class PURLTest extends MetricTest{
 
@@ -86,11 +87,11 @@ public class PURLTest extends MetricTest{
         try{
             // create new purl object
             new PURL(value);
-            r = resultFactory.pass(field, INFO.VALID, value);
+            r = resultFactory.pass(field, INFO.VALID, value, "PURL Object was successfully built");
         }
         // failed to create new purl, test fails
         catch(Exception e){
-            r = resultFactory.fail(field, INFO.INVALID, value);
+            r = resultFactory.fail(field, INFO.INVALID, value, "PURL Object was unsuccessfully built");
         }
         results.add(r);
         return results;
@@ -108,7 +109,7 @@ public class PURLTest extends MetricTest{
         }
         // failed to create new purl, test automatically fails
         catch(Exception e){
-            r = resultFactory.fail(field, INFO.INVALID, value);
+            r = resultFactory.fail(field, INFO.INVALID, value, "PURL Object could not be built");
             results.add(r);
         }
         return results;
@@ -124,13 +125,16 @@ public class PURLTest extends MetricTest{
      */
     private Result isEqual(String field, String purlValue, String componentValue){
         Result r;
+        String context;
         // Check if purl value is different
         if(!purlValue.equals(componentValue)){
-            r = resultFactory.fail(field, INFO.INVALID, purlValue);
+            context = field + " value is different between PURL and Component";
+            r = resultFactory.fail(field, INFO.INVALID, purlValue, context);
         }
         // Else they both match
         else {
-            r = resultFactory.pass(field, INFO.VALID, purlValue);
+            context = field + " value is the same between PURL and Component";
+            r = resultFactory.pass(field, INFO.VALID, purlValue, context);
         }
 
         return r;
@@ -152,7 +156,7 @@ public class PURLTest extends MetricTest{
         }
         // failed to create new purl, test automatically fails
         catch(Exception e){
-            r = resultFactory.fail(field, INFO.INVALID, value);
+            r = resultFactory.fail(field, INFO.INVALID, value, "PURL Object could not be built");
             results.add(r);
             return results;
         }
@@ -189,7 +193,9 @@ public class PURLTest extends MetricTest{
                         "docker", "generic", "github", "mlflow",
                         "qpkg", "oci", "rpm", "swid", "swift"
                         -> {
-                    r = resultFactory.fail(field, INFO.MISSING, value);
+                    r = resultFactory.fail(field, INFO.MISSING, value,
+                            "Package Manager is a valid type but " +
+                                    "is currently not supported");
                     results.add(r);
                     // error number to skip other results
                     response = -1;
@@ -198,7 +204,8 @@ public class PURLTest extends MetricTest{
 
                 // a package manager that is not currently supported
                 default -> {
-                    r = resultFactory.fail(field, INFO.INVALID, value);
+                    r = resultFactory.fail(field, INFO.INVALID, value,
+                            "Package Manager is an invalid type");
                     results.add(r);
                     // error number to skip other results
                     response = -1;
@@ -207,7 +214,8 @@ public class PURLTest extends MetricTest{
         }
         // if there are any issues with the url or http connection
         catch (IOException e) {
-            r = resultFactory.fail(field, INFO.INVALID, value);
+            r = resultFactory.fail(field, INFO.INVALID, value,
+                    "PURL had an error in producing URL");
             results.add(r);
             // error number to skip other results
             response = -1;
@@ -220,7 +228,8 @@ public class PURLTest extends MetricTest{
         }
         // some tests will throw a 0 if a different error occurs
         else if (response == 0) {
-            r = resultFactory.fail(field, INFO.INVALID, value);
+            r = resultFactory.fail(field, INFO.INVALID, value,
+                    "PURL had an error when checking URL");
             results.add(r);
         }
 
@@ -640,11 +649,13 @@ public class PURLTest extends MetricTest{
         // if the response code is 200 (HTTP_OK), then
         // package is registered with package manager
         if (response == HttpURLConnection.HTTP_OK) {
-           r = resultFactory.pass(field, INFO.VALID, value);
+           r = resultFactory.pass(field, INFO.VALID, value,
+                   "Package is registered with package manager");
         }
         // any other response codes result in a test fail
         else {
-            r = resultFactory.fail(field, INFO.INVALID, value);
+            r = resultFactory.fail(field, INFO.INVALID, value,
+                    "Package is not registered with package manager");
         }
         return r;
     }

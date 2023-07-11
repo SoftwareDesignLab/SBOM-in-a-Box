@@ -51,20 +51,24 @@ public class EmptyOrNullTest {
             isEmptyorNull = ((Collection<?>) value).isEmpty();
 
         // if value was a single string and was empty or null
-        if(isEmptyorNull && value instanceof String)
-            r = resultFactory.fail(field, INFO.MISSING, (String) value);
+        if(value instanceof String && isEmptyorNull)
+            r = resultFactory.fail(field, INFO.MISSING, (String) value,
+                    "String value was an empty value");
 
         // if value was a collection of Strings and was empty or null
-        else if(isEmptyorNull && value instanceof Collection<?>){
-            r = resultFactory.fail(field, INFO.MISSING, (Collection<String>) value);
+        else if(value instanceof Collection<?> && isEmptyorNull){
+            r = resultFactory.fail(field, INFO.MISSING, (Collection<String>) value,
+                    "Collection of values was empty");
         }
         // if value was a single string and had a value
         else if(!isEmptyorNull && value instanceof String ){
-            r = resultFactory.pass(field, INFO.HAS, (String) value);
+            r = resultFactory.pass(field, INFO.HAS, (String) value,
+                    "String value was not empty and has a value");
         }
         // if value was a collection of Strings and was not empty or null
         else{
-            r = resultFactory.pass(field, INFO.HAS, (Collection<String>) value);
+            r = resultFactory.pass(field, INFO.HAS, (Collection<String>) value,
+                    "Colletion of values was not empty and had valid values");
         }
 
         return r;
