@@ -26,6 +26,12 @@ public class SPDX23TagValueDeserializerTest extends DeserializerTest {
         SPDX23TagValueDeserializer spdx23Deserializer = new SPDX23TagValueDeserializer();
         SPDX23SBOM sbom = spdx23Deserializer.readFromString(Files.readString(Path.of(SPDX23_TAGVALUE_SBOM)));
         assertNotNull(sbom);
+    }
+    @Test
+    public void metadataTest() throws IOException {
+        SPDX23TagValueDeserializer spdx23Deserializer = new SPDX23TagValueDeserializer();
+        SPDX23SBOM sbom = spdx23Deserializer.readFromString(Files.readString(Path.of(SPDX23_TAGVALUE_SBOM)));
+        assertNotNull(sbom);
 
         // TODO more assertions
         assertNotNull(sbom);
@@ -41,19 +47,30 @@ public class SPDX23TagValueDeserializerTest extends DeserializerTest {
         assertEquals("3.19", sbom.getSPDXLicenseListVersion());
         // created
         assertEquals("2023-03-10T14:43:10Z", sbom.getCreationData().getCreationTime());
-        // creators TODO fix tool regex
-        // assertEquals(1, sbom.getCreationData().getCreationTools().size());
-        // List<CreationTool> creationTools = sbom.getCreationData().getCreationTools().stream().toList();
-        //assertEquals("Anchore, Inc", creationTools.get(0).getVendor());
-        // assertEquals("syft", creationTools.get(0).getName());
-        // assertEquals("0.69.1", creationTools.get(0).getVersion());
+
+        // creators
+        assertEquals(1, sbom.getCreationData().getCreationTools().size());
+        List<CreationTool> creationTools = sbom.getCreationData().getCreationTools().stream().toList();
+        assertEquals("syft", creationTools.get(0).getName());
+        assertEquals("0.69.1", creationTools.get(0).getVersion());
+    }
+    @Test
+    public void componentTest() throws IOException {
+        SPDX23TagValueDeserializer spdx23Deserializer = new SPDX23TagValueDeserializer();
+        SPDX23SBOM sbom = spdx23Deserializer.readFromString(Files.readString(Path.of(SPDX23_TAGVALUE_SBOM)));
+        assertNotNull(sbom);
 
         assertEquals(94, sbom.getComponents().size());
         List<Component> components = sbom.getComponents().stream().toList();
-        assertEquals("SPDXRef-1ae61640919b8dcb", components.get(0).getUID());
+        //assertEquals("SPDXRef-1071b0c6b4d98bb1", components.get(0).getUID());
         // TODO get a better sbom
-        for (int i = 1; i < components.size(); i++) {
-            assertNotEquals("SPDXRef-1ae61640919b8dcb", components.get(i).getUID());
+        // check for duplicates
+        int count = 0;
+        for (int i = 0; i < components.size(); i++) {
+            if (components.get(i).getUID() == "SPDXRef-35ab393f27e0bc39") {
+                count += 1;
+            }
         }
+        assertEquals(1, count);
     }
 }

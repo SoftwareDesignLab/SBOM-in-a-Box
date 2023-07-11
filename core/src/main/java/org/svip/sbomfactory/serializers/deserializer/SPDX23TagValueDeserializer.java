@@ -156,25 +156,19 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                         creationData.addAuthor(author);
                     }
                     // TOOLS
-                    String tool = "";
-                    Pattern toolPattern = Pattern.compile("\"Tool: \" name 0*1( \" \" DASH \" \" version)", Pattern.CASE_INSENSITIVE);
+                    String toolName = "";
+                    String toolVersion = "";
+                    // group 1 is name, group 2 is version
+                    Pattern toolPattern = Pattern.compile("Tool: (?:(.*)-)(.*)", Pattern.CASE_INSENSITIVE);
                     Matcher mTool = toolPattern.matcher(mHeader.group(2));
                     while(mTool.find()) {
-                        tool = mTool.group();
+                        toolName = mTool.group(1);
+                        toolVersion = mTool.group(2);
                     }
-                    if (tool != "") {
+                    if (toolName != "") {
                         CreationTool creationTool = new CreationTool();
-                        creationTool.setName(tool);
-                        // add vendor to the tool data if it's listed
-                        String org = "";
-                        Pattern orgPattern = Pattern.compile("\"Organization: \" name 0*1contact-info", Pattern.CASE_INSENSITIVE);
-                        Matcher mOrg = orgPattern.matcher(mHeader.group(2));
-                        while(mOrg.find()) {
-                            org = mOrg.group();
-                        }
-                        if (org != "") {
-                            creationTool.setVendor(org);
-                        }
+                        creationTool.setName(toolName);
+                        if (toolVersion != "") creationTool.setVersion(toolVersion);
                         creationData.addCreationTool(creationTool);
                     }
 

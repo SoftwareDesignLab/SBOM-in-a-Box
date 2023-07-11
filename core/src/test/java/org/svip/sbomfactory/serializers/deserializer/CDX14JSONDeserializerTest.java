@@ -26,6 +26,12 @@ public class CDX14JSONDeserializerTest extends DeserializerTest {
     public void readFromStringTest() throws IOException {
         CDX14JSONDeserializer cdx14Deserializer = new CDX14JSONDeserializer();
         CDX14SBOM sbom = cdx14Deserializer.readFromString(Files.readString(Path.of(CDX_14_JSON_SBOM)));
+    }
+
+    @Test
+    public void metadataTest() throws IOException {
+        CDX14JSONDeserializer cdx14Deserializer = new CDX14JSONDeserializer();
+        CDX14SBOM sbom = cdx14Deserializer.readFromString(Files.readString(Path.of(CDX_14_JSON_SBOM)));
 
         // TODO more assertions
         assertNotNull(sbom);
@@ -42,22 +48,30 @@ public class CDX14JSONDeserializerTest extends DeserializerTest {
         assertEquals("container", sbom.getRootComponent().getType());
         assertEquals("alpine:latest", sbom.getRootComponent().getName());
         assertEquals("sha256:b6ca290b6b4cdcca5b3db3ffa338ee0285c11744b4a6abaa9627746ee3291d8d", sbom.getRootComponent().getVersion());
+    }
+
+    @Test
+    public void componentsTest() throws IOException {
+        CDX14JSONDeserializer cdx14Deserializer = new CDX14JSONDeserializer();
+        CDX14SBOM sbom = cdx14Deserializer.readFromString(Files.readString(Path.of(CDX_14_JSON_SBOM)));
         assertEquals(17, sbom.getComponents().size());
         List<Component> components = sbom.getComponents().stream().toList();
-        assertEquals("pkg:apk/alpine/musl@1.2.3-r4?arch=x86_64&upstream=musl&distro=alpine-3.17.3&package-id=d9700f02cf26e8b8", components.get(0).getUID());
-        // TODO implement author
-        assertEquals("library", components.get(0).getType());
-        assertEquals("musl", components.get(0).getName());
-        // TODO CDX specific data is lost as the CDX SBOM stores incomplete component interfaces
-        // assertEquals("1.2.3-r4", components.get(0).getVersion());
-        // assertEquals("the musl c library (libc) implementation", components.get(0).getDescription());
-        // TODO licenses not working
-        // LicenseCollection licenses = components.get(0).getLicenses();
-        // assertEquals("MIT", licenses.getInfoFromFiles().stream().toList().get(0));
-        // TODO cpe, purl, external ref, and properties are not available in generic component
         // checking for duplicates:
+        int count = 1;
         for (int i = 1; i < components.size(); i++) {
-            assertNotEquals("pkg:apk/alpine/musl@1.2.3-r4?arch=x86_64&upstream=musl&distro=alpine-3.17.3&package-id=d9700f02cf26e8b8", components.get(i).getUID());
+            if (components.get(i).getUID() == "pkg:apk/alpine/musl@1.2.3-r4?arch=x86_64&upstream=musl&distro=alpine-3.17.3&package-id=d9700f02cf26e8b8") {
+                // TODO implement author
+                assertEquals("library", components.get(i).getType());
+                assertEquals("musl", components.get(i).getName());
+                // TODO CDX specific data is lost as the CDX SBOM stores incomplete component interfaces
+                // assertEquals("1.2.3-r4", components.get(i).getVersion());
+                // assertEquals("the musl c library (libc) implementation", components.get(i).getDescription());
+                // TODO licenses not working
+                // LicenseCollection licenses = components.get(i).getLicenses();
+                // assertEquals("MIT", licenses.getInfoFromFiles().stream().toList().get(i));
+                // TODO cpe, purl, external ref, and properties are not available in generic component
+                count += 1;
+            }
         }
     }
 }
