@@ -309,6 +309,8 @@ public class SVIPApiController {
         Merger merger = new Merger();
         SVIPSBOM result = null;
                // merger.merge(sboms); // todo wait for Tyler to finish new Merger class
+        // todo merged sbom --> SBOMFile --> set ID and store in database
+
         return Utils.encodeResponse(result.toString());
 
     }
