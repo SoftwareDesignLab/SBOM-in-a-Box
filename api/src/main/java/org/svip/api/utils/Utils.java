@@ -225,15 +225,17 @@ public class Utils {
 
         // serialize into desired format
         Serializer s;
+        String serialized;
         try{
             s = SerializerFactory.createSerializer(schema, format, true);
+            serialized = s.writeToString(deserialized);
         }catch (Exception e){
             ret.put(new SBOMFile("",""), "DURING SERIALIZATION: " +
                     e.getMessage());
             return ret;
         }
 
-        ret.put(new SBOMFile("SUCCESS", s.writeToString(deserialized)), "");
+        ret.put(new SBOMFile("SUCCESS", serialized), "");
         return ret;
 
     }
