@@ -4,8 +4,10 @@ import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.shared.Relationship;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,23 +18,25 @@ public class MergerCDX extends Merger {
         super(A, B);
     }
 
-    protected SBOM mergeSBOM(CDX14SBOM A, CDX14SBOM B) {
+    @Override
+    protected SBOM mergeSBOM(SBOM A, SBOM B) {
 
-        Set<Component> componentsA = A.getComponents();
+        Set<CDX14ComponentObject> componentsA = Collections.singleton((CDX14ComponentObject) A.getComponents());
+        Set<CDX14ComponentObject> componentsB = Collections.singleton((CDX14ComponentObject) A.getComponents());
 
-        Set<Component> componentsB = B.getComponents();
+        CDX14SBOM mainSBOM = (CDX14SBOM) A;
 
-        Set<Component> merged_components = mergeComponents(componentsA, componentsB);
 
-        return new CDX14SBOM(
-                A.getFormat(), A.getName(), A.getUID(), A.getVersion(), A.getSpecVersion(),
-                A.getLicenses(), A.getCreationData(), A.getDocumentComment(), A.getRootComponent(),
-                merged_components, (HashMap<String, Set<Relationship>>) A.getRelationships(), A.getExternalReferences()
-        );
+
     }
 
     @Override
-    protected SBOM mergeSBOM(SBOM A, SBOM B) {
+    protected Set<Component> mergeComponents(Set<Component> A, Set<Component> B) {
+        return null;
+    }
+
+    @Override
+    protected Component mergeComponent(Component A, Component B) {
         return null;
     }
 }
