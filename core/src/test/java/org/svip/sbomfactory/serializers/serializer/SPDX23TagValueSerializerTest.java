@@ -1,7 +1,6 @@
 package org.svip.sbomfactory.serializers.serializer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbomfactory.generators.utils.Debug;
@@ -14,7 +13,6 @@ public class SPDX23TagValueSerializerTest extends SerializerTest {
         super(new SPDX23TagValueSerializer());
     }
 
-    @Disabled("Disabled until support for SPDX 2.3 Tag-Value is added.")
     @Test
     public void writeToStringTest() throws JsonProcessingException {
         Debug.logBlockTitle("SPDX 2.3 Tag-Value");
