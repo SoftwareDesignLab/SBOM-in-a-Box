@@ -139,6 +139,8 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
     @Override
     public SPDX23Builder addExternalReference(ExternalReference externalReference)
     {
+        if(this.externalReferences == null)
+            this.externalReferences = new HashSet<ExternalReference>();
         this.externalReferences.add(externalReference);
         return this;
     }
