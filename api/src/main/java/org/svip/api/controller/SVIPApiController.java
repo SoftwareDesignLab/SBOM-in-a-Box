@@ -11,10 +11,15 @@ import org.springframework.web.bind.annotation.*;
 import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.utils.Utils;
+import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.sbomanalysis.comparison.Merger;
+import org.svip.sbomfactory.serializers.SerializerFactory;
+import org.svip.sbomfactory.serializers.deserializer.Deserializer;
 import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomfactory.translators.TranslatorException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -144,11 +149,9 @@ public class SVIPApiController {
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
-        // Return SBOM or invalid ID
-        if (sbomFile.isEmpty()) {
-            LOGGER.info("GET /svip/view?id=" + id + " - FILE NOT FOUND");
-            return new ResponseEntity<>("Invalid SBOM ID.", HttpStatus.NOT_FOUND);
-        }
+        // Check if it exists
+        ResponseEntity<String> NOT_FOUND = Utils.checkIfExists(id, sbomFile, "view");
+        if (NOT_FOUND != null) return NOT_FOUND;
 
         // Log
         LOGGER.info("GET /svip/view?id=" + id + " - File: " + sbomFile.get().getFileName());
@@ -225,10 +228,8 @@ public class SVIPApiController {
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
         // Check if it exists
-        if (sbomFile.isEmpty()) {
-            LOGGER.info("DELETE /svip/convert?id=" + id + " - FILE NOT FOUND");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        ResponseEntity<String> NOT_FOUND = Utils.checkIfExists(id, sbomFile, "convert");
+        if (NOT_FOUND != null) return NOT_FOUND;
 
         SBOMFile toConvert = sbomFile.get();
 
@@ -255,6 +256,61 @@ public class SVIPApiController {
 
         return Utils.encodeResponse(converted.getContents());
     }
+
+
+
+    /**
+     * Merge existing SBOMs
+     * @param ids
+     * @param store
+     * @return
+     */
+    @GetMapping("/merge")
+    public ResponseEntity<String> merge(@RequestParam("ids") long[] ids, @RequestParam("store") boolean store){
+
+        ArrayList<SBOM> sboms = new ArrayList<>();
+
+        // check for bad files
+        for (Long id: ids
+             ) {
+
+            // Get SBOM
+            Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
+
+            // Check if it exists
+            ResponseEntity<String> NOT_FOUND = Utils.checkIfExists(id, sbomFile, "merge");
+            if (NOT_FOUND != null) return NOT_FOUND;
+            SBOMFile sbom = sbomFile.get();
+
+            if(sbom.hasNullProperties()){
+                LOGGER.info("DELETE /svip/merge?id=" + sbomFile.get().getId() + " - ERROR IN MERGE - HAS NULL PROPERTIES");
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            // deserialize into SBOM object
+            Deserializer d;
+            SVIPSBOM deserialized;
+
+            try{
+                d = SerializerFactory.createDeserializer(sbom.getContents());
+                deserialized = (SVIPSBOM) d.readFromString(sbom.getContents());
+            }catch (Exception e){
+                LOGGER.info("DELETE /svip/merge?id=" + sbomFile.get().getId() + "DURING DESERIALIZATION: " +
+                        e.getMessage());
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            sboms.add(deserialized);
+
+        }
+
+        Merger merger = new Merger();
+        SVIPSBOM result = null;
+               // merger.merge(sboms); // todo wait for Tyler to finish new Merger class
+        return Utils.encodeResponse(result.toString());
+
+    }
+
 
     //#region Deprecated Endpoints
 

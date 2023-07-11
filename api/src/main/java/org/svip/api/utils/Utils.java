@@ -3,8 +3,11 @@ package org.svip.api.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.svip.api.controller.SVIPApiController;
 import org.svip.api.model.SBOMFile;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.old.SBOM;
@@ -17,10 +20,7 @@ import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomfactory.translators.TranslatorException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A static class containing helpful utilities for API calls and testing responses.
@@ -29,6 +29,11 @@ import java.util.Map;
  * @author Juan Francisco Patino
  */
 public class Utils {
+
+    /**
+     * Spring-configured logger
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(SVIPApiController.class);
 
     /**
      * Helper method to get the schema of an SBOM string by translating it in and finding the SBOM object origin format.
@@ -236,6 +241,18 @@ public class Utils {
         ret.put(new SBOMFile("SUCCESS", s.writeToString(deserialized)), "");
         return ret;
 
+    }
+
+    /**
+     * Reusable code used in API controller to check if SBOMFile is empty/not found
+     * Also eliminates the need for isPresent() check for Optionals
+     */
+    public static ResponseEntity<String> checkIfExists(long id, Optional<SBOMFile> sbomFile, String call) {
+        if (sbomFile.isEmpty()) {
+            LOGGER.info("DELETE /svip/"+ call + "?id=" + id + " - FILE NOT FOUND. INVALID ID");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return null;
     }
 
 }
