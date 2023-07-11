@@ -92,10 +92,10 @@ public class Text {
         StringBuilder infoString = new StringBuilder();
         switch (info){
             case HAS -> details.append(field).append(": ").append(value);
-            //TODO implement for MISSING, VALID, INVALID
+            //TODO implement for MISSING
             case MISSING -> details.append("TODO");
-            case VALID -> details.append("TODO");
-            case INVALID -> details.append("TODO");
+            case VALID -> details.append(value).append("is a valid ").append(field);
+            case INVALID -> details.append(value).append("is an invalid ").append(field);
         }
         return details.toString();
     }
