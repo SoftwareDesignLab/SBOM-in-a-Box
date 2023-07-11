@@ -57,7 +57,7 @@ public class CPETest extends MetricTest{
         // cpe is a null value and does not exist, tests cannot be run
         // return missing Result
         else {
-            Text text = new Text(null, field);
+            Text text = new Text(value, field);
             String message = text.getMessage(INFO.MISSING, field);
             String details = text.getDetails(INFO.MISSING, field);
             Result r = new Result(attributes, TEST_NAME, message, details, STATUS.ERROR);
