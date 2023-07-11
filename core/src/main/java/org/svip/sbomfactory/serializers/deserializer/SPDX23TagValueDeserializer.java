@@ -124,7 +124,19 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                 case SPEC_VERSION_TAG -> sbomBuilder.setSpecVersion(mHeader.group(2).substring(mHeader.group(2).lastIndexOf('-') + 1)); // Get text after "SPDX-"
                 // AUTHORS
                 case AUTHOR_TAG -> {
-                    Contact author = new Contact(mHeader.group(2), "", "");
+                    String authorName = "";
+                    Pattern authorPattern = Pattern.compile("1*( UNRESERVED ) / U+0022 1*( VCHAR-SANS-QUOTE ) U+0022", Pattern.CASE_INSENSITIVE);
+                    Matcher mAuthorName = authorPattern.matcher(mHeader.group(2));
+                    while(mAuthorName.find()) {
+                        authorName = mAuthorName.group();
+                    }
+                    String authorEmail = "";
+                    Pattern authorEmailPattern = Pattern.compile("local-name-atom *( \".\" local-name-atom ) \"@\" domain-name-atom 1*( \".\" domain-name-atom )", Pattern.CASE_INSENSITIVE);
+                    Matcher mAuthorEmail = authorEmailPattern.matcher(mHeader.group(2));
+                    while(mAuthorEmail.find()) {
+                        authorEmail = mAuthorEmail.group();
+                    }
+                    Contact author = new Contact(authorName, authorEmail, "");
                     creationData.addAuthor(author);
                 }
                 // TIMESTAMP
@@ -139,20 +151,8 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         // Find all relationships in the file contents regardless of where they are
         Matcher relationship = RELATIONSHIP_PATTERN.matcher(fileContents);
         while(relationship.find()) {
-            switch(relationship.group(2)) {
-                case "DEPENDS_ON" -> {
-                    Relationship dependsOn = new Relationship(relationship.group(3), "DEPENDS_ON");
-                    sbomBuilder.addRelationship(relationship.group(1), dependsOn);
-                }
-                case "DEPENDENCY_OF" -> {
-                    Relationship dependencyOf = new Relationship(relationship.group(3), "DEPENDENCY_OF");
-                    sbomBuilder.addRelationship(relationship.group(1), dependencyOf);
-                }
-                case "DESCRIBES" -> {
-                    Relationship describes = new Relationship(relationship.group(3), "DESCRIBES");
-                    sbomBuilder.addRelationship(relationship.group(1), describes);
-                }
-            }
+            Relationship r = new Relationship(relationship.group(3), relationship.group(2));
+            sbomBuilder.addRelationship(relationship.group(1), r);
             lines.remove(relationship.group()); // Remove parsed relationship from contents
         }
         fileContents = String.join("\n", lines); // Remove all relationships from fileContents
@@ -219,10 +219,36 @@ public class SPDX23TagValueDeserializer implements Deserializer {
             // SUPPLIER
             // Cleanup package originator
             if (componentMaterials.get("PackageSupplier") != null) {
-                Organization supplier = new Organization(componentMaterials.get("PackageSupplier"), "");
+                // Fix setting supplier/originator, add contact email (if any) using regex
+                String supplierName = "";
+                Pattern namePattern = Pattern.compile("1*( UNRESERVED ) / U+0022 1*( VCHAR-SANS-QUOTE ) U+0022", Pattern.CASE_INSENSITIVE);
+                Matcher mName = namePattern.matcher(componentMaterials.get("PackageSupplier"));
+                while(mName.find()) {
+                    supplierName = mName.group();
+                }
+                String supplierEmail = "";
+                Pattern emailPattern = Pattern.compile("local-name-atom *( \".\" local-name-atom ) \"@\" domain-name-atom 1*( \".\" domain-name-atom )", Pattern.CASE_INSENSITIVE);
+                Matcher mEmail = emailPattern.matcher(componentMaterials.get("PackageSupplier"));
+                while(mEmail.find()) {
+                    supplierEmail = mEmail.group();
+                }
+                Organization supplier = new Organization(supplierName, supplierEmail);
                 packageBuilder.setSupplier(supplier);
             } else if (componentMaterials.get("PackageOriginator") != null) {
-                Organization supplier = new Organization(componentMaterials.get("PackageOriginator"), "");
+                // Fix setting supplier/originator, add contact email (if any) using regex
+                String supplierName = "";
+                Pattern namePattern = Pattern.compile("1*( UNRESERVED ) / U+0022 1*( VCHAR-SANS-QUOTE ) U+0022", Pattern.CASE_INSENSITIVE);
+                Matcher mName = namePattern.matcher(componentMaterials.get("PackageOriginator"));
+                while(mName.find()) {
+                    supplierName = mName.group();
+                }
+                String supplierEmail = "";
+                Pattern emailPattern = Pattern.compile("local-name-atom *( \".\" local-name-atom ) \"@\" domain-name-atom 1*( \".\" domain-name-atom )", Pattern.CASE_INSENSITIVE);
+                Matcher mEmail = emailPattern.matcher(componentMaterials.get("PackageOriginator"));
+                while(mEmail.find()) {
+                    supplierEmail = mEmail.group();
+                }
+                Organization supplier = new Organization(supplierName, supplierEmail);
                 packageBuilder.setSupplier(supplier);
             }
 
