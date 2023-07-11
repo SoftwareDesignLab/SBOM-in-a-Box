@@ -223,7 +223,7 @@ public class SVIPApiController {
 
     @GetMapping("/convert")
     public ResponseEntity<String> convert(@RequestParam("id") long id, @RequestParam("schema") String schema, String format,
-                                          @RequestParam("schema") Boolean overwrite) throws JsonProcessingException {
+                                          @RequestParam("overwrite") Boolean overwrite) throws JsonProcessingException {
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
@@ -310,6 +310,7 @@ public class SVIPApiController {
         return Utils.encodeResponse(result.toString());
 
     }
+
 
 
     //#region Deprecated Endpoints
