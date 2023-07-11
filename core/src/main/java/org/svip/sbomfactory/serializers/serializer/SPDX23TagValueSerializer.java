@@ -144,7 +144,7 @@ public class SPDX23TagValueSerializer implements Serializer {
         out.append("### Package: " + pkg.getName() + "\n\n");
         out.append(buildTagValue("SPDXID", pkg.getUID()));
         out.append(buildTagValue("PackageName", pkg.getName()));
-        out.append(buildTagValue("PackageVersiom", pkg.getVersion()));
+        out.append(buildTagValue("PackageVersion", pkg.getVersion()));
         out.append(buildTagValue("PackageSummary", pkg.getDescription().getSummary()));
         out.append(buildTagValue("PackageDescription", pkg.getDescription().getDescription()));
         out.append(buildTagValue("PackageComment", pkg.getComment()));
