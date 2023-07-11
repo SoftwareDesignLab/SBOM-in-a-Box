@@ -63,7 +63,7 @@ public class CDX14Pipeline implements CDX14Tests {
 
         // set the attributes of this test to create a new ResultFactory
         List<ATTRIBUTE> attributes = new ArrayList<>(List.of(
-                ATTRIBUTE.CDX14, ATTRIBUTE.COMPLETENESS
+                ATTRIBUTE.COMPLETENESS
         ));
         ResultFactory resultFactory = new ResultFactory(attributes, testName);
         Result r;
