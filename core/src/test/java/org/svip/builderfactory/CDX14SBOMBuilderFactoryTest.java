@@ -64,7 +64,7 @@ public class CDX14SBOMBuilderFactoryTest {
 
 
     @Test
-    void setFormat() {
+    void getFormat_is_test_format_when_setFormat_is_used_test() {
         test_CDX14SBOMBuilder.setFormat(test_format);
         test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
@@ -72,7 +72,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void setName(){
+    void getName_is_test_name_when_setName_is_used_test(){
         test_CDX14SBOMBuilder.setName(test_name);
         test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
@@ -80,7 +80,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void setUID(){
+    void getUID_is_test_uid_when_setUID_is_used_test(){
         test_CDX14SBOMBuilder.setUID(test_uid);
         test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
@@ -88,7 +88,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void setVersion(){
+    void getVersion_is_test_version_when_setVersion_is_used_test(){
         test_CDX14SBOMBuilder.setVersion(test_version);
         test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
@@ -96,7 +96,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void setSpecVersion(){
+    void getSpecVersion_is_test_specVersion_when_setSpecVersion_is_used_test(){
         test_CDX14SBOMBuilder.setSpecVersion(test_specVersion);
         test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
@@ -104,7 +104,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void addLicense(){
+    void getLicenses_is_test_set_when_addLicense_is_used_test(){
         test_CDX14SBOMBuilder.addLicense(test_license1);
         test_CDX14SBOMBuilder.addLicense(test_license2);
         test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
@@ -117,7 +117,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void setCreationData(){
+    void getCreationData_is_test_creationData_when_setCreationData_is_used_test(){
         test_creationData.setCreationTime("17:32");
         test_creationData.setCreatorComment("This was created as a test.");
 
@@ -128,7 +128,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void setDocumentComment(){
+    void getDocumentComment_is_test_documentComment_when_setDocumentComment_is_used_test(){
         test_CDX14SBOMBuilder.setDocumentComment(test_documentComment);
         test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
@@ -136,7 +136,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void setRootCDXComponentObject(){
+    void getRootComponent_is_test_rootComponent_when_setRootCDXComponentObject_is_used_test(){
         test_rootComponent = new CDX14ComponentObject("CycloneDX", null, "Tester", "Test Component",null,null,null,null,null,null,null,null,null, null, null, null,null,null);
         test_CDX14SBOMBuilder.setRootComponent(test_rootComponent);
         test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
@@ -145,7 +145,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void addCDXComponentObject(){
+    void getComponents_is_test_components_when_addCDXComponentObject_is_used_test(){
         CDX14ComponentObject test_componentA = new CDX14ComponentObject("CycloneDX", null, "Tester One", "Test Component A",null,null,null,null,null,null,null,null,null, null, null, null,null,null);
         CDX14ComponentObject test_componentB = new CDX14ComponentObject("CycloneDX", null, "Tester 2", "Test Component B",null,null,null,null,null,null,null,null,null, null, null, null,null,null);
         test_CDX14SBOMBuilder.addComponent(test_componentA);
@@ -162,7 +162,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void addCDX14Package(){
+    void getComponents_contains_test_package_when_addCDX14Package_is_used_test(){
         test_packageBuilder.setName("test name");
         CDX14Package test_package = test_packageBuilder.buildAndFlush();
 
@@ -173,7 +173,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void addRelationship(){
+    void getRelationships_contains_test_relationships_when_addRelationship_is_used_test(){
         HashMap<String, Relationship> test_relationships = new HashMap<String, Relationship>();
         Relationship test_relationship = new Relationship("001", "dependant");
         test_CDX14SBOMBuilder.addRelationship("test_component", test_relationship);
@@ -184,7 +184,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void addExternalReference(){
+    void getExternalReferences_is_test_externalRefs_when_addExternalReference_is_used_test(){
         HashSet<ExternalReference> test_externalRefs = new HashSet<ExternalReference>();
         ExternalReference test_externalRef = new ExternalReference("really cool url", "CPE");
 
@@ -197,7 +197,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void build(){
+    void getName_is_test_name_when_SBOM_is_built_with_Build_method_test(){
         test_CDX14SBOMBuilder.setName(test_name);
         SBOM test_SBOM = test_CDX14SBOMBuilder.Build();
 
