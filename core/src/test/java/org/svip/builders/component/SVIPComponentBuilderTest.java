@@ -95,35 +95,35 @@ public class SVIPComponentBuilderTest {
     String test_property_value = "team_responsible";
 
     @Test
-    void setMimeType() {
+    void getMimeType_is_test_mimeType_when_setMimeType_is_used_test() {
         test_packageBuilder.setMimeType(test_mimeType);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_mimeType, test_file.getMimeType());
     }
 
     @Test
-    void setPublisher() {
+    void getPublisher_is_test_publisher_when_setPublisher_is_used_test() {
         test_packageBuilder.setPublisher(test_publisher);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_publisher, test_file.getPublisher());
     }
 
     @Test
-    void setScope() {
+    void getScope_is_test_scope_when_setScope_is_used_test() {
         test_packageBuilder.setScope(test_scope);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_scope, test_file.getScope());
     }
 
     @Test
-    void setGroup() {
+    void getGroup_is_test_group_when_setGroup_is_used_test() {
         test_packageBuilder.setGroup(test_group);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_group, test_file.getGroup());
     }
 
     @Test
-    void addExternalReferences() {
+    void getExternalReferences_contains_test_extRef_when_addExternalReferences_is_used_test() {
         ExternalReference test_extRef = new ExternalReference(
                 test_extRef_url, test_extTef_type);
         test_packageBuilder.addExternalReferences(test_extRef);
@@ -133,7 +133,7 @@ public class SVIPComponentBuilderTest {
     }
 
     @Test
-    void addProperty() {
+    void getProperties_is_test_propertyMap_when_addProperty_is_used_test() {
         test_packageBuilder.addProperty(test_property_name, test_property_value);
 
         test_file = test_packageBuilder.buildAndFlush();
@@ -146,7 +146,7 @@ public class SVIPComponentBuilderTest {
     }
 
     @Test
-    void setType() {
+    void getType_is_test_type_when_setType_is_used_test() {
         test_packageBuilder.setType(test_type);
 
         test_file = test_packageBuilder.buildAndFlush();
@@ -154,7 +154,7 @@ public class SVIPComponentBuilderTest {
     }
 
     @Test
-    void setUID() {
+    void getUID_is_test_uid_when_setUID_is_used_test() {
         test_packageBuilder.setUID(test_uid);
 
         test_file = test_packageBuilder.buildAndFlush();
@@ -162,7 +162,7 @@ public class SVIPComponentBuilderTest {
     }
 
     @Test
-    void setAuthor() {
+    void getAuthor_is_test_author_when_setAuthor_is_used_test() {
         test_packageBuilder.setAuthor(test_author);
 
         test_file = test_packageBuilder.buildAndFlush();
@@ -171,7 +171,7 @@ public class SVIPComponentBuilderTest {
     }
 
     @Test
-    void setName() {
+    void getName_is_test_name_when_setName_is_used_test() {
         test_packageBuilder.setName(test_name);
 
         test_file = test_packageBuilder.buildAndFlush();
@@ -179,7 +179,7 @@ public class SVIPComponentBuilderTest {
     }
 
     @Test
-    void setLicenses() {
+    void getLicenses_is_licenseCollection_when_setLicenses_is_used_test() {
         LicenseCollection licenseCollection = new LicenseCollection();
         licenseCollection.addDeclaredLicense(test_license1);
         licenseCollection.addDeclaredLicense(test_license2);
@@ -190,7 +190,7 @@ public class SVIPComponentBuilderTest {
     }
 
     @Test
-    void setCopyright() {
+    void getCopyright_is_test_copyright_when_setCopyright_is_used_test() {
         test_packageBuilder.setCopyright(test_copyright);
 
         test_file = test_packageBuilder.buildAndFlush();
@@ -198,7 +198,7 @@ public class SVIPComponentBuilderTest {
     }
 
     @Test
-    void addHash() {
+    void getHashes_is_test_map_when_addHash_is_used_test() {
         test_packageBuilder.addHash(test_hash_algo, test_hash_value);
 
         test_file = test_packageBuilder.buildAndFlush();
@@ -210,7 +210,7 @@ public class SVIPComponentBuilderTest {
     }
 
     @Test
-    void setSupplier() {
+    void getSupplier_is_test_supplier_when_setSupplier_is_used_test() {
         Organization supplier = new Organization(test_supplier, "www.python.com");
         test_packageBuilder.setSupplier(supplier);
 
@@ -219,7 +219,7 @@ public class SVIPComponentBuilderTest {
     }
 
     @Test
-    void setVersion() {
+    void getVersion_is_test_version_when_setVersion_is_used_test() {
         test_packageBuilder.setVersion(test_version);
 
         test_file = test_packageBuilder.buildAndFlush();
@@ -227,7 +227,7 @@ public class SVIPComponentBuilderTest {
     }
 
     @Test
-    void setDescription() {
+    void getDescription_is_test_description_when_setDescription_is_used_test() {
         Description description = new Description(test_description);
         test_packageBuilder.setDescription(description);
 
@@ -236,7 +236,7 @@ public class SVIPComponentBuilderTest {
     }
 
     @Test
-    void addCPE() {
+    void getCPEs_contains_test_random_cpe_when_addCPE_is_used_test() {
         test_packageBuilder.addCPE(test_random_cpe);
 
         test_file = test_packageBuilder.buildAndFlush();
@@ -244,7 +244,7 @@ public class SVIPComponentBuilderTest {
     }
 
     @Test
-    void addPURL() {
+    void getPURLs_contains_test_random_purl_when_addPURL_is_used_test() {
         test_packageBuilder.addPURL(test_random_purl);
 
         test_file = test_packageBuilder.buildAndFlush();
@@ -252,7 +252,7 @@ public class SVIPComponentBuilderTest {
     }
 
     @Test
-    void addExternalReference() {
+    void getExternalReferences_contains_externalReference_when_addExternalReference_is_used_test() {
         ExternalReference externalReference = new ExternalReference(test_extRef_url, test_extTef_type);
         test_packageBuilder.addExternalReference(externalReference);
 
@@ -261,7 +261,7 @@ public class SVIPComponentBuilderTest {
     }
 
     @Test
-    void setFileNotice() {
+    void getFileNotice_is_fileNotice_when_setFileNotice_is_used_test() {
         test_packageBuilder.setFileNotice(fileNotice);
 
         test_file = test_packageBuilder.buildAndFlush();
@@ -270,7 +270,7 @@ public class SVIPComponentBuilderTest {
     }
 
     @Test
-    void setComment() {
+    void getComment_is_test_comment_when_setComment_is_used_test() {
         test_packageBuilder.setComment(test_comment);
 
         test_file = test_packageBuilder.buildAndFlush();
@@ -279,7 +279,7 @@ public class SVIPComponentBuilderTest {
     }
 
     @Test
-    void setAttributionText() {
+    void getAttributionText_is_test_attributionText_when_setAttributionText_is_used_test() {
         test_packageBuilder.setAttributionText(test_attributionText);
 
         test_file = test_packageBuilder.buildAndFlush();
@@ -288,63 +288,63 @@ public class SVIPComponentBuilderTest {
     }
 
     @Test
-    void setDownloadLocation() {
+    void getDownloadLocation_is_test_downloadLocation_when_setDownloadLocation_is_used_test() {
         test_packageBuilder.setDownloadLocation(test_downloadLocation);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_downloadLocation, test_file.getDownloadLocation());
     }
 
     @Test
-    void setFileName() {
+    void getFileName_is_test_fileName_when_setFileName_is_used_test() {
         test_packageBuilder.setFileName(test_fileName);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_fileName, test_file.getFileName());
     }
 
     @Test
-    void setFilesAnalyzed() {
+    void getFilesAnalyzed_is_test_filesAnalyzed_when_setFilesAnalyzed_is_used_test() {
         test_packageBuilder.setFilesAnalyzed(test_filesAnalyzed);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_filesAnalyzed, test_file.getFilesAnalyzed());
     }
 
     @Test
-    void setVerificationCode() {
+    void getVerificationCode_is_test_verificationCode_when_setVerificationCode_is_used_test() {
         test_packageBuilder.setVerificationCode(test_verificationCode);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_verificationCode, test_file.getVerificationCode());
     }
 
     @Test
-    void setHomePage() {
+    void getHomePage_is_test_homePage_when_setHomePage_is_used_test() {
         test_packageBuilder.setHomePage(test_homePage);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_homePage, test_file.getHomePage());
     }
 
     @Test
-    void setSourceInfo() {
+    void getSourceInfo_is_test_sourceInfo_when_setSourceInfo_is_used_test() {
         test_packageBuilder.setSourceInfo(test_sourceInfo);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_sourceInfo, test_file.getSourceInfo());
     }
 
     @Test
-    void setReleaseDate() {
+    void getReleaseDate_is_test_releaseDate_when_setReleaseDate_is_used_test() {
         test_packageBuilder.setReleaseDate(test_releaseDate);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_releaseDate, test_file.getReleaseDate());
     }
 
     @Test
-    void setBuildDate() {
+    void getBuiltDate_is_test_builtDate_when_setBuildDate_is_used_test() {
         test_packageBuilder.setBuildDate(test_builtDate);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_builtDate, test_file.getBuiltDate());
     }
 
     @Test
-    void setValidUntilDate() {
+    void getValidUntilDate_is_test_validUntilDate_when_setValidUntilDate_is_used_test() {
         test_packageBuilder.setValidUntilDate(test_validUntilDate);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_validUntilDate, test_file.getValidUntilDate());
