@@ -13,7 +13,6 @@ public class CDX14Pipeline implements CDX14Tests {
     public QualityReport process(String uid, SBOM sbom) {
         return null;
     }
-
     @Override
     public Set<Result> hasBomVersion(SBOM sbom) {
         return null;
