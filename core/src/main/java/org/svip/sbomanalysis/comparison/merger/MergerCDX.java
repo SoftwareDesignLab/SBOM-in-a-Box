@@ -26,7 +26,7 @@ public class MergerCDX extends Merger {
 
         CDX14SBOM mainSBOM = (CDX14SBOM) A;
 
-
+        return mainSBOM;
 
     }
 
