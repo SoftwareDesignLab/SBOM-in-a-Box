@@ -1,7 +1,7 @@
 package org.svip.sbomanalysis.qualityattributes.newtests.enumerations;
 
 public enum ATTRIBUTE {
-    CDX4,
+    CDX14,
     COMPLETENESS,
     LICENSING,
     REGISTERED,

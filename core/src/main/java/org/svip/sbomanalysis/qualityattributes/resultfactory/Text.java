@@ -36,21 +36,11 @@ public class Text {
      */
     public String getMessage(INFO info, Collection<String> values){
         StringBuilder message = new StringBuilder();
-        StringBuilder infoString = new StringBuilder();
-        String valuesString = String.join(",", values);
         switch (info){
-            case HAS -> infoString.append(" has the following values: ").append(valuesString);
-            case MISSING -> infoString.append("Missing ").append(field).append(" value");
-            case VALID -> infoString.append(" are valid: ").append(valuesString);
-            case INVALID -> infoString.append(" are invalid: ").append(valuesString);
+            case HAS -> message.append(context).append(" has ").append(field).append("s");
+            case MISSING -> message.append(context).append(" has missing ").append(field).append("s");
         }
 
-        if(info.equals(INFO.MISSING)){
-            message.append(infoString);
-        }
-        else{
-            message.append(field).append(infoString);
-        }
         return message.toString();
     }
 
@@ -62,20 +52,13 @@ public class Text {
      */
     public String getMessage(INFO info, String value){
         StringBuilder message = new StringBuilder();
-        StringBuilder infoString = new StringBuilder();
         switch (info){
-            case HAS -> infoString.append(" has the value: ").append(value);
-            case MISSING -> infoString.append("Missing ").append(field).append(" value");
-            case VALID -> infoString.append(" is valid: ").append(value);
-            case INVALID -> infoString.append(" is invalid: ").append(value);
+            case HAS -> message.append(context).append(" has a ").append(field);
+            case MISSING -> message.append(context).append(" is a missing ").append(field);
+            case VALID -> message.append(value).append(" is a valid ").append(field);
+            case INVALID -> message.append(value).append(" is an invalid ").append(field);
         }
 
-        if(info.equals(INFO.MISSING)){
-            message.append(infoString);
-        }
-        else{
-            message.append(field).append(infoString);
-        }
         return message.toString();
     }
 
@@ -87,23 +70,14 @@ public class Text {
      */
     public String getDetails(INFO info, Collection<String> values){
         StringBuilder details = new StringBuilder();
-        StringBuilder infoString = new StringBuilder();
         String valuesString = String.join(",", values);
         switch (info){
-            case HAS -> infoString.append(" has the following values: ").append(valuesString);
-            case MISSING -> infoString.append("Missing ").append(field).append(" value");
-            case VALID -> infoString.append(" are valid: ").append(valuesString);
-            case INVALID -> infoString.append(" are invalid: ").append(valuesString);
+            case HAS -> details.append(context).append(" has ").append(values.size())
+                    .append(field).append("s: ").append(valuesString);
+            // TODO implement for MISSING
+            case MISSING -> details.append("TODO");
         }
 
-        if(info.equals(INFO.MISSING)){
-            details.append(infoString);
-            details.append(" with the following context: ").append(context);
-        }
-        else{
-            details.append(field).append(infoString);
-            details.append(" with the following context: ").append(context);
-        }
         return details.toString();
     }
 
@@ -117,20 +91,11 @@ public class Text {
         StringBuilder details = new StringBuilder();
         StringBuilder infoString = new StringBuilder();
         switch (info){
-            case HAS -> infoString.append(" has the value: ").append(value);
-            case MISSING -> infoString.append("Missing ").append(field).append(" value");
-            case VALID -> infoString.append(" is valid: ").append(value);
-            case INVALID -> infoString.append(" is invalid: ").append(value);
-        }
-
-        if(info.equals(INFO.MISSING)){
-            details.append(infoString);
-            details.append(" with the following context: ").append(context);
-        }
-        else{
-
-            details.append(field).append(infoString);
-            details.append(" with the following context: ").append(context);
+            case HAS -> details.append(field).append(": ").append(value);
+            //TODO implement for MISSING, VALID, INVALID
+            case MISSING -> details.append("TODO");
+            case VALID -> details.append("TODO");
+            case INVALID -> details.append("TODO");
         }
         return details.toString();
     }
