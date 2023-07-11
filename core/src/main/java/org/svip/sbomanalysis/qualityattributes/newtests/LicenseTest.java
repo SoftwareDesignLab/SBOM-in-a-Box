@@ -4,7 +4,6 @@ import jregex.Matcher;
 import jregex.Pattern;
 import jregex.REFlags;
 import org.apache.commons.io.IOUtils;
-import org.svip.sbom.model.old.Component;
 import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.ResultFactory;
@@ -16,11 +15,17 @@ import org.svip.sbomfactory.generators.utils.Debug;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * file: LicenseTest.java
+ * Series of tests for license string and license expression objects
+ *
+ * @author Matthew Morrison
+ * @author Derek Garcia
+ */
 public class LicenseTest extends MetricTest{
 
     private final String TEST_NAME = "LicenseTest";
@@ -204,30 +209,36 @@ public class LicenseTest extends MetricTest{
         //TODO only held as a string. A License object should be created
         // Test if valid Identifier
         if(SPDX_LICENSE_IDENTIFIERS.contains(value.toLowerCase())){
-            r = resultFactory.pass("SPDX License Identifier", INFO.VALID, value);
+            r = resultFactory.pass("SPDX License Identifier", INFO.VALID, value,
+                    "License Identifier is valid");
         } else {
-            r = resultFactory.fail("SPDX License Identifier", INFO.INVALID, value);
+            r = resultFactory.fail("SPDX License Identifier", INFO.INVALID, value,
+                    "License Identifier is invalid");
         }
 
         results.add(r);
 
             // Test if valid name
             if(SPDX_LICENSE_NAMES.contains(value.toLowerCase())){
-                r = resultFactory.pass("SPDX License Name", INFO.VALID, value);
+                r = resultFactory.pass("SPDX License Name", INFO.VALID, value,
+                        "License is a valid name in SPDX license list");
             } else {
-                r = resultFactory.pass("SPDX License Name", INFO.INVALID, value);
+                r = resultFactory.pass("SPDX License Name", INFO.INVALID, value,
+                        "License is a valid name in SPDX license list");
             }
             results.add(r);
 
             // Test if depreciated Identifier
             if(DEPRECIATED_SPDX_LICENSE_IDENTIFIERS.contains(value.toLowerCase())){
-                r = resultFactory.fail("Deprecated SPDX License Identifier", INFO.INVALID, value);
+                r = resultFactory.fail("SPDX License Identifier", INFO.INVALID, value,
+                        "Valid SPDX License Identifier but is depreciated");
                 results.add(r);
             }
 
             // Test if depreciated Name
             if(DEPRECIATED_SPDX_LICENSE_NAMES.contains(value.toLowerCase())){
-                r = resultFactory.fail("Deprecated SPDX License Name", INFO.INVALID, value);
+                r = resultFactory.fail("SPDX License Name", INFO.INVALID, value,
+                        "Valid SPDX License Name but is depreciated");
                 results.add(r);
             }
 

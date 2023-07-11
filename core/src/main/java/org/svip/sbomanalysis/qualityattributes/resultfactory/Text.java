@@ -34,9 +34,24 @@ public class Text {
      * @param values a collection of values to get messages for
      * @return a String of messages
      */
-    //TODO implement
     public String getMessage(INFO info, Collection<String> values){
-        return null;
+        StringBuilder message = new StringBuilder();
+        StringBuilder infoString = new StringBuilder();
+        String valuesString = String.join(",", values);
+        switch (info){
+            case HAS -> infoString.append(" has the following values: ").append(valuesString);
+            case MISSING -> infoString.append("Missing ").append(field).append(" value");
+            case VALID -> infoString.append(" are valid: ").append(valuesString);
+            case INVALID -> infoString.append(" are invalid: ").append(valuesString);
+        }
+
+        if(info.equals(INFO.MISSING)){
+            message.append(infoString);
+        }
+        else{
+            message.append(field).append(infoString);
+        }
+        return message.toString();
     }
 
     /**
@@ -45,30 +60,78 @@ public class Text {
      * @param value a value to get messages for
      * @return a String message
      */
-    //TODO implement
     public String getMessage(INFO info, String value){
-        return null;
+        StringBuilder message = new StringBuilder();
+        StringBuilder infoString = new StringBuilder();
+        switch (info){
+            case HAS -> infoString.append(" has the value: ").append(value);
+            case MISSING -> infoString.append("Missing ").append(field).append(" value");
+            case VALID -> infoString.append(" is valid: ").append(value);
+            case INVALID -> infoString.append(" is invalid: ").append(value);
+        }
+
+        if(info.equals(INFO.MISSING)){
+            message.append(infoString);
+        }
+        else{
+            message.append(field).append(infoString);
+        }
+        return message.toString();
     }
 
     /**
-     * Get the details of multiple values
+     * Get details of multiple values from a result
      * @param info the info
      * @param values a collection of values to get details for
      * @return a String of details
      */
-    //TODO implement
     public String getDetails(INFO info, Collection<String> values){
-        return null;
+        StringBuilder details = new StringBuilder();
+        StringBuilder infoString = new StringBuilder();
+        String valuesString = String.join(",", values);
+        switch (info){
+            case HAS -> infoString.append(" has the following values: ").append(valuesString);
+            case MISSING -> infoString.append("Missing ").append(field).append(" value");
+            case VALID -> infoString.append(" are valid: ").append(valuesString);
+            case INVALID -> infoString.append(" are invalid: ").append(valuesString);
+        }
+
+        if(info.equals(INFO.MISSING)){
+            details.append(infoString);
+            details.append(" with the following context: ").append(context);
+        }
+        else{
+            details.append(field).append(infoString);
+            details.append(" with the following context: ").append(context);
+        }
+        return details.toString();
     }
 
     /**
-     * Get the details of a single value
+     * Get details of a single value from a result
      * @param info the info
      * @param value a value to get details for
      * @return a String of details
      */
-    //TODO implement
     public String getDetails(INFO info, String value){
-        return null;
+        StringBuilder details = new StringBuilder();
+        StringBuilder infoString = new StringBuilder();
+        switch (info){
+            case HAS -> infoString.append(" has the value: ").append(value);
+            case MISSING -> infoString.append("Missing ").append(field).append(" value");
+            case VALID -> infoString.append(" is valid: ").append(value);
+            case INVALID -> infoString.append(" is invalid: ").append(value);
+        }
+
+        if(info.equals(INFO.MISSING)){
+            details.append(infoString);
+            details.append(" with the following context: ").append(context);
+        }
+        else{
+
+            details.append(field).append(infoString);
+            details.append(" with the following context: ").append(context);
+        }
+        return details.toString();
     }
 }
