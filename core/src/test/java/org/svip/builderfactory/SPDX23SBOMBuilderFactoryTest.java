@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Kevin Laporte
  */
 public class SPDX23SBOMBuilderFactoryTest {
-    // TODO SPDX SBOM Builder Factory Tests
     SPDX23SBOMBuilderFactory test_sbomBuilderFactory = new SPDX23SBOMBuilderFactory();
     SPDX23FileBuilder test_fileBuilder = new SPDX23FileBuilder();
     SPDX23PackageBuilder test_packageBuilder = new SPDX23PackageBuilder();
