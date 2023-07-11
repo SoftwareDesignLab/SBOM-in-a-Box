@@ -222,7 +222,8 @@ public class SVIPApiController {
      */
 
     @GetMapping("/convert")
-    public ResponseEntity<String> convert(@RequestParam("id") long id, @RequestParam("schema") String schema, String format,
+    public ResponseEntity<String> convert(@RequestParam("id") long id, @RequestParam("schema") String schema,
+                                          @RequestParam("format") String format,
                                           @RequestParam("overwrite") Boolean overwrite) throws JsonProcessingException {
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
@@ -262,11 +263,10 @@ public class SVIPApiController {
     /**
      * Merge existing SBOMs
      * @param ids
-     * @param store
      * @return
      */
     @GetMapping("/merge")
-    public ResponseEntity<String> merge(@RequestParam("ids") long[] ids, @RequestParam("store") boolean store){
+    public ResponseEntity<String> merge(@RequestParam("ids") long[] ids){
 
         ArrayList<SBOM> sboms = new ArrayList<>();
 
@@ -303,6 +303,8 @@ public class SVIPApiController {
             sboms.add(deserialized);
 
         }
+
+        // todo store
 
         Merger merger = new Merger();
         SVIPSBOM result = null;
