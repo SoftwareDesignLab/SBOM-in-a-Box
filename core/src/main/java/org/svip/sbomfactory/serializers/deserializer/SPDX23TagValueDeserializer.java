@@ -277,7 +277,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                 String supplierName = "";
                 String supplierEmail = "";
                 Pattern supplierPattern = Pattern.compile("PackageOriginator: (.*)", Pattern.CASE_INSENSITIVE);
-                Matcher mSupplier = supplierPattern.matcher(componentMaterials.get("PackageSupplier"));
+                Matcher mSupplier = supplierPattern.matcher(componentMaterials.get("PackageOriginator"));
                 while(mSupplier.find()) {
                     supplierName = mSupplier.group(1);
                 }
@@ -293,18 +293,13 @@ public class SPDX23TagValueDeserializer implements Deserializer {
             // LICENSE EXPRESSION
             LicenseCollection licenseCollection = new LicenseCollection();
             if (componentMaterials.get("PackageLicenseConcluded") != null) {
-                Pattern licensePattern = Pattern.compile("(simple-expression / compound-expression)", Pattern.CASE_INSENSITIVE);
-                Matcher mLicense = licensePattern.matcher(componentMaterials.get("PackageLicenseConcluded"));
-                while (mLicense.find()) {
-                    licenseCollection.addLicenseInfoFromFile(mLicense.group());
-                }
+                licenseCollection.addConcludedLicenseString(componentMaterials.get("PackageLicenseConcluded"));
             }
             if (componentMaterials.get("PackageLicenseDeclared") != null) {
-                Pattern licensePattern = Pattern.compile("(simple-expression / compound-expression)", Pattern.CASE_INSENSITIVE);
-                Matcher mLicense = licensePattern.matcher(componentMaterials.get("PackageLicenseDeclared"));
-                while (mLicense.find()) {
-                    licenseCollection.addLicenseInfoFromFile(mLicense.group());
-                }
+                licenseCollection.addDeclaredLicense(componentMaterials.get("PackageLicenseDeclared"));
+            }
+            if (componentMaterials.get("PackageLicenseInfoFromFiles") != null) {
+                licenseCollection.addLicenseInfoFromFile(componentMaterials.get("PackageLicenseInfoFromFiles"));
             }
             packageBuilder.setLicenses(licenseCollection);
 
