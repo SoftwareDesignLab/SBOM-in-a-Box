@@ -3,6 +3,22 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v5.0.2-alpha] - (7/10/2023)
+
+### Added
+- New Serializer refactor and implementation of the old generator serializers to use the SBOM object:
+  - `SerializerFactory` Class - Responsible for recieving parameters and constructing/configuring 
+    serializers/deserializers
+  - `Serializer` Interface
+    - `CDX14JSONSerializer` Class - CycloneDX v1.4 JSON serializer
+    - `SPDX23JSONSerializer` Class - SPDX v2.3 JSON serializer
+    - `SPDX23TagValueSerializer` Class - SPDX v2.3 Tag-Value (.spdx) serializer
+    - `SVIPSBOMJSONSerializer` Class - Data serializer to represent all fields in an SVIP SBOM object instance
+  - `Deserializer` Interface
+    - `CDX14JSONDeserializer` Class - CycloneDX v1.4 JSON deserializer
+    - `SPDX23JSONDeserializer` Class - SPDX v2.3 JSON deserializer
+    - `SPDX23TagValueDeserializer` Class - SPDX v2.3 Tag-Value (.spdx) deserializer
+
 ## [v5.0.1-alpha] - (7/3/2023)
 
 ### Added
