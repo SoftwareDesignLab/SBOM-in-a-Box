@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -67,7 +68,7 @@ public class SPDX23TagValueDeserializerTest extends DeserializerTest {
         // check for duplicates
         int count = 0;
         for (int i = 0; i < components.size(); i++) {
-            if (components.get(i).getUID() == "SPDXRef-35ab393f27e0bc39") {
+            if (Objects.equals(components.get(i).getUID(), "SPDXRef-35ab393f27e0bc39")) {
                 count += 1;
             }
         }

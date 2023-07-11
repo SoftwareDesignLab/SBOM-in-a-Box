@@ -140,16 +140,12 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                 // AUTHORS
                 case AUTHOR_TAG -> {
                     String authorName = "";
-                    Pattern authorPattern = Pattern.compile("1*( UNRESERVED ) / U+0022 1*( VCHAR-SANS-QUOTE ) U+0022", Pattern.CASE_INSENSITIVE);
-                    Matcher mAuthorName = authorPattern.matcher(mHeader.group(2));
-                    while(mAuthorName.find()) {
-                        authorName = mAuthorName.group();
-                    }
                     String authorEmail = "";
-                    Pattern authorEmailPattern = Pattern.compile("local-name-atom *( \".\" local-name-atom ) \"@\" domain-name-atom 1*( \".\" domain-name-atom )", Pattern.CASE_INSENSITIVE);
-                    Matcher mAuthorEmail = authorEmailPattern.matcher(mHeader.group(2));
-                    while(mAuthorEmail.find()) {
-                        authorEmail = mAuthorEmail.group();
+                    Pattern authorPattern = Pattern.compile("Organization: (?:(.*) \\((.*)\\))(.*)", Pattern.CASE_INSENSITIVE);
+                    Matcher mAuthor = authorPattern.matcher(mHeader.group(2));
+                    while(mAuthor.find()) {
+                        authorName = mAuthor.group(1);
+                        authorEmail = mAuthor.group(2);
                     }
                     if (authorName != "") {
                         Contact author = new Contact(authorName, authorEmail, "");
@@ -267,32 +263,23 @@ public class SPDX23TagValueDeserializer implements Deserializer {
             if (componentMaterials.get("PackageSupplier") != null) {
                 // Fix setting supplier/originator, add contact email (if any) using regex
                 String supplierName = "";
-                Pattern namePattern = Pattern.compile("1*( UNRESERVED ) / U+0022 1*( VCHAR-SANS-QUOTE ) U+0022", Pattern.CASE_INSENSITIVE);
-                Matcher mName = namePattern.matcher(componentMaterials.get("PackageSupplier"));
-                while(mName.find()) {
-                    supplierName = mName.group();
-                }
                 String supplierEmail = "";
-                Pattern emailPattern = Pattern.compile("local-name-atom *( \".\" local-name-atom ) \"@\" domain-name-atom 1*( \".\" domain-name-atom )", Pattern.CASE_INSENSITIVE);
-                Matcher mEmail = emailPattern.matcher(componentMaterials.get("PackageSupplier"));
-                while(mEmail.find()) {
-                    supplierEmail = mEmail.group();
+                Pattern supplierPattern = Pattern.compile("Organization: (?:(.*) \\((.*)\\))(.*)", Pattern.CASE_INSENSITIVE);
+                Matcher mSupplier = supplierPattern.matcher(componentMaterials.get("PackageSupplier"));
+                while(mSupplier.find()) {
+                    supplierName = mSupplier.group(1);
+                    supplierEmail = mSupplier.group(2);
                 }
                 Organization supplier = new Organization(supplierName, supplierEmail);
                 packageBuilder.setSupplier(supplier);
             } else if (componentMaterials.get("PackageOriginator") != null) {
                 // Fix setting supplier/originator, add contact email (if any) using regex
                 String supplierName = "";
-                Pattern namePattern = Pattern.compile("1*( UNRESERVED ) / U+0022 1*( VCHAR-SANS-QUOTE ) U+0022", Pattern.CASE_INSENSITIVE);
-                Matcher mName = namePattern.matcher(componentMaterials.get("PackageOriginator"));
-                while(mName.find()) {
-                    supplierName = mName.group();
-                }
                 String supplierEmail = "";
-                Pattern emailPattern = Pattern.compile("local-name-atom *( \".\" local-name-atom ) \"@\" domain-name-atom 1*( \".\" domain-name-atom )", Pattern.CASE_INSENSITIVE);
-                Matcher mEmail = emailPattern.matcher(componentMaterials.get("PackageOriginator"));
-                while(mEmail.find()) {
-                    supplierEmail = mEmail.group();
+                Pattern supplierPattern = Pattern.compile("PackageOriginator: (.*)", Pattern.CASE_INSENSITIVE);
+                Matcher mSupplier = supplierPattern.matcher(componentMaterials.get("PackageSupplier"));
+                while(mSupplier.find()) {
+                    supplierName = mSupplier.group(1);
                 }
                 Organization supplier = new Organization(supplierName, supplierEmail);
                 packageBuilder.setSupplier(supplier);
