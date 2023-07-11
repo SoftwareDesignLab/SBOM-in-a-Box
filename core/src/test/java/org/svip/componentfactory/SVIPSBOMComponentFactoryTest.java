@@ -15,7 +15,7 @@ public class SVIPSBOMComponentFactoryTest {
     SVIPSBOMComponentFactory test_componentBuilder;
 
     @Test
-    void createBuilder() {
+    void svipsbomComponentFactory_is_test_componentBuilder_when_createBuilder_is_used_test() {
         SVIPSBOMComponentFactory svipsbomComponentFactory = new SVIPSBOMComponentFactory();
         test_componentBuilder = new SVIPSBOMComponentFactory();
         assertEquals(test_componentBuilder, svipsbomComponentFactory);
