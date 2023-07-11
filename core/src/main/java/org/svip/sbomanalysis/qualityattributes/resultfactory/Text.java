@@ -89,7 +89,7 @@ public class Text {
      */
     public String getDetails(INFO info, String value){
         StringBuilder details = new StringBuilder();
-        StringBuilder infoString = new StringBuilder();
+
         switch (info){
             case HAS -> details.append(field).append(": ").append(value);
             //TODO implement for MISSING
