@@ -15,7 +15,7 @@ public class CDX14PackageBuilderFactoryTest {
     CDX14PackageBuilderFactory test_packageBuilder;
 
     @Test
-    void createBuilder() {
+    void cdx14PackageBuilderFactory_is_test_packageBuilder_when_createBuilder_is_used_test() {
         CDX14PackageBuilderFactory cdx14PackageBuilderFactory = new CDX14PackageBuilderFactory();
         test_packageBuilder = new CDX14PackageBuilderFactory();
         assertEquals(test_packageBuilder, cdx14PackageBuilderFactory);
