@@ -51,7 +51,7 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
      * @return The deserialized SPDX 2.3 SBOM object.
      */
     @Override
-    public SBOM readFromString(String fileContents) throws JsonProcessingException {
+    public SPDX23SBOM readFromString(String fileContents) throws JsonProcessingException {
         return getObjectMapper().readValue(fileContents, SPDX23SBOM.class);
     }
 

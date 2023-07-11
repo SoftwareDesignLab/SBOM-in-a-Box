@@ -1,14 +1,18 @@
 package org.svip.sbomfactory.serializers.deserializer;
 
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbom.model.shared.metadata.CreationTool;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SPDX23JSONDeserializerTest extends DeserializerTest {
     public SPDX23JSONDeserializerTest() {
@@ -17,10 +21,42 @@ public class SPDX23JSONDeserializerTest extends DeserializerTest {
 
     @Test
     public void readFromStringTest() throws IOException {
-        SBOM sbom = getDeserializer().readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
+        SPDX23JSONDeserializer spdx23Deserializer = new SPDX23JSONDeserializer();
+        SPDX23SBOM sbom = spdx23Deserializer.readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
         assertNotNull(sbom);
 
         // TODO more assertions
-        assertEquals(11, sbom.getComponents().size()); // TODO ensure no duplicates added?
+        assertNotNull(sbom);
+        // spdxVersion
+        assertEquals("SPDX-2.3", sbom.getSpecVersion());
+        // dataLicense
+        assertEquals("CC0-1.0", sbom.getLicenses().stream().toList().get(0));
+        // name
+        assertEquals(".", sbom.getName());
+        // documentNamespace
+        assertEquals("https://anchore.com/syft/dir/d6734fe2-792a-4890-8428-453b3ed70ce7", sbom.getUID());
+        // created
+        assertEquals("2023-05-10T21:15:01Z", sbom.getCreationData().getCreationTime());
+        // creators
+        assertEquals(1, sbom.getCreationData().getCreationTools().size());
+        List<CreationTool> creationTools = sbom.getCreationData().getCreationTools().stream().toList();
+        //assertEquals("Anchore, Inc", creationTools.get(0).getVendor());
+        assertEquals("syft", creationTools.get(0).getName());
+        assertEquals("0.80.0", creationTools.get(0).getVersion());
+
+        assertEquals(11, sbom.getComponents().size());
+        List<Component> components = sbom.getComponents().stream().toList();
+        assertEquals("SPDXRef-Package--rsc.io-sampler-94f1adb847e5062b", components.get(0).getUID());
+        // TODO implement author
+        // name
+        assertEquals("rsc.io/sampler", components.get(0).getName());
+        // SPDXID
+        assertEquals("SPDXRef-Package--rsc.io-sampler-94f1adb847e5062b", components.get(0).getUID());
+        // versionInfo TODO SPDX specific data is lost as the CDX SBOM stores incomplete component interfaces
+        //assertEquals("v1.3.0", components.get(0).getVersion());
+        // checking for duplicates:
+        for (int i = 1; i < components.size(); i++) {
+            assertNotEquals("SPDXRef-Package--rsc.io-sampler-94f1adb847e5062b", components.get(i).getUID());
+        }
     }
 }
