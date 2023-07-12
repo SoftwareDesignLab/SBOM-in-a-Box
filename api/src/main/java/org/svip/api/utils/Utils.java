@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.svip.api.controller.SVIPApiController;
 import org.svip.api.model.SBOMFile;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.old.SBOM;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
@@ -238,9 +239,14 @@ public class Utils {
             s = SerializerFactory.createSerializer(schema, format, true);
             if(schema == SerializerFactory.Schema.SPDX23 || schema == SerializerFactory.Schema.SVIP){
                 //serialized = s.writeToString((CDX14SBOM) deserialized);// todo fix
-                return internalSerializerError(ret, "","UNIMPLIMENTED");}
+                return internalSerializerError(ret, "","UNIMPLIMENTED CASTING FIX");}
             else {
-                serialized = s.writeToString((SVIPSBOM) deserialized);
+                try{
+                    serialized = s.writeToString((SVIPSBOM) deserialized);
+                }catch (ClassCastException c){
+                //    serialized = s.writeToString((SPDX23SBOM) deserialized); // todo fix
+                    return internalSerializerError(ret, "","UNIMPLIMENTED CASTING FIX");}
+
             }
 
         }catch (Exception e){
