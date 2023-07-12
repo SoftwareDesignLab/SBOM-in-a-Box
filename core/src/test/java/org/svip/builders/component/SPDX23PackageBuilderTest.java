@@ -1,6 +1,8 @@
 package org.svip.builders.component;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.svip.componentfactory.SPDX23PackageBuilderFactory;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
@@ -19,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Kevin Laporte
  */
 public class SPDX23PackageBuilderTest {
-    SPDX23PackageBuilder test_packageBuilder = new SPDX23PackageBuilder();
+    SPDX23PackageBuilder test_packageBuilder;
     SPDX23PackageObject test_file;
     String test_type = "library";
 
@@ -75,6 +77,11 @@ public class SPDX23PackageBuilderTest {
     String test_extRef_url = "https://www.python.org";
 
     String test_extTef_type = "website";
+    @BeforeEach
+    void create_test_packageBuilder(){
+        SPDX23PackageBuilderFactory test_SPDX23PackageBuilderFactory = new SPDX23PackageBuilderFactory();
+        test_packageBuilder = test_SPDX23PackageBuilderFactory.createBuilder();
+    }
 
     @Test
     void setType_is_library_value_test() {

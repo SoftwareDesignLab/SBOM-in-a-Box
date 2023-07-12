@@ -1,6 +1,8 @@
 package org.svip.builders.component;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.svip.componentfactory.SPDX23FileBuilderFactory;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
@@ -19,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SPDX23FileBuilderTest {
 
-    SPDX23FileBuilder test_fileBuilder = new SPDX23FileBuilder();
+    SPDX23FileBuilder test_fileBuilder;
     SPDX23FileObject test_file;
     String test_type = "library";
 
@@ -45,6 +47,12 @@ class SPDX23FileBuilderTest {
             "must display this test acknowledgement";
 
     String fileNotice = "This file is licensed under GPL";
+
+    @BeforeEach
+    void create_test_packageBuilder(){
+        SPDX23FileBuilderFactory test_SPDX23FileBuilderFactory = new SPDX23FileBuilderFactory();
+        test_fileBuilder = test_SPDX23FileBuilderFactory.createBuilder();
+    }
 
     @Test
     void setType_is_test_type_value_test() {
