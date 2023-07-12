@@ -1,6 +1,8 @@
 package org.svip.builders.component;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.svip.componentfactory.CDX14PackageBuilderFactory;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
@@ -21,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Kevin Laporte
  */
 class CDX14PackageBuilderTest {
-    CDX14PackageBuilder test_packageBuilder = new CDX14PackageBuilder();
+    CDX14PackageBuilder test_packageBuilder;
     CDX14ComponentObject test_package;
 
     String test_mimeType = "image/jpeg";
@@ -67,6 +69,12 @@ class CDX14PackageBuilderTest {
     String test_random_cpe = "cpe:2.3:a:random_test_cpe:random:3.11.2:*:*:*:*:*:*:*";
 
     String test_random_purl = "pkg:random/test@2.0.0";
+
+    @BeforeEach
+    void create_test_packageBuilder(){
+        CDX14PackageBuilderFactory test_CDX14PackageBuilderFactory = new CDX14PackageBuilderFactory();
+        test_packageBuilder = test_CDX14PackageBuilderFactory.createBuilder();
+    }
 
     @Test
     void getMimeType_is_test_mimeType_when_setMimeType_is_used_test() {
