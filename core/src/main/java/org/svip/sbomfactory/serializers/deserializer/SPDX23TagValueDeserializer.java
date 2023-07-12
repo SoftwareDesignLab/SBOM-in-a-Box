@@ -247,13 +247,13 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                     }
                     // EXTERNAL REFERENCES
                     case "referenceCategory" -> {
-                        externalReference = new ExternalReference(externalRef.group(3), externalReference.getUrl(), externalReference.getType());
+                        externalReference = new ExternalReference(externalRef.group(), externalReference.getUrl(), externalReference.getType());
                     }
                     case "referenceLocator" -> {
-                        externalReference = new ExternalReference(externalReference.getCategory(), externalRef.group(3), externalReference.getType());
+                        externalReference = new ExternalReference(externalReference.getCategory(), externalRef.group(), externalReference.getType());
                     }
                     case "referenceType" -> {
-                        externalReference = new ExternalReference(externalReference.getCategory(), externalReference.getUrl(), externalRef.group(3));
+                        externalReference = new ExternalReference(externalReference.getCategory(), externalReference.getUrl(), externalRef.group());
                     }
                 }
                 packageBuilder.addExternalReference(externalReference);
