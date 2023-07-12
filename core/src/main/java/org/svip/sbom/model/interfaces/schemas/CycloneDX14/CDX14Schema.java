@@ -1,6 +1,10 @@
 package org.svip.sbom.model.interfaces.schemas.CycloneDX14;
 
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+
+import java.util.List;
 
 /**
  * File: CDX14Schema.java
@@ -18,4 +22,9 @@ public interface CDX14Schema extends SBOM {
     + getCompositions(): Set<Composition>
     + getSignature(): Signature
      */
+    /**
+     * @param other
+     * @return component conflicts
+     */
+    List<Conflict> compare(CDX14SBOM other);
 }

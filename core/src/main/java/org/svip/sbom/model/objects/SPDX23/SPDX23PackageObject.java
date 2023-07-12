@@ -1,12 +1,17 @@
 package org.svip.sbom.model.objects.SPDX23;
 
+import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.interfaces.generics.SBOMPackage;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -367,5 +372,16 @@ public class SPDX23PackageObject implements SPDX23Package {
         this.comment = comment;
         this.attributionText = attributionText;
     }
-
+    public List<Conflict> compare(Component other) {
+        return null;
+    }
+    public List<Conflict> compare(SBOMPackage other) {
+        return null;
+    }
+    public List<Conflict> compare(SPDX23Component other) {
+        return null;
+    }
+    public List<Conflict> compare(SPDX23Package other) {
+        return null;
+    }
 }

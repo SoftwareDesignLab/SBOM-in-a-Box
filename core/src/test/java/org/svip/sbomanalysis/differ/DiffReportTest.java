@@ -5,8 +5,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.svip.sbom.model.old.Component;
 import org.svip.sbom.model.old.DependencyTree;
 import org.svip.sbom.model.old.SBOM;
-import org.svip.sbomanalysis.comparison.conflicts.ComponentConflict;
-import org.svip.sbomanalysis.comparison.conflicts.SBOMConflict;
+import org.svip.sbomanalysis.old.ComponentConflict;
+import org.svip.sbomanalysis.old.SBOMConflict;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -3,7 +3,7 @@ package org.svip.sbom.model.old;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.svip.sbom.model.uids.Hash;
-import org.svip.sbomanalysis.comparison.conflicts.ComponentConflict;
+import org.svip.sbomanalysis.old.ComponentConflict;
 
 import java.util.*;
 
