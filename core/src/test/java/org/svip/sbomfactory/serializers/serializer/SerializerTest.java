@@ -70,7 +70,7 @@ public class SerializerTest {
         sbomBuilder.setFormat("CycloneDX");
         sbomBuilder.setName("Test SBOM");
         sbomBuilder.setUID("12345678");
-        sbomBuilder.setRootComponent(buildTestComponent(0));
+        sbomBuilder.setRootComponent(buildTestComponent(0 ,false));
         sbomBuilder.setDocumentComment("Test Document Comment");
         sbomBuilder.setSPDXLicenseListVersion("0.0");
         sbomBuilder.setSpecVersion("1.4");
@@ -81,20 +81,25 @@ public class SerializerTest {
         ref.addHash("SHA256", "hash");
         sbomBuilder.addExternalReference(ref);
 
-        sbomBuilder.addComponent(buildTestComponent(1));
-        sbomBuilder.addComponent(buildTestComponent(2));
+        sbomBuilder.addComponent(buildTestComponent(1, false));
+        sbomBuilder.addComponent(buildTestComponent(2, true));
+        sbomBuilder.addComponent(buildTestComponent(3, false));
 
-        Relationship relationship = new Relationship("Component 1", "DESCRIBES");
+        Relationship relationship = new Relationship("uid3", "DESCRIBES");
+        Relationship relationship = new Relationship("COMPONENT 1", "DESCRIBES");
         relationship.setComment("Test Relationship Comment");
-        sbomBuilder.addRelationship("Component 0", relationship);
+        sbomBuilder.addRelationship("uid1", relationship);
+        sbomBuilder.addRelationship("COMPONENT 0", relationship);
 
         return (SVIPSBOM) sbomBuilder.Build();
     }
 
-    private SVIPComponentObject buildTestComponent(int id) {
+    private SVIPComponentObject buildTestComponent(int id, boolean file) {
         SVIPComponentBuilder componentBuilder = componentFactory.createBuilder();
 
         Function<String, String> nameAttribute = s -> s + id;
+
+        if (file) componentBuilder.setFileNotice(nameAttribute.apply("fileNotice"));
 
         // Primitive/string properties
         componentBuilder.setMimeType(nameAttribute.apply("mimeType"));
@@ -119,8 +124,8 @@ public class SerializerTest {
         componentBuilder.setSourceInfo(nameAttribute.apply("sourceInfo"));
         componentBuilder.setReleaseDate(nameAttribute.apply("releaseDate"));
         componentBuilder.setBuildDate(nameAttribute.apply("buildDate"));
-        componentBuilder.setFileNotice(nameAttribute.apply("fileNotice"));
         componentBuilder.setValidUntilDate(nameAttribute.apply("validUntilDate"));
+        componentBuilder.setComment(nameAttribute.apply("comment"));
 
         componentBuilder.addProperty(nameAttribute.apply("property"), nameAttribute.apply("value"));
         componentBuilder.addHash("SHA256", nameAttribute.apply("hash"));
