@@ -255,6 +255,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
             // Cleanup package originator
             if (componentMaterials.get("PackageSupplier") != null) {
                 // Fix setting supplier/originator, add contact email (if any) using regex
+                //ORGANIZATION
                 String supplierName = "";
                 String supplierEmail = "";
                 Pattern supplierPattern = Pattern.compile("Organization: (?:(.*) \\((.*)\\))(.*)", Pattern.CASE_INSENSITIVE);
@@ -265,17 +266,37 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                 }
                 Organization supplier = new Organization(supplierName, supplierEmail);
                 packageBuilder.setSupplier(supplier);
+
+                // PERSON
+                String personName = "";
+                Pattern personPattern = Pattern.compile("Person: (?:(.*) \\((.*)\\))(.*)", Pattern.CASE_INSENSITIVE);
+                Matcher mPerson = personPattern.matcher(componentMaterials.get("PackageSupplier"));
+                while(mPerson.find()) {
+                    personName = mSupplier.group(1);
+                }
+                packageBuilder.setAuthor(personName);
             } else if (componentMaterials.get("PackageOriginator") != null) {
                 // Fix setting supplier/originator, add contact email (if any) using regex
+                //ORGANIZATION
                 String supplierName = "";
                 String supplierEmail = "";
-                Pattern supplierPattern = Pattern.compile("PackageOriginator: (.*)", Pattern.CASE_INSENSITIVE);
+                Pattern supplierPattern = Pattern.compile("Organization: (?:(.*) \\((.*)\\))(.*)", Pattern.CASE_INSENSITIVE);
                 Matcher mSupplier = supplierPattern.matcher(componentMaterials.get("PackageOriginator"));
                 while(mSupplier.find()) {
                     supplierName = mSupplier.group(1);
+                    supplierEmail = mSupplier.group(2);
                 }
                 Organization supplier = new Organization(supplierName, supplierEmail);
                 packageBuilder.setSupplier(supplier);
+
+                // PERSON
+                String personName = "";
+                Pattern personPattern = Pattern.compile("Person: (?:(.*) \\((.*)\\))(.*)", Pattern.CASE_INSENSITIVE);
+                Matcher mPerson = personPattern.matcher(componentMaterials.get("PackageOriginator"));
+                while(mPerson.find()) {
+                    personName = mSupplier.group(1);
+                }
+                packageBuilder.setAuthor(personName);
             }
 
             // Set required information
