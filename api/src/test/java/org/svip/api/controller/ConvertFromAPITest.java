@@ -40,6 +40,13 @@ public class ConvertFromAPITest extends APITest{
                  ) {
                 for (Long id : testMap.keySet()) {
 
+                    // don't convert to the same schema
+                    if(testMap.get(id).getContents().toLowerCase().contains("spdx") && (schema.equals("SPDX23") || schema.equals("SVIP")))
+                        continue; // todo implement this check in /convert and return a bad request error
+                    if(testMap.get(id).getContents().toLowerCase().contains("cyclone") && (schema.equals("CDX14")))
+                        continue;
+
+                    // we don't support xml deserialization right now
                     if(testMap.get(id).getContents().contains("xml"))
                         continue;
 

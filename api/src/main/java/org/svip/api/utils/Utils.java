@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.controller.SVIPApiController;
 import org.svip.api.model.SBOMFile;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.old.SBOM;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
@@ -197,11 +198,11 @@ public class Utils {
 
         // deserialize into SBOM object
         Deserializer d;
-        SVIPSBOM deserialized;
+        org.svip.sbom.model.interfaces.generics.SBOM deserialized;
 
         try{
             d = SerializerFactory.createDeserializer(sbom.getContents());
-            deserialized = (SVIPSBOM) d.readFromString(sbom.getContents());
+            deserialized = d.readFromString(sbom.getContents());
         }catch (Exception e){
             return internalSerializerError(ret, ": " + e.getMessage(),"DURING DESERIALIZATION");
         }
@@ -233,7 +234,13 @@ public class Utils {
         String serialized;
         try{
             s = SerializerFactory.createSerializer(schema, format, true);
-            serialized = s.writeToString(deserialized);
+            if(schema == SerializerFactory.Schema.SPDX23 || schema == SerializerFactory.Schema.SVIP){
+                //serialized = s.writeToString((CDX14SBOM) deserialized);// todo fix
+                return internalSerializerError(ret, "","UNIMPLIMENTED");}
+            else {
+                serialized = s.writeToString((SVIPSBOM) deserialized);
+            }
+
         }catch (Exception e){
             return internalSerializerError(ret, ": " + e.getMessage(),"DURING SERIALIZATION");
         }
