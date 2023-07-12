@@ -9,9 +9,9 @@ public class DiffReport {
     private Map<String, Comparison> comparisons;
 
     DiffReport(String targetUID) {
-
+        this.targetUID = targetUID;
     }
     public void addComparison(Comparison comparison) {
-
+        this.comparisons.put(this.targetUID, comparison);
     }
 }
