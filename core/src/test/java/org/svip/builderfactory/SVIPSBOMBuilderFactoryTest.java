@@ -8,9 +8,12 @@ import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
@@ -32,7 +35,7 @@ public class SVIPSBOMBuilderFactoryTest {
     SVIPSBOMBuilderFactory test_sbomBuilderFactory = new SVIPSBOMBuilderFactory();
     SVIPComponentBuilder test_componentBuilder = new SVIPComponentBuilder();
     SVIPSBOMBuilder test_SVIPSBOMBuilder = test_sbomBuilderFactory.createBuilder();
-    SBOM test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
+    SVIPSBOM test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
 
     String test_format = "SVIP";
 
@@ -208,8 +211,13 @@ public class SVIPSBOMBuilderFactoryTest {
         assertEquals(test_externalRefs, test_SVIPSBOM.getExternalReferences());
     }
 
-    // TODO setSPDXLicenseListVersion
-    //      Same as SPDX23SBOM. getSPDXLicenseListVersion is missing from the SBOM
+    @Test
+    void getSPDXLicenseListVersion_is_v143_when_setSPDXLicenseListVersion_is_used_test(){
+        test_SVIPSBOMBuilder.setSPDXLicenseListVersion("v142");
+        test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
+
+        assertEquals("v142", test_SVIPSBOM.getSPDXLicenseListVersion());
+    }
 
     @Test
     void getComponents_is_test_components_when_buildSPDXSBOM_is_used_test(){
@@ -218,13 +226,15 @@ public class SVIPSBOMBuilderFactoryTest {
         test_SVIPSBOMBuilder.addComponent(test_componentA);
         test_SVIPSBOMBuilder.addComponent(test_componentB);
         test_SVIPSBOMBuilder.addSPDX23Component(test_componentA);
-        test_SVIPSBOM = test_SVIPSBOMBuilder.buildSPDX23SBOM();
+
+
+        SPDX23SBOM test_SPDXSBOM = test_SVIPSBOMBuilder.buildSPDX23SBOM();
 
         test_components.add(test_componentA);
         test_components.add(test_componentA);
         test_components.add(test_componentB);
 
-        assertEquals(test_components, test_SVIPSBOM.getComponents());
+        assertEquals(test_components, test_SPDXSBOM.getComponents());
     }
 
     @Test
@@ -237,11 +247,11 @@ public class SVIPSBOMBuilderFactoryTest {
         CDX14Package test_componentB = test_CDX14PackageBuilder.buildAndFlush();
         test_SVIPSBOMBuilder.addCDX14Package(test_componentB);
 
-        test_SVIPSBOM = test_SVIPSBOMBuilder.buildCDX14SBOM();
+        CDX14SBOM test_CDX14SBOM = test_SVIPSBOMBuilder.buildCDX14SBOM();
 
         test_components.add(test_componentA);
         test_components.add(test_componentB);
 
-        assertEquals(test_components, test_SVIPSBOM.getComponents());
+        assertEquals(test_components, test_CDX14SBOM.getComponents());
     }
 }

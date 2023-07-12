@@ -174,7 +174,14 @@ public class SPDX23SBOMBuilderFactoryTest {
         assertEquals(test_externalRefs, test_SPDX23SBOM.getExternalReferences());
     }
 
-    // TODO Do we need a License List Version test?
+    @Test
+    void getSPDXLicenseListVersion_is_v143_when_setSPDXLicenseListVersion_is_used_test(){
+        test_SPDX23SBOMBuilder.setSPDXLicenseListVersion("v142");
+        test_SPDX23SBOM = test_SPDX23SBOMBuilder.buildSPDX23SBOM();
+
+        assertEquals("v142", test_SPDX23SBOM.getSPDXLicenseListVersion());
+    }
+
     @Test
     void getName_is_test_name_when_SBOM_is_built_with_Build_method_test(){
         test_SPDX23SBOMBuilder.setName(test_name);
