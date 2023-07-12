@@ -93,6 +93,10 @@ public class CreationData {
         this.properties.get(key).add(value);
     }
 
+    public void addCreationTool(CreationTool tool) {
+        creationTools.add(tool);
+    }
+
     ///
     /// Getters
     ///

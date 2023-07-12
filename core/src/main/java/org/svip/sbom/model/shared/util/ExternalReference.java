@@ -37,7 +37,7 @@ public class ExternalReference {
     public ExternalReference(String category, String url, String type){
         this.category = category;
         this.url = url;
-        this.type = url;
+        this.type = type;
     }
 
 
