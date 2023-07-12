@@ -142,11 +142,15 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                     String authorName = "";
                     String authorEmail = "";
                     // PERSON
-                    Pattern authorPattern = Pattern.compile("Person: (?:(.*) \\((.*)\\))(.*)", Pattern.CASE_INSENSITIVE);
+                    Pattern authorPattern = Pattern.compile("Person: (?:(.*) |)(?:\\((.*)\\))?(.*)", Pattern.CASE_INSENSITIVE);
                     Matcher mAuthor = authorPattern.matcher(mHeader.group(2));
                     while(mAuthor.find()) {
-                        authorName = mAuthor.group(1);
-                        authorEmail = mAuthor.group(2);
+                        if (mAuthor.group(1) != null) {
+                            authorName = mAuthor.group(1);
+                            authorEmail = mAuthor.group(2);
+                        } else {
+                            authorName = mAuthor.group(3);
+                        }
                     }
                     if (authorName != "") {
                         Contact author = new Contact(authorName, authorEmail, "");
@@ -155,11 +159,15 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                         // ORGANIZATION
                         String orgName = "";
                         String orgEmail = "";
-                        Pattern orgPattern = Pattern.compile("Organization: (?:(.*) \\((.*)\\))(.*)", Pattern.CASE_INSENSITIVE);
+                        Pattern orgPattern = Pattern.compile("Organization: (?:(.*) |)(?:\\((.*)\\))?(.*)", Pattern.CASE_INSENSITIVE);
                         Matcher mOrg = orgPattern.matcher(mHeader.group(2));
                         while(mOrg.find()) {
-                            orgName = mOrg.group(1);
-                            orgEmail = mOrg.group(2);
+                            if (mOrg.group(1) != null) {
+                                orgName = mOrg.group(1);
+                                orgEmail = mOrg.group(2);
+                            } else {
+                                orgName = mOrg.group(3);
+                            }
                         }
                         if (orgName != "") {
                             Contact orgContact = new Contact(orgName, orgEmail, "");
@@ -274,21 +282,28 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                 //ORGANIZATION
                 String supplierName = "";
                 String supplierEmail = "";
-                Pattern supplierPattern = Pattern.compile("Organization: (?:(.*) \\((.*)\\))(.*)", Pattern.CASE_INSENSITIVE);
+                Pattern supplierPattern = Pattern.compile("Organization: (?:(.*) |)(?:\\((.*)\\))?(.*)", Pattern.CASE_INSENSITIVE);
                 Matcher mSupplier = supplierPattern.matcher(componentMaterials.get("PackageSupplier"));
                 while(mSupplier.find()) {
-                    supplierName = mSupplier.group(1);
-                    supplierEmail = mSupplier.group(2);
+                    if (mSupplier.group(1) != null) {
+                        supplierName = mSupplier.group(1);
+                        supplierEmail = mSupplier.group(2);
+                    } else {
+                        supplierName = mSupplier.group(3);
+                    }
                 }
                 Organization supplier = new Organization(supplierName, supplierEmail);
                 packageBuilder.setSupplier(supplier);
-
                 // PERSON
                 String personName = "";
-                Pattern personPattern = Pattern.compile("Person: (?:(.*) \\((.*)\\))(.*)", Pattern.CASE_INSENSITIVE);
+                Pattern personPattern = Pattern.compile("Person: (?:(.*) |)(?:\\((.*)\\))?(.*)", Pattern.CASE_INSENSITIVE);
                 Matcher mPerson = personPattern.matcher(componentMaterials.get("PackageSupplier"));
                 while(mPerson.find()) {
-                    personName = mSupplier.group(1);
+                    if (mPerson.group(1) != null) {
+                        personName = mPerson.group(1);
+                    } else {
+                        personName = mPerson.group(3);
+                    }
                 }
                 packageBuilder.setAuthor(personName);
             } else if (componentMaterials.get("PackageOriginator") != null) {
@@ -296,18 +311,22 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                 //ORGANIZATION
                 String supplierName = "";
                 String supplierEmail = "";
-                Pattern supplierPattern = Pattern.compile("Organization: (?:(.*) \\((.*)\\))(.*)", Pattern.CASE_INSENSITIVE);
+                Pattern supplierPattern = Pattern.compile("Organization: (?:(.*) |)(?:\\((.*)\\))?(.*)", Pattern.CASE_INSENSITIVE);
                 Matcher mSupplier = supplierPattern.matcher(componentMaterials.get("PackageOriginator"));
                 while(mSupplier.find()) {
-                    supplierName = mSupplier.group(1);
-                    supplierEmail = mSupplier.group(2);
+                    if (mSupplier.group(1) != null) {
+                        supplierName = mSupplier.group(1);
+                        supplierEmail = mSupplier.group(2);
+                    } else {
+                        supplierName = mSupplier.group(3);
+                    }
                 }
                 Organization supplier = new Organization(supplierName, supplierEmail);
                 packageBuilder.setSupplier(supplier);
 
                 // PERSON
                 String personName = "";
-                Pattern personPattern = Pattern.compile("Person: (?:(.*) \\((.*)\\))(.*)", Pattern.CASE_INSENSITIVE);
+                Pattern personPattern = Pattern.compile("Person: (?:(.*) |)(?:\\((.*)\\))?(.*)", Pattern.CASE_INSENSITIVE);
                 Matcher mPerson = personPattern.matcher(componentMaterials.get("PackageOriginator"));
                 while(mPerson.find()) {
                     personName = mSupplier.group(1);
