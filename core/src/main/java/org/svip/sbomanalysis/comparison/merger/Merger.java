@@ -6,6 +6,7 @@ import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
 import java.util.HashMap;
@@ -29,5 +30,7 @@ public abstract class Merger {
     protected abstract Set<Component> mergeComponents(Set<Component> A, Set<Component> B);
 
     protected abstract Component mergeComponent(Component A, Component B);
+
+    protected abstract CreationData mergeCreationData(CreationData A, CreationData B);
 
 }
