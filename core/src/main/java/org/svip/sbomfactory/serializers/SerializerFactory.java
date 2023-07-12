@@ -126,7 +126,7 @@ public class SerializerFactory {
         Format format = JSON;
 
         if (fileContents.contains("SPDX")) schema = SPDX23;
-        else if (fileContents.contains("SVIP")) schema = SVIP;
+        else if (fileContents.contains("rootComponent")) schema = SVIP; // Field unique to SVIP SBOM
 
         if (fileContents.contains("DocumentName:")) format = TAGVALUE;
 

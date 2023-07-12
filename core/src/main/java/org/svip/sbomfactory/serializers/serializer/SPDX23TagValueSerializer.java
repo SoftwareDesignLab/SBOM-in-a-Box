@@ -34,7 +34,7 @@ public class SPDX23TagValueSerializer implements Serializer {
     public String writeToString(SVIPSBOM sbom) {
         StringBuilder out = new StringBuilder();
 
-        out.append(getCreationInfo(sbom));
+        out.append(getDocumentInfo(sbom));
 
         return out.toString();
     }
@@ -50,7 +50,7 @@ public class SPDX23TagValueSerializer implements Serializer {
         return String.format("%s: %s (%s)", type, primaryId, secondaryId);
     }
 
-    private String getCreationInfo(SVIPSBOM sbom) {
+    private String getDocumentInfo(SVIPSBOM sbom) {
         StringBuilder out = new StringBuilder();
 
         Set<String> creators = new HashSet<>(sbom.getCreationData().getAuthors().stream()
