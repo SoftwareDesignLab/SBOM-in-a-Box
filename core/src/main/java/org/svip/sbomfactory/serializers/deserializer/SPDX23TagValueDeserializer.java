@@ -88,6 +88,10 @@ public class SPDX23TagValueDeserializer implements Deserializer {
             "(\\S*) (\\S*) (\\S*)");
     private static final Pattern RELATIONSHIP_PATTERN = Pattern.compile(RELATIONSHIP_KEY + SEPARATOR +
             "(\\S*) (\\S*) (\\S*)");
+    // https://regex101.com/r/TQLei8/1
+    private static final Pattern CREATOR_PATTERN = Pattern.compile(
+            "^(?:(?:Person|Organization): )(.+?)(?:$| (?:\\((.*)\\))?$)");
+    private static final Pattern TOOL_PATTERN = Pattern.compile("^Tool: (?:(.*)-)(.*)$", Pattern.CASE_INSENSITIVE);
 
     //#endregion
 
@@ -139,60 +143,19 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                 case LICENSE_LIST_VERSION_TAG -> sbomBuilder.setSPDXLicenseListVersion(mHeader.group(2));
                 // AUTHORS
                 case CREATOR_TAG -> {
-                    String authorName = "";
-                    String authorEmail = "";
-                    // PERSON
-                    Pattern authorPattern = Pattern.compile("Person: (?:(.*) |)(?:\\((.*)\\))?(.*)", Pattern.CASE_INSENSITIVE);
-                    Matcher mAuthor = authorPattern.matcher(mHeader.group(2));
-                    while(mAuthor.find()) {
-                        if (mAuthor.group(1) != null) {
-                            authorName = mAuthor.group(1);
-                            authorEmail = mAuthor.group(2);
-                        } else {
-                            authorName = mAuthor.group(3);
-                        }
-                    }
-                    if (authorName != "") {
-                        Contact author = new Contact(authorName, authorEmail, "");
-                        creationData.addAuthor(author);
-                    } else {
-                        // ORGANIZATION
-                        String orgName = "";
-                        String orgEmail = "";
-                        Pattern orgPattern = Pattern.compile("Organization: (?:(.*) |)(?:\\((.*)\\))?(.*)", Pattern.CASE_INSENSITIVE);
-                        Matcher mOrg = orgPattern.matcher(mHeader.group(2));
-                        while(mOrg.find()) {
-                            if (mOrg.group(1) != null) {
-                                orgName = mOrg.group(1);
-                                orgEmail = mOrg.group(2);
-                            } else {
-                                orgName = mOrg.group(3);
-                            }
-                        }
-                        if (orgName != "") {
-                            Contact orgContact = new Contact(orgName, orgEmail, "");
-                            creationData.addAuthor(orgContact);
-                        }
-                    }
-                    // TOOLS
-                    String toolName = "";
-                    String toolVersion = "";
-                    // group 1 is name, group 2 is version
-                    Pattern toolPattern = Pattern.compile("Tool: (?:(.*)-)(.*)", Pattern.CASE_INSENSITIVE);
-                    Matcher mTool = toolPattern.matcher(mHeader.group(2));
-                    while(mTool.find()) {
-                        toolName = mTool.group(1);
-                        toolVersion = mTool.group(2);
-                    }
-                    if (toolName != "") {
-                        CreationTool creationTool = new CreationTool();
-                        creationTool.setName(toolName);
-                        if (toolVersion != "") creationTool.setVersion(toolVersion);
-                        // add the tool
-                        creationData.addCreationTool(creationTool);
+                    Matcher creatorMatcher = CREATOR_PATTERN.matcher(mHeader.group(2));
+                    while(creatorMatcher.find()) {
+                        Contact contact = new Contact(creatorMatcher.group(1), creatorMatcher.group(2), null);
+                        creationData.addAuthor(contact);
                     }
 
-
+                    Matcher toolMatcher = TOOL_PATTERN.matcher(mHeader.group(2));
+                    while(toolMatcher.find()) {
+                        CreationTool tool = new CreationTool();
+                        tool.setName(toolMatcher.group(1));
+                        tool.setVersion(toolMatcher.group(2));
+                        creationData.addCreationTool(tool);
+                    }
                 }
                 // TIMESTAMP
                 case TIMESTAMP_TAG -> creationData.setCreationTime(mHeader.group(2));
