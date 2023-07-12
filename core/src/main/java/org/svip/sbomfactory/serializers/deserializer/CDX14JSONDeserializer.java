@@ -23,6 +23,7 @@ import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
+import javax.management.relation.Relation;
 import java.io.IOException;
 
 /**
