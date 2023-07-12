@@ -259,64 +259,6 @@ public class SVIPApiController {
     }
 
 
-
-    /**
-     * Merge existing SBOMs
-     * @param ids
-     * @return
-     */
-    @GetMapping("/merge")
-    public ResponseEntity<String> merge(@RequestParam("ids") long[] ids){
-
-        ArrayList<SBOM> sboms = new ArrayList<>();
-
-        // check for bad files
-        for (Long id: ids
-             ) {
-
-            // Get SBOM
-            Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
-
-            // Check if it exists
-            ResponseEntity<String> NOT_FOUND = Utils.checkIfExists(id, sbomFile, "merge");
-            if (NOT_FOUND != null) return NOT_FOUND;
-            SBOMFile sbom = sbomFile.get();
-
-            if(sbom.hasNullProperties()){
-                LOGGER.info("DELETE /svip/merge?id=" + sbomFile.get().getId() + " - ERROR IN MERGE - HAS NULL PROPERTIES");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
-            // deserialize into SBOM object
-            Deserializer d;
-            SVIPSBOM deserialized;
-
-            try{
-                d = SerializerFactory.createDeserializer(sbom.getContents());
-                deserialized = (SVIPSBOM) d.readFromString(sbom.getContents());
-            }catch (Exception e){
-                LOGGER.info("DELETE /svip/merge?id=" + sbomFile.get().getId() + "DURING DESERIALIZATION: " +
-                        e.getMessage());
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-
-            sboms.add(deserialized);
-
-        }
-
-        // todo store
-
-        Merger merger = new Merger();
-        SVIPSBOM result = null;
-               // merger.merge(sboms); // todo wait for Tyler to finish new Merger class
-        // todo merged sbom --> SBOMFile --> set ID and store in database
-
-        return Utils.encodeResponse(result.toString());
-
-    }
-
-
-
     //#region Deprecated Endpoints
 
     /**
