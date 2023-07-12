@@ -207,7 +207,9 @@ public class Utils {
             return internalSerializerError(ret, ": " + e.getMessage(),"DURING DESERIALIZATION");
         }
         if(deserialized == null)
-            return internalSerializerError(ret, "","DURING DESERIALIZATION");
+            return internalSerializerError(ret, "","DURING DESERIALIZATION"
+                    + ": SPDX tag value deserializer not yet implemented" // todo remove after implemented
+            );
 
         // ensure schema is valid
         SerializerFactory.Schema schema;
