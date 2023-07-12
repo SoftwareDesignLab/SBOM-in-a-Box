@@ -79,6 +79,8 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
         CDX14PackageBuilderFactory componentFactory = new CDX14PackageBuilderFactory();
         CDX14PackageBuilder componentBuilder = componentFactory.createBuilder();
 
+        // TODO check for/complete missing fields
+
         // FORMAT
         if (node.get("bomFormat") != null) {
             sbomBuilder.setFormat(node.get("bomFormat").asText());

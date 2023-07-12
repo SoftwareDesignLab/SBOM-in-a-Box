@@ -82,6 +82,8 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
         SPDX23FileBuilderFactory fileFactory = new SPDX23FileBuilderFactory();
         SPDX23FileBuilder fileBuilder = fileFactory.createBuilder();
 
+        // TODO check for/complete missing fields
+
         // NAME
         if (node.get("name") != null) {
             sbomBuilder.setName(node.get("name").asText());

@@ -1,6 +1,7 @@
 package org.svip.sbomfactory.serializers.deserializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jvnet.hk2.internal.Creator;
 import org.mockito.internal.matchers.Or;
 import org.svip.builderfactory.SPDX23SBOMBuilderFactory;
 import org.svip.builders.component.SPDX23PackageBuilder;
@@ -88,9 +89,9 @@ public class SPDX23TagValueDeserializer implements Deserializer {
             "(\\S*) (\\S*) (\\S*)");
     private static final Pattern RELATIONSHIP_PATTERN = Pattern.compile(RELATIONSHIP_KEY + SEPARATOR +
             "(\\S*) (\\S*) (\\S*)");
-    // https://regex101.com/r/TQLei8/1
+    // https://regex101.com/r/0jMwAU/1
     private static final Pattern CREATOR_PATTERN = Pattern.compile(
-            "^(?:(?:Person|Organization): )(.+?)(?:$| (?:\\((.*)\\))?$)");
+            "^(?:(Person|Organization): )(.+?)(?:$| (?:\\((.*)\\))?$)");
     private static final Pattern TOOL_PATTERN = Pattern.compile("^Tool: (?:(.*)-)(.*)$", Pattern.CASE_INSENSITIVE);
 
     //#endregion
@@ -143,18 +144,28 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                 case LICENSE_LIST_VERSION_TAG -> sbomBuilder.setSPDXLicenseListVersion(mHeader.group(2));
                 // AUTHORS
                 case CREATOR_TAG -> {
-                    Matcher creatorMatcher = CREATOR_PATTERN.matcher(mHeader.group(2));
-                    while(creatorMatcher.find()) {
-                        Contact contact = new Contact(creatorMatcher.group(1), creatorMatcher.group(2), null);
-                        creationData.addAuthor(contact);
-                    }
-
                     Matcher toolMatcher = TOOL_PATTERN.matcher(mHeader.group(2));
-                    while(toolMatcher.find()) {
+                    while (toolMatcher.find()) {
                         CreationTool tool = new CreationTool();
                         tool.setName(toolMatcher.group(1));
                         tool.setVersion(toolMatcher.group(2));
                         creationData.addCreationTool(tool);
+                    }
+
+                    Contact creator = parseCreator(mHeader.group(2));
+                    if (creator == null) continue;
+
+                    // If we find an organization, set it to the supplier if there isn't already one. Otherwise,
+                    // add another author with the contact info
+                    if (mHeader.group(2).toLowerCase().startsWith("organization") &&
+                            creationData.getSupplier() != null &&
+                            !creationData.getSupplier().getName().isEmpty()) {
+
+                        Organization supplier = new Organization(creator.getName(), null);
+                        supplier.addContact(creator);
+                        creationData.setSupplier(supplier);
+                    } else {
+                        creationData.addAuthor(creator);
                     }
                 }
                 // TIMESTAMP
@@ -201,6 +212,8 @@ public class SPDX23TagValueDeserializer implements Deserializer {
             // FILE UID
             fileBuilder.setUID(file_materials.get("SPDXID"));
 
+            // TODO complete missing fields
+
             // add component
             sbomBuilder.addSPDX23Component(fileBuilder.buildAndFlush());
         }
@@ -241,60 +254,14 @@ public class SPDX23TagValueDeserializer implements Deserializer {
             // SUPPLIER
             // Cleanup package originator
             if (componentMaterials.get("PackageSupplier") != null) {
-                // Fix setting supplier/originator, add contact email (if any) using regex
-                //ORGANIZATION
-                String supplierName = "";
-                String supplierEmail = "";
-                Pattern supplierPattern = Pattern.compile("Organization: (?:(.*) |)(?:\\((.*)\\))?(.*)", Pattern.CASE_INSENSITIVE);
-                Matcher mSupplier = supplierPattern.matcher(componentMaterials.get("PackageSupplier"));
-                while(mSupplier.find()) {
-                    if (mSupplier.group(1) != null) {
-                        supplierName = mSupplier.group(1);
-                        supplierEmail = mSupplier.group(2);
-                    } else {
-                        supplierName = mSupplier.group(3);
-                    }
+                Contact supplier = parseCreator(componentMaterials.get("PackageSupplier"));
+                if (supplier != null) {
+                    Organization org = new Organization(supplier.getName(), null);
+                    org.addContact(supplier);
+                    packageBuilder.setSupplier(org);
                 }
-                Organization supplier = new Organization(supplierName, supplierEmail);
-                packageBuilder.setSupplier(supplier);
-                // PERSON
-                String personName = "";
-                Pattern personPattern = Pattern.compile("Person: (?:(.*) |)(?:\\((.*)\\))?(.*)", Pattern.CASE_INSENSITIVE);
-                Matcher mPerson = personPattern.matcher(componentMaterials.get("PackageSupplier"));
-                while(mPerson.find()) {
-                    if (mPerson.group(1) != null) {
-                        personName = mPerson.group(1);
-                    } else {
-                        personName = mPerson.group(3);
-                    }
-                }
-                packageBuilder.setAuthor(personName);
             } else if (componentMaterials.get("PackageOriginator") != null) {
-                // Fix setting supplier/originator, add contact email (if any) using regex
-                //ORGANIZATION
-                String supplierName = "";
-                String supplierEmail = "";
-                Pattern supplierPattern = Pattern.compile("Organization: (?:(.*) |)(?:\\((.*)\\))?(.*)", Pattern.CASE_INSENSITIVE);
-                Matcher mSupplier = supplierPattern.matcher(componentMaterials.get("PackageOriginator"));
-                while(mSupplier.find()) {
-                    if (mSupplier.group(1) != null) {
-                        supplierName = mSupplier.group(1);
-                        supplierEmail = mSupplier.group(2);
-                    } else {
-                        supplierName = mSupplier.group(3);
-                    }
-                }
-                Organization supplier = new Organization(supplierName, supplierEmail);
-                packageBuilder.setSupplier(supplier);
-
-                // PERSON
-                String personName = "";
-                Pattern personPattern = Pattern.compile("Person: (?:(.*) |)(?:\\((.*)\\))?(.*)", Pattern.CASE_INSENSITIVE);
-                Matcher mPerson = personPattern.matcher(componentMaterials.get("PackageOriginator"));
-                while(mPerson.find()) {
-                    personName = mSupplier.group(1);
-                }
-                packageBuilder.setAuthor(personName);
+                packageBuilder.setAuthor(componentMaterials.get("PackageOriginator"));
             }
 
             // Set required information
@@ -330,6 +297,8 @@ public class SPDX23TagValueDeserializer implements Deserializer {
             // PACKAGE VERIFICATION CODE
             packageBuilder.setVerificationCode(componentMaterials.get("PackageVerificationCode"));
 
+            // TODO check for/complete missing fields
+
             // build package
             sbomBuilder.addSPDX23Component(packageBuilder.buildAndFlush());
         }
@@ -347,6 +316,13 @@ public class SPDX23TagValueDeserializer implements Deserializer {
     public ObjectMapper getObjectMapper() {
         // We don't need an objectmapper for tag value but removing this breaks tests
         return new ObjectMapper();
+    }
+
+    private Contact parseCreator(String creator) {
+        Matcher creatorMatcher = CREATOR_PATTERN.matcher(creator);
+        if (!creatorMatcher.find()) return null;
+
+        return new Contact(creatorMatcher.group(2), creatorMatcher.group(3), null);
     }
 
     /**
