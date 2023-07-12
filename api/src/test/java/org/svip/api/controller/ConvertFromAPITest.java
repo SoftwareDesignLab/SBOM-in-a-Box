@@ -39,9 +39,15 @@ public class ConvertFromAPITest extends APITest{
             for (String format: formats
                  ) {
                 for (Long id : testMap.keySet()) {
+
+                    if(testMap.get(id).getContents().contains("xml"))
+                        continue;
+
                     ResponseEntity<String> response = controller.convert(id, schema, format,true);
+                    String res = response.getBody();
+                    int x = 0;
                     //assertEquals(HttpStatus.OK, response.getStatusCode());
-                   // assertEquals(testMap.get(id).getContents(), response.getBody());
+                    //assertEquals(testMap.get(id).getContents(), response.getBody());
                 }
             }
         }

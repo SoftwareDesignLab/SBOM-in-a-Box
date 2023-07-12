@@ -242,7 +242,7 @@ public class SVIPApiController {
         // paired with the message String
         if (converted.hasNullProperties()) {
             LOGGER.info("DELETE /svip/convert?id=" + id + " - ERROR IN CONVERSION TO " + schema
-            + ((message.length() == 0) ? (": " + message) : ""));
+            + ((message.length() != 0) ? (": " + message) : ""));
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

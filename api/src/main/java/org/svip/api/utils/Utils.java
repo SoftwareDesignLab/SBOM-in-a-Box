@@ -203,10 +203,10 @@ public class Utils {
             d = SerializerFactory.createDeserializer(sbom.getContents());
             deserialized = (SVIPSBOM) d.readFromString(sbom.getContents());
         }catch (Exception e){
-            return internalSerializerError(ret, e.getMessage(),"DURING DESERIALIZATION: ");
+            return internalSerializerError(ret, ": " + e.getMessage(),"DURING DESERIALIZATION");
         }
         if(deserialized == null)
-            return internalSerializerError(ret, "","DURING DESERIALIZATION: ");
+            return internalSerializerError(ret, "","DURING DESERIALIZATION");
 
         // ensure schema is valid
         SerializerFactory.Schema schema;
@@ -235,10 +235,10 @@ public class Utils {
             s = SerializerFactory.createSerializer(schema, format, true);
             serialized = s.writeToString(deserialized);
         }catch (Exception e){
-            return internalSerializerError(ret, e.getMessage(),"DURING SERIALIZATION: ");
+            return internalSerializerError(ret, ": " + e.getMessage(),"DURING SERIALIZATION");
         }
         if(serialized == null){
-            return internalSerializerError(ret, "","DURING SERIALIZATION: ");
+            return internalSerializerError(ret, "","DURING SERIALIZATION");
         }
 
         ret.put(new SBOMFile("SUCCESS", serialized), "");
