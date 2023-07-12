@@ -6,10 +6,7 @@ import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.Organization;
-import org.svip.sbomanalysis.qualityattributes.newtests.CPETest;
-import org.svip.sbomanalysis.qualityattributes.newtests.HashTest;
-import org.svip.sbomanalysis.qualityattributes.newtests.LicenseTest;
-import org.svip.sbomanalysis.qualityattributes.newtests.PURLTest;
+import org.svip.sbomanalysis.qualityattributes.newtests.*;
 import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
 import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.schemas.SPDX23.SPDX23Tests;
@@ -138,20 +135,12 @@ public class SPDX23Pipeline implements SPDX23Tests {
         String testName = "HasBomVersion";
         Set<Result> result = new HashSet<>();
 
-        // set the attributes of this test to create a new ResultFactory
+        // set the attributes of this test to create a new EmptyOrNullTest
         List<ATTRIBUTE> attributes = new ArrayList<>(List.of(
                 ATTRIBUTE.COMPLETENESS
         ));
-        ResultFactory resultFactory = new ResultFactory(attributes, testName);
-        Result r;
-
-        // check if the version is a null or empty value
-        if(value != null && !value.isEmpty()){
-            r = resultFactory.pass(field, INFO.HAS, value);
-        }
-        else{
-            r = resultFactory.fail(field, INFO.MISSING, value);
-        }
+        var emptyNullTest = new EmptyOrNullTest(attributes);
+        Result r = emptyNullTest.test(field, value);
 
         result.add(r);
         return result;
@@ -259,41 +248,25 @@ public class SPDX23Pipeline implements SPDX23Tests {
         String testName = "HasDataLicense";
         Set<Result> results = new HashSet<>();
 
-        // set the attributes of this test to create a new ResultFactory
+        // set the attributes of this test to create a new EmptyOrNullTest
         List<ATTRIBUTE> attributes = new ArrayList<>(List.of(
                 ATTRIBUTE.SPDX23, ATTRIBUTE.COMPLETENESS
         ));
-        ResultFactory resultFactory = new ResultFactory(attributes, testName);
         Result r;
 
         //first check for creator info
         Organization creator = creationData.getManufacture();
         String creatorName = creator.getName();
         // creator is not null, is a valid object, test passes
-        if(creatorName != null && !creatorName.isEmpty()){
-            r = resultFactory.pass(field, INFO.HAS,
-                    creatorName);
-        }
-        else{
-            r = resultFactory.pass(field, INFO.MISSING,
-                    creatorName);
-        }
+        var emptyNullTest = new EmptyOrNullTest(attributes);
+        r = emptyNullTest.test(field, creatorName);
 
         results.add(r);
 
 
         // then check for creation time info
         String creationTime = creationData.getCreationTime();
-        // creation time has a value, test passes
-        if(creationTime != null && !creationTime.isEmpty()){
-            r = resultFactory.pass(field, INFO.HAS,
-                    creationTime);
-        }
-        // creation time is null or an empty string, test fails
-        else{
-            r = resultFactory.fail(field, INFO.MISSING,
-                    creationTime);
-        }
+        r = emptyNullTest.test(field, creationTime);
 
         results.add(r);
 
@@ -312,28 +285,16 @@ public class SPDX23Pipeline implements SPDX23Tests {
         String testName = "HasDownloadLocation";
         Set<Result> results = new HashSet<>();
 
-        // set the attributes of this test to create a new ResultFactory
+        // set the attributes of this test to create a new EmptyOrNullTest
         List<ATTRIBUTE> attributes = new ArrayList<>(List.of(
                 ATTRIBUTE.SPDX23, ATTRIBUTE.COMPLETENESS
         ));
-        ResultFactory resultFactory = new ResultFactory(attributes, testName);
 
-            Result r;
+        // TODO check for NOASSERTION or NONE?
+        var emptyNullTest = new EmptyOrNullTest(attributes);
+        Result r = emptyNullTest.test(field, value);
 
-            // TODO check for NOASSERTION or NONE?
-            // downloadLocation is not null or an empty string
-            // test passes
-            if(value != null && !value.isEmpty()){
-                r = resultFactory.pass(field, INFO.HAS,
-                        value);
-            }
-            // downloadLocation is null or an empty string, test fails
-            else{
-                r = resultFactory.fail(field, INFO.MISSING,
-                        value);
-            }
-            results.add(r);
-
+        results.add(r);
 
         return results;
     }

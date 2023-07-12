@@ -6,10 +6,7 @@ import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
-import org.svip.sbomanalysis.qualityattributes.newtests.CPETest;
-import org.svip.sbomanalysis.qualityattributes.newtests.HashTest;
-import org.svip.sbomanalysis.qualityattributes.newtests.LicenseTest;
-import org.svip.sbomanalysis.qualityattributes.newtests.PURLTest;
+import org.svip.sbomanalysis.qualityattributes.newtests.*;
 import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
 import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.schemas.CycloneDX14.CDX14Tests;
@@ -134,20 +131,12 @@ public class CDX14Pipeline implements CDX14Tests {
         String testName = "HasBomVersion";
         Set<Result> result = new HashSet<>();
 
-        // set the attributes of this test to create a new ResultFactory
+        // set the attributes of this test to create a new EmptyOrNullTest
         List<ATTRIBUTE> attributes = new ArrayList<>(List.of(
                 ATTRIBUTE.COMPLETENESS
         ));
-        ResultFactory resultFactory = new ResultFactory(attributes, testName);
-        Result r;
-
-        // check if the version is a null or empty value
-        if(value != null && !value.isEmpty()){
-            r = resultFactory.pass(field, INFO.HAS, value);
-        }
-        else{
-            r = resultFactory.fail(field, INFO.MISSING, value);
-        }
+        var emptyNullTest = new EmptyOrNullTest(attributes);
+        Result r = emptyNullTest.test(field, value);
 
         result.add(r);
         return result;
@@ -209,18 +198,8 @@ public class CDX14Pipeline implements CDX14Tests {
         List<ATTRIBUTE> attributes = new ArrayList<>(List.of(
                 ATTRIBUTE.CDX14, ATTRIBUTE.UNIQUENESS
         ));
-        // create a new ResultFactory to create results
-        ResultFactory resultFactory = new ResultFactory(attributes, testName);
-
-            Result r;
-
-            if(value != null && !value.isEmpty()){
-                r = resultFactory.pass(field, INFO.HAS, value);
-            }
-            else{
-                r = resultFactory.fail(field , INFO.MISSING, value);
-            }
-            results.add(r);
+        var emptyNullTest = new EmptyOrNullTest(attributes);
+        Result r = emptyNullTest.test(field, value);
 
 
         return results;
