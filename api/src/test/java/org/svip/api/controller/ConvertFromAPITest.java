@@ -54,15 +54,21 @@ public class ConvertFromAPITest extends APITest{
                     if(thisSchema == SerializerFactory.Schema.CDX14 && (schema.equals("CDX14")))
                         continue;
 
-                    LOGGER.info("Converting " + thisSchema.name() + " --> " + schema);
-
                     // we don't support xml deserialization right now
                     if(testMap.get(id).getContents().contains("xml"))
                         continue;
 
+                    LOGGER.info("Converting " + thisSchema.name() + " --> " + schema);
+
                     ResponseEntity<String> response = controller.convert(id, schema, format,true);
                     String res = response.getBody();
                     int x = 0;
+
+                    if(response.getStatusCode() == HttpStatus.OK)
+                        LOGGER.info("HTTP STATUS OK");
+                    if(response.getBody() != null)
+                        LOGGER.info("NOT NULL");
+
                     //assertEquals(HttpStatus.OK, response.getStatusCode());
                     //assertEquals(testMap.get(id).getContents(), response.getBody());
                 }

@@ -241,7 +241,7 @@ public class SVIPApiController {
         // if anything went wrong, an SBOMFILE with a blank name and contents will be returned,
         // paired with the message String
         if (converted.hasNullProperties()) {
-            LOGGER.info("DELETE /svip/convert?id=" + id + " - ERROR IN CONVERSION TO " + schema
+            LOGGER.info("CONVERT /svip/convert?id=" + id + " - ERROR IN CONVERSION TO " + schema
             + ((message.length() != 0) ? (": " + message) : ""));
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
