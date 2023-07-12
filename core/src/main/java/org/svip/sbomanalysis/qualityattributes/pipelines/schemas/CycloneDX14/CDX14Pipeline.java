@@ -6,6 +6,7 @@ import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.uids.Hash;
 import org.svip.sbomanalysis.qualityattributes.newtests.*;
 import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
@@ -42,44 +43,44 @@ public class CDX14Pipeline implements CDX14Tests {
         QualityReport qualityReport = new QualityReport(uid);
 
         // Set to hold all the results
-        List<Result> r = new ArrayList<>();
+        List<Result> sbomResults = new ArrayList<>();
 
         // test SBOM metadata
         String bomVersion = cdx14SBOM.getVersion();
-        r.addAll(hasBomVersion("Bom Version", bomVersion));
+        sbomResults.addAll(hasBomVersion("Bom Version", bomVersion));
 
         // test for SBOM's licenses
         var lt = new LicenseTest(ATTRIBUTE.LICENSING);
         for(String l : cdx14SBOM.getLicenses()){
-            r.addAll(lt.test("License", l));
+            sbomResults.addAll(lt.test("License", l));
         }
 
         // test CycloneDX 1.4 specific metadata information
         String serialNumber = cdx14SBOM.getUID();
-        r.addAll(validSerialNumber("Bom Serial Number", serialNumber));
+        sbomResults.addAll(validSerialNumber("Bom Serial Number", serialNumber));
 
         // add metadata results to the quality report
-        qualityReport.addComponent("metadata", r);
-        r.clear();
+        qualityReport.addComponent("metadata", sbomResults);
 
         // test component info
         for(Component c : cdx14SBOM.getComponents()){
+            List<Result> componentResults = new ArrayList<>();
             CDX14ComponentObject component = (CDX14ComponentObject) c;
 
             String bomRef = component.getUID();
-            r.addAll(hasBomRef("Bom-Ref", bomRef));
+            componentResults.addAll(hasBomRef("Bom-Ref", bomRef));
 
             // test component CPEs
             var cpeTest = new CPETest(component, ATTRIBUTE.UNIQUENESS,
                     ATTRIBUTE.MINIMUM_ELEMENTS);
             for(String cpe: component.getCPEs()){
-                r.addAll(cpeTest.test("cpe", cpe));
+                componentResults.addAll(cpeTest.test("cpe", cpe));
             }
             // test component PURLs
             var purlTest = new PURLTest(component, ATTRIBUTE.UNIQUENESS,
                     ATTRIBUTE.MINIMUM_ELEMENTS);
             for(String purl: component.getPURLs()){
-                r.addAll(purlTest.test("purl", purl));
+                componentResults.addAll(purlTest.test("purl", purl));
             }
 
             // test component Licenses
@@ -87,21 +88,21 @@ public class CDX14Pipeline implements CDX14Tests {
                     ATTRIBUTE.MINIMUM_ELEMENTS);
             Set<String> licenses = component.getLicenses().getDeclared();
             for(String l: licenses){
-                r.addAll(licenseTest.test("License", l));
+                componentResults.addAll(licenseTest.test("License", l));
             }
 
             // test component Hashes
-            var hashTest = new HashTest(component, ATTRIBUTE.UNIQUENESS,
+            var hashTest = new HashTest(ATTRIBUTE.UNIQUENESS,
                     ATTRIBUTE.MINIMUM_ELEMENTS);
             Map<String, String> hashes = component.getHashes();
             for(String hashAlgo : hashes.keySet()){
                 String hashValue = hashes.get(hashAlgo);
-                r.addAll(hashTest.test(hashAlgo, hashValue));
+                componentResults.addAll(hashTest.test(hashAlgo, hashValue));
+                componentResults.addAll(supportedHash("Supported CDX Hash", hashAlgo));
             }
 
             // add the component and all its tests to the quality report
-            qualityReport.addComponent(component.getName(), r);
-            r.clear();
+            qualityReport.addComponent(component.getName(), componentResults);
         }
 
         return qualityReport;
@@ -182,4 +183,32 @@ public class CDX14Pipeline implements CDX14Tests {
 
         return results;
     }
+
+    /**
+     * Check if a hash algorithm in the given CycloneDX 1.4 SBOM is supported
+     * within CycloneDX
+     * @param field the field that's tested
+     * @param value the bom ref tested
+     * @return the result of if the hash algorithm is supported
+     */
+    @Override
+    public Set<Result> supportedHash(String field, String value) {
+        String testName = "SupportedCDXHash";
+        Set<Result> result = new HashSet<>();
+        Result r;
+        ResultFactory resultFactory = new ResultFactory(testName,
+                ATTRIBUTE.CDX14, ATTRIBUTE.UNIQUENESS);
+        // hash is unsupported, test fails
+        if(Hash.isSPDXExclusive(Hash.Algorithm.valueOf(value))){
+            r = resultFactory.fail(field, INFO.INVALID, value);
+        }
+        // hash is supported, test passes
+        else{
+            r = resultFactory.pass(field, INFO.VALID, value);
+        }
+        result.add(r);
+        return result;
+    }
+
+
 }

@@ -33,5 +33,14 @@ public interface CDX14Tests extends QAPipeline {
      */
     Set<Result> hasBomRef(String field, String value);
 
+    /**
+     * Check if a hash algorithm in the given CycloneDX 1.4 SBOM is supported
+     * within CycloneDX
+     * @param field the field that's tested
+     * @param value the bom ref tested
+     * @return the result of if the hash algorithm is supported
+     */
+    Set<Result> supportedHash(String field, String value);
+
 
 }

@@ -97,7 +97,7 @@ public class SPDX23Pipeline implements SPDX23Tests {
             }
 
             // test component Hashes
-            var hashTest = new HashTest(component, ATTRIBUTE.UNIQUENESS,
+            var hashTest = new HashTest(ATTRIBUTE.UNIQUENESS,
                     ATTRIBUTE.MINIMUM_ELEMENTS);
             Map<String, String> hashes = component.getHashes();
             for(String hashAlgo : hashes.keySet()){

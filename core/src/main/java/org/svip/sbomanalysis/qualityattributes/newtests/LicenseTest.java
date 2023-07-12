@@ -53,6 +53,7 @@ public class LicenseTest extends MetricTest{
     public LicenseTest(ATTRIBUTE... attributes) {
         super(attributes);
         resultFactory = new ResultFactory(TEST_NAME, attributes);
+        loadSPDXLicenseData();
     }
 
     /**
@@ -100,25 +101,18 @@ public class LicenseTest extends MetricTest{
 
         // Error if can't populate sets
         if(!loadSPDXLicenseData()){
-            Text text = new Text("SPDX License Data could not load", field);
-            String message = text.getMessage(INFO.MISSING, field);
-            String details = text.getDetails(INFO.MISSING, field);
-            r = new Result(attributes, TEST_NAME, message, details, STATUS.ERROR);
+            r = resultFactory.error(field, INFO.MISSING, "SPDX License Data");
             results.add(r);
             return  results;
         }
         // sets were populated
         else {
             // if the license value is empty, test cannot be run
-            if(value.equals("")){
-                Text text = new Text("SPDX License is empty", field);
-                String message = text.getMessage(INFO.MISSING, field);
-                String details = text.getDetails(INFO.MISSING, field);
-                r = new Result(attributes, TEST_NAME, message, details, STATUS.ERROR);
+            if(value == null || value.equals("")){
+                r = resultFactory.error(field, INFO.MISSING, value);
                 results.add(r);
                 return results;
             }
-
             results.addAll(testSPDXLicense(field, value));
         }
 
