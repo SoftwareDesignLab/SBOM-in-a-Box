@@ -25,8 +25,9 @@ public interface QAPipeline {
 
     /**
      * Check if the SBOM contains a version number
-     * @param sbom the SBOM to test
+     * @param field the field that's tested
+     * @param value the bom version tested
      * @return the result of checking for the sbom's version number
      */
-    Set<Result> hasBomVersion(SBOM sbom);
+    Set<Result> hasBomVersion(String field, String value);
 }

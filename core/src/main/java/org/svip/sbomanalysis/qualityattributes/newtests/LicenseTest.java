@@ -122,7 +122,7 @@ public class LicenseTest extends MetricTest{
                 return results;
             }
 
-            results.addAll(testSPDXLicense(value));
+            results.addAll(testSPDXLicense(field, value));
         }
 
         return results;
@@ -202,43 +202,37 @@ public class LicenseTest extends MetricTest{
      * @return a collection of results for each license of a component and
      * its validity
      */
-    private Set<Result> testSPDXLicense(String value) {
+    private Set<Result> testSPDXLicense(String field, String value) {
         Set<Result> results = new HashSet<>();
         Result r;
 
         //TODO only held as a string. A License object should be created
         // Test if valid Identifier
         if(SPDX_LICENSE_IDENTIFIERS.contains(value.toLowerCase())){
-            r = resultFactory.pass("SPDX License Identifier", INFO.VALID, value,
-                    "License Identifier is valid");
+            r = resultFactory.pass(field, INFO.VALID, value);
         } else {
-            r = resultFactory.fail("SPDX License Identifier", INFO.INVALID, value,
-                    "License Identifier is invalid");
+            r = resultFactory.fail(field, INFO.INVALID, value);
         }
 
         results.add(r);
 
             // Test if valid name
             if(SPDX_LICENSE_NAMES.contains(value.toLowerCase())){
-                r = resultFactory.pass("SPDX License Name", INFO.VALID, value,
-                        "License is a valid name in SPDX license list");
+                r = resultFactory.pass(field, INFO.VALID, value);
             } else {
-                r = resultFactory.pass("SPDX License Name", INFO.INVALID, value,
-                        "License is a valid name in SPDX license list");
+                r = resultFactory.pass(field, INFO.INVALID, value);
             }
             results.add(r);
 
             // Test if depreciated Identifier
             if(DEPRECIATED_SPDX_LICENSE_IDENTIFIERS.contains(value.toLowerCase())){
-                r = resultFactory.fail("SPDX License Identifier", INFO.INVALID, value,
-                        "Valid SPDX License Identifier but is depreciated");
+                r = resultFactory.fail(field, INFO.INVALID, value);
                 results.add(r);
             }
 
             // Test if depreciated Name
             if(DEPRECIATED_SPDX_LICENSE_NAMES.contains(value.toLowerCase())){
-                r = resultFactory.fail("SPDX License Name", INFO.INVALID, value,
-                        "Valid SPDX License Name but is depreciated");
+                r = resultFactory.fail(field, INFO.INVALID, value);
                 results.add(r);
             }
 

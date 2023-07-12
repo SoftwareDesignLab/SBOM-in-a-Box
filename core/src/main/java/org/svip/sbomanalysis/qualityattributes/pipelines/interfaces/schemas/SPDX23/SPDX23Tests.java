@@ -1,6 +1,7 @@
 package org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.schemas.SPDX23;
 
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.generics.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 
@@ -19,68 +20,58 @@ public interface SPDX23Tests extends QAPipeline {
     /**
      * Test the SPDX SBOM Metadata to see if it contains a data license of
      * CC0-1.0
-     * @param sbom SPDX 2.3 SBOM to test
+     * @param field the field that's tested
+     * @param values the data licenses tested
      * @return The result of checking for the SBOM's data license
      */
-    Set<Result> hasDataLicense(SBOM sbom);
+    Set<Result> hasDataLicense(String field, Set<String> values);
 
     /**
      * Test every component in a given SPDX 2.3 SBOM for a valid SPDXID
-     * @param sbom SPDX 2.3 SBOM to test
+     * @param field the field that's tested
+     * @param value the SPDXID tested
      * @return a collection of results for every component in the SBOM
      */
-    Set<Result> hasSPDXID(SBOM sbom);
+    Set<Result> hasSPDXID(String field, String value);
 
     /**
      * Test the SPDX 2.3 sbom's metadata for a valid document namespace
-     * @param sbom SPDX 2.3 SBOM to test
+     * @param field the field that's tested
+     * @param value the document namespace tested
      * @return the result of if the sbom's metadata contains a valid
      * document namespace
      */
-    Set<Result> hasDocumentNamespace(SBOM sbom);
+    Set<Result> hasDocumentNamespace(String field, String value);
 
     /**
      * Given an SPDX 2.3 SBOM, check that it has creator and created info
-     * @param sbom SPDX 2.3 SBOM to test
+     * @param field the field that's tested
+     * @param creationData the creation data of the SBOM to be tested
      * @return a collection of results of if the sbom contains creator and
      * created time info
      */
-    Set<Result> hasCreationInfo(SBOM sbom);
+    Set<Result> hasCreationInfo(String field, CreationData creationData);
 
     /**
      * Test every component in the SPDX 2.3 SBOM for the PackageDownloadLocation field
      * and that it has a value
-     * @param sbom SPDX 2.3 SBOM to test
+     * @param field the field that's tested
+     * @param value the download location tested
      * @return a collection of results from each component and if it contains
      * info about its download location
      */
-    Set<Result> hasDownloadLocation(SBOM sbom);
+    Set<Result> hasDownloadLocation(String field, String value);
 
     /**
      * Test all components in a given SPDX 2.3 SBOM for their verification code
      * based on FilesAnalyzed
-     * @param sbom SPDX 2.3 SBOM to test
+     * @param field the field that's tested
+     * @param value the verification code tested
+     * @param filesAnalyzed if the component's files were analyzed
      * @return a collection of results for each component in the SBOM
      */
-    Set<Result> hasVerificationCode(SBOM sbom);
+    Set<Result> hasVerificationCode(String field, String value, boolean filesAnalyzed);
 
-    /**
-     * Check all components in a given SPDX 2.3 SBOM for extracted licenses not on
-     * the SPDX license list
-     * @param sbom SPDX 2.3 SBOM to test
-     * @return a collection of results if any extracted licenses exist
-     * in the SBOM
-     */
-    Set<Result> hasExtractedLicenses(SBOM sbom);
 
-    /**
-     * Check all components in a given SPDX 2.3 SBOM for extracted licenses not on
-     * the SPDX license list
-     * If an extracted license is present, check for the following fields:
-     * LicenseName, LicenseID, LicenseCrossReference
-     * @param sbom SPDX 2.3 SBOM to test
-     * @return a collection of results if any extracted licenses exist
-     * in the SBOM
-     */
-    Set<Result> extractedLicenseMinElements(SBOM sbom);
+    //TODO hasExtractedLicenses? extractedLicenseMinElements? Implement and how to access?
 }
