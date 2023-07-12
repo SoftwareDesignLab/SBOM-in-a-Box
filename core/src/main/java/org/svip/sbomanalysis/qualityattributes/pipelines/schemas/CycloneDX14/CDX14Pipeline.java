@@ -2,8 +2,14 @@ package org.svip.sbomanalysis.qualityattributes.pipelines.schemas.CycloneDX14;
 
 import jregex.Matcher;
 import jregex.Pattern;
+import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbomanalysis.qualityattributes.newtests.CPETest;
+import org.svip.sbomanalysis.qualityattributes.newtests.HashTest;
+import org.svip.sbomanalysis.qualityattributes.newtests.LicenseTest;
+import org.svip.sbomanalysis.qualityattributes.newtests.PURLTest;
 import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
 import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.schemas.CycloneDX14.CDX14Tests;
@@ -12,10 +18,7 @@ import org.svip.sbomanalysis.qualityattributes.resultfactory.ResultFactory;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.INFO;
 
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * file: CDX14Pipeline.java
@@ -32,19 +35,90 @@ public class CDX14Pipeline implements CDX14Tests {
      * Process the tests for the SBOM
      * @param uid Unique filename used to ID the SBOM
      * @param sbom the SBOM to run tests against
-     * @return a Quality report for the component and every test
+     * @return a Quality report for the sbom, its components and every test
      */
-    //TODO implement
     @Override
     public QualityReport process(String uid, SBOM sbom) {
+        // cast sbom to CDX14SBOM
         CDX14SBOM cdx14SBOM = (CDX14SBOM) sbom;
-        String sbomUID = cdx14SBOM.getUID();
+        // build a new quality report
+        QualityReport qualityReport = new QualityReport(uid);
+        Map<String, Map<String, List<Result>>> components;
 
-        QualityReport qualityReport = new QualityReport(sbomUID);
+        // attributes for tests
+        List<ATTRIBUTE> attributes;
+        // Set to hold all the results
+        List<Result> r = new ArrayList<>();
 
+        // test SBOM metadata
+        String bomVersion = cdx14SBOM.getVersion();
+        r.addAll(hasBomVersion("Bom Version", bomVersion));
 
+        // test for SBOM's licenses
+        attributes = new ArrayList<>(List.of(ATTRIBUTE.LICENSING));
+        var lt = new LicenseTest(attributes);
+        for(String l : cdx14SBOM.getLicenses()){
+            r.addAll(lt.test("License", l));
+        }
+        attributes.clear();
 
+        // test CycloneDX 1.4 specific metadata information
+        String serialNumber = cdx14SBOM.getUID();
+        r.addAll(validSerialNumber("Bom Serial Number", serialNumber));
 
+        // add metadata results to the quality report
+        qualityReport.addComponent("metadata", r);
+        r.clear();
+
+        // test component info
+        for(Component c : cdx14SBOM.getComponents()){
+            CDX14ComponentObject component = (CDX14ComponentObject) c;
+
+            String bomRef = component.getUID();
+            r.addAll(hasBomRef("Bom-Ref", bomRef));
+
+            // test component CPEs
+            attributes.addAll(List.of(ATTRIBUTE.UNIQUENESS,
+                    ATTRIBUTE.MINIMUM_ELEMENTS));
+            var cpeTest = new CPETest(component, attributes);
+            attributes.clear();
+            for(String cpe: component.getCPEs()){
+                r.addAll(cpeTest.test("cpe", cpe));
+            }
+            // test component PURLs
+            attributes.addAll(List.of(ATTRIBUTE.UNIQUENESS,
+                    ATTRIBUTE.MINIMUM_ELEMENTS));
+            var purlTest = new PURLTest(component, attributes);
+            attributes.clear();
+            for(String purl: component.getPURLs()){
+                r.addAll(purlTest.test("purl", purl));
+            }
+
+            // test component Licenses
+            attributes.addAll(List.of(ATTRIBUTE.UNIQUENESS,
+                    ATTRIBUTE.MINIMUM_ELEMENTS));
+            var licenseTest = new LicenseTest(attributes);
+            attributes.clear();
+            Set<String> licenses = component.getLicenses().getDeclared();
+            for(String l: licenses){
+                r.addAll(licenseTest.test("License", l));
+            }
+
+            // test component Hashes
+            attributes.addAll(List.of(ATTRIBUTE.UNIQUENESS,
+                    ATTRIBUTE.MINIMUM_ELEMENTS));
+            var hashTest = new HashTest(attributes, component);
+            attributes.clear();
+            Map<String, String> hashes = component.getHashes();
+            for(String hashAlgo : hashes.keySet()){
+                String hashValue = hashes.get(hashAlgo);
+                r.addAll(hashTest.test(hashAlgo, hashValue));
+            }
+
+            // add the component and all its tests to the quality report
+            qualityReport.addComponent(component.getName(), r);
+            r.clear();
+        }
 
         return qualityReport;
     }
