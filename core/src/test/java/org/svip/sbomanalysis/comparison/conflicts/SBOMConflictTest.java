@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.old.DependencyTree;
 import org.svip.sbom.model.old.SBOM;
 import org.svip.sbom.model.old.Signature;
+import org.svip.sbomanalysis.old.SBOMConflict;
 
 import java.util.Collections;
 

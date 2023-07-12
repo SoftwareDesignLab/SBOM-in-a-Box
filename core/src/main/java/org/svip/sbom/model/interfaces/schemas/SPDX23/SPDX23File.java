@@ -1,5 +1,10 @@
 package org.svip.sbom.model.interfaces.schemas.SPDX23;
 
+import org.svip.sbom.model.interfaces.generics.SBOMPackage;
+import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+
+import java.util.List;
+
 /**
  * File: SPDX23File.java
  *  <p>
@@ -15,4 +20,10 @@ public interface SPDX23File extends SPDX23Component{
      * @return License notices or other such related notices
      */
     String getFileNotice();
+
+    /**
+     * @param other
+     * @return component conflicts
+     */
+    List<Conflict> compare(SPDX23File other);
 }

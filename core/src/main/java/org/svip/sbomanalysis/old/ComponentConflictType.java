@@ -1,4 +1,4 @@
-package org.svip.sbomanalysis.comparison.conflicts;
+package org.svip.sbomanalysis.old;
 
 /**
  * Enum to represent the type of conflict between two components

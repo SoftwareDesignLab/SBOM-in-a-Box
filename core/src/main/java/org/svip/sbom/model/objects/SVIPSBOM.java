@@ -1,15 +1,21 @@
 package org.svip.sbom.model.objects;
 
 import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Schema;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
+import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -240,13 +246,25 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
         this.creationData = creationData;
         this.documentComment = documentComment;
         this.rootComponent = rootComponent;
-        if (components == null) this.components = new HashSet<>();
-        else this.components = components;
-        if (relationships == null) this.relationships = new HashMap<>();
-        else this.relationships = relationships;
+        this.components = components;
+        this.relationships = relationships;
         this.externalReferences = externalReferences;
         this.SPDXLicenseListVersion = spdxLicenseListVersion;
 
     }
 
+    @Override
+    public List<Conflict> compare(SBOM other) {
+        return null;
+    }
+
+    @Override
+    public List<Conflict> compare(SPDX23SBOM other) {
+        return null;
+    }
+
+    @Override
+    public List<Conflict> compare(CDX14SBOM other) {
+        return null;
+    }
 }
