@@ -1,6 +1,5 @@
 package org.svip.sbomfactory.serializers.deserializer;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -8,25 +7,25 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.svip.builderfactory.CDX14SBOMBuilderFactory;
 import org.svip.builderfactory.SPDX23SBOMBuilderFactory;
-import org.svip.builders.component.CDX14PackageBuilder;
+import org.svip.builders.component.SPDX23FileBuilder;
 import org.svip.builders.component.SPDX23PackageBuilder;
-import org.svip.componentfactory.CDX14PackageBuilderFactory;
+import org.svip.componentfactory.SPDX23FileBuilderFactory;
 import org.svip.componentfactory.SPDX23PackageBuilderFactory;
-import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
-import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * File: SPDX23JSONDeserializer.java
@@ -52,7 +51,7 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
      * @return The deserialized SPDX 2.3 SBOM object.
      */
     @Override
-    public SBOM readFromString(String fileContents) throws JsonProcessingException {
+    public SPDX23SBOM readFromString(String fileContents) throws JsonProcessingException {
         return getObjectMapper().readValue(fileContents, SPDX23SBOM.class);
     }
 
@@ -72,57 +71,68 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
     }
 
     @Override
-    public SPDX23SBOM deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException,
-            JacksonException {
-        // SPDX SBOMS tend to be inconsistant with capitalization,
-        // if this becomes a problem we should consider converting the JSON to all lower case
-
+    public SPDX23SBOM deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException {
         // get JSON node
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
         // initialize builders
         SPDX23SBOMBuilderFactory sbomFactory = new SPDX23SBOMBuilderFactory();
         SPDX23Builder sbomBuilder = sbomFactory.createBuilder();
-        SPDX23PackageBuilderFactory componentFactory = new SPDX23PackageBuilderFactory();
-        SPDX23PackageBuilder componentBuilder = componentFactory.createBuilder();
+        SPDX23PackageBuilderFactory packageFactory = new SPDX23PackageBuilderFactory();
+        SPDX23PackageBuilder packageBuilder = packageFactory.createBuilder();
+        SPDX23FileBuilderFactory fileFactory = new SPDX23FileBuilderFactory();
+        SPDX23FileBuilder fileBuilder = fileFactory.createBuilder();
+
+        // TODO check for/complete missing fields
 
         // NAME
-        if (node.get("DocumentName") != null) {
-            sbomBuilder.setName(node.get("DocumentName").asText());
+        if (node.get("name") != null) {
+            sbomBuilder.setName(node.get("name").asText());
         }
         // UID
-        if (node.get("DocumentNamespace") != null) {
-            sbomBuilder.setUID(node.get("DocumentNamespace").asText());
+        if (node.get("documentNamespace") != null) {
+            sbomBuilder.setUID(node.get("documentNamespace").asText());
         }
         // SPEC VERSION
-        if (node.get("SPDXVersion") != null) {
-            sbomBuilder.setSpecVersion(node.get("SPDXVersion").asText());
+        if (node.get("spdxVersion") != null) {
+            sbomBuilder.setSpecVersion(node.get("spdxVersion").asText());
         }
         // LICENSE
-        if (node.get("DataLicense") != null) {
-            sbomBuilder.addLicense(node.get("DataLicense").asText());
+        if (node.get("dataLicense") != null) {
+            sbomBuilder.addLicense(node.get("dataLicense").asText());
         }
 
-        if (node.get("CreationInfo") != null) {
+        if (node.get("creationInfo") != null) {
             // CREATION DATA
             CreationData creationData = new CreationData();
             // TIMESTAMP
-            if (node.get("CreationInfo").get("Created") != null) {
-                creationData.setCreationTime(node.get("CreationInfo").get("Created").asText());
+            if (node.get("creationInfo").get("created") != null) {
+                creationData.setCreationTime(node.get("creationInfo").get("created").asText());
             }
             // LICENSE LIST VERSION:
-            if (node.get("CreationInfo").get("Created").get("licenseListVersion") != null) {
-                sbomBuilder.setSPDXLicenseListVersion(node.get("CreationInfo").get("Created").get("licenseListVersion").asText());
+            if (node.get("creationInfo").get("licenseListVersion") != null) {
+                sbomBuilder.setSPDXLicenseListVersion(node.get("creationInfo").get("licenseListVersion").asText());
             }
             // CREATION TOOL
-            if (node.get("CreationInfo").get("Creator") != null) {
-                for (int i = 0; i < node.get("CreationInfo").get("Creator").size(); i++) {
-                    CreationTool creationTool = new CreationTool();
-                    // TOOL NAME
-                    if (node.get("CreationInfo").get("Creator").get(i).get("Tool") != null) {
-                        creationTool.setName(node.get("CreationInfo").get("Creator").get(i).get("Tool").asText());
+            if (node.get("creationInfo").get("creators") != null) {
+                for (int i = 0; i < node.get("creationInfo").get("creators").size(); i++) {
+                    // TOOL
+                    if (node.get("creationInfo").get("creators").get(i).asText().startsWith("Tool")) {
+                        CreationTool creationTool = new CreationTool();
+
+                        Matcher toolMatcher = Pattern.compile("(\\S*): (.*)-(.*)")
+                                .matcher(node.get("creationInfo").get("creators").get(i).asText());
+
+                        if (!toolMatcher.find()) continue;
+                        creationTool.setName(toolMatcher.group(2));
+                        creationTool.setVersion(toolMatcher.group(3));
+                        creationData.addCreationTool(creationTool);
+                    } else { // OTHER
+                        Matcher authorMatcher = Pattern.compile("(\\S*): (.*) \\((\\S*)\\)")
+                                .matcher(node.get("creationInfo").get("creators").get(i).asText());
+
+                        if (!authorMatcher.find()) continue;
+                        creationData.addAuthor(new Contact(authorMatcher.group(2), authorMatcher.group(3), null));
                     }
-                    // add the creation tool to the creation data
-                    creationData.addCreationTool(creationTool);
                 }
             }
             // add the creation data to the builder
@@ -134,120 +144,133 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
         if (node.get("packages") != null) {
             for (int i = 0; i < node.get("packages").size(); i++) {
                 // TYPE
-                if (node.get("packages").get(i).get("PrimaryPackagePurpose") != null) {
-                    componentBuilder.setType(node.get("packages").get(i).get("PrimaryPackagePurpose").asText());
+                if (node.get("packages").get(i).get("primaryPackagePurpose") != null) {
+                    packageBuilder.setType(node.get("packages").get(i).get("primaryPackagePurpose").asText());
                 }
                 // UID
                 if (node.get("packages").get(i).get("SPDXID") != null) {
-                    componentBuilder.setUID(node.get("packages").get(i).get("SPDXID").asText());
+                    packageBuilder.setUID(node.get("packages").get(i).get("SPDXID").asText());
                 }
                 // AUTHOR
-                if (node.get("packages").get(i).get("PackageOriginator") != null) {
-                    componentBuilder.setAuthor(node.get("packages").get(i).get("PackageOriginator").asText());
+                if (node.get("packages").get(i).get("originator") != null) {
+                    packageBuilder.setAuthor(node.get("packages").get(i).get("originator").asText());
                 }
                 // NAME
-                if (node.get("packages").get(i).get("PackageName") != null) {
-                    componentBuilder.setName(node.get("packages").get(i).get("PackageName").asText());
+                if (node.get("packages").get(i).get("name") != null) {
+                    packageBuilder.setName(node.get("packages").get(i).get("name").asText());
                 }
                 // VERSION
-                if (node.get("packages").get(i).get("PackageVersion") != null) {
-                    componentBuilder.setVersion(node.get("packages").get(i).get("PackageVersion").asText());
+                if (node.get("packages").get(i).get("versionInfo") != null) {
+                    packageBuilder.setVersion(node.get("packages").get(i).get("versionInfo").asText());
                 }
                 // DOWNLOAD LOCATION
-                if (node.get("packages").get(i).get("PackageDownloadLocation") != null) {
-                    componentBuilder.setDownloadLocation(node.get("packages").get(i).get("PackageDownloadLocation").asText());
+                if (node.get("packages").get(i).get("downloadLocation") != null) {
+                    packageBuilder.setDownloadLocation(node.get("packages").get(i).get("downloadLocation").asText());
                 }
                 // DESCRIPTION
-                if (node.get("packages").get(i).get("PackageSummary") != null) {
-                    Description description = new Description(node.get("packages").get(i).get("PackageSummary").asText());
-                    componentBuilder.setDescription(description);
+                if (node.get("packages").get(i).get("summary") != null) {
+                    Description description = new Description(node.get("packages").get(i).get("summary").asText());
+                    packageBuilder.setDescription(description);
                 }
                 // HASHES
-                if (node.get("packages").get(i).get("PackageChecksum") != null) {
-                    for (int j = 0; j < node.get("packages").get(i).get("PackageChecksum").size(); j++) {
-                        componentBuilder.addHash(node.get("packages").get(i).get("PackageChecksum").get(j).get("algorithm").asText(),
-                                node.get("packages").get(i).get("PackageChecksum").get(j).get("checksumValue").asText());
+                if (node.get("packages").get(i).get("checksums") != null) {
+                    for (int j = 0; j < node.get("packages").get(i).get("checksums").size(); j++) {
+                        packageBuilder.addHash(node.get("packages").get(i).get("checksums").get(j).get("algorithm").asText(),
+                                node.get("packages").get(i).get("checksums").get(j).get("checksumValue").asText());
                     }
                 }
                 // Licenses
                 LicenseCollection componentLicenses = new LicenseCollection();
-                if (node.get("packages").get(i).get("PackageLicenseConcluded") != null) {
-                    componentLicenses.addConcludedLicenseString(node.get("packages").get(i).get("PackageLicenseConcluded").asText());
+                if (node.get("packages").get(i).get("licenseConcluded") != null) {
+                    componentLicenses.addConcludedLicenseString(node.get("packages").get(i).get("licenseConcluded").asText());
                 }
-                if (node.get("packages").get(i).get("PackageLicenseDeclared") != null) {
-                    componentLicenses.addDeclaredLicense(node.get("packages").get(i).get("PackageLicenseDeclared").asText());
+                if (node.get("packages").get(i).get("licenseDeclared") != null) {
+                    componentLicenses.addDeclaredLicense(node.get("packages").get(i).get("licenseDeclared").asText());
                 }
-                if (node.get("packages").get(i).get("PackageLicenseInfoFromFile") != null) {
-                    componentLicenses.addLicenseInfoFromFile(node.get("packages").get(i).get("PackageLicenseInfoFromFile").asText());
+                if (node.get("packages").get(i).get("licenseInfoFromFiles") != null) {
+                    componentLicenses.addLicenseInfoFromFile(node.get("packages").get(i).get("licenseInfoFromFiles").asText());
                 }
                 // add license collection to component builder
-                componentBuilder.setLicenses(componentLicenses);
+                packageBuilder.setLicenses(componentLicenses);
                 // COPYRIGHT
-                if (node.get("packages").get(i).get("PackageCopyrightText") != null) {
-                    componentBuilder.setCopyright(node.get("packages").get(i).get("PackageCopyrightText").asText());
+                if (node.get("packages").get(i).get("copyright") != null) {
+                    packageBuilder.setCopyright(node.get("packages").get(i).get("copyright").asText());
                 }
                 // EXTERNAL REFERENCES
-                if (node.get("packages").get(i).get("ExternalRef") != null) {
-                    for (int j = 0; j < node.get("packages").get(i).get("ExternalRef").size(); j++) {
-                        if (node.get("packages").get(i).get("ExternalRef").get(j).get("referenceCategory") != null &&
-                                node.get("packages").get(i).get("ExternalRef").get(j).get("referenceLocator") != null &&
-                                node.get("packages").get(i).get("ExternalRef").get(j).get("referenceType") != null) {
+                if (node.get("packages").get(i).get("externalRefs") != null) {
+                    for (int j = 0; j < node.get("packages").get(i).get("externalRefs").size(); j++) {
+                        if (node.get("packages").get(i).get("externalRefs").get(j).get("referenceCategory") != null &&
+                                node.get("packages").get(i).get("externalRefs").get(j).get("referenceLocator") != null &&
+                                node.get("packages").get(i).get("externalRefs").get(j).get("referenceType") != null) {
                             ExternalReference externalReference = new ExternalReference(
-                                    node.get("packages").get(i).get("ExternalRef").get(j).get("referenceCategory").asText(),
-                                    node.get("packages").get(i).get("ExternalRef").get(j).get("referenceLocator").asText(),
-                                    node.get("packages").get(i).get("ExternalRef").get(j).get("referenceType").asText());
+                                    node.get("packages").get(i).get("externalRefs").get(j).get("referenceCategory").asText(),
+                                    node.get("packages").get(i).get("externalRefs").get(j).get("referenceLocator").asText(),
+                                    node.get("packages").get(i).get("externalRefs").get(j).get("referenceType").asText());
                             // add the external reference to the component builder
-                            componentBuilder.addExternalReference(externalReference);
+                            packageBuilder.addExternalReference(externalReference);
                         }
                     }
                 }
-                // TO DO: Add relationship data
                 // add the component to the sbom builder
-                sbomBuilder.addSPDX23Component(componentBuilder.buildAndFlush());
+                sbomBuilder.addSPDX23Component(packageBuilder.buildAndFlush());
             }
         }
         // Files
         if (node.get("files") != null) {
             for (int i = 0; i < node.get("files").size(); i++) {
                 // TYPE
-                if (node.get("files").get(i).get("FileType") != null) {
-                    componentBuilder.setType(node.get("files").get(i).get("FileType").asText());
+                if (node.get("files").get(i).get("fileTypes") != null && node.get("files").get(i).get("fileTypes").size() > 0) {
+                    // TODO get more filetypes
+                    fileBuilder.setType(node.get("files").get(i).get("fileTypes").get(0).asText());
                 }
                 // UID
                 if (node.get("files").get(i).get("SPDXID") != null) {
-                    componentBuilder.setUID(node.get("files").get(i).get("SPDXID").asText());
+                    fileBuilder.setUID(node.get("files").get(i).get("SPDXID").asText());
                 }
                 // AUTHOR
-                if (node.get("files").get(i).get("FileContributer") != null) {
-                    componentBuilder.setAuthor(node.get("files").get(i).get("FileContributer").asText());
+                if (node.get("files").get(i).get("fileContributors") != null) {
+                    fileBuilder.setAuthor(node.get("files").get(i).get("fileContributors").asText());
                 }
                 // NAME
-                if (node.get("files").get(i).get("FileName") != null) {
-                    componentBuilder.setName(node.get("files").get(i).get("FileName").asText());
+                if (node.get("files").get(i).get("fileName") != null) {
+                    fileBuilder.setName(node.get("files").get(i).get("fileName").asText());
                 }
                 // HASHES
-                if (node.get("files").get(i).get("FileChecksum") != null) {
-                    for (int j = 0; j < node.get("files").get(i).get("FileChecksum").size(); j++) {
-                        componentBuilder.addHash(node.get("files").get(i).get("FileChecksum").get(j).get("algorithm").asText(),
-                                node.get("files").get(i).get("FileChecksum").get(j).get("checksumValue").asText());
+                if (node.get("files").get(i).get("checksums") != null) {
+                    for (int j = 0; j < node.get("files").get(i).get("checksums").size(); j++) {
+                        fileBuilder.addHash(node.get("files").get(i).get("checksums").get(j).get("algorithm").asText(),
+                                node.get("files").get(i).get("checksums").get(j).get("checksumValue").asText());
                     }
                 }
                 // Licenses
                 LicenseCollection componentLicenses = new LicenseCollection();
-                if (node.get("files").get(i).get("LicenseConcluded") != null) {
-                    componentLicenses.addConcludedLicenseString(node.get("files").get(i).get("LicenseConcluded").asText());
+                if (node.get("files").get(i).get("licenseConcluded") != null) {
+                    componentLicenses.addConcludedLicenseString(node.get("files").get(i).get("licenseConcluded").asText());
                 }
-                if (node.get("files").get(i).get("licenseInfoInFile") != null) {
-                    componentLicenses.addLicenseInfoFromFile(node.get("files").get(i).get("licenseInfoInFile").asText());
+                if (node.get("files").get(i).get("licenseInfoInFiles") != null) {
+                    componentLicenses.addLicenseInfoFromFile(node.get("files").get(i).get("licenseInfoInFiles").asText());
                 }
                 // add license collection to component builder
-                componentBuilder.setLicenses(componentLicenses);
+                fileBuilder.setLicenses(componentLicenses);
                 // COPYRIGHT
-                if (node.get("files").get(i).get("FileCopyrightText") != null) {
-                    componentBuilder.setCopyright(node.get("files").get(i).get("FileCopyrightText").asText());
+                if (node.get("files").get(i).get("copyrightText") != null) {
+                    fileBuilder.setCopyright(node.get("files").get(i).get("copyrightText").asText());
                 }
                 // add the component to the sbom builder
-                sbomBuilder.addSPDX23Component(componentBuilder.buildAndFlush());
+                sbomBuilder.addSPDX23Component(fileBuilder.buildAndFlush());
+            }
+        }
+        // Relationships:
+        if (node.get("relationships") != null) {
+            for (int i = 0; i < node.get("relationships").size(); i++) {
+                if (node.get("relationships").get(i).get("relatedSpdxElement") != null
+                 && node.get("relationships").get(i).get("relationshipType") != null
+                 && node.get("relationships").get(i).get("spdxElementId") != null) {
+                    Relationship relationship = new Relationship(
+                            node.get("relationships").get(i).get("relatedSpdxElement").asText(),
+                            node.get("relationships").get(i).get("relationshipType").asText());
+                    sbomBuilder.addRelationship(node.get("relationships").get(i).get("spdxElementId").asText(), relationship);
+                }
             }
         }
         // Build the SBOM

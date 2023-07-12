@@ -1,26 +1,77 @@
 package org.svip.sbomfactory.serializers.deserializer;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbom.model.shared.metadata.CreationTool;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SPDX23JSONDeserializerTest extends DeserializerTest {
     public SPDX23JSONDeserializerTest() {
         super(new SPDX23JSONDeserializer());
     }
 
-    public static final String TEST_SMALL_SPDX_JSON = "{ \"spdxVersion\": \"SPDX-2.3\", \"dataLicense\": \"CC0-1.0\", \"SPDXID\": \"SPDXRef-DOCUMENT\", \"name\": \".\", \"documentNamespace\": \"https://anchore.com/syft/dir/d6734fe2-792a-4890-8428-453b3ed70ce7\", \"creationInfo\": { \"licenseListVersion\": \"3.20\", \"creators\": [ \"Organization: Anchore, Inc\", \"Tool: syft-0.80.0\" ], \"created\": \"2023-05-10T21:15:01Z\" }, \"packages\": [ { \"name\": \"example.com/main\", \"SPDXID\": \"SPDXRef-Package--example.com-main-12776a71afba78e1\", \"downloadLocation\": \"NOASSERTION\", \"sourceInfo\": \"acquired package info from SBOM: spdx-sbom-generator-0.0.15-deployment-spdx.spdx\", \"licenseConcluded\": \"NONE\", \"licenseDeclared\": \"NONE\", \"copyrightText\": \"NOASSERTION\", \"externalRefs\": [ { \"referenceCategory\": \"SECURITY\", \"referenceType\": \"cpe23Type\", \"referenceLocator\": \"cpe:2.3:a:example.com\\\\/main:example.com\\\\/main:*:*:*:*:*:*:*:*\" }, { \"referenceCategory\": \"PACKAGE-MANAGER\", \"referenceType\": \"purl\", \"referenceLocator\": \"pkg:/\" } ] }, { \"name\": \"github.com/markcheno/go-quote\", \"SPDXID\": \"SPDXRef-Package--github.com-markcheno-go-quote-798e43da7d47ee21\", \"versionInfo\": \"v0.0.0-20220624214117-555891babbf1\", \"downloadLocation\": \"NOASSERTION\", \"sourceInfo\": \"acquired package info from SBOM: spdx-sbom-generator-0.0.15-deployment-spdx.spdx\", \"licenseConcluded\": \"NONE\", \"licenseDeclared\": \"NONE\", \"copyrightText\": \"NOASSERTION\", \"externalRefs\": [ { \"referenceCategory\": \"SECURITY\", \"referenceType\": \"cpe23Type\", \"referenceLocator\": \"cpe:2.3:a:github.com\\\\/markcheno\\\\/go-quote:github.com\\\\/markcheno\\\\/go-quote:v0.0.0-20220624214117-555891babbf1:*:*:*:*:*:*:*\" }, { \"referenceCategory\": \"SECURITY\", \"referenceType\": \"cpe23Type\", \"referenceLocator\": \"cpe:2.3:a:github.com\\\\/markcheno\\\\/go-quote:github.com\\\\/markcheno\\\\/go_quote:v0.0.0-20220624214117-555891babbf1:*:*:*:*:*:*:*\" }, { \"referenceCategory\": \"SECURITY\", \"referenceType\": \"cpe23Type\", \"referenceLocator\": \"cpe:2.3:a:github.com\\\\/markcheno\\\\/go_quote:github.com\\\\/markcheno\\\\/go-quote:v0.0.0-20220624214117-555891babbf1:*:*:*:*:*:*:*\" }, { \"referenceCategory\": \"SECURITY\", \"referenceType\": \"cpe23Type\", \"referenceLocator\": \"cpe:2.3:a:github.com\\\\/markcheno\\\\/go_quote:github.com\\\\/markcheno\\\\/go_quote:v0.0.0-20220624214117-555891babbf1:*:*:*:*:*:*:*\" }, { \"referenceCategory\": \"SECURITY\", \"referenceType\": \"cpe23Type\", \"referenceLocator\": \"cpe:2.3:a:github.com\\\\/markcheno\\\\/go:github.com\\\\/markcheno\\\\/go-quote:v0.0.0-20220624214117-555891babbf1:*:*:*:*:*:*:*\" }, { \"referenceCategory\": \"SECURITY\", \"referenceType\": \"cpe23Type\", \"referenceLocator\": \"cpe:2.3:a:github.com\\\\/markcheno\\\\/go:github.com\\\\/markcheno\\\\/go_quote:v0.0.0-20220624214117-555891babbf1:*:*:*:*:*:*:*\" }, { \"referenceCategory\": \"PACKAGE-MANAGER\", \"referenceType\": \"purl\", \"referenceLocator\": \"pkg:/\" } ] }, { \"name\": \"github.com/markcheno/go-quote\", \"SPDXID\": \"SPDXRef-Package-go-module-github.com-markcheno-go-quote-92a80ddce817d67d\", \"versionInfo\": \"v0.0.0-20220624214117-555891babbf1\", \"downloadLocation\": \"NOASSERTION\", \"sourceInfo\": \"acquired package info from go module information: go.mod\",   \"licenseConcluded\": \"NONE\", \"licenseDeclared\": \"NONE\", \"copyrightText\": \"NOASSERTION\", \"externalRefs\": [ { \"referenceCategory\": \"SECURITY\", \"referenceType\": \"cpe23Type\", \"referenceLocator\": \"cpe:2.3:a:markcheno:go-quote:v0.0.0-20220624214117-555891babbf1:*:*:*:*:*:*:*\" }, { \"referenceCategory\": \"SECURITY\", \"referenceType\": \"cpe23Type\", \"referenceLocator\": \"cpe:2.3:a:markcheno:go_quote:v0.0.0-20220624214117-555891babbf1:*:*:*:*:*:*:*\" }, { \"referenceCategory\": \"PACKAGE-MANAGER\", \"referenceType\": \"purl\", \"referenceLocator\": \"pkg:golang/github.com/markcheno/go-quote@v0.0.0-20220624214117-555891babbf1\" } ] }, { \"name\": \"golang.org/x/text\", \"SPDXID\": \"SPDXRef-Package--golang.org-x-text-fdd3bb80dd75e1b2\", \"versionInfo\": \"v0.0.0-20170915032832-14c0d48ead0c\", \"downloadLocation\": \"NOASSERTION\", \"sourceInfo\": \"acquired package info from SBOM: spdx-sbom-generator-0.0.15-deployment-spdx.spdx\", \"licenseConcluded\": \"NONE\", \"licenseDeclared\": \"NONE\", \"copyrightText\": \"NOASSERTION\", \"externalRefs\": [ { \"referenceCategory\": \"SECURITY\", \"referenceType\": \"cpe23Type\", \"referenceLocator\": \"cpe:2.3:a:golang.org\\\\/x\\\\/text:golang.org\\\\/x\\\\/text:v0.0.0-20170915032832-14c0d48ead0c:*:*:*:*:*:*:*\" }, { \"referenceCategory\": \"PACKAGE-MANAGER\", \"referenceType\": \"purl\", \"referenceLocator\": \"pkg:/\" } ] }, { \"name\": \"golang.org/x/text\", \"SPDXID\": \"SPDXRef-Package-go-module-golang.org-x-text-199235658d7b7f73\",   \"versionInfo\": \"v0.0.0-20170915032832-14c0d48ead0c\", \"downloadLocation\": \"NOASSERTION\", \"sourceInfo\": \"acquired package info from go module information: go.mod\",   \"licenseConcluded\": \"NONE\", \"licenseDeclared\": \"NONE\", \"copyrightText\": \"NOASSERTION\", \"externalRefs\": [ { \"referenceCategory\": \"SECURITY\", \"referenceType\": \"cpe23Type\", \"referenceLocator\": \"cpe:2.3:a:golang:x\\\\/text:v0.0.0-20170915032832-14c0d48ead0c:*:*:*:*:*:*:*\" }, { \"referenceCategory\": \"PACKAGE-MANAGER\", \"referenceType\": \"purl\", \"referenceLocator\": \"pkg:golang/golang.org/x/text@v0.0.0-20170915032832-14c0d48ead0c\" } ] }, { \"name\": \"rsc.io/quote\", \"SPDXID\": \"SPDXRef-Package--rsc.io-quote-6b3e4acc4d4caaf5\", \"versionInfo\": \"v1.5.2\", \"downloadLocation\": \"NOASSERTION\", \"sourceInfo\": \"acquired package info from SBOM: spdx-sbom-generator-0.0.15-deployment-spdx.spdx\", \"licenseConcluded\": \"NONE\", \"licenseDeclared\": \"NONE\", \"copyrightText\": \"NOASSERTION\", \"externalRefs\": [ { \"referenceCategory\": \"SECURITY\", \"referenceType\": \"cpe23Type\", \"referenceLocator\": \"cpe:2.3:a:rsc.io\\\\/quote:rsc.io\\\\/quote:v1.5.2:*:*:*:*:*:*:*\" }, { \"referenceCategory\": \"PACKAGE-MANAGER\", \"referenceType\": \"purl\", \"referenceLocator\": \"pkg:/\" } ] }, { \"name\": \"rsc.io/quote\", \"SPDXID\": \"SPDXRef-Package-go-module-rsc.io-quote-e67929d00289cf5d\", \"versionInfo\": \"v1.5.2\", \"downloadLocation\": \"NOASSERTION\", \"sourceInfo\": \"acquired package info from go module information: go.mod\",   \"licenseConcluded\": \"NONE\", \"licenseDeclared\": \"NONE\", \"copyrightText\": \"NOASSERTION\", \"externalRefs\": [ { \"referenceCategory\": \"PACKAGE-MANAGER\", \"referenceType\": \"purl\", \"referenceLocator\": \"pkg:golang/rsc.io/quote@v1.5.2\" } ] }, { \"name\": \"rsc.io/sampler\", \"SPDXID\": \"SPDXRef-Package--rsc.io-sampler-94f1adb847e5062b\", \"versionInfo\": \"v1.3.0\", \"downloadLocation\": \"NOASSERTION\", \"sourceInfo\": \"acquired package info from SBOM: spdx-sbom-generator-0.0.15-deployment-spdx.spdx\", \"licenseConcluded\": \"NONE\", \"licenseDeclared\": \"NONE\", \"copyrightText\": \"NOASSERTION\", \"externalRefs\": [ { \"referenceCategory\": \"SECURITY\", \"referenceType\": \"cpe23Type\", \"referenceLocator\": \"cpe:2.3:a:rsc.io\\\\/sampler:rsc.io\\\\/sampler:v1.3.0:*:*:*:*:*:*:*\" }, { \"referenceCategory\": \"PACKAGE-MANAGER\", \"referenceType\": \"purl\", \"referenceLocator\": \"pkg:/\" } ] }, { \"name\": \"rsc.io/sampler\", \"SPDXID\": \"SPDXRef-Package-go-module-rsc.io-sampler-3e34617b8ea74d35\", \"versionInfo\": \"v1.3.0\", \"downloadLocation\": \"NOASSERTION\", \"sourceInfo\": \"acquired package info from go module information: go.mod\",   \"licenseConcluded\": \"NONE\", \"licenseDeclared\": \"NONE\", \"copyrightText\": \"NOASSERTION\", \"externalRefs\": [ { \"referenceCategory\": \"PACKAGE-MANAGER\", \"referenceType\": \"purl\", \"referenceLocator\": \"pkg:golang/rsc.io/sampler@v1.3.0\" } ] } ], \"files\": [ { \"fileName\": \"go.mod\", \"SPDXID\": \"SPDXRef-File-go.mod-ed9ca1d5b0eb32bc\", \"checksums\": [ { \"algorithm\": \"SHA1\", \"checksumValue\": \"0000000000000000000000000000000000000000\" } ], \"licenseConcluded\": \"NOASSERTION\", \"copyrightText\": \"\" }, { \"fileName\": \"spdx-sbom-generator-0.0.15-deployment-spdx.spdx\", \"SPDXID\": \"SPDXRef-File-spdx-sbom-generator-0.0.15-deployment-spdx.spdx-8ab6d83c1a7fd06e\", \"checksums\": [ { \"algorithm\": \"SHA1\", \"checksumValue\": \"0000000000000000000000000000000000000000\" } ], \"licenseConcluded\": \"NOASSERTION\", \"copyrightText\": \"\" } ], \"relationships\": [ { \"spdxElementId\": \"SPDXRef-Package--example.com-main-12776a71afba78e1\", \"relatedSpdxElement\": \"SPDXRef-File-spdx-sbom-generator-0.0.15-deployment-spdx.spdx-8ab6d83c1a7fd06e\", \"relationshipType\": \"OTHER\", \"comment\": \"evident-by: indicates the package's existence is evident by the given file\" }, { \"spdxElementId\": \"SPDXRef-Package-go-module-golang.org-x-text-199235658d7b7f73\", \"relatedSpdxElement\": \"SPDXRef-File-go.mod-ed9ca1d5b0eb32bc\", \"relationshipType\": \"OTHER\", \"comment\": \"evident-by: indicates the package's existence is evident by the given file\" }, { \"spdxElementId\": \"SPDXRef-Package-go-module-rsc.io-sampler-3e34617b8ea74d35\", \"relatedSpdxElement\": \"SPDXRef-File-go.mod-ed9ca1d5b0eb32bc\", \"relationshipType\": \"OTHER\", \"comment\": \"evident-by: indicates the package's existence is evident by the given file\" }, { \"spdxElementId\": \"SPDXRef-Package--rsc.io-quote-6b3e4acc4d4caaf5\", \"relatedSpdxElement\": \"SPDXRef-File-spdx-sbom-generator-0.0.15-deployment-spdx.spdx-8ab6d83c1a7fd06e\", \"relationshipType\": \"OTHER\", \"comment\": \"evident-by: indicates the package's existence is evident by the given file\" }, { \"spdxElementId\": \"SPDXRef-Package--github.com-markcheno-go-quote-798e43da7d47ee21\", \"relatedSpdxElement\": \"SPDXRef-File-spdx-sbom-generator-0.0.15-deployment-spdx.spdx-8ab6d83c1a7fd06e\", \"relationshipType\": \"OTHER\", \"comment\": \"evident-by: indicates the package's existence is evident by the given file\" }, { \"spdxElementId\": \"SPDXRef-Package-go-module-github.com-markcheno-go-quote-92a80ddce817d67d\", \"relatedSpdxElement\": \"SPDXRef-File-go.mod-ed9ca1d5b0eb32bc\", \"relationshipType\": \"OTHER\", \"comment\": \"evident-by: indicates the package's existence is evident by the given file\" }, { \"spdxElementId\": \"SPDXRef-Package--rsc.io-sampler-94f1adb847e5062b\", \"relatedSpdxElement\": \"SPDXRef-File-spdx-sbom-generator-0.0.15-deployment-spdx.spdx-8ab6d83c1a7fd06e\", \"relationshipType\": \"OTHER\", \"comment\": \"evident-by: indicates the package's existence is evident by the given file\" }, { \"spdxElementId\": \"SPDXRef-Package-go-module-rsc.io-quote-e67929d00289cf5d\", \"relatedSpdxElement\": \"SPDXRef-File-go.mod-ed9ca1d5b0eb32bc\", \"relationshipType\": \"OTHER\", \"comment\": \"evident-by: indicates the package's existence is evident by the given file\" }, { \"spdxElementId\": \"SPDXRef-Package--golang.org-x-text-fdd3bb80dd75e1b2\", \"relatedSpdxElement\": \"SPDXRef-File-spdx-sbom-generator-0.0.15-deployment-spdx.spdx-8ab6d83c1a7fd06e\", \"relationshipType\": \"OTHER\", \"comment\": \"evident-by: indicates the package's existence is evident by the given file\" }, { \"spdxElementId\": \"SPDXRef-DOCUMENT\", \"relatedSpdxElement\": \"SPDXRef-DOCUMENT\", \"relationshipType\": \"DESCRIBES\" } ] }";
-    public static final SPDX23JSONDeserializer DESERIALIZER = new SPDX23JSONDeserializer();
+    @Test
+    public void readFromStringTest() throws IOException {
+        SPDX23JSONDeserializer spdx23Deserializer = new SPDX23JSONDeserializer();
+        SPDX23SBOM sbom = spdx23Deserializer.readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
+        assertNotNull(sbom);
+    }
 
     @Test
-    @ValueSource(strings = { TEST_SMALL_SPDX_JSON })
-    public void build_SBOM_from_small_cdx_json_test() throws JsonProcessingException {
-        SBOM sbom = this.DESERIALIZER.readFromString(TEST_SMALL_SPDX_JSON);
+    public void metadataTest() throws IOException {
+        SPDX23JSONDeserializer spdx23Deserializer = new SPDX23JSONDeserializer();
+        SPDX23SBOM sbom = spdx23Deserializer.readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
         assertNotNull(sbom);
-        assertEquals(11, sbom.getComponents().size()); // TODO ensure no duplicates added?
+
+        // TODO more assertions
+        assertNotNull(sbom);
+        // spdxVersion
+        assertEquals("SPDX-2.3", sbom.getSpecVersion());
+        // dataLicense
+        assertEquals("CC0-1.0", sbom.getLicenses().stream().toList().get(0));
+        // name
+        assertEquals(".", sbom.getName());
+        // documentNamespace
+        assertEquals("https://anchore.com/syft/dir/d6734fe2-792a-4890-8428-453b3ed70ce7", sbom.getUID());
+        // created
+        assertEquals("2023-05-10T21:15:01Z", sbom.getCreationData().getCreationTime());
+        // creators
+        assertEquals(1, sbom.getCreationData().getCreationTools().size());
+        List<CreationTool> creationTools = sbom.getCreationData().getCreationTools().stream().toList();
+        //assertEquals("Anchore, Inc", creationTools.get(0).getVendor());
+        assertEquals("syft", creationTools.get(0).getName());
+        assertEquals("0.80.0", creationTools.get(0).getVersion());
+    }
+
+    @Test
+    public void componentTest() throws IOException {
+        SPDX23JSONDeserializer spdx23Deserializer = new SPDX23JSONDeserializer();
+        SPDX23SBOM sbom = spdx23Deserializer.readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
+        assertNotNull(sbom);
+
+        assertEquals(11, sbom.getComponents().size());
+        List<Component> components = sbom.getComponents().stream().toList();
+        // checking for duplicates:
+        int count = 1;
+        for (int i = 1; i < components.size(); i++) {
+            if (components.get(i).getUID() == "SPDXRef-Package--rsc.io-sampler-94f1adb847e5062b") {
+                // TODO implement author
+                // name
+                assertEquals("rsc.io/sampler", components.get(0).getName());
+                // versionInfo TODO SPDX specific data is lost as the CDX SBOM stores incomplete component interfaces
+                //assertEquals("v1.3.0", components.get(0).getVersion());
+                count += 1;
+            }
+        }
+        assertEquals(1, count);
     }
 }

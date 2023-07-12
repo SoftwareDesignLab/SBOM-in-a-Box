@@ -14,7 +14,7 @@ import org.svip.componentfactory.CDX14PackageBuilderFactory;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
-import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
@@ -23,6 +23,7 @@ import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
+import javax.management.relation.Relation;
 import java.io.IOException;
 
 /**
@@ -49,7 +50,7 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
      * @return The deserialized CDX 1.4 SBOM object.
      */
     @Override
-    public SBOM readFromString(String fileContents) throws JsonProcessingException {
+    public CDX14SBOM readFromString(String fileContents) throws JsonProcessingException {
         return getObjectMapper().readValue(fileContents, CDX14SBOM.class);
     }
 
@@ -78,6 +79,8 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
         CDX14Builder sbomBuilder = sbomFactory.createBuilder();
         CDX14PackageBuilderFactory componentFactory = new CDX14PackageBuilderFactory();
         CDX14PackageBuilder componentBuilder = componentFactory.createBuilder();
+
+        // TODO check for/complete missing fields
 
         // FORMAT
         if (node.get("bomFormat") != null) {
@@ -250,8 +253,32 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
             }
             // ROOT COMPONENT PROPERTIES
             if (node.get("metadata").get("component").get("properties") != null) {
-                for (int i = 0; i < node.get("component").get("properties").size(); i++) {
-                    componentBuilder.addProperty(node.get("component").get("properties").get(i).get("name").asText(), node.get("component").get("properties").get(i).get("value").asText());
+                for (int i = 0; i < node.get("metadata").get("component").get("properties").size(); i++) {
+                    componentBuilder.addProperty(node.get("metadata").get("component").get("properties").get(i).get("name").asText(), node.get("metadata").get("component").get("properties").get(i).get("value").asText());
+                }
+            }
+            // ROOT COMPONENT RELATIONSHIPS
+            if (node.get("metadata").get("component").get("pedigree") != null && node.get("metadata").get("component").get("bom-ref") != null) {
+                if (node.get("metadata").get("component").get("pedigree").get("ancestors") != null) {
+                    for (int i = 0; i < node.get("metadata").get("component").get("pedigree").get("ancestors").size(); i++) {
+                        Relationship relationship = new Relationship(node.get("metadata").get("component").get("pedigree").get("ancestors").get(i).asText(),
+                                "ancestor");
+                        sbomBuilder.addRelationship(node.get("metadata").get("component").get("bom-ref").asText(), relationship);
+                    }
+                }
+                if (node.get("metadata").get("component").get("pedigree").get("descendants") != null) {
+                    for (int i = 0; i < node.get("metadata").get("component").get("pedigree").get("descendants").size(); i++) {
+                        Relationship relationship = new Relationship(node.get("metadata").get("component").get("pedigree").get("descendants").get(i).asText(),
+                                "descendant");
+                        sbomBuilder.addRelationship(node.get("metadata").get("component").get("bom-ref").asText(), relationship);
+                    }
+                }
+                if (node.get("metadata").get("component").get("pedigree").get("variants") != null) {
+                    for (int i = 0; i < node.get("metadata").get("component").get("pedigree").get("variants").size(); i++) {
+                        Relationship relationship = new Relationship(node.get("metadata").get("component").get("pedigree").get("variants").get(i).asText(),
+                                "variant");
+                        sbomBuilder.addRelationship(node.get("metadata").get("component").get("bom-ref").asText(), relationship);
+                    }
                 }
             }
             // add the component to the sbom builder
@@ -302,7 +329,7 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
                 }
                 // GROUP
                 if (node.get("components").get(i).get("group") != null) {
-                    componentBuilder.setGroup(node.get("metadata").get("component").get(i).get("group").asText());
+                    componentBuilder.setGroup(node.get("components").get(i).get("group").asText());
                 }
                 // NAME
                 if (node.get("components").get(i).get("name") != null) {
@@ -372,7 +399,30 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
                         componentBuilder.addProperty(node.get("components").get(i).get("properties").get(j).get("name").asText(), node.get("components").get(i).get("properties").get(j).get("value").asText());
                     }
                 }
-                // TO DO: Add relationship data
+                // RELATIONSHIPS
+                if (node.get("components").get(i).get("pedigree") != null && node.get("components").get(i).get("bom-ref") != null) {
+                    if (node.get("components").get(i).get("pedigree").get("ancestors") != null) {
+                        for (int j = 0; j < node.get("components").get(i).get("pedigree").get("ancestors").size(); j++) {
+                            Relationship relationship = new Relationship(node.get("components").get(i).get("pedigree").get("ancestors").get(j).asText(),
+                                    "ancestor");
+                            sbomBuilder.addRelationship(node.get("components").get(i).get("bom-ref").asText(), relationship);
+                        }
+                    }
+                    if (node.get("components").get(i).get("pedigree").get("descendants") != null) {
+                        for (int j = 0; j < node.get("components").get(i).get("pedigree").get("descendants").size(); j++) {
+                            Relationship relationship = new Relationship(node.get("components").get(i).get("pedigree").get("descendants").get(j).asText(),
+                                    "descendant");
+                            sbomBuilder.addRelationship(node.get("components").get(i).get("bom-ref").asText(), relationship);
+                        }
+                    }
+                    if (node.get("components").get(i).get("pedigree").get("variants") != null) {
+                        for (int j = 0; j < node.get("components").get(i).get("pedigree").get("variants").size(); j++) {
+                            Relationship relationship = new Relationship(node.get("components").get(i).get("pedigree").get("variants").get(j).asText(),
+                                    "variant");
+                            sbomBuilder.addRelationship(node.get("components").get(i).get("bom-ref").asText(), relationship);
+                        }
+                    }
+                }
                 // add the component to the sbom builder
                 sbomBuilder.addCDX14Package(componentBuilder.buildAndFlush());
             }
