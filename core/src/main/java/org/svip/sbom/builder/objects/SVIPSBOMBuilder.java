@@ -140,6 +140,8 @@ public class SVIPSBOMBuilder implements CDX14SBOMBuilder, SPDX23SBOMBuilder {
 
     @Override
     public SVIPSBOMBuilder addExternalReference(ExternalReference externalReference) {
+        if(this.externalReferences == null)
+            this.externalReferences = new HashSet<ExternalReference>();
         this.externalReferences.add(externalReference);
         return this;
     }

@@ -1,21 +1,26 @@
 package org.svip.builderfactory;
 
 import org.junit.jupiter.api.Test;
+import org.svip.builders.component.CDX14PackageBuilder;
 import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
+import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
+import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
+import org.svip.sbom.model.shared.util.ExternalReference;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * file: SVIPSBOMBuilderFactoryTest.java
@@ -146,31 +151,97 @@ public class SVIPSBOMBuilderFactoryTest {
 
         assertEquals(test_components, test_SVIPSBOM.getComponents());
     }
+    @Test
+    void getComponents_is_test_components_when_addCDX14Package_is_used_test(){
+        SVIPComponentObject test_componentA = new SVIPComponentObject("SVIP", null, "Tester 1", "Test Component A",null,null,null,null,null,null,null,null,null, null, null, null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+        test_SVIPSBOMBuilder.addComponent(test_componentA);
 
-    // TODO addCDX14Package
-//    @Test
-//    void getComponents_is_test_components_when_addCDX14Package_is_used_test(){
-//        SVIPComponentObject test_componentA = new SVIPComponentObject("SVIP", null, "Tester 1", "Test Component A",null,null,null,null,null,null,null,null,null, null, null, null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
-//        CDX14Package test_componentB = new CDX14Package("SVIP", null, "Tester Two", "Test Component B",null,null,null,null,null,null,null,null,null, null, null, null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
-//        test_SVIPSBOMBuilder.addComponent(test_componentA);
-//        test_SVIPSBOMBuilder.addCDX14Package(test_componentB);
-//        test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
-//
-//        test_components.add(test_componentA);
-//        test_components.add(test_componentB);
-//
-//        assertEquals(test_components, test_SVIPSBOM.getComponents());
-//    }
+        CDX14PackageBuilder test_CDX14PackageBuilder = new CDX14PackageBuilder();
+        test_CDX14PackageBuilder.setName("CDX14 Package");
+        CDX14Package test_componentB = test_CDX14PackageBuilder.buildAndFlush();
+        test_SVIPSBOMBuilder.addCDX14Package(test_componentB);
 
-    // TODO addSPDX23Component
+        test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
 
-    // TODO addRelationship
+        test_components.add(test_componentA);
+        test_components.add(test_componentB);
 
-    // TODO addExternalReference
+        assertEquals(test_components, test_SVIPSBOM.getComponents());
+    }
+    @Test
+    void getComponents_is_test_components_when_addSPDXComponentObject_is_used_test(){
+        SPDX23PackageObject test_componentA = new SPDX23PackageObject("SPDX Package", null, "Tester One", "Test Component A",null,null,null,null,null,null,null,null,null, null, null, null,null,null,null,null,null,null,null,null);
+        SPDX23FileObject test_componentB = new SPDX23FileObject("SPDX File", null, "Tester 2", "Test Component B",null,null,null,null,null,null);
+        test_SVIPSBOMBuilder.addComponent(test_componentA);
+        test_SVIPSBOMBuilder.addComponent(test_componentB);
+        test_SVIPSBOMBuilder.addSPDX23Component(test_componentA);
+        test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
+
+        test_components.add(test_componentA);
+        test_components.add(test_componentA);
+        test_components.add(test_componentB);
+
+        assertEquals(test_components, test_SVIPSBOM.getComponents());
+    }
+
+    @Test
+    void getRelationships_contains_test_relationships_when_addRelationship_is_used_test(){
+        HashMap<String, Relationship> test_relationships = new HashMap<String, Relationship>();
+        Relationship test_relationship = new Relationship("001", "dependant");
+        test_SVIPSBOMBuilder.addRelationship("test_component", test_relationship);
+
+        test_SVIPSBOM = test_SVIPSBOMBuilder.buildCDX14SBOM();
+
+        assertTrue(test_SVIPSBOM.getRelationships().containsKey("test_component"));
+    }
+
+    @Test
+    void getExternalReferences_is_test_externalRefs_when_addExternalReference_is_used_test(){
+        HashSet<ExternalReference> test_externalRefs = new HashSet<ExternalReference>();
+        ExternalReference test_externalRef = new ExternalReference("really cool url", "CPE");
+
+        test_SVIPSBOMBuilder.addExternalReference(test_externalRef);
+        test_externalRefs.add(test_externalRef);
+
+        test_SVIPSBOM = test_SVIPSBOMBuilder.buildCDX14SBOM();
+
+        assertEquals(test_externalRefs, test_SVIPSBOM.getExternalReferences());
+    }
 
     // TODO setSPDXLicenseListVersion
+    //      Same as SPDX23SBOM. getSPDXLicenseListVersion is missing from the SBOM
 
-    // TODO buildSPDX23SBOM
+    @Test
+    void getComponents_is_test_components_when_buildSPDXSBOM_is_used_test(){
+        SPDX23PackageObject test_componentA = new SPDX23PackageObject("SPDX Package", null, "Tester One", "Test Component A",null,null,null,null,null,null,null,null,null, null, null, null,null,null,null,null,null,null,null,null);
+        SPDX23FileObject test_componentB = new SPDX23FileObject("SPDX File", null, "Tester 2", "Test Component B",null,null,null,null,null,null);
+        test_SVIPSBOMBuilder.addComponent(test_componentA);
+        test_SVIPSBOMBuilder.addComponent(test_componentB);
+        test_SVIPSBOMBuilder.addSPDX23Component(test_componentA);
+        test_SVIPSBOM = test_SVIPSBOMBuilder.buildSPDX23SBOM();
 
-    // TODO buildCDX14SBOM
+        test_components.add(test_componentA);
+        test_components.add(test_componentA);
+        test_components.add(test_componentB);
+
+        assertEquals(test_components, test_SVIPSBOM.getComponents());
+    }
+
+    @Test
+    void getComponents_is_test_components_when_buildCDX14SBOM_is_used_test(){
+        SVIPComponentObject test_componentA = new SVIPComponentObject("SVIP", null, "Tester 1", "Test Component A",null,null,null,null,null,null,null,null,null, null, null, null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+        test_SVIPSBOMBuilder.addComponent(test_componentA);
+
+        CDX14PackageBuilder test_CDX14PackageBuilder = new CDX14PackageBuilder();
+        test_CDX14PackageBuilder.setName("CDX14 Package");
+        CDX14Package test_componentB = test_CDX14PackageBuilder.buildAndFlush();
+        test_SVIPSBOMBuilder.addCDX14Package(test_componentB);
+
+        test_SVIPSBOM = test_SVIPSBOMBuilder.buildCDX14SBOM();
+
+        test_components.add(test_componentA);
+        test_components.add(test_componentB);
+
+        assertEquals(test_components, test_SVIPSBOM.getComponents());
+    }
 }
