@@ -2,22 +2,39 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [v5.0.2-alpha] - (7/10/2023)
+## [v5.0.3-alpha] - (7/12/2023)
 
 ### Added
 - New Serializer refactor and implementation of the old generator serializers to use the SBOM object:
-  - `SerializerFactory` Class - Responsible for recieving parameters and constructing/configuring 
-    serializers/deserializers
-  - `Serializer` Interface
-    - `CDX14JSONSerializer` Class - CycloneDX v1.4 JSON serializer
-    - `SPDX23JSONSerializer` Class - SPDX v2.3 JSON serializer
-    - `SPDX23TagValueSerializer` Class - SPDX v2.3 Tag-Value (.spdx) serializer
-    - `SVIPSBOMJSONSerializer` Class - Data serializer to represent all fields in an SVIP SBOM object instance
-  - `Deserializer` Interface
-    - `CDX14JSONDeserializer` Class - CycloneDX v1.4 JSON deserializer
-    - `SPDX23JSONDeserializer` Class - SPDX v2.3 JSON deserializer
-    - `SPDX23TagValueDeserializer` Class - SPDX v2.3 Tag-Value (.spdx) deserializer
+    - `SerializerFactory` Class - Responsible for recieving parameters and constructing/configuring
+      serializers/deserializers
+    - `Serializer` Interface
+        - `CDX14JSONSerializer` Class - CycloneDX v1.4 JSON serializer
+        - `SPDX23JSONSerializer` Class - SPDX v2.3 JSON serializer
+        - `SPDX23TagValueSerializer` Class - SPDX v2.3 Tag-Value (.spdx) serializer
+        - `SVIPSBOMJSONSerializer` Class - Data serializer to represent all fields in an SVIP SBOM object instance
+    - `Deserializer` Interface
+        - `CDX14JSONDeserializer` Class - CycloneDX v1.4 JSON deserializer
+        - `SPDX23JSONDeserializer` Class - SPDX v2.3 JSON deserializer
+        - `SPDX23TagValueDeserializer` Class - SPDX v2.3 Tag-Value (.spdx) deserializer
+- Unit tests to be completed for each serializer/deserializer
+
+## [v5.0.2-alpha] - (7/12/2023)
+
+### Added
+- New VEX and VEXStatement Implementation. This covers the following files:
+    - `VEX` - Class that build a VEX Document object
+    - `VEXType` - An enumeration of the possible VEX file types
+    - `VEXStatement` - Class for a single VEX Statement in a VEX file
+    - `Product` - Class that defines a product inside a VEX Statement
+    - `Vulnerability` - Class that defines the vulnerability for a VEX Statement
+    - `Status` - Class that defines the status of a VEX Statement
+    - `VulnStatus` -  An enumeration for all the possible statuses of a VEX Statement
+    - `Justification` - An enumeration of all possible justifications for a NOT_AFFECTED VEX Statement
+
+### Changed
+
+### Removed
 
 ## [v5.0.1-alpha] - (7/3/2023)
 
