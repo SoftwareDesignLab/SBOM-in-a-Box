@@ -3,6 +3,23 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v5.0.2-alpha] - (7/12/2023)
+
+### Added
+- New VEX and VEXStatement Implementation. This covers the following files:
+    - `VEX` - Class that build a VEX Document object
+    - `VEXType` - An enumeration of the possible VEX file types
+    - `VEXStatement` - Class for a single VEX Statement in a VEX file
+    - `Product` - Class that defines a product inside a VEX Statement
+    - `Vulnerability` - Class that defines the vulnerability for a VEX Statement
+    - `Status` - Class that defines the status of a VEX Statement
+    - `VulnStatus` -  An enumeration for all the possible statuses of a VEX Statement
+    - `Justification` - An enumeration of all possible justifications for a NOT_AFFECTED VEX Statement
+
+### Changed
+
+### Removed
+
 ## [v5.0.1-alpha] - (7/3/2023)
 
 ### Added
