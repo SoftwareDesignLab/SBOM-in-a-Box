@@ -141,6 +141,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                 case CREATOR_TAG -> {
                     String authorName = "";
                     String authorEmail = "";
+                    // PERSON
                     Pattern authorPattern = Pattern.compile("Person: (?:(.*) \\((.*)\\))(.*)", Pattern.CASE_INSENSITIVE);
                     Matcher mAuthor = authorPattern.matcher(mHeader.group(2));
                     while(mAuthor.find()) {
@@ -150,6 +151,20 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                     if (authorName != "") {
                         Contact author = new Contact(authorName, authorEmail, "");
                         creationData.addAuthor(author);
+                    } else {
+                        // ORGANIZATION
+                        String orgName = "";
+                        String orgEmail = "";
+                        Pattern orgPattern = Pattern.compile("Organization: (?:(.*) \\((.*)\\))(.*)", Pattern.CASE_INSENSITIVE);
+                        Matcher mOrg = orgPattern.matcher(mHeader.group(2));
+                        while(mOrg.find()) {
+                            orgName = mOrg.group(1);
+                            orgEmail = mOrg.group(2);
+                        }
+                        if (orgName != "") {
+                            Contact orgContact = new Contact(orgName, orgEmail, "");
+                            creationData.addAuthor(orgContact);
+                        }
                     }
                     // TOOLS
                     String toolName = "";
@@ -165,6 +180,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                         CreationTool creationTool = new CreationTool();
                         creationTool.setName(toolName);
                         if (toolVersion != "") creationTool.setVersion(toolVersion);
+                        // add the tool
                         creationData.addCreationTool(creationTool);
                     }
 
