@@ -49,7 +49,7 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
      * @return The deserialized CDX 1.4 SBOM object.
      */
     @Override
-    public SBOM readFromString(String fileContents) throws JsonProcessingException {
+    public CDX14SBOM readFromString(String fileContents) throws JsonProcessingException {
         return getObjectMapper().readValue(fileContents, CDX14SBOM.class);
     }
 
@@ -78,6 +78,8 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
         CDX14Builder sbomBuilder = sbomFactory.createBuilder();
         CDX14PackageBuilderFactory componentFactory = new CDX14PackageBuilderFactory();
         CDX14PackageBuilder componentBuilder = componentFactory.createBuilder();
+
+        // TODO check for/complete missing fields
 
         // FORMAT
         if (node.get("bomFormat") != null) {

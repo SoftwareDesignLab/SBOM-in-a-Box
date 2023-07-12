@@ -11,7 +11,7 @@ public class DeserializerTest {
             "/src/test/java/org/svip/sbomfactory/serializers/sample_boms/syft-0.80.0-source-spdx-json.json";
 
     protected final String SPDX23_TAGVALUE_SBOM = System.getProperty("user.dir") +
-            "/src/test/java/org/svip/sbomfactory/serializers/sample_boms/sbom.alpine.2-3.spdx";
+            "/src/test/java/org/svip/sbomfactory/serializers/sample_boms/sbom.test.spdx";
 
     protected final String SPDX23_TAGVALUE_SBOM_NOCOMPONENTS = System.getProperty("user.dir") +
             "/src/test/java/org/svip/sbomfactory/serializers/sample_boms/sbom.nocomponents.2-3.spdx";
