@@ -1,6 +1,9 @@
 package org.svip.builders.component;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.svip.componentfactory.CDX14PackageBuilderFactory;
+import org.svip.componentfactory.SVIPSBOMComponentFactory;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
@@ -23,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class SVIPComponentBuilderTest {
 
-    SVIPComponentBuilder test_packageBuilder = new SVIPComponentBuilder();
+    SVIPComponentBuilder test_packageBuilder;
     SVIPComponentObject test_file;
     String test_type = "library";
 
@@ -93,7 +96,11 @@ public class SVIPComponentBuilderTest {
     String test_property_name = "local";
 
     String test_property_value = "team_responsible";
-
+    @BeforeEach
+    void create_test_packageBuilder(){
+        SVIPSBOMComponentFactory test_SVIPComponentBuilderFactory = new SVIPSBOMComponentFactory();
+        test_packageBuilder = test_SVIPComponentBuilderFactory.createBuilder();
+    }
     @Test
     void getMimeType_is_test_mimeType_when_setMimeType_is_used_test() {
         test_packageBuilder.setMimeType(test_mimeType);
