@@ -21,16 +21,14 @@ public class HashTest extends MetricTest{
     private final String TEST_NAME = "HashTest";
     private ResultFactory resultFactory;
 
-    private final Component component;
 
     /**
      * Constructor to create a new MetricTest
      *
      * @param attributes the list of attributes used
      */
-    public HashTest(Component component, ATTRIBUTE... attributes) {
+    public HashTest(ATTRIBUTE... attributes) {
         super(attributes);
-        this.component = component;
         resultFactory = new ResultFactory(TEST_NAME, attributes);
     }
 
@@ -72,12 +70,6 @@ public class HashTest extends MetricTest{
 
             // Check if hash algorithm is unknown
             if(hash.getAlgorithm() == Hash.Algorithm.UNKNOWN){
-                r = resultFactory.fail(field, INFO.INVALID, value);
-                return r;
-            }
-
-            // Check for unsupported hash in CycloneDX components
-            if(component.getType().equals("CycloneDX") && Hash.isSPDXExclusive(hash.getAlgorithm())){
                 r = resultFactory.fail(field, INFO.INVALID, value);
                 return r;
             }

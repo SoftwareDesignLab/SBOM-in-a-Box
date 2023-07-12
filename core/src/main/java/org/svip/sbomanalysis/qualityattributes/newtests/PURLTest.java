@@ -6,20 +6,9 @@ import org.svip.sbom.model.uids.PURL;
 import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.ResultFactory;
-import org.svip.sbomanalysis.qualityattributes.resultfactory.Text;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.INFO;
-import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.STATUS;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -62,7 +51,7 @@ public class PURLTest extends MetricTest{
         if(value != null) {
             results.addAll(isValidPURL(field, value));
             results.addAll(isAccuratePURL(field, value));
-            results.addAll(existsInRepo(field, value));
+            // results.addAll(existsInRepo(field, value));
         }
         // purl string is null so no tests can be run
         // return missing Result
@@ -100,9 +89,7 @@ public class PURLTest extends MetricTest{
         Result r;
         try{
             PURL purl = new PURL(value);
-            results.add(isEqual(field, purl.getName(), component.getName()));
-
-            results.add(isEqual(field, purl.getVersion(), component.getVersion()));
+            results.add(match(purl));
 
         }
         // failed to create new purl, test automatically fails
@@ -114,22 +101,29 @@ public class PURLTest extends MetricTest{
     }
 
     /**
-     * Helper function to check if 2 fields are equal
+     * Helper function to check if PURL and Component match
      *
-     * @param field name of field that is being checked
-     * @param purlValue Value stored in the PURL string
-     * @param componentValue Value stored in the Component
+     * @param purl the purl to be tested
      * @return Result with the findings
      */
-    private Result isEqual(String field, String purlValue, String componentValue){
+    private Result match(PURL purl){
         Result r;
-        // Check if purl value is different
-        if(!purlValue.equals(componentValue)){
-            r = resultFactory.fail(field, INFO.INVALID, purlValue);
+
+        // test purl and component name
+        String purlName = purl.getName();
+        if(!purlName.equals(component.getName())){
+            r = resultFactory.fail("PURL Name", INFO.INVALID, purl.toString());
+            return r;
         }
-        // Else they both match
+        // test purl and component version
+        String purlVersion = purl.getVersion();
+        if(!purlVersion.equals(component.getVersion())){
+            r = resultFactory.fail("PURL Version", INFO.INVALID, purl.toString());
+            return r;
+        }
+        // all fields match the component, test passes
         else {
-            r = resultFactory.pass(field, INFO.VALID, purlValue);
+            r = resultFactory.pass("CPE Match", INFO.VALID, purl.toString());
         }
 
         return r;

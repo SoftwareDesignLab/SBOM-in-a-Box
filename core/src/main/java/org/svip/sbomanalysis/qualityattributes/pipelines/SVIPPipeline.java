@@ -8,6 +8,7 @@ import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.Organization;
+import org.svip.sbom.model.uids.Hash;
 import org.svip.sbomanalysis.qualityattributes.newtests.*;
 import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.schemas.CycloneDX14.CDX14Tests;
@@ -105,12 +106,13 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
             }
 
             // test component Hashes
-            var hashTest = new HashTest(component, ATTRIBUTE.UNIQUENESS,
+            var hashTest = new HashTest(ATTRIBUTE.UNIQUENESS,
                     ATTRIBUTE.MINIMUM_ELEMENTS);
             Map<String, String> hashes = component.getHashes();
             for(String hashAlgo : hashes.keySet()){
                 String hashValue = hashes.get(hashAlgo);
                 componentResults.addAll(hashTest.test(hashAlgo, hashValue));
+                componentResults.addAll(supportedHash("Supported CDX Hash", hashAlgo));
             }
 
             // add the component and all its tests to the quality report
@@ -191,6 +193,32 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
 
         results.add(r);
         return results;
+    }
+
+    /**
+     * Check if a hash algorithm in the given SVIP SBOM is supported
+     * within CycloneDX
+     * @param field the field that's tested
+     * @param value the bom ref tested
+     * @return the result of if the hash algorithm is supported
+     */
+    @Override
+    public Set<Result> supportedHash(String field, String value) {
+        String testName = "SupportedCDXHash";
+        Set<Result> result = new HashSet<>();
+        Result r;
+        ResultFactory resultFactory = new ResultFactory(testName,
+                ATTRIBUTE.CDX14, ATTRIBUTE.UNIQUENESS);
+        // hash is unsupported, test fails
+        if(Hash.isSPDXExclusive(Hash.Algorithm.valueOf(value))){
+            r = resultFactory.fail(field, INFO.INVALID, value);
+        }
+        // hash is supported, test passes
+        else{
+            r = resultFactory.pass(field, INFO.VALID, value);
+        }
+        result.add(r);
+        return result;
     }
 
     /**
