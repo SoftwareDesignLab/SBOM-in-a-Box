@@ -86,32 +86,27 @@ public class HashTest extends MetricTest{
 
             // Check if hash algorithm is unknown
             if(hash.getAlgorithm() == Hash.Algorithm.UNKNOWN){
-                r = resultFactory.fail(field, INFO.INVALID, value,
-                        "Unknown Hash algorithm");
+                r = resultFactory.fail(field, INFO.INVALID, value);
                 return r;
             }
 
             // Check for unsupported hash in CycloneDX components
             if(component.getType().equals("CycloneDX") && Hash.isSPDXExclusive(hash.getAlgorithm())){
-                r = resultFactory.fail(field, INFO.INVALID, value,
-                        "Hash algorithm is not supported in CycloneDX components");
+                r = resultFactory.fail(field, INFO.INVALID, value);
                 return r;
             }
 
             // Check if hash is valid
             if(!Hash.validateHash(hash.getAlgorithm(), hash.getValue())){
-                r = resultFactory.fail(field, INFO.INVALID, value,
-                        "Invalid " + hash.getAlgorithm() + " hash");
+                r = resultFactory.fail(field, INFO.INVALID, value);
             } else {
-                r = resultFactory.pass(field, INFO.VALID, value,
-                        "Valid " + hash.getAlgorithm() + " hash");
+                r = resultFactory.pass(field, INFO.VALID, value);
             }
 
         }
         // failed to create a new Hash object, test automatically fails
         catch(Exception e){
-            r = resultFactory.fail(field, INFO.INVALID, value,
-                    "Hash Object was unsuccessfully built");
+            r = resultFactory.fail(field, INFO.INVALID, value);
             return r;
         }
 

@@ -32,7 +32,6 @@ public class EmptyOrNullTest {
      * @param field Object to test
      * @return a result if the field is empty/null or has a value
      */
-    //TODO implement
     public Result test(String field, Object value){
         resultFactory = new ResultFactory(this.attributes, TEST_NAME);
         Result r;
@@ -52,23 +51,19 @@ public class EmptyOrNullTest {
 
         // if value was a single string and was empty or null
         if(value instanceof String && isEmptyorNull)
-            r = resultFactory.fail(field, INFO.MISSING, (String) value,
-                    "String value was an empty value");
+            r = resultFactory.fail(field, INFO.MISSING, (String) value);
 
         // if value was a collection of Strings and was empty or null
         else if(value instanceof Collection<?> && isEmptyorNull){
-            r = resultFactory.fail(field, INFO.MISSING, (Collection<String>) value,
-                    "Collection of values was empty");
+            r = resultFactory.fail(field, INFO.MISSING, (Collection<String>) value);
         }
         // if value was a single string and had a value
         else if(!isEmptyorNull && value instanceof String ){
-            r = resultFactory.pass(field, INFO.HAS, (String) value,
-                    "String value was not empty and has a value");
+            r = resultFactory.pass(field, INFO.HAS, (String) value);
         }
         // if value was a collection of Strings and was not empty or null
         else{
-            r = resultFactory.pass(field, INFO.HAS, (Collection<String>) value,
-                    "Colletion of values was not empty and had valid values");
+            r = resultFactory.pass(field, INFO.HAS, (Collection<String>) value);
         }
 
         return r;

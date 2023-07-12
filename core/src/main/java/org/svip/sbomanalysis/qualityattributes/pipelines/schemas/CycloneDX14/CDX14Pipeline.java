@@ -2,9 +2,7 @@ package org.svip.sbomanalysis.qualityattributes.pipelines.schemas.CycloneDX14;
 
 import jregex.Matcher;
 import jregex.Pattern;
-import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
@@ -53,11 +51,12 @@ public class CDX14Pipeline implements CDX14Tests {
 
     /**
      * Test a CycloneDX 1.4 sbom for a bom version
-     * @param sbom the SBOM to test
+     * @param field the field that's tested
+     * @param value the bom version tested
      * @return the result of if the sbom has a bom version
      */
     @Override
-    public Set<Result> hasBomVersion(SBOM sbom) {
+    public Set<Result> hasBomVersion(String field, String value) {
         String testName = "HasBomVersion";
         Set<Result> result = new HashSet<>();
 
@@ -68,17 +67,12 @@ public class CDX14Pipeline implements CDX14Tests {
         ResultFactory resultFactory = new ResultFactory(attributes, testName);
         Result r;
 
-        CDX14SBOM cdx14SBOM = (CDX14SBOM) sbom;
-        String version = cdx14SBOM.getVersion();
-
         // check if the version is a null or empty value
-        if(version != null && !version.isEmpty()){
-            r = resultFactory.pass("BomVersion", INFO.HAS, version,
-                    sbom.getName());
+        if(value != null && !value.isEmpty()){
+            r = resultFactory.pass(field, INFO.HAS, value);
         }
         else{
-            r = resultFactory.fail("BomVersion", INFO.MISSING, version,
-                    sbom.getName());
+            r = resultFactory.fail(field, INFO.MISSING, value);
         }
 
         result.add(r);
@@ -87,11 +81,12 @@ public class CDX14Pipeline implements CDX14Tests {
 
     /**
      * Test a CycloneDX 1.4 SBOM for a valid serial number UID
-     * @param sbom the CycloneDX 1.4 SBOM
+     * @param field the field that's tested
+     * @param value the serial number tested
      * @return the result of if the sbom has a valid serial number UID
      */
     @Override
-    public Set<Result> validSerialNumber(SBOM sbom) {
+    public Set<Result> validSerialNumber(String field, String value) {
         String testName = "ValidSerialNumber";
         Set<Result> result = new HashSet<>();
         //Create a new Pattern with the CDX14 Regex
@@ -104,27 +99,21 @@ public class CDX14Pipeline implements CDX14Tests {
         ResultFactory resultFactory = new ResultFactory(attributes, testName);
         Result r;
 
-        CDX14SBOM cdx14SBOM = (CDX14SBOM) sbom;
-        String sbomUID = cdx14SBOM.getUID();
-
         // first check if the sbom uid is not a null or empty string
-        if(sbomUID != null && !sbomUID.isEmpty()){
-            Matcher matcher = cdx14UIDPattern.matcher(sbomUID);
+        if(value != null && !value.isEmpty()){
+            Matcher matcher = cdx14UIDPattern.matcher(value);
             // if regex fails to match to the uid string
             if(!matcher.find()){
-                r = resultFactory.fail("SBOM Serial Number", INFO.INVALID, sbomUID,
-                        sbom.getName());
+                r = resultFactory.fail(field, INFO.INVALID, value);
             }
             // regex matches to the uid string
             else{
-                r = resultFactory.pass("SBOM Serial Number", INFO.VALID, sbomUID,
-                        sbom.getName());
+                r = resultFactory.pass(field, INFO.VALID, value);
             }
         }
         // uid was null or an empty string
         else{
-            r = resultFactory.fail("SBOM Serial Number", INFO.MISSING, sbomUID,
-                    sbom.getName());
+            r = resultFactory.fail(field, INFO.MISSING, value);
         }
 
         result.add(r);
@@ -133,11 +122,12 @@ public class CDX14Pipeline implements CDX14Tests {
 
     /**
      * Test each component in a CycloneDX 1.4 SBOM for a bom-ref
-     * @param sbom the CycloneDX 1.4 SBOM
+     * @param field the field that's tested
+     * @param value the bom-ref tested
      * @return a set of results for each component in the sbom
      */
     @Override
-    public Set<Result> hasBomRef(SBOM sbom) {
+    public Set<Result> hasBomRef(String field, String value) {
         String testName = "HasBomRef";
         Set<Result> results = new HashSet<>();
 
@@ -148,24 +138,16 @@ public class CDX14Pipeline implements CDX14Tests {
         // create a new ResultFactory to create results
         ResultFactory resultFactory = new ResultFactory(attributes, testName);
 
-        // cast sbom to CDX14SBOM
-        CDX14SBOM cdx14SBOM = (CDX14SBOM) sbom;
-
-        for (Component c : cdx14SBOM.getComponents()){
             Result r;
-            CDX14ComponentObject cdx14Component = (CDX14ComponentObject) c;
-            String bomRef = cdx14Component.getUID();
 
-            if(bomRef != null && !bomRef.isEmpty()){
-                r = resultFactory.pass("BomRef", INFO.HAS, bomRef,
-                        cdx14Component.getName());
+            if(value != null && !value.isEmpty()){
+                r = resultFactory.pass(field, INFO.HAS, value);
             }
             else{
-                r = resultFactory.fail("BomRef", INFO.MISSING, bomRef,
-                        cdx14Component.getName());
+                r = resultFactory.fail(field , INFO.MISSING, value);
             }
             results.add(r);
-        }
+
 
         return results;
     }

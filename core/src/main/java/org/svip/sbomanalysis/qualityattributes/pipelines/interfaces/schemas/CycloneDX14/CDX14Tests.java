@@ -18,17 +18,20 @@ public interface CDX14Tests extends QAPipeline {
 
     /**
      * Check if the CycloneDX 1.4 SBOM contains a valid Serial Number value
+     * @param field the field that's tested
+     * @param value the serial number tested
      * @return a Set<Result> of if the serial number is valid or not
      */
-    Set<Result> validSerialNumber(SBOM sbom);
+    Set<Result> validSerialNumber(String field, String value);
 
     /**
      * Check if each component in the given CycloneDX 1.4 SBOM contains
      * a bom-ref value
-     * @param sbom the CycloneDX 1.4 SBOM
+     * @param field the field that's tested
+     * @param value the bom ref tested
      * @return a collection of results from each component in the sbom
      */
-    Set<Result> hasBomRef(SBOM sbom);
+    Set<Result> hasBomRef(String field, String value);
 
 
 }
