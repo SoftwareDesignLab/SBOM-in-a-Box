@@ -1,14 +1,16 @@
 package org.svip.sbom.model.objects.SPDX23;
 
 import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 
-import java.util.*;
-
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * file: SPDX23FileObject.java
@@ -167,138 +169,12 @@ public class SPDX23FileObject implements SPDX23File {
 
     }
     public List<Conflict> compare(Component other) {
-//        ArrayList<Conflict> conflicts = new ArrayList<>();
-//        // NAME
-//        if (this.name != null ^ other.getName() != null) {
-//            conflicts.add(new MissingConflict("name", this.name, other.getName()));
-//        } else if (!Objects.equals(this.name, other.getName()) && this.name != null) {
-//            conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
-//        }
-//        // AUTHOR
-//        if (this.author != null ^ other.getAuthor() != null) {
-//            conflicts.add(new MissingConflict("author", this.author, other.getAuthor()));
-//        } else if (!Objects.equals(this.author, other.getAuthor()) && this.author != null) {
-//            conflicts.add(new MismatchConflict("author", this.author, other.getAuthor(), AUTHOR_MISMATCH));
-//        }
-//        // Licenses
-//        if (this.licenses != null && other.getLicenses() != null) {
-//            if (!this.licenses.getConcluded().containsAll(other.getLicenses().getConcluded())) {
-//                conflicts.add(new MismatchConflict("license", this.licenses.getConcluded().toString(), other.getLicenses().getConcluded().toString(), LICENSE_MISMATCH));
-//            }
-//            if (!this.licenses.getDeclared().containsAll(other.getLicenses().getDeclared())) {
-//                conflicts.add(new MismatchConflict("license", this.licenses.getDeclared().toString(), other.getLicenses().getDeclared().toString(), LICENSE_MISMATCH));
-//            }
-//            if (!this.licenses.getInfoFromFiles().containsAll(other.getLicenses().getInfoFromFiles())) {
-//                conflicts.add(new MismatchConflict("license", this.licenses.getInfoFromFiles().toString(), other.getLicenses().getInfoFromFiles().toString(), LICENSE_MISMATCH));
-//            }
-//        } else if (this.licenses != null && (this.licenses.getConcluded().size() > 0 || this.licenses.getDeclared().size() > 0 || this.licenses.getInfoFromFiles().size() > 0)) {
-//            conflicts.add(new MissingConflict("license", this.licenses.getConcluded().toString() + this.licenses.getDeclared().toString() + this.licenses.getInfoFromFiles().toString(), null));
-//        } else if (other.getLicenses() != null && (other.getLicenses().getConcluded().size() > 0 || other.getLicenses().getDeclared().size() > 0 || other.getLicenses().getInfoFromFiles().size() > 0)) {
-//            conflicts.add(new MissingConflict("license", null, other.getLicenses().getConcluded().toString() + other.getLicenses().getDeclared().toString() + other.getLicenses().getInfoFromFiles().toString()));
-//        }
-//        // HASHES
-//        if (this.hashes != null && other.getHashes() != null) {
-//            if (!this.hashes.values().containsAll(other.getHashes().values())) {
-//                conflicts.add(new MismatchConflict("hash", this.hashes.toString(), other.getHashes().toString(), HASH_MISMATCH));
-//            }
-//        } else if (this.hashes != null) {
-//            conflicts.add(new MissingConflict("hash", this.hashes.toString(), null));
-//        } else if (other.getHashes() != null) {
-//            conflicts.add(new MissingConflict("hash", null, other.getHashes().toString()));
-//        }
-//        // TODO SWIDs?
-//
-//        return conflicts.stream().toList();
         return null;
     }
     public List<Conflict> compare(SPDX23Component other) {
-//        ArrayList<Conflict> conflicts = new ArrayList<>();
-//        // NAME
-//        if (this.name != null ^ other.getName() != null) {
-//            conflicts.add(new MissingConflict("name", this.name, other.getName()));
-//        } else if (!Objects.equals(this.name, other.getName()) && this.name != null) {
-//            conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
-//        }
-//        // AUTHOR
-//        if (this.author != null ^ other.getAuthor() != null) {
-//            conflicts.add(new MissingConflict("author", this.author, other.getAuthor()));
-//        } else if (!Objects.equals(this.author, other.getAuthor()) && this.author != null) {
-//            conflicts.add(new MismatchConflict("author", this.author, other.getAuthor(), AUTHOR_MISMATCH));
-//        }
-//        // Licenses
-//        if (this.licenses != null && other.getLicenses() != null) {
-//            if (!this.licenses.getConcluded().containsAll(other.getLicenses().getConcluded())) {
-//                conflicts.add(new MismatchConflict("license", this.licenses.getConcluded().toString(), other.getLicenses().getConcluded().toString(), LICENSE_MISMATCH));
-//            }
-//            if (!this.licenses.getDeclared().containsAll(other.getLicenses().getDeclared())) {
-//                conflicts.add(new MismatchConflict("license", this.licenses.getDeclared().toString(), other.getLicenses().getDeclared().toString(), LICENSE_MISMATCH));
-//            }
-//            if (!this.licenses.getInfoFromFiles().containsAll(other.getLicenses().getInfoFromFiles())) {
-//                conflicts.add(new MismatchConflict("license", this.licenses.getInfoFromFiles().toString(), other.getLicenses().getInfoFromFiles().toString(), LICENSE_MISMATCH));
-//            }
-//        } else if (this.licenses != null && (this.licenses.getConcluded().size() > 0 || this.licenses.getDeclared().size() > 0 || this.licenses.getInfoFromFiles().size() > 0)) {
-//            conflicts.add(new MissingConflict("license", this.licenses.getConcluded().toString() + this.licenses.getDeclared().toString() + this.licenses.getInfoFromFiles().toString(), null));
-//        } else if (other.getLicenses() != null && (other.getLicenses().getConcluded().size() > 0 || other.getLicenses().getDeclared().size() > 0 || other.getLicenses().getInfoFromFiles().size() > 0)) {
-//            conflicts.add(new MissingConflict("license", null, other.getLicenses().getConcluded().toString() + other.getLicenses().getDeclared().toString() + other.getLicenses().getInfoFromFiles().toString()));
-//        }
-//        // HASHES
-//        if (this.hashes != null && other.getHashes() != null) {
-//            if (!this.hashes.values().containsAll(other.getHashes().values())) {
-//                conflicts.add(new MismatchConflict("hash", this.hashes.toString(), other.getHashes().toString(), HASH_MISMATCH));
-//            }
-//        } else if (this.hashes != null) {
-//            conflicts.add(new MissingConflict("hash", this.hashes.toString(), null));
-//        } else if (other.getHashes() != null) {
-//            conflicts.add(new MissingConflict("hash", null, other.getHashes().toString()));
-//        }
-//        // TODO SWIDs?
-//
-//        return conflicts.stream().toList();
         return null;
     }
     public List<Conflict> compare(SPDX23File other) {
-//        ArrayList<Conflict> conflicts = new ArrayList<>();
-//        // NAME
-//        if (this.name != null ^ other.getName() != null) {
-//            conflicts.add(new MissingConflict("name", this.name, other.getName()));
-//        } else if (!Objects.equals(this.name, other.getName()) && this.name != null) {
-//            conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
-//        }
-//        // AUTHOR
-//        if (this.author != null ^ other.getAuthor() != null) {
-//            conflicts.add(new MissingConflict("author", this.author, other.getAuthor()));
-//        } else if (!Objects.equals(this.author, other.getAuthor()) && this.author != null) {
-//            conflicts.add(new MismatchConflict("author", this.author, other.getAuthor(), AUTHOR_MISMATCH));
-//        }
-//        // Licenses
-//        if (this.licenses != null && other.getLicenses() != null) {
-//            if (!this.licenses.getConcluded().containsAll(other.getLicenses().getConcluded())) {
-//                conflicts.add(new MismatchConflict("license", this.licenses.getConcluded().toString(), other.getLicenses().getConcluded().toString(), LICENSE_MISMATCH));
-//            }
-//            if (!this.licenses.getDeclared().containsAll(other.getLicenses().getDeclared())) {
-//                conflicts.add(new MismatchConflict("license", this.licenses.getDeclared().toString(), other.getLicenses().getDeclared().toString(), LICENSE_MISMATCH));
-//            }
-//            if (!this.licenses.getInfoFromFiles().containsAll(other.getLicenses().getInfoFromFiles())) {
-//                conflicts.add(new MismatchConflict("license", this.licenses.getInfoFromFiles().toString(), other.getLicenses().getInfoFromFiles().toString(), LICENSE_MISMATCH));
-//            }
-//        } else if (this.licenses != null && (this.licenses.getConcluded().size() > 0 || this.licenses.getDeclared().size() > 0 || this.licenses.getInfoFromFiles().size() > 0)) {
-//            conflicts.add(new MissingConflict("license", this.licenses.getConcluded().toString() + this.licenses.getDeclared().toString() + this.licenses.getInfoFromFiles().toString(), null));
-//        } else if (other.getLicenses() != null && (other.getLicenses().getConcluded().size() > 0 || other.getLicenses().getDeclared().size() > 0 || other.getLicenses().getInfoFromFiles().size() > 0)) {
-//            conflicts.add(new MissingConflict("license", null, other.getLicenses().getConcluded().toString() + other.getLicenses().getDeclared().toString() + other.getLicenses().getInfoFromFiles().toString()));
-//        }
-//        // HASHES
-//        if (this.hashes != null && other.getHashes() != null) {
-//            if (!this.hashes.values().containsAll(other.getHashes().values())) {
-//                conflicts.add(new MismatchConflict("hash", this.hashes.toString(), other.getHashes().toString(), HASH_MISMATCH));
-//            }
-//        } else if (this.hashes != null) {
-//            conflicts.add(new MissingConflict("hash", this.hashes.toString(), null));
-//        } else if (other.getHashes() != null) {
-//            conflicts.add(new MissingConflict("hash", null, other.getHashes().toString()));
-//        }
-//        // TODO SWIDs?
-//
-//        return conflicts.stream().toList();
         return null;
     }
 }
