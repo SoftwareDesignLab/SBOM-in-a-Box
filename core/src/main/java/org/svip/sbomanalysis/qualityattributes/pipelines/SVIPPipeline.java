@@ -2,9 +2,16 @@ package org.svip.sbomanalysis.qualityattributes.pipelines;
 
 import jregex.Matcher;
 import jregex.Pattern;
+import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.Organization;
+import org.svip.sbomanalysis.qualityattributes.newtests.CPETest;
+import org.svip.sbomanalysis.qualityattributes.newtests.HashTest;
+import org.svip.sbomanalysis.qualityattributes.newtests.LicenseTest;
+import org.svip.sbomanalysis.qualityattributes.newtests.PURLTest;
 import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.schemas.CycloneDX14.CDX14Tests;
 import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.schemas.SPDX23.SPDX23Tests;
@@ -12,20 +19,119 @@ import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.ResultFactory;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.INFO;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
 
     /**UID Regex used for validSerialNumber test*/
     private static final String UID_REGEX = "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$";
 
-    //TODO implement
+    /**
+     * Process the tests for the SBOM
+     * @param uid Unique filename used to ID the SBOM
+     * @param sbom the SBOM to run tests against
+     * @return a Quality report for the sbom, its components and every test
+     */
     @Override
     public QualityReport process(String uid, SBOM sbom) {
-        return null;
+        // cast sbom to SVIPSBOM
+        SVIPSBOM svipsbom = (SVIPSBOM) sbom;
+        // build a new quality report
+        QualityReport qualityReport = new QualityReport(uid);
+
+        // attributes for tests
+        List<ATTRIBUTE> attributes;
+        // Set to hold all the results
+        List<Result> r = new ArrayList<>();
+
+        // test SBOM metadata
+        String bomVersion = svipsbom.getVersion();
+        r.addAll(hasBomVersion("Bom Version", bomVersion));
+
+        // test for SBOM's licenses
+        attributes = new ArrayList<>(List.of(ATTRIBUTE.LICENSING));
+        var lt = new LicenseTest(attributes);
+        for(String l : svipsbom.getLicenses()){
+            r.addAll(lt.test("License", l));
+        }
+        attributes.clear();
+
+        // test SPDX specific metadata info
+        Set<String> dataLicenses = svipsbom.getLicenses();
+        r.addAll(hasDataLicense("CC0-1.0 License", dataLicenses));
+
+        CreationData creationData = svipsbom.getCreationData();
+        r.addAll(hasCreationInfo("Creation Data", creationData));
+
+        String sbomUID = svipsbom.getUID();
+        r.addAll(hasSPDXID("SBOM SPDXID", sbomUID));
+        r.addAll(validSerialNumber("CDX Serial Number", sbomUID));
+
+        //TODO add hasDocumentNamespace when implemented
+
+        // add metadata results to the quality report
+        qualityReport.addComponent("metadata", r);
+        r.clear();
+
+        // test component info
+        for(Component c : svipsbom.getComponents()){
+            SVIPComponentObject component = (SVIPComponentObject) c;
+
+            String componentUID = component.getUID();
+            r.addAll(hasSPDXID("SPDXID", componentUID));
+            r.addAll(hasBomRef("Bom-Ref", componentUID));
+
+            String downloadLocation = component.getDownloadLocation();
+            r.addAll(hasDownloadLocation("Download Location", downloadLocation));
+
+            boolean filesAnalyzed = component.getFilesAnalyzed();
+            String verificationCode = component.getVerificationCode();
+            r.addAll(hasVerificationCode("Verification Code", verificationCode, filesAnalyzed));
+
+            // test component CPEs
+            attributes.addAll(List.of(ATTRIBUTE.UNIQUENESS,
+                    ATTRIBUTE.MINIMUM_ELEMENTS));
+            var cpeTest = new CPETest(component, attributes);
+            attributes.clear();
+            for(String cpe: component.getCPEs()){
+                r.addAll(cpeTest.test("cpe", cpe));
+            }
+            // test component PURLs
+            attributes.addAll(List.of(ATTRIBUTE.UNIQUENESS,
+                    ATTRIBUTE.MINIMUM_ELEMENTS));
+            var purlTest = new PURLTest(component, attributes);
+            attributes.clear();
+            for(String purl: component.getPURLs()){
+                r.addAll(purlTest.test("purl", purl));
+            }
+
+            // test component Licenses
+            attributes.addAll(List.of(ATTRIBUTE.UNIQUENESS,
+                    ATTRIBUTE.MINIMUM_ELEMENTS));
+            var licenseTest = new LicenseTest(attributes);
+            attributes.clear();
+            Set<String> licenses = component.getLicenses().getDeclared();
+            for(String l: licenses){
+                r.addAll(licenseTest.test("License", l));
+            }
+
+            // test component Hashes
+            attributes.addAll(List.of(ATTRIBUTE.UNIQUENESS,
+                    ATTRIBUTE.MINIMUM_ELEMENTS));
+            var hashTest = new HashTest(attributes, component);
+            attributes.clear();
+            Map<String, String> hashes = component.getHashes();
+            for(String hashAlgo : hashes.keySet()){
+                String hashValue = hashes.get(hashAlgo);
+                r.addAll(hashTest.test(hashAlgo, hashValue));
+            }
+
+            // add the component and all its tests to the quality report
+            qualityReport.addComponent(component.getName(), r);
+            r.clear();
+        }
+
+        return qualityReport;
     }
 
     /**
