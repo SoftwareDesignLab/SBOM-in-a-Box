@@ -203,10 +203,10 @@ public class Utils {
             d = SerializerFactory.createDeserializer(sbom.getContents());
             deserialized = (SVIPSBOM) d.readFromString(sbom.getContents());
         }catch (Exception e){
-            ret.put(new SBOMFile("",""), "DURING DESERIALIZATION: " +
-                    e.getMessage());
-            return ret;
+            return internalSerializerError(ret, e.getMessage(),"DURING DESERIALIZATION: ");
         }
+        if(deserialized == null)
+            return internalSerializerError(ret, "","DURING DESERIALIZATION: ");
 
         // ensure schema is valid
         SerializerFactory.Schema schema;
@@ -235,14 +235,29 @@ public class Utils {
             s = SerializerFactory.createSerializer(schema, format, true);
             serialized = s.writeToString(deserialized);
         }catch (Exception e){
-            ret.put(new SBOMFile("",""), "DURING SERIALIZATION: " +
-                    e.getMessage());
-            return ret;
+            return internalSerializerError(ret, e.getMessage(),"DURING SERIALIZATION: ");
+        }
+        if(serialized == null){
+            return internalSerializerError(ret, "","DURING SERIALIZATION: ");
         }
 
         ret.put(new SBOMFile("SUCCESS", serialized), "");
         return ret;
 
+    }
+
+    /**
+     * Returns a message detailing what went wrong during serialization/deserialization
+     * @param ret HashMap value to return containing message
+     * @param exceptionMessage message from caught exception, if any
+     * @param internalMessage message detailing what specifically happened in convert()
+     * @return HashMap value to return containing message
+     */
+    private static HashMap<SBOMFile, String> internalSerializerError(HashMap<SBOMFile, String> ret,
+                                                                     String exceptionMessage, String internalMessage) {
+        ret.put(new SBOMFile("",""), internalMessage +
+                exceptionMessage);
+        return ret;
     }
 
     /**
