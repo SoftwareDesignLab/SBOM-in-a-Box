@@ -2,7 +2,6 @@ package org.svip.builders.component;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.svip.componentfactory.CDX14PackageBuilderFactory;
 import org.svip.componentfactory.SVIPSBOMComponentFactory;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.shared.metadata.Organization;
