@@ -7,6 +7,7 @@ public abstract class Conflict {
     protected String other;
 
     Conflict(String field, String targetValue, String otherValue) {
-
+        target = targetValue;
+        other = otherValue;
     }
 }
