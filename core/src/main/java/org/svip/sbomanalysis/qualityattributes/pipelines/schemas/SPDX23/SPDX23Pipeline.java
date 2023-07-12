@@ -4,6 +4,8 @@ import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbom.model.shared.metadata.CreationData;
+import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
 import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.schemas.SPDX23.SPDX23Tests;
@@ -14,6 +16,8 @@ import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.INFO;
 import java.util.*;
 
 public class SPDX23Pipeline implements SPDX23Tests {
+
+    //TODO implement
     @Override
     public QualityReport process(String uid, SBOM sbom) {
         return null;
@@ -36,7 +40,9 @@ public class SPDX23Pipeline implements SPDX23Tests {
         ResultFactory resultFactory = new ResultFactory(attributes, testName);
         Result r;
 
-        String version = sbom.getVersion();
+        SPDX23SBOM spdx23SBOM = (SPDX23SBOM) sbom;
+
+        String version = spdx23SBOM.getVersion();
 
         // check if the version is a null or empty value
         if(version != null && !version.isEmpty()){
@@ -153,6 +159,7 @@ public class SPDX23Pipeline implements SPDX23Tests {
      * @return the result of if the sbom's metadata contains a valid
      * document namespace
      */
+    //TODO is documentNamespace in SPDX23SBOM? How to access?
     @Override
     public Set<Result> hasDocumentNamespace(SBOM sbom) {
         return null;
@@ -165,7 +172,50 @@ public class SPDX23Pipeline implements SPDX23Tests {
      */
     @Override
     public Set<Result> hasCreationInfo(SBOM sbom) {
-        return null;
+        String testName = "HasDataLicense";
+        Set<Result> results = new HashSet<>();
+
+        // set the attributes of this test to create a new ResultFactory
+        List<ATTRIBUTE> attributes = new ArrayList<>(List.of(
+                ATTRIBUTE.SPDX23, ATTRIBUTE.COMPLETENESS
+        ));
+        ResultFactory resultFactory = new ResultFactory(attributes, testName);
+        Result r;
+
+        // cast sbom to SPDX23SBOM
+        SPDX23SBOM spdx23SBOM = (SPDX23SBOM) sbom;
+        CreationData creationData = spdx23SBOM.getCreationData();
+
+        //first check for creator info
+        Organization creator = creationData.getManufacture();
+        String creatorName = creator.getName();
+        // creator is not null, is a valid object, test passes
+        if(creatorName != null && !creatorName.isEmpty()){
+            r = resultFactory.pass("Creator", INFO.HAS,
+                    creatorName, spdx23SBOM.getName());
+        }
+        else{
+            r = resultFactory.pass("Creator", INFO.MISSING,
+                    creatorName, spdx23SBOM.getName());
+        }
+
+
+        // then check for creation time info
+        String creationTime = creationData.getCreationTime();
+        // creation time has a value, test passes
+        if(creationTime != null && !creationTime.isEmpty()){
+            r = resultFactory.pass("Creation Time", INFO.HAS,
+                    creationTime, spdx23SBOM.getName());
+        }
+        // creation time is null or an empty string, test fails
+        else{
+            r = resultFactory.fail("Creation Time", INFO.MISSING,
+                    creationTime, spdx23SBOM.getName());
+        }
+
+        results.add(r);
+
+        return results;
     }
 
     /**
@@ -285,7 +335,7 @@ public class SPDX23Pipeline implements SPDX23Tests {
      * @param sbom SPDX 2.3 SBOM to test
      * @return the result of if there are any extracted licenses
      */
-    //TODO how to obtain extracted licenses? NOt a designated variable in SPDX23PackageObject or SPDX23SBOM
+    //TODO how to obtain extracted licenses? Not a designated variable in SPDX23PackageObject or SPDX23SBOM
     @Override
     public Set<Result> hasExtractedLicenses(SBOM sbom) {
         return null;
@@ -298,7 +348,7 @@ public class SPDX23Pipeline implements SPDX23Tests {
      * @param sbom SPDX 2.3 SBOM to test
      * @return a set of results for each extracted license tested
      */
-    //TODO how to obtain extracted licenses? NOt a designated variable in SPDX23PackageObject or SPDX23SBOM
+    //TODO how to obtain extracted licenses? Not a designated variable in SPDX23PackageObject or SPDX23SBOM
     @Override
     public Set<Result> extractedLicenseMinElements(SBOM sbom) {
         return null;

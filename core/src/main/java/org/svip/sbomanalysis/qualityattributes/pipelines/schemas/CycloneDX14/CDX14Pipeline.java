@@ -68,7 +68,8 @@ public class CDX14Pipeline implements CDX14Tests {
         ResultFactory resultFactory = new ResultFactory(attributes, testName);
         Result r;
 
-        String version = sbom.getVersion();
+        CDX14SBOM cdx14SBOM = (CDX14SBOM) sbom;
+        String version = cdx14SBOM.getVersion();
 
         // check if the version is a null or empty value
         if(version != null && !version.isEmpty()){
@@ -103,7 +104,8 @@ public class CDX14Pipeline implements CDX14Tests {
         ResultFactory resultFactory = new ResultFactory(attributes, testName);
         Result r;
 
-        String sbomUID = sbom.getUID();
+        CDX14SBOM cdx14SBOM = (CDX14SBOM) sbom;
+        String sbomUID = cdx14SBOM.getUID();
 
         // first check if the sbom uid is not a null or empty string
         if(sbomUID != null && !sbomUID.isEmpty()){
