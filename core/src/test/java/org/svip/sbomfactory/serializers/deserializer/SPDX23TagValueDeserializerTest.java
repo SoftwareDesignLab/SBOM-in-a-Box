@@ -92,8 +92,8 @@ public class SPDX23TagValueDeserializerTest extends DeserializerTest {
                 //assertEquals("extendedDescription1", spdx23Component.getDescription().getDescription());
                 //assertEquals("fileName1", spdx23Component.getFileName());
                 assertEquals("SVIP1", spdx23Component.getSupplier().getName());
-                assertEquals("svip@svip.xyz", spdx23Component.getSupplier().getUrl());
-                assertEquals("author1", spdx23Component.getAuthor());
+                assertEquals("svip@svip.xyz", spdx23Component.getSupplier().getContacts().stream().toList().get(0).getEmail());
+                assertEquals("Person: author1", spdx23Component.getAuthor());
                 assertEquals("downloadLocation1", spdx23Component.getDownloadLocation());
                 assertEquals(true, spdx23Component.getFilesAnalyzed());
                 assertEquals("verificationCode1", spdx23Component.getVerificationCode());

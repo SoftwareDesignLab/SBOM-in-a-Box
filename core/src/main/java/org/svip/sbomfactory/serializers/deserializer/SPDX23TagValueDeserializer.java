@@ -246,7 +246,8 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                     }
                     // EXTERNAL REFERENCES - DEFAULT CASE
                     default -> {
-                        ExternalReference externalRef = new ExternalReference(externalRefMatcher.group(1), externalRefMatcher.group(2), externalRefMatcher.group(3));
+                        ExternalReference externalRef = new ExternalReference(externalRefMatcher.group(1),
+                                externalRefMatcher.group(3), externalRefMatcher.group(2));
                         packageBuilder.addExternalReference(externalRef);
                     }
                 }
@@ -260,7 +261,10 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                     org.addContact(supplier);
                     packageBuilder.setSupplier(org);
                 }
-            } else if (componentMaterials.get("PackageOriginator") != null) {
+            }
+
+            // AUTHOR
+            if (componentMaterials.get("PackageOriginator") != null) {
                 packageBuilder.setAuthor(componentMaterials.get("PackageOriginator"));
             }
 
@@ -289,13 +293,31 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                 packageBuilder.addHash(packageChecksum[0].substring(0,packageChecksum[0].length()-1), packageChecksum[1]);
             }
 
-            // Other package info TODO tests
+            // Other package info
             // DOWNLOAD LOCATION
             packageBuilder.setDownloadLocation(componentMaterials.get("PackageDownloadLocation"));
             // FILES ANALYZED
             packageBuilder.setFilesAnalyzed(Objects.equals(componentMaterials.get("FilesAnalyzed"), "true"));
             // PACKAGE VERIFICATION CODE
             packageBuilder.setVerificationCode(componentMaterials.get("PackageVerificationCode"));
+            // HOMEPAGE
+            packageBuilder.setHomePage(componentMaterials.get("PackageHomePage"));
+            // SOURCE INFO
+            packageBuilder.setSourceInfo(componentMaterials.get("PackageSourceInfo"));
+            // COMMENT
+            packageBuilder.setComment(componentMaterials.get("PackageComment"));
+            // COPYRIGHT
+            packageBuilder.setCopyright(componentMaterials.get("PackageCopyrightText"));
+            // ATTRIBUTION TEXT
+            packageBuilder.setAttributionText(componentMaterials.get("PackageAttributionText"));
+            // TYPE
+            packageBuilder.setType(componentMaterials.get("PrimaryPackagePurpose"));
+            // RELEASE DATE
+            packageBuilder.setReleaseDate(componentMaterials.get("ReleaseDate"));
+            // BUILT DATE
+            packageBuilder.setBuildDate(componentMaterials.get("BuiltDate"));
+            // VALID UNTIL DATE
+            packageBuilder.setValidUntilDate(componentMaterials.get("ValidUntilDate"));
 
             // TODO check for/complete missing fields
 
