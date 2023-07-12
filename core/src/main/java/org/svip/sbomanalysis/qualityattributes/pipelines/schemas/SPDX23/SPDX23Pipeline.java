@@ -132,7 +132,6 @@ public class SPDX23Pipeline implements SPDX23Tests {
      */
     @Override
     public Set<Result> hasBomVersion(String field, String value) {
-        String testName = "HasBomVersion";
         Set<Result> result = new HashSet<>();
 
         // set the attributes of this test to create a new EmptyOrNullTest
@@ -245,7 +244,6 @@ public class SPDX23Pipeline implements SPDX23Tests {
      */
     @Override
     public Set<Result> hasCreationInfo(String field, CreationData creationData) {
-        String testName = "HasDataLicense";
         Set<Result> results = new HashSet<>();
 
         // set the attributes of this test to create a new EmptyOrNullTest
@@ -282,7 +280,6 @@ public class SPDX23Pipeline implements SPDX23Tests {
      */
     @Override
     public Set<Result> hasDownloadLocation(String field, String value) {
-        String testName = "HasDownloadLocation";
         Set<Result> results = new HashSet<>();
 
         // set the attributes of this test to create a new EmptyOrNullTest

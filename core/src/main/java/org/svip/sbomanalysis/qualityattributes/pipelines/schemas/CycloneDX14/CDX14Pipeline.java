@@ -40,7 +40,6 @@ public class CDX14Pipeline implements CDX14Tests {
         CDX14SBOM cdx14SBOM = (CDX14SBOM) sbom;
         // build a new quality report
         QualityReport qualityReport = new QualityReport(uid);
-        Map<String, Map<String, List<Result>>> components;
 
         // attributes for tests
         List<ATTRIBUTE> attributes;
@@ -128,7 +127,6 @@ public class CDX14Pipeline implements CDX14Tests {
      */
     @Override
     public Set<Result> hasBomVersion(String field, String value) {
-        String testName = "HasBomVersion";
         Set<Result> result = new HashSet<>();
 
         // set the attributes of this test to create a new EmptyOrNullTest
@@ -191,7 +189,6 @@ public class CDX14Pipeline implements CDX14Tests {
      */
     @Override
     public Set<Result> hasBomRef(String field, String value) {
-        String testName = "HasBomRef";
         Set<Result> results = new HashSet<>();
 
         // set  the attributes associated with the test
@@ -201,6 +198,7 @@ public class CDX14Pipeline implements CDX14Tests {
         var emptyNullTest = new EmptyOrNullTest(attributes);
         Result r = emptyNullTest.test(field, value);
 
+        results.add(r);
 
         return results;
     }

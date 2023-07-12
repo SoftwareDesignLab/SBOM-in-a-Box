@@ -33,4 +33,23 @@ public class Result {
         this.status = status;
     }
 
+    public List<ATTRIBUTE> getAttributes() {
+        return this.attributes;
+    }
+
+    public String getTest(){
+        return this.test;
+    }
+
+    public String getMessage(){
+        return this.message;
+    }
+
+    public String getDetails(){
+        return this.details;
+    }
+
+    public STATUS getStatus() {
+        return this.status;
+    }
 }

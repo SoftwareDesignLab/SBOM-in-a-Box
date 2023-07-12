@@ -49,6 +49,7 @@ class PURLTestTests {
        List<Result> resultList = new ArrayList<Result>(result);
        Result r = resultList.get(0);
 
+
        List<ATTRIBUTE> test_attributes = new ArrayList<>(List.of(
                ATTRIBUTE.SPDX23, ATTRIBUTE.UNIQUENESS
        ));
@@ -56,12 +57,11 @@ class PURLTestTests {
        Result test_result = new Result(test_attributes, "PURLTest",
                "null is a missing purl", "TODO", STATUS.ERROR);
 
-       assertEquals(test_result, r);
-
-
-
-
-
+       assertEquals(test_result.getAttributes(), r.getAttributes());
+       assertEquals(test_result.getTest(), r.getTest());
+       assertEquals(test_result.getMessage(), r.getMessage());
+       assertEquals(test_result.getDetails(), r.getDetails());
+       assertEquals(test_result.getStatus(), r.getStatus());
     }
 
 }
