@@ -36,96 +36,85 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
         // build a new quality report
         QualityReport qualityReport = new QualityReport(uid);
 
-        // attributes for tests
-        List<ATTRIBUTE> attributes;
         // Set to hold all the results
-        List<Result> r = new ArrayList<>();
+        List<Result> sbomResults = new ArrayList<>();
 
         // test SBOM metadata
         String bomVersion = svipsbom.getVersion();
-        r.addAll(hasBomVersion("Bom Version", bomVersion));
+        sbomResults.addAll(hasBomVersion("Bom Version", bomVersion));
 
         // test for SBOM's licenses
-        attributes = new ArrayList<>(List.of(ATTRIBUTE.LICENSING));
-        var lt = new LicenseTest(attributes);
+        var lt = new LicenseTest(ATTRIBUTE.LICENSING);
         for(String l : svipsbom.getLicenses()){
-            r.addAll(lt.test("License", l));
+            sbomResults.addAll(lt.test("License", l));
         }
-        attributes.clear();
 
-        // test SPDX specific metadata info
+        // test SPDX/CDX specific metadata info
+        //TODO data license can only hold one value, why is it a set of strings?
         Set<String> dataLicenses = svipsbom.getLicenses();
-        r.addAll(hasDataLicense("CC0-1.0 License", dataLicenses));
+        sbomResults.addAll(hasDataLicense("Data License", dataLicenses));
 
         CreationData creationData = svipsbom.getCreationData();
-        r.addAll(hasCreationInfo("Creation Data", creationData));
+        sbomResults.addAll(hasCreationInfo("Creation Data", creationData));
 
         String sbomUID = svipsbom.getUID();
-        r.addAll(hasSPDXID("SBOM SPDXID", sbomUID));
-        r.addAll(validSerialNumber("CDX Serial Number", sbomUID));
+        sbomResults.addAll(hasSPDXID("SBOM SPDXID", sbomUID));
+        sbomResults.addAll(validSerialNumber("CDX Serial Number", sbomUID));
 
         //TODO add hasDocumentNamespace when implemented
 
         // add metadata results to the quality report
-        qualityReport.addComponent("metadata", r);
-        r.clear();
+        qualityReport.addComponent("metadata", sbomResults);
+
 
         // test component info
         for(Component c : svipsbom.getComponents()){
+            List<Result> componentResults = new ArrayList<>();
             SVIPComponentObject component = (SVIPComponentObject) c;
 
             String componentUID = component.getUID();
-            r.addAll(hasSPDXID("SPDXID", componentUID));
-            r.addAll(hasBomRef("Bom-Ref", componentUID));
+            componentResults.addAll(hasSPDXID("SPDXID", componentUID));
+            componentResults.addAll(hasBomRef("Bom-Ref", componentUID));
 
             String downloadLocation = component.getDownloadLocation();
-            r.addAll(hasDownloadLocation("Download Location", downloadLocation));
+            componentResults.addAll(hasDownloadLocation("Download Location", downloadLocation));
 
             boolean filesAnalyzed = component.getFilesAnalyzed();
             String verificationCode = component.getVerificationCode();
-            r.addAll(hasVerificationCode("Verification Code", verificationCode, filesAnalyzed));
+            componentResults.addAll(hasVerificationCode("Verification Code", verificationCode, filesAnalyzed));
 
             // test component CPEs
-            attributes.addAll(List.of(ATTRIBUTE.UNIQUENESS,
-                    ATTRIBUTE.MINIMUM_ELEMENTS));
-            var cpeTest = new CPETest(component, attributes);
-            attributes.clear();
+            var cpeTest = new CPETest(component, ATTRIBUTE.UNIQUENESS,
+                    ATTRIBUTE.MINIMUM_ELEMENTS);
             for(String cpe: component.getCPEs()){
-                r.addAll(cpeTest.test("cpe", cpe));
+                componentResults.addAll(cpeTest.test("cpe", cpe));
             }
             // test component PURLs
-            attributes.addAll(List.of(ATTRIBUTE.UNIQUENESS,
-                    ATTRIBUTE.MINIMUM_ELEMENTS));
-            var purlTest = new PURLTest(component, attributes);
-            attributes.clear();
+            var purlTest = new PURLTest(component, ATTRIBUTE.UNIQUENESS,
+                    ATTRIBUTE.MINIMUM_ELEMENTS);
             for(String purl: component.getPURLs()){
-                r.addAll(purlTest.test("purl", purl));
+                componentResults.addAll(purlTest.test("purl", purl));
             }
 
             // test component Licenses
-            attributes.addAll(List.of(ATTRIBUTE.UNIQUENESS,
-                    ATTRIBUTE.MINIMUM_ELEMENTS));
-            var licenseTest = new LicenseTest(attributes);
-            attributes.clear();
+            var licenseTest = new LicenseTest(ATTRIBUTE.UNIQUENESS,
+                    ATTRIBUTE.MINIMUM_ELEMENTS);
             Set<String> licenses = component.getLicenses().getDeclared();
             for(String l: licenses){
-                r.addAll(licenseTest.test("License", l));
+                componentResults.addAll(licenseTest.test("License", l));
             }
 
             // test component Hashes
-            attributes.addAll(List.of(ATTRIBUTE.UNIQUENESS,
-                    ATTRIBUTE.MINIMUM_ELEMENTS));
-            var hashTest = new HashTest(attributes, component);
-            attributes.clear();
+            var hashTest = new HashTest(component, ATTRIBUTE.UNIQUENESS,
+                    ATTRIBUTE.MINIMUM_ELEMENTS);
             Map<String, String> hashes = component.getHashes();
             for(String hashAlgo : hashes.keySet()){
                 String hashValue = hashes.get(hashAlgo);
-                r.addAll(hashTest.test(hashAlgo, hashValue));
+                componentResults.addAll(hashTest.test(hashAlgo, hashValue));
             }
 
             // add the component and all its tests to the quality report
-            qualityReport.addComponent(component.getName(), r);
-            r.clear();
+            qualityReport.addComponent(component.getName(), componentResults);
         }
 
         return qualityReport;
@@ -141,11 +130,8 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
     public Set<Result> hasBomVersion(String field, String value) {
         Set<Result> result = new HashSet<>();
 
-        // set the attributes of this test to create a new EmptyOrNullTest
-        List<ATTRIBUTE> attributes = new ArrayList<>(List.of(
-                ATTRIBUTE.COMPLETENESS
-        ));
-        var emptyNullTest = new EmptyOrNullTest(attributes);
+        // create a new EmptyOrNullTest
+        var emptyNullTest = new EmptyOrNullTest(ATTRIBUTE.COMPLETENESS);
         Result r = emptyNullTest.test(field, value);
 
         result.add(r);
@@ -166,10 +152,7 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
         Pattern cdx14UIDPattern = new Pattern(UID_REGEX, Pattern.DEFAULT);
 
         // set the attributes of this test to create a new ResultFactory
-        List<ATTRIBUTE> attributes = new ArrayList<>(List.of(
-                ATTRIBUTE.CDX14, ATTRIBUTE.COMPLETENESS
-        ));
-        ResultFactory resultFactory = new ResultFactory(attributes, testName);
+        ResultFactory resultFactory = new ResultFactory(testName, ATTRIBUTE.CDX14, ATTRIBUTE.COMPLETENESS);
         Result r;
 
         // first check if the sbom uid is not a null or empty string
@@ -203,11 +186,7 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
     public Set<Result> hasBomRef(String field, String value) {
         Set<Result> results = new HashSet<>();
 
-        // set  the attributes associated with the test
-        List<ATTRIBUTE> attributes = new ArrayList<>(List.of(
-                ATTRIBUTE.CDX14, ATTRIBUTE.UNIQUENESS
-        ));
-        var emptyNullTest = new EmptyOrNullTest(attributes);
+        var emptyNullTest = new EmptyOrNullTest(ATTRIBUTE.CDX14, ATTRIBUTE.UNIQUENESS);
         Result r = emptyNullTest.test(field, value);
 
         results.add(r);
@@ -227,10 +206,8 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
         Set<Result> result = new HashSet<>();
 
         // set the attributes of this test to create a new ResultFactory
-        List<ATTRIBUTE> attributes = new ArrayList<>(List.of(
-                ATTRIBUTE.SPDX23, ATTRIBUTE.COMPLETENESS
-        ));
-        ResultFactory resultFactory = new ResultFactory(attributes, testName);
+        ResultFactory resultFactory = new ResultFactory(testName,
+                ATTRIBUTE.SPDX23, ATTRIBUTE.COMPLETENESS);
         Result r;
 
         // the required sbom license
@@ -263,10 +240,8 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
         Set<Result> results = new HashSet<>();
 
         // set the attributes of this test to create a new ResultFactory
-        List<ATTRIBUTE> attributes = new ArrayList<>(List.of(
-                ATTRIBUTE.SPDX23, ATTRIBUTE.UNIQUENESS
-        ));
-        ResultFactory resultFactory = new ResultFactory(attributes, testName);
+        ResultFactory resultFactory = new ResultFactory(testName,
+                ATTRIBUTE.SPDX23, ATTRIBUTE.UNIQUENESS);
 
         Result r;
 
@@ -314,17 +289,14 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
     public Set<Result> hasCreationInfo(String field, CreationData creationData) {
         Set<Result> results = new HashSet<>();
 
-        // set the attributes of this test to create a new EmptyOrNullTest
-        List<ATTRIBUTE> attributes = new ArrayList<>(List.of(
-                ATTRIBUTE.SPDX23, ATTRIBUTE.COMPLETENESS
-        ));
+        // create a new EmptyOrNullTest
+        var emptyNullTest = new EmptyOrNullTest(ATTRIBUTE.SPDX23,
+                ATTRIBUTE.COMPLETENESS);
         Result r;
 
         //first check for creator info
         Organization creator = creationData.getManufacture();
         String creatorName = creator.getName();
-        // creator is not null, is a valid object, test passes
-        var emptyNullTest = new EmptyOrNullTest(attributes);
         r = emptyNullTest.test(field, creatorName);
 
         results.add(r);
@@ -349,13 +321,10 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
     public Set<Result> hasDownloadLocation(String field, String value) {
         Set<Result> results = new HashSet<>();
 
-        // set the attributes of this test to create a new ResultFactory
-        List<ATTRIBUTE> attributes = new ArrayList<>(List.of(
-                ATTRIBUTE.SPDX23, ATTRIBUTE.COMPLETENESS
-        ));
-
+        // create a new EmptyOrNullTest
         // TODO check for NOASSERTION or NONE?
-        var emptyNullTest = new EmptyOrNullTest(attributes);
+        var emptyNullTest = new EmptyOrNullTest(ATTRIBUTE.SPDX23,
+                ATTRIBUTE.COMPLETENESS);
         Result r = emptyNullTest.test(field, value);
 
         results.add(r);
@@ -378,10 +347,8 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
         Set<Result> results = new HashSet<>();
 
         // set the attributes of this test to create a new ResultFactory
-        List<ATTRIBUTE> attributes = new ArrayList<>(List.of(
-                ATTRIBUTE.SPDX23, ATTRIBUTE.COMPLETENESS
-        ));
-        ResultFactory resultFactory = new ResultFactory(attributes, testName);
+        ResultFactory resultFactory = new ResultFactory(testName,
+                ATTRIBUTE.SPDX23, ATTRIBUTE.COMPLETENESS);
 
         Result r;
 

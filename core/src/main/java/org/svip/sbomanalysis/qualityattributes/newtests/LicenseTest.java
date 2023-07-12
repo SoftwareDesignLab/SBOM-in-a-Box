@@ -30,7 +30,7 @@ public class LicenseTest extends MetricTest{
 
     private final String TEST_NAME = "LicenseTest";
 
-    private ResultFactory resultFactory;
+    private final ResultFactory resultFactory;
 
     /**For isValidSPDXLicense*/
     private static final String SPDX_LICENSE_LIST_URL = "https://spdx.org/licenses/";
@@ -50,8 +50,9 @@ public class LicenseTest extends MetricTest{
      *
      * @param attributes the list of attributes used
      */
-    public LicenseTest(List<ATTRIBUTE> attributes) {
+    public LicenseTest(ATTRIBUTE... attributes) {
         super(attributes);
+        resultFactory = new ResultFactory(TEST_NAME, attributes);
     }
 
     /**
@@ -65,16 +66,12 @@ public class LicenseTest extends MetricTest{
         Set<Result> results = new HashSet<>();
         // license is not a null value and does exist, tests can run
         if(value != null && !value.equals("")) {
-            resultFactory = new ResultFactory(super.attributes, this.TEST_NAME);
             results.addAll(isValidSPDXLicense(field, value));
         }
         // license is a null value and does not exist, tests cannot be run
         // return missing Result
         else {
-            Text text = new Text("License is missing or null", field);
-            String message = text.getMessage(INFO.MISSING, field);
-            String details = text.getDetails(INFO.MISSING, field);
-            Result r = new Result(attributes, TEST_NAME, message, details, STATUS.ERROR);
+            Result r = resultFactory.error(field, INFO.MISSING, value);
             results.add(r);
         }
         return results;

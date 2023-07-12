@@ -35,11 +35,8 @@ class PURLTestTests {
                 null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null, null,
                 null, null, null);
-        List<ATTRIBUTE> attributes = new ArrayList<>(List.of(
-                ATTRIBUTE.SPDX23, ATTRIBUTE.UNIQUENESS
-        ));
 
-        purlTest = new PURLTest(test_component, attributes);
+        purlTest = new PURLTest(test_component, ATTRIBUTE.SPDX23, ATTRIBUTE.UNIQUENESS);
     }
 
     @Test

@@ -41,8 +41,6 @@ public class CDX14Pipeline implements CDX14Tests {
         // build a new quality report
         QualityReport qualityReport = new QualityReport(uid);
 
-        // attributes for tests
-        List<ATTRIBUTE> attributes;
         // Set to hold all the results
         List<Result> r = new ArrayList<>();
 
@@ -51,12 +49,10 @@ public class CDX14Pipeline implements CDX14Tests {
         r.addAll(hasBomVersion("Bom Version", bomVersion));
 
         // test for SBOM's licenses
-        attributes = new ArrayList<>(List.of(ATTRIBUTE.LICENSING));
-        var lt = new LicenseTest(attributes);
+        var lt = new LicenseTest(ATTRIBUTE.LICENSING);
         for(String l : cdx14SBOM.getLicenses()){
             r.addAll(lt.test("License", l));
         }
-        attributes.clear();
 
         // test CycloneDX 1.4 specific metadata information
         String serialNumber = cdx14SBOM.getUID();
@@ -74,37 +70,29 @@ public class CDX14Pipeline implements CDX14Tests {
             r.addAll(hasBomRef("Bom-Ref", bomRef));
 
             // test component CPEs
-            attributes.addAll(List.of(ATTRIBUTE.UNIQUENESS,
-                    ATTRIBUTE.MINIMUM_ELEMENTS));
-            var cpeTest = new CPETest(component, attributes);
-            attributes.clear();
+            var cpeTest = new CPETest(component, ATTRIBUTE.UNIQUENESS,
+                    ATTRIBUTE.MINIMUM_ELEMENTS);
             for(String cpe: component.getCPEs()){
                 r.addAll(cpeTest.test("cpe", cpe));
             }
             // test component PURLs
-            attributes.addAll(List.of(ATTRIBUTE.UNIQUENESS,
-                    ATTRIBUTE.MINIMUM_ELEMENTS));
-            var purlTest = new PURLTest(component, attributes);
-            attributes.clear();
+            var purlTest = new PURLTest(component, ATTRIBUTE.UNIQUENESS,
+                    ATTRIBUTE.MINIMUM_ELEMENTS);
             for(String purl: component.getPURLs()){
                 r.addAll(purlTest.test("purl", purl));
             }
 
             // test component Licenses
-            attributes.addAll(List.of(ATTRIBUTE.UNIQUENESS,
-                    ATTRIBUTE.MINIMUM_ELEMENTS));
-            var licenseTest = new LicenseTest(attributes);
-            attributes.clear();
+            var licenseTest = new LicenseTest(ATTRIBUTE.UNIQUENESS,
+                    ATTRIBUTE.MINIMUM_ELEMENTS);
             Set<String> licenses = component.getLicenses().getDeclared();
             for(String l: licenses){
                 r.addAll(licenseTest.test("License", l));
             }
 
             // test component Hashes
-            attributes.addAll(List.of(ATTRIBUTE.UNIQUENESS,
-                    ATTRIBUTE.MINIMUM_ELEMENTS));
-            var hashTest = new HashTest(attributes, component);
-            attributes.clear();
+            var hashTest = new HashTest(component, ATTRIBUTE.UNIQUENESS,
+                    ATTRIBUTE.MINIMUM_ELEMENTS);
             Map<String, String> hashes = component.getHashes();
             for(String hashAlgo : hashes.keySet()){
                 String hashValue = hashes.get(hashAlgo);
@@ -129,11 +117,8 @@ public class CDX14Pipeline implements CDX14Tests {
     public Set<Result> hasBomVersion(String field, String value) {
         Set<Result> result = new HashSet<>();
 
-        // set the attributes of this test to create a new EmptyOrNullTest
-        List<ATTRIBUTE> attributes = new ArrayList<>(List.of(
-                ATTRIBUTE.COMPLETENESS
-        ));
-        var emptyNullTest = new EmptyOrNullTest(attributes);
+        // create a new EmptyOrNullTest
+        var emptyNullTest = new EmptyOrNullTest(ATTRIBUTE.COMPLETENESS);
         Result r = emptyNullTest.test(field, value);
 
         result.add(r);
@@ -154,10 +139,8 @@ public class CDX14Pipeline implements CDX14Tests {
         Pattern cdx14UIDPattern = new Pattern(CDX14_UID_REGEX, Pattern.DEFAULT);
 
         // set the attributes of this test to create a new ResultFactory
-        List<ATTRIBUTE> attributes = new ArrayList<>(List.of(
-                ATTRIBUTE.CDX14, ATTRIBUTE.COMPLETENESS
-        ));
-        ResultFactory resultFactory = new ResultFactory(attributes, testName);
+        ResultFactory resultFactory = new ResultFactory(testName,
+                ATTRIBUTE.CDX14, ATTRIBUTE.COMPLETENESS);
         Result r;
 
         // first check if the sbom uid is not a null or empty string
@@ -191,11 +174,8 @@ public class CDX14Pipeline implements CDX14Tests {
     public Set<Result> hasBomRef(String field, String value) {
         Set<Result> results = new HashSet<>();
 
-        // set  the attributes associated with the test
-        List<ATTRIBUTE> attributes = new ArrayList<>(List.of(
-                ATTRIBUTE.CDX14, ATTRIBUTE.UNIQUENESS
-        ));
-        var emptyNullTest = new EmptyOrNullTest(attributes);
+        var emptyNullTest = new EmptyOrNullTest(ATTRIBUTE.CDX14,
+                ATTRIBUTE.UNIQUENESS);
         Result r = emptyNullTest.test(field, value);
 
         results.add(r);

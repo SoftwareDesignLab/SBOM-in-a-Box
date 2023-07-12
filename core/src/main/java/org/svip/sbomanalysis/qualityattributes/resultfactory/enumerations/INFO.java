@@ -10,5 +10,6 @@ public enum INFO {
     MISSING,
     HAS,
     VALID,
-    INVALID
+    INVALID,
+    NULL
 }
