@@ -22,8 +22,9 @@ public class EmptyOrNullTest {
 
     private final List<ATTRIBUTE> attributes;
 
-    public EmptyOrNullTest(List<ATTRIBUTE> attributes){
-        this.attributes = attributes;
+    public EmptyOrNullTest(ATTRIBUTE... attributes){
+        this.attributes = List.of(attributes);
+        resultFactory = new ResultFactory(TEST_NAME, attributes);
     }
 
 
@@ -33,7 +34,6 @@ public class EmptyOrNullTest {
      * @return a result if the field is empty/null or has a value
      */
     public Result test(String field, Object value){
-        resultFactory = new ResultFactory(this.attributes, TEST_NAME);
         Result r;
         boolean isEmptyorNull = false;
 

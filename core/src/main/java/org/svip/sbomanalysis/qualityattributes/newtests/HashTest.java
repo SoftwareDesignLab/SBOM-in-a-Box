@@ -6,12 +6,9 @@ import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
 
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.ResultFactory;
-import org.svip.sbomanalysis.qualityattributes.resultfactory.Text;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.INFO;
-import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.STATUS;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -31,9 +28,10 @@ public class HashTest extends MetricTest{
      *
      * @param attributes the list of attributes used
      */
-    public HashTest(List<ATTRIBUTE> attributes, Component component) {
+    public HashTest(Component component, ATTRIBUTE... attributes) {
         super(attributes);
         this.component = component;
+        resultFactory = new ResultFactory(TEST_NAME, attributes);
     }
 
     /**
@@ -47,25 +45,13 @@ public class HashTest extends MetricTest{
         Set<Result> results = new HashSet<>();
         // hash  is not a null value and does exist, tests can run
         if(value != null && field != null) {
-            resultFactory = new ResultFactory(super.attributes, this.TEST_NAME);
             results.add(isValidHash(field, value));
 
         }
         // Hash has a null algo or value, tests cannot be run
         // return missing Result
         else{
-            Text text = new Text("Hash Object could not be built", field);
-            String message;
-            String details;
-            if(value == null){
-                message = text.getMessage(INFO.MISSING, "Hash Value");
-                details = text.getDetails(INFO.MISSING, "Hash Value");
-            }
-            else{
-                message = text.getMessage(INFO.MISSING, "Hash Algo");
-                details = text.getDetails(INFO.MISSING, "Hash Algo");
-            }
-            Result r = new Result(attributes, TEST_NAME, message, details, STATUS.ERROR);
+            Result r = resultFactory.error(field, INFO.MISSING, value);
             results.add(r);
         }
         return results;

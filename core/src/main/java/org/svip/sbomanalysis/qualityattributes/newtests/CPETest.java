@@ -6,12 +6,9 @@ import org.svip.sbom.model.uids.CPE;
 import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.ResultFactory;
-import org.svip.sbomanalysis.qualityattributes.resultfactory.Text;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.INFO;
-import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.STATUS;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -25,18 +22,19 @@ public class CPETest extends MetricTest{
 
     private final String TEST_NAME = "CPETest";
 
-    private ResultFactory resultFactory;
+    private final ResultFactory resultFactory;
 
-    private SBOMPackage component;
+    private final SBOMPackage component;
 
     /**
      * Constructor to create a new MetricTest
      *
      * @param attributes the list of attributes used
      */
-    public CPETest(Component component, List<ATTRIBUTE> attributes) {
+    public CPETest(Component component, ATTRIBUTE... attributes) {
         super(attributes);
         this.component = (SBOMPackage) component;
+        resultFactory = new ResultFactory(TEST_NAME, attributes);
     }
 
     /**
@@ -50,18 +48,13 @@ public class CPETest extends MetricTest{
         Set<Result> results = new HashSet<>();
         // cpe is not a null value and does exist, tests can run
         if(value != null) {
-            resultFactory = new ResultFactory(super.attributes, this.TEST_NAME);
             results.add(isValidCPE(field, value));
             results.addAll(isAccurateCPE(field, value));
         }
         // cpe is a null value and does not exist, tests cannot be run
         // return missing Result
         else {
-            //TODO context?
-            Text text = new Text(null, field);
-            String message = text.getMessage(INFO.MISSING, field);
-            String details = text.getDetails(INFO.MISSING, field);
-            Result r = new Result(attributes, TEST_NAME, message, details, STATUS.ERROR);
+            Result r = resultFactory.error(field, INFO.MISSING, value);
             results.add(r);
         }
 
@@ -94,37 +87,7 @@ public class CPETest extends MetricTest{
         Result r;
         try{
             CPE cpeObj = new CPE(value);
-
-            // test the cpe name, names need to be present
-            results.add(isEqual("CPE Name", cpeObj.getProduct(), component.getName()));
-            // test version information, an optional field
-
-            // Test if CPE and/or component is missing a version
-            r = hasNullValues("Version", cpeObj.getVersion(), component.getVersion());
-            // both component and CPE have versions, continue to comparison test
-            if(r == null){
-                results.add(isEqual("CPE Version", cpeObj.getVersion(), component.getVersion()));
-            }
-            // CPE and/or Component is missing a version, add result to list
-            else{
-                results.add(r);
-            }
-            // test vendor information, an optional field
-
-            // Test if CPE and/or component is missing vendor info
-            r = hasNullValues("Vendor", cpeObj.getVendor(), component.getAuthor());
-
-            // both component and CPE have vendor info, continue to comparison test
-            if(r == null){
-                results.add(isEqual("CPE Vendor", cpeObj.getVendor(), component.getAuthor()));
-            }
-            // CPE and/or Component is missing vendor info, add result to list
-            else{
-                results.add(r);
-            }
-
-            // TODO other elements to test? Any relevant info in CPE to test in component?
-
+            results.add(match(cpeObj));
         }
         // failed to create a new CPE object, test automatically fails
         catch (Exception e){
@@ -135,64 +98,40 @@ public class CPETest extends MetricTest{
     }
 
     /**
-     * Helper function checks if 2 fields are equal
+     * Helper function checks if CPE and Component match
      *
-     * @param cpeValue Value stored in the CPE string
-     * @param componentValue Value stored in the Component
+     * @param cpe the cpe to be tested against
      * @return Result with the findings
      */
-    private Result isEqual(String field, String cpeValue, String componentValue){
+    private Result match(CPE cpe){
         Result r;
-        String context;
-        // Check if cpe value is different, if so, test fails
-        if(!CPE.isEqualWildcard(cpeValue, componentValue)){
-            context = field + " value is different between CPE and Component";
-            r = resultFactory.fail(field, INFO.INVALID, cpeValue);
-            // Else they both match, test passes
-        } else {
-            context = field + " value is the same between CPE and Component";
-            r = resultFactory.pass(field, INFO.VALID, cpeValue);
+
+        // test cpe and component name
+        String cpeName = cpe.getProduct();
+        if(!cpeName.equals(component.getName())){
+            r = resultFactory.fail("CPE Name", INFO.INVALID, cpe.toString());
+            return r;
+        }
+
+        // test cpe and component version
+        String cpeVersion = cpe.getVersion();
+        if(!cpeVersion.equals(component.getVersion())){
+            r = resultFactory.fail("CPE Vendor", INFO.INVALID, cpe.toString());
+            return r;
+        }
+
+        // test cpe vendor to component author
+        String cpeVendor = cpe.getVendor();
+        if(!cpeVendor.equals(component.getAuthor())){
+            r = resultFactory.fail("CPE Vendor", INFO.INVALID, cpe.toString());
+            return r;
+        }
+        // all fields match the component, test passes
+       else {
+            r = resultFactory.pass("CPE Match", INFO.VALID, cpe.toString());
         }
 
         return r;
     }
 
-    /**
-     * For testing in optional fields, test if a field is present for both
-     * the cpe and component
-     * @param field the field that is being tested
-     * @param cpeValue value stored in the CPE string
-     * @param componentValue value stored in the Component
-     * @return a result if one or both values are null OR null if both values
-     * are present and not empty/null
-     */
-    private Result hasNullValues(String field, String cpeValue, String componentValue){
-        // booleans to hold if cpe and/or component field are present or not
-        // (true if empty/null, else false)
-        boolean cpeValueNull = cpeValue.isEmpty();
-        boolean componentValueNull = componentValue.isEmpty();
-
-        // at least one of the fields is null
-        Result r;
-        // If component is missing the field info and CPE is not
-        if(!cpeValueNull && componentValueNull){
-            r = resultFactory.fail(field, INFO.MISSING, componentValue);
-            return r;
-        }
-        // If CPE is missing the field info and component is not
-        else if(cpeValueNull && !componentValueNull){
-            r = resultFactory.fail(field, INFO.MISSING, cpeValue);
-            return r;
-        }
-        // If both component and CPE are missing the field's info
-        else if(cpeValueNull && componentValueNull){
-            r = resultFactory.fail(field, INFO.MISSING, cpeValue);
-            return r;
-        }
-        // both fields are not null and have values, return null so actual
-        // test for comparison can occur
-        else{
-            return null;
-        }
-    }
 }
