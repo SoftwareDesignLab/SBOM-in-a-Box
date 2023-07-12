@@ -36,6 +36,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+## [v5.0.2-alpha] - (7/12/2023)
+
+### Added
+- Unit tests for SBOM and Component Builders.
+
+### Changed
+- `BuildAndFlush()` methods now call their base `build()` method rather than using duplicate code.
+- Fixed a bug where `SVIPSBOM.Build()` was returning an `SBOM` rather than an `SVIPSBOM`.
+- Patched various methods that did not check if a list was null before trying to access it.
+        
+
 ## [v5.0.1-alpha] - (7/3/2023)
 
 ### Added
