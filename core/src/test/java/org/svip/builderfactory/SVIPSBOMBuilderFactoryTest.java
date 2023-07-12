@@ -190,7 +190,7 @@ public class SVIPSBOMBuilderFactoryTest {
         Relationship test_relationship = new Relationship("001", "dependant");
         test_SVIPSBOMBuilder.addRelationship("test_component", test_relationship);
 
-        test_SVIPSBOM = test_SVIPSBOMBuilder.buildCDX14SBOM();
+        test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
 
         assertTrue(test_SVIPSBOM.getRelationships().containsKey("test_component"));
     }
@@ -203,7 +203,7 @@ public class SVIPSBOMBuilderFactoryTest {
         test_SVIPSBOMBuilder.addExternalReference(test_externalRef);
         test_externalRefs.add(test_externalRef);
 
-        test_SVIPSBOM = test_SVIPSBOMBuilder.buildCDX14SBOM();
+        test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
 
         assertEquals(test_externalRefs, test_SVIPSBOM.getExternalReferences());
     }
