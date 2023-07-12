@@ -77,7 +77,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
 
     public static final String LICENSE_LIST_VERSION_TAG = "LicenseListVersion";
 
-    public static final String AUTHOR_TAG = "Creator";
+    public static final String CREATOR_TAG = "Creator";
 
     // Used as an identifier for main SBOM information. Sometimes used as reference in relationships to show header contains main component.
     public static final String DOCUMENT_REFERENCE_TAG = "SPDXRef-DOCUMENT";
@@ -138,10 +138,10 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                 // LICENSE LIST VERSION
                 case LICENSE_LIST_VERSION_TAG -> sbomBuilder.setSPDXLicenseListVersion(mHeader.group(2));
                 // AUTHORS
-                case AUTHOR_TAG -> {
+                case CREATOR_TAG -> {
                     String authorName = "";
                     String authorEmail = "";
-                    Pattern authorPattern = Pattern.compile("Organization: (?:(.*) \\((.*)\\))(.*)", Pattern.CASE_INSENSITIVE);
+                    Pattern authorPattern = Pattern.compile("Person: (?:(.*) \\((.*)\\))(.*)", Pattern.CASE_INSENSITIVE);
                     Matcher mAuthor = authorPattern.matcher(mHeader.group(2));
                     while(mAuthor.find()) {
                         authorName = mAuthor.group(1);
@@ -233,30 +233,23 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                 }
 
                 // Special case for external references
-                Matcher externalRef = EXTERNAL_REF_PATTERN.matcher(mPackages.group());
-                if (!externalRef.find()) continue;
-                ExternalReference externalReference = new ExternalReference("","","");
-                switch(externalRef.group(2).toLowerCase()) {
+                Matcher externalRefMatcher = EXTERNAL_REF_PATTERN.matcher(mPackages.group());
+                if (!externalRefMatcher.find()) continue;
+                switch(externalRefMatcher.group(2).toLowerCase()) {
                     case "cpe23type" -> {
                         // CPE
-                        packageBuilder.addCPE(externalRef.group(3));
+                        packageBuilder.addCPE(externalRefMatcher.group(3));
                     }
                     case "purl" -> {
                         // PURL
-                        packageBuilder.addPURL(externalRef.group(3));
+                        packageBuilder.addPURL(externalRefMatcher.group(3));
                     }
-                    // EXTERNAL REFERENCES
-                    case "referenceCategory" -> {
-                        externalReference = new ExternalReference(externalRef.group(), externalReference.getUrl(), externalReference.getType());
-                    }
-                    case "referenceLocator" -> {
-                        externalReference = new ExternalReference(externalReference.getCategory(), externalRef.group(), externalReference.getType());
-                    }
-                    case "referenceType" -> {
-                        externalReference = new ExternalReference(externalReference.getCategory(), externalReference.getUrl(), externalRef.group());
+                    // EXTERNAL REFERENCES - DEFAULT CASE
+                    default -> {
+                        ExternalReference externalRef = new ExternalReference(externalRefMatcher.group(1), externalRefMatcher.group(2), externalRefMatcher.group(3));
+                        packageBuilder.addExternalReference(externalRef);
                     }
                 }
-                packageBuilder.addExternalReference(externalReference);
             }
             // SUPPLIER
             // Cleanup package originator
