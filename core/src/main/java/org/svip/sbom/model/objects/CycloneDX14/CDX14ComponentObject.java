@@ -1,12 +1,16 @@
 package org.svip.sbom.model.objects.CycloneDX14;
 
+import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -283,6 +287,14 @@ public class CDX14ComponentObject implements CDX14Package {
         this.properties = properties;
 
     }
-
+    public List<Conflict> compare(Component other) {
+        return null;
+    }
+    public List<Conflict> compare(SBOMPackage other) {
+        return null;
+    }
+    public List<Conflict> compare(CDX14Package other) {
+        return null;
+    }
 }
 

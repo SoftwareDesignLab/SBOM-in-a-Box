@@ -1,14 +1,19 @@
 package org.svip.sbom.model.objects;
 
+import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -453,5 +458,23 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         this.fileNotice = fileNotice;
         this.comment = comment;
         this.attributionText = attributionText;
+    }
+    public List<Conflict> compare(Component other) {
+        return null;
+    }
+    public List<Conflict> compare(SPDX23Component other) {
+        return null;
+    }
+    public List<Conflict> compare(SPDX23Package other) {
+        return null;
+    }
+    public List<Conflict> compare(SPDX23File other) {
+        return null;
+    }
+    public List<Conflict> compare(SBOMPackage other) {
+        return null;
+    }
+    public List<Conflict> compare(CDX14Package other) {
+        return null;
     }
 }

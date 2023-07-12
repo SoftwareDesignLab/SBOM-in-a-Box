@@ -3,7 +3,9 @@ package org.svip.sbom.model.interfaces.generics;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
+import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -75,4 +77,9 @@ public interface SBOM {
      * @return External references from this SBOM
      */
     Set<ExternalReference> getExternalReferences();
+    /**
+     * @param other
+     * @return component conflicts
+     */
+    List<Conflict> compare(SBOM other);
 }

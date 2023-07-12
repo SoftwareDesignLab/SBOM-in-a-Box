@@ -8,7 +8,7 @@ import org.svip.api.model.SBOMFile;
 import org.svip.api.utils.Utils;
 
 import org.svip.sbom.model.old.SBOM;
-import org.svip.sbomanalysis.differ.DiffReport;
+import org.svip.sbomanalysis.old.DiffReport;
 import org.svip.sbomanalysis.qualityattributes.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.QualityReport;
 import org.svip.sbomanalysis.qualityattributes.processors.*;
