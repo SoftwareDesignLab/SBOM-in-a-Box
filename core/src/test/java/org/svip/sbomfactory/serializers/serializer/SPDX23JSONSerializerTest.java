@@ -24,7 +24,7 @@ public class SPDX23JSONSerializerTest extends SerializerTest {
         Debug.log(Debug.LOG_TYPE.SUMMARY, "Deserializing SBOM back to object.");
         SBOM sbom = SerializerFactory.createDeserializer(serialized).readFromString(serialized);
 
-        // TODO more assertions / equals checker?
+        // TODO Compare getTestSBOM() and sbom with Comparison when it's finished
         assertEquals(3, sbom.getComponents().size());
     }
 }

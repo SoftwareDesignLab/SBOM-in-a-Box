@@ -1,4 +1,4 @@
-SPDXVersion: SPDX-1.4
+SPDXVersion: SPDX-2.3
 DataLicense: CC0-1.0
 SPDXID: SPDXRef-DOCUMENT
 DocumentName: Test SBOM
@@ -8,7 +8,7 @@ Creator: Organization: Supplier (supplier@svip.xyz)
 Creator: Tool: SVIP Serializer-1.0.0
 Creator: Person: Test Author (author@publisher.xyz)
 Created: TEST TIMESTAMP
-CreatorComment: This SBOM was created for serializer testing
+CreatorComment: This SBOM was generated using the SVIP serializer tooling.
 DocumentComment: Test Document Comment
 
 ### Package: COMPONENT 1
@@ -21,7 +21,7 @@ PackageDescription: extendedDescription1
 PackageComment: comment1
 PackageFileName: fileName1
 PackageSupplier: Organization: SVIP1 (svip@svip.xyz)
-PackageOriginator: Person: author1
+PackageOriginator: author1
 PackageDownloadLocation: downloadLocation1
 FilesAnalyzed: true
 PackageVerificationCode: verificationCode1
@@ -30,7 +30,7 @@ PackageHomePage: homePage1
 PackageSourceInfo: sourceInfo1
 PackageLicenseConcluded: concluded1
 PackageLicenseInfoFromFiles: licenseFileText1
-PackageLicenseDeclared: licenseFileText1
+PackageLicenseDeclared: declared1
 PackageLicenseComments: comment1
 PackageCopyrightText: copyright1
 ExternalRef: SECURITY cpe23Type cpe1
@@ -61,7 +61,7 @@ PackageHomePage: homePage3
 PackageSourceInfo: sourceInfo3
 PackageLicenseConcluded: concluded3
 PackageLicenseInfoFromFiles: licenseFileText3
-PackageLicenseDeclared: licenseFileText3
+PackageLicenseDeclared: declared3
 PackageLicenseComments: comment3
 PackageCopyrightText: copyright3
 ExternalRef: PACKAGE-MANAGER purl purl3
@@ -77,14 +77,14 @@ ValidUntilDate: validUntilDate3
 ### Unpackaged Files
 
 SPDXID: uid2
-FileName: COMPONENT 2
+FileName: fileName2
 FileType: type2
 FileComment: comment2
 PackageChecksum: SHA256: hash2
-PackageLicenseConcluded: concluded2
+LicenseConcluded: concluded2
 LicenseInfoInFile: licenseFileText2
-PackageLicenseDeclared: licenseFileText2
-PackageLicenseComments: comment2
+LicenseDeclared: declared2
+LicenseComments: comment2
 FileCopyrightText: copyright2
 FileNotice: fileNotice2
 FileContributor: author2
