@@ -238,15 +238,11 @@ public class Utils {
         try{
             // serialize into SPDX23 schema
 
-
-            int x;
-            if(format == SerializerFactory.Format.TAGVALUE)
-                x = 0;
-
             s = SerializerFactory.createSerializer(schema, format, true);
             if(schema == SerializerFactory.Schema.SPDX23){
-               // serialized = s.writeToString((CDX14SBOM) deserialized);// todo fix
-                return internalSerializerError(ret, "","UNIMPLIMENTED CASTING FIX");}
+                serialized = s.writeToString(new SVIPSBOM((CDX14SBOM) deserialized));// todo currently this doesn't reach because of deserializor errors
+                //return internalSerializerError(ret, "","UNIMPLIMENTED CASTING FIX");
+            }
             else if(schema == SerializerFactory.Schema.CDX14){ // serialize into CDX14 schema
                 serialized = s.writeToString(new SVIPSBOM((SPDX23SBOM) deserialized)); // todo fix
                     //return internalSerializerError(ret, "","UNIMPLIMENTED CASTING FIX");

@@ -49,10 +49,11 @@ public class ConvertFromAPITest extends APITest{
                     if (testController(convertToSchema, convertToFormat, id, thisSchema)) continue;
 
                     LOGGER.info("ID: " + id + " Converting " + thisSchema.name() + " --> " + convertToSchema);
-                    LOGGER.info("From " + ((testMap.get(id).getFileName()).contains("json")
-                            ? "JSON" : "TAGVALUE") + " --> " + convertToFormat + "\n-------------\n");
-
+                    LOGGER.info("From             " + ((testMap.get(id).getFileName()).contains("json")
+                            ? "JSON" : "TAGVALUE") + " --> " + convertToFormat);
                     ResponseEntity<String> response = controller.convert(id, convertToSchema, convertToFormat,true);
+                    LOGGER.info( "\n-------------\n");
+
                     String res = response.getBody();
                     int x = 0;
 
