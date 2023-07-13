@@ -33,6 +33,8 @@ public enum ConflictType {
     SERIAL_NUMBER_MISMATCH,
     /** Component found in both SBOMs, but has different PURL */
     PURL_MISMATCH,
+    /** Component found in both SBOMs, but has different CPE */
+    CPE_MISMATCH,
     /** Component found in both SBOMs, but has different SWID */
     SWID_MISMATCH,
     /** Component found in both SBOMs, but has different SPDX ID */
