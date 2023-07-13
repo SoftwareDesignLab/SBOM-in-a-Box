@@ -1,4 +1,7 @@
 package org.svip.sbomanalysis.comparison.conflicts;
+
+import org.svip.sbomfactory.generators.utils.Debug;
+
 /**
  * file: MissingConflict.java
  * Class for missing conflict
@@ -10,5 +13,6 @@ public class MissingConflict extends Conflict {
         super(field, targetValue, otherValue);
         this.type = type;
         this.message = field + " is missing";
+        Debug.log(Debug.LOG_TYPE.SUMMARY, "\n" + message);
     }
 }
