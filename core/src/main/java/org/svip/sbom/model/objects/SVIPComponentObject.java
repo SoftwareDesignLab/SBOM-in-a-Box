@@ -3,6 +3,7 @@ package org.svip.sbom.model.objects;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
+import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
@@ -454,4 +455,50 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         this.comment = comment;
         this.attributionText = attributionText;
     }
+
+        /*
+        Construct from other component objects
+     */
+
+    /**
+     * // todo docstring
+     * @param spdx23PackageObject
+     */
+    public SVIPComponentObject(SPDX23PackageObject spdx23PackageObject){
+        this.type = spdx23PackageObject.getType();
+        this.uid = spdx23PackageObject.getUID();
+        this.author = spdx23PackageObject.getAuthor();
+        this.name = spdx23PackageObject.getName();
+        this.licenses = spdx23PackageObject.getLicenses();
+        this.copyright = spdx23PackageObject.getCopyright();
+        this.hashes = (HashMap<String, String>) spdx23PackageObject.getHashes();
+        this.supplier = spdx23PackageObject.getSupplier();
+        this.version = spdx23PackageObject.getVersion();
+        this.description = spdx23PackageObject.getDescription();
+        this.cpes = spdx23PackageObject.getCPEs();
+        this.purls = spdx23PackageObject.getPURLs();
+        this.externalReferences = spdx23PackageObject.getExternalReferences();
+        this.downloadLocation =spdx23PackageObject.getDownloadLocation();
+        this.fileName = spdx23PackageObject.getFileName();
+        this.filesAnalyzed = spdx23PackageObject.getFilesAnalyzed();
+        this.verificationCode = spdx23PackageObject.getVerificationCode();
+        this.homePage = spdx23PackageObject.getHomePage();
+        this.sourceInfo = spdx23PackageObject.getSourceInfo();
+        this.releaseDate = spdx23PackageObject.getReleaseDate();
+        this.builtDate = spdx23PackageObject.getBuiltDate();
+        this.validUntilDate = spdx23PackageObject.getValidUntilDate();
+        this.mimeType = spdx23PackageObject.getType();
+
+
+        // todo is this okay
+        this.publisher = "";
+        this.scope = "";
+        this.group = "";
+        this.properties = null;
+        this.fileNotice  = null;
+
+        this.comment = getComment();
+        this.attributionText = getAttributionText();
+    }
+
 }

@@ -240,7 +240,7 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
     }
 
     /*
-        Constructors from other SBOMs
+        Construct from other SBOMs
      */
 
     public SVIPSBOM(SPDX23SBOM spdx23SBOM){
@@ -252,9 +252,7 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
         this.licenses = spdx23SBOM.getLicenses();
         this.creationData = spdx23SBOM.getCreationData();
         this.documentComment = spdx23SBOM.getDocumentComment();
-        //this.rootComponent = spdx23SBOM.getRootComponent(); // todo fix
-        this.rootComponent = null;
-
+        this.rootComponent = new SVIPComponentObject(spdx23SBOM.getRootComponent());
         this.components = spdx23SBOM.getComponents();
         this.relationships = (HashMap<String, Set<Relationship>>) spdx23SBOM.getRelationships();
         this.externalReferences = spdx23SBOM.getExternalReferences();
