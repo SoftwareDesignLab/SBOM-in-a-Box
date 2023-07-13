@@ -1,6 +1,6 @@
 {
   "SPDXID" : "SPDXRef-DOCUMENT",
-  "spdxVersion" : "SPDX-1.4",
+  "spdxVersion" : "SPDX-2.3",
   "name" : "Test SBOM",
   "documentNamespace" : "12345678",
   "comment" : "Test Document Comment",

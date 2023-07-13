@@ -14,6 +14,7 @@ import org.svip.componentfactory.SPDX23FileBuilderFactory;
 import org.svip.componentfactory.SPDX23PackageBuilderFactory;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.Contact;
@@ -82,53 +83,49 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
         SPDX23FileBuilderFactory fileFactory = new SPDX23FileBuilderFactory();
         SPDX23FileBuilder fileBuilder = fileFactory.createBuilder();
 
-        // TODO check for/complete missing fields
+        // FORMAT
+        sbomBuilder.setFormat("SPDX");
 
         // NAME
-        if (node.get("name") != null) {
-            sbomBuilder.setName(node.get("name").asText());
-        }
-        // UID
-        if (node.get("documentNamespace") != null) {
-            sbomBuilder.setUID(node.get("documentNamespace").asText());
-        }
-        // SPEC VERSION
-        if (node.get("spdxVersion") != null) {
-            sbomBuilder.setSpecVersion(node.get("spdxVersion").asText());
-        }
-        // LICENSE
-        if (node.get("dataLicense") != null) {
-            sbomBuilder.addLicense(node.get("dataLicense").asText());
-        }
+        if (node.get("name") != null) sbomBuilder.setName(node.get("name").asText());
 
-        if (node.get("creationInfo") != null) {
+        // UID
+        if (node.get("documentNamespace") != null) sbomBuilder.setUID(node.get("documentNamespace").asText());
+
+        // SPEC VERSION
+        JsonNode spdxVersion = node.get("spdxVersion");
+        if (spdxVersion != null)
+            sbomBuilder.setSpecVersion(spdxVersion.asText().substring(spdxVersion.asText().indexOf("-") + 1));
+
+        // LICENSE
+        if (node.get("dataLicense") != null) sbomBuilder.addLicense(node.get("dataLicense").asText());
+
+        // CREATION INFO
+        JsonNode creationInfo = node.get("creationInfo");
+        if (creationInfo != null) {
             // CREATION DATA
             CreationData creationData = new CreationData();
             // TIMESTAMP
-            if (node.get("creationInfo").get("created") != null) {
-                creationData.setCreationTime(node.get("creationInfo").get("created").asText());
-            }
+            if (creationInfo.get("created") != null) creationData.setCreationTime(creationInfo.get("created").asText());
+
             // LICENSE LIST VERSION:
-            if (node.get("creationInfo").get("licenseListVersion") != null) {
-                sbomBuilder.setSPDXLicenseListVersion(node.get("creationInfo").get("licenseListVersion").asText());
-            }
+            if (creationInfo.get("licenseListVersion") != null) sbomBuilder.setSPDXLicenseListVersion(creationInfo.get("licenseListVersion").asText());
+
             // CREATION TOOL
-            if (node.get("creationInfo").get("creators") != null) {
-                for (int i = 0; i < node.get("creationInfo").get("creators").size(); i++) {
+            if (creationInfo.get("creators") != null) {
+                for (JsonNode creator : creationInfo.get("creators")) {
                     // TOOL
-                    if (node.get("creationInfo").get("creators").get(i).asText().startsWith("Tool")) {
+                    if (creator.asText().startsWith("Tool")) {
                         CreationTool creationTool = new CreationTool();
 
-                        Matcher toolMatcher = Pattern.compile("(\\S*): (.*)-(.*)")
-                                .matcher(node.get("creationInfo").get("creators").get(i).asText());
+                        Matcher toolMatcher = Pattern.compile("(\\S*): (.*)-(.*)").matcher(creator.asText());
 
                         if (!toolMatcher.find()) continue;
                         creationTool.setName(toolMatcher.group(2));
                         creationTool.setVersion(toolMatcher.group(3));
                         creationData.addCreationTool(creationTool);
                     } else { // OTHER
-                        Matcher authorMatcher = Pattern.compile("(\\S*): (.*) \\((\\S*)\\)")
-                                .matcher(node.get("creationInfo").get("creators").get(i).asText());
+                        Matcher authorMatcher = Pattern.compile("(\\S*): (.*) \\((\\S*)\\)").matcher(creator.asText());
 
                         if (!authorMatcher.find()) continue;
                         creationData.addAuthor(new Contact(authorMatcher.group(2), authorMatcher.group(3), null));
@@ -141,80 +138,10 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
 
         // COMPONENTS
         // Packages
-        if (node.get("packages") != null) {
-            for (int i = 0; i < node.get("packages").size(); i++) {
-                // TYPE
-                if (node.get("packages").get(i).get("primaryPackagePurpose") != null) {
-                    packageBuilder.setType(node.get("packages").get(i).get("primaryPackagePurpose").asText());
-                }
-                // UID
-                if (node.get("packages").get(i).get("SPDXID") != null) {
-                    packageBuilder.setUID(node.get("packages").get(i).get("SPDXID").asText());
-                }
-                // AUTHOR
-                if (node.get("packages").get(i).get("originator") != null) {
-                    packageBuilder.setAuthor(node.get("packages").get(i).get("originator").asText());
-                }
-                // NAME
-                if (node.get("packages").get(i).get("name") != null) {
-                    packageBuilder.setName(node.get("packages").get(i).get("name").asText());
-                }
-                // VERSION
-                if (node.get("packages").get(i).get("versionInfo") != null) {
-                    packageBuilder.setVersion(node.get("packages").get(i).get("versionInfo").asText());
-                }
-                // DOWNLOAD LOCATION
-                if (node.get("packages").get(i).get("downloadLocation") != null) {
-                    packageBuilder.setDownloadLocation(node.get("packages").get(i).get("downloadLocation").asText());
-                }
-                // DESCRIPTION
-                if (node.get("packages").get(i).get("summary") != null) {
-                    Description description = new Description(node.get("packages").get(i).get("summary").asText());
-                    packageBuilder.setDescription(description);
-                }
-                // HASHES
-                if (node.get("packages").get(i).get("checksums") != null) {
-                    for (int j = 0; j < node.get("packages").get(i).get("checksums").size(); j++) {
-                        packageBuilder.addHash(node.get("packages").get(i).get("checksums").get(j).get("algorithm").asText(),
-                                node.get("packages").get(i).get("checksums").get(j).get("checksumValue").asText());
-                    }
-                }
-                // Licenses
-                LicenseCollection componentLicenses = new LicenseCollection();
-                if (node.get("packages").get(i).get("licenseConcluded") != null) {
-                    componentLicenses.addConcludedLicenseString(node.get("packages").get(i).get("licenseConcluded").asText());
-                }
-                if (node.get("packages").get(i).get("licenseDeclared") != null) {
-                    componentLicenses.addDeclaredLicense(node.get("packages").get(i).get("licenseDeclared").asText());
-                }
-                if (node.get("packages").get(i).get("licenseInfoFromFiles") != null) {
-                    componentLicenses.addLicenseInfoFromFile(node.get("packages").get(i).get("licenseInfoFromFiles").asText());
-                }
-                // add license collection to component builder
-                packageBuilder.setLicenses(componentLicenses);
-                // COPYRIGHT
-                if (node.get("packages").get(i).get("copyright") != null) {
-                    packageBuilder.setCopyright(node.get("packages").get(i).get("copyright").asText());
-                }
-                // EXTERNAL REFERENCES
-                if (node.get("packages").get(i).get("externalRefs") != null) {
-                    for (int j = 0; j < node.get("packages").get(i).get("externalRefs").size(); j++) {
-                        if (node.get("packages").get(i).get("externalRefs").get(j).get("referenceCategory") != null &&
-                                node.get("packages").get(i).get("externalRefs").get(j).get("referenceLocator") != null &&
-                                node.get("packages").get(i).get("externalRefs").get(j).get("referenceType") != null) {
-                            ExternalReference externalReference = new ExternalReference(
-                                    node.get("packages").get(i).get("externalRefs").get(j).get("referenceCategory").asText(),
-                                    node.get("packages").get(i).get("externalRefs").get(j).get("referenceLocator").asText(),
-                                    node.get("packages").get(i).get("externalRefs").get(j).get("referenceType").asText());
-                            // add the external reference to the component builder
-                            packageBuilder.addExternalReference(externalReference);
-                        }
-                    }
-                }
-                // add the component to the sbom builder
-                sbomBuilder.addSPDX23Component(packageBuilder.buildAndFlush());
-            }
-        }
+        if (node.get("packages") != null)
+            for (JsonNode pkg : node.get("packages"))
+                sbomBuilder.addSPDX23Component(buildPackage(packageBuilder, pkg));
+
         // Files
         if (node.get("files") != null) {
             for (int i = 0; i < node.get("files").size(); i++) {
@@ -260,20 +187,91 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
                 sbomBuilder.addSPDX23Component(fileBuilder.buildAndFlush());
             }
         }
+
         // Relationships:
-        if (node.get("relationships") != null) {
-            for (int i = 0; i < node.get("relationships").size(); i++) {
-                if (node.get("relationships").get(i).get("relatedSpdxElement") != null
-                 && node.get("relationships").get(i).get("relationshipType") != null
-                 && node.get("relationships").get(i).get("spdxElementId") != null) {
+        if (node.get("relationships") != null)
+            for (JsonNode rel : node.get("relationships"))
+                if (rel.get("relatedSpdxElement") != null
+                 && rel.get("relationshipType") != null
+                 && rel.get("spdxElementId") != null) {
+
                     Relationship relationship = new Relationship(
-                            node.get("relationships").get(i).get("relatedSpdxElement").asText(),
-                            node.get("relationships").get(i).get("relationshipType").asText());
-                    sbomBuilder.addRelationship(node.get("relationships").get(i).get("spdxElementId").asText(), relationship);
+                            rel.get("relatedSpdxElement").asText(), rel.get("relationshipType").asText());
+                    sbomBuilder.addRelationship(rel.get("spdxElementId").asText(), relationship);
                 }
-            }
-        }
+
         // Build the SBOM
         return sbomBuilder.buildSPDX23SBOM();
+    }
+
+    private SPDX23PackageObject buildPackage(SPDX23PackageBuilder builder, JsonNode pkg) {
+        // TYPE
+        if (pkg.get("primaryPackagePurpose") != null) builder.setType(pkg.get("primaryPackagePurpose").asText());
+
+        // UID
+        if (pkg.get("SPDXID") != null) builder.setUID(pkg.get("SPDXID").asText());
+
+        // AUTHOR
+        if (pkg.get("originator") != null) builder.setAuthor(pkg.get("originator").asText());
+
+        // NAME
+        if (pkg.get("name") != null) builder.setName(pkg.get("name").asText());
+
+        // VERSION
+        if (pkg.get("versionInfo") != null) builder.setVersion(pkg.get("versionInfo").asText());
+
+        // DOWNLOAD LOCATION
+        if (pkg.get("downloadLocation") != null) builder.setDownloadLocation(pkg.get("downloadLocation").asText());
+
+        // DESCRIPTION
+        if (pkg.get("summary") != null) {
+            Description description = new Description(pkg.get("summary").asText());
+
+            if (pkg.get("description") != null) description.setDescription(pkg.get("description").asText());
+            builder.setDescription(description);
+        }
+
+        // HASHES
+        if (pkg.get("checksums") != null)
+            for (JsonNode cs : pkg.get("checksums"))
+                builder.addHash(cs.get("algorithm").asText(), cs.get("checksumValue").asText());
+
+        // Licenses
+        LicenseCollection componentLicenses = new LicenseCollection();
+        if (pkg.get("licenseConcluded") != null)
+            for (JsonNode concluded : pkg.get("licenseConcluded"))
+                componentLicenses.addConcludedLicenseString(concluded.asText());
+
+        if (pkg.get("licenseDeclared") != null)
+            for (JsonNode declared : pkg.get("licenseDeclared"))
+                componentLicenses.addDeclaredLicense(declared.asText());
+
+        if (pkg.get("licenseInfoFromFiles") != null)
+            for (JsonNode fileInfo : pkg.get("licenseInfoFromFiles"))
+                componentLicenses.addLicenseInfoFromFile(fileInfo.asText());
+
+        // add license collection to component builder
+        builder.setLicenses(componentLicenses);
+
+        // COPYRIGHT
+        if (pkg.get("copyright") != null) builder.setCopyright(pkg.get("copyright").asText());
+
+        // EXTERNAL REFERENCES
+        if (pkg.get("externalRefs") != null)
+            for (JsonNode ref : pkg.get("externalRefs"))
+                if (ref.get("referenceCategory") != null && ref.get("referenceLocator") != null &&
+                        ref.get("referenceType") != null) {
+
+                    ExternalReference externalReference = new ExternalReference(
+                            ref.get("referenceCategory").asText(),
+                            ref.get("referenceLocator").asText(),
+                            ref.get("referenceType").asText());
+
+                    // add the external reference to the component builder
+                    builder.addExternalReference(externalReference);
+                }
+
+        // add the component to the sbom builder
+        return builder.buildAndFlush();
     }
 }
