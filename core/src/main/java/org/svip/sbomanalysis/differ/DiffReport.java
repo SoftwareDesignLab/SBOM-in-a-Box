@@ -2,6 +2,7 @@ package org.svip.sbomanalysis.differ;
 
 import org.svip.sbomanalysis.comparison.Comparison;
 
+import java.util.HashMap;
 import java.util.Map;
 /**
  * file: DiffReport.java
@@ -11,7 +12,7 @@ import java.util.Map;
  */
 public class DiffReport {
     private String targetUID;
-    private Map<String, Comparison> comparisons;
+    private Map<String, Comparison> comparisons = new HashMap<>();
 
     DiffReport(String targetUID) {
         this.targetUID = targetUID;

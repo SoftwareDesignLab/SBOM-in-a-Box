@@ -230,8 +230,8 @@ public class CDX14SBOM implements CDX14Schema {
             for (int i = 0; i < targetComponents.size(); i++) {
                 for (int j = 0; j < otherComponents.size(); j++) {
                     // TODO: improve the optimization for component matching
-                    if (targetComponents.get(i).getUID() == otherComponents.get(j).getUID()) {
-                        conflicts.addAll((targetComponents.get(i)).compare(otherComponents.get(j)));
+                    if (Objects.equals(targetComponents.get(i).getUID(), otherComponents.get(j).getUID())) {
+                        conflicts.addAll(((CDX14ComponentObject)targetComponents.get(i)).compare(otherComponents.get(j)));
                     }
                 }
             }
