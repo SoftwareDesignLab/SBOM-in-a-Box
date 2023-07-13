@@ -10,7 +10,15 @@ import org.springframework.web.bind.annotation.*;
 import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.utils.Utils;
-import org.svip.sbom.model.old.SBOM;
+import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.sbomfactory.serializers.deserializer.CDX14JSONDeserializer;
+import org.svip.sbomfactory.serializers.deserializer.Deserializer;
+import org.svip.sbomfactory.serializers.deserializer.SPDX23JSONDeserializer;
+import org.svip.sbomfactory.serializers.deserializer.SPDX23TagValueDeserializer;
 import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomfactory.translators.TranslatorException;
 
@@ -192,7 +200,55 @@ public class SVIPApiController {
      */
     @GetMapping("/getSBOM")
     public ResponseEntity<?> getSBOM(@RequestParam("id") Long id, @RequestParam(required = false) Integer type) {
-        return Utils.encodeResponse("foo");
+
+        // default to SVIP SBOM if no type is given
+        if(type == null)
+            type = 0;
+
+        String urlMsg = "GET /svip/getSBOM?id=" + id + "&type=" + type;     // for logging
+
+        // Get SBOM
+        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
+
+        // Return SBOM or invalid ID
+        if (sbomFile.isEmpty()) {
+            LOGGER.warn(urlMsg + " - FILE NOT FOUND");
+            return new ResponseEntity<>("Invalid SBOM ID", HttpStatus.NOT_FOUND);
+        }
+
+
+        SBOM sbom = deserialize(sbomFile.get().getContents(),
+                new CDX14JSONDeserializer(),
+                new SPDX23TagValueDeserializer(),
+                new SPDX23JSONDeserializer());
+
+        switch (type) {
+            case 0 -> sbom = (SVIPSBOM) sbom;
+            case 1 -> sbom = (CDX14SBOM) sbom;
+            case 2 -> sbom = (SPDX23SBOM) sbom;
+            default -> {
+                LOGGER.warn(urlMsg + " - BAD TYPE ARGUMENT");
+                return new ResponseEntity<>("Invalid Type Argument", HttpStatus.BAD_REQUEST);
+            }
+        }
+
+        // Log
+        LOGGER.info(urlMsg + " - File: " + sbomFile.get().getFileName());
+
+
+        return Utils.encodeResponse(sbom);
+    }
+
+    public SBOM deserialize(String contents, Deserializer... deserializers){
+        for(Deserializer d : deserializers){
+            try{
+                return d.readFromString(contents);
+            } catch (Exception e){
+                LOGGER.warn("Failed to parse using " + d.getClass().getName());
+            }
+        }
+        LOGGER.error("All deserializers failed to parse SBOM contents");
+        return null;
     }
 
 
