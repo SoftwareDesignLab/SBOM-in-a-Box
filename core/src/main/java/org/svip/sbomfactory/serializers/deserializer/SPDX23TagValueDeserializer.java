@@ -15,6 +15,7 @@ import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
+import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbomfactory.generators.utils.Debug;
@@ -286,8 +287,6 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         // AUTHOR
         if (componentMaterials.get("PackageOriginator") != null) builder.setAuthor(componentMaterials.get("PackageOriginator"));
 
-        //
-
         // LICENSE EXPRESSION
         LicenseCollection licenseCollection = new LicenseCollection();
         if (componentMaterials.get("PackageLicenseConcluded") != null)
@@ -303,9 +302,18 @@ public class SPDX23TagValueDeserializer implements Deserializer {
 
         // HASHES
         // Packages hashing info
-        if (componentMaterials.get("PackageChecksum") != null){
-            String[] packageChecksum = componentMaterials.get("PackageChecksum").split(" ");
-            builder.addHash(packageChecksum[0].substring(0,packageChecksum[0].length()-1), packageChecksum[1]);
+        if (componentMaterials.get("PackageChecksum") != null) {
+            Matcher mChecksum = TAG_VALUE_PATTERN.matcher(componentMaterials.get("PackageChecksum"));
+            if (mChecksum.find())
+                builder.addHash(mChecksum.group(1), mChecksum.group(2));
+        }
+
+        if (componentMaterials.get("PackageSummary") != null) {
+            Description description = new Description(componentMaterials.get("PackageSummary"));
+            if (componentMaterials.get("PackageDescription") != null)
+                description.setDescription(componentMaterials.get("PackageDescription"));
+
+            builder.setDescription(description);
         }
 
         // Other package info
@@ -350,8 +358,31 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         builder.setName(fileMaterials.get("FileName"));
         // FILE UID
         builder.setUID(fileMaterials.get("SPDXID"));
+        builder.setType(fileMaterials.get("FileType"));
+        builder.setFileNotice(fileMaterials.get("FileNotice"));
+        builder.setComment(fileMaterials.get("FileComment"));
+        builder.setAuthor(fileMaterials.get("FileContributor"));
+        builder.setCopyright(fileMaterials.get("FileCopyrightText"));
+        builder.setAttributionText(fileMaterials.get("FileAttributionText"));
 
-        // TODO complete missing fields
+        // LICENSE EXPRESSION
+        LicenseCollection licenseCollection = new LicenseCollection();
+        if (fileMaterials.get("LicenseConcluded") != null)
+            licenseCollection.addConcludedLicenseString(fileMaterials.get("LicenseConcluded"));
+        if (fileMaterials.get("LicenseDeclared") != null)
+            licenseCollection.addDeclaredLicense(fileMaterials.get("LicenseDeclared"));
+        if (fileMaterials.get("LicenseInfoInFile") != null)
+            licenseCollection.addLicenseInfoFromFile(fileMaterials.get("LicenseInfoInFile"));
+        if (fileMaterials.get("LicenseComments") != null)
+            licenseCollection.setComment(fileMaterials.get("LicenseComments"));
+
+        builder.setLicenses(licenseCollection);
+
+        if (fileMaterials.get("PackageChecksum") != null) {
+            Matcher mChecksum = TAG_VALUE_PATTERN.matcher(fileMaterials.get("PackageChecksum"));
+            if (mChecksum.find())
+                builder.addHash(mChecksum.group(1), mChecksum.group(2));
+        }
 
         // add component
         return builder.buildAndFlush();

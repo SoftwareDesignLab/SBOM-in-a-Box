@@ -121,19 +121,19 @@ public class SPDX23TagValueSerializer implements Serializer {
 
     private String getLicenseInfo(LicenseCollection licenses, boolean file) {
         StringBuilder out = new StringBuilder();
+        String concludedTag = (file ? "" : "Package") + "LicenseConcluded";
+        String declaredTag = (file ? "" : "Package") + "LicenseDeclared";
+        String fileTag = file ? "LicenseInfoInFile" : "PackageLicenseInfoFromFiles";
+        String commentTag = (file ? "" : "Package") + "LicenseComments";
 
         for (String concluded : licenses.getConcluded())
-            out.append(buildTagValue("PackageLicenseConcluded", concluded));
-        for (String fromFile : licenses.getInfoFromFiles()) {
-            if (!file)
-                out.append(buildTagValue("PackageLicenseInfoFromFiles", fromFile));
-            else
-                out.append(buildTagValue("LicenseInfoInFile", fromFile));
-        }
+            out.append(buildTagValue(concludedTag, concluded));
+        for (String fromFile : licenses.getInfoFromFiles())
+            out.append(buildTagValue(fileTag, fromFile));
 
         for (String declared : licenses.getInfoFromFiles())
-            out.append(buildTagValue("PackageLicenseDeclared", declared));
-        out.append(buildTagValue("PackageLicenseComments", licenses.getComment()));
+            out.append(buildTagValue(declaredTag, declared));
+        out.append(buildTagValue(commentTag, licenses.getComment()));
 
         return out.toString();
     }
