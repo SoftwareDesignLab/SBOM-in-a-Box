@@ -11,6 +11,9 @@ import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
+import org.svip.sbom.model.shared.metadata.CreationTool;
+import org.svip.sbom.model.shared.metadata.Organization;
+import org.svip.sbom.model.uids.Hash;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -95,8 +98,116 @@ public class MergerCDX extends Merger {
         mergedCreationData.setCreationTime(timeFormat.format(timestamp));
 
         // Authors
-        Set<Contact> authorsA = A.getAuthors();
-        Set<Contact> authorsB = B.getAuthors();
+        Set<Contact> authorsNew = mergeAuthors(A.getAuthors(), B.getAuthors());
+        for(Contact author : authorsNew) { mergedCreationData.addAuthor(author); }
+
+        // Manufacturer
+        mergedCreationData.setManufacture(mergeOrganization(A.getManufacture(), B.getManufacture()));
+
+        // Supplier
+        mergedCreationData.setSupplier(mergeOrganization(A.getSupplier(), B.getSupplier()));
+
+        // Licenses
+        Set<String> mergedLicenses = A.getLicenses();
+        mergedLicenses.addAll(B.getLicenses());
+        for(String license : mergedLicenses) {  mergedCreationData.addLicense(license); }
+
+        // Properties
+        Map<String, Set<String>> propertiesA = A.getProperties();
+        Map<String, Set<String>> propertiesB = B.getProperties();
+        for(String keyA : propertiesA.keySet()) {
+            for (String entryA : propertiesA.get(keyA)) {
+                mergedCreationData.addProperty(keyA, entryA);
+            }
+        }
+        for(String keyB : propertiesB.keySet()) {
+            for (String entryB : propertiesA.get(keyB)) {
+                mergedCreationData.addProperty(keyB, entryB);
+            }
+        }
+
+        // Creation Tools
+
+        // Document Comment
+
+        // Return Creation Data
+        return mergedCreationData;
+    }
+
+    private Organization mergeOrganization(Organization organizationA, Organization organizationB) {
+
+        // New organization
+        Organization organizationNew = null;
+
+        // Based on the contents of organization A and organization B, attempt to merge them
+        if(organizationA.getName().equals(organizationB.getName()) && organizationA.getUrl().equals(organizationB.getUrl())) {
+
+            // Condition one: both have same name and url: merge their authors into one
+            Set<Contact> manufactureAuthorsNew = mergeAuthors(organizationA.getContacts(), organizationB.getContacts());
+            organizationNew = new Organization(organizationA.getName(), organizationA.getUrl());
+            for(Contact manufacturer : manufactureAuthorsNew) { organizationNew.addContact(manufacturer); }
+            return organizationNew;
+
+        } else if(!organizationA.equals(null) && !organizationB.equals(null)) {
+
+            // Condition two: both exist: default to Organization A
+            return organizationA;
+
+        } else if(!organizationA.equals(null) && organizationB.equals(null)) {
+
+            // Condition three: Only A exists: merged Organization becomes Organization A
+            return organizationA;
+
+        } else if (!organizationB.equals(null) && organizationA.equals(null)) {
+
+            // condition four: Only B exists: merged Organization becomes Organization B
+            return organizationB;
+
+        }
+
+        // return new Organization
+        return organizationNew;
+
+    }
+
+    private Set<CreationTool> mergeCreationTools(Set<CreationTool> toolsA, Set<CreationTool> toolsB) {
+
+        // new creation tools set
+        Set<CreationTool> mergedTools = new HashSet<>();
+
+        for(CreationTool toolA : toolsA) {
+            for(CreationTool toolB : toolsB) {
+                if(toolA.getName() == toolB.getName() && toolA.getVendor() == toolB.getVendor() && toolA.getVersion() == toolB.getVersion()) {
+
+                    // New tool to hold merged CreationTool data
+                    CreationTool newTool = new CreationTool();
+
+                    // Set the name, vendor, and version
+                    newTool.setName(toolA.getName());
+                    newTool.setVendor(toolA.getVendor());
+                    newTool.setVersion(toolA.getVersion());
+
+                    // Merge hashes
+                    for(String hashA : toolA.getHashes().keySet()) {
+                        newTool.addHash(hashA, toolA.getHashes().get(hashA));
+                    }
+                    for(String hashB : toolB.getHashes().keySet()) {
+                        if(!newTool.getHashes().containsKey(hashB)) {
+                            newTool.addHash(hashB, toolB.getHashes().get(hashB));
+                        }
+                    }
+
+                } else {
+                    mergedTools.add(toolA);
+                }
+            }
+        }
+
+        return mergedTools;
+    }
+
+    private Set<Contact> mergeAuthors(Set<Contact> authorsA, Set<Contact> authorsB) {
+
         Set<Contact> authorsNew = new HashSet<>();
 
         // Cycle through each primary SBOM author
@@ -105,8 +216,8 @@ public class MergerCDX extends Merger {
             for(Contact authorB : authorsB) {
                 if(
                         authorA.getName().contains(authorB.getName()) &&
-                        authorA.getEmail().contains(authorB.getEmail()) &&
-                        authorA.getPhone().contains(authorB.getPhone())
+                                authorA.getEmail().contains(authorB.getEmail()) &&
+                                authorA.getPhone().contains(authorB.getPhone())
                 ) {
                     // If a duplicate is found remove it from second SBOM authors
                     authorsB.remove(authorB);
@@ -120,8 +231,8 @@ public class MergerCDX extends Merger {
             authorsNew.add(authorB);
         }
 
+        return authorsNew;
 
-        return mergedCreationData;
     }
 
 }
