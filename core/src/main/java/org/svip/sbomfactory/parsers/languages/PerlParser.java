@@ -1,7 +1,7 @@
 package org.svip.sbomfactory.parsers.languages;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
+import org.svip.utils.VirtualPath;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,8 +9,8 @@ import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
-import static org.svip.sbomfactory.generators.utils.Debug.log;
+import static org.svip.utils.Debug.LOG_TYPE;
+import static org.svip.utils.Debug.log;
 
 
 /**
@@ -72,7 +72,7 @@ public class PerlParser extends LanguageParser {
 
         VirtualPath internalPath = new VirtualPath((group == null ? "" : group) + "/" + name);
 
-        for(VirtualPath internalComponent : internalFiles) {
+        for(VirtualPath internalComponent : sourceFiles) {
             if(internalComponent.getFileExtension().equals("pl")) continue;
             if(internalComponent.removeFileExtension().endsWith(internalPath)) return true;
         }

@@ -1,7 +1,7 @@
 package org.svip.api.controller.old;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 
 import java.io.IOException;

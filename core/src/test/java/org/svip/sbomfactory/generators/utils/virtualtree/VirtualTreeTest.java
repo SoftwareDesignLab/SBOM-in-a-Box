@@ -2,7 +2,8 @@ package org.svip.sbomfactory.generators.utils.virtualtree;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
+import org.svip.utils.VirtualPath;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

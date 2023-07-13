@@ -2,7 +2,7 @@ package org.svip.sbomfactory.generators.generators.cyclonedx;
 
 import org.svip.sbom.model.old.Component;
 import org.svip.sbomfactory.generators.generators.BOMStore;
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorException;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
@@ -11,7 +11,7 @@ import org.svip.sbomfactory.generators.utils.generators.License;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.svip.sbomfactory.generators.utils.Debug.log;
+import static org.svip.utils.Debug.log;
 
 /**
  * File: CycloneDXStore.java

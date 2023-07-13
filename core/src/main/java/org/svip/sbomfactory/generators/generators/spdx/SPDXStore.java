@@ -1,7 +1,7 @@
 package org.svip.sbomfactory.generators.generators.spdx;
 
 import org.svip.sbomfactory.generators.generators.BOMStore;
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorException;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
@@ -9,7 +9,7 @@ import org.svip.sbomfactory.generators.utils.generators.License;
 
 import java.util.*;
 
-import static org.svip.sbomfactory.generators.utils.Debug.log;
+import static org.svip.utils.Debug.log;
 
 /**
  * File: SPDXStore.java

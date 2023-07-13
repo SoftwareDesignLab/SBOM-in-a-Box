@@ -3,7 +3,7 @@ package org.svip.sbomfactory.serializers.serializer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 import org.svip.sbomfactory.serializers.SerializerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -1,15 +1,11 @@
 package org.svip.sbomfactory.serializers.deserializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.jvnet.hk2.internal.Creator;
-import org.mockito.internal.matchers.Or;
 import org.svip.builderfactory.SPDX23SBOMBuilderFactory;
 import org.svip.builders.component.SPDX23PackageBuilder;
 import org.svip.componentfactory.SPDX23PackageBuilderFactory;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
-import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
-import org.svip.sbom.model.old.Component;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
@@ -17,14 +13,11 @@ import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.sbom.model.uids.Hash;
-import org.svip.sbom.model.uids.PURL;
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**

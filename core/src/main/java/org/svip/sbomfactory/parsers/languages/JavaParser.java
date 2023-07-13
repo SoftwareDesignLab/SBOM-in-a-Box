@@ -12,8 +12,8 @@ import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
-import static org.svip.sbomfactory.generators.utils.Debug.log;
+import static org.svip.utils.Debug.LOG_TYPE;
+import static org.svip.utils.Debug.log;
 
 
 /**

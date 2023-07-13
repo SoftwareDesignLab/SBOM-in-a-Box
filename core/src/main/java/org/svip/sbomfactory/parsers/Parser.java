@@ -1,18 +1,17 @@
 package org.svip.sbomfactory.parsers;
 
-import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.sbomfactory.generators.utils.virtualtree.VirtualNode;
-import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
+import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.utils.VirtualPath;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
-import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
-import static org.svip.sbomfactory.generators.utils.Debug.log;
+import static org.svip.utils.Debug.LOG_TYPE;
+import static org.svip.utils.Debug.log;
 
 /**
  * <b>File</b>: Parser.java<br>
@@ -43,7 +42,7 @@ public abstract class Parser {
      * components.
      */
 
-    protected List<VirtualPath> internalFiles;
+    protected Set<VirtualPath> sourceFiles;
 
     /**
      * The standard library URL of the parser.
@@ -83,8 +82,8 @@ public abstract class Parser {
      *
      * @param internalFiles The current internal VirtualTree of the parser.
      */
-    public void setInternalFiles(List<VirtualNode> internalFiles) {
-        this.internalFiles = internalFiles.stream().map(VirtualNode::getPath).toList();
+    public void setSourceFiles(Set<VirtualPath> internalFiles) {
+        this.sourceFiles = internalFiles;
     }
 
     //#endregion
@@ -147,7 +146,7 @@ public abstract class Parser {
      * @param components A list of ParserComponents that the found components will be appended to.
      * @param fileContents file contents to be parsed
      */
-    public abstract void parse(ArrayList<ParserComponent> components, String fileContents);
+    public abstract void parse(ArrayList<SVIPComponentObject> components, String fileContents);
 
     //#endregion
 }

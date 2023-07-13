@@ -7,7 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.svip.sbom.model.old.Component;
 import org.svip.sbom.model.old.SBOM;
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 
 import java.util.Map;
 import java.util.Set;

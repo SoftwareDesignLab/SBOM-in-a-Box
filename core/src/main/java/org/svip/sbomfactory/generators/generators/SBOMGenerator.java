@@ -6,7 +6,7 @@ import org.svip.sbom.model.old.Component;
 import org.svip.sbom.model.old.SBOM;
 import org.svip.sbomfactory.generators.generators.spdx.SPDXStore;
 import org.svip.sbomfactory.generators.generators.spdx.SPDXTagValueWriter;
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorException;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import static org.svip.sbomfactory.generators.utils.Debug.log;
+import static org.svip.utils.Debug.log;
 
 /**
  * File: SBOMGenerator.java

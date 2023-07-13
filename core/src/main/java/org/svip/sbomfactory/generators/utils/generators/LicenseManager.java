@@ -1,6 +1,6 @@
 package org.svip.sbomfactory.generators.utils.generators;
 
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 import org.svip.sbomfactory.generators.utils.queryworkers.QueryWorker;
 import org.svip.sbomfactory.generators.utils.queryworkers.SPDXLicenseQueryWorker;
 
@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static org.svip.sbomfactory.generators.utils.Debug.log;
+import static org.svip.utils.Debug.log;
 
 /**
  * File: LicenseManager.java

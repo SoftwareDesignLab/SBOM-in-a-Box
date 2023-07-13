@@ -3,7 +3,7 @@ package org.svip.sbomfactory.parsers.contexts;
 // Declares Imports
 
 import org.apache.commons.lang3.StringUtils;
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
@@ -13,8 +13,8 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
-import static org.svip.sbomfactory.generators.utils.Debug.log;
+import static org.svip.utils.Debug.LOG_TYPE;
+import static org.svip.utils.Debug.log;
 
 /**
  * file: SubprocessParser.java

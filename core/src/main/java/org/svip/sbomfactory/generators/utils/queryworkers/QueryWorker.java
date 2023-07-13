@@ -1,6 +1,6 @@
 package org.svip.sbomfactory.generators.utils.queryworkers;
 
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.BufferedReader;
@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static org.svip.sbomfactory.generators.utils.Debug.log;
+import static org.svip.utils.Debug.log;
 
 /**
  * File: QueryWorker.java

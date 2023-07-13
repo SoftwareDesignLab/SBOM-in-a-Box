@@ -3,7 +3,7 @@ package org.svip.sbomfactory.generators.generators.cyclonedx;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.svip.sbomfactory.generators.generators.BOMStoreTestCore;
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorException;
 

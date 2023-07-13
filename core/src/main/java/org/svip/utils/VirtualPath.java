@@ -1,6 +1,4 @@
-package org.svip.sbomfactory.generators.utils.virtualtree;
-
-import org.svip.sbomfactory.generators.utils.Debug;
+package org.svip.utils;
 
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
