@@ -12,6 +12,7 @@ import org.svip.builderfactory.CDX14SBOMBuilderFactory;
 import org.svip.builders.component.CDX14PackageBuilder;
 import org.svip.componentfactory.CDX14PackageBuilderFactory;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
+import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
@@ -27,7 +28,9 @@ import org.svip.sbom.model.shared.util.LicenseCollection;
 import javax.management.relation.Relation;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * File: CDX14JSONDeserializer.java
@@ -101,158 +104,32 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
                 sbomBuilder.addLicense(license.asText());
 
         // METADATA
-        sbomBuilder.setCreationData(resolveMetadata(node.get("metadata")));
+        sbomBuilder.setCreationData(resolveMetadata(node.get("metadata"), sbomBuilder));
 
         // ROOT COMPONENT
         sbomBuilder.setRootComponent(resolveComponent(componentBuilder, node.get("metadata").get("component")));
 
         // COMPONENTS
-        if (node.get("components") != null) {
-            for (int i = 0; i < node.get("components").size(); i++) {
-                // TYPE
-                if (node.get("components").get(i).get("type") != null) {
-                    componentBuilder.setType(node.get("components").get(i).get("type").asText());
-                }
-                // MIME TYPE
-                if (node.get("components").get(i).get("mime-type") != null) {
-                    componentBuilder.setMimeType(node.get("components").get(i).get("mime-type").asText());
-                }
-                // UID
-                if (node.get("components").get(i).get("bom-ref") != null) {
-                    componentBuilder.setUID(node.get("components").get(i).get("bom-ref").asText());
-                }
-                // SUPPLIER
-                if (node.get("components").get(i).get("supplier") != null) {
-                    if (node.get("components").get(i).get("supplier").get("name") != null && node.get("components").get(i).get("supplier").get("url") != null) {
-                        Organization supplier = new Organization(node.get("components").get(i).get("supplier").get("name").asText(),
-                                node.get("components").get(i).get("supplier").get("url").asText());
-                        if (node.get("components").get(i).get("supplier").get("contact") != null) {
-                            // Contact requires all fields in its constructor, it might be more usable with an empty constructor and "add" functions
-                            if (node.get("components").get(i).get("supplier").get("contact").get("name") != null &&
-                                    node.get("components").get(i).get("supplier").get("contact").get("email") != null &&
-                                    node.get("components").get(i).get("supplier").get("contact").get("phone") != null) {
-                                Contact contact = new Contact(node.get("components").get(i).get("supplier").get("contact").get("name").asText(),
-                                        node.get("components").get(i).get("supplier").get("contact").get("email").asText(),
-                                        node.get("components").get(i).get("supplier").get("contact").get("phone").asText());
-                                supplier.addContact(contact);
-                            }
-                        }
-                        componentBuilder.setSupplier(supplier);
-                    }
-                }
-                // AUTHOR
-                if (node.get("components").get(i).get("author") != null) {
-                    componentBuilder.setAuthor(node.get("components").get(i).get("author").asText());
-                }
-                // PUBLISHER
-                if (node.get("components").get(i).get("publisher") != null) {
-                    componentBuilder.setPublisher(node.get("components").get(i).get("publisher").asText());
-                }
-                // GROUP
-                if (node.get("components").get(i).get("group") != null) {
-                    componentBuilder.setGroup(node.get("components").get(i).get("group").asText());
-                }
-                // NAME
-                if (node.get("components").get(i).get("name") != null) {
-                    componentBuilder.setName(node.get("components").get(i).get("name").asText());
-                }
-                // VERSION
-                if (node.get("components").get(i).get("version") != null) {
-                    componentBuilder.setVersion(node.get("components").get(i).get("version").asText());
-                }
-                // DESCRIPTION
-                if (node.get("components").get(i).get("description") != null) {
-                    Description description = new Description(node.get("components").get(i).get("description").asText());
-                    componentBuilder.setDescription(description);
-                }
-                // SCOPE
-                if (node.get("components").get(i).get("scope") != null) {
-                    componentBuilder.setScope(node.get("components").get(i).get("scope").asText());
-                }
-                // HASHES
-                if (node.get("components").get(i).get("hashes") != null) {
-                    for (int j = 0; j < node.get("components").get(i).get("hashes").size(); j++) {
-                        componentBuilder.addHash(node.get("components").get(i).get("hashes").get(j).get("alg").asText(), node.get("components").get(i).get("hashes").get(j).get("content").asText());
-                    }
-                }
-                // Licenses
-                if (node.get("components").get(i).get("licenses") != null) {
-                    LicenseCollection componentLicenses = new LicenseCollection();
-                    for (int j = 0; j < node.get("components").get(i).get("licenses").size(); j++) {
-                        componentLicenses.addLicenseInfoFromFile(node.get("components").get(i).get("licenses").get(j).asText());
-                    }
-                    componentBuilder.setLicenses(componentLicenses);
-                }
-                // COPYRIGHT
-                if (node.get("components").get(i).get("copyright") != null) {
-                    componentBuilder.setCopyright(node.get("components").get(i).get("copyright").asText());
-                }
-                // CPE
-                if (node.get("components").get(i).get("cpe") != null) {
-                    componentBuilder.addCPE(node.get("components").get(i).get("cpe").asText());
-                }
-                // PURL
-                if (node.get("components").get(i).get("purl") != null) {
-                    componentBuilder.addPURL(node.get("components").get(i).get("purl").asText());
-                }
-                // EXTERNAL REFERENCES
-                if (node.get("components").get(i).get("externalReferences") != null) {
-                    for (int j = 0; j < node.get("components").get(i).get("externalReferences").size(); j++) {
-                        if (node.get("components").get(i).get("externalReferences").get(j).get("url") != null &&
-                                node.get("components").get(i).get("externalReferences").get(j).get("type") != null) {
-                            ExternalReference externalReference = new ExternalReference(
-                                    node.get("components").get(i).get("externalReferences").get(j).get("url").asText(),
-                                    node.get("components").get(i).get("externalReferences").get(j).get("type").asText());
-                            // add hashes to the external reference
-                            if (node.get("components").get(i).get("externalReferences").get(j).get("hashes") != null) {
-                                for (int k = 0; k < node.get("components").get(i).get("externalReferences").get(j).get("hashes").size(); k++) {
-                                    componentBuilder.addHash(node.get("components").get(i).get("externalReferences").get(j).get("hashes").get(k).get("alg").asText(),
-                                            node.get("components").get(i).get("externalReferences").get(j).get("hashes").get(k).get("content").asText());
-                                }
-                            }
-                            componentBuilder.addExternalReference(externalReference);
-                        }
-                    }
-                }
-                // PROPERTIES
-                if (node.get("components").get(i).get("properties") != null) {
-                    for (int j = 0; j < node.get("components").get(i).get("properties").size(); j++) {
-                        componentBuilder.addProperty(node.get("components").get(i).get("properties").get(j).get("name").asText(), node.get("components").get(i).get("properties").get(j).get("value").asText());
-                    }
-                }
-                // RELATIONSHIPS
-                if (node.get("components").get(i).get("pedigree") != null && node.get("components").get(i).get("bom-ref") != null) {
-                    if (node.get("components").get(i).get("pedigree").get("ancestors") != null) {
-                        for (int j = 0; j < node.get("components").get(i).get("pedigree").get("ancestors").size(); j++) {
-                            Relationship relationship = new Relationship(node.get("components").get(i).get("pedigree").get("ancestors").get(j).asText(),
-                                    "ancestor");
-                            sbomBuilder.addRelationship(node.get("components").get(i).get("bom-ref").asText(), relationship);
-                        }
-                    }
-                    if (node.get("components").get(i).get("pedigree").get("descendants") != null) {
-                        for (int j = 0; j < node.get("components").get(i).get("pedigree").get("descendants").size(); j++) {
-                            Relationship relationship = new Relationship(node.get("components").get(i).get("pedigree").get("descendants").get(j).asText(),
-                                    "descendant");
-                            sbomBuilder.addRelationship(node.get("components").get(i).get("bom-ref").asText(), relationship);
-                        }
-                    }
-                    if (node.get("components").get(i).get("pedigree").get("variants") != null) {
-                        for (int j = 0; j < node.get("components").get(i).get("pedigree").get("variants").size(); j++) {
-                            Relationship relationship = new Relationship(node.get("components").get(i).get("pedigree").get("variants").get(j).asText(),
-                                    "variant");
-                            sbomBuilder.addRelationship(node.get("components").get(i).get("bom-ref").asText(), relationship);
-                        }
-                    }
-                }
-                // add the component to the sbom builder
-                sbomBuilder.addCDX14Package(componentBuilder.buildAndFlush());
+        if (node.get("components") != null)
+            for(JsonNode component : node.get("components"))
+                sbomBuilder.addCDX14Package(resolveComponent(componentBuilder, component));
+
+        // EXTERNAL REFERENCES
+        if (node.get("externalReferences") != null)
+            for (JsonNode ref : node.get("externalReferences"))
+                sbomBuilder.addExternalReference(resolveExternalRef(ref));
+
+        if (node.get("dependencies") != null)
+            for (JsonNode depNode : node.get("dependencies")) {
+                String ref = depNode.get("ref").asText();
+                resolveDependency(depNode).forEach(d -> sbomBuilder.addRelationship(ref, d));
             }
-        }
+
         // Build the SBOM
         return sbomBuilder.buildCDX14SBOM();
     }
 
-    private CreationData resolveMetadata(JsonNode metadata) {
+    private CreationData resolveMetadata(JsonNode metadata, CDX14Builder sbomBuilder) {
         if (metadata == null) return null;
         CreationData creationData = new CreationData();
 
@@ -293,6 +170,21 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
 
         JsonNode supplier = metadata.get("supplier");
         if (supplier != null) creationData.setSupplier(resolveOrganization(supplier));
+
+        if (metadata.get("properties") != null)
+            for (JsonNode prop : metadata.get("properties")) {
+                String name = prop.get("name").asText();
+                String value = prop.get("value").asText();
+                if (name.equals("creatorComment")) creationData.setCreatorComment(value);
+                else creationData.addProperty(name, value);
+            }
+
+        if (metadata.get("licenses") != null)
+            for (JsonNode license : metadata.get("licenses")) {
+                // TODO will it cause problems duplicating these?
+                sbomBuilder.addLicense(license.get("name").asText());
+                creationData.addLicense(license.get("name").asText());
+            }
 
         return creationData;
     }
@@ -367,11 +259,9 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
                     builder.addExternalReference(resolveExternalRef(ref));
             }
             // COMPONENT PROPERTIES
-            if (component.get("properties") != null) {
-                for (int i = 0; i < component.get("properties").size(); i++) {
-                    builder.addProperty(component.get("properties").get(i).get("name").asText(), component.get("properties").get(i).get("value").asText());
-                }
-            }
+            if (component.get("properties") != null)
+                for (JsonNode prop : component.get("properties"))
+                    builder.addProperty(prop.get("name").asText(), prop.get("value").asText());
 
         // add the component to the sbom builder
         return builder.buildAndFlush();
@@ -411,5 +301,14 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
             resolveHashes(hashes).forEach(externalReference::addHash);
 
         return externalReference;
+    }
+
+    private Set<Relationship> resolveDependency(JsonNode dep) {
+        Set<Relationship> relationships = new HashSet<>();
+
+        for(JsonNode dependency : dep.get("dependsOn"))
+            relationships.add(new Relationship(dependency.asText(), "dependsOn")); // TODO correct type?
+
+        return relationships;
     }
 }
