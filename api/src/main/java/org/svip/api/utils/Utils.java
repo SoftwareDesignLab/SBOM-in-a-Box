@@ -234,19 +234,16 @@ public class Utils {
 
         // serialize into desired format
         Serializer s;
-        String serialized;
+        String serialized = null;
         try{
+            // serialize into SPDX23 schema
             s = SerializerFactory.createSerializer(schema, format, true);
-            if(schema == SerializerFactory.Schema.SPDX23 || schema == SerializerFactory.Schema.SVIP){
+            if(schema == SerializerFactory.Schema.SPDX23){
                 //serialized = s.writeToString((CDX14SBOM) deserialized);// todo fix
                 return internalSerializerError(ret, "","UNIMPLIMENTED CASTING FIX");}
-            else {
-                try{
-                    serialized = s.writeToString((SVIPSBOM) deserialized);
-                }catch (ClassCastException c){
-                //    serialized = s.writeToString((SPDX23SBOM) deserialized); // todo fix
-                    return internalSerializerError(ret, "","UNIMPLIMENTED CASTING FIX");}
-
+            else if(schema == SerializerFactory.Schema.CDX14){ // serialize into CDX14 schema
+                    //serialized = s.writeToString((SPDX23SBOM) deserialized); // todo fix
+                    return internalSerializerError(ret, "","UNIMPLIMENTED CASTING FIX");
             }
 
         }catch (Exception e){

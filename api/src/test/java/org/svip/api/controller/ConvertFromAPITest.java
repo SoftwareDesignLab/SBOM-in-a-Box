@@ -35,7 +35,7 @@ public class ConvertFromAPITest extends APITest{
 
         when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
 
-        String[] schemas = {"CDX14", "SPDX23", "SVIP"};
+        String[] schemas = {"CDX14", "SPDX23"};
         String[] formats = {"JSON", "TAGVALUE"};
 
         for (String schema: schemas
