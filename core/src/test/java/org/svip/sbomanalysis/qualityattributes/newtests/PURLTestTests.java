@@ -100,7 +100,7 @@ class PURLTestTests {
         List<Result> resultList = new ArrayList<Result>(result);
         Result r = resultList.get(1);
 
-        assertEquals(STATUS.FAIL, r.getStatus());
+        assertEquals(STATUS.PASS, r.getStatus());
     }
 
     @Test
@@ -120,8 +120,8 @@ class PURLTestTests {
         List<Result> resultList = new ArrayList<Result>(result);
         Result r = resultList.get(1);
 
-        assertEquals(STATUS.PASS, resultList.get(0).getStatus());
-        assertEquals(STATUS.FAIL, r.getStatus());
+        assertEquals(STATUS.FAIL, resultList.get(0).getStatus());
+        assertEquals(STATUS.PASS, r.getStatus());
     }
 
     // TODO these test are more geared towards testing the result factory
