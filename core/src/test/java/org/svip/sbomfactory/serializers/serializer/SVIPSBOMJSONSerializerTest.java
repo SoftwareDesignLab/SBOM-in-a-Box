@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.svip.sbomfactory.generators.utils.Debug;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 public class SVIPSBOMJSONSerializerTest extends SerializerTest {
     public SVIPSBOMJSONSerializerTest() {
         super(new SVIPSBOMJSONSerializer());
@@ -11,6 +13,9 @@ public class SVIPSBOMJSONSerializerTest extends SerializerTest {
 
     @Test
     public void writeToStringTest() throws JsonProcessingException {
-        Debug.log(Debug.LOG_TYPE.SUMMARY, getSerializer().writeToString(getTestSBOM()));
+        // TODO is this testable since it just serializes the class itself?
+        String svipSBOM = getSerializer().writeToString(getTestSBOM());
+        assertNotNull(svipSBOM);
+        Debug.log(Debug.LOG_TYPE.SUMMARY, svipSBOM);
     }
 }
