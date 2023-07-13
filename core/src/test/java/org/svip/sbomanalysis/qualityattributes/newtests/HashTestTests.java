@@ -22,7 +22,6 @@ class HashTestTests {
     String testNotSHA1Hash = "2f05477fc24bb4faefd86517156dafdecec45b8ad3cf2522a563582b";
 
     String testSPDXExclusiveHash = "SHA224";
-    String testSHA224Hash = "2f05477fc24bb4faefd86517156dafdecec45b8ad3cf2522a563582b";
 
     HashTest hashTest;
 
@@ -35,7 +34,7 @@ class HashTestTests {
     public void test_null_error_test(){
         Set<Result> result = hashTest.test("hash", null);
 
-        List<Result> resultList = new ArrayList<Result>(result);
+        List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
 
         assertEquals(STATUS.ERROR, r.getStatus());
