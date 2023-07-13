@@ -3,15 +3,20 @@ package org.svip.sbom.model.objects;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Schema;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
+import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
-import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.Relationship;
+import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * file: SVIPSBOM.java
@@ -263,7 +268,13 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
         }
         catch (NullPointerException n){}
         this.rootComponent = temp;
-        this.components = spdx23SBOM.getComponents();
+
+        this.components = spdx23SBOM.getComponents().stream().filter(Objects::nonNull)
+                        .map(c -> {
+                            if (c instanceof SPDX23FileObject) return new SVIPComponentObject((SPDX23FileObject) c);
+                            else return new SVIPComponentObject((SPDX23PackageObject) c);
+                        }).collect(Collectors.toSet());
+
         this.relationships = (HashMap<String, Set<Relationship>>) spdx23SBOM.getRelationships();
         this.externalReferences = spdx23SBOM.getExternalReferences();
         this.SPDXLicenseListVersion = spdx23SBOM.getSPDXLicenseListVersion();
@@ -288,7 +299,11 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
         }
         catch (NullPointerException n){}
         this.rootComponent = temp;
-        this.components = cdx14SBOM.getComponents();
+
+        this.components = cdx14SBOM.getComponents().stream().filter(Objects::nonNull)
+                .map(c -> new SVIPComponentObject((CDX14ComponentObject) c))
+                .collect(Collectors.toSet());
+
         this.relationships = (HashMap<String, Set<Relationship>>) cdx14SBOM.getRelationships();
         this.externalReferences = cdx14SBOM.getExternalReferences();
 

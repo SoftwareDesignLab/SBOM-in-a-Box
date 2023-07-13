@@ -4,7 +4,7 @@ import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
@@ -501,6 +501,47 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
         this.comment = getComment();
         this.attributionText = getAttributionText();
+    }
+
+    /**
+     * // Constructs an SVIPComponent object from an spdx23FileObject
+     * @param spdx23FileObject said object to construct from
+     */
+    public SVIPComponentObject(SPDX23FileObject spdx23FileObject){
+        this.type = spdx23FileObject.getType();
+        this.uid = spdx23FileObject.getUID();
+        this.author = spdx23FileObject.getAuthor();
+        this.name = spdx23FileObject.getName();
+        this.licenses = spdx23FileObject.getLicenses();
+        this.copyright = spdx23FileObject.getCopyright();
+        this.hashes = (HashMap<String, String>) spdx23FileObject.getHashes();
+        this.supplier = null;
+        this.version = null;
+        this.description = null;
+        this.cpes = null;
+        this.purls = null;
+        this.externalReferences = null;
+        this.downloadLocation = null;
+        this.fileName = null;
+        this.filesAnalyzed = null;
+        this.verificationCode = null;
+        this.homePage = null;
+        this.sourceInfo = null;
+        this.releaseDate = null;
+        this.builtDate = null;
+        this.validUntilDate = null;
+        this.mimeType = null;
+
+
+        // todo is this okay
+        this.publisher = "";
+        this.scope = "";
+        this.group = "";            // attributes not supported in spdx23PackageObject
+        this.properties = null;
+        this.fileNotice  = spdx23FileObject.getFileNotice();
+
+        this.comment = spdx23FileObject.getComment();
+        this.attributionText = spdx23FileObject.getAttributionText();
     }
 
     /**

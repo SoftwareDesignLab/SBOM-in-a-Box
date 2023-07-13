@@ -205,7 +205,8 @@ public class Utils {
             d = SerializerFactory.createDeserializer(sbom.getContents());
             deserialized = d.readFromString(sbom.getContents());
         }catch (Exception e){
-            return internalSerializerError(ret, ": " + e.getMessage(),"DURING DESERIALIZATION");
+            return internalSerializerError(ret,
+                    ": " + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()),"DURING DESERIALIZATION");
         }
         if(deserialized == null)
             return internalSerializerError(ret, "","DURING DESERIALIZATION"
@@ -249,7 +250,7 @@ public class Utils {
             }
 
         }catch (Exception e){
-            return internalSerializerError(ret, ": " + e.getMessage(),"DURING SERIALIZATION");
+            return internalSerializerError(ret, ": " + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()),"DURING SERIALIZATION");
         }
         if(serialized == null){
             return internalSerializerError(ret, "","DURING SERIALIZATION");

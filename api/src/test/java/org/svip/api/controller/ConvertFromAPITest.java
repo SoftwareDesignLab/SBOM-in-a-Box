@@ -11,13 +11,10 @@ import org.svip.api.model.SBOMFile;
 import org.svip.sbomfactory.serializers.SerializerFactory;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -52,7 +49,6 @@ public class ConvertFromAPITest extends APITest{
                     LOGGER.info("From             " + ((testMap.get(id).getFileName()).contains("json")
                             ? "JSON" : "TAGVALUE") + " --> " + convertToFormat);
                     ResponseEntity<String> response = controller.convert(id, convertToSchema, convertToFormat,true);
-                    LOGGER.info( "\n-------------\n");
 
                     String res = response.getBody();
                     int x = 0;
@@ -61,6 +57,8 @@ public class ConvertFromAPITest extends APITest{
                         LOGGER.info("HTTP STATUS OK");
                     if(response.getBody() != null)
                         LOGGER.info("NOT NULL");
+
+                    LOGGER.info( "\n-------------\n");
 
                     //assertEquals(HttpStatus.OK, response.getStatusCode());
                     //assertEquals(testMap.get(id).getContents(), response.getBody());
