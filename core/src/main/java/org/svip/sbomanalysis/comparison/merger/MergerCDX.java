@@ -37,7 +37,7 @@ public class MergerCDX extends Merger {
         // Create a new builder for the new SBOM
         CDX14Builder builder = new CDX14Builder();
 
-        /* Assign all top level data for the new SBOM */
+        /** Assign all top level data for the new SBOM **/
 
         // Format
         builder.setFormat(mainSBOM.getFormat());
@@ -72,7 +72,7 @@ public class MergerCDX extends Merger {
         // Root Component
         builder.setRootComponent(mainSBOM.getRootComponent());
 
-
+        // Return the newly built merged SBOM
         return builder.Build();
 
     }
@@ -127,8 +127,11 @@ public class MergerCDX extends Merger {
         }
 
         // Creation Tools
+        Set<CreationTool> mergedTools = mergeCreationTools(A.getCreationTools(), B.getCreationTools());
+        for(CreationTool mergedTool : mergedTools) { mergedCreationData.addCreationTool(mergedTool); }
 
         // Document Comment
+        mergedCreationData.setCreatorComment("1) " + A.getCreatorComment() + "\n2) " + B.getCreatorComment());
 
         // Return Creation Data
         return mergedCreationData;
@@ -170,42 +173,6 @@ public class MergerCDX extends Merger {
 
     }
 
-    private Set<CreationTool> mergeCreationTools(Set<CreationTool> toolsA, Set<CreationTool> toolsB) {
-
-        // new creation tools set
-        Set<CreationTool> mergedTools = new HashSet<>();
-
-        for(CreationTool toolA : toolsA) {
-            for(CreationTool toolB : toolsB) {
-                if(toolA.getName() == toolB.getName() && toolA.getVendor() == toolB.getVendor() && toolA.getVersion() == toolB.getVersion()) {
-
-                    // New tool to hold merged CreationTool data
-                    CreationTool newTool = new CreationTool();
-
-                    // Set the name, vendor, and version
-                    newTool.setName(toolA.getName());
-                    newTool.setVendor(toolA.getVendor());
-                    newTool.setVersion(toolA.getVersion());
-
-                    // Merge hashes
-                    for(String hashA : toolA.getHashes().keySet()) {
-                        newTool.addHash(hashA, toolA.getHashes().get(hashA));
-                    }
-                    for(String hashB : toolB.getHashes().keySet()) {
-                        if(!newTool.getHashes().containsKey(hashB)) {
-                            newTool.addHash(hashB, toolB.getHashes().get(hashB));
-                        }
-                    }
-
-                } else {
-                    mergedTools.add(toolA);
-                }
-            }
-        }
-
-        return mergedTools;
-    }
-
     private Set<Contact> mergeAuthors(Set<Contact> authorsA, Set<Contact> authorsB) {
 
         Set<Contact> authorsNew = new HashSet<>();
@@ -231,7 +198,50 @@ public class MergerCDX extends Merger {
             authorsNew.add(authorB);
         }
 
+        // Return the merged Authors
         return authorsNew;
+
+    }
+
+
+    private Set<CreationTool> mergeCreationTools(Set<CreationTool> toolsA, Set<CreationTool> toolsB) {
+
+        // new creation tools set
+        Set<CreationTool> mergedTools = new HashSet<>();
+
+        for(CreationTool toolA : toolsA) {
+            for(CreationTool toolB : toolsB) {
+                if(toolA.getName() == toolB.getName() && toolA.getVendor() == toolB.getVendor() && toolA.getVersion() == toolB.getVersion()) {
+
+                    // New tool to hold merged CreationTool data
+                    CreationTool newTool = new CreationTool();
+
+                    // Set the name, vendor, and version
+                    newTool.setName(toolA.getName());
+                    newTool.setVendor(toolA.getVendor());
+                    newTool.setVersion(toolA.getVersion());
+
+                    // Merge A hashes
+                    for(String hashA : toolA.getHashes().keySet()) {
+                        newTool.addHash(hashA, toolA.getHashes().get(hashA));
+                    }
+                    // Merge B hashes
+                    for(String hashB : toolB.getHashes().keySet()) {
+                        // Make sure it doesn't already exist from the A hashes
+                        if(!newTool.getHashes().containsKey(hashB)) {
+                            newTool.addHash(hashB, toolB.getHashes().get(hashB));
+                        }
+                    }
+
+                } else {
+                    // Otherwise, add the tool to the mergedTool set
+                    mergedTools.add(toolA);
+                }
+            }
+        }
+
+        // Returned the merged tools
+        return mergedTools;
 
     }
 
