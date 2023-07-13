@@ -3,6 +3,7 @@ package org.svip.sbom.model.objects;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Schema;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.util.ExternalReference;
@@ -237,4 +238,27 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
         this.SPDXLicenseListVersion = spdxLicenseListVersion;
 
     }
+
+    /*
+        Constructors from other SBOMs
+     */
+
+    public SVIPSBOM(SPDX23SBOM spdx23SBOM){
+        this.format = spdx23SBOM.getFormat();
+        this.name = spdx23SBOM.getName();
+        this.uid = spdx23SBOM.getUID();
+        this.version = spdx23SBOM.getVersion();
+        this.specVersion = spdx23SBOM.getSpecVersion();
+        this.licenses = spdx23SBOM.getLicenses();
+        this.creationData = spdx23SBOM.getCreationData();
+        this.documentComment = spdx23SBOM.getDocumentComment();
+        //this.rootComponent = spdx23SBOM.getRootComponent(); // todo fix
+        this.rootComponent = null;
+
+        this.components = spdx23SBOM.getComponents();
+        this.relationships = (HashMap<String, Set<Relationship>>) spdx23SBOM.getRelationships();
+        this.externalReferences = spdx23SBOM.getExternalReferences();
+        this.SPDXLicenseListVersion = spdx23SBOM.getSPDXLicenseListVersion();
+    }
+
 }

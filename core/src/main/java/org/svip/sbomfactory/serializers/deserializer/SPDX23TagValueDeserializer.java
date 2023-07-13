@@ -164,7 +164,14 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         while(relationship.find()) {
             Relationship r = new Relationship(relationship.group(3), relationship.group(2));
 
-            String nextLine = lines.get(lines.indexOf(relationship.group()) + 1);
+            String nextLine;
+            try{
+                nextLine = lines.get(lines.indexOf(relationship.group()) + 1);
+            }
+            catch (IndexOutOfBoundsException e){
+                break;
+            }
+            
             if (nextLine.startsWith("RelationshipComment: ")) {
                 r.setComment(nextLine.substring(nextLine.indexOf(" ") + 1));
                 lines.remove(nextLine);
