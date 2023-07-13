@@ -1,13 +1,8 @@
 package org.svip.sbomanalysis.qualityattributes.newtests;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.model.interfaces.generics.Component;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
-import org.svip.sbom.model.shared.Relationship;
-import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.STATUS;
@@ -18,15 +13,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PURLTestTests {
 
-    String nullPURL = null;
-
     String testRandomPURL = "pkg:random/test@2.0.0";
 
     String testActualPURL = "pkg:golang/rsc.io/sampler@v1.3.0";
 
     PURLTest purlTest;
 
-    String test_name = "Python";
 
 
     @BeforeEach
@@ -44,7 +36,7 @@ class PURLTestTests {
     public void test_error_test(){
         Set<Result> result =  purlTest.test("purl", null);
 
-        List<Result> resultList = new ArrayList<Result>(result);
+        List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
 
         assertEquals(STATUS.ERROR, r.getStatus());
@@ -56,7 +48,7 @@ class PURLTestTests {
     public void isValidPURL_pass_test(){
         Set<Result> result =  purlTest.test("purl", testActualPURL);
 
-        List<Result> resultList = new ArrayList<Result>(result);
+        List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
 
         assertEquals(STATUS.PASS, r.getStatus());
@@ -66,7 +58,7 @@ class PURLTestTests {
     public void isValidPURL_fail_test(){
         Set<Result> result =  purlTest.test("purl", "purl");
 
-        List<Result> resultList = new ArrayList<Result>(result);
+        List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
 
         assertEquals(STATUS.FAIL, r.getStatus());
@@ -76,7 +68,7 @@ class PURLTestTests {
     public void isAccuratePURL_pass_test(){
         Set<Result> result =  purlTest.test("purl", testActualPURL);
 
-        List<Result> resultList = new ArrayList<Result>(result);
+        List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(1);
 
         assertEquals(STATUS.PASS, r.getStatus());
@@ -87,7 +79,7 @@ class PURLTestTests {
     {
         Set<Result> result =  purlTest.test("purl", "purl");
 
-        List<Result> resultList = new ArrayList<Result>(result);
+        List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
 
         assertEquals(STATUS.FAIL, r.getStatus());
@@ -97,7 +89,7 @@ class PURLTestTests {
     public void isAccuratePURL_match_getName_fail_test(){
         Set<Result> result =  purlTest.test("purl", "pkg:golang/rsc.io/incorrectName@v1.3.0");
 
-        List<Result> resultList = new ArrayList<Result>(result);
+        List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(1);
 
         assertEquals(STATUS.PASS, r.getStatus());
@@ -107,7 +99,7 @@ class PURLTestTests {
     public void isAccuratePURL_match_getVersion_fail_test(){
         Set<Result> result =  purlTest.test("purl", "pkg:golang/rsc.io/sampler@v0.0.0");
 
-        List<Result> resultList = new ArrayList<Result>(result);
+        List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(1);
 
         assertEquals(STATUS.FAIL, r.getStatus());
@@ -117,7 +109,7 @@ class PURLTestTests {
     public void isValidPURL_pass_isAccuratePURL_match_fail_test(){
         Set<Result> result =  purlTest.test("purl", testRandomPURL);
 
-        List<Result> resultList = new ArrayList<Result>(result);
+        List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(1);
 
         assertEquals(STATUS.FAIL, resultList.get(0).getStatus());

@@ -15,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CPETestTests {
 
-    String testRandomCPE = "cpe:2.3:a:random_test_cpe:random:3.11.2:*:*:*:*:*:*:*";
 
     String testActualCPE = "cpe:2.3:a:python_software_foundation:python:3.11.2:*:*:*:*:*:*:*";
 
@@ -65,7 +64,7 @@ class CPETestTests {
     public void isAccurateCPE_pass_test(){
         Set<Result> result =  cpeTest.test("cpe", testActualCPE);
 
-        List<Result> resultList = new ArrayList<Result>(result);
+        List<Result> resultList = new ArrayList<>(result);
 
         // first check that valid purl test passes
         Result r = resultList.get(0);
@@ -80,7 +79,7 @@ class CPETestTests {
     public void isAccurateCPE_match_name_fail_test(){
         Set<Result> result =  cpeTest.test("cpe", "cpe:2.3:a:python_software_foundation:notpython:3.11.2:*:*:*:*:*:*:*");
 
-        List<Result> resultList = new ArrayList<Result>(result);
+        List<Result> resultList = new ArrayList<>(result);
 
         // first check that valid purl test passes
         Result r = resultList.get(0);
@@ -95,7 +94,7 @@ class CPETestTests {
     public void isAccurateCPE_match_version_fail_test(){
         Set<Result> result =  cpeTest.test("cpe", "cpe:2.3:a:python_software_foundation:python:3.20.0:*:*:*:*:*:*:*");
 
-        List<Result> resultList = new ArrayList<Result>(result);
+        List<Result> resultList = new ArrayList<>(result);
 
         // first check that valid purl test passes
         Result r = resultList.get(0);
@@ -110,7 +109,7 @@ class CPETestTests {
     public void isAccurateCPE_match_vendor_fail_test(){
         Set<Result> result =  cpeTest.test("cpe", "cpe:2.3:a:not_correct_vendor:python:3.20.0:*:*:*:*:*:*:*");
 
-        List<Result> resultList = new ArrayList<Result>(result);
+        List<Result> resultList = new ArrayList<>(result);
 
         // first check that valid purl test passes
         Result r = resultList.get(0);

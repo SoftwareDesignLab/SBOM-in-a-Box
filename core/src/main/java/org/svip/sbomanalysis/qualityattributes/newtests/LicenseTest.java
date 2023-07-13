@@ -197,35 +197,35 @@ public class LicenseTest extends MetricTest{
         Set<Result> results = new HashSet<>();
         Result r;
 
-        //TODO only held as a string. A License object should be created
-        // Test if valid Identifier
-        if(SPDX_LICENSE_IDENTIFIERS.contains(value.toLowerCase())){
+        // TODO only held as a string. A License object should be created
+
+        // Test if valid identifier
+        if(SPDX_LICENSE_IDENTIFIERS.contains(value.toLowerCase())) {
             r = resultFactory.pass(field, INFO.VALID, value);
-        } else {
-            r = resultFactory.fail(field, INFO.INVALID, value);
+        }
+        // Test if valid name
+        if(SPDX_LICENSE_NAMES.contains(value.toLowerCase())){
+            r = resultFactory.pass(field, INFO.VALID, value);
         }
 
+        // Test if depreciated Identifier
+        if(DEPRECIATED_SPDX_LICENSE_IDENTIFIERS.contains(value.toLowerCase())){
+            r = resultFactory.fail(field, INFO.INVALID, value);
+            results.add(r);
+        }
+
+        // Test if depreciated Name
+        if(DEPRECIATED_SPDX_LICENSE_NAMES.contains(value.toLowerCase())){
+            r = resultFactory.fail(field, INFO.INVALID, value);
+            results.add(r);
+        }
+
+        // name/id is in neither list and does not exist
+        else {
+            r = resultFactory.pass(field, INFO.INVALID, value);
+        }
         results.add(r);
 
-            // Test if valid name
-            if(SPDX_LICENSE_NAMES.contains(value.toLowerCase())){
-                r = resultFactory.pass(field, INFO.VALID, value);
-            } else {
-                r = resultFactory.pass(field, INFO.INVALID, value);
-            }
-            results.add(r);
-
-            // Test if depreciated Identifier
-            if(DEPRECIATED_SPDX_LICENSE_IDENTIFIERS.contains(value.toLowerCase())){
-                r = resultFactory.fail(field, INFO.INVALID, value);
-                results.add(r);
-            }
-
-            // Test if depreciated Name
-            if(DEPRECIATED_SPDX_LICENSE_NAMES.contains(value.toLowerCase())){
-                r = resultFactory.fail(field, INFO.INVALID, value);
-                results.add(r);
-            }
 
         return results;
     }

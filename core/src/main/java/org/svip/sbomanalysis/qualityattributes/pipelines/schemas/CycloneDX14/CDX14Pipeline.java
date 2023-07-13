@@ -188,7 +188,7 @@ public class CDX14Pipeline implements CDX14Tests {
      * Check if a hash algorithm in the given CycloneDX 1.4 SBOM is supported
      * within CycloneDX
      * @param field the field that's tested
-     * @param value the bom ref tested
+     * @param value the hash algorithm tested
      * @return the result of if the hash algorithm is supported
      */
     @Override
