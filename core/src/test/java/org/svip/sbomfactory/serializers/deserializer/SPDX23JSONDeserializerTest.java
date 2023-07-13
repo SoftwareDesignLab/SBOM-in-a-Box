@@ -3,11 +3,6 @@ package org.svip.sbomfactory.serializers.deserializer;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.interfaces.generics.Component;
-import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
@@ -20,10 +15,10 @@ import org.svip.sbom.model.shared.util.ExternalReference;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SPDX23JSONDeserializerTest extends DeserializerTest {
     private final SPDX23SBOM spdx23json;
@@ -135,6 +130,24 @@ public class SPDX23JSONDeserializerTest extends DeserializerTest {
         assertEquals("testCategory", ref.getCategory());
     }
 
+    private void testFile(SPDX23FileObject file, int num) {
+        assertEquals("uid" + num, file.getUID());
+        assertEquals("type" + num, file.getType());
+        assertEquals("comment" + num, file.getComment());
+        assertEquals("fileName" + num, file.getName());
+        assertEquals("comment" + num, file.getComment());
+
+        assertEquals("author" + num, file.getAuthor());
+        assertTrue(file.getLicenses().getConcluded().contains("concluded" + num));
+        assertTrue(file.getLicenses().getInfoFromFiles().contains("licenseFileText" + num));
+        assertEquals("comment" + num, file.getLicenses().getComment());
+
+        assertEquals("copyright" + num, file.getCopyright());
+        assertEquals("attributionText" + num, file.getAttributionText());
+        assertEquals("fileNotice" + num, file.getFileNotice());
+        assertEquals("hash" + num, file.getHashes().get("SHA256"));
+    }
+
     @Test
     @Disabled("SPDX doesn't support a root component.")
     public void rootComponentTest() {
@@ -147,7 +160,16 @@ public class SPDX23JSONDeserializerTest extends DeserializerTest {
         for (Component component : spdx23json.getComponents()) {
             if (component instanceof SPDX23PackageObject)
                 testComponent((SPDX23PackageObject) component,
-                        Integer.parseInt(component.getName().substring("COMPONENT ".length())));
+                        Integer.parseInt(component.getUID().substring("uid".length())));
+        }
+    }
+
+    @Test
+    public void fileTest() {
+        for (Component component : spdx23json.getComponents()) {
+            if (component instanceof SPDX23FileObject)
+                testFile((SPDX23FileObject) component,
+                        Integer.parseInt(component.getUID().substring("uid".length())));
         }
     }
 

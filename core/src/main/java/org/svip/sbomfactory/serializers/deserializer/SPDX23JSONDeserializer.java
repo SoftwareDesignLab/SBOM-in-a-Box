@@ -13,12 +13,12 @@ import org.svip.builders.component.SPDX23PackageBuilder;
 import org.svip.componentfactory.SPDX23FileBuilderFactory;
 import org.svip.componentfactory.SPDX23PackageBuilderFactory;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
+import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
-import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
@@ -27,7 +27,6 @@ import org.svip.sbom.model.shared.util.LicenseCollection;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
 
 /**
  * File: SPDX23JSONDeserializer.java
@@ -137,50 +136,9 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
                 sbomBuilder.addSPDX23Component(buildPackage(packageBuilder, pkg));
 
         // Files
-        if (node.get("files") != null) {
-            for (int i = 0; i < node.get("files").size(); i++) {
-                // TYPE
-                if (node.get("files").get(i).get("fileTypes") != null && node.get("files").get(i).get("fileTypes").size() > 0) {
-                    // TODO get more filetypes
-                    fileBuilder.setType(node.get("files").get(i).get("fileTypes").get(0).asText());
-                }
-                // UID
-                if (node.get("files").get(i).get("SPDXID") != null) {
-                    fileBuilder.setUID(node.get("files").get(i).get("SPDXID").asText());
-                }
-                // AUTHOR
-                if (node.get("files").get(i).get("fileContributors") != null) {
-                    fileBuilder.setAuthor(node.get("files").get(i).get("fileContributors").asText());
-                }
-                // NAME
-                if (node.get("files").get(i).get("fileName") != null) {
-                    fileBuilder.setName(node.get("files").get(i).get("fileName").asText());
-                }
-                // HASHES
-                if (node.get("files").get(i).get("checksums") != null) {
-                    for (int j = 0; j < node.get("files").get(i).get("checksums").size(); j++) {
-                        fileBuilder.addHash(node.get("files").get(i).get("checksums").get(j).get("algorithm").asText(),
-                                node.get("files").get(i).get("checksums").get(j).get("checksumValue").asText());
-                    }
-                }
-                // Licenses
-                LicenseCollection componentLicenses = new LicenseCollection();
-                if (node.get("files").get(i).get("licenseConcluded") != null) {
-                    componentLicenses.addConcludedLicenseString(node.get("files").get(i).get("licenseConcluded").asText());
-                }
-                if (node.get("files").get(i).get("licenseInfoInFiles") != null) {
-                    componentLicenses.addLicenseInfoFromFile(node.get("files").get(i).get("licenseInfoInFiles").asText());
-                }
-                // add license collection to component builder
-                fileBuilder.setLicenses(componentLicenses);
-                // COPYRIGHT
-                if (node.get("files").get(i).get("copyrightText") != null) {
-                    fileBuilder.setCopyright(node.get("files").get(i).get("copyrightText").asText());
-                }
-                // add the component to the sbom builder
-                sbomBuilder.addSPDX23Component(fileBuilder.buildAndFlush());
-            }
-        }
+        if (node.get("packages") != null)
+            for (JsonNode file : node.get("files"))
+                sbomBuilder.addSPDX23Component(buildFile(fileBuilder, file));
 
         // Relationships:
         if (node.get("relationships") != null)
@@ -299,6 +257,59 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
 
 
         // add the component to the sbom builder
+        return builder.buildAndFlush();
+    }
+
+    private SPDX23FileObject buildFile(SPDX23FileBuilder builder, JsonNode file) {
+        // UID
+        if (file.get("SPDXID") != null) builder.setUID(file.get("SPDXID").asText());
+
+        // NAME
+        if (file.get("fileName") != null) builder.setName(file.get("fileName").asText());
+
+        // TYPE
+        if (file.get("fileTypes") != null && file.get("fileTypes").size() > 0)
+            // TODO set more filetypes, sbom only supports 1
+            builder.setType(file.get("fileTypes").get(0).asText());
+
+        // AUTHOR
+        // TODO store more than 1 author
+        if (file.get("fileContributors") != null)
+            for (JsonNode author : file.get("fileContributors"))
+                builder.setAuthor(author.asText());
+
+        // Licenses
+        LicenseCollection licenses = new LicenseCollection();
+        if (file.get("licenseConcluded") != null)
+            for (JsonNode concluded : file.get("licenseConcluded"))
+                licenses.addConcludedLicenseString(concluded.asText());
+
+        if (file.get("licenseInfoInFiles") != null)
+            for (JsonNode fileInfo : file.get("licenseInfoInFiles"))
+                licenses.addLicenseInfoFromFile(fileInfo.asText());
+
+        if (file.get("licenseComments") != null) licenses.setComment(file.get("licenseComments").asText());
+
+        builder.setLicenses(licenses);
+
+        // COPYRIGHT
+        if (file.get("copyrightText") != null) builder.setCopyright(file.get("copyrightText").asText());
+
+        // COMMENT
+        if (file.get("comment") != null) builder.setComment(file.get("comment").asText());
+
+        // CHECKSUMS
+        if (file.get("checksums") != null)
+            for (JsonNode cs : file.get("checksums"))
+                builder.addHash(cs.get("algorithm").asText(), cs.get("checksumValue").asText());
+
+        // NOTICE TEXT
+        // Distinguishes this as a file. TODO should be here?
+        if (file.get("noticeText") != null) builder.setFileNotice(file.get("noticeText").asText());
+
+        // ATTRIBUTION TEXT
+        if (file.get("attributionText") != null) builder.setAttributionText(file.get("attributionText").asText());
+
         return builder.buildAndFlush();
     }
 }
