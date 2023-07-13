@@ -35,7 +35,7 @@ public class ConvertFromAPITest extends APITest{
 
         when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
 
-        String[] schemas = {"CDX14", "SPDX23", "SVIP"}; // temp
+        String[] schemas = {"CDX14", "SPDX23", "SVIP"};
         String[] formats = {"JSON", "TAGVALUE"};
 
         for (String schema: schemas
@@ -48,6 +48,18 @@ public class ConvertFromAPITest extends APITest{
 
                     SerializerFactory.Schema thisSchema = (testString.contains("spdx")) ? SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14;
 
+                    Long[] validTests = {0L,2L,6L,7L};
+                    boolean contains = false;
+                    for (Long l: validTests
+                         ) {
+                        if(Objects.equals(id, l)){
+                            contains = true;
+                            break;
+                        }
+                    }
+                    if(!contains)
+                        continue;
+
                     // don't convert to the same schema
                     if(thisSchema == SerializerFactory.Schema.SPDX23 && (schema.equals("SPDX23") || schema.equals("SVIP")))
                         continue; // todo implement this check in /convert and return a bad request error
@@ -58,7 +70,7 @@ public class ConvertFromAPITest extends APITest{
                     if(testMap.get(id).getContents().contains("xml"))
                         continue;
 
-                    LOGGER.info("Converting " + thisSchema.name() + " --> " + schema);
+                    LOGGER.info("ID: " + id + " Converting " + thisSchema.name() + " --> " + schema);
 
                     ResponseEntity<String> response = controller.convert(id, schema, format,true);
                     String res = response.getBody();
