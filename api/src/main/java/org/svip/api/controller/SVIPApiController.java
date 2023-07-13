@@ -12,6 +12,7 @@ import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.utils.Utils;
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Schema;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
@@ -122,6 +123,7 @@ public class SVIPApiController {
         if (sbomFile.hasNullProperties())
             return new ResponseEntity<>("SBOM filename and/or contents may not be empty", HttpStatus.BAD_REQUEST);
 
+        // TODO REPLACE WITH NEW SERIALIZERS ASAP
         try {
             TranslatorController.translateContents(sbomFile.getContents(), sbomFile.getFileName());
         } catch (TranslatorException e) {
@@ -188,25 +190,16 @@ public class SVIPApiController {
     /**
      * USAGE. Send GET request to /getSBOM with a URL parameter id to get the deserialized SBOM.
      *
-     * The API will respond with an HTTP 200 and the SBOM object
-     * Supported types:
-     * 0: SVIP (Default)
-     * 1: CycloneDX 1.4
-     * 2: SPDX 2.3
+     * The API will respond with an HTTP 200 and the SBOM object json
      * todo: better ways to add more support?
      *
      * @param id The id of the SBOM contents to retrieve.
-     * @param type Type of SBOM object to return
      * @return The contents of the SBOM file.
      */
     @GetMapping("/getSBOM")
-    public ResponseEntity<?> getSBOM(@RequestParam("id") Long id, @RequestParam(defaultValue = "0") Integer type) throws JsonProcessingException {
+    public ResponseEntity<?> getSBOM(@RequestParam("id") Long id){
 
-        // default to SVIP SBOM if no type is given
-//        if(type == null)
-//            type = 0;
-
-        String urlMsg = "GET /svip/getSBOM?id=" + id + "&type=" + type;     // for logging
+        String urlMsg = "GET /svip/getSBOM?id=" + id;    // for logging
 
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
@@ -217,53 +210,42 @@ public class SVIPApiController {
             return new ResponseEntity<>("Invalid SBOM ID", HttpStatus.NOT_FOUND);
         }
 
+        // Deserialize SBOM into JSON Object
+        SBOM sbom = deserialize(sbomFile.get().getContents(),
+                new CDX14JSONDeserializer(),
+                new SPDX23TagValueDeserializer(),
+                new SPDX23JSONDeserializer());
 
-//        SBOM sbom = deserialize(sbomFile.get().getContents(),
-//                new CDX14JSONDeserializer(),
-//                new SPDX23TagValueDeserializer(),
-//                new SPDX23JSONDeserializer());
-
-
-
-        SBOM sbom = null;
-        switch (type) {
-            case 0:
-                break;
-            case 1:
-                sbom = new CDX14JSONDeserializer().readFromString(sbomFile.get().getContents());
-                break;
-            case 2:
-                break;
-            default:
-                LOGGER.warn(urlMsg + " - BAD TYPE ARGUMENT");
-                return new ResponseEntity<>("Invalid Type Argument", HttpStatus.BAD_REQUEST);
-
-        }
-
+        // All deserializers failed
         if(sbom == null)
             return new ResponseEntity<>("Failed to deserialize SBOM content", HttpStatus.INTERNAL_SERVER_ERROR);
 
         // Log
         LOGGER.info(urlMsg + " - File: " + sbomFile.get().getFileName());
 
-
         return Utils.encodeResponse(sbom);
     }
 
+    /**
+     * Deserialize Utility into SBOM JSON Objects
+     *
+     * @param contents SBOM string to deserialize
+     * @param deserializers Collection of deserializers to attempt to use
+     * @return Deserialized SBOM Object
+     */
     public SBOM deserialize(String contents, Deserializer... deserializers){
         for(Deserializer d : deserializers){
             try{
-                CDX14SBOM s = (CDX14SBOM) d.readFromString(contents);
-                LOGGER.info("Failed to parse using " + d.getClass().getName());
+                SBOM s = d.readFromString(contents);
+                LOGGER.info("Successfully parsed using " + d.getClass().getSimpleName());
                 return s;
             } catch (Exception e){
-                LOGGER.warn("Failed to parse using " + d.getClass().getName());
+                LOGGER.warn("Failed to parse using " + d.getClass().getSimpleName());
             }
         }
         LOGGER.error("All deserializers failed to parse SBOM contents");
         return null;
     }
-
 
 
     /**
