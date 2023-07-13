@@ -256,7 +256,12 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
         this.licenses = spdx23SBOM.getLicenses();
         this.creationData = spdx23SBOM.getCreationData();
         this.documentComment = spdx23SBOM.getDocumentComment();
-        this.rootComponent = new SVIPComponentObject(spdx23SBOM.getRootComponent());
+        SVIPComponentObject temp = null;
+        try{
+            temp = new SVIPComponentObject(spdx23SBOM.getRootComponent()); // todo this is a temporary fix and messes up json object mapping in serializers
+        }
+        catch (NullPointerException n){}
+        this.rootComponent = temp;
         this.components = spdx23SBOM.getComponents();
         this.relationships = (HashMap<String, Set<Relationship>>) spdx23SBOM.getRelationships();
         this.externalReferences = spdx23SBOM.getExternalReferences();
