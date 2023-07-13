@@ -10,7 +10,12 @@ import java.util.Map;
 public class Comparison {
     private Map<String, List<Conflict>> componentConflicts;
     private List<String> missingComponents;
-
+    /**
+     * file: Comparison.java
+     * Compares SBOMs
+     *
+     * @author Thomas Roman
+     */
     public Comparison(SBOM targetSBOM, SBOM otherSBOM) {
         // METADATA
         CompareMetadata(targetSBOM, otherSBOM);
