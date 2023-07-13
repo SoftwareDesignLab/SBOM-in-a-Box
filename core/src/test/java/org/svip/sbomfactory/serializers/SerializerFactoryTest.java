@@ -23,8 +23,11 @@ public class SerializerFactoryTest {
     public SerializerFactoryTest() throws IOException {
         String source = System.getProperty("user.dir") + "/src/test/java/org/svip/sbomfactory/serializers";
         CDX14_JSON = new String(Files.readAllBytes(Paths.get(source + "/sample_boms/cdx_json/sbom.alpine.json")));
-        SPDX23_JSON = new String(Files.readAllBytes(Paths.get(source + "/sample_boms/syft-0.80.0-source-spdx-json.json")));
-        SPDX23_TAGVALUE = new String(Files.readAllBytes(Paths.get(source + "/sample_boms/sbom.alpine.2-3.spdx")));
+        SPDX23_JSON = new String(Files.readAllBytes(Paths.get(source + "/sample_boms/spdx_json/syft-0.80" +
+                ".0-source-spdx-json" +
+                ".json")));
+        SPDX23_TAGVALUE =
+                new String(Files.readAllBytes(Paths.get(source + "/sample_boms/spdx_tagvalue/sbom.alpine.2-3.spdx")));
     }
 
     @Test

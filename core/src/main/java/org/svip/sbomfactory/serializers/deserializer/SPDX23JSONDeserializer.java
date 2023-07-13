@@ -218,6 +218,10 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
         // DOWNLOAD LOCATION
         if (pkg.get("downloadLocation") != null) builder.setDownloadLocation(pkg.get("downloadLocation").asText());
 
+        if (pkg.get("comment") != null) builder.setComment(pkg.get("comment").asText());
+
+        if (pkg.get("packageFileName") != null) builder.setFileName(pkg.get("packageFileName").asText());
+
         // DESCRIPTION
         if (pkg.get("summary") != null) {
             Description description = new Description(pkg.get("summary").asText());
