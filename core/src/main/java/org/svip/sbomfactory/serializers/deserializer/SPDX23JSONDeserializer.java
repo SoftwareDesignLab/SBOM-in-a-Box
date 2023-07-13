@@ -304,7 +304,7 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
                 builder.addHash(cs.get("algorithm").asText(), cs.get("checksumValue").asText());
 
         // NOTICE TEXT
-        // Distinguishes this as a file. TODO should be here?
+        // Distinguishes this as a file.
         if (file.get("noticeText") != null) builder.setFileNotice(file.get("noticeText").asText());
 
         // ATTRIBUTION TEXT
