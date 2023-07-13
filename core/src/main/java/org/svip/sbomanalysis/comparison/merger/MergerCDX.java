@@ -1,5 +1,6 @@
 package org.svip.sbomanalysis.comparison.merger;
 
+import org.svip.builders.component.CDX14PackageBuilder;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
 
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -28,8 +29,8 @@ public class MergerCDX extends Merger {
     @Override
     protected SBOM mergeSBOM(SBOM A, SBOM B) {
 
-        Set<CDX14ComponentObject> componentsA = Collections.singleton((CDX14ComponentObject) A.getComponents());
-        Set<CDX14ComponentObject> componentsB = Collections.singleton((CDX14ComponentObject) A.getComponents());
+        Set<Component> componentsA = A.getComponents();
+        Set<Component> componentsB = B.getComponents();
 
         // declare SBOM A as the main SBOM, cast it back to CDX14SBOM
         CDX14SBOM mainSBOM = (CDX14SBOM) A;
@@ -72,6 +73,12 @@ public class MergerCDX extends Merger {
         // Root Component
         builder.setRootComponent(mainSBOM.getRootComponent());
 
+        // Components
+        Set<Component> mergedComponents = mergeComponents(componentsA, componentsB);
+        for(Component mergedComponent : mergedComponents) {
+            builder.addComponent(mergedComponent);
+        }
+
         // Return the newly built merged SBOM
         return builder.Build();
 
@@ -79,11 +86,26 @@ public class MergerCDX extends Merger {
 
     @Override
     protected Set<Component> mergeComponents(Set<Component> A, Set<Component> B) {
+        for(Component componentA : A) {
+            CDX14ComponentObject componentA_CDX = (CDX14ComponentObject) componentA;
+            for(Component componentB : B) {
+                CDX14ComponentObject componentB_CDX = (CDX14ComponentObject) componentB;
+                if(componentA_CDX.getName() == componentB_CDX.getName() && componentA_CDX.getVersion() == componentB_CDX.getVersion()) {
+                    mergeComponent(componentA, componentB);
+                }
+            }
+        }
         return null;
     }
 
     @Override
     protected Component mergeComponent(Component A, Component B) {
+
+        CDX14PackageBuilder compBuilder = new CDX14PackageBuilder();
+
+        CDX14ComponentObject componentA_CDX = (CDX14ComponentObject) A;
+        CDX14ComponentObject componentB_CDX = (CDX14ComponentObject) B;
+
         return null;
     }
 
