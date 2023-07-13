@@ -138,7 +138,7 @@ public class SVIPApiController {
      * @return The contents of the SBOM file.
      */
     @GetMapping("/view")
-    public ResponseEntity<String> view(@RequestParam("id") long id) {
+    public ResponseEntity<String> view(@RequestParam("id") Long id) {
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
@@ -207,7 +207,7 @@ public class SVIPApiController {
      * @return The ID of the deleted file.
      */
     @DeleteMapping("/delete")
-    public ResponseEntity<Long> delete(@RequestParam("id") long id) {
+    public ResponseEntity<Long> delete(@RequestParam("id") Long id) {
         // Get SBOM to be deleted
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
