@@ -80,7 +80,7 @@ public class CDX14JSONDeserializerTest extends DeserializerTest {
 
     @Test
     public void metadataSupplierTest() {
-        Organization supplier = cdx14json.getCreationData().getManufacture();
+        Organization supplier = cdx14json.getCreationData().getSupplier();
         assertEquals("Supplier", supplier.getName());
         assertEquals("svip.xyz", supplier.getUrl());
         assertEquals("Supplier", supplier.getContacts().stream().findFirst().get().getName());
@@ -126,14 +126,14 @@ public class CDX14JSONDeserializerTest extends DeserializerTest {
         assertEquals("hash" + num, component.getHashes().get("SHA256"));
 
         // TODO how do we find the difference?
-        assertTrue(component.getLicenses().getConcluded().containsAll(List.of("licenseFileText" + num,
+        assertTrue(component.getLicenses().getInfoFromFiles().containsAll(List.of("licenseFileText" + num,
                 "declared" + num,
                 "concluded" + num)));
 
         ExternalReference ref = component.getExternalReferences().stream().findFirst().get();
         assertEquals(num + ".svip.xyz", ref.getUrl());
         // Comment is irrelevant here
-        assertEquals("testRef", ref.getType());
+        assertEquals("testRef" + num, ref.getType());
         assertEquals("hash" + num, ref.getHashes().get("SHA256"));
         assertTrue(component.getProperties().get("property" + num).contains("value" + num));
     }
@@ -147,7 +147,7 @@ public class CDX14JSONDeserializerTest extends DeserializerTest {
     public void componentTest() {
         for (Component component : cdx14json.getComponents()) {
             testComponent((CDX14ComponentObject) component,
-                    component.getName().charAt(component.getName().length() - 1));
+                    Integer.parseInt(component.getName().substring("COMPONENT ".length())));
         }
     }
 
