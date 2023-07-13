@@ -7,10 +7,15 @@ import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+import org.svip.sbomanalysis.comparison.conflicts.MismatchConflict;
+import org.svip.sbomanalysis.comparison.conflicts.MissingConflict;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.svip.sbomanalysis.comparison.conflicts.ConflictType.*;
 
 /**
  * file: SPDX23FileObject.java
@@ -169,12 +174,129 @@ public class SPDX23FileObject implements SPDX23File {
 
     }
     public List<Conflict> compare(Component other) {
-        return null;
+        ArrayList<Conflict> conflicts = new ArrayList<>();
+        // NAME
+        if (this.name != null ^ other.getName() != null) {
+            conflicts.add(new MissingConflict("name", this.name, other.getName()));
+        } else if (this.name != other.getName()) {
+            conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
+        }
+        // AUTHOR
+        if (this.author != null ^ other.getAuthor() != null) {
+            conflicts.add(new MissingConflict("author", this.author, other.getAuthor()));
+        } else if (this.author != other.getAuthor()) {
+            conflicts.add(new MismatchConflict("author", this.author, other.getAuthor(), AUTHOR_MISMATCH));
+        }
+        // Licenses
+        if (this.licenses != null && other.getLicenses() != null) {
+            if (!this.licenses.getConcluded().containsAll(other.getLicenses().getConcluded())) {
+                conflicts.add(new MismatchConflict("licenses", this.licenses.getConcluded().toString(), other.getLicenses().getConcluded().toString(), LICENSE_MISMATCH));
+            }
+            if (!this.licenses.getDeclared().containsAll(other.getLicenses().getDeclared())) {
+                conflicts.add(new MismatchConflict("licenses", this.licenses.getDeclared().toString(), other.getLicenses().getDeclared().toString(), LICENSE_MISMATCH));
+            }
+            if (!this.licenses.getInfoFromFiles().containsAll(other.getLicenses().getInfoFromFiles())) {
+                conflicts.add(new MismatchConflict("licenses", this.licenses.getInfoFromFiles().toString(), other.getLicenses().getInfoFromFiles().toString(), LICENSE_MISMATCH));
+            }
+        } else if (this.licenses != null) {
+            conflicts.add(new MissingConflict("licenses", this.licenses.toString(), null));
+        } else if (other.getLicenses() != null) {
+            conflicts.add(new MissingConflict("licenses", null, other.getLicenses().toString()));
+        }
+        // HASHES
+        if (this.hashes != null && other.getHashes() != null) {
+            if (!this.hashes.values().containsAll(other.getHashes().values())) {
+                conflicts.add(new MismatchConflict("hashes", this.hashes.toString(), other.getHashes().toString(), HASH_MISMATCH));
+            }
+        } else if (this.hashes != null) {
+            conflicts.add(new MissingConflict("hashes", this.hashes.toString(), null));
+        } else if (other.getHashes() != null) {
+            conflicts.add(new MissingConflict("hashes", null, other.getHashes().toString()));
+        }
+        // TODO SWIDs?
+
+        return conflicts.stream().toList();
     }
     public List<Conflict> compare(SPDX23Component other) {
-        return null;
+        ArrayList<Conflict> conflicts = new ArrayList<>();
+        // NAME
+        if (this.name != null ^ other.getName() != null) {
+            conflicts.add(new MissingConflict("name", this.name, other.getName()));
+        } else if (this.name != other.getName()) {
+            conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
+        }
+        // AUTHOR
+        if (this.author != null ^ other.getAuthor() != null) {
+            conflicts.add(new MissingConflict("author", this.author, other.getAuthor()));
+        } else if (this.author != other.getAuthor()) {
+            conflicts.add(new MismatchConflict("author", this.author, other.getAuthor(), AUTHOR_MISMATCH));
+        }
+        // Licenses
+        if (this.licenses != null && other.getLicenses() != null) {
+            if (!this.licenses.getConcluded().containsAll(other.getLicenses().getConcluded())) {
+                conflicts.add(new MismatchConflict("licenses", this.licenses.getConcluded().toString(), other.getLicenses().getConcluded().toString(), LICENSE_MISMATCH));
+            }
+            if (!this.licenses.getDeclared().containsAll(other.getLicenses().getDeclared())) {
+                conflicts.add(new MismatchConflict("licenses", this.licenses.getDeclared().toString(), other.getLicenses().getDeclared().toString(), LICENSE_MISMATCH));
+            }
+            if (!this.licenses.getInfoFromFiles().containsAll(other.getLicenses().getInfoFromFiles())) {
+                conflicts.add(new MismatchConflict("licenses", this.licenses.getInfoFromFiles().toString(), other.getLicenses().getInfoFromFiles().toString(), LICENSE_MISMATCH));
+            }
+        } else if (this.licenses != null) {
+            conflicts.add(new MissingConflict("licenses", this.licenses.toString(), null));
+        } else if (other.getLicenses() != null) {
+            conflicts.add(new MissingConflict("licenses", null, other.getLicenses().toString()));
+        }
+        // HASHES
+        if (this.hashes != null && other.getHashes() != null) {
+            if (!this.hashes.values().containsAll(other.getHashes().values())) {
+                conflicts.add(new MismatchConflict("hashes", this.hashes.toString(), other.getHashes().toString(), HASH_MISMATCH));
+            }
+        } else if (this.hashes != null) {
+            conflicts.add(new MissingConflict("hashes", this.hashes.toString(), null));
+        } else if (other.getHashes() != null) {
+            conflicts.add(new MissingConflict("hashes", null, other.getHashes().toString()));
+        }
+        // TODO SWIDs?
+
+        return conflicts.stream().toList();
     }
     public List<Conflict> compare(SPDX23File other) {
-        return null;
+        ArrayList<Conflict> conflicts = new ArrayList<>();
+        // NAME
+        if (this.name != null ^ other.getName() != null) {
+            conflicts.add(new MissingConflict("name", this.name, other.getName()));
+        } else if (this.name != other.getName()) {
+            conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
+        }
+        // Licenses
+        if (this.licenses != null && other.getLicenses() != null) {
+            if (!this.licenses.getConcluded().containsAll(other.getLicenses().getConcluded())) {
+                conflicts.add(new MismatchConflict("licenses", this.licenses.getConcluded().toString(), other.getLicenses().getConcluded().toString(), LICENSE_MISMATCH));
+            }
+            if (!this.licenses.getDeclared().containsAll(other.getLicenses().getDeclared())) {
+                conflicts.add(new MismatchConflict("licenses", this.licenses.getDeclared().toString(), other.getLicenses().getDeclared().toString(), LICENSE_MISMATCH));
+            }
+            if (!this.licenses.getInfoFromFiles().containsAll(other.getLicenses().getInfoFromFiles())) {
+                conflicts.add(new MismatchConflict("licenses", this.licenses.getInfoFromFiles().toString(), other.getLicenses().getInfoFromFiles().toString(), LICENSE_MISMATCH));
+            }
+        } else if (this.licenses != null) {
+            conflicts.add(new MissingConflict("licenses", this.licenses.toString(), null));
+        } else if (other.getLicenses() != null) {
+            conflicts.add(new MissingConflict("licenses", null, other.getLicenses().toString()));
+        }
+        // HASHES
+        if (this.hashes != null && other.getHashes() != null) {
+            if (!this.hashes.values().containsAll(other.getHashes().values())) {
+                conflicts.add(new MismatchConflict("hashes", this.hashes.toString(), other.getHashes().toString(), HASH_MISMATCH));
+            }
+        } else if (this.hashes != null) {
+            conflicts.add(new MissingConflict("hashes", this.hashes.toString(), null));
+        } else if (other.getHashes() != null) {
+            conflicts.add(new MissingConflict("hashes", null, other.getHashes().toString()));
+        }
+        // TODO SWIDs?
+
+        return conflicts.stream().toList();
     }
 }

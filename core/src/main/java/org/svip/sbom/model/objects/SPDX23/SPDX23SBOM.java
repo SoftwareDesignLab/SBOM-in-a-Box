@@ -2,19 +2,23 @@ package org.svip.sbom.model.objects.SPDX23;
 
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+import org.svip.sbomanalysis.comparison.conflicts.MismatchConflict;
+import org.svip.sbomanalysis.comparison.conflicts.MissingConflict;
+
+import static org.svip.sbomanalysis.comparison.conflicts.ConflictType.*;
+import static org.svip.sbomanalysis.comparison.conflicts.ConflictType.TIMESTAMP_MISMATCH;
 
 /**
  * file: SPDX23SBOM.java
@@ -236,11 +240,72 @@ public class SPDX23SBOM implements SPDX23Schema{
 
     @Override
     public List<Conflict> compare(SBOM other) {
-        return null;
+        // SPDX - OTHER Comparison
+        ArrayList<Conflict> conflicts = new ArrayList<>();
+        // COMPONENTS
+        if (this.components != null && other.getComponents() != null) {
+            List<Component> targetComponents = this.components.stream().toList();
+            List<Component> otherComponents = other.getComponents().stream().toList();
+            for (int i = 0; i < targetComponents.size(); i++) {
+                for (int j = 0; j < otherComponents.size(); j++) {
+                    // TODO: improve the optimization for component matching
+                    if (targetComponents.get(i).getUID() == otherComponents.get(j).getUID()) {
+                        conflicts.addAll((targetComponents.get(i)).compare(otherComponents.get(j)));
+                    }
+                }
+            }
+        }
+        return conflicts.stream().toList();
     }
 
     @Override
     public List<Conflict> compare(SPDX23SBOM other) {
-        return null;
+        // SPDX - SPDX Comparison
+        ArrayList<Conflict> conflicts = new ArrayList<>();
+        // NAME
+        if (this.name != null ^ other.getName() != null) {
+            conflicts.add(new MissingConflict("name", this.name, other.getName()));
+        } else if (this.name != other.getName()) {
+            conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
+        }
+        // VERSION
+        if (this.version != null ^ other.getVersion() != null) {
+            conflicts.add(new MissingConflict("version", this.version, other.getVersion()));
+        } else if (this.version != other.getVersion()) {
+            conflicts.add(new MismatchConflict("version", this.version, other.getVersion(), VERSION_MISMATCH));
+        }
+        // LICENSES
+        if (this.licenses != null && other.getLicenses() != null) {
+            if (!this.licenses.containsAll(other.getLicenses())) {
+                conflicts.add(new MismatchConflict("licenses", this.licenses.toString(), other.getLicenses().toString(), LICENSE_MISMATCH));
+            }
+        } else if (this.licenses != null) {
+            conflicts.add(new MissingConflict("licenses", this.licenses.toString(), null));
+        } else if (other.getLicenses() != null) {
+            conflicts.add(new MissingConflict("licenses", null, other.getLicenses().toString()));
+        }
+        // Creation data - includes timestamp, licenses
+        if (this.creationData != null && other.getCreationData() != null) {
+            // TIMESTAMP
+            if (this.creationData.getCreationTime() != null ^ other.getCreationData().getCreationTime() != null) {
+                conflicts.add(new MissingConflict("timestamp", this.creationData.getCreationTime(), other.getCreationData().getCreationTime()));
+            } else if (this.creationData.getCreationTime() != other.getCreationData().getCreationTime()) {
+                conflicts.add(new MismatchConflict("timestamp", this.creationData.getCreationTime(), other.getCreationData().getCreationTime(), TIMESTAMP_MISMATCH));
+            }
+        }
+        // COMPONENTS
+        if (this.components != null && other.getComponents() != null) {
+            List<Component> targetComponents = this.components.stream().toList();
+            List<Component> otherComponents = other.getComponents().stream().toList();
+            for (int i = 0; i < targetComponents.size(); i++) {
+                for (int j = 0; j < otherComponents.size(); j++) {
+                    // TODO: improve the optimization for component matching
+                    if (targetComponents.get(i).getUID() == otherComponents.get(j).getUID()) {
+                        conflicts.addAll(((SPDX23PackageObject) targetComponents.get(i)).compare((SPDX23PackageObject) otherComponents.get(j)));
+                    }
+                }
+            }
+        }
+        return conflicts.stream().toList();
     }
 }

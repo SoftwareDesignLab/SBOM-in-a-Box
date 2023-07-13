@@ -3,15 +3,19 @@ package org.svip.sbom.model.objects.CycloneDX14;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Schema;
+import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+import org.svip.sbomanalysis.comparison.conflicts.MismatchConflict;
+import org.svip.sbomanalysis.comparison.conflicts.MissingConflict;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import static org.svip.sbomanalysis.comparison.conflicts.ConflictType.*;
 
 /**
  * file: CDX14SBOM.java
@@ -217,7 +221,22 @@ public class CDX14SBOM implements CDX14Schema {
 
     @Override
     public List<Conflict> compare(SBOM other) {
-        return null;
+        // CDX - OTHER Comparison
+        ArrayList<Conflict> conflicts = new ArrayList<>();
+        // COMPONENTS
+        if (this.components != null && other.getComponents() != null) {
+            List<Component> targetComponents = this.components.stream().toList();
+            List<Component> otherComponents = other.getComponents().stream().toList();
+            for (int i = 0; i < targetComponents.size(); i++) {
+                for (int j = 0; j < otherComponents.size(); j++) {
+                    // TODO: improve the optimization for component matching
+                    if (targetComponents.get(i).getUID() == otherComponents.get(j).getUID()) {
+                        conflicts.addAll((targetComponents.get(i)).compare(otherComponents.get(j)));
+                    }
+                }
+            }
+        }
+        return conflicts.stream().toList();
     }
 
     @Override
