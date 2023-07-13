@@ -7,7 +7,7 @@
   "dataLicense" : "CC0-1.0",
   "documentDescribes" : [ "uid1", "uid2", "uid3" ],
   "creationInfo" : {
-    "comment" : "This SBOM was created for serializer testing",
+    "comment" : "This SBOM was generated using the SVIP serializer tooling.",
     "created" : "TEST TIMESTAMP",
     "licenseListVersion" : "0.0",
     "creators" : [ "Organization: Supplier (supplier@svip.xyz)", "Tool: SVIP Serializer-1.0.0", "Person: Test Author (author@publisher.xyz)" ]
