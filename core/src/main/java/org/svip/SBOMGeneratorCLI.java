@@ -1,6 +1,6 @@
 package org.svip;
 
-import org.svip.sbomfactory.generators.ParserController;
+import org.svip.sbomfactory.parsers.ParserController;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;

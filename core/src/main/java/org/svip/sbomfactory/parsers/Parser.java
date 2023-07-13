@@ -1,4 +1,4 @@
-package org.svip.sbomfactory.generators.parsers;
+package org.svip.sbomfactory.parsers;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualNode;

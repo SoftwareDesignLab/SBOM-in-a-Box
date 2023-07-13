@@ -1,7 +1,8 @@
-package org.svip.sbomfactory.generators.parsers.languages;
+package org.svip.sbomfactory.parsers.languages;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
+import org.svip.sbomfactory.parsers.Parser;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -53,13 +54,13 @@ public class CppParser extends LanguageParser {
     protected boolean isLanguageComponent(ParserComponent component) {
         // Attempt to find component
         try{
-            if(queryURL(STD_LIB_URL + component.getName(), true).getResponseCode() == 200) return true;
+            if(Parser.queryURL(STD_LIB_URL + component.getName(), true).getResponseCode() == 200) return true;
 
             // if external, test if header is in C Library (https://cplusplus.com/reference/clibrary/)
             if(component.getType() == ParserComponent.Type.EXTERNAL && component.getName().contains(".h")){
                 String clib = "c"+component.getName().split("\\.")[0];
                 log(LOG_TYPE.DEBUG, "EXTERNAL [ " + component.getName() + " ] not found, attempting clib");
-                return queryURL(STD_LIB_URL + clib, true).getResponseCode() == 200;
+                return Parser.queryURL(STD_LIB_URL + clib, true).getResponseCode() == 200;
             }
         } catch (Exception e){
             log(LOG_TYPE.EXCEPTION, e);

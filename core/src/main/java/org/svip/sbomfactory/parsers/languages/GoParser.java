@@ -1,6 +1,7 @@
-package org.svip.sbomfactory.generators.parsers.languages;
+package org.svip.sbomfactory.parsers.languages;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.parsers.Parser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +46,7 @@ public class GoParser extends LanguageParser {
         } else endpoint = component.getName(); // Otherwise, it is "/name"
 
         // Return connection response (200 = true, else = false)
-        try { return queryURL(STD_LIB_URL + endpoint, false).getResponseCode() == 200; }
+        try { return Parser.queryURL(STD_LIB_URL + endpoint, false).getResponseCode() == 200; }
         // If an error is thrown, return false
         catch (Exception ignored) { return false; }
     }

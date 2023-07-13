@@ -1,7 +1,8 @@
-package org.svip.sbomfactory.generators.parsers.languages;
+package org.svip.sbomfactory.parsers.languages;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
+import org.svip.sbomfactory.parsers.Parser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,7 +65,7 @@ public class PythonParser extends LanguageParser {
         // Return connection response (200 = true, else = false)
         try {
             // Replace '/' with '.' since all Python submodule pages are top-level
-            return queryURL(this.STD_LIB_URL + endpoint.replace('/', '.') + ".html", false).getResponseCode() == 200;
+            return Parser.queryURL(this.STD_LIB_URL + endpoint.replace('/', '.') + ".html", false).getResponseCode() == 200;
         }
         // If an error is thrown, return false
         catch (Exception ignored) { return false; }

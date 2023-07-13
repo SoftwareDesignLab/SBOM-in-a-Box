@@ -1,4 +1,4 @@
-package org.svip.sbomfactory.generators.parsers.packagemanagers;
+package org.svip.sbomfactory.parsers.packagemanagers;
 
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.svip.sbomfactory.generators.utils.ParserComponent;

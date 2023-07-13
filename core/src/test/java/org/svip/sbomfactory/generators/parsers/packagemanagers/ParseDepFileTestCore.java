@@ -2,6 +2,7 @@ package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
 import org.svip.sbomfactory.generators.parsers.ParserTestCore;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.parsers.packagemanagers.PackageManagerParser;
 
 import java.util.ArrayList;
 

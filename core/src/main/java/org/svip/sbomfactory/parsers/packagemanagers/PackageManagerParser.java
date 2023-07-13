@@ -1,10 +1,10 @@
-package org.svip.sbomfactory.generators.parsers.packagemanagers;
+package org.svip.sbomfactory.parsers.packagemanagers;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.sbom.model.uids.CPE;
-import org.svip.sbomfactory.generators.parsers.Parser;
+import org.svip.sbomfactory.parsers.Parser;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.queryworkers.QueryWorker;

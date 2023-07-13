@@ -2,6 +2,7 @@ package org.svip.sbomfactory.generators.parsers;
 
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
+import org.svip.sbomfactory.parsers.Parser;
 
 public abstract class ParserTestCore<T extends Parser> {
     protected T PARSER;
