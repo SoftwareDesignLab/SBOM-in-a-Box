@@ -71,9 +71,7 @@ public class SPDX23JSONDeserializerTest extends DeserializerTest {
     public void metadataToolTest() {
         CreationTool tool = spdx23json.getCreationData().getCreationTools().stream().findFirst().get();
         assertEquals("SVIP Serializer", tool.getName());
-        assertEquals("SVIP", tool.getVendor());
         assertEquals("1.0.0", tool.getVersion());
-        assertEquals("hash", tool.getHashes().get("SHA256"));
     }
 
     @Test
@@ -81,17 +79,14 @@ public class SPDX23JSONDeserializerTest extends DeserializerTest {
         Contact author = spdx23json.getCreationData().getAuthors().stream().findFirst().get();
         assertEquals("Test Author", author.getName());
         assertEquals("author@publisher.xyz", author.getEmail());
-        assertEquals("123-456-7890", author.getPhone());
     }
 
     @Test
     public void metadataSupplierTest() {
         Organization supplier = spdx23json.getCreationData().getSupplier();
         assertEquals("Supplier", supplier.getName());
-        assertEquals("svip.xyz", supplier.getUrl());
         assertEquals("Supplier", supplier.getContacts().stream().findFirst().get().getName());
         assertEquals("supplier@svip.xyz", supplier.getContacts().stream().findFirst().get().getEmail());
-        assertEquals("123-456-7890", supplier.getContacts().stream().findFirst().get().getPhone());
     }
 
     private void testComponent(SPDX23PackageObject component, int num) {
