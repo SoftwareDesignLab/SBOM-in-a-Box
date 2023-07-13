@@ -222,6 +222,10 @@ public class SVIPApiController {
                 new SPDX23TagValueDeserializer(),
                 new SPDX23JSONDeserializer());
 
+        if(sbom == null)
+            return new ResponseEntity<>("Failed to deserialize SBOM content", HttpStatus.INTERNAL_SERVER_ERROR);
+
+
         switch (type) {
             case 0 -> sbom = (SVIPSBOM) sbom;
             case 1 -> sbom = (CDX14SBOM) sbom;
