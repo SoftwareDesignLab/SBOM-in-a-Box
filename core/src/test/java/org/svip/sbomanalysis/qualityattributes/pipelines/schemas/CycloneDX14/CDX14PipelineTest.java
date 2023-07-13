@@ -23,7 +23,7 @@ class CDX14PipelineTest {
 
     @Test
     void hasBomVersion_null_fail_test() {
-        Set<Result> result = cdx14Pipeline.hasBomVersion("Bom Version", null);
+        Set<Result> result = cdx14Pipeline.hasBomVersion("Bom Version", null, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -33,7 +33,7 @@ class CDX14PipelineTest {
 
     @Test
     void hasBomVersion_empty_string_fail_test() {
-        Set<Result> result = cdx14Pipeline.hasBomVersion("Bom Version", "");
+        Set<Result> result = cdx14Pipeline.hasBomVersion("Bom Version", "", "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -43,7 +43,7 @@ class CDX14PipelineTest {
 
     @Test
     void hasBomVersion_string_pass_test() {
-        Set<Result> result = cdx14Pipeline.hasBomVersion("Bom Version", testBomVersion);
+        Set<Result> result = cdx14Pipeline.hasBomVersion("Bom Version", testBomVersion, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -53,7 +53,7 @@ class CDX14PipelineTest {
 
     @Test
     void validSerialNumber_null_fail_test() {
-        Set<Result> result = cdx14Pipeline.validSerialNumber("Serial Number", null);
+        Set<Result> result = cdx14Pipeline.validSerialNumber("Serial Number", null, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -63,7 +63,7 @@ class CDX14PipelineTest {
 
     @Test
     void validSerialNumber_empty_string_fail_test() {
-        Set<Result> result = cdx14Pipeline.validSerialNumber("Serial Number", "");
+        Set<Result> result = cdx14Pipeline.validSerialNumber("Serial Number", "", "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -73,7 +73,7 @@ class CDX14PipelineTest {
 
     @Test
     void validSerialNumber_string_pass_test() {
-        Set<Result> result = cdx14Pipeline.validSerialNumber("Serial Number", testUID);
+        Set<Result> result = cdx14Pipeline.validSerialNumber("Serial Number", testUID, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -83,7 +83,7 @@ class CDX14PipelineTest {
 
     @Test
     void hasBomRef_null_fail_test() {
-        Set<Result> result = cdx14Pipeline.hasBomRef("Bom Ref", null);
+        Set<Result> result = cdx14Pipeline.hasBomRef("Bom Ref", null, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -93,7 +93,7 @@ class CDX14PipelineTest {
 
     @Test
     void hasBomRef_empty_string_fail_test() {
-        Set<Result> result = cdx14Pipeline.hasBomRef("Bom Ref", "");
+        Set<Result> result = cdx14Pipeline.hasBomRef("Bom Ref", "", "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -103,7 +103,7 @@ class CDX14PipelineTest {
 
     @Test
     void hasBomRef_string_pass_test() {
-        Set<Result> result = cdx14Pipeline.hasBomRef("Bom Ref", testBomRef);
+        Set<Result> result = cdx14Pipeline.hasBomRef("Bom Ref", testBomRef, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -113,7 +113,7 @@ class CDX14PipelineTest {
 
     @Test
     void supportedHash_unsupported_fail_test() {
-        Set<Result> result = cdx14Pipeline.supportedHash("Hash Algorithm", testSPDXExclusiveHash);
+        Set<Result> result = cdx14Pipeline.supportedHash("Hash Algorithm", testSPDXExclusiveHash, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -123,7 +123,7 @@ class CDX14PipelineTest {
 
     @Test
     void supportedHash_supported_pass_test() {
-        Set<Result> result = cdx14Pipeline.supportedHash("Hash Algorithm", testSupportedHash);
+        Set<Result> result = cdx14Pipeline.supportedHash("Hash Algorithm", testSupportedHash, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);

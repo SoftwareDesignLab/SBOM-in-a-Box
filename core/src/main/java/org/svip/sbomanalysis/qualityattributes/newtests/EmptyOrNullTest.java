@@ -33,13 +33,13 @@ public class EmptyOrNullTest {
      * @param field Object to test
      * @return a result if the field is empty/null or has a value
      */
-    public Result test(String field, Object value){
+    public Result test(String field, Object value, String context){
         Result r;
         boolean isEmptyorNull = false;
 
         // Check if value is null first
         if(value == null){
-            r = resultFactory.fail(field, INFO.MISSING, (String) null);
+            r = resultFactory.fail(field, INFO.NULL, (String) null, context);
             return r;
         }
         // Check for empty string if value is instance of a string
@@ -50,21 +50,21 @@ public class EmptyOrNullTest {
         if(value instanceof Collection<?>)
             isEmptyorNull = ((Collection<?>) value).isEmpty();
 
-        // if value was a single string and was empty or null
+        // if value was a single string and was empty
         if(value instanceof String && isEmptyorNull)
-            r = resultFactory.fail(field, INFO.MISSING, (String) value);
+            r = resultFactory.fail(field, INFO.MISSING, (String) value, context);
 
-        // if value was a collection of Strings and was empty or null
+        // if value was a collection of Strings and was empty
         else if(value instanceof Collection<?> && isEmptyorNull){
-            r = resultFactory.fail(field, INFO.MISSING, (Collection<String>) value);
+            r = resultFactory.fail(field, INFO.MISSING, (Collection<String>) value, context);
         }
         // if value was a single string and had a value
         else if(!isEmptyorNull && value instanceof String ){
-            r = resultFactory.pass(field, INFO.HAS, (String) value);
+            r = resultFactory.pass(field, INFO.HAS, (String) value, context);
         }
-        // if value was a collection of Strings and was not empty or null
+        // if value was a collection of Strings and was not empty
         else{
-            r = resultFactory.pass(field, INFO.HAS, (Collection<String>) value);
+            r = resultFactory.pass(field, INFO.HAS, (Collection<String>) value, context);
         }
 
         return r;

@@ -56,7 +56,7 @@ public class PURLTest extends MetricTest{
         // purl string is null so no tests can be run
         // return missing Result
         else {
-            Result r = resultFactory.error(field, INFO.MISSING, value);
+            Result r = resultFactory.error(field, INFO.NULL, value, component.getName());
             results.add(r);
         }
         return results;
@@ -74,11 +74,11 @@ public class PURLTest extends MetricTest{
         try{
             // create new purl object
             new PURL(value);
-            r = resultFactory.pass(field, INFO.VALID, value);
+            r = resultFactory.pass(field, INFO.VALID, value, component.getName());
         }
         // failed to create new purl, test fails
         catch(Exception e){
-            r = resultFactory.fail(field, INFO.INVALID, value);
+            r = resultFactory.fail(field, INFO.INVALID, value, component.getName());
         }
         results.add(r);
         return results;
@@ -94,7 +94,7 @@ public class PURLTest extends MetricTest{
         }
         // failed to create new purl, test automatically fails
         catch(Exception e){
-            r = resultFactory.fail(field, INFO.INVALID, value);
+            r = resultFactory.error(field, INFO.ERROR, value, component.getName());
             results.add(r);
         }
         return results;
@@ -112,18 +112,18 @@ public class PURLTest extends MetricTest{
         // test purl and component name
         String purlName = purl.getName();
         if(!purlName.equals(component.getName())){
-            r = resultFactory.fail("PURL Name", INFO.INVALID, purl.toString());
+            r = resultFactory.fail("PURL Name", INFO.INVALID, purl.toString(), component.getName());
             return r;
         }
         // test purl and component version
         String purlVersion = purl.getVersion();
         if(!purlVersion.equals(component.getVersion())){
-            r = resultFactory.fail("PURL Version", INFO.INVALID, purl.toString());
+            r = resultFactory.fail("PURL Version", INFO.INVALID, purl.toString(), component.getName());
             return r;
         }
         // all fields match the component, test passes
         else {
-            r = resultFactory.pass("CPE Match", INFO.VALID, purl.toString());
+            r = resultFactory.pass("PURL Match", INFO.VALID, purl.toString(), component.getName());
         }
 
         return r;

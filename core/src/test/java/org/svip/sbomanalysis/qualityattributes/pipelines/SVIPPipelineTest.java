@@ -41,7 +41,7 @@ class SVIPPipelineTest {
 
     @Test
     void hasBomVersion_null_fail_test() {
-        Set<Result> result = svipPipeline.hasBomVersion("Bom Version", null);
+        Set<Result> result = svipPipeline.hasBomVersion("Bom Version", null, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -51,7 +51,7 @@ class SVIPPipelineTest {
 
     @Test
     void hasBomVersion_empty_string_fail_test() {
-        Set<Result> result = svipPipeline.hasBomVersion("Bom Version", "");
+        Set<Result> result = svipPipeline.hasBomVersion("Bom Version", "", "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -61,7 +61,7 @@ class SVIPPipelineTest {
 
     @Test
     void hasBomVersion_string_pass_test() {
-        Set<Result> result = svipPipeline.hasBomVersion("Bom Version", testBomVersion);
+        Set<Result> result = svipPipeline.hasBomVersion("Bom Version", testBomVersion, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -71,7 +71,7 @@ class SVIPPipelineTest {
 
     @Test
     void validSerialNumber_null_fail_test() {
-        Set<Result> result = svipPipeline.validSerialNumber("Serial Number", null);
+        Set<Result> result = svipPipeline.validSerialNumber("Serial Number", null, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -81,7 +81,7 @@ class SVIPPipelineTest {
 
     @Test
     void validSerialNumber_empty_string_fail_test() {
-        Set<Result> result = svipPipeline.validSerialNumber("Serial Number", "");
+        Set<Result> result = svipPipeline.validSerialNumber("Serial Number", "", "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -91,7 +91,7 @@ class SVIPPipelineTest {
 
     @Test
     void validSerialNumber_string_pass_test() {
-        Set<Result> result = svipPipeline.validSerialNumber("Serial Number", testUID);
+        Set<Result> result = svipPipeline.validSerialNumber("Serial Number", testUID, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -101,7 +101,7 @@ class SVIPPipelineTest {
 
     @Test
     void hasBomRef_null_fail_test() {
-        Set<Result> result = svipPipeline.hasBomRef("Bom Ref", null);
+        Set<Result> result = svipPipeline.hasBomRef("Bom Ref", null, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -111,7 +111,7 @@ class SVIPPipelineTest {
 
     @Test
     void hasBomRef_empty_string_fail_test() {
-        Set<Result> result = svipPipeline.hasBomRef("Bom Ref", "");
+        Set<Result> result = svipPipeline.hasBomRef("Bom Ref", "", "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -121,7 +121,7 @@ class SVIPPipelineTest {
 
     @Test
     void hasBomRef_string_pass_test() {
-        Set<Result> result = svipPipeline.hasBomRef("Bom Ref", testBomRef);
+        Set<Result> result = svipPipeline.hasBomRef("Bom Ref", testBomRef, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -131,7 +131,7 @@ class SVIPPipelineTest {
 
     @Test
     void supportedHash_unsupported_fail_test() {
-        Set<Result> result = svipPipeline.supportedHash("Hash Algorithm", testSPDXExclusiveHash);
+        Set<Result> result = svipPipeline.supportedHash("Hash Algorithm", testSPDXExclusiveHash, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -141,7 +141,7 @@ class SVIPPipelineTest {
 
     @Test
     void supportedHash_supported_pass_test() {
-        Set<Result> result = svipPipeline.supportedHash("Hash Algorithm", testSupportedHash);
+        Set<Result> result = svipPipeline.supportedHash("Hash Algorithm", testSupportedHash, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -151,7 +151,7 @@ class SVIPPipelineTest {
 
     @Test
     void hasDataLicense_null_fail_test() {
-        Set<Result> result = svipPipeline.hasDataLicense("Data License", null);
+        Set<Result> result = svipPipeline.hasDataLicense("Data License", null, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -161,7 +161,7 @@ class SVIPPipelineTest {
 
     @Test
     void hasDataLicense_incorrect_license_fail_test() {
-        Set<Result> result = svipPipeline.hasDataLicense("Data License", testLicensesFail);
+        Set<Result> result = svipPipeline.hasDataLicense("Data License", testLicensesFail, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -171,7 +171,7 @@ class SVIPPipelineTest {
 
     @Test
     void hasDataLicense_correct_license_pass_test() {
-        Set<Result> result = svipPipeline.hasDataLicense("Data License", testLicensesPass);
+        Set<Result> result = svipPipeline.hasDataLicense("Data License", testLicensesPass, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -181,7 +181,7 @@ class SVIPPipelineTest {
 
     @Test
     void hasSPDXID_null_fail_test() {
-        Set<Result> result = svipPipeline.hasSPDXID("SPDXID", null);
+        Set<Result> result = svipPipeline.hasSPDXID("SPDXID", null, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -191,7 +191,7 @@ class SVIPPipelineTest {
 
     @Test
     void hasSPDXID_empty_string_fail_test() {
-        Set<Result> result = svipPipeline.hasSPDXID("SPDXID", "");
+        Set<Result> result = svipPipeline.hasSPDXID("SPDXID", "", "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -201,7 +201,7 @@ class SVIPPipelineTest {
 
     @Test
     void hasSPDXID_string_pass_test() {
-        Set<Result> result = svipPipeline.hasSPDXID("SPDXID", testSPDXID);
+        Set<Result> result = svipPipeline.hasSPDXID("SPDXID", testSPDXID, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -211,7 +211,7 @@ class SVIPPipelineTest {
 
     @Test
     void hasCreationInfo_null_fail_test() {
-        Set<Result> result = svipPipeline.hasCreationInfo("Creation Data", null);
+        Set<Result> result = svipPipeline.hasCreationInfo("Creation Data", null, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -222,7 +222,7 @@ class SVIPPipelineTest {
     @Test
     void hasCreationInfo_null_manufacture_fail_test() {
         testCreationData.setManufacture(null);
-        Set<Result> result = svipPipeline.hasCreationInfo("Creation Data", testCreationData);
+        Set<Result> result = svipPipeline.hasCreationInfo("Creation Data", testCreationData, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -234,7 +234,7 @@ class SVIPPipelineTest {
     void hasCreationInfo_empty_string_manufacture_fail_test() {
         Organization manufacture = new Organization("", "");
         testCreationData.setManufacture(manufacture);
-        Set<Result> result = svipPipeline.hasCreationInfo("Creation Data", testCreationData);
+        Set<Result> result = svipPipeline.hasCreationInfo("Creation Data", testCreationData, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -246,7 +246,7 @@ class SVIPPipelineTest {
     void hasCreationInfo_valid_manufacture_pass_test() {
         Organization manufacture = new Organization("Organization", "www.organization.com");
         testCreationData.setManufacture(manufacture);
-        Set<Result> result = svipPipeline.hasCreationInfo("Creation Data", testCreationData);
+        Set<Result> result = svipPipeline.hasCreationInfo("Creation Data", testCreationData, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -259,7 +259,7 @@ class SVIPPipelineTest {
         Organization manufacture = new Organization("Organization", "www.organization.com");
         testCreationData.setManufacture(manufacture);
         testCreationData.setCreationTime("2010-01-29T18:30:22Z");
-        Set<Result> result = svipPipeline.hasCreationInfo("Creation Data", testCreationData);
+        Set<Result> result = svipPipeline.hasCreationInfo("Creation Data", testCreationData, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -274,7 +274,7 @@ class SVIPPipelineTest {
         Organization manufacture = new Organization("Organization", "www.organization.com");
         testCreationData.setManufacture(manufacture);
         testCreationData.setCreationTime("");
-        Set<Result> result = svipPipeline.hasCreationInfo("Creation Data", testCreationData);
+        Set<Result> result = svipPipeline.hasCreationInfo("Creation Data", testCreationData, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
 
@@ -285,7 +285,7 @@ class SVIPPipelineTest {
     @Test
     void hasDownloadLocation_null_fail_test() {
         Set<Result> result = svipPipeline.hasDownloadLocation(
-                "Download Location", null);
+                "Download Location", null, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -296,7 +296,7 @@ class SVIPPipelineTest {
     @Test
     void hasDownloadLocation_empty_string_fail_test() {
         Set<Result> result = svipPipeline.hasDownloadLocation(
-                "Download Location", "");
+                "Download Location", "", "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -307,7 +307,7 @@ class SVIPPipelineTest {
     @Test
     void hasDownloadLocation_string_pass_test() {
         Set<Result> result = svipPipeline.hasDownloadLocation(
-                "Download Location", testDownloadLocation);
+                "Download Location", testDownloadLocation, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -318,7 +318,7 @@ class SVIPPipelineTest {
     @Test
     void hasVerificationCode_filesAnalyzed_fail_test() {
         Set<Result> result = svipPipeline.hasVerificationCode(
-                "Download Location", null, true);
+                "Download Location", null, true, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -329,7 +329,7 @@ class SVIPPipelineTest {
     @Test
     void hasVerificationCode_filesAnalyzed_pass_test() {
         Set<Result> result = svipPipeline.hasVerificationCode(
-                "Download Location", testVerificationCode, true);
+                "Download Location", testVerificationCode, true, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -340,7 +340,7 @@ class SVIPPipelineTest {
     @Test
     void hasVerificationCode_filesAnalyzed_false_fail_test() {
         Set<Result> result = svipPipeline.hasVerificationCode(
-                "Download Location", testVerificationCode, false);
+                "Download Location", testVerificationCode, false, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -351,7 +351,7 @@ class SVIPPipelineTest {
     @Test
     void hasVerificationCode_filesAnalyzed_false_pass_test() {
         Set<Result> result = svipPipeline.hasVerificationCode(
-                "Download Location", null, false);
+                "Download Location", null, false, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);

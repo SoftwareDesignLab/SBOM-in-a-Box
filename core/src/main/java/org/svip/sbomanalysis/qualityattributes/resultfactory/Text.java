@@ -39,6 +39,8 @@ public class Text {
         switch (info){
             case HAS -> message.append(context).append(" has ").append(field).append("s");
             case MISSING -> message.append(context).append(" has missing ").append(field).append("s");
+            case NULL -> message.append(field).append(" was a null value");
+            case ERROR -> message.append(field).append(" had an error");
         }
 
         return message.toString();
@@ -57,6 +59,8 @@ public class Text {
             case MISSING -> message.append(context).append(" is a missing ").append(field);
             case VALID -> message.append(value).append(" is a valid ").append(field);
             case INVALID -> message.append(value).append(" is an invalid ").append(field);
+            case NULL -> message.append(field).append(" has a null value");
+            case ERROR -> message.append(field).append(" had an error");
         }
 
         return message.toString();
@@ -72,10 +76,17 @@ public class Text {
         StringBuilder details = new StringBuilder();
         String valuesString = String.join(",", values);
         switch (info){
-            case HAS -> details.append(context).append(" has ").append(values.size())
-                    .append(field).append("s: ").append(valuesString);
+            case HAS -> details.append(context).append(" has ")
+                    .append(values.size()).append(field).append("s: ")
+                    .append(valuesString);
             // TODO implement for MISSING
-            case MISSING -> details.append("TODO");
+            case MISSING -> details.append(context)
+                    .append(" is missing the following field: ")
+                    .append(field);
+            case NULL -> details.append(field).append(" was a null value and" +
+                    " should be a value");
+            case ERROR -> details.append(valuesString).append(" had an error " +
+                    "producing the following object: ").append(field);
         }
 
         return details.toString();
@@ -93,9 +104,15 @@ public class Text {
         switch (info){
             case HAS -> details.append(field).append(": ").append(value);
             //TODO implement for MISSING
-            case MISSING -> details.append("TODO");
-            case VALID -> details.append(value).append("is a valid ").append(field);
-            case INVALID -> details.append(value).append("is an invalid ").append(field);
+            case MISSING -> details.append(context)
+                    .append(" is missing the following field: ")
+                    .append(field);
+            case VALID -> details.append(value).append(" is a valid ").append(field);
+            case INVALID -> details.append(value).append(" is an invalid ").append(field);
+            case NULL -> details.append(field).append(" was a null value and" +
+                    " should be a value");
+            case ERROR -> details.append(value).append(" had an error producing " +
+                    "the following object: ").append(field);
         }
         return details.toString();
     }

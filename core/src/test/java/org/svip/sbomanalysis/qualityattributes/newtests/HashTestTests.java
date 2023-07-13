@@ -27,7 +27,7 @@ class HashTestTests {
 
     @BeforeEach
     public void create_HashTest(){
-        hashTest = new HashTest(ATTRIBUTE.UNIQUENESS);
+        hashTest = new HashTest("Component", ATTRIBUTE.UNIQUENESS);
     }
 
     @Test
@@ -73,7 +73,7 @@ class HashTestTests {
     @Test
     public void supportedCDXHash_fail_test(){
         CDX14Pipeline cdx14Pipeline = new CDX14Pipeline();
-        Set<Result> result = cdx14Pipeline.supportedHash("Supported Hash", testSPDXExclusiveHash);
+        Set<Result> result = cdx14Pipeline.supportedHash("Supported Hash", testSPDXExclusiveHash, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -84,7 +84,7 @@ class HashTestTests {
     @Test
     public void supportedCDXHash_pass_test(){
         CDX14Pipeline cdx14Pipeline = new CDX14Pipeline();
-        Set<Result> result = cdx14Pipeline.supportedHash("Supported Hash", testHashAlgo1);
+        Set<Result> result = cdx14Pipeline.supportedHash("Supported Hash", testHashAlgo1, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);

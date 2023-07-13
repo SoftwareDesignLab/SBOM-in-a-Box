@@ -44,16 +44,19 @@ public class LicenseTest extends MetricTest{
     private final Set<String> DEPRECIATED_SPDX_LICENSE_IDENTIFIERS = new HashSet<>();
     private final Set<String> DEPRECIATED_SPDX_LICENSE_NAMES = new HashSet<>();
 
+    private String componentName;
+
 
     /**
      * Constructor to create a new MetricTest
      *
      * @param attributes the list of attributes used
      */
-    public LicenseTest(ATTRIBUTE... attributes) {
+    public LicenseTest(String componentName, ATTRIBUTE... attributes) {
         super(attributes);
         resultFactory = new ResultFactory(TEST_NAME, attributes);
         loadSPDXLicenseData();
+        this.componentName = componentName;
     }
 
     /**
@@ -72,7 +75,7 @@ public class LicenseTest extends MetricTest{
         // license is a null value and does not exist, tests cannot be run
         // return missing Result
         else {
-            Result r = resultFactory.error(field, INFO.MISSING, value);
+            Result r = resultFactory.error(field, INFO.NULL, value, componentName);
             results.add(r);
         }
         return results;
@@ -101,7 +104,7 @@ public class LicenseTest extends MetricTest{
 
         // Error if can't populate sets
         if(!loadSPDXLicenseData()){
-            r = resultFactory.error(field, INFO.MISSING, "SPDX License Data");
+            r = resultFactory.error(field, INFO.ERROR, "SPDX License Data", componentName);
             results.add(r);
             return  results;
         }
@@ -109,7 +112,7 @@ public class LicenseTest extends MetricTest{
         else {
             // if the license value is empty, test cannot be run
             if(value == null || value.equals("")){
-                r = resultFactory.error(field, INFO.MISSING, value);
+                r = resultFactory.error(field, INFO.MISSING, value, componentName);
                 results.add(r);
                 return results;
             }
@@ -201,28 +204,28 @@ public class LicenseTest extends MetricTest{
 
         // Test if valid identifier
         if(SPDX_LICENSE_IDENTIFIERS.contains(value.toLowerCase())) {
-            r = resultFactory.pass(field, INFO.VALID, value);
+            r = resultFactory.pass(field, INFO.VALID, value, componentName);
         }
         // Test if valid name
         if(SPDX_LICENSE_NAMES.contains(value.toLowerCase())){
-            r = resultFactory.pass(field, INFO.VALID, value);
+            r = resultFactory.pass(field, INFO.VALID, value, componentName);
         }
 
         // Test if depreciated Identifier
         if(DEPRECIATED_SPDX_LICENSE_IDENTIFIERS.contains(value.toLowerCase())){
-            r = resultFactory.fail(field, INFO.INVALID, value);
+            r = resultFactory.fail(field, INFO.INVALID, value, componentName);
             results.add(r);
         }
 
         // Test if depreciated Name
         if(DEPRECIATED_SPDX_LICENSE_NAMES.contains(value.toLowerCase())){
-            r = resultFactory.fail(field, INFO.INVALID, value);
+            r = resultFactory.fail(field, INFO.INVALID, value, componentName);
             results.add(r);
         }
 
         // name/id is in neither list and does not exist
         else {
-            r = resultFactory.pass(field, INFO.INVALID, value);
+            r = resultFactory.pass(field, INFO.INVALID, value, componentName);
         }
         results.add(r);
 

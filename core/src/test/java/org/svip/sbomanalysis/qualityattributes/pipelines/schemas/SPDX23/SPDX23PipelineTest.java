@@ -37,7 +37,7 @@ class SPDX23PipelineTest {
 
     @Test
     void hasBomVersion_null_fail_test() {
-        Set<Result> result = spdx23Pipeline.hasBomVersion("Bom Version", null);
+        Set<Result> result = spdx23Pipeline.hasBomVersion("Bom Version", null, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -47,7 +47,7 @@ class SPDX23PipelineTest {
 
     @Test
     void hasBomVersion_empty_string_fail_test() {
-        Set<Result> result = spdx23Pipeline.hasBomVersion("Bom Version", "");
+        Set<Result> result = spdx23Pipeline.hasBomVersion("Bom Version", "", "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -57,7 +57,7 @@ class SPDX23PipelineTest {
 
     @Test
     void hasBomVersion_string_pass_test() {
-        Set<Result> result = spdx23Pipeline.hasBomVersion("Bom Version", testBomVersion);
+        Set<Result> result = spdx23Pipeline.hasBomVersion("Bom Version", testBomVersion, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -68,7 +68,7 @@ class SPDX23PipelineTest {
 
     @Test
     void hasDataLicense_null_fail_test() {
-        Set<Result> result = spdx23Pipeline.hasDataLicense("Data License", null);
+        Set<Result> result = spdx23Pipeline.hasDataLicense("Data License", null, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -78,7 +78,7 @@ class SPDX23PipelineTest {
 
     @Test
     void hasDataLicense_incorrect_license_fail_test() {
-        Set<Result> result = spdx23Pipeline.hasDataLicense("Data License", testLicensesFail);
+        Set<Result> result = spdx23Pipeline.hasDataLicense("Data License", testLicensesFail, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -88,7 +88,7 @@ class SPDX23PipelineTest {
 
     @Test
     void hasDataLicense_correct_license_pass_test() {
-        Set<Result> result = spdx23Pipeline.hasDataLicense("Data License", testLicensesPass);
+        Set<Result> result = spdx23Pipeline.hasDataLicense("Data License", testLicensesPass, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -98,7 +98,7 @@ class SPDX23PipelineTest {
 
     @Test
     void hasSPDXID_null_fail_test() {
-        Set<Result> result = spdx23Pipeline.hasSPDXID("SPDXID", null);
+        Set<Result> result = spdx23Pipeline.hasSPDXID("SPDXID", null, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -108,7 +108,7 @@ class SPDX23PipelineTest {
 
     @Test
     void hasSPDXID_empty_string_fail_test() {
-        Set<Result> result = spdx23Pipeline.hasSPDXID("SPDXID", "");
+        Set<Result> result = spdx23Pipeline.hasSPDXID("SPDXID", "", "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -118,7 +118,7 @@ class SPDX23PipelineTest {
 
     @Test
     void hasSPDXID_string_pass_test() {
-        Set<Result> result = spdx23Pipeline.hasSPDXID("SPDXID", testSPDXID);
+        Set<Result> result = spdx23Pipeline.hasSPDXID("SPDXID", testSPDXID, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -128,7 +128,7 @@ class SPDX23PipelineTest {
 
     @Test
     void hasCreationInfo_null_fail_test() {
-        Set<Result> result = spdx23Pipeline.hasCreationInfo("Creation Data", null);
+        Set<Result> result = spdx23Pipeline.hasCreationInfo("Creation Data", null, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -139,7 +139,7 @@ class SPDX23PipelineTest {
     @Test
     void hasCreationInfo_null_manufacture_fail_test() {
         testCreationData.setManufacture(null);
-        Set<Result> result = spdx23Pipeline.hasCreationInfo("Creation Data", testCreationData);
+        Set<Result> result = spdx23Pipeline.hasCreationInfo("Creation Data", testCreationData, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -151,7 +151,7 @@ class SPDX23PipelineTest {
     void hasCreationInfo_empty_string_manufacture_fail_test() {
         Organization manufacture = new Organization("", "");
         testCreationData.setManufacture(manufacture);
-        Set<Result> result = spdx23Pipeline.hasCreationInfo("Creation Data", testCreationData);
+        Set<Result> result = spdx23Pipeline.hasCreationInfo("Creation Data", testCreationData, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -163,7 +163,7 @@ class SPDX23PipelineTest {
     void hasCreationInfo_valid_manufacture_pass_test() {
         Organization manufacture = new Organization("Organization", "www.organization.com");
         testCreationData.setManufacture(manufacture);
-        Set<Result> result = spdx23Pipeline.hasCreationInfo("Creation Data", testCreationData);
+        Set<Result> result = spdx23Pipeline.hasCreationInfo("Creation Data", testCreationData, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -176,7 +176,7 @@ class SPDX23PipelineTest {
         Organization manufacture = new Organization("Organization", "www.organization.com");
         testCreationData.setManufacture(manufacture);
         testCreationData.setCreationTime("2010-01-29T18:30:22Z");
-        Set<Result> result = spdx23Pipeline.hasCreationInfo("Creation Data", testCreationData);
+        Set<Result> result = spdx23Pipeline.hasCreationInfo("Creation Data", testCreationData, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -191,7 +191,7 @@ class SPDX23PipelineTest {
         Organization manufacture = new Organization("Organization", "www.organization.com");
         testCreationData.setManufacture(manufacture);
         testCreationData.setCreationTime("");
-        Set<Result> result = spdx23Pipeline.hasCreationInfo("Creation Data", testCreationData);
+        Set<Result> result = spdx23Pipeline.hasCreationInfo("Creation Data", testCreationData, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
 
@@ -202,7 +202,7 @@ class SPDX23PipelineTest {
     @Test
     void hasDownloadLocation_null_fail_test() {
         Set<Result> result = spdx23Pipeline.hasDownloadLocation(
-                "Download Location", null);
+                "Download Location", null, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -213,7 +213,7 @@ class SPDX23PipelineTest {
     @Test
     void hasDownloadLocation_empty_string_fail_test() {
         Set<Result> result = spdx23Pipeline.hasDownloadLocation(
-                "Download Location", "");
+                "Download Location", "", "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -224,7 +224,7 @@ class SPDX23PipelineTest {
     @Test
     void hasDownloadLocation_string_pass_test() {
         Set<Result> result = spdx23Pipeline.hasDownloadLocation(
-                "Download Location", testDownloadLocation);
+                "Download Location", testDownloadLocation, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -235,7 +235,7 @@ class SPDX23PipelineTest {
     @Test
     void hasVerificationCode_filesAnalyzed_fail_test() {
         Set<Result> result = spdx23Pipeline.hasVerificationCode(
-                "Download Location", null, true);
+                "Download Location", null, true, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -246,7 +246,7 @@ class SPDX23PipelineTest {
     @Test
     void hasVerificationCode_filesAnalyzed_pass_test() {
         Set<Result> result = spdx23Pipeline.hasVerificationCode(
-                "Download Location", testVerificationCode, true);
+                "Download Location", testVerificationCode, true, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -257,7 +257,7 @@ class SPDX23PipelineTest {
     @Test
     void hasVerificationCode_filesAnalyzed_false_fail_test() {
         Set<Result> result = spdx23Pipeline.hasVerificationCode(
-                "Download Location", testVerificationCode, false);
+                "Download Location", testVerificationCode, false, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
@@ -268,7 +268,7 @@ class SPDX23PipelineTest {
     @Test
     void hasVerificationCode_filesAnalyzed_false_pass_test() {
         Set<Result> result = spdx23Pipeline.hasVerificationCode(
-                "Download Location", null, false);
+                "Download Location", null, false, "Component");
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);

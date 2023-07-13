@@ -27,7 +27,7 @@ class LicenseTestTests {
 
     @BeforeEach
     public void create_LicenseTest(){
-        licenseTest = new LicenseTest(ATTRIBUTE.LICENSING, ATTRIBUTE.COMPLETENESS);
+        licenseTest = new LicenseTest("Component", ATTRIBUTE.LICENSING, ATTRIBUTE.COMPLETENESS);
     }
 
 

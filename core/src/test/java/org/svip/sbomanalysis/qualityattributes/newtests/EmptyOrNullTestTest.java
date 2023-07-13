@@ -27,37 +27,37 @@ class EmptyOrNullTestTest {
 
     @Test
     public void test_null_string_fail_test(){
-        Result result = emptyOrNullTest.test("String", null);
+        Result result = emptyOrNullTest.test("String", null, "field");
         assertEquals(STATUS.FAIL, result.getStatus());
     }
 
     @Test
     public void test_empty_string_fail_test(){
-        Result result = emptyOrNullTest.test("String", "");
+        Result result = emptyOrNullTest.test("String", "", "field");
         assertEquals(STATUS.FAIL, result.getStatus());
     }
 
     @Test
     public void test_string_pass_test(){
-        Result result = emptyOrNullTest.test("String", "AnActualString");
+        Result result = emptyOrNullTest.test("String", "AnActualString", "field");
         assertEquals(STATUS.PASS, result.getStatus());
     }
 
     @Test
     public void test_null_collection_fail_test(){
-        Result result = emptyOrNullTest.test("collection", null);
+        Result result = emptyOrNullTest.test("collection", null, "field");
         assertEquals(STATUS.FAIL, result.getStatus());
     }
 
     @Test
     public void test_empty_collection_fail_test(){
-        Result result = emptyOrNullTest.test("collection", testEmptyCol);
+        Result result = emptyOrNullTest.test("collection", testEmptyCol, "field");
         assertEquals(STATUS.FAIL, result.getStatus());
     }
 
     @Test
     public void test_collection_pass_test(){
-        Result result = emptyOrNullTest.test("collection", testActualCol);
+        Result result = emptyOrNullTest.test("collection", testActualCol, "field");
         assertEquals(STATUS.PASS, result.getStatus());
     }
 }

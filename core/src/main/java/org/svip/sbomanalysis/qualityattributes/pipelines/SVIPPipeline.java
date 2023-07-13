@@ -43,10 +43,10 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
 
         // test SBOM metadata
         String bomVersion = svipsbom.getVersion();
-        sbomResults.addAll(hasBomVersion("Bom Version", bomVersion));
+        sbomResults.addAll(hasBomVersion("Bom Version", bomVersion, svipsbom.getName()));
 
         // test for SBOM's licenses
-        var lt = new LicenseTest(ATTRIBUTE.LICENSING);
+        var lt = new LicenseTest(svipsbom.getName(), ATTRIBUTE.LICENSING);
         if(svipsbom.getLicenses() != null){
             for(String l : svipsbom.getLicenses()){
                 sbomResults.addAll(lt.test("License", l));
@@ -56,14 +56,14 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
         // test SPDX/CDX specific metadata info
         //TODO data license can only hold one value, why is it a set of strings?
         Set<String> dataLicenses = svipsbom.getLicenses();
-        sbomResults.addAll(hasDataLicense("Data License", dataLicenses));
+        sbomResults.addAll(hasDataLicense("Data License", dataLicenses, svipsbom.getName()));
 
         CreationData creationData = svipsbom.getCreationData();
-        sbomResults.addAll(hasCreationInfo("Creation Data", creationData));
+        sbomResults.addAll(hasCreationInfo("Creation Data", creationData, svipsbom.getName()));
 
         String sbomUID = svipsbom.getUID();
-        sbomResults.addAll(hasSPDXID("SBOM SPDXID", sbomUID));
-        sbomResults.addAll(validSerialNumber("CDX Serial Number", sbomUID));
+        sbomResults.addAll(hasSPDXID("SBOM SPDXID", sbomUID, svipsbom.getName()));
+        sbomResults.addAll(validSerialNumber("CDX Serial Number", sbomUID, svipsbom.getName()));
 
         //TODO add hasDocumentNamespace when implemented
 
@@ -77,15 +77,17 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
                 SVIPComponentObject component = (SVIPComponentObject) c;
 
                 String componentUID = component.getUID();
-                componentResults.addAll(hasSPDXID("SPDXID", componentUID));
-                componentResults.addAll(hasBomRef("Bom-Ref", componentUID));
+                componentResults.addAll(hasSPDXID("SPDXID", componentUID, component.getName()));
+                componentResults.addAll(hasBomRef("Bom-Ref", componentUID, component.getName()));
 
                 String downloadLocation = component.getDownloadLocation();
-                componentResults.addAll(hasDownloadLocation("Download Location", downloadLocation));
+                componentResults.addAll(hasDownloadLocation("Download Location", downloadLocation,
+                        component.getName()));
 
                 boolean filesAnalyzed = component.getFilesAnalyzed();
                 String verificationCode = component.getVerificationCode();
-                componentResults.addAll(hasVerificationCode("Verification Code", verificationCode, filesAnalyzed));
+                componentResults.addAll(hasVerificationCode("Verification Code",
+                        verificationCode, filesAnalyzed, component.getName()));
 
                 // test component CPEs
                 var cpeTest = new CPETest(component, ATTRIBUTE.UNIQUENESS,
@@ -108,7 +110,7 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
                 }
 
                 // test component Licenses
-                var licenseTest = new LicenseTest(ATTRIBUTE.UNIQUENESS,
+                var licenseTest = new LicenseTest(component.getName(),ATTRIBUTE.UNIQUENESS,
                         ATTRIBUTE.MINIMUM_ELEMENTS);
                 LicenseCollection licenses = component.getLicenses();
                 if (licenses != null) {
@@ -119,7 +121,7 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
                 }
 
                 // test component Hashes
-                var hashTest = new HashTest(ATTRIBUTE.UNIQUENESS,
+                var hashTest = new HashTest(component.getName(), ATTRIBUTE.UNIQUENESS,
                         ATTRIBUTE.MINIMUM_ELEMENTS);
                 Map<String, String> hashes = component.getHashes();
                 if(hashes != null){
@@ -141,15 +143,16 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
      * Test an SVIP SBOM for a bom version
      * @param field the field that's tested
      * @param value the bom version tested
+     * @param sbomName the sbom's name to product the result
      * @return the result of if the sbom has a bom version
      */
     @Override
-    public Set<Result> hasBomVersion(String field, String value) {
+    public Set<Result> hasBomVersion(String field, String value, String sbomName) {
         Set<Result> result = new HashSet<>();
 
         // create a new EmptyOrNullTest
         var emptyNullTest = new EmptyOrNullTest(ATTRIBUTE.COMPLETENESS);
-        Result r = emptyNullTest.test(field, value);
+        Result r = emptyNullTest.test(field, value, sbomName);
 
         result.add(r);
         return result;
@@ -159,10 +162,11 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
      * Test an SVIP SBOM for a valid serial number UID
      * @param field the field that's tested
      * @param value the serial number tested
+     * @param sbomName the sbom's name to product the result
      * @return the result of if the sbom has a valid serial number UID
      */
     @Override
-    public Set<Result> validSerialNumber(String field, String value) {
+    public Set<Result> validSerialNumber(String field, String value, String sbomName) {
         String testName = "ValidSerialNumber";
         Set<Result> result = new HashSet<>();
         //Create a new Pattern with the CDX14 Regex
@@ -177,16 +181,16 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
             Matcher matcher = cdx14UIDPattern.matcher(value);
             // if regex fails to match to the uid string
             if(!matcher.find()){
-                r = resultFactory.fail("SBOM Serial Number", INFO.INVALID, value);
+                r = resultFactory.fail("SBOM Serial Number", INFO.INVALID, value, sbomName);
             }
             // regex matches to the uid string
             else{
-                r = resultFactory.pass("SBOM Serial Number", INFO.VALID, value);
+                r = resultFactory.pass("SBOM Serial Number", INFO.VALID, value, sbomName);
             }
         }
         // uid was null or an empty string
         else{
-            r = resultFactory.fail("SBOM Serial Number", INFO.MISSING, value);
+            r = resultFactory.fail("SBOM Serial Number", INFO.MISSING, value, sbomName);
         }
 
         result.add(r);
@@ -197,14 +201,15 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
      * Test each component in a SVIP SBOM for a bom-ref
      * @param field the field that's tested
      * @param value the bom-ref tested
+     * @param componentName the component's name to product the result
      * @return a set of results for each component in the sbom
      */
     @Override
-    public Set<Result> hasBomRef(String field, String value) {
+    public Set<Result> hasBomRef(String field, String value, String componentName) {
         Set<Result> results = new HashSet<>();
 
         var emptyNullTest = new EmptyOrNullTest(ATTRIBUTE.CDX14, ATTRIBUTE.UNIQUENESS);
-        Result r = emptyNullTest.test(field, value);
+        Result r = emptyNullTest.test(field, value, componentName);
 
         results.add(r);
         return results;
@@ -215,10 +220,11 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
      * within CycloneDX
      * @param field the field that's tested
      * @param value the bom ref tested
+     * @param componentName the component's name to product the result
      * @return the result of if the hash algorithm is supported
      */
     @Override
-    public Set<Result> supportedHash(String field, String value) {
+    public Set<Result> supportedHash(String field, String value, String componentName) {
         String testName = "SupportedCDXHash";
         Set<Result> result = new HashSet<>();
         Result r;
@@ -226,11 +232,11 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
                 ATTRIBUTE.CDX14, ATTRIBUTE.UNIQUENESS);
         // hash is unsupported, test fails
         if(Hash.isSPDXExclusive(Hash.Algorithm.valueOf(value))){
-            r = resultFactory.fail(field, INFO.INVALID, value);
+            r = resultFactory.fail(field, INFO.INVALID, value, componentName);
         }
         // hash is supported, test passes
         else{
-            r = resultFactory.pass(field, INFO.VALID, value);
+            r = resultFactory.pass(field, INFO.VALID, value, componentName);
         }
         result.add(r);
         return result;
@@ -241,10 +247,11 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
      * CC0-1.0
      * @param field the field that's tested
      * @param values the data licenses tested
+     * @param sbomName the sbom's name to product the result
      * @return the result of checking for the CC0-1.0 data license
      */
     @Override
-    public Set<Result> hasDataLicense(String field, Set<String> values) {
+    public Set<Result> hasDataLicense(String field, Set<String> values, String sbomName) {
         String testName = "HasDataLicense";
         Set<Result> result = new HashSet<>();
 
@@ -255,16 +262,20 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
 
         // the required sbom license
         String requiredLicense = "CC0-1.0";
-
+        // values is null or empty, test automatically fails
+        if(values == null || values.isEmpty()){
+            r = resultFactory.fail(field, INFO.MISSING,
+                    requiredLicense, sbomName);
+        }
         // if the sbom's licenses contain the required license
-        if(values.contains(requiredLicense)){
+        else if(values.size() == 1 && values.contains(requiredLicense)){
             r = resultFactory.pass(field, INFO.HAS,
-                    requiredLicense);
+                    requiredLicense, sbomName);
         }
         // the sbom is missing the required license
         else{
             r = resultFactory.fail(field, INFO.MISSING,
-                    requiredLicense);
+                    requiredLicense, sbomName);
         }
 
         result.add(r);
@@ -275,10 +286,11 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
      * Test every component in a given SVIP SBOM for a valid SPDXID
      * @param field the field that's tested
      * @param value the SPDXID tested
+     * @param componentName the component's name to product the result
      * @return a set of results for each component in the sbom
      */
     @Override
-    public Set<Result> hasSPDXID(String field, String value) {
+    public Set<Result> hasSPDXID(String field, String value, String componentName) {
         String testName = "HasSPDXID";
         Set<Result> results = new HashSet<>();
 
@@ -294,16 +306,16 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
             // check that SPDXID is a valid format
             // SPDXID starts with a valid format, test passes
             if(value.startsWith("SPDXRef-")){
-                r = resultFactory.pass(field, INFO.VALID, value);
+                r = resultFactory.pass(field, INFO.VALID, value, componentName);
             }
             // SPDX starts with an invalid format, test fails
             else{
-                r = resultFactory.fail(field, INFO.INVALID, value);
+                r = resultFactory.fail(field, INFO.INVALID, value, componentName);
             }
         }
         // SPDXID is null or an empty value, test fails
         else{
-            r = resultFactory.fail(field, INFO.MISSING, value);
+            r = resultFactory.fail(field, INFO.MISSING, value, componentName);
         }
         results.add(r);
 
@@ -314,22 +326,24 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
      * Test the SVIP sbom's metadata for a valid document namespace
      * @param field the field that's tested
      * @param value the document namespace tested
+     * @param sbomName the sbom's name to product the result
      * @return the result of if the sbom's metadata contains a valid
      * document namespace
      */
     //TODO is documentNamespace in SPDX23SBOM? How to access?
     @Override
-    public Set<Result> hasDocumentNamespace(String field, String value) {
+    public Set<Result> hasDocumentNamespace(String field, String value, String sbomName) {
         return null;
     }
     /**
      * Given an SVIP SBOM, check that it has creator and created info
      * @param field the field that's tested
      * @param creationData the creation data of the SBOM to be tested
+     * @param sbomName the sbom's name to product the result
      * @return the result of if the sbom has creation info
      */
     @Override
-    public Set<Result> hasCreationInfo(String field, CreationData creationData) {
+    public Set<Result> hasCreationInfo(String field, CreationData creationData, String sbomName) {
         Set<Result> results = new HashSet<>();
 
         // create a new EmptyOrNullTest
@@ -340,14 +354,14 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
         //first check for creator info
         Organization creator = creationData.getManufacture();
         String creatorName = creator.getName();
-        r = emptyNullTest.test(field, creatorName);
+        r = emptyNullTest.test(field, creatorName, sbomName);
 
         results.add(r);
 
 
         // then check for creation time info
         String creationTime = creationData.getCreationTime();
-        r = emptyNullTest.test(field, creationTime);
+        r = emptyNullTest.test(field, creationTime, sbomName);
         results.add(r);
 
         return results;
@@ -358,17 +372,18 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
      * PackageDownloadLocation field and that it has a value
      * @param field the field that's tested
      * @param value the download location tested
+     * @param componentName the component's name to product the result
      * @return a set of results for each component tested
      */
     @Override
-    public Set<Result> hasDownloadLocation(String field, String value) {
+    public Set<Result> hasDownloadLocation(String field, String value, String componentName) {
         Set<Result> results = new HashSet<>();
 
         // create a new EmptyOrNullTest
         // TODO check for NOASSERTION or NONE?
         var emptyNullTest = new EmptyOrNullTest(ATTRIBUTE.SPDX23,
                 ATTRIBUTE.COMPLETENESS);
-        Result r = emptyNullTest.test(field, value);
+        Result r = emptyNullTest.test(field, value, componentName);
 
         results.add(r);
 
@@ -382,10 +397,11 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
      * @param field the field that's tested
      * @param value the verification code tested
      * @param filesAnalyzed if the component's files were analyzed
+     * @param componentName the component's name to product the result
      * @return a set of results for each component tested
      */
     @Override
-    public Set<Result> hasVerificationCode(String field, String value, boolean filesAnalyzed) {
+    public Set<Result> hasVerificationCode(String field, String value, boolean filesAnalyzed, String componentName) {
         String testName = "HasVerificationCode";
         Set<Result> results = new HashSet<>();
 
@@ -398,21 +414,21 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
         // if files were analyzed, check if the verification code is present
         if(filesAnalyzed){
             if(value == null || value.equals("")){
-                r = resultFactory.fail(field, INFO.MISSING, value);
+                r = resultFactory.fail(field, INFO.MISSING, value, componentName);
             }
             // verification code is not null and is present, test passes
             else{
-                r = resultFactory.pass(field, INFO.HAS, value);
+                r = resultFactory.pass(field, INFO.HAS, value, componentName);
             }
         }
         // files were not analyzed, check if the verification code is null
         else{
             if(value == null || value.equals("")){
-                r = resultFactory.pass(field, INFO.MISSING, value);
+                r = resultFactory.pass(field, INFO.MISSING, value, componentName);
             }
             // verification code is not null and is present, test passes
             else{
-                r = resultFactory.fail(field, INFO.HAS, value);
+                r = resultFactory.fail(field, INFO.HAS, value, componentName);
             }
         }
 

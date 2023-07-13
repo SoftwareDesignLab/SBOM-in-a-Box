@@ -37,10 +37,10 @@ public class SPDX23Pipeline implements SPDX23Tests {
 
         // test SBOM metadata
         String bomVersion = spdx23SBOM.getVersion();
-        sbomResults.addAll(hasBomVersion("Bom Version", bomVersion));
+        sbomResults.addAll(hasBomVersion("Bom Version", bomVersion, spdx23SBOM.getName()));
 
         // test for SBOM's licenses
-        var lt = new LicenseTest(ATTRIBUTE.LICENSING);
+        var lt = new LicenseTest(spdx23SBOM.getName(), ATTRIBUTE.LICENSING);
         if(spdx23SBOM.getLicenses() != null){
             for(String l : spdx23SBOM.getLicenses()){
                 sbomResults.addAll(lt.test("License", l));
@@ -50,13 +50,13 @@ public class SPDX23Pipeline implements SPDX23Tests {
         // test SPDX specific metadata info
         //TODO data license can only hold one value, why is it a set of strings?
         Set<String> dataLicenses = spdx23SBOM.getLicenses();
-        sbomResults.addAll(hasDataLicense("Data License", dataLicenses));
+        sbomResults.addAll(hasDataLicense("Data License", dataLicenses, spdx23SBOM.getName()));
 
         CreationData creationData = spdx23SBOM.getCreationData();
-        sbomResults.addAll(hasCreationInfo("Creation Data", creationData));
+        sbomResults.addAll(hasCreationInfo("Creation Data", creationData, spdx23SBOM.getName()));
 
         String sbomSPDXID = spdx23SBOM.getUID();
-        sbomResults.addAll(hasSPDXID("SBOM SPDXID", sbomSPDXID));
+        sbomResults.addAll(hasSPDXID("SBOM SPDXID", sbomSPDXID, spdx23SBOM.getName()));
 
         //TODO add hasDocumentNamespace when implemented
 
@@ -69,14 +69,16 @@ public class SPDX23Pipeline implements SPDX23Tests {
                 SPDX23PackageObject component = (SPDX23PackageObject) c;
 
                 String spdxID = component.getUID();
-                componentResults.addAll(hasSPDXID("SPDXID", spdxID));
+                componentResults.addAll(hasSPDXID("SPDXID", spdxID, component.getName()));
 
                 String downloadLocation = component.getDownloadLocation();
-                componentResults.addAll(hasDownloadLocation("Download Location", downloadLocation));
+                componentResults.addAll(hasDownloadLocation("Download Location", downloadLocation,
+                        component.getName()));
 
                 boolean filesAnalyzed = component.getFilesAnalyzed();
                 String verificationCode = component.getVerificationCode();
-                componentResults.addAll(hasVerificationCode("Verification Code", verificationCode, filesAnalyzed));
+                componentResults.addAll(hasVerificationCode("Verification Code",
+                        verificationCode, filesAnalyzed, component.getName()));
 
                 // test component CPEs
                 var cpeTest = new CPETest(component, ATTRIBUTE.UNIQUENESS,
@@ -99,7 +101,7 @@ public class SPDX23Pipeline implements SPDX23Tests {
                 }
 
                 // test component Licenses
-                var licenseTest = new LicenseTest(ATTRIBUTE.UNIQUENESS,
+                var licenseTest = new LicenseTest(component.getName(), ATTRIBUTE.UNIQUENESS,
                         ATTRIBUTE.MINIMUM_ELEMENTS);
                 LicenseCollection licenses = component.getLicenses();
                 if (licenses != null) {
@@ -110,7 +112,7 @@ public class SPDX23Pipeline implements SPDX23Tests {
                 }
 
                 // test component Hashes
-                var hashTest = new HashTest(ATTRIBUTE.UNIQUENESS,
+                var hashTest = new HashTest(component.getName(), ATTRIBUTE.UNIQUENESS,
                         ATTRIBUTE.MINIMUM_ELEMENTS);
                 Map<String, String> hashes = component.getHashes();
                 if(hashes != null){
@@ -132,15 +134,16 @@ public class SPDX23Pipeline implements SPDX23Tests {
      * Test an SPDX 2.3 sbom for a bom version
      * @param field the field that's tested
      * @param value the bom version tested
+     * @param sbomName the sbom's name to product the result
      * @return the result of if the sbom has a bom version
      */
     @Override
-    public Set<Result> hasBomVersion(String field, String value) {
+    public Set<Result> hasBomVersion(String field, String value, String sbomName) {
         Set<Result> result = new HashSet<>();
 
         // create a new EmptyOrNullTest
         var emptyNullTest = new EmptyOrNullTest(ATTRIBUTE.COMPLETENESS);
-        Result r = emptyNullTest.test(field, value);
+        Result r = emptyNullTest.test(field, value, sbomName);
 
         result.add(r);
         return result;
@@ -148,13 +151,14 @@ public class SPDX23Pipeline implements SPDX23Tests {
 
     /**
      * Test the SPDX SBOM Metadata to see if it contains a data license of
-     *      * CC0-1.0
+     * CC0-1.0
      * @param field the field that's tested
      * @param values the licenses tested
+     * @param sbomName the sbom's name to product the result
      * @return the result of checking for the CC0-1.0 data license
      */
     @Override
-    public Set<Result> hasDataLicense(String field, Set<String> values) {
+    public Set<Result> hasDataLicense(String field, Set<String> values, String sbomName) {
         String testName = "HasDataLicense";
         Set<Result> result = new HashSet<>();
 
@@ -168,17 +172,17 @@ public class SPDX23Pipeline implements SPDX23Tests {
         // values is null or empty, test automatically fails
         if(values == null || values.isEmpty()){
             r = resultFactory.fail(field, INFO.MISSING,
-                    requiredLicense);
+                    requiredLicense, sbomName);
         }
         // if the sbom's licenses contain the required license
         else if(values.size() == 1 && values.contains(requiredLicense)){
             r = resultFactory.pass(field, INFO.HAS,
-                    requiredLicense);
+                    requiredLicense, sbomName);
         }
         // the sbom is missing the required license
         else{
             r = resultFactory.fail(field, INFO.MISSING,
-                    requiredLicense);
+                    requiredLicense, sbomName);
         }
 
         result.add(r);
@@ -189,10 +193,11 @@ public class SPDX23Pipeline implements SPDX23Tests {
      * Test every component in a given SPDX 2.3 SBOM for a valid SPDXID
      * @param field the field that's tested
      * @param value the SPDXID tested
+     * @param componentName the component's name to product the result
      * @return a set of results for each component in the sbom
      */
     @Override
-    public Set<Result> hasSPDXID(String field, String value) {
+    public Set<Result> hasSPDXID(String field, String value, String componentName) {
         String testName = "HasSPDXID";
         Set<Result> results = new HashSet<>();
 
@@ -208,16 +213,16 @@ public class SPDX23Pipeline implements SPDX23Tests {
             // check that SPDXID is a valid format
             // SPDXID starts with a valid format, test passes
             if(value.startsWith("SPDXRef-")){
-                r = resultFactory.pass(field, INFO.VALID, value);
+                r = resultFactory.pass(field, INFO.VALID, value, componentName);
             }
             // SPDX starts with an invalid format, test fails
             else{
-                r = resultFactory.fail(field, INFO.INVALID, value);
+                r = resultFactory.fail(field, INFO.INVALID, value, componentName);
             }
         }
         // SPDXID is null or an empty value, test fails
         else{
-            r = resultFactory.fail(field, INFO.MISSING, value);
+            r = resultFactory.fail(field, INFO.MISSING, value, componentName);
         }
         results.add(r);
 
@@ -228,12 +233,13 @@ public class SPDX23Pipeline implements SPDX23Tests {
      * Test the SPDX 2.3 sbom's metadata for a valid document namespace
      * @param field the field that's tested
      * @param value the document namespace tested
+     * @param sbomName the sbom's name to product the result
      * @return the result of if the sbom's metadata contains a valid
      * document namespace
      */
     //TODO is documentNamespace in SPDX23SBOM? How to access?
     @Override
-    public Set<Result> hasDocumentNamespace(String field, String value) {
+    public Set<Result> hasDocumentNamespace(String field, String value, String sbomName) {
         return null;
     }
 
@@ -241,10 +247,13 @@ public class SPDX23Pipeline implements SPDX23Tests {
      * Given an SPDX 2.3 SBOM, check that it has creator and created info
      * @param field the field that's tested
      * @param creationData the creation data of the SBOM to be tested
+     * @param sbomName the sbom's name to product the result
      * @return the result of if the sbom has creation info
      */
     @Override
-    public Set<Result> hasCreationInfo(String field, CreationData creationData) {
+    public Set<Result> hasCreationInfo(String field,
+                                       CreationData creationData,
+                                       String sbomName) {
         Set<Result> results = new HashSet<>();
 
         // create a new EmptyOrNullTest
@@ -256,7 +265,7 @@ public class SPDX23Pipeline implements SPDX23Tests {
 
         // creation data is null, test automatically fails and ends
         if(creationData == null){
-            r = resultFactory.error(field, INFO.MISSING, "Creation Data");
+            r = resultFactory.error(field, INFO.NULL, "Creation Data", sbomName);
             results.add(r);
             return results;
         }
@@ -264,16 +273,16 @@ public class SPDX23Pipeline implements SPDX23Tests {
         //first check for creator info
         Organization creator = creationData.getManufacture();
         if(creator == null){
-            r = resultFactory.fail(field, INFO.MISSING, "Creator Name");
+            r = resultFactory.fail(field, INFO.MISSING, "Creator Name", sbomName);
             results.add(r);
         }
         else{
             String creatorName = creator.getName();
-            r = emptyNullTest.test(field, creatorName);
+            r = emptyNullTest.test(field, creatorName, sbomName);
             results.add(r);
             // then check for creation time info
             String creationTime = creationData.getCreationTime();
-            r = emptyNullTest.test(field, creationTime);
+            r = emptyNullTest.test(field, creationTime, sbomName);
             results.add(r);
         }
 
@@ -286,10 +295,11 @@ public class SPDX23Pipeline implements SPDX23Tests {
      * PackageDownloadLocation field and that it has a value
      * @param field the field that's tested
      * @param value the download location tested
+     * @param componentName the component's name to product the result
      * @return a set of results for each component tested
      */
     @Override
-    public Set<Result> hasDownloadLocation(String field, String value) {
+    public Set<Result> hasDownloadLocation(String field, String value, String componentName) {
         Set<Result> results = new HashSet<>();
 
         // create a new EmptyOrNullTest
@@ -297,7 +307,7 @@ public class SPDX23Pipeline implements SPDX23Tests {
                 ATTRIBUTE.COMPLETENESS);
 
         // TODO check for NOASSERTION or NONE?
-        Result r = emptyNullTest.test(field, value);
+        Result r = emptyNullTest.test(field, value, componentName);
 
         results.add(r);
 
@@ -310,10 +320,13 @@ public class SPDX23Pipeline implements SPDX23Tests {
      * @param field the field that's tested
      * @param value the verification code tested
      * @param filesAnalyzed if the component's files were analyzed
+     * @param componentName the component's name to product the result
      * @return a set of results for each component tested
      */
     @Override
-    public Set<Result> hasVerificationCode(String field, String value, boolean filesAnalyzed) {
+    public Set<Result> hasVerificationCode(String field, String value,
+                                           boolean filesAnalyzed,
+                                           String componentName) {
         String testName = "HasVerificationCode";
         Set<Result> results = new HashSet<>();
 
@@ -326,21 +339,21 @@ public class SPDX23Pipeline implements SPDX23Tests {
         // if files were analyzed, check if the verification code is present
         if(filesAnalyzed){
             if(value == null || value.equals("")){
-                r = resultFactory.fail(field, INFO.MISSING, value);
+                r = resultFactory.fail(field, INFO.MISSING, value, componentName);
             }
             // verification code is not null and is present, test passes
             else{
-                r = resultFactory.pass(field, INFO.HAS, value);
+                r = resultFactory.pass(field, INFO.HAS, value, componentName);
             }
         }
         // files were not analyzed, check if the verification code is null
         else{
             if(value == null || value.equals("")){
-                r = resultFactory.pass(field, INFO.MISSING, value);
+                r = resultFactory.pass(field, INFO.MISSING, value, componentName);
             }
             // verification code is not null and is present, test passes
             else{
-                r = resultFactory.fail(field, INFO.HAS, value);
+                r = resultFactory.fail(field, INFO.HAS, value, componentName);
             }
         }
 
