@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -49,19 +51,10 @@ public class ConvertFromAPITest extends APITest{
                     LOGGER.info("From             " + ((testMap.get(id).getFileName()).contains("json")
                             ? "JSON" : "TAGVALUE") + " --> " + convertToFormat);
                     ResponseEntity<String> response = controller.convert(id, convertToSchema, convertToFormat,true);
-
-                    String res = response.getBody();
-                    int x = 0;
-
-                    if(response.getStatusCode() == HttpStatus.OK)
-                        LOGGER.info("HTTP STATUS OK");
-                    if(response.getBody() != null)
-                        LOGGER.info("NOT NULL");
-
                     LOGGER.info( "\n-------------\n");
 
-                    //assertEquals(HttpStatus.OK, response.getStatusCode());
-                    //assertEquals(testMap.get(id).getContents(), response.getBody());
+                    assertEquals(HttpStatus.OK, response.getStatusCode());
+                    assertNotNull(testMap.get(id).getContents());
                 }
             }
         }
