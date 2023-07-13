@@ -263,17 +263,20 @@ public class SPDX23Pipeline implements SPDX23Tests {
 
         //first check for creator info
         Organization creator = creationData.getManufacture();
-        String creatorName = creator.getName();
-        r = emptyNullTest.test(field, creatorName);
+        if(creator == null){
+            r = resultFactory.fail(field, INFO.MISSING, "Creator Name");
+            results.add(r);
+        }
+        else{
+            String creatorName = creator.getName();
+            r = emptyNullTest.test(field, creatorName);
+            results.add(r);
+            // then check for creation time info
+            String creationTime = creationData.getCreationTime();
+            r = emptyNullTest.test(field, creationTime);
+            results.add(r);
+        }
 
-        results.add(r);
-
-
-        // then check for creation time info
-        String creationTime = creationData.getCreationTime();
-        r = emptyNullTest.test(field, creationTime);
-
-        results.add(r);
 
         return results;
     }
