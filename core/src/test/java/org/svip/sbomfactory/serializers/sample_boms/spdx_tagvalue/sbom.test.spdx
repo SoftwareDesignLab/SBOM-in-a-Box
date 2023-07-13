@@ -30,7 +30,7 @@ PackageHomePage: homePage1
 PackageSourceInfo: sourceInfo1
 PackageLicenseConcluded: concluded1
 PackageLicenseInfoFromFiles: licenseFileText1
-PackageLicenseDeclared: licenseFileText1
+PackageLicenseDeclared: declared1
 PackageLicenseComments: comment1
 PackageCopyrightText: copyright1
 ExternalRef: SECURITY cpe23Type cpe1
@@ -61,7 +61,7 @@ PackageHomePage: homePage3
 PackageSourceInfo: sourceInfo3
 PackageLicenseConcluded: concluded3
 PackageLicenseInfoFromFiles: licenseFileText3
-PackageLicenseDeclared: licenseFileText3
+PackageLicenseDeclared: declared3
 PackageLicenseComments: comment3
 PackageCopyrightText: copyright3
 ExternalRef: PACKAGE-MANAGER purl purl3
@@ -77,14 +77,14 @@ ValidUntilDate: validUntilDate3
 ### Unpackaged Files
 
 SPDXID: uid2
-FileName: COMPONENT 2
+FileName: fileName2
 FileType: type2
 FileComment: comment2
 PackageChecksum: SHA256: hash2
-PackageLicenseConcluded: concluded2
+LicenseConcluded: concluded2
 LicenseInfoInFile: licenseFileText2
-PackageLicenseDeclared: licenseFileText2
-PackageLicenseComments: comment2
+LicenseDeclared: declared2
+LicenseComments: comment2
 FileCopyrightText: copyright2
 FileNotice: fileNotice2
 FileContributor: author2
