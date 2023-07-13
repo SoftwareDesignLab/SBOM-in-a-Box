@@ -22,9 +22,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SPDX23JSONDeserializerTest extends DeserializerTest {
     private final SPDX23SBOM spdx23json;
+
+    public SPDX23JSONDeserializerTest(Deserializer deserializer, String path) throws IOException {
+        super(deserializer);
+        spdx23json = (SPDX23SBOM) getDeserializer().readFromString(Files.readString(Path.of(path)));
+    }
+
     public SPDX23JSONDeserializerTest() throws IOException {
-        super(new SPDX23JSONDeserializer());
-        spdx23json = (SPDX23SBOM) getDeserializer().readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
+        this(new SPDX23JSONDeserializer(), SPDX23_JSON_SBOM);
     }
 
     @Test
