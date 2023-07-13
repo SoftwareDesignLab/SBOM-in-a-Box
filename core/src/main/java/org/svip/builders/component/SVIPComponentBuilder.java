@@ -514,13 +514,8 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
     @Override
     public SVIPComponentObject buildAndFlush() {
         // build the component
-        SVIPComponentObject component = new SVIPComponentObject(type, uid, author, name, licenses,
-                copyright, hashes, supplier, version, description, cpes,
-                purls, externalReferences, downloadLocation, fileName,
-                filesAnalyzed, verificationCode, homePage, sourceInfo,
-                releaseDate, builtDate, validUntilDate, mimeType,
-                publisher, scope, group, properties, fileNotice,
-                comment, attributionText);
+        SVIPComponentObject component = build();
+
         // clear all the data in the builder
         this.type = null;
         this.uid = null;
@@ -552,9 +547,6 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
         this.fileNotice = null;
         this.comment = null;
         this.attributionText = null;
-        return new SVIPComponentObject(null, null, null, null,null, null,
-                null, null, null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, null, null, null, null,
-                null, null, null, null);
+        return component;
     }
 }

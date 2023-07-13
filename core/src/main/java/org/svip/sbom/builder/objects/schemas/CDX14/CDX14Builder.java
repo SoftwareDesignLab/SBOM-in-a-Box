@@ -229,6 +229,8 @@ public class CDX14Builder implements CDX14SBOMBuilder{
      */
     @Override
     public CDX14Builder addExternalReference(ExternalReference externalReference) {
+        if(this.externalReferences == null)
+            this.externalReferences = new HashSet<ExternalReference>();
         this.externalReferences.add(externalReference);
         return this;
     }

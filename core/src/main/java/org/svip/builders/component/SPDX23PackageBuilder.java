@@ -2,8 +2,6 @@ package org.svip.builders.component;
 
 
 import org.svip.sbom.builder.interfaces.schemas.SPDX23.SPDX23PackageBuilder_I;
-import org.svip.sbom.model.interfaces.generics.Component;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
@@ -400,12 +398,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     @Override
     public SPDX23PackageObject buildAndFlush() {
         // build the component
-        SPDX23PackageObject component = new SPDX23PackageObject(type, uid, author, name, licenses,
-                copyright, hashes, supplier, version, description, cpes,
-                purls, externalReferences, downloadLocation, fileName,
-                filesAnalyzed, verificationCode, homePage, sourceInfo,
-                releaseDate, builtDate, validUntilDate,
-                comment, attributionText);
+        SPDX23PackageObject component = build();
         // clear all the data in the builder
         this.type = null;
         this.uid = null;
