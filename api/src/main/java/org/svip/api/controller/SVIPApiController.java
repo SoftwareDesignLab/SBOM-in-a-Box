@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.utils.Utils;
+import org.svip.sbom.model.old.SBOM;
 import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomfactory.translators.TranslatorException;
 
@@ -174,6 +175,27 @@ public class SVIPApiController {
         // Return file names
         return Utils.encodeResponse(sbomFiles.stream().map(SBOMFile::getId).toList().toArray(new Long[0]));
     }
+
+    /**
+     * USAGE. Send GET request to /getSBOM with a URL parameter id to get the deserialized SBOM.
+     *
+     * The API will respond with an HTTP 200 and the SBOM object
+     * Supported types:
+     * 0: SVIP (Default)
+     * 1: CycloneDX 1.4
+     * 2: SPDX 2.3
+     * todo: better ways to add more support?
+     *
+     * @param id The id of the SBOM contents to retrieve.
+     * @param type Type of SBOM object to return
+     * @return The contents of the SBOM file.
+     */
+    @GetMapping("/getSBOM")
+    public ResponseEntity<?> getSBOM(@RequestParam("id") Long id, @RequestParam(required = false) Integer type) {
+        return Utils.encodeResponse("foo");
+    }
+
+
 
     /**
      * USAGE. Send DELETE request to /delete with a URL parameter id to get the contents of the SBOM with the specified
