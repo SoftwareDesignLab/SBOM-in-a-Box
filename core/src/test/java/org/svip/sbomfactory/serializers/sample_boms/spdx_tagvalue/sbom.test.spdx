@@ -21,7 +21,7 @@ PackageDescription: extendedDescription1
 PackageComment: comment1
 PackageFileName: fileName1
 PackageSupplier: Organization: SVIP1 (svip@svip.xyz)
-PackageOriginator: Person: author1
+PackageOriginator: author1
 PackageDownloadLocation: downloadLocation1
 FilesAnalyzed: true
 PackageVerificationCode: verificationCode1
