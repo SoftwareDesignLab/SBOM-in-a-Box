@@ -39,7 +39,8 @@ public class EmptyOrNullTest {
 
         // Check if value is null first
         if(value == null){
-           isEmptyorNull = true;
+            r = resultFactory.fail(field, INFO.MISSING, (String) null);
+            return r;
         }
         // Check for empty string if value is instance of a string
         if(value instanceof String)
