@@ -22,8 +22,6 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CDX14JSONDeserializerTest extends DeserializerTest {
-    // TODO no way to test root component
-
     private final CDX14SBOM cdx14json;
     public CDX14JSONDeserializerTest() throws IOException {
         super(new CDX14JSONDeserializer());
@@ -145,6 +143,7 @@ public class CDX14JSONDeserializerTest extends DeserializerTest {
 
     @Test
     public void componentTest() {
+        assertEquals(4, cdx14json.getComponents().size());
         for (Component component : cdx14json.getComponents()) {
             testComponent((CDX14ComponentObject) component,
                     Integer.parseInt(component.getName().substring("COMPONENT ".length())));
