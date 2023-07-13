@@ -3,6 +3,7 @@ package org.svip.sbom.model.objects;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Schema;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.Relationship;
@@ -266,6 +267,33 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
         this.relationships = (HashMap<String, Set<Relationship>>) spdx23SBOM.getRelationships();
         this.externalReferences = spdx23SBOM.getExternalReferences();
         this.SPDXLicenseListVersion = spdx23SBOM.getSPDXLicenseListVersion();
+    }
+
+    /**
+     * Constructs an SVIPSBOM from a cdx14SBOM
+     * @param cdx14SBOM said SBOM to construct from
+     */
+    public SVIPSBOM(CDX14SBOM cdx14SBOM){
+        this.format = cdx14SBOM.getFormat();
+        this.name = cdx14SBOM.getName();
+        this.uid = cdx14SBOM.getUID();
+        this.version = cdx14SBOM.getVersion();
+        this.specVersion = cdx14SBOM.getSpecVersion();
+        this.licenses = cdx14SBOM.getLicenses();
+        this.creationData = cdx14SBOM.getCreationData();
+        this.documentComment = cdx14SBOM.getDocumentComment();
+        SVIPComponentObject temp = null;
+        try{
+            temp = new SVIPComponentObject(cdx14SBOM.getRootComponent()); // todo this is a temporary fix and messes up json object mapping in serializers
+        }
+        catch (NullPointerException n){}
+        this.rootComponent = temp;
+        this.components = cdx14SBOM.getComponents();
+        this.relationships = (HashMap<String, Set<Relationship>>) cdx14SBOM.getRelationships();
+        this.externalReferences = cdx14SBOM.getExternalReferences();
+
+        // todo this should be okay?
+        this.SPDXLicenseListVersion = null;
     }
 
 }

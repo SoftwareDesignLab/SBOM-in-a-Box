@@ -3,6 +3,8 @@ package org.svip.sbom.model.objects;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
@@ -493,12 +495,52 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         // todo is this okay
         this.publisher = "";
         this.scope = "";
-        this.group = "";
+        this.group = "";            // attributes not supported in spdx23PackageObject
         this.properties = null;
         this.fileNotice  = null;
 
         this.comment = getComment();
         this.attributionText = getAttributionText();
+    }
+
+    /**
+     * // Constructs an SVIPComponent object from an spdx23PackageObject
+     * @param cdx14ComponentObject said object to construct from
+     */
+    public SVIPComponentObject(CDX14ComponentObject cdx14ComponentObject){
+        this.type = cdx14ComponentObject.getType();
+        this.uid = cdx14ComponentObject.getUID();
+        this.author = cdx14ComponentObject.getAuthor();
+        this.name = cdx14ComponentObject.getName();
+        this.licenses = cdx14ComponentObject.getLicenses();
+        this.copyright = cdx14ComponentObject.getCopyright();
+        this.hashes = (HashMap<String, String>) cdx14ComponentObject.getHashes();
+        this.supplier = cdx14ComponentObject.getSupplier();
+        this.version = cdx14ComponentObject.getVersion();
+        this.description = cdx14ComponentObject.getDescription();
+        this.cpes = cdx14ComponentObject.getCPEs();
+        this.purls = cdx14ComponentObject.getPURLs();
+        this.externalReferences = cdx14ComponentObject.getExternalReferences();
+
+        this.downloadLocation = null;
+        this.fileName = null;
+        this.filesAnalyzed = null;
+        this.verificationCode = null;
+        this.homePage = null;               // attributes not present in cdx14ComponentObject
+        this.sourceInfo = null;
+        this.releaseDate = null;
+        this.builtDate = null;
+        this.validUntilDate = null;
+
+        this.mimeType = cdx14ComponentObject.getMimeType();
+        this.publisher = cdx14ComponentObject.getPublisher();
+        this.scope = cdx14ComponentObject.getScope();
+        this.group = cdx14ComponentObject.getGroup();
+        this.properties = cdx14ComponentObject.getProperties();
+
+        this.fileNotice = null;
+        this.comment = null;                // attributes not present in cdx14ComponentObject
+        this.attributionText = null;
     }
 
 }
