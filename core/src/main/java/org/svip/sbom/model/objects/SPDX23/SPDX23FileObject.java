@@ -10,10 +10,7 @@ import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.MismatchConflict;
 import org.svip.sbomanalysis.comparison.conflicts.MissingConflict;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.svip.sbomanalysis.comparison.conflicts.ConflictType.*;
 
@@ -178,13 +175,13 @@ public class SPDX23FileObject implements SPDX23File {
         // NAME
         if (this.name != null ^ other.getName() != null) {
             conflicts.add(new MissingConflict("name", this.name, other.getName()));
-        } else if (this.name != other.getName()) {
+        } else if (!Objects.equals(this.name, other.getName()) && this.name != null) {
             conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
         }
         // AUTHOR
         if (this.author != null ^ other.getAuthor() != null) {
             conflicts.add(new MissingConflict("author", this.author, other.getAuthor()));
-        } else if (this.author != other.getAuthor()) {
+        } else if (!Objects.equals(this.author, other.getAuthor()) && this.author != null) {
             conflicts.add(new MismatchConflict("author", this.author, other.getAuthor(), AUTHOR_MISMATCH));
         }
         // Licenses
@@ -222,13 +219,13 @@ public class SPDX23FileObject implements SPDX23File {
         // NAME
         if (this.name != null ^ other.getName() != null) {
             conflicts.add(new MissingConflict("name", this.name, other.getName()));
-        } else if (this.name != other.getName()) {
+        } else if (!Objects.equals(this.name, other.getName()) && this.name != null) {
             conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
         }
         // AUTHOR
         if (this.author != null ^ other.getAuthor() != null) {
             conflicts.add(new MissingConflict("author", this.author, other.getAuthor()));
-        } else if (this.author != other.getAuthor()) {
+        } else if (!Objects.equals(this.author, other.getAuthor()) && this.author != null) {
             conflicts.add(new MismatchConflict("author", this.author, other.getAuthor(), AUTHOR_MISMATCH));
         }
         // Licenses
@@ -266,8 +263,14 @@ public class SPDX23FileObject implements SPDX23File {
         // NAME
         if (this.name != null ^ other.getName() != null) {
             conflicts.add(new MissingConflict("name", this.name, other.getName()));
-        } else if (this.name != other.getName()) {
+        } else if (!Objects.equals(this.name, other.getName()) && this.name != null) {
             conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
+        }
+        // AUTHOR
+        if (this.author != null ^ other.getAuthor() != null) {
+            conflicts.add(new MissingConflict("author", this.author, other.getAuthor()));
+        } else if (!Objects.equals(this.author, other.getAuthor()) && this.author != null) {
+            conflicts.add(new MismatchConflict("author", this.author, other.getAuthor(), AUTHOR_MISMATCH));
         }
         // Licenses
         if (this.licenses != null && other.getLicenses() != null) {
