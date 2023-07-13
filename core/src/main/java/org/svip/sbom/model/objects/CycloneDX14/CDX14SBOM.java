@@ -229,8 +229,8 @@ public class CDX14SBOM implements CDX14Schema {
             for (int i = 0; i < targetComponents.size(); i++) {
                 for (int j = 0; j < otherComponents.size(); j++) {
                     // TODO: improve the optimization for component matching
-                    if (targetComponents.get(i).getUID() == otherComponents.get(j).getUID()) {
-                        conflicts.addAll((targetComponents.get(i)).compare(otherComponents.get(j)));
+                    if (Objects.equals(targetComponents.get(i).getUID(), otherComponents.get(j).getUID())) {
+                        conflicts.addAll(((CDX14ComponentObject)targetComponents.get(i)).compare(otherComponents.get(j)));
                     }
                 }
             }
@@ -245,19 +245,19 @@ public class CDX14SBOM implements CDX14Schema {
         // NAME
         if (this.name != null ^ other.getName() != null) {
             conflicts.add(new MissingConflict("name", this.name, other.getName()));
-        } else if (this.name != other.getName()) {
+        } else if (!Objects.equals(this.name, other.getName()) && this.name != null) {
             conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
         }
         // VERSION
         if (this.version != null ^ other.getVersion() != null) {
             conflicts.add(new MissingConflict("version", this.version, other.getVersion()));
-        } else if (this.version != other.getVersion()) {
+        } else if (!Objects.equals(this.version, other.getVersion()) && this.version != null) {
             conflicts.add(new MismatchConflict("version", this.version, other.getVersion(), VERSION_MISMATCH));
         }
         // SPECVERSION
         if (this.specVersion != null ^ other.getSpecVersion() != null) {
             conflicts.add(new MissingConflict("specVersion", this.specVersion, other.getSpecVersion()));
-        } else if (this.specVersion != other.getSpecVersion()) {
+        } else if (!Objects.equals(this.specVersion, other.getSpecVersion()) && this.specVersion != null) {
             conflicts.add(new MismatchConflict("specVersion", this.specVersion, other.getSpecVersion(), SBOM_VERSION_MISMATCH));
         }
         // LICENSES
@@ -275,7 +275,7 @@ public class CDX14SBOM implements CDX14Schema {
             // TIMESTAMP
             if (this.creationData.getCreationTime() != null ^ other.getCreationData().getCreationTime() != null) {
                 conflicts.add(new MissingConflict("timestamp", this.creationData.getCreationTime(), other.getCreationData().getCreationTime()));
-            } else if (this.creationData.getCreationTime() != other.getCreationData().getCreationTime()) {
+            } else if (!Objects.equals(this.creationData.getCreationTime(), other.getCreationData().getCreationTime()) && this.creationData.getCreationTime() != null) {
                 conflicts.add(new MismatchConflict("timestamp", this.creationData.getCreationTime(), other.getCreationData().getCreationTime(), TIMESTAMP_MISMATCH));
             }
         }
@@ -286,7 +286,7 @@ public class CDX14SBOM implements CDX14Schema {
             for (int i = 0; i < targetComponents.size(); i++) {
                 for (int j = 0; j < otherComponents.size(); j++) {
                     // TODO: improve the optimization for component matching
-                    if (targetComponents.get(i).getUID() == otherComponents.get(j).getUID()) {
+                    if (Objects.equals(targetComponents.get(i).getUID(), otherComponents.get(j).getUID())) {
                         conflicts.addAll(((CDX14ComponentObject) targetComponents.get(i)).compare((CDX14ComponentObject) otherComponents.get(j)));
                     }
                 }

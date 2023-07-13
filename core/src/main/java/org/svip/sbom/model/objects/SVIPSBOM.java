@@ -257,7 +257,7 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
             for (int i = 0; i < targetComponents.size(); i++) {
                 for (int j = 0; j < otherComponents.size(); j++) {
                     // TODO: improve the optimization for component matching
-                    if (targetComponents.get(i).getUID() == otherComponents.get(j).getUID()) {
+                    if (Objects.equals(targetComponents.get(i).getUID(), otherComponents.get(j).getUID())) {
                         conflicts.addAll((targetComponents.get(i)).compare(otherComponents.get(j)));
                     }
                 }
@@ -277,7 +277,7 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
             for (int i = 0; i < targetComponents.size(); i++) {
                 for (int j = 0; j < otherComponents.size(); j++) {
                     // TODO: improve the optimization for component matching
-                    if (targetComponents.get(i).getUID() == otherComponents.get(j).getUID()) {
+                    if (Objects.equals(targetComponents.get(i).getUID(), otherComponents.get(j).getUID())) {
                         conflicts.addAll(((SVIPComponentObject) targetComponents.get(i)).compare((SPDX23PackageObject) otherComponents.get(j)));
                     }
                 }
@@ -297,7 +297,7 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
             for (int i = 0; i < targetComponents.size(); i++) {
                 for (int j = 0; j < otherComponents.size(); j++) {
                     // TODO: improve the optimization for component matching
-                    if (targetComponents.get(i).getUID() == otherComponents.get(j).getUID()) {
+                    if (Objects.equals(targetComponents.get(i).getUID(), otherComponents.get(j).getUID())) {
                         conflicts.addAll(((SVIPComponentObject) targetComponents.get(i)).compare((CDX14ComponentObject) otherComponents.get(j)));
                     }
                 }

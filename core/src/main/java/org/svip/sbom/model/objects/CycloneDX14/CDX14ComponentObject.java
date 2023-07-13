@@ -293,13 +293,13 @@ public class CDX14ComponentObject implements CDX14Package {
         // NAME
         if (this.name != null ^ other.getName() != null) {
             conflicts.add(new MissingConflict("name", this.name, other.getName()));
-        } else if (this.name != other.getName()) {
+        } else if (!Objects.equals(this.name, other.getName()) && this.name != null) {
             conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
         }
         // AUTHOR
         if (this.author != null ^ other.getAuthor() != null) {
             conflicts.add(new MissingConflict("author", this.author, other.getAuthor()));
-        } else if (this.author != other.getAuthor()) {
+        } else if (!Objects.equals(this.author, other.getAuthor()) && this.author != null) {
             conflicts.add(new MismatchConflict("author", this.author, other.getAuthor(), AUTHOR_MISMATCH));
         }
         // Licenses
@@ -337,25 +337,29 @@ public class CDX14ComponentObject implements CDX14Package {
         // NAME
         if (this.name != null ^ other.getName() != null) {
             conflicts.add(new MissingConflict("name", this.name, other.getName()));
-        } else if (this.name != other.getName()) {
+        } else if (!Objects.equals(this.name, other.getName()) && this.name != null) {
             conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
         }
         // VERSION
         if (this.version != null ^ other.getVersion() != null) {
             conflicts.add(new MissingConflict("version", this.version, other.getVersion()));
-        } else if (this.version != other.getVersion()) {
+        } else if (!Objects.equals(this.version, other.getVersion()) && this.version != null) {
             conflicts.add(new MismatchConflict("version", this.version, other.getVersion(), VERSION_MISMATCH));
         }
         // SUPPLIER
-        if (this.supplier != null ^ other.getSupplier() != null) {
-            conflicts.add(new MissingConflict("supplier", this.supplier.getName(), other.getSupplier().getName()));
-        } else if (this.supplier.getName() != other.getSupplier().getName()) {
-            conflicts.add(new MismatchConflict("supplier", this.supplier.getName(), other.getSupplier().getName(), SUPPLIER_MISMATCH));
+        if (this.supplier != null && other.getSupplier() != null) {
+            if (!Objects.equals(this.supplier.getName(), other.getSupplier().getName())) {
+                conflicts.add(new MismatchConflict("supplier", this.supplier.getName(), other.getSupplier().getName(), SUPPLIER_MISMATCH));
+            }
+        } else if (this.supplier != null) {
+            conflicts.add(new MissingConflict("supplier", this.supplier.getName(), null));
+        } else if (other.getSupplier() != null) {
+            conflicts.add(new MissingConflict("supplier", null, other.getSupplier().getName()));
         }
         // AUTHOR
         if (this.author != null ^ other.getAuthor() != null) {
             conflicts.add(new MissingConflict("author", this.author, other.getAuthor()));
-        } else if (this.author != other.getAuthor()) {
+        } else if (!Objects.equals(this.author, other.getAuthor()) && this.author != null) {
             conflicts.add(new MismatchConflict("author", this.author, other.getAuthor(), AUTHOR_MISMATCH));
         }
         // PURL
@@ -413,25 +417,29 @@ public class CDX14ComponentObject implements CDX14Package {
         // NAME
         if (this.name != null ^ other.getName() != null) {
             conflicts.add(new MissingConflict("name", this.name, other.getName()));
-        } else if (this.name != other.getName()) {
+        } else if (!Objects.equals(this.name, other.getName()) && this.name != null) {
             conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
         }
         // VERSION
         if (this.version != null ^ other.getVersion() != null) {
             conflicts.add(new MissingConflict("version", this.version, other.getVersion()));
-        } else if (this.version != other.getVersion()) {
+        } else if (!Objects.equals(this.version, other.getVersion()) && this.version != null) {
             conflicts.add(new MismatchConflict("version", this.version, other.getVersion(), VERSION_MISMATCH));
         }
         // SUPPLIER
-        if (this.supplier != null ^ other.getSupplier() != null) {
-            conflicts.add(new MissingConflict("supplier", this.supplier.getName(), other.getSupplier().getName()));
-        } else if (this.supplier.getName() != other.getSupplier().getName()) {
-            conflicts.add(new MismatchConflict("supplier", this.supplier.getName(), other.getSupplier().getName(), SUPPLIER_MISMATCH));
+        if (this.supplier != null && other.getSupplier() != null) {
+            if (!Objects.equals(this.supplier.getName(), other.getSupplier().getName())) {
+                conflicts.add(new MismatchConflict("supplier", this.supplier.getName(), other.getSupplier().getName(), SUPPLIER_MISMATCH));
+            }
+        } else if (this.supplier != null) {
+            conflicts.add(new MissingConflict("supplier", this.supplier.getName(), null));
+        } else if (other.getSupplier() != null) {
+            conflicts.add(new MissingConflict("supplier", null, other.getSupplier().getName()));
         }
         // AUTHOR
         if (this.author != null ^ other.getAuthor() != null) {
             conflicts.add(new MissingConflict("author", this.author, other.getAuthor()));
-        } else if (this.author != other.getAuthor()) {
+        } else if (!Objects.equals(this.author, other.getAuthor()) && this.author != null) {
             conflicts.add(new MismatchConflict("author", this.author, other.getAuthor(), AUTHOR_MISMATCH));
         }
         // PURL
@@ -483,7 +491,7 @@ public class CDX14ComponentObject implements CDX14Package {
         // PUBLISHER
         if (this.publisher != null ^ other.getPublisher() != null) {
             conflicts.add(new MissingConflict("publisher", this.publisher, other.getPublisher()));
-        } else if (this.publisher != other.getPublisher()) {
+        } else if (!Objects.equals(this.publisher, other.getPublisher()) && this.publisher != null) {
             conflicts.add(new MismatchConflict("publisher", this.publisher, other.getPublisher(), PUBLISHER_MISMATCH));
         }
         // TODO SWIDs?
