@@ -1,5 +1,6 @@
 package org.svip.api.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -199,11 +200,11 @@ public class SVIPApiController {
      * @return The contents of the SBOM file.
      */
     @GetMapping("/getSBOM")
-    public ResponseEntity<?> getSBOM(@RequestParam("id") Long id, @RequestParam(required = false) Integer type) {
+    public ResponseEntity<?> getSBOM(@RequestParam("id") Long id, @RequestParam(defaultValue = "0") Integer type) throws JsonProcessingException {
 
         // default to SVIP SBOM if no type is given
-        if(type == null)
-            type = 0;
+//        if(type == null)
+//            type = 0;
 
         String urlMsg = "GET /svip/getSBOM?id=" + id + "&type=" + type;     // for logging
 
@@ -217,24 +218,30 @@ public class SVIPApiController {
         }
 
 
-        SBOM sbom = deserialize(sbomFile.get().getContents(),
-                new CDX14JSONDeserializer(),
-                new SPDX23TagValueDeserializer(),
-                new SPDX23JSONDeserializer());
+//        SBOM sbom = deserialize(sbomFile.get().getContents(),
+//                new CDX14JSONDeserializer(),
+//                new SPDX23TagValueDeserializer(),
+//                new SPDX23JSONDeserializer());
+
+
+
+        SBOM sbom = null;
+        switch (type) {
+            case 0:
+                break;
+            case 1:
+                sbom = new CDX14JSONDeserializer().readFromString(sbomFile.get().getContents());
+                break;
+            case 2:
+                break;
+            default:
+                LOGGER.warn(urlMsg + " - BAD TYPE ARGUMENT");
+                return new ResponseEntity<>("Invalid Type Argument", HttpStatus.BAD_REQUEST);
+
+        }
 
         if(sbom == null)
             return new ResponseEntity<>("Failed to deserialize SBOM content", HttpStatus.INTERNAL_SERVER_ERROR);
-
-
-        switch (type) {
-            case 0 -> sbom = (SVIPSBOM) sbom;
-            case 1 -> sbom = (CDX14SBOM) sbom;
-            case 2 -> sbom = (SPDX23SBOM) sbom;
-            default -> {
-                LOGGER.warn(urlMsg + " - BAD TYPE ARGUMENT");
-                return new ResponseEntity<>("Invalid Type Argument", HttpStatus.BAD_REQUEST);
-            }
-        }
 
         // Log
         LOGGER.info(urlMsg + " - File: " + sbomFile.get().getFileName());
@@ -246,7 +253,9 @@ public class SVIPApiController {
     public SBOM deserialize(String contents, Deserializer... deserializers){
         for(Deserializer d : deserializers){
             try{
-                return d.readFromString(contents);
+                CDX14SBOM s = (CDX14SBOM) d.readFromString(contents);
+                LOGGER.info("Failed to parse using " + d.getClass().getName());
+                return s;
             } catch (Exception e){
                 LOGGER.warn("Failed to parse using " + d.getClass().getName());
             }
