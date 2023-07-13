@@ -38,44 +38,21 @@ public class ConvertFromAPITest extends APITest{
         String[] schemas = {"CDX14", "SPDX23"};
         String[] formats = {"JSON", "TAGVALUE"};
 
-        for (String schema: schemas
+        for (String convertToSchema: schemas
              ) {
-            for (String format: formats
+            for (String convertToFormat: formats
                  ) {
                 for (Long id : testMap.keySet()) {
 
                     String testString = testMap.get(id).getContents().toLowerCase();
-
                     SerializerFactory.Schema thisSchema = (testString.contains("spdx")) ? SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14;
+                    if (testController(convertToSchema, convertToFormat, id, thisSchema)) continue;
 
-                    Long[] validTests = {0L,2L,6L,7L};
-                    boolean contains = false;
-                    for (Long l: validTests
-                         ) {
-                        if(Objects.equals(id, l)){
-                            contains = true;
-                            break;
-                        }
-                    }
-                    if(!contains)
-                        continue;
+                    LOGGER.info("ID: " + id + " Converting " + thisSchema.name() + " --> " + convertToSchema);
+                    LOGGER.info("From " + ((testMap.get(id).getFileName()).contains("json")
+                            ? "JSON" : "TAGVALUE") + " --> " + convertToFormat + "\n-------------\n");
 
-                    // todo this is bad practice
-                    // don't convert to the same schema
-                    if(thisSchema == SerializerFactory.Schema.SPDX23 && (schema.equals("SPDX23") || schema.equals("SVIP")))
-                        continue; // todo implement this check in /convert and return a bad request error
-                    if(thisSchema == SerializerFactory.Schema.CDX14 && (schema.equals("CDX14")))
-                        continue;
-                    // tagvalue format unsupported for cdx14
-                    if(thisSchema == SerializerFactory.Schema.CDX14 && format.equals("TAGVALUE"))
-                        continue;
-                    // we don't support xml deserialization right now
-                    if(testMap.get(id).getContents().contains("xml"))
-                        continue;
-
-                    LOGGER.info("ID: " + id + " Converting " + thisSchema.name() + " --> " + schema);
-
-                    ResponseEntity<String> response = controller.convert(id, schema, format,true);
+                    ResponseEntity<String> response = controller.convert(id, convertToSchema, convertToFormat,true);
                     String res = response.getBody();
                     int x = 0;
 
@@ -89,6 +66,39 @@ public class ConvertFromAPITest extends APITest{
                 }
             }
         }
+    }
+
+    /**
+     * For faster testing
+     */
+    private boolean testController(String convertToSchema, String convertToFormat, Long id, SerializerFactory.Schema thisSchema) {
+        Long[] validTests = {0L,2L,6L,7L};
+        boolean contains = false;
+        for (Long l: validTests
+             ) {
+            if(Objects.equals(id, l)){
+                contains = true;
+                break;
+            }
+        }
+        if(!contains)
+            return true;
+
+        // todo this is bad practice
+        // todo implement these checks in the controller and return a bad request error
+
+        // don't convert to the same schema
+        if(thisSchema == SerializerFactory.Schema.SPDX23 && (convertToSchema.equals("SPDX23")))
+            return true;
+        if(thisSchema == SerializerFactory.Schema.CDX14 && (convertToSchema.equals("CDX14")))
+            return true;
+        // tagvalue format unsupported for cdx14
+        if(convertToSchema.equals("CDX14") && convertToFormat.equals("TAGVALUE"))
+            return true;
+        // we don't support xml deserialization right now
+        if(testMap.get(id).getContents().contains("xml"))
+            return true;
+        return false;
     }
 
 
