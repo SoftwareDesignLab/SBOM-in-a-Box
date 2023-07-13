@@ -17,6 +17,7 @@ import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.sbomfactory.serializers.SerializerFactory;
 import org.svip.sbomfactory.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.sbomfactory.serializers.deserializer.Deserializer;
 import org.svip.sbomfactory.serializers.deserializer.SPDX23JSONDeserializer;
@@ -211,40 +212,22 @@ public class SVIPApiController {
         }
 
         // Deserialize SBOM into JSON Object
-        SBOM sbom = deserialize(sbomFile.get().getContents(),
-                new CDX14JSONDeserializer(),
-                new SPDX23TagValueDeserializer(),
-                new SPDX23JSONDeserializer());
-
-        // All deserializers failed
-        if(sbom == null)
-            return new ResponseEntity<>("Failed to deserialize SBOM content", HttpStatus.INTERNAL_SERVER_ERROR);
+        SBOM sbom;
+        try{
+            Deserializer d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
+            sbom = d.readFromString(sbomFile.get().getContents());
+        } catch (IllegalArgumentException e){
+            return new ResponseEntity<>("Schema or Format Could not be Determined", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (JsonProcessingException e ){
+            return new ResponseEntity<>("Failed to deserialize SBOM content, may be an unsupported format", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e){
+            return new ResponseEntity<>("Deserialization Error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         // Log
         LOGGER.info(urlMsg + " - File: " + sbomFile.get().getFileName());
 
         return Utils.encodeResponse(sbom);
-    }
-
-    /**
-     * Deserialize Utility into SBOM JSON Objects
-     *
-     * @param contents SBOM string to deserialize
-     * @param deserializers Collection of deserializers to attempt to use
-     * @return Deserialized SBOM Object
-     */
-    public SBOM deserialize(String contents, Deserializer... deserializers){
-        for(Deserializer d : deserializers){
-            try{
-                SBOM s = d.readFromString(contents);
-                LOGGER.info("Successfully parsed using " + d.getClass().getSimpleName());
-                return s;
-            } catch (Exception e){
-                LOGGER.warn("Failed to parse using " + d.getClass().getSimpleName());
-            }
-        }
-        LOGGER.error("All deserializers failed to parse SBOM contents");
-        return null;
     }
 
 
