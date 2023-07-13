@@ -6,6 +6,7 @@ import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.Organization;
+import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbomanalysis.qualityattributes.newtests.*;
 import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
@@ -40,8 +41,10 @@ public class SPDX23Pipeline implements SPDX23Tests {
 
         // test for SBOM's licenses
         var lt = new LicenseTest(ATTRIBUTE.LICENSING);
-        for(String l : spdx23SBOM.getLicenses()){
-            sbomResults.addAll(lt.test("License", l));
+        if(spdx23SBOM.getLicenses() != null){
+            for(String l : spdx23SBOM.getLicenses()){
+                sbomResults.addAll(lt.test("License", l));
+            }
         }
 
         // test SPDX specific metadata info
@@ -59,54 +62,67 @@ public class SPDX23Pipeline implements SPDX23Tests {
 
         // add metadata results to the quality report
         qualityReport.addComponent("metadata", sbomResults);
+        if(spdx23SBOM.getComponents() != null){
+            // test component info
+            for(Component c : spdx23SBOM.getComponents()){
+                List<Result> componentResults = new ArrayList<>();
+                SPDX23PackageObject component = (SPDX23PackageObject) c;
 
-        // test component info
-        for(Component c : spdx23SBOM.getComponents()){
-            List<Result> componentResults = new ArrayList<>();
-            SPDX23PackageObject component = (SPDX23PackageObject) c;
+                String spdxID = component.getUID();
+                componentResults.addAll(hasSPDXID("SPDXID", spdxID));
 
-            String spdxID = component.getUID();
-            componentResults.addAll(hasSPDXID("SPDXID", spdxID));
+                String downloadLocation = component.getDownloadLocation();
+                componentResults.addAll(hasDownloadLocation("Download Location", downloadLocation));
 
-            String downloadLocation = component.getDownloadLocation();
-            componentResults.addAll(hasDownloadLocation("Download Location", downloadLocation));
+                boolean filesAnalyzed = component.getFilesAnalyzed();
+                String verificationCode = component.getVerificationCode();
+                componentResults.addAll(hasVerificationCode("Verification Code", verificationCode, filesAnalyzed));
 
-            boolean filesAnalyzed = component.getFilesAnalyzed();
-            String verificationCode = component.getVerificationCode();
-            componentResults.addAll(hasVerificationCode("Verification Code", verificationCode, filesAnalyzed));
+                // test component CPEs
+                var cpeTest = new CPETest(component, ATTRIBUTE.UNIQUENESS,
+                        ATTRIBUTE.MINIMUM_ELEMENTS);
+                Set<String> cpes = component.getCPEs();
+                if(cpes != null){
+                    for(String cpe: cpes){
+                        componentResults.addAll(cpeTest.test("cpe", cpe));
+                    }
+                }
 
-            // test component CPEs
-            var cpeTest = new CPETest(component, ATTRIBUTE.UNIQUENESS,
-                    ATTRIBUTE.MINIMUM_ELEMENTS);
-            for(String cpe: component.getCPEs()){
-                componentResults.addAll(cpeTest.test("cpe", cpe));
+                // test component PURLs
+                var purlTest = new PURLTest(component, ATTRIBUTE.UNIQUENESS,
+                        ATTRIBUTE.MINIMUM_ELEMENTS);
+                Set<String> purls =  component.getPURLs();
+                if(purls != null){
+                    for(String purl: purls){
+                        componentResults.addAll(purlTest.test("purl", purl));
+                    }
+                }
+
+                // test component Licenses
+                var licenseTest = new LicenseTest(ATTRIBUTE.UNIQUENESS,
+                        ATTRIBUTE.MINIMUM_ELEMENTS);
+                LicenseCollection licenses = component.getLicenses();
+                if (licenses != null) {
+                    Set<String> declaredLicenses = licenses.getDeclared();
+                    for(String l: declaredLicenses){
+                        componentResults.addAll(licenseTest.test("License", l));
+                    }
+                }
+
+                // test component Hashes
+                var hashTest = new HashTest(ATTRIBUTE.UNIQUENESS,
+                        ATTRIBUTE.MINIMUM_ELEMENTS);
+                Map<String, String> hashes = component.getHashes();
+                if(hashes != null){
+                    for(String hashAlgo : hashes.keySet()){
+                        String hashValue = hashes.get(hashAlgo);
+                        componentResults.addAll(hashTest.test(hashAlgo, hashValue));
+                    }
+                }
+
+                // add the component and all its tests to the quality report
+                qualityReport.addComponent(component.getName(), componentResults);
             }
-            // test component PURLs
-            var purlTest = new PURLTest(component, ATTRIBUTE.UNIQUENESS,
-                    ATTRIBUTE.MINIMUM_ELEMENTS);
-            for(String purl: component.getPURLs()){
-                componentResults.addAll(purlTest.test("purl", purl));
-            }
-
-            // test component Licenses
-            var licenseTest = new LicenseTest(ATTRIBUTE.UNIQUENESS,
-                    ATTRIBUTE.MINIMUM_ELEMENTS);
-            Set<String> licenses = component.getLicenses().getDeclared();
-            for(String l: licenses){
-                componentResults.addAll(licenseTest.test("License", l));
-            }
-
-            // test component Hashes
-            var hashTest = new HashTest(ATTRIBUTE.UNIQUENESS,
-                    ATTRIBUTE.MINIMUM_ELEMENTS);
-            Map<String, String> hashes = component.getHashes();
-            for(String hashAlgo : hashes.keySet()){
-                String hashValue = hashes.get(hashAlgo);
-                componentResults.addAll(hashTest.test(hashAlgo, hashValue));
-            }
-
-            // add the component and all its tests to the quality report
-            qualityReport.addComponent(component.getName(), componentResults);
         }
 
         return qualityReport;
@@ -149,9 +165,13 @@ public class SPDX23Pipeline implements SPDX23Tests {
 
         // the required sbom license
         String requiredLicense = "CC0-1.0";
-
+        // values is null or empty, test automatically fails
+        if(values == null || values.isEmpty()){
+            r = resultFactory.fail(field, INFO.MISSING,
+                    requiredLicense);
+        }
         // if the sbom's licenses contain the required license
-        if(values.size() == 1 && values.contains(requiredLicense)){
+        else if(values.size() == 1 && values.contains(requiredLicense)){
             r = resultFactory.pass(field, INFO.HAS,
                     requiredLicense);
         }
@@ -231,6 +251,15 @@ public class SPDX23Pipeline implements SPDX23Tests {
         var emptyNullTest = new EmptyOrNullTest(ATTRIBUTE.SPDX23,
                 ATTRIBUTE.COMPLETENESS);
         Result r;
+        ResultFactory resultFactory = new ResultFactory("HasCreationInfo",
+                ATTRIBUTE.SPDX23, ATTRIBUTE.COMPLETENESS);
+
+        // creation data is null, test automatically fails and ends
+        if(creationData == null){
+            r = resultFactory.error(field, INFO.MISSING, "Creation Data");
+            results.add(r);
+            return results;
+        }
 
         //first check for creator info
         Organization creator = creationData.getManufacture();

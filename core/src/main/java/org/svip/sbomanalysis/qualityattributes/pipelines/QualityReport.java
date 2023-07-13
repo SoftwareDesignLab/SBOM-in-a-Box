@@ -24,7 +24,7 @@ public class QualityReport {
     private final String uid;
 
     @JsonProperty
-    private Map<String, Map<String, List<Result>>> components;
+    private Map<String, Map<String, List<Result>>> components = new HashMap<>();
 
     /**
      * Create a new QualityReport
