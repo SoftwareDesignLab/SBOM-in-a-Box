@@ -3,16 +3,18 @@ package org.svip.sbom.model.objects.CycloneDX14;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Schema;
+import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+import org.svip.sbomanalysis.comparison.conflicts.MismatchConflict;
+import org.svip.sbomanalysis.comparison.conflicts.MissingConflict;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import static org.svip.sbomanalysis.comparison.conflicts.ConflictType.*;
 
 /**
  * file: CDX14SBOM.java
@@ -218,11 +220,78 @@ public class CDX14SBOM implements CDX14Schema {
 
     @Override
     public List<Conflict> compare(SBOM other) {
-        return null;
+        // CDX - OTHER Comparison
+        ArrayList<Conflict> conflicts = new ArrayList<>();
+        // COMPONENTS
+        if (this.components != null && other.getComponents() != null) {
+            List<Component> targetComponents = this.components.stream().toList();
+            List<Component> otherComponents = other.getComponents().stream().toList();
+            for (int i = 0; i < targetComponents.size(); i++) {
+                for (int j = 0; j < otherComponents.size(); j++) {
+                    // TODO: improve the optimization for component matching
+                    if (targetComponents.get(i).getUID() == otherComponents.get(j).getUID()) {
+                        conflicts.addAll((targetComponents.get(i)).compare(otherComponents.get(j)));
+                    }
+                }
+            }
+        }
+        return conflicts.stream().toList();
     }
 
     @Override
     public List<Conflict> compare(CDX14SBOM other) {
-        return null;
+        // CDX - CDX Comparison
+        ArrayList<Conflict> conflicts = new ArrayList<>();
+        // NAME
+        if (this.name != null ^ other.getName() != null) {
+            conflicts.add(new MissingConflict("name", this.name, other.getName()));
+        } else if (this.name != other.getName()) {
+            conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
+        }
+        // VERSION
+        if (this.version != null ^ other.getVersion() != null) {
+            conflicts.add(new MissingConflict("version", this.version, other.getVersion()));
+        } else if (this.version != other.getVersion()) {
+            conflicts.add(new MismatchConflict("version", this.version, other.getVersion(), VERSION_MISMATCH));
+        }
+        // SPECVERSION
+        if (this.specVersion != null ^ other.getSpecVersion() != null) {
+            conflicts.add(new MissingConflict("specVersion", this.specVersion, other.getSpecVersion()));
+        } else if (this.specVersion != other.getSpecVersion()) {
+            conflicts.add(new MismatchConflict("specVersion", this.specVersion, other.getSpecVersion(), SBOM_VERSION_MISMATCH));
+        }
+        // LICENSES
+        if (this.licenses != null && other.getLicenses() != null) {
+            if (!this.licenses.containsAll(other.getLicenses())) {
+                conflicts.add(new MismatchConflict("licenses", this.licenses.toString(), other.getLicenses().toString(), LICENSE_MISMATCH));
+            }
+        } else if (this.licenses != null) {
+            conflicts.add(new MissingConflict("licenses", this.licenses.toString(), null));
+        } else if (other.getLicenses() != null) {
+            conflicts.add(new MissingConflict("licenses", null, other.getLicenses().toString()));
+        }
+        // Creation data - includes timestamp, licenses
+        if (this.creationData != null && other.getCreationData() != null) {
+            // TIMESTAMP
+            if (this.creationData.getCreationTime() != null ^ other.getCreationData().getCreationTime() != null) {
+                conflicts.add(new MissingConflict("timestamp", this.creationData.getCreationTime(), other.getCreationData().getCreationTime()));
+            } else if (this.creationData.getCreationTime() != other.getCreationData().getCreationTime()) {
+                conflicts.add(new MismatchConflict("timestamp", this.creationData.getCreationTime(), other.getCreationData().getCreationTime(), TIMESTAMP_MISMATCH));
+            }
+        }
+        // COMPONENTS
+        if (this.components != null && other.getComponents() != null) {
+            List<Component> targetComponents = this.components.stream().toList();
+            List<Component> otherComponents = other.getComponents().stream().toList();
+            for (int i = 0; i < targetComponents.size(); i++) {
+                for (int j = 0; j < otherComponents.size(); j++) {
+                    // TODO: improve the optimization for component matching
+                    if (targetComponents.get(i).getUID() == otherComponents.get(j).getUID()) {
+                        conflicts.addAll(((CDX14ComponentObject) targetComponents.get(i)).compare((CDX14ComponentObject) otherComponents.get(j)));
+                    }
+                }
+            }
+        }
+        return conflicts.stream().toList();
     }
 }
