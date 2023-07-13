@@ -1,6 +1,5 @@
 package org.svip.sbomfactory.serializers.deserializer;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -12,8 +11,6 @@ import org.svip.builderfactory.CDX14SBOMBuilderFactory;
 import org.svip.builders.component.CDX14PackageBuilder;
 import org.svip.componentfactory.CDX14PackageBuilderFactory;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
-import org.svip.sbom.model.interfaces.generics.Component;
-import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.shared.Relationship;
@@ -25,7 +22,6 @@ import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
-import javax.management.relation.Relation;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -307,7 +303,7 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
         Set<Relationship> relationships = new HashSet<>();
 
         for(JsonNode dependency : dep.get("dependsOn"))
-            relationships.add(new Relationship(dependency.asText(), "dependsOn")); // TODO correct type?
+            relationships.add(new Relationship(dependency.asText(), "DEPENDS_ON")); // TODO correct type?
 
         return relationships;
     }

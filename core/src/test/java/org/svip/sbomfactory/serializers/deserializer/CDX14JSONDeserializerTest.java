@@ -125,7 +125,6 @@ public class CDX14JSONDeserializerTest extends DeserializerTest {
                 component.getDescription().getSummary());
         assertEquals("hash" + num, component.getHashes().get("SHA256"));
 
-        // TODO how do we find the difference?
         assertTrue(component.getLicenses().getInfoFromFiles().containsAll(List.of("licenseFileText" + num,
                 "declared" + num,
                 "concluded" + num)));
