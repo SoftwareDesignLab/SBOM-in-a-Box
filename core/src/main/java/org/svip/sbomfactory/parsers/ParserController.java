@@ -1,8 +1,8 @@
 package org.svip.sbomfactory.parsers;
 
 import org.svip.builderfactory.SVIPSBOMBuilderFactory;
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbomfactory.parsers.contexts.ContextParser;
 import org.svip.sbomfactory.parsers.contexts.DeadImportParser;
@@ -156,7 +156,7 @@ public class ParserController {
         }
 
         // Init Component list
-        ArrayList<SVIPComponentObject> components = new ArrayList<>();
+        ArrayList<SVIPComponentBuilder> components = new ArrayList<>();
 
         // Configure parser
         parser.setPWD(filepath);
@@ -175,45 +175,46 @@ public class ParserController {
         // If file being parsed is a package manager file
 
         // TODO duplicates, dead imports, modifying component values
-//        if(parser instanceof PackageManagerParser) { // Parsing an EXTERNAL dependency
-//            components.forEach(SVIPComponentObject::setPackaged); // Sets it to packaged and EXTERNAL
-//        } // Otherwise it will be unpackaged and INTERNAL (LIBRARY if it has been parsed as such)
-//
-//        components.forEach(c -> c.addFile(filepath.toString()));
-//
+        if(parser instanceof PackageManagerParser) { // Parsing an EXTERNAL dependency
+//            components.forEach(SVIPComponentBuilder::setPackaged); // Sets it to packaged and EXTERNAL
+        } // Otherwise it will be unpackaged and INTERNAL (LIBRARY if it has been parsed as such)
+
+        components.forEach(c -> c.setFileName(filepath.toString()));
+
 //        // componentMap contains a map from a component's name to itself
-//        Map<String, ParserComponent> componentMap = new HashMap<>();
-//        for(Component c : this.SBOM.getAllComponents()) {
-//            componentMap.put(c.getName(), (ParserComponent) c);
+//        Map<String, SVIPComponentBuilder> componentMap = new HashMap<>();
+//        for(Component c : builder.Build().getComponents()) {
+//            componentMap.put(c.getName(), (SVIPComponentObject) c);
 //        }
 //
 //        // List to store any duplicates/dead imports we find to avoid concurrent arraylist modification
-//        ArrayList<ParserComponent> toRemove = new ArrayList<>();
+//        ArrayList<SVIPComponentBuilder> toRemove = new ArrayList<>();
 //
 //        // Get list of all components that have dead imports and remove from main components array
 //        List<String> deadImportNames = components.stream()
 //                .filter(c -> {
-//                    if(c != null && c.getType() == ParserComponent.Type.DEAD_IMPORT) {
+//                    if(c != null && c.build().getType().equals("DEAD_IMPORT")) { // TODO better way to do this
 //                        toRemove.add(c); // Remove dead import component parsed by DeadImportParser
 //                        return true;
 //                    }
 //                    return false;
-//                }).map(Component::getName).toList();
+//                }).map(c -> c.build().getName()).toList();
 //
 //        components.removeAll(toRemove);
 //        toRemove.clear(); // Clear components to remove for below loop
 //
 //        int deadImportCounter = 0;
 //        // Check for duplicate named components & dead imports
-//        for(ParserComponent component : components) {
+//        for(SVIPComponentBuilder cBuilder : components) {
+//            SVIPComponentObject component = cBuilder.build();
 //            if(deadImportNames.contains(component.getName())) {
-//                toRemove.add(component);
+//                toRemove.add(cBuilder);
 //                Debug.log(LOG_TYPE.DEBUG, "Removed dead import " + component.getName());
 //                deadImportCounter++;
 //                continue;
 //            }
 //
-//            ParserComponent old = componentMap.get(component.getName());
+//            SVIPComponentObject old = componentMap.get(component.getName());
 //            // If a component name doesn't exist, there are no duplicates
 //            if(old == null) continue;
 //
@@ -238,8 +239,8 @@ public class ParserController {
 //        Debug.log(LOG_TYPE.DEBUG, removedComponentsLog);
 
         // Add Components to SBOM
-        for (SVIPComponentObject c : components) {
-            builder.addComponent(c);
+        for (SVIPComponentBuilder c : components) {
+            builder.addComponent(c.buildAndFlush());
         }
     }
 

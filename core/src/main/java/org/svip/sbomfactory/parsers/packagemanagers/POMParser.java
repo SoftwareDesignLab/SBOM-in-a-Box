@@ -1,7 +1,7 @@
 package org.svip.sbomfactory.parsers.packagemanagers;
 
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +33,7 @@ public class POMParser extends PackageManagerParser {
     //#region Core Methods
 
     @Override
-    protected void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data) {
+    protected void parseData(ArrayList<SVIPComponentObject> components, HashMap<String, Object> data) {
         // Init properties
         this.properties = new HashMap<>();
 

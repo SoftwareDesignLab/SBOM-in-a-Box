@@ -1,6 +1,7 @@
 package org.svip.sbomfactory.parsers.packagemanagers;
 
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.queryworkers.QueryWorker;
 
@@ -24,7 +25,7 @@ public class CSProjParser extends PackageManagerParser {
     }
 
     @Override
-    protected void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data) {
+    protected void parseData(ArrayList<SVIPComponentObject> components, HashMap<String, Object> data) {
 
         /*
         xml structure
@@ -84,7 +85,7 @@ public class CSProjParser extends PackageManagerParser {
      * @param type item type (Reference, Compile, etc)
      * @param component component properties table
      */
-    private void addComponent(ArrayList<ParserComponent> components, String type, HashMap<String, String> component) {
+    private void addComponent(ArrayList<SVIPComponentObject> components, String type, HashMap<String, String> component) {
 
         // Internal components will have Include = {filepath}, whereas external and system will be Include = {group.name}
         String include = component.get("Include");
@@ -92,7 +93,7 @@ public class CSProjParser extends PackageManagerParser {
         // Ensure include was found
         if(include == null) return;
 
-        final ParserComponent c = new ParserComponent(component.get("Include")); // TODO is this a correct default name?
+        final SVIPComponentObject c = new SVIPComponentObject(component.get("Include")); // TODO is this a correct default name?
 
         // Convert hashmap to parser component
         switch(type) {
@@ -114,21 +115,21 @@ public class CSProjParser extends PackageManagerParser {
                         try {
                             // If query is sucessful, set type to LANGUAGE and return
                             if(queryURL(url, true).getResponseCode() == 200) {
-                                c.setType(ParserComponent.Type.LANGUAGE);
+                                c.setType(SVIPComponentObject.Type.LANGUAGE);
                                 return;
                             }
                         } catch (Exception ignored) { } // If an error is thrown, ignore it
 
                         // If this is reached, queryURL returned something other than
                         // 200, or an exception was thrown
-                        c.setType(ParserComponent.Type.EXTERNAL);
+                        c.setType(SVIPComponentObject.Type.EXTERNAL);
                     }
                 });
             }
             // These types are filepaths
             case "Compile", "None", "Content", "EmbeddedResource" -> {
                 // Set type to INTERNAL
-                c.setType(ParserComponent.Type.INTERNAL);
+                c.setType(SVIPComponentObject.Type.INTERNAL);
 
                 // Replace back-slashes with forward-slashes
                 include = include.replace('\\', '/');
@@ -160,7 +161,7 @@ public class CSProjParser extends PackageManagerParser {
     }
 
     // TODO: Docstring
-    private String buildURL(ParserComponent component) {
+    private String buildURL(SVIPComponentObject component) {
         // Build URL to query
         String endpoint =
                 component.getGroup() == null ?

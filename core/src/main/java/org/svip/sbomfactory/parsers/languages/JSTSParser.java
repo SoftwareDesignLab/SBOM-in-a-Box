@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.parsers.languages;
 
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.utils.VirtualPath;
 
@@ -27,7 +28,7 @@ public class JSTSParser extends LanguageParser {
      * @return true if internal, false otherwise
      */
     @Override
-    protected boolean isInternalComponent(ParserComponent component) {
+    protected boolean isInternalComponent(SVIPComponentObject component) {
         String name = component.getName();
         String group = component.getGroup();
 
@@ -48,7 +49,7 @@ public class JSTSParser extends LanguageParser {
      * @return true if language, false otherwise
      */
     @Override
-    protected boolean isLanguageComponent(ParserComponent component) {
+    protected boolean isLanguageComponent(SVIPComponentObject component) {
         // No language library for JS, packages use 3rd party managers like npm and yarn
         return false;
     }
@@ -87,7 +88,7 @@ public class JSTSParser extends LanguageParser {
      * @return new component
      */
     @Override
-    protected void parseRegexMatch(ArrayList<ParserComponent> components, Matcher matcher) {
+    protected void parseRegexMatch(ArrayList<SVIPComponentObject> components, Matcher matcher) {
         // Check for groups 1-5
         String match = null;
         for (int i = 1; i <= 5; i++) {
@@ -119,13 +120,13 @@ public class JSTSParser extends LanguageParser {
         for (String token : tokens) {
             token = token.trim();   // remove leading/trailing whitespace
             // Ex: import foo, bar -> "foo" and "bar"
-            ParserComponent c = null;
+            SVIPComponentObject c = null;
             // If no whitespace, component does not have an alias
             if (!token.contains(" ")) {
                 // Ensure token is not commented in-line
                 if(!token.contains("/*") && !token.contains("*/")) {
                     // Create component
-                    c = new ParserComponent(token);
+                    c = new SVIPComponentObject(token);
                 }
                 // Otherwise, do not create component
             }
@@ -135,7 +136,7 @@ public class JSTSParser extends LanguageParser {
                 // Check for alias match
                 if (m.find()) {
                     // Create component (with name and alias)
-                    c = new ParserComponent(m.group(1));    // import foo as f; foo = group(2)
+                    c = new SVIPComponentObject(m.group(1));    // import foo as f; foo = group(2)
                     c.setAlias(m.group(2));     // import foo as f; f = group(3)
                 }
                 // Otherwise, do not create component
@@ -151,11 +152,11 @@ public class JSTSParser extends LanguageParser {
 
                 // Check if internal
                 if (isInternalComponent(c)) {
-                    c.setType(ParserComponent.Type.INTERNAL);
+                    c.setType(SVIPComponentObject.Type.INTERNAL);
 
                 // Otherwise, check if Language
                 } else if (isLanguageComponent(c)) {
-                    c.setType(ParserComponent.Type.LANGUAGE);
+                    c.setType(SVIPComponentObject.Type.LANGUAGE);
                 }
 
                 // Add Component

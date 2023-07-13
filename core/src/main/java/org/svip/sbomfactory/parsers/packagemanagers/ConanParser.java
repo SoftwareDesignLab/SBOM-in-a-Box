@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.parsers.packagemanagers;
 
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.queryworkers.QueryWorker;
 
@@ -39,13 +40,13 @@ public class ConanParser extends PackageManagerParser {
      * @param data       map of data to be parsed
      */
     @Override
-    protected void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data) {
+    protected void parseData(ArrayList<SVIPComponentObject> components, HashMap<String, Object> data) {
 
         // Iterate over dependencies
         for (final LinkedHashMap<String, String> d : (ArrayList<LinkedHashMap<String, String>>) data.get("dependencies")) {
             // Create ParserComponent from dep info
-            final ParserComponent c = new ParserComponent(d.get("artifactId"));
-                  c.setType(ParserComponent.Type.EXTERNAL);
+            final SVIPComponentObject c = new SVIPComponentObject(d.get("artifactId"));
+                  c.setType(SVIPComponentObject.Type.EXTERNAL);
                   //c.setGroup("None");
             if (d.containsKey("version")) c.setVersion(d.get("version"));
             //Query for Licenses
@@ -109,7 +110,7 @@ public class ConanParser extends PackageManagerParser {
      * @param fileContents the contents of the file to be parsed
      */
     @Override
-    public void parse(ArrayList<ParserComponent> components, String fileContents) {
+    public void parse(ArrayList<SVIPComponentObject> components, String fileContents) {
         // Init main data structure
         final LinkedHashMap<String, Object> data = new LinkedHashMap<>();
 

@@ -1,6 +1,6 @@
 package org.svip.sbomfactory.parsers;
 
-import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.utils.VirtualPath;
 
 import java.io.IOException;
@@ -146,7 +146,7 @@ public abstract class Parser {
      * @param components A list of ParserComponents that the found components will be appended to.
      * @param fileContents file contents to be parsed
      */
-    public abstract void parse(ArrayList<SVIPComponentObject> components, String fileContents);
+    public abstract void parse(ArrayList<SVIPComponentBuilder> components, String fileContents);
 
     //#endregion
 }

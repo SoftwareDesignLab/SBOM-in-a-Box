@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.parsers.languages;
 
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.parsers.Parser;
 
@@ -31,7 +32,7 @@ public class ScalaParser extends LanguageParser {
      * @return true if language, false otherwise
      */
     @Override
-    protected boolean isLanguageComponent(ParserComponent component) {
+    protected boolean isLanguageComponent(SVIPComponentObject component) {
         // Attempt to find component
         try{
             // Initialize variables
@@ -104,9 +105,9 @@ public class ScalaParser extends LanguageParser {
      * @return new component
      */
     @Override
-    protected void parseRegexMatch(ArrayList<ParserComponent> components, Matcher matcher) {
+    protected void parseRegexMatch(ArrayList<SVIPComponentObject> components, Matcher matcher) {
         // Variable initialization
-        ParserComponent c;
+        SVIPComponentObject c;
         Pattern aliasRegex = Pattern.compile("^([\\w\\*]*)(?: => | as )?(\\w*)?", Pattern.MULTILINE);
         String match = "";
 
@@ -132,7 +133,7 @@ public class ScalaParser extends LanguageParser {
                 // If component is not capitalized, component is package
                 if(Character.isLowerCase(aliasMatcher.group(1).charAt(0))) {
                     // Create component with original matcher group 1 combined with aliasMatcher group 1
-                    c = new ParserComponent(matcher.group(1).replace(".", "/") + "/" + aliasMatcher.group(1));
+                    c = new SVIPComponentObject(matcher.group(1).replace(".", "/") + "/" + aliasMatcher.group(1));
                 }
                 // Otherwise, component is Class
                 else {
@@ -141,7 +142,7 @@ public class ScalaParser extends LanguageParser {
                     if(name.equals("_")) name = "*";
 
                     // Create component with aliasMatcher group 1
-                    c = new ParserComponent(name);
+                    c = new SVIPComponentObject(name);
 
                     // Set from as group 1 from the original matcher
                     c.setGroup(matcher.group(1).replace(".", "/"));
@@ -155,11 +156,11 @@ public class ScalaParser extends LanguageParser {
 
                 // Check if internal
                 if (isInternalComponent(c)) {
-                    c.setType(ParserComponent.Type.INTERNAL);
+                    c.setType(SVIPComponentObject.Type.INTERNAL);
 
                 // Otherwise, check if Language
                 } else if (isLanguageComponent(c)) {
-                    c.setType(ParserComponent.Type.LANGUAGE);
+                    c.setType(SVIPComponentObject.Type.LANGUAGE);
                 }
 
                 // Add Component

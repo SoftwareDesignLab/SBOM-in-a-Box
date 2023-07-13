@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.parsers.languages;
 
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.utils.VirtualPath;
 import org.svip.sbomfactory.parsers.Parser;
@@ -114,7 +115,7 @@ public class RubyParser extends LanguageParser {
      * @return true if internal, false otherwise
      */
     @Override
-    protected boolean isInternalComponent(ParserComponent component) {
+    protected boolean isInternalComponent(SVIPComponentObject component) {
         String name = component.getName();
         String group = component.getGroup();
 
@@ -135,7 +136,7 @@ public class RubyParser extends LanguageParser {
      * @return true if language, false otherwise
      */
     @Override
-    protected boolean isLanguageComponent(ParserComponent component) {
+    protected boolean isLanguageComponent(SVIPComponentObject component) {
         // Define variables
         String key;
 
@@ -188,9 +189,9 @@ public class RubyParser extends LanguageParser {
      * @return new component
      */
     @Override
-    protected void parseRegexMatch(ArrayList<ParserComponent> components, Matcher matcher) {
+    protected void parseRegexMatch(ArrayList<SVIPComponentObject> components, Matcher matcher) {
         // Variable initialization
-        ParserComponent c;
+        SVIPComponentObject c;
         String match = "";
 
         // Import validation
@@ -207,7 +208,7 @@ public class RubyParser extends LanguageParser {
         // If match has more than one token
         if(tokens.length > 1) {
             // Set name to last token (what exactly is being imported)
-            c = new ParserComponent(tokens[tokens.length - 1]);
+            c = new SVIPComponentObject(tokens[tokens.length - 1]);
 
             // Start index for copy is 0 by default
             int start = 0;
@@ -220,16 +221,16 @@ public class RubyParser extends LanguageParser {
             // If from is not an empty string, set c.from to from
             if(!from.equals("")) c.setGroup(from);
         } else {
-            c = new ParserComponent(match);
+            c = new SVIPComponentObject(match);
         }
 
         // Check if internal
         if (isInternalComponent(c)) {
-            c.setType(ParserComponent.Type.INTERNAL);
+            c.setType(SVIPComponentObject.Type.INTERNAL);
 
             // Otherwise, check if Language
         } else if (isLanguageComponent(c)) {
-            c.setType(ParserComponent.Type.LANGUAGE);
+            c.setType(SVIPComponentObject.Type.LANGUAGE);
         }
         // Add Component
         components.add(c);
