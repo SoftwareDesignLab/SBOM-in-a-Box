@@ -60,12 +60,15 @@ public class ConvertFromAPITest extends APITest{
                     if(!contains)
                         continue;
 
+                    // todo this is bad practice
                     // don't convert to the same schema
                     if(thisSchema == SerializerFactory.Schema.SPDX23 && (schema.equals("SPDX23") || schema.equals("SVIP")))
                         continue; // todo implement this check in /convert and return a bad request error
                     if(thisSchema == SerializerFactory.Schema.CDX14 && (schema.equals("CDX14")))
                         continue;
-
+                    // tagvalue format unsupported for cdx14
+                    if(thisSchema == SerializerFactory.Schema.CDX14 && format.equals("TAGVALUE"))
+                        continue;
                     // we don't support xml deserialization right now
                     if(testMap.get(id).getContents().contains("xml"))
                         continue;
