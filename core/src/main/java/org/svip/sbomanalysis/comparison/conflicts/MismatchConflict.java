@@ -11,8 +11,7 @@ import org.svip.sbomfactory.generators.utils.Debug;
 public class MismatchConflict extends Conflict {
     public MismatchConflict(String field, String targetValue, String otherValue, ConflictType type) {
         super(field, targetValue, otherValue);
-        this.type = ConflictType.MISSING;
+        this.type = type;
         this.message = field + " doesn't match";
-        Debug.log(Debug.LOG_TYPE.SUMMARY, "\n" + message);
     }
 }
