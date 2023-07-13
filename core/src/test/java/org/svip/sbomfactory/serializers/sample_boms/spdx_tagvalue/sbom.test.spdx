@@ -8,7 +8,7 @@ Creator: Organization: Supplier (supplier@svip.xyz)
 Creator: Tool: SVIP Serializer-1.0.0
 Creator: Person: Test Author (author@publisher.xyz)
 Created: TEST TIMESTAMP
-CreatorComment: This SBOM was created for serializer testing
+CreatorComment: This SBOM was generated using the SVIP serializer tooling.
 DocumentComment: Test Document Comment
 
 ### Package: COMPONENT 1
