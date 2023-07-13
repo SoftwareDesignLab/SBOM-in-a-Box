@@ -13,20 +13,21 @@ import org.svip.builders.component.SPDX23PackageBuilder;
 import org.svip.componentfactory.SPDX23FileBuilderFactory;
 import org.svip.componentfactory.SPDX23PackageBuilderFactory;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
-import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
+import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * File: SPDX23JSONDeserializer.java
@@ -100,6 +101,9 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
         // LICENSE
         if (node.get("dataLicense") != null) sbomBuilder.addLicense(node.get("dataLicense").asText());
 
+        // DOCUMENT COMMENT
+        if (node.get("comment") != null) sbomBuilder.setDocumentComment(node.get("comment").asText());
+
         // CREATION INFO
         JsonNode creationInfo = node.get("creationInfo");
         if (creationInfo != null) {
@@ -108,29 +112,19 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
             // TIMESTAMP
             if (creationInfo.get("created") != null) creationData.setCreationTime(creationInfo.get("created").asText());
 
+            // COMMENT
+            if (creationInfo.get("comment") != null) creationData.setCreatorComment(creationInfo.get("comment").asText());
+
             // LICENSE LIST VERSION:
             if (creationInfo.get("licenseListVersion") != null) sbomBuilder.setSPDXLicenseListVersion(creationInfo.get("licenseListVersion").asText());
 
             // CREATION TOOL
             if (creationInfo.get("creators") != null) {
-                for (JsonNode creator : creationInfo.get("creators")) {
-                    // TOOL
-                    if (creator.asText().startsWith("Tool")) {
-                        CreationTool creationTool = new CreationTool();
+                List<String> creators = new ArrayList<>();
+                for (JsonNode creator : creationInfo.get("creators"))
+                    creators.add(creator.asText());
 
-                        Matcher toolMatcher = Pattern.compile("(\\S*): (.*)-(.*)").matcher(creator.asText());
-
-                        if (!toolMatcher.find()) continue;
-                        creationTool.setName(toolMatcher.group(2));
-                        creationTool.setVersion(toolMatcher.group(3));
-                        creationData.addCreationTool(creationTool);
-                    } else { // OTHER
-                        Matcher authorMatcher = Pattern.compile("(\\S*): (.*) \\((\\S*)\\)").matcher(creator.asText());
-
-                        if (!authorMatcher.find()) continue;
-                        creationData.addAuthor(new Contact(authorMatcher.group(2), authorMatcher.group(3), null));
-                    }
-                }
+                SPDX23TagValueDeserializer.parseSPDXCreatorInfo(creationData, creators);
             }
             // add the creation data to the builder
             sbomBuilder.setCreationData(creationData);
@@ -197,6 +191,7 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
 
                     Relationship relationship = new Relationship(
                             rel.get("relatedSpdxElement").asText(), rel.get("relationshipType").asText());
+                    if (rel.get("comment") != null) relationship.setComment(rel.get("comment").asText());
                     sbomBuilder.addRelationship(rel.get("spdxElementId").asText(), relationship);
                 }
 

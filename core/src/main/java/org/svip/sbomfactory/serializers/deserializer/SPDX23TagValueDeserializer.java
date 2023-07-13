@@ -1,15 +1,12 @@
 package org.svip.sbomfactory.serializers.deserializer;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.jvnet.hk2.internal.Creator;
-import org.mockito.internal.matchers.Or;
 import org.svip.builderfactory.SPDX23SBOMBuilderFactory;
 import org.svip.builders.component.SPDX23PackageBuilder;
 import org.svip.componentfactory.SPDX23PackageBuilderFactory;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
-import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
-import org.svip.sbom.model.old.Component;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
@@ -17,14 +14,11 @@ import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.sbom.model.uids.Hash;
-import org.svip.sbom.model.uids.PURL;
 import org.svip.sbomfactory.generators.utils.Debug;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -92,7 +86,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
     // https://regex101.com/r/0jMwAU/1
     private static final Pattern CREATOR_PATTERN = Pattern.compile(
             "^(?:(Person|Organization): )(.+?)(?:$| (?:\\((.*)\\))?$)");
-    private static final Pattern TOOL_PATTERN = Pattern.compile("^Tool: (?:(.*)-)(.*)$", Pattern.CASE_INSENSITIVE);
+    protected static final Pattern TOOL_PATTERN = Pattern.compile("^Tool: (?:(.*)-)(.*)$", Pattern.CASE_INSENSITIVE);
 
     //#endregion
 
@@ -130,6 +124,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         // Process header TODO throw error if required fields are not found. Create enum with all tags?
         Matcher mHeader = TAG_VALUE_PATTERN.matcher(header);
         CreationData creationData = new CreationData();
+        List<String> creators = new ArrayList<>();
         while(mHeader.find()) {
             switch (mHeader.group(1)) {
                 // NAME
@@ -143,35 +138,12 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                 // LICENSE LIST VERSION
                 case LICENSE_LIST_VERSION_TAG -> sbomBuilder.setSPDXLicenseListVersion(mHeader.group(2));
                 // AUTHORS
-                case CREATOR_TAG -> {
-                    Matcher toolMatcher = TOOL_PATTERN.matcher(mHeader.group(2));
-                    while (toolMatcher.find()) {
-                        CreationTool tool = new CreationTool();
-                        tool.setName(toolMatcher.group(1));
-                        tool.setVersion(toolMatcher.group(2));
-                        creationData.addCreationTool(tool);
-                    }
-
-                    Contact creator = parseCreator(mHeader.group(2));
-                    if (creator == null) continue;
-
-                    // If we find an organization, set it to the supplier if there isn't already one. Otherwise,
-                    // add another author with the contact info
-                    if (mHeader.group(2).toLowerCase().startsWith("organization") &&
-                            creationData.getSupplier() != null &&
-                            !creationData.getSupplier().getName().isEmpty()) {
-
-                        Organization supplier = new Organization(creator.getName(), null);
-                        supplier.addContact(creator);
-                        creationData.setSupplier(supplier);
-                    } else {
-                        creationData.addAuthor(creator);
-                    }
-                }
+                case CREATOR_TAG -> creators.add(mHeader.group(2));
                 // TIMESTAMP
                 case TIMESTAMP_TAG -> creationData.setCreationTime(mHeader.group(2));
             }
         }
+        parseSPDXCreatorInfo(creationData, creators);
         // CREATION DATA
         sbomBuilder.setCreationData(creationData);
 
@@ -255,7 +227,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
             // SUPPLIER
             // Cleanup package originator
             if (componentMaterials.get("PackageSupplier") != null) {
-                Contact supplier = parseCreator(componentMaterials.get("PackageSupplier"));
+                Contact supplier = parseSPDXCreator(componentMaterials.get("PackageSupplier"));
                 if (supplier != null) {
                     Organization org = new Organization(supplier.getName(), null);
                     org.addContact(supplier);
@@ -340,11 +312,38 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         return new ObjectMapper();
     }
 
-    private Contact parseCreator(String creator) {
+    protected static Contact parseSPDXCreator(String creator) {
         Matcher creatorMatcher = CREATOR_PATTERN.matcher(creator);
         if (!creatorMatcher.find()) return null;
 
         return new Contact(creatorMatcher.group(2), creatorMatcher.group(3), null);
+    }
+
+    protected static void parseSPDXCreatorInfo(CreationData data, List<String> creatorInfo) {
+        for (String creator : creatorInfo) {
+            Matcher toolMatcher = SPDX23TagValueDeserializer.TOOL_PATTERN.matcher(creator);
+            while (toolMatcher.find()) {
+                CreationTool tool = new CreationTool();
+                tool.setName(toolMatcher.group(1));
+                tool.setVersion(toolMatcher.group(2));
+                data.addCreationTool(tool);
+            }
+
+            Contact contact = SPDX23TagValueDeserializer.parseSPDXCreator(creator);
+            if (contact == null) continue;
+
+            // If we find an organization, set it to the supplier if there isn't already one. Otherwise,
+            // add another author with the contact info
+            if (creator.toLowerCase().startsWith("organization") &&
+                    (data.getSupplier() == null || data.getSupplier().getName().isEmpty())) {
+
+                Organization supplier = new Organization(contact.getName(), null);
+                supplier.addContact(contact);
+                data.setSupplier(supplier);
+            } else {
+                data.addAuthor(contact);
+            }
+        }
     }
 
     /**
