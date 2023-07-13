@@ -243,6 +243,10 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
         Construct from other SBOMs
      */
 
+    /**
+     * Constructs an SVIPSBOM from an spdx23SBOM
+     * @param spdx23SBOM said SBOM to construct from
+     */
     public SVIPSBOM(SPDX23SBOM spdx23SBOM){
         this.format = spdx23SBOM.getFormat();
         this.name = spdx23SBOM.getName();

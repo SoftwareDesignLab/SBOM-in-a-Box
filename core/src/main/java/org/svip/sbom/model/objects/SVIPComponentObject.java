@@ -461,8 +461,8 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
      */
 
     /**
-     * // todo docstring
-     * @param spdx23PackageObject
+     * // Constructs an SVIPComponent object from an spdx23PackageObject
+     * @param spdx23PackageObject said object to construct from
      */
     public SVIPComponentObject(SPDX23PackageObject spdx23PackageObject){
         this.type = spdx23PackageObject.getType();
