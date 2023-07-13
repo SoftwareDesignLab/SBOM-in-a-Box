@@ -4,7 +4,7 @@ package org.svip.sbomanalysis.qualityattributes.tests;
 import org.svip.sbom.model.old.Component;
 import org.svip.sbom.model.old.SBOM;
 import org.svip.sbom.model.uids.PURL;
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 
 import java.util.ArrayList;
 import java.util.List;

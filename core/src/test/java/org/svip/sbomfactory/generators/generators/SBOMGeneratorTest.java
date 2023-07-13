@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.old.Component;
 import org.svip.sbom.model.old.SBOM;
 import org.svip.sbomfactory.generators.generators.cyclonedx.CycloneDXStore;
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorException;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;

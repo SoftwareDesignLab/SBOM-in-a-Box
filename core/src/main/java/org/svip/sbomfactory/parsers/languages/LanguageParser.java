@@ -1,9 +1,9 @@
 package org.svip.sbomfactory.parsers.languages;
 
 import org.svip.sbomfactory.parsers.Parser;
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
+import org.svip.utils.VirtualPath;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.svip.sbomfactory.generators.utils.Debug.log;
+import static org.svip.utils.Debug.log;
 
 /**
  * <b>File</b>: LanguageParser.java<br>
@@ -48,7 +48,7 @@ public abstract class LanguageParser extends Parser {
         String group = component.getGroup();
         VirtualPath internalPath = new VirtualPath((group == null ? "" : group) + "/" + name);
 
-        for(VirtualPath internalComponent : internalFiles) {
+        for(VirtualPath internalComponent : sourceFiles) {
             VirtualPath noExtension = internalComponent.removeFileExtension();
 
             if(internalComponent.endsWith(internalPath) || noExtension.endsWith(internalPath)) return true;

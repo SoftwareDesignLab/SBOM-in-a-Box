@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.sbom.model.uids.CPE;
 import org.svip.sbomfactory.parsers.Parser;
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.queryworkers.QueryWorker;
 
@@ -21,8 +21,8 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
-import static org.svip.sbomfactory.generators.utils.Debug.log;
+import static org.svip.utils.Debug.LOG_TYPE;
+import static org.svip.utils.Debug.log;
 
 /**
  * <b>File</b>: PackageManagerParser.java<br>

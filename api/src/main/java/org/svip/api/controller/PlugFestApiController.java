@@ -12,7 +12,7 @@ import org.svip.sbomanalysis.differ.DiffReport;
 import org.svip.sbomanalysis.qualityattributes.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.QualityReport;
 import org.svip.sbomanalysis.qualityattributes.processors.*;
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomfactory.translators.TranslatorException;
 

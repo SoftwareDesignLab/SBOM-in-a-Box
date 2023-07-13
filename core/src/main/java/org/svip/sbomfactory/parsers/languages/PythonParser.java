@@ -1,7 +1,7 @@
 package org.svip.sbomfactory.parsers.languages;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
+import org.svip.utils.VirtualPath;
 import org.svip.sbomfactory.parsers.Parser;
 
 import java.util.ArrayList;
@@ -9,8 +9,8 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
-import static org.svip.sbomfactory.generators.utils.Debug.log;
+import static org.svip.utils.Debug.LOG_TYPE;
+import static org.svip.utils.Debug.log;
 
 
 /**
