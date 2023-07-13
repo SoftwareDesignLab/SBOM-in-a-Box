@@ -1,4 +1,4 @@
-package org.svip.sbomfactory.generators.parsers.contexts;
+package org.svip.sbomfactory.parsers.contexts;
 
 // Declares Imports
 

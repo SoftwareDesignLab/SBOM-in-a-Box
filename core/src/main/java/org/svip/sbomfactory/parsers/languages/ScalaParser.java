@@ -1,6 +1,7 @@
-package org.svip.sbomfactory.generators.parsers.languages;
+package org.svip.sbomfactory.parsers.languages;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.parsers.Parser;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -64,7 +65,7 @@ public class ScalaParser extends LanguageParser {
             log(LOG_TYPE.DEBUG, "URL: " + urlSB);
 
             // Test to see if page exists.
-            return queryURL(urlSB.toString(), false).getResponseCode() == 200;
+            return Parser.queryURL(urlSB.toString(), false).getResponseCode() == 200;
         } catch (Exception e){
             log(LOG_TYPE.EXCEPTION, e);
         }

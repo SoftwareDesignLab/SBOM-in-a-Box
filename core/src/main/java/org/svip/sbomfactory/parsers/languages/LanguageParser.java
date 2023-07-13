@@ -1,6 +1,6 @@
-package org.svip.sbomfactory.generators.parsers.languages;
+package org.svip.sbomfactory.parsers.languages;
 
-import org.svip.sbomfactory.generators.parsers.Parser;
+import org.svip.sbomfactory.parsers.Parser;
 import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;

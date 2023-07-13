@@ -1,7 +1,8 @@
-package org.svip.sbomfactory.generators.parsers.languages;
+package org.svip.sbomfactory.parsers.languages;
 
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
+import org.svip.sbomfactory.parsers.Parser;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -45,7 +46,7 @@ public class RubyParser extends LanguageParser {
         // Attempt to get list of std packages
         try{
             // Attempt to perform a GET request on ORACLE_URL
-            final HttpURLConnection connection = queryURL(STD_LIB_URL + "index.html", false);
+            final HttpURLConnection connection = Parser.queryURL(STD_LIB_URL + "index.html", false);
 
             // If page cannot be reached, log failure and return empty set
             if(connection.getResponseCode() != 200) {

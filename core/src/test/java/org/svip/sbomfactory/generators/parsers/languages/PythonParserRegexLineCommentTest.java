@@ -2,6 +2,7 @@ package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.svip.sbomfactory.parsers.languages.PythonParser;
 
 import java.util.regex.Matcher;
 

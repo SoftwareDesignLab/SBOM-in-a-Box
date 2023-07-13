@@ -2,7 +2,7 @@ package org.svip.sbomfactory.generators.parsers.packagemanagers.Nuget;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.svip.sbomfactory.generators.parsers.packagemanagers.NugetParser;
+import org.svip.sbomfactory.parsers.packagemanagers.NugetParser;
 import org.svip.sbomfactory.generators.parsers.packagemanagers.ParseDepFileTestCore;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 

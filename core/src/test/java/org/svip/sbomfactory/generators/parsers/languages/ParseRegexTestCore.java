@@ -1,6 +1,7 @@
 package org.svip.sbomfactory.generators.parsers.languages;
 
 import org.svip.sbomfactory.generators.parsers.ParserTestCore;
+import org.svip.sbomfactory.parsers.languages.LanguageParser;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

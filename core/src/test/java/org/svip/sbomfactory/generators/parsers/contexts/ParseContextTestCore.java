@@ -1,6 +1,6 @@
 package org.svip.sbomfactory.generators.parsers.contexts;
 
-import org.svip.sbomfactory.generators.parsers.Parser;
+import org.svip.sbomfactory.parsers.Parser;
 import org.svip.sbomfactory.generators.parsers.ParserTestCore;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 

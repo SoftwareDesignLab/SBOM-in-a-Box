@@ -2,6 +2,7 @@ package org.svip.sbomfactory.generators.parsers.packagemanagers;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.svip.sbomfactory.parsers.packagemanagers.GradleParser;
 
 import java.io.IOException;
 import java.nio.file.Files;

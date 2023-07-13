@@ -3,6 +3,7 @@ package org.svip.sbomfactory.generators.parsers.packagemanagers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbomfactory.parsers.packagemanagers.ConanParser;
 
 import java.io.IOException;
 import java.nio.file.Files;
