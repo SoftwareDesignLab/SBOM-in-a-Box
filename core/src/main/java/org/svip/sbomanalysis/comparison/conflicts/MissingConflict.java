@@ -11,8 +11,7 @@ import org.svip.sbomfactory.generators.utils.Debug;
 public class MissingConflict extends Conflict {
     public MissingConflict(String field, String targetValue, String otherValue) {
         super(field, targetValue, otherValue);
-        this.type = type;
+        this.type = ConflictType.MISSING;
         this.message = field + " is missing";
-        Debug.log(Debug.LOG_TYPE.SUMMARY, "\n" + message);
     }
 }
