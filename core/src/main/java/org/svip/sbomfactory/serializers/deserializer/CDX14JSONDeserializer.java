@@ -233,8 +233,10 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
             JsonNode licenses = component.get("licenses");
             if (licenses != null) {
                 LicenseCollection componentLicenses = new LicenseCollection();
-                for (JsonNode license : licenses)
+                for (JsonNode license : licenses) {
+                    if (license.get("name") == null) continue;
                     componentLicenses.addLicenseInfoFromFile(license.get("name").asText());
+                }
 
                 builder.setLicenses(componentLicenses);
             }
@@ -302,8 +304,12 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
     private Set<Relationship> resolveDependency(JsonNode dep) {
         Set<Relationship> relationships = new HashSet<>();
 
-        for(JsonNode dependency : dep.get("dependsOn"))
+        if (dep.get("dependsOn") == null) return relationships;
+
+        for(JsonNode dependency : dep.get("dependsOn")) {
+            if (dependency == null) continue;
             relationships.add(new Relationship(dependency.asText(), "DEPENDS_ON")); // TODO correct type?
+        }
 
         return relationships;
     }
