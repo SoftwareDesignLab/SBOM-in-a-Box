@@ -13,6 +13,12 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * file: SPDX23PipelineTest.java
+ * Test class to test SPDX23Pipeline and its methods and usage
+ *
+ * @author Matthew Morrison
+ */
 class SPDX23PipelineTest {
 
     String testBomVersion = "1.0";

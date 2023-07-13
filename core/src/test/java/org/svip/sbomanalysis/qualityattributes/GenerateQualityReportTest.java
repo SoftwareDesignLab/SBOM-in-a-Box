@@ -13,6 +13,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * file: GenerateQualityReportTest.java
+ * Test class to test generating a quality report through the pipeline classes
+ *
+ * @author Matthew Morrison
+ */
 public class GenerateQualityReportTest {
 
     private final String CDX_14_JSON_SBOM = System.getProperty("user.dir") +

@@ -11,6 +11,11 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * file: PURLTestTests.java
+ * Test class to test PURLTest and its methods and usage
+ * @author Kevin Laporte
+ */
 class PURLTestTests {
 
     String testRandomPURL = "pkg:random/test@2.0.0";

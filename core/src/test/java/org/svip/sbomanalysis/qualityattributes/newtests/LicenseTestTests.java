@@ -12,6 +12,12 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * file: LicenseTestTests.java
+ * Test class to test LicenseTest and its methods and usage
+ *
+ * @author Matthew Morrison
+ */
 class LicenseTestTests {
 
     LicenseTest licenseTest;

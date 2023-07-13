@@ -40,7 +40,6 @@ public class Text {
             case HAS -> message.append(context).append(" has ").append(field).append("s");
             case MISSING -> message.append(context).append(" has missing ").append(field).append("s");
             case NULL -> message.append(field).append(" was a null value");
-            case ERROR -> message.append(field).append(" had an error");
         }
 
         return message.toString();
@@ -56,10 +55,10 @@ public class Text {
         StringBuilder message = new StringBuilder();
         switch (info){
             case HAS -> message.append(context).append(" has a ").append(field);
-            case MISSING -> message.append(context).append(" is a missing ").append(field);
+            case MISSING -> message.append(context).append(" is missing ").append(field);
             case VALID -> message.append(value).append(" is a valid ").append(field);
             case INVALID -> message.append(value).append(" is an invalid ").append(field);
-            case NULL -> message.append(field).append(" has a null value");
+            case NULL -> message.append(field).append(" was a null value");
             case ERROR -> message.append(field).append(" had an error");
         }
 
@@ -74,19 +73,21 @@ public class Text {
      */
     public String getDetails(INFO info, Collection<String> values){
         StringBuilder details = new StringBuilder();
-        String valuesString = String.join(",", values);
+        String valuesString;
+        if(values != null){
+            valuesString = String.join(", ", values);
+        }
+        else{
+            valuesString = "";
+        }
         switch (info){
             case HAS -> details.append(context).append(" has ")
-                    .append(values.size()).append(field).append("s: ")
+                    .append(values.size()).append(" ").append(field).append("s: ")
                     .append(valuesString);
-            // TODO implement for MISSING
             case MISSING -> details.append(context)
                     .append(" is missing the following field: ")
                     .append(field);
-            case NULL -> details.append(field).append(" was a null value and" +
-                    " should be a value");
-            case ERROR -> details.append(valuesString).append(" had an error " +
-                    "producing the following object: ").append(field);
+            case NULL -> details.append(field).append(" was a null value");
         }
 
         return details.toString();
@@ -109,8 +110,7 @@ public class Text {
                     .append(field);
             case VALID -> details.append(value).append(" is a valid ").append(field);
             case INVALID -> details.append(value).append(" is an invalid ").append(field);
-            case NULL -> details.append(field).append(" was a null value and" +
-                    " should be a value");
+            case NULL -> details.append(field).append(" was a null value");
             case ERROR -> details.append(value).append(" had an error producing " +
                     "the following object: ").append(field);
         }

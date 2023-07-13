@@ -13,6 +13,12 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * file: CPETestTests.java
+ * Test class to test CPETest and its methods and usage
+ *
+ * @author Matthew Morrison
+ */
 class CPETestTests {
 
 

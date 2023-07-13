@@ -10,6 +10,12 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * file: CDX14PipelineTest.java
+ * Test class to test CDX14Pipeline and its methods and usage
+ *
+ * @author Matthew Morrison
+ */
 class CDX14PipelineTest {
 
     String testBomVersion = "1.0";

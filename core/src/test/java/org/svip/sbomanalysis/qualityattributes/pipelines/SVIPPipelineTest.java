@@ -13,6 +13,12 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * file: SVIPPipelineTest.java
+ * Test class to test SVIPPipeline and its methods and usage
+ *
+ * @author Matthew Morrison
+ */
 class SVIPPipelineTest {
 
     String testUID = "urn:uuid:1b53623d-b96b-4660-8d25-f84b7f617c54";

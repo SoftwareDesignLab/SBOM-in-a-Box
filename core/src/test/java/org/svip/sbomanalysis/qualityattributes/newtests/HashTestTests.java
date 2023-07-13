@@ -13,6 +13,12 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * file: HashTestTests.java
+ * Test class to test HashTest and its methods and usage
+ *
+ * @author Matthew Morrison
+ */
 class HashTestTests {
 
     String testHashAlgo1 = "MD5";

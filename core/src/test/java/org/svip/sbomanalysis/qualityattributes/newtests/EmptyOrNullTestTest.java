@@ -11,6 +11,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * file: EmptyOrNullTestTests.java
+ * Test class to test EmptyOrNullTest and its methods and usage
+ *
+ * @author Matthew Morrison
+ */
 class EmptyOrNullTestTest {
 
     Collection<String> testEmptyCol = new ArrayList<>();
