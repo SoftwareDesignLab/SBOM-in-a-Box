@@ -1,8 +1,6 @@
 package org.svip.sbomfactory.serializers.deserializer;
 
-import org.junit.jupiter.api.BeforeEach;
-
-public class DeserializerTest {
+public abstract class DeserializerTest {
 
     protected static final String CDX_14_JSON_SBOM = System.getProperty("user.dir") +
             "/src/test/java/org/svip/sbomfactory/serializers/sample_boms/cdx_json/sbom.test.json";
@@ -15,19 +13,5 @@ public class DeserializerTest {
 
     // TODO in the future: no metadata, no components, empty sbom
 
-    private final Deserializer deserializer;
-
-    public DeserializerTest(Deserializer deserializer) {
-        this.deserializer = deserializer;
-    }
-
-    @BeforeEach
-    public void setup() {
-        // All deserializer configuration goes in here
-        // TODO remove if nothing here
-    }
-
-    public Deserializer getDeserializer() {
-        return deserializer;
-    }
+    public abstract Deserializer getDeserializer();
 }

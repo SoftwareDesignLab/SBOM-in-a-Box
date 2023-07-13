@@ -11,7 +11,18 @@ import java.io.IOException;
  * @author Ian Dunn
  */
 public class SPDX23TagValueDeserializerTest extends SPDX23JSONDeserializerTest {
+
     public SPDX23TagValueDeserializerTest() throws IOException {
-        super(new SPDX23TagValueDeserializer(), SPDX23_TAGVALUE_SBOM);
+        // Needed for inheritance
+    }
+
+    @Override
+    public Deserializer getDeserializer() {
+        return new SPDX23TagValueDeserializer();
+    }
+
+    @Override
+    public String getTestFilePath() {
+        return SPDX23_TAGVALUE_SBOM;
     }
 }

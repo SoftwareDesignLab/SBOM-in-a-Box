@@ -23,13 +23,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class SPDX23JSONDeserializerTest extends DeserializerTest {
     private final SPDX23SBOM spdx23json;
 
-    public SPDX23JSONDeserializerTest(Deserializer deserializer, String path) throws IOException {
-        super(deserializer);
-        spdx23json = (SPDX23SBOM) getDeserializer().readFromString(Files.readString(Path.of(path)));
+    public SPDX23JSONDeserializerTest() throws IOException {
+        spdx23json = (SPDX23SBOM) getDeserializer().readFromString(Files.readString(Path.of(getTestFilePath())));
     }
 
-    public SPDX23JSONDeserializerTest() throws IOException {
-        this(new SPDX23JSONDeserializer(), SPDX23_JSON_SBOM);
+    public String getTestFilePath() {
+        return SPDX23_JSON_SBOM;
+    }
+
+    @Override
+    public Deserializer getDeserializer() {
+        return new SPDX23JSONDeserializer();
     }
 
     @Test

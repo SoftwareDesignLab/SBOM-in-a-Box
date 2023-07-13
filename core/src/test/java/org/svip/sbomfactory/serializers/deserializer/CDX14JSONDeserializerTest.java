@@ -2,8 +2,6 @@ package org.svip.sbomfactory.serializers.deserializer;
 
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.interfaces.generics.Component;
-import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.shared.Relationship;
@@ -11,21 +9,25 @@ import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.ExternalReference;
-import org.svip.sbom.model.shared.util.LicenseCollection;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CDX14JSONDeserializerTest extends DeserializerTest {
     private final CDX14SBOM cdx14json;
+
     public CDX14JSONDeserializerTest() throws IOException {
-        super(new CDX14JSONDeserializer());
         cdx14json = (CDX14SBOM) getDeserializer().readFromString(Files.readString(Path.of(CDX_14_JSON_SBOM)));
+    }
+
+    @Override
+    public Deserializer getDeserializer() {
+        return new CDX14JSONDeserializer();
     }
 
     @Test
