@@ -4,10 +4,7 @@ import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Comparison {
     private Map<String, List<Conflict>> componentConflicts = new HashMap<>();
@@ -28,7 +25,7 @@ public class Comparison {
         for (int i = 0; i < targetComponents.size(); i++) {
             count = 0;
             for (int j = 0; j < otherComponents.size(); j++) {
-                if (targetComponents.get(i).getUID() == otherComponents.get(j).getUID()) {
+                if (Objects.equals(targetComponents.get(i).getUID(), otherComponents.get(j).getUID())) {
                     CompareComponent(targetComponents.get(i), otherComponents.get(j));
                     count += 1;
                 }
