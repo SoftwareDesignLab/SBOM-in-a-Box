@@ -1,9 +1,11 @@
 package org.svip.sbomfactory.serializers.deserializer;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
@@ -133,13 +135,14 @@ public class SPDX23JSONDeserializerTest extends DeserializerTest {
     }
 
     @Test
+    @Disabled("SPDX doesn't support a root component.")
     public void rootComponentTest() {
         testComponent(spdx23json.getRootComponent(), 0);
     }
 
     @Test
     public void componentTest() {
-        assertEquals(4, spdx23json.getComponents().size());
+        assertEquals(3, spdx23json.getComponents().size());
         for (Component component : spdx23json.getComponents()) {
             testComponent((SPDX23PackageObject) component,
                     Integer.parseInt(component.getName().substring("COMPONENT ".length())));
@@ -147,7 +150,7 @@ public class SPDX23JSONDeserializerTest extends DeserializerTest {
     }
 
     @Test
-    public void relationshipsText() {
+    public void relationshipsTest() {
         Relationship rel = spdx23json.getRelationships().get("uid1").stream().findFirst().get();
         assertEquals("uid3", rel.getOtherUID());
         assertEquals("DESCRIBES", rel.getRelationshipType());
