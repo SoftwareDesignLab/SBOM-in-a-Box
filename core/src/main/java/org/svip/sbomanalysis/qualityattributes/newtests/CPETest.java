@@ -9,6 +9,7 @@ import org.svip.sbomanalysis.qualityattributes.resultfactory.ResultFactory;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.INFO;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -54,7 +55,7 @@ public class CPETest extends MetricTest{
         // cpe is a null value and does not exist, tests cannot be run
         // return missing Result
         else {
-            Result r = resultFactory.error(field, INFO.MISSING, value, component.getName());
+            Result r = resultFactory.error(field, INFO.ERROR, value, component.getName());
             results.add(r);
         }
 
@@ -68,11 +69,13 @@ public class CPETest extends MetricTest{
      * @return a result of if the cpe value is valid or not
      */
     private Result isValidCPE(String field, String value){
+        String testName = "ValidCPE";
+        ResultFactory resultFactory = new ResultFactory(testName, ATTRIBUTE.UNIQUENESS);
         try{
             new CPE(value);    // throws error if given purl string is invalid
             return resultFactory.pass(field, INFO.VALID, value, component.getName());
         } catch (Exception e){
-            return resultFactory.fail(field, INFO.ERROR, value, component.getName());
+            return resultFactory.error(field, INFO.ERROR, value, component.getName());
         }
     }
 
@@ -104,6 +107,8 @@ public class CPETest extends MetricTest{
      * @return Result with the findings
      */
     private Result match(CPE cpe){
+        String testName = "AccurateCPE";
+        ResultFactory resultFactory = new ResultFactory(testName, ATTRIBUTE.UNIQUENESS);
         Result r;
 
         // test cpe and component name

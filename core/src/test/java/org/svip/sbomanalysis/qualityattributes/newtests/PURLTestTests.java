@@ -34,7 +34,7 @@ class PURLTestTests {
                 null, null, null, null, null, null, null, null, null,
                 null, null, null);
 
-        purlTest = new PURLTest(test_component, ATTRIBUTE.SPDX23, ATTRIBUTE.UNIQUENESS);
+        purlTest = new PURLTest(test_component, ATTRIBUTE.UNIQUENESS);
     }
 
     @Test
@@ -70,24 +70,13 @@ class PURLTestTests {
     }
 
     @Test
-    public void isAccuratePURL_pass_test(){
+    public void isValidPURL_isAccuratePURL_pass_test(){
         Set<Result> result =  purlTest.test("purl", testActualPURL);
 
         List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(1);
-
-        assertEquals(STATUS.PASS, r.getStatus());
-    }
-
-    @Test
-    public void isAccuratePURL_fail_test()
-    {
-        Set<Result> result =  purlTest.test("purl", "purl");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
-        assertEquals(STATUS.FAIL, r.getStatus());
+        for(Result r : resultList){
+            assertEquals(STATUS.PASS, r.getStatus());
+        }
     }
 
     @Test
@@ -95,9 +84,15 @@ class PURLTestTests {
         Set<Result> result =  purlTest.test("purl", "pkg:golang/rsc.io/incorrectName@v1.3.0");
 
         List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(1);
 
-        assertEquals(STATUS.PASS, r.getStatus());
+        for(Result r : resultList){
+            if(r.getTest().equals("AccuratePURL")){
+                assertEquals(STATUS.FAIL, r.getStatus());
+            }
+            else{
+                assertEquals(STATUS.PASS, r.getStatus());
+            }
+        }
     }
 
     @Test
@@ -105,9 +100,15 @@ class PURLTestTests {
         Set<Result> result =  purlTest.test("purl", "pkg:golang/rsc.io/sampler@v0.0.0");
 
         List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(1);
 
-        assertEquals(STATUS.FAIL, r.getStatus());
+        for(Result r : resultList){
+            if(r.getTest().equals("AccuratePURL")){
+                assertEquals(STATUS.FAIL, r.getStatus());
+            }
+            else{
+                assertEquals(STATUS.PASS, r.getStatus());
+            }
+        }
     }
 
     @Test
@@ -115,10 +116,15 @@ class PURLTestTests {
         Set<Result> result =  purlTest.test("purl", testRandomPURL);
 
         List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(1);
 
-        assertEquals(STATUS.FAIL, resultList.get(0).getStatus());
-        assertEquals(STATUS.PASS, r.getStatus());
+        for(Result r : resultList){
+            if(r.getTest().equals("AccuratePURL")){
+                assertEquals(STATUS.FAIL, r.getStatus());
+            }
+            else{
+                assertEquals(STATUS.PASS, r.getStatus());
+            }
+        }
     }
 
     // TODO these test are more geared towards testing the result factory

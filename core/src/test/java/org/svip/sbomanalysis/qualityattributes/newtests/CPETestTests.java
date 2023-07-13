@@ -47,53 +47,39 @@ class CPETestTests {
     }
 
     @Test
-    public void isValidCPE_pass_test(){
+    public void isValidCPE_isAccurateCPE_pass_test(){
         Set<Result> result =  cpeTest.test("cpe", testActualCPE);
 
         List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
-        assertEquals(STATUS.PASS, r.getStatus());
+        for(Result r : resultList){
+            assertEquals(STATUS.PASS, r.getStatus());
+        }
     }
 
     @Test
-    public void isValidCPE_fail_test(){
+    public void isValidCPE_isAccurateCPE_fail_test(){
         Set<Result> result =  cpeTest.test("cpe", "cpe:cpefail");
 
         List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
-        assertEquals(STATUS.FAIL, r.getStatus());
-    }
-
-    @Test
-    public void isAccurateCPE_pass_test(){
-        Set<Result> result =  cpeTest.test("cpe", testActualCPE);
-
-        List<Result> resultList = new ArrayList<>(result);
-
-        // first check that valid purl test passes
-        Result r = resultList.get(0);
-        assertEquals(STATUS.PASS, r.getStatus());
-
-        // then check accurate purl test
-        r = resultList.get(1);
-        assertEquals(STATUS.PASS, r.getStatus());
+        for(Result r : resultList){
+            assertEquals(STATUS.ERROR, r.getStatus());
+        }
     }
 
     @Test
     public void isAccurateCPE_match_name_fail_test(){
-        Set<Result> result =  cpeTest.test("cpe", "cpe:2.3:a:python_software_foundation:notpython:3.11.2:*:*:*:*:*:*:*");
+        Set<Result> result =  cpeTest.test("cpe", "cpe:2.3:a:python_software_foundation:noName:3.20.0:*:*:*:*:*:*:*");
 
         List<Result> resultList = new ArrayList<>(result);
 
-        // first check that valid purl test passes
-        Result r = resultList.get(0);
-        assertEquals(STATUS.PASS, r.getStatus());
-
-        // then check accurate purl test
-        r = resultList.get(1);
-        assertEquals(STATUS.FAIL, r.getStatus());
+        for(Result r : resultList){
+            if(r.getTest().equals("AccurateCPE")){
+                assertEquals(STATUS.FAIL, r.getStatus());
+            }
+            else{
+                assertEquals(STATUS.PASS, r.getStatus());
+            }
+        }
     }
 
     @Test
@@ -102,13 +88,14 @@ class CPETestTests {
 
         List<Result> resultList = new ArrayList<>(result);
 
-        // first check that valid purl test passes
-        Result r = resultList.get(0);
-        assertEquals(STATUS.PASS, r.getStatus());
-
-        // then check accurate purl test
-        r = resultList.get(1);
-        assertEquals(STATUS.FAIL, r.getStatus());
+        for(Result r : resultList){
+            if(r.getTest().equals("AccurateCPE")){
+                assertEquals(STATUS.FAIL, r.getStatus());
+            }
+            else{
+                assertEquals(STATUS.PASS, r.getStatus());
+            }
+        }
     }
 
     @Test
@@ -117,12 +104,13 @@ class CPETestTests {
 
         List<Result> resultList = new ArrayList<>(result);
 
-        // first check that valid purl test passes
-        Result r = resultList.get(0);
-        assertEquals(STATUS.PASS, r.getStatus());
-
-        // then check accurate purl test
-        r = resultList.get(1);
-        assertEquals(STATUS.FAIL, r.getStatus());
+        for(Result r : resultList){
+            if(r.getTest().equals("AccurateCPE")){
+                assertEquals(STATUS.FAIL, r.getStatus());
+            }
+            else{
+                assertEquals(STATUS.PASS, r.getStatus());
+            }
+        }
     }
 }

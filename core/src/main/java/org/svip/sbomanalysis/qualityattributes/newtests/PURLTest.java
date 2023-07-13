@@ -69,6 +69,8 @@ public class PURLTest extends MetricTest{
      * @return a result if the purl is valid or not
      */
     private Set<Result> isValidPURL(String field, String value){
+        String testName = "ValidPURL";
+        ResultFactory resultFactory = new ResultFactory(testName, ATTRIBUTE.UNIQUENESS);
         Set<Result> results = new HashSet<>();
         Result r;
         try{
@@ -107,6 +109,8 @@ public class PURLTest extends MetricTest{
      * @return Result with the findings
      */
     private Result match(PURL purl){
+        String testName = "AccuratePURL";
+        ResultFactory resultFactory = new ResultFactory(testName, ATTRIBUTE.UNIQUENESS);
         Result r;
 
         // test purl and component name
