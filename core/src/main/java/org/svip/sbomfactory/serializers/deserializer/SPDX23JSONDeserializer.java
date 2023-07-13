@@ -209,6 +209,14 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
         // AUTHOR
         if (pkg.get("originator") != null) builder.setAuthor(pkg.get("originator").asText());
 
+        // SUPPLIER
+        if (pkg.get("supplier") != null) {
+            Contact supplierContact = SPDX23TagValueDeserializer.parseSPDXCreator(pkg.get("supplier").asText());
+            Organization supplier = new Organization(supplierContact.getName(), null);
+            supplier.addContact(supplierContact);
+            builder.setSupplier(supplier);
+        }
+
         // NAME
         if (pkg.get("name") != null) builder.setName(pkg.get("name").asText());
 
@@ -221,6 +229,14 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
         if (pkg.get("comment") != null) builder.setComment(pkg.get("comment").asText());
 
         if (pkg.get("packageFileName") != null) builder.setFileName(pkg.get("packageFileName").asText());
+
+        if (pkg.get("filesAnalyzed") != null) builder.setFilesAnalyzed(pkg.get("filesAnalyzed").asBoolean());
+
+        if (pkg.get("homepage") != null) builder.setHomePage(pkg.get("homepage").asText());
+
+        if (pkg.get("sourceInfo") != null) builder.setSourceInfo(pkg.get("sourceInfo").asText());
+
+        if (pkg.get("attributionText") != null) builder.setAttributionText(pkg.get("attributionText").asText());
 
         // DESCRIPTION
         if (pkg.get("summary") != null) {
@@ -249,6 +265,8 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
             for (JsonNode fileInfo : pkg.get("licenseInfoFromFiles"))
                 componentLicenses.addLicenseInfoFromFile(fileInfo.asText());
 
+        if (pkg.get("licenseComments") != null) componentLicenses.setComment(pkg.get("licenseComments").asText());
+
         // add license collection to component builder
         builder.setLicenses(componentLicenses);
 
@@ -257,18 +275,28 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
 
         // EXTERNAL REFERENCES
         if (pkg.get("externalRefs") != null)
-            for (JsonNode ref : pkg.get("externalRefs"))
-                if (ref.get("referenceCategory") != null && ref.get("referenceLocator") != null &&
-                        ref.get("referenceType") != null) {
+            for (JsonNode ref : pkg.get("externalRefs")) {
+                String category = ref.get("referenceCategory").asText();
+                String url = ref.get("referenceLocator").asText();
+                String type = ref.get("referenceType").asText();
+                if (category == null || url == null || type == null) continue;
 
-                    ExternalReference externalReference = new ExternalReference(
-                            ref.get("referenceCategory").asText(),
-                            ref.get("referenceLocator").asText(),
-                            ref.get("referenceType").asText());
+                if (category.equalsIgnoreCase("security") &&
+                        type.equalsIgnoreCase("cpe23type"))
+                    builder.addCPE(url);
+                else if (category.equalsIgnoreCase("package-manager") &&
+                        type.equalsIgnoreCase("purl"))
+                    builder.addPURL(url);
+                else
+                    builder.addExternalReference(new ExternalReference(category, url, type));
+            }
 
-                    // add the external reference to the component builder
-                    builder.addExternalReference(externalReference);
-                }
+        if (pkg.get("builtDate") != null) builder.setBuildDate(pkg.get("builtDate").asText());
+        if (pkg.get("releaseDate") != null) builder.setReleaseDate(pkg.get("releaseDate").asText());
+        if (pkg.get("validUntilDate") != null) builder.setValidUntilDate(pkg.get("validUntilDate").asText());
+        if (pkg.get("packageVerificationCode") != null)
+            builder.setVerificationCode(pkg.get("packageVerificationCode").asText());
+
 
         // add the component to the sbom builder
         return builder.buildAndFlush();

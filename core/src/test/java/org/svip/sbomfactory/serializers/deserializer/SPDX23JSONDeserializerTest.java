@@ -8,6 +8,7 @@ import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.Relationship;
@@ -144,8 +145,9 @@ public class SPDX23JSONDeserializerTest extends DeserializerTest {
     public void componentTest() {
         assertEquals(3, spdx23json.getComponents().size());
         for (Component component : spdx23json.getComponents()) {
-            testComponent((SPDX23PackageObject) component,
-                    Integer.parseInt(component.getName().substring("COMPONENT ".length())));
+            if (component instanceof SPDX23PackageObject)
+                testComponent((SPDX23PackageObject) component,
+                        Integer.parseInt(component.getName().substring("COMPONENT ".length())));
         }
     }
 
