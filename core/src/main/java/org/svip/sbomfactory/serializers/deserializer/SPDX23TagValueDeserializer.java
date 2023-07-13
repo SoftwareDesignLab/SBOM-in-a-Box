@@ -1,6 +1,5 @@
 package org.svip.sbomfactory.serializers.deserializer;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.builderfactory.SPDX23SBOMBuilderFactory;
 import org.svip.builders.component.SPDX23PackageBuilder;
@@ -86,7 +85,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
     // https://regex101.com/r/0jMwAU/1
     private static final Pattern CREATOR_PATTERN = Pattern.compile(
             "^(?:(Person|Organization): )(.+?)(?:$| (?:\\((.*)\\))?$)");
-    protected static final Pattern TOOL_PATTERN = Pattern.compile("^Tool: (?:(.*)-)(.*)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern TOOL_PATTERN = Pattern.compile("^Tool: (?:(.*)-)(.*)$", Pattern.CASE_INSENSITIVE);
 
     //#endregion
 
@@ -121,6 +120,8 @@ public class SPDX23TagValueDeserializer implements Deserializer {
             fileContents = fileContents.substring(firstIndex); // Remove all header info from fileContents
         }
 
+        sbomBuilder.setFormat("SPDX");
+
         // Process header TODO throw error if required fields are not found. Create enum with all tags?
         Matcher mHeader = TAG_VALUE_PATTERN.matcher(header);
         CreationData creationData = new CreationData();
@@ -141,6 +142,10 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                 case CREATOR_TAG -> creators.add(mHeader.group(2));
                 // TIMESTAMP
                 case TIMESTAMP_TAG -> creationData.setCreationTime(mHeader.group(2));
+                // CREATOR COMMENT
+                case "CreatorComment" -> creationData.setCreatorComment(mHeader.group(2));
+                // DOCUMENT COMMENT
+                case "DocumentComment" -> sbomBuilder.setDocumentComment(mHeader.group(2));
             }
         }
         parseSPDXCreatorInfo(creationData, creators);
@@ -153,6 +158,11 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         Matcher relationship = RELATIONSHIP_PATTERN.matcher(fileContents);
         while(relationship.find()) {
             Relationship r = new Relationship(relationship.group(3), relationship.group(2));
+
+            String nextLine = lines.get(lines.indexOf(relationship.group()) + 1);
+            if (nextLine.startsWith("RelationshipComment: "))
+                r.setComment(nextLine.substring(nextLine.indexOf(" ") + 1));
+
             sbomBuilder.addRelationship(relationship.group(1), r);
             lines.remove(relationship.group()); // Remove parsed relationship from contents
         }
