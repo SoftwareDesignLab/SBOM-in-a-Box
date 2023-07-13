@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.parsers.languages;
 
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.utils.VirtualPath;
 import org.svip.sbomfactory.parsers.Parser;
@@ -32,7 +33,7 @@ public class CppParser extends LanguageParser {
      * @return true if internal, false otherwise
      */
     @Override
-    protected boolean isInternalComponent(ParserComponent component) {
+    protected boolean isInternalComponent(SVIPComponentObject component) {
         String name = component.getName();
         String group = component.getGroup();
 
@@ -51,13 +52,13 @@ public class CppParser extends LanguageParser {
      * @return true if language, false otherwise
      */
     @Override
-    protected boolean isLanguageComponent(ParserComponent component) {
+    protected boolean isLanguageComponent(SVIPComponentObject component) {
         // Attempt to find component
         try{
             if(Parser.queryURL(STD_LIB_URL + component.getName(), true).getResponseCode() == 200) return true;
 
             // if external, test if header is in C Library (https://cplusplus.com/reference/clibrary/)
-            if(component.getType() == ParserComponent.Type.EXTERNAL && component.getName().contains(".h")){
+            if(component.getType() == SVIPComponentObject.Type.EXTERNAL && component.getName().contains(".h")){
                 String clib = "c"+component.getName().split("\\.")[0];
                 log(LOG_TYPE.DEBUG, "EXTERNAL [ " + component.getName() + " ] not found, attempting clib");
                 return Parser.queryURL(STD_LIB_URL + clib, true).getResponseCode() == 200;
@@ -115,8 +116,8 @@ public class CppParser extends LanguageParser {
      * @return new component
      */
     @Override
-    protected void parseRegexMatch(ArrayList<ParserComponent> components, Matcher matcher) {
-        ParserComponent c;
+    protected void parseRegexMatch(ArrayList<SVIPComponentObject> components, Matcher matcher) {
+        SVIPComponentObject c;
         // group 1: External component, capture inside '<' and '>'
         if (matcher.group(1) != null) {
             c = new ParserComponent(matcher.group(1));

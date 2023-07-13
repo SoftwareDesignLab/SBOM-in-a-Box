@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.parsers.packagemanagers;
 
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.queryworkers.QueryWorker;
 
@@ -25,13 +26,13 @@ public class RequirementsParser extends PackageManagerParser {
     }
 
     @Override
-    protected void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data) {
+    protected void parseData(ArrayList<SVIPComponentObject> components, HashMap<String, Object> data) {
         final ArrayList<LinkedHashMap<String, String>> requirements =
                 (ArrayList<LinkedHashMap<String, String>>) data.get("requirements");
 
         for (LinkedHashMap<String, String> req : requirements) {
             final String name = req.get("name");
-            final ParserComponent c = new ParserComponent(name);
+            final SVIPComponentObject c = new SVIPComponentObject(name);
             if(req.containsKey("version")) c.setVersion(req.get("version"));
             if(req.containsKey("src")) c.setGroup(req.get("src"));
 
@@ -65,7 +66,7 @@ public class RequirementsParser extends PackageManagerParser {
     }
 
     @Override
-    public void parse(ArrayList<ParserComponent> components, String fileContents) {
+    public void parse(ArrayList<SVIPComponentObject> components, String fileContents) {
         // Init main data structure
         final LinkedHashMap<String, Object> data = new LinkedHashMap<>();
 

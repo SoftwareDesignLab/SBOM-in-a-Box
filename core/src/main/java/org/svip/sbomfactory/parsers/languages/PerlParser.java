@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.parsers.languages;
 
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.utils.VirtualPath;
 
@@ -66,7 +67,7 @@ public class PerlParser extends LanguageParser {
      * @return true if internal, false otherwise
      */
     @Override
-    protected boolean isInternalComponent(ParserComponent component) {
+    protected boolean isInternalComponent(SVIPComponentObject component) {
         String name = component.getName();
         String group = component.getGroup();
 
@@ -89,7 +90,7 @@ public class PerlParser extends LanguageParser {
      * @return true if language, false otherwise
      */
     @Override
-    protected boolean isLanguageComponent(ParserComponent component) {
+    protected boolean isLanguageComponent(SVIPComponentObject component) {
         try {
             String endpoint;
             // If from is defined, build URL with from and name
@@ -144,12 +145,12 @@ public class PerlParser extends LanguageParser {
      * @return new component
      */
     @Override
-    protected void parseRegexMatch(ArrayList<ParserComponent> components, Matcher matcher) {
+    protected void parseRegexMatch(ArrayList<SVIPComponentObject> components, Matcher matcher) {
         // Initialize variables
         final HashSet<String> KEYWORDS = new HashSet<>(Arrays.asList(
                 "strict", "warning", "integer", "bytes", "constant"
         )); // List of keywords to ignore from matches
-        ParserComponent c; // ParserComponent declaration
+        SVIPComponentObject c; // ParserComponent declaration
         String match; // Match to parse
         int groupNum = 0; // Group counter
 
@@ -246,7 +247,7 @@ public class PerlParser extends LanguageParser {
         }
 
         // Construct component
-        c = new ParserComponent(match);
+        c = new SVIPComponentObject(match);
         if(from != null) c.setGroup(from.replace("::", "/")); // If a from has been found, assign it to c
         if(alias != null) c.setAlias(alias); // If an alias has been found, assign it to c
         if(version != null) c.setVersion(version); // If a version has been found, assign it to c
@@ -254,11 +255,11 @@ public class PerlParser extends LanguageParser {
 
         // Check if internal
         if (isInternalComponent(c)) {
-            c.setType(ParserComponent.Type.INTERNAL);
+            c.setType(SVIPComponentObject.Type.INTERNAL);
 
         // Otherwise, check if Language
         } else if (isLanguageComponent(c)) {
-            c.setType(ParserComponent.Type.LANGUAGE);
+            c.setType(SVIPComponentObject.Type.LANGUAGE);
         }
 
         // Add Component

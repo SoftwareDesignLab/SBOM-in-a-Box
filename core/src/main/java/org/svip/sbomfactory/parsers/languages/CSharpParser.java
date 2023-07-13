@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.parsers.languages;
 
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class CSharpParser extends LanguageParser {
      * @return true if language, false otherwise
      */
     @Override
-    protected boolean isLanguageComponent(ParserComponent component) {
+    protected boolean isLanguageComponent(SVIPComponentObject component) {
         // Return connection response (200 = true, else = false)
         String endpoint =
                 component.getGroup() == null ?
@@ -91,7 +92,7 @@ public class CSharpParser extends LanguageParser {
      * @return new component
      */
     @Override
-    protected void parseRegexMatch(ArrayList<ParserComponent> components, Matcher matcher) {
+    protected void parseRegexMatch(ArrayList<SVIPComponentObject> components, Matcher matcher) {
         // Capture match data
         String match;
         if(matcher.group(2) != null) match = matcher.group(2);
@@ -114,7 +115,7 @@ public class CSharpParser extends LanguageParser {
         }
 
         // Create Component
-        final ParserComponent c = new ParserComponent(match);
+        final SVIPComponentObject c = new SVIPComponentObject(match);
 
         // Add "from" if found
         if(from != null) c.setGroup(from);
@@ -125,9 +126,9 @@ public class CSharpParser extends LanguageParser {
         }
 
         // Check if internal
-        if (isInternalComponent(c)) c.setType(ParserComponent.Type.INTERNAL);
+        if (isInternalComponent(c)) c.setType(SVIPComponentObject.Type.INTERNAL);
         // Otherwise, check if Language
-        else if (isLanguageComponent(c)) c.setType(ParserComponent.Type.LANGUAGE);
+        else if (isLanguageComponent(c)) c.setType(SVIPComponentObject.Type.LANGUAGE);
 
         // Add Component
         components.add(c);

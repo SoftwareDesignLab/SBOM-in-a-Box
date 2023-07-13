@@ -1,8 +1,8 @@
 package org.svip.sbomfactory.parsers.packagemanagers;
 
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.utils.Debug;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +41,7 @@ public class NugetParser extends PackageManagerParser{
      * @param data       map of data to be parsed
      */
     @Override
-    protected void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data) {
+    protected void parseData(ArrayList<SVIPComponentObject> components, HashMap<String, Object> data) {
 
         /*
                 <?xml version="1.0" encoding="utf-8"?>

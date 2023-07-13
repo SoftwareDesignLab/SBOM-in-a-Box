@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.parsers.packagemanagers;
 
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.generators.utils.queryworkers.QueryWorker;
 
@@ -39,7 +40,7 @@ public class GradleParser extends PackageManagerParser {
     //#region Core Methods
 
     @Override
-    protected void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data) {
+    protected void parseData(ArrayList<SVIPComponentObject> components, HashMap<String, Object> data) {
         // Init properties
         this.properties = new HashMap<>();
 
@@ -78,11 +79,11 @@ public class GradleParser extends PackageManagerParser {
             final HashMap<String, String> d = this.dependencies.get(artifactId);
 
             // Create ParserComponent from dep info
-            final ParserComponent c = new ParserComponent(artifactId);
+            final SVIPComponentObject c = new SVIPComponentObject(artifactId);
             c.setGroup(d.get("groupId"));
             if (d.containsKey("type")) {
                 final String type = d.get("type");
-                if (type.equals("file")) c.setType(ParserComponent.Type.INTERNAL);
+                if (type.equals("file")) c.setType(SVIPComponentObject.Type.INTERNAL);
             }
             if (d.containsKey("version")) c.setVersion(d.get("version"));
 
@@ -119,7 +120,7 @@ public class GradleParser extends PackageManagerParser {
     }
 
     @Override
-    public void parse(ArrayList<ParserComponent> components, String fileContents) {
+    public void parse(ArrayList<SVIPComponentObject> components, String fileContents) {
         // Init main data structure
         final LinkedHashMap<String, Object> data = new LinkedHashMap<>();
 

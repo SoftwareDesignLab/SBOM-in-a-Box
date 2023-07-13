@@ -3,6 +3,7 @@ package org.svip.sbomfactory.parsers.packagemanagers;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.uids.CPE;
 import org.svip.sbomfactory.parsers.Parser;
 import org.svip.utils.Debug;
@@ -174,7 +175,7 @@ public abstract class PackageManagerParser extends Parser {
      * @param components list of Components to add to
      * @param data map of data to be parsed
      */
-    protected abstract void parseData(ArrayList<ParserComponent> components, HashMap<String, Object> data);
+    protected abstract void parseData(ArrayList<SVIPComponentObject> components, HashMap<String, Object> data);
 
     // TODO: Docstring
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -279,7 +280,7 @@ public abstract class PackageManagerParser extends Parser {
      * @param fileContents the contents of the file to be parsed
      */
     @Override
-    public void parse(ArrayList<ParserComponent> components, String fileContents) {
+    public void parse(ArrayList<SVIPComponentObject> components, String fileContents) {
         try {
             final HashMap<String, Object> data = this.OM.readValue(fileContents, HashMap.class);
             this.parseData(components, data);
@@ -293,7 +294,7 @@ public abstract class PackageManagerParser extends Parser {
      * @param parser the package-manager parser
      * @param packageManager the package manager
      */
-    public static void buildURLs(ArrayList<ParserComponent> components, PackageManagerParser parser, String packageManager) {
+    public static void buildURLs(ArrayList<SVIPComponentObject> components, PackageManagerParser parser, String packageManager) {
         // Iterate and build URLs
 
         boolean nugetParser = packageManager.equals("nuget");
@@ -310,7 +311,7 @@ public abstract class PackageManagerParser extends Parser {
 
             String version = d.get("version");
 
-            final ParserComponent c = new ParserComponent(id);
+            final SVIPComponentObject c = new SVIPComponentObject(id);
 
             //framework assemblies use assemblyName + targetFramework
             if (result.groupId() != null) c.setGroup(result.groupId());
@@ -333,7 +334,7 @@ public abstract class PackageManagerParser extends Parser {
             if (frameworkAssembly) {
                 c.setPublisher("Microsoft");
                 id = d.get("assemblyName");
-                c.setType(ParserComponent.Type.LANGUAGE);
+                c.setType(SVIPComponentObject.Type.LANGUAGE);
             }
             String PURLString = PackageManagerParser.buildPURL(PURLData);
 

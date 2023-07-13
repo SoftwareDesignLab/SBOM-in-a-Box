@@ -1,5 +1,7 @@
 package org.svip.sbomfactory.parsers.languages;
 
+import org.svip.builders.component.SVIPComponentBuilder;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.parsers.Parser;
 import org.svip.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
@@ -43,7 +45,7 @@ public abstract class LanguageParser extends Parser {
      * @param component component to search for
      * @return true if internal, false otherwise
      */
-    protected boolean isInternalComponent(ParserComponent component) {
+    protected boolean isInternalComponent(SVIPComponentObject component) {
         String name = component.getName();
         String group = component.getGroup();
         VirtualPath internalPath = new VirtualPath((group == null ? "" : group) + "/" + name);
@@ -73,7 +75,7 @@ public abstract class LanguageParser extends Parser {
      * @param component component to search for
      * @return true if language, false otherwise
      */
-    protected abstract boolean isLanguageComponent(ParserComponent component);
+    protected abstract boolean isLanguageComponent(SVIPComponentObject component);
 
     /**
      * Get the regex to parse with.
@@ -90,12 +92,12 @@ public abstract class LanguageParser extends Parser {
      * @param components A list of ParserComponents that the found components will be appended to
      * @param matcher regex match pattern
      */
-    protected abstract void parseRegexMatch(ArrayList<ParserComponent> components, Matcher matcher);
+    protected abstract void parseRegexMatch(ArrayList<SVIPComponentObject> components, Matcher matcher);
 
     //#endregion
 
     @Override
-    public void parse(ArrayList<ParserComponent> components, String fileContents) {
+    public void parse(ArrayList<SVIPComponentBuilder> components, String fileContents) {
         // Get regex
         final Matcher m = getRegex().matcher(fileContents);
 
@@ -108,9 +110,9 @@ public abstract class LanguageParser extends Parser {
 
             parseRegexMatch(components, m);
 
-            List<ParserComponent> componentsToRemove = new ArrayList<>();
+            List<SVIPComponentObject> componentsToRemove = new ArrayList<>();
 
-            for(ParserComponent component : components) {
+            for(SVIPComponentObject component : components) {
                 if(component.getName().equals("*")) {
                     Debug.log(Debug.LOG_TYPE.DEBUG, String.format("Import wildcard found in component %s with group %s",
                             component.getName(), component.getGroup()));
