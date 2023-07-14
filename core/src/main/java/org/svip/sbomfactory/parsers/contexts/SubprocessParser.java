@@ -3,9 +3,9 @@ package org.svip.sbomfactory.parsers.contexts;
 // Declares Imports
 
 import org.apache.commons.lang3.StringUtils;
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.utils.Debug;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,10 +106,11 @@ public class SubprocessParser extends ContextParser {
         // TODO: Better way to handle this? Currently the entire call is stored as name and type is set to EXTERNAL
         for (final String subprocessCall : this.context) {
             // Create ParserComponent
-            final SVIPComponentObject c = new ParserComponent(subprocessCall.replaceAll("\\\\\\\\", "/"));
-            c.setType(ParserComponent.Type.APPLICATION);
+            final SVIPComponentBuilder builder = new SVIPComponentBuilder();
+            builder.setName(subprocessCall.replaceAll("\\\\\\\\", "/"));
+            builder.setType("APPLICATION");
             // Add ParserComponent to components
-            components.add(c);
+            components.add(builder.build());
         }
     }
 }

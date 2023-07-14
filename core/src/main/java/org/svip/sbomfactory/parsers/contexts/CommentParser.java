@@ -3,8 +3,8 @@ package org.svip.sbomfactory.parsers.contexts;
 // Declares Imports
 
 import org.apache.commons.lang3.StringUtils;
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.utils.Debug;
 
 import java.util.List;
@@ -103,10 +103,11 @@ public class CommentParser extends ContextParser {
         // TODO: Better way to handle this? Currently the entire call is stored as name and type is set to EXTERNAL
         for(final String comment : this.context) {
             // Create ParserComponent
-            final SVIPComponentObject c = new ParserComponent(comment);
-            c.setType(ParserComponent.Type.EXTERNAL);
+            final SVIPComponentBuilder builder = new SVIPComponentBuilder();
+            builder.setName(comment);
+            builder.setType("EXTERNAL");
             // Add comment to components
-            components.add(c);
+            components.add(builder.build());
         }
     }
 }
