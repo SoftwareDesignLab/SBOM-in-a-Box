@@ -2,6 +2,11 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [v5.0.4-alpha] - (7/13/2023)
+
+### Added
+- All unit tests for the `serializers` package at ~91% method code coverage.
+
 ## [v5.0.3-alpha] - (7/12/2023)
 
 ### Added
@@ -17,7 +22,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         - `CDX14JSONDeserializer` Class - CycloneDX v1.4 JSON deserializer
         - `SPDX23JSONDeserializer` Class - SPDX v2.3 JSON deserializer
         - `SPDX23TagValueDeserializer` Class - SPDX v2.3 Tag-Value (.spdx) deserializer
-- Unit tests to be completed for each serializer/deserializer
 
 ## [v5.0.2-alpha] - (7/12/2023)
 

@@ -40,6 +40,7 @@ public class SPDX23TagValueSerializer implements Serializer {
     }
 
     private String buildTagValue(String tag, String value) {
+        if (tag == null || value == null) return "";
         return tag + ": " + value + "\n";
     }
 
@@ -58,11 +59,13 @@ public class SPDX23TagValueSerializer implements Serializer {
         creators.addAll(sbom.getCreationData().getCreationTools().stream()
                 .map(t -> getCreatorString("Tool", t.getName(), t.getVersion())).toList());
 
-        Optional<Contact> supplierContact = sbom.getCreationData().getSupplier().getContacts().stream().findFirst();
-        String supplierEmail = "";
-        if (supplierContact.isPresent())
-            supplierEmail = supplierContact.get().getEmail();
-        creators.add(getCreatorString("Organization", sbom.getCreationData().getSupplier().getName(), supplierEmail));
+        if (sbom.getCreationData().getSupplier() != null) {
+            Optional<Contact> supplierContact = sbom.getCreationData().getSupplier().getContacts().stream().findFirst();
+            String supplierEmail = "";
+            if (supplierContact.isPresent())
+                supplierEmail = supplierContact.get().getEmail();
+            creators.add(getCreatorString("Organization", sbom.getCreationData().getSupplier().getName(), supplierEmail));
+        }
 
         out.append(buildTagValue("SPDXVersion", "SPDX-" + sbom.getSpecVersion()));
         out.append(buildTagValue("DataLicense", "CC0-1.0"));
@@ -112,6 +115,8 @@ public class SPDX23TagValueSerializer implements Serializer {
     }
 
     private String getChecksum(Map<String, String> hashes) {
+        if (hashes == null) return "";
+
         StringBuilder out = new StringBuilder();
         for (Map.Entry<String, String> hash : hashes.entrySet())
             out.append(buildTagValue("PackageChecksum", hash.getKey() + ": " + hash.getValue()));
@@ -120,20 +125,27 @@ public class SPDX23TagValueSerializer implements Serializer {
     }
 
     private String getLicenseInfo(LicenseCollection licenses, boolean file) {
+        if (licenses == null) return "";
+
         StringBuilder out = new StringBuilder();
+        String concludedTag = (file ? "" : "Package") + "LicenseConcluded";
+        String declaredTag = (file ? "" : "Package") + "LicenseDeclared";
+        String fileTag = file ? "LicenseInfoInFile" : "PackageLicenseInfoFromFiles";
+        String commentTag = (file ? "" : "Package") + "LicenseComments";
 
-        for (String concluded : licenses.getConcluded())
-            out.append(buildTagValue("PackageLicenseConcluded", concluded));
-        for (String fromFile : licenses.getInfoFromFiles()) {
-            if (!file)
-                out.append(buildTagValue("PackageLicenseInfoFromFiles", fromFile));
-            else
-                out.append(buildTagValue("LicenseInfoInFile", fromFile));
-        }
+        if (licenses.getConcluded() != null)
+            for (String concluded : licenses.getConcluded())
+                out.append(buildTagValue(concludedTag, concluded));
 
-        for (String declared : licenses.getInfoFromFiles())
-            out.append(buildTagValue("PackageLicenseDeclared", declared));
-        out.append(buildTagValue("PackageLicenseComments", licenses.getComment()));
+        if (licenses.getInfoFromFiles() != null)
+            for (String fromFile : licenses.getInfoFromFiles())
+                out.append(buildTagValue(fileTag, fromFile));
+
+        if (licenses.getDeclared() != null)
+            for (String declared : licenses.getInfoFromFiles())
+                out.append(buildTagValue(declaredTag, declared));
+
+        out.append(buildTagValue(commentTag, licenses.getComment()));
 
         return out.toString();
     }
@@ -145,22 +157,26 @@ public class SPDX23TagValueSerializer implements Serializer {
         out.append(buildTagValue("SPDXID", pkg.getUID()));
         out.append(buildTagValue("PackageName", pkg.getName()));
         out.append(buildTagValue("PackageVersion", pkg.getVersion()));
-        out.append(buildTagValue("PackageSummary", pkg.getDescription().getSummary()));
-        out.append(buildTagValue("PackageDescription", pkg.getDescription().getDescription()));
+        if (pkg.getDescription() != null) {
+            out.append(buildTagValue("PackageSummary", pkg.getDescription().getSummary()));
+            out.append(buildTagValue("PackageDescription", pkg.getDescription().getDescription()));
+        }
         out.append(buildTagValue("PackageComment", pkg.getComment()));
         out.append(buildTagValue("PackageFileName", pkg.getFileName()));
 
-        Optional<Contact> supplierContact = pkg.getSupplier().getContacts().stream().findFirst();
-        String supplierEmail = "";
-        if (supplierContact.isPresent())
-            supplierEmail = supplierContact.get().getEmail();
-
-        out.append(buildTagValue("PackageSupplier",
-                String.format("Organization: %s (%s)", pkg.getSupplier().getName(), supplierEmail)));
+        if (pkg.getSupplier() != null) {
+            Optional<Contact> supplierContact = pkg.getSupplier().getContacts().stream().findFirst();
+            String supplierEmail = "";
+            if (supplierContact.isPresent())
+                supplierEmail = supplierContact.get().getEmail();
+            out.append(buildTagValue("PackageSupplier",
+                    String.format("Organization: %s (%s)", pkg.getSupplier().getName(), supplierEmail)));
+        }
 
         out.append(buildTagValue("PackageOriginator", pkg.getAuthor()));
         out.append(buildTagValue("PackageDownloadLocation", pkg.getDownloadLocation()));
-        out.append(buildTagValue("FilesAnalyzed", pkg.getFilesAnalyzed().toString()));
+        if (pkg.getFilesAnalyzed() != null)
+            out.append(buildTagValue("FilesAnalyzed", pkg.getFilesAnalyzed().toString()));
         out.append(buildTagValue("PackageVerificationCode", pkg.getVerificationCode()));
         out.append(getChecksum(pkg.getHashes()));
         out.append(buildTagValue("PackageHomePage", pkg.getHomePage()));
@@ -168,14 +184,18 @@ public class SPDX23TagValueSerializer implements Serializer {
         out.append(getLicenseInfo(pkg.getLicenses(), false));
         out.append(buildTagValue("PackageCopyrightText", pkg.getCopyright()));
 
-        Set<ExternalReference> references = pkg.getExternalReferences();
+        Set<ExternalReference> references = new HashSet<>();
+        if (pkg.getExternalReferences() != null) references = pkg.getExternalReferences();
 
-        references.addAll(pkg.getCPEs().stream()
-                .map(cpe -> new ExternalReference("SECURITY", cpe, "cpe23Type"))
-                .toList());
-        references.addAll(pkg.getPURLs().stream()
-                .map(purl -> new ExternalReference("PACKAGE-MANAGER", purl, "purl"))
-                .toList());
+        if (pkg.getCPEs() != null)
+            references.addAll(pkg.getCPEs().stream()
+                    .map(cpe -> new ExternalReference("SECURITY", cpe, "cpe23Type"))
+                    .toList());
+
+        if (pkg.getPURLs() != null)
+            references.addAll(pkg.getPURLs().stream()
+                    .map(purl -> new ExternalReference("PACKAGE-MANAGER", purl, "purl"))
+                    .toList());
 
         for (ExternalReference ref : references) {
             out.append(buildTagValue("ExternalRef",

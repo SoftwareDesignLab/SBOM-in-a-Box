@@ -1,30 +1,28 @@
 package org.svip.sbomfactory.serializers.deserializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.jvnet.hk2.internal.Creator;
-import org.mockito.internal.matchers.Or;
 import org.svip.builderfactory.SPDX23SBOMBuilderFactory;
+import org.svip.builders.component.SPDX23FileBuilder;
 import org.svip.builders.component.SPDX23PackageBuilder;
+import org.svip.componentfactory.SPDX23FileBuilderFactory;
 import org.svip.componentfactory.SPDX23PackageBuilderFactory;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
-import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
+import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
-import org.svip.sbom.model.old.Component;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
+import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.sbom.model.uids.Hash;
-import org.svip.sbom.model.uids.PURL;
 import org.svip.sbomfactory.generators.utils.Debug;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -46,7 +44,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
 
     public static final String SEPARATOR = ": ";
 
-    public static final String UNPACKAGED_TAG = "### Unpackaged files";
+    public static final String UNPACKAGED_TAG = "### Unpackaged Files";
 
     public static final String PACKAGE_TAG = "### Package";
 
@@ -112,8 +110,8 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         SPDX23Builder sbomBuilder = sbomFactory.createBuilder();
         SPDX23PackageBuilderFactory packageFactory = new SPDX23PackageBuilderFactory();
         SPDX23PackageBuilder packageBuilder = packageFactory.createBuilder();
-        SPDX23PackageBuilderFactory fileFactory = new SPDX23PackageBuilderFactory();
-        SPDX23PackageBuilder fileBuilder = fileFactory.createBuilder();
+        SPDX23FileBuilderFactory fileFactory = new SPDX23FileBuilderFactory();
+        SPDX23FileBuilder fileBuilder = fileFactory.createBuilder();
 
         // Metadata
         fileContents = fileContents.replaceAll("\r", ""); // Remove carriage return characters if windows
@@ -127,9 +125,12 @@ public class SPDX23TagValueDeserializer implements Deserializer {
             fileContents = fileContents.substring(firstIndex); // Remove all header info from fileContents
         }
 
+        sbomBuilder.setFormat("SPDX");
+
         // Process header TODO throw error if required fields are not found. Create enum with all tags?
         Matcher mHeader = TAG_VALUE_PATTERN.matcher(header);
         CreationData creationData = new CreationData();
+        List<String> creators = new ArrayList<>();
         while(mHeader.find()) {
             switch (mHeader.group(1)) {
                 // NAME
@@ -143,35 +144,16 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                 // LICENSE LIST VERSION
                 case LICENSE_LIST_VERSION_TAG -> sbomBuilder.setSPDXLicenseListVersion(mHeader.group(2));
                 // AUTHORS
-                case CREATOR_TAG -> {
-                    Matcher toolMatcher = TOOL_PATTERN.matcher(mHeader.group(2));
-                    while (toolMatcher.find()) {
-                        CreationTool tool = new CreationTool();
-                        tool.setName(toolMatcher.group(1));
-                        tool.setVersion(toolMatcher.group(2));
-                        creationData.addCreationTool(tool);
-                    }
-
-                    Contact creator = parseCreator(mHeader.group(2));
-                    if (creator == null) continue;
-
-                    // If we find an organization, set it to the supplier if there isn't already one. Otherwise,
-                    // add another author with the contact info
-                    if (mHeader.group(2).toLowerCase().startsWith("organization") &&
-                            creationData.getSupplier() != null &&
-                            !creationData.getSupplier().getName().isEmpty()) {
-
-                        Organization supplier = new Organization(creator.getName(), null);
-                        supplier.addContact(creator);
-                        creationData.setSupplier(supplier);
-                    } else {
-                        creationData.addAuthor(creator);
-                    }
-                }
+                case CREATOR_TAG -> creators.add(mHeader.group(2));
                 // TIMESTAMP
                 case TIMESTAMP_TAG -> creationData.setCreationTime(mHeader.group(2));
+                // CREATOR COMMENT
+                case "CreatorComment" -> creationData.setCreatorComment(mHeader.group(2));
+                // DOCUMENT COMMENT
+                case "DocumentComment" -> sbomBuilder.setDocumentComment(mHeader.group(2));
             }
         }
+        parseSPDXCreatorInfo(creationData, creators);
         // CREATION DATA
         sbomBuilder.setCreationData(creationData);
 
@@ -181,6 +163,13 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         Matcher relationship = RELATIONSHIP_PATTERN.matcher(fileContents);
         while(relationship.find()) {
             Relationship r = new Relationship(relationship.group(3), relationship.group(2));
+
+            String nextLine = lines.get(lines.indexOf(relationship.group()) + 1);
+            if (nextLine.startsWith("RelationshipComment: ")) {
+                r.setComment(nextLine.substring(nextLine.indexOf(" ") + 1));
+                lines.remove(nextLine);
+            }
+
             sbomBuilder.addRelationship(relationship.group(1), r);
             lines.remove(relationship.group()); // Remove parsed relationship from contents
         }
@@ -197,25 +186,12 @@ public class SPDX23TagValueDeserializer implements Deserializer {
 
         // FILES
         String unpackagedFilesContents = getTagContents(fileContents, UNPACKAGED_TAG);
-        List<String> files = List.of(unpackagedFilesContents.split("\n\n")); // Split over newline
+        List<String> files = new ArrayList<>(List.of(unpackagedFilesContents.split("\n\n"))); // Split over newline
+        files.remove(UNPACKAGED_TAG);
+
         for(String fileBlock : files) {
-            if (fileBlock.equals("")) continue;
-            Matcher mFiles = TAG_VALUE_PATTERN.matcher(fileBlock);
-            HashMap<String, String> file_materials = new HashMap<>();
-            while(mFiles.find()) file_materials.put(mFiles.group(1), mFiles.group(2));
-
-            // Create new component from materials
-            // FILE NAME
-            fileBuilder.setName(file_materials.get("FileName"));
-            // FILE VERSION
-            fileBuilder.setVersion(file_materials.get("PackageVersion"));
-            // FILE UID
-            fileBuilder.setUID(file_materials.get("SPDXID"));
-
-            // TODO complete missing fields
-
-            // add component
-            sbomBuilder.addSPDX23Component(fileBuilder.buildAndFlush());
+            if (fileBlock.strip().equals("")) continue;
+            sbomBuilder.addSPDX23Component(buildFile(fileBuilder, fileBlock));
         }
 
         // PACKAGES
@@ -223,108 +199,9 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         List<String> packageList = Stream.of(packageContents.split("\n\n")).filter(pkg -> !pkg.contains(TAG)).toList();
 
         for (String packageBlock : packageList) {
-            if (packageBlock.equals("")) continue;
-            Map<String, String> componentMaterials = new HashMap<>();
-            Matcher mPackages = TAG_VALUE_PATTERN.matcher(packageBlock);
-            while (mPackages.find()) {
-                if (!mPackages.group(1).equals(EXTERNAL_REFERENCE_TAG)) {
-                    componentMaterials.put(mPackages.group(1), mPackages.group(2));
-                    continue;
-                }
-
-                // Special case for external references
-                Matcher externalRefMatcher = EXTERNAL_REF_PATTERN.matcher(mPackages.group());
-                if (!externalRefMatcher.find()) continue;
-                switch(externalRefMatcher.group(2).toLowerCase()) {
-                    case "cpe23type" -> {
-                        // CPE
-                        packageBuilder.addCPE(externalRefMatcher.group(3));
-                    }
-                    case "purl" -> {
-                        // PURL
-                        packageBuilder.addPURL(externalRefMatcher.group(3));
-                    }
-                    // EXTERNAL REFERENCES - DEFAULT CASE
-                    default -> {
-                        ExternalReference externalRef = new ExternalReference(externalRefMatcher.group(1),
-                                externalRefMatcher.group(3), externalRefMatcher.group(2));
-                        packageBuilder.addExternalReference(externalRef);
-                    }
-                }
-            }
-            // SUPPLIER
-            // Cleanup package originator
-            if (componentMaterials.get("PackageSupplier") != null) {
-                Contact supplier = parseCreator(componentMaterials.get("PackageSupplier"));
-                if (supplier != null) {
-                    Organization org = new Organization(supplier.getName(), null);
-                    org.addContact(supplier);
-                    packageBuilder.setSupplier(org);
-                }
-            }
-
-            // AUTHOR
-            if (componentMaterials.get("PackageOriginator") != null) {
-                packageBuilder.setAuthor(componentMaterials.get("PackageOriginator"));
-            }
-
-            // Set required information
-            packageBuilder.setName(componentMaterials.get("PackageName"));
-            packageBuilder.setVersion(componentMaterials.get("PackageVersion"));
-            packageBuilder.setUID(componentMaterials.get("SPDXID"));
-
-            // LICENSE EXPRESSION
-            LicenseCollection licenseCollection = new LicenseCollection();
-            if (componentMaterials.get("PackageLicenseConcluded") != null) {
-                licenseCollection.addConcludedLicenseString(componentMaterials.get("PackageLicenseConcluded"));
-            }
-            if (componentMaterials.get("PackageLicenseDeclared") != null) {
-                licenseCollection.addDeclaredLicense(componentMaterials.get("PackageLicenseDeclared"));
-            }
-            if (componentMaterials.get("PackageLicenseInfoFromFiles") != null) {
-                licenseCollection.addLicenseInfoFromFile(componentMaterials.get("PackageLicenseInfoFromFiles"));
-            }
-            packageBuilder.setLicenses(licenseCollection);
-
-            // HASHES
-            // Packages hashing info
-            if (componentMaterials.get("PackageChecksum") != null){
-                String[] packageChecksum = componentMaterials.get("PackageChecksum").split(" ");
-                packageBuilder.addHash(packageChecksum[0].substring(0,packageChecksum[0].length()-1), packageChecksum[1]);
-            }
-
-            // Other package info
-            // DOWNLOAD LOCATION
-            packageBuilder.setDownloadLocation(componentMaterials.get("PackageDownloadLocation"));
-            // FILES ANALYZED
-            packageBuilder.setFilesAnalyzed(Objects.equals(componentMaterials.get("FilesAnalyzed"), "true"));
-            // PACKAGE VERIFICATION CODE
-            packageBuilder.setVerificationCode(componentMaterials.get("PackageVerificationCode"));
-            // HOMEPAGE
-            packageBuilder.setHomePage(componentMaterials.get("PackageHomePage"));
-            // SOURCE INFO
-            packageBuilder.setSourceInfo(componentMaterials.get("PackageSourceInfo"));
-            // COMMENT
-            packageBuilder.setComment(componentMaterials.get("PackageComment"));
-            // COPYRIGHT
-            packageBuilder.setCopyright(componentMaterials.get("PackageCopyrightText"));
-            // ATTRIBUTION TEXT
-            packageBuilder.setAttributionText(componentMaterials.get("PackageAttributionText"));
-            // TYPE
-            packageBuilder.setType(componentMaterials.get("PrimaryPackagePurpose"));
-            // RELEASE DATE
-            packageBuilder.setReleaseDate(componentMaterials.get("ReleaseDate"));
-            // BUILT DATE
-            packageBuilder.setBuildDate(componentMaterials.get("BuiltDate"));
-            // VALID UNTIL DATE
-            packageBuilder.setValidUntilDate(componentMaterials.get("ValidUntilDate"));
-
-            // TODO check for/complete missing fields
-
-            // build package
-            sbomBuilder.addSPDX23Component(packageBuilder.buildAndFlush());
+            if (packageBlock.strip().equals("")) continue;
+            sbomBuilder.addSPDX23Component(buildPackage(packageBuilder, packageBlock));
         }
-
 
         return sbomBuilder.buildSPDX23SBOM();
     }
@@ -340,11 +217,175 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         return new ObjectMapper();
     }
 
-    private Contact parseCreator(String creator) {
+    protected static Contact parseSPDXCreator(String creator) {
         Matcher creatorMatcher = CREATOR_PATTERN.matcher(creator);
         if (!creatorMatcher.find()) return null;
 
         return new Contact(creatorMatcher.group(2), creatorMatcher.group(3), null);
+    }
+
+    protected static void parseSPDXCreatorInfo(CreationData data, List<String> creatorInfo) {
+        for (String creator : creatorInfo) {
+            Matcher toolMatcher = SPDX23TagValueDeserializer.TOOL_PATTERN.matcher(creator);
+            while (toolMatcher.find()) {
+                CreationTool tool = new CreationTool();
+                tool.setName(toolMatcher.group(1));
+                tool.setVersion(toolMatcher.group(2));
+                data.addCreationTool(tool);
+            }
+
+            Contact contact = SPDX23TagValueDeserializer.parseSPDXCreator(creator);
+            if (contact == null) continue;
+
+            // If we find an organization, set it to the supplier if there isn't already one. Otherwise,
+            // add another author with the contact info
+            if (creator.toLowerCase().startsWith("organization") &&
+                    (data.getSupplier() == null || data.getSupplier().getName().isEmpty())) {
+
+                Organization supplier = new Organization(contact.getName(), null);
+                supplier.addContact(contact);
+                data.setSupplier(supplier);
+            } else {
+                data.addAuthor(contact);
+            }
+        }
+    }
+
+    private SPDX23PackageObject buildPackage(SPDX23PackageBuilder builder, String contents) {
+        Map<String, String> componentMaterials = new HashMap<>();
+        Matcher mPackages = TAG_VALUE_PATTERN.matcher(contents);
+
+        while (mPackages.find()) {
+            if (mPackages.group(1).equals(EXTERNAL_REFERENCE_TAG)) {
+                Matcher externalRefMatcher = EXTERNAL_REF_PATTERN.matcher(mPackages.group());
+                if (!externalRefMatcher.find()) continue;
+
+                switch (externalRefMatcher.group(2).toLowerCase()) {
+                    case "cpe23type" -> builder.addCPE(externalRefMatcher.group(3));
+                    case "purl" -> builder.addPURL(externalRefMatcher.group(3));
+                    default ->
+                            builder.addExternalReference(new ExternalReference(externalRefMatcher.group(1), externalRefMatcher.group(3), externalRefMatcher.group(2)));
+                }
+            }
+            else componentMaterials.put(mPackages.group(1), mPackages.group(2));
+        }
+
+        builder.setName(componentMaterials.get("PackageName"));
+        builder.setVersion(componentMaterials.get("PackageVersion"));
+        builder.setUID(componentMaterials.get("SPDXID"));
+
+        // SUPPLIER
+        if (componentMaterials.get("PackageSupplier") != null) {
+            Contact supplier = parseSPDXCreator(componentMaterials.get("PackageSupplier"));
+            if (supplier != null) {
+                Organization org = new Organization(supplier.getName(), null);
+                org.addContact(supplier);
+                builder.setSupplier(org);
+            }
+        }
+
+        // AUTHOR
+        if (componentMaterials.get("PackageOriginator") != null) builder.setAuthor(componentMaterials.get("PackageOriginator"));
+
+        // LICENSE EXPRESSION
+        LicenseCollection licenseCollection = new LicenseCollection();
+        if (componentMaterials.get("PackageLicenseConcluded") != null)
+            licenseCollection.addConcludedLicenseString(componentMaterials.get("PackageLicenseConcluded"));
+        if (componentMaterials.get("PackageLicenseDeclared") != null)
+            licenseCollection.addDeclaredLicense(componentMaterials.get("PackageLicenseDeclared"));
+        if (componentMaterials.get("PackageLicenseInfoFromFiles") != null)
+            licenseCollection.addLicenseInfoFromFile(componentMaterials.get("PackageLicenseInfoFromFiles"));
+        if (componentMaterials.get("PackageLicenseComments") != null)
+            licenseCollection.setComment(componentMaterials.get("PackageLicenseComments"));
+
+        builder.setLicenses(licenseCollection);
+
+        // HASHES
+        // Packages hashing info
+        if (componentMaterials.get("PackageChecksum") != null) {
+            Matcher mChecksum = TAG_VALUE_PATTERN.matcher(componentMaterials.get("PackageChecksum"));
+            if (mChecksum.find())
+                builder.addHash(mChecksum.group(1), mChecksum.group(2));
+        }
+
+        if (componentMaterials.get("PackageSummary") != null) {
+            Description description = new Description(componentMaterials.get("PackageSummary"));
+            if (componentMaterials.get("PackageDescription") != null)
+                description.setDescription(componentMaterials.get("PackageDescription"));
+
+            builder.setDescription(description);
+        }
+
+        // Other package info
+        // DOWNLOAD LOCATION
+        builder.setDownloadLocation(componentMaterials.get("PackageDownloadLocation"));
+        // FILES ANALYZED
+        builder.setFilesAnalyzed(Objects.equals(componentMaterials.get("FilesAnalyzed"), "true"));
+        // PACKAGE VERIFICATION CODE
+        builder.setVerificationCode(componentMaterials.get("PackageVerificationCode"));
+        // HOMEPAGE
+        builder.setHomePage(componentMaterials.get("PackageHomePage"));
+        // SOURCE INFO
+        builder.setSourceInfo(componentMaterials.get("PackageSourceInfo"));
+        // COMMENT
+        builder.setComment(componentMaterials.get("PackageComment"));
+        // COPYRIGHT
+        builder.setCopyright(componentMaterials.get("PackageCopyrightText"));
+        // ATTRIBUTION TEXT
+        builder.setAttributionText(componentMaterials.get("PackageAttributionText"));
+        // TYPE
+        builder.setType(componentMaterials.get("PrimaryPackagePurpose"));
+        // RELEASE DATE
+        builder.setReleaseDate(componentMaterials.get("ReleaseDate"));
+        // BUILT DATE
+        builder.setBuildDate(componentMaterials.get("BuiltDate"));
+        // VALID UNTIL DATE
+        builder.setValidUntilDate(componentMaterials.get("ValidUntilDate"));
+        // FILE NAME
+        builder.setFileName(componentMaterials.get("PackageFileName"));
+
+        // build package
+        return builder.buildAndFlush();
+    }
+
+    private SPDX23FileObject buildFile(SPDX23FileBuilder builder, String contents) {
+        Matcher mFiles = TAG_VALUE_PATTERN.matcher(contents);
+        HashMap<String, String> fileMaterials = new HashMap<>();
+        while(mFiles.find()) fileMaterials.put(mFiles.group(1), mFiles.group(2));
+
+        // Create new component from materials
+        // FILE NAME
+        builder.setName(fileMaterials.get("FileName"));
+        // FILE UID
+        builder.setUID(fileMaterials.get("SPDXID"));
+        builder.setType(fileMaterials.get("FileType"));
+        builder.setFileNotice(fileMaterials.get("FileNotice"));
+        builder.setComment(fileMaterials.get("FileComment"));
+        builder.setAuthor(fileMaterials.get("FileContributor"));
+        builder.setCopyright(fileMaterials.get("FileCopyrightText"));
+        builder.setAttributionText(fileMaterials.get("FileAttributionText"));
+
+        // LICENSE EXPRESSION
+        LicenseCollection licenseCollection = new LicenseCollection();
+        if (fileMaterials.get("LicenseConcluded") != null)
+            licenseCollection.addConcludedLicenseString(fileMaterials.get("LicenseConcluded"));
+        if (fileMaterials.get("LicenseDeclared") != null)
+            licenseCollection.addDeclaredLicense(fileMaterials.get("LicenseDeclared"));
+        if (fileMaterials.get("LicenseInfoInFile") != null)
+            licenseCollection.addLicenseInfoFromFile(fileMaterials.get("LicenseInfoInFile"));
+        if (fileMaterials.get("LicenseComments") != null)
+            licenseCollection.setComment(fileMaterials.get("LicenseComments"));
+
+        builder.setLicenses(licenseCollection);
+
+        if (fileMaterials.get("PackageChecksum") != null) {
+            Matcher mChecksum = TAG_VALUE_PATTERN.matcher(fileMaterials.get("PackageChecksum"));
+            if (mChecksum.find())
+                builder.addHash(mChecksum.group(1), mChecksum.group(2));
+        }
+
+        // add component
+        return builder.buildAndFlush();
     }
 
     /**
