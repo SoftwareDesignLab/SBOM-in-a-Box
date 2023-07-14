@@ -10,6 +10,7 @@ import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+import org.svip.sbomanalysis.comparison.ComparisonUtils;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.MismatchConflict;
 import org.svip.sbomanalysis.comparison.conflicts.MissingConflict;
@@ -755,15 +756,15 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
     public List<Conflict> compare(CDX14Package other) {
         ArrayList<Conflict> conflicts = new ArrayList<>();
         // NAME
-        if (this.name != null ^ other.getName() != null) {
+        if (!ComparisonUtils.isNull(this.name) ^ !ComparisonUtils.isNull(other.getName())) {
             conflicts.add(new MissingConflict("name", this.name, other.getName()));
-        } else if (!Objects.equals(this.name, other.getName()) && this.name != null) {
+        } else if (!ComparisonUtils.isNull(this.name) && !Objects.equals(this.name, other.getName())) {
             conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
         }
         // VERSION
-        if (this.version != null ^ other.getVersion() != null) {
+        if (!ComparisonUtils.isNull(this.version) ^ !ComparisonUtils.isNull(other.getVersion())) {
             conflicts.add(new MissingConflict("version", this.version, other.getVersion()));
-        } else if (!Objects.equals(this.version, other.getVersion()) && this.version != null) {
+        } else if (!ComparisonUtils.isNull(this.version) && !Objects.equals(this.version, other.getVersion())) {
             conflicts.add(new MismatchConflict("version", this.version, other.getVersion(), VERSION_MISMATCH));
         }
         // SUPPLIER
@@ -777,16 +778,30 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
             conflicts.add(new MissingConflict("supplier", null, other.getSupplier().getName()));
         }
         // AUTHOR
-        if (this.author != null ^ other.getAuthor() != null) {
+        if (!ComparisonUtils.isNull(this.author) ^ !ComparisonUtils.isNull(other.getAuthor())) {
             conflicts.add(new MissingConflict("author", this.author, other.getAuthor()));
-        } else if (!Objects.equals(this.author, other.getAuthor()) && this.author != null) {
+        } else if (!ComparisonUtils.isNull(this.author) && !Objects.equals(this.author, other.getAuthor())) {
             conflicts.add(new MismatchConflict("author", this.author, other.getAuthor(), AUTHOR_MISMATCH));
         }
         // PURL
         if (this.purls != null && other.getPURLs() != null) {
-            if (!this.purls.containsAll(other.getPURLs())) {
-                conflicts.add(new MismatchConflict("purl", this.purls.toString(), other.getPURLs().toString(), PURL_MISMATCH));
+            // TODO compare PURLs individually
+//            if (!this.purls.containsAll(other.getPURLs())) {
+//                conflicts.add(new MismatchConflict("purl", this.purls.toString(), other.getPURLs().toString(), PURL_MISMATCH));
+//            }
+            int count;
+            List<String> purlsListThis = this.purls.stream().toList();
+            List<String> purlsListOther = this.purls.stream().toList();
+            for (int i = 0; i < purlsListThis.size(); i++) {
+                count = 0;
+                for (int j = 0; j < purlsListOther.size(); j++) {
+                    if (i == j) continue;
+                }
+                if (count == 0) {
+                    // missing conflict
+                }
             }
+
         } else if (this.purls != null) {
             conflicts.add(new MissingConflict("purl", this.purls.toString(), null));
         } else if (other.getPURLs() != null) {
@@ -794,9 +809,11 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         }
         // CPE
         if (this.cpes != null && other.getCPEs() != null) {
+            // TODO compare CPEs individually
             if (!this.cpes.containsAll(other.getCPEs())) {
                 conflicts.add(new MismatchConflict("cpe", this.cpes.toString(), other.getCPEs().toString(), CPE_MISMATCH));
             }
+
         } else if (this.cpes != null) {
             conflicts.add(new MissingConflict("cpe", this.cpes.toString(), null));
         } else if (other.getCPEs() != null) {
@@ -804,6 +821,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         }
         // Licenses
         if (this.licenses != null && other.getLicenses() != null) {
+            // TODO compare licenses individually
             if (!this.licenses.getConcluded().containsAll(other.getLicenses().getConcluded())) {
                 conflicts.add(new MismatchConflict("license", this.licenses.getConcluded().toString(), other.getLicenses().getConcluded().toString(), LICENSE_MISMATCH));
             }
@@ -813,6 +831,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
             if (!this.licenses.getInfoFromFiles().containsAll(other.getLicenses().getInfoFromFiles())) {
                 conflicts.add(new MismatchConflict("license", this.licenses.getInfoFromFiles().toString(), other.getLicenses().getInfoFromFiles().toString(), LICENSE_MISMATCH));
             }
+
         } else if (this.licenses != null && (this.licenses.getConcluded().size() > 0 || this.licenses.getDeclared().size() > 0 || this.licenses.getInfoFromFiles().size() > 0)) {
             conflicts.add(new MissingConflict("license", this.licenses.getConcluded().toString() + this.licenses.getDeclared().toString() + this.licenses.getInfoFromFiles().toString(), null));
         } else if (other.getLicenses() != null && (other.getLicenses().getConcluded().size() > 0 || other.getLicenses().getDeclared().size() > 0 || other.getLicenses().getInfoFromFiles().size() > 0)) {
@@ -820,18 +839,20 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         }
         // HASHES
         if (this.hashes != null && other.getHashes() != null) {
+            // TODO compare hashes individually
             if (!this.hashes.values().containsAll(other.getHashes().values())) {
                 conflicts.add(new MismatchConflict("hash", this.hashes.toString(), other.getHashes().toString(), HASH_MISMATCH));
             }
+
         } else if (this.hashes != null) {
             conflicts.add(new MissingConflict("hash", this.hashes.toString(), null));
         } else if (other.getHashes() != null) {
             conflicts.add(new MissingConflict("hash", null, other.getHashes().toString()));
         }
         // PUBLISHER
-        if (this.publisher != null ^ other.getPublisher() != null) {
+        if (!ComparisonUtils.isNull(this.publisher) ^ !ComparisonUtils.isNull(other.getPublisher())) {
             conflicts.add(new MissingConflict("publisher", this.publisher, other.getPublisher()));
-        } else if (!Objects.equals(this.publisher, other.getPublisher()) && this.publisher != null) {
+        } else if (!ComparisonUtils.isNull(this.publisher) && !Objects.equals(this.publisher, other.getPublisher())) {
             conflicts.add(new MismatchConflict("publisher", this.publisher, other.getPublisher(), PUBLISHER_MISMATCH));
         }
         // TODO SWIDs?
