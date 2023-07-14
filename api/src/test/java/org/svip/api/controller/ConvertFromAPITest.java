@@ -19,6 +19,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.svip.sbomfactory.serializers.SerializerFactory.Format.TAGVALUE;
+import static org.svip.sbomfactory.serializers.SerializerFactory.Schema.SPDX23;
 
 public class ConvertFromAPITest extends APITest{
     private Map<Long, SBOMFile> testMap;
@@ -63,35 +65,30 @@ public class ConvertFromAPITest extends APITest{
                     assertEquals(HttpStatus.OK, response.getStatusCode());
                     assertNotNull(responseBody);
 
-                    // todo fix. this is more on the serializer/deserializers side
-                    covertBackTest(thisSchema.name(), responseBody);
+                    // assert we can convert again
+                    try{
+                        String originalFormat = "JSON";
+                        if (sbom.getContents().contains("DocumentName:") || sbom.getContents().contains("DocumentNamespace:"))
+                            originalFormat = TAGVALUE.name();
 
+                       assertEquals("", Utils.convert(new SBOMFile("convertBack." +
+                        (originalFormat.equals("TAGVALUE") ? "json" : "spdx") ,
+
+                            responseBody), thisSchema.name(), originalFormat).values().toArray()[0]);
+                        LOGGER.info( "Reconversion successful!");
+
+                    }catch (Exception e){
+
+                        LOGGER.error("Cannot reconvert: " + e.getMessage());
+                        fail();
+
+                    }
                     LOGGER.info( "\n-------------\n");
                 }
             }
         }
     }
 
-    private static void covertBackTest(String convertToSchema, String responseBody) {
-        // assert we can convert back without any issues
-        try{
-         //   assertEquals("SUCCESS",
-
-                    String reconversion = (String) Utils.convert(new SBOMFile("convertBack.json",
-                            responseBody), convertToSchema, "JSON").values().toArray()[0];
-                    if(!reconversion.equals(""))
-                        LOGGER.error("cannot reconvert : " + reconversion);
-                    else
-                        LOGGER.info("reconversion successful");
-
-         //   );
-        }catch (Exception e){
-
-            LOGGER.error( "Cannot reconvert");
-           // fail();
-
-        }
-    }
 
     /**
      * For faster testing

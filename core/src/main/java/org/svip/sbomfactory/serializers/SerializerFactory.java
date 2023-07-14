@@ -128,7 +128,10 @@ public class SerializerFactory {
         if (fileContents.contains("SPDX") && fileContents.toLowerCase().contains("spdxversion")) schema = SPDX23;
         else if (fileContents.contains("rootComponent")) schema = SVIP; // Field unique to SVIP SBOM
 
-        if (fileContents.contains("DocumentName:")) format = TAGVALUE;
+        if (fileContents.contains("DocumentName:") || fileContents.contains("DocumentNamespace:")) {
+            schema = SPDX23;
+            format = TAGVALUE;
+        }
 
         // TODO what if we still have an incorrect deserializer?
         return schema.getDeserializer(format);

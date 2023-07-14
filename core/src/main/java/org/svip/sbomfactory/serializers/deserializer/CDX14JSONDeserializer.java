@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import org.checkerframework.checker.units.qual.C;
 import org.svip.builderfactory.CDX14SBOMBuilderFactory;
 import org.svip.builders.component.CDX14PackageBuilder;
 import org.svip.componentfactory.CDX14PackageBuilderFactory;
@@ -103,7 +104,8 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
         sbomBuilder.setCreationData(resolveMetadata(node.get("metadata"), sbomBuilder));
 
         // ROOT COMPONENT
-        sbomBuilder.setRootComponent(resolveComponent(componentBuilder, node.get("metadata").get("component")));
+        if(node.get("metadata").get("component") != null)
+            sbomBuilder.setRootComponent(resolveComponent(componentBuilder, node.get("metadata").get("component")));
 
         // COMPONENTS
         if (node.get("components") != null)
@@ -275,18 +277,27 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
     }
 
     private Contact resolveContact(JsonNode ct) {
-        return new Contact(ct.get("name").asText(),
-                ct.get("email").asText(),
-                ct.get("phone").asText());
+        try{
+            return new Contact(ct.get("name").asText(),
+                    ct.get("email").asText(),
+                    ct.get("phone").asText());
+        }catch ( Exception e){
+            return new Contact("", "", "");
+        }
     }
 
     private Organization resolveOrganization(JsonNode org) {
-        Organization organization = new Organization(org.get("name").asText(), org.get("url").asText());
-        if (org.get("contact") != null)
-            for (JsonNode contact : org.get("contact"))
-                organization.addContact(resolveContact(contact));
+        try{
+            Organization organization = new Organization(org.get("name").asText(), org.get("url").asText());
+            if (org.get("contact") != null)
+                for (JsonNode contact : org.get("contact"))
+                    organization.addContact(resolveContact(contact));
+            return organization;
+        }catch ( Exception e){
+            return new Organization("", "");
+        }
 
-        return organization;
+
     }
 
     private ExternalReference resolveExternalRef(JsonNode ref) {
