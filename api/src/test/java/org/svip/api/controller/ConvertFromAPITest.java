@@ -63,20 +63,33 @@ public class ConvertFromAPITest extends APITest{
                     assertEquals(HttpStatus.OK, response.getStatusCode());
                     assertNotNull(responseBody);
 
-//                    // assert we can convert back without any issues
-//                    try{
-//                        assertEquals("SUCCESS",
-//                                Utils.convert(new SBOMFile("convertBack." + convertToFormat.toLowerCase(),
-//                                        responseBody), convertToSchema, convertToFormat).values().toArray()[0]);
-//                    }catch (Exception e){
-//
-//                        LOGGER.error( "Cannot reconvert");
-//                       // fail();
-//
-//                    }
+                    // todo fix. this is more on the serializer/deserializers side
+                    covertBackTest(thisSchema.name(), responseBody);
+
                     LOGGER.info( "\n-------------\n");
                 }
             }
+        }
+    }
+
+    private static void covertBackTest(String convertToSchema, String responseBody) {
+        // assert we can convert back without any issues
+        try{
+         //   assertEquals("SUCCESS",
+
+                    String reconversion = (String) Utils.convert(new SBOMFile("convertBack.json",
+                            responseBody), convertToSchema, "JSON").values().toArray()[0];
+                    if(!reconversion.equals(""))
+                        LOGGER.error("cannot reconvert : " + reconversion);
+                    else
+                        LOGGER.info("reconversion successful");
+
+         //   );
+        }catch (Exception e){
+
+            LOGGER.error( "Cannot reconvert");
+           // fail();
+
         }
     }
 
