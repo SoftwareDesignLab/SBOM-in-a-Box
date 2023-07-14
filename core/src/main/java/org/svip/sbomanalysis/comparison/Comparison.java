@@ -25,6 +25,7 @@ public class Comparison {
         for (int i = 0; i < targetComponents.size(); i++) {
             count = 0;
             for (int j = 0; j < otherComponents.size(); j++) {
+                if (i == j) continue;
                 if (Objects.equals(targetComponents.get(i).getUID(), otherComponents.get(j).getUID())) {
                     CompareComponent(targetComponents.get(i), otherComponents.get(j));
                     count += 1;
