@@ -92,12 +92,12 @@ public abstract class LanguageParser extends Parser {
      * @param components A list of ParserComponents that the found components will be appended to
      * @param matcher regex match pattern
      */
-    protected abstract void parseRegexMatch(ArrayList<SVIPComponentObject> components, Matcher matcher);
+    protected abstract void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher);
 
     //#endregion
 
     @Override
-    public void parse(ArrayList<SVIPComponentObject> components, String fileContents) {
+    public void parse(List<SVIPComponentObject> components, String fileContents) {
         // Get regex
         final Matcher m = getRegex().matcher(fileContents);
 

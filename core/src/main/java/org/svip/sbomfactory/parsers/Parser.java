@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.parsers;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.componentfactory.SVIPSBOMComponentFactory;
 import org.svip.sbom.model.objects.SVIPComponentObject;
@@ -9,7 +10,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -182,6 +183,15 @@ public abstract class Parser {
         return builder.build();
     }
 
+    /**
+     * Utility method to generate and set a component's unique SHA256 hash.
+     * @param component The component to set the hash of.
+     */
+    protected static void generateHash(SVIPComponentObject component) {
+        int code = component.hashCode();
+        set(component, b -> b.addHash("SHA256", DigestUtils.sha256Hex(String.valueOf(code))));
+    }
+
     //#endregion
 
     //#region Abstract Methods
@@ -193,7 +203,7 @@ public abstract class Parser {
      * @param components A list of ParserComponents that the found components will be appended to.
      * @param fileContents file contents to be parsed
      */
-    public abstract void parse(ArrayList<SVIPComponentObject> components, String fileContents);
+    public abstract void parse(List<SVIPComponentObject> components, String fileContents);
 
     //#endregion
 }

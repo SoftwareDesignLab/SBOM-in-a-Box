@@ -1,8 +1,8 @@
 package org.svip.sbomfactory.parsers;
 
 import org.svip.builderfactory.SVIPSBOMBuilderFactory;
-import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
+import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbomfactory.parsers.contexts.ContextParser;
@@ -13,10 +13,7 @@ import org.svip.sbomfactory.parsers.packagemanagers.*;
 import org.svip.utils.Debug;
 import org.svip.utils.VirtualPath;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.svip.utils.Debug.LOG_TYPE;
 import static org.svip.utils.Debug.log;
@@ -157,7 +154,7 @@ public class ParserController {
         }
 
         // Init Component list
-        ArrayList<SVIPComponentObject> components = new ArrayList<>();
+        List<SVIPComponentObject> components = new ArrayList<>();
 
         // Configure parser
         parser.setPWD(filepath);
@@ -173,71 +170,59 @@ public class ParserController {
             else
                 for (final ContextParser cp : contextParsers) cp.parse(components, fileContents);
         }
-        // If file being parsed is a package manager file
 
-        // TODO duplicates, dead imports, modifying component values
-        if(parser instanceof PackageManagerParser) { // Parsing an EXTERNAL dependency
-//            components.forEach(SVIPComponentBuilder::setPackaged); // Sets it to packaged and EXTERNAL
-        } // Otherwise it will be unpackaged and INTERNAL (LIBRARY if it has been parsed as such)
+        // TODO add filenotice flag to differentiate files
+        for (SVIPComponentObject c : components) {
+            Parser.set(c, b -> b.setFileName(filepath.toString()));
+            Parser.set(c, b -> b.setFilesAnalyzed(true));
+            Parser.generateHash(c);
 
-        components.forEach(c -> c.setFileName(filepath.toString()));
+            if (parser instanceof PackageManagerParser)
+                Parser.set(c, b -> b.setFileNotice(null));
+                // TODO set to external
+            else
+                Parser.set(c, b -> b.setFileNotice("PARSED AS SOURCE FILE")); // TODO confirm this
+        }
 
-//        // componentMap contains a map from a component's name to itself
-//        Map<String, SVIPComponentBuilder> componentMap = new HashMap<>();
-//        for(Component c : builder.Build().getComponents()) {
-//            componentMap.put(c.getName(), (SVIPComponentObject) c);
-//        }
-//
-//        // List to store any duplicates/dead imports we find to avoid concurrent arraylist modification
-//        ArrayList<SVIPComponentBuilder> toRemove = new ArrayList<>();
-//
-//        // Get list of all components that have dead imports and remove from main components array
-//        List<String> deadImportNames = components.stream()
-//                .filter(c -> {
-//                    if(c != null && c.build().getType().equals("DEAD_IMPORT")) { // TODO better way to do this
-//                        toRemove.add(c); // Remove dead import component parsed by DeadImportParser
-//                        return true;
-//                    }
-//                    return false;
-//                }).map(c -> c.build().getName()).toList();
-//
-//        components.removeAll(toRemove);
-//        toRemove.clear(); // Clear components to remove for below loop
-//
-//        int deadImportCounter = 0;
-//        // Check for duplicate named components & dead imports
-//        for(SVIPComponentBuilder cBuilder : components) {
-//            SVIPComponentObject component = cBuilder.build();
-//            if(deadImportNames.contains(component.getName())) {
-//                toRemove.add(cBuilder);
-//                Debug.log(LOG_TYPE.DEBUG, "Removed dead import " + component.getName());
-//                deadImportCounter++;
-//                continue;
-//            }
-//
-//            SVIPComponentObject old = componentMap.get(component.getName());
-//            // If a component name doesn't exist, there are no duplicates
-//            if(old == null) continue;
-//
-//            // Add the component to the map to avoid further duplicates from THIS FILE
-//            componentMap.put(component.getName(), component);
-//
-//            // Compare important fields and update old component
-//            old.setGroup(component.getGroup());
-//            component.getFiles().forEach(old::addFile);
-//
-//            // TODO possibly more assignments?
-//
-//            toRemove.add(component); // Remove new component directly
-//            Debug.log(LOG_TYPE.DEBUG, "Found and removed duplicate component " + component.getName());
-//        }
-//
-//        components.removeAll(toRemove); // Remove all duplicates
-//
-//        String removedComponentsLog = "Removed " + toRemove.size() + " Components parsed from file " + filename;
-//        if(deadImportCounter > 0) removedComponentsLog += " (" + deadImportCounter + "/" + toRemove.size()
-//                + " were dead imports)";
-//        Debug.log(LOG_TYPE.DEBUG, removedComponentsLog);
+        // componentMap contains a map from a component's hash to itself
+        Map<String, SVIPComponentObject> componentMap = new HashMap<>();
+        for(Component c : builder.Build().getComponents())
+            componentMap.put(c.getHashes().get("SHA256"), (SVIPComponentObject) c);
+
+        // List of hashes to store any duplicates/dead imports we find to avoid concurrent arraylist modification
+        List<String> toRemove = new ArrayList<>();
+        int deadImportCounter = 0;
+
+        for (SVIPComponentObject c : components)
+            if (c.getType().equalsIgnoreCase("dead_import")) {
+                toRemove.add(c.getHashes().get("SHA256"));
+                Debug.log(LOG_TYPE.DEBUG, "Removed dead import " + c.getName());
+                deadImportCounter++;
+            }
+
+        // Check for duplicate named components & dead imports
+        for(SVIPComponentObject c : components) {
+            SVIPComponentObject old = componentMap.get(c.getHashes().get("SHA256"));
+
+            // If a component name doesn't exist, there are no duplicates
+            if(old == null) continue;
+
+            // Compare important fields and update old component
+            Parser.set(old, b -> b.setGroup(c.getGroup()));
+            Parser.set(old, b -> b.setFileName(c.getFileName()));
+            // TODO possibly more assignments?
+
+            toRemove.add(c.getHashes().get("SHA256")); // Remove new component directly
+            Debug.log(LOG_TYPE.DEBUG, "Found and removed duplicate component " + c.getName());
+        }
+
+        // Remove all components whose hashes are in toRemove
+        components = components.stream().filter(c -> toRemove.contains(c.getHashes().get("SHA256"))).toList();
+
+        String removedComponentsLog = "Removed " + toRemove.size() + " Components parsed from file " + filename;
+        if(deadImportCounter > 0) removedComponentsLog += " (" + deadImportCounter + "/" + toRemove.size()
+                + " were dead imports)";
+        Debug.log(LOG_TYPE.DEBUG, removedComponentsLog);
 
         // Add Components to SBOM
         for (SVIPComponentObject c : components)

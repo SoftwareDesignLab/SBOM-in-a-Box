@@ -3,10 +3,11 @@ package org.svip.sbomfactory.parsers.contexts;
 // Declares Imports
 
 import org.apache.commons.lang3.StringUtils;
-import org.svip.utils.Debug;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.utils.Debug;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static org.svip.utils.Debug.log;
 
@@ -89,7 +90,7 @@ public class CommentParser extends ContextParser {
      * @param fileContents file contents to be parsed
      */
     @Override
-    public void parse(ArrayList<ParserComponent> components, String fileContents) {
+    public void parse(List<SVIPComponentObject> components, String fileContents) {
         // Parse Comments
         this.parseComments(fileContents);
 
@@ -102,7 +103,7 @@ public class CommentParser extends ContextParser {
         // TODO: Better way to handle this? Currently the entire call is stored as name and type is set to EXTERNAL
         for(final String comment : this.context) {
             // Create ParserComponent
-            final ParserComponent c = new ParserComponent(comment);
+            final SVIPComponentObject c = new ParserComponent(comment);
             c.setType(ParserComponent.Type.EXTERNAL);
             // Add comment to components
             components.add(c);

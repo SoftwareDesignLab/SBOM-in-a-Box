@@ -6,6 +6,7 @@ import org.svip.sbom.model.objects.SVIPComponentObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 public class CondaParser extends PackageManagerParser{
 
@@ -18,7 +19,7 @@ public class CondaParser extends PackageManagerParser{
     }
 
     @Override
-    protected void parseData(ArrayList<SVIPComponentObject> components, HashMap<String, Object> data) {
+    protected void parseData(List<SVIPComponentObject> components, HashMap<String, Object> data) {
         // Init properties
         this.properties = new HashMap<>();
 

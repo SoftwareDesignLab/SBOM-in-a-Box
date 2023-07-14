@@ -99,7 +99,7 @@ public class PythonParser extends LanguageParser {
      * @return new component
      */
     @Override
-    protected void parseRegexMatch(ArrayList<SVIPComponentObject> components, Matcher matcher) {
+    protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
         // Match for Group 2 and Group 3
         String match;
         if (matcher.group(2) != null) match = matcher.group(2);
