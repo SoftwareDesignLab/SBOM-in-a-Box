@@ -72,7 +72,15 @@ public class GetSBOMAPITest extends APITest{
     @Test
     @DisplayName("Parse Valid SPDX23 JSON")
     public void get_valid_SPDX23_SBOM_JSON(){
+        // Get SPDX23 JSON SBOM when requested
+        when(repository.findById(SPDX23_JSON_ID)).thenAnswer(i -> Optional.of(fileMap.get(SPDX23_JSON_ID)));
 
+        // Make API Request
+        ResponseEntity<?> response = controller.getSBOM(SPDX23_JSON_ID);
+
+        // Assert correct object was returned
+        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertInstanceOf(SPDX23SBOM.class, response.getBody());
     }
 
     @Test
