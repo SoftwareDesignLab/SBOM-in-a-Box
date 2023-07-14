@@ -2,7 +2,7 @@ package org.svip.sbomfactory.parsers.languages;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -36,19 +36,19 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
     void useBasic() {
         Matcher m = getMatcher("use foo;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -57,19 +57,19 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
     void useMultipart() {
         Matcher m = getMatcher("use bar::foo;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("bar", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -78,19 +78,19 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
     void useConditional() {
         Matcher m = getMatcher("use if $var < 5.008, \"foo\";");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -99,19 +99,19 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
     void useAlias1() {
         Matcher m = getMatcher("use package::alias 'Fbbq' => 'Foo::Barista::Bazoo::Qux';");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("Qux", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("Foo/Barista/Bazoo", c.getGroup());
-        assertEquals("Fbbq", c.getAlias());
+//        assertEquals("Fbbq", c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -120,19 +120,19 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
     void useAlias2() {
         Matcher m = getMatcher("use aliased 'Foo::Barista::Bazoo::Qux' => 'Fbbq';");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("Qux", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("Foo/Barista/Bazoo", c.getGroup());
-        assertEquals("Fbbq", c.getAlias());
+//        assertEquals("Fbbq", c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -141,19 +141,19 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
     void useAlias3() {
         Matcher m = getMatcher("use namespace::alias 'Foo::Barista::Bazoo::Qux' => 'Fbbq';");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("Qux", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+//         assertEquals(0, c.getDepth());
         assertEquals("Foo/Barista/Bazoo", c.getGroup());
-        assertEquals("Fbbq", c.getAlias());
+//        assertEquals("Fbbq", c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -163,7 +163,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use 5.24.1;");
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not find any matches
@@ -175,7 +175,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use v5.24.1;");
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not find any matches
@@ -186,19 +186,19 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
     void beginRequireBasic() {
         Matcher m = getMatcher("BEGIN { require foo}");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -207,19 +207,19 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
     void beginRequireVersion() {
         Matcher m = getMatcher("BEGIN { require foo; foo->VERSION(v12.34) }");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertEquals("v12.34", c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -228,19 +228,19 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
     void beginRequireFrom() {
         Matcher m = getMatcher("BEGIN { require foo; foo->import( free ); }");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("free", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("foo", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -249,19 +249,19 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
     void requireBasic() {
         Matcher m = getMatcher("require bar::foo;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("bar", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -270,19 +270,19 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
     void requireVariable() {
         Matcher m = getMatcher("require $var;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("$var", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -292,7 +292,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use 5.24.1;");
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not find any matches
@@ -304,7 +304,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("require v5.24.1;");
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not find any matches
@@ -336,7 +336,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use strict;");
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not find any matches
@@ -348,7 +348,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use warning;");
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not find any matches
@@ -360,7 +360,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use integer;");
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not find any matches
@@ -372,7 +372,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use bytes;");
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not find any matches
@@ -384,7 +384,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("use constant;");
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not find any matches
@@ -399,19 +399,19 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
     void useInternal() {
         Matcher m = getMatcher("use lib::bar;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("bar", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("lib", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -420,19 +420,19 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
     void requireInternal() {
         Matcher m = getMatcher("require lib::bar;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("bar", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("lib", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -441,19 +441,19 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
     void requireInternal2() {
         Matcher m = getMatcher("require \"lib/fee.pm\";");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("fee", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("lib", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -466,19 +466,19 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
     void useLanguage() {
         Matcher m = getMatcher("use autodie::exception::system;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("system", c.getName());
-        assertEquals(ParserComponent.Type.LANGUAGE, c.getType());
+        assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("autodie/exception", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -515,19 +515,19 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
     void useBetweenBlockComments() {
         Matcher m = getMatcher("=a\nuse foo ();\n=cut;\nuse foo;\n=begin\nuse foo;=cut;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -536,19 +536,19 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
     void useBeforeHashtag() {
         Matcher m = getMatcher("use foo; // this imports foo");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 

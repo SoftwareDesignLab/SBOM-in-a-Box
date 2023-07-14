@@ -1,8 +1,8 @@
 package org.svip.sbomfactory.parsers.contexts;
 
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.parsers.Parser;
 import org.svip.sbomfactory.parsers.ParserTestCore;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.util.ArrayList;
 
@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public abstract class ParseContextTestCore extends ParserTestCore {
     // Stores the ParserComponents to be tested
-    protected final ArrayList<ParserComponent> components;
+    protected final ArrayList<SVIPComponentObject> components;
 
     /**
      * Constructor calls super with parser and src, and parses the given

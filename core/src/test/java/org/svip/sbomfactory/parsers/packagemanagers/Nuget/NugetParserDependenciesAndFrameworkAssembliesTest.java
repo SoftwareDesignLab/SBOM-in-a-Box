@@ -2,15 +2,15 @@ package org.svip.sbomfactory.parsers.packagemanagers.Nuget;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.parsers.packagemanagers.NugetParser;
 import org.svip.sbomfactory.parsers.packagemanagers.ParseDepFileTestCore;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,29 +31,19 @@ public class NugetParserDependenciesAndFrameworkAssembliesTest extends ParseDepF
                 "src/test/java/org/svip/sbomfactory/generators/TestData/CSharp/Nuget");
     }
 
-    protected ParserComponent getComponent(String name) {
-        for(ParserComponent i : this.components) {
-            String cname = i.getName();
-            if((cname != null) && cname.equals(name) ) {
-                return i;
-            }
-        }
-        return null;
-    }
-
     @Test
     @DisplayName("Nuget Test Dependencies")
     void testDependencies() {
 
         // Get Components from PARSER
-        final ArrayList<ParserComponent> components = this.components;
+        final List<SVIPComponentObject> components = this.components;
 
         // Test correct count is found
         assertEquals(8, components.size());
 
         //Make ValueSet
         final Set<String> ValueSet = new HashSet<>();;
-        for(ParserComponent pc : components) {
+        for(SVIPComponentObject pc : components) {
             ValueSet.add(pc.getName());
         }
 
@@ -61,7 +51,7 @@ public class NugetParserDependenciesAndFrameworkAssembliesTest extends ParseDepF
 
         String str = "System.Json" ;
         assertTrue(ValueSet.contains(str));
-        assertEquals("MIT", components.get(0).getLicenses().toArray()[0]);
+        assertTrue(components.get(0).getLicenses().getConcluded().contains("MIT"));
 
         str = "System.Web" ;
         assertTrue(ValueSet.contains(str));
@@ -74,11 +64,11 @@ public class NugetParserDependenciesAndFrameworkAssembliesTest extends ParseDepF
 
         str = "Newtonsoft.Json" ;
         assertTrue(ValueSet.contains(str));
-        assertEquals("MIT", components.get(5).getLicenses().toArray()[0]);
+        assertTrue(components.get(5).getLicenses().getConcluded().contains("MIT"));
 
         str = "RestSharp" ;
         assertTrue(ValueSet.contains(str));
-        assertEquals("Apache-2.0", components.get(2).getLicenses().toArray()[0]);
+        assertTrue(components.get(2).getLicenses().getConcluded().contains("Apache-2.0"));
 
         str = "Selenium.Support" ;
         assertTrue(ValueSet.contains(str));
@@ -89,12 +79,12 @@ public class NugetParserDependenciesAndFrameworkAssembliesTest extends ParseDepF
         int languageComponents = 0;
         int externalComponents = 0;
 
-        for (ParserComponent f: components //assert there are exactly four language components
+        for (SVIPComponentObject f: components //assert there are exactly four language components
         ) {
 
-            if(f.getType() == ParserComponent.Type.LANGUAGE)
+            if(f.getType().equalsIgnoreCase("language"))
                 languageComponents++;
-            else if(f.getType() == ParserComponent.Type.EXTERNAL)
+            else if(f.getType().equalsIgnoreCase("external"))
                 externalComponents++;
 
         }

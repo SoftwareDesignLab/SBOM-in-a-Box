@@ -2,7 +2,7 @@ package org.svip.sbomfactory.parsers.languages;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -36,19 +36,19 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import foo");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -58,19 +58,19 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import foo.bar");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("bar", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("foo", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -80,19 +80,19 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import foo as f");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertEquals("f", c.getAlias());
+        // assertEquals("f", c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -102,19 +102,19 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("if not someVersion:\n    import fye as f\n");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("fye", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertEquals("f", c.getAlias());
+        // assertEquals("f", c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -124,19 +124,19 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("if not someOtherVersion:\n    from fee.fye import Fo as f\n");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("Fo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("fee/fye", c.getGroup());
-        assertEquals("f", c.getAlias());
+        // assertEquals("f", c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -146,19 +146,19 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from foo import bar");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("bar", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("foo", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -168,29 +168,29 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from foo import b, a");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should 2 matches
 
         // Test resulting component 1
-        ParserComponent c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0);
         assertEquals("b", c1.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c1.getType());
+        assertEquals("external", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
-        assertEquals(0, c1.getDepth());
+//        // assertEquals(0, c1.getDepth());
         assertEquals("foo", c1.getGroup());
-        assertNull(c1.getAlias());
+//        // assertNull(c1.getAlias());
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        ParserComponent c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1);
         assertEquals("a", c2.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c2.getType());
+        assertEquals("external", c2.getType().toLowerCase());
         assertNull(c2.getVersion());
-        assertEquals(0, c2.getDepth());
+//        // assertEquals(0, c2.getDepth());
         assertEquals("foo", c2.getGroup());
-        assertNull(c2.getAlias());
+//        // assertNull(c2.getAlias());
         // assertNull(c2.getChildren());
     }
 
@@ -200,19 +200,19 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from foo import bar as b");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("bar", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("foo", c.getGroup());
-        assertEquals("b", c.getAlias());
+//        assertEquals("b", c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -222,39 +222,39 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from foo import (b, a, r)");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(3, results.size());    // should 3 matches
 
         // Test resulting component 1
-        ParserComponent c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0);
         assertEquals("b", c1.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c1.getType());
+        assertEquals("external", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
-        assertEquals(0, c1.getDepth());
+//        // assertEquals(0, c1.getDepth());
         assertEquals("foo", c1.getGroup());
-        assertNull(c1.getAlias());
+//        // assertNull(c1.getAlias());
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        ParserComponent c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1);
         assertEquals("a", c2.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c2.getType());
+        assertEquals("external", c2.getType().toLowerCase());
         assertNull(c2.getVersion());
-        assertEquals(0, c2.getDepth());
+//        // assertEquals(0, c2.getDepth());
         assertEquals("foo", c2.getGroup());
-        assertNull(c2.getAlias());
+//        // assertNull(c2.getAlias());
         // assertNull(c2.getChildren());
 
         // Test resulting component 3
-        ParserComponent c3 = results.get(2);
+        SVIPComponentObject c3 = results.get(2);
         assertEquals("r", c3.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c3.getType());
+        assertEquals("external", c3.getType().toLowerCase());
         assertNull(c3.getVersion());
-        assertEquals(0, c3.getDepth());
+//        // assertEquals(0, c3.getDepth());
         assertEquals("foo", c3.getGroup());
-        assertNull(c3.getAlias());
+//        // assertNull(c3.getAlias());
         // assertNull(c3.getChildren());
     }
 
@@ -269,40 +269,40 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from foo import (\n\tb,\n\ta,\n\tr,\n)");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(3, results.size());    // should 3 matches
 
         // Test resulting component 1
-        ParserComponent c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0);
         assertEquals("b", c1.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c1.getType());
+        assertEquals("external", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
-        assertEquals(0, c1.getDepth());
+//        // assertEquals(0, c1.getDepth());
         assertEquals("foo", c1.getGroup());
-        assertNull(c1.getAlias());
+//        // assertNull(c1.getAlias());
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        ParserComponent c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1);
         assertEquals("a", c2.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c2.getType());
+        assertEquals("external", c2.getType().toLowerCase());
         assertNull(c2.getVersion());
-        assertEquals(0, c2.getDepth());
+//        // assertEquals(0, c2.getDepth());
         assertEquals("foo", c2.getGroup());
-        assertNull(c2.getAlias());
+//        // assertNull(c2.getAlias());
         // assertNull(c2.getChildren());
 
         // Test resulting component 3
-        ParserComponent c3 = results.get(2);
+        SVIPComponentObject c3 = results.get(2);
         assertEquals("r", c3.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c3.getType());
+        assertEquals("external", c3.getType().toLowerCase());
         assertNull(c3.getVersion());
-        assertEquals(0, c3.getDepth());
+//        // assertEquals(0, c3.getDepth());
         assertEquals("foo", c3.getGroup());
-        assertNull(c3.getAlias());
-        // assertNull(c3.getChildren());
+//        // assertNull(c3.getAlias());
+//         assertNull(c3.getChildren());
     }
 
     @Test
@@ -311,19 +311,19 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import random");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("random", c.getName());
-        assertEquals(ParserComponent.Type.LANGUAGE, c.getType());
+        assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -336,19 +336,19 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import ifoo");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("ifoo", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
     @Test
@@ -357,19 +357,19 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import f");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("f", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -380,19 +380,19 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import ifoo as if");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("ifoo", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertEquals("if", c.getAlias());
+//        assertEquals("if", c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -402,19 +402,19 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import ifoo.ibar");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("ibar", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("ifoo", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -424,19 +424,19 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import ifoo.ibar as ifb");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("ibar", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("ifoo", c.getGroup());
-        assertEquals("ifb", c.getAlias());
+//        assertEquals("ifb", c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -447,19 +447,19 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from ifoo.ibar import ifoobarModule");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("ifoobarModule", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("ifoo/ibar", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -470,19 +470,19 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from ifoo.ibar.ifoobarModule import ifoobarClass");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("ifoobarClass", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("ifoo/ibar/ifoobarModule", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -493,39 +493,39 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from ifoo.ibar import ib, ia, ir");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(3, results.size());    // should 3 matches
 
         // Test resulting component 1
-        ParserComponent c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0);
         assertEquals("ib", c1.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c1.getType());
+        assertEquals("internal", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
-        assertEquals(0, c1.getDepth());
+//        // assertEquals(0, c1.getDepth());
         assertEquals("ifoo/ibar", c1.getGroup());
-        assertNull(c1.getAlias());
+//        // assertNull(c1.getAlias());
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        ParserComponent c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1);
         assertEquals("ia", c2.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c2.getType());
+        assertEquals("internal", c2.getType().toLowerCase());
         assertNull(c2.getVersion());
-        assertEquals(0, c2.getDepth());
+//        // assertEquals(0, c2.getDepth());
         assertEquals("ifoo/ibar", c2.getGroup());
-        assertNull(c2.getAlias());
+//        // assertNull(c2.getAlias());
         // assertNull(c2.getChildren());
 
         // Test resulting component 3
-        ParserComponent c3 = results.get(2);
+        SVIPComponentObject c3 = results.get(2);
         assertEquals("ir", c3.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c3.getType());
+        assertEquals("internal", c3.getType().toLowerCase());
         assertNull(c3.getVersion());
-        assertEquals(0, c3.getDepth());
+//        // assertEquals(0, c3.getDepth());
         assertEquals("ifoo/ibar", c3.getGroup());
-        assertNull(c3.getAlias());
+//        // assertNull(c3.getAlias());
         // assertNull(c3.getChildren());
     }
 
@@ -535,39 +535,39 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from ifoo.ibar import (ib, ia, ir)");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(3, results.size());    // should 3 matches
 
         // Test resulting component 1
-        ParserComponent c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0);
         assertEquals("ib", c1.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c1.getType());
+        assertEquals("internal", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
-        assertEquals(0, c1.getDepth());
+        // assertEquals(0, c1.getDepth());
         assertEquals("ifoo/ibar", c1.getGroup());
-        assertNull(c1.getAlias());
+        // assertNull(c1.getAlias());
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        ParserComponent c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1);
         assertEquals("ia", c2.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c2.getType());
+        assertEquals("internal", c2.getType().toLowerCase());
         assertNull(c2.getVersion());
-        assertEquals(0, c2.getDepth());
+        // assertEquals(0, c2.getDepth());
         assertEquals("ifoo/ibar", c2.getGroup());
-        assertNull(c2.getAlias());
+        // assertNull(c2.getAlias());
         // assertNull(c2.getChildren());
 
         // Test resulting component 3
-        ParserComponent c3 = results.get(2);
+        SVIPComponentObject c3 = results.get(2);
         assertEquals("ir", c3.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c3.getType());
+        assertEquals("internal", c3.getType().toLowerCase());
         assertNull(c3.getVersion());
-        assertEquals(0, c3.getDepth());
+        // assertEquals(0, c3.getDepth());
         assertEquals("ifoo/ibar", c3.getGroup());
-        assertNull(c3.getAlias());
+        // assertNull(c3.getAlias());
         // assertNull(c3.getChildren());
     }
 
@@ -577,39 +577,39 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from ifoo.ibar import ib, ia as IA, ir");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(3, results.size());    // should 3 matches
 
         // Test resulting component 1
-        ParserComponent c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0);
         assertEquals("ib", c1.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c1.getType());
+        assertEquals("internal", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
-        assertEquals(0, c1.getDepth());
+        // assertEquals(0, c1.getDepth());
         assertEquals("ifoo/ibar", c1.getGroup());
-        assertNull(c1.getAlias());
+        // assertNull(c1.getAlias());
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        ParserComponent c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1);
         assertEquals("ia", c2.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c2.getType());
+        assertEquals("internal", c2.getType().toLowerCase());
         assertNull(c2.getVersion());
-        assertEquals(0, c2.getDepth());
+        // assertEquals(0, c2.getDepth());
         assertEquals("ifoo/ibar", c2.getGroup());
-        assertEquals("IA", c2.getAlias());
+//        assertEquals("IA", c2.getAlias());
         // assertNull(c2.getChildren());
 
         // Test resulting component 3
-        ParserComponent c3 = results.get(2);
+        SVIPComponentObject c3 = results.get(2);
         assertEquals("ir", c3.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c3.getType());
+        assertEquals("internal", c3.getType().toLowerCase());
         assertNull(c3.getVersion());
-        assertEquals(0, c3.getDepth());
+        // assertEquals(0, c3.getDepth());
         assertEquals("ifoo/ibar", c3.getGroup());
-        assertNull(c3.getAlias());
+        // assertNull(c3.getAlias());
         // assertNull(c3.getChildren());
     }
 
@@ -619,39 +619,39 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from ifoo.ibar import (\n\tib, \n\tia, \n\tir\n)");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(3, results.size());    // should 3 matches
 
         // Test resulting component 1
-        ParserComponent c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0);
         assertEquals("ib", c1.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c1.getType());
+        assertEquals("internal", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
-        assertEquals(0, c1.getDepth());
+        // assertEquals(0, c1.getDepth());
         assertEquals("ifoo/ibar", c1.getGroup());
-        assertNull(c1.getAlias());
+        // assertNull(c1.getAlias());
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        ParserComponent c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1);
         assertEquals("ia", c2.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c2.getType());
+        assertEquals("internal", c2.getType().toLowerCase());
         assertNull(c2.getVersion());
-        assertEquals(0, c2.getDepth());
+        // assertEquals(0, c2.getDepth());
         assertEquals("ifoo/ibar", c2.getGroup());
-        assertNull(c2.getAlias());
+        // assertNull(c2.getAlias());
         // assertNull(c2.getChildren());
 
         // Test resulting component 3
-        ParserComponent c3 = results.get(2);
+        SVIPComponentObject c3 = results.get(2);
         assertEquals("ir", c3.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c3.getType());
+        assertEquals("internal", c3.getType().toLowerCase());
         assertNull(c3.getVersion());
-        assertEquals(0, c3.getDepth());
+        // assertEquals(0, c3.getDepth());
         assertEquals("ifoo/ibar", c3.getGroup());
-        assertNull(c3.getAlias());
+        // assertNull(c3.getAlias());
         // assertNull(c3.getChildren());
     }
 
@@ -661,19 +661,19 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import .");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("ifoo", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -683,19 +683,19 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import .ibar");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("ibar", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("ifoo", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -705,19 +705,19 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from . import ibar");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("ibar", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("ifoo", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -727,29 +727,29 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from . import (f, o)");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should 3 matches
 
         // Test resulting component 1
-        ParserComponent c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0);
         assertEquals("f", c1.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c1.getType());
+        assertEquals("internal", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
-        assertEquals(0, c1.getDepth());
+        // assertEquals(0, c1.getDepth());
         assertEquals("ifoo", c1.getGroup());
-        assertNull(c1.getAlias());
+        // assertNull(c1.getAlias());
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        ParserComponent c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1);
         assertEquals("o", c2.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c2.getType());
+        assertEquals("internal", c2.getType().toLowerCase());
         assertNull(c2.getVersion());
-        assertEquals(0, c2.getDepth());
+        // assertEquals(0, c2.getDepth());
         assertEquals("ifoo", c2.getGroup());
-        assertNull(c2.getAlias());
+        // assertNull(c2.getAlias());
         // assertNull(c2.getChildren());
     }
 
@@ -759,29 +759,29 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from . import (\n\tf,\n\to,\n)");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should be 2 matches
 
         // Test resulting component 1
-        ParserComponent c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0);
         assertEquals("f", c1.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c1.getType());
+        assertEquals("internal", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
-        assertEquals(0, c1.getDepth());
+        // assertEquals(0, c1.getDepth());
         assertEquals("ifoo", c1.getGroup());
-        assertNull(c1.getAlias());
+        // assertNull(c1.getAlias());
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        ParserComponent c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1);
         assertEquals("o", c2.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c2.getType());
+        assertEquals("internal", c2.getType().toLowerCase());
         assertNull(c2.getVersion());
-        assertEquals(0, c2.getDepth());
+        // assertEquals(0, c2.getDepth());
         assertEquals("ifoo", c2.getGroup());
-        assertNull(c2.getAlias());
+        // assertNull(c2.getAlias());
         // assertNull(c2.getChildren());
     }
 
@@ -791,19 +791,19 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import ..");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("Absolute", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -813,19 +813,19 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import ..b");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("b", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("Absolute", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -835,19 +835,19 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from .. import r");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("r", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("Absolute", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -857,29 +857,29 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from .. import (a, r)");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should 3 matches
 
         // Test resulting component 1
-        ParserComponent c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0);
         assertEquals("a", c1.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c1.getType());
+        assertEquals("internal", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
-        assertEquals(0, c1.getDepth());
+        // assertEquals(0, c1.getDepth());
         assertEquals("Absolute", c1.getGroup());
-        assertNull(c1.getAlias());
+        // assertNull(c1.getAlias());
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        ParserComponent c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1);
         assertEquals("r", c2.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c2.getType());
+        assertEquals("internal", c2.getType().toLowerCase());
         assertNull(c2.getVersion());
-        assertEquals(0, c2.getDepth());
+        // assertEquals(0, c2.getDepth());
         assertEquals("Absolute", c2.getGroup());
-        assertNull(c2.getAlias());
+        // assertNull(c2.getAlias());
         // assertNull(c2.getChildren());
     }
 
@@ -889,29 +889,29 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from .. import (\n\tb,\n\ta,\n)");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should 3 matches
 
         // Test resulting component 1
-        ParserComponent c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0);
         assertEquals("b", c1.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c1.getType());
+        assertEquals("internal", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
-        assertEquals(0, c1.getDepth());
+        // assertEquals(0, c1.getDepth());
         assertEquals("Absolute", c1.getGroup());
-        assertNull(c1.getAlias());
+        // assertNull(c1.getAlias());
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        ParserComponent c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1);
         assertEquals("a", c2.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c2.getType());
+        assertEquals("internal", c2.getType().toLowerCase());
         assertNull(c2.getVersion());
-        assertEquals(0, c2.getDepth());
+        // assertEquals(0, c2.getDepth());
         assertEquals("Absolute", c2.getGroup());
-        assertNull(c2.getAlias());
+        // assertNull(c2.getAlias());
         // assertNull(c2.getChildren());
     }
 

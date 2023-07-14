@@ -2,7 +2,7 @@ package org.svip.sbomfactory.parsers.packagemanagers;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,7 +30,7 @@ public class CSProjParserTest extends ParseDepFileTestCore {
 
         //Make ValueSet
         final Set<String> ValueSet = new HashSet<>();;
-        for(ParserComponent pc : this.components) {
+        for(SVIPComponentObject pc : this.components) {
             ValueSet.add(pc.getName());
         }
 

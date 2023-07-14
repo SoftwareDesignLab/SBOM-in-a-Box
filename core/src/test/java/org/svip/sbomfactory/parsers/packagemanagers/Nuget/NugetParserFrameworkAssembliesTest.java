@@ -2,15 +2,15 @@ package org.svip.sbomfactory.parsers.packagemanagers.Nuget;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.parsers.packagemanagers.NugetParser;
 import org.svip.sbomfactory.parsers.packagemanagers.ParseDepFileTestCore;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,27 +30,17 @@ public class NugetParserFrameworkAssembliesTest extends ParseDepFileTestCore {
                 "src/test/java/org/svip/sbomfactory/generators/TestData/CSharp/Nuget");
     }
 
-    protected ParserComponent getComponent(String name) {
-        for(ParserComponent i : this.components) {
-            String cname = i.getName();
-            if((cname != null) && cname.equals(name) ) {
-                return i;
-            }
-        }
-        return null;
-    }
-
     @Test
     @DisplayName("Nuget Test Dependencies")
     void testDependencies() {
 
         // Get Components from PARSER
-        final ArrayList<ParserComponent> components = this.components;
+        final List<SVIPComponentObject> components = this.components;
 
-        for (ParserComponent f: components //assert these are language components
+        for (SVIPComponentObject f: components //assert these are language components
              ) {
-            assertSame(ParserComponent.Type.LANGUAGE, f.getType());
-            assertSame("Microsoft", f.getPublisher());
+            assertEquals("language", f.getType().toLowerCase());
+            assertSame("microsoft", f.getPublisher().toLowerCase());
         }
 
         // Test correct count is found
@@ -58,8 +48,8 @@ public class NugetParserFrameworkAssembliesTest extends ParseDepFileTestCore {
 
         //Make ValueSet
         final Set<String> ValueSet = new HashSet<>();;
-        for(ParserComponent pc : components) {
-            ValueSet.add(pc.getName());
+        for(SVIPComponentObject c : components) {
+            ValueSet.add(c.getName());
         }
 
         //Check component's name

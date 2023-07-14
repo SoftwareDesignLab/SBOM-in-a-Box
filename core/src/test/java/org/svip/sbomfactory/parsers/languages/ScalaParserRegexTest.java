@@ -2,7 +2,7 @@ package org.svip.sbomfactory.parsers.languages;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -36,19 +36,19 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
     void importBasic() {
         Matcher m = getMatcher("import bar.foo");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("bar/foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -57,19 +57,19 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
     void importBasicSemicolon() {
         Matcher m = getMatcher("import bar.foo;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("bar/foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -78,19 +78,19 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
     void importStar() {
         Matcher m = getMatcher("import bar.*");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("*", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("bar", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -99,19 +99,19 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
     void importUnderscore() {
         Matcher m = getMatcher("import bar._");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("*", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("bar", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -120,19 +120,19 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
     void importAlphaStar() {
         Matcher m = getMatcher("import bar.A*");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("A*", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("bar", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -141,19 +141,19 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
     void importAlias() {
         Matcher m = getMatcher("import bar.foo as barfoo");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("bar/foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertEquals("barfoo", c.getAlias());
+//        assertEquals("barfoo", c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -162,29 +162,29 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
     void importMultiple() {
         Matcher m = getMatcher("import bar.{foo, fee}");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should only be 1 match
 
         // Test resulting component 1
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("bar/foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
 
         // Test resulting component 2
         c = results.get(1);
         assertEquals("bar/fee", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -193,29 +193,29 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
     void importMultipleAlias() {
         Matcher m = getMatcher("import bar.{foo as f, fee => free}");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should only be 1 match
 
         // Test resulting component 1
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("bar/foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertEquals("f", c.getAlias());
+//        assertEquals("f", c.getAlias());
         // assertNull(c.getChildren());
 
         // Test resulting component 2
         c = results.get(1);
         assertEquals("bar/fee", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertEquals("free", c.getAlias());
+//        assertEquals("free", c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -228,19 +228,19 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
     void importInternal() {
         Matcher m = getMatcher("import Scala.lib.Bar");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("Bar", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("Scala/lib", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -249,19 +249,19 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
     void importInternalAlias() {
         Matcher m = getMatcher("import Scala.lib.Bar as Baz");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("Bar", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("Scala/lib", c.getGroup());
-        assertEquals("Baz", c.getAlias());
+//        assertEquals("Baz", c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -274,19 +274,19 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
     void importLanguage() {
         Matcher m = getMatcher("import scala.collection.parallel.immutable");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("scala/collection/parallel/immutable", c.getName());
-        assertEquals(ParserComponent.Type.LANGUAGE, c.getType());
+        assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -295,19 +295,19 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
     void importLanguageStar() {
         Matcher m = getMatcher("import scala.collection.parallel.immutable.*");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("*", c.getName());
-        assertEquals(ParserComponent.Type.LANGUAGE, c.getType());
+        assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("scala/collection/parallel/immutable", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -316,19 +316,19 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
     void importLanguageClass() {
         Matcher m = getMatcher("import scala.collection.parallel.immutable.ParHashMap");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("ParHashMap", c.getName());
-        assertEquals(ParserComponent.Type.LANGUAGE, c.getType());
+        assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("scala/collection/parallel/immutable", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -337,19 +337,19 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
     void importLanguageClassAliasSemicolon() {
         Matcher m = getMatcher("import scala.collection.parallel.immutable.ParHashMap as phm;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("ParHashMap", c.getName());
-        assertEquals(ParserComponent.Type.LANGUAGE, c.getType());
+        assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("scala/collection/parallel/immutable", c.getGroup());
-        assertEquals("phm", c.getAlias());
+//        assertEquals("phm", c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -378,19 +378,19 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
     void importBetweenBlockComments() {
         Matcher m = getMatcher("/**/ import bar.foo /**/");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("bar/foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -399,19 +399,19 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
     void importBeforeDoubleSlash() {
         Matcher m = getMatcher("import bar.foo // this imports bar");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("bar/foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 

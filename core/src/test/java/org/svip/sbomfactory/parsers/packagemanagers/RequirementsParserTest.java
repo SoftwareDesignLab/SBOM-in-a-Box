@@ -2,13 +2,13 @@ package org.svip.sbomfactory.parsers.packagemanagers;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,14 +31,14 @@ public class RequirementsParserTest extends ParseDepFileTestCore {
     @DisplayName("Test Componemts")
     void testComponemts() {
         // Get Components from PARSER
-        final ArrayList<ParserComponent> components = this.components;
+        final List<SVIPComponentObject> components = this.components;
 
         // Test correct count is found
         assertEquals(15, components.size());
 
         //Make ValueSet
         final Set<String> ValueSet = new HashSet<>();;
-        for(ParserComponent pc : components) {
+        for(SVIPComponentObject pc : components) {
             ValueSet.add(pc.getName());
         }
 

@@ -1,6 +1,9 @@
 package org.svip.sbomfactory.parsers;
 
+import org.svip.SBOMGeneratorCLI;
 import org.svip.utils.VirtualPath;
+
+import java.util.Map;
 
 public abstract class ParserTestCore<T extends Parser> {
     protected T PARSER;
@@ -19,8 +22,8 @@ public abstract class ParserTestCore<T extends Parser> {
     private void setDummyParser(T parser, String src) {
         parser.setPWD(new VirtualPath(src));
         // TODO set source files
-//        VirtualTree dummyFileTree = VirtualTree.buildVirtualTree(new VirtualPath(src));
-//        parser.setSourceFiles(dummyFileTree.getAllFiles());
+        Map<VirtualPath, String> dummyFileMap = SBOMGeneratorCLI.buildFileMap(new VirtualPath(src));
+        parser.setSourceFiles(dummyFileMap.keySet());
         this.PARSER = parser;
     }
 }

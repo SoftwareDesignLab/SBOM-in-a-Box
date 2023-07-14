@@ -2,14 +2,14 @@ package org.svip.sbomfactory.parsers.packagemanagers.Nuget;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.parsers.packagemanagers.NugetParser;
 import org.svip.sbomfactory.parsers.packagemanagers.ParseDepFileTestCore;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -28,22 +28,12 @@ public class NugetParserNoDependenciesTest extends ParseDepFileTestCore {
                 "src/test/java/org/svip/sbomfactory/generators/TestData/CSharp/Nuget");
     }
 
-    protected ParserComponent getComponent(String name) {
-        for(ParserComponent i : this.components) {
-            String cname = i.getName();
-            if((cname != null) && cname.equals(name) ) {
-                return i;
-            }
-        }
-        return null;
-    }
-
     @Test
     @DisplayName("Nuget Test Dependencies")
     void testDependencies() {
 
         // Get Components from PARSER
-        final ArrayList<ParserComponent> components = this.components;
+        final List<SVIPComponentObject> components = this.components;
 
         // Test correct count is found
         assertEquals(0, components.size());
