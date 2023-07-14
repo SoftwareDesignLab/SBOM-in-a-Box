@@ -15,8 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -42,19 +41,21 @@ public class ConvertFromAPITest extends APITest{
             for (String convertToFormat: formats
                  ) {
                 for (Long id : testMap.keySet()) {
-
-                    String testString = testMap.get(id).getContents().toLowerCase();
+                    SBOMFile sbom = testMap.get(id);
+                    String testString = sbom.getContents().toLowerCase();
                     SerializerFactory.Schema thisSchema = (testString.contains("spdx")) ? SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14;
                     if (testController(convertToSchema, convertToFormat, id, thisSchema)) continue;
 
                     LOGGER.info("ID: " + id + " Converting " + thisSchema.name() + " --> " + convertToSchema);
-                    LOGGER.info("From             " + ((testMap.get(id).getFileName()).contains("json")
+                    LOGGER.info("From             " + ((sbom.getFileName()).contains("json")
                             ? "JSON" : "TAGVALUE") + " --> " + convertToFormat);
                     ResponseEntity<String> response = controller.convert(id, convertToSchema, convertToFormat,true);
                     LOGGER.info( "\n-------------\n");
 
+                    String responseBody = response.getBody();
                     assertEquals(HttpStatus.OK, response.getStatusCode());
-                    assertNotNull(testMap.get(id).getContents());
+                    assertNotNull(responseBody);
+
                 }
             }
         }

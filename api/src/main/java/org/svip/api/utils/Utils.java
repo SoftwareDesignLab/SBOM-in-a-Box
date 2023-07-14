@@ -241,12 +241,17 @@ public class Utils {
 
             s = SerializerFactory.createSerializer(schema, format, true);
             if(schema == SerializerFactory.Schema.SPDX23){
-                serialized = s.writeToString(new SVIPSBOM((CDX14SBOM) deserialized));// todo currently this doesn't reach because of deserializor errors
-                //return internalSerializerError(ret, "","UNIMPLIMENTED CASTING FIX");
+                serialized = s.writeToString(new SVIPSBOM((CDX14SBOM) deserialized));
             }
             else if(schema == SerializerFactory.Schema.CDX14){ // serialize into CDX14 schema
-                serialized = s.writeToString(new SVIPSBOM((SPDX23SBOM) deserialized)); // todo fix
-                    //return internalSerializerError(ret, "","UNIMPLIMENTED CASTING FIX");
+                s.setPrettyPrinting(true);
+
+                // instead of adding superfluous setters to all SBOM objects, just replace strings specific to SPDX
+                // with CDX equivalent
+                serialized = s.writeToString(new SVIPSBOM((SPDX23SBOM) deserialized));
+                serialized = serialized.replaceFirst("\"bomFormat\" : \"SPDX\"",
+                        "\"bomFormat\" : \"CycloneDX\"").
+                        replaceFirst("spdxVersion", "specversion");
             }
 
         }catch (Exception e){
