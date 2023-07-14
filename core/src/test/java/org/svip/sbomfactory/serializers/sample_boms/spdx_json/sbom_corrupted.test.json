@@ -1,7 +1,7 @@
 {
   "SPDXID" : "SPDXRef-DOCUMENT",
   "spdxVersion" : "SPDX-2.3",
-  "name" : "Test SBOM",
+  "name" : "MINECRAFT",
   "documentNamespace" : "12345678",
   "comment" : "Test Document Comment",
   "dataLicense" : "CC0-1.0",

@@ -2,6 +2,8 @@ package org.svip.sbomanalysis.comparison;
 
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 
 import java.util.*;
