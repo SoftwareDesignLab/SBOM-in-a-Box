@@ -209,7 +209,9 @@ public class MergerCDX extends Merger {
         for(String purlB : componentB_CDX.getPURLs()) { compBuilder.addPURL(purlB); }
 
         // External References
-        Set<ExternalReference> mergedExRef = new HashSet<>();
+        mergeExternalReferences(
+                componentA_CDX.getExternalReferences(), componentB_CDX.getExternalReferences()
+        ).stream().forEach(x -> compBuilder.addExternalReference(x));
 
         // Mime Type
         compBuilder.setMimeType(componentA_CDX.getMimeType());
@@ -353,8 +355,9 @@ public class MergerCDX extends Merger {
         Set<CreationTool> mergedTools = new HashSet<>();
 
         for(CreationTool toolA : toolsA) {
+            boolean merged = false;
             for(CreationTool toolB : toolsB) {
-                if(toolA.getName() == toolB.getName() && toolA.getVendor() == toolB.getVendor() && toolA.getVersion() == toolB.getVersion()) {
+                if (toolA.getName() == toolB.getName() && toolA.getVendor() == toolB.getVendor() && toolA.getVersion() == toolB.getVersion()) {
 
                     // New tool to hold merged CreationTool data
                     CreationTool newTool = new CreationTool();
@@ -365,26 +368,63 @@ public class MergerCDX extends Merger {
                     newTool.setVersion(toolA.getVersion());
 
                     // Merge A hashes
-                    for(String hashA : toolA.getHashes().keySet()) {
+                    for (String hashA : toolA.getHashes().keySet()) {
                         newTool.addHash(hashA, toolA.getHashes().get(hashA));
                     }
                     // Merge B hashes
-                    for(String hashB : toolB.getHashes().keySet()) {
+                    for (String hashB : toolB.getHashes().keySet()) {
                         // Make sure it doesn't already exist from the A hashes
-                        if(!newTool.getHashes().containsKey(hashB)) {
+                        if (!newTool.getHashes().containsKey(hashB)) {
                             newTool.addHash(hashB, toolB.getHashes().get(hashB));
                         }
                     }
 
-                } else {
-                    // Otherwise, add the tool to the mergedTool set
-                    mergedTools.add(toolA);
+                    mergedTools.add(newTool);
+                    toolsB.remove(toolB);
+                    merged = true;
+
                 }
             }
+            if(!merged) mergedTools.add(toolA);
         }
+        for(CreationTool toolB : toolsB) { if(!toolB.equals(null)) mergedTools.add(toolB); }
 
         // Returned the merged tools
         return mergedTools;
+
+    }
+
+    private Set<ExternalReference> mergeExternalReferences(Set<ExternalReference> refA, Set<ExternalReference> refB) {
+
+        // New set for merged External References
+        Set<ExternalReference> mergedExternalReferences = new HashSet<>();
+
+        for(ExternalReference a : refA) {
+            boolean merged = false;
+            for (ExternalReference b : refB) {
+                if (a.getType() == b.getType() && a.getUrl() == b.getUrl()) {
+                    ExternalReference mergedExRef = new ExternalReference(a.getUrl(), a.getType());
+                    if (!b.getHashes().isEmpty() && !b.getHashes().equals(null)) {
+                        b.getHashes().keySet().forEach(x -> mergedExRef.addHash(x, b.getHashes().get(x)));
+                    }
+                    if (!a.getHashes().isEmpty() && !a.getHashes().equals(null)) {
+                        a.getHashes().keySet().forEach(x -> mergedExRef.addHash(x, a.getHashes().get(x)));
+                    }
+                    merged = true;
+                    refB.remove(b);
+                    mergedExternalReferences.add(mergedExRef);
+                }
+            }
+            if(!merged) mergedExternalReferences.add(a);
+        }
+        for(ExternalReference b : refB) {
+            if (!b.equals(null)) {
+                mergedExternalReferences.add(b);
+            }
+        }
+
+        // Return the newly merged External References
+        return mergedExternalReferences;
 
     }
 
