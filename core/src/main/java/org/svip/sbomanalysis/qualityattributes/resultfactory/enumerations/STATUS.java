@@ -1,5 +1,11 @@
 package org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations;
 
+/**
+ * file: STATUS.java
+ * Enumeration that holds the status of a Result
+ *
+ * @author Matthew Morrison
+ */
 public enum STATUS {
     PASS(1),
     FAIL(0),

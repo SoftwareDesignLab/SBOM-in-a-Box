@@ -81,9 +81,12 @@ public class Text {
             valuesString = "";
         }
         switch (info){
-            case HAS -> details.append(context).append(" has ")
-                    .append(values.size()).append(" ").append(field).append("s: ")
-                    .append(valuesString);
+            case HAS -> {
+                assert values != null;
+                details.append(context).append(" has ")
+                        .append(values.size()).append(" ").append(field)
+                        .append("s: ").append(valuesString);
+            }
             case MISSING -> details.append(context)
                     .append(" is missing the following field: ")
                     .append(field);

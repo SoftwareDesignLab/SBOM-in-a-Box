@@ -24,6 +24,14 @@ public class Result {
 
     private STATUS status;
 
+    /**
+     * Create a new Result
+     * @param attributes list of attributes associated with result
+     * @param test test name
+     * @param message message about the result
+     * @param details details about the result
+     * @param status the status of the result
+     */
     public Result(List<ATTRIBUTE> attributes, String test,
                   String message, String details, STATUS status){
         this.attributes = attributes;
@@ -32,6 +40,8 @@ public class Result {
         this.details = details;
         this.status = status;
     }
+
+    /**Getters*/
 
     public List<ATTRIBUTE> getAttributes() {
         return this.attributes;

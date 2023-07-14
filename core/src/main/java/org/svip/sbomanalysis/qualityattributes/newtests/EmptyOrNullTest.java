@@ -22,6 +22,10 @@ public class EmptyOrNullTest {
 
     private final List<ATTRIBUTE> attributes;
 
+    /**
+     * Constructor class to create a new EmptyOrNullTest
+     * @param attributes a list of attributes associates with the test
+     */
     public EmptyOrNullTest(ATTRIBUTE... attributes){
         this.attributes = List.of(attributes);
         resultFactory = new ResultFactory(TEST_NAME, attributes);

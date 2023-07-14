@@ -22,7 +22,7 @@ public class PURLTest extends MetricTest{
 
     private final String TEST_NAME = "PURLTest";
 
-    private ResultFactory resultFactory;
+    private final ResultFactory resultFactory;
 
     private final SBOMPackage component;
 

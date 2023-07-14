@@ -1,8 +1,8 @@
 package org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations;
 
 /**
- * file: Info.java
- * An enumeration that holds text information about a result
+ * file: INFO.java
+ * Enumeration that holds the types of information a result could have
  *
  * @author Matthew Morrison
  */

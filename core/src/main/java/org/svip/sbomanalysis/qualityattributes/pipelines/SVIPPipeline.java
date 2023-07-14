@@ -20,6 +20,12 @@ import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.INFO;
 
 import java.util.*;
 
+/**
+ * file: SVIPPipeline.java
+ * Pipeline class to run tests for SVIP SBOMs
+ *
+ * @author Matthew Morrison
+ */
 public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
 
     /**UID Regex used for validSerialNumber test*/

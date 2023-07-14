@@ -17,6 +17,12 @@ import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.INFO;
 
 import java.util.*;
 
+/**
+ * file: SPDX23Pipeline.java
+ * Pipeline class to run tests for SPDX 2.3 specific SBOMs
+ *
+ * @author Matthew Morrison
+ */
 public class SPDX23Pipeline implements SPDX23Tests {
 
     /**

@@ -1,7 +1,5 @@
 package org.svip.sbomanalysis.qualityattributes.newtests;
 
-import org.svip.sbom.model.interfaces.generics.Component;
-import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 import org.svip.sbom.model.uids.Hash;
 import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
 

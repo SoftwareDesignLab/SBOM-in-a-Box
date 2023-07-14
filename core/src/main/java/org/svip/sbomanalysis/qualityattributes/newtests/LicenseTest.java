@@ -7,16 +7,13 @@ import org.apache.commons.io.IOUtils;
 import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.ResultFactory;
-import org.svip.sbomanalysis.qualityattributes.resultfactory.Text;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.INFO;
-import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.STATUS;
 import org.svip.sbomfactory.generators.utils.Debug;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -44,7 +41,7 @@ public class LicenseTest extends MetricTest{
     private final Set<String> DEPRECIATED_SPDX_LICENSE_IDENTIFIERS = new HashSet<>();
     private final Set<String> DEPRECIATED_SPDX_LICENSE_NAMES = new HashSet<>();
 
-    private String componentName;
+    private final String componentName;
 
 
     /**

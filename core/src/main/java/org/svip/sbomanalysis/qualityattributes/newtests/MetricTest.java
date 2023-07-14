@@ -1,7 +1,5 @@
 package org.svip.sbomanalysis.qualityattributes.newtests;
 
-import org.checkerframework.checker.units.qual.A;
-import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 
