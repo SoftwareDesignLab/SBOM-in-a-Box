@@ -97,7 +97,7 @@ public abstract class LanguageParser extends Parser {
     //#endregion
 
     @Override
-    public void parse(ArrayList<SVIPComponentBuilder> components, String fileContents) {
+    public void parse(ArrayList<SVIPComponentObject> components, String fileContents) {
         // Get regex
         final Matcher m = getRegex().matcher(fileContents);
 
