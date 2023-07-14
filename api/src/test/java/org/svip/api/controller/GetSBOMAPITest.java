@@ -1,11 +1,22 @@
 package org.svip.api.controller;
 
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.svip.api.model.SBOMFile;
+import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Derek Garcia
@@ -13,16 +24,32 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GetSBOMAPITest extends APITest{
 
-    private final static int CDX14_JSON_INDEX = 6;
-    private final static int CDX14_XML_INDEX = 4;
-    private final static int SPDX23_TAGVALUE_INDEX = 0;
-    private final static int SPDX23_JSON_INDEX = 9;
+    private final static long CDX14_JSON_ID = 6;
+    private final static long CDX14_XML_ID = 4;
+    private final static long SPDX23_TAGVALUE_ID = 0;
+    private final static long SPDX23_JSON_ID = 9;
+    private static Map<Long, SBOMFile> fileMap;
+
+    @BeforeAll
+    static void setupFileMap(){
+        try{
+            fileMap = getTestFileMap();
+        } catch (Exception e){
+            fail(e);
+        }
+    }
+
 
     @Test
     @DisplayName("Parse Valid CDX14 JSON")
-    public void get_valid_CDX_14_SBOM_JSON() throws IOException {
-        var foo = getTestFileMap();
-        //gradleSBOM
+    public void get_valid_CDX_14_SBOM_JSON() {
+        // Get CDX14 JSON SBOM when requested
+        when(repository.findById(CDX14_JSON_ID)).thenAnswer(i -> Optional.of(fileMap.get(CDX14_JSON_ID)));
+        ResponseEntity<?> response = controller.getSBOM(CDX14_JSON_ID);
+
+        // Assert correct object was returned
+        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertInstanceOf(CDX14SBOM.class, response.getBody());
     }
 
     @Test
