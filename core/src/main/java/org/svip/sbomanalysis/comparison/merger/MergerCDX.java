@@ -61,11 +61,11 @@ public class MergerCDX extends Merger {
         for(String license : mainSBOM.getLicenses()) { builder.addLicense(license); }
 
         // Creation Data
-        if(!A.getCreationData().equals(null) && !B.getCreationData().equals(null)) {
+        if(A.getCreationData() != null && B.getCreationData() != null) {
             builder.setCreationData(mergeCreationData(A.getCreationData(), B.getCreationData())); /** A new object should be created for this. Will do later.**/
-        } else if (!A.getCreationData().equals(null)) {
+        } else if (A.getCreationData() != null) {
             builder.setCreationData(A.getCreationData());
-        } else if (!B.getCreationData().equals(null)) {
+        } else if (B.getCreationData() != null) {
             builder.setCreationData(B.getCreationData());
         } else { builder.setCreationData(null); }
 
@@ -110,22 +110,22 @@ public class MergerCDX extends Merger {
         CDX14ComponentObject componentB_CDX = (CDX14ComponentObject) B;
 
         // Type : If A Type isn't empty or null, Merged Component uses A, otherwise use
-        if(!componentA_CDX.getType().isEmpty() && !componentA_CDX.getType().equals(null))
+        if(!componentA_CDX.getType().isEmpty() && componentA_CDX.getType() != null)
             compBuilder.setType(componentA_CDX.getType());
         else compBuilder.setType(componentB_CDX.getType());
 
         // UID : If A UID isn't empty or null, Merged Component uses A, otherwise use B
-        if(!componentA_CDX.getUID().isEmpty() && !componentA_CDX.getUID().equals(null))
+        if(!componentA_CDX.getUID().isEmpty() && componentA_CDX.getUID() != null)
             compBuilder.setUID(componentA_CDX.getUID());
         else compBuilder.setUID(componentB_CDX.getUID());
 
         // Author : If A 'Author' isn't empty or null, Merged Component uses A, otherwise use B
-        if(!componentA_CDX.getAuthor().isEmpty() && !componentA_CDX.getAuthor().equals(null))
+        if(!componentA_CDX.getAuthor().isEmpty() && componentA_CDX.getAuthor() != null)
             compBuilder.setAuthor(componentA_CDX.getAuthor());
         else compBuilder.setAuthor(componentB_CDX.getAuthor());
 
         // Name : If A 'Name' isn't empty or null, Merged Component uses A, otherwise use B
-        if(!componentA_CDX.getName().isEmpty() && !componentA_CDX.getName().equals(null))
+        if(!componentA_CDX.getName().isEmpty() && componentA_CDX.getName() != null)
             compBuilder.setName(componentA_CDX.getName());
         else compBuilder.setName(componentB_CDX.getName());
 
@@ -134,7 +134,7 @@ public class MergerCDX extends Merger {
 
         Set<String> concludedA = componentA_CDX.getLicenses().getConcluded();
 
-        if(!concludedA.isEmpty() && !concludedA.equals(null)) {
+        if(!concludedA.isEmpty() && concludedA != null) {
             concludedA.stream().forEach(
                     x -> mergedLicenses.addConcludedLicenseString(x)
             );
@@ -211,7 +211,7 @@ public class MergerCDX extends Merger {
         // External References
         mergeExternalReferences(
                 componentA_CDX.getExternalReferences(), componentB_CDX.getExternalReferences()
-        ).stream().forEach(x -> compBuilder.addExternalReference(x));
+        ).forEach(x -> compBuilder.addExternalReference(x));
 
         // Mime Type
         compBuilder.setMimeType(componentA_CDX.getMimeType());
@@ -225,7 +225,13 @@ public class MergerCDX extends Merger {
         // Group
         compBuilder.setGroup(componentA_CDX.getGroup());
 
-
+        // Properties
+        if(componentB_CDX.getProperties() != null) componentB_CDX.getProperties().keySet().stream().forEach(
+                x -> componentB_CDX.getProperties().get(x).stream().forEach(y -> compBuilder.addProperty(x, y))
+        );
+        if(componentA_CDX.getProperties() != null) componentA_CDX.getProperties().keySet().stream().forEach(
+                x -> componentA_CDX.getProperties().get(x).stream().forEach(y -> compBuilder.addProperty(x, y))
+        );
 
         // Build the merged component and return it
         return compBuilder.build();
@@ -294,14 +300,8 @@ public class MergerCDX extends Merger {
             Set<Contact> manufactureAuthorsNew = mergeAuthors(organizationA.getContacts(), organizationB.getContacts());
             organizationNew = new Organization(organizationA.getName(), organizationA.getUrl());
             for(Contact manufacturer : manufactureAuthorsNew) { organizationNew.addContact(manufacturer); }
-            return organizationNew;
 
-        } else if(!organizationA.equals(null) && !organizationB.equals(null)) {
-
-            // Condition two: both exist: default to Organization A
-            return organizationA;
-
-        } else if(!organizationA.equals(null) && organizationB.equals(null)) {
+        } else if(organizationA != null && organizationB == null) {
 
             // Condition three: Only A exists: merged Organization becomes Organization A
             return organizationA;
@@ -311,7 +311,7 @@ public class MergerCDX extends Merger {
             // condition four: Only B exists: merged Organization becomes Organization B
             return organizationB;
 
-        }
+        } else { return organizationA; }
 
         // return new Organization
         return organizationNew;
@@ -387,7 +387,7 @@ public class MergerCDX extends Merger {
             }
             if(!merged) mergedTools.add(toolA);
         }
-        for(CreationTool toolB : toolsB) { if(!toolB.equals(null)) mergedTools.add(toolB); }
+        for(CreationTool toolB : toolsB) { if(toolB != null) mergedTools.add(toolB); }
 
         // Returned the merged tools
         return mergedTools;
@@ -404,10 +404,10 @@ public class MergerCDX extends Merger {
             for (ExternalReference b : refB) {
                 if (a.getType() == b.getType() && a.getUrl() == b.getUrl()) {
                     ExternalReference mergedExRef = new ExternalReference(a.getUrl(), a.getType());
-                    if (!b.getHashes().isEmpty() && !b.getHashes().equals(null)) {
+                    if (!b.getHashes().isEmpty() && b.getHashes() != null) {
                         b.getHashes().keySet().forEach(x -> mergedExRef.addHash(x, b.getHashes().get(x)));
                     }
-                    if (!a.getHashes().isEmpty() && !a.getHashes().equals(null)) {
+                    if (!a.getHashes().isEmpty() && a.getHashes() != null) {
                         a.getHashes().keySet().forEach(x -> mergedExRef.addHash(x, a.getHashes().get(x)));
                     }
                     merged = true;
@@ -418,7 +418,7 @@ public class MergerCDX extends Merger {
             if(!merged) mergedExternalReferences.add(a);
         }
         for(ExternalReference b : refB) {
-            if (!b.equals(null)) {
+            if (b != null) {
                 mergedExternalReferences.add(b);
             }
         }
