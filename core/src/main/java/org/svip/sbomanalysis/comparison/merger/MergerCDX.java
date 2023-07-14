@@ -8,15 +8,13 @@ import org.svip.sbom.model.interfaces.generics.SBOM;
 
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
-import org.svip.sbom.model.objects.SVIPComponentObject;
-import org.svip.sbom.model.shared.Relationship;
+
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.sbom.model.uids.Hash;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -62,7 +60,7 @@ public class MergerCDX extends Merger {
 
         // Creation Data
         if(A.getCreationData() != null && B.getCreationData() != null) {
-            builder.setCreationData(mergeCreationData(A.getCreationData(), B.getCreationData())); /** A new object should be created for this. Will do later.**/
+            builder.setCreationData(mergeCreationData(A.getCreationData(), B.getCreationData()));
         } else if (A.getCreationData() != null) {
             builder.setCreationData(A.getCreationData());
         } else if (B.getCreationData() != null) {
@@ -80,6 +78,13 @@ public class MergerCDX extends Merger {
         for(Component mergedComponent : mergedComponents) {
             builder.addComponent(mergedComponent);
         }
+
+        // Relationships TODO: Add merging of relationships in future sprint
+
+        // External References
+        mergeExternalReferences(
+                A.getExternalReferences(), B.getExternalReferences()
+        ).forEach(x -> builder.addExternalReference(x));
 
         // Return the newly built merged SBOM
         return builder.Build();
