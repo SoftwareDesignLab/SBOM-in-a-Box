@@ -3,11 +3,11 @@ package org.svip.sbomfactory.parsers.packagemanagers;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.uids.CPE;
 import org.svip.sbomfactory.parsers.Parser;
 import org.svip.utils.Debug;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.utils.QueryWorker;
 
 import java.io.IOException;
@@ -311,11 +311,12 @@ public abstract class PackageManagerParser extends Parser {
 
             String version = d.get("version");
 
-            final SVIPComponentObject c = new SVIPComponentObject(id);
+            SVIPComponentBuilder builder = new SVIPComponentBuilder();
+            builder.setName(id);
 
             //framework assemblies use assemblyName + targetFramework
-            if (result.groupId() != null) c.setGroup(result.groupId());
-            if (version != null) c.setVersion(version);
+            if (result.groupId() != null) builder.setGroup(result.groupId());
+            if (version != null) builder.setVersion(version);
 
             // TODO: Find this PURL regex a home (Translator?): https://regex101.com/r/sbFd7Z/2
             //  "^pkg:([^/]+)/([^#\n@]+)(?:@([^\?\n]+))?(?:\?([^#\n]+))?(?:#([^\n]+))?"
@@ -332,20 +333,20 @@ public abstract class PackageManagerParser extends Parser {
             if (version != null) PURLData.put("version", version);
 
             if (frameworkAssembly) {
-                c.setPublisher("Microsoft");
+                builder.setPublisher("Microsoft");
                 id = d.get("assemblyName");
-                c.setType(SVIPComponentObject.Type.LANGUAGE);
+                builder.setType("LANGUAGE");
             }
             String PURLString = PackageManagerParser.buildPURL(PURLData);
 
             // Add built PURL
-            c.addPURL(PURLString);
+            builder.addPURL(PURLString);
             log(Debug.LOG_TYPE.DEBUG, String.format("Dependency Found with PURL: %s", PURLString));
 
             // Build CPE
             CPE cpe = new CPE(packageManager, id, version);
             String cpeFormatString = cpe.toString();
-            c.addCPE(cpeFormatString);
+            builder.addCPE(cpeFormatString);
             log(Debug.LOG_TYPE.DEBUG, String.format("Dependency Found with CPE: %s", cpeFormatString));
 
             // Build URL and worker object
@@ -357,7 +358,7 @@ public abstract class PackageManagerParser extends Parser {
                 if (version != null) url += "/" + version;
                 // Create and add QueryWorker with Component reference and URL
                 String finalLicenseRegex = result.licenseRegex();
-                parser.queryWorkers.add(new QueryWorker(c, url) {
+                parser.queryWorkers.add(new QueryWorker(builder.build(), url) {
                     @Override
                     public void run() {
                         // Get page contents
@@ -370,7 +371,8 @@ public abstract class PackageManagerParser extends Parser {
 
                             // Add all found licenses
                             while (m.find()) {
-                                this.component.addLicense(m.group(1).trim());
+                                // TODO concluded?
+                                this.component.getLicenses().addConcludedLicenseString(m.group(1).trim());
                             }
                         }
 
@@ -379,7 +381,7 @@ public abstract class PackageManagerParser extends Parser {
             }
 
             // Add ParserComponent to components
-            components.add(c);
+            components.add(builder.build());
         }
     }
 

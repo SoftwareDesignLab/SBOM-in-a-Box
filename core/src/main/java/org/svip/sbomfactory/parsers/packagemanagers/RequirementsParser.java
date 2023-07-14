@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.parsers.packagemanagers;
 
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.utils.QueryWorker;
 
@@ -32,14 +33,15 @@ public class RequirementsParser extends PackageManagerParser {
 
         for (LinkedHashMap<String, String> req : requirements) {
             final String name = req.get("name");
-            final SVIPComponentObject c = new SVIPComponentObject(name);
-            if(req.containsKey("version")) c.setVersion(req.get("version"));
-            if(req.containsKey("src")) c.setGroup(req.get("src"));
+            SVIPComponentBuilder builder = new SVIPComponentBuilder();
+            builder.setName(name);
+            if(req.containsKey("version")) builder.setVersion(req.get("version"));
+            if(req.containsKey("src")) builder.setGroup(req.get("src"));
 
             // Build URL and worker object
             if(name != null) {
                 // Create and add QueryWorker with Component reference and URL
-                this.queryWorkers.add(new QueryWorker(c, this.STD_LIB_URL + name){
+                this.queryWorkers.add(new QueryWorker(builder.build(), this.STD_LIB_URL + name){
                     @Override
                     public void run() {
                         // Get page contents
@@ -49,7 +51,7 @@ public class RequirementsParser extends PackageManagerParser {
                         final Matcher m = Pattern.compile("<p><strong>License:</strong>(.*?)</p>", Pattern.MULTILINE).matcher(contents);
 
                         while(m.find()) {
-                            this.component.addLicense(m.group(1).trim());
+                            this.component.getLicenses().addConcludedLicenseString(m.group(1).trim());
                         }
                     }
 
@@ -58,7 +60,7 @@ public class RequirementsParser extends PackageManagerParser {
             }
 
             // Add ParserComponent to components
-            components.add(c);
+            components.add(builder.build());
         }
 
         // Query all found URLs and store any relevant data

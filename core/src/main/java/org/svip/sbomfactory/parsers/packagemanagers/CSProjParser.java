@@ -1,8 +1,8 @@
 package org.svip.sbomfactory.parsers.packagemanagers;
 
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.utils.QueryWorker;
 
 import java.util.*;
@@ -93,7 +93,8 @@ public class CSProjParser extends PackageManagerParser {
         // Ensure include was found
         if(include == null) return;
 
-        final SVIPComponentObject c = new SVIPComponentObject(component.get("Include")); // TODO is this a correct default name?
+        SVIPComponentBuilder builder = new SVIPComponentBuilder();
+        builder.setName(component.get("Include")); // TODO is this a correct default name?
 
         // Convert hashmap to parser component
         switch(type) {
@@ -103,33 +104,33 @@ public class CSProjParser extends PackageManagerParser {
                 final String[] split = include.split("\\.");
 
                 // Set name to last element of split
-                c.setName(split[split.length - 1]);
+                builder.setName(split[split.length - 1]);
 
                 // If more than one element, rejoin elements on "/"
-                if (split.length > 1) c.setGroup(String.join("/", Arrays.copyOfRange(split, 0, split.length - 1)));
+                if (split.length > 1) builder.setGroup(String.join("/", Arrays.copyOfRange(split, 0, split.length - 1)));
 
                 // Build url and worker object
-                this.queryWorkers.add(new QueryWorker(c, this.buildURL(c)) {
+                this.queryWorkers.add(new QueryWorker(builder.build(), this.buildURL(builder.build())) {
                     @Override
                     public void run() {
                         try {
                             // If query is sucessful, set type to LANGUAGE and return
                             if(queryURL(url, true).getResponseCode() == 200) {
-                                c.setType(SVIPComponentObject.Type.LANGUAGE);
+                                builder.setType("LANGUAGE");
                                 return;
                             }
                         } catch (Exception ignored) { } // If an error is thrown, ignore it
 
                         // If this is reached, queryURL returned something other than
                         // 200, or an exception was thrown
-                        c.setType(SVIPComponentObject.Type.EXTERNAL);
+                        builder.setType("EXTERNAL");
                     }
                 });
             }
             // These types are filepaths
             case "Compile", "None", "Content", "EmbeddedResource" -> {
                 // Set type to INTERNAL
-                c.setType(SVIPComponentObject.Type.INTERNAL);
+                builder.setType("INTERNAL");
 
                 // Replace back-slashes with forward-slashes
                 include = include.replace('\\', '/');
@@ -141,23 +142,23 @@ public class CSProjParser extends PackageManagerParser {
                 final String filename = fileSplit[fileSplit.length - 1];
 
                 // Strip file extension
-                c.setName(filename.substring(0, filename.lastIndexOf('.')));
+                builder.setName(filename.substring(0, filename.lastIndexOf('.')));
 
                 // No slashes (only one element) = no group
                 if(fileSplit.length == 1) break;
 
                 // Include without the filename is the group
-                c.setGroup(include.substring(0, include.length() - 1 - filename.length()));
+                builder.setGroup(include.substring(0, include.length() - 1 - filename.length()));
             }
         }
         /*
         some items have metadata which holds other information like version. I couldn't find a reference for
         what metadata properties there could be, other than Version which was in some of my testing projects.
          */
-        if(component.get("Version") != null) c.setVersion(component.get("Version"));
+        if(component.get("Version") != null) builder.setVersion(component.get("Version"));
 
         // Add ParserComponent to components
-        components.add(c);
+        components.add(builder.build());
     }
 
     // TODO: Docstring
@@ -178,7 +179,7 @@ public class CSProjParser extends PackageManagerParser {
 
             // Strip typing from component name
             final String name = component.getName();
-            component.setName(name.substring(0, name.indexOf('<')));
+            set(component, b -> b.setName(name.substring(0, name.indexOf('<'))));
         }
 
         // Return built URL

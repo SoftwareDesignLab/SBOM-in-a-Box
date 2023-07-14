@@ -1,7 +1,6 @@
 package org.svip.utils;
 
-import org.svip.utils.Debug;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,7 +18,7 @@ import static org.svip.utils.Debug.log;
  * @author Dylan Mulligan
  */
 public abstract class QueryWorker implements Runnable {
-    protected final ParserComponent component; // Component to be appended to
+    protected final SVIPComponentObject component; // Component to be appended to
     protected final String url; // URL to be queried
 
     /**
@@ -28,7 +27,7 @@ public abstract class QueryWorker implements Runnable {
      * @param component the Component to store any collected information in
      * @param url the url to be queried
      */
-    protected QueryWorker(ParserComponent component, String url) {
+    protected QueryWorker(SVIPComponentObject component, String url) {
         this.component = component;
         this.url = url;
     }
