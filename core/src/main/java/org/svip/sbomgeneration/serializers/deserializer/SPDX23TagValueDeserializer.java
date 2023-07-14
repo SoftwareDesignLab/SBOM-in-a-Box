@@ -171,7 +171,6 @@ public class SPDX23TagValueDeserializer implements Deserializer {
             catch (IndexOutOfBoundsException e){
                 break;
             }
-            
             if (nextLine.startsWith("RelationshipComment: ")) {
                 r.setComment(nextLine.substring(nextLine.indexOf(" ") + 1));
                 lines.remove(nextLine);
