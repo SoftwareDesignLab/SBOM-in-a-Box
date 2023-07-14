@@ -257,18 +257,6 @@ public class CDX14SBOM implements CDX14Schema {
                 }
             }
         }
-        // COMPONENTS
-//        if (this.components != null && other.getComponents() != null) {
-//            List<Component> targetComponents = this.components.stream().toList();
-//            List<Component> otherComponents = other.getComponents().stream().toList();
-//            for (int i = 0; i < targetComponents.size(); i++) {
-//                for (int j = 0; j < otherComponents.size(); j++) {
-//                    if (Objects.equals(targetComponents.get(i).getUID(), otherComponents.get(j).getUID())) {
-//                        conflicts.addAll(((CDX14ComponentObject)targetComponents.get(i)).compare(otherComponents.get(j)));
-//                    }
-//                }
-//            }
-//        }
         return conflicts.stream().toList();
     }
 
