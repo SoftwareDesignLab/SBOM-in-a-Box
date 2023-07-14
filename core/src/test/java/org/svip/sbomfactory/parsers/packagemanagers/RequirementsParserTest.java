@@ -22,14 +22,14 @@ public class RequirementsParserTest extends ParseDepFileTestCore {
      */
     protected RequirementsParserTest() throws IOException {
         super(new RequirementsParser(),
-        Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/generators/TestData/Python/Absolute/requirements.txt")),
-                "src/test/java/org/svip/sbomfactory/generators/TestData/Python/Absolute");
+        Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/parsers/TestData/Python/Absolute/requirements.txt")),
+                "src/test/java/org/svip/sbomfactory/parsers/TestData/Python/Absolute");
         }
 
 
     @Test
     @DisplayName("Test Componemts")
-    void testComponemts() {
+    void testComponents() {
         // Get Components from PARSER
         final List<SVIPComponentObject> components = this.components;
 

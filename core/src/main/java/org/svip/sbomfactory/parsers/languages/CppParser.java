@@ -121,6 +121,7 @@ public class CppParser extends LanguageParser {
         // group 1: External component, capture inside '<' and '>'
         if (matcher.group(1) != null) {
             builder.setName(matcher.group(1));
+            builder.setType("EXTERNAL"); // Default to EXTERNAL
             // group 2: 'Internal' component, capture inside '"' and '"'
         } else if (matcher.group(2) != null) {
             builder.setName(matcher.group(2));

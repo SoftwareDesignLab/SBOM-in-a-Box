@@ -26,8 +26,8 @@ public class NugetParserFrameworkAssembliesTest extends ParseDepFileTestCore {
     protected NugetParserFrameworkAssembliesTest() throws IOException {
         super(new NugetParser(),
                 Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/" +
-                        "generators/TestData/CSharp/Nuget/WithFrameworkAssemblies.nuspec")),
-                "src/test/java/org/svip/sbomfactory/generators/TestData/CSharp/Nuget");
+                        "parsers/TestData/CSharp/Nuget/WithFrameworkAssemblies.nuspec")),
+                "src/test/java/org/svip/sbomfactory/parsers/TestData/CSharp/Nuget");
     }
 
     @Test
@@ -40,7 +40,7 @@ public class NugetParserFrameworkAssembliesTest extends ParseDepFileTestCore {
         for (SVIPComponentObject f: components //assert these are language components
              ) {
             assertEquals("language", f.getType().toLowerCase());
-            assertSame("microsoft", f.getPublisher().toLowerCase());
+            assertEquals("microsoft", f.getPublisher().toLowerCase());
         }
 
         // Test correct count is found

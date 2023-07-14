@@ -151,6 +151,7 @@ public class PerlParser extends LanguageParser {
                 "strict", "warning", "integer", "bytes", "constant"
         )); // List of keywords to ignore from matches
         SVIPComponentBuilder builder = new SVIPComponentBuilder();
+        builder.setType("EXTERNAL"); // Default to EXTERNAL
         String match; // Match to parse
         int groupNum = 0; // Group counter
 

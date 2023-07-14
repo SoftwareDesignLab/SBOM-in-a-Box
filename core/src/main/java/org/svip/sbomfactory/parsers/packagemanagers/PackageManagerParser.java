@@ -36,9 +36,6 @@ import static org.svip.utils.Debug.log;
 public abstract class PackageManagerParser extends Parser {
 
     //#region Attributes
-
-    protected static final String CPE_URL = "https://services.nvd.nist.gov/rest/json/cpes/2.0?cpeMatchString=";
-
     protected final ObjectMapper OM;
 
     protected final ArrayList<QueryWorker> queryWorkers;

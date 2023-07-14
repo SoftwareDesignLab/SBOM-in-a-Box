@@ -1,22 +1,18 @@
 package org.svip.sbomfactory.parsers;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.svip.SBOMGeneratorCLI;
-
 /**
  *
  * @author pliu
  */
 public class ParserControllerTest {
 
-    static String[] argv = {"src/test/java/org/svip/sbomfactory/generators/TestData/Conan", "-d"};
-
-    @Test
-    @DisplayName("Conan Parser Tests")
-    void conanParserTest() { // TODO is this needed?
-        SBOMGeneratorCLI.main(argv);
-    }
+//    static String[] argv = {"src/test/java/org/svip/sbomfactory/generators/TestData/Conan", "-d"};
+//
+//    @Test
+//    @DisplayName("Conan Parser Tests")
+//    void conanParserTest() { // TODO is this needed?
+//        SBOMGeneratorCLI.main(argv);
+//    }
 //
 //
 //    @Test

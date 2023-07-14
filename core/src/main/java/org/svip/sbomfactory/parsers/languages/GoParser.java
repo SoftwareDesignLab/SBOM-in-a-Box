@@ -89,6 +89,7 @@ public class GoParser extends LanguageParser {
         // LinkedHashMap used to maintain match order for testing and output consistency
         final LinkedHashMap<String, String> matches = new LinkedHashMap<>();
         SVIPComponentBuilder builder = new SVIPComponentBuilder();
+        builder.setType("EXTERNAL"); // Default to EXTERNAL
         String match;
 
         // Import validation

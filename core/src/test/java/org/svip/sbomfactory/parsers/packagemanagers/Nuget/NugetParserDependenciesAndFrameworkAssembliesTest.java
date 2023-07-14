@@ -26,9 +26,8 @@ public class NugetParserDependenciesAndFrameworkAssembliesTest extends ParseDepF
 
     protected NugetParserDependenciesAndFrameworkAssembliesTest() throws IOException {
         super(new NugetParser(),
-                Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/" +
-                        "generators/TestData/CSharp/Nuget/WithFrameworkAssembliesAndDependencies.nuspec")),
-                "src/test/java/org/svip/sbomfactory/generators/TestData/CSharp/Nuget");
+                Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/parsers/TestData/CSharp/Nuget/WithFrameworkAssembliesAndDependencies.nuspec")),
+                "src/test/java/org/svip/sbomfactory/parsers/TestData/CSharp/Nuget");
     }
 
     @Test

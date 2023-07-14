@@ -236,8 +236,11 @@ public class ParserController {
         Debug.log(LOG_TYPE.DEBUG, removedComponentsLog);
 
         // Add Components to SBOM
-        for (SVIPComponentObject c : components)
+        for (SVIPComponentObject c : components) {
+            // Default to external
+            if (c.getType() == null) Parser.set(c, b -> b.setType("EXTERNAL"));
             builder.addComponent(c);
+        }
     }
 
     //#endregion

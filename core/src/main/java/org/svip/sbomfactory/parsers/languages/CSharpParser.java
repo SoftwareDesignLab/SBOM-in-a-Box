@@ -117,6 +117,7 @@ public class CSharpParser extends LanguageParser {
         // Create Component
         SVIPComponentBuilder builder = new SVIPComponentBuilder();
         builder.setName(match);
+        builder.setType("EXTERNAL"); // Default to EXTERNAL
 
         // Add "from" if found
         if(from != null) builder.setGroup(from);

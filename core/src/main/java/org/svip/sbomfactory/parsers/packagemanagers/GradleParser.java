@@ -77,6 +77,7 @@ public class GradleParser extends PackageManagerParser {
 
             // Create ParserComponent from dep info
             SVIPComponentBuilder builder = new SVIPComponentBuilder();
+            builder.setType("EXTERNAL"); // Default to EXTERNAL
             builder.setName(artifactId);
             builder.setGroup(d.get("groupId"));
             if (d.containsKey("type")) {

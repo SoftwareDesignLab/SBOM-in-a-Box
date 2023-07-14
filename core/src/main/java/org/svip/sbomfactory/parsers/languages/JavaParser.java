@@ -144,6 +144,7 @@ public class JavaParser extends LanguageParser {
     @Override
     protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
         SVIPComponentBuilder builder = new SVIPComponentBuilder();
+        builder.setType("EXTERNAL"); // Default to EXTERNAL
 
         // Clean strings
         String match1 = matcher.group(1).trim();

@@ -16,8 +16,8 @@ public class CSProjParserTest extends ParseDepFileTestCore {
 
     protected CSProjParserTest() throws IOException {
         super(new CSProjParser(),
-                Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/generators/TestData/CSharp/Bar/sample.csproj")),
-                "src/test/java/org/svip/sbomfactory/generators/TestData/CSharp/Bar");
+                Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/parsers/TestData/CSharp/Bar/sample.csproj")),
+                "src/test/java/org/svip/sbomfactory/parsers/TestData/CSharp/Bar");
     }
 
 

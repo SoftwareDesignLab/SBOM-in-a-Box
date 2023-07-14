@@ -94,6 +94,7 @@ public class CSProjParser extends PackageManagerParser {
         if(include == null) return;
 
         SVIPComponentBuilder builder = new SVIPComponentBuilder();
+        builder.setType("EXTERNAL"); // Default to EXTERNAL
         builder.setName(component.get("Include")); // TODO is this a correct default name?
 
         // Convert hashmap to parser component

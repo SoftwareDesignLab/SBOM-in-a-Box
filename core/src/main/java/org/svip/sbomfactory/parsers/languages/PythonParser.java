@@ -129,6 +129,7 @@ public class PythonParser extends LanguageParser {
 
             // Initialize variables
             SVIPComponentBuilder builder = new SVIPComponentBuilder();
+            builder.setType("EXTERNAL"); // Default to EXTERNAL
             String name;
             String from = null;
             String alias;

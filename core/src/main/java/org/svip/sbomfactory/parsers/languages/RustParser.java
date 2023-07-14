@@ -131,6 +131,7 @@ public class RustParser extends LanguageParser {
         // LinkedHashMap used to maintain match order for testing and output consistency
         final LinkedHashMap<String, String> matches = new LinkedHashMap<>();
         SVIPComponentBuilder builder = new SVIPComponentBuilder();
+        builder.setType("EXTERNAL"); // Default to EXTERNAL
         String match;
 
         // Set from to group 1 (crate being imported from)

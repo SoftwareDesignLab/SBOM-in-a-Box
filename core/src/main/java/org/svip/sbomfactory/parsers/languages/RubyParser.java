@@ -192,6 +192,7 @@ public class RubyParser extends LanguageParser {
     protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
         // Variable initialization
         SVIPComponentBuilder builder = new SVIPComponentBuilder();
+        builder.setType("EXTERNAL"); // Default to EXTERNAL
         String match = "";
 
         // Import validation

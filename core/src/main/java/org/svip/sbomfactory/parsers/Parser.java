@@ -156,7 +156,9 @@ public abstract class Parser {
      * @return The type field of the builder object.
      */
     protected static String getType(SVIPComponentBuilder builder) {
-        return builder.build().getType();
+        String type = builder.build().getType();
+        if (type == null) type = "EXTERNAL"; // Default to external
+        return type;
     }
 
     /**

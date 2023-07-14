@@ -27,8 +27,8 @@ public class NugetParserErrLogIOTest extends ParseDepFileTestCore {
     protected NugetParserErrLogIOTest() throws IOException {
         super(new NugetParser(),
                 Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/" +
-                        "generators/TestData/CSharp/Nuget/ErrLog.IO.nuspec")),
-                "src/test/java/org/svip/sbomfactory/generators/TestData/CSharp/Nuget");
+                        "parsers/TestData/CSharp/Nuget/ErrLog.IO.nuspec")),
+                "src/test/java/org/svip/sbomfactory/parsers/TestData/CSharp/Nuget");
     }
 
     @Test

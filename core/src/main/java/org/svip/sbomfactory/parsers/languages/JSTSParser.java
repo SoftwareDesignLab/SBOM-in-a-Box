@@ -121,6 +121,7 @@ public class JSTSParser extends LanguageParser {
             token = token.trim();   // remove leading/trailing whitespace
             // Ex: import foo, bar -> "foo" and "bar"
             SVIPComponentBuilder builder = new SVIPComponentBuilder();
+            builder.setType("EXTERNAL"); // Default to EXTERNAL
             // If no whitespace, component does not have an alias
             if (!token.contains(" ")) {
                 // Ensure token is not commented in-line
