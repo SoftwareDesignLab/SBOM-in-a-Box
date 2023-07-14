@@ -14,6 +14,7 @@ import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
+import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbom.model.uids.Hash;
 
 import java.sql.Timestamp;
@@ -27,7 +28,7 @@ public class MergerCDX extends Merger {
     }
 
     @Override
-    protected SBOM mergeSBOM(SBOM A, SBOM B) {
+    protected SBOM mergeSBOM() {
 
         Set<Component> componentsA = A.getComponents();
         Set<Component> componentsB = B.getComponents();
@@ -101,12 +102,93 @@ public class MergerCDX extends Merger {
     @Override
     protected Component mergeComponent(Component A, Component B) {
 
+        // New builder for the merged component
         CDX14PackageBuilder compBuilder = new CDX14PackageBuilder();
 
         CDX14ComponentObject componentA_CDX = (CDX14ComponentObject) A;
         CDX14ComponentObject componentB_CDX = (CDX14ComponentObject) B;
 
-        return null;
+        // Type : If A Type isn't empty or null, Merged Component uses A, otherwise use
+        if(!componentA_CDX.getType().isEmpty() && !componentA_CDX.getType().equals(null))
+            compBuilder.setType(componentA_CDX.getType());
+        else compBuilder.setType(componentB_CDX.getType());
+
+        // UID : If A UID isn't empty or null, Merged Component uses A, otherwise use B
+        if(!componentA_CDX.getUID().isEmpty() && !componentA_CDX.getUID().equals(null))
+            compBuilder.setUID(componentA_CDX.getUID());
+        else compBuilder.setUID(componentB_CDX.getUID());
+
+        // Author : If A 'Author' isn't empty or null, Merged Component uses A, otherwise use B
+        if(!componentA_CDX.getAuthor().isEmpty() && !componentA_CDX.getAuthor().equals(null))
+            compBuilder.setAuthor(componentA_CDX.getAuthor());
+        else compBuilder.setAuthor(componentB_CDX.getAuthor());
+
+        // Name : If A 'Name' isn't empty or null, Merged Component uses A, otherwise use B
+        if(!componentA_CDX.getName().isEmpty() && !componentA_CDX.getName().equals(null))
+            compBuilder.setName(componentA_CDX.getName());
+        else compBuilder.setName(componentB_CDX.getName());
+
+        // Licenses : Merge Licenses of A and B together
+        LicenseCollection mergedLicenses = new LicenseCollection();
+
+        Set<String> concludedA = componentA_CDX.getLicenses().getConcluded();
+
+        if(!concludedA.isEmpty() && !concludedA.equals(null)) {
+            concludedA.stream().forEach(
+                    x -> mergedLicenses.addConcludedLicenseString(x)
+            );
+        }
+
+        Set<String> declaredA = componentA_CDX.getLicenses().getDeclared();
+
+        if(!declaredA.isEmpty() && !declaredA.equals(null)) {
+            declaredA.stream().forEach(
+                    x -> mergedLicenses.addDeclaredLicense(x)
+            );
+        }
+
+        Set<String> fileA = componentA_CDX.getLicenses().getInfoFromFiles();
+
+        if(!fileA.isEmpty() && !fileA.equals(null)) {
+            fileA.stream().forEach(
+                    x -> mergedLicenses.addLicenseInfoFromFile(x)
+            );
+        }
+
+        Set<String> concludedB = componentB_CDX.getLicenses().getConcluded();
+
+        if(!concludedB.isEmpty() && !concludedB.equals(null)) {
+            concludedB.stream().forEach(
+                    x -> mergedLicenses.addConcludedLicenseString(x)
+            );
+        }
+
+        Set<String> declaredB = componentB_CDX.getLicenses().getDeclared();
+
+        if(!declaredB.isEmpty() && !declaredB.equals(null)) {
+            declaredB.stream().forEach(
+                    x -> mergedLicenses.addDeclaredLicense(x)
+            );
+        }
+
+        Set<String> fileB = componentB_CDX.getLicenses().getInfoFromFiles();
+
+        if(!fileB.isEmpty() && !fileB.equals(null)) {
+            fileB.stream().forEach(
+                    x -> mergedLicenses.addLicenseInfoFromFile(x)
+            );
+        }
+
+        compBuilder.setLicenses(mergedLicenses);
+
+        compBuilder.setCopyright("1) " + componentA_CDX.getCopyright() + "\n2) " + componentB_CDX.getCopyright());
+
+        // Hashes
+
+
+        // Build the merged component and return it
+        return compBuilder.build();
+
     }
 
     @Override
