@@ -3,6 +3,7 @@ package org.svip.sbomfactory.parsers;
 import org.svip.builderfactory.SVIPSBOMBuilderFactory;
 import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbomfactory.parsers.contexts.ContextParser;
 import org.svip.sbomfactory.parsers.contexts.DeadImportParser;
@@ -156,7 +157,7 @@ public class ParserController {
         }
 
         // Init Component list
-        ArrayList<SVIPComponentBuilder> components = new ArrayList<>();
+        ArrayList<SVIPComponentObject> components = new ArrayList<>();
 
         // Configure parser
         parser.setPWD(filepath);
@@ -239,9 +240,8 @@ public class ParserController {
 //        Debug.log(LOG_TYPE.DEBUG, removedComponentsLog);
 
         // Add Components to SBOM
-        for (SVIPComponentBuilder c : components) {
-            builder.addComponent(c.buildAndFlush());
-        }
+        for (SVIPComponentObject c : components)
+            builder.addComponent(c);
     }
 
     //#endregion

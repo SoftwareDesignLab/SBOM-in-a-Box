@@ -1,6 +1,8 @@
 package org.svip.sbomfactory.parsers;
 
 import org.svip.builders.component.SVIPComponentBuilder;
+import org.svip.componentfactory.SVIPSBOMComponentFactory;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.utils.VirtualPath;
 
 import java.io.IOException;
@@ -9,6 +11,7 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import static org.svip.utils.Debug.LOG_TYPE;
 import static org.svip.utils.Debug.log;
@@ -135,6 +138,50 @@ public abstract class Parser {
         }
     }
 
+    /**
+     * Utility method to get the name field from a builder object.
+     *
+     * @param builder The builder object to query.
+     * @return The name field of the builder object.
+     */
+    protected static String getName(SVIPComponentBuilder builder) {
+        return builder.build().getName();
+    }
+
+    /**
+     * Utility method to get the type field from a builder object.
+     *
+     * @param builder The builder object to query.
+     * @return The type field of the builder object.
+     */
+    protected static String getType(SVIPComponentBuilder builder) {
+        return builder.build().getType();
+    }
+
+    /**
+     * Utility method to get the group field from a builder object.
+     *
+     * @param builder The builder object to query.
+     * @return The group field of the builder object.
+     */
+    protected static String getGroup(SVIPComponentBuilder builder) {
+        return builder.build().getGroup();
+    }
+
+    /**
+     * Utility method to set any attribute of a component using its builder.
+     *
+     * @param component The component to modify.
+     * @param function The function to modify the component with. Takes in a builder as a parameter, and any actions
+     *                 performed on the builder will be performed on the component.
+     * @return The updated component.
+     */
+    protected static SVIPComponentObject set(SVIPComponentObject component, Consumer<SVIPComponentBuilder> function) {
+        SVIPComponentBuilder builder = new SVIPSBOMComponentFactory().createBuilder(component);
+        function.accept(builder);
+        return builder.build();
+    }
+
     //#endregion
 
     //#region Abstract Methods
@@ -146,7 +193,7 @@ public abstract class Parser {
      * @param components A list of ParserComponents that the found components will be appended to.
      * @param fileContents file contents to be parsed
      */
-    public abstract void parse(ArrayList<SVIPComponentBuilder> components, String fileContents);
+    public abstract void parse(ArrayList<SVIPComponentObject> components, String fileContents);
 
     //#endregion
 }

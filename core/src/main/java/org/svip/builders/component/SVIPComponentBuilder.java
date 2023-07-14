@@ -4,7 +4,6 @@ package org.svip.builders.component;
 import org.svip.sbom.builder.interfaces.schemas.CycloneDX14.CDX14PackageBuilder_I;
 import org.svip.sbom.builder.interfaces.schemas.SPDX23.SPDX23FileBuilder_I;
 import org.svip.sbom.builder.interfaces.schemas.SPDX23.SPDX23PackageBuilder_I;
-
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
@@ -113,6 +112,43 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**Component properties*/
     private HashMap<String, Set<String>> properties;
+
+    public SVIPComponentBuilder() {
+
+    }
+
+    public SVIPComponentBuilder(SVIPComponentObject component) {
+        this.type = component.getType();
+        this.uid = component.getUID();
+        this.author = component.getAuthor();
+        this.name = component.getName();
+        this.licenses = component.getLicenses();
+        this.copyright = component.getCopyright();
+        this.hashes = (HashMap<String, String>) component.getHashes();
+        this.comment = component.getComment();
+        this.attributionText = component.getAttributionText();
+        this.fileNotice = component.getFileNotice();
+        this.downloadLocation = component.getDownloadLocation();
+        this.fileName = component.getFileName();
+        this.filesAnalyzed = component.getFilesAnalyzed();
+        this.verificationCode = component.getVerificationCode();
+        this.homePage = component.getHomePage();
+        this.sourceInfo = component.getSourceInfo();
+        this.releaseDate = component.getReleaseDate();
+        this.builtDate = component.getBuiltDate();
+        this.validUntilDate = component.getValidUntilDate();
+        this.supplier = component.getSupplier();
+        this.version = component.getVersion();
+        this.description = component.getDescription();
+        this.cpes = component.getCPEs();
+        this.purls = component.getPURLs();
+        this.externalReferences = component.getExternalReferences();
+        this.mimeType = component.getMimeType();
+        this.publisher = component.getPublisher();
+        this.scope = component.getScope();
+        this.group = component.getGroup();
+        this.properties = component.getProperties();
+    }
 
     /**
      * Set the component's mime type
