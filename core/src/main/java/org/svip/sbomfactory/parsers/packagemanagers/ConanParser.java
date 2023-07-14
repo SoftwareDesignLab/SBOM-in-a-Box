@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.parsers.packagemanagers;
 
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.utils.QueryWorker;
 
@@ -45,16 +46,17 @@ public class ConanParser extends PackageManagerParser {
         // Iterate over dependencies
         for (final LinkedHashMap<String, String> d : (ArrayList<LinkedHashMap<String, String>>) data.get("dependencies")) {
             // Create ParserComponent from dep info
-            final SVIPComponentObject c = new SVIPComponentObject(d.get("artifactId"));
-                  c.setType(SVIPComponentObject.Type.EXTERNAL);
+            SVIPComponentBuilder builder = new SVIPComponentBuilder();
+            builder.setName(d.get("artifactId"));
+            builder.setType("EXTERNAL");
                   //c.setGroup("None");
-            if (d.containsKey("version")) c.setVersion(d.get("version"));
+            if (d.containsKey("version")) builder.setVersion(d.get("version"));
             //Query for Licenses
             String name = d.get("artifactId");
             // Build URL and worker object
             if(name != null) {
                 // Create and add QueryWorker with Component reference and URL
-                this.queryWorkers.add(new QueryWorker(c, this.STD_LIB_URL + name){
+                this.queryWorkers.add(new QueryWorker(builder.build(), this.STD_LIB_URL + name){
                     @Override
                     public void run() {
                         // Get page contents
@@ -65,7 +67,7 @@ public class ConanParser extends PackageManagerParser {
                         String r;
                         if(m.find()) {
                             r = m.group(1).trim();
-                            this.component.addLicense(r);
+                            this.component.getLicenses().addConcludedLicenseString(r);
                         }
                         else {
                             // Parse license with content in the following form:
@@ -89,7 +91,7 @@ public class ConanParser extends PackageManagerParser {
                             m = Pattern.compile(String.format("<script.*\"name\"\\s*:\\s*\"%s\".*\"license\"\\s*:\\s*\"([\\w.\\\\-]*)\".*</script>",name), Pattern.MULTILINE).matcher(contents);
                             if(m.find()) {
                                 r = m.group(1).trim();
-                                this.component.addLicense(r);
+                                this.component.getLicenses().addConcludedLicenseString(r);
                             }
                         }
                     }
@@ -98,8 +100,8 @@ public class ConanParser extends PackageManagerParser {
             }
             queryURLs(this.queryWorkers);
             // Add ParserComponent to components
-            components.add(c);
-            log(LOG_TYPE.DEBUG, String.format("New Component: %s", c.toReadableString()));
+            components.add(builder.build());
+            log(LOG_TYPE.DEBUG, String.format("New Component: %s", getName(builder)));
         }
     }
 

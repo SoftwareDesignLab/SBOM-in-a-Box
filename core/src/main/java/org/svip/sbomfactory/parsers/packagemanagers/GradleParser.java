@@ -1,13 +1,10 @@
 package org.svip.sbomfactory.parsers.packagemanagers;
 
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.utils.QueryWorker;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.*;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,7 +37,7 @@ public class GradleParser extends PackageManagerParser {
     //#region Core Methods
 
     @Override
-    protected void parseData(ArrayList<SVIPComponentObject> components, HashMap<String, Object> data) {
+    protected void parseData(List<SVIPComponentObject> components, HashMap<String, Object> data) {
         // Init properties
         this.properties = new HashMap<>();
 
@@ -79,19 +76,20 @@ public class GradleParser extends PackageManagerParser {
             final HashMap<String, String> d = this.dependencies.get(artifactId);
 
             // Create ParserComponent from dep info
-            final SVIPComponentObject c = new SVIPComponentObject(artifactId);
-            c.setGroup(d.get("groupId"));
+            SVIPComponentBuilder builder = new SVIPComponentBuilder();
+            builder.setName(artifactId);
+            builder.setGroup(d.get("groupId"));
             if (d.containsKey("type")) {
                 final String type = d.get("type");
-                if (type.equals("file")) c.setType(SVIPComponentObject.Type.INTERNAL);
+                if (type.equals("file")) builder.setType("INTERNAL");
             }
-            if (d.containsKey("version")) c.setVersion(d.get("version"));
+            if (d.containsKey("version")) builder.setVersion(d.get("version"));
 
-            if(c.getGroup() == null) continue; // Prevent null groups in URL
+            if(getGroup(builder) == null) continue; // Prevent null groups in URL
 
-            String url = STD_LIB_URL + c.getGroup() + "/" + c.getName() + "/" +
-                    (c.getVersion() == null ? "" : c.getVersion());
-            this.queryWorkers.add(new QueryWorker(c, url) {
+            String url = STD_LIB_URL + getGroup(builder) + "/" + getName(builder) + "/" +
+                    (getVersion(builder) == null ? "" : getVersion(builder));
+            this.queryWorkers.add(new QueryWorker(builder.build(), url) {
                 @Override
                 public void run() {
                     // Get page contents
@@ -107,20 +105,20 @@ public class GradleParser extends PackageManagerParser {
 
                     // Add all found licenses
                     while(m.find()) {
-                        this.component.addLicense(m.group(1).trim());
+                        this.component.getLicenses().addConcludedLicenseString(m.group(1).trim());
                     }
                 }
             });
 
             queryURLs(this.queryWorkers); // TODO is thsi correct?
             // Add ParserComponent to components
-            components.add(c);
-            log(LOG_TYPE.DEBUG, String.format("New Component: %s", c.toReadableString()));
+            components.add(builder.build());
+            log(LOG_TYPE.DEBUG, String.format("New Component: %s", getName(builder)));
         }
     }
 
     @Override
-    public void parse(ArrayList<SVIPComponentObject> components, String fileContents) {
+    public void parse(List<SVIPComponentObject> components, String fileContents) {
         // Init main data structure
         final LinkedHashMap<String, Object> data = new LinkedHashMap<>();
 

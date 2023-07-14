@@ -170,6 +170,16 @@ public abstract class Parser {
     }
 
     /**
+     * Utility method to get the version field from a builder object.
+     *
+     * @param builder The builder object to query.
+     * @return The version field of the builder object.
+     */
+    protected static String getVersion(SVIPComponentBuilder builder) {
+        return builder.build().getVersion();
+    }
+
+    /**
      * Utility method to set any attribute of a component using its builder.
      *
      * @param component The component to modify.
