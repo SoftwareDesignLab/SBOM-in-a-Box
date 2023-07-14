@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.svip.api.model.SBOMFile;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 
 import java.io.IOException;
 import java.util.Map;
@@ -45,6 +46,8 @@ public class GetSBOMAPITest extends APITest{
     public void get_valid_CDX_14_SBOM_JSON() {
         // Get CDX14 JSON SBOM when requested
         when(repository.findById(CDX14_JSON_ID)).thenAnswer(i -> Optional.of(fileMap.get(CDX14_JSON_ID)));
+
+        // Make API Request
         ResponseEntity<?> response = controller.getSBOM(CDX14_JSON_ID);
 
         // Assert correct object was returned
@@ -55,7 +58,15 @@ public class GetSBOMAPITest extends APITest{
     @Test
     @DisplayName("Parse Valid SPDX23 Tag Value")
     public void get_valid_SPDX_23_SBOM_TAGVALUE(){
-        //dockerspdx
+        // Get SPDX23 Tagvalue SBOM when requested
+        when(repository.findById(SPDX23_TAGVALUE_ID)).thenAnswer(i -> Optional.of(fileMap.get(SPDX23_TAGVALUE_ID)));
+
+        // Make API Request
+        ResponseEntity<?> response = controller.getSBOM(SPDX23_TAGVALUE_ID);
+
+        // Assert correct object was returned
+        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertInstanceOf(SPDX23SBOM.class, response.getBody());
     }
 
     @Test
