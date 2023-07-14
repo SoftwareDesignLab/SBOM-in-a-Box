@@ -1,7 +1,7 @@
 package org.svip.sbomfactory.parsers.languages;
 
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.parsers.Parser;
 import org.svip.utils.VirtualPath;
 
@@ -58,7 +58,7 @@ public class CppParser extends LanguageParser {
             if(Parser.queryURL(STD_LIB_URL + component.getName(), true).getResponseCode() == 200) return true;
 
             // if external, test if header is in C Library (https://cplusplus.com/reference/clibrary/)
-            if(component.getType() == SVIPComponentObject.Type.EXTERNAL && component.getName().contains(".h")){
+            if(component.getType().equalsIgnoreCase("external") && component.getName().contains(".h")){
                 String clib = "c"+component.getName().split("\\.")[0];
                 log(LOG_TYPE.DEBUG, "EXTERNAL [ " + component.getName() + " ] not found, attempting clib");
                 return Parser.queryURL(STD_LIB_URL + clib, true).getResponseCode() == 200;
@@ -117,14 +117,14 @@ public class CppParser extends LanguageParser {
      */
     @Override
     protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
-        SVIPComponentObject c;
+        SVIPComponentBuilder builder = new SVIPComponentBuilder();
         // group 1: External component, capture inside '<' and '>'
         if (matcher.group(1) != null) {
-            c = new ParserComponent(matcher.group(1));
+            builder.setName(matcher.group(1));
             // group 2: 'Internal' component, capture inside '"' and '"'
         } else if (matcher.group(2) != null) {
-            c = new ParserComponent(matcher.group(2));
-            c.setType(ParserComponent.Type.INTERNAL); // "foo" files are internal
+            builder.setName(matcher.group(2));
+            builder.setType("INTERNAL"); // "foo" files are internal
         } else {
             // Exclude warnings about comments
             if (matcher.group(0).contains("\\\\"))
@@ -133,22 +133,23 @@ public class CppParser extends LanguageParser {
         }
 
         // Check if internal
-        boolean isInternal = isInternalComponent(c);
+        boolean isInternal = isInternalComponent(builder.build());
 
         // If already marked as internal and is not, change to external
-        if (!isInternal && c.getType() == ParserComponent.Type.INTERNAL) {
-            log(LOG_TYPE.WARN, "ParserComponent [ " + c.getName() + " ] was marked as INTERNAL, but not found. Changing to EXTERNAL");
-            c.setType(ParserComponent.Type.EXTERNAL);
+        if (!isInternal && getType(builder).equalsIgnoreCase("internal")) {
+            log(LOG_TYPE.WARN, "ParserComponent [ " + getName(builder) + " ] " +
+                    "was marked as INTERNAL, but not found. Changing to EXTERNAL");
+            builder.setType("EXTERNAL");
             // Else mark as internal
         } else if (isInternal) {
-            c.setType(ParserComponent.Type.INTERNAL);
+            builder.setType("INTERNAL");
         }
 
         // Only check EXTERNAL if Language components
-        if (c.getType() == ParserComponent.Type.EXTERNAL && isLanguageComponent(c))
-            c.setType(ParserComponent.Type.LANGUAGE);
+        if (getType(builder).equalsIgnoreCase("EXTERNAL") && isLanguageComponent(builder.build()))
+            builder.setType("LANGUAGE");
 
         // Add Component
-        components.add(c);
+        components.add(builder.build());
     }
 }

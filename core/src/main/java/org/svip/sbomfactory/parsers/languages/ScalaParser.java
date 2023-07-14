@@ -1,10 +1,10 @@
 package org.svip.sbomfactory.parsers.languages;
 
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.parsers.Parser;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -107,7 +107,7 @@ public class ScalaParser extends LanguageParser {
     @Override
     protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
         // Variable initialization
-        SVIPComponentObject c;
+        SVIPComponentBuilder builder = new SVIPComponentBuilder();
         Pattern aliasRegex = Pattern.compile("^([\\w\\*]*)(?: => | as )?(\\w*)?", Pattern.MULTILINE);
         String match = "";
 
@@ -133,7 +133,7 @@ public class ScalaParser extends LanguageParser {
                 // If component is not capitalized, component is package
                 if(Character.isLowerCase(aliasMatcher.group(1).charAt(0))) {
                     // Create component with original matcher group 1 combined with aliasMatcher group 1
-                    c = new SVIPComponentObject(matcher.group(1).replace(".", "/") + "/" + aliasMatcher.group(1));
+                    builder.setName(matcher.group(1).replace(".", "/") + "/" + aliasMatcher.group(1));
                 }
                 // Otherwise, component is Class
                 else {
@@ -142,29 +142,29 @@ public class ScalaParser extends LanguageParser {
                     if(name.equals("_")) name = "*";
 
                     // Create component with aliasMatcher group 1
-                    c = new SVIPComponentObject(name);
+                    builder.setName(name);
 
                     // Set from as group 1 from the original matcher
-                    c.setGroup(matcher.group(1).replace(".", "/"));
+                    builder.setGroup(matcher.group(1).replace(".", "/"));
                 }
 
 
-                // If an alias is found, set alias to group 2
-                if(!aliasMatcher.group(2).equals("")) {
-                    c.setAlias(aliasMatcher.group(2));
-                }
+                // TODO If an alias is found, set alias to group 2
+//                if(!aliasMatcher.group(2).equals("")) {
+//                    builder.setAlias(aliasMatcher.group(2));
+//                }
 
                 // Check if internal
-                if (isInternalComponent(c)) {
-                    c.setType(SVIPComponentObject.Type.INTERNAL);
+                if (isInternalComponent(builder.build())) {
+                    builder.setType("INTERNAL");
 
                 // Otherwise, check if Language
-                } else if (isLanguageComponent(c)) {
-                    c.setType(SVIPComponentObject.Type.LANGUAGE);
+                } else if (isLanguageComponent(builder.build())) {
+                    builder.setType("LANGUAGE");
                 }
 
                 // Add Component
-                components.add(c);
+                components.add(builder.build());
             }
         }
     }

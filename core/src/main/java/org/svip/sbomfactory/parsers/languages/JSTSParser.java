@@ -1,10 +1,10 @@
 package org.svip.sbomfactory.parsers.languages;
 
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.utils.VirtualPath;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -120,13 +120,13 @@ public class JSTSParser extends LanguageParser {
         for (String token : tokens) {
             token = token.trim();   // remove leading/trailing whitespace
             // Ex: import foo, bar -> "foo" and "bar"
-            SVIPComponentObject c = null;
+            SVIPComponentBuilder builder = new SVIPComponentBuilder();
             // If no whitespace, component does not have an alias
             if (!token.contains(" ")) {
                 // Ensure token is not commented in-line
                 if(!token.contains("/*") && !token.contains("*/")) {
                     // Create component
-                    c = new SVIPComponentObject(token);
+                    builder.setName("token");
                 }
                 // Otherwise, do not create component
             }
@@ -136,31 +136,31 @@ public class JSTSParser extends LanguageParser {
                 // Check for alias match
                 if (m.find()) {
                     // Create component (with name and alias)
-                    c = new SVIPComponentObject(m.group(1));    // import foo as f; foo = group(2)
-                    c.setAlias(m.group(2));     // import foo as f; f = group(3)
+                    builder.setName(m.group(1));    // import foo as f; foo = group(2)
+//                    c.setAlias(m.group(2));     // TODO import foo as f; f = group(3)
                 }
                 // Otherwise, do not create component
             }
-            if (c != null) {
+            if (builder.build().getName() != null && !builder.build().getName().isEmpty()) {
                 // Set from to the match in group 3
                 final String from = matcher.group(3);
 
                 // If the component imports an entire internal file,
                 //from should be set to the component name (filepath).
                 // Otherwise, use the value from matcher group 3
-                c.setGroup(c.getName().contains(".") ? c.getName() : from);
+                builder.setGroup(getName(builder).contains(".") ? getName(builder) : from);
 
                 // Check if internal
-                if (isInternalComponent(c)) {
-                    c.setType(SVIPComponentObject.Type.INTERNAL);
+                if (isInternalComponent(builder.build())) {
+                    builder.setType("INTERNAL");
 
                 // Otherwise, check if Language
-                } else if (isLanguageComponent(c)) {
-                    c.setType(SVIPComponentObject.Type.LANGUAGE);
+                } else if (isLanguageComponent(builder.build())) {
+                    builder.setType("LANGUAGE");
                 }
 
                 // Add Component
-                components.add(c);
+                components.add(builder.build());
             }
         }
     }

@@ -1,12 +1,9 @@
 package org.svip.sbomfactory.parsers.languages;
 
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -133,7 +130,7 @@ public class RustParser extends LanguageParser {
     protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
         // LinkedHashMap used to maintain match order for testing and output consistency
         final LinkedHashMap<String, String> matches = new LinkedHashMap<>();
-        SVIPComponentObject c;
+        SVIPComponentBuilder builder = new SVIPComponentBuilder();
         String match;
 
         // Set from to group 1 (crate being imported from)
@@ -271,9 +268,9 @@ public class RustParser extends LanguageParser {
                 // Otherwise, use Group 1  as name
                 else match = aliasMatcher.group(1);
 
-                c = new SVIPComponentObject(match); // Create component
-                // If group 2 is not null, set alias as group 2
-                if(aliasMatcher.group(2) != null) c.setAlias(aliasMatcher.group(2));
+                builder.setName(match); // Create component
+                // TODO If group 2 is not null, set alias as group 2
+//                if(aliasMatcher.group(2) != null) builder.setAlias(aliasMatcher.group(2));
             } else continue; // If no match found, import must be invalid, skip component
 
             // "From" information formatter
@@ -292,16 +289,16 @@ public class RustParser extends LanguageParser {
                 }
 
                 // Assign from to c
-                if(from != null) c.setGroup(from);
+                if(from != null) builder.setGroup(from);
             }
 
             // Check if component is Internal
-            if (isInternalComponent(c)) c.setType(SVIPComponentObject.Type.INTERNAL);
+            if (isInternalComponent(builder.build())) builder.setType("INTERNAL");
             // Otherwise, check component is Language
-            else if (isLanguageComponent(c)) c.setType(SVIPComponentObject.Type.LANGUAGE);
+            else if (isLanguageComponent(builder.build())) builder.setType("LANGUAGE");
 
             // Add Component
-            components.add(c);
+            components.add(builder.build());
         }
     }
 }
