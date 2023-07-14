@@ -8,7 +8,7 @@ import org.svip.sbom.model.uids.CPE;
 import org.svip.sbomfactory.parsers.Parser;
 import org.svip.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.sbomfactory.generators.utils.queryworkers.QueryWorker;
+import org.svip.utils.QueryWorker;
 
 import java.io.IOException;
 import java.util.ArrayList;

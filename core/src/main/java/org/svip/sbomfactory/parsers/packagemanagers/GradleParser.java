@@ -2,7 +2,7 @@ package org.svip.sbomfactory.parsers.packagemanagers;
 
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.sbomfactory.generators.utils.queryworkers.QueryWorker;
+import org.svip.utils.QueryWorker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
