@@ -4,6 +4,8 @@ import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
@@ -412,6 +414,81 @@ public class SPDX23PackageObject implements SPDX23Package {
             conflicts.add(new MissingConflict("hashes", this.hashes.toString(), null));
         } else if (other.getHashes() != null) {
             conflicts.add(new MissingConflict("hashes", null, other.getHashes().toString()));
+        }
+        if (other instanceof CDX14ComponentObject) {
+            // VERSION
+            if (this.version != null ^ ((CDX14ComponentObject)other).getVersion() != null) {
+                conflicts.add(new MissingConflict("version", this.version, ((CDX14ComponentObject)other).getVersion()));
+            } else if (!Objects.equals(this.version, ((CDX14ComponentObject)other).getVersion()) && this.version != null) {
+                conflicts.add(new MismatchConflict("version", this.version, ((CDX14ComponentObject)other).getVersion(), VERSION_MISMATCH));
+            }
+            // SUPPLIER
+            if (this.supplier != null && ((CDX14ComponentObject)other).getSupplier() != null) {
+                if (!Objects.equals(this.supplier.getName(), ((CDX14ComponentObject)other).getSupplier().getName())) {
+                    conflicts.add(new MismatchConflict("supplier", this.supplier.getName(), ((CDX14ComponentObject)other).getSupplier().getName(), SUPPLIER_MISMATCH));
+                }
+            } else if (this.supplier != null) {
+                conflicts.add(new MissingConflict("supplier", this.supplier.getName(), null));
+            } else if (((CDX14ComponentObject)other).getSupplier() != null) {
+                conflicts.add(new MissingConflict("supplier", null, ((CDX14ComponentObject)other).getSupplier().getName()));
+            }
+            // PURL
+            if (this.purls != null && ((CDX14ComponentObject)other).getPURLs() != null) {
+                if (!this.purls.containsAll(((CDX14ComponentObject)other).getPURLs())) {
+                    conflicts.add(new MismatchConflict("purls", this.purls.toString(), ((CDX14ComponentObject)other).getPURLs().toString(), PURL_MISMATCH));
+                }
+            } else if (this.purls != null) {
+                conflicts.add(new MissingConflict("purls", this.purls.toString(), null));
+            } else if (((CDX14ComponentObject)other).getPURLs() != null) {
+                conflicts.add(new MissingConflict("purls", null, ((CDX14ComponentObject)other).getPURLs().toString()));
+            }
+            // CPE
+            if (this.cpes != null && ((CDX14ComponentObject)other).getCPEs() != null) {
+                if (!this.cpes.containsAll(((CDX14ComponentObject)other).getCPEs())) {
+                    conflicts.add(new MismatchConflict("cpes", this.cpes.toString(), ((CDX14ComponentObject)other).getCPEs().toString(), CPE_MISMATCH));
+                }
+            } else if (this.cpes != null) {
+                conflicts.add(new MissingConflict("cpes", this.cpes.toString(), null));
+            } else if (((CDX14ComponentObject)other).getCPEs() != null) {
+                conflicts.add(new MissingConflict("cpes", null, ((CDX14ComponentObject)other).getCPEs().toString()));
+            }
+        } else if (other instanceof SVIPComponentObject) {
+            // VERSION
+            if (this.version != null ^ ((SVIPComponentObject)other).getVersion() != null) {
+                conflicts.add(new MissingConflict("version", this.version, ((SVIPComponentObject)other).getVersion()));
+            } else if (!Objects.equals(this.version, ((SVIPComponentObject)other).getVersion()) && this.version != null) {
+                conflicts.add(new MismatchConflict("version", this.version, ((SVIPComponentObject)other).getVersion(), VERSION_MISMATCH));
+            }
+            // SUPPLIER
+            if (this.supplier != null && ((SVIPComponentObject)other).getSupplier() != null) {
+                if (!Objects.equals(this.supplier.getName(), ((SVIPComponentObject)other).getSupplier().getName())) {
+                    conflicts.add(new MismatchConflict("supplier", this.supplier.getName(), ((SVIPComponentObject)other).getSupplier().getName(), SUPPLIER_MISMATCH));
+                }
+            } else if (this.supplier != null) {
+                conflicts.add(new MissingConflict("supplier", this.supplier.getName(), null));
+            } else if (((SVIPComponentObject)other).getSupplier() != null) {
+                conflicts.add(new MissingConflict("supplier", null, ((SVIPComponentObject)other).getSupplier().getName()));
+            }
+            // PURL
+            if (this.purls != null && ((SVIPComponentObject)other).getPURLs() != null) {
+                if (!this.purls.containsAll(((SVIPComponentObject)other).getPURLs())) {
+                    conflicts.add(new MismatchConflict("purls", this.purls.toString(), ((SVIPComponentObject)other).getPURLs().toString(), PURL_MISMATCH));
+                }
+            } else if (this.purls != null) {
+                conflicts.add(new MissingConflict("purls", this.purls.toString(), null));
+            } else if (((SVIPComponentObject)other).getPURLs() != null) {
+                conflicts.add(new MissingConflict("purls", null, ((SVIPComponentObject)other).getPURLs().toString()));
+            }
+            // CPE
+            if (this.cpes != null && ((SVIPComponentObject)other).getCPEs() != null) {
+                if (!this.cpes.containsAll(((SVIPComponentObject)other).getCPEs())) {
+                    conflicts.add(new MismatchConflict("cpes", this.cpes.toString(), ((SVIPComponentObject)other).getCPEs().toString(), CPE_MISMATCH));
+                }
+            } else if (this.cpes != null) {
+                conflicts.add(new MissingConflict("cpes", this.cpes.toString(), null));
+            } else if (((SVIPComponentObject)other).getCPEs() != null) {
+                conflicts.add(new MissingConflict("cpes", null, ((SVIPComponentObject)other).getCPEs().toString()));
+            }
         }
         // TODO SWIDs?
 
