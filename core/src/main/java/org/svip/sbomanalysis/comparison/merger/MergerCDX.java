@@ -14,6 +14,7 @@ import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
+import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbom.model.uids.Hash;
 
@@ -184,6 +185,44 @@ public class MergerCDX extends Merger {
         compBuilder.setCopyright("1) " + componentA_CDX.getCopyright() + "\n2) " + componentB_CDX.getCopyright());
 
         // Hashes
+        Map<String, String> hashesA = componentA_CDX.getHashes();
+        Map<String, String> hashesB = componentB_CDX.getHashes();
+
+        for(String keyB : hashesB.keySet()) { compBuilder.addHash(keyB, hashesB.get(keyB)); }
+        for(String keyA : hashesA.keySet()) { compBuilder.addHash(keyA, hashesA.get(keyA)); }
+
+        // Supplier
+        compBuilder.setSupplier(mergeOrganization(componentA_CDX.getSupplier(), componentB_CDX.getSupplier()));
+
+        // Version : Since they already match, default it to component A version
+        compBuilder.setVersion(componentA_CDX.getVersion());
+
+        // Description
+        compBuilder.setDescription(componentA_CDX.getDescription());
+
+        // CPEs
+        for(String cpeA : componentA_CDX.getCPEs()) { compBuilder.addCPE(cpeA); }
+        for(String cpeB : componentB_CDX.getCPEs()) { compBuilder.addCPE(cpeB); }
+
+        // PURLs
+        for(String purlA : componentA_CDX.getPURLs()) { compBuilder.addPURL(purlA); }
+        for(String purlB : componentB_CDX.getPURLs()) { compBuilder.addPURL(purlB); }
+
+        // External References
+        Set<ExternalReference> mergedExRef = new HashSet<>();
+
+        // Mime Type
+        compBuilder.setMimeType(componentA_CDX.getMimeType());
+
+        // Publisher
+        compBuilder.setPublisher(componentA_CDX.getPublisher());
+
+        // Scope
+        compBuilder.setScope(componentA_CDX.getScope());
+
+        // Group
+        compBuilder.setGroup(componentA_CDX.getGroup());
+
 
 
         // Build the merged component and return it
