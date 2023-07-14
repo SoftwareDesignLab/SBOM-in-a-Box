@@ -1,5 +1,8 @@
 package org.svip.sbomanalysis.comparison;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
@@ -33,7 +36,6 @@ public class ComparisonTest {
             "/src/test/java/org/svip/sbomfactory/serializers/sample_boms/spdx_tagvalue/sbom.test.spdx";
     @Test
     public void compareSBOMs() throws IOException {
-        Debug.logBlockTitle("Diff Report");
         SPDX23SBOM spdx23json = (SPDX23SBOM) getSPDXJSONDeserializer().readFromString(Files.readString(Path.of(getSPDXJSONTestFilePath())));
         CDX14SBOM cdx14json = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(getCDXJSONTestFilePath())));
         SPDX23SBOM spdx23tag = (SPDX23SBOM) getSPDXTagValueDeserializer().readFromString(Files.readString(Path.of(getSpdx23TagValueTestFilePath())));
@@ -44,7 +46,11 @@ public class ComparisonTest {
         APIController apiController = new APIController();
         DiffReport diffReport = apiController.compare(0, sboms);
         // TODO figure out how to actually test the diff reports
-        Debug.log(Debug.LOG_TYPE.SUMMARY, "Test Diff Report" + "\n" + diffReport);
+        Debug.logBlockTitle("Diff Report");
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        String diffReportString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(diffReport);
+        Debug.log(Debug.LOG_TYPE.SUMMARY, "Test Diff Report" + "\n" + diffReportString);
         Debug.logBlock();
     }
 
