@@ -310,6 +310,7 @@ public abstract class PackageManagerParser extends Parser {
 
             SVIPComponentBuilder builder = new SVIPComponentBuilder();
             builder.setName(id);
+            builder.setType("EXTERNAL"); // Default to external
 
             //framework assemblies use assemblyName + targetFramework
             if (result.groupId() != null) builder.setGroup(result.groupId());

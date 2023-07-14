@@ -40,7 +40,7 @@ public class NugetParserDependenciesTest extends ParseDepFileTestCore {
         assertEquals(2, components.size());
 
         assertEquals("external", components.get(0).getType().toLowerCase());
-        assertSame("external", components.get(1).getType().toLowerCase());
+        assertEquals("external", components.get(1).getType().toLowerCase());
 
         //Make ValueSet
         final Set<String> ValueSet = new HashSet<>();;

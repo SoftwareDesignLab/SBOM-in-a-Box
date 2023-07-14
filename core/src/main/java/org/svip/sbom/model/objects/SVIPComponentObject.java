@@ -34,7 +34,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
     private final String name;
 
     /**Component's licenses*/
-    private final LicenseCollection licenses;
+    private LicenseCollection licenses;
 
     /**Component's copyright*/
     private final String copyright;
@@ -153,6 +153,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
      */
     @Override
     public LicenseCollection getLicenses() {
+        if (this.licenses == null) this.licenses = new LicenseCollection();
         return this.licenses;
     }
 

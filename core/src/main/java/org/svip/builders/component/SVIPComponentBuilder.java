@@ -286,7 +286,8 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
      */
     @Override
     public SVIPComponentBuilder setLicenses(LicenseCollection licenses) {
-        this.licenses = licenses;
+        if (licenses == null) this.licenses = new LicenseCollection();
+        else this.licenses = licenses;
         return this;
     }
 
