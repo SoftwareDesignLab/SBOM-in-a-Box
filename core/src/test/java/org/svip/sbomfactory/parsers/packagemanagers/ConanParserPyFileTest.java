@@ -22,7 +22,7 @@ public class ConanParserPyFileTest extends ParseDepFileTestCore {
     public ConanParserPyFileTest() throws IOException {
         super(new ConanParser(),
                 Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/parsers/TestData/Conan/conanfile.py")),
-                "src/test/java/org/svip/sbomfactory/parsers/TestData/Conan");
+                "Conan");
     }
 
 //        //Check component's name

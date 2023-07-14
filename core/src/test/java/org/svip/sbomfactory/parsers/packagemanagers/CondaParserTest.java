@@ -15,7 +15,7 @@ public class CondaParserTest extends ParseDepFileTestCore{
     protected CondaParserTest() throws IOException {
         super(new CondaParser(),
                 Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/parsers/TestData/Conda/realData/environment.yaml")),
-                "src/test/java/org/svip/sbomfactory/parsers/TestData/Conda/realData");
+                "Conda/realData");
     }
 
     @Test

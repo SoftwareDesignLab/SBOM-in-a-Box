@@ -26,7 +26,7 @@ public abstract class ParseDepFileTestCore extends ParserTestCore<PackageManager
      */
     protected ParseDepFileTestCore(PackageManagerParser parser, String fileContents, String src) {
         // Call super
-        super(parser, src);
+        super(parser, TEST_DATA_PATH + src);
 
         // Init components array
         components = new ArrayList<>();

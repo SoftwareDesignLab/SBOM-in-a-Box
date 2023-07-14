@@ -24,7 +24,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
     public PythonParserRegexTest() {
         super(new PythonParser(),
                 "(?:(?!#))(?:(?:from ([\\w.]*) )?import (?:(?=.*\\(\\n?)\\(([\\S\\s]*?)\\)|([\\w. ,\\*]*)))",
-                "src/test/java/org/svip/sbomfactory/generators/TestData/Python/Absolute/ifoo");
+                "Python/Absolute/ifoo");
     }
 
     //

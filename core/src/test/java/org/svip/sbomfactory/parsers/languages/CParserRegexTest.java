@@ -24,7 +24,7 @@ class CParserRegexTest extends ParseRegexTestCore {
     public CParserRegexTest() {
         super(new CParser(),
                 "(?=//).*|(?=/\\*)[\\S\\s]*?\\*/|#include.*(?:(?=<.*>)<(.*)>|(?=\".*\")\"(.*)\")",
-                "src/test/java/org/svip/sbomfactory/generators/TestData/C");
+                "C");
     }
 
     //

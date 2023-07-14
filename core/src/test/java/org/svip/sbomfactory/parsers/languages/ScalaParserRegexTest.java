@@ -24,7 +24,7 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
     public ScalaParserRegexTest() {
         super(new ScalaParser(),
                 "^(?:(?!//).)*(?:import (?:([\\w.*]*)(?:(?=\\.\\{\\n?)([\\S\\s]*?\\})|(\\.[\\w.*]*(?: as [\\w*.]*)?))))(?![^\\/\\*]*\\*\\/)",
-                "src/test/java/org/svip/sbomfactory/generators/TestData/Scala");
+                "Scala");
     }
 
     ///

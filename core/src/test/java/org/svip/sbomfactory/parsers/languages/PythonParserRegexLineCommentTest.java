@@ -21,7 +21,7 @@ class PythonParserRegexLineCommentTest extends ParseRegexTestCore {
     public PythonParserRegexLineCommentTest() {
         super(new PythonParser(),
                 "(?:(?=\"\"\")\"\"\"[\\S\\s]*?\"\"\"|^import (.*)$|^from (.*) import (?:(?=.*\\($)([\\S\\s]*?\\))|(.*)))",
-                "src/test/java/org/svip/sbomfactory/generators/TestData/Python/Absolute/ifoo");
+                "Python/Absolute/ifoo");
     }
 
     //

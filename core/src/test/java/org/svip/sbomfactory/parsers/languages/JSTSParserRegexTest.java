@@ -24,7 +24,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     public JSTSParserRegexTest() {
         super(new JSTSParser(),
                 "^(?:(?!//).)*(?:import (?:(?:(?=.*\\{\\n?)([\\S\\s]*?\\})|(.*))\\s*from [ '\\\"]*([\\w\\.\\/]+)[ '\\\"]*|[ '\\\"]*([\\w\\.\\/]+)[ '\\\"]*)|require[ \\('\\\"]*([\\w\\.\\/]+)[ \\)'\\\"]*)(?![^\\/\\*]*\\*\\/)",
-                "src/test/java/org/svip/sbomfactory/generators/TestData/JS");
+                "JS");
     }
 
     ///

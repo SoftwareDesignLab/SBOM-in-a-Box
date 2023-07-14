@@ -24,7 +24,7 @@ public class JavaParserRegexTest extends ParseRegexTestCore {
     public JavaParserRegexTest() {
         super(new JavaParser(),
                 "^(?:(?!//).)*import(?: static)?(.*?)([\\w\\*]*);(?![^\\/\\*]*\\*\\/)",
-                "src/test/java/org/svip/sbomfactory/generators/TestData/Java");
+                "Java");
         // Cast generic instance to its correct type, such that protected fields can be accessed
     }
 

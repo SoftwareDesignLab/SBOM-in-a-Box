@@ -26,7 +26,7 @@ public abstract class ParseRegexTestCore extends ParserTestCore<LanguageParser> 
      */
     public ParseRegexTestCore(LanguageParser parser, String regex, String src) {
         // Call super
-        super(parser, src);
+        super(parser, TEST_DATA_PATH + src);
 
         // Compile and store regex Pattern
         setRegex(regex);

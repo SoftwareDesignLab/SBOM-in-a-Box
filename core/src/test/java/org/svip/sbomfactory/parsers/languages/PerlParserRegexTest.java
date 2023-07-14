@@ -24,7 +24,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
     public PerlParserRegexTest() {
         super(new PerlParser(),
                 "^(?:(?!#).)*(?:(?:use (?:(?=if).*, [ '\\\"]*(\\w+)[ '\\\"]|(?:(?=.*alias.*)[ '\\\"]*(.+)[ '\\\"]*|[ '\\\"]*(.+)[ '\\\"]*));)|require [ '\\\"]*([\\$\\w./:]+)[ '\\\"]*(?:.*->VERSION\\(([\\w.]*)|.*->import\\((.*)\\)|))(?![^\\=]*\\=(?:cut|end))",
-                "src/test/java/org/svip/sbomfactory/generators/TestData/Perl");
+                "Perl");
     }
 
     ///

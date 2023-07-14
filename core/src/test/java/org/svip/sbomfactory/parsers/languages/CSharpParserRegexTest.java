@@ -24,7 +24,7 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
     public CSharpParserRegexTest() {
         super(new CSharpParser(),
                 "^(?:(?!//).)*(?:(?:|global )using(?: static | )(?:(.*) = (?!new)|)([\\w.<> =,]*);)(?![^\\/\\*]*\\*\\/)",
-                "src/test/java/org/svip/sbomfactory/generators/TestData/CSharp/Bar");
+                "CSharp/Bar");
     }
 
     //

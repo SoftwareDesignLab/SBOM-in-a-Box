@@ -23,7 +23,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
     public GoParserRegexTest() {
         super(new GoParser(),
                 "^(?:(?!//).)*(?:import (?:(?=.*\\(\\n?)\\(([\\S\\s]*?)\\)|([\\w.]* ?\\\"[\\S]*)))(?![^\\*]*\\*\\/)",
-                "src/test/java/org/svip/sbomfactory/generators/TestData/Go");
+                "Go");
     }
 
     ///
