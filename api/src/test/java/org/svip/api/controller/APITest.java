@@ -41,7 +41,8 @@ public class APITest {
             + "/src/test/java/org/svip/api/sample_sboms/cdx-gomod-1.4.0-bin.json";
     private final static String gradleSBOM = System.getProperty("user.dir")
             + "/src/test/java/org/svip/api/sample_sboms/CDXGradlePlugin_deployed_cdx.json";
-
+    private final static String syftSPDX23JSON = System.getProperty("user.dir")
+            + "/src/test/java/org/svip/api/sample_sboms/syft-0.80.0-source-spdx-json.json";
     @BeforeEach
     public void setup() {
         // Init controller with mocked repository
@@ -63,6 +64,7 @@ public class APITest {
         contentsArray.add(new String(Files.readAllBytes(Paths.get(dotnetSBOM))));
         contentsArray.add(new String(Files.readAllBytes(Paths.get(goSBOM))));
         contentsArray.add(new String(Files.readAllBytes(Paths.get(gradleSBOM))));
+        contentsArray.add(new String(Files.readAllBytes(Paths.get(syftSPDX23JSON))));
 
         fileNamesArray.add(alpineSBOM);
         fileNamesArray.add(pythonSBOM);
@@ -75,6 +77,7 @@ public class APITest {
         fileNamesArray.add(dotnetSBOM);
         fileNamesArray.add(goSBOM);
         fileNamesArray.add(gradleSBOM);
+        fileNamesArray.add(syftSPDX23JSON);
 
         final Map<Long, SBOMFile> resultMap = new HashMap<>();
         for (int i = 0; i < contentsArray.size(); i++) {
