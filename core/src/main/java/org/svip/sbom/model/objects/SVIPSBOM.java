@@ -283,18 +283,6 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
                 }
             }
         }
-        // COMPONENTS
-//        if (this.components != null && other.getComponents() != null) {
-//            List<Component> targetComponents = this.components.stream().toList();
-//            List<Component> otherComponents = other.getComponents().stream().toList();
-//            for (int i = 0; i < targetComponents.size(); i++) {
-//                for (int j = 0; j < otherComponents.size(); j++) {
-//                    if (Objects.equals(targetComponents.get(i).getUID(), otherComponents.get(j).getUID())) {
-//                        conflicts.addAll((targetComponents.get(i)).compare(otherComponents.get(j)));
-//                    }
-//                }
-//            }
-//        }
         return conflicts.stream().toList();
     }
 
@@ -302,18 +290,6 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
     public List<Conflict> compare(SPDX23SBOM other) {
         // SVIP - SPDX Comparison
         ArrayList<Conflict> conflicts = new ArrayList<>();
-        // COMPONENTS
-//        if (this.components != null && other.getComponents() != null) {
-//            List<Component> targetComponents = this.components.stream().toList();
-//            List<Component> otherComponents = other.getComponents().stream().toList();
-//            for (int i = 0; i < targetComponents.size(); i++) {
-//                for (int j = 0; j < otherComponents.size(); j++) {
-//                    if (Objects.equals(targetComponents.get(i).getUID(), otherComponents.get(j).getUID())) {
-//                        conflicts.addAll(((SVIPComponentObject) targetComponents.get(i)).compare((SPDX23PackageObject) otherComponents.get(j)));
-//                    }
-//                }
-//            }
-//        }
         return conflicts.stream().toList();
     }
 
@@ -321,18 +297,6 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
     public List<Conflict> compare(CDX14SBOM other) {
         // SVIP - CDX14 Comparison
         ArrayList<Conflict> conflicts = new ArrayList<>();
-        // COMPONENTS
-//        if (this.components != null && other.getComponents() != null) {
-//            List<Component> targetComponents = this.components.stream().toList();
-//            List<Component> otherComponents = other.getComponents().stream().toList();
-//            for (int i = 0; i < targetComponents.size(); i++) {
-//                for (int j = 0; j < otherComponents.size(); j++) {
-//                    if (Objects.equals(targetComponents.get(i).getUID(), otherComponents.get(j).getUID())) {
-//                        conflicts.addAll(((SVIPComponentObject) targetComponents.get(i)).compare((CDX14ComponentObject) otherComponents.get(j)));
-//                    }
-//                }
-//            }
-//        }
         return conflicts.stream().toList();
     }
 }
