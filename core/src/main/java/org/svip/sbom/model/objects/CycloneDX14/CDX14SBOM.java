@@ -222,6 +222,40 @@ public class CDX14SBOM implements CDX14Schema {
     public List<Conflict> compare(SBOM other) {
         // CDX - OTHER Comparison
         ArrayList<Conflict> conflicts = new ArrayList<>();
+        // the Comparison object kept calling this class rather than the other one, even if I cast other to cdx
+        if (other instanceof CDX14SBOM) {
+            // NAME
+            if (this.name != null ^ other.getName() != null) {
+                conflicts.add(new MissingConflict("name", this.name, other.getName()));
+            } else if (!Objects.equals(this.name, other.getName()) && this.name != null) {
+                conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
+            }
+            // VERSION
+            if (this.version != null ^ other.getVersion() != null) {
+                conflicts.add(new MissingConflict("version", this.version, other.getVersion()));
+            } else if (!Objects.equals(this.version, other.getVersion()) && this.version != null) {
+                conflicts.add(new MismatchConflict("version", this.version, other.getVersion(), VERSION_MISMATCH));
+            }
+            // LICENSES
+            if (this.licenses != null && other.getLicenses() != null) {
+                if (!this.licenses.containsAll(other.getLicenses())) {
+                    conflicts.add(new MismatchConflict("licenses", this.licenses.toString(), other.getLicenses().toString(), LICENSE_MISMATCH));
+                }
+            } else if (this.licenses != null) {
+                conflicts.add(new MissingConflict("licenses", this.licenses.toString(), null));
+            } else if (other.getLicenses() != null) {
+                conflicts.add(new MissingConflict("licenses", null, other.getLicenses().toString()));
+            }
+            // Creation data - includes timestamp, licenses
+            if (this.creationData != null && other.getCreationData() != null) {
+                // TIMESTAMP
+                if (this.creationData.getCreationTime() != null ^ other.getCreationData().getCreationTime() != null) {
+                    conflicts.add(new MissingConflict("timestamp", this.creationData.getCreationTime(), other.getCreationData().getCreationTime()));
+                } else if (!Objects.equals(this.creationData.getCreationTime(), other.getCreationData().getCreationTime()) && this.creationData.getCreationTime() != null) {
+                    conflicts.add(new MismatchConflict("timestamp", this.creationData.getCreationTime(), other.getCreationData().getCreationTime(), TIMESTAMP_MISMATCH));
+                }
+            }
+        }
         // COMPONENTS
         if (this.components != null && other.getComponents() != null) {
             List<Component> targetComponents = this.components.stream().toList();
