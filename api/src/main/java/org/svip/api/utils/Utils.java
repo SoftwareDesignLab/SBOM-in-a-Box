@@ -206,12 +206,11 @@ public class Utils {
             deserialized = d.readFromString(sbom.getContents());
         }catch (Exception e){
             return internalSerializerError(ret,
-                    ": " + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()),"DURING DESERIALIZATION");
+                    ": " + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()),
+                    "DURING DESERIALIZATION");
         }
         if(deserialized == null)
-            return internalSerializerError(ret, "","DURING DESERIALIZATION"
-                    + ": SPDX tag value deserializer not yet implemented" // todo remove after implemented
-            );
+            return internalSerializerError(ret, "","DURING DESERIALIZATION");
 
         // ensure schema is valid
         SerializerFactory.Schema schema;
@@ -244,6 +243,7 @@ public class Utils {
                 serialized = s.writeToString(new SVIPSBOM((CDX14SBOM) deserialized));
             }
             else if(schema == SerializerFactory.Schema.CDX14){ // serialize into CDX14 schema
+
                 s.setPrettyPrinting(true);
 
                 // instead of adding superfluous setters to all SBOM objects, just replace strings specific to SPDX
@@ -251,11 +251,14 @@ public class Utils {
                 serialized = s.writeToString(new SVIPSBOM((SPDX23SBOM) deserialized));
                 serialized = serialized.replaceFirst("\"bomFormat\" : \"SPDX\"",
                         "\"bomFormat\" : \"CycloneDX\"").
-                        replaceFirst("spdxVersion", "specversion");
+                        replaceFirst("specVersion\" : \"" + deserialized.getSpecVersion() + "\"",
+                                "specVersion\" : \"1.4\"");
             }
 
         }catch (Exception e){
-            return internalSerializerError(ret, ": " + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()),"DURING SERIALIZATION");
+            return internalSerializerError(ret,
+                    ": " + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()),
+                    "DURING SERIALIZATION");
         }
         if(serialized == null){
             return internalSerializerError(ret, "","DURING SERIALIZATION");

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.model.SBOMFile;
+import org.svip.api.utils.Utils;
 import org.svip.sbomfactory.serializers.SerializerFactory;
 
 import java.io.IOException;
@@ -41,21 +42,39 @@ public class ConvertFromAPITest extends APITest{
             for (String convertToFormat: formats
                  ) {
                 for (Long id : testMap.keySet()) {
+
                     SBOMFile sbom = testMap.get(id);
                     String testString = sbom.getContents().toLowerCase();
-                    SerializerFactory.Schema thisSchema = (testString.contains("spdx")) ? SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14;
+
+                    SerializerFactory.Schema thisSchema = (testString.contains("spdx")) ?
+                            SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14;
+
                     if (testController(convertToSchema, convertToFormat, id, thisSchema)) continue;
 
                     LOGGER.info("ID: " + id + " Converting " + thisSchema.name() + " --> " + convertToSchema);
                     LOGGER.info("From             " + ((sbom.getFileName()).contains("json")
                             ? "JSON" : "TAGVALUE") + " --> " + convertToFormat);
                     ResponseEntity<String> response = controller.convert(id, convertToSchema, convertToFormat,true);
-                    LOGGER.info( "\n-------------\n");
+
 
                     String responseBody = response.getBody();
+
+                    // check if OK
                     assertEquals(HttpStatus.OK, response.getStatusCode());
                     assertNotNull(responseBody);
 
+//                    // assert we can convert back without any issues
+//                    try{
+//                        assertEquals("SUCCESS",
+//                                Utils.convert(new SBOMFile("convertBack." + convertToFormat.toLowerCase(),
+//                                        responseBody), convertToSchema, convertToFormat).values().toArray()[0]);
+//                    }catch (Exception e){
+//
+//                        LOGGER.error( "Cannot reconvert");
+//                       // fail();
+//
+//                    }
+                    LOGGER.info( "\n-------------\n");
                 }
             }
         }
