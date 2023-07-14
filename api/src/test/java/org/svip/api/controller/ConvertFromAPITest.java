@@ -1,6 +1,5 @@
 package org.svip.api.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -33,7 +32,7 @@ public class ConvertFromAPITest extends APITest{
      */
     @Test
     @DisplayName("Invalid format test")
-    public void invalidSchemaAndFormatTest() throws JsonProcessingException {
+    public void invalidSchemaAndFormatTest(){
         setupMockRepository();
 
         assertEquals(HttpStatus.BAD_REQUEST, controller.convert(0L, "123", "JSON", true).
@@ -48,7 +47,7 @@ public class ConvertFromAPITest extends APITest{
      */
     @Test
     @DisplayName("Convert to CDX tag value test")
-    public void CDXTagValueTest() throws JsonProcessingException {
+    public void CDXTagValueTest(){
         setupMockRepository();
 
         assertEquals(HttpStatus.BAD_REQUEST, controller.convert(0L, "CDX14", "TAGVALUE", true).
@@ -60,12 +59,14 @@ public class ConvertFromAPITest extends APITest{
      */
     @Test
     @DisplayName("Same format test")
-    public void sameFormatTest() throws JsonProcessingException {
+    public void sameFormatTest(){
         setupMockRepository();
 
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, controller.convert(0L, "SPDX23", "TAGVALUE", true).
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, controller.
+                convert(0L, "SPDX23", "TAGVALUE", true).
                 getStatusCode());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, controller.convert(6L, "CDX14", "JSON", true).
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, controller.
+                convert(6L, "CDX14", "JSON", true).
                 getStatusCode());
     }
 
@@ -74,7 +75,7 @@ public class ConvertFromAPITest extends APITest{
      */
     @Test
     @DisplayName("Convert, then convert back to original schema and format")
-    public void convertTest() throws JsonProcessingException {
+    public void convertTest(){
 
         setupMockRepository();
 
@@ -87,20 +88,20 @@ public class ConvertFromAPITest extends APITest{
                  ) {
                 for (Long id : testMap.keySet()) {
 
+                    // retrieve test SBOM and assume schema
                     SBOMFile sbom = testMap.get(id);
                     String testString = sbom.getContents().toLowerCase();
-
                     SerializerFactory.Schema thisSchema = (testString.contains("spdx")) ?
                             SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14;
 
+                    // check if test is valid
                     if (Utils.convertTestController(convertToSchema, convertToFormat, id, thisSchema, testMap)) continue;
 
+                    // test conversion to schema and format
                     LOGGER.info("ID: " + id + " Converting " + thisSchema.name() + " --> " + convertToSchema);
                     LOGGER.info("From             " + ((sbom.getFileName()).contains("json")
                             ? "JSON" : "TAGVALUE") + " --> " + convertToFormat);
                     ResponseEntity<String> response = controller.convert(id, convertToSchema, convertToFormat,true);
-
-
                     String responseBody = response.getBody();
 
                     // check if OK

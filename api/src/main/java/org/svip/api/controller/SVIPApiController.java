@@ -218,7 +218,7 @@ public class SVIPApiController {
     @GetMapping("/convert")
     public ResponseEntity<String> convert(@RequestParam("id") long id, @RequestParam("schema") String schema,
                                           @RequestParam("format") String format,
-                                          @RequestParam("overwrite") Boolean overwrite) throws JsonProcessingException {
+                                          @RequestParam("overwrite") Boolean overwrite){
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
@@ -226,12 +226,13 @@ public class SVIPApiController {
         ResponseEntity<String> NOT_FOUND = Utils.checkIfExists(id, sbomFile, "convert");
         if (NOT_FOUND != null) return NOT_FOUND;
 
+        // Get and convert SBOM
         SBOMFile toConvert = sbomFile.get();
-
         HashMap<SBOMFile, String> conversionResult = (HashMap<SBOMFile, String>) Utils.convert(toConvert, schema, format);
         String error = (String) conversionResult.values().toArray()[0];
         SBOMFile converted = (SBOMFile) conversionResult.keySet().toArray()[0];
 
+        // Error message if needed
         String defaultErrorMessage = "CONVERT /svip/convert?id=" + id + " - ERROR IN CONVERSION TO " + schema
                 + ((error.length() != 0) ? (": " + error) : "");
 
@@ -256,6 +257,7 @@ public class SVIPApiController {
         converted.setId(id);
         converted.setFileName(toConvert.getFileName());
 
+        // overwrite
         if(overwrite){
             sbomFileRepository.deleteById(id);
             sbomFileRepository.save(converted);

@@ -193,7 +193,7 @@ public class Utils {
      * @param formatString the desired format
      * @return converted SBOMFile and error message, if any
      */
-    public static Map<SBOMFile, String> convert(SBOMFile sbom, String schemaString, String formatString) throws JsonProcessingException {
+    public static Map<SBOMFile, String> convert(SBOMFile sbom, String schemaString, String formatString){
 
         HashMap<SBOMFile, String> ret = new HashMap<>();
 
