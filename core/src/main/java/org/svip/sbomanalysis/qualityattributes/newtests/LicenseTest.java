@@ -25,8 +25,6 @@ import java.util.Set;
  */
 public class LicenseTest extends MetricTest{
 
-    private final String TEST_NAME = "LicenseTest";
-
     private final ResultFactory resultFactory;
 
     /**For isValidSPDXLicense*/
@@ -51,6 +49,7 @@ public class LicenseTest extends MetricTest{
      */
     public LicenseTest(String componentName, ATTRIBUTE... attributes) {
         super(attributes);
+        String TEST_NAME = "LicenseTest";
         resultFactory = new ResultFactory(TEST_NAME, attributes);
         loadSPDXLicenseData();
         this.componentName = componentName;

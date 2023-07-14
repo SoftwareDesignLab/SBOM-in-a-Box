@@ -17,10 +17,8 @@ import java.util.Set;
  * @author Matthew Morrison
  */
 public class HashTest extends MetricTest{
-    private final String TEST_NAME = "HashTest";
-    private ResultFactory resultFactory;
-
-    private String componentName;
+    private final ResultFactory resultFactory;
+    private final String componentName;
 
 
     /**
@@ -30,6 +28,7 @@ public class HashTest extends MetricTest{
      */
     public HashTest(String componentName, ATTRIBUTE... attributes) {
         super(attributes);
+        String TEST_NAME = "HashTest";
         resultFactory = new ResultFactory(TEST_NAME, attributes);
         this.componentName = componentName;
     }

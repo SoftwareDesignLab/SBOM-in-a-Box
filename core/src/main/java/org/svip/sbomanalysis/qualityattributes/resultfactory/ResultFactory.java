@@ -23,11 +23,21 @@ public class ResultFactory {
 
     /**
      * Constructor to create a new ResultFactory
-     * @param attributes list of attributes
      * @param test name of test
+     * @param attributes list of attributes
      */
     public ResultFactory(String test, ATTRIBUTE... attributes){
         this.attributes = List.of(attributes);
+        this.test = test;
+    }
+
+    /**
+     * Constructor to create a new ResultFactory
+     * @param test name of test
+     * @param attributes list of attributes
+     */
+    public ResultFactory(String test, List<ATTRIBUTE> attributes){
+        this.attributes = attributes;
         this.test = test;
     }
 

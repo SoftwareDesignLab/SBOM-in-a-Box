@@ -9,6 +9,7 @@ import org.svip.sbomanalysis.qualityattributes.resultfactory.ResultFactory;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.INFO;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,11 +21,11 @@ import java.util.Set;
  */
 public class PURLTest extends MetricTest{
 
-    private final String TEST_NAME = "PURLTest";
-
     private final ResultFactory resultFactory;
 
     private final SBOMPackage component;
+
+    private final List<ATTRIBUTE> attributes;
 
     /**
      * Constructor to create a new PURLTest
@@ -35,6 +36,8 @@ public class PURLTest extends MetricTest{
     public PURLTest(Component component, ATTRIBUTE... attributes) {
         super(attributes);
         this.component = (SBOMPackage) component;
+        this.attributes = List.of(attributes);
+        String TEST_NAME = "PURLTest";
         resultFactory = new ResultFactory(TEST_NAME, attributes);
     }
 
@@ -70,7 +73,7 @@ public class PURLTest extends MetricTest{
      */
     private Set<Result> isValidPURL(String field, String value){
         String testName = "ValidPURL";
-        ResultFactory resultFactory = new ResultFactory(testName, ATTRIBUTE.UNIQUENESS);
+        ResultFactory resultFactory = new ResultFactory(testName, this.attributes);
         Set<Result> results = new HashSet<>();
         Result r;
         try{
@@ -96,7 +99,7 @@ public class PURLTest extends MetricTest{
         }
         // failed to create new purl, test automatically fails
         catch(Exception e){
-            r = resultFactory.error(field, INFO.ERROR, value, component.getName());
+            r = resultFactory.fail(field, INFO.ERROR, value, component.getName());
             results.add(r);
         }
         return results;
@@ -110,7 +113,7 @@ public class PURLTest extends MetricTest{
      */
     private Result match(PURL purl){
         String testName = "AccuratePURL";
-        ResultFactory resultFactory = new ResultFactory(testName, ATTRIBUTE.UNIQUENESS);
+        ResultFactory resultFactory = new ResultFactory(testName, this.attributes);
         Result r;
 
         // test purl and component name

@@ -9,6 +9,7 @@ import org.svip.sbomanalysis.qualityattributes.resultfactory.ResultFactory;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.INFO;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,11 +21,11 @@ import java.util.Set;
  */
 public class CPETest extends MetricTest{
 
-    private final String TEST_NAME = "CPETest";
-
     private final ResultFactory resultFactory;
 
     private final SBOMPackage component;
+
+    private final List<ATTRIBUTE> attributes;
 
     /**
      * Constructor to create a new MetricTest
@@ -34,6 +35,8 @@ public class CPETest extends MetricTest{
     public CPETest(Component component, ATTRIBUTE... attributes) {
         super(attributes);
         this.component = (SBOMPackage) component;
+        this.attributes = List.of(attributes);
+        String TEST_NAME = "CPETest";
         resultFactory = new ResultFactory(TEST_NAME, attributes);
     }
 
@@ -69,7 +72,7 @@ public class CPETest extends MetricTest{
      */
     private Result isValidCPE(String field, String value){
         String testName = "ValidCPE";
-        ResultFactory resultFactory = new ResultFactory(testName, ATTRIBUTE.UNIQUENESS);
+        ResultFactory resultFactory = new ResultFactory(testName, this.attributes);
         try{
             new CPE(value);    // throws error if given purl string is invalid
             return resultFactory.pass(field, INFO.VALID, value, component.getName());
@@ -107,7 +110,7 @@ public class CPETest extends MetricTest{
      */
     private Result match(CPE cpe){
         String testName = "AccurateCPE";
-        ResultFactory resultFactory = new ResultFactory(testName, ATTRIBUTE.UNIQUENESS);
+        ResultFactory resultFactory = new ResultFactory(testName, this.attributes);
         Result r;
 
         // test cpe and component name
