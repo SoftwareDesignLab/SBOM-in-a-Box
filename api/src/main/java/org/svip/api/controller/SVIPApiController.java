@@ -206,7 +206,7 @@ public class SVIPApiController {
     }
 
     /**
-     * USAGE. Send CONVERT request to /convert an existing SBOM on the backend to a desired schema
+     * USAGE. Send CONVERT request to /convert an existing SBOM on the backend to a desired schema and format
      *
      * @param id of the SBOM
      * @param schema to convert to
