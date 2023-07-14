@@ -190,7 +190,6 @@ public class ParserController {
 
             if (parser instanceof PackageManagerParser)
                 Parser.set(c, b -> b.setFileNotice(null));
-                // TODO set to external
             else
                 Parser.set(c, b -> b.setFileNotice("PARSED AS SOURCE FILE")); // TODO confirm this
         }

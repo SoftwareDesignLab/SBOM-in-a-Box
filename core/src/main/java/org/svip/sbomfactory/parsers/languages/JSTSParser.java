@@ -127,7 +127,7 @@ public class JSTSParser extends LanguageParser {
                 // Ensure token is not commented in-line
                 if(!token.contains("/*") && !token.contains("*/")) {
                     // Create component
-                    builder.setName("token");
+                    builder.setName(token);
                 }
                 // Otherwise, do not create component
             }
