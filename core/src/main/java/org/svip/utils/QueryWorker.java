@@ -1,4 +1,4 @@
-package org.svip.sbomfactory.generators.utils.queryworkers;
+package org.svip.utils;
 
 import org.svip.utils.Debug;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
