@@ -229,14 +229,26 @@ public class SVIPApiController {
         SBOMFile toConvert = sbomFile.get();
 
         HashMap<SBOMFile, String> conversionResult = (HashMap<SBOMFile, String>) Utils.convert(toConvert, schema, format);
-        String message = (String) conversionResult.values().toArray()[0];
+        String error = (String) conversionResult.values().toArray()[0];
         SBOMFile converted = (SBOMFile) conversionResult.keySet().toArray()[0];
+
+        String defaultErrorMessage = "CONVERT /svip/convert?id=" + id + " - ERROR IN CONVERSION TO " + schema
+                + ((error.length() != 0) ? (": " + error) : "");
+
+        // bad request errors
+        if(error.toLowerCase().contains("not valid") && (
+                error.toLowerCase().contains("schema") || error.toLowerCase().contains("format"))){
+            LOGGER.error(defaultErrorMessage);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else if (schema.toLowerCase().contains("cdx") && format.equals("TAGVALUE")) {
+            LOGGER.error("CONVERT /svip/convert?id=" + id + "TAGVALUE unsupported by CDX14");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         // if anything went wrong, an SBOMFILE with a blank name and contents will be returned,
         // paired with the message String
         if (converted.hasNullProperties()) {
-            LOGGER.info("CONVERT /svip/convert?id=" + id + " - ERROR IN CONVERSION TO " + schema
-            + ((message.length() != 0) ? (": " + message) : ""));
+            LOGGER.error(defaultErrorMessage);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

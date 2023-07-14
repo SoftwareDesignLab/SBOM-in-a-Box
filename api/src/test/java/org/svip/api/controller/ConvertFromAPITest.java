@@ -13,14 +13,12 @@ import org.svip.sbomfactory.serializers.SerializerFactory;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.svip.sbomfactory.serializers.SerializerFactory.Format.TAGVALUE;
-import static org.svip.sbomfactory.serializers.SerializerFactory.Schema.SPDX23;
 
 public class ConvertFromAPITest extends APITest{
     private Map<Long, SBOMFile> testMap;
@@ -30,11 +28,55 @@ public class ConvertFromAPITest extends APITest{
         testMap = getTestFileMap();
     }
 
+    /**
+     * Test bad requests regarding schema and format
+     */
     @Test
-    @DisplayName("Convert Sbom")
+    @DisplayName("Invalid format test")
+    public void invalidSchemaAndFormatTest() throws JsonProcessingException {
+        setupMockRepository();
+
+        assertEquals(HttpStatus.BAD_REQUEST, controller.convert(0L, "123", "JSON", true).
+                getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, controller.convert(0L, "SPDX23", "321", true).
+                getStatusCode());
+
+    }
+
+    /**
+     * CDX does not support Tag Value format
+     */
+    @Test
+    @DisplayName("Convert to CDX tag value test")
+    public void CDXTagValueTest() throws JsonProcessingException {
+        setupMockRepository();
+
+        assertEquals(HttpStatus.BAD_REQUEST, controller.convert(0L, "CDX14", "TAGVALUE", true).
+                getStatusCode());
+    }
+
+    /**
+     * Ensure that something goes wrong when trying to convert to the same format as the SBOMFile
+     */
+    @Test
+    @DisplayName("Same format test")
+    public void sameFormatTest() throws JsonProcessingException {
+        setupMockRepository();
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, controller.convert(0L, "SPDX23", "TAGVALUE", true).
+                getStatusCode());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, controller.convert(6L, "CDX14", "JSON", true).
+                getStatusCode());
+    }
+
+    /**
+     * Rigorous test for /convert endpoint. Tests conversion to a valid schema + format, then tests converting back
+     */
+    @Test
+    @DisplayName("Convert, then convert back to original schema and format")
     public void convertTest() throws JsonProcessingException {
 
-        when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
+        setupMockRepository();
 
         String[] schemas = {"CDX14", "SPDX23"};
         String[] formats = {"JSON", "TAGVALUE"};
@@ -51,7 +93,7 @@ public class ConvertFromAPITest extends APITest{
                     SerializerFactory.Schema thisSchema = (testString.contains("spdx")) ?
                             SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14;
 
-                    if (testController(convertToSchema, convertToFormat, id, thisSchema)) continue;
+                    if (Utils.convertTestController(convertToSchema, convertToFormat, id, thisSchema, testMap)) continue;
 
                     LOGGER.info("ID: " + id + " Converting " + thisSchema.name() + " --> " + convertToSchema);
                     LOGGER.info("From             " + ((sbom.getFileName()).contains("json")
@@ -91,36 +133,10 @@ public class ConvertFromAPITest extends APITest{
 
 
     /**
-     * For faster testing
+     * Reused code to set up mock repository for tests
      */
-    private boolean testController(String convertToSchema, String convertToFormat, Long id, SerializerFactory.Schema thisSchema) {
-        Long[] validTests = {0L,2L,6L,7L};
-        boolean contains = false;
-        for (Long l: validTests
-             ) {
-            if(Objects.equals(id, l)){
-                contains = true;
-                break;
-            }
-        }
-        if(!contains)
-            return true;
-
-        // todo this is bad practice
-        // todo implement these checks in the controller and return a bad request error
-
-        // don't convert to the same schema
-        if(thisSchema == SerializerFactory.Schema.SPDX23 && (convertToSchema.equals("SPDX23")))
-            return true;
-        if(thisSchema == SerializerFactory.Schema.CDX14 && (convertToSchema.equals("CDX14")))
-            return true;
-        // tagvalue format unsupported for cdx14
-        if(convertToSchema.equals("CDX14") && convertToFormat.equals("TAGVALUE"))
-            return true;
-        // we don't support xml deserialization right now
-        if(testMap.get(id).getContents().contains("xml"))
-            return true;
-        return false;
+    private void setupMockRepository() {
+        when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
     }
 
 

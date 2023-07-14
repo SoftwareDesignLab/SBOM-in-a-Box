@@ -295,4 +295,35 @@ public class Utils {
         return null;
     }
 
+
+    /**
+     * Helper function for ConvertFromAPITest
+     * @return whether it is valid to proceed with this test
+     */
+    public static boolean convertTestController(String convertToSchema, String convertToFormat, Long id,
+                                                SerializerFactory.Schema thisSchema, Map<Long, SBOMFile> testMap) {
+        Long[] validTests = {0L,2L,6L,7L};
+        boolean contains = false;
+        for (Long l: validTests
+        ) {
+            if(Objects.equals(id, l)){
+                contains = true;
+                break;
+            }
+        }
+        if(!contains)
+            return true;
+
+        // don't convert to the same schema
+        if(thisSchema == SerializerFactory.Schema.SPDX23 && (convertToSchema.equals("SPDX23")))
+            return true;
+        if(thisSchema == SerializerFactory.Schema.CDX14 && (convertToSchema.equals("CDX14")))
+            return true;
+        // tagvalue format unsupported for cdx14
+        if(convertToSchema.equals("CDX14") && convertToFormat.equals("TAGVALUE"))
+            return true;
+        // we don't support xml deserialization right now
+        return testMap.get(id).getContents().contains("xml");
+    }
+
 }
