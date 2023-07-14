@@ -3,8 +3,8 @@ package org.svip.sbomfactory.parsers.contexts;
 // Declares Imports
 
 import org.apache.commons.lang3.StringUtils;
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.utils.Debug;
 
 import java.util.List;
@@ -69,10 +69,11 @@ public class DeadImportParser extends ContextParser {
         // TODO: Better way to handle this? Currently the entire call is stored as name and type is set to EXTERNAL
         for(final String deadImport: this.context) {
             // Create ParserComponent
-            final ParserComponent c = new ParserComponent(deadImport);
-            c.setType(ParserComponent.Type.DEAD_IMPORT);
+            final SVIPComponentBuilder builder = new SVIPComponentBuilder();
+            builder.setName(deadImport);
+            builder.setType("DEAD_IMPORT");
             // Add dead imports to components
-            components.add(c);
+            components.add(builder.build());
         }
     }
 }
