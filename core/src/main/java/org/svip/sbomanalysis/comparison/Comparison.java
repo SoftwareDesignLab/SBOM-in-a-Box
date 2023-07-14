@@ -28,14 +28,14 @@ public class Comparison {
             count = 0;
             for (int j = 0; j < otherComponents.size(); j++) {
                 if (i == j) continue;
-                if (Objects.equals(targetComponents.get(i).getUID(), otherComponents.get(j).getUID())) {
+                if (Objects.equals(targetComponents.get(i).getName(), otherComponents.get(j).getName())) {
                     CompareComponent(targetComponents.get(i), otherComponents.get(j));
                     count += 1;
                 }
             }
             // component not found in otherComponents
             if (count == 0) {
-                missingComponents.add(targetComponents.get(i).getUID());
+                missingComponents.add(targetComponents.get(i).getName());
             }
         }
     }
@@ -45,7 +45,7 @@ public class Comparison {
     }
 
     private void CompareComponent(Component targetComponent, Component otherComponent) {
-        componentConflicts.put(targetComponent.getUID(), targetComponent.compare(otherComponent));
+        componentConflicts.put(targetComponent.getName(), targetComponent.compare(otherComponent));
     }
 
     // TODO compareOtherReleventField()
