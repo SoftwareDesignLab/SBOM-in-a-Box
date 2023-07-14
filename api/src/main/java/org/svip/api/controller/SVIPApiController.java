@@ -11,15 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.utils.Utils;
-import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbom.model.objects.SVIPSBOM;
-import org.svip.sbomanalysis.comparison.Merger;
-import org.svip.sbomfactory.serializers.SerializerFactory;
-import org.svip.sbomfactory.serializers.deserializer.Deserializer;
 import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomfactory.translators.TranslatorException;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
