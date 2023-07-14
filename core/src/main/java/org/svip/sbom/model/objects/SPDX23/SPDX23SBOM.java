@@ -259,12 +259,12 @@ public class SPDX23SBOM implements SPDX23Schema{
             // LICENSES
             if (this.licenses != null && other.getLicenses() != null) {
                 if (!this.licenses.containsAll(other.getLicenses())) {
-                    conflicts.add(new MismatchConflict("licenses", this.licenses.toString(), other.getLicenses().toString(), LICENSE_MISMATCH));
+                    conflicts.add(new MismatchConflict("license", this.licenses.toString(), other.getLicenses().toString(), LICENSE_MISMATCH));
                 }
             } else if (this.licenses != null) {
-                conflicts.add(new MissingConflict("licenses", this.licenses.toString(), null));
+                conflicts.add(new MissingConflict("license", this.licenses.toString(), null));
             } else if (other.getLicenses() != null) {
-                conflicts.add(new MissingConflict("licenses", null, other.getLicenses().toString()));
+                conflicts.add(new MissingConflict("license", null, other.getLicenses().toString()));
             }
             // Creation data - includes timestamp, licenses
             if (this.creationData != null && other.getCreationData() != null) {
@@ -277,18 +277,17 @@ public class SPDX23SBOM implements SPDX23Schema{
             }
         }
         // COMPONENTS
-        if (this.components != null && other.getComponents() != null) {
-            List<Component> targetComponents = this.components.stream().toList();
-            List<Component> otherComponents = other.getComponents().stream().toList();
-            for (int i = 0; i < targetComponents.size(); i++) {
-                for (int j = 0; j < otherComponents.size(); j++) {
-                    // TODO: improve the optimization for component matching
-                    if (Objects.equals(targetComponents.get(i).getUID(), otherComponents.get(j).getUID())) {
-                        conflicts.addAll((targetComponents.get(i)).compare(otherComponents.get(j)));
-                    }
-                }
-            }
-        }
+//        if (this.components != null && other.getComponents() != null) {
+//            List<Component> targetComponents = this.components.stream().toList();
+//            List<Component> otherComponents = other.getComponents().stream().toList();
+//            for (int i = 0; i < targetComponents.size(); i++) {
+//                for (int j = 0; j < otherComponents.size(); j++) {
+//                    if (Objects.equals(targetComponents.get(i).getUID(), otherComponents.get(j).getUID())) {
+//                        conflicts.addAll((targetComponents.get(i)).compare(otherComponents.get(j)));
+//                    }
+//                }
+//            }
+//        }
         return conflicts.stream().toList();
     }
 
@@ -311,12 +310,12 @@ public class SPDX23SBOM implements SPDX23Schema{
         // LICENSES
         if (this.licenses != null && other.getLicenses() != null) {
             if (!this.licenses.containsAll(other.getLicenses())) {
-                conflicts.add(new MismatchConflict("licenses", this.licenses.toString(), other.getLicenses().toString(), LICENSE_MISMATCH));
+                conflicts.add(new MismatchConflict("license", this.licenses.toString(), other.getLicenses().toString(), LICENSE_MISMATCH));
             }
         } else if (this.licenses != null) {
-            conflicts.add(new MissingConflict("licenses", this.licenses.toString(), null));
+            conflicts.add(new MissingConflict("license", this.licenses.toString(), null));
         } else if (other.getLicenses() != null) {
-            conflicts.add(new MissingConflict("licenses", null, other.getLicenses().toString()));
+            conflicts.add(new MissingConflict("license", null, other.getLicenses().toString()));
         }
         // Creation data - includes timestamp, licenses
         if (this.creationData != null && other.getCreationData() != null) {
@@ -328,18 +327,17 @@ public class SPDX23SBOM implements SPDX23Schema{
             }
         }
         // COMPONENTS
-        if (this.components != null && other.getComponents() != null) {
-            List<Component> targetComponents = this.components.stream().toList();
-            List<Component> otherComponents = other.getComponents().stream().toList();
-            for (int i = 0; i < targetComponents.size(); i++) {
-                for (int j = 0; j < otherComponents.size(); j++) {
-                    // TODO: improve the optimization for component matching
-                    if (targetComponents.get(i).getUID() == otherComponents.get(j).getUID()) {
-                        conflicts.addAll(((SPDX23PackageObject) targetComponents.get(i)).compare((SPDX23PackageObject) otherComponents.get(j)));
-                    }
-                }
-            }
-        }
+//        if (this.components != null && other.getComponents() != null) {
+//            List<Component> targetComponents = this.components.stream().toList();
+//            List<Component> otherComponents = other.getComponents().stream().toList();
+//            for (int i = 0; i < targetComponents.size(); i++) {
+//                for (int j = 0; j < otherComponents.size(); j++) {
+//                    if (targetComponents.get(i).getUID() == otherComponents.get(j).getUID()) {
+//                        conflicts.addAll(((SPDX23PackageObject) targetComponents.get(i)).compare((SPDX23PackageObject) otherComponents.get(j)));
+//                    }
+//                }
+//            }
+//        }
         return conflicts.stream().toList();
     }
 }
