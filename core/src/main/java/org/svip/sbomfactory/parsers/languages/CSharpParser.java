@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.parsers.languages;
 
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 
 import java.util.Arrays;
@@ -49,7 +50,7 @@ public class CSharpParser extends LanguageParser {
 
             // Strip typing from component name
             final String name = component.getName();
-            component.setName(name.substring(0, name.indexOf('<')));
+            set(component, b -> b.setName(name.substring(0, name.indexOf('<'))));
         }
 
         // Query URL
@@ -114,22 +115,23 @@ public class CSharpParser extends LanguageParser {
         }
 
         // Create Component
-        final SVIPComponentObject c = new SVIPComponentObject(match);
+        SVIPComponentBuilder builder = new SVIPComponentBuilder();
+        builder.setName(match);
 
         // Add "from" if found
-        if(from != null) c.setGroup(from);
+        if(from != null) builder.setGroup(from);
 
-        // Determine if alias is present
-        if(matcher.group(1) != null) {
-            c.setAlias(matcher.group(1).trim());
-        }
+        // TODO Determine if alias is present
+//        if(matcher.group(1) != null) {
+//            builder.setAlias(matcher.group(1).trim());
+//        }
 
         // Check if internal
-        if (isInternalComponent(c)) c.setType(SVIPComponentObject.Type.INTERNAL);
+        if (isInternalComponent(builder.build())) builder.setType("INTERNAL");
         // Otherwise, check if Language
-        else if (isLanguageComponent(c)) c.setType(SVIPComponentObject.Type.LANGUAGE);
+        else if (isLanguageComponent(builder.build())) builder.setType("LANGUAGE");
 
         // Add Component
-        components.add(c);
+        components.add(builder.build());
     }
 }

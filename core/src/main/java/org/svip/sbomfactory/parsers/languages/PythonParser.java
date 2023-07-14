@@ -1,12 +1,12 @@
 package org.svip.sbomfactory.parsers.languages;
 
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.utils.VirtualPath;
 import org.svip.sbomfactory.parsers.Parser;
+import org.svip.utils.VirtualPath;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -128,7 +128,7 @@ public class PythonParser extends LanguageParser {
             token = token.trim();   // remove leading/trailing whitespace
 
             // Initialize variables
-            SVIPComponentObject c;
+            SVIPComponentBuilder builder = new SVIPComponentBuilder();
             String name;
             String from = null;
             String alias;
@@ -172,20 +172,20 @@ public class PythonParser extends LanguageParser {
                 continue;
             }
 
-            c = new SVIPComponentObject(name); // Create Component
-            if(from != null && !from.equals("/")) c.setGroup(from);
-            if(alias != null) c.setAlias(alias);
+            builder.setName(name); // Create Component
+            if(from != null && !from.equals("/")) builder.setGroup(from);
+//            if(alias != null) c.setAlias(alias); TODO
 
             // Check if internal
-            if (isInternalComponent(c) || internal) {
-                c.setType(SVIPComponentObject.Type.INTERNAL);
+            if (isInternalComponent(builder.build()) || internal) {
+                builder.setType("INTERNAL");
 
                 // Otherwise check if Language
-            } else if (isLanguageComponent(c)) {
-                c.setType(SVIPComponentObject.Type.LANGUAGE);
+            } else if (isLanguageComponent(builder.build())) {
+                builder.setType("LANGUAGE");
             }
             // Add Component
-            components.add(c);
+            components.add(builder.build());
             // Set PWD back to stored value
             this.PWD = tempPwd;
         }

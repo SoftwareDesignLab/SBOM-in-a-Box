@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.parsers.languages;
 
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.parsers.Parser;
 
@@ -87,7 +88,7 @@ public class GoParser extends LanguageParser {
     protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
         // LinkedHashMap used to maintain match order for testing and output consistency
         final LinkedHashMap<String, String> matches = new LinkedHashMap<>();
-        SVIPComponentObject c;
+        SVIPComponentBuilder builder = new SVIPComponentBuilder();
         String match;
 
         // Import validation
@@ -165,19 +166,19 @@ public class GoParser extends LanguageParser {
                     }
                 }
 
-                c = new SVIPComponentObject(cName); // Create component with cName
-                if(alias != null) c.setAlias(alias); // Set alias if found
-                if(from != null) c.setGroup(from); // Set from if found
+                builder.setName(cName);
+//                if(alias != null) c.setAlias(alias); // TODO Set alias if found
+                if(from != null) builder.setGroup(from); // Set from if found
 
             } else continue; // If no match found, import must be invalid, skip component
 
             // Check if component is Internal
-            if (isInternalComponent(c)) c.setType(SVIPComponentObject.Type.INTERNAL);
+            if (isInternalComponent(builder.build())) builder.setType("INTERNAL");
                 // Otherwise, check component is Language
-            else if (isLanguageComponent(c)) c.setType(SVIPComponentObject.Type.LANGUAGE);
+            else if (isLanguageComponent(builder.build())) builder.setType("LANGUAGE");
 
             // Add Component
-            components.add(c);
+            components.add(builder.build());
         }
     }
 }

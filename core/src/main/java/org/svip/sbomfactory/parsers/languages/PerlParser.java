@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.parsers.languages;
 
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.utils.VirtualPath;
 
@@ -149,7 +150,7 @@ public class PerlParser extends LanguageParser {
         final HashSet<String> KEYWORDS = new HashSet<>(Arrays.asList(
                 "strict", "warning", "integer", "bytes", "constant"
         )); // List of keywords to ignore from matches
-        SVIPComponentObject c; // ParserComponent declaration
+        SVIPComponentBuilder builder = new SVIPComponentBuilder();
         String match; // Match to parse
         int groupNum = 0; // Group counter
 
@@ -246,22 +247,22 @@ public class PerlParser extends LanguageParser {
         }
 
         // Construct component
-        c = new SVIPComponentObject(match);
-        if(from != null) c.setGroup(from.replace("::", "/")); // If a from has been found, assign it to c
-        if(alias != null) c.setAlias(alias); // If an alias has been found, assign it to c
-        if(version != null) c.setVersion(version); // If a version has been found, assign it to c
+        builder.setName(match);
+        if(from != null) builder.setGroup(from.replace("::", "/")); // If a from has been found, assign it to c
+//        if(alias != null) builder.setAlias(alias); // TODO If an alias has been found, assign it to c
+        if(version != null) builder.setVersion(version); // If a version has been found, assign it to c
 
 
         // Check if internal
-        if (isInternalComponent(c)) {
-            c.setType(SVIPComponentObject.Type.INTERNAL);
+        if (isInternalComponent(builder.build())) {
+            builder.setType("INTERNAL");
 
         // Otherwise, check if Language
-        } else if (isLanguageComponent(c)) {
-            c.setType(SVIPComponentObject.Type.LANGUAGE);
+        } else if (isLanguageComponent(builder.build())) {
+            builder.setType("LANGUAGE");
         }
 
         // Add Component
-        components.add(c);
+        components.add(builder.build());
     }
 }

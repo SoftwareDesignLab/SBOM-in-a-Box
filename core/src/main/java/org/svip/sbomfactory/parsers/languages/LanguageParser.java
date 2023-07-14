@@ -1,10 +1,8 @@
 package org.svip.sbomfactory.parsers.languages;
 
-import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.parsers.Parser;
 import org.svip.utils.Debug;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.utils.VirtualPath;
 
 import java.util.ArrayList;
@@ -123,10 +121,10 @@ public abstract class LanguageParser extends Parser {
                                 .toList());
 
                         // Set name to last group of component TODO is this correct behavior?
-                        component.setName(groups.remove(groups.size() - 1));
+                        set(component, b -> b.setName(groups.remove(groups.size() - 1)));
 
                         // Set new component group, exclude last element
-                        component.setGroup(String.join("/", groups));
+                        set(component, b -> b.setGroup(String.join("/", groups)));
 
                         Debug.log(Debug.LOG_TYPE.DEBUG, String.format("Component renamed to %s with group %s",
                                 component.getName(), component.getGroup()));

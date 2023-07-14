@@ -1,15 +1,15 @@
 package org.svip.sbomfactory.parsers.languages;
 
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
 import org.svip.sbomfactory.parsers.Parser;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -143,7 +143,7 @@ public class JavaParser extends LanguageParser {
      */
     @Override
     protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
-        SVIPComponentObject c;
+        SVIPComponentBuilder builder = new SVIPComponentBuilder();
 
         // Clean strings
         String match1 = matcher.group(1).trim();
@@ -154,31 +154,31 @@ public class JavaParser extends LanguageParser {
             // Check if import is package (java.awt.color)
             if(Character.isLowerCase(match2.charAt(0))) {
                 // Combine capture groups to complete package name
-                c = new SVIPComponentObject((match1 + match2).replace('.', '/'));
+                builder.setName((match1 + match2).replace('.', '/'));
             }
             // Otherwise, import is Class (java.awt.color.ColorSpace)
             else {
                 // Set name to group 2
-                c = new SVIPComponentObject(match2);
+                builder.setName(match2);
 
                 // If group 1 exists, it is the package that has been imported from
                 if(!match1.equals("")) {
                     // Set from to group 1 (and trim last ".")
-                    c.setGroup(match1.substring(0, match1.length() - 1).replace('.', '/'));
+                    builder.setGroup(match1.substring(0, match1.length() - 1).replace('.', '/'));
                 }
             }
 
             // Check if internal
-            if (isInternalComponent(c)) {
-                c.setType(SVIPComponentObject.Type.INTERNAL);
+            if (isInternalComponent(builder.build())) {
+                builder.setType("INTERNAL");
 
                 // Otherwise, check if Language
-            } else if (isLanguageComponent(c)) {
-                c.setType(SVIPComponentObject.Type.LANGUAGE);
+            } else if (isLanguageComponent(builder.build())) {
+                builder.setType("LANGUAGE");
             }
 
             // Add Component
-            components.add(c);
+            components.add(builder.build());
         }
     }
 }

@@ -1,5 +1,6 @@
 package org.svip.sbomfactory.parsers.languages;
 
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.parsers.Parser;
 import org.svip.utils.VirtualPath;
@@ -190,7 +191,7 @@ public class RubyParser extends LanguageParser {
     @Override
     protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
         // Variable initialization
-        SVIPComponentObject c;
+        SVIPComponentBuilder builder = new SVIPComponentBuilder();
         String match = "";
 
         // Import validation
@@ -207,7 +208,7 @@ public class RubyParser extends LanguageParser {
         // If match has more than one token
         if(tokens.length > 1) {
             // Set name to last token (what exactly is being imported)
-            c = new SVIPComponentObject(tokens[tokens.length - 1]);
+            builder.setName(tokens[tokens.length - 1]);
 
             // Start index for copy is 0 by default
             int start = 0;
@@ -218,20 +219,20 @@ public class RubyParser extends LanguageParser {
             final String from = String.join("/", Arrays.copyOfRange(tokens, start, tokens.length - 1));
 
             // If from is not an empty string, set c.from to from
-            if(!from.equals("")) c.setGroup(from);
+            if(!from.equals("")) builder.setGroup(from);
         } else {
-            c = new SVIPComponentObject(match);
+            builder.setName(match);
         }
 
         // Check if internal
-        if (isInternalComponent(c)) {
-            c.setType(SVIPComponentObject.Type.INTERNAL);
+        if (isInternalComponent(builder.build())) {
+            builder.setType("INTERNAL");
 
             // Otherwise, check if Language
-        } else if (isLanguageComponent(c)) {
-            c.setType(SVIPComponentObject.Type.LANGUAGE);
+        } else if (isLanguageComponent(builder.build())) {
+            builder.setType("LANGUAGE");
         }
         // Add Component
-        components.add(c);
+        components.add(builder.build());
     }
 }
