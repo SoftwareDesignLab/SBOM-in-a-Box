@@ -3,10 +3,11 @@ package org.svip.sbomfactory.parsers.contexts;
 // Declares Imports
 
 import org.apache.commons.lang3.StringUtils;
-import org.svip.utils.Debug;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.utils.Debug;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static org.svip.utils.Debug.log;
 
@@ -24,12 +25,12 @@ public class DeadImportParser extends ContextParser {
      * @param components A list of ParserComponents that the found components will be appended to.
      * @param fileContents file contents to be parsed
      */
-    public void parseDeadImports(ArrayList<ParserComponent> components, String fileContents) {
+    public void parseDeadImports(List<SVIPComponentObject> components, String fileContents) {
         Debug.log(Debug.LOG_TYPE.DEBUG, "Detecting Dead Code & Imports...");
         // Splits source file to be read line by line
         final String[] lines = fileContents.split("\n");
         // Iterates through each component of the source file
-        for(ParserComponent component : components) {
+        for(SVIPComponentObject component : components) {
             // Counter for how many times component appears in the file
             int importCount = 0;
             // Iterates through each line of the file
@@ -55,7 +56,7 @@ public class DeadImportParser extends ContextParser {
      * @param fileContents file contents to be parsed
      */
     @Override
-    public void parse(ArrayList<ParserComponent> components, String fileContents) {
+    public void parse(List<SVIPComponentObject> components, String fileContents) {
         // Parse Dead Imports
         this.parseDeadImports(components, fileContents);
 

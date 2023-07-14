@@ -1,17 +1,16 @@
 package org.svip.sbomfactory.parsers.languages;
 
 import org.svip.sbom.model.objects.SVIPComponentObject;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.utils.VirtualPath;
 import org.svip.sbomfactory.parsers.Parser;
+import org.svip.utils.VirtualPath;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -189,7 +188,7 @@ public class RubyParser extends LanguageParser {
      * @return new component
      */
     @Override
-    protected void parseRegexMatch(ArrayList<SVIPComponentObject> components, Matcher matcher) {
+    protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
         // Variable initialization
         SVIPComponentObject c;
         String match = "";

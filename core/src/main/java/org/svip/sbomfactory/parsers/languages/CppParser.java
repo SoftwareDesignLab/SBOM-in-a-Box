@@ -2,10 +2,10 @@ package org.svip.sbomfactory.parsers.languages;
 
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.generators.utils.ParserComponent;
-import org.svip.utils.VirtualPath;
 import org.svip.sbomfactory.parsers.Parser;
+import org.svip.utils.VirtualPath;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -116,7 +116,7 @@ public class CppParser extends LanguageParser {
      * @return new component
      */
     @Override
-    protected void parseRegexMatch(ArrayList<SVIPComponentObject> components, Matcher matcher) {
+    protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
         SVIPComponentObject c;
         // group 1: External component, capture inside '<' and '>'
         if (matcher.group(1) != null) {

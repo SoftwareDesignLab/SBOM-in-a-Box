@@ -6,6 +6,7 @@ import org.svip.sbom.model.objects.SVIPComponentObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.svip.utils.Debug.LOG_TYPE;
@@ -33,7 +34,7 @@ public class POMParser extends PackageManagerParser {
     //#region Core Methods
 
     @Override
-    protected void parseData(ArrayList<SVIPComponentObject> components, HashMap<String, Object> data) {
+    protected void parseData(List<SVIPComponentObject> components, HashMap<String, Object> data) {
         // Init properties
         this.properties = new HashMap<>();
 

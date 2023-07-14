@@ -7,6 +7,7 @@ import org.svip.utils.Debug;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.svip.utils.Debug.log;
@@ -41,7 +42,7 @@ public class NugetParser extends PackageManagerParser{
      * @param data       map of data to be parsed
      */
     @Override
-    protected void parseData(ArrayList<SVIPComponentObject> components, HashMap<String, Object> data) {
+    protected void parseData(List<SVIPComponentObject> components, HashMap<String, Object> data) {
 
         /*
                 <?xml version="1.0" encoding="utf-8"?>

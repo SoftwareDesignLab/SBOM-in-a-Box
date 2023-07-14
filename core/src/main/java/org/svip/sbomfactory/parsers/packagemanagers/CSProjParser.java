@@ -25,7 +25,7 @@ public class CSProjParser extends PackageManagerParser {
     }
 
     @Override
-    protected void parseData(ArrayList<SVIPComponentObject> components, HashMap<String, Object> data) {
+    protected void parseData(List<SVIPComponentObject> components, HashMap<String, Object> data) {
 
         /*
         xml structure
@@ -85,7 +85,7 @@ public class CSProjParser extends PackageManagerParser {
      * @param type item type (Reference, Compile, etc)
      * @param component component properties table
      */
-    private void addComponent(ArrayList<SVIPComponentObject> components, String type, HashMap<String, String> component) {
+    private void addComponent(List<SVIPComponentObject> components, String type, HashMap<String, String> component) {
 
         // Internal components will have Include = {filepath}, whereas external and system will be Include = {group.name}
         String include = component.get("Include");

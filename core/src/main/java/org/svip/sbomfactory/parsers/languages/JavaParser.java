@@ -142,7 +142,7 @@ public class JavaParser extends LanguageParser {
      * @return new component
      */
     @Override
-    protected void parseRegexMatch(ArrayList<SVIPComponentObject> components, Matcher matcher) {
+    protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
         SVIPComponentObject c;
 
         // Clean strings

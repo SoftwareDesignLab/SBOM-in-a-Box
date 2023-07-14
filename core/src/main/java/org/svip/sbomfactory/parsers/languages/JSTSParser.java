@@ -88,7 +88,7 @@ public class JSTSParser extends LanguageParser {
      * @return new component
      */
     @Override
-    protected void parseRegexMatch(ArrayList<SVIPComponentObject> components, Matcher matcher) {
+    protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
         // Check for groups 1-5
         String match = null;
         for (int i = 1; i <= 5; i++) {
