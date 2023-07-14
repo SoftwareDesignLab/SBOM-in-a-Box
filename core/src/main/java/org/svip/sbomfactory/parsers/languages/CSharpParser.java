@@ -122,7 +122,7 @@ public class CSharpParser extends LanguageParser {
         // Add "from" if found
         if(from != null) builder.setGroup(from);
 
-        // TODO Determine if alias is present
+        // If alias
 //        if(matcher.group(1) != null) {
 //            builder.setAlias(matcher.group(1).trim());
 //        }
@@ -131,6 +131,9 @@ public class CSharpParser extends LanguageParser {
         if (isInternalComponent(builder.build())) builder.setType("INTERNAL");
         // Otherwise, check if Language
         else if (isLanguageComponent(builder.build())) builder.setType("LANGUAGE");
+
+        // Remove generic type if found
+        if (match.contains("<")) builder.setName(match.substring(0, match.indexOf("<")));
 
         // Add Component
         components.add(builder.build());
