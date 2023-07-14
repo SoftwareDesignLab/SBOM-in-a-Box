@@ -1,16 +1,21 @@
 package org.svip;
 
-import org.svip.utils.Debug;
-import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 import org.svip.sbomfactory.parsers.ParserController;
+import org.svip.sbomfactory.serializers.SerializerFactory;
+import org.svip.sbomfactory.serializers.serializer.Serializer;
+import org.svip.utils.Debug;
+import org.svip.utils.VirtualPath;
 
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import static org.svip.utils.Debug.LOG_TYPE;
 import static org.svip.utils.Debug.log;
@@ -345,11 +350,8 @@ public class SBOMGeneratorCLI {
         // Enable debug console logging if indicated
         if (optArgs.containsKey("-d")) Debug.enableDebug();
 
-        // Build filesystem representation
-//        VirtualTree tree = VirtualTree.buildVirtualTree(new VirtualPath(reqArgs.get(0)));
-
-        // Instantiate controller with the VirtualTree representation
-        final ParserController controller = new ParserController();
+        // Instantiate controller with the filepath
+        final ParserController controller = new ParserController(buildFileMap(new VirtualPath(reqArgs.get(0))));
         controller.parseAll(); // Parse all files
 
         // Build outPath
@@ -364,9 +366,9 @@ public class SBOMGeneratorCLI {
 //        outPath = null; // UNCOMMENT FOR TESTING ONLY, THIS DOES NOT GENERATE SBOM FILES, ONLY STRINGS
 
         // Get schema from optional args, if not present, default to CycloneDX
-        GeneratorSchema schema = GeneratorSchema.CycloneDX;
+        SerializerFactory.Schema schema = SerializerFactory.Schema.CDX14;
         if(optArgs.containsKey("-o")) {
-            try { schema = GeneratorSchema.valueOfArgument(optArgs.get("-o").toUpperCase()); }
+            try { schema = SerializerFactory.Schema.valueOf(optArgs.get("-o").toUpperCase()); }
             catch (IllegalArgumentException ignored) {
                 log(LOG_TYPE.WARN, String.format(
                         "Invalid schema type provided: '%s', defaulting to '%s'",
@@ -377,9 +379,9 @@ public class SBOMGeneratorCLI {
         }
 
         // Get format from optional args, if not present, default to JSON
-        GeneratorSchema.GeneratorFormat format = GeneratorSchema.GeneratorFormat.JSON;
+        SerializerFactory.Format format = SerializerFactory.Format.JSON;
         if(optArgs.containsKey("-f")) {
-            try { format = GeneratorSchema.GeneratorFormat.valueOf(optArgs.get("-f").toUpperCase()); }
+            try { format = SerializerFactory.Format.valueOf(optArgs.get("-f").toUpperCase()); }
             catch (IllegalArgumentException ignored) {
                 log(LOG_TYPE.WARN, String.format(
                         "Invalid format type provided: '%s', defaulting to '%s'",
@@ -389,12 +391,59 @@ public class SBOMGeneratorCLI {
             }
         }
 
-//        try {
-//            // Write to file
-//            controller.toFile(outPath, schema, format);
-//        } catch(IOException e) {
-//            log(Debug.LOG_TYPE.EXCEPTION, e);
-//            log(Debug.LOG_TYPE.ERROR, "Error writing to file " + outPath);
-//        }
+        try {
+            // Write to file
+            Serializer s = SerializerFactory.createSerializer(schema, format, true);
+            String sbom = s.writeToString(controller.getSBOM());
+
+            FileOutputStream fileStream = new FileOutputStream(outPath);
+            DataOutputStream outStream = new DataOutputStream(new BufferedOutputStream(fileStream));
+            outStream.writeUTF(sbom);
+            outStream.close();
+        } catch(IOException e) {
+            log(Debug.LOG_TYPE.EXCEPTION, e);
+            log(Debug.LOG_TYPE.ERROR, "Error writing to file " + outPath);
+        }
+    }
+
+    /**
+     * Builds a VirtualTree from an existing file tree located in the user's filesystem given a source path. This loops
+     * through all files and directories using Files.walk() over the source path, and adds each file with its contents
+     * to the VirtualTree.
+     *
+     * @param src The source path to build the file tree representation from.
+     * @return A new VirtualTree that represents all files and directories in the source path.
+     */
+    public static Map<VirtualPath, String> buildFileMap(VirtualPath src) {
+        Map<VirtualPath, String> fileMap = new HashMap<>();
+        final long buildStart = System.currentTimeMillis();
+
+        AtomicInteger directoryCounter = new AtomicInteger();
+
+        // Build the tree by finding each file and adding to the virtual tree
+        try (Stream<Path> stream = Files.walk(src.getPath())) {
+            stream.forEach(filepath -> {
+                // Only add the directory + files of the path if the file is found - no empty directories
+                if (!Files.isDirectory(filepath)) {
+                    try {
+                        fileMap.put(new VirtualPath(filepath), Files.readString(filepath));
+                    } catch (IOException e) {
+                        Debug.log(Debug.LOG_TYPE.WARN, "Unable to read file contents of: " + filepath);
+                    }
+                } else directoryCounter.getAndIncrement();
+            });
+        } catch (Exception e) {
+            Debug.log(Debug.LOG_TYPE.ERROR, "Unable to access file");
+            Debug.log(Debug.LOG_TYPE.EXCEPTION, e.getMessage());
+        }
+
+        // Report stats
+        log(Debug.LOG_TYPE.SUMMARY, String.format("VirtualTree construction complete. " +
+                        "Found %s Directories and %s Files in %.2f seconds",
+                directoryCounter,
+                fileMap.size(),
+                (float)(System.currentTimeMillis() - buildStart) / 1000));
+
+        return fileMap;
     }
 }

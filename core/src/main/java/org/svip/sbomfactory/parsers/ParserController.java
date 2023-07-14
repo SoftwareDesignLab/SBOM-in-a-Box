@@ -75,12 +75,19 @@ public class ParserController {
 
     //#region Constructors
 
-    /** TODO
-     * Create a new ParserController.
-     */
     public ParserController() {
         // Set project name to root filename
         this.files = new HashMap<>();
+        this.projectName = "SVIP Project";
+        this.builder = new SVIPSBOMBuilderFactory().createBuilder();
+    }
+
+    /** TODO
+     * Create a new ParserController.
+     */
+    public ParserController(Map<VirtualPath, String> files) {
+        // Set project name to root filename
+        this.files = files;
         this.projectName = "SVIP Project";
         this.builder = new SVIPSBOMBuilderFactory().createBuilder();
     }
@@ -90,6 +97,10 @@ public class ParserController {
     //#region Getters
 
     public SVIPSBOM getSBOM() { return builder.Build(); }
+
+    public void addFile(VirtualPath path, String contents) {
+        files.put(path, contents);
+    }
 
     //#endregion
 
