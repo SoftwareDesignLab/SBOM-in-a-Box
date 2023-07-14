@@ -488,10 +488,10 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
             if (!this.licenses.getInfoFromFiles().containsAll(other.getLicenses().getInfoFromFiles())) {
                 conflicts.add(new MismatchConflict("license", this.licenses.getInfoFromFiles().toString(), other.getLicenses().getInfoFromFiles().toString(), LICENSE_MISMATCH));
             }
-        } else if (this.licenses != null) {
-            conflicts.add(new MissingConflict("license", this.licenses.toString(), null));
-        } else if (other.getLicenses() != null) {
-            conflicts.add(new MissingConflict("license", null, other.getLicenses().toString()));
+        } else if (this.licenses != null && (this.licenses.getConcluded().size() > 0 || this.licenses.getDeclared().size() > 0 || this.licenses.getInfoFromFiles().size() > 0)) {
+            conflicts.add(new MissingConflict("license", this.licenses.getConcluded().toString() + this.licenses.getDeclared().toString() + this.licenses.getInfoFromFiles().toString(), null));
+        } else if (other.getLicenses() != null && (other.getLicenses().getConcluded().size() > 0 || other.getLicenses().getDeclared().size() > 0 || other.getLicenses().getInfoFromFiles().size() > 0)) {
+            conflicts.add(new MissingConflict("license", null, other.getLicenses().getConcluded().toString() + other.getLicenses().getDeclared().toString() + other.getLicenses().getInfoFromFiles().toString()));
         }
         // HASHES
         if (this.hashes != null && other.getHashes() != null) {
@@ -532,10 +532,10 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
             if (!this.licenses.getInfoFromFiles().containsAll(other.getLicenses().getInfoFromFiles())) {
                 conflicts.add(new MismatchConflict("license", this.licenses.getInfoFromFiles().toString(), other.getLicenses().getInfoFromFiles().toString(), LICENSE_MISMATCH));
             }
-        } else if (this.licenses != null) {
-            conflicts.add(new MissingConflict("license", this.licenses.toString(), null));
-        } else if (other.getLicenses() != null) {
-            conflicts.add(new MissingConflict("license", null, other.getLicenses().toString()));
+        } else if (this.licenses != null && (this.licenses.getConcluded().size() > 0 || this.licenses.getDeclared().size() > 0 || this.licenses.getInfoFromFiles().size() > 0)) {
+            conflicts.add(new MissingConflict("license", this.licenses.getConcluded().toString() + this.licenses.getDeclared().toString() + this.licenses.getInfoFromFiles().toString(), null));
+        } else if (other.getLicenses() != null && (other.getLicenses().getConcluded().size() > 0 || other.getLicenses().getDeclared().size() > 0 || other.getLicenses().getInfoFromFiles().size() > 0)) {
+            conflicts.add(new MissingConflict("license", null, other.getLicenses().getConcluded().toString() + other.getLicenses().getDeclared().toString() + other.getLicenses().getInfoFromFiles().toString()));
         }
         // HASHES
         if (this.hashes != null && other.getHashes() != null) {
@@ -612,10 +612,10 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
             if (!this.licenses.getInfoFromFiles().containsAll(other.getLicenses().getInfoFromFiles())) {
                 conflicts.add(new MismatchConflict("license", this.licenses.getInfoFromFiles().toString(), other.getLicenses().getInfoFromFiles().toString(), LICENSE_MISMATCH));
             }
-        } else if (this.licenses != null) {
-            conflicts.add(new MissingConflict("license", this.licenses.toString(), null));
-        } else if (other.getLicenses() != null) {
-            conflicts.add(new MissingConflict("license", null, other.getLicenses().toString()));
+        } else if (this.licenses != null && (this.licenses.getConcluded().size() > 0 || this.licenses.getDeclared().size() > 0 || this.licenses.getInfoFromFiles().size() > 0)) {
+            conflicts.add(new MissingConflict("license", this.licenses.getConcluded().toString() + this.licenses.getDeclared().toString() + this.licenses.getInfoFromFiles().toString(), null));
+        } else if (other.getLicenses() != null && (other.getLicenses().getConcluded().size() > 0 || other.getLicenses().getDeclared().size() > 0 || other.getLicenses().getInfoFromFiles().size() > 0)) {
+            conflicts.add(new MissingConflict("license", null, other.getLicenses().getConcluded().toString() + other.getLicenses().getDeclared().toString() + other.getLicenses().getInfoFromFiles().toString()));
         }
         // HASHES
         if (this.hashes != null && other.getHashes() != null) {
@@ -656,10 +656,10 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
             if (!this.licenses.getInfoFromFiles().containsAll(other.getLicenses().getInfoFromFiles())) {
                 conflicts.add(new MismatchConflict("license", this.licenses.getInfoFromFiles().toString(), other.getLicenses().getInfoFromFiles().toString(), LICENSE_MISMATCH));
             }
-        } else if (this.licenses != null) {
-            conflicts.add(new MissingConflict("license", this.licenses.toString(), null));
-        } else if (other.getLicenses() != null) {
-            conflicts.add(new MissingConflict("license", null, other.getLicenses().toString()));
+        } else if (this.licenses != null && (this.licenses.getConcluded().size() > 0 || this.licenses.getDeclared().size() > 0 || this.licenses.getInfoFromFiles().size() > 0)) {
+            conflicts.add(new MissingConflict("license", this.licenses.getConcluded().toString() + this.licenses.getDeclared().toString() + this.licenses.getInfoFromFiles().toString(), null));
+        } else if (other.getLicenses() != null && (other.getLicenses().getConcluded().size() > 0 || other.getLicenses().getDeclared().size() > 0 || other.getLicenses().getInfoFromFiles().size() > 0)) {
+            conflicts.add(new MissingConflict("license", null, other.getLicenses().getConcluded().toString() + other.getLicenses().getDeclared().toString() + other.getLicenses().getInfoFromFiles().toString()));
         }
         // HASHES
         if (this.hashes != null && other.getHashes() != null) {
@@ -736,10 +736,10 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
             if (!this.licenses.getInfoFromFiles().containsAll(other.getLicenses().getInfoFromFiles())) {
                 conflicts.add(new MismatchConflict("license", this.licenses.getInfoFromFiles().toString(), other.getLicenses().getInfoFromFiles().toString(), LICENSE_MISMATCH));
             }
-        } else if (this.licenses != null) {
-            conflicts.add(new MissingConflict("license", this.licenses.toString(), null));
-        } else if (other.getLicenses() != null) {
-            conflicts.add(new MissingConflict("license", null, other.getLicenses().toString()));
+        } else if (this.licenses != null && (this.licenses.getConcluded().size() > 0 || this.licenses.getDeclared().size() > 0 || this.licenses.getInfoFromFiles().size() > 0)) {
+            conflicts.add(new MissingConflict("license", this.licenses.getConcluded().toString() + this.licenses.getDeclared().toString() + this.licenses.getInfoFromFiles().toString(), null));
+        } else if (other.getLicenses() != null && (other.getLicenses().getConcluded().size() > 0 || other.getLicenses().getDeclared().size() > 0 || other.getLicenses().getInfoFromFiles().size() > 0)) {
+            conflicts.add(new MissingConflict("license", null, other.getLicenses().getConcluded().toString() + other.getLicenses().getDeclared().toString() + other.getLicenses().getInfoFromFiles().toString()));
         }
         // HASHES
         if (this.hashes != null && other.getHashes() != null) {
@@ -816,10 +816,10 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
             if (!this.licenses.getInfoFromFiles().containsAll(other.getLicenses().getInfoFromFiles())) {
                 conflicts.add(new MismatchConflict("license", this.licenses.getInfoFromFiles().toString(), other.getLicenses().getInfoFromFiles().toString(), LICENSE_MISMATCH));
             }
-        } else if (this.licenses != null) {
-            conflicts.add(new MissingConflict("license", this.licenses.toString(), null));
-        } else if (other.getLicenses() != null) {
-            conflicts.add(new MissingConflict("license", null, other.getLicenses().toString()));
+        } else if (this.licenses != null && (this.licenses.getConcluded().size() > 0 || this.licenses.getDeclared().size() > 0 || this.licenses.getInfoFromFiles().size() > 0)) {
+            conflicts.add(new MissingConflict("license", this.licenses.getConcluded().toString() + this.licenses.getDeclared().toString() + this.licenses.getInfoFromFiles().toString(), null));
+        } else if (other.getLicenses() != null && (other.getLicenses().getConcluded().size() > 0 || other.getLicenses().getDeclared().size() > 0 || other.getLicenses().getInfoFromFiles().size() > 0)) {
+            conflicts.add(new MissingConflict("license", null, other.getLicenses().getConcluded().toString() + other.getLicenses().getDeclared().toString() + other.getLicenses().getInfoFromFiles().toString()));
         }
         // HASHES
         if (this.hashes != null && other.getHashes() != null) {
