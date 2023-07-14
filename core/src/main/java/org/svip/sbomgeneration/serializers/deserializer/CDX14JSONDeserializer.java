@@ -7,6 +7,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import org.checkerframework.checker.units.qual.C;
+import org.svip.builderfactory.CDX14SBOMBuilderFactory;
+import org.svip.builders.component.CDX14PackageBuilder;
+import org.svip.componentfactory.CDX14PackageBuilderFactory;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14PackageBuilder;
 import org.svip.sbom.factory.objects.CycloneDX14.CDX14PackageBuilderFactory;
@@ -185,82 +189,82 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
 
         return creationData;
     }
-    
+
     private CDX14ComponentObject resolveComponent(CDX14PackageBuilder builder, JsonNode component) {
-            // COMPONENT TYPE
-            if (component.get("type") != null) builder.setType(component.get("type").asText());
+        // COMPONENT TYPE
+        if (component.get("type") != null) builder.setType(component.get("type").asText());
 
-            // COMPONENT MIME TYPE
-            if (component.get("mime-type") != null) builder.setMimeType(component.get("mime-type").asText());
+        // COMPONENT MIME TYPE
+        if (component.get("mime-type") != null) builder.setMimeType(component.get("mime-type").asText());
 
-            // COMPONENT UID
-            if (component.get("bom-ref") != null) builder.setUID(component.get("bom-ref").asText());
+        // COMPONENT UID
+        if (component.get("bom-ref") != null) builder.setUID(component.get("bom-ref").asText());
 
-            // COMPONENT SUPPLIER
-            JsonNode supplier = component.get("supplier");
-            if (supplier != null) builder.setSupplier(resolveOrganization(supplier));
+        // COMPONENT SUPPLIER
+        JsonNode supplier = component.get("supplier");
+        if (supplier != null) builder.setSupplier(resolveOrganization(supplier));
 
-            // COMPONENT AUTHOR
-            if (component.get("author") != null) builder.setAuthor(component.get("author").asText());
+        // COMPONENT AUTHOR
+        if (component.get("author") != null) builder.setAuthor(component.get("author").asText());
 
-            // COMPONENT PUBLISHER
-            if (component.get("publisher") != null) builder.setPublisher(component.get("publisher").asText());
+        // COMPONENT PUBLISHER
+        if (component.get("publisher") != null) builder.setPublisher(component.get("publisher").asText());
 
-            // COMPONENT GROUP
-            if (component.get("group") != null)
-                builder.setGroup(component.get("group").asText());
+        // COMPONENT GROUP
+        if (component.get("group") != null)
+            builder.setGroup(component.get("group").asText());
 
-            // COMPONENT NAME
-            if (component.get("name") != null)
-                builder.setName(component.get("name").asText());
+        // COMPONENT NAME
+        if (component.get("name") != null)
+            builder.setName(component.get("name").asText());
 
-            // COMPONENT VERSION
-            if (component.get("version") != null)
-                builder.setVersion(component.get("version").asText());
+        // COMPONENT VERSION
+        if (component.get("version") != null)
+            builder.setVersion(component.get("version").asText());
 
-            // COMPONENT DESCRIPTION
-            if (component.get("description") != null)
-                builder.setDescription(new Description(component.get("description").asText()));
+        // COMPONENT DESCRIPTION
+        if (component.get("description") != null)
+            builder.setDescription(new Description(component.get("description").asText()));
 
-            // COMPONENT SCOPE
-            if (component.get("scope") != null)
-                builder.setScope(component.get("scope").asText());
+        // COMPONENT SCOPE
+        if (component.get("scope") != null)
+            builder.setScope(component.get("scope").asText());
 
-            // COMPONENT HASHES
+        // COMPONENT HASHES
 
-            if (component.get("hashes") != null) resolveHashes(component.get("hashes")).forEach(builder::addHash);
+        if (component.get("hashes") != null) resolveHashes(component.get("hashes")).forEach(builder::addHash);
 
-            // COMPONENT Licenses
-            JsonNode licenses = component.get("licenses");
-            if (licenses != null) {
-                LicenseCollection componentLicenses = new LicenseCollection();
-                for (JsonNode license : licenses) {
+        // COMPONENT Licenses
+        JsonNode licenses = component.get("licenses");
+        if (licenses != null) {
+            LicenseCollection componentLicenses = new LicenseCollection();
+            for (JsonNode license : licenses) {
                     if (license.get("name") == null) continue;
-                    componentLicenses.addLicenseInfoFromFile(license.get("name").asText());
-                }
-
-                builder.setLicenses(componentLicenses);
+                componentLicenses.addLicenseInfoFromFile(license.get("name").asText());
             }
 
-            // COMPONENT COPYRIGHT
-            if (component.get("copyright") != null) builder.setCopyright(component.get("copyright").asText());
+            builder.setLicenses(componentLicenses);
+        }
 
-            // COMPONENT CPE
-            if (component.get("cpe") != null) builder.addCPE(component.get("cpe").asText());
+        // COMPONENT COPYRIGHT
+        if (component.get("copyright") != null) builder.setCopyright(component.get("copyright").asText());
 
-            // COMPONENT PURL
-            if (component.get("purl") != null) builder.addPURL(component.get("purl").asText());
+        // COMPONENT CPE
+        if (component.get("cpe") != null) builder.addCPE(component.get("cpe").asText());
 
-            // COMPONENT EXTERNAL REFERENCES
-            JsonNode externalRefs = component.get("externalReferences");
-            if (component.get("externalReferences") != null) {
-                for (JsonNode ref : externalRefs)
-                    builder.addExternalReference(resolveExternalRef(ref));
-            }
-            // COMPONENT PROPERTIES
-            if (component.get("properties") != null)
-                for (JsonNode prop : component.get("properties"))
-                    builder.addProperty(prop.get("name").asText(), prop.get("value").asText());
+        // COMPONENT PURL
+        if (component.get("purl") != null) builder.addPURL(component.get("purl").asText());
+
+        // COMPONENT EXTERNAL REFERENCES
+        JsonNode externalRefs = component.get("externalReferences");
+        if (component.get("externalReferences") != null) {
+            for (JsonNode ref : externalRefs)
+                builder.addExternalReference(resolveExternalRef(ref));
+        }
+        // COMPONENT PROPERTIES
+        if (component.get("properties") != null)
+            for (JsonNode prop : component.get("properties"))
+                builder.addProperty(prop.get("name").asText(), prop.get("value").asText());
 
         // add the component to the sbom builder
         return builder.buildAndFlush();
