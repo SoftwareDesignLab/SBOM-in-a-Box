@@ -165,7 +165,7 @@ public class SVIPSBOMBuilder implements CDX14SBOMBuilder, SPDX23SBOMBuilder {
 
     /** TO DO: add constructors to SBOM */
     @Override
-    public SBOM Build() {
+    public SVIPSBOM Build() {
         return new SVIPSBOM(format, name, uid, version, specVersion, licenses, creationData, documentComment, (SVIPComponentObject) rootComponent, components, relationships,
                 externalReferences, SPDXLicenseListVersion);
     }
