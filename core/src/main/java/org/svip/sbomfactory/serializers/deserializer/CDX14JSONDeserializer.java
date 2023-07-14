@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import org.checkerframework.checker.units.qual.C;
 import org.svip.builderfactory.CDX14SBOMBuilderFactory;
 import org.svip.builders.component.CDX14PackageBuilder;
 import org.svip.componentfactory.CDX14PackageBuilderFactory;
@@ -103,7 +104,8 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
         sbomBuilder.setCreationData(resolveMetadata(node.get("metadata"), sbomBuilder));
 
         // ROOT COMPONENT
-        sbomBuilder.setRootComponent(resolveComponent(componentBuilder, node.get("metadata").get("component")));
+        if(node.get("metadata").get("component") != null)
+            sbomBuilder.setRootComponent(resolveComponent(componentBuilder, node.get("metadata").get("component")));
 
         // COMPONENTS
         if (node.get("components") != null)
@@ -184,80 +186,82 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
 
         return creationData;
     }
-    
+
     private CDX14ComponentObject resolveComponent(CDX14PackageBuilder builder, JsonNode component) {
-            // COMPONENT TYPE
-            if (component.get("type") != null) builder.setType(component.get("type").asText());
+        // COMPONENT TYPE
+        if (component.get("type") != null) builder.setType(component.get("type").asText());
 
-            // COMPONENT MIME TYPE
-            if (component.get("mime-type") != null) builder.setMimeType(component.get("mime-type").asText());
+        // COMPONENT MIME TYPE
+        if (component.get("mime-type") != null) builder.setMimeType(component.get("mime-type").asText());
 
-            // COMPONENT UID
-            if (component.get("bom-ref") != null) builder.setUID(component.get("bom-ref").asText());
+        // COMPONENT UID
+        if (component.get("bom-ref") != null) builder.setUID(component.get("bom-ref").asText());
 
-            // COMPONENT SUPPLIER
-            JsonNode supplier = component.get("supplier");
-            if (supplier != null) builder.setSupplier(resolveOrganization(supplier));
+        // COMPONENT SUPPLIER
+        JsonNode supplier = component.get("supplier");
+        if (supplier != null) builder.setSupplier(resolveOrganization(supplier));
 
-            // COMPONENT AUTHOR
-            if (component.get("author") != null) builder.setAuthor(component.get("author").asText());
+        // COMPONENT AUTHOR
+        if (component.get("author") != null) builder.setAuthor(component.get("author").asText());
 
-            // COMPONENT PUBLISHER
-            if (component.get("publisher") != null) builder.setPublisher(component.get("publisher").asText());
+        // COMPONENT PUBLISHER
+        if (component.get("publisher") != null) builder.setPublisher(component.get("publisher").asText());
 
-            // COMPONENT GROUP
-            if (component.get("group") != null)
-                builder.setGroup(component.get("group").asText());
+        // COMPONENT GROUP
+        if (component.get("group") != null)
+            builder.setGroup(component.get("group").asText());
 
-            // COMPONENT NAME
-            if (component.get("name") != null)
-                builder.setName(component.get("name").asText());
+        // COMPONENT NAME
+        if (component.get("name") != null)
+            builder.setName(component.get("name").asText());
 
-            // COMPONENT VERSION
-            if (component.get("version") != null)
-                builder.setVersion(component.get("version").asText());
+        // COMPONENT VERSION
+        if (component.get("version") != null)
+            builder.setVersion(component.get("version").asText());
 
-            // COMPONENT DESCRIPTION
-            if (component.get("description") != null)
-                builder.setDescription(new Description(component.get("description").asText()));
+        // COMPONENT DESCRIPTION
+        if (component.get("description") != null)
+            builder.setDescription(new Description(component.get("description").asText()));
 
-            // COMPONENT SCOPE
-            if (component.get("scope") != null)
-                builder.setScope(component.get("scope").asText());
+        // COMPONENT SCOPE
+        if (component.get("scope") != null)
+            builder.setScope(component.get("scope").asText());
 
-            // COMPONENT HASHES
+        // COMPONENT HASHES
 
-            if (component.get("hashes") != null) resolveHashes(component.get("hashes")).forEach(builder::addHash);
+        if (component.get("hashes") != null) resolveHashes(component.get("hashes")).forEach(builder::addHash);
 
-            // COMPONENT Licenses
-            JsonNode licenses = component.get("licenses");
-            if (licenses != null) {
-                LicenseCollection componentLicenses = new LicenseCollection();
-                for (JsonNode license : licenses)
-                    componentLicenses.addLicenseInfoFromFile(license.get("name").asText());
-
-                builder.setLicenses(componentLicenses);
+        // COMPONENT Licenses
+        JsonNode licenses = component.get("licenses");
+        if (licenses != null) {
+            LicenseCollection componentLicenses = new LicenseCollection();
+            for (JsonNode license : licenses) {
+                if (license.get("name") == null) continue;
+                componentLicenses.addLicenseInfoFromFile(license.get("name").asText());
             }
 
-            // COMPONENT COPYRIGHT
-            if (component.get("copyright") != null) builder.setCopyright(component.get("copyright").asText());
+            builder.setLicenses(componentLicenses);
+        }
 
-            // COMPONENT CPE
-            if (component.get("cpe") != null) builder.addCPE(component.get("cpe").asText());
+        // COMPONENT COPYRIGHT
+        if (component.get("copyright") != null) builder.setCopyright(component.get("copyright").asText());
 
-            // COMPONENT PURL
-            if (component.get("purl") != null) builder.addPURL(component.get("purl").asText());
+        // COMPONENT CPE
+        if (component.get("cpe") != null) builder.addCPE(component.get("cpe").asText());
 
-            // COMPONENT EXTERNAL REFERENCES
-            JsonNode externalRefs = component.get("externalReferences");
-            if (component.get("externalReferences") != null) {
-                for (JsonNode ref : externalRefs)
-                    builder.addExternalReference(resolveExternalRef(ref));
-            }
-            // COMPONENT PROPERTIES
-            if (component.get("properties") != null)
-                for (JsonNode prop : component.get("properties"))
-                    builder.addProperty(prop.get("name").asText(), prop.get("value").asText());
+        // COMPONENT PURL
+        if (component.get("purl") != null) builder.addPURL(component.get("purl").asText());
+
+        // COMPONENT EXTERNAL REFERENCES
+        JsonNode externalRefs = component.get("externalReferences");
+        if (component.get("externalReferences") != null) {
+            for (JsonNode ref : externalRefs)
+                builder.addExternalReference(resolveExternalRef(ref));
+        }
+        // COMPONENT PROPERTIES
+        if (component.get("properties") != null)
+            for (JsonNode prop : component.get("properties"))
+                builder.addProperty(prop.get("name").asText(), prop.get("value").asText());
 
         // add the component to the sbom builder
         return builder.buildAndFlush();
@@ -273,18 +277,27 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
     }
 
     private Contact resolveContact(JsonNode ct) {
-        return new Contact(ct.get("name").asText(),
-                ct.get("email").asText(),
-                ct.get("phone").asText());
+        try{
+            return new Contact(ct.get("name").asText(),
+                    ct.get("email").asText(),
+                    ct.get("phone").asText());
+        }catch ( Exception e){
+            return new Contact("", "", "");
+        }
     }
 
     private Organization resolveOrganization(JsonNode org) {
-        Organization organization = new Organization(org.get("name").asText(), org.get("url").asText());
-        if (org.get("contact") != null)
-            for (JsonNode contact : org.get("contact"))
-                organization.addContact(resolveContact(contact));
+        try{
+            Organization organization = new Organization(org.get("name").asText(), org.get("url").asText());
+            if (org.get("contact") != null)
+                for (JsonNode contact : org.get("contact"))
+                    organization.addContact(resolveContact(contact));
+            return organization;
+        }catch ( Exception e){
+            return new Organization("", "");
+        }
 
-        return organization;
+
     }
 
     private ExternalReference resolveExternalRef(JsonNode ref) {
@@ -302,8 +315,12 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
     private Set<Relationship> resolveDependency(JsonNode dep) {
         Set<Relationship> relationships = new HashSet<>();
 
-        for(JsonNode dependency : dep.get("dependsOn"))
+        if (dep.get("dependsOn") == null) return relationships;
+
+        for(JsonNode dependency : dep.get("dependsOn")) {
+            if (dependency == null) continue;
             relationships.add(new Relationship(dependency.asText(), "DEPENDS_ON")); // TODO correct type?
+        }
 
         return relationships;
     }

@@ -18,6 +18,6 @@ public class DiffReport {
         this.targetUID = targetUID;
     }
     public void addComparison(Comparison comparison) {
-        this.comparisons.put(this.targetUID, comparison);
+        this.comparisons.put(String.valueOf(comparisons.size()), comparison);
     }
 }

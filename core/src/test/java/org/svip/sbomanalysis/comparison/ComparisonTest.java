@@ -39,7 +39,7 @@ public class ComparisonTest {
             "/src/test/java/org/svip/sbomfactory/serializers/sample_boms/Benchmark_SBOM_Megacollection/jbom-Case1-1.0-SNAPSHOT-jar-with-dependencies.json";
 
     protected static final String SBOM_5 = System.getProperty("user.dir") +
-            "/src/test/java/org/svip/sbomfactory/serializers/sample_boms/Benchmark_SBOM_Megacollection/spdx-sbom-generator.json";
+            "/src/test/java/org/svip/sbomfactory/serializers/sample_boms/Benchmark_SBOM_Megacollection/spdx-sbom-generator.spdx";
 
     protected static final String SBOM_6 = System.getProperty("user.dir") +
             "/src/test/java/org/svip/sbomfactory/serializers/sample_boms/Benchmark_SBOM_Megacollection/syft.json";
@@ -50,7 +50,7 @@ public class ComparisonTest {
         CDX14SBOM sbom2 = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_2)));
         CDX14SBOM sbom3 = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_3)));
         CDX14SBOM sbom4 = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_4)));
-        SPDX23SBOM sbom5 = (SPDX23SBOM) getSPDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_5)));
+        SPDX23SBOM sbom5 = (SPDX23SBOM) getSPDXTagValueDeserializer().readFromString(Files.readString(Path.of(SBOM_5)));
         CDX14SBOM sbom6 = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_6)));
         SBOM[] sboms = new SBOM[6];
         sboms[0] = sbom1;
