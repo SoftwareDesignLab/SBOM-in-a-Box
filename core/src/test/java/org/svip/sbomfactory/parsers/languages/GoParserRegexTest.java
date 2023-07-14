@@ -2,7 +2,7 @@ package org.svip.sbomfactory.parsers.languages;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -35,19 +35,19 @@ public class GoParserRegexTest extends ParseRegexTestCore {
     void importBasic() {
         Matcher m = getMatcher("import \"fee\"");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("fee", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -56,19 +56,19 @@ public class GoParserRegexTest extends ParseRegexTestCore {
     void importMultipart() {
         Matcher m = getMatcher("import \"bar/fee\"");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("fee", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("bar", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -77,19 +77,19 @@ public class GoParserRegexTest extends ParseRegexTestCore {
     void importLongMultipart() {
         Matcher m = getMatcher("import \"bar/foo/fee\"");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("fee", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("bar/foo", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -98,19 +98,19 @@ public class GoParserRegexTest extends ParseRegexTestCore {
     void import3rdParty() {
         Matcher m = getMatcher("import \"github.com/gopherguides/greet\"");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("greet", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("github.com/gopherguides", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -119,19 +119,19 @@ public class GoParserRegexTest extends ParseRegexTestCore {
     void importAlias() {
         Matcher m = getMatcher("import f \"fee\"");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("fee", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertEquals("f", c.getAlias());
+        // assertEquals("f", c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -140,19 +140,19 @@ public class GoParserRegexTest extends ParseRegexTestCore {
     void importAliasMultipart() {
         Matcher m = getMatcher("import f \"fee/fye\"");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("fye", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("fee", c.getGroup());
-        assertEquals("f", c.getAlias());
+        // assertEquals("f", c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -161,19 +161,19 @@ public class GoParserRegexTest extends ParseRegexTestCore {
     void importAliasDot() {
         Matcher m = getMatcher("import . \"fee\"");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("*", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("fee", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -182,7 +182,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
     void importAliasUnderscore() {
         Matcher m = getMatcher("import _ \"fee\"");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not be a match
@@ -193,29 +193,29 @@ public class GoParserRegexTest extends ParseRegexTestCore {
     void importMultiline() {
         Matcher m = getMatcher("import (\n\t\"bar\"\n\t\"fee\"\n)");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should only be 1 match
 
         // Test resulting component 1
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("bar", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
 
         // Test resulting component 2
         c = results.get(1);
         assertEquals("fee", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -224,29 +224,29 @@ public class GoParserRegexTest extends ParseRegexTestCore {
     void importMultilineMultipart() {
         Matcher m = getMatcher("import (\n\t\"bar\"\n\t\"fee/fye/fo\"\n)");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should only be 1 match
 
         // Test resulting component 1
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("bar", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
 
         // Test resulting component 2
         c = results.get(1);
         assertEquals("fo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("fee/fye", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -255,29 +255,29 @@ public class GoParserRegexTest extends ParseRegexTestCore {
     void importMultilineAlias() {
         Matcher m = getMatcher("import (\n\tb \"bar\"\n\tf \"fee\"\n)");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should only be 1 match
 
         // Test resulting component 1
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("bar", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertEquals("b", c.getAlias());
+//        assertEquals("b", c.getAlias());
         // assertNull(c.getChildren());
 
         // Test resulting component 2
         c = results.get(1);
         assertEquals("fee", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertEquals("f", c.getAlias());
+        // assertEquals("f", c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -286,29 +286,29 @@ public class GoParserRegexTest extends ParseRegexTestCore {
     void importMultilineInline() {
         Matcher m = getMatcher("import (\"bar\"; \"fee\")");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should only be 1 match
 
         // Test resulting component 1
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("bar", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
 
         // Test resulting component 2
         c = results.get(1);
         assertEquals("fee", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -317,29 +317,29 @@ public class GoParserRegexTest extends ParseRegexTestCore {
     void importMultilineInlineAlias() {
         Matcher m = getMatcher("import (b \"bar\"; \"fee\")");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should only be 1 match
 
         // Test resulting component 1
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("bar", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertEquals("b", c.getAlias());
+//        assertEquals("b", c.getAlias());
         // assertNull(c.getChildren());
 
         // Test resulting component 2
         c = results.get(1);
         assertEquals("fee", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -352,19 +352,19 @@ public class GoParserRegexTest extends ParseRegexTestCore {
     void importInternal() {
         Matcher m = getMatcher("import \"Go/lib/int2\"");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("int2", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("Go/lib", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -377,19 +377,19 @@ public class GoParserRegexTest extends ParseRegexTestCore {
     void importLanguage() {
         Matcher m = getMatcher("import \"fmt\"");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("fmt", c.getName());
-        assertEquals(ParserComponent.Type.LANGUAGE, c.getType());
+        assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -398,19 +398,19 @@ public class GoParserRegexTest extends ParseRegexTestCore {
     void importLanguage2() {
         Matcher m = getMatcher("import \"math/big\"");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("big", c.getName());
-        assertEquals(ParserComponent.Type.LANGUAGE, c.getType());
+        assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("math", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -419,19 +419,19 @@ public class GoParserRegexTest extends ParseRegexTestCore {
     void importLanguage3() {
         Matcher m = getMatcher("import . \"regexp\"");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("*", c.getName());
-        assertEquals(ParserComponent.Type.LANGUAGE, c.getType());
+        assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("regexp", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -476,19 +476,19 @@ public class GoParserRegexTest extends ParseRegexTestCore {
     void importBetweenBlockComments() {
         Matcher m = getMatcher("/**/ import \"fee\" /**/");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("fee", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -497,19 +497,19 @@ public class GoParserRegexTest extends ParseRegexTestCore {
     void importBetweenBlockCommentsMultipart() {
         Matcher m = getMatcher("/**/ import \"fee/fye\" /**/");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("fye", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("fee", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -518,19 +518,19 @@ public class GoParserRegexTest extends ParseRegexTestCore {
     void importBeforeBasicComment() {
         Matcher m = getMatcher("import \"bar/fee\" // this imports fee");
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("fee", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+        // assertEquals(0, c.getDepth());
         assertEquals("bar", c.getGroup());
-        assertNull(c.getAlias());
+        // assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 }

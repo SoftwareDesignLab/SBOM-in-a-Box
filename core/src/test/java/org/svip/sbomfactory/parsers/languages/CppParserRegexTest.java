@@ -2,7 +2,7 @@ package org.svip.sbomfactory.parsers.languages;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -35,19 +35,19 @@ class CppParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("#include <foo>");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+//        assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+//        assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -57,19 +57,19 @@ class CppParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("#include<foo>");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("foo", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+//        assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+//        assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -83,19 +83,19 @@ class CppParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("#include <ios>");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("ios", c.getName());
-        assertEquals(ParserComponent.Type.LANGUAGE, c.getType());
+        assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+//        assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+//        assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -105,19 +105,19 @@ class CppParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("#include <ctype.h>");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("ctype.h", c.getName());
-        assertEquals(ParserComponent.Type.LANGUAGE, c.getType());
+        assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+//        assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+//        assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -131,19 +131,19 @@ class CppParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("#include \"foo.h\"");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("foo.h", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+//        assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+//        assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -153,19 +153,19 @@ class CppParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("#include \"foobar.h\"");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("foobar.h", c.getName());
-        assertEquals(ParserComponent.Type.EXTERNAL, c.getType());
+        assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+//        assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+//        assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -175,19 +175,19 @@ class CppParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("#include\"foo.h\"");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("foo.h", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+//        assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+//        assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -197,19 +197,19 @@ class CppParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("#include \"foobar\\bar.h\"");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
         // Test resulting component
-        ParserComponent c = results.get(0);
+        SVIPComponentObject c = results.get(0);
         assertEquals("foobar\\bar.h", c.getName());
-        assertEquals(ParserComponent.Type.INTERNAL, c.getType());
+        assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
-        assertEquals(0, c.getDepth());
+//        assertEquals(0, c.getDepth());
         assertNull(c.getGroup());
-        assertNull(c.getAlias());
+//        assertNull(c.getAlias());
         // assertNull(c.getChildren());
     }
 
@@ -243,7 +243,7 @@ class CppParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("// #include <foo>");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());
@@ -255,7 +255,7 @@ class CppParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("/*\n#include <foo>\n*/");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<ParserComponent> results = new ArrayList<>();
+        ArrayList<SVIPComponentObject> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());

@@ -2,7 +2,7 @@ package org.svip.sbomfactory.parsers.packagemanagers;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.svip.sbomfactory.generators.utils.ParserComponent;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -43,7 +43,7 @@ public class ConanParserPyFileTest extends ParseDepFileTestCore {
         //Make ValueSet
         final Set<String> ValueSet = new HashSet<>();
 
-        for (ParserComponent pc : this.components) {
+        for (SVIPComponentObject pc : this.components) {
             ValueSet.add(pc.getName());
         }
 
@@ -53,7 +53,7 @@ public class ConanParserPyFileTest extends ParseDepFileTestCore {
         assertTrue(ValueSet.contains(str));
         //Check component's Version
         assertEquals("[>=1.0 <2.0]", getComponent(str).getVersion());
-        assertEquals("Apache-2.0", getComponent(str).getLicense("Apache-2.0"));
+        assertTrue(getComponent(str).getLicenses().getConcluded().contains("Apache-2.0"));
 
         //Check component's name
         str = "sound32";
@@ -66,6 +66,6 @@ public class ConanParserPyFileTest extends ParseDepFileTestCore {
         assertTrue(ValueSet.contains(str));
         //Check component's Version
         assertEquals("1.7.0#revision1", getComponent(str).getVersion());
-        assertEquals("MIT", getComponent(str).getLicense("MIT"));
+        assertTrue(getComponent(str).getLicenses().getConcluded().contains("MIT"));
     }
 }
