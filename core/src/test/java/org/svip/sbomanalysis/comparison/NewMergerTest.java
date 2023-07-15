@@ -1,7 +1,9 @@
 package org.svip.sbomanalysis.comparison;
 
+import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 
@@ -114,6 +116,65 @@ public class NewMergerTest {
      * Test Components
      */
 
+    /** CDX Test Components **/
+
+    private static HashMap<String, String> blue_cdx_hashes= new HashMap<>() {{
+        put("SHA256","somerandomtestbluecdxhash");
+    }};
+
+    private static Organization blue_cdx_org = new Organization("blue_cdx_test_org", "www.blue_cdx.test");
+
+    private static Description blue_cdx_description = new Description("a_summary_about_the_blue_cdx_component");
+
+    private static LicenseCollection blue_cdx_licenses = new LicenseCollection();
+
+    private static Set<ExternalReference> blue_externalReference = new HashSet<>(
+            Arrays.asList(
+                    new ExternalReference("www.bluecdxref.test", "blue_cdx")
+            )
+    );
+
+    private static HashMap<String, Set<String>> blue_cdx_properties = new HashMap<>() {{
+       put("blue_properties", Set.of("this_is_blue", "it's also cool", "but kind of outdated"));
+    }};
+
+    CDX14ComponentObject comp_cdx_blue = new CDX14ComponentObject(
+            "library", "1234567890-blue-id-cdx", "blue_cdx_author", "test_component_blue_cdx",
+            blue_cdx_licenses, "blue_copyright_cdx", blue_cdx_hashes, blue_cdx_org, "1.0.2",
+            blue_cdx_description, Set.of("cpe2.3::test_blue_cdx_cpe"), Set.of("pkg:bluecdxpackage/blue@1.1.0"),
+            "blueMimeType", "blue_cdx_publisher", "blue_cdx_scope", "blue_cdx_group",
+            blue_externalReference, blue_cdx_properties
+    );
+
+    private static HashMap<String, String> yellow_cdx_hashes= new HashMap<>() {{
+        put("SHA256","somerandomtestyellowcdxhash");
+    }};
+
+    private static Organization yellow_cdx_org = new Organization("yellow_cdx_test_org", "www.yellow_cdx.test");
+
+    private static Description yellow_cdx_description = new Description("a_summary_about_the_yellow_cdx_component");
+
+    private static LicenseCollection yellow_cdx_licenses = new LicenseCollection();
+
+    private static Set<ExternalReference> yellow_externalReference = new HashSet<>(
+            Arrays.asList(
+                    new ExternalReference("www.yellowcdxref.test", "yellow_cdx")
+            )
+    );
+
+    private static HashMap<String, Set<String>> yellow_cdx_properties = new HashMap<>() {{
+        put("yellow_properties", Set.of("this_is_yellow", "it's also really cool", "but has a large size"));
+    }};
+
+    CDX14ComponentObject comp_cdx_yellow = new CDX14ComponentObject(
+            "library", "1234567890-yellow-id-cdx", "yellow_cdx_author", "test_component_yellow_cdx",
+            yellow_cdx_licenses, "yellow_copyright_cdx", yellow_cdx_hashes, yellow_cdx_org, "1.0.2",
+            yellow_cdx_description, Set.of("cpe2.3::test_yellow_cdx_cpe"), Set.of("pkg:yellowcdxpackage/yellow@1.1.0"),
+            "yellowMimeType", "yellow_cdx_publisher", "yellow_cdx_scope", "yellow_cdx_group",
+            yellow_externalReference, yellow_cdx_properties
+    );
+
+    /** SVIP Test Components **/
 
     Component comp_svip_blue = new SVIPComponentObject(
             "blue_package", "1234567890-blue-id", "blue_author",
