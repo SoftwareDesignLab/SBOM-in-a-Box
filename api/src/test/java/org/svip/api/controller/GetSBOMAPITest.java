@@ -97,15 +97,18 @@ public class GetSBOMAPITest extends APITest{
     }
 
     @Test
-    @DisplayName("Request SBOM with invalid ID value")
-    public void get_invalid_ID_SBOM(){
-
-    }
-
-    @Test
     @DisplayName("Request SBOM with valid, but missing ID")
     public void get_missing_ID_SBOM(){
 
+        // Get a bad id
+        long missingID = 99999;
+        when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.empty());
+
+        // Make API Request
+        ResponseEntity<?> response = controller.getSBOM(missingID);
+
+        // Assert correct object was returned
+        assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
     }
 
 }
