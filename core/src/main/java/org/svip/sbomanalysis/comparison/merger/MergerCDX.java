@@ -22,12 +22,12 @@ import java.util.*;
 
 public class MergerCDX extends Merger {
 
-    public MergerCDX(CDX14SBOM A, CDX14SBOM B) {
-        super(A, B);
+    public MergerCDX() {
+        super();
     }
 
     @Override
-    protected SBOM mergeSBOM() {
+    public SBOM mergeSBOM(SBOM A, SBOM B){
 
         Set<Component> componentsA = A.getComponents();
         Set<Component> componentsB = B.getComponents();

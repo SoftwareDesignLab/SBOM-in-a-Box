@@ -18,12 +18,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 public class MergerSPDX extends Merger {
 
-    public MergerSPDX(SPDX23SBOM A, SPDX23SBOM B) {
-        super(A, B);
+    public MergerSPDX() {
+        super();
     }
 
     @Override
-    protected SBOM mergeSBOM() {
+    public SBOM mergeSBOM(SBOM A, SBOM B){
 
         Set<Component> componentsA = A.getComponents();
         Set<Component> componentsB = B.getComponents();
