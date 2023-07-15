@@ -216,8 +216,6 @@ public class SVIPApiController {
         try{
             Deserializer d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
             sbom = d.readFromString(sbomFile.get().getContents());
-        } catch (IllegalArgumentException e){
-            return new ResponseEntity<>("Schema or Format Could not be Determined", HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (JsonProcessingException e ){
             return new ResponseEntity<>("Failed to deserialize SBOM content, may be an unsupported format", HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception e){
