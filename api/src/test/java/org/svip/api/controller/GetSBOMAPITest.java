@@ -86,7 +86,14 @@ public class GetSBOMAPITest extends APITest{
     @Test
     @DisplayName("Parse Unsupported SBOM")
     public void get_unsupported_SBOM_format(){
-        // alpine cdx
+        // Get CDX14 XML SBOM when requested
+        when(repository.findById(CDX14_XML_ID)).thenAnswer(i -> Optional.of(fileMap.get(CDX14_XML_ID)));
+
+        // Make API Request
+        ResponseEntity<?> response = controller.getSBOM(CDX14_XML_ID);
+
+        // Assert correct object was returned
+        assertEquals(response.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Test
