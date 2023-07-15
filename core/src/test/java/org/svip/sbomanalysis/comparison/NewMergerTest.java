@@ -2,8 +2,11 @@ package org.svip.sbomanalysis.comparison;
 
 import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
 import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 
@@ -13,9 +16,14 @@ import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+import org.svip.sbomanalysis.comparison.merger.Merger;
+import org.svip.sbomanalysis.comparison.merger.MergerCDX;
 import org.svip.sbomanalysis.comparison.merger.MergerController;
+import org.svip.sbomfactory.translators.TranslatorCDXJSON;
 
 import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class NewMergerTest {
 
@@ -118,6 +126,7 @@ public class NewMergerTest {
 
     /** CDX Test Components **/
 
+    // Blue
     private static HashMap<String, String> blue_cdx_hashes= new HashMap<>() {{
         put("SHA256","somerandomtestbluecdxhash");
     }};
@@ -146,6 +155,7 @@ public class NewMergerTest {
             blue_externalReference, blue_cdx_properties
     );
 
+    // Yellow
     private static HashMap<String, String> yellow_cdx_hashes= new HashMap<>() {{
         put("SHA256","somerandomtestyellowcdxhash");
     }};
@@ -172,6 +182,36 @@ public class NewMergerTest {
             yellow_cdx_description, Set.of("cpe2.3::test_yellow_cdx_cpe"), Set.of("pkg:yellowcdxpackage/yellow@1.1.0"),
             "yellowMimeType", "yellow_cdx_publisher", "yellow_cdx_scope", "yellow_cdx_group",
             yellow_externalReference, yellow_cdx_properties
+    );
+
+
+    private static HashMap<String, String> green_cdx_hashes= new HashMap<>() {{
+        put("SHA256","somerandomtestbluecdxhash");
+    }};
+
+    // Green
+    private static Organization green_cdx_org = new Organization("green_cdx_test_org", "www.green_cdx.test");
+
+    private static Description green_cdx_description = new Description("a_summary_about_the_green_cdx_component");
+
+    private static LicenseCollection green_cdx_licenses = new LicenseCollection();
+
+    private static Set<ExternalReference> green_externalReference = new HashSet<>(
+            Arrays.asList(
+                    new ExternalReference("www.greencdxref.test", "green_cdx")
+            )
+    );
+
+    private static HashMap<String, Set<String>> green_cdx_properties = new HashMap<>() {{
+        put("green_properties", Set.of("this_is_green", "it's also cool", "but kind of slow"));
+    }};
+
+    CDX14ComponentObject comp_cdx_green = new CDX14ComponentObject(
+            "library", "1234567890-green-id-cdx", "green_cdx_author", "test_component_green_cdx",
+            green_cdx_licenses, "green_copyright_cdx", green_cdx_hashes, green_cdx_org, "1.0.2",
+            green_cdx_description, Set.of("cpe2.3::test_green_cdx_cpe"), Set.of("pkg:greencdxpackage/green@1.1.0"),
+            "greenMimeType", "green_cdx_publisher", "green_cdx_scope", "green_cdx_group",
+            green_externalReference, green_cdx_properties
     );
 
     /** SVIP Test Components **/
@@ -216,6 +256,92 @@ public class NewMergerTest {
     );
 
 
+    @Test
+    public void merger_should_merge_basic_CDX_SBOMs() {
+
+        // SBOM One
+
+        CDX14Builder builder_one = new CDX14Builder();
+
+        builder_one.setFormat("CycloneDX");
+
+        builder_one.setName("test_sbom_one");
+
+        builder_one.setUID("urn:uuid:0000a000-0aaa-0000-00a0-0000aaa00000");
+
+        builder_one.setVersion("1");
+
+        builder_one.setSpecVersion("1.4");
+
+        builder_one.addLicense("test_license");
+
+        CreationData creationDataSBOMOne = new CreationData();
+
+        builder_one.setCreationData(creationDataSBOMOne);
+
+        builder_one.setDocumentComment("This is a test comment for the first SBOM");
+
+        builder_one.setRootComponent(comp_cdx_green);
+
+        builder_one.addComponent(comp_cdx_green);
+
+        builder_one.addComponent(comp_cdx_yellow);
+
+        Relationship green_to_yellow = new Relationship(comp_cdx_yellow.getUID(), "Depends on");
+
+        builder_one.addRelationship(comp_cdx_green.getUID(), green_to_yellow);
+
+        ExternalReference exRefSBOMOne = new ExternalReference("www.testsbom.test", "test_sbom_one");
+
+        builder_one.addExternalReference(exRefSBOMOne);
+
+        CDX14SBOM SBOM_one = builder_one.buildCDX14SBOM();
+
+        // SBOM Two
+
+        CDX14Builder builder_two = new CDX14Builder();
+
+        builder_one.setFormat("CycloneDX");
+
+        builder_one.setName("test_sbom_two");
+
+        builder_one.setUID("urn:uuid:aaaa0aaa-a000-aaaa-aa0a-aaaa000aaaaa");
+
+        builder_one.setVersion("1");
+
+        builder_one.setSpecVersion("1.4");
+
+        builder_one.addLicense("test_license");
+
+        CreationData creationDataSBOMTwo = new CreationData();
+
+        builder_one.setCreationData(creationDataSBOMTwo);
+
+        builder_one.setDocumentComment("This is a test comment for the second SBOM");
+
+        builder_one.setRootComponent(comp_cdx_green);
+
+        builder_one.addComponent(comp_cdx_green);
+
+        builder_one.addComponent(comp_cdx_blue);
+
+        Relationship green_to_blue = new Relationship(comp_cdx_blue.getUID(), "Depends on");
+
+        builder_one.addRelationship(comp_cdx_green.getUID(), green_to_blue);
+
+        ExternalReference exRefSBOMTwo = new ExternalReference("www.testsbom.test", "test_sbom_two");
+
+        builder_one.addExternalReference(exRefSBOMTwo);
+
+        CDX14SBOM SBOM_two = builder_two.buildCDX14SBOM();
+
+        Merger merger = new MergerCDX();
+
+        SBOM result = merger.mergeSBOM(SBOM_one, SBOM_two);
+
+        assertNotNull(result);
+
+    }
 
     @Test
     public void merger_should_merge_basic_SVIP_SBOMs() {

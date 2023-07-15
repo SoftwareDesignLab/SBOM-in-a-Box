@@ -19,12 +19,11 @@ public abstract class Merger {
 
     SBOM B;
 
-    public Merger(SBOM A, SBOM B) {
-        this.A = A;
-        this.B = B;
+    public Merger() {
+
     }
 
-    protected abstract SBOM mergeSBOM();
+    public abstract SBOM mergeSBOM(SBOM A, SBOM B);
 
     protected abstract Set<Component> mergeComponents(Set<Component> A, Set<Component> B);
 
