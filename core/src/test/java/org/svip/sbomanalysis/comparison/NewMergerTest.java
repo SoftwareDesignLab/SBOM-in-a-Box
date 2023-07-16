@@ -23,6 +23,7 @@ import org.svip.sbomfactory.translators.TranslatorCDXJSON;
 
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class NewMergerTest {
@@ -301,33 +302,33 @@ public class NewMergerTest {
 
         CDX14Builder builder_two = new CDX14Builder();
 
-        builder_one.setFormat("CycloneDX");
+        builder_two.setFormat("CycloneDX");
 
-        builder_one.setName("test_sbom_two");
+        builder_two.setName("test_sbom_two");
 
-        builder_one.setUID("urn:uuid:aaaa0aaa-a000-aaaa-aa0a-aaaa000aaaaa");
+        builder_two.setUID("urn:uuid:aaaa0aaa-a000-aaaa-aa0a-aaaa000aaaaa");
 
-        builder_one.setVersion("1");
+        builder_two.setVersion("1");
 
-        builder_one.setSpecVersion("1.4");
+        builder_two.setSpecVersion("1.4");
 
-        builder_one.addLicense("test_license");
+        builder_two.addLicense("test_license");
 
         CreationData creationDataSBOMTwo = new CreationData();
 
-        builder_one.setCreationData(creationDataSBOMTwo);
+        builder_two.setCreationData(creationDataSBOMTwo);
 
-        builder_one.setDocumentComment("This is a test comment for the second SBOM");
+        builder_two.setDocumentComment("This is a test comment for the second SBOM");
 
-        builder_one.setRootComponent(comp_cdx_green);
+        builder_two.setRootComponent(comp_cdx_green);
 
-        builder_one.addComponent(comp_cdx_green);
+        builder_two.addComponent(comp_cdx_green);
 
-        builder_one.addComponent(comp_cdx_blue);
+        builder_two.addComponent(comp_cdx_blue);
 
         Relationship green_to_blue = new Relationship(comp_cdx_blue.getUID(), "Depends on");
 
-        builder_one.addRelationship(comp_cdx_green.getUID(), green_to_blue);
+        builder_two.addRelationship(comp_cdx_green.getUID(), green_to_blue);
 
         ExternalReference exRefSBOMTwo = new ExternalReference("www.testsbom.test", "test_sbom_two");
 
@@ -340,6 +341,16 @@ public class NewMergerTest {
         SBOM result = merger.mergeSBOM(SBOM_one, SBOM_two);
 
         assertNotNull(result);
+
+        assertEquals("test_sbom_one", result.getName());
+
+        assertEquals("test_component_green_cdx", result.getRootComponent().getName());
+
+        assertEquals("urn:uuid:0000a000-0aaa-0000-00a0-0000aaa00000", result.getUID());
+
+        assertEquals(3, result.getComponents().size());
+
+        assertEquals(2, result.getExternalReferences().size());
 
     }
 
