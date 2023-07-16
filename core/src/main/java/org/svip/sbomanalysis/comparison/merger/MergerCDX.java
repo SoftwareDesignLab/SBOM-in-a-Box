@@ -93,16 +93,24 @@ public class MergerCDX extends Merger {
 
     @Override
     protected Set<Component> mergeComponents(Set<Component> A, Set<Component> B) {
+
+        Set<Component> mergedComponents = new HashSet<>();
+
         for(Component componentA : A) {
+            boolean merged = false;
             CDX14ComponentObject componentA_CDX = (CDX14ComponentObject) componentA;
             for(Component componentB : B) {
                 CDX14ComponentObject componentB_CDX = (CDX14ComponentObject) componentB;
                 if(componentA_CDX.getName() == componentB_CDX.getName() && componentA_CDX.getVersion() == componentB_CDX.getVersion()) {
-                    mergeComponent(componentA, componentB);
+                    mergedComponents.add(mergeComponent(componentA, componentB));
+                    B.remove(componentB);
+                    merged = true;
                 }
             }
+            if(!merged) mergedComponents.add(componentA);
         }
-        return null;
+        for(Component componentB : B) { mergedComponents.add(componentB); }
+        return mergedComponents;
     }
 
     @Override
@@ -296,25 +304,29 @@ public class MergerCDX extends Merger {
     private Organization mergeOrganization(Organization organizationA, Organization organizationB) {
 
         // New organization
-        Organization organizationNew = null;
+        Organization organizationNew;
 
         // Based on the contents of organization A and organization B, attempt to merge them
-        if(organizationA.getName().equals(organizationB.getName()) && organizationA.getUrl().equals(organizationB.getUrl())) {
+        if(organizationA != null && organizationB == null) {
+
+            // Condition three: Only A exists: merged Organization becomes Organization A
+            return organizationA;
+
+        } else if (organizationB != null && organizationA == null) {
+
+            // condition four: Only B exists: merged Organization becomes Organization B
+            return organizationB;
+
+        } else if (organizationA == null && organizationB == null) {
+
+            return null;
+
+        } else if(organizationA.getName().equals(organizationB.getName()) && organizationA.getUrl().equals(organizationB.getUrl())) {
 
             // Condition one: both have same name and url: merge their authors into one
             Set<Contact> manufactureAuthorsNew = mergeAuthors(organizationA.getContacts(), organizationB.getContacts());
             organizationNew = new Organization(organizationA.getName(), organizationA.getUrl());
             for(Contact manufacturer : manufactureAuthorsNew) { organizationNew.addContact(manufacturer); }
-
-        } else if(organizationA != null && organizationB == null) {
-
-            // Condition three: Only A exists: merged Organization becomes Organization A
-            return organizationA;
-
-        } else if (!organizationB.equals(null) && organizationA.equals(null)) {
-
-            // condition four: Only B exists: merged Organization becomes Organization B
-            return organizationB;
 
         } else { return organizationA; }
 
@@ -328,24 +340,30 @@ public class MergerCDX extends Merger {
         Set<Contact> authorsNew = new HashSet<>();
 
         // Cycle through each primary SBOM author
-        for(Contact authorA : authorsA) {
-            // Cycle through all authors from sbom B and compare them against current primary SBOM author
-            for(Contact authorB : authorsB) {
-                if(
-                        authorA.getName().contains(authorB.getName()) &&
-                                authorA.getEmail().contains(authorB.getEmail()) &&
-                                authorA.getPhone().contains(authorB.getPhone())
-                ) {
-                    // If a duplicate is found remove it from second SBOM authors
-                    authorsB.remove(authorB);
+        if(authorsA != null && !authorsA.isEmpty()) {
+            for (Contact authorA : authorsA) {
+                // Cycle through all authors from sbom B and compare them against current primary SBOM author
+                if(authorsB != null && !authorsB.isEmpty()) {
+                    for (Contact authorB : authorsB) {
+                        if (
+                                authorA.getName().contains(authorB.getName()) &&
+                                        authorA.getEmail().contains(authorB.getEmail()) &&
+                                        authorA.getPhone().contains(authorB.getPhone())
+                        ) {
+                            // If a duplicate is found remove it from second SBOM authors
+                            authorsB.remove(authorB);
+                        }
+                    }
                 }
+                // After duplicates have been removed, add the author from the primary SBOM in
+                authorsNew.add(authorA);
             }
-            // After duplicates have been removed, add the author from the primary SBOM in
-            authorsNew.add(authorA);
         }
         // Add all remaining authors from second SBOM into new authors
-        for(Contact authorB : authorsB) {
-            authorsNew.add(authorB);
+        if(authorsB != null && !authorsB.isEmpty()) {
+            for (Contact authorB : authorsB) {
+                authorsNew.add(authorB);
+            }
         }
 
         // Return the merged Authors
@@ -359,40 +377,48 @@ public class MergerCDX extends Merger {
         // new creation tools set
         Set<CreationTool> mergedTools = new HashSet<>();
 
-        for(CreationTool toolA : toolsA) {
-            boolean merged = false;
-            for(CreationTool toolB : toolsB) {
-                if (toolA.getName() == toolB.getName() && toolA.getVendor() == toolB.getVendor() && toolA.getVersion() == toolB.getVersion()) {
+        if(toolsA != null && !toolsA.isEmpty()) {
+            for (CreationTool toolA : toolsA) {
+                boolean merged = false;
+                if(toolsB != null && !toolsB.isEmpty()) {
+                    for (CreationTool toolB : toolsB) {
+                        if (toolA.getName() == toolB.getName() && toolA.getVendor() == toolB.getVendor() && toolA.getVersion() == toolB.getVersion()) {
 
-                    // New tool to hold merged CreationTool data
-                    CreationTool newTool = new CreationTool();
+                            // New tool to hold merged CreationTool data
+                            CreationTool newTool = new CreationTool();
 
-                    // Set the name, vendor, and version
-                    newTool.setName(toolA.getName());
-                    newTool.setVendor(toolA.getVendor());
-                    newTool.setVersion(toolA.getVersion());
+                            // Set the name, vendor, and version
+                            newTool.setName(toolA.getName());
+                            newTool.setVendor(toolA.getVendor());
+                            newTool.setVersion(toolA.getVersion());
 
-                    // Merge A hashes
-                    for (String hashA : toolA.getHashes().keySet()) {
-                        newTool.addHash(hashA, toolA.getHashes().get(hashA));
-                    }
-                    // Merge B hashes
-                    for (String hashB : toolB.getHashes().keySet()) {
-                        // Make sure it doesn't already exist from the A hashes
-                        if (!newTool.getHashes().containsKey(hashB)) {
-                            newTool.addHash(hashB, toolB.getHashes().get(hashB));
+                            // Merge A hashes
+                            for (String hashA : toolA.getHashes().keySet()) {
+                                newTool.addHash(hashA, toolA.getHashes().get(hashA));
+                            }
+                            // Merge B hashes
+                            for (String hashB : toolB.getHashes().keySet()) {
+                                // Make sure it doesn't already exist from the A hashes
+                                if (!newTool.getHashes().containsKey(hashB)) {
+                                    newTool.addHash(hashB, toolB.getHashes().get(hashB));
+                                }
+                            }
+
+                            mergedTools.add(newTool);
+                            toolsB.remove(toolB);
+                            merged = true;
+
                         }
                     }
-
-                    mergedTools.add(newTool);
-                    toolsB.remove(toolB);
-                    merged = true;
-
                 }
+                if (!merged) mergedTools.add(toolA);
             }
-            if(!merged) mergedTools.add(toolA);
         }
-        for(CreationTool toolB : toolsB) { if(toolB != null) mergedTools.add(toolB); }
+        if(toolsB != null && !toolsB.isEmpty()) {
+            for (CreationTool toolB : toolsB) {
+                if (toolB != null) mergedTools.add(toolB);
+            }
+        }
 
         // Returned the merged tools
         return mergedTools;
@@ -404,27 +430,33 @@ public class MergerCDX extends Merger {
         // New set for merged External References
         Set<ExternalReference> mergedExternalReferences = new HashSet<>();
 
-        for(ExternalReference a : refA) {
-            boolean merged = false;
-            for (ExternalReference b : refB) {
-                if (a.getType() == b.getType() && a.getUrl() == b.getUrl()) {
-                    ExternalReference mergedExRef = new ExternalReference(a.getUrl(), a.getType());
-                    if (!b.getHashes().isEmpty() && b.getHashes() != null) {
-                        b.getHashes().keySet().forEach(x -> mergedExRef.addHash(x, b.getHashes().get(x)));
+        if(refA != null && !refA.isEmpty()) {
+            for (ExternalReference a : refA) {
+                boolean merged = false;
+                if(refB != null && !refB.isEmpty()) {
+                    for (ExternalReference b : refB) {
+                        if (a.getType() == b.getType() && a.getUrl() == b.getUrl()) {
+                            ExternalReference mergedExRef = new ExternalReference(a.getUrl(), a.getType());
+                            if (!b.getHashes().isEmpty() && b.getHashes() != null) {
+                                b.getHashes().keySet().forEach(x -> mergedExRef.addHash(x, b.getHashes().get(x)));
+                            }
+                            if (!a.getHashes().isEmpty() && a.getHashes() != null) {
+                                a.getHashes().keySet().forEach(x -> mergedExRef.addHash(x, a.getHashes().get(x)));
+                            }
+                            merged = true;
+                            refB.remove(b);
+                            mergedExternalReferences.add(mergedExRef);
+                        }
                     }
-                    if (!a.getHashes().isEmpty() && a.getHashes() != null) {
-                        a.getHashes().keySet().forEach(x -> mergedExRef.addHash(x, a.getHashes().get(x)));
-                    }
-                    merged = true;
-                    refB.remove(b);
-                    mergedExternalReferences.add(mergedExRef);
                 }
+                if (!merged) mergedExternalReferences.add(a);
             }
-            if(!merged) mergedExternalReferences.add(a);
         }
-        for(ExternalReference b : refB) {
-            if (b != null) {
-                mergedExternalReferences.add(b);
+        if(refB != null) {
+            for (ExternalReference b : refB) {
+                if (b != null) {
+                    mergedExternalReferences.add(b);
+                }
             }
         }
 
