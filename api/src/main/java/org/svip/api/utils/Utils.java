@@ -15,7 +15,6 @@ import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
-import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.old.SBOM;
 import org.svip.sbom.model.shared.Relationship;

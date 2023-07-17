@@ -17,7 +17,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.svip.sbomfactory.serializers.SerializerFactory.Format.TAGVALUE;
 
 public class ConvertFromAPITest extends APITest{
     private Map<Long, SBOMFile> testMap;
