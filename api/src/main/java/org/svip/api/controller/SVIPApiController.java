@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
+import org.svip.api.utils.Converter;
 import org.svip.api.utils.Utils;
 import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomfactory.translators.TranslatorException;
@@ -228,7 +229,7 @@ public class SVIPApiController {
 
         // Get and convert SBOM
         SBOMFile toConvert = sbomFile.get();
-        HashMap<SBOMFile, String> conversionResult = Utils.convert(toConvert, schema, format);
+        HashMap<SBOMFile, String> conversionResult = Converter.convert(toConvert, schema, format);
         String error = (String) conversionResult.values().toArray()[0];
         SBOMFile converted = (SBOMFile) conversionResult.keySet().toArray()[0];
 

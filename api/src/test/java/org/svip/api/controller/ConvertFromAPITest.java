@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.model.SBOMFile;
+import org.svip.api.utils.Converter;
 import org.svip.api.utils.Utils;
 import org.svip.sbomfactory.serializers.SerializerFactory;
 
@@ -19,6 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class ConvertFromAPITest extends APITest{
+    private Converter converter;
     private Map<Long, SBOMFile> testMap;
     private static final Logger LOGGER = LoggerFactory.getLogger(SVIPApiController.class);
 
@@ -94,7 +96,7 @@ public class ConvertFromAPITest extends APITest{
                     try{
                         String originalFormat = Utils.assumeFormatFromDocument(sbom);
 
-                        assertEquals("", Utils.convert(new SBOMFile("convertBack." +
+                        assertEquals("", Converter.convert(new SBOMFile("convertBack." +
                         (originalFormat.equals("TAGVALUE") ? "json" : "spdx") ,
 
                             responseBody), thisSchema.name(), originalFormat).values().toArray()[0]);
