@@ -15,6 +15,7 @@ import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.old.SBOM;
 import org.svip.sbom.model.shared.Relationship;
@@ -249,6 +250,7 @@ public class Utils {
             s = SerializerFactory.createSerializer(schema, format, true);
             s.setPrettyPrinting(true);
             SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
+            SerializerFactory.Schema originalSchema = assumeSchemaFromOriginal(sbom.getContents());
 
             builder.setFormat(String.valueOf(schema));
             builder.setName(deserialized.getName());
@@ -264,7 +266,7 @@ public class Utils {
             builder.setDocumentComment(deserialized.getDocumentComment());
 
             SVIPComponentBuilder compBuilder = new SVIPComponentBuilder();
-            buildSVIPComponentObject(deserialized.getRootComponent(), compBuilder, schema);
+            buildSVIPComponentObject(deserialized.getRootComponent(), compBuilder, originalSchema);
             builder.setRootComponent(compBuilder.buildAndFlush());
 
             if(deserialized.getComponents() != null )
@@ -272,7 +274,7 @@ public class Utils {
                 ) {
                     if(c == null)
                         continue;
-                    buildSVIPComponentObject(c, compBuilder, schema);
+                    buildSVIPComponentObject(c, compBuilder, originalSchema);
                     builder.addSPDX23Component(compBuilder.buildAndFlush());
                 }
 
@@ -318,8 +320,14 @@ public class Utils {
 
     }
 
+    /**
+     * Build an SVIP Component object
+     * @param component original uncasted component
+     * @param compBuilder compBuilder in use
+     * @param originalSchema the original Schema we are converting from
+     */
     private static void buildSVIPComponentObject(Component component, SVIPComponentBuilder compBuilder,
-                                                 SerializerFactory.Schema schema) {
+                                                 SerializerFactory.Schema originalSchema) {
         if(component == null)
             return;
         compBuilder.setType(component.getType());
@@ -334,8 +342,8 @@ public class Utils {
                 compBuilder.addHash(entry.getKey(), entry.getValue());
 
         // schema specific
-        switch (schema){
-            case SPDX23 -> {
+        switch (originalSchema){
+            case CDX14 -> {
 
                 CDX14ComponentObject cdx14ComponentObject = (CDX14ComponentObject) component;
                 compBuilder.setSupplier(cdx14ComponentObject.getSupplier());
@@ -364,7 +372,7 @@ public class Utils {
                         for (String value : prop.getValue())
                             compBuilder.addProperty(prop.getKey(), value);
             }
-            case CDX14 -> {
+            case SPDX23 -> {
 
                 // is this a package or file object?
                 if(component instanceof SPDX23PackageObject spdx23PackageObject){
@@ -383,7 +391,6 @@ public class Utils {
 
 
     }
-
 
     /**
      * Returns a message detailing what went wrong during serialization/deserialization
@@ -455,6 +462,16 @@ public class Utils {
         if (sbom.getContents().contains("DocumentName:") || sbom.getContents().contains("DocumentNamespace:"))
             originalFormat = TAGVALUE.name();
         return originalFormat;
+    }
+
+    /**
+     * Helper function to assume schema from raw SBOM document
+     * @param contents SBOMFile to check
+     * @return String representation of the schema
+     */
+    public static SerializerFactory.Schema assumeSchemaFromOriginal(String contents) {
+        return (contents.toLowerCase().contains("spdxversion")) ?
+                SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14;
     }
 
 }

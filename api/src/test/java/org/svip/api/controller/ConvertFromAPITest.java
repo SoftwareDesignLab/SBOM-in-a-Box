@@ -74,9 +74,7 @@ public class ConvertFromAPITest extends APITest{
 
                     // retrieve test SBOM and assume schema
                     SBOMFile sbom = testMap.get(id);
-                    String testString = sbom.getContents().toLowerCase();
-                    SerializerFactory.Schema thisSchema = (testString.contains("spdx")) ?
-                            SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14;
+                    SerializerFactory.Schema thisSchema = Utils.assumeSchemaFromOriginal(sbom.getContents().toLowerCase());
 
                     // check if test is valid
                     if (Utils.convertTestController(convertToSchema, convertToFormat, id, thisSchema, testMap, sbom))
@@ -114,8 +112,6 @@ public class ConvertFromAPITest extends APITest{
             }
         }
     }
-
-
 
 
     /**
