@@ -5,8 +5,7 @@ import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
 
 import java.util.*;
 
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISC_MISMATCH;
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.TIMESTAMP_MISMATCH;
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
 
 /**
  * File: CreationData.java
@@ -166,8 +165,13 @@ public class CreationData {
     public List<Conflict> compare(CreationData other){
         ConflictFactory cf = new ConflictFactory();
 
+        // Compare single String fields
         cf.addConflict("Timestamp", TIMESTAMP_MISMATCH, this.creationTime, other.getCreationTime());
         cf.addConflict("Creator Comment", MISC_MISMATCH, this.creatorComment, other.getCreatorComment());
+
+        // Compare licenses
+        // todo dif between this and sbom licenses?
+        cf.compareSets("Creation Data: Licenses", LICENSE_MISMATCH, this.licenses, other.getLicenses());
         // todo
         // authors, manufacture, supplier, licenses, properties, creationTools
         return cf.getConflicts();
