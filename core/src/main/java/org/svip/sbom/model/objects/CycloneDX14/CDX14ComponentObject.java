@@ -297,20 +297,7 @@ public class CDX14ComponentObject implements CDX14Package {
         // AUTHOR
         cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
         // Licenses
-        if (this.licenses != null && other.getLicenses() != null) {
-            // CONCLUDED
-            cf.compareSets("License", LICENSE_MISMATCH, this.licenses.getConcluded(), other.getLicenses().getConcluded());
-            // DECLARED
-            cf.compareSets("License", LICENSE_MISMATCH, this.licenses.getDeclared(), other.getLicenses().getDeclared());
-            // INFO FROM FILES
-            cf.compareSets("License", LICENSE_MISMATCH, this.licenses.getInfoFromFiles(), other.getLicenses().getInfoFromFiles());
-        }
-        // TODO not currently possible to add missing conflicts if LicenceCollection is null/empty in one component and not null/empty in another component
-//        else if (this.licenses != null && (this.licenses.getConcluded().size() > 0 || this.licenses.getDeclared().size() > 0 || this.licenses.getInfoFromFiles().size() > 0)) {
-//            conflicts.add(new MissingConflict("license", this.licenses.getConcluded().toString() + this.licenses.getDeclared().toString() + this.licenses.getInfoFromFiles().toString(), null));
-//        } else if (other.getLicenses() != null && (other.getLicenses().getConcluded().size() > 0 || other.getLicenses().getDeclared().size() > 0 || other.getLicenses().getInfoFromFiles().size() > 0)) {
-//            conflicts.add(new MissingConflict("license", null, other.getLicenses().getConcluded().toString() + other.getLicenses().getDeclared().toString() + other.getLicenses().getInfoFromFiles().toString()));
-//        }
+        cf.compareLicenseCollections("License", LICENSE_MISMATCH, this.licenses, other.getLicenses());
         // HASHES
         if (this.hashes != null && other.getHashes() != null) {
             // TODO Should we compare keys, values or both?
