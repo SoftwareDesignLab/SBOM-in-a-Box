@@ -399,12 +399,17 @@ public class SBOMGeneratorCLI {
             // Write to file
             Serializer s = SerializerFactory.createSerializer(schema, format, true);
             SVIPSBOM sbom = controller.buildSBOM(schema);
+
+            Debug.log(LOG_TYPE.SUMMARY, "Serializing " + schema + " SBOM to " + format);
             String serialized = s.writeToString(sbom);
 
+            String sbomFile = outPath + "/" + sbom.getName() + "_" + schema + "." + format.toString().toLowerCase();
+            Debug.log(LOG_TYPE.DEBUG, "Attempting to write SBOM to file " + sbomFile);
             Files.createDirectories(Path.of(outPath));
-            PrintWriter out = new PrintWriter(outPath + "/" + sbom.getName() + "_" + schema + "." + format.toString().toLowerCase());
+            PrintWriter out = new PrintWriter(sbomFile);
             out.println(serialized);
             out.close();
+            Debug.log(LOG_TYPE.SUMMARY, "SUCCESSFULLY WRITTEN " + schema + " " + format + " SBOM to path: " + sbomFile);
         } catch(IOException e) {
             log(Debug.LOG_TYPE.EXCEPTION, e);
             log(Debug.LOG_TYPE.ERROR, "Error writing to file " + outPath);

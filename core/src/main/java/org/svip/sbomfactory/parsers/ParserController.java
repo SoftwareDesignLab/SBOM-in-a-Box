@@ -3,10 +3,8 @@ package org.svip.sbomfactory.parsers;
 import org.svip.builderfactory.SVIPSBOMBuilderFactory;
 import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
-import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
-import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbomfactory.parsers.contexts.ContextParser;
@@ -19,7 +17,6 @@ import org.svip.sbomfactory.serializers.SerializerFactory;
 import org.svip.utils.Debug;
 import org.svip.utils.VirtualPath;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 import static org.svip.utils.Debug.LOG_TYPE;
@@ -43,7 +40,7 @@ public class ParserController {
     /**
      * Store a list of all SVIP components mapped to their hash as the key (to check for duplicates).
      */
-    private final Map<String, SVIPSBOMBuilder> components;
+    private final Map<String, SVIPComponentBuilder> components;
     private final Map<VirtualPath, String> files;
     private static final HashMap<String, Parser> EXTENSION_MAP = new HashMap<>() {{
         //
@@ -102,6 +99,17 @@ public class ParserController {
     //#region Getters
 
     public SVIPSBOM buildSBOM(SerializerFactory.Schema schema) {
+        // Add Components to SBOM
+        for (SVIPComponentBuilder c : components.values()) {
+            // Default to external
+            if (Parser.getType(c) == null) c.setType("EXTERNAL");
+
+            c.setFilesAnalyzed(true);
+
+            c.setUID(UUID.randomUUID().toString());
+            builder.addComponent(c.build());
+        }
+
         builder.setFormat(schema.getName());
         builder.setVersion("1");
         builder.setName(this.projectName);
@@ -110,7 +118,6 @@ public class ParserController {
 
         CreationData data = new CreationData();
         data.setCreationTime(new Date().toString());
-        data.addAuthor(new Contact("Ian Dunn", null, null));
 
         CreationTool tool = new CreationTool();
         tool.setName(Metadata.NAME);
@@ -120,6 +127,7 @@ public class ParserController {
 
         builder.setCreationData(data);
 
+        Debug.log(LOG_TYPE.SUMMARY, "Building " + schema + " SBOM");
         return builder.Build();
     }
 
@@ -190,96 +198,63 @@ public class ParserController {
         }
 
         // Init Component list
-        List<SVIPComponentBuilder> components = new ArrayList<>();
+        List<SVIPComponentBuilder> found = new ArrayList<>();
 
         // Configure parser
         parser.setPWD(filepath);
         parser.setSourceFiles(internalFiles);
 
         // Parse components
-        parser.parse(components, fileContents);
+        parser.parse(found, fileContents);
+
+        found.forEach(Parser::generateHash); // Set all hashes
 
         // If file being parsed is a language file, execute the following additionally
         if(parser instanceof LanguageParser) {
             if (filename.equals("conanfile.py"))
-                new ConanParser().parse(components, fileContents);
+                new ConanParser().parse(found, fileContents);
             else
-                for (final ContextParser cp : contextParsers) cp.parse(components, fileContents);
+                for (final ContextParser cp : contextParsers) cp.parse(found, fileContents);
         }
 
-        // componentMap contains a map from a component's hash to itself
-        Map<String, SVIPComponentObject> componentMap = new HashMap<>();
-        for(Component c : builder.Build().getComponents())
-            componentMap.put(c.getHashes().get("SHA256"), (SVIPComponentObject) c);
-
-        // List of hashes to store any duplicates/dead imports we find to avoid concurrent arraylist modification
-        List<String> toRemove = new ArrayList<>();
         int deadImportCounter = 0;
-
+        int totalRemoved = 0;
         // Check for duplicate named components & dead imports
-        for(SVIPComponentBuilder c : components) {
+        for(SVIPComponentBuilder c : found) {
             SVIPComponentObject newComponent = c.build();
             String hash = newComponent.getHashes().get("SHA256");
-            SVIPComponentObject oldComponent = componentMap.get(hash);
+            SVIPComponentBuilder oldComponent = components.get(hash);
 
+            // Dead import found
             if (newComponent.getType().equalsIgnoreCase("dead_import")) {
-                toRemove.add(hash);
                 Debug.log(LOG_TYPE.DEBUG, "Removed dead import " + newComponent.getName());
                 deadImportCounter++;
+                totalRemoved++;
                 continue;
-            } else if (oldComponent == null) continue; // If a component name doesn't exist, there are no duplicates
-
-            // TODO Compare important fields and update old component\
-
-            /*
-                This is my hack to modify the component group if a duplicate is found. This needs to be here for 2
-                reasons:
-                    1. We can't get a full list of current components from the SVIP SBOM object without building it
-                    2. Building the SVIP SBOM object results in a list of immutable components, and we need to update
-                     the group.
-
-                Thus, we have to modify the class fields programatically through Java APIs. Working on a solution.
-             */
-            try {
-                Field group = SVIPComponentObject.class.getDeclaredField("group");
-                group.setAccessible(true);
-                group.set(oldComponent, newComponent.getGroup());
-            } catch (Exception e) {
-                Debug.log(LOG_TYPE.ERROR, "Could not modify component group. Component" + oldComponent.getName() +
-                        " may have an incorrect group.");
             }
-            // TODO possibly more assignments?
 
-            toRemove.add(newComponent.getHashes().get("SHA256")); // Remove new component directly
-            Debug.log(LOG_TYPE.DEBUG, "Found and removed duplicate component " + newComponent.getName());
-        }
+            // Duplicate found
+            if (oldComponent != null) {
+                Debug.log(LOG_TYPE.DEBUG, "Found and removed duplicate component " + newComponent.getName());
+                totalRemoved++;
+                continue;
+            }
 
-        // Remove all components whose hashes are in toRemove
-        components = components.stream().filter(c -> !toRemove.contains(c.build().getHashes().get("SHA256"))).toList();
-
-        String removedComponentsLog = "Removed " + toRemove.size() + " Components parsed from file " + filename;
-        if(deadImportCounter > 0) removedComponentsLog += " (" + deadImportCounter + "/" + toRemove.size()
-                + " were dead imports)";
-        Debug.log(LOG_TYPE.DEBUG, removedComponentsLog);
-
-        // Add Components to SBOM
-        for (SVIPComponentBuilder c : components) {
-            // Default to external
-            if (Parser.getType(c) == null) c.setType("EXTERNAL");
-
-            c.setFileName(filepath.toString());
-            c.setFilesAnalyzed(true);
-            Parser.generateHash(c);
+            // Otherwise, configure component
+            c.setFileName(filename);
 
             if (parser instanceof PackageManagerParser)
                 c.setFileNotice(null);
             else
                 c.setFileNotice("PARSED AS SOURCE FILE"); // TODO confirm this
-
-            c.setUID(UUID.randomUUID().toString());
-
-            builder.addComponent(c.build());
+            components.put(hash, c);
+            continue;
         }
+
+        String removedComponentsLog = "Removed " + totalRemoved + " Components parsed from file " + filename;
+        if(deadImportCounter > 0) removedComponentsLog += " (" + deadImportCounter + "/" + totalRemoved
+                + " were dead imports)";
+        Debug.log(LOG_TYPE.DEBUG, removedComponentsLog);
     }
 
     //#endregion
