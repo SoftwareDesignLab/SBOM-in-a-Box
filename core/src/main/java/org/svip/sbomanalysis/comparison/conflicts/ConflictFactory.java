@@ -129,39 +129,52 @@ public class ConflictFactory {
             addConflict(field, mismatchType, target.getName(), null);
             return;
         }
+
+        // ensure that these are not missing before their respective mismatch checks
+        boolean nameMissing = false;
+        boolean emailMissing = false;
+        boolean phoneMissing = false;
+
         // Target Name is missing
-        if(target.getName() == null || target.getName().isEmpty())
+        if(target.getName() == null || target.getName().isEmpty()) {
             addConflict(field, mismatchType, null, other.getName());
-
+            nameMissing = true;
+        }
         // Other Name is missing
-        if(other.getName() == null || other.getName().isEmpty())
+        if(other.getName() == null || other.getName().isEmpty()) {
             addConflict(field, mismatchType, target.getName(), null);
-
+            nameMissing = true;
+        }
         // Target Email is missing
-        if(target.getEmail() == null || target.getEmail().isEmpty())
+        if(target.getEmail() == null || target.getEmail().isEmpty()) {
             addConflict(field, mismatchType, null, other.getName());
-
+            emailMissing = true;
+        }
         // Other Email is missing
-        if(other.getEmail() == null || other.getEmail().isEmpty())
+        if(other.getEmail() == null || other.getEmail().isEmpty()) {
             addConflict(field, mismatchType, target.getName(), null);
-
+            emailMissing = true;
+        }
         // Target Phone is missing
-        if(target.getPhone() == null || target.getPhone().isEmpty())
+        if(target.getPhone() == null || target.getPhone().isEmpty()) {
             addConflict(field, mismatchType, null, other.getName());
-
+            phoneMissing = true;
+        }
         // Other Phone is missing
-        if(other.getPhone() == null || other.getPhone().isEmpty())
+        if(other.getPhone() == null || other.getPhone().isEmpty()) {
             addConflict(field, mismatchType, target.getName(), null);
-
+            phoneMissing = true;
+        }
         // Mismatch
-        if(!target.getName().equals(other.getName()))
+        if(!nameMissing && !target.getName().equals(other.getName())) {
             addConflict(field, mismatchType, target.getName(), other.getName());
-
-        if(!target.getPhone().equals(other.getPhone()))
+        }
+        if(!phoneMissing && !target.getPhone().equals(other.getPhone())) {
             addConflict(field, mismatchType, target.getName(), other.getName());
-
-        if(!target.getEmail().equals(other.getEmail()))
+        }
+        if(!emailMissing && !target.getEmail().equals(other.getEmail())) {
             addConflict(field, mismatchType, target.getName(), other.getName());
+        }
     }
 
     /**
