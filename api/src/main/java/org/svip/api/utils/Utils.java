@@ -9,10 +9,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.controller.SVIPApiController;
 import org.svip.api.model.SBOMFile;
+import org.svip.builders.component.SVIPComponentBuilder;
+import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
+import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.old.SBOM;
+import org.svip.sbom.model.shared.Relationship;
+import org.svip.sbom.model.shared.util.ExternalReference;
+import org.svip.sbom.model.uids.CPE;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 import org.svip.sbomfactory.serializers.SerializerFactory;
@@ -22,6 +30,7 @@ import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomfactory.translators.TranslatorException;
 
 import java.io.IOException;
+import java.security.KeyStore;
 import java.util.*;
 
 /**
@@ -239,16 +248,49 @@ public class Utils {
             // serialize into requested schema
 
             s = SerializerFactory.createSerializer(schema, format, true);
+            SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
 
             switch (schema){
-                case SPDX23 ->
-                    serialized = s.writeToString(new SVIPSBOM((CDX14SBOM) deserialized));
+                case SPDX23 ->{
+
+                    CDX14SBOM cdxDeserialized = (CDX14SBOM)deserialized;
+
+                    builder.setFormat(cdxDeserialized.getFormat());
+                    builder.setName(cdxDeserialized.getName());
+                    builder.setUID(cdxDeserialized.getUID());
+                    builder.setVersion(cdxDeserialized.getVersion());
+                    for (String license: cdxDeserialized.getLicenses()) {builder.addLicense(license);}
+                    builder.setCreationData(cdxDeserialized.getCreationData());
+                    builder.setDocumentComment(cdxDeserialized.getDocumentComment());
+
+                    SVIPComponentBuilder compBuilder = new SVIPComponentBuilder();
+                    buildSVIPComponentObject(cdxDeserialized.getRootComponent(), compBuilder);
+                    builder.setRootComponent(compBuilder.buildAndFlush());
+
+                    for (Component c: cdxDeserialized.getComponents()
+                         ) {
+                        if(c == null)
+                            continue;
+                        buildSVIPComponentObject((CDX14ComponentObject) c, compBuilder);
+                        builder.addSPDX23Component(compBuilder.buildAndFlush());
+                    }
+
+                    for(Map.Entry<String, Set<Relationship>> entry: cdxDeserialized.getRelationships().entrySet()) {
+                        for (Relationship r: entry.getValue()
+                             ) {
+                            builder.addRelationship(entry.getKey(), r);
+                        }
+                    }
+                    for (ExternalReference e: cdxDeserialized.getExternalReferences()) {builder.addExternalReference(e);}
+                    SVIPSBOM built = builder.Build();
+
+                    serialized = s.writeToString(built);
+                }
                 case CDX14 -> {
                     s.setPrettyPrinting(true);
 
                     // instead of adding superfluous setters to all SBOM objects, just replace strings specific to SPDX
                     // with CDX equivalent
-
                     serialized = s.writeToString(new SVIPSBOM((SPDX23SBOM) deserialized));
                     serialized = serialized.replaceFirst("\"bomFormat\" : \"SPDX\"",
                                     "\"bomFormat\" : \"CycloneDX\"").
@@ -270,6 +312,36 @@ public class Utils {
         ret.put(new SBOMFile("SUCCESS", serialized), "");
         return ret;
 
+    }
+
+    private static void buildSVIPComponentObject(CDX14ComponentObject component, SVIPComponentBuilder compBuilder) {
+        compBuilder.setType(component.getType());
+        compBuilder.setUID(component.getUID());
+        compBuilder.setAuthor(component.getAuthor());
+        compBuilder.setName(component.getName());
+        compBuilder.setLicenses(component.getLicenses());
+        compBuilder.setCopyright(component.getCopyright());
+        for(Map.Entry<String, String> entry: component.getHashes().entrySet())
+        {
+            compBuilder.addHash(entry.getKey(), entry.getValue());}
+        compBuilder.setSupplier(component.getSupplier());
+        compBuilder.setVersion(component.getVersion());
+        compBuilder.setDescription(component.getDescription());
+        for(String cpe: component.getCPEs()) {
+            compBuilder.addCPE(cpe);}
+        for(String purl: component.getPURLs()) {
+            compBuilder.addPURL(purl);}
+        for(ExternalReference ext: component.getExternalReferences()) {
+            compBuilder.addExternalReference(ext);}
+        compBuilder.setMimeType(component.getMimeType());
+        compBuilder.setPublisher(component.getPublisher());
+        compBuilder.setScope(component.getScope());
+        compBuilder.setGroup(component.getGroup());
+        for(Map.Entry<String, Set<String>> prop: component.getProperties().entrySet())
+        {
+            for(String value: prop.getValue()){
+                compBuilder.addProperty(prop.getKey(), value);}
+        }
     }
 
     /**

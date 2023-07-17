@@ -544,44 +544,5 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         this.attributionText = spdx23FileObject.getAttributionText();
     }
 
-    /**
-     * // Constructs an SVIPComponent object from an spdx23PackageObject
-     * @param cdx14ComponentObject said object to construct from
-     */
-    public SVIPComponentObject(CDX14ComponentObject cdx14ComponentObject){
-        this.type = cdx14ComponentObject.getType();
-        this.uid = cdx14ComponentObject.getUID();
-        this.author = cdx14ComponentObject.getAuthor();
-        this.name = cdx14ComponentObject.getName();
-        this.licenses = cdx14ComponentObject.getLicenses();
-        this.copyright = cdx14ComponentObject.getCopyright();
-        this.hashes = (HashMap<String, String>) cdx14ComponentObject.getHashes();
-        this.supplier = cdx14ComponentObject.getSupplier();
-        this.version = cdx14ComponentObject.getVersion();
-        this.description = cdx14ComponentObject.getDescription();
-        this.cpes = cdx14ComponentObject.getCPEs();
-        this.purls = cdx14ComponentObject.getPURLs();
-        this.externalReferences = cdx14ComponentObject.getExternalReferences();
-
-        this.downloadLocation = null;
-        this.fileName = null;
-        this.filesAnalyzed = null;
-        this.verificationCode = null;
-        this.homePage = null;               // attributes not present in cdx14ComponentObject
-        this.sourceInfo = null;
-        this.releaseDate = null;
-        this.builtDate = null;
-        this.validUntilDate = null;
-
-        this.mimeType = cdx14ComponentObject.getMimeType();
-        this.publisher = cdx14ComponentObject.getPublisher();
-        this.scope = cdx14ComponentObject.getScope();
-        this.group = cdx14ComponentObject.getGroup();
-        this.properties = cdx14ComponentObject.getProperties();
-
-        this.fileNotice = null;
-        this.comment = null;                // attributes not present in cdx14ComponentObject
-        this.attributionText = null;
-    }
 
 }
