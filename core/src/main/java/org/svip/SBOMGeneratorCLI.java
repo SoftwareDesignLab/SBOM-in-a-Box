@@ -398,10 +398,9 @@ public class SBOMGeneratorCLI {
             String fileName = controller.getSBOM().getName() + "_" + schema + "." + format.toString().toLowerCase();
 
             Files.createDirectories(Path.of(outPath));
-            FileOutputStream fileStream = new FileOutputStream(outPath + "/" + fileName);
-            DataOutputStream outStream = new DataOutputStream(new BufferedOutputStream(fileStream));
-            outStream.writeUTF(sbom);
-            outStream.close();
+            PrintWriter out = new PrintWriter(outPath + "/" + fileName);
+            out.println(sbom);
+            out.close();
         } catch(IOException e) {
             log(Debug.LOG_TYPE.EXCEPTION, e);
             log(Debug.LOG_TYPE.ERROR, "Error writing to file " + outPath);

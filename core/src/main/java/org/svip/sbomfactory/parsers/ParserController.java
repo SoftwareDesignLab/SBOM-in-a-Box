@@ -227,7 +227,7 @@ public class ParserController {
         }
 
         // Remove all components whose hashes are in toRemove
-        components = components.stream().filter(c -> toRemove.contains(c.getHashes().get("SHA256"))).toList();
+        components = components.stream().filter(c -> !toRemove.contains(c.getHashes().get("SHA256"))).toList();
 
         String removedComponentsLog = "Removed " + toRemove.size() + " Components parsed from file " + filename;
         if(deadImportCounter > 0) removedComponentsLog += " (" + deadImportCounter + "/" + toRemove.size()
