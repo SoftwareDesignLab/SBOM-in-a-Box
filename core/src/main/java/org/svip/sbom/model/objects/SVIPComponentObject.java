@@ -430,7 +430,8 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         this.name = name;
         this.licenses = licenses;
         this.copyright = copyright;
-        this.hashes = hashes;
+        if (hashes == null) this.hashes = new HashMap<>();
+        else this.hashes = hashes;
         this.supplier = supplier;
         this.version = version;
         this.description = description;

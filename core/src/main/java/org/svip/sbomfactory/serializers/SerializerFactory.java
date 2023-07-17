@@ -1,6 +1,5 @@
 package org.svip.sbomfactory.serializers;
 
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.svip.sbomfactory.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.sbomfactory.serializers.deserializer.Deserializer;
 import org.svip.sbomfactory.serializers.deserializer.SPDX23JSONDeserializer;
@@ -149,7 +148,7 @@ public class SerializerFactory {
         Serializer serializer = schema.getSerializer(format);
 
         // Set objectmapper to pretty-print if specified
-        if (prettyPrint) serializer.getObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+        if (prettyPrint) serializer.setPrettyPrinting(true);
 
         return serializer;
     }

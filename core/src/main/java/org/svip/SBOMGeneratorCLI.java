@@ -395,8 +395,10 @@ public class SBOMGeneratorCLI {
             // Write to file
             Serializer s = SerializerFactory.createSerializer(schema, format, true);
             String sbom = s.writeToString(controller.getSBOM());
+            String fileName = controller.getSBOM().getName() + "_" + schema + "." + format.toString().toLowerCase();
 
-            FileOutputStream fileStream = new FileOutputStream(outPath);
+            Files.createDirectories(Path.of(outPath));
+            FileOutputStream fileStream = new FileOutputStream(outPath + "/" + fileName);
             DataOutputStream outStream = new DataOutputStream(new BufferedOutputStream(fileStream));
             outStream.writeUTF(sbom);
             outStream.close();
