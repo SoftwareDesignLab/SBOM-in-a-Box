@@ -228,7 +228,7 @@ public class SVIPApiController {
 
         // Get and convert SBOM
         SBOMFile toConvert = sbomFile.get();
-        HashMap<SBOMFile, String> conversionResult = (HashMap<SBOMFile, String>) Utils.convert(toConvert, schema, format);
+        HashMap<SBOMFile, String> conversionResult = Utils.convert(toConvert, schema, format);
         String error = (String) conversionResult.values().toArray()[0];
         SBOMFile converted = (SBOMFile) conversionResult.keySet().toArray()[0];
 

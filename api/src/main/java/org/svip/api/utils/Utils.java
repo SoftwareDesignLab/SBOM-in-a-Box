@@ -193,7 +193,7 @@ public class Utils {
      * @param formatString the desired format
      * @return converted SBOMFile and error message, if any
      */
-    public static Map<SBOMFile, String> convert(SBOMFile sbom, String schemaString, String formatString){
+    public static HashMap<SBOMFile, String> convert(SBOMFile sbom, String schemaString, String formatString){
 
         HashMap<SBOMFile, String> ret = new HashMap<>();
 
@@ -236,23 +236,26 @@ public class Utils {
         Serializer s;
         String serialized = null;
         try{
-            // serialize into SPDX23 schema
+            // serialize into requested schema
 
             s = SerializerFactory.createSerializer(schema, format, true);
-            if(schema == SerializerFactory.Schema.SPDX23){
-                serialized = s.writeToString(new SVIPSBOM((CDX14SBOM) deserialized));
-            }
-            else if(schema == SerializerFactory.Schema.CDX14){ // serialize into CDX14 schema
 
-                s.setPrettyPrinting(true);
+            switch (schema){
+                case SPDX23 ->
+                    serialized = s.writeToString(new SVIPSBOM((CDX14SBOM) deserialized));
+                case CDX14 -> {
+                    s.setPrettyPrinting(true);
 
-                // instead of adding superfluous setters to all SBOM objects, just replace strings specific to SPDX
-                // with CDX equivalent
-                serialized = s.writeToString(new SVIPSBOM((SPDX23SBOM) deserialized));
-                serialized = serialized.replaceFirst("\"bomFormat\" : \"SPDX\"",
-                        "\"bomFormat\" : \"CycloneDX\"").
-                        replaceFirst("specVersion\" : \"" + deserialized.getSpecVersion() + "\"",
-                                "specVersion\" : \"1.4\"");
+                    // instead of adding superfluous setters to all SBOM objects, just replace strings specific to SPDX
+                    // with CDX equivalent
+
+                    serialized = s.writeToString(new SVIPSBOM((SPDX23SBOM) deserialized));
+                    serialized = serialized.replaceFirst("\"bomFormat\" : \"SPDX\"",
+                                    "\"bomFormat\" : \"CycloneDX\"").
+                            replaceFirst("specVersion\" : \"" + deserialized.getSpecVersion() + "\"",
+                                    "specVersion\" : \"1.4\"");
+
+                }
             }
 
         }catch (Exception e){
@@ -314,7 +317,7 @@ public class Utils {
         if(!contains)
             return true;
 
-        // don't convert to the same schema
+        // don't convert to the same schema+format
         if(thisSchema == SerializerFactory.Schema.SPDX23 && (convertToSchema.equals("SPDX23")))
             return true;
         if(thisSchema == SerializerFactory.Schema.CDX14 && (convertToSchema.equals("CDX14")))

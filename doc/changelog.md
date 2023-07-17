@@ -2,6 +2,19 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [v5.0.5-alpha] - (7/17/2023)
+
+### Added
+- /convert endpoint
+- Relevant unit tests in `ConvertFromAPITest`
+  - `invalidSchemaAndFormatTest()`
+  - `CDXTagValueTest()`
+  - `sameFormatTest()`
+  - `convertTest()`
+- Serializer + deserializer fixes
+
+
 ## [v5.0.4-alpha] - (7/13/2023)
 
 ### Added
