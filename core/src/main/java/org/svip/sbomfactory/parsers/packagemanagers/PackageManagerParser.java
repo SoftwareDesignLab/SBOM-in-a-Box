@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbom.model.uids.CPE;
 import org.svip.sbomfactory.parsers.Parser;
 import org.svip.utils.Debug;
@@ -356,7 +357,7 @@ public abstract class PackageManagerParser extends Parser {
                 if (version != null) url += "/" + version;
                 // Create and add QueryWorker with Component reference and URL
                 String finalLicenseRegex = result.licenseRegex();
-                parser.queryWorkers.add(new QueryWorker(builder.build(), url) {
+                parser.queryWorkers.add(new QueryWorker(builder, url) {
                     @Override
                     public void run() {
                         // Get page contents
@@ -370,7 +371,9 @@ public abstract class PackageManagerParser extends Parser {
                             // Add all found licenses
                             while (m.find()) {
                                 // TODO concluded?
-                                this.component.getLicenses().addConcludedLicenseString(m.group(1).trim());
+                                LicenseCollection licenses = new LicenseCollection();
+                                licenses.addConcludedLicenseString(m.group(1).trim());
+                                this.builder.setLicenses(licenses);
                             }
                         }
 

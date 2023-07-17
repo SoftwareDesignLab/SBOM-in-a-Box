@@ -2,6 +2,7 @@ package org.svip.sbomfactory.parsers.packagemanagers;
 
 import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.utils.QueryWorker;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class ConanParser extends PackageManagerParser {
             // Build URL and worker object
             if(name != null) {
                 // Create and add QueryWorker with Component reference and URL
-                this.queryWorkers.add(new QueryWorker(builder.build(), this.STD_LIB_URL + name){
+                this.queryWorkers.add(new QueryWorker(builder, this.STD_LIB_URL + name){
                     @Override
                     public void run() {
                         // Get page contents
@@ -67,7 +68,9 @@ public class ConanParser extends PackageManagerParser {
                         String r;
                         if(m.find()) {
                             r = m.group(1).trim();
-                            this.component.getLicenses().addConcludedLicenseString(r);
+                            LicenseCollection licenses = new LicenseCollection();
+                            licenses.addConcludedLicenseString(r);
+                            this.builder.setLicenses(licenses);
                         }
                         else {
                             // Parse license with content in the following form:
@@ -91,7 +94,9 @@ public class ConanParser extends PackageManagerParser {
                             m = Pattern.compile(String.format("<script.*\"name\"\\s*:\\s*\"%s\".*\"license\"\\s*:\\s*\"([\\w.\\\\-]*)\".*</script>",name), Pattern.MULTILINE).matcher(contents);
                             if(m.find()) {
                                 r = m.group(1).trim();
-                                this.component.getLicenses().addConcludedLicenseString(r);
+                                LicenseCollection licenses = new LicenseCollection();
+                                licenses.addConcludedLicenseString(r);
+                                this.builder.setLicenses(licenses);
                             }
                         }
                     }

@@ -2,6 +2,7 @@ package org.svip.sbomfactory.parsers.packagemanagers;
 
 import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.utils.QueryWorker;
 
 import java.util.*;
@@ -90,7 +91,7 @@ public class GradleParser extends PackageManagerParser {
 
             String url = STD_LIB_URL + getGroup(builder) + "/" + getName(builder) + "/" +
                     (getVersion(builder) == null ? "" : getVersion(builder));
-            this.queryWorkers.add(new QueryWorker(builder.build(), url) {
+            this.queryWorkers.add(new QueryWorker(builder, url) {
                 @Override
                 public void run() {
                     // Get page contents
@@ -106,7 +107,9 @@ public class GradleParser extends PackageManagerParser {
 
                     // Add all found licenses
                     while(m.find()) {
-                        this.component.getLicenses().addConcludedLicenseString(m.group(1).trim());
+                        LicenseCollection licenses = new LicenseCollection();
+                        licenses.addConcludedLicenseString(m.group(1).trim());
+                        this.builder.setLicenses(licenses);
                     }
                 }
             });

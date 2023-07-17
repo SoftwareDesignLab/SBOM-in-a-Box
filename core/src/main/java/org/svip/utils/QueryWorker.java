@@ -1,6 +1,6 @@
 package org.svip.utils;
 
-import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.builders.component.SVIPComponentBuilder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,17 +18,17 @@ import static org.svip.utils.Debug.log;
  * @author Dylan Mulligan
  */
 public abstract class QueryWorker implements Runnable {
-    protected final SVIPComponentObject component; // Component to be appended to
+    protected final SVIPComponentBuilder builder; // Component builder to be appended to
     protected final String url; // URL to be queried
 
     /**
      * Creates a new object with the url to be queried and the Component to store any collected information in.
      *
-     * @param component the Component to store any collected information in
+     * @param builder the component builder to store any collected information in
      * @param url the url to be queried
      */
-    protected QueryWorker(SVIPComponentObject component, String url) {
-        this.component = component;
+    protected QueryWorker(SVIPComponentBuilder builder, String url) {
+        this.builder = builder;
         this.url = url;
     }
 

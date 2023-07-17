@@ -2,6 +2,7 @@ package org.svip.sbomfactory.parsers.packagemanagers;
 
 import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.utils.QueryWorker;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class RequirementsParser extends PackageManagerParser {
             // Build URL and worker object
             if(name != null) {
                 // Create and add QueryWorker with Component reference and URL
-                this.queryWorkers.add(new QueryWorker(builder.build(), this.STD_LIB_URL + name){
+                this.queryWorkers.add(new QueryWorker(builder, this.STD_LIB_URL + name){
                     @Override
                     public void run() {
                         // Get page contents
@@ -51,7 +52,9 @@ public class RequirementsParser extends PackageManagerParser {
                         final Matcher m = Pattern.compile("<p><strong>License:</strong>(.*?)</p>", Pattern.MULTILINE).matcher(contents);
 
                         while(m.find()) {
-                            this.component.getLicenses().addConcludedLicenseString(m.group(1).trim());
+                            LicenseCollection licenses = new LicenseCollection();
+                            licenses.addConcludedLicenseString(m.group(1).trim());
+                            this.builder.setLicenses(licenses);
                         }
                     }
 

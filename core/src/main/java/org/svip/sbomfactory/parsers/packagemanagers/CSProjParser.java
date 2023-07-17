@@ -111,7 +111,7 @@ public class CSProjParser extends PackageManagerParser {
                 if (split.length > 1) builder.setGroup(String.join("/", Arrays.copyOfRange(split, 0, split.length - 1)));
 
                 // Build url and worker object
-                this.queryWorkers.add(new QueryWorker(builder.build(), this.buildURL(builder.build())) {
+                this.queryWorkers.add(new QueryWorker(builder, this.buildURL(builder.build())) {
                     @Override
                     public void run() {
                         try {
