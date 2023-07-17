@@ -129,8 +129,6 @@ public class RustParser extends LanguageParser {
     protected void parseRegexMatch(List<SVIPComponentBuilder> components, Matcher matcher) {
         // LinkedHashMap used to maintain match order for testing and output consistency
         final LinkedHashMap<String, String> matches = new LinkedHashMap<>();
-        SVIPComponentBuilder builder = new SVIPComponentBuilder();
-        builder.setType("EXTERNAL"); // Default to EXTERNAL
         String match;
 
         // Set from to group 1 (crate being imported from)
@@ -242,6 +240,9 @@ public class RustParser extends LanguageParser {
 
         // Format, build, and add all matches to components
         for (final String name : matches.keySet()) {
+            SVIPComponentBuilder builder = new SVIPComponentBuilder();
+            builder.setType("EXTERNAL"); // Default to EXTERNAL
+
             // Get "from" information from the matches LinkedHashMap with name as the key
             final String storedFrom = matches.get(name);
             // Unless "from" info is an empty string, store info for component construction

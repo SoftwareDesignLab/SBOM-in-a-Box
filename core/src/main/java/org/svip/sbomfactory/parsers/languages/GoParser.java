@@ -87,8 +87,6 @@ public class GoParser extends LanguageParser {
     protected void parseRegexMatch(List<SVIPComponentBuilder> components, Matcher matcher) {
         // LinkedHashMap used to maintain match order for testing and output consistency
         final LinkedHashMap<String, String> matches = new LinkedHashMap<>();
-        SVIPComponentBuilder builder = new SVIPComponentBuilder();
-        builder.setType("EXTERNAL"); // Default to EXTERNAL
         String match;
 
         // Import validation
@@ -136,6 +134,9 @@ public class GoParser extends LanguageParser {
 
         // Format, build, and add all matches to components
         for (final String name : matches.keySet()) {
+            SVIPComponentBuilder builder = new SVIPComponentBuilder();
+            builder.setType("EXTERNAL"); // Default to EXTERNAL
+
             // Matcher captures name in group 2 and alias in group 1,
             //however, if there is no alias, name is captured in group 1.
             // Raw string: Match: Group 1  Group 2

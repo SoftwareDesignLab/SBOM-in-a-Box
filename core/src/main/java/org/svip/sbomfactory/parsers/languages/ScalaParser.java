@@ -106,8 +106,6 @@ public class ScalaParser extends LanguageParser {
     @Override
     protected void parseRegexMatch(List<SVIPComponentBuilder> components, Matcher matcher) {
         // Variable initialization
-        SVIPComponentBuilder builder = new SVIPComponentBuilder();
-        builder.setType("EXTERNAL"); // Default to EXTERNAL
         Pattern aliasRegex = Pattern.compile("^([\\w\\*]*)(?: => | as )?(\\w*)?", Pattern.MULTILINE);
         String match = "";
 
@@ -129,6 +127,10 @@ public class ScalaParser extends LanguageParser {
         for (String token : tokens) {
             // Match for name and alias
             Matcher aliasMatcher = aliasRegex.matcher(token.trim());
+
+            SVIPComponentBuilder builder = new SVIPComponentBuilder();
+            builder.setType("EXTERNAL"); // Default to EXTERNAL
+
             if(aliasMatcher.find() && !aliasMatcher.group(1).equals("")) {
                 // If component is not capitalized, component is package
                 if(Character.isLowerCase(aliasMatcher.group(1).charAt(0))) {
