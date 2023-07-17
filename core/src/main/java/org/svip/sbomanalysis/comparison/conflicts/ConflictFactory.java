@@ -173,7 +173,6 @@ public class ConflictFactory {
         // False: Skip, not comparable classes
         // True: Objects are of the same class to be compared
         return target.getClass().equals(other.getClass());
-
     }
 
     /**
