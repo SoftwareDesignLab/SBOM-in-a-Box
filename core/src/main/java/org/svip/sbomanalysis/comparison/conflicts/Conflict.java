@@ -8,10 +8,10 @@ package org.svip.sbomanalysis.comparison.conflicts;
  */
 public class Conflict {
 
-    private MismatchType type;
-    private String message;
-    private String target;
-    private String other;
+    private final MismatchType type;
+    private final String message;
+    private final String target;
+    private final String other;
 
     /**
      * Mismatch Conflict Constructor

@@ -42,5 +42,8 @@ public enum MismatchType {
     /** Component found in both SBOMs, but has different Hashes */
     HASH_MISMATCH,
     /** Component found in both SBOMs, conflict was called, but cannot be determined */
-    COMPONENT_UNKNOWN_MISMATCH
+    COMPONENT_UNKNOWN_MISMATCH,
+
+    // todo replace with more detailed field
+    MISC_MISMATCH
 }
