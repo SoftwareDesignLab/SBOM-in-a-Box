@@ -100,7 +100,5 @@ public class Contact {
 
         // no fields match if phone doesn't match
         return this.phone.equals(other.getPhone());
-
-
     }
 }
