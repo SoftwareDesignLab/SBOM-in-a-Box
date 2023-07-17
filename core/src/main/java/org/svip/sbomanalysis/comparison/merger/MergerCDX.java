@@ -87,23 +87,44 @@ public class MergerCDX extends Merger {
     @Override
     protected Set<Component> mergeComponents(Set<Component> A, Set<Component> B) {
 
+        // New collection for merged components
         Set<Component> mergedComponents = new HashSet<>();
 
+        // For every component in the first SBOM
         for(Component componentA : A) {
+
+            // Checks to see if component A was merged with another component
             boolean merged = false;
+
+            // Cast the generic component from SBOM A back to a SPDX component
             CDX14ComponentObject componentA_CDX = (CDX14ComponentObject) componentA;
+
+            // For every component in the second SBOM
             for(Component componentB : B) {
+
+                // Cast the generic component from SBOM B back to a SPDX component
                 CDX14ComponentObject componentB_CDX = (CDX14ComponentObject) componentB;
+
+                // If the components are the same by Name and Version, merge then add them to the SBOM
                 if(componentA_CDX.getName() == componentB_CDX.getName() && componentA_CDX.getVersion() == componentB_CDX.getVersion()) {
+
                     mergedComponents.add(mergeComponent(componentA, componentB));
                     B.remove(componentB);
                     merged = true;
+
                 }
+
             }
+            // If component A was not merged with anything, add it to the new components
             if(!merged) mergedComponents.add(componentA);
         }
+
+        // Merge remaining components from SBOM B that were not merged with any components from A
         for(Component componentB : B) { mergedComponents.add(componentB); }
+
+        // Return the merged components set
         return mergedComponents;
+
     }
 
     @Override
@@ -243,7 +264,5 @@ public class MergerCDX extends Merger {
         return compBuilder.build();
 
     }
-
-
 
 }
