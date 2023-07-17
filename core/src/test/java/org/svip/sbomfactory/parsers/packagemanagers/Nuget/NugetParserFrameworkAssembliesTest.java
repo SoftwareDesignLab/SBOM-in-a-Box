@@ -2,7 +2,8 @@ package org.svip.sbomfactory.parsers.packagemanagers.Nuget;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.builders.component.SVIPComponentBuilder;
+import org.svip.sbomfactory.parsers.Parser;
 import org.svip.sbomfactory.parsers.packagemanagers.NugetParser;
 import org.svip.sbomfactory.parsers.packagemanagers.ParseDepFileTestCore;
 
@@ -13,7 +14,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * file: NugetParserFrameworkAssembliesTest.java //todo
@@ -35,12 +37,12 @@ public class NugetParserFrameworkAssembliesTest extends ParseDepFileTestCore {
     void testDependencies() {
 
         // Get Components from PARSER
-        final List<SVIPComponentObject> components = this.components;
+        final List<SVIPComponentBuilder> components = this.components;
 
-        for (SVIPComponentObject f: components //assert these are language components
+        for (SVIPComponentBuilder f: components //assert these are language components
              ) {
-            assertEquals("language", f.getType().toLowerCase());
-            assertEquals("microsoft", f.getPublisher().toLowerCase());
+            assertEquals("language", Parser.getType(f).toLowerCase());
+            assertEquals("microsoft", Parser.getPublisher(f).toLowerCase());
         }
 
         // Test correct count is found
@@ -48,8 +50,8 @@ public class NugetParserFrameworkAssembliesTest extends ParseDepFileTestCore {
 
         //Make ValueSet
         final Set<String> ValueSet = new HashSet<>();;
-        for(SVIPComponentObject c : components) {
-            ValueSet.add(c.getName());
+        for(SVIPComponentBuilder c : components) {
+            ValueSet.add(Parser.getName(c));
         }
 
         //Check component's name

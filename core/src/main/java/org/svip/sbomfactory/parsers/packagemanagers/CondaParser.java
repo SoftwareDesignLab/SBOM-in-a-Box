@@ -1,7 +1,7 @@
 package org.svip.sbomfactory.parsers.packagemanagers;
 
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.builders.component.SVIPComponentBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ public class CondaParser extends PackageManagerParser{
     }
 
     @Override
-    protected void parseData(List<SVIPComponentObject> components, HashMap<String, Object> data) {
+    protected void parseData(List<SVIPComponentBuilder> components, HashMap<String, Object> data) {
         // Init properties
         this.properties = new HashMap<>();
 

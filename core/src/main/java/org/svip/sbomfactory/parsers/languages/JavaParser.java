@@ -1,7 +1,6 @@
 package org.svip.sbomfactory.parsers.languages;
 
 import org.svip.builders.component.SVIPComponentBuilder;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.parsers.Parser;
 
 import java.io.BufferedReader;
@@ -101,13 +100,13 @@ public class JavaParser extends LanguageParser {
      * @return true if language, false otherwise
      */
     @Override
-    protected boolean isLanguageComponent(SVIPComponentObject component) {
+    protected boolean isLanguageComponent(SVIPComponentBuilder component) {
         // If component is a standard package, return true
-        if(JAVA8_STD_PACKAGES.contains(component.getName().replace('/', '.'))) return true;
-        else if(component.getGroup() == null) return false;
+        if(JAVA8_STD_PACKAGES.contains(getName(component).replace('/', '.'))) return true;
+        else if(getGroup(component) == null) return false;
 
         // Otherwise, check if component is from a standard package
-        return JAVA8_STD_PACKAGES.contains(component.getGroup().replace('/', '.'));
+        return JAVA8_STD_PACKAGES.contains(getGroup(component).replace('/', '.'));
     }
 
 
@@ -142,7 +141,7 @@ public class JavaParser extends LanguageParser {
      * @return new component
      */
     @Override
-    protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
+    protected void parseRegexMatch(List<SVIPComponentBuilder> components, Matcher matcher) {
         SVIPComponentBuilder builder = new SVIPComponentBuilder();
         builder.setType("EXTERNAL"); // Default to EXTERNAL
 
@@ -170,16 +169,16 @@ public class JavaParser extends LanguageParser {
             }
 
             // Check if internal
-            if (isInternalComponent(builder.build())) {
+            if (isInternalComponent(builder)) {
                 builder.setType("INTERNAL");
 
                 // Otherwise, check if Language
-            } else if (isLanguageComponent(builder.build())) {
+            } else if (isLanguageComponent(builder)) {
                 builder.setType("LANGUAGE");
             }
 
             // Add Component
-            components.add(builder.build());
+            components.add(builder);
         }
     }
 }

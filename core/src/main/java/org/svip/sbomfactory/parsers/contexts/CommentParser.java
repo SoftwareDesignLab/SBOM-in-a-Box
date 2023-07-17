@@ -4,7 +4,6 @@ package org.svip.sbomfactory.parsers.contexts;
 
 import org.apache.commons.lang3.StringUtils;
 import org.svip.builders.component.SVIPComponentBuilder;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.utils.Debug;
 
 import java.util.List;
@@ -90,7 +89,7 @@ public class CommentParser extends ContextParser {
      * @param fileContents file contents to be parsed
      */
     @Override
-    public void parse(List<SVIPComponentObject> components, String fileContents) {
+    public void parse(List<SVIPComponentBuilder> components, String fileContents) {
         // Parse Comments
         this.parseComments(fileContents);
 
@@ -107,7 +106,7 @@ public class CommentParser extends ContextParser {
             builder.setName(comment);
             builder.setType("EXTERNAL");
             // Add comment to components
-            components.add(builder.build());
+            components.add(builder);
         }
     }
 }

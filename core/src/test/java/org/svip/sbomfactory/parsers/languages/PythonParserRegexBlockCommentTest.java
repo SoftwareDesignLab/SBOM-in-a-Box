@@ -2,9 +2,10 @@ package org.svip.sbomfactory.parsers.languages;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.builders.component.SVIPComponentBuilder;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,7 +40,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "import foo" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components
     }
@@ -50,7 +51,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "import foo.bar" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -61,7 +62,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "import foo as f" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -72,7 +73,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "from foo import bar" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -83,7 +84,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "from foo import b, a" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -94,7 +95,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "from foo import bar as b" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -105,7 +106,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "from foo import (b, a, r)" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -130,7 +131,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -141,7 +142,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "import random" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -155,7 +156,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "import ifoo" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -166,7 +167,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "import ifoo as if" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -177,7 +178,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "import ifoo.ibar" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -188,7 +189,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "import ifoo.ibar as ifb" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -200,7 +201,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "from ifoo.ibar import ifoobarModule" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -211,7 +212,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "from ifoo.ibar.ifoobarModule import ifoobarClass" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -223,7 +224,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "from ifoo.ibar import ib, ia, ir" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -234,7 +235,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "from ifoo.ibar import (ib, ia, ir)" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -245,7 +246,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "from ifoo.ibar import ib, ia as IA, ir" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -264,7 +265,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
                 ")" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -275,7 +276,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "import ." + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -286,7 +287,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "import .ibar" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -297,7 +298,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "from . import ibar" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -308,7 +309,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "from . import (f, o)" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -326,7 +327,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
 
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -337,7 +338,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "import .." + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -348,7 +349,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "import ..f" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -359,7 +360,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "from .. import f" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -370,7 +371,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         Matcher m = getMatcher(openBlockComment + "from .. import (f, o)" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
@@ -387,7 +388,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
                 "))" + closeBlockComment);
         assertTrue(m.find());   // Should be a match
 
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }

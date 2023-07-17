@@ -1,6 +1,6 @@
 package org.svip.sbomfactory.parsers.languages;
 
-import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.builders.component.SVIPComponentBuilder;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -55,7 +55,7 @@ public class CParser extends CppParser {
      * @return true if language, false otherwise
      */
     @Override
-    protected boolean isLanguageComponent(SVIPComponentObject component) {
-        return this.C_STD_LIB.contains(component.getName());
+    protected boolean isLanguageComponent(SVIPComponentBuilder component) {
+        return this.C_STD_LIB.contains(getName(component));
     }
 }

@@ -2,7 +2,8 @@ package org.svip.sbomfactory.parsers.packagemanagers;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.builders.component.SVIPComponentBuilder;
+import org.svip.sbomfactory.parsers.Parser;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -43,9 +44,8 @@ public class ConanParserPyFileTest extends ParseDepFileTestCore {
         //Make ValueSet
         final Set<String> ValueSet = new HashSet<>();
 
-        for (SVIPComponentObject pc : this.components) {
-            ValueSet.add(pc.getName());
-        }
+        for (SVIPComponentBuilder c : this.components)
+            ValueSet.add(Parser.getName(c));
 
 
         //Check component's name

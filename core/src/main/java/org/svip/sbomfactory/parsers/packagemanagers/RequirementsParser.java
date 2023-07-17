@@ -1,7 +1,6 @@
 package org.svip.sbomfactory.parsers.packagemanagers;
 
 import org.svip.builders.component.SVIPComponentBuilder;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.utils.QueryWorker;
 
@@ -28,7 +27,7 @@ public class RequirementsParser extends PackageManagerParser {
     }
 
     @Override
-    protected void parseData(List<SVIPComponentObject> components, HashMap<String, Object> data) {
+    protected void parseData(List<SVIPComponentBuilder> components, HashMap<String, Object> data) {
         final ArrayList<LinkedHashMap<String, String>> requirements =
                 (ArrayList<LinkedHashMap<String, String>>) data.get("requirements");
 
@@ -63,7 +62,7 @@ public class RequirementsParser extends PackageManagerParser {
             }
 
             // Add ParserComponent to components
-            components.add(builder.build());
+            components.add(builder);
         }
 
         // Query all found URLs and store any relevant data
@@ -71,7 +70,7 @@ public class RequirementsParser extends PackageManagerParser {
     }
 
     @Override
-    public void parse(List<SVIPComponentObject> components, String fileContents) {
+    public void parse(List<SVIPComponentBuilder> components, String fileContents) {
         // Init main data structure
         final LinkedHashMap<String, Object> data = new LinkedHashMap<>();
 

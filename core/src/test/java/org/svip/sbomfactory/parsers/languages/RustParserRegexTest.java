@@ -2,9 +2,11 @@ package org.svip.sbomfactory.parsers.languages;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,13 +40,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void useBasic() {
         Matcher m = getMatcher("use fee::fye;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("fye", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -59,13 +61,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void useLong() {
         Matcher m = getMatcher("use fee::fye::fo::Fum;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("Fum", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -80,13 +82,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void useAlias() {
         Matcher m = getMatcher("use fee::fye as f;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("fye", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -101,13 +103,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void usePrefix() {
         Matcher m = getMatcher("use ::fee::fye;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("fye", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -122,13 +124,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void useBracketsBasic() {
         Matcher m = getMatcher("use fee::fye::{fo};");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("fo", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -143,13 +145,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void useBracketsMultiple() {
         Matcher m = getMatcher("use fee::fye::{fo, fum, fair};");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(3, results.size());    // should be 3 matches
 
         // Test resulting component 1
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("fo", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -159,7 +161,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
 
         // Test resulting component 2
-        c = results.get(1);
+        c = results.get(1).build();
         assertEquals("fum", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -169,7 +171,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
 
         // Test resulting component 3
-        c = results.get(2);
+        c = results.get(2).build();
         assertEquals("fair", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -184,13 +186,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void useBracketsComplex() {
         Matcher m = getMatcher("use fee::fye::{fo as f, fum::fro,\nfum::{grow as g, Grew},\n\r fair};");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(5, results.size());    // should be 5 matches
 
         // Test resulting component 1
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("fo", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -200,7 +202,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
 
         // Test resulting component 2
-        c = results.get(1);
+        c = results.get(1).build();
         assertEquals("fro", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -210,7 +212,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
 
         // Test resulting component 3
-        c = results.get(2);
+        c = results.get(2).build();
         assertEquals("grow", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -220,7 +222,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
 
         // Test resulting component 4
-        c = results.get(3);
+        c = results.get(3).build();
         assertEquals("Grew", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -230,7 +232,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
 
         // Test resulting component 5
-        c = results.get(4);
+        c = results.get(4).build();
         assertEquals("fair", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -247,13 +249,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void modSingle() {
         Matcher m = getMatcher("mod fee;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("fee", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -268,13 +270,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void modBasic() {
         Matcher m = getMatcher("mod fee::fye;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("fye", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -293,13 +295,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void useSelfBasic() {
         Matcher m = getMatcher("use self::fee::fye;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("fye", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -314,13 +316,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void useSelfShort() {
         Matcher m = getMatcher("use self::fee;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("fee", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -335,13 +337,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void useSelfLong() {
         Matcher m = getMatcher("use self::fee::fye::Fo::fum;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("fum", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -356,13 +358,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void modSelfInvalid() {
         Matcher m = getMatcher("mod self_fee;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("self_fee", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -378,7 +380,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("mod self;");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(0, results.size());    // should not match
@@ -389,13 +391,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void useSelfBrackets() {
         Matcher m = getMatcher("use fee::fye::{self};");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("*", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -414,13 +416,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void useInternal() {
         Matcher m = getMatcher("use lib::bar;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("bar", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -435,13 +437,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void externInternal() {
         Matcher m = getMatcher("extern lib far;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("far", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -456,13 +458,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void modInternal() {
         Matcher m = getMatcher("mod tar;");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("tar", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -481,13 +483,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void useLanguage() {
         Matcher m = getMatcher("use std::fmt::{Result, Debug, Arguments, Alignment, Display, format};");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(6, results.size());    // should be 6 matches
 
         // Test resulting component 1
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("Result", c.getName());
         assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -497,7 +499,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
 
         // Test resulting component 2
-        c = results.get(1);
+        c = results.get(1).build();
         assertEquals("Debug", c.getName());
         assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -507,7 +509,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
 
         // Test resulting component 3
-        c = results.get(2);
+        c = results.get(2).build();
         assertEquals("Arguments", c.getName());
         assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -517,7 +519,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
 
         // Test resulting component 4
-        c = results.get(3);
+        c = results.get(3).build();
         assertEquals("Alignment", c.getName());
         assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -527,7 +529,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
 
         // Test resulting component 5
-        c = results.get(4);
+        c = results.get(4).build();
         assertEquals("Display", c.getName());
         assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -537,7 +539,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
 
         // Test resulting component 5
-        c = results.get(5);
+        c = results.get(5).build();
         assertEquals("format", c.getName());
         assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -624,13 +626,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void useBetweenBlockComments() {
         Matcher m = getMatcher("/**/ use fee::fye; /**/");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("fye", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -645,13 +647,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void modBetweenBlockComments() {
         Matcher m = getMatcher("/**/ mod fee::fye; /**/");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("fye", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -666,13 +668,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void externBetweenBlockComments3() {
         Matcher m = getMatcher("/**/ extern fee fye; /**/");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("fye", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -687,13 +689,13 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     void useBeforeDoubleSlash() {
         Matcher m = getMatcher("use fee::fye // this imports fye");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("fye", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());

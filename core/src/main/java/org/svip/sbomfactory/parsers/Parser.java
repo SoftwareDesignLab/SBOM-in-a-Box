@@ -2,8 +2,6 @@ package org.svip.sbomfactory.parsers;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.svip.builders.component.SVIPComponentBuilder;
-import org.svip.componentfactory.SVIPSBOMComponentFactory;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.utils.VirtualPath;
 
 import java.io.IOException;
@@ -12,7 +10,6 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import static org.svip.utils.Debug.LOG_TYPE;
 import static org.svip.utils.Debug.log;
@@ -145,7 +142,7 @@ public abstract class Parser {
      * @param builder The builder object to query.
      * @return The name field of the builder object.
      */
-    protected static String getName(SVIPComponentBuilder builder) {
+    public static String getName(SVIPComponentBuilder builder) {
         return builder.build().getName();
     }
 
@@ -155,10 +152,8 @@ public abstract class Parser {
      * @param builder The builder object to query.
      * @return The type field of the builder object.
      */
-    protected static String getType(SVIPComponentBuilder builder) {
-        String type = builder.build().getType();
-        if (type == null) type = "EXTERNAL"; // Default to external
-        return type;
+    public static String getType(SVIPComponentBuilder builder) {
+        return builder.build().getType();
     }
 
     /**
@@ -177,31 +172,27 @@ public abstract class Parser {
      * @param builder The builder object to query.
      * @return The version field of the builder object.
      */
-    protected static String getVersion(SVIPComponentBuilder builder) {
+    public static String getVersion(SVIPComponentBuilder builder) {
         return builder.build().getVersion();
     }
 
     /**
-     * Utility method to set any attribute of a component using its builder.
+     * Utility method to get the publisher field from a builder object.
      *
-     * @param component The component to modify.
-     * @param function The function to modify the component with. Takes in a builder as a parameter, and any actions
-     *                 performed on the builder will be performed on the component.
-     * @return The updated component.
+     * @param builder The builder object to query.
+     * @return The version field of the builder object.
      */
-    protected static SVIPComponentObject set(SVIPComponentObject component, Consumer<SVIPComponentBuilder> function) {
-        SVIPComponentBuilder builder = new SVIPSBOMComponentFactory().createBuilder(component);
-        function.accept(builder);
-        return builder.build();
+    public static String getPublisher(SVIPComponentBuilder builder) {
+        return builder.build().getPublisher();
     }
 
     /**
      * Utility method to generate and set a component's unique SHA256 hash.
      * @param component The component to set the hash of.
      */
-    protected static void generateHash(SVIPComponentObject component) {
+    protected static void generateHash(SVIPComponentBuilder component) {
         int code = component.hashCode();
-        set(component, b -> b.addHash("SHA256", DigestUtils.sha256Hex(String.valueOf(code))));
+        component.addHash("SHA256", DigestUtils.sha256Hex(String.valueOf(code)));
     }
 
     //#endregion
@@ -215,7 +206,7 @@ public abstract class Parser {
      * @param components A list of ParserComponents that the found components will be appended to.
      * @param fileContents file contents to be parsed
      */
-    public abstract void parse(List<SVIPComponentObject> components, String fileContents);
+    public abstract void parse(List<SVIPComponentBuilder> components, String fileContents);
 
     //#endregion
 }

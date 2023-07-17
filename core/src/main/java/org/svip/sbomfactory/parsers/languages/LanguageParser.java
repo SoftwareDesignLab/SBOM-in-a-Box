@@ -1,6 +1,6 @@
 package org.svip.sbomfactory.parsers.languages;
 
-import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbomfactory.parsers.Parser;
 import org.svip.utils.Debug;
 import org.svip.utils.VirtualPath;
@@ -43,9 +43,9 @@ public abstract class LanguageParser extends Parser {
      * @param component component to search for
      * @return true if internal, false otherwise
      */
-    protected boolean isInternalComponent(SVIPComponentObject component) {
-        String name = component.getName();
-        String group = component.getGroup();
+    protected boolean isInternalComponent(SVIPComponentBuilder component) {
+        String name = getName(component);
+        String group = getGroup(component);
         VirtualPath internalPath = new VirtualPath((group == null ? "" : group) + "/" + name);
 
         for(VirtualPath internalComponent : sourceFiles) {
@@ -73,7 +73,7 @@ public abstract class LanguageParser extends Parser {
      * @param component component to search for
      * @return true if language, false otherwise
      */
-    protected abstract boolean isLanguageComponent(SVIPComponentObject component);
+    protected abstract boolean isLanguageComponent(SVIPComponentBuilder component);
 
     /**
      * Get the regex to parse with.
@@ -90,12 +90,12 @@ public abstract class LanguageParser extends Parser {
      * @param components A list of ParserComponents that the found components will be appended to
      * @param matcher regex match pattern
      */
-    protected abstract void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher);
+    protected abstract void parseRegexMatch(List<SVIPComponentBuilder> components, Matcher matcher);
 
     //#endregion
 
     @Override
-    public void parse(List<SVIPComponentObject> components, String fileContents) {
+    public void parse(List<SVIPComponentBuilder> components, String fileContents) {
         // Get regex
         final Matcher m = getRegex().matcher(fileContents);
 
@@ -108,26 +108,26 @@ public abstract class LanguageParser extends Parser {
 
             parseRegexMatch(components, m);
 
-            List<SVIPComponentObject> componentsToRemove = new ArrayList<>();
+            List<SVIPComponentBuilder> componentsToRemove = new ArrayList<>();
 
-            for(SVIPComponentObject component : components) {
-                if(component.getName().equals("*")) {
+            for(SVIPComponentBuilder component : components) {
+                if(getName(component).equals("*")) {
                     Debug.log(Debug.LOG_TYPE.DEBUG, String.format("Import wildcard found in component %s with group %s",
-                            component.getName(), component.getGroup()));
+                            getName(component), getGroup(component)));
 
-                    if(component.getGroup() != null) {
+                    if(getGroup(component) != null) {
                         // Get list of all subgroups in the component group
-                        List<String> groups = new ArrayList<>(Arrays.stream(component.getGroup().split("/"))
+                        List<String> groups = new ArrayList<>(Arrays.stream(getGroup(component).split("/"))
                                 .toList());
 
                         // Set name to last group of component TODO is this correct behavior?
-                        set(component, b -> b.setName(groups.remove(groups.size() - 1)));
+                        component.setName(groups.remove(groups.size() - 1));
 
                         // Set new component group, exclude last element
-                        set(component, b -> b.setGroup(String.join("/", groups)));
+                        component.setGroup(String.join("/", groups));
 
                         Debug.log(Debug.LOG_TYPE.DEBUG, String.format("Component renamed to %s with group %s",
-                                component.getName(), component.getGroup()));
+                                getName(component), getGroup(component)));
                     } else {
                         componentsToRemove.add(component); // This is an invalid component (something like import *)
                         Debug.log(Debug.LOG_TYPE.DEBUG, "Component has no group, removing from SBOM.");

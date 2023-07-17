@@ -4,7 +4,6 @@ package org.svip.sbomfactory.parsers.contexts;
 
 import org.apache.commons.lang3.StringUtils;
 import org.svip.builders.component.SVIPComponentBuilder;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.utils.Debug;
 
 import java.util.ArrayList;
@@ -93,7 +92,7 @@ public class SubprocessParser extends ContextParser {
      * @param fileContents file contents to be parsed
      */
     @Override
-    public void parse(List<SVIPComponentObject> components, String fileContents) {
+    public void parse(List<SVIPComponentBuilder> components, String fileContents) {
         // Detect subprocess calls
         this.detectSubprocessCall(fileContents);
 
@@ -110,7 +109,7 @@ public class SubprocessParser extends ContextParser {
             builder.setName(subprocessCall.replaceAll("\\\\\\\\", "/"));
             builder.setType("APPLICATION");
             // Add ParserComponent to components
-            components.add(builder.build());
+            components.add(builder);
         }
     }
 }

@@ -1,7 +1,6 @@
 package org.svip.sbomfactory.parsers.languages;
 
 import org.svip.builders.component.SVIPComponentBuilder;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.parsers.Parser;
 import org.svip.utils.VirtualPath;
 
@@ -115,9 +114,9 @@ public class RubyParser extends LanguageParser {
      * @return true if internal, false otherwise
      */
     @Override
-    protected boolean isInternalComponent(SVIPComponentObject component) {
-        String name = component.getName();
-        String group = component.getGroup();
+    protected boolean isInternalComponent(SVIPComponentBuilder component) {
+        String name = getName(component);
+        String group = getGroup(component);
 
         VirtualPath internalPath = new VirtualPath((group == null ? "" : group) + "/" + name);
 
@@ -136,16 +135,16 @@ public class RubyParser extends LanguageParser {
      * @return true if language, false otherwise
      */
     @Override
-    protected boolean isLanguageComponent(SVIPComponentObject component) {
+    protected boolean isLanguageComponent(SVIPComponentBuilder component) {
         // Define variables
         String key;
 
         // If from is defined, append name after a "/" and check full component path
-        if(component.getGroup() != null) {
-            key = component.getGroup().toLowerCase() + "/" + component.getName().toLowerCase();
+        if(getGroup(component) != null) {
+            key = getGroup(component).toLowerCase() + "/" + getName(component).toLowerCase();
         } else {
             // Otherwise, use name only
-            key = component.getName().toLowerCase();
+            key = getName(component).toLowerCase();
         }
 
         // RUBY_STD_PACKAGES_AND_CLASSES contains appropriate values of the standard language
@@ -189,7 +188,7 @@ public class RubyParser extends LanguageParser {
      * @return new component
      */
     @Override
-    protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
+    protected void parseRegexMatch(List<SVIPComponentBuilder> components, Matcher matcher) {
         // Variable initialization
         SVIPComponentBuilder builder = new SVIPComponentBuilder();
         builder.setType("EXTERNAL"); // Default to EXTERNAL
@@ -226,14 +225,14 @@ public class RubyParser extends LanguageParser {
         }
 
         // Check if internal
-        if (isInternalComponent(builder.build())) {
+        if (isInternalComponent(builder)) {
             builder.setType("INTERNAL");
 
             // Otherwise, check if Language
-        } else if (isLanguageComponent(builder.build())) {
+        } else if (isLanguageComponent(builder)) {
             builder.setType("LANGUAGE");
         }
         // Add Component
-        components.add(builder.build());
+        components.add(builder);
     }
 }

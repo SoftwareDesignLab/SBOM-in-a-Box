@@ -1,6 +1,7 @@
 package org.svip.sbomfactory.parsers;
 
 import org.svip.builderfactory.SVIPSBOMBuilderFactory;
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.SVIPComponentObject;
@@ -18,6 +19,7 @@ import org.svip.sbomfactory.serializers.SerializerFactory;
 import org.svip.utils.Debug;
 import org.svip.utils.VirtualPath;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 import static org.svip.utils.Debug.LOG_TYPE;
@@ -37,6 +39,11 @@ public class ParserController {
     //#region Attributes
     private final String projectName;
     private final SVIPSBOMBuilder builder;
+
+    /**
+     * Store a list of all SVIP components mapped to their hash as the key (to check for duplicates).
+     */
+    private final Map<String, SVIPSBOMBuilder> components;
     private final Map<VirtualPath, String> files;
     private static final HashMap<String, Parser> EXTENSION_MAP = new HashMap<>() {{
         //
@@ -85,6 +92,7 @@ public class ParserController {
      */
     public ParserController(String projectName, Map<VirtualPath, String> files) {
         this.projectName = projectName;
+        this.components = new HashMap<>();
         this.files = files;
         this.builder = new SVIPSBOMBuilderFactory().createBuilder();
     }
@@ -182,7 +190,7 @@ public class ParserController {
         }
 
         // Init Component list
-        List<SVIPComponentObject> components = new ArrayList<>();
+        List<SVIPComponentBuilder> components = new ArrayList<>();
 
         // Configure parser
         parser.setPWD(filepath);
@@ -209,28 +217,45 @@ public class ParserController {
         int deadImportCounter = 0;
 
         // Check for duplicate named components & dead imports
-        for(SVIPComponentObject c : components) {
-            String hash = c.getHashes().get("SHA256");
-            SVIPComponentObject old = componentMap.get(hash);
+        for(SVIPComponentBuilder c : components) {
+            SVIPComponentObject newComponent = c.build();
+            String hash = newComponent.getHashes().get("SHA256");
+            SVIPComponentObject oldComponent = componentMap.get(hash);
 
-            if (c.getType().equalsIgnoreCase("dead_import")) {
+            if (newComponent.getType().equalsIgnoreCase("dead_import")) {
                 toRemove.add(hash);
-                Debug.log(LOG_TYPE.DEBUG, "Removed dead import " + c.getName());
+                Debug.log(LOG_TYPE.DEBUG, "Removed dead import " + newComponent.getName());
                 deadImportCounter++;
                 continue;
-            } else if (old == null) continue; // If a component name doesn't exist, there are no duplicates
+            } else if (oldComponent == null) continue; // If a component name doesn't exist, there are no duplicates
 
-            // Compare important fields and update old component
-            Parser.set(old, b -> b.setGroup(c.getGroup()));
-            Parser.set(old, b -> b.setFileName(c.getFileName()));
+            // TODO Compare important fields and update old component\
+
+            /*
+                This is my hack to modify the component group if a duplicate is found. This needs to be here for 2
+                reasons:
+                    1. We can't get a full list of current components from the SVIP SBOM object without building it
+                    2. Building the SVIP SBOM object results in a list of immutable components, and we need to update
+                     the group.
+
+                Thus, we have to modify the class fields programatically through Java APIs. Working on a solution.
+             */
+            try {
+                Field group = SVIPComponentObject.class.getDeclaredField("group");
+                group.setAccessible(true);
+                group.set(oldComponent, newComponent.getGroup());
+            } catch (Exception e) {
+                Debug.log(LOG_TYPE.ERROR, "Could not modify component group. Component" + oldComponent.getName() +
+                        " may have an incorrect group.");
+            }
             // TODO possibly more assignments?
 
-            toRemove.add(c.getHashes().get("SHA256")); // Remove new component directly
-            Debug.log(LOG_TYPE.DEBUG, "Found and removed duplicate component " + c.getName());
+            toRemove.add(newComponent.getHashes().get("SHA256")); // Remove new component directly
+            Debug.log(LOG_TYPE.DEBUG, "Found and removed duplicate component " + newComponent.getName());
         }
 
         // Remove all components whose hashes are in toRemove
-        components = components.stream().filter(c -> !toRemove.contains(c.getHashes().get("SHA256"))).toList();
+        components = components.stream().filter(c -> !toRemove.contains(c.build().getHashes().get("SHA256"))).toList();
 
         String removedComponentsLog = "Removed " + toRemove.size() + " Components parsed from file " + filename;
         if(deadImportCounter > 0) removedComponentsLog += " (" + deadImportCounter + "/" + toRemove.size()
@@ -238,22 +263,22 @@ public class ParserController {
         Debug.log(LOG_TYPE.DEBUG, removedComponentsLog);
 
         // Add Components to SBOM
-        for (SVIPComponentObject c : components) {
+        for (SVIPComponentBuilder c : components) {
             // Default to external
-            if (c.getType() == null) Parser.set(c, b -> b.setType("EXTERNAL"));
+            if (Parser.getType(c) == null) c.setType("EXTERNAL");
 
-            Parser.set(c, b -> b.setFileName(filepath.toString()));
-            Parser.set(c, b -> b.setFilesAnalyzed(true));
+            c.setFileName(filepath.toString());
+            c.setFilesAnalyzed(true);
             Parser.generateHash(c);
 
             if (parser instanceof PackageManagerParser)
-                Parser.set(c, b -> b.setFileNotice(null));
+                c.setFileNotice(null);
             else
-                Parser.set(c, b -> b.setFileNotice("PARSED AS SOURCE FILE")); // TODO confirm this
+                c.setFileNotice("PARSED AS SOURCE FILE"); // TODO confirm this
 
-            Parser.set(c, b -> b.setUID(UUID.randomUUID().toString()));
+            c.setUID(UUID.randomUUID().toString());
 
-            builder.addComponent(c);
+            builder.addComponent(c.build());
         }
     }
 

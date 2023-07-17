@@ -2,9 +2,11 @@ package org.svip.sbomfactory.parsers.languages;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,13 +38,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import foo");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("foo", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -58,13 +60,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import foo.bar");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("bar", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -80,13 +82,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import foo as f");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("foo", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -102,13 +104,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("if not someVersion:\n    import fye as f\n");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("fye", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -124,13 +126,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("if not someOtherVersion:\n    from fee.fye import Fo as f\n");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("Fo", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -146,13 +148,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from foo import bar");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("bar", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -168,13 +170,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from foo import b, a");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should 2 matches
 
         // Test resulting component 1
-        SVIPComponentObject c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0).build();
         assertEquals("b", c1.getName());
         assertEquals("external", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
@@ -184,7 +186,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        SVIPComponentObject c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1).build();
         assertEquals("a", c2.getName());
         assertEquals("external", c2.getType().toLowerCase());
         assertNull(c2.getVersion());
@@ -200,13 +202,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from foo import bar as b");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("bar", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -222,13 +224,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from foo import (b, a, r)");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(3, results.size());    // should 3 matches
 
         // Test resulting component 1
-        SVIPComponentObject c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0).build();
         assertEquals("b", c1.getName());
         assertEquals("external", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
@@ -238,7 +240,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        SVIPComponentObject c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1).build();
         assertEquals("a", c2.getName());
         assertEquals("external", c2.getType().toLowerCase());
         assertNull(c2.getVersion());
@@ -248,7 +250,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         // assertNull(c2.getChildren());
 
         // Test resulting component 3
-        SVIPComponentObject c3 = results.get(2);
+        SVIPComponentObject c3 = results.get(2).build();
         assertEquals("r", c3.getName());
         assertEquals("external", c3.getType().toLowerCase());
         assertNull(c3.getVersion());
@@ -269,13 +271,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from foo import (\n\tb,\n\ta,\n\tr,\n)");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(3, results.size());    // should 3 matches
 
         // Test resulting component 1
-        SVIPComponentObject c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0).build();
         assertEquals("b", c1.getName());
         assertEquals("external", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
@@ -285,7 +287,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        SVIPComponentObject c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1).build();
         assertEquals("a", c2.getName());
         assertEquals("external", c2.getType().toLowerCase());
         assertNull(c2.getVersion());
@@ -295,7 +297,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         // assertNull(c2.getChildren());
 
         // Test resulting component 3
-        SVIPComponentObject c3 = results.get(2);
+        SVIPComponentObject c3 = results.get(2).build();
         assertEquals("r", c3.getName());
         assertEquals("external", c3.getType().toLowerCase());
         assertNull(c3.getVersion());
@@ -311,13 +313,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import random");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("random", c.getName());
         assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -336,13 +338,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import ifoo");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("ifoo", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -357,13 +359,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import f");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("f", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -380,13 +382,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import ifoo as if");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("ifoo", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -402,13 +404,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import ifoo.ibar");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("ibar", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -424,13 +426,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import ifoo.ibar as ifb");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("ibar", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -447,13 +449,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from ifoo.ibar import ifoobarModule");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("ifoobarModule", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -470,13 +472,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from ifoo.ibar.ifoobarModule import ifoobarClass");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("ifoobarClass", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -493,13 +495,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from ifoo.ibar import ib, ia, ir");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(3, results.size());    // should 3 matches
 
         // Test resulting component 1
-        SVIPComponentObject c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0).build();
         assertEquals("ib", c1.getName());
         assertEquals("internal", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
@@ -509,7 +511,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        SVIPComponentObject c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1).build();
         assertEquals("ia", c2.getName());
         assertEquals("internal", c2.getType().toLowerCase());
         assertNull(c2.getVersion());
@@ -519,7 +521,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         // assertNull(c2.getChildren());
 
         // Test resulting component 3
-        SVIPComponentObject c3 = results.get(2);
+        SVIPComponentObject c3 = results.get(2).build();
         assertEquals("ir", c3.getName());
         assertEquals("internal", c3.getType().toLowerCase());
         assertNull(c3.getVersion());
@@ -535,13 +537,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from ifoo.ibar import (ib, ia, ir)");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(3, results.size());    // should 3 matches
 
         // Test resulting component 1
-        SVIPComponentObject c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0).build();
         assertEquals("ib", c1.getName());
         assertEquals("internal", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
@@ -551,7 +553,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        SVIPComponentObject c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1).build();
         assertEquals("ia", c2.getName());
         assertEquals("internal", c2.getType().toLowerCase());
         assertNull(c2.getVersion());
@@ -561,7 +563,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         // assertNull(c2.getChildren());
 
         // Test resulting component 3
-        SVIPComponentObject c3 = results.get(2);
+        SVIPComponentObject c3 = results.get(2).build();
         assertEquals("ir", c3.getName());
         assertEquals("internal", c3.getType().toLowerCase());
         assertNull(c3.getVersion());
@@ -577,13 +579,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from ifoo.ibar import ib, ia as IA, ir");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(3, results.size());    // should 3 matches
 
         // Test resulting component 1
-        SVIPComponentObject c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0).build();
         assertEquals("ib", c1.getName());
         assertEquals("internal", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
@@ -593,7 +595,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        SVIPComponentObject c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1).build();
         assertEquals("ia", c2.getName());
         assertEquals("internal", c2.getType().toLowerCase());
         assertNull(c2.getVersion());
@@ -603,7 +605,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         // assertNull(c2.getChildren());
 
         // Test resulting component 3
-        SVIPComponentObject c3 = results.get(2);
+        SVIPComponentObject c3 = results.get(2).build();
         assertEquals("ir", c3.getName());
         assertEquals("internal", c3.getType().toLowerCase());
         assertNull(c3.getVersion());
@@ -619,13 +621,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from ifoo.ibar import (\n\tib, \n\tia, \n\tir\n)");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(3, results.size());    // should 3 matches
 
         // Test resulting component 1
-        SVIPComponentObject c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0).build();
         assertEquals("ib", c1.getName());
         assertEquals("internal", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
@@ -635,7 +637,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        SVIPComponentObject c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1).build();
         assertEquals("ia", c2.getName());
         assertEquals("internal", c2.getType().toLowerCase());
         assertNull(c2.getVersion());
@@ -645,7 +647,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         // assertNull(c2.getChildren());
 
         // Test resulting component 3
-        SVIPComponentObject c3 = results.get(2);
+        SVIPComponentObject c3 = results.get(2).build();
         assertEquals("ir", c3.getName());
         assertEquals("internal", c3.getType().toLowerCase());
         assertNull(c3.getVersion());
@@ -661,13 +663,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import .");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("ifoo", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -683,13 +685,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import .ibar");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("ibar", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -705,13 +707,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from . import ibar");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("ibar", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -727,13 +729,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from . import (f, o)");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should 3 matches
 
         // Test resulting component 1
-        SVIPComponentObject c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0).build();
         assertEquals("f", c1.getName());
         assertEquals("internal", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
@@ -743,7 +745,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        SVIPComponentObject c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1).build();
         assertEquals("o", c2.getName());
         assertEquals("internal", c2.getType().toLowerCase());
         assertNull(c2.getVersion());
@@ -759,13 +761,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from . import (\n\tf,\n\to,\n)");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should be 2 matches
 
         // Test resulting component 1
-        SVIPComponentObject c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0).build();
         assertEquals("f", c1.getName());
         assertEquals("internal", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
@@ -775,7 +777,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        SVIPComponentObject c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1).build();
         assertEquals("o", c2.getName());
         assertEquals("internal", c2.getType().toLowerCase());
         assertNull(c2.getVersion());
@@ -791,13 +793,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import ..");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("Absolute", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -813,13 +815,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import ..b");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("b", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -835,13 +837,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from .. import r");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("r", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -857,13 +859,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from .. import (a, r)");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should 3 matches
 
         // Test resulting component 1
-        SVIPComponentObject c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0).build();
         assertEquals("a", c1.getName());
         assertEquals("internal", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
@@ -873,7 +875,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        SVIPComponentObject c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1).build();
         assertEquals("r", c2.getName());
         assertEquals("internal", c2.getType().toLowerCase());
         assertNull(c2.getVersion());
@@ -889,13 +891,13 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("from .. import (\n\tb,\n\ta,\n)");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should 3 matches
 
         // Test resulting component 1
-        SVIPComponentObject c1 = results.get(0);
+        SVIPComponentObject c1 = results.get(0).build();
         assertEquals("b", c1.getName());
         assertEquals("internal", c1.getType().toLowerCase());
         assertNull(c1.getVersion());
@@ -905,7 +907,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         // assertNull(c1.getChildren());
 
         // Test resulting component 2
-        SVIPComponentObject c2 = results.get(1);
+        SVIPComponentObject c2 = results.get(1).build();
         assertEquals("a", c2.getName());
         assertEquals("internal", c2.getType().toLowerCase());
         assertNull(c2.getVersion());

@@ -4,7 +4,6 @@ package org.svip.sbomfactory.parsers.contexts;
 
 import org.apache.commons.lang3.StringUtils;
 import org.svip.builders.component.SVIPComponentBuilder;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.utils.Debug;
 
 import java.util.List;
@@ -25,26 +24,26 @@ public class DeadImportParser extends ContextParser {
      * @param components A list of ParserComponents that the found components will be appended to.
      * @param fileContents file contents to be parsed
      */
-    public void parseDeadImports(List<SVIPComponentObject> components, String fileContents) {
+    public void parseDeadImports(List<SVIPComponentBuilder> components, String fileContents) {
         Debug.log(Debug.LOG_TYPE.DEBUG, "Detecting Dead Code & Imports...");
         // Splits source file to be read line by line
         final String[] lines = fileContents.split("\n");
         // Iterates through each component of the source file
-        for(SVIPComponentObject component : components) {
+        for(SVIPComponentBuilder component : components) {
             // Counter for how many times component appears in the file
             int importCount = 0;
             // Iterates through each line of the file
             for(String line : lines) {
                 // Checks if component/import appears in the line
-                if(StringUtils.contains(line, component.getName())) {
+                if(StringUtils.contains(line, getName(component))) {
                     // If the component does appear in the line, increments import counter
                     importCount++;
                 }
             }
             // Checks to see if the component/import is a singular entity or multiple, and if it has been counted multiple times in file past import declaration
-            if(!(component.getName().split(" ").length > 1) && importCount <= 1) {
+            if(!(getName(component).split(" ").length > 1) && importCount <= 1) {
                 // Adds component to context list of Dead Imports
-                this.context.add(component.getName());
+                this.context.add(getName(component));
             }
         }
     }
@@ -56,7 +55,7 @@ public class DeadImportParser extends ContextParser {
      * @param fileContents file contents to be parsed
      */
     @Override
-    public void parse(List<SVIPComponentObject> components, String fileContents) {
+    public void parse(List<SVIPComponentBuilder> components, String fileContents) {
         // Parse Dead Imports
         this.parseDeadImports(components, fileContents);
 
@@ -73,7 +72,7 @@ public class DeadImportParser extends ContextParser {
             builder.setName(deadImport);
             builder.setType("DEAD_IMPORT");
             // Add dead imports to components
-            components.add(builder.build());
+            components.add(builder);
         }
     }
 }

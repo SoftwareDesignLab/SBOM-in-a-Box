@@ -2,7 +2,6 @@ package org.svip.sbomfactory.parsers.packagemanagers;
 
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import org.svip.builders.component.SVIPComponentBuilder;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.utils.QueryWorker;
 
 import java.util.*;
@@ -25,7 +24,7 @@ public class CSProjParser extends PackageManagerParser {
     }
 
     @Override
-    protected void parseData(List<SVIPComponentObject> components, HashMap<String, Object> data) {
+    protected void parseData(List<SVIPComponentBuilder> components, HashMap<String, Object> data) {
 
         /*
         xml structure
@@ -85,7 +84,7 @@ public class CSProjParser extends PackageManagerParser {
      * @param type item type (Reference, Compile, etc)
      * @param component component properties table
      */
-    private void addComponent(List<SVIPComponentObject> components, String type, HashMap<String, String> component) {
+    private void addComponent(List<SVIPComponentBuilder> components, String type, HashMap<String, String> component) {
 
         // Internal components will have Include = {filepath}, whereas external and system will be Include = {group.name}
         String include = component.get("Include");
@@ -111,7 +110,7 @@ public class CSProjParser extends PackageManagerParser {
                 if (split.length > 1) builder.setGroup(String.join("/", Arrays.copyOfRange(split, 0, split.length - 1)));
 
                 // Build url and worker object
-                this.queryWorkers.add(new QueryWorker(builder, this.buildURL(builder.build())) {
+                this.queryWorkers.add(new QueryWorker(builder, this.buildURL(builder)) {
                     @Override
                     public void run() {
                         try {
@@ -159,16 +158,16 @@ public class CSProjParser extends PackageManagerParser {
         if(component.get("Version") != null) builder.setVersion(component.get("Version"));
 
         // Add ParserComponent to components
-        components.add(builder.build());
+        components.add(builder);
     }
 
     // TODO: Docstring
-    private String buildURL(SVIPComponentObject component) {
+    private String buildURL(SVIPComponentBuilder component) {
         // Build URL to query
         String endpoint =
-                component.getGroup() == null ?
-                        component.getName() :
-                        component.getGroup().replace('/', '.') + "." + component.getName();
+                getGroup(component) == null ?
+                        getName(component) :
+                        getGroup(component).replace('/', '.') + "." + getName(component);
 
         // If component is typed, count types and go to correct URL
         // "System.Func<string, string>" -> "System.Func-2"
@@ -179,8 +178,8 @@ public class CSProjParser extends PackageManagerParser {
             endpoint = endpoint.substring(0, index) + "-" + params;
 
             // Strip typing from component name
-            final String name = component.getName();
-            set(component, b -> b.setName(name.substring(0, name.indexOf('<'))));
+            final String name = getName(component);
+            component.setName(name.substring(0, name.indexOf('<')));
         }
 
         // Return built URL

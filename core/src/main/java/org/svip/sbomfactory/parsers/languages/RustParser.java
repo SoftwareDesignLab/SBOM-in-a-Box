@@ -1,7 +1,6 @@
 package org.svip.sbomfactory.parsers.languages;
 
 import org.svip.builders.component.SVIPComponentBuilder;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -31,13 +30,13 @@ public class RustParser extends LanguageParser {
      * @return true if language, false otherwise
      */
     @Override
-    protected boolean isLanguageComponent(SVIPComponentObject component) {
+    protected boolean isLanguageComponent(SVIPComponentBuilder component) {
         // Attempt to find component
         try{
             // Initialize variables
             final StringBuilder urlSB = new StringBuilder(STD_LIB_URL);
-            final String from = component.getGroup();
-            final String name = component.getName();
+            final String from = getGroup(component);
+            final String name = getName(component);
 
             // Append component from to URL
             if(from != null) {
@@ -127,7 +126,7 @@ public class RustParser extends LanguageParser {
      * @return new component
      */
     @Override
-    protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
+    protected void parseRegexMatch(List<SVIPComponentBuilder> components, Matcher matcher) {
         // LinkedHashMap used to maintain match order for testing and output consistency
         final LinkedHashMap<String, String> matches = new LinkedHashMap<>();
         SVIPComponentBuilder builder = new SVIPComponentBuilder();
@@ -294,12 +293,12 @@ public class RustParser extends LanguageParser {
             }
 
             // Check if component is Internal
-            if (isInternalComponent(builder.build())) builder.setType("INTERNAL");
+            if (isInternalComponent(builder)) builder.setType("INTERNAL");
             // Otherwise, check component is Language
-            else if (isLanguageComponent(builder.build())) builder.setType("LANGUAGE");
+            else if (isLanguageComponent(builder)) builder.setType("LANGUAGE");
 
             // Add Component
-            components.add(builder.build());
+            components.add(builder);
         }
     }
 }

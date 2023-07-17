@@ -1,7 +1,6 @@
 package org.svip.sbomfactory.parsers.languages;
 
 import org.svip.builders.component.SVIPComponentBuilder;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.parsers.Parser;
 import org.svip.utils.VirtualPath;
 
@@ -59,9 +58,9 @@ public class PythonParser extends LanguageParser {
      * @return true if language, false otherwise
      */
     @Override
-    protected boolean isLanguageComponent(SVIPComponentObject component) {
+    protected boolean isLanguageComponent(SVIPComponentBuilder component) {
         // Get correct target
-        final String endpoint = component.getGroup() != null ? component.getGroup() : component.getName();
+        final String endpoint = getGroup(component) != null ? getGroup(component) : getName(component);
 
         // Return connection response (200 = true, else = false)
         try {
@@ -99,7 +98,7 @@ public class PythonParser extends LanguageParser {
      * @return new component
      */
     @Override
-    protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
+    protected void parseRegexMatch(List<SVIPComponentBuilder> components, Matcher matcher) {
         // Match for Group 2 and Group 3
         String match;
         if (matcher.group(2) != null) match = matcher.group(2);
@@ -178,15 +177,15 @@ public class PythonParser extends LanguageParser {
 //            if(alias != null) c.setAlias(alias); TODO
 
             // Check if internal
-            if (isInternalComponent(builder.build()) || internal) {
+            if (isInternalComponent(builder) || internal) {
                 builder.setType("INTERNAL");
 
                 // Otherwise check if Language
-            } else if (isLanguageComponent(builder.build())) {
+            } else if (isLanguageComponent(builder)) {
                 builder.setType("LANGUAGE");
             }
             // Add Component
-            components.add(builder.build());
+            components.add(builder);
             // Set PWD back to stored value
             this.PWD = tempPwd;
         }

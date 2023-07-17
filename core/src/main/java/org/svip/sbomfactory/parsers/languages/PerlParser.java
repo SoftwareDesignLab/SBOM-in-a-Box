@@ -1,7 +1,6 @@
 package org.svip.sbomfactory.parsers.languages;
 
 import org.svip.builders.component.SVIPComponentBuilder;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.utils.VirtualPath;
 
 import java.util.Arrays;
@@ -67,9 +66,9 @@ public class PerlParser extends LanguageParser {
      * @return true if internal, false otherwise
      */
     @Override
-    protected boolean isInternalComponent(SVIPComponentObject component) {
-        String name = component.getName();
-        String group = component.getGroup();
+    protected boolean isInternalComponent(SVIPComponentBuilder component) {
+        String name = getName(component);
+        String group = getGroup(component);
 
         VirtualPath internalPath = new VirtualPath((group == null ? "" : group) + "/" + name);
 
@@ -90,13 +89,13 @@ public class PerlParser extends LanguageParser {
      * @return true if language, false otherwise
      */
     @Override
-    protected boolean isLanguageComponent(SVIPComponentObject component) {
+    protected boolean isLanguageComponent(SVIPComponentBuilder component) {
         try {
             String endpoint;
             // If from is defined, build URL with from and name
             // Replace "/" with "::"
-            if(component.getGroup() != null) endpoint = String.join("::", component.getGroup().split("/")) + "::" + component.getName();
-            else endpoint = component.getName();
+            if(getGroup(component) != null) endpoint = String.join("::", getGroup(component).split("/")) + "::" + getName(component);
+            else endpoint = getName(component);
 
             // Return connection response (200 = true, else = false)
             try { return queryURL(STD_LIB_URL + endpoint, false).getResponseCode() == 200; }
@@ -145,7 +144,7 @@ public class PerlParser extends LanguageParser {
      * @return new component
      */
     @Override
-    protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
+    protected void parseRegexMatch(List<SVIPComponentBuilder> components, Matcher matcher) {
         // Initialize variables
         final HashSet<String> KEYWORDS = new HashSet<>(Arrays.asList(
                 "strict", "warning", "integer", "bytes", "constant"
@@ -255,15 +254,15 @@ public class PerlParser extends LanguageParser {
 
 
         // Check if internal
-        if (isInternalComponent(builder.build())) {
+        if (isInternalComponent(builder)) {
             builder.setType("INTERNAL");
 
         // Otherwise, check if Language
-        } else if (isLanguageComponent(builder.build())) {
+        } else if (isLanguageComponent(builder)) {
             builder.setType("LANGUAGE");
         }
 
         // Add Component
-        components.add(builder.build());
+        components.add(builder);
     }
 }

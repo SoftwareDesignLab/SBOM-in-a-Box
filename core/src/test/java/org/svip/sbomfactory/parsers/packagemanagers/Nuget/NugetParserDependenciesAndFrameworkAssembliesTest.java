@@ -2,7 +2,8 @@ package org.svip.sbomfactory.parsers.packagemanagers.Nuget;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.builders.component.SVIPComponentBuilder;
+import org.svip.sbomfactory.parsers.Parser;
 import org.svip.sbomfactory.parsers.packagemanagers.NugetParser;
 import org.svip.sbomfactory.parsers.packagemanagers.ParseDepFileTestCore;
 
@@ -35,22 +36,22 @@ public class NugetParserDependenciesAndFrameworkAssembliesTest extends ParseDepF
     void testDependencies() {
 
         // Get Components from PARSER
-        final List<SVIPComponentObject> components = this.components;
+        final List<SVIPComponentBuilder> components = this.components;
 
         // Test correct count is found
         assertEquals(8, components.size());
 
         //Make ValueSet
         final Set<String> ValueSet = new HashSet<>();;
-        for(SVIPComponentObject pc : components) {
-            ValueSet.add(pc.getName());
+        for(SVIPComponentBuilder c : components) {
+            ValueSet.add(Parser.getName(c));
         }
 
         //Check component's name
 
         String str = "System.Json" ;
         assertTrue(ValueSet.contains(str));
-        assertTrue(components.get(0).getLicenses().getConcluded().contains("MIT"));
+        assertTrue(getComponent(str).getLicenses().getConcluded().contains("MIT"));
 
         str = "System.Web" ;
         assertTrue(ValueSet.contains(str));
@@ -63,11 +64,11 @@ public class NugetParserDependenciesAndFrameworkAssembliesTest extends ParseDepF
 
         str = "Newtonsoft.Json" ;
         assertTrue(ValueSet.contains(str));
-        assertTrue(components.get(5).getLicenses().getConcluded().contains("MIT"));
+        assertTrue(getComponent(str).getLicenses().getConcluded().contains("MIT"));
 
         str = "RestSharp" ;
         assertTrue(ValueSet.contains(str));
-        assertTrue(components.get(2).getLicenses().getConcluded().contains("Apache-2.0"));
+        assertTrue(getComponent(str).getLicenses().getConcluded().contains("Apache-2.0"));
 
         str = "Selenium.Support" ;
         assertTrue(ValueSet.contains(str));
@@ -78,12 +79,12 @@ public class NugetParserDependenciesAndFrameworkAssembliesTest extends ParseDepF
         int languageComponents = 0;
         int externalComponents = 0;
 
-        for (SVIPComponentObject f: components //assert there are exactly four language components
+        for (SVIPComponentBuilder f: components //assert there are exactly four language components
         ) {
 
-            if(f.getType().equalsIgnoreCase("language"))
+            if(Parser.getType(f).equalsIgnoreCase("language"))
                 languageComponents++;
-            else if(f.getType().equalsIgnoreCase("external"))
+            else if(Parser.getType(f).equalsIgnoreCase("external"))
                 externalComponents++;
 
         }

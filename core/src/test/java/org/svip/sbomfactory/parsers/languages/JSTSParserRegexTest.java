@@ -2,9 +2,11 @@ package org.svip.sbomfactory.parsers.languages;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,13 +38,13 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     void importBasic() {
         Matcher m = getMatcher("import bar");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("bar", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -57,13 +59,13 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     void importSingleQuotes() {
         Matcher m = getMatcher("import 'bar'");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("bar", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -78,13 +80,13 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     void importDoubleQuotes() {
         Matcher m = getMatcher("import \"bar\"");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("bar", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -99,13 +101,13 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     void importFrom() {
         Matcher m = getMatcher("import foo from bar");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("foo", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -120,13 +122,13 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     void importMultipleFrom() {
         Matcher m = getMatcher("import foo, fee from bar");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should be 2 matches
 
         // Test resulting components
-        SVIPComponentObject c = results.get(0); // first match
+        SVIPComponentObject c = results.get(0).build(); // first match
 
         assertEquals("foo", c.getName());
         assertEquals("external", c.getType().toLowerCase());
@@ -136,7 +138,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getAlias());
         // assertNull(c.getChildren());
 
-        c = results.get(1); // second match
+        c = results.get(1).build(); // second match
 
         assertEquals("fee", c.getName());
         assertEquals("external", c.getType().toLowerCase());
@@ -152,13 +154,13 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     void importAsAliasFrom() {
         Matcher m = getMatcher("import foo as f from bar");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("foo", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -173,13 +175,13 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     void importMultipleAsAliasFrom() {
         Matcher m = getMatcher("import foo as f, fee from bar");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should be 2 matches
 
         // Test resulting components
-        SVIPComponentObject c = results.get(0); // first match
+        SVIPComponentObject c = results.get(0).build(); // first match
 
         assertEquals("foo", c.getName());
         assertEquals("external", c.getType().toLowerCase());
@@ -189,7 +191,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         // assertEquals("f", c.getAlias());
         // assertNull(c.getChildren());
 
-        c = results.get(1); // second match
+        c = results.get(1).build(); // second match
 
         assertEquals("fee", c.getName());
         assertEquals("external", c.getType().toLowerCase());
@@ -205,13 +207,13 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     void importBracesFrom() {
         Matcher m = getMatcher("import { foo } from bar");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("foo", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -226,13 +228,13 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     void importBracesAsAliasFrom() {
         Matcher m = getMatcher("import { foo as f } from bar");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("foo", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -247,13 +249,13 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     void importBracesMultipleAsAliasFrom() {
         Matcher m = getMatcher("import { foo as f, fee } from bar");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should be 2 matches
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0); // first match
+        SVIPComponentObject c = results.get(0).build(); // first match
 
         assertEquals("foo", c.getName());
         assertEquals("external", c.getType().toLowerCase());
@@ -263,7 +265,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         // assertEquals("f", c.getAlias());
         // assertNull(c.getChildren());
 
-        c = results.get(1); // second match
+        c = results.get(1).build(); // second match
 
         assertEquals("fee", c.getName());
         assertEquals("external", c.getType().toLowerCase());
@@ -279,13 +281,13 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     void importBracesSomeAsAliasFrom() {
         Matcher m = getMatcher("import foo as f, { goo as g } from bar");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(2, results.size());    // should be 2 matches
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0); // first match
+        SVIPComponentObject c = results.get(0).build(); // first match
 
         assertEquals("foo", c.getName());
         assertEquals("external", c.getType().toLowerCase());
@@ -295,7 +297,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         // assertEquals("f", c.getAlias());
         // assertNull(c.getChildren());
 
-        c = results.get(1); // second match
+        c = results.get(1).build(); // second match
 
         assertEquals("goo", c.getName());
         assertEquals("external", c.getType().toLowerCase());
@@ -311,13 +313,13 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     void requireBasic() {
         Matcher m = getMatcher("require(bar)");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("bar", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -332,13 +334,13 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     void requireSingleQuotes() {
         Matcher m = getMatcher("require('bar')");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("bar", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -353,13 +355,13 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     void requireDoubleQuotes() {
         Matcher m = getMatcher("require(\"bar\")");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("bar", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -378,13 +380,13 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     void importInternal() {
         Matcher m = getMatcher("import './lib/bar.js'");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("./lib/bar.js", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -399,13 +401,13 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     void importInternalFrom() {
         Matcher m = getMatcher("import foo from './lib/bar.js'");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("foo", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -447,7 +449,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("import {fee, /*...*/ } from bar");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size()); // should only find fee
@@ -458,13 +460,13 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     void importBetweenBlockComments() {
         Matcher m = getMatcher("/**/ import bar /**/");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("bar", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -479,13 +481,13 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     void importBeforeDoubleSlash() {
         Matcher m = getMatcher("import bar // this imports bar");
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("bar", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());

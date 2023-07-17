@@ -2,9 +2,11 @@ package org.svip.sbomfactory.parsers.languages;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,13 +39,13 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("using foo;");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("foo", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -59,13 +61,13 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("using foo.bar;");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("bar", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -81,13 +83,13 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("using f = foo;");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("foo", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -103,13 +105,13 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("using f = Faz.Foo.Fee<string>;");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("Fee", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -125,13 +127,13 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("using f = Faz.Foo.Fee<string>;");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("Fee", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -151,13 +153,13 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("using static foo;");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("foo", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -173,13 +175,13 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("global using foo;");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("foo", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -195,13 +197,13 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("global using static foo;");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());    // should only be 1 match
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("foo", c.getName());
         assertEquals("external", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -249,13 +251,13 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("using System.Net;");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("Net", c.getName());
         assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -271,13 +273,13 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("using System.IO.Compression;");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("Compression", c.getName());
         assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -293,13 +295,13 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("using s = System.Net;");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("Net", c.getName());
         assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -315,13 +317,13 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("using f = System.Func<string>;");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("Func", c.getName());
         assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -337,13 +339,13 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("using f = System.Func<string, string>;");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("Func", c.getName());
         assertEquals("language", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -363,13 +365,13 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("using CSharp.Bar;");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("Bar", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -385,13 +387,13 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("using b = CSharp.Bar;");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("Bar", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -407,13 +409,13 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("using CSharp.Bar;");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("Bar", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());
@@ -429,13 +431,13 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         Matcher m = getMatcher("using CSharp.Bar.foobar.foofoobar;");
 
         assertTrue(m.find());   // Should be a match
-        ArrayList<SVIPComponentObject> results = new ArrayList<>();
+        List<SVIPComponentBuilder> results = new ArrayList<>();
         this.PARSER.parseRegexMatch(results, m);
 
         assertEquals(1, results.size());
 
         // Test resulting component
-        SVIPComponentObject c = results.get(0);
+        SVIPComponentObject c = results.get(0).build();
         assertEquals("foofoobar", c.getName());
         assertEquals("internal", c.getType().toLowerCase());
         assertNull(c.getVersion());

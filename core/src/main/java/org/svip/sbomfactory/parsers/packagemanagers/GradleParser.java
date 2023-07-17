@@ -1,7 +1,6 @@
 package org.svip.sbomfactory.parsers.packagemanagers;
 
 import org.svip.builders.component.SVIPComponentBuilder;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.utils.QueryWorker;
 
@@ -38,7 +37,7 @@ public class GradleParser extends PackageManagerParser {
     //#region Core Methods
 
     @Override
-    protected void parseData(List<SVIPComponentObject> components, HashMap<String, Object> data) {
+    protected void parseData(List<SVIPComponentBuilder> components, HashMap<String, Object> data) {
         // Init properties
         this.properties = new HashMap<>();
 
@@ -116,13 +115,13 @@ public class GradleParser extends PackageManagerParser {
 
             queryURLs(this.queryWorkers); // TODO is thsi correct?
             // Add ParserComponent to components
-            components.add(builder.build());
+            components.add(builder);
             log(LOG_TYPE.DEBUG, String.format("New Component: %s", getName(builder)));
         }
     }
 
     @Override
-    public void parse(List<SVIPComponentObject> components, String fileContents) {
+    public void parse(List<SVIPComponentBuilder> components, String fileContents) {
         // Init main data structure
         final LinkedHashMap<String, Object> data = new LinkedHashMap<>();
 

@@ -1,6 +1,8 @@
 package org.svip.sbomfactory.parsers.packagemanagers;
 
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.sbomfactory.parsers.Parser;
 import org.svip.sbomfactory.parsers.ParserTestCore;
 
 import java.util.ArrayList;
@@ -15,7 +17,7 @@ import java.util.List;
  */
 public abstract class ParseDepFileTestCore extends ParserTestCore<PackageManagerParser> {
     // Stores the ParserComponents to be tested
-    protected final List<SVIPComponentObject> components;
+    protected final List<SVIPComponentBuilder> components;
     /**
      * Constructor calls super with parser and src, and parses the given
      * fileContents to test against.
@@ -41,10 +43,10 @@ public abstract class ParseDepFileTestCore extends ParserTestCore<PackageManager
      * @return The found component object or null
      */
     protected SVIPComponentObject getComponent(String name) {
-        for(SVIPComponentObject i : this.components) {
-            String cname = i.getName();
+        for(SVIPComponentBuilder i : this.components) {
+            String cname = Parser.getName(i);
             if((cname != null) && cname.equals(name) ) {
-                return i;
+                return i.build();
             }
         }
         return null;

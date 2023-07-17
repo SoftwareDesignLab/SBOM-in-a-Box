@@ -1,7 +1,6 @@
 package org.svip.sbomfactory.parsers.languages;
 
 import org.svip.builders.component.SVIPComponentBuilder;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,12 +32,12 @@ public class CSharpParser extends LanguageParser {
      * @return true if language, false otherwise
      */
     @Override
-    protected boolean isLanguageComponent(SVIPComponentObject component) {
+    protected boolean isLanguageComponent(SVIPComponentBuilder component) {
         // Return connection response (200 = true, else = false)
         String endpoint =
-                component.getGroup() == null ?
-                        component.getName() :
-                        component.getGroup().replace('/', '.') + "." + component.getName();
+                getGroup(component) == null ?
+                        getName(component) :
+                        getGroup(component).replace('/', '.') + "." + getName(component);
 
         // If component is typed, count types and go to correct URL
         // "System.Func<string, string>" -> "System.Func-2"
@@ -49,8 +48,8 @@ public class CSharpParser extends LanguageParser {
             endpoint = endpoint.substring(0, index) + "-" + params;
 
             // Strip typing from component name
-            final String name = component.getName();
-            set(component, b -> b.setName(name.substring(0, name.indexOf('<'))));
+            final String name = getName(component);
+            component.setName(name.substring(0, name.indexOf('<')));
         }
 
         // Query URL
@@ -92,7 +91,7 @@ public class CSharpParser extends LanguageParser {
      * @return new component
      */
     @Override
-    protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
+    protected void parseRegexMatch(List<SVIPComponentBuilder> components, Matcher matcher) {
         // Capture match data
         String match;
         if(matcher.group(2) != null) match = matcher.group(2);
@@ -128,14 +127,14 @@ public class CSharpParser extends LanguageParser {
 //        }
 
         // Check if internal
-        if (isInternalComponent(builder.build())) builder.setType("INTERNAL");
+        if (isInternalComponent(builder)) builder.setType("INTERNAL");
         // Otherwise, check if Language
-        else if (isLanguageComponent(builder.build())) builder.setType("LANGUAGE");
+        else if (isLanguageComponent(builder)) builder.setType("LANGUAGE");
 
         // Remove generic type if found
         if (match.contains("<")) builder.setName(match.substring(0, match.indexOf("<")));
 
         // Add Component
-        components.add(builder.build());
+        components.add(builder);
     }
 }

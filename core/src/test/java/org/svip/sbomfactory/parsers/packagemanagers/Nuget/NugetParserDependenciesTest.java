@@ -2,7 +2,8 @@ package org.svip.sbomfactory.parsers.packagemanagers.Nuget;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.builders.component.SVIPComponentBuilder;
+import org.svip.sbomfactory.parsers.Parser;
 import org.svip.sbomfactory.parsers.packagemanagers.NugetParser;
 import org.svip.sbomfactory.parsers.packagemanagers.ParseDepFileTestCore;
 
@@ -13,7 +14,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * file: NugetParserDependenciesTest.java //todo
@@ -34,18 +36,18 @@ public class NugetParserDependenciesTest extends ParseDepFileTestCore {
     void testDependencies() {
 
         // Get Components from PARSER
-        final List<SVIPComponentObject> components = this.components;
+        final List<SVIPComponentBuilder> components = this.components;
 
         // Test correct count is found
         assertEquals(2, components.size());
 
-        assertEquals("external", components.get(0).getType().toLowerCase());
-        assertEquals("external", components.get(1).getType().toLowerCase());
+        assertEquals("external", components.get(0).build().getType().toLowerCase());
+        assertEquals("external", components.get(1).build().getType().toLowerCase());
 
         //Make ValueSet
         final Set<String> ValueSet = new HashSet<>();;
-        for(SVIPComponentObject c : components) {
-            ValueSet.add(c.getName());
+        for(SVIPComponentBuilder c : components) {
+            ValueSet.add(Parser.getName(c));
         }
 
         //Check component's name

@@ -1,7 +1,6 @@
 package org.svip.sbomfactory.parsers.languages;
 
 import org.svip.builders.component.SVIPComponentBuilder;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.parsers.Parser;
 
 import java.util.List;
@@ -32,13 +31,13 @@ public class ScalaParser extends LanguageParser {
      * @return true if language, false otherwise
      */
     @Override
-    protected boolean isLanguageComponent(SVIPComponentObject component) {
+    protected boolean isLanguageComponent(SVIPComponentBuilder component) {
         // Attempt to find component
         try{
             // Initialize variables
             StringBuilder urlSB = new StringBuilder(STD_LIB_URL);
-            final String from = component.getGroup();
-            final String name = component.getName();
+            final String from = getGroup(component);
+            final String name = getName(component);
 
             // If component is not capitalized, component is package
             if(from == null) {
@@ -105,7 +104,7 @@ public class ScalaParser extends LanguageParser {
      * @return new component
      */
     @Override
-    protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
+    protected void parseRegexMatch(List<SVIPComponentBuilder> components, Matcher matcher) {
         // Variable initialization
         SVIPComponentBuilder builder = new SVIPComponentBuilder();
         builder.setType("EXTERNAL"); // Default to EXTERNAL
@@ -156,16 +155,16 @@ public class ScalaParser extends LanguageParser {
 //                }
 
                 // Check if internal
-                if (isInternalComponent(builder.build())) {
+                if (isInternalComponent(builder)) {
                     builder.setType("INTERNAL");
 
                 // Otherwise, check if Language
-                } else if (isLanguageComponent(builder.build())) {
+                } else if (isLanguageComponent(builder)) {
                     builder.setType("LANGUAGE");
                 }
 
                 // Add Component
-                components.add(builder.build());
+                components.add(builder);
             }
         }
     }

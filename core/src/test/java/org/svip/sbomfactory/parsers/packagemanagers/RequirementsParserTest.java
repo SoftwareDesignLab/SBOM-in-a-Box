@@ -2,7 +2,8 @@ package org.svip.sbomfactory.parsers.packagemanagers;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.builders.component.SVIPComponentBuilder;
+import org.svip.sbomfactory.parsers.Parser;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,16 +32,15 @@ public class RequirementsParserTest extends ParseDepFileTestCore {
     @DisplayName("Test Componemts")
     void testComponents() {
         // Get Components from PARSER
-        final List<SVIPComponentObject> components = this.components;
+        final List<SVIPComponentBuilder> components = this.components;
 
         // Test correct count is found
         assertEquals(15, components.size());
 
         //Make ValueSet
         final Set<String> ValueSet = new HashSet<>();;
-        for(SVIPComponentObject pc : components) {
-            ValueSet.add(pc.getName());
-        }
+        for(SVIPComponentBuilder c : components)
+            ValueSet.add(Parser.getName(c));
 
 //        //Check component's name
 //        String str = "contourpy" ;
@@ -55,21 +55,21 @@ public class RequirementsParserTest extends ParseDepFileTestCore {
         final String[] str = new String[]{"contourpy"} ;
         assertTrue(ValueSet.contains(str[0]));
         //Check component's version
-        components.forEach(i->{if(i.getName().equals(str[0]))assertEquals("1.0.6", i.getVersion());});
+        components.forEach(i->{if(Parser.getName(i).equals(str[0]))assertEquals("1.0.6", Parser.getVersion(i));});
 
 
         //Check component's name
         str[0] = "numpy" ;
         assertTrue(ValueSet.contains(str[0]));
         //Check component's version
-        components.forEach(i->{if(i.getName().equals(str[0]))assertEquals("1.23.5", i.getVersion());});
+        components.forEach(i->{if(Parser.getName(i).equals(str[0]))assertEquals("1.23.5", Parser.getVersion(i));});
 
 
         //Check component's name
         str[0] = "scipy" ;
         assertTrue(ValueSet.contains(str[0]));
         //Check component's version
-        components.forEach(i->{if(i.getName().equals(str[0]))assertEquals("1.9.3", i.getVersion());});
+        components.forEach(i->{if(Parser.getName(i).equals(str[0]))assertEquals("1.9.3", Parser.getVersion(i));});
 
     }
 

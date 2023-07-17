@@ -1,7 +1,6 @@
 package org.svip.sbomfactory.parsers.languages;
 
 import org.svip.builders.component.SVIPComponentBuilder;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.parsers.Parser;
 import org.svip.utils.VirtualPath;
 
@@ -33,9 +32,9 @@ public class CppParser extends LanguageParser {
      * @return true if internal, false otherwise
      */
     @Override
-    protected boolean isInternalComponent(SVIPComponentObject component) {
-        String name = component.getName();
-        String group = component.getGroup();
+    protected boolean isInternalComponent(SVIPComponentBuilder component) {
+        String name = getName(component);
+        String group = getGroup(component);
 
         for(VirtualPath internalComponent : sourceFiles) {
             if(internalComponent.endsWith(new VirtualPath(name))) return true;
@@ -52,15 +51,17 @@ public class CppParser extends LanguageParser {
      * @return true if language, false otherwise
      */
     @Override
-    protected boolean isLanguageComponent(SVIPComponentObject component) {
+    protected boolean isLanguageComponent(SVIPComponentBuilder component) {
         // Attempt to find component
         try{
-            if(Parser.queryURL(STD_LIB_URL + component.getName(), true).getResponseCode() == 200) return true;
+            if(Parser.queryURL(STD_LIB_URL + getName(component), true).getResponseCode() == 200) return true;
 
             // if external, test if header is in C Library (https://cplusplus.com/reference/clibrary/)
-            if(component.getType().equalsIgnoreCase("external") && component.getName().contains(".h")){
-                String clib = "c"+component.getName().split("\\.")[0];
-                log(LOG_TYPE.DEBUG, "EXTERNAL [ " + component.getName() + " ] not found, attempting clib");
+            if(getType(component).equalsIgnoreCase("external") &&
+                    getName(component).contains(".h")) {
+
+                String clib = "c" + getName(component).split("\\.")[0];
+                log(LOG_TYPE.DEBUG, "EXTERNAL [ " + getName(component) + " ] not found, attempting clib");
                 return Parser.queryURL(STD_LIB_URL + clib, true).getResponseCode() == 200;
             }
         } catch (Exception e){
@@ -116,7 +117,7 @@ public class CppParser extends LanguageParser {
      * @return new component
      */
     @Override
-    protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
+    protected void parseRegexMatch(List<SVIPComponentBuilder> components, Matcher matcher) {
         SVIPComponentBuilder builder = new SVIPComponentBuilder();
         // group 1: External component, capture inside '<' and '>'
         if (matcher.group(1) != null) {
@@ -134,7 +135,7 @@ public class CppParser extends LanguageParser {
         }
 
         // Check if internal
-        boolean isInternal = isInternalComponent(builder.build());
+        boolean isInternal = isInternalComponent(builder);
 
         // If already marked as internal and is not, change to external
         if (!isInternal && getType(builder).equalsIgnoreCase("internal")) {
@@ -147,10 +148,10 @@ public class CppParser extends LanguageParser {
         }
 
         // Only check EXTERNAL if Language components
-        if (getType(builder).equalsIgnoreCase("EXTERNAL") && isLanguageComponent(builder.build()))
+        if (getType(builder).equalsIgnoreCase("EXTERNAL") && isLanguageComponent(builder))
             builder.setType("LANGUAGE");
 
         // Add Component
-        components.add(builder.build());
+        components.add(builder);
     }
 }

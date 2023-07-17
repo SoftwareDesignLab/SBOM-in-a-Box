@@ -2,7 +2,7 @@ package org.svip.sbomfactory.parsers.packagemanagers.Nuget;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbomfactory.parsers.packagemanagers.NugetParser;
 import org.svip.sbomfactory.parsers.packagemanagers.ParseDepFileTestCore;
 
@@ -33,7 +33,7 @@ public class NugetParserNoDependenciesTest extends ParseDepFileTestCore {
     void testDependencies() {
 
         // Get Components from PARSER
-        final List<SVIPComponentObject> components = this.components;
+        final List<SVIPComponentBuilder> components = this.components;
 
         // Test correct count is found
         assertEquals(0, components.size());

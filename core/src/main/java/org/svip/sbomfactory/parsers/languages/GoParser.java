@@ -1,7 +1,6 @@
 package org.svip.sbomfactory.parsers.languages;
 
 import org.svip.builders.component.SVIPComponentBuilder;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbomfactory.parsers.Parser;
 
 import java.util.Arrays;
@@ -34,17 +33,17 @@ public class GoParser extends LanguageParser {
      * @return true if language, false otherwise
      */
     @Override
-    protected boolean isLanguageComponent(SVIPComponentObject component) {
+    protected boolean isLanguageComponent(SVIPComponentBuilder component) {
         String endpoint;
         // Endpoint will either be "/from/name" or "/name"
         // If from is found, it is "/from/name"
-        if(component.getGroup() != null) {
-            endpoint = component.getGroup().toLowerCase();
+        if(getGroup(component) != null) {
+            endpoint = getGroup(component).toLowerCase();
             // If name is not "*", endpoint is "/from/name"
-            if(!component.getName().equals("*"))
-                endpoint += "/" + component.getName().toLowerCase();
+            if(!getName(component).equals("*"))
+                endpoint += "/" + getName(component).toLowerCase();
             // Otherwise, endpoint is "/from"
-        } else endpoint = component.getName(); // Otherwise, it is "/name"
+        } else endpoint = getName(component); // Otherwise, it is "/name"
 
         // Return connection response (200 = true, else = false)
         try { return Parser.queryURL(STD_LIB_URL + endpoint, false).getResponseCode() == 200; }
@@ -85,7 +84,7 @@ public class GoParser extends LanguageParser {
      * @return new component
      */
     @Override
-    protected void parseRegexMatch(List<SVIPComponentObject> components, Matcher matcher) {
+    protected void parseRegexMatch(List<SVIPComponentBuilder> components, Matcher matcher) {
         // LinkedHashMap used to maintain match order for testing and output consistency
         final LinkedHashMap<String, String> matches = new LinkedHashMap<>();
         SVIPComponentBuilder builder = new SVIPComponentBuilder();
@@ -174,12 +173,12 @@ public class GoParser extends LanguageParser {
             } else continue; // If no match found, import must be invalid, skip component
 
             // Check if component is Internal
-            if (isInternalComponent(builder.build())) builder.setType("INTERNAL");
+            if (isInternalComponent(builder)) builder.setType("INTERNAL");
                 // Otherwise, check component is Language
-            else if (isLanguageComponent(builder.build())) builder.setType("LANGUAGE");
+            else if (isLanguageComponent(builder)) builder.setType("LANGUAGE");
 
             // Add Component
-            components.add(builder.build());
+            components.add(builder);
         }
     }
 }

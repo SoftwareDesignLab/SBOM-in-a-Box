@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.builders.component.SVIPComponentBuilder;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbom.model.uids.CPE;
 import org.svip.sbomfactory.parsers.Parser;
@@ -173,7 +172,7 @@ public abstract class PackageManagerParser extends Parser {
      * @param components list of Components to add to
      * @param data map of data to be parsed
      */
-    protected abstract void parseData(List<SVIPComponentObject> components, HashMap<String, Object> data);
+    protected abstract void parseData(List<SVIPComponentBuilder> components, HashMap<String, Object> data);
 
     // TODO: Docstring
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -278,7 +277,7 @@ public abstract class PackageManagerParser extends Parser {
      * @param fileContents the contents of the file to be parsed
      */
     @Override
-    public void parse(List<SVIPComponentObject> components, String fileContents) {
+    public void parse(List<SVIPComponentBuilder> components, String fileContents) {
         try {
             final HashMap<String, Object> data = this.OM.readValue(fileContents, HashMap.class);
             this.parseData(components, data);
@@ -292,7 +291,7 @@ public abstract class PackageManagerParser extends Parser {
      * @param parser the package-manager parser
      * @param packageManager the package manager
      */
-    public static void buildURLs(List<SVIPComponentObject> components, PackageManagerParser parser, String packageManager) {
+    public static void buildURLs(List<SVIPComponentBuilder> components, PackageManagerParser parser, String packageManager) {
         // Iterate and build URLs
 
         boolean nugetParser = packageManager.equals("nuget");
@@ -382,7 +381,7 @@ public abstract class PackageManagerParser extends Parser {
             }
 
             // Add ParserComponent to components
-            components.add(builder.build());
+            components.add(builder);
         }
     }
 
