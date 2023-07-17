@@ -297,6 +297,7 @@ public class CDX14SBOM implements CDX14Schema {
 //            }
 //        }
 //        return conflicts.stream().toList();
+        compare((SBOM) other);
         return null;
     }
 }

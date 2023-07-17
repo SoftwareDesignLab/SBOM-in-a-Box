@@ -187,6 +187,8 @@ public class CreationData implements Comparable{
         cf.addConflicts(this.manufacture.compare(other.getManufacture()));
         cf.addConflicts(this.supplier.compare(other.getSupplier()));
 
+
+
         // todo
         //  properties
         return cf.getConflicts();
