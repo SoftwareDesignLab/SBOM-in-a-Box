@@ -2,6 +2,9 @@ package org.svip.sbomanalysis.comparison.conflicts;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.LICENSE_MISMATCH;
 
 /**
  * File: ConflictFactory.java
@@ -27,6 +30,28 @@ public class ConflictFactory {
         // Add conflict if there is one
         if(c != null)
             this.conflicts.add(c);
+    }
+
+    /**
+     * Create conflicts for Sets of Strings
+     *
+     * @param field Name of the Comparison Field
+     * @param mismatchType Type of conflict
+     * @param target Set of target values
+     * @param other Set of other values
+     */
+    public void addConflicts(String field, MismatchType mismatchType, Set<String> target, Set<String> other){
+        // Compare Strings
+        for(String value : target){
+            // Value in target and not in other
+            if(!other.contains(value))
+                addConflict(field, mismatchType, value, null);
+        }
+        for(String value : other){
+            // Value in other and not in target
+            if(!target.contains(value))
+                addConflict(field, mismatchType, null, value);
+        }
     }
 
     /**
