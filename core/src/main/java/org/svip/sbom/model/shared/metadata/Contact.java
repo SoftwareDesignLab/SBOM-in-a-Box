@@ -1,9 +1,13 @@
 package org.svip.sbom.model.shared.metadata;
 
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
+import org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
 
 import java.util.List;
 import java.util.Objects;
+
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISC_MISMATCH;
 
 /**
  * File: Contact.java
@@ -59,8 +63,19 @@ public class Contact {
     ///
     /// Util
     ///
+
+    /**
+     * Compare against other Contact
+     *
+     * @param other Other contact
+     * @return list of conflicts
+     */
     public List<Conflict> compare(Contact other){
-        return null;
+        ConflictFactory cf = new ConflictFactory();
+        cf.addConflict("Contact Name", MISC_MISMATCH, this.name, other.getName());
+        cf.addConflict("Contact Email", MISC_MISMATCH, this.email, other.getEmail());
+        cf.addConflict("Contact Phone", MISC_MISMATCH, this.phone, other.getEmail());
+        return cf.getConflicts();
     }
 
     /**
