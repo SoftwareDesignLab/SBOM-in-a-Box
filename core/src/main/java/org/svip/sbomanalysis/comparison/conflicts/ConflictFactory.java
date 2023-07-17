@@ -1,6 +1,7 @@
 package org.svip.sbomanalysis.comparison.conflicts;
 
 import org.svip.sbom.model.shared.metadata.Contact;
+import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
 import java.util.ArrayList;
@@ -62,8 +63,6 @@ public class ConflictFactory {
         // True: Objects are of the same class to be compared
         return !target.getClass().equals(other.getClass());
 
-
-
     }
 
     /**
@@ -92,6 +91,14 @@ public class ConflictFactory {
         }
     }
 
+    public void compareCreationData(String field, CreationData target, CreationData other){
+        // Null check
+        if(!comparable(field, target, other))
+            return;
+
+        // add conflicts
+        addConflicts(target.compare(other));
+    }
 
     public void compareLicenseCollections(String field, MismatchType mismatchType, LicenseCollection target, LicenseCollection other){
         if (target == null && other == null) {
