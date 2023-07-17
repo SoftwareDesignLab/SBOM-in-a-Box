@@ -8,8 +8,8 @@ import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbom.model.uids.Hash;
-import org.svip.sbomanalysis.qualityattributes.newtests.*;
-import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
+import org.svip.sbomanalysis.qualityattributes.tests.*;
+import org.svip.sbomanalysis.qualityattributes.tests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
 import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.schemas.CycloneDX14.CDX14Tests;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
@@ -48,7 +48,7 @@ public class CDX14Pipeline implements CDX14Tests {
 
         // test SBOM metadata
         String bomVersion = cdx14SBOM.getVersion();
-        sbomResults.addAll(hasBomVersion("Bom Version", bomVersion, cdx14SBOM.getName()));
+        sbomResults.add(hasBomVersion("Bom Version", bomVersion, cdx14SBOM.getName()));
 
         // test for SBOM's licenses
         var lt = new LicenseTest(cdx14SBOM.getName(), ATTRIBUTE.LICENSING);
@@ -60,7 +60,7 @@ public class CDX14Pipeline implements CDX14Tests {
 
         // test CycloneDX 1.4 specific metadata information
         String serialNumber = cdx14SBOM.getUID();
-        sbomResults.addAll(validSerialNumber("Bom Serial Number", serialNumber, cdx14SBOM.getName()));
+        sbomResults.add(validSerialNumber("Bom Serial Number", serialNumber, cdx14SBOM.getName()));
 
         // add metadata results to the quality report
         qualityReport.addComponent("metadata", sbomResults);
@@ -71,7 +71,8 @@ public class CDX14Pipeline implements CDX14Tests {
                 CDX14ComponentObject component = (CDX14ComponentObject) c;
 
                 String bomRef = component.getUID();
-                componentResults.addAll(hasBomRef("Bom-Ref", bomRef, component.getName()));
+                componentResults.add(hasBomRef("Bom-Ref", bomRef,
+                        component.getName()));
 
                 // test component CPEs
                 var cpeTest = new CPETest(component, ATTRIBUTE.UNIQUENESS,
@@ -112,7 +113,8 @@ public class CDX14Pipeline implements CDX14Tests {
                     for(String hashAlgo : hashes.keySet()){
                         String hashValue = hashes.get(hashAlgo);
                         componentResults.addAll(hashTest.test(hashAlgo, hashValue));
-                        componentResults.addAll(supportedHash("Supported CDX Hash", hashAlgo, component.getName()));
+                        componentResults.add(supportedHash("Supported CDX Hash",
+                                hashAlgo, component.getName()));
                     }
                 }
 
@@ -132,15 +134,10 @@ public class CDX14Pipeline implements CDX14Tests {
      * @return the result of if the sbom has a bom version
      */
     @Override
-    public Set<Result> hasBomVersion(String field, String value, String sbomName) {
-        Set<Result> result = new HashSet<>();
-
+    public Result hasBomVersion(String field, String value, String sbomName) {
         // create a new EmptyOrNullTest
         var emptyNullTest = new EmptyOrNullTest(ATTRIBUTE.COMPLETENESS);
-        Result r = emptyNullTest.test(field, value, sbomName);
-
-        result.add(r);
-        return result;
+        return emptyNullTest.test(field, value, sbomName);
     }
 
     /**
@@ -151,36 +148,31 @@ public class CDX14Pipeline implements CDX14Tests {
      * @return the result of if the sbom has a valid serial number UID
      */
     @Override
-    public Set<Result> validSerialNumber(String field, String value, String sbomName) {
-        String testName = "ValidSerialNumber";
-        Set<Result> result = new HashSet<>();
+    public Result validSerialNumber(String field, String value, String sbomName) {
         //Create a new Pattern with the CDX14 Regex
         Pattern cdx14UIDPattern = new Pattern(CDX14_UID_REGEX, Pattern.DEFAULT);
 
         // set the attributes of this test to create a new ResultFactory
+        String testName = "ValidSerialNumber";
         ResultFactory resultFactory = new ResultFactory(testName,
                 ATTRIBUTE.CDX14, ATTRIBUTE.COMPLETENESS);
-        Result r;
 
         // first check if the sbom uid is not a null or empty string
         if(value != null && !value.isEmpty()){
             Matcher matcher = cdx14UIDPattern.matcher(value);
             // if regex fails to match to the uid string
             if(!matcher.find()){
-                r = resultFactory.fail(field, INFO.INVALID, value, sbomName);
+                return resultFactory.fail("SBOM Serial Number", INFO.INVALID, value, sbomName);
             }
             // regex matches to the uid string
             else{
-                r = resultFactory.pass(field, INFO.VALID, value, sbomName);
+                return resultFactory.pass("SBOM Serial Number", INFO.VALID, value, sbomName);
             }
         }
         // uid was null or an empty string
         else{
-            r = resultFactory.fail(field, INFO.MISSING, value, sbomName);
+            return resultFactory.fail("SBOM Serial Number", INFO.MISSING, value, sbomName);
         }
-
-        result.add(r);
-        return result;
     }
 
     /**
@@ -188,19 +180,13 @@ public class CDX14Pipeline implements CDX14Tests {
      * @param field the field that's tested
      * @param value the bom-ref tested
      * @param componentName the component's name to product the result
-     * @return a set of results for each component in the sbom
+     * @return the result of if the component has a bom-ref
      */
     @Override
-    public Set<Result> hasBomRef(String field, String value, String componentName) {
-        Set<Result> results = new HashSet<>();
-
-        var emptyNullTest = new EmptyOrNullTest(ATTRIBUTE.CDX14,
-                ATTRIBUTE.UNIQUENESS);
-        Result r = emptyNullTest.test(field, value, componentName);
-
-        results.add(r);
-
-        return results;
+    public Result hasBomRef(String field, String value, String componentName) {
+        // create a new EmptyOrNullTest
+        var emptyNullTest = new EmptyOrNullTest(ATTRIBUTE.CDX14, ATTRIBUTE.UNIQUENESS);
+        return emptyNullTest.test(field, value, componentName);
     }
 
     /**
@@ -212,22 +198,21 @@ public class CDX14Pipeline implements CDX14Tests {
      * @return the result of if the hash algorithm is supported
      */
     @Override
-    public Set<Result> supportedHash(String field, String value, String componentName) {
+    public Result supportedHash(String field, String value, String componentName) {
         String testName = "SupportedCDXHash";
-        Set<Result> result = new HashSet<>();
-        Result r;
         ResultFactory resultFactory = new ResultFactory(testName,
                 ATTRIBUTE.CDX14, ATTRIBUTE.UNIQUENESS);
+
         // hash is unsupported, test fails
         if(Hash.isSPDXExclusive(Hash.Algorithm.valueOf(value))){
-            r = resultFactory.fail(field, INFO.INVALID, value, componentName);
+            return resultFactory.fail(field, INFO.INVALID, value,
+                    componentName);
         }
         // hash is supported, test passes
         else{
-            r = resultFactory.pass(field, INFO.VALID, value, componentName);
+            return resultFactory.pass(field, INFO.VALID, value,
+                    componentName);
         }
-        result.add(r);
-        return result;
     }
 
 

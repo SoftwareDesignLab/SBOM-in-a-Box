@@ -1,7 +1,7 @@
-package org.svip.sbomanalysis.qualityattributes.newtests;
+package org.svip.sbomanalysis.qualityattributes.tests;
 
 import org.svip.sbom.model.uids.Hash;
-import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
+import org.svip.sbomanalysis.qualityattributes.tests.enumerations.ATTRIBUTE;
 
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.ResultFactory;
@@ -50,7 +50,8 @@ public class HashTest extends MetricTest{
         // Hash has a null algo or value, tests cannot be run
         // return missing Result
         else{
-            Result r = resultFactory.error(field, INFO.NULL, value, componentName);
+            Result r = resultFactory.error(field, INFO.NULL,
+                    value, componentName);
             results.add(r);
         }
         return results;
@@ -64,31 +65,30 @@ public class HashTest extends MetricTest{
      * @return a Result if the hash is valid or not
      */
     private Result isValidHash(String field, String value){
-        Result r;
         try{
             // create new hash object
             Hash hash = new Hash(field, value);
 
             // Check if hash algorithm is unknown
             if(hash.getAlgorithm() == Hash.Algorithm.UNKNOWN){
-                r = resultFactory.fail(field, INFO.INVALID, value, componentName);
-                return r;
+                return resultFactory.fail(field, INFO.INVALID,
+                        value, componentName);
             }
 
             // Check if hash is valid
             if(!Hash.validateHash(hash.getAlgorithm(), hash.getValue())){
-                r = resultFactory.fail(field, INFO.INVALID, value, componentName);
+                return resultFactory.fail(field, INFO.INVALID,
+                        value, componentName);
             } else {
-                r = resultFactory.pass(field, INFO.VALID, value, componentName);
+                return resultFactory.pass(field, INFO.VALID,
+                        value, componentName);
             }
 
         }
         // failed to create a new Hash object, test automatically fails
         catch(Exception e){
-            r = resultFactory.fail(field, INFO.INVALID, value, componentName);
-            return r;
+            return resultFactory.fail(field, INFO.INVALID,
+                    value, componentName);
         }
-
-        return r;
     }
 }

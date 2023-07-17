@@ -20,9 +20,9 @@ public interface CDX14Tests extends QAPipeline {
      * @param field the field that's tested
      * @param value the serial number tested
      * @param sbomName the sbom's name to product the result
-     * @return a Set<Result> of if the serial number is valid or not
+     * @return a Result of if the serial number is valid or not
      */
-    Set<Result> validSerialNumber(String field, String value, String sbomName);
+    Result validSerialNumber(String field, String value, String sbomName);
 
     /**
      * Check if each component in the given CycloneDX 1.4 SBOM contains
@@ -30,9 +30,9 @@ public interface CDX14Tests extends QAPipeline {
      * @param field the field that's tested
      * @param value the bom ref tested
      * @param componentName the component's name to product the result
-     * @return a collection of results from each component in the sbom
+     * @return the result of if the component has a bom-ref
      */
-    Set<Result> hasBomRef(String field, String value, String componentName);
+    Result hasBomRef(String field, String value, String componentName);
 
     /**
      * Check if a hash algorithm in the given CycloneDX 1.4 SBOM is supported
@@ -42,7 +42,7 @@ public interface CDX14Tests extends QAPipeline {
      * @param componentName the component's name to product the result
      * @return the result of if the hash algorithm is supported
      */
-    Set<Result> supportedHash(String field, String value, String componentName);
+    Result supportedHash(String field, String value, String componentName);
 
 
 }

@@ -1,15 +1,14 @@
-package org.svip.sbomanalysis.qualityattributes.newtests;
+package org.svip.sbomanalysis.qualityattributes.tests;
 
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 import org.svip.sbom.model.uids.PURL;
-import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
+import org.svip.sbomanalysis.qualityattributes.tests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.ResultFactory;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.INFO;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -25,7 +24,6 @@ public class PURLTest extends MetricTest{
 
     private final SBOMPackage component;
 
-    private final List<ATTRIBUTE> attributes;
 
     /**
      * Constructor to create a new PURLTest
@@ -36,7 +34,6 @@ public class PURLTest extends MetricTest{
     public PURLTest(Component component, ATTRIBUTE... attributes) {
         super(attributes);
         this.component = (SBOMPackage) component;
-        this.attributes = List.of(attributes);
         String TEST_NAME = "PURLTest";
         resultFactory = new ResultFactory(TEST_NAME, attributes);
     }
@@ -52,8 +49,8 @@ public class PURLTest extends MetricTest{
         Set<Result> results = new HashSet<>();
         // check that purl string value is not null
         if(value != null) {
-            results.addAll(isValidPURL(field, value));
-            results.addAll(isAccuratePURL(field, value));
+            results.add(isValidPURL(field, value));
+            results.add(isAccuratePURL(field, value));
             // results.addAll(existsInRepo(field, value));
         }
         // purl string is null so no tests can be run
@@ -71,38 +68,38 @@ public class PURLTest extends MetricTest{
      * @param value the purl string
      * @return a result if the purl is valid or not
      */
-    private Set<Result> isValidPURL(String field, String value){
-        String testName = "ValidPURL";
-        ResultFactory resultFactory = new ResultFactory(testName, this.attributes);
-        Set<Result> results = new HashSet<>();
-        Result r;
+    private Result isValidPURL(String field, String value){
         try{
             // create new purl object
             new PURL(value);
-            r = resultFactory.pass(field, INFO.VALID, value, component.getName());
+            return resultFactory.pass(field, INFO.VALID,
+                    value, component.getName());
         }
         // failed to create new purl, test fails
         catch(Exception e){
-            r = resultFactory.fail(field, INFO.INVALID, value, component.getName());
+            return resultFactory.fail(field, INFO.INVALID,
+                    value, component.getName());
         }
-        results.add(r);
-        return results;
     }
 
-    private Set<Result> isAccuratePURL(String field, String value){
-        Set<Result> results = new HashSet<>();
-        Result r;
+    /**
+     * Test the purl string for its accuracy against the component's fields
+     * @param field the field to be tested
+     * @param value the purl string
+     * @return the result of if the purl's fields matches the
+     * component's fields
+     */
+    private Result isAccuratePURL(String field, String value){
         try{
             PURL purl = new PURL(value);
-            results.add(match(purl));
+            return match(purl);
 
         }
         // failed to create new purl, test automatically fails
         catch(Exception e){
-            r = resultFactory.fail(field, INFO.ERROR, value, component.getName());
-            results.add(r);
+            return resultFactory.fail(field, INFO.ERROR,
+                    value, component.getName());
         }
-        return results;
     }
 
     /**
@@ -112,28 +109,23 @@ public class PURLTest extends MetricTest{
      * @return Result with the findings
      */
     private Result match(PURL purl){
-        String testName = "AccuratePURL";
-        ResultFactory resultFactory = new ResultFactory(testName, this.attributes);
-        Result r;
-
         // test purl and component name
         String purlName = purl.getName();
         if(!purlName.equals(component.getName())){
-            r = resultFactory.fail("PURL Name", INFO.INVALID, purl.toString(), component.getName());
-            return r;
+            return resultFactory.fail("PURL Name", INFO.INVALID,
+                    purl.toString(), component.getName());
         }
         // test purl and component version
         String purlVersion = purl.getVersion();
         if(!purlVersion.equals(component.getVersion())){
-            r = resultFactory.fail("PURL Version", INFO.INVALID, purl.toString(), component.getName());
-            return r;
+            return resultFactory.fail("PURL Version", INFO.INVALID,
+                    purl.toString(), component.getName());
         }
         // all fields match the component, test passes
         else {
-            r = resultFactory.pass("PURL Match", INFO.VALID, purl.toString(), component.getName());
+            return resultFactory.pass("PURL Match", INFO.VALID,
+                    purl.toString(), component.getName());
         }
-
-        return r;
     }
 
     /**

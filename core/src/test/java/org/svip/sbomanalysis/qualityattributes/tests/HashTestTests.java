@@ -1,8 +1,8 @@
-package org.svip.sbomanalysis.qualityattributes.newtests;
+package org.svip.sbomanalysis.qualityattributes.tests;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
+import org.svip.sbomanalysis.qualityattributes.tests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.pipelines.schemas.CycloneDX14.CDX14Pipeline;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.STATUS;
@@ -79,22 +79,14 @@ class HashTestTests {
     @Test
     public void supportedCDXHash_fail_test(){
         CDX14Pipeline cdx14Pipeline = new CDX14Pipeline();
-        Set<Result> result = cdx14Pipeline.supportedHash("Supported Hash", testSPDXExclusiveHash, "Component");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
+        Result r = cdx14Pipeline.supportedHash("Supported Hash", testSPDXExclusiveHash, "Component");
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
     @Test
     public void supportedCDXHash_pass_test(){
         CDX14Pipeline cdx14Pipeline = new CDX14Pipeline();
-        Set<Result> result = cdx14Pipeline.supportedHash("Supported Hash", testHashAlgo1, "Component");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
+        Result r = cdx14Pipeline.supportedHash("Supported Hash", testHashAlgo1, "Component");
         assertEquals(STATUS.PASS, r.getStatus());
     }
 

@@ -1,7 +1,7 @@
-package org.svip.sbomanalysis.qualityattributes.newtests;
+package org.svip.sbomanalysis.qualityattributes.tests;
 
 import org.junit.jupiter.api.*;
-import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
+import org.svip.sbomanalysis.qualityattributes.tests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.STATUS;
 

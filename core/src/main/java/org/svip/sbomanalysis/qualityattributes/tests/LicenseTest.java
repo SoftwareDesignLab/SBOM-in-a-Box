@@ -1,10 +1,10 @@
-package org.svip.sbomanalysis.qualityattributes.newtests;
+package org.svip.sbomanalysis.qualityattributes.tests;
 
 import jregex.Matcher;
 import jregex.Pattern;
 import jregex.REFlags;
 import org.apache.commons.io.IOUtils;
-import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
+import org.svip.sbomanalysis.qualityattributes.tests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.ResultFactory;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.INFO;
@@ -71,7 +71,8 @@ public class LicenseTest extends MetricTest{
         // license is a null value and does not exist, tests cannot be run
         // return missing Result
         else {
-            Result r = resultFactory.error(field, INFO.NULL, value, componentName);
+            Result r = resultFactory.error(field, INFO.NULL,
+                    value, componentName);
             results.add(r);
         }
         return results;
@@ -100,19 +101,21 @@ public class LicenseTest extends MetricTest{
 
         // Error if can't populate sets
         if(!loadSPDXLicenseData()){
-            r = resultFactory.error(field, INFO.ERROR, "SPDX License Data", componentName);
+            r = resultFactory.error(field, INFO.ERROR,
+                    "SPDX License Data", componentName);
             results.add(r);
-            return  results;
+            return results;
         }
         // sets were populated
         else {
             // if the license value is empty, test cannot be run
             if(value == null || value.equals("")){
-                r = resultFactory.error(field, INFO.MISSING, value, componentName);
+                r = resultFactory.error(field, INFO.MISSING,
+                        value, componentName);
                 results.add(r);
                 return results;
             }
-            results.addAll(testSPDXLicense(field, value));
+            results.add(testSPDXLicense(field, value));
         }
 
         return results;
@@ -192,40 +195,38 @@ public class LicenseTest extends MetricTest{
      * @return a collection of results for each license of a component and
      * its validity
      */
-    private Set<Result> testSPDXLicense(String field, String value) {
+    private Result testSPDXLicense(String field, String value) {
         Set<Result> results = new HashSet<>();
-        Result r;
 
         // TODO only held as a string. A License object should be created
 
         // Test if valid identifier
         if(SPDX_LICENSE_IDENTIFIERS.contains(value.toLowerCase())) {
-            r = resultFactory.pass(field, INFO.VALID, value, componentName);
+            return resultFactory.pass(field, INFO.VALID,
+                    value, componentName);
         }
         // Test if valid name
-        if(SPDX_LICENSE_NAMES.contains(value.toLowerCase())){
-            r = resultFactory.pass(field, INFO.VALID, value, componentName);
+        else if(SPDX_LICENSE_NAMES.contains(value.toLowerCase())){
+            return resultFactory.pass(field, INFO.VALID,
+                    value, componentName);
         }
 
         // Test if depreciated Identifier
-        if(DEPRECIATED_SPDX_LICENSE_IDENTIFIERS.contains(value.toLowerCase())){
-            r = resultFactory.fail(field, INFO.INVALID, value, componentName);
-            results.add(r);
+        else if(DEPRECIATED_SPDX_LICENSE_IDENTIFIERS.contains(value.toLowerCase())){
+            return resultFactory.fail(field, INFO.INVALID,
+                    value, componentName);
         }
 
         // Test if depreciated Name
-        if(DEPRECIATED_SPDX_LICENSE_NAMES.contains(value.toLowerCase())){
-            r = resultFactory.fail(field, INFO.INVALID, value, componentName);
-            results.add(r);
+        else if(DEPRECIATED_SPDX_LICENSE_NAMES.contains(value.toLowerCase())){
+            return resultFactory.fail(field, INFO.INVALID,
+                    value, componentName);
         }
 
         // name/id is in neither list and does not exist
         else {
-            r = resultFactory.pass(field, INFO.INVALID, value, componentName);
+            return resultFactory.fail(field, INFO.INVALID,
+                    value, componentName);
         }
-        results.add(r);
-
-
-        return results;
     }
 }

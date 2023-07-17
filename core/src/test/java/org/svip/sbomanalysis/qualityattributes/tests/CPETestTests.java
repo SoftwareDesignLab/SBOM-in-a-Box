@@ -1,9 +1,9 @@
-package org.svip.sbomanalysis.qualityattributes.newtests;
+package org.svip.sbomanalysis.qualityattributes.tests;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
-import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
+import org.svip.sbomanalysis.qualityattributes.tests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.STATUS;
 
@@ -71,15 +71,20 @@ class CPETestTests {
         Set<Result> result =  cpeTest.test("cpe", "cpe:2.3:a:python_software_foundation:noName:3.20.0:*:*:*:*:*:*:*");
 
         List<Result> resultList = new ArrayList<>(result);
+        int pass = 0;
+        int fail = 0;
 
         for(Result r : resultList){
-            if(r.getTest().equals("AccurateCPE")){
-                assertEquals(STATUS.FAIL, r.getStatus());
+            if(r.getStatus().equals(STATUS.PASS)){
+                pass++;
             }
             else{
-                assertEquals(STATUS.PASS, r.getStatus());
+                fail++;
             }
         }
+
+        assertEquals(1, pass);
+        assertEquals(1, fail);
     }
 
     @Test
@@ -87,15 +92,20 @@ class CPETestTests {
         Set<Result> result =  cpeTest.test("cpe", "cpe:2.3:a:python_software_foundation:python:3.20.0:*:*:*:*:*:*:*");
 
         List<Result> resultList = new ArrayList<>(result);
+        int pass = 0;
+        int fail = 0;
 
         for(Result r : resultList){
-            if(r.getTest().equals("AccurateCPE")){
-                assertEquals(STATUS.FAIL, r.getStatus());
+            if(r.getStatus().equals(STATUS.PASS)){
+                pass++;
             }
             else{
-                assertEquals(STATUS.PASS, r.getStatus());
+                fail++;
             }
         }
+
+        assertEquals(1, pass);
+        assertEquals(1, fail);
     }
 
     @Test
@@ -103,14 +113,19 @@ class CPETestTests {
         Set<Result> result =  cpeTest.test("cpe", "cpe:2.3:a:not_correct_vendor:python:3.20.0:*:*:*:*:*:*:*");
 
         List<Result> resultList = new ArrayList<>(result);
+        int pass = 0;
+        int fail = 0;
 
         for(Result r : resultList){
-            if(r.getTest().equals("AccurateCPE")){
-                assertEquals(STATUS.FAIL, r.getStatus());
+            if(r.getStatus().equals(STATUS.PASS)){
+                pass++;
             }
             else{
-                assertEquals(STATUS.PASS, r.getStatus());
+                fail++;
             }
         }
+
+        assertEquals(1, pass);
+        assertEquals(1, fail);
     }
 }

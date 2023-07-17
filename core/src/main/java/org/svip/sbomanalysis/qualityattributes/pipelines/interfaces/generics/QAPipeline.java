@@ -30,5 +30,5 @@ public interface QAPipeline {
      * @param sbomName the sbom's name to product the result
      * @return the result of checking for the sbom's version number
      */
-    Set<Result> hasBomVersion(String field, String value, String sbomName);
+    Result hasBomVersion(String field, String value, String sbomName);
 }

@@ -47,171 +47,106 @@ class SVIPPipelineTest {
 
     @Test
     void hasBomVersion_null_fail_test() {
-        Set<Result> result = svipPipeline.hasBomVersion("Bom Version", null, "SBOM");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
+        Result r = svipPipeline.hasBomVersion("Bom Version", null, "SBOM");
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
     @Test
     void hasBomVersion_empty_string_fail_test() {
-        Set<Result> result = svipPipeline.hasBomVersion("Bom Version", "", "SBOM");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
+        Result r = svipPipeline.hasBomVersion("Bom Version", "", "SBOM");
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
     @Test
     void hasBomVersion_string_pass_test() {
-        Set<Result> result = svipPipeline.hasBomVersion("Bom Version", testBomVersion, "SBOM");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
+        Result r = svipPipeline.hasBomVersion("Bom Version", testBomVersion, "SBOM");
         assertEquals(STATUS.PASS, r.getStatus());
     }
 
     @Test
     void validSerialNumber_null_fail_test() {
-        Set<Result> result = svipPipeline.validSerialNumber("Serial Number", null, "SBOM");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
+        Result r = svipPipeline.validSerialNumber("Serial Number", null, "SBOM");
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
     @Test
     void validSerialNumber_empty_string_fail_test() {
-        Set<Result> result = svipPipeline.validSerialNumber("Serial Number", "", "SBOM");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
+        Result r = svipPipeline.validSerialNumber("Serial Number", "", "SBOM");
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
     @Test
     void validSerialNumber_string_pass_test() {
-        Set<Result> result = svipPipeline.validSerialNumber("Serial Number", testUID, "SBOM");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
+        Result r = svipPipeline.validSerialNumber("Serial Number", testUID, "SBOM");
         assertEquals(STATUS.PASS, r.getStatus());
     }
 
     @Test
     void hasBomRef_null_fail_test() {
-        Set<Result> result = svipPipeline.hasBomRef("Bom Ref", null, "Component");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
+        Result r = svipPipeline.hasBomRef("Bom Ref", null, "Component");
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
     @Test
     void hasBomRef_empty_string_fail_test() {
-        Set<Result> result = svipPipeline.hasBomRef("Bom Ref", "", "Component");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
+        Result r = svipPipeline.hasBomRef("Bom Ref", "", "Component");
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
     @Test
     void hasBomRef_string_pass_test() {
-        Set<Result> result = svipPipeline.hasBomRef("Bom Ref", testBomRef, "Component");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
+        Result r = svipPipeline.hasBomRef("Bom Ref", testBomRef, "Component");
         assertEquals(STATUS.PASS, r.getStatus());
     }
 
     @Test
     void supportedHash_unsupported_fail_test() {
-        Set<Result> result = svipPipeline.supportedHash("Hash Algorithm", testSPDXExclusiveHash, "Component");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
+        Result r = svipPipeline.supportedHash("Hash Algorithm", testSPDXExclusiveHash, "Component");
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
     @Test
     void supportedHash_supported_pass_test() {
-        Set<Result> result = svipPipeline.supportedHash("Hash Algorithm", testSupportedHash, "Component");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
+        Result r = svipPipeline.supportedHash("Hash Algorithm", testSupportedHash, "Component");
         assertEquals(STATUS.PASS, r.getStatus());
     }
 
     @Test
     void hasDataLicense_null_fail_test() {
-        Set<Result> result = svipPipeline.hasDataLicense("Data License", null, "SBOM");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
+        Result r = svipPipeline.hasDataLicense("Data License", null, "SBOM");
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
     @Test
     void hasDataLicense_incorrect_license_fail_test() {
-        Set<Result> result = svipPipeline.hasDataLicense("Data License", testLicensesFail, "SBOM");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
+        Result r = svipPipeline.hasDataLicense("Data License", testLicensesFail, "SBOM");
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
     @Test
     void hasDataLicense_correct_license_pass_test() {
-        Set<Result> result = svipPipeline.hasDataLicense("Data License", testLicensesPass, "SBOM");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
+        Result r = svipPipeline.hasDataLicense("Data License", testLicensesPass, "SBOM");
         assertEquals(STATUS.PASS, r.getStatus());
     }
 
     @Test
     void hasSPDXID_null_fail_test() {
-        Set<Result> result = svipPipeline.hasSPDXID("SPDXID", null, "Component");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
+        Result r = svipPipeline.hasSPDXID("SPDXID", null,
+                "Component");
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
     @Test
     void hasSPDXID_empty_string_fail_test() {
-        Set<Result> result = svipPipeline.hasSPDXID("SPDXID", "", "Component");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
+        Result r = svipPipeline.hasSPDXID("SPDXID", "",
+                "Component");
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
     @Test
     void hasSPDXID_string_pass_test() {
-        Set<Result> result = svipPipeline.hasSPDXID("SPDXID", testSPDXID, "Component");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
+        Result r = svipPipeline.hasSPDXID("SPDXID", testSPDXID,
+                "Component");
         assertEquals(STATUS.PASS, r.getStatus());
     }
 
@@ -236,28 +171,54 @@ class SVIPPipelineTest {
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
+
+
     @Test
-    void hasCreationInfo_empty_string_manufacture_fail_test() {
+    void hasCreationInfo_empty_string_manufacture_fail_time_pass_test() {
         Organization manufacture = new Organization("", "");
         testCreationData.setManufacture(manufacture);
+        testCreationData.setCreationTime("2010-01-29T18:30:22Z");
         Set<Result> result = svipPipeline.hasCreationInfo("Creation Data", testCreationData, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
+        int pass = 0;
+        int fail = 0;
 
-        assertEquals(STATUS.FAIL, r.getStatus());
+        for(Result r : resultList){
+            if(r.getStatus().equals(STATUS.PASS)){
+                pass++;
+            }
+            else{
+                fail++;
+            }
+        }
+
+        assertEquals(1, pass);
+        assertEquals(1, fail);
     }
 
     @Test
-    void hasCreationInfo_valid_manufacture_pass_test() {
-        Organization manufacture = new Organization("Organization", "www.organization.com");
+    void hasCreationInfo_empty_string_manufacture_fail_time_fail_test() {
+        Organization manufacture = new Organization("", "");
         testCreationData.setManufacture(manufacture);
+        testCreationData.setCreationTime("");
         Set<Result> result = svipPipeline.hasCreationInfo("Creation Data", testCreationData, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
+        int pass = 0;
+        int fail = 0;
 
-        assertEquals(STATUS.PASS, r.getStatus());
+        for(Result r : resultList){
+            if(r.getStatus().equals(STATUS.PASS)){
+                pass++;
+            }
+            else{
+                fail++;
+            }
+        }
+
+        assertEquals(0, pass);
+        assertEquals(2, fail);
     }
 
     @Test
@@ -268,11 +229,20 @@ class SVIPPipelineTest {
         Set<Result> result = svipPipeline.hasCreationInfo("Creation Data", testCreationData, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-        assertEquals(STATUS.PASS, r.getStatus());
+        int pass = 0;
+        int fail = 0;
 
-        r = resultList.get(1);
-        assertEquals(STATUS.PASS, r.getStatus());
+        for(Result r : resultList){
+            if(r.getStatus().equals(STATUS.PASS)){
+                pass++;
+            }
+            else{
+                fail++;
+            }
+        }
+
+        assertEquals(2, pass);
+        assertEquals(0, fail);
     }
 
     @Test
@@ -283,85 +253,68 @@ class SVIPPipelineTest {
         Set<Result> result = svipPipeline.hasCreationInfo("Creation Data", testCreationData, "SBOM");
 
         List<Result> resultList = new ArrayList<>(result);
+        int pass = 0;
+        int fail = 0;
 
-        Result r = resultList.get(1);
-        assertEquals(STATUS.FAIL, r.getStatus());
+        for(Result r : resultList){
+            if(r.getStatus().equals(STATUS.PASS)){
+                pass++;
+            }
+            else{
+                fail++;
+            }
+        }
+
+        assertEquals(1, pass);
+        assertEquals(1, fail);
     }
 
     @Test
     void hasDownloadLocation_null_fail_test() {
-        Set<Result> result = svipPipeline.hasDownloadLocation(
+        Result r = svipPipeline.hasDownloadLocation(
                 "Download Location", null, "Component");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
     @Test
     void hasDownloadLocation_empty_string_fail_test() {
-        Set<Result> result = svipPipeline.hasDownloadLocation(
+        Result r = svipPipeline.hasDownloadLocation(
                 "Download Location", "", "Component");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
     @Test
     void hasDownloadLocation_string_pass_test() {
-        Set<Result> result = svipPipeline.hasDownloadLocation(
+        Result r = svipPipeline.hasDownloadLocation(
                 "Download Location", testDownloadLocation, "Component");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
         assertEquals(STATUS.PASS, r.getStatus());
     }
 
     @Test
     void hasVerificationCode_filesAnalyzed_fail_test() {
-        Set<Result> result = svipPipeline.hasVerificationCode(
+        Result r = svipPipeline.hasVerificationCode(
                 "Download Location", null, true, "Component");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
     @Test
     void hasVerificationCode_filesAnalyzed_pass_test() {
-        Set<Result> result = svipPipeline.hasVerificationCode(
+        Result r = svipPipeline.hasVerificationCode(
                 "Download Location", testVerificationCode, true, "Component");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
         assertEquals(STATUS.PASS, r.getStatus());
     }
 
     @Test
     void hasVerificationCode_filesAnalyzed_false_fail_test() {
-        Set<Result> result = svipPipeline.hasVerificationCode(
+        Result r = svipPipeline.hasVerificationCode(
                 "Download Location", testVerificationCode, false, "Component");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
     @Test
     void hasVerificationCode_filesAnalyzed_false_pass_test() {
-        Set<Result> result = svipPipeline.hasVerificationCode(
+        Result r = svipPipeline.hasVerificationCode(
                 "Download Location", null, false, "Component");
-
-        List<Result> resultList = new ArrayList<>(result);
-        Result r = resultList.get(0);
-
         assertEquals(STATUS.PASS, r.getStatus());
     }
 }

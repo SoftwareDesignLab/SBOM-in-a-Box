@@ -1,4 +1,4 @@
-package org.svip.sbomanalysis.qualityattributes.newtests.enumerations;
+package org.svip.sbomanalysis.qualityattributes.tests.enumerations;
 
 /**
  * file: ATTRIBUTE.java

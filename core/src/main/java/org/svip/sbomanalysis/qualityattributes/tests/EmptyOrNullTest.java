@@ -1,6 +1,6 @@
-package org.svip.sbomanalysis.qualityattributes.newtests;
+package org.svip.sbomanalysis.qualityattributes.tests;
 
-import org.svip.sbomanalysis.qualityattributes.newtests.enumerations.ATTRIBUTE;
+import org.svip.sbomanalysis.qualityattributes.tests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.ResultFactory;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.INFO;
@@ -37,23 +37,22 @@ public class EmptyOrNullTest {
      * @return a result if the field is empty/null or has a value
      */
     public Result test(String field, Object value, String context) {
-        Result r;
-
         // Check if value is null first
         if (value == null) {
-            r = resultFactory.fail(field, INFO.NULL, (String) null, context);
-            return r;
+            return resultFactory.fail(field, INFO.NULL,
+                    (String) null, context);
         }
 
         // value is a string
         // Check for empty string if value is instance of a string
         else if (value instanceof String) {
             if (((String) value).isEmpty()) {
-                r = resultFactory.fail(field, INFO.MISSING, (String) value, context);
+                return resultFactory.fail(field, INFO.MISSING,
+                        (String) value, context);
             } else {
-                r = resultFactory.pass(field, INFO.HAS, (String) value, context);
+                return resultFactory.pass(field, INFO.HAS,
+                        (String) value, context);
             }
-            return r;
         }
 
         // value is a collection of value
@@ -61,15 +60,14 @@ public class EmptyOrNullTest {
         else{
             // if value is an empty collection, test fails
             if (((Collection<?>) value).isEmpty()) {
-                r = resultFactory.fail(field, INFO.MISSING,
+                return resultFactory.fail(field, INFO.MISSING,
                         (Collection<String>) value, context);
             }
             // collection is not empty, test passes
             else {
-                r = resultFactory.pass(field, INFO.HAS,
+                return resultFactory.pass(field, INFO.HAS,
                         (Collection<String>) value, context);
             }
-            return r;
         }
     }
 }
