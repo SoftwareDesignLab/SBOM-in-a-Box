@@ -9,11 +9,14 @@ import org.svip.sbomvex.vexstatement.status.Justification;
 import org.svip.sbomvex.vexstatement.status.Status;
 import org.svip.sbomvex.vexstatement.status.VulnStatus;
 
-import java.io.File;
+
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * file: VEXTest.java
+ * File to test generating a VEX Object
+ */
 class VEXTest {
     private final VEXType testType = VEXType.CYCLONE_DX;
 
