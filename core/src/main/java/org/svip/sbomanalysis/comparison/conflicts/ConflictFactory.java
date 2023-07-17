@@ -1,7 +1,5 @@
 package org.svip.sbomanalysis.comparison.conflicts;
 
-import org.checkerframework.checker.units.qual.C;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,11 +16,11 @@ public class ConflictFactory {
      * Attempt to add a new Conflict. If there is no conflict, nothing is added
      *
      * @param field Name of the Comparison Field
-     * @param conflictType Type of conflict
+     * @param mismatchType Type of conflict
      * @param target Target value
      * @param other Other value
      */
-    public void addConflict(String field, ConflictType conflictType, String target, String other){
+    public void addConflict(String field, MismatchType mismatchType, String target, String other){
 //        // Attempt to make a conflict
 //        Conflict c = Conflict.buildConflict(field, conflictType, target, other);
 //
