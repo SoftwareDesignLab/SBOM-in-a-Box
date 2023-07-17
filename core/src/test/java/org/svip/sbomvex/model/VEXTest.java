@@ -1,5 +1,6 @@
 package org.svip.sbomvex.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.svip.sbomvex.vexstatement.Product;
 import org.svip.sbomvex.vexstatement.VEXStatement;
@@ -7,6 +8,9 @@ import org.svip.sbomvex.vexstatement.Vulnerability;
 import org.svip.sbomvex.vexstatement.status.Justification;
 import org.svip.sbomvex.vexstatement.status.Status;
 import org.svip.sbomvex.vexstatement.status.VulnStatus;
+
+import java.io.File;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -82,9 +86,8 @@ class VEXTest {
             "or other Apache Logging Services projects.";
     private final String testVulnID3 = "CVE-2021-44228";
 
-
     @Test
-    public void manual_VEX_Build_test(){
+    public void manual_VEX_Build_test() throws IOException {
         VEX.Builder builder = new VEX.Builder();
         String testVEXIdentifier = "TestAuthor/1234321";
         builder.setVEXIdentifier(testVEXIdentifier);
@@ -164,6 +167,11 @@ class VEXTest {
         VEX testVEX = builder.build();
 
         System.out.println(testVEX.toString());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        // pretty print
+        String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(testVEX);
+        System.out.println(json);
 
     }
 }
