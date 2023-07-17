@@ -362,7 +362,7 @@ public class CDX14ComponentObject implements CDX14Package {
 //        // TODO SWIDs?
 //
 //        return conflicts.stream().toList();
-        return null;
+        return cf.getConflicts();
     }
     public List<Conflict> compare(SBOMPackage other) {
 //        ArrayList<Conflict> conflicts = new ArrayList<>();
