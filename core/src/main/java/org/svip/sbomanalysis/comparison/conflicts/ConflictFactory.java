@@ -21,12 +21,12 @@ public class ConflictFactory {
      * @param other Other value
      */
     public void addConflict(String field, MismatchType mismatchType, String target, String other){
-//        // Attempt to make a conflict
-//        Conflict c = Conflict.buildConflict(field, conflictType, target, other);
-//
-//        // Add conflict if there is one
-//        if(c != null)
-//            this.conflicts.add(c);
+        // Attempt to make a conflict
+        Conflict c = Conflict.buildConflict(field, mismatchType, target, other);
+
+        // Add conflict if there is one
+        if(c != null)
+            this.conflicts.add(c);
     }
 
     /**
