@@ -5,11 +5,16 @@ import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.sbom.model.shared.metadata.Contact;
+import org.svip.sbom.model.shared.metadata.CreationData;
+import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbomfactory.parsers.contexts.ContextParser;
 import org.svip.sbomfactory.parsers.contexts.DeadImportParser;
 import org.svip.sbomfactory.parsers.contexts.SubprocessParser;
 import org.svip.sbomfactory.parsers.languages.*;
 import org.svip.sbomfactory.parsers.packagemanagers.*;
+import org.svip.sbomfactory.serializers.Metadata;
+import org.svip.sbomfactory.serializers.SerializerFactory;
 import org.svip.utils.Debug;
 import org.svip.utils.VirtualPath;
 
@@ -75,20 +80,12 @@ public class ParserController {
 
     //#region Constructors
 
-    public ParserController() {
-        // Set project name to root filename
-        this.files = new HashMap<>();
-        this.projectName = "SVIP Project";
-        this.builder = new SVIPSBOMBuilderFactory().createBuilder();
-    }
-
     /** TODO
      * Create a new ParserController.
      */
-    public ParserController(Map<VirtualPath, String> files) {
-        // Set project name to root filename
+    public ParserController(String projectName, Map<VirtualPath, String> files) {
+        this.projectName = projectName;
         this.files = files;
-        this.projectName = "SVIP Project";
         this.builder = new SVIPSBOMBuilderFactory().createBuilder();
     }
 
@@ -96,7 +93,27 @@ public class ParserController {
 
     //#region Getters
 
-    public SVIPSBOM getSBOM() { return builder.Build(); }
+    public SVIPSBOM buildSBOM(SerializerFactory.Schema schema) {
+        builder.setFormat(schema.getName());
+        builder.setVersion("1");
+        builder.setName(this.projectName);
+        builder.setSpecVersion(schema.getVersion());
+        builder.setUID(UUID.randomUUID().toString());
+
+        CreationData data = new CreationData();
+        data.setCreationTime(new Date().toString());
+        data.addAuthor(new Contact("Ian Dunn", null, null));
+
+        CreationTool tool = new CreationTool();
+        tool.setName(Metadata.NAME);
+        tool.setVersion(Metadata.VERSION);
+        tool.setVendor(Metadata.VENDOR);
+        data.addCreationTool(tool);
+
+        builder.setCreationData(data);
+
+        return builder.Build();
+    }
 
     public void addFile(VirtualPath path, String contents) {
         files.put(path, contents);
@@ -182,18 +199,6 @@ public class ParserController {
                 for (final ContextParser cp : contextParsers) cp.parse(components, fileContents);
         }
 
-        // TODO add filenotice flag to differentiate files
-        for (SVIPComponentObject c : components) {
-            Parser.set(c, b -> b.setFileName(filepath.toString()));
-            Parser.set(c, b -> b.setFilesAnalyzed(true));
-            Parser.generateHash(c);
-
-            if (parser instanceof PackageManagerParser)
-                Parser.set(c, b -> b.setFileNotice(null));
-            else
-                Parser.set(c, b -> b.setFileNotice("PARSED AS SOURCE FILE")); // TODO confirm this
-        }
-
         // componentMap contains a map from a component's hash to itself
         Map<String, SVIPComponentObject> componentMap = new HashMap<>();
         for(Component c : builder.Build().getComponents())
@@ -203,19 +208,17 @@ public class ParserController {
         List<String> toRemove = new ArrayList<>();
         int deadImportCounter = 0;
 
-        for (SVIPComponentObject c : components)
-            if (c.getType().equalsIgnoreCase("dead_import")) {
-                toRemove.add(c.getHashes().get("SHA256"));
-                Debug.log(LOG_TYPE.DEBUG, "Removed dead import " + c.getName());
-                deadImportCounter++;
-            }
-
         // Check for duplicate named components & dead imports
         for(SVIPComponentObject c : components) {
-            SVIPComponentObject old = componentMap.get(c.getHashes().get("SHA256"));
+            String hash = c.getHashes().get("SHA256");
+            SVIPComponentObject old = componentMap.get(hash);
 
-            // If a component name doesn't exist, there are no duplicates
-            if(old == null) continue;
+            if (c.getType().equalsIgnoreCase("dead_import")) {
+                toRemove.add(hash);
+                Debug.log(LOG_TYPE.DEBUG, "Removed dead import " + c.getName());
+                deadImportCounter++;
+                continue;
+            } else if (old == null) continue; // If a component name doesn't exist, there are no duplicates
 
             // Compare important fields and update old component
             Parser.set(old, b -> b.setGroup(c.getGroup()));
@@ -238,6 +241,18 @@ public class ParserController {
         for (SVIPComponentObject c : components) {
             // Default to external
             if (c.getType() == null) Parser.set(c, b -> b.setType("EXTERNAL"));
+
+            Parser.set(c, b -> b.setFileName(filepath.toString()));
+            Parser.set(c, b -> b.setFilesAnalyzed(true));
+            Parser.generateHash(c);
+
+            if (parser instanceof PackageManagerParser)
+                Parser.set(c, b -> b.setFileNotice(null));
+            else
+                Parser.set(c, b -> b.setFileNotice("PARSED AS SOURCE FILE")); // TODO confirm this
+
+            Parser.set(c, b -> b.setUID(UUID.randomUUID().toString()));
+
             builder.addComponent(c);
         }
     }

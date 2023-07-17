@@ -30,7 +30,7 @@ public class SerializerFactory {
         /**
          * CycloneDX 1.4 supports JSON serialization/deserialization via CDX14JSONSerializer & CDX14JSONDeserializer.
          */
-        CDX14(new HashMap<>() {{
+        CDX14("CycloneDX", "1.4", new HashMap<>() {{
             this.put(JSON, new CDX14JSONSerializer());
         }}, new HashMap<>() {{
             this.put(JSON, new CDX14JSONDeserializer());
@@ -40,7 +40,7 @@ public class SerializerFactory {
          * SPDX 2.3 supports JSON and tag-value serialization via SPDX23JSONSerializer & SPDX23TagValueSerializer.
          * SPDX 2.3 supports JSON and tag-value deserialization via SPDX23JSONDeserializer & SPDX23TagValueDeserializer.
          */
-        SPDX23(new HashMap<>() {{
+        SPDX23("SPDX", "2.3", new HashMap<>() {{
             this.put(JSON, new SPDX23JSONSerializer());
             this.put(TAGVALUE, new SPDX23TagValueSerializer());
         }}, new HashMap<>() {{
@@ -48,11 +48,15 @@ public class SerializerFactory {
             this.put(TAGVALUE, new SPDX23TagValueDeserializer());
         }}),
 
-        SVIP(new HashMap<>() {{
+        SVIP("SVIP", "1.0-a", new HashMap<>() {{
             this.put(JSON, new SVIPSBOMJSONSerializer());
         }}, new HashMap<>() {{
             // No deserialization supported
         }});
+
+        private final String name;
+
+        private final String version;
 
         /**
          * Map of valid formats to serializers.
@@ -70,9 +74,20 @@ public class SerializerFactory {
          * @param serializerMap A map of valid formats to serializers.
          * @param deserializerMap A map of valid formats to deserializers.
          */
-        private Schema(Map<Format, Serializer> serializerMap, Map<Format, Deserializer> deserializerMap) {
+        private Schema(String name, String version, Map<Format, Serializer> serializerMap,
+                       Map<Format, Deserializer> deserializerMap) {
+            this.name = name;
+            this.version = version;
             this.serializerMap = serializerMap;
             this.deserializerMap = deserializerMap;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getVersion() {
+            return version;
         }
 
         /**

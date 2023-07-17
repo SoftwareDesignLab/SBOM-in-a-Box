@@ -1,12 +1,15 @@
 package org.svip;
 
+import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbomfactory.parsers.ParserController;
 import org.svip.sbomfactory.serializers.SerializerFactory;
 import org.svip.sbomfactory.serializers.serializer.Serializer;
 import org.svip.utils.Debug;
 import org.svip.utils.VirtualPath;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -70,7 +73,7 @@ public class SBOMGeneratorCLI {
                   -s : Show Summary information, disabling ALL default messages.
               Key=value form:
                  -o=specification\s
-                      Output specification. Select a supported format (CycloneDX, SPDX) to output to,
+                      Output specification. Select a supported format (CDX14, SPDX23) to output to,
                       Output specification defaults to CycloneDX if not specified.
 
                  -f=format\s
@@ -86,10 +89,10 @@ public class SBOMGeneratorCLI {
                    Debug, Output as JSON: java -jar parser.jar MyProject/src -o=json -d
                    CycloneDX:
                        - CycloneDX JSON:            java -jar parser.jar MyProject/src -d
-                       - CycloneDX XML (no debug):  java -jar parser.jar MyProject/src -o=CycloneDX -f=XML
+                       - CycloneDX JSON (no debug):  java -jar parser.jar MyProject/src -o=CDX14 -f=JSON
                    SPDX:
-                       - SPDX JSON:                 java -jar parser.jar MyProject/src -d -o=SPDX
-                       - SPDX YAML (no debug):      java -jar parser.jar MyProject/src -o=SPDX -f=YAML
+                       - SPDX JSON:                 java -jar parser.jar MyProject/src -d -o=SPDX23
+                       - SPDX Tag-Value (no debug):      java -jar parser.jar MyProject/src -o=SPDX23 -f=TAG_VALUE
             """;
 
     /**
@@ -351,7 +354,8 @@ public class SBOMGeneratorCLI {
         if (optArgs.containsKey("-d")) Debug.enableDebug();
 
         // Instantiate controller with the filepath
-        final ParserController controller = new ParserController(buildFileMap(new VirtualPath(reqArgs.get(0))));
+        VirtualPath sourcePath = new VirtualPath(reqArgs.get(0));
+        final ParserController controller = new ParserController(sourcePath.getFileName().toString(), buildFileMap(sourcePath));
         controller.parseAll(); // Parse all files
 
         // Build outPath
@@ -394,12 +398,12 @@ public class SBOMGeneratorCLI {
         try {
             // Write to file
             Serializer s = SerializerFactory.createSerializer(schema, format, true);
-            String sbom = s.writeToString(controller.getSBOM());
-            String fileName = controller.getSBOM().getName() + "_" + schema + "." + format.toString().toLowerCase();
+            SVIPSBOM sbom = controller.buildSBOM(schema);
+            String serialized = s.writeToString(sbom);
 
             Files.createDirectories(Path.of(outPath));
-            PrintWriter out = new PrintWriter(outPath + "/" + fileName);
-            out.println(sbom);
+            PrintWriter out = new PrintWriter(outPath + "/" + sbom.getName() + "_" + schema + "." + format.toString().toLowerCase());
+            out.println(serialized);
             out.close();
         } catch(IOException e) {
             log(Debug.LOG_TYPE.EXCEPTION, e);
