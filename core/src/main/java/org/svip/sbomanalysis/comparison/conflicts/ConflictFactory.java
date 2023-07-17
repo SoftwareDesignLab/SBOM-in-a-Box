@@ -4,6 +4,9 @@ import java.util.*;
 
 import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.HASH_MISMATCH;
 import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISSING;
+import java.util.Set;
+
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.LICENSE_MISMATCH;
 
 /**
  * File: ConflictFactory.java
