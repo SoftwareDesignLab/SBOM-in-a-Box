@@ -1,13 +1,20 @@
 package org.svip.sbom.model.shared.util;
 
+import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
+
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.LICENSE_MISMATCH;
 
 /**
  * File: LicensesCollection.java
  * Utility object tot hold license data
  *
  * @author Derek Garcia
+ * @author Thomas Roman
  */
 public class LicenseCollection {
     private final Set<String> declared = new HashSet<>();
@@ -73,6 +80,20 @@ public class LicenseCollection {
      */
     public String getComment() {
         return comment;
+    }
+
+    /**
+     * Compare against other license collection
+     *
+     * @param other Other license collection
+     * @return list of conflicts
+     */
+    public List<Conflict> compare(LicenseCollection other) {
+        ConflictFactory cf = new ConflictFactory();
+        cf.compareSets("License", LICENSE_MISMATCH, this.getConcluded(), other.getConcluded());
+        cf.compareSets("License", LICENSE_MISMATCH, this.getDeclared(), other.getDeclared());
+        cf.compareSets("License", LICENSE_MISMATCH, this.getInfoFromFiles(), other.getInfoFromFiles());
+        return cf.getConflicts();
     }
 }
 
