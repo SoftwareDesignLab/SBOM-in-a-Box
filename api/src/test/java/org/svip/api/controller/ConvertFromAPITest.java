@@ -79,7 +79,8 @@ public class ConvertFromAPITest extends APITest{
                             SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14;
 
                     // check if test is valid
-                    if (Utils.convertTestController(convertToSchema, convertToFormat, id, thisSchema, testMap)) continue;
+                    if (Utils.convertTestController(convertToSchema, convertToFormat, id, thisSchema, testMap, sbom))
+                        continue;
 
                     // test conversion to schema and format
                     LOGGER.info("ID: " + id + " Converting " + thisSchema.name() + " --> " + convertToSchema);
@@ -94,11 +95,9 @@ public class ConvertFromAPITest extends APITest{
 
                     // assert we can convert again
                     try{
-                        String originalFormat = "JSON";
-                        if (sbom.getContents().contains("DocumentName:") || sbom.getContents().contains("DocumentNamespace:"))
-                            originalFormat = TAGVALUE.name();
+                        String originalFormat = Utils.assumeFormatFromDocument(sbom);
 
-                       assertEquals("", Utils.convert(new SBOMFile("convertBack." +
+                        assertEquals("", Utils.convert(new SBOMFile("convertBack." +
                         (originalFormat.equals("TAGVALUE") ? "json" : "spdx") ,
 
                             responseBody), thisSchema.name(), originalFormat).values().toArray()[0]);
@@ -115,6 +114,8 @@ public class ConvertFromAPITest extends APITest{
             }
         }
     }
+
+
 
 
     /**

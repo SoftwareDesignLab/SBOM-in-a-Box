@@ -30,6 +30,8 @@ import org.svip.sbomfactory.translators.TranslatorException;
 import java.io.IOException;
 import java.util.*;
 
+import static org.svip.sbomfactory.serializers.SerializerFactory.Format.TAGVALUE;
+
 /**
  * A static class containing helpful utilities for API calls and testing responses.
  *
@@ -415,7 +417,8 @@ public class Utils {
      * @return whether it is valid to proceed with this test
      */
     public static boolean convertTestController(String convertToSchema, String convertToFormat, Long id,
-                                                SerializerFactory.Schema thisSchema, Map<Long, SBOMFile> testMap) {
+                                                SerializerFactory.Schema thisSchema, Map<Long, SBOMFile> testMap,
+                                                SBOMFile original) {
         Long[] validTests = {0L,2L,6L,7L};
         boolean contains = false;
         for (Long l: validTests
@@ -429,8 +432,10 @@ public class Utils {
             return true;
 
         // don't convert to the same schema+format
-        if(thisSchema == SerializerFactory.Schema.SPDX23 && (convertToSchema.equals("SPDX23")))
-            return true;
+        if(thisSchema == SerializerFactory.Schema.SPDX23 && (convertToSchema.equals("SPDX23"))){
+            if((convertToFormat).equalsIgnoreCase(assumeFormatFromDocument(original)))
+                return true;
+        }
         if(thisSchema == SerializerFactory.Schema.CDX14 && (convertToSchema.equals("CDX14")))
             return true;
         // tagvalue format unsupported for cdx14
@@ -438,6 +443,18 @@ public class Utils {
             return true;
         // we don't support xml deserialization right now
         return testMap.get(id).getContents().contains("xml");
+    }
+
+    /**
+     * Helper function to assume format from raw SBOM document
+     * @param sbom SBOMFile to check
+     * @return String representation of the format (JSON/TAGVALUE)
+     */
+    public static String assumeFormatFromDocument(SBOMFile sbom) {
+        String originalFormat = "JSON";
+        if (sbom.getContents().contains("DocumentName:") || sbom.getContents().contains("DocumentNamespace:"))
+            originalFormat = TAGVALUE.name();
+        return originalFormat;
     }
 
 }
