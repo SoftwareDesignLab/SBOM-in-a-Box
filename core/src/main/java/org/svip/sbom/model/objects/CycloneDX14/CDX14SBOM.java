@@ -8,6 +8,7 @@ import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
 
 import java.util.*;
 
@@ -215,48 +216,61 @@ public class CDX14SBOM implements CDX14Schema {
 
     }
 
+    /**
+     * Compare a CycloneDX 1.4 SBOM against another SBOM Metadata
+     *
+     * @param other Other SBOM to compare against
+     * @return List of Metadata to compare against
+     */
     @Override
     public List<Conflict> compare(SBOM other) {
-//        // CDX - OTHER Comparison
-//        ArrayList<Conflict> conflicts = new ArrayList<>();
-//        // the Comparison object kept calling this class rather than the other one, even if I cast other to cdx
-//        if (other instanceof CDX14SBOM) {
-//            // NAME
-//            if (this.name != null ^ other.getName() != null) {
-//                conflicts.add(new MissingConflict("name", this.name, other.getName()));
-//            } else if (!Objects.equals(this.name, other.getName()) && this.name != null) {
-//                conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
-//            }
-//            // VERSION
-//            if (this.version != null ^ other.getVersion() != null) {
-//                conflicts.add(new MissingConflict("version", this.version, other.getVersion()));
-//            } else if (!Objects.equals(this.version, other.getVersion()) && this.version != null) {
-//                conflicts.add(new MismatchConflict("version", this.version, other.getVersion(), VERSION_MISMATCH));
-//            }
-//            // LICENSES
-//            if (this.licenses != null && other.getLicenses() != null) {
-//                if (!this.licenses.containsAll(other.getLicenses())) {
-//                    conflicts.add(new MismatchConflict("license", this.licenses.toString(), other.getLicenses().toString(), LICENSE_MISMATCH));
-//                }
-//            } else if (this.licenses != null) {
-//                conflicts.add(new MissingConflict("license", this.licenses.toString(), null));
-//            } else if (other.getLicenses() != null) {
-//                conflicts.add(new MissingConflict("license", null, other.getLicenses().toString()));
-//            }
-//            // Creation data - includes timestamp, licenses
-//            if (this.creationData != null && other.getCreationData() != null) {
-//                // TIMESTAMP
-//                if (this.creationData.getCreationTime() != null ^ other.getCreationData().getCreationTime() != null) {
-//                    conflicts.add(new MissingConflict("timestamp", this.creationData.getCreationTime(), other.getCreationData().getCreationTime()));
-//                } else if (!Objects.equals(this.creationData.getCreationTime(), other.getCreationData().getCreationTime()) && this.creationData.getCreationTime() != null) {
-//                    conflicts.add(new MismatchConflict("timestamp", this.creationData.getCreationTime(), other.getCreationData().getCreationTime(), TIMESTAMP_MISMATCH));
-//                }
-//            }
-//        }
-//        return conflicts.stream().toList();
-        return null;
+        // CDX - OTHER Comparison
+        ConflictFactory cf = new ConflictFactory();
+
+        // Compare single String fields
+        cf.addConflict("Format", ORIGIN_FORMAT_MISMATCH, this.format, other.getFormat());
+        cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
+        cf.addConflict("UID", MISC_MISMATCH, this.uid, other.getUID());
+        cf.addConflict("Version", VERSION_MISMATCH, this.version, other.getVersion());
+        cf.addConflict("Spec Version", SCHEMA_VERSION_MISMATCH, this.specVersion, other.getSpecVersion());
+        cf.addConflict("Document Comment", MISC_MISMATCH, this.documentComment, other.getDocumentComment());
+
+        // Compare Licenses todo add util method in ConflictFactory?
+        for(String license : this.licenses){
+            // License in target and not in other
+            if(!other.getLicenses().contains(license))
+                cf.addConflict("License", LICENSE_MISMATCH, license, null);
+        }
+        for(String license : other.getLicenses()){
+            // License in other and not in target
+            if(!this.getLicenses().contains(license))
+                cf.addConflict("License", LICENSE_MISMATCH, null, license);
+        }
+
+        // Compare Creation data
+        // todo compare method in CreationData + other util objects??
+        CreationData targetCD = this.getCreationData();
+        CreationData otherCD = this.getCreationData();
+
+        cf.addConflict("Timestamp", TIMESTAMP_MISMATCH, targetCD.getCreationTime(), otherCD.getCreationTime());
+        cf.addConflict("Creator Comment", MISC_MISMATCH, targetCD.getCreatorComment(), otherCD.getCreatorComment());
+        // todo
+        // authors, manufacture, supplier, licenses, properties, creationTools
+
+        // todo
+        // compare relationships
+        // compare Vulns
+        // compare external refs
+
+        return cf.getConflicts();
     }
 
+    /**
+     * Compare a CycloneDX 1.4 SBOM against another CycloneDX 1.4 SBOM Metadata
+     *
+     * @param other other CycloneDX 1.4 SBOM
+     * @return list of conflict
+     */
     @Override
     public List<Conflict> compare(CDX14SBOM other) {
 //        // CDX - CDX Comparison
