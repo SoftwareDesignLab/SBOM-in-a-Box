@@ -66,6 +66,7 @@ public class ConflictFactory {
         }
     }
 
+
     public void compareLicenseCollections(String field, MismatchType mismatchType, LicenseCollection target, LicenseCollection other){
         if (target == null && other == null) {
             return;
