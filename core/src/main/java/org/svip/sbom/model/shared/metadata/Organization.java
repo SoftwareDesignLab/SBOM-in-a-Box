@@ -60,4 +60,29 @@ public class Organization {
     public Set<Contact> getContacts() {
         return contacts;
     }
+
+    ///
+    /// Utils
+    ///
+
+    /**
+     * Compare based if any fields match since Organization can be the same just incomplete
+     * Don't compare Contacts since the same organization can have different contacts
+     *
+     * @param o Other object
+     * @return True if they share any fields
+     */
+    @Override
+    public boolean equals(Object o) {
+        // Test if correct class
+        if (o == null || getClass() != o.getClass()) return false;
+        Organization other = (Organization) o;
+
+        // Check if name equivalent
+        if(this.name.equals(other.getName()))
+            return true;
+
+        // no fields match if url doesn't match
+        return this.url.equals(other.getUrl());
+    }
 }
