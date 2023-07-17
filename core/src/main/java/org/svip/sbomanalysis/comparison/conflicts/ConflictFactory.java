@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.LICENSE_MISMATCH;
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISSING;
 
 /**
  * File: ConflictFactory.java
@@ -44,6 +45,28 @@ public class ConflictFactory {
         this.conflicts.addAll(conflicts);
     }
 
+    private boolean compare(String field, Object target, Object other){
+
+        // Both are missing, no conflict
+        if(target == null && other == null)
+            return false;
+
+        // One is missing from the other
+        // TODO Better way to handle this case
+        if(target == null || other == null){
+            addConflict(field, MISSING, "FOO", "BAR");
+            return false;
+        }
+
+        // Skip, not comparable classes
+        if(target.getClass().equals(other.getClass()))
+            return false;
+
+        // Objects are of the same class to be compared
+        return true;
+
+    }
+
     /**
      * Create conflicts for Sets of Strings
      *
@@ -65,6 +88,7 @@ public class ConflictFactory {
                 addConflict(field, mismatchType, null, value);
         }
     }
+
 
     public void compareLicenseCollections(String field, MismatchType mismatchType, LicenseCollection target, LicenseCollection other){
         if (target == null && other == null) {
