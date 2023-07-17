@@ -1,7 +1,15 @@
 package org.svip.sbom.model.shared.metadata;
 
+import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
+import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
+
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISC_MISMATCH;
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.NAME_MISMATCH;
 
 /**
  * File: Organization
@@ -64,6 +72,16 @@ public class Organization {
     ///
     /// Utils
     ///
+
+    public List<Conflict> compare(Organization other){
+        ConflictFactory cf = new ConflictFactory();
+
+        cf.addConflict("Organization: Name", NAME_MISMATCH, this.name, other.getName());
+        cf.addConflict("Organization: URL", MISC_MISMATCH, this.url, other.getUrl());
+
+        // todo finish rest of comparison
+        return cf.getConflicts();
+    }
 
     /**
      * Compare based if any fields match since Organization can be the same just incomplete
