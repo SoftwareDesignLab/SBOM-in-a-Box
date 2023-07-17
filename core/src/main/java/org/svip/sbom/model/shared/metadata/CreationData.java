@@ -173,6 +173,8 @@ public class CreationData {
         // todo dif between this and sbom licenses?
         cf.compareSets("Creation Data: Licenses", LICENSE_MISMATCH, this.licenses, other.getLicenses());
 
+
+
         // todo
         // authors, manufacture, supplier, licenses, properties, creationTools
         return cf.getConflicts();

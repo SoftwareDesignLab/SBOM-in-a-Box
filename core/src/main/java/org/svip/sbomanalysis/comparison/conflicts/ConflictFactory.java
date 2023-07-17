@@ -45,7 +45,7 @@ public class ConflictFactory {
         this.conflicts.addAll(conflicts);
     }
 
-    private boolean compare(String field, Object target, Object other){
+    private boolean comparable(String field, Object target, Object other){
 
         // Both are missing, no conflict
         if(target == null && other == null)
@@ -58,12 +58,11 @@ public class ConflictFactory {
             return false;
         }
 
-        // Skip, not comparable classes
-        if(target.getClass().equals(other.getClass()))
-            return false;
+        // False: Skip, not comparable classes
+        // True: Objects are of the same class to be compared
+        return !target.getClass().equals(other.getClass());
 
-        // Objects are of the same class to be compared
-        return true;
+
 
     }
 
@@ -76,6 +75,10 @@ public class ConflictFactory {
      * @param other Set of other values
      */
     public void compareSets(String field, MismatchType mismatchType, Set<String> target, Set<String> other){
+        // Null check
+        if(!comparable(field, target, other))
+            return;
+
         // Compare Strings
         for(String value : target){
             // Value in target and not in other
