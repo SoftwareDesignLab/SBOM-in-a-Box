@@ -259,7 +259,12 @@ public class Utils {
                     builder.setName(cdxDeserialized.getName());
                     builder.setUID(cdxDeserialized.getUID());
                     builder.setVersion(cdxDeserialized.getVersion());
-                    for (String license: cdxDeserialized.getLicenses()) {builder.addLicense(license);}
+
+                    if(cdxDeserialized.getLicenses() != null )
+                        for (String license: cdxDeserialized.getLicenses()) {
+                            if(license == null)continue;
+                            builder.addLicense(license);}
+
                     builder.setCreationData(cdxDeserialized.getCreationData());
                     builder.setDocumentComment(cdxDeserialized.getDocumentComment());
 
@@ -267,21 +272,25 @@ public class Utils {
                     buildSVIPComponentObject(cdxDeserialized.getRootComponent(), compBuilder);
                     builder.setRootComponent(compBuilder.buildAndFlush());
 
-                    for (Component c: cdxDeserialized.getComponents()
-                         ) {
-                        if(c == null)
-                            continue;
-                        buildSVIPComponentObject((CDX14ComponentObject) c, compBuilder);
-                        builder.addSPDX23Component(compBuilder.buildAndFlush());
-                    }
-
-                    for(Map.Entry<String, Set<Relationship>> entry: cdxDeserialized.getRelationships().entrySet()) {
-                        for (Relationship r: entry.getValue()
+                    if(cdxDeserialized.getComponents() != null )
+                        for (Component c: cdxDeserialized.getComponents()
                              ) {
-                            builder.addRelationship(entry.getKey(), r);
+                            if(c == null)
+                                continue;
+                            buildSVIPComponentObject((CDX14ComponentObject) c, compBuilder);
+                            builder.addSPDX23Component(compBuilder.buildAndFlush());
                         }
-                    }
-                    for (ExternalReference e: cdxDeserialized.getExternalReferences()) {builder.addExternalReference(e);}
+
+                    if(cdxDeserialized.getRelationships() != null)
+                        for(Map.Entry<String, Set<Relationship>> entry: cdxDeserialized.getRelationships().entrySet())
+                            for (Relationship r: entry.getValue())
+                                builder.addRelationship(entry.getKey(), r);
+
+                    if(cdxDeserialized.getExternalReferences() != null)
+                        for (ExternalReference e: cdxDeserialized.getExternalReferences())
+                            builder.addExternalReference(e);
+                    builder.setFormat(String.valueOf(schema));
+
                     SVIPSBOM built = builder.Build();
 
                     serialized = s.writeToString(built);
@@ -315,33 +324,45 @@ public class Utils {
     }
 
     private static void buildSVIPComponentObject(CDX14ComponentObject component, SVIPComponentBuilder compBuilder) {
+        if(component == null)
+            return;
         compBuilder.setType(component.getType());
         compBuilder.setUID(component.getUID());
         compBuilder.setAuthor(component.getAuthor());
         compBuilder.setName(component.getName());
         compBuilder.setLicenses(component.getLicenses());
         compBuilder.setCopyright(component.getCopyright());
-        for(Map.Entry<String, String> entry: component.getHashes().entrySet())
-        {
-            compBuilder.addHash(entry.getKey(), entry.getValue());}
+
+        if(component.getHashes() != null )
+            for(Map.Entry<String, String> entry: component.getHashes().entrySet())
+                compBuilder.addHash(entry.getKey(), entry.getValue());
+
         compBuilder.setSupplier(component.getSupplier());
         compBuilder.setVersion(component.getVersion());
         compBuilder.setDescription(component.getDescription());
-        for(String cpe: component.getCPEs()) {
-            compBuilder.addCPE(cpe);}
-        for(String purl: component.getPURLs()) {
-            compBuilder.addPURL(purl);}
-        for(ExternalReference ext: component.getExternalReferences()) {
-            compBuilder.addExternalReference(ext);}
+
+        if(component.getCPEs() != null)
+            for(String cpe: component.getCPEs())
+                compBuilder.addCPE(cpe);
+
+        if(component.getPURLs() != null)
+            for(String purl: component.getPURLs())
+                compBuilder.addPURL(purl);
+
+        if(component.getExternalReferences() != null)
+            for(ExternalReference ext: component.getExternalReferences())
+                compBuilder.addExternalReference(ext);
+
         compBuilder.setMimeType(component.getMimeType());
         compBuilder.setPublisher(component.getPublisher());
         compBuilder.setScope(component.getScope());
         compBuilder.setGroup(component.getGroup());
-        for(Map.Entry<String, Set<String>> prop: component.getProperties().entrySet())
-        {
-            for(String value: prop.getValue()){
-                compBuilder.addProperty(prop.getKey(), value);}
-        }
+
+        if(component.getProperties() != null)
+            for(Map.Entry<String, Set<String>> prop: component.getProperties().entrySet())
+                for(String value: prop.getValue())
+                    compBuilder.addProperty(prop.getKey(), value);
+
     }
 
     /**
