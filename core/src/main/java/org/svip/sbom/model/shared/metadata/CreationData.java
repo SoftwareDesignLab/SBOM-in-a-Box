@@ -1,9 +1,12 @@
 package org.svip.sbom.model.shared.metadata;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
+
+import java.util.*;
+
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISC_MISMATCH;
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.TIMESTAMP_MISMATCH;
 
 /**
  * File: CreationData.java
@@ -155,5 +158,18 @@ public class CreationData {
      */
     public String getCreatorComment() {
         return creatorComment;
+    }
+
+    ///
+    /// Util
+    ///
+    public List<Conflict> compare(CreationData other){
+        ConflictFactory cf = new ConflictFactory();
+
+        cf.addConflict("Timestamp", TIMESTAMP_MISMATCH, this.creationTime, other.getCreationTime());
+        cf.addConflict("Creator Comment", MISC_MISMATCH, this.creatorComment, other.getCreatorComment());
+        // todo
+        // authors, manufacture, supplier, licenses, properties, creationTools
+        return cf.getConflicts();
     }
 }
