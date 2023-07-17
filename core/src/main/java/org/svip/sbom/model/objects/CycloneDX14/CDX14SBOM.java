@@ -235,7 +235,7 @@ public class CDX14SBOM implements CDX14Schema {
         cf.addConflict("Spec Version", SCHEMA_VERSION_MISMATCH, this.specVersion, other.getSpecVersion());
         cf.addConflict("Document Comment", MISC_MISMATCH, this.documentComment, other.getDocumentComment());
 
-        // Compare Licenses todo add util method in ConflictFactory?
+        // Compare Licenses
         cf.compareSets("License", LICENSE_MISMATCH, this.licenses, other.getLicenses());
 
         // Compare Creation Data
