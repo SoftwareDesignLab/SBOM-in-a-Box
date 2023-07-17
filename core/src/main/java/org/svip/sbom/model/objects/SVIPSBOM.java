@@ -4,17 +4,13 @@ import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Schema;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
-import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
-import org.svip.sbomanalysis.comparison.conflicts.MismatchConflict;
-import org.svip.sbomanalysis.comparison.conflicts.MissingConflict;
 
 import java.util.Collections;
 import java.util.*;
@@ -23,7 +19,7 @@ import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
 import java.util.*;
 import java.util.HashSet;
 
-import static org.svip.sbomanalysis.comparison.conflicts.ConflictType.*;
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
 
 /**
  * file: SVIPSBOM.java
