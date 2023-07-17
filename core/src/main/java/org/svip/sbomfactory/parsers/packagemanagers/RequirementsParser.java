@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
  * Description: Package-manager specific implementation of the PackageManagerParser (PIP/requirements.txt)
  *
  * @author Dylan Mulligan
+ * @author Ian Dunn
  */
 public class RequirementsParser extends PackageManagerParser {
     public RequirementsParser() {

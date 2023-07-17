@@ -19,7 +19,9 @@ import static org.svip.utils.Debug.log;
  * file: ConanParser.java
  * Description: Package-manager specific implementation of the PackageManagerParser (Conan/conanfile.txt or conanfile.py)
  *
- * @author Dylan Mulligan, Ping Liu
+ * @author Dylan Mulligan
+ * @author Ping Liu
+ * @author Ian Dunn
  */
 public class ConanParser extends PackageManagerParser {
 

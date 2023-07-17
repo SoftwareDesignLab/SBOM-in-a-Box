@@ -32,6 +32,7 @@ import static org.svip.utils.Debug.log;
  * methods to be implemented for child PackageManagerParser instances.
  *
  * @author Dylan Mulligan
+ * @author Ian Dunn
  */
 public abstract class PackageManagerParser extends Parser {
 

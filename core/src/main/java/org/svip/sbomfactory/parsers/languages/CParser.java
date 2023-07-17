@@ -11,6 +11,7 @@ import java.util.HashSet;
  * identical
  *
  * @author Derek Garcia
+ * @author Ian Dunn
  */
 public class CParser extends CppParser {
 

@@ -8,9 +8,11 @@ import java.util.ArrayList;
 
 /**
  * file: ContextParser.java
- * @description Parser for context based entities/elements in source files.
+ * Parser for context based entities/elements in source files.
  *
- * @author Henry Keena , Dylan Mulligan
+ * @author Dylan Mulligan
+ * @author Henry Keena
+ * @author Ian Dunn
  */
 public abstract class ContextParser extends Parser {
     protected final ArrayList<String> context;

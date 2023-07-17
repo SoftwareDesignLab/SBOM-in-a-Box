@@ -24,11 +24,12 @@ import static org.svip.utils.Debug.LOG_TYPE;
 import static org.svip.utils.Debug.log;
 
 /**
- * file: GeneratorsTestMain.java
- * Description: SBOM Generation CLI Code
+ * file: SBOMGeneratorCLI.java
+ * Description: SBOM Generation CLI utility.
  *
  * @author Dylan Mulligan
  * @author Derek Garcia
+ * @author Ian Dunn
  */
 public class SBOMGeneratorCLI {
 
@@ -57,7 +58,6 @@ public class SBOMGeneratorCLI {
     private static final String PWD = System.getProperty("user.dir");   // System property for pwd
     private static final String OUT_DIRECTORY = "SBOMOut";               // Default Output directory
 
-    // TODO: Is it better practice to use something other than a block string?
     /**
      * This is the usage text.
      */

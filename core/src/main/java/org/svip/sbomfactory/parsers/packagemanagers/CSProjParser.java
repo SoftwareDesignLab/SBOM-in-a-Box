@@ -12,6 +12,7 @@ import java.util.*;
  *
  * @author Henry Orsagh
  * @author Dylan Mulligan
+ * @author Ian Dunn
  */
 public class CSProjParser extends PackageManagerParser {
 

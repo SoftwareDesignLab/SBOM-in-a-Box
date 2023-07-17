@@ -15,6 +15,7 @@ import static org.svip.utils.Debug.log;
  * Description: Language specific implementation of the ParserCore (Scala)
  *
  * @author Dylan Mulligan
+ * @author Ian Dunn
  */
 public class ScalaParser extends LanguageParser {
     // Scala API

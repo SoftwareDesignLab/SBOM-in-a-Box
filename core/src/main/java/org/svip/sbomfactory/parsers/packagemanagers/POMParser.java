@@ -17,6 +17,7 @@ import static org.svip.utils.Debug.log;
  * Description: Package-manager specific implementation of the PackageManagerParser (Maven/pom.xml)
  *
  * @author Dylan Mulligan
+ * @author Ian Dunn
  */
 public class POMParser extends PackageManagerParser {
     //#region Constructors

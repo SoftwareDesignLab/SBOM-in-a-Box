@@ -8,6 +8,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+/**
+ * File: CondaParser
+ * Package-manager specific implementation of the PackageManagerParser using Conda.
+ *
+ * @author Asa Horn ?
+ * @author Ian Dunn
+ */
 public class CondaParser extends PackageManagerParser{
 
     public CondaParser() {

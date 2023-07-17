@@ -15,6 +15,7 @@ import static org.svip.utils.Debug.log;
  * Description: Language specific implementation of the ParserCore (Rust)
  *
  * @author Dylan Mulligan
+ * @author Ian Dunn
  */
 public class RustParser extends LanguageParser {
     public RustParser() { super("https://doc.rust-lang.org/"); }

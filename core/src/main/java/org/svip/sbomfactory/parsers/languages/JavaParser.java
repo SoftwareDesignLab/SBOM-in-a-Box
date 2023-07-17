@@ -21,6 +21,7 @@ import static org.svip.utils.Debug.log;
  * Description: Language specific implementation of the Parser (Java)
  *
  * @author Dylan Mulligan
+ * @author Ian Dunn
  */
 public class JavaParser extends LanguageParser {
     // Oracle API Reference: This reference currently supports Java8 only for LTS. Other versions of

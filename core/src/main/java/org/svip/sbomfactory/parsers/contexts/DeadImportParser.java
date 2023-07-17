@@ -12,9 +12,11 @@ import static org.svip.utils.Debug.log;
 
 /**
  * file: DeadImportParser.java
- * @description Context parser class responsible for parsing source files for dead or unused imports and dependency calls.
+ * Context parser class responsible for parsing source files for dead or unused imports and dependency calls.
  *
- * @author Henry Keena , Dylan Mulligan
+ * @author Dylan Mulligan
+ * @author Henry Keena
+ * @author Ian Dunn
  */
 public class DeadImportParser extends ContextParser {
 

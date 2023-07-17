@@ -18,6 +18,7 @@ import static org.svip.utils.Debug.log;
  * Description: Language specific implementation of the ParserCore (Go)
  *
  * @author Dylan Mulligan
+ * @author Ian Dunn
  */
 public class GoParser extends LanguageParser {
     public GoParser() { super("https://pkg.go.dev/"); }

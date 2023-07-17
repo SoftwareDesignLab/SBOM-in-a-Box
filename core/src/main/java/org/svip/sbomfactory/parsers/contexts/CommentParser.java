@@ -12,9 +12,11 @@ import static org.svip.utils.Debug.log;
 
 /**
  * file: CommentParser
- * @description Context parser class responsible for handling and parsing source file comments.
+ * Context parser class responsible for handling and parsing source file comments.
  *
- * @author Dylan Mulligan , Henry Keena
+ * @author Dylan Mulligan
+ * @author Henry Keena
+ * @author Ian Dunn
  */
 public class CommentParser extends ContextParser {
 

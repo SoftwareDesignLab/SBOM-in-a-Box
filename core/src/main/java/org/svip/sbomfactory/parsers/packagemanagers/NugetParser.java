@@ -17,6 +17,7 @@ import static org.svip.utils.Debug.log;
  * Description: Package-manager specific implementation of the PackageManagerParser (.nuspec/.json)
  *
  * @author Juan Francisco Patino
+ * @author Ian Dunn
  */
 public class NugetParser extends PackageManagerParser{
 
