@@ -55,22 +55,6 @@ public class ConvertFromAPITest extends APITest{
     }
 
     /**
-     * Ensure that something goes wrong when trying to convert to the same format as the SBOMFile
-     */
-    @Test
-    @DisplayName("Same format test")
-    public void sameFormatTest(){
-        setupMockRepository();
-
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, controller.
-                convert(0L, "SPDX23", "TAGVALUE", true).
-                getStatusCode());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, controller.
-                convert(6L, "CDX14", "JSON", true).
-                getStatusCode());
-    }
-
-    /**
      * Rigorous test for /convert endpoint. Tests conversion to a valid schema + format, then tests converting back
      */
     @Test

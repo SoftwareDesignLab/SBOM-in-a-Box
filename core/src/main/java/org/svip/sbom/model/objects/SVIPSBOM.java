@@ -245,39 +245,4 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
 
     }
 
-    /*
-        Construct from other SBOMs
-     */
-
-    /**
-     * Constructs an SVIPSBOM from an spdx23SBOM
-     * @param spdx23SBOM said SBOM to construct from
-     */
-    public SVIPSBOM(SPDX23SBOM spdx23SBOM){
-        this.format = spdx23SBOM.getFormat();
-        this.name = spdx23SBOM.getName();
-        this.uid = spdx23SBOM.getUID();
-        this.version = spdx23SBOM.getVersion();
-        this.specVersion = spdx23SBOM.getSpecVersion();
-        this.licenses = spdx23SBOM.getLicenses();
-        this.creationData = spdx23SBOM.getCreationData();
-        this.documentComment = spdx23SBOM.getDocumentComment();
-        SVIPComponentObject temp = null;
-        try{
-            temp = new SVIPComponentObject(spdx23SBOM.getRootComponent()); // todo this is a temporary fix and messes up json object mapping in serializers
-        }
-        catch (NullPointerException n){}
-        this.rootComponent = temp;
-
-        this.components = spdx23SBOM.getComponents().stream().filter(Objects::nonNull)
-                        .map(c -> {
-                            if (c instanceof SPDX23FileObject) return new SVIPComponentObject((SPDX23FileObject) c);
-                            else return new SVIPComponentObject((SPDX23PackageObject) c);
-                        }).collect(Collectors.toSet());
-
-        this.relationships = (HashMap<String, Set<Relationship>>) spdx23SBOM.getRelationships();
-        this.externalReferences = spdx23SBOM.getExternalReferences();
-        this.SPDXLicenseListVersion = spdx23SBOM.getSPDXLicenseListVersion();
-    }
-
 }

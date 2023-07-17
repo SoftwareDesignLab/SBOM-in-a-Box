@@ -13,14 +13,12 @@ import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
-import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
-import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
+import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.old.SBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.util.ExternalReference;
-import org.svip.sbom.model.uids.CPE;
 import org.svip.sbomfactory.generators.generators.SBOMGenerator;
 import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 import org.svip.sbomfactory.serializers.SerializerFactory;
@@ -30,7 +28,6 @@ import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomfactory.translators.TranslatorException;
 
 import java.io.IOException;
-import java.security.KeyStore;
 import java.util.*;
 
 /**
@@ -248,64 +245,60 @@ public class Utils {
             // serialize into requested schema
 
             s = SerializerFactory.createSerializer(schema, format, true);
+            s.setPrettyPrinting(true);
             SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
 
+            builder.setFormat(String.valueOf(schema));
+            builder.setName(deserialized.getName());
+            builder.setUID(deserialized.getUID());
+            builder.setVersion(deserialized.getVersion());
+
+            if(deserialized.getLicenses() != null )
+                for (String license: deserialized.getLicenses()) {
+                    if(license == null)continue;
+                    builder.addLicense(license);}
+
+            builder.setCreationData(deserialized.getCreationData());
+            builder.setDocumentComment(deserialized.getDocumentComment());
+
+            SVIPComponentBuilder compBuilder = new SVIPComponentBuilder();
+            buildSVIPComponentObject(deserialized.getRootComponent(), compBuilder, schema);
+            builder.setRootComponent(compBuilder.buildAndFlush());
+
+            if(deserialized.getComponents() != null )
+                for (Component c: deserialized.getComponents()
+                ) {
+                    if(c == null)
+                        continue;
+                    buildSVIPComponentObject(c, compBuilder, schema);
+                    builder.addSPDX23Component(compBuilder.buildAndFlush());
+                }
+
+            if(deserialized.getRelationships() != null)
+                for(Map.Entry<String, Set<Relationship>> entry: deserialized.getRelationships().entrySet())
+                    for (Relationship r: entry.getValue())
+                        builder.addRelationship(entry.getKey(), r);
+
+            if(deserialized.getExternalReferences() != null)
+                for (ExternalReference e: deserialized.getExternalReferences())
+                    builder.addExternalReference(e);
+
+            // schema specific adjustments
             switch (schema){
                 case SPDX23 ->{
-
-                    CDX14SBOM cdxDeserialized = (CDX14SBOM)deserialized;
-
-                    builder.setFormat(cdxDeserialized.getFormat());
-                    builder.setName(cdxDeserialized.getName());
-                    builder.setUID(cdxDeserialized.getUID());
-                    builder.setVersion(cdxDeserialized.getVersion());
-
-                    if(cdxDeserialized.getLicenses() != null )
-                        for (String license: cdxDeserialized.getLicenses()) {
-                            if(license == null)continue;
-                            builder.addLicense(license);}
-
-                    builder.setCreationData(cdxDeserialized.getCreationData());
-                    builder.setDocumentComment(cdxDeserialized.getDocumentComment());
-
-                    SVIPComponentBuilder compBuilder = new SVIPComponentBuilder();
-                    buildSVIPComponentObject(cdxDeserialized.getRootComponent(), compBuilder);
-                    builder.setRootComponent(compBuilder.buildAndFlush());
-
-                    if(cdxDeserialized.getComponents() != null )
-                        for (Component c: cdxDeserialized.getComponents()
-                             ) {
-                            if(c == null)
-                                continue;
-                            buildSVIPComponentObject((CDX14ComponentObject) c, compBuilder);
-                            builder.addSPDX23Component(compBuilder.buildAndFlush());
-                        }
-
-                    if(cdxDeserialized.getRelationships() != null)
-                        for(Map.Entry<String, Set<Relationship>> entry: cdxDeserialized.getRelationships().entrySet())
-                            for (Relationship r: entry.getValue())
-                                builder.addRelationship(entry.getKey(), r);
-
-                    if(cdxDeserialized.getExternalReferences() != null)
-                        for (ExternalReference e: cdxDeserialized.getExternalReferences())
-                            builder.addExternalReference(e);
-                    builder.setFormat(String.valueOf(schema));
-
                     SVIPSBOM built = builder.Build();
-
                     serialized = s.writeToString(built);
                 }
                 case CDX14 -> {
-                    s.setPrettyPrinting(true);
 
                     // instead of adding superfluous setters to all SBOM objects, just replace strings specific to SPDX
                     // with CDX equivalent
-                    serialized = s.writeToString(new SVIPSBOM((SPDX23SBOM) deserialized));
+                    SVIPSBOM built = builder.Build();
+                    serialized = s.writeToString(built);
                     serialized = serialized.replaceFirst("\"bomFormat\" : \"SPDX\"",
                                     "\"bomFormat\" : \"CycloneDX\"").
                             replaceFirst("specVersion\" : \"" + deserialized.getSpecVersion() + "\"",
                                     "specVersion\" : \"1.4\"");
-
                 }
             }
 
@@ -323,7 +316,8 @@ public class Utils {
 
     }
 
-    private static void buildSVIPComponentObject(CDX14ComponentObject component, SVIPComponentBuilder compBuilder) {
+    private static void buildSVIPComponentObject(Component component, SVIPComponentBuilder compBuilder,
+                                                 SerializerFactory.Schema schema) {
         if(component == null)
             return;
         compBuilder.setType(component.getType());
@@ -337,33 +331,57 @@ public class Utils {
             for(Map.Entry<String, String> entry: component.getHashes().entrySet())
                 compBuilder.addHash(entry.getKey(), entry.getValue());
 
-        compBuilder.setSupplier(component.getSupplier());
-        compBuilder.setVersion(component.getVersion());
-        compBuilder.setDescription(component.getDescription());
+        // schema specific
+        switch (schema){
+            case SPDX23 -> {
 
-        if(component.getCPEs() != null)
-            for(String cpe: component.getCPEs())
-                compBuilder.addCPE(cpe);
+                CDX14ComponentObject cdx14ComponentObject = (CDX14ComponentObject) component;
+                compBuilder.setSupplier(cdx14ComponentObject.getSupplier());
+                compBuilder.setVersion(cdx14ComponentObject.getVersion());
+                compBuilder.setDescription(cdx14ComponentObject.getDescription());
 
-        if(component.getPURLs() != null)
-            for(String purl: component.getPURLs())
-                compBuilder.addPURL(purl);
+                if (cdx14ComponentObject.getCPEs() != null)
+                    for (String cpe : cdx14ComponentObject.getCPEs())
+                        compBuilder.addCPE(cpe);
 
-        if(component.getExternalReferences() != null)
-            for(ExternalReference ext: component.getExternalReferences())
-                compBuilder.addExternalReference(ext);
+                if (cdx14ComponentObject.getPURLs() != null)
+                    for (String purl : cdx14ComponentObject.getPURLs())
+                        compBuilder.addPURL(purl);
 
-        compBuilder.setMimeType(component.getMimeType());
-        compBuilder.setPublisher(component.getPublisher());
-        compBuilder.setScope(component.getScope());
-        compBuilder.setGroup(component.getGroup());
+                if (cdx14ComponentObject.getExternalReferences() != null)
+                    for (ExternalReference ext : cdx14ComponentObject.getExternalReferences())
+                        compBuilder.addExternalReference(ext);
 
-        if(component.getProperties() != null)
-            for(Map.Entry<String, Set<String>> prop: component.getProperties().entrySet())
-                for(String value: prop.getValue())
-                    compBuilder.addProperty(prop.getKey(), value);
+                compBuilder.setMimeType(cdx14ComponentObject.getMimeType());
+                compBuilder.setPublisher(cdx14ComponentObject.getPublisher());
+                compBuilder.setScope(cdx14ComponentObject.getScope());
+                compBuilder.setGroup(cdx14ComponentObject.getGroup());
+
+                if (cdx14ComponentObject.getProperties() != null)
+                    for (Map.Entry<String, Set<String>> prop : cdx14ComponentObject.getProperties().entrySet())
+                        for (String value : prop.getValue())
+                            compBuilder.addProperty(prop.getKey(), value);
+            }
+            case CDX14 -> {
+
+                // is this a package or file object?
+                if(component instanceof SPDX23PackageObject spdx23PackageObject){
+                    compBuilder.setComment(spdx23PackageObject.getComment());
+                    compBuilder.setAttributionText(spdx23PackageObject.getAttributionText());
+                }
+                else if(component instanceof SPDX23FileObject spdx23FileObject){
+                    compBuilder.setComment(spdx23FileObject.getComment());
+                    compBuilder.setAttributionText(spdx23FileObject.getAttributionText());
+                    compBuilder.setFileNotice(spdx23FileObject.getFileNotice());
+                }
+
+            }
+
+        }
+
 
     }
+
 
     /**
      * Returns a message detailing what went wrong during serialization/deserialization
