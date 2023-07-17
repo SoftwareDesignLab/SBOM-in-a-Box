@@ -33,6 +33,15 @@ public class ConflictFactory {
     }
 
     /**
+     * Add collection of conflicts
+     *
+     * @param conflicts list of conflicts to add
+     */
+    public void addConflicts(List<Conflict> conflicts){
+        this.conflicts.addAll(conflicts);
+    }
+
+    /**
      * Create conflicts for Sets of Strings
      *
      * @param field Name of the Comparison Field
@@ -40,7 +49,7 @@ public class ConflictFactory {
      * @param target Set of target values
      * @param other Set of other values
      */
-    public void addConflicts(String field, MismatchType mismatchType, Set<String> target, Set<String> other){
+    public void compareSets(String field, MismatchType mismatchType, Set<String> target, Set<String> other){
         // Compare Strings
         for(String value : target){
             // Value in target and not in other
