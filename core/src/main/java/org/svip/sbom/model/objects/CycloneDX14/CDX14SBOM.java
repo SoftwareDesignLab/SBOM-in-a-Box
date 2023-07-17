@@ -235,17 +235,11 @@ public class CDX14SBOM implements CDX14Schema {
         cf.addConflict("Document Comment", MISC_MISMATCH, this.documentComment, other.getDocumentComment());
 
         // Compare Licenses todo add util method in ConflictFactory?
-        cf.addConflicts("License", LICENSE_MISMATCH, this.licenses, other.getLicenses());
+        cf.compareSets("License", LICENSE_MISMATCH, this.licenses, other.getLicenses());
 
-        // Compare Creation data
-        // todo compare method in CreationData + other util objects??
-        CreationData targetCD = this.getCreationData();
-        CreationData otherCD = this.getCreationData();
+        // Compare Creation Data
+        cf.addConflicts(this.creationData.compare(other.getCreationData()));
 
-        cf.addConflict("Timestamp", TIMESTAMP_MISMATCH, targetCD.getCreationTime(), otherCD.getCreationTime());
-        cf.addConflict("Creator Comment", MISC_MISMATCH, targetCD.getCreatorComment(), otherCD.getCreatorComment());
-        // todo
-        // authors, manufacture, supplier, licenses, properties, creationTools
 
         // todo
         // compare relationships
