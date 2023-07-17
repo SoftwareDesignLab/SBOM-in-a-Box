@@ -1,13 +1,13 @@
 package org.svip.sbomanalysis.comparison.conflicts;
 
-public enum ConflictType {
+public enum MismatchType {
     /**
      * Types of conflicts that can occur in SBOM or Component comparison
      *
      * @author Matt London
      * @author Thomas Roman
      */
-    /** Component only found in one SBOM */
+    // Special case
     MISSING,
     /** Component found in both SBOMs, but has different versions */
     VERSION_MISMATCH,

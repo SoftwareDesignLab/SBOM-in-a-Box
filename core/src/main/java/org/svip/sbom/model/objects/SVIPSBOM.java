@@ -4,20 +4,16 @@ import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Schema;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
-import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
-import org.svip.sbomanalysis.comparison.conflicts.MismatchConflict;
-import org.svip.sbomanalysis.comparison.conflicts.MissingConflict;
 
 import java.util.*;
 
-import static org.svip.sbomanalysis.comparison.conflicts.ConflictType.*;
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
 
 /**
  * file: SVIPSBOM.java
@@ -248,55 +244,58 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
 
     @Override
     public List<Conflict> compare(SBOM other) {
-        // SVIP - OTHER Comparison
-        ArrayList<Conflict> conflicts = new ArrayList<>();
-        if (other instanceof SVIPSBOM) {
-            // NAME
-            if (this.name != null ^ other.getName() != null) {
-                conflicts.add(new MissingConflict("name", this.name, other.getName()));
-            } else if (!Objects.equals(this.name, other.getName()) && this.name != null) {
-                conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
-            }
-            // VERSION
-            if (this.version != null ^ other.getVersion() != null) {
-                conflicts.add(new MissingConflict("version", this.version, other.getVersion()));
-            } else if (!Objects.equals(this.version, other.getVersion()) && this.version != null) {
-                conflicts.add(new MismatchConflict("version", this.version, other.getVersion(), VERSION_MISMATCH));
-            }
-            // LICENSES
-            if (this.licenses != null && other.getLicenses() != null) {
-                if (!this.licenses.containsAll(other.getLicenses())) {
-                    conflicts.add(new MismatchConflict("license", this.licenses.toString(), other.getLicenses().toString(), LICENSE_MISMATCH));
-                }
-            } else if (this.licenses != null) {
-                conflicts.add(new MissingConflict("license", this.licenses.toString(), null));
-            } else if (other.getLicenses() != null) {
-                conflicts.add(new MissingConflict("license", null, other.getLicenses().toString()));
-            }
-            // Creation data - includes timestamp, licenses
-            if (this.creationData != null && other.getCreationData() != null) {
-                // TIMESTAMP
-                if (this.creationData.getCreationTime() != null ^ other.getCreationData().getCreationTime() != null) {
-                    conflicts.add(new MissingConflict("timestamp", this.creationData.getCreationTime(), other.getCreationData().getCreationTime()));
-                } else if (!Objects.equals(this.creationData.getCreationTime(), other.getCreationData().getCreationTime()) && this.creationData.getCreationTime() != null) {
-                    conflicts.add(new MismatchConflict("timestamp", this.creationData.getCreationTime(), other.getCreationData().getCreationTime(), TIMESTAMP_MISMATCH));
-                }
-            }
-        }
-        return conflicts.stream().toList();
+//        // SVIP - OTHER Comparison
+//        ArrayList<Conflict> conflicts = new ArrayList<>();
+//        if (other instanceof SVIPSBOM) {
+//            // NAME
+//            if (this.name != null ^ other.getName() != null) {
+//                conflicts.add(new MissingConflict("name", this.name, other.getName()));
+//            } else if (!Objects.equals(this.name, other.getName()) && this.name != null) {
+//                conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
+//            }
+//            // VERSION
+//            if (this.version != null ^ other.getVersion() != null) {
+//                conflicts.add(new MissingConflict("version", this.version, other.getVersion()));
+//            } else if (!Objects.equals(this.version, other.getVersion()) && this.version != null) {
+//                conflicts.add(new MismatchConflict("version", this.version, other.getVersion(), VERSION_MISMATCH));
+//            }
+//            // LICENSES
+//            if (this.licenses != null && other.getLicenses() != null) {
+//                if (!this.licenses.containsAll(other.getLicenses())) {
+//                    conflicts.add(new MismatchConflict("license", this.licenses.toString(), other.getLicenses().toString(), LICENSE_MISMATCH));
+//                }
+//            } else if (this.licenses != null) {
+//                conflicts.add(new MissingConflict("license", this.licenses.toString(), null));
+//            } else if (other.getLicenses() != null) {
+//                conflicts.add(new MissingConflict("license", null, other.getLicenses().toString()));
+//            }
+//            // Creation data - includes timestamp, licenses
+//            if (this.creationData != null && other.getCreationData() != null) {
+//                // TIMESTAMP
+//                if (this.creationData.getCreationTime() != null ^ other.getCreationData().getCreationTime() != null) {
+//                    conflicts.add(new MissingConflict("timestamp", this.creationData.getCreationTime(), other.getCreationData().getCreationTime()));
+//                } else if (!Objects.equals(this.creationData.getCreationTime(), other.getCreationData().getCreationTime()) && this.creationData.getCreationTime() != null) {
+//                    conflicts.add(new MismatchConflict("timestamp", this.creationData.getCreationTime(), other.getCreationData().getCreationTime(), TIMESTAMP_MISMATCH));
+//                }
+//            }
+//        }
+//        return conflicts.stream().toList();
+        return null;
     }
 
     @Override
     public List<Conflict> compare(SPDX23SBOM other) {
-        // SVIP - SPDX Comparison
-        ArrayList<Conflict> conflicts = new ArrayList<>();
-        return conflicts.stream().toList();
+//        // SVIP - SPDX Comparison
+//        ArrayList<Conflict> conflicts = new ArrayList<>();
+//        return conflicts.stream().toList();
+        return null;
     }
 
     @Override
     public List<Conflict> compare(CDX14SBOM other) {
-        // SVIP - CDX14 Comparison
-        ArrayList<Conflict> conflicts = new ArrayList<>();
-        return conflicts.stream().toList();
+//        // SVIP - CDX14 Comparison
+//        ArrayList<Conflict> conflicts = new ArrayList<>();
+//        return conflicts.stream().toList();
+        return null;
     }
 }
