@@ -2,6 +2,15 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [v5.0.5-alpha] - (7/13/2023)
+
+### Added
+> NOTE: Serializers may serialize null fields; this should be fixed in a later version.
+- Refactored `parsers` package to use the new `SVIPSBOM` & `SVIPComponentObject`.
+  - Refactored all parser unit tests to reflect this (100% passing, code coverage TBD).
+- Refactored `SBOMGeneratorCLI` class to use `serializers` and `parsers` packages.
+
 ## [v5.0.4-alpha] - (7/13/2023)
 
 ### Added
