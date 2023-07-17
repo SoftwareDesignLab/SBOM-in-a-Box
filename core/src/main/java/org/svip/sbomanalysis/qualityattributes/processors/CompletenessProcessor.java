@@ -1,8 +1,8 @@
 package org.svip.sbomanalysis.qualityattributes.processors;
 
-import org.svip.sbomanalysis.qualityattributes.tests.MinElementTest;
-import org.svip.sbomanalysis.qualityattributes.tests.ValidPurlTest;
-import org.svip.sbomanalysis.qualityattributes.tests.ValidCPETest;
+import org.svip.sbomanalysis.qualityattributes.oldtests.MinElementTest;
+import org.svip.sbomanalysis.qualityattributes.oldtests.ValidPurlTest;
+import org.svip.sbomanalysis.qualityattributes.oldtests.ValidCPETest;
 
 /**
  * file: CompletenessProcessor.java

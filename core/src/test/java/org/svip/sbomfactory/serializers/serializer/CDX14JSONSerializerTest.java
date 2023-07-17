@@ -25,6 +25,6 @@ public class CDX14JSONSerializerTest extends SerializerTest {
         CDX14SBOM sbom = (CDX14SBOM) SerializerFactory.createDeserializer(serialized).readFromString(serialized);
 
         // TODO Compare getTestSBOM() and sbom with Comparison when it's finished
-        assertEquals(4, sbom.getComponents().size());
+        assertEquals(3, sbom.getComponents().size());
     }
 }

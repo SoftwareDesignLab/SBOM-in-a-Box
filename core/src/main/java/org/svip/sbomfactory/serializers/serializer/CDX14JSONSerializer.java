@@ -20,10 +20,7 @@ import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbomfactory.serializers.Metadata;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -88,9 +85,6 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
     public void serialize(SVIPSBOM sbom, JsonGenerator jsonGenerator, SerializerProvider provider) throws IOException {
         jsonGenerator.writeStartObject();
 
-        Set<Component> allComponents = sbom.getComponents();
-        allComponents.add(sbom.getRootComponent());
-
         //
         // Top-level info
         //
@@ -103,7 +97,8 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         //
         // Metadata
         //
-        writeCreationData(jsonGenerator, sbom.getCreationData(), sbom.getRootComponent());
+        if (sbom.getCreationData() != null)
+            writeCreationData(jsonGenerator, sbom.getCreationData(), sbom.getRootComponent());
 
         //
         // Components
@@ -112,6 +107,7 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         jsonGenerator.writeStartArray(); // [
 
         for (Component component : sbom.getComponents()) {
+            if (component == null) continue;
             SVIPComponentObject svipComponent = (SVIPComponentObject) component;
             writeComponent(jsonGenerator, svipComponent);
         }
@@ -121,7 +117,8 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         // Services
 
         // External References
-        writeExternalRefs(jsonGenerator, sbom.getExternalReferences());
+        if (sbom.getExternalReferences() != null)
+            writeExternalRefs(jsonGenerator, sbom.getExternalReferences());
 
         // Dependencies
         jsonGenerator.writeFieldName("dependencies");
@@ -130,25 +127,12 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         for (Map.Entry<String, Set<Relationship>> dep : sbom.getRelationships().entrySet()) {
             jsonGenerator.writeStartObject();
 
-            // Find the UID of the component by name if one exists
-            Optional<Component> found = allComponents.stream().filter(c -> c.getName().equals(dep.getKey())).findFirst();
-            String bomRef = dep.getKey();
-            if (found.isPresent() && found.get().getUID() != null)
-                bomRef = found.get().getUID();
-
-            jsonGenerator.writeStringField("ref", bomRef);
+            jsonGenerator.writeStringField("ref", dep.getKey());
 
             jsonGenerator.writeFieldName("dependsOn");
             jsonGenerator.writeStartArray();
-            for(Relationship rel : dep.getValue()) {
-                // Find the UID of the component by name if one exists
-                found = allComponents.stream().filter(c -> c.getName().equals(rel.getOtherUID())).findFirst();
-                bomRef = rel.getOtherUID();
-                if (found.isPresent() && found.get().getUID() != null)
-                    bomRef = found.get().getUID();
-
-                jsonGenerator.writeString(bomRef);
-            }
+            for(Relationship rel : dep.getValue())
+                jsonGenerator.writeString(rel.getOtherUID());
             jsonGenerator.writeEndArray();
             jsonGenerator.writeEndObject();
         }
@@ -240,8 +224,10 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         }
 
         /* Root Component */
-        jsonGenerator.writeFieldName("component");
-        writeComponent(jsonGenerator, rootComponent);
+        if (rootComponent != null) {
+            jsonGenerator.writeFieldName("component");
+            writeComponent(jsonGenerator, rootComponent);
+        }
         jsonGenerator.writeEndObject(); // }
     }
 
@@ -260,20 +246,26 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
     }
 
     private void writeContact(JsonGenerator jsonGenerator, Contact contact) throws IOException {
-        jsonGenerator.writeStartObject();
+        if (contact == null || contact.getName() == null) return;
 
+        jsonGenerator.writeStartObject();
         jsonGenerator.writeStringField("name", contact.getName());
-        jsonGenerator.writeStringField("email", contact.getEmail());
-        jsonGenerator.writeStringField("phone", contact.getPhone());
+
+        if (contact.getEmail() != null)
+            jsonGenerator.writeStringField("email", contact.getEmail());
+        if (contact.getPhone() != null)
+            jsonGenerator.writeStringField("phone", contact.getPhone());
 
         jsonGenerator.writeEndObject();
     }
 
     private void writeOrganization(JsonGenerator jsonGenerator, Organization organization) throws IOException {
+        if (organization == null || organization.getName() == null) return;
         jsonGenerator.writeStartObject();
 
         jsonGenerator.writeStringField("name", organization.getName());
-        jsonGenerator.writeStringField("url", organization.getUrl());
+
+        if (organization.getUrl() != null) jsonGenerator.writeStringField("url", organization.getUrl());
 
         jsonGenerator.writeFieldName("contact");
         jsonGenerator.writeStartArray();
@@ -287,6 +279,8 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
     }
 
     private void writeProperties(JsonGenerator jsonGenerator, Map<String, Set<String>> properties) throws IOException {
+        if (properties == null) return;
+
         jsonGenerator.writeFieldName("properties");
         jsonGenerator.writeStartArray();
 
@@ -307,6 +301,8 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
     }
 
     private void writeHashes(JsonGenerator jsonGenerator, Map<String, String> hashes) throws IOException {
+        if (hashes == null) return;
+
         jsonGenerator.writeFieldName("hashes");
         jsonGenerator.writeStartArray(); // [
 
@@ -337,6 +333,8 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
     }
 
     private void writeExternalRefs(JsonGenerator jsonGenerator, Set<ExternalReference> refs) throws IOException {
+        if (refs == null) return;
+
         jsonGenerator.writeFieldName("externalReferences");
         jsonGenerator.writeStartArray();
         for (ExternalReference ref : refs) {
@@ -366,26 +364,34 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         jsonGenerator.writeStringField("scope", component.getScope());
         jsonGenerator.writeStringField("copyright", component.getCopyright());
         // TODO is this the right way to represent multiple CPEs/PURLs?
-        jsonGenerator.writeStringField("cpe", String.join(", ", component.getCPEs()));
+        if (component.getCPEs() != null)
+            jsonGenerator.writeStringField("cpe", String.join(", ", component.getCPEs()));
+        if (component.getPURLs() != null)
         jsonGenerator.writeStringField("purl", String.join(", ", component.getPURLs()));
 
-        jsonGenerator.writeFieldName("supplier");
-        writeOrganization(jsonGenerator, component.getSupplier());
+        if (component.getSupplier() != null) {
+            jsonGenerator.writeFieldName("supplier");
+            writeOrganization(jsonGenerator, component.getSupplier());
+        }
+
         jsonGenerator.writeStringField("author", component.getAuthor());
         jsonGenerator.writeStringField("publisher", component.getPublisher());
 
-        jsonGenerator.writeStringField("description",
+        if (component.getDescription() != null)
+            jsonGenerator.writeStringField("description",
                 "Summary: " + component.getDescription().getSummary() + " | Details: " + component.getDescription().getDescription());
 
         writeHashes(jsonGenerator, component.getHashes());
 
         // Licenses
-        LicenseCollection licenses = component.getLicenses();
-        Set<String> allLicenses = new HashSet<>();
-        allLicenses.addAll(licenses.getConcluded());
-        allLicenses.addAll(licenses.getDeclared());
-        allLicenses.addAll(licenses.getInfoFromFiles());
-        writeLicenses(jsonGenerator, allLicenses);
+        if (component.getLicenses() != null) {
+            LicenseCollection licenses = component.getLicenses();
+            Set<String> allLicenses = new HashSet<>();
+            allLicenses.addAll(licenses.getConcluded());
+            allLicenses.addAll(licenses.getDeclared());
+            allLicenses.addAll(licenses.getInfoFromFiles());
+            writeLicenses(jsonGenerator, allLicenses);
+        }
 
         // External Refs
         writeExternalRefs(jsonGenerator, component.getExternalReferences());
