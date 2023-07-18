@@ -1,5 +1,6 @@
 package org.svip.sbom.model.shared.metadata;
 
+import org.svip.sbomanalysis.comparison.conflicts.Comparable;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
 import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
@@ -18,7 +19,7 @@ import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.NAME_MISMA
  *
  * @author Derek Garcia
  */
-public class Organization {
+public class Organization implements Comparable {
     private final String name;
     private final String url;
     private final Set<Contact> contacts = new HashSet<>();
@@ -73,13 +74,19 @@ public class Organization {
     /// Utils
     ///
 
-    public List<Conflict> compare(Organization other){
+
+    @Override
+    public List<Conflict> compare(Comparable o) {
+        // Don't compare if not instance of same object
+        if(!(o instanceof Organization other))
+            return null;
+
         ConflictFactory cf = new ConflictFactory();
 
         cf.addConflict("Organization: Name", NAME_MISMATCH, this.name, other.getName());
         cf.addConflict("Organization: URL", MISC_MISMATCH, this.url, other.getUrl());
+        cf.compareComparableSets("Contacts", new HashSet<>(this.contacts), new HashSet<>(other.getContacts()));
 
-        // todo finish rest of comparison
         return cf.getConflicts();
     }
 
