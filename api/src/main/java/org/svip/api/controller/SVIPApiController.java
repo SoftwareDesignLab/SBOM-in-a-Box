@@ -13,8 +13,12 @@ import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.utils.Converter;
 import org.svip.api.utils.Utils;
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.sbomgeneration.parsers.ParserController;
 import org.svip.sbomgeneration.serializers.SerializerFactory;
 import org.svip.sbomgeneration.serializers.deserializer.Deserializer;
+import org.svip.sbomgeneration.serializers.serializer.Serializer;
+import org.svip.utils.VirtualPath;
 
 import java.util.HashMap;
 import java.util.List;
@@ -322,8 +326,11 @@ public class SVIPApiController {
 
     @GetMapping("/generate")
     public ResponseEntity<String> generate(@RequestBody SBOMFile[] files,
+                                           @RequestParam("name") String name,
                                            @RequestParam("schema") SerializerFactory.Schema schema, // todo implement this schema + format params in /convert
-                                           @RequestParam("format") SerializerFactory.Format format){
+                                           @RequestParam("format") SerializerFactory.Format format) throws JsonProcessingException {
+
+        ParserController parserController = new ParserController(name, new HashMap<>());
 
         for (SBOMFile f: files
              ) {
@@ -331,9 +338,19 @@ public class SVIPApiController {
                 LOGGER.error("GENERATE /svip/generate?fileName=" + f.getFileName() + "has null properties");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
+            parserController.addFile(new VirtualPath(f.getFileName()), f.getContents());
         }
 
-        return null;
+        parserController.parseAll();
+
+        SVIPSBOM parsed = parserController.buildSBOM(schema);
+
+        Serializer s = SerializerFactory.createSerializer(schema,format, true);
+
+        String contents = s.writeToString(parsed);
+
+        return Utils.encodeResponse(contents);
+
     }
 
     //#region Deprecated Endpoints
