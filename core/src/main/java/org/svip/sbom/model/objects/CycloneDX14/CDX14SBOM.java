@@ -218,7 +218,7 @@ public class CDX14SBOM implements CDX14Schema {
      * Compare a CycloneDX 1.4 SBOM against another SBOM Metadata
      *
      * @param other Other SBOM to compare against
-     * @return List of Metadata to compare against
+     * @return List of Metadata conflicts
      */
     @Override
     public List<Conflict> compare(SBOM other) {

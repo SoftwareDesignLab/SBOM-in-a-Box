@@ -10,6 +10,7 @@ import java.util.*;
 
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
 
 import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
 import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.TIMESTAMP_MISMATCH;
@@ -232,46 +233,39 @@ public class SPDX23SBOM implements SPDX23Schema{
 
     }
 
+    /**
+     * Compare a SPDX 2.3 SBOM against another SBOM Metadata
+     *
+     * @param other Other SBOM to compare against
+     * @return List of Metadata of conflicts
+     */
     @Override
     public List<Conflict> compare(SBOM other) {
-//        // SPDX - OTHER Comparison
-//        ArrayList<Conflict> conflicts = new ArrayList<>();
-//        // the Comparison object kept calling this class rather than the other one, even if I cast other to spdx
-//        if (other instanceof SPDX23SBOM) {
-//            // NAME
-//            if (this.name != null ^ other.getName() != null) {
-//                conflicts.add(new MissingConflict("name", this.name, other.getName()));
-//            } else if (!Objects.equals(this.name, other.getName()) && this.name != null) {
-//                conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
-//            }
-//            // VERSION
-//            if (this.version != null ^ other.getVersion() != null) {
-//                conflicts.add(new MissingConflict("version", this.version, other.getVersion()));
-//            } else if (!Objects.equals(this.version, other.getVersion()) && this.version != null) {
-//                conflicts.add(new MismatchConflict("version", this.version, other.getVersion(), VERSION_MISMATCH));
-//            }
-//            // LICENSES
-//            if (this.licenses != null && other.getLicenses() != null) {
-//                if (!this.licenses.containsAll(other.getLicenses())) {
-//                    conflicts.add(new MismatchConflict("license", this.licenses.toString(), other.getLicenses().toString(), LICENSE_MISMATCH));
-//                }
-//            } else if (this.licenses != null) {
-//                conflicts.add(new MissingConflict("license", this.licenses.toString(), null));
-//            } else if (other.getLicenses() != null) {
-//                conflicts.add(new MissingConflict("license", null, other.getLicenses().toString()));
-//            }
-//            // Creation data - includes timestamp, licenses
-//            if (this.creationData != null && other.getCreationData() != null) {
-//                // TIMESTAMP
-//                if (this.creationData.getCreationTime() != null ^ other.getCreationData().getCreationTime() != null) {
-//                    conflicts.add(new MissingConflict("timestamp", this.creationData.getCreationTime(), other.getCreationData().getCreationTime()));
-//                } else if (!Objects.equals(this.creationData.getCreationTime(), other.getCreationData().getCreationTime()) && this.creationData.getCreationTime() != null) {
-//                    conflicts.add(new MismatchConflict("timestamp", this.creationData.getCreationTime(), other.getCreationData().getCreationTime(), TIMESTAMP_MISMATCH));
-//                }
-//            }
-//        }
-//        return conflicts.stream().toList();
-        return null;
+        // SPDX - OTHER Comparison
+        ConflictFactory cf = new ConflictFactory();
+
+        // Compare single String fields
+        cf.addConflict("Format", ORIGIN_FORMAT_MISMATCH, this.format, other.getFormat());
+        cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
+        cf.addConflict("UID", MISC_MISMATCH, this.uid, other.getUID());
+        cf.addConflict("Version", VERSION_MISMATCH, this.version, other.getVersion());
+        cf.addConflict("Spec Version", SCHEMA_VERSION_MISMATCH, this.specVersion, other.getSpecVersion());
+        cf.addConflict("Document Comment", MISC_MISMATCH, this.documentComment, other.getDocumentComment());
+
+        // Compare Licenses
+        cf.compareStringSets("License", LICENSE_MISMATCH, this.licenses, other.getLicenses());
+
+        // Compare Creation Data
+        cf.addConflicts(this.creationData.compare(other.getCreationData()));
+
+        // Comparable Sets
+        cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
+
+        // todo
+        // compare relationships
+        // compare Vulns
+
+        return cf.getConflicts();
     }
 
     @Override
