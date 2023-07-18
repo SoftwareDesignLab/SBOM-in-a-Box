@@ -2,6 +2,7 @@ package org.svip.sbomvex.vexstatement;
 
 import org.svip.sbomvex.vexstatement.status.Status;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -107,7 +108,7 @@ public class VEXStatement {
         private Status status;
 
         /**The statement's set of products*/
-        private Set<Product> products;
+        private Set<Product> products = new HashSet<>();
 
         /**The statement's vulnerability statement*/
         private Vulnerability vulnerability;
