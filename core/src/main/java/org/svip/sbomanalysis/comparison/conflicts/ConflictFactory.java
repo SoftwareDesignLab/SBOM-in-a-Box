@@ -47,74 +47,54 @@ public class ConflictFactory {
     }
 
 
-    public void compareComparableSets(String field, MismatchType mismatchType, List<Comparable> target, List<Comparable> other){
+    /**
+     * Compare Sets of Comparable Objects
+     *
+     * @param field Name of the Comparison Field
+     * @param target Set of target values
+     * @param other Set of other values
+     */
+    public void compareComparableSets(String field, Set<Comparable> target, Set<Comparable> other){
+
         // Null check
         if(!comparable(field, target, other))
             return;
 
+        // Round 1: Compare target against other if equal
         for(Comparable targetValue : target){
             boolean compared = false;   // track if comparison occurred
+
+            // Test targetValue against otherValue
             for(Comparable otherValue : other){
 
+                // If equal, compare
                 if(targetValue.equals(otherValue)){
                     addConflicts(targetValue.compare(otherValue));
                     compared = true;
                 }
             }
+            // targetValue not in other set
             if(!compared)
-                addConflict(field, MISSING, targetValue.toString(), null);
+                addConflict(field, MISSING, "Contains " + field + " Data", null);
         }
 
+        // Round 2: Don't compare other against target, just checking if present
         for(Comparable otherValue : other){
             boolean compared = false;   // track if comparison occurred
+
+            // Attempt to see if otherValue exists in target
             for(Comparable targetValue : target){
+                // otherValue is in targetValue
                 if (otherValue.equals(targetValue)) {
                     compared = true;
                     break;
                 }
             }
+
+            // otherValue not in target set
             if(!compared)
-                addConflict(field, MISSING, null, otherValue.toString());
+                addConflict(field, MISSING, null, "Contains " + field + " Data");
         }
-
-//        while(!target.isEmpty()){
-//            Comparable targetValue = target.remove(0);
-//
-//            boolean compared = false;   // track if comparison occurred
-//
-//            for(Comparable otherValue : other){
-//                if(targetValue.equals(otherValue)){
-//                    addConflicts(targetValue.compare(otherValue));
-//                    compared = true;
-//                }
-//            }
-//
-//            if(!compared)
-//                addConflict(field, MISSING, targetValue.toString(), null);
-//        }
-//
-//        for(Comparable otherValue : other)
-//            addConflict(field, MISSING, null, otherValue.toString());
-
-    }
-
-    private boolean comparable(String field, Object target, Object other){
-
-        // Both are missing, no conflict
-        if(target == null && other == null)
-            return false;
-
-        // One is missing from the other
-        // TODO Better way to handle this case
-        if(target == null || other == null){
-            addConflict(field, MISSING, "FOO", "BAR");
-            return false;
-        }
-
-        // False: Skip, not comparable classes
-        // True: Objects are of the same class to be compared
-        return target.getClass().equals(other.getClass());
-
     }
 
     /**
@@ -144,126 +124,31 @@ public class ConflictFactory {
     }
 
 
-    public void compareContacts(String field, Set<Contact> target, Set<Contact> other){
-        // Null check
-        if(!comparable(field, target, other))
-            return;
+    /**
+     * Utility method to test to see if 2 objects can be compared
+     *
+     * @param field Name of the Comparison Field
+     * @param target Target value
+     * @param other Other value
+     * @return True if they can be compared, false otherwise
+     */
+    private boolean comparable(String field, Object target, Object other){
 
-        List<Contact> targetList = new ArrayList<>(target);
-        List<Contact> otherList = new ArrayList<>(other);
-
-        while(!targetList.isEmpty()){
-            Contact targetValue = targetList.remove(0);
-
-            boolean compared = false;   // track if comparison occurred
-            for(Contact otherValue : otherList){
-                if(targetValue.equals(otherValue)){
-                    addConflicts(targetValue.compare(otherValue));
-                    otherList.remove(otherValue);
-                    compared = true;
-                }
-            }
-
-            if(!compared)
-                addConflict(field, MISSING, target.toString(), null);
-        }
-
-        for(Contact otherValue : otherList)
-            addConflict(field, MISSING, null, otherValue.toString());
-
-    }
-
-    public void compareCreationData(String field, CreationData target, CreationData other){
-        // Null check
-        if(!comparable(field, target, other))
-            return;
-
-        // add conflicts
-        addConflicts(target.compare(other));
-    }
-
-    public void compareLicenseCollections(String field, MismatchType mismatchType, LicenseCollection target, LicenseCollection other){
-        if (target == null && other == null) {
-            return;
-        }
-        if (target == null) {
-            addConflict(field, mismatchType, null, other.getConcluded().toString() + other.getDeclared().toString() + other.getInfoFromFiles().toString());
-            return;
-        }
-        if (other == null) {
-            addConflict(field, mismatchType, target.getConcluded().toString() + target.getDeclared().toString() + target.getInfoFromFiles().toString(), null);
-            return;
-        }
-        // CONCLUDED
-        compareStringSets("License", LICENSE_MISMATCH, target.getConcluded(), other.getConcluded());
-        // DECLARED
-        compareStringSets("License", LICENSE_MISMATCH, target.getDeclared(), other.getDeclared());
-        // INFO FROM FILES
-        compareStringSets("License", LICENSE_MISMATCH, target.getInfoFromFiles(), other.getInfoFromFiles());
-    }
-
-    public void compareContacts(String field, MismatchType mismatchType, Contact target, Contact other) {
         // Both are missing, no conflict
         if(target == null && other == null)
-            return;
+            return false;
 
-        // Target is missing
-        if(target == null) {
-            addConflict(field, mismatchType, null, other.getName());
-            return;
-        }
-
-        // Other is missing
-        if(other == null) {
-            addConflict(field, mismatchType, target.getName(), null);
-            return;
+        // One is missing from the other
+        // TODO Better way to handle this case
+        if(target == null || other == null){
+            addConflict(field, MISSING, (target == null ? "Present" : null), (other == null ? "Present" : null));
+            return false;
         }
 
-        // ensure that these are not missing before their respective mismatch checks
-        boolean nameMissing = false;
-        boolean emailMissing = false;
-        boolean phoneMissing = false;
+        // False: Skip, not comparable classes
+        // True: Objects are of the same class to be compared
+        return target.getClass().equals(other.getClass());
 
-        // Target Name is missing
-        if(target.getName() == null || target.getName().isEmpty()) {
-            addConflict(field, mismatchType, null, other.getName());
-            nameMissing = true;
-        }
-        // Other Name is missing
-        if(other.getName() == null || other.getName().isEmpty()) {
-            addConflict(field, mismatchType, target.getName(), null);
-            nameMissing = true;
-        }
-        // Target Email is missing
-        if(target.getEmail() == null || target.getEmail().isEmpty()) {
-            addConflict(field, mismatchType, null, other.getName());
-            emailMissing = true;
-        }
-        // Other Email is missing
-        if(other.getEmail() == null || other.getEmail().isEmpty()) {
-            addConflict(field, mismatchType, target.getName(), null);
-            emailMissing = true;
-        }
-        // Target Phone is missing
-        if(target.getPhone() == null || target.getPhone().isEmpty()) {
-            addConflict(field, mismatchType, null, other.getName());
-            phoneMissing = true;
-        }
-        // Other Phone is missing
-        if(other.getPhone() == null || other.getPhone().isEmpty()) {
-            addConflict(field, mismatchType, target.getName(), null);
-            phoneMissing = true;
-        }
-        // Mismatch
-        if(!nameMissing && !target.getName().equals(other.getName())) {
-            addConflict(field, mismatchType, target.getName(), other.getName());
-        }
-        if(!phoneMissing && !target.getPhone().equals(other.getPhone())) {
-            addConflict(field, mismatchType, target.getName(), other.getName());
-        }
-        if(!emailMissing && !target.getEmail().equals(other.getEmail())) {
-            addConflict(field, mismatchType, target.getName(), other.getName());
-        }
     }
 
     /**
