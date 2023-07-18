@@ -131,9 +131,9 @@ public class CreationTool implements Comparable {
 
         // Compare hashes
         for(String alg : this.hashes.keySet()){
-            // Missing hash
+            // Missing hash, missing doesn't imply different
             if(!other.getHashes().containsKey(alg))
-                return false;
+                continue;
             // Same hash alg, different values
             if(!other.getHashes().get(alg).equals(this.hashes.get(alg)))
                 return false;

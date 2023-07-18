@@ -1,6 +1,7 @@
 package org.svip.sbom.model.shared.util;
 
 import org.svip.sbom.model.shared.metadata.CreationData;
+import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbomanalysis.comparison.conflicts.Comparable;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
@@ -109,5 +110,37 @@ public class ExternalReference implements Comparable {
 
         // Compare single String fields
         return cf.getConflicts();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        // Test if correct class
+        if (o == null || getClass() != o.getClass()) return false;
+        ExternalReference other = (ExternalReference) o;
+
+        // If urls match, then same External Reference
+        if((this.url != null && other.getUrl() != null && this.url.equals(other.getUrl())))
+            return true;
+
+        // Check if category is equivalent
+        if(!this.category.equals(other.getCategory()))
+            return false;
+
+        // Check if type is equivalent
+        if(!this.type.equals(other.getType()))
+            return false;
+
+        // Compare hashes
+        for(String alg : this.hashes.keySet()){
+            // Missing hash, missing doesn't imply different
+            if(!other.getHashes().containsKey(alg))
+                continue;
+            // Same hash alg, different values
+            if(!other.getHashes().get(alg).equals(this.hashes.get(alg)))
+                return false;
+        }
+
+        // Don't compare free text comment, pass all tests
+        return true;
     }
 }
