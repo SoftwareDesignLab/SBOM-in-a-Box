@@ -10,4 +10,5 @@ import java.util.List;
 
 public interface Comparable {
     List<Conflict> compare(Comparable o);
+    boolean equals(Object o);
 }

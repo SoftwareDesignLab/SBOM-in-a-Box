@@ -46,6 +46,58 @@ public class ConflictFactory {
         this.conflicts.addAll(conflicts);
     }
 
+
+    public void compareComparableSets(String field, MismatchType mismatchType, List<Comparable> target, List<Comparable> other){
+        // Null check
+        if(!comparable(field, target, other))
+            return;
+
+        for(Comparable targetValue : target){
+            boolean compared = false;   // track if comparison occurred
+            for(Comparable otherValue : other){
+
+                if(targetValue.equals(otherValue)){
+                    addConflicts(targetValue.compare(otherValue));
+                    compared = true;
+                }
+            }
+            if(!compared)
+                addConflict(field, MISSING, targetValue.toString(), null);
+        }
+
+        for(Comparable otherValue : other){
+            boolean compared = false;   // track if comparison occurred
+            for(Comparable targetValue : target){
+                if (otherValue.equals(targetValue)) {
+                    compared = true;
+                    break;
+                }
+            }
+            if(!compared)
+                addConflict(field, MISSING, null, otherValue.toString());
+        }
+
+//        while(!target.isEmpty()){
+//            Comparable targetValue = target.remove(0);
+//
+//            boolean compared = false;   // track if comparison occurred
+//
+//            for(Comparable otherValue : other){
+//                if(targetValue.equals(otherValue)){
+//                    addConflicts(targetValue.compare(otherValue));
+//                    compared = true;
+//                }
+//            }
+//
+//            if(!compared)
+//                addConflict(field, MISSING, targetValue.toString(), null);
+//        }
+//
+//        for(Comparable otherValue : other)
+//            addConflict(field, MISSING, null, otherValue.toString());
+
+    }
+
     private boolean comparable(String field, Object target, Object other){
 
         // Both are missing, no conflict
@@ -73,7 +125,7 @@ public class ConflictFactory {
      * @param target Set of target values
      * @param other Set of other values
      */
-    public void compareSets(String field, MismatchType mismatchType, Set<String> target, Set<String> other){
+    public void compareStringSets(String field, MismatchType mismatchType, Set<String> target, Set<String> other){
         // Null check
         if(!comparable(field, target, other))
             return;
@@ -143,11 +195,11 @@ public class ConflictFactory {
             return;
         }
         // CONCLUDED
-        compareSets("License", LICENSE_MISMATCH, target.getConcluded(), other.getConcluded());
+        compareStringSets("License", LICENSE_MISMATCH, target.getConcluded(), other.getConcluded());
         // DECLARED
-        compareSets("License", LICENSE_MISMATCH, target.getDeclared(), other.getDeclared());
+        compareStringSets("License", LICENSE_MISMATCH, target.getDeclared(), other.getDeclared());
         // INFO FROM FILES
-        compareSets("License", LICENSE_MISMATCH, target.getInfoFromFiles(), other.getInfoFromFiles());
+        compareStringSets("License", LICENSE_MISMATCH, target.getInfoFromFiles(), other.getInfoFromFiles());
     }
 
     public void compareContacts(String field, MismatchType mismatchType, Contact target, Contact other) {
