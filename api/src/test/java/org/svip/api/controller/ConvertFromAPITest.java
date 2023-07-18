@@ -20,7 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class ConvertFromAPITest extends APITest{
-    private Map<Long, SBOMFile> testMap;
+    private final Map<Long, SBOMFile> testMap;
     private static final Logger LOGGER = LoggerFactory.getLogger(SVIPApiController.class);
 
     public ConvertFromAPITest() throws IOException {

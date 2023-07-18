@@ -122,18 +122,16 @@ public class Converter {
             switch (schema){
                 case SPDX23 ->{
                     SVIPSBOM built = builder.Build();
-                    serialized = s.writeToString(built);
+                    serialized = s.writeToString(built).replaceFirst("SPDX-null",
+                            "SPDX-2.3");
                 }
                 case CDX14 -> {
 
-                    // instead of adding superfluous setters to all SBOM objects, just replace strings specific to SPDX
-                    // with CDX equivalent
                     SVIPSBOM built = builder.Build();
-                    serialized = s.writeToString(built);
-                    serialized = serialized.replaceFirst("\"bomFormat\" : \"SPDX\"",
-                                    "\"bomFormat\" : \"CycloneDX\"").
-                            replaceFirst("specVersion\" : \"" + deserialized.getSpecVersion() + "\"",
-                                    "specVersion\" : \"1.4\"");
+                    serialized = s.writeToString(built).replaceFirst("\"bomFormat\" : \"SPDX\"",
+                            "\"bomFormat\" : \"CycloneDX\"").
+                            replaceFirst("specVersion\" : null",
+                                    "specVersion\" : \"1.4\"");;
                 }
             }
 
