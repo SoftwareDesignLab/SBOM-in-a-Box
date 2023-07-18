@@ -93,6 +93,13 @@ public class ExternalReference implements Comparable {
     }
 
     /**
+     * @return comment
+     */
+    public String getComment(){
+        return this.comment;
+    }
+
+    /**
      * @return Hashes
      */
     public Map<String, String> getHashes() {
@@ -109,6 +116,14 @@ public class ExternalReference implements Comparable {
         ConflictFactory cf = new ConflictFactory();
 
         // Compare single String fields
+        cf.addConflict("URL", MISC_MISMATCH, this.url, other.getUrl());
+        cf.addConflict("Type", MISC_MISMATCH, this.type, other.getType());
+        cf.addConflict("Category", MISC_MISMATCH, this.category, other.getCategory());
+        cf.addConflict("Comment", MISC_MISMATCH, this.comment, other.getComment());
+
+        // Compare Hashes
+        cf.compareHashes("External Reference Hash", this.hashes, other.getHashes());
+
         return cf.getConflicts();
     }
 
