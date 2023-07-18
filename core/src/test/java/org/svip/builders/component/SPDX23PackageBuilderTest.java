@@ -2,7 +2,8 @@ package org.svip.builders.component;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.svip.componentfactory.SPDX23PackageBuilderFactory;
+import org.svip.sbom.factory.objects.SPDX23.SPDX23PackageBuilderFactory;
+import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23PackageBuilder;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;

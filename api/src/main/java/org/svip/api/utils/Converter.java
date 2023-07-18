@@ -1,7 +1,7 @@
 package org.svip.api.utils;
 
 import org.svip.api.model.SBOMFile;
-import org.svip.builders.component.SVIPComponentBuilder;
+import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
@@ -10,9 +10,9 @@ import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.util.ExternalReference;
-import org.svip.sbomfactory.serializers.SerializerFactory;
-import org.svip.sbomfactory.serializers.deserializer.Deserializer;
-import org.svip.sbomfactory.serializers.serializer.Serializer;
+import org.svip.sbomgeneration.serializers.SerializerFactory;
+import org.svip.sbomgeneration.serializers.deserializer.Deserializer;
+import org.svip.sbomgeneration.serializers.serializer.Serializer;
 
 import java.util.Arrays;
 import java.util.HashMap;

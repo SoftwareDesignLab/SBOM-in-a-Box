@@ -1,0 +1,98 @@
+package org.svip.sbomgeneration.parsers.TestData.Java
+/**
+ * Copyright 2019 Esri
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy
+ * of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ */
+
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
+}
+
+ext {
+    arcgisVersion = '200.1.0'
+    sampleVersion1 = 'v1.2.344'
+    rootPath = 'this/is/a/path'
+    testPath = '$rootPath/test'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://esri.jfrog.io/artifactory/arcgis'
+    }
+}
+
+configurations {
+    natives
+}
+
+dependencies {
+    implementation "com.esri.arcgisruntime:arcgis-java:$arcgisVersion"
+    natives "com.esri.arcgisruntime:arcgis-java-jnilibs:$arcgisVersion"
+    natives "com.esri.arcgisruntime:arcgis-java-resources:$arcgisVersion"
+    // handle SLF4J http://www.slf4j.org/codes.html#StaticLoggerBinder using a no-operation logger
+    implementation "org.slf4j:slf4j-nop:2.0.5"
+    runtimeOnly group: 'org.springframework', name: 'spring-core', version: '2.5'
+    runtimeOnly 'org.springframework:spring-api:3.6',
+            'org.springframework:spring-oop:5.7'
+    runtimeOnly(
+        [group: 'org.springframework', name: 'spring-rope', version: '2.1'],
+        [group: 'org.springframework', name: 'spring-bean', version: '2.3']
+    )
+    runtimeOnly('org.hibernate:hibernate:3.0.5') {
+        transitive = true
+    }
+    runtimeOnly group: 'org.hibernate', name: 'wake', version: '1.2.3', transitive: true
+    runtimeOnly(group: 'org.hibernate', name: 'nap', version: '1') {
+        transitive = false
+    }
+    //declaring arbitrary files as dependencies
+    implementation files('hibernate.jar', 'libs/spring.jar')
+    //putting all jars from 'libs' onto compile classpath
+    implementation fileTree('libs')
+    implementation('org.hibernate:hibernate') {
+        //in case of versions conflict '3.1' version of hibernate wins:
+        version {
+          strictly('3.1')
+        }
+
+        //excluding a particular transitive dependency:
+        exclude module: 'cglib' //by artifact name
+        exclude group: 'org.jmock' //by group
+    }
+}
+
+javafx {
+    version = "17.0.2"
+    modules = [ 'javafx.controls', 'javafx.graphics', 'javafx.fxml', 'javafx.web', 'javafx.media' ]
+}
+
+application {
+    mainModule = "com.mycompany.app"
+    mainClass = "com.mycompany.app.App"
+}
+
+task copyNatives(type: Copy) {
+    description = "Copies the arcgis native libraries into the .arcgis directory for development."
+    group = "build"
+    configurations.natives.asFileTree.each {
+        from(zipTree(it))
+    }
+    into "${System.properties.getProperty("user.home")}/.arcgis/$arcgisVersion"
+}
+
+run {
+    dependsOn copyNatives
+}

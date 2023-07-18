@@ -2,7 +2,8 @@ package org.svip.builders.component;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.svip.componentfactory.SPDX23FileBuilderFactory;
+import org.svip.sbom.factory.objects.SPDX23.SPDX23FileBuilderFactory;
+import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23FileBuilder;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 

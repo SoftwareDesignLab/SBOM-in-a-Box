@@ -1,9 +1,9 @@
 package org.svip;
 
 import org.svip.sbom.model.objects.SVIPSBOM;
-import org.svip.sbomfactory.parsers.ParserController;
-import org.svip.sbomfactory.serializers.SerializerFactory;
-import org.svip.sbomfactory.serializers.serializer.Serializer;
+import org.svip.sbomgeneration.parsers.ParserController;
+import org.svip.sbomgeneration.serializers.SerializerFactory;
+import org.svip.sbomgeneration.serializers.serializer.Serializer;
 import org.svip.utils.Debug;
 import org.svip.utils.VirtualPath;
 

@@ -1,6 +1,6 @@
 package org.svip.utils;
 
-import org.svip.builders.component.SVIPComponentBuilder;
+import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,8 +1,9 @@
 package org.svip.builderfactory;
 
 import org.junit.jupiter.api.Test;
-import org.svip.builders.component.CDX14PackageBuilder;
+import org.svip.sbom.builder.objects.schemas.CDX14.CDX14PackageBuilder;
 import org.svip.sbom.builder.interfaces.schemas.CycloneDX14.CDX14SBOMBuilder;
+import org.svip.sbom.factory.objects.CycloneDX14.CDX14SBOMBuilderFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
@@ -11,11 +12,9 @@ import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
-import org.svip.sbom.model.shared.util.LicenseCollection;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

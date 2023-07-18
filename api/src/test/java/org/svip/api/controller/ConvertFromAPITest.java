@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.svip.api.model.SBOMFile;
 import org.svip.api.utils.Converter;
 import org.svip.api.utils.Utils;
-import org.svip.sbomfactory.serializers.SerializerFactory;
+import org.svip.sbomgeneration.serializers.SerializerFactory;
 
 import java.io.IOException;
 import java.util.Map;

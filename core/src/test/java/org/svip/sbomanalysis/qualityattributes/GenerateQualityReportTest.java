@@ -6,8 +6,8 @@ import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
 import org.svip.sbomanalysis.qualityattributes.pipelines.schemas.CycloneDX14.CDX14Pipeline;
 import org.svip.sbomanalysis.qualityattributes.pipelines.schemas.SPDX23.SPDX23Pipeline;
-import org.svip.sbomfactory.serializers.deserializer.CDX14JSONDeserializer;
-import org.svip.sbomfactory.serializers.deserializer.SPDX23JSONDeserializer;
+import org.svip.sbomgeneration.serializers.deserializer.CDX14JSONDeserializer;
+import org.svip.sbomgeneration.serializers.deserializer.SPDX23JSONDeserializer;
 
 import java.io.IOException;
 import java.nio.file.Files;
