@@ -90,9 +90,9 @@ public class LicenseCollection {
      */
     public List<Conflict> compare(LicenseCollection other) {
         ConflictFactory cf = new ConflictFactory();
-        cf.compareSets("License", LICENSE_MISMATCH, this.getConcluded(), other.getConcluded());
-        cf.compareSets("License", LICENSE_MISMATCH, this.getDeclared(), other.getDeclared());
-        cf.compareSets("License", LICENSE_MISMATCH, this.getInfoFromFiles(), other.getInfoFromFiles());
+        cf.compareStringSets("License", LICENSE_MISMATCH, this.getConcluded(), other.getConcluded());
+        cf.compareStringSets("License", LICENSE_MISMATCH, this.getDeclared(), other.getDeclared());
+        cf.compareStringSets("License", LICENSE_MISMATCH, this.getInfoFromFiles(), other.getInfoFromFiles());
         return cf.getConflicts();
     }
 }
