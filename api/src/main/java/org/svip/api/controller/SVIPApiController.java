@@ -13,18 +13,8 @@ import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.utils.Converter;
 import org.svip.api.utils.Utils;
 import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Schema;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
-import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
-import org.svip.sbom.model.objects.SVIPSBOM;
-import org.svip.sbomfactory.serializers.SerializerFactory;
-import org.svip.sbomfactory.serializers.deserializer.CDX14JSONDeserializer;
-import org.svip.sbomfactory.serializers.deserializer.Deserializer;
-import org.svip.sbomfactory.serializers.deserializer.SPDX23JSONDeserializer;
-import org.svip.sbomfactory.serializers.deserializer.SPDX23TagValueDeserializer;
-import org.svip.sbomfactory.translators.TranslatorController;
-import org.svip.sbomfactory.translators.TranslatorException;
+import org.svip.sbomgeneration.serializers.SerializerFactory;
+import org.svip.sbomgeneration.serializers.deserializer.Deserializer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -126,13 +116,14 @@ public class SVIPApiController {
         if (sbomFile.hasNullProperties())
             return new ResponseEntity<>("SBOM filename and/or contents may not be empty", HttpStatus.BAD_REQUEST);
 
-        // TODO REPLACE WITH NEW SERIALIZERS ASAP
+        String errorMsg = "Error processing file: " + sbomFile.getFileName();
         try {
-            TranslatorController.translateContents(sbomFile.getContents(), sbomFile.getFileName());
-        } catch (TranslatorException e) {
-            LOGGER.info("POST /svip/upload - Error translating file: " + sbomFile.getFileName());
+            Deserializer d = SerializerFactory.createDeserializer(sbomFile.getContents());
+            d.readFromString(sbomFile.getContents());
+        } catch (IllegalArgumentException | JsonProcessingException e) {
+            LOGGER.info("POST /svip/upload - " + errorMsg);
             LOGGER.error(e.getMessage());
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(errorMsg, HttpStatus.BAD_REQUEST);
         }
 
         // Upload

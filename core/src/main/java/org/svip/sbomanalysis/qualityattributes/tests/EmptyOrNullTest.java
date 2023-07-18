@@ -1,9 +1,9 @@
 package org.svip.sbomanalysis.qualityattributes.tests;
 
-import org.svip.sbomanalysis.qualityattributes.tests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.ResultFactory;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.INFO;
+import org.svip.sbomanalysis.qualityattributes.tests.enumerations.ATTRIBUTE;
 
 import java.util.Collection;
 

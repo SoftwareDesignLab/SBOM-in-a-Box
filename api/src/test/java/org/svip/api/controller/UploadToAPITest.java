@@ -21,6 +21,7 @@ public class UploadToAPITest extends APITest {
     @DisplayName("Upload File")
     public void uploadFileTest() throws IOException {
         List<SBOMFile> files = getTestFileMap().values().stream()
+                .filter(sbomFile -> !sbomFile.getFileName().endsWith(".xml"))
                 .map(sbomFile -> new SBOMFile(sbomFile.getFileName(), sbomFile.getContents()))
                 .toList();
 

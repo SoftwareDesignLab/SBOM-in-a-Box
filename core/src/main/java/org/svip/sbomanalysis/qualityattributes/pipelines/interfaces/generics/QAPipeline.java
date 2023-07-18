@@ -4,8 +4,6 @@ import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 
-import java.util.Set;
-
 
 /**
  * file: QAPipeline.java

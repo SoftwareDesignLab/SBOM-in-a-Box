@@ -3,7 +3,6 @@ package org.svip.sbomanalysis.comparison.conflicts;
 import org.svip.sbom.model.old.Component;
 import org.svip.sbom.model.uids.Hash;
 
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;

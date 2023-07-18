@@ -2,16 +2,16 @@ package org.svip.sbomanalysis.qualityattributes.tests;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.svip.sbomanalysis.qualityattributes.tests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.pipelines.schemas.CycloneDX14.CDX14Pipeline;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.STATUS;
+import org.svip.sbomanalysis.qualityattributes.tests.enumerations.ATTRIBUTE;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * file: HashTestTests.java

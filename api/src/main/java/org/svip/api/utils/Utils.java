@@ -6,11 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.controller.SVIPApiController;
 import org.svip.api.model.SBOMFile;
-import org.svip.sbomfactory.serializers.SerializerFactory;
+import org.svip.sbomgeneration.serializers.SerializerFactory;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
-import static org.svip.sbomfactory.serializers.SerializerFactory.Format.TAGVALUE;
+import static org.svip.sbomgeneration.serializers.SerializerFactory.Format.TAGVALUE;
 
 /**
  * A static class containing helpful utilities for API calls and testing responses.
@@ -24,23 +27,6 @@ public class Utils {
      * Spring-configured logger
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(SVIPApiController.class);
-
-    /**
-     * Checks an array of {@code SBOMFile} objects for one containing any null properties.
-     *
-     * @param arr The array of {@code SBOMFile} objects to check.
-     * @return -1 if no SBOMFiles have null properties. Otherwise, return the index of the first SBOM with null
-     * properties.
-     */
-    public static int sbomFileArrNullCheck(SBOMFile[] arr) {
-        for (int i = 0; i < arr.length; i++) {
-            SBOMFile file = arr[i];
-            if (file == null || file.hasNullProperties())
-                return i;
-        }
-
-        return -1;
-    }
 
     /**
      * Utility method to encode a response into a {@code ResponseEntity} of the same generic type. If there is an error

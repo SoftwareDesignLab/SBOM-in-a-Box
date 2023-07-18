@@ -4,7 +4,6 @@ import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.generics.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 
-
 import java.util.Set;
 
 /**

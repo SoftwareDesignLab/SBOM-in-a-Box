@@ -3,9 +3,6 @@ package org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.schemas.Cyc
 import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.generics.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 
-
-import java.util.Set;
-
 /**
  * file: CDX14Tests.java
  * An interface that contains a collection of tests that are specific to

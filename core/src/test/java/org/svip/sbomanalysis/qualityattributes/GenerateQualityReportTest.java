@@ -6,8 +6,8 @@ import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
 import org.svip.sbomanalysis.qualityattributes.pipelines.schemas.CycloneDX14.CDX14Pipeline;
 import org.svip.sbomanalysis.qualityattributes.pipelines.schemas.SPDX23.SPDX23Pipeline;
-import org.svip.sbomfactory.serializers.deserializer.CDX14JSONDeserializer;
-import org.svip.sbomfactory.serializers.deserializer.SPDX23JSONDeserializer;
+import org.svip.sbomgeneration.serializers.deserializer.CDX14JSONDeserializer;
+import org.svip.sbomgeneration.serializers.deserializer.SPDX23JSONDeserializer;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,10 +22,10 @@ import java.nio.file.Path;
 public class GenerateQualityReportTest {
 
     private final String CDX_14_JSON_SBOM = System.getProperty("user.dir") +
-            "/src/test/java/org/svip/sbomfactory/serializers/sample_boms/cdx_json/sbom.alpine.json";
+            "/src/test/java/org/svip/sbomgeneration/serializers/sample_boms/cdx_json/sbom.alpine.json";
 
     private final String SPDX23_JSON_SBOM = System.getProperty("user.dir") +
-            "/src/test/java/org/svip/sbomfactory/serializers/sample_boms/syft-0.80.0-source-spdx-json.json";
+            "/src/test/java/org/svip/sbomgeneration/serializers/sample_boms/syft-0.80.0-source-spdx-json.json";
 
     @Test
     public void test_quality_report_cdx_pipeline_test() throws IOException {

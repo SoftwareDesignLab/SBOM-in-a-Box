@@ -4,10 +4,10 @@ import jregex.Matcher;
 import jregex.Pattern;
 import jregex.REFlags;
 import org.apache.commons.io.IOUtils;
-import org.svip.sbomanalysis.qualityattributes.tests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.ResultFactory;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.INFO;
+import org.svip.sbomanalysis.qualityattributes.tests.enumerations.ATTRIBUTE;
 import org.svip.utils.Debug;
 
 import java.io.InputStream;
