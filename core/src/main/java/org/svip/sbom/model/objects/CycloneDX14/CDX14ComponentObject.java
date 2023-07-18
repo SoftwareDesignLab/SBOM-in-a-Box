@@ -296,7 +296,7 @@ public class CDX14ComponentObject implements CDX14Package {
         // AUTHOR
         cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
         // Licenses
-        cf.compareLicenseCollections("License", LICENSE_MISMATCH, this.licenses, other.getLicenses());
+//        cf.compareLicenseCollections("License", LICENSE_MISMATCH, this.licenses, other.getLicenses());
         // HASHES
         if (this.hashes != null && other.getHashes() != null) {
             // TODO Should we compare keys, values or both?
