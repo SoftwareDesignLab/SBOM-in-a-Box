@@ -1,9 +1,6 @@
 package org.svip.sbomanalysis.comparison.conflicts;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.HASH_MISMATCH;
 import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISSING;
@@ -127,7 +124,7 @@ public class ConflictFactory {
      * @param target Set of target values
      * @param other Set of other values
      */
-    public void compareHashes(String field, HashMap<String, String> target, HashMap<String, String> other){
+    public void compareHashes(String field, Map<String, String> target, Map<String, String> other){
         // Null check
         if(!comparable(field, target, other))
             return;
