@@ -266,6 +266,7 @@ public class CDX14SBOM implements CDX14Schema {
         // Compositions
         // Signature
 
+        // Compare shared items
         cf.addConflicts(compare((SBOM) other));
         return null;
     }
