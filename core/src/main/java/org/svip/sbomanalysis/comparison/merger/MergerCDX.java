@@ -13,6 +13,13 @@ import org.svip.sbom.model.shared.util.LicenseCollection;
 
 import java.util.*;
 
+/**
+ * File: MergerCDX.java
+ *
+ * Merges two CDX SBOMs together.
+ *
+ * @author tyler_drake
+ */
 public class MergerCDX extends Merger {
 
     public MergerCDX() {
@@ -90,6 +97,8 @@ public class MergerCDX extends Merger {
         // New collection for merged components
         Set<Component> mergedComponents = new HashSet<>();
 
+        Set<Component> removeB = new HashSet<>();
+
         // For every component in the first SBOM
         for(Component componentA : A) {
 
@@ -109,12 +118,15 @@ public class MergerCDX extends Merger {
                 if(componentA_CDX.getName() == componentB_CDX.getName() && componentA_CDX.getVersion() == componentB_CDX.getVersion()) {
 
                     mergedComponents.add(mergeComponent(componentA, componentB));
-                    B.remove(componentB);
+                    removeB.add(componentB);
                     merged = true;
 
                 }
 
             }
+
+            B.removeAll(removeB);
+
             // If component A was not merged with anything, add it to the new components
             if(!merged) mergedComponents.add(componentA);
         }
