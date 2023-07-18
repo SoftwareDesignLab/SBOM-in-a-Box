@@ -1,6 +1,7 @@
 package org.svip.sbomanalysis.comparison.conflicts;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -116,6 +117,10 @@ public class ConflictFactory {
             if(!target.contains(value))
                 addConflict(field, mismatchType, null, value);
         }
+    }
+
+    public void compareHashes(String field, HashMap<String, String> target, HashMap<String, String> others){
+
     }
 
 
