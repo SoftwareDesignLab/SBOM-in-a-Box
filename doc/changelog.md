@@ -3,7 +3,17 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v5.0.6-alpha] - (7/17/2023)
+## [v5.1.1-alpha] - (7/17/2023)
+
+### Changed
+- Organized all builder interfaces and objects into `sbom.builder` package.
+- Organized all factory interfaces and objects into `sbom.model` package.
+
+### Removed
+- `translators` package as the translators have been deprecated by the deserializers
+- Legacy endpoint API unit tests
+
+## [v5.1.0-alpha] - (7/17/2023)
 
 ### Added
 - /convert endpoint
