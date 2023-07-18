@@ -238,10 +238,12 @@ public class CDX14SBOM implements CDX14Schema {
         cf.compareStringSets("License", LICENSE_MISMATCH, this.licenses, other.getLicenses());
 
         // Compare Creation Data
-        cf.addConflicts(this.creationData.compare(other.getCreationData()));
+        if(cf.comparable("Creation Data", this.creationData, other.getCreationData()))
+            cf.addConflicts(this.creationData.compare(other.getCreationData()));
 
         // Comparable Sets
-        cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
+        if(cf.comparable("External Reference", this.externalReferences, other.getExternalReferences()))
+            cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
 
         // todo
         // compare relationships
@@ -268,6 +270,6 @@ public class CDX14SBOM implements CDX14Schema {
 
         // Compare shared items
         cf.addConflicts(compare((SBOM) other));
-        return null;
+        return cf.getConflicts();
     }
 }

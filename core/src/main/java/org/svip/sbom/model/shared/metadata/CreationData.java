@@ -180,12 +180,16 @@ public class CreationData implements Comparable{
         cf.compareStringSets("Creation Data: License", LICENSE_MISMATCH, this.licenses, other.getLicenses());
 
         // Comparable Sets
-        cf.compareComparableSets("Creation Data: Author", new HashSet<>(this.authors), new HashSet<>(other.getAuthors()));
-        cf.compareComparableSets("Creation Data: Tool", new HashSet<>(this.creationTools), new HashSet<>(other.getCreationTools()));
+        if(cf.comparable("Creation Data: Author", this.authors, other.getAuthors()))
+            cf.compareComparableSets("Creation Data: Author", new HashSet<>(this.authors), new HashSet<>(other.getAuthors()));
+        if(cf.comparable("Creation Data: Tool", this.creationTools, other.getCreationTools()))
+            cf.compareComparableSets("Creation Data: Tool", new HashSet<>(this.creationTools), new HashSet<>(other.getCreationTools()));
 
         // Compare Objects
-        cf.addConflicts(this.manufacture.compare(other.getManufacture()));
-        cf.addConflicts(this.supplier.compare(other.getSupplier()));
+        if(cf.comparable("Manufacture", this.manufacture, other.getManufacture()))
+            cf.addConflicts(this.manufacture.compare(other.getManufacture()));
+        if(cf.comparable("Supplier", this.supplier, other.getSupplier()))
+            cf.addConflicts(this.supplier.compare(other.getSupplier()));
 
         // todo
         //  properties

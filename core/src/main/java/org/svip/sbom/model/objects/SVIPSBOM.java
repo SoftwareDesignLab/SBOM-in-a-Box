@@ -272,11 +272,12 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
         cf.compareStringSets("License", LICENSE_MISMATCH, this.licenses, other.getLicenses());
 
         // Compare Creation Data
-        cf.addConflicts(this.creationData.compare(other.getCreationData()));
+        if(cf.comparable("Creation Data", this.creationData, other.getCreationData()))
+            cf.addConflicts(this.creationData.compare(other.getCreationData()));
 
         // Comparable Sets
-        cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
-
+        if(cf.comparable("External Reference", this.externalReferences, other.getExternalReferences()))
+            cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
         // todo
         // compare relationships
         // compare Vulns
@@ -319,27 +320,13 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
         // SVIP - CDX Comparison
         ConflictFactory cf = new ConflictFactory();
 
-        // Compare single String fields
-        cf.addConflict("Format", ORIGIN_FORMAT_MISMATCH, this.format, other.getFormat());
-        cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
-        cf.addConflict("UID", MISC_MISMATCH, this.uid, other.getUID());
-        cf.addConflict("Version", VERSION_MISMATCH, this.version, other.getVersion());
-        cf.addConflict("Spec Version", SCHEMA_VERSION_MISMATCH, this.specVersion, other.getSpecVersion());
-        cf.addConflict("Document Comment", MISC_MISMATCH, this.documentComment, other.getDocumentComment());
-
-        // Compare Licenses
-        cf.compareStringSets("License", LICENSE_MISMATCH, this.licenses, other.getLicenses());
-
-        // Compare Creation Data
-        cf.addConflicts(this.creationData.compare(other.getCreationData()));
-
-        // Comparable Sets
-        cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
-
         // todo
-        // compare relationships
-        // compare Vulns
+        // Services
+        // Compositions
+        // Signature
 
+        // Compare shared items
+        cf.addConflicts(compare((SBOM) other));
         return cf.getConflicts();
     }
 }
