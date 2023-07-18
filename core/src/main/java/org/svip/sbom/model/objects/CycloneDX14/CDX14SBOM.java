@@ -239,8 +239,7 @@ public class CDX14SBOM implements CDX14Schema {
         cf.compareStringSets("License", LICENSE_MISMATCH, this.licenses, other.getLicenses());
 
         // Compare Creation Data
-        if(cf.comparable("Creation Data", this.creationData, other.getCreationData()))
-            cf.addConflicts(this.creationData.compare(other.getCreationData()));
+        cf.addConflicts(this.creationData.compare(other.getCreationData()));
 
 
         // todo
