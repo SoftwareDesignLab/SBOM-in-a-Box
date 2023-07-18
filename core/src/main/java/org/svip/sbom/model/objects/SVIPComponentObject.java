@@ -156,7 +156,6 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
      */
     @Override
     public LicenseCollection getLicenses() {
-        if (this.licenses == null) this.licenses = new LicenseCollection();
         return this.licenses;
     }
 

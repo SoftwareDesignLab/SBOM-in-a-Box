@@ -1,24 +1,8 @@
 package org.svip.sbomanalysis.comparison;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
-import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
-import org.svip.sbomanalysis.differ.DiffReport;
-import org.svip.sbomfactory.generators.utils.Debug;
-import org.svip.sbomfactory.serializers.deserializer.CDX14JSONDeserializer;
-import org.svip.sbomfactory.serializers.deserializer.Deserializer;
-import org.svip.sbomfactory.serializers.deserializer.SPDX23JSONDeserializer;
-import org.svip.sbomfactory.serializers.deserializer.SPDX23TagValueDeserializer;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 
@@ -66,14 +50,14 @@ public class ComparisonTest {
 //        Debug.log(Debug.LOG_TYPE.SUMMARY, "Test Diff Report" + "\n" + diffReportString);
 //        Debug.logBlock();
     }
-
-    public Deserializer getSPDXJSONDeserializer() {
-        return new SPDX23JSONDeserializer();
-    }
-    public Deserializer getCDXJSONDeserializer() {
-        return new CDX14JSONDeserializer();
-    }
-    public Deserializer getSPDXTagValueDeserializer() {
-        return new SPDX23TagValueDeserializer();
-    }
+//
+//    public Deserializer getSPDXJSONDeserializer() {
+//        return new SPDX23JSONDeserializer();
+//    }
+//    public Deserializer getCDXJSONDeserializer() {
+//        return new CDX14JSONDeserializer();
+//    }
+//    public Deserializer getSPDXTagValueDeserializer() {
+//        return new SPDX23TagValueDeserializer();
+//    }
 }

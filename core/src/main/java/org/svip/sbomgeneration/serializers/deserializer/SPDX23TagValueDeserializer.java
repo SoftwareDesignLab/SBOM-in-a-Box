@@ -1,4 +1,4 @@
-package org.svip.sbomfactory.serializers.deserializer;
+package org.svip.sbomgeneration.serializers.deserializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
@@ -18,6 +18,7 @@ import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+import org.svip.sbomgeneration.serializers.deserializer.Deserializer;
 import org.svip.utils.Debug;
 
 import java.util.*;
