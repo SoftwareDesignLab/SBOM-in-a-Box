@@ -1,4 +1,4 @@
-package org.svip.sbomgeneration.serializers.deserializer;
+package org.svip.sbomfactory.serializers.deserializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;

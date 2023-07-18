@@ -15,11 +15,11 @@ import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import java.util.*;
 
 import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
-import java.util.HashMap;
+import java.util.*;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
 
 /**
  * file: SVIPSBOM.java
