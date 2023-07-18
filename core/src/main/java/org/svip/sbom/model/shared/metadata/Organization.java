@@ -85,7 +85,9 @@ public class Organization implements Comparable {
 
         cf.addConflict("Organization: Name", NAME_MISMATCH, this.name, other.getName());
         cf.addConflict("Organization: URL", MISC_MISMATCH, this.url, other.getUrl());
-        cf.compareComparableSets("Contacts", new HashSet<>(this.contacts), new HashSet<>(other.getContacts()));
+
+        if(cf.comparable("Contacts", this.contacts, other.getContacts()))
+            cf.compareComparableSets("Contacts", new HashSet<>(this.contacts), new HashSet<>(other.getContacts()));
 
         return cf.getConflicts();
     }

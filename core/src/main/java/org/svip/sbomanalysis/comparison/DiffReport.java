@@ -2,7 +2,9 @@ package org.svip.sbomanalysis.comparison;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.svip.sbom.model.old.SBOM;
+import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 
 import java.util.*;
@@ -21,15 +23,31 @@ public class DiffReport {
     /**
      * Utility class for organizing conflict data
      */
-    private class Comparison {
+    private static class Comparison {
         private static final String METADATA_TAG = "metadata";
         @JsonProperty
         private final Map<String, List<Conflict>> componentConflicts = new HashMap<>();
         @JsonProperty
         private final List<String> missingComponents = new ArrayList<>();
 
-        public Comparison(SBOM target, SBOM other) {
+        public Comparison(CDX14SBOM target, SPDX23SBOM other) {
+            // Compare metadata
+            this.componentConflicts.put(METADATA_TAG, target.compare(other));
+        }
 
+        public Comparison(SPDX23SBOM target, CDX14SBOM other) {
+            // Compare metadata
+            this.componentConflicts.put(METADATA_TAG, target.compare(other));
+        }
+
+        public Comparison(SPDX23SBOM target, SPDX23SBOM other) {
+            // Compare metadata
+            this.componentConflicts.put(METADATA_TAG, target.compare(other));
+        }
+
+        public Comparison(CDX14SBOM target, CDX14SBOM other) {
+            // Compare metadata
+            this.componentConflicts.put(METADATA_TAG, target.compare(other));
         }
 
     }
@@ -60,7 +78,7 @@ public class DiffReport {
      * @param otherSBOM other SBOM to compare against
      */
     public void compare(String otherUID, SBOM otherSBOM) {
-        this.diffReport.put(otherUID, new Comparison(this.targetSBOM, otherSBOM));
+        this.diffReport.put(otherUID, new Comparison((SPDX23SBOM) this.targetSBOM, (SPDX23SBOM) otherSBOM));
     }
 
 }
