@@ -4,7 +4,7 @@ import org.svip.sbom.model.old.AppTool;
 import org.svip.sbom.model.old.Component;
 import org.svip.sbom.model.old.SBOM;
 import org.svip.sbom.model.uids.Hash;
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

@@ -2,6 +2,7 @@ package org.svip.componentfactory;
 
 import org.svip.builders.component.SVIPComponentBuilder;
 import org.svip.componentfactory.interfaces.ComponentBuilderFactory;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 
 /**
  * file: SVIPSBOMComponentFactory.java
@@ -18,5 +19,13 @@ public class SVIPSBOMComponentFactory implements ComponentBuilderFactory {
     @Override
     public SVIPComponentBuilder createBuilder() {
         return new SVIPComponentBuilder();
+    }
+
+    /**
+     * Create a new SVIP SBOM Builder from an existing component.
+     * @return a new SVIPSBOMComponentBuilder
+     */
+    public SVIPComponentBuilder createBuilder(SVIPComponentObject component) {
+        return new SVIPComponentBuilder(component);
     }
 }

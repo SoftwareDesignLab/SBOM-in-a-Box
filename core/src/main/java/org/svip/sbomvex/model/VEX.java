@@ -2,6 +2,7 @@ package org.svip.sbomvex.model;
 
 import org.svip.sbomvex.vexstatement.VEXStatement;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -111,7 +112,7 @@ public class VEX {
         /**The document's last updated time*/
         private String timeLastUpdated;
 
-        private Set<VEXStatement> vexStatements;
+        private Set<VEXStatement> vexStatements = new HashSet<>();
 
         /**
          * Set the document's VEX Identifier

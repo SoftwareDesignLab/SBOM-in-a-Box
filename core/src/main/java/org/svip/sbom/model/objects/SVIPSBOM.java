@@ -13,6 +13,7 @@ import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -238,8 +239,10 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
         this.creationData = creationData;
         this.documentComment = documentComment;
         this.rootComponent = rootComponent;
-        this.components = components;
-        this.relationships = relationships;
+        if (components == null) this.components = new HashSet<>();
+        else this.components = components;
+        if (relationships == null) this.relationships = new HashMap<>();
+        else this.relationships = relationships;
         this.externalReferences = externalReferences;
         this.SPDXLicenseListVersion = spdxLicenseListVersion;
 

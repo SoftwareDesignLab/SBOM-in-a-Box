@@ -1,7 +1,7 @@
 package org.svip.sbomfactory.translators;
 
 
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 
 /**
  * File: TranslatorException.java

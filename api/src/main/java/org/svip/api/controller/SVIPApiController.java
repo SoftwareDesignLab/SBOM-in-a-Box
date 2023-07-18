@@ -1,5 +1,6 @@
 package org.svip.api.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,17 @@ import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.utils.Converter;
 import org.svip.api.utils.Utils;
+import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Schema;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.sbomfactory.serializers.SerializerFactory;
+import org.svip.sbomfactory.serializers.deserializer.CDX14JSONDeserializer;
+import org.svip.sbomfactory.serializers.deserializer.Deserializer;
+import org.svip.sbomfactory.serializers.deserializer.SPDX23JSONDeserializer;
+import org.svip.sbomfactory.serializers.deserializer.SPDX23TagValueDeserializer;
 import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomfactory.translators.TranslatorException;
 
@@ -114,6 +126,7 @@ public class SVIPApiController {
         if (sbomFile.hasNullProperties())
             return new ResponseEntity<>("SBOM filename and/or contents may not be empty", HttpStatus.BAD_REQUEST);
 
+        // TODO REPLACE WITH NEW SERIALIZERS ASAP
         try {
             TranslatorController.translateContents(sbomFile.getContents(), sbomFile.getFileName());
         } catch (TranslatorException e) {
@@ -139,7 +152,7 @@ public class SVIPApiController {
      * @return The contents of the SBOM file.
      */
     @GetMapping("/view")
-    public ResponseEntity<String> view(@RequestParam("id") long id) {
+    public ResponseEntity<String> view(@RequestParam("id") Long id) {
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
@@ -176,6 +189,47 @@ public class SVIPApiController {
     }
 
     /**
+     * USAGE. Send GET request to /getSBOM with a URL parameter id to get the deserialized SBOM.
+     *
+     * The API will respond with an HTTP 200 and the SBOM object json
+     * todo: better ways to add more support?
+     *
+     * @param id The id of the SBOM contents to retrieve.
+     * @return The contents of the SBOM file.
+     */
+    @GetMapping("/getSBOM")
+    public ResponseEntity<?> getSBOM(@RequestParam("id") Long id){
+
+        String urlMsg = "GET /svip/getSBOM?id=" + id;    // for logging
+
+        // Get SBOM
+        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
+
+        // Return SBOM or invalid ID
+        if (sbomFile.isEmpty()) {
+            LOGGER.warn(urlMsg + " - FILE NOT FOUND");
+            return new ResponseEntity<>("Invalid SBOM ID", HttpStatus.NOT_FOUND);
+        }
+
+        // Deserialize SBOM into JSON Object
+        SBOM sbom;
+        try{
+            Deserializer d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
+            sbom = d.readFromString(sbomFile.get().getContents());
+        } catch (JsonProcessingException e ){
+            return new ResponseEntity<>("Failed to deserialize SBOM content, may be an unsupported format", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e){
+            return new ResponseEntity<>("Deserialization Error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // Log
+        LOGGER.info(urlMsg + " - File: " + sbomFile.get().getFileName());
+
+        return Utils.encodeResponse(sbom);
+    }
+
+
+    /**
      * USAGE. Send DELETE request to /delete with a URL parameter id to get the contents of the SBOM with the specified
      * ID.
      *
@@ -185,7 +239,7 @@ public class SVIPApiController {
      * @return The ID of the deleted file.
      */
     @DeleteMapping("/delete")
-    public ResponseEntity<Long> delete(@RequestParam("id") long id) {
+    public ResponseEntity<Long> delete(@RequestParam("id") Long id) {
         // Get SBOM to be deleted
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
