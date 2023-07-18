@@ -1,6 +1,10 @@
 package org.svip.sbom.model.shared.metadata;
 
+import org.svip.sbomanalysis.comparison.conflicts.Comparable;
+import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -9,7 +13,7 @@ import java.util.Map;
  *
  * @author Derek Garcia
  */
-public class CreationTool {
+public class CreationTool implements Comparable {
     private String vendor;
     private String name;
     private String version;
@@ -86,4 +90,38 @@ public class CreationTool {
     }
 
 
+    @Override
+    public List<Conflict> compare(Comparable o) {
+        return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        // Test if correct class
+        if (o == null || getClass() != o.getClass()) return false;
+        CreationTool other = (CreationTool) o;
+
+        // todo more lax comparison like Contact?
+
+        // Check if vendor equivalent
+        if(!this.vendor.equals(other.getVendor()))
+            return false;
+
+        // Check if name equivalent
+        if(!this.name.equals(other.getName()))
+            return false;
+
+        // Compare hashes
+        for(String alg : this.hashes.keySet()){
+            // Missing hash
+            if(!other.getHashes().containsKey(alg))
+                return false;
+            // Same hash alg, different values
+            if(!other.getHashes().get(alg).equals(this.hashes.get(alg)))
+                return false;
+        }
+
+        // All checks pass
+        return true;
+    }
 }
