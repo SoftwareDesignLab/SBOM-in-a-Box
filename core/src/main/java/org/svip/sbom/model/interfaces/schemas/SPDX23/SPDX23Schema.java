@@ -28,8 +28,10 @@ public interface SPDX23Schema extends SBOM {
     String getSPDXLicenseListVersion();
 
     /**
-     * @param other
-     * @return component conflicts
+     * Compare a SPDX 2.3 SBOM against another SPDX 2.3 SBOM Metadata
+     *
+     * @param other other SPDX 2.3 SBOM
+     * @return list of conflicts
      */
     List<Conflict> compare(SPDX23SBOM other);
 }
