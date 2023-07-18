@@ -1,5 +1,6 @@
 package org.svip.sbom.model.shared.metadata;
 
+import org.svip.sbomanalysis.comparison.conflicts.Comparable;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
 
@@ -172,7 +173,6 @@ public class CreationData {
         // Compare licenses
         // todo dif between this and sbom licenses?
         cf.compareStringSets("Creation Data: Licenses", LICENSE_MISMATCH, this.licenses, other.getLicenses());
-
 
 
         // todo
