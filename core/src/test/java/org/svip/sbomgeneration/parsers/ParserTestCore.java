@@ -6,7 +6,7 @@ import org.svip.utils.VirtualPath;
 import java.util.Map;
 
 public abstract class ParserTestCore<T extends Parser> {
-    protected static final String TEST_DATA_PATH = "src/test/java/org/svip/sbomfactory/parsers/TestData/";
+    protected static final String TEST_DATA_PATH = "src/test/java/org/svip/sbomgeneration/parsers/TestData/";
     protected T PARSER;
 
     // TODO: Docstring

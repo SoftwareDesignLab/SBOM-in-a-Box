@@ -23,7 +23,7 @@ public class RequirementsParserTest extends ParseDepFileTestCore {
      */
     protected RequirementsParserTest() throws IOException {
         super(new RequirementsParser(),
-        Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/parsers/TestData/Python/Absolute/requirements.txt")),
+        Files.readString(Paths.get(TEST_DATA_PATH + "Python/Absolute/requirements.txt")),
                 "Python/Absolute");
         }
 

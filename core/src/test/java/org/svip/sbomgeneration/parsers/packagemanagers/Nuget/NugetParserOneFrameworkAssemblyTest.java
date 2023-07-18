@@ -27,9 +27,8 @@ public class NugetParserOneFrameworkAssemblyTest extends ParseDepFileTestCore {
 
     protected NugetParserOneFrameworkAssemblyTest() throws IOException {
         super(new NugetParser(),
-                Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/" +
-                        "parsers/TestData/CSharp/Nuget/WithOneFrameworkAssembly.nuspec")),
-                "src/test/java/org/svip/sbomfactory/parsers/TestData/CSharp/Nuget");
+                Files.readString(Paths.get(TEST_DATA_PATH + "CSharp/Nuget/WithOneFrameworkAssembly.nuspec")),
+                TEST_DATA_PATH + "CSharp/Nuget");
     }
 
     @Test

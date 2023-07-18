@@ -19,8 +19,8 @@ public class NugetParserDependencyGroupsAndFrameworkAssembliesTest extends Parse
 
     protected NugetParserDependencyGroupsAndFrameworkAssembliesTest() throws IOException {
         super(new NugetParser(),
-                Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/parsers/TestData/CSharp/Nuget/WithDependencyGroups.nuspec")),
-                "src/test/java/org/svip/sbomfactory/parsers/TestData/CSharp/Nuget");
+                Files.readString(Paths.get(TEST_DATA_PATH + "CSharp/Nuget/WithDependencyGroups.nuspec")),
+                TEST_DATA_PATH + "CSharp/Nuget");
     }
 
     @Test

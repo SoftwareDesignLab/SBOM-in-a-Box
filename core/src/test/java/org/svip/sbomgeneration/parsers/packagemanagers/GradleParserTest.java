@@ -22,7 +22,7 @@ public class GradleParserTest extends ParseDepFileTestCore {
      */
     protected GradleParserTest() throws IOException {
         super(new GradleParser(),
-                Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/parsers/TestData/Java/build.gradle")),
+                Files.readString(Paths.get(TEST_DATA_PATH + "Java/build.gradle")),
                 "Java");
     }
 

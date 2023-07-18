@@ -23,9 +23,8 @@ public class NugetParserNoDependenciesTest extends ParseDepFileTestCore {
 
     protected NugetParserNoDependenciesTest() throws IOException {
         super(new NugetParser(),
-                Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/" +
-                        "parsers/TestData/CSharp/Nuget/NoDependencies.nuspec")),
-                "src/test/java/org/svip/sbomfactory/parsers/TestData/CSharp/Nuget");
+                Files.readString(Paths.get(TEST_DATA_PATH + "CSharp/Nuget/NoDependencies.nuspec")),
+                TEST_DATA_PATH + "CSharp/Nuget");
     }
 
     @Test

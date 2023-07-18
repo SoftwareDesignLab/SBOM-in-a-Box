@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CondaParserTest extends ParseDepFileTestCore{
     protected CondaParserTest() throws IOException {
         super(new CondaParser(),
-                Files.readString(Paths.get("src/test/java/org/svip/sbomfactory/parsers/TestData/Conda/realData/environment.yaml")),
+                Files.readString(Paths.get(TEST_DATA_PATH + "Conda/realData/environment.yaml")),
                 "Conda/realData");
     }
 
