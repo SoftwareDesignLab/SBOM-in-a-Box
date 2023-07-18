@@ -19,15 +19,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Utility class for SBOM conversion functionality
+ *
+ * @author Juan Francisco Patino
+ */
 public class Converter {
 
-    private static SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
-    private static SVIPComponentBuilder compBuilder = new SVIPComponentBuilder();
-
-    public Converter(){
-        builder = new SVIPSBOMBuilder();
-        compBuilder = new SVIPComponentBuilder();
-    }
+    private static final SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
+    private static final SVIPComponentBuilder compBuilder = new SVIPComponentBuilder();
 
     /**
      * Convert an SBOM to a desired schema
