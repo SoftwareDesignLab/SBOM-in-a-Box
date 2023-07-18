@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-public class ConvertFromAPITest extends APITest{
+public class ConvertFromAPITest extends APITest {
     private final Map<Long, SBOMFile> testMap;
     private static final Logger LOGGER = LoggerFactory.getLogger(SVIPApiController.class);
 
@@ -32,7 +32,7 @@ public class ConvertFromAPITest extends APITest{
      */
     @Test
     @DisplayName("Invalid format test")
-    public void invalidSchemaAndFormatTest(){
+    public void invalidSchemaAndFormatTest() {
         setupMockRepository();
 
         assertEquals(HttpStatus.BAD_REQUEST, controller.convert(0L, "123", "JSON", true).
@@ -47,7 +47,7 @@ public class ConvertFromAPITest extends APITest{
      */
     @Test
     @DisplayName("Convert to CDX tag value test")
-    public void CDXTagValueTest(){
+    public void CDXTagValueTest() {
         setupMockRepository();
 
         assertEquals(HttpStatus.BAD_REQUEST, controller.convert(0L, "CDX14", "TAGVALUE", true).
@@ -59,17 +59,17 @@ public class ConvertFromAPITest extends APITest{
      */
     @Test
     @DisplayName("Convert, then convert back to original schema and format")
-    public void convertTest(){
+    public void convertTest() {
 
         setupMockRepository();
 
         String[] schemas = {"CDX14", "SPDX23"};
         String[] formats = {"JSON", "TAGVALUE"};
 
-        for (String convertToSchema: schemas
-             ) {
-            for (String convertToFormat: formats
-                 ) {
+        for (String convertToSchema : schemas
+        ) {
+            for (String convertToFormat : formats
+            ) {
                 for (Long id : testMap.keySet()) {
 
                     // retrieve test SBOM and assume schema
@@ -79,13 +79,12 @@ public class ConvertFromAPITest extends APITest{
                     // check if test is valid
                     if (Utils.convertTestController(convertToSchema, convertToFormat, id, thisSchema, testMap, sbom))
                         continue;
-                    int x = 0;
 
                     // test conversion to schema and format
                     LOGGER.info("ID: " + id + " Converting " + thisSchema.name() + " --> " + convertToSchema);
                     LOGGER.info("From             " + ((sbom.getFileName()).contains("json")
                             ? "JSON" : "TAGVALUE") + " --> " + convertToFormat);
-                    ResponseEntity<String> response = controller.convert(id, convertToSchema, convertToFormat,true);
+                    ResponseEntity<String> response = controller.convert(id, convertToSchema, convertToFormat, true);
                     String responseBody = response.getBody();
 
                     // check if OK
@@ -93,34 +92,33 @@ public class ConvertFromAPITest extends APITest{
                     assertNotNull(responseBody);
 
                     // assert we can convert again
-                    try{
+                    try {
 
                         // this test in particular takes several minutes, it passes
-                        if(id == 6 && thisSchema == SerializerFactory.Schema.CDX14 && convertToFormat.equals("TAGVALUE")){
-                            LOGGER.info( "Reconversion ignored for the sake of time.\n-------------\n");
+                        if (id == 6 && thisSchema == SerializerFactory.Schema.CDX14 && convertToFormat.equals("TAGVALUE")) {
+                            LOGGER.info("Reconversion ignored for the sake of time.\n-------------\n");
                             continue;
                         }
 
                         String originalFormat = Utils.assumeFormatFromDocument(sbom);
 
                         assertEquals("", Converter.convert(new SBOMFile("convertBack." +
-                        (originalFormat.equals("TAGVALUE") ? "json" : "spdx") ,
+                                (originalFormat.equals("TAGVALUE") ? "json" : "spdx"),
 
-                            responseBody), thisSchema.name(), originalFormat).values().toArray()[0]);
-                        LOGGER.info( "Reconversion successful!");
+                                responseBody), thisSchema.name(), originalFormat).values().toArray()[0]);
+                        LOGGER.info("Reconversion successful!");
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
 
                         LOGGER.error("Cannot reconvert: " + e.getMessage());
                         fail();
 
                     }
-                    LOGGER.info( "\n-------------\n");
+                    LOGGER.info("\n-------------\n");
                 }
             }
         }
     }
-
 
     /**
      * Reused code to set up mock repository for tests
@@ -128,6 +126,5 @@ public class ConvertFromAPITest extends APITest{
     private void setupMockRepository() {
         when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
     }
-
 
 }

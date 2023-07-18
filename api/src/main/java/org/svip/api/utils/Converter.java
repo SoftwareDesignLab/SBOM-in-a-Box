@@ -31,11 +31,12 @@ public class Converter {
 
     /**
      * Convert an SBOM to a desired schema
+     *
      * @param schemaString the desired schema
      * @param formatString the desired format
      * @return converted SBOMFile and error message, if any
      */
-    public static HashMap<SBOMFile, String> convert(SBOMFile sbom, String schemaString, String formatString){
+    public static HashMap<SBOMFile, String> convert(SBOMFile sbom, String schemaString, String formatString) {
 
         HashMap<SBOMFile, String> ret = new HashMap<>();
 
@@ -43,33 +44,33 @@ public class Converter {
         Deserializer d;
         org.svip.sbom.model.interfaces.generics.SBOM deserialized;
 
-        try{
+        try {
             d = SerializerFactory.createDeserializer(sbom.getContents());
             deserialized = d.readFromString(sbom.getContents());
-        }catch (Exception e){
+        } catch (Exception e) {
             return Utils.internalSerializerError(ret,
                     ": " + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()),
                     "DURING DESERIALIZATION");
         }
-        if(deserialized == null)
-            return Utils.internalSerializerError(ret, "","DURING DESERIALIZATION");
+        if (deserialized == null)
+            return Utils.internalSerializerError(ret, "", "DURING DESERIALIZATION");
 
         // ensure schema is valid
         SerializerFactory.Schema schema;
-        try{
+        try {
             schema = SerializerFactory.Schema.valueOf(schemaString);
-        }catch (Exception e){
-            ret.put(new SBOMFile("",""), "SCHEMA " + schemaString + " NOT VALID: " +
+        } catch (Exception e) {
+            ret.put(new SBOMFile("", ""), "SCHEMA " + schemaString + " NOT VALID: " +
                     e.getMessage());
             return ret;
         }
 
         // ensure format is valid
         SerializerFactory.Format format;
-        try{
+        try {
             format = SerializerFactory.Format.valueOf(formatString);
-        }catch (Exception e){
-            ret.put(new SBOMFile("",""), "FORMAT " + formatString + " NOT VALID: " +
+        } catch (Exception e) {
+            ret.put(new SBOMFile("", ""), "FORMAT " + formatString + " NOT VALID: " +
                     e.getMessage());
             return ret;
         }
@@ -77,7 +78,7 @@ public class Converter {
         // serialize into desired format
         Serializer s;
         String serialized = null;
-        try{
+        try {
             // serialize into requested schema
 
             s = SerializerFactory.createSerializer(schema, format, true);
@@ -89,10 +90,11 @@ public class Converter {
             builder.setUID(deserialized.getUID());
             builder.setVersion(deserialized.getVersion());
 
-            if(deserialized.getLicenses() != null )
-                for (String license: deserialized.getLicenses()) {
-                    if(license == null)continue;
-                    builder.addLicense(license);}
+            if (deserialized.getLicenses() != null)
+                for (String license : deserialized.getLicenses()) {
+                    if (license == null) continue;
+                    builder.addLicense(license);
+                }
 
             builder.setCreationData(deserialized.getCreationData());
             builder.setDocumentComment(deserialized.getDocumentComment());
@@ -100,48 +102,43 @@ public class Converter {
             buildSVIPComponentObject(deserialized.getRootComponent(), originalSchema);
             builder.setRootComponent(compBuilder.buildAndFlush());
 
-            if(deserialized.getComponents() != null )
-                for (Component c: deserialized.getComponents()
+            if (deserialized.getComponents() != null)
+                for (Component c : deserialized.getComponents()
                 ) {
-                    if(c == null)
+                    if (c == null)
                         continue;
                     buildSVIPComponentObject(c, originalSchema);
                     builder.addSPDX23Component(compBuilder.buildAndFlush());
                 }
 
-            if(deserialized.getRelationships() != null)
-                for(Map.Entry<String, Set<Relationship>> entry: deserialized.getRelationships().entrySet())
-                    for (Relationship r: entry.getValue())
+            if (deserialized.getRelationships() != null)
+                for (Map.Entry<String, Set<Relationship>> entry : deserialized.getRelationships().entrySet())
+                    for (Relationship r : entry.getValue())
                         builder.addRelationship(entry.getKey(), r);
 
-            if(deserialized.getExternalReferences() != null)
-                for (ExternalReference e: deserialized.getExternalReferences())
+            if (deserialized.getExternalReferences() != null)
+                for (ExternalReference e : deserialized.getExternalReferences())
                     builder.addExternalReference(e);
+            SVIPSBOM built = builder.Build();
 
             // schema specific adjustments
-            switch (schema){
-                case SPDX23 ->{
-                    SVIPSBOM built = builder.Build();
-                    serialized = s.writeToString(built).replaceFirst("SPDX-null",
-                            "SPDX-2.3");
-                }
-                case CDX14 -> {
+            switch (schema) {
+                case SPDX23 -> serialized = s.writeToString(built).replaceFirst("SPDX-null",
+                        "SPDX-2.3");
 
-                    SVIPSBOM built = builder.Build();
-                    serialized = s.writeToString(built).replaceFirst("\"bomFormat\" : \"SPDX\"",
-                            "\"bomFormat\" : \"CycloneDX\"").
-                            replaceFirst("specVersion\" : null",
-                                    "specVersion\" : \"1.4\"");;
-                }
+                case CDX14 -> serialized = s.writeToString(built).replaceFirst("\"bomFormat\" : \"SPDX\"",
+                                "\"bomFormat\" : \"CycloneDX\"").
+                        replaceFirst("specVersion\" : null",
+                                "specVersion\" : \"1.4\"");
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             return Utils.internalSerializerError(ret,
                     ": " + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()),
                     "DURING SERIALIZATION");
         }
-        if(serialized == null){
-            return Utils.internalSerializerError(ret, "","DURING SERIALIZATION");
+        if (serialized == null) {
+            return Utils.internalSerializerError(ret, "", "DURING SERIALIZATION");
         }
 
         ret.put(new SBOMFile("SUCCESS", serialized), "");
@@ -151,12 +148,13 @@ public class Converter {
 
     /**
      * Build an SVIP Component object
-     * @param component original uncasted component
+     *
+     * @param component      original uncasted component
      * @param originalSchema the original Schema we are converting from
      */
     public static void buildSVIPComponentObject(Component component,
-                                                 SerializerFactory.Schema originalSchema) {
-        if(component == null)
+                                                SerializerFactory.Schema originalSchema) {
+        if (component == null)
             return;
         compBuilder.setType(component.getType());
         compBuilder.setUID(component.getUID());
@@ -165,12 +163,12 @@ public class Converter {
         compBuilder.setLicenses(component.getLicenses());
         compBuilder.setCopyright(component.getCopyright());
 
-        if(component.getHashes() != null )
-            for(Map.Entry<String, String> entry: component.getHashes().entrySet())
+        if (component.getHashes() != null)
+            for (Map.Entry<String, String> entry : component.getHashes().entrySet())
                 compBuilder.addHash(entry.getKey(), entry.getValue());
 
         // schema specific
-        switch (originalSchema){
+        switch (originalSchema) {
             case CDX14 -> {
 
                 CDX14ComponentObject cdx14ComponentObject = (CDX14ComponentObject) component;
@@ -203,11 +201,10 @@ public class Converter {
             case SPDX23 -> {
 
                 // is this a package or file object?
-                if(component instanceof SPDX23PackageObject spdx23PackageObject){
+                if (component instanceof SPDX23PackageObject spdx23PackageObject) {
                     compBuilder.setComment(spdx23PackageObject.getComment());
                     compBuilder.setAttributionText(spdx23PackageObject.getAttributionText());
-                }
-                else if(component instanceof SPDX23FileObject spdx23FileObject){
+                } else if (component instanceof SPDX23FileObject spdx23FileObject) {
                     compBuilder.setComment(spdx23FileObject.getComment());
                     compBuilder.setAttributionText(spdx23FileObject.getAttributionText());
                     compBuilder.setFileNotice(spdx23FileObject.getFileNotice());
