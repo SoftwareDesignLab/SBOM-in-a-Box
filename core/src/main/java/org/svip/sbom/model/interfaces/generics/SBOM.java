@@ -77,9 +77,12 @@ public interface SBOM {
      * @return External references from this SBOM
      */
     Set<ExternalReference> getExternalReferences();
+
     /**
-     * @param other
-     * @return component conflicts
+     * Compare a Generic SBOM against another SBOM Metadata
+     *
+     * @param other Other SBOM to compare against
+     * @return List of Metadata of conflicts
      */
     List<Conflict> compare(SBOM other);
 }

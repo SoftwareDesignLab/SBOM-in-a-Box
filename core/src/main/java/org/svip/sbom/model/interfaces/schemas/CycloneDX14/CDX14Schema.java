@@ -22,9 +22,12 @@ public interface CDX14Schema extends SBOM {
     + getCompositions(): Set<Composition>
     + getSignature(): Signature
      */
+
     /**
-     * @param other
-     * @return component conflicts
+     * Compare a CycloneDX 1.4 SBOM against another CycloneDX 1.4 SBOM Metadata
+     *
+     * @param other other CycloneDX 1.4 SBOM
+     * @return list of conflict
      */
     List<Conflict> compare(CDX14SBOM other);
 }
