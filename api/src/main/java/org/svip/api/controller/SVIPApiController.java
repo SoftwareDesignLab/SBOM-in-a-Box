@@ -329,7 +329,7 @@ public class SVIPApiController {
         return Utils.encodeResponse(converted.getContents());
     }
 
-    /** USAGE Send POST request to /qa with a URL parameter id to conduct a quality assessment on the SBOM with
+    /** USAGE Send GET request to /qa with a URL parameter id to conduct a quality assessment on the SBOM with
      * the specified ID.
      *
      * The API will respond with an HTTP 200 and a JSON string of the Quality Report (if SBOM was found).
@@ -337,7 +337,7 @@ public class SVIPApiController {
      * @param id The id of the SBOM contents to retrieve.
      * @return A JSON string of the Quality Report file.
      */
-    @PostMapping("/sboms/qa")
+    @GetMapping("/sboms/qa")
     public ResponseEntity<String> qa(@RequestParam("id") long id) throws IOException {
 
         SBOM sbom;
