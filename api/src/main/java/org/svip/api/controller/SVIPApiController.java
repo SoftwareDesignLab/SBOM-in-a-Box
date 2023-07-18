@@ -318,19 +318,19 @@ public class SVIPApiController {
     /**
      * USAGE. Send GENERATE request to /generate an SBOM from source file(s)
      *
+     * @param projectName of project to be converted to SBOM
      * @param files from project source
      * @param schema to convert to
      * @param format to convert to
      * @return generated SBOM
      */
-
     @GetMapping("/generate")
     public ResponseEntity<String> generate(@RequestBody SBOMFile[] files,
-                                           @RequestParam("name") String name,
+                                           @RequestParam("name") String projectName,
                                            @RequestParam("schema") SerializerFactory.Schema schema, // todo implement this schema + format params in /convert
                                            @RequestParam("format") SerializerFactory.Format format) throws JsonProcessingException {
 
-        ParserController parserController = new ParserController(name, new HashMap<>());
+        ParserController parserController = new ParserController(projectName, new HashMap<>());
 
         for (SBOMFile f: files
              ) {
