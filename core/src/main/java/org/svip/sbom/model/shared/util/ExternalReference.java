@@ -1,7 +1,16 @@
 package org.svip.sbom.model.shared.util;
 
+import org.svip.sbom.model.shared.metadata.CreationData;
+import org.svip.sbomanalysis.comparison.conflicts.Comparable;
+import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISC_MISMATCH;
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.TIMESTAMP_MISMATCH;
 
 /**
  * File: ExternalReference.java
@@ -9,9 +18,10 @@ import java.util.Map;
  *
  * @author Derek Garcia
  */
-public class ExternalReference {
+public class ExternalReference implements Comparable {
 
     private final String url;
+    private String comment;
     private final String type;
     private String category;
     private final Map<String, String> hashes = new HashMap<>();
@@ -49,6 +59,13 @@ public class ExternalReference {
         this.hashes.put(algorithm, hash);
     }
 
+    /**
+     * @param comment Reference comment
+     */
+    public void setComment(String comment){
+        this.comment = comment;
+    }
+
     ///
     /// getters
     ///
@@ -79,5 +96,18 @@ public class ExternalReference {
      */
     public Map<String, String> getHashes() {
         return hashes;
+    }
+
+
+    @Override
+    public List<Conflict> compare(Comparable o) {
+        // Don't compare if not instance of same object
+        if(!(o instanceof ExternalReference other))
+            return null;
+
+        ConflictFactory cf = new ConflictFactory();
+
+        // Compare single String fields
+        return cf.getConflicts();
     }
 }
