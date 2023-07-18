@@ -1,6 +1,7 @@
 package org.svip.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,24 @@ import org.svip.api.utils.Utils;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbomgeneration.parsers.ParserController;
+import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
+import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.generics.QAPipeline;
+import org.svip.sbomanalysis.qualityattributes.pipelines.schemas.CycloneDX14.CDX14Pipeline;
+import org.svip.sbomanalysis.qualityattributes.pipelines.schemas.SPDX23.SPDX23Pipeline;
 import org.svip.sbomgeneration.serializers.SerializerFactory;
+import org.svip.sbomgeneration.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.sbomgeneration.serializers.deserializer.Deserializer;
 import org.svip.sbomgeneration.serializers.serializer.Serializer;
 import org.svip.utils.VirtualPath;
 
 import java.util.Arrays;
+import org.svip.sbomgeneration.serializers.deserializer.SPDX23JSONDeserializer;
+import org.svip.sbomgeneration.serializers.deserializer.SPDX23TagValueDeserializer;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -315,6 +328,62 @@ public class SVIPApiController {
 
         return Utils.encodeResponse(converted.getContents());
     }
+
+    /** USAGE Send POST request to /qa with a URL parameter id to conduct a quality assessment on the SBOM with
+     * the specified ID.
+     *
+     * The API will respond with an HTTP 200 and a JSON string of the Quality Report (if SBOM was found).
+     *
+     * @param id The id of the SBOM contents to retrieve.
+     * @return A JSON string of the Quality Report file.
+     */
+    @PostMapping("/sboms/qa")
+    public ResponseEntity<String> qa(@RequestParam("id") long id) throws IOException {
+
+        SBOM sbom;
+        Deserializer d;
+        QAPipeline qaPipeline;
+
+        // Get the SBOM to be tested
+        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
+
+        // Check if it exists
+        if (sbomFile.isEmpty()) {
+            LOGGER.info("QA /svip/sboms/qa?id=" + id + " - FILE NOT FOUND");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Deserialize SBOM into JSON Object
+        try{
+            d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
+            sbom = d.readFromString(sbomFile.get().getContents());
+        } catch (JsonProcessingException e ){
+            return new ResponseEntity<>("Failed to deserialize SBOM content, may be an unsupported format", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e){
+            return new ResponseEntity<>("Deserialization Error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // Determine what QA Pipeline to use based on
+        if (d.getClass().equals(CDX14JSONDeserializer.class)) {
+            qaPipeline = new CDX14Pipeline();
+        } else if (d.getClass().equals(SPDX23TagValueDeserializer.class) || d.getClass().equals(SPDX23JSONDeserializer.class)) {
+            qaPipeline = new SPDX23Pipeline();
+        } else {
+            return new ResponseEntity<>("Deserialization Error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // QA test SBOM
+        QualityReport qualityReport = qaPipeline.process(String.valueOf(id), sbom);
+
+        // Log
+        LOGGER.info("QA /svip/sboms/?id=" + id + " - TESTED: " + sbomFile.get().getFileName());
+
+        // Return Quality Report as JSON to Frontend
+        ObjectMapper mapper = new ObjectMapper();
+        return new ResponseEntity<>(mapper.writeValueAsString(qualityReport), HttpStatus.OK);
+    }
+
+    //#region Deprecated Endpoints
 
     /**
      * USAGE. Send GENERATE request to /generate an SBOM from source file(s)
