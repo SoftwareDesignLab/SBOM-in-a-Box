@@ -1,7 +1,7 @@
 package org.svip.sbom.factory.objects.CycloneDX14;
 
-import org.svip.sbom.builder.objects.schemas.CDX14.CDX14PackageBuilder;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
+import org.svip.sbom.builder.objects.schemas.CDX14.CDX14PackageBuilder;
 import org.svip.sbom.factory.interfaces.SBOMBuilderFactory;
 
 /**

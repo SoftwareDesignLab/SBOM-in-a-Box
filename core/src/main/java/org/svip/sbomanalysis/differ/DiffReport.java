@@ -9,7 +9,6 @@ import org.svip.sbomanalysis.comparison.conflicts.ComponentConflictType;
 import org.svip.sbomanalysis.comparison.conflicts.SBOMConflict;
 import org.svip.sbomanalysis.comparison.conflicts.SBOMConflictType;
 
-
 import java.util.*;
 
 import static org.svip.sbomanalysis.comparison.conflicts.ComponentConflictType.*;

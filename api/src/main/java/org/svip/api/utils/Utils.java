@@ -8,7 +8,10 @@ import org.svip.api.controller.SVIPApiController;
 import org.svip.api.model.SBOMFile;
 import org.svip.sbomgeneration.serializers.SerializerFactory;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import static org.svip.sbomgeneration.serializers.SerializerFactory.Format.TAGVALUE;
 

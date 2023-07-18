@@ -1,10 +1,10 @@
 package org.svip.sbomgeneration.serializers.serializer;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.svip.sbom.factory.objects.SVIPSBOMBuilderFactory;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
-import org.svip.sbom.factory.objects.SVIPSBOMComponentFactory;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
+import org.svip.sbom.factory.objects.SVIPSBOMBuilderFactory;
+import org.svip.sbom.factory.objects.SVIPSBOMComponentFactory;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.Relationship;
@@ -15,8 +15,8 @@ import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.utils.Debug;
 import org.svip.sbomgeneration.serializers.Metadata;
+import org.svip.utils.Debug;
 
 import java.util.function.Function;
 

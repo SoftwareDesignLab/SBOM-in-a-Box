@@ -20,7 +20,9 @@ import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbomgeneration.serializers.Metadata;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

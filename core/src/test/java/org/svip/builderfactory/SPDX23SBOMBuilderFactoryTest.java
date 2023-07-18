@@ -1,9 +1,9 @@
 package org.svip.builderfactory;
 
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.builder.interfaces.schemas.SPDX23.SPDX23SBOMBuilder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23FileBuilder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23PackageBuilder;
-import org.svip.sbom.builder.interfaces.schemas.SPDX23.SPDX23SBOMBuilder;
 import org.svip.sbom.factory.objects.SPDX23.SPDX23SBOMBuilderFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;

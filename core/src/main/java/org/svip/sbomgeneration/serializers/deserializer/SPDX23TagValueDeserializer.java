@@ -1,12 +1,12 @@
 package org.svip.sbomgeneration.serializers.deserializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.svip.sbom.factory.objects.SPDX23.SPDX23SBOMBuilderFactory;
+import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23FileBuilder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23PackageBuilder;
 import org.svip.sbom.factory.objects.SPDX23.SPDX23FileBuilderFactory;
 import org.svip.sbom.factory.objects.SPDX23.SPDX23PackageBuilderFactory;
-import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
+import org.svip.sbom.factory.objects.SPDX23.SPDX23SBOMBuilderFactory;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;

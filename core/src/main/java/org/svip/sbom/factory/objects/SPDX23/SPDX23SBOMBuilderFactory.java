@@ -1,8 +1,8 @@
 package org.svip.sbom.factory.objects.SPDX23;
 
+import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23FileBuilder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23PackageBuilder;
-import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.factory.interfaces.SBOMBuilderFactory;
 
 /**

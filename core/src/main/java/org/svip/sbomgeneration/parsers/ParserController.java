@@ -1,8 +1,8 @@
 package org.svip.sbomgeneration.parsers;
 
-import org.svip.sbom.factory.objects.SVIPSBOMBuilderFactory;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
+import org.svip.sbom.factory.objects.SVIPSBOMBuilderFactory;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.metadata.CreationData;
