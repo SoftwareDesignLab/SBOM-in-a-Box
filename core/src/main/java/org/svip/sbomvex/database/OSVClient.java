@@ -1,9 +1,13 @@
 package org.svip.sbomvex.database;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 import org.svip.sbomvex.database.interfaces.VulnerabilityDBClient;
 import org.svip.sbomvex.model.VEX;
+import org.svip.sbomvex.model.VEXType;
 import org.svip.sbomvex.vexstatement.Product;
 import org.svip.sbomvex.vexstatement.VEXStatement;
 import org.svip.sbomvex.vexstatement.status.Justification;
@@ -15,6 +19,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * file: OSVClient.java
@@ -55,12 +61,21 @@ public class OSVClient implements VulnerabilityDBClient {
                         .uri(URI.create(getVulnsByID)).GET().build();
             }
             // send the response and get the APIs response
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            return response.body();
+            HttpResponse<String> apiResponse = httpClient.send(request,
+                    HttpResponse.BodyHandlers.ofString());
+            String responseBody = apiResponse.body();
+
+            if(apiResponse.statusCode() == 200){
+                ObjectMapper objectMapper = new ObjectMapper();
+                return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(responseBody);
+            }
+            else{
+                return null;
+            }
         }
         // error with the HttpRequest occurs
         catch (Exception e) {
-            throw new RuntimeException(e);
+            return null;
         }
     }
 
@@ -73,9 +88,9 @@ public class OSVClient implements VulnerabilityDBClient {
      * @return the response from the OSV API request
      */
     public String getOSVByNameVersionPost(String componentName, String componentVersion) {
-        String jsonBody = "{\"package\": {\"name\": \"" +
-                componentName + "\"}, \"version\": " +
-                componentVersion + "\"}";
+        String jsonBody = "{\"version\": \"" + componentVersion +
+        "\", \"package\": {\"name\": \"" +
+                componentName + "\"}}";
         return getOSVResponse(jsonBody, "post");
     }
 
@@ -89,10 +104,10 @@ public class OSVClient implements VulnerabilityDBClient {
      */
     public String getOSVByNameVersionEcosystemPost(
             String componentName, String componentVersion, String ecosystem) {
-        String jsonBody = "{\"package\": {\"name\": \"" +
+        String jsonBody = "{\"version\": \"" +
+                componentVersion + "\", \"package\": {\"name\": \"" +
                 componentName + "\", \"ecosystem\": " +   "\"" +
-                ecosystem + "\"}, \"version\": " +
-                componentVersion + "\"} ";
+                ecosystem + "\"}}";
         return getOSVResponse(jsonBody, "post");
     }
 
@@ -113,8 +128,8 @@ public class OSVClient implements VulnerabilityDBClient {
      * @param commitString the commit string
      * @return the response from the OSV API request
      */
-    public String getOSVByCommitAsyncPost(String commitString) {
-        String jsonBody = "{\"commit\": " +
+    public String getOSVByCommitPost(String commitString) {
+        String jsonBody = "{\"commit\": \"" +
                 commitString + "\"} ";
         return getOSVResponse(jsonBody, "post");
     }
@@ -131,29 +146,64 @@ public class OSVClient implements VulnerabilityDBClient {
 
     /**
      * Generate a new VEX document
-     * @param sbomPackage the SBOMPackage to create the VEX Document
+     * @param sbom the SBOM to create the VEX Document
      * @return a new VEX object
      */
-    //TODO implement
     @Override
-    public VEX generateVEX(SBOMPackage sbomPackage) {
+    public VEX generateVEX(SBOM sbom) {
         // create vex builder to create VEX document
         VEX.Builder vexBuilder = new VEX.Builder();
 
         // initially get the necessary fields for the VEX Document builder
         String creationTime = String.valueOf(java.time.LocalDateTime.now());
-        // TODO how to determine these fields?
-//        vexBuilder.setVEXIdentifier();
-//        vexBuilder.setOriginType();
-//        vexBuilder.setSpecVersion();
+        vexBuilder.setVEXIdentifier(sbom.getName());
+
+        // TODO better way to determine origin type and spec version?
+        String sbomFormat = sbom.getFormat().toLowerCase();
+        if(sbomFormat.contains("cyclonedx")){
+            vexBuilder.setOriginType(VEXType.CYCLONE_DX);
+            vexBuilder.setSpecVersion("1.4");
+        }
+        else{
+            vexBuilder.setOriginType(VEXType.CSAF);
+            vexBuilder.setSpecVersion("2.0");
+        }
         vexBuilder.setDocVersion("1.0");
         vexBuilder.setTimeFirstIssued(creationTime);
         vexBuilder.setTimeLastUpdated(creationTime);
 
-        //TODO loop through response and get content to build VEXStatements
+        for(Component c : sbom.getComponents()){
+            String jsonResponse;
+            // cast to SBOMPackage to check for purls
+            SBOMPackage component = (SBOMPackage) c;
+            Set<String> purls = component.getPURLs();
+
+            // if component has no purls, construct API request with
+            // name and version
+            if(purls.isEmpty()){
+                String name = component.getName();
+                String version = component.getVersion();
+                jsonResponse = getOSVByNameVersionPost(name, version);
+            }
+            else{
+                ArrayList<String> purlList = new ArrayList<>(purls);
+                String purlString = purlList.get(0);
+                jsonResponse = getOSVByPURLPost(purlString);
+            }
+
+            // if jsonResponse did not have an error and is not empty,
+            // create a vex statement for every vulnerability in response
+            if(jsonResponse != null && !jsonResponse.equals("{}")){
+                //TODO extract info from response to get VEX Statements
 
 
-        return null;
+                VEXStatement vexStatement = generateVEXStatement();
+                vexBuilder.addVEXStatement(vexStatement);
+            }
+
+        }
+
+        return vexBuilder.build();
     }
 
 
