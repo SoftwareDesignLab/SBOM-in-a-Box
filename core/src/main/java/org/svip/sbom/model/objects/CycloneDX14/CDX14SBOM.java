@@ -212,7 +212,6 @@ public class CDX14SBOM implements CDX14Schema {
         this.components = components;
         this.relationships = relationships;
         this.externalReferences = externalReferences;
-
     }
 
     /**
@@ -240,7 +239,6 @@ public class CDX14SBOM implements CDX14Schema {
         // Compare Creation Data
         cf.addConflicts(this.creationData.compare(other.getCreationData()));
 
-
         // todo
         // compare relationships
         // compare Vulns
@@ -257,47 +255,15 @@ public class CDX14SBOM implements CDX14Schema {
      */
     @Override
     public List<Conflict> compare(CDX14SBOM other) {
-//        // CDX - CDX Comparison
-//        ArrayList<Conflict> conflicts = new ArrayList<>();
-//        // NAME
-//        if (this.name != null ^ other.getName() != null) {
-//            conflicts.add(new MissingConflict("name", this.name, other.getName()));
-//        } else if (!Objects.equals(this.name, other.getName()) && this.name != null) {
-//            conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
-//        }
-//        // VERSION
-//        if (this.version != null ^ other.getVersion() != null) {
-//            conflicts.add(new MissingConflict("version", this.version, other.getVersion()));
-//        } else if (!Objects.equals(this.version, other.getVersion()) && this.version != null) {
-//            conflicts.add(new MismatchConflict("version", this.version, other.getVersion(), VERSION_MISMATCH));
-//        }
-//        // SPECVERSION
-//        if (this.specVersion != null ^ other.getSpecVersion() != null) {
-//            conflicts.add(new MissingConflict("specVersion", this.specVersion, other.getSpecVersion()));
-//        } else if (!Objects.equals(this.specVersion, other.getSpecVersion()) && this.specVersion != null) {
-//            conflicts.add(new MismatchConflict("specVersion", this.specVersion, other.getSpecVersion(), SBOM_VERSION_MISMATCH));
-//        }
-//        // LICENSES
-//        if (this.licenses != null && other.getLicenses() != null) {
-//            if (!this.licenses.containsAll(other.getLicenses())) {
-//                conflicts.add(new MismatchConflict("license", this.licenses.toString(), other.getLicenses().toString(), LICENSE_MISMATCH));
-//            }
-//        } else if (this.licenses != null) {
-//            conflicts.add(new MissingConflict("license", this.licenses.toString(), null));
-//        } else if (other.getLicenses() != null) {
-//            conflicts.add(new MissingConflict("license", null, other.getLicenses().toString()));
-//        }
-//        // Creation data - includes timestamp, licenses
-//        if (this.creationData != null && other.getCreationData() != null) {
-//            // TIMESTAMP
-//            if (this.creationData.getCreationTime() != null ^ other.getCreationData().getCreationTime() != null) {
-//                conflicts.add(new MissingConflict("timestamp", this.creationData.getCreationTime(), other.getCreationData().getCreationTime()));
-//            } else if (!Objects.equals(this.creationData.getCreationTime(), other.getCreationData().getCreationTime()) && this.creationData.getCreationTime() != null) {
-//                conflicts.add(new MismatchConflict("timestamp", this.creationData.getCreationTime(), other.getCreationData().getCreationTime(), TIMESTAMP_MISMATCH));
-//            }
-//        }
-//        return conflicts.stream().toList();
-        compare((SBOM) other);
+        // CDX - CDX Comparison
+        ConflictFactory cf = new ConflictFactory();
+
+        // todo
+        // Services
+        // Compositions
+        // Signature
+
+        cf.addConflicts(compare((SBOM) other));
         return null;
     }
 }
