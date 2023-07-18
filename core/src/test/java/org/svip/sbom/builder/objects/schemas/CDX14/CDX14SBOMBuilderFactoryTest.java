@@ -1,4 +1,4 @@
-package org.svip.builderfactory;
+package org.svip.sbom.builder.objects.schemas.CDX14;
 
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.builder.interfaces.schemas.CycloneDX14.CDX14SBOMBuilder;

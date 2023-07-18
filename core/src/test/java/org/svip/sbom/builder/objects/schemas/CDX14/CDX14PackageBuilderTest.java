@@ -1,4 +1,4 @@
-package org.svip.builders.component;
+package org.svip.sbom.builder.objects.schemas.CDX14;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

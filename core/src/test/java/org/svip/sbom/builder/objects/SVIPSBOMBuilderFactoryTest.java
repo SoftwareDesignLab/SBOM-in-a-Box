@@ -1,4 +1,4 @@
-package org.svip.builderfactory;
+package org.svip.sbom.builder.objects;
 
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
