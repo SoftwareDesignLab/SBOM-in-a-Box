@@ -2,10 +2,13 @@ package org.svip.sbom.model.shared.metadata;
 
 import org.svip.sbomanalysis.comparison.conflicts.Comparable;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISC_MISMATCH;
 
 /**
  * File: CreationTool.java
@@ -92,7 +95,16 @@ public class CreationTool implements Comparable {
 
     @Override
     public List<Conflict> compare(Comparable o) {
-        return null;
+        // Don't compare if not instance of same object
+        if(!(o instanceof CreationTool other))
+            return null;
+
+        ConflictFactory cf = new ConflictFactory();
+        cf.addConflict("Tool Vendor", MISC_MISMATCH, this.vendor, other.getVendor());
+        cf.addConflict("Tool Name", MISC_MISMATCH, this.name, other.getName());
+        cf.addConflict("Tool Version", MISC_MISMATCH, this.version, other.getVendor());
+
+        return cf.getConflicts();
     }
 
     @Override
@@ -109,6 +121,10 @@ public class CreationTool implements Comparable {
 
         // Check if name equivalent
         if(!this.name.equals(other.getName()))
+            return false;
+
+        // Check if version equivalent
+        if(!this.version.equals(other.getVersion()))
             return false;
 
         // Compare hashes
