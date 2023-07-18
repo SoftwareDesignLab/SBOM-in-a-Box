@@ -11,6 +11,7 @@ import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
 
 import java.util.*;
 
@@ -248,18 +249,97 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
 
     }
 
+    /**
+     * Compare a SVIP SBOM against another SBOM Metadata
+     *
+     * @param other Other SBOM to compare against
+     * @return List of Metadata of conflicts
+     */
     @Override
     public List<Conflict> compare(SBOM other) {
-        return null;
+        // SVIP - OTHER Comparison
+        ConflictFactory cf = new ConflictFactory();
+
+        // Compare single String fields
+        cf.addConflict("Format", ORIGIN_FORMAT_MISMATCH, this.format, other.getFormat());
+        cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
+        cf.addConflict("UID", MISC_MISMATCH, this.uid, other.getUID());
+        cf.addConflict("Version", VERSION_MISMATCH, this.version, other.getVersion());
+        cf.addConflict("Spec Version", SCHEMA_VERSION_MISMATCH, this.specVersion, other.getSpecVersion());
+        cf.addConflict("Document Comment", MISC_MISMATCH, this.documentComment, other.getDocumentComment());
+
+        // Compare Licenses
+        cf.compareStringSets("License", LICENSE_MISMATCH, this.licenses, other.getLicenses());
+
+        // Compare Creation Data
+        cf.addConflicts(this.creationData.compare(other.getCreationData()));
+
+        // Comparable Sets
+        cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
+
+        // todo
+        // compare relationships
+        // compare Vulns
+
+        return cf.getConflicts();
     }
 
+    /**
+     * Compare a SVIP SBOM against another SPDX 2.3 SBOM Metadata
+     *
+     * @param other other SPDX 2.3 SBOM
+     * @return list of conflicts
+     */
     @Override
     public List<Conflict> compare(SPDX23SBOM other) {
-        return null;
+        // SVIP - SPDX Comparison
+
+        ConflictFactory cf = new ConflictFactory();
+        // Compare single String fields
+        cf.addConflict("SPDX License List Version", LICENSE_MISMATCH, this.SPDXLicenseListVersion, other.getSPDXLicenseListVersion());
+
+        // todo
+        // snippets, additional license info, annotation info
+
+        // Compare shared items
+        cf.addConflicts(compare((SBOM) other));
+
+        return cf.getConflicts();
     }
 
+
+    /**
+     * Compare a SVIP SBOM against another CycloneDX 1.4 SBOM Metadata
+     *
+     * @param other other CycloneDX 1.4 SBOM
+     * @return list of conflicts
+     */
     @Override
     public List<Conflict> compare(CDX14SBOM other) {
-        return null;
+        // SVIP - CDX Comparison
+        ConflictFactory cf = new ConflictFactory();
+
+        // Compare single String fields
+        cf.addConflict("Format", ORIGIN_FORMAT_MISMATCH, this.format, other.getFormat());
+        cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
+        cf.addConflict("UID", MISC_MISMATCH, this.uid, other.getUID());
+        cf.addConflict("Version", VERSION_MISMATCH, this.version, other.getVersion());
+        cf.addConflict("Spec Version", SCHEMA_VERSION_MISMATCH, this.specVersion, other.getSpecVersion());
+        cf.addConflict("Document Comment", MISC_MISMATCH, this.documentComment, other.getDocumentComment());
+
+        // Compare Licenses
+        cf.compareStringSets("License", LICENSE_MISMATCH, this.licenses, other.getLicenses());
+
+        // Compare Creation Data
+        cf.addConflicts(this.creationData.compare(other.getCreationData()));
+
+        // Comparable Sets
+        cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
+
+        // todo
+        // compare relationships
+        // compare Vulns
+
+        return cf.getConflicts();
     }
 }
