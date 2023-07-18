@@ -171,7 +171,7 @@ public class CreationData {
 
         // Compare licenses
         // todo dif between this and sbom licenses?
-        cf.compareSets("Creation Data: Licenses", LICENSE_MISMATCH, this.licenses, other.getLicenses());
+        cf.compareStringSets("Creation Data: Licenses", LICENSE_MISMATCH, this.licenses, other.getLicenses());
 
 
 

@@ -13,7 +13,6 @@ import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
 
@@ -301,7 +300,7 @@ public class CDX14ComponentObject implements CDX14Package {
         // HASHES
         if (this.hashes != null && other.getHashes() != null) {
             // TODO Should we compare keys, values or both?
-            cf.compareSets("Hash", HASH_MISMATCH, new HashSet<String>(this.hashes.values()), new HashSet<String>(other.getHashes().values()));
+            cf.compareStringSets("Hash", HASH_MISMATCH, new HashSet<String>(this.hashes.values()), new HashSet<String>(other.getHashes().values()));
         } // TODO not currently possible to add missing conflicts if Hashes is null/empty in one component and not null/empty in another component
         if (other instanceof SPDX23PackageObject) {
             // VERSION
@@ -321,9 +320,9 @@ public class CDX14ComponentObject implements CDX14Package {
 //                conflicts.add(new MissingConflict("supplier", null, ((SPDX23PackageObject)other).getSupplier().getName()));
 //            }
             // PURL
-            cf.compareSets("PURL", PURL_MISMATCH, this.purls, ((SPDX23PackageObject) other).getPURLs());
+            cf.compareStringSets("PURL", PURL_MISMATCH, this.purls, ((SPDX23PackageObject) other).getPURLs());
             // CPE
-            cf.compareSets("CPE", CPE_MISMATCH, this.cpes, ((SPDX23PackageObject) other).getCPEs());
+            cf.compareStringSets("CPE", CPE_MISMATCH, this.cpes, ((SPDX23PackageObject) other).getCPEs());
         } else if (other instanceof SVIPComponentObject) {
             // VERSION
             cf.addConflict("Version", VERSION_MISMATCH, this.version, ((SVIPComponentObject) other).getVersion());
@@ -342,9 +341,9 @@ public class CDX14ComponentObject implements CDX14Package {
 //                conflicts.add(new MissingConflict("supplier", null, ((SVIPComponentObject)other).getSupplier().getName()));
 //            }
             // PURL
-            cf.compareSets("PURL", PURL_MISMATCH, this.purls, ((SVIPComponentObject) other).getPURLs());
+            cf.compareStringSets("PURL", PURL_MISMATCH, this.purls, ((SVIPComponentObject) other).getPURLs());
             // CPE
-            cf.compareSets("CPE", CPE_MISMATCH, this.cpes, ((SVIPComponentObject) other).getCPEs());
+            cf.compareStringSets("CPE", CPE_MISMATCH, this.cpes, ((SVIPComponentObject) other).getCPEs());
         }
 //        // TODO SWIDs?
 //
