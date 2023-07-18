@@ -172,16 +172,18 @@ public class CreationData {
 
         // Compare licenses
         // todo dif between this and sbom licenses?
-        cf.compareStringSets("Creation Data: Licenses", LICENSE_MISMATCH, this.licenses, other.getLicenses());
+        cf.compareStringSets("Creation Data: License", LICENSE_MISMATCH, this.licenses, other.getLicenses());
 
         // Comparable Sets
-        cf.compareComparableSets("Creation Data: Authors", new HashSet<>(this.authors), new HashSet<>(other.getAuthors()));
+        cf.compareComparableSets("Creation Data: Author", new HashSet<>(this.authors), new HashSet<>(other.getAuthors()));
+        cf.compareComparableSets("Creation Data: Tool", new HashSet<>(this.creationTools), new HashSet<>(other.getCreationTools()));
 
         // Compare Objects
         cf.addConflicts(this.manufacture.compare(other.getManufacture()));
         cf.addConflicts(this.supplier.compare(other.getSupplier()));
+
         // todo
-        //  properties, creationTools
+        //  properties
         return cf.getConflicts();
     }
 }
