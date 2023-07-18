@@ -3,6 +3,23 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v5.0.5-alpha] - (7/13/2023)
+
+### Added
+> NOTE: Serializers may serialize null fields; this should be fixed in a later version.
+- Refactored `parsers` package to use the new `SVIPSBOM` & `SVIPComponentObject`.
+  - Refactored all parser unit tests to reflect this (100% passing, code coverage TBD).
+- Refactored `SBOMGeneratorCLI` class to use `serializers` & `parsers` packages.
+
+### Changed
+- Moved `Debug`, `QueryWorker`, & `VirtualPath` classes to the base `utils` package.
+
+### Removed
+- `Resolver.java` as the new API endpoints don't take string file arguments anymore.
+- `generators` package as it has now been fully replaced by the `serializers` & `parsers` packages.
+- `translators` unit tests as the translators have been deprecated by the deserializers and will be removed once the 
+  API endpoints have been refactored.
+
 ## [v5.0.4-alpha] - (7/13/2023)
 
 ### Added

@@ -2,8 +2,8 @@ package org.svip.sbomfactory.serializers.serializer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
+import org.svip.utils.Debug;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
-import org.svip.sbomfactory.generators.utils.Debug;
 import org.svip.sbomfactory.serializers.SerializerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

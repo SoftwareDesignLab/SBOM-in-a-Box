@@ -8,7 +8,7 @@ import org.svip.sbomanalysis.qualityattributes.tests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.ResultFactory;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.INFO;
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;

@@ -3,7 +3,7 @@ package org.svip.sbomfactory.translators;
 
 import org.svip.sbom.model.old.Component;
 import org.svip.sbom.model.old.SBOM;
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 
 import java.io.IOException;
 import java.nio.file.Files;
