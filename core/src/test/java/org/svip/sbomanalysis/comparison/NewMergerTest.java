@@ -1,12 +1,19 @@
 package org.svip.sbomanalysis.comparison;
 
 import org.checkerframework.checker.units.qual.C;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.builder.interfaces.schemas.SPDX23.SPDX23SBOMBuilder;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
+import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 
@@ -16,9 +23,7 @@ import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.sbomanalysis.comparison.merger.Merger;
-import org.svip.sbomanalysis.comparison.merger.MergerCDX;
-import org.svip.sbomanalysis.comparison.merger.MergerController;
+import org.svip.sbomanalysis.comparison.merger.*;
 import org.svip.sbomfactory.translators.TranslatorCDXJSON;
 
 import java.util.*;
@@ -215,6 +220,92 @@ public class NewMergerTest {
             green_externalReference, green_cdx_properties
     );
 
+    /** SPDX Test Components **/
+
+    // Blue SPDX
+
+    private static LicenseCollection blue_spdx_licenses = new LicenseCollection();
+
+    private static HashMap<String, String> blue_spdx_hashes = new HashMap<>() {{
+        put("SHA256","somerandomtestbluespdxhash");
+    }};
+
+    private static Organization blue_spdx_supplier = new Organization("blue_spdx_supplier","www.testbluespdx.com");
+
+    private static Description blue_spdx_description = new Description("a_summary_about_the_blue_spdx_component");
+
+    private static Set<ExternalReference> blue_spdx_externalReference = new HashSet<>(
+            Arrays.asList(
+                    new ExternalReference("www.bluespdxref.test", "blue_spdx")
+            )
+    );
+
+    SPDX23PackageObject comp_spdx_blue = new SPDX23PackageObject(
+            "library", "1234567890-blue-id-spdx", "blue_spdx_author", "test_component_blue_spdx",
+            blue_spdx_licenses, "blue_copyright_spdx", blue_spdx_hashes, blue_spdx_supplier, "4.1",
+            blue_spdx_description, Set.of("cpe2.3::test_blue_spdx_cpe"), Set.of("pkg:bluespdxpackage/blue@1.1.0"),
+            blue_spdx_externalReference, "www.downloadbluespdx.test", "blue_spdx.txt",
+            true, "42", "www.bluespdx.test", "some_blue_spdx_source_info",
+            "01/01/2000", "01/01/2000", "01/01/3000", "blue_spdx_comment",
+            "blue_spdx_attribution_test"
+    );
+
+    // Yellow SPDX
+
+    private static LicenseCollection yellow_spdx_licenses = new LicenseCollection();
+
+    private static HashMap<String, String> yellow_spdx_hashes = new HashMap<>() {{
+        put("SHA256","somerandomtestyellowspdxhash");
+    }};
+
+    private static Organization yellow_spdx_supplier = new Organization("yellow_spdx_supplier","www.testyellowspdx.com");
+
+    private static Description yellow_spdx_description = new Description("a_summary_about_the_yellow_spdx_component");
+
+    private static Set<ExternalReference> yellow_spdx_externalReference = new HashSet<>(
+            Arrays.asList(
+                    new ExternalReference("www.yellowspdxref.test", "yellow_spdx")
+            )
+    );
+
+    SPDX23PackageObject comp_spdx_yellow = new SPDX23PackageObject(
+            "library", "1234567890-yellow-id-spdx", "yellow_spdx_author", "test_component_yellow_spdx",
+            yellow_spdx_licenses, "yellow_copyright_spdx", yellow_spdx_hashes, yellow_spdx_supplier, "2.7.3",
+            yellow_spdx_description, Set.of("cpe2.3::test_yellow_spdx_cpe"), Set.of("pkg:yellowspdxpackage/yellow@1.1.0"),
+            yellow_spdx_externalReference, "www.downloadyellowspdx.test", "yellow_spdx.txt",
+            true, "42", "www.yellowspdx.test", "some_yellow_spdx_source_info",
+            "01/01/2000", "01/01/2000", "01/01/2500", "yellow_spdx_comment",
+            "yellow_spdx_attribution_test"
+    );
+
+    // Green SPDX
+
+    private static LicenseCollection green_spdx_licenses = new LicenseCollection();
+
+    private static HashMap<String, String> green_spdx_hashes = new HashMap<>() {{
+        put("SHA256","somerandomtestgreenspdxhash");
+    }};
+
+    private static Organization green_spdx_supplier = new Organization("green_spdx_supplier","www.testgreenspdx.com");
+
+    private static Description green_spdx_description = new Description("a_summary_about_the_green_spdx_component");
+
+    private static Set<ExternalReference> green_spdx_externalReference = new HashSet<>(
+            Arrays.asList(
+                    new ExternalReference("www.greenspdxref.test", "green_spdx")
+            )
+    );
+
+    SPDX23PackageObject comp_spdx_green = new SPDX23PackageObject(
+            "library", "1234567890-green-id-spdx", "green_spdx_author", "test_component_green_spdx",
+            green_spdx_licenses, "green_copyright_spdx", green_spdx_hashes, green_spdx_supplier, "2.3",
+            green_spdx_description, Set.of("cpe2.3::test_green_spdx_cpe"), Set.of("pkg:greenspdxpackage/green@1.1.0"),
+            green_spdx_externalReference, "www.downloadgreenspdx.test", "green_spdx.txt",
+            true, "42", "www.greenspdx.test", "some_green_spdx_source_info",
+            "01/01/2000", "01/01/2000", "01/01/2750", "green_spdx_comment",
+            "green_spdx_attribution_test"
+    );
+
     /** SVIP Test Components **/
 
     Component comp_svip_blue = new SVIPComponentObject(
@@ -336,9 +427,15 @@ public class NewMergerTest {
 
         CDX14SBOM SBOM_two = builder_two.buildCDX14SBOM();
 
+        // New merger
+
         Merger merger = new MergerCDX();
 
+        // Merged SBOM Result
+
         SBOM result = merger.mergeSBOM(SBOM_one, SBOM_two);
+
+        // Assertions
 
         assertNotNull(result);
 
@@ -355,7 +452,111 @@ public class NewMergerTest {
     }
 
     @Test
-    public void merger_should_merge_basic_SVIP_SBOMs() {
+    public void merger_should_merge_basic_SPDX_SBOMs() {
+
+        // SBOM One
+
+        SPDX23Builder builder_one = new SPDX23Builder();
+
+        builder_one.setFormat("SPDX");
+
+        builder_one.setName("test_sbom_one");
+
+        builder_one.setUID("0000a000-0aaa-0000-00a0-0000aaa00000");
+
+        builder_one.setVersion("1");
+
+        builder_one.setSpecVersion("2.3");
+
+        builder_one.addLicense("test_license");
+
+        CreationData creationDataSBOMOne = new CreationData();
+
+        builder_one.setCreationData(creationDataSBOMOne);
+
+        builder_one.setDocumentComment("This is a test comment for the second SBOM");
+
+        builder_one.setRootComponent(comp_spdx_green);
+
+        builder_one.addComponent(comp_spdx_green);
+
+        builder_one.addComponent(comp_spdx_yellow);
+
+        Relationship green_to_yellow = new Relationship(comp_spdx_yellow.getUID(), "Depends on");
+
+        builder_one.addRelationship(comp_spdx_green.getUID(), green_to_yellow);
+
+        ExternalReference exRefSBOMOne = new ExternalReference("www.testsbom.test", "test_sbom_one");
+
+        builder_one.addExternalReference(exRefSBOMOne);
+
+        SPDX23SBOM SBOM_one = builder_one.buildSPDX23SBOM();
+
+        // SBOM Two
+
+        SPDX23Builder builder_two = new SPDX23Builder();
+
+        builder_two.setFormat("SPDX");
+
+        builder_two.setName("test_sbom_two");
+
+        builder_two.setUID("aaaa0aaa-a000-aaaa-aa0a-aaaa000aaaaa");
+
+        builder_two.setVersion("1");
+
+        builder_two.setSpecVersion("2.3");
+
+        builder_two.addLicense("test_license");
+
+        CreationData creationDataSBOMTwo = new CreationData();
+
+        builder_two.setCreationData(creationDataSBOMTwo);
+
+        builder_two.setDocumentComment("This is a test comment for the second SBOM");
+
+        builder_two.setRootComponent(comp_spdx_green);
+
+        builder_two.addComponent(comp_spdx_green);
+
+        builder_two.addComponent(comp_spdx_blue);
+
+        Relationship green_to_blue = new Relationship(comp_spdx_blue.getUID(), "Depends on");
+
+        builder_one.addRelationship(comp_spdx_green.getUID(), green_to_blue);
+
+        ExternalReference exRefSBOMTwo = new ExternalReference("www.testsbom.test", "test_sbom_two");
+
+        builder_two.addExternalReference(exRefSBOMTwo);
+
+        SPDX23SBOM SBOM_two = builder_two.buildSPDX23SBOM();
+
+        // New Merger
+
+        Merger merger = new MergerSPDX();
+
+        // Merged SBOM Result
+
+        SBOM result = merger.mergeSBOM(SBOM_one, SBOM_two);
+
+        // Assertions
+
+        assertNotNull(result);
+
+        assertEquals("test_sbom_one", result.getName());
+
+        assertEquals("test_component_green_spdx", result.getRootComponent().getName());
+
+        assertEquals("0000a000-0aaa-0000-00a0-0000aaa00000", result.getUID());
+
+        assertEquals(3, result.getComponents().size());
+
+        assertEquals(2, result.getExternalReferences().size());
+
+    }
+
+    @Disabled("Functionality disabled for now.")
+    @Test
+    public void merger_should_merge_basic_SVIP_SBOMs() throws MergerException {
 
         Set<Component> SVIP_components_one = new HashSet<>(Arrays.asList(comp_svip_blue, comp_svip_yellow));
 
@@ -377,7 +578,7 @@ public class NewMergerTest {
 
         MergerController mergerController = new MergerController();
 
-        mergerController.merge(sboms);
+        mergerController.mergeAll(sboms);
 
 
     }

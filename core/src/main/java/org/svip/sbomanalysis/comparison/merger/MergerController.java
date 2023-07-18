@@ -7,24 +7,30 @@ import org.svip.sbom.model.objects.SVIPComponentObject;
 
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.util.ExternalReference;
+import org.svip.sbomfactory.translators.*;
 
 import java.util.*;
+import java.util.function.Function;
 
 /**
- * Merges two SBOMs of any type together into one SVIP type SBOM
+ * Merges two SBOMs either in CDX or SPDX format together. Does not currently support cross-format merging.
  *
  * @author tyler_drake
  * @author Matt London
  */
 
 public class MergerController {
+
+    private final static Function<String, String> INVALID_FORMAT_TYPE = (formats) ->
+            "Cross format merging not supported for " + formats + ".";
+
     /**
      * Merge a collection of SBOMs into one main SBOM
      *
      * @param SBOMs Collection of SBOM objects to merge together
      * @return Resulting merged bom
      */
-    public SBOM merge(Collection<SVIPSBOM> SBOMs) {
+    public SBOM mergeAll(Collection<SVIPSBOM> SBOMs) throws MergerException {
         // Loop through and merge into a master SBOM
         if (SBOMs.size() == 0) {
             return null;
@@ -37,82 +43,71 @@ public class MergerController {
 
         // Now we know there is at least two SBOMs
         Iterator<SVIPSBOM> it = SBOMs.iterator();
-        SVIPSBOM a = it.next();
-        SVIPSBOM b = it.next();
+        SBOM a = it.next();
+        SBOM b = it.next();
+
+        SBOM mainBom;
 
         // Merge it into a main SBOM
-        SVIPSBOM mainBom = merge(a, b);
+        try {
+            Merger merger = getMerger(a.getFormat(), b.getFormat());
+            mainBom = merger.mergeSBOM(a, b);
+        } catch (MergerException e) {
+            mainBom = null;
+            throw new MergerException(e.getMessage());
+        }
 
         // Take the remaining SBOMs and merge them into the main SBOM
         while (it.hasNext()) {
-            SVIPSBOM nextBom = it.next();
-            mainBom = merge(mainBom, nextBom);
+            SBOM nextBom = it.next();
+            // Merge it into a main SBOM
+            try {
+                Merger merger = getMerger(mainBom.getFormat(), nextBom.getFormat());
+                mainBom = merger.mergeSBOM(mainBom, nextBom);
+            } catch (MergerException e) {
+                mainBom = null;
+                throw new RuntimeException(e);
+            }
         }
 
         // Return the main bom
         return mainBom;
     }
 
-    public SVIPSBOM merge(SVIPSBOM A, SVIPSBOM B) {
+    /**
+     * A smaller merge call for a single merge between two SBOMs
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public SBOM merge(SBOM a, SBOM b) throws MergerException {
 
-        Set<SVIPComponentObject> componentsA = A.getSVIPComponents();
+        SBOM mainBom;
 
-        Set<SVIPComponentObject> componentsB = B.getSVIPComponents();
-
-        Set<Component> merged_components = mergeComponents(componentsA, componentsB);
-
-        return new SVIPSBOM(A.getFormat(), A.getName(), A.getUID(), A.getVersion(), A.getSpecVersion(),
-                A.getLicenses(), A.getCreationData(), A.getDocumentComment(), A.getRootComponent(),
-                merged_components, (HashMap<String, Set<Relationship>>) A.getRelationships(),
-                A.getExternalReferences(), A.getSPDXLicenseListVersion());
-    }
-
-    public Set<Component> mergeComponents(Set<SVIPComponentObject> components_A, Set<SVIPComponentObject> components_B) {
-        Set<Component> merged_components = new HashSet<>();
-
-        for(SVIPComponentObject current_A : components_A) {
-            for(SVIPComponentObject current_B : components_B) {
-                if(current_A.getName().equals(current_B.getName()) && current_A.getVersion().equals(current_B.getVersion())) {
-                    unifyComponent(current_A, current_B);
-                }
-            }
+        // Merge it into a main SBOM
+        try {
+            Merger merger = getMerger(a.getFormat(), b.getFormat());
+            mainBom = merger.mergeSBOM(a, b);
+        } catch (MergerException e) {
+            mainBom = null;
+            throw new MergerException(e.getMessage());
         }
 
-        return merged_components;
+        return mainBom;
     }
 
-    public Component unifyComponent(SVIPComponentObject compA, SVIPComponentObject compB) {
-        Set<String> new_cpe = compA.getCPEs();
-        new_cpe.addAll(compB.getCPEs());
-
-        Set<String> new_purl = compA.getPURLs();
-        new_purl.addAll(compB.getPURLs());
-
-        Map<String, String> new_hashes = compA.getHashes();
-        new_hashes.putAll(compB.getHashes());
-
-        Set<ExternalReference> new_exRef = compA.getExternalReferences();
-        new_exRef.addAll(compB.getExternalReferences());
-
-        HashMap<String, Set<String>> new_properties = compA.getProperties();
-        for(String property : compB.getProperties().keySet()) {
-            if(new_properties.containsKey(property)) {
-
-            }
+    /**
+     * Gets the necessary merger for the two SBOMs
+     *
+     * @param formatOne format of SBOM one
+     * @param formatTwo format of SBOM two
+     */
+    private static Merger getMerger(String formatOne, String formatTwo) throws MergerException {
+        switch (formatOne.toLowerCase() + ":" + formatTwo.toLowerCase()) {
+            case "cyclonedx:cyclonedx" -> { return new MergerCDX(); }
+            case "spdx:spdx" -> { return new MergerSPDX(); }
+            default -> { throw new MergerException(INVALID_FORMAT_TYPE.apply(formatOne + " and " +  formatTwo)); }
         }
-
-
-        SVIPComponentObject new_component = null;
-
-        return new_component;
-    }
-
-
-    public HashMap<String, HashSet<String>> mergeRelationships(
-            Map<String, Set<Relationship>> relationshipsA,
-            Map<String, Set<Relationship>> relationshipsB
-    ) {
-        HashMap<String, HashSet<String>> merged_relationships = new HashMap<>();
-        return merged_relationships;
     }
 }
