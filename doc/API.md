@@ -56,6 +56,7 @@ Current Endpoints (`/svip/`):
 - `/view` - View the raw contents of an SBOM file.
 - `/viewFiles` - View all file IDs uploaded to the server.
 - `/delete` - Delete a file from the server.
+- `/getSBOM` - Get an SBOM object from the server
 
 ### MySQL Database
 Located at `localhost:3306` while the `svip-mysql` Docker container is running.
