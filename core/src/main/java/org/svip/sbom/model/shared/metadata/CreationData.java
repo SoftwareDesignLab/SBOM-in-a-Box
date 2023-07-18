@@ -14,7 +14,7 @@ import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
  *
  * @author Derek Garcia
  */
-public class CreationData {
+public class CreationData implements Comparable{
 
     // Time SBOM was created
     private String creationTime;
@@ -163,7 +163,12 @@ public class CreationData {
     ///
     /// Util
     ///
-    public List<Conflict> compare(CreationData other){
+    @Override
+    public List<Conflict> compare(Comparable o){
+        // Don't compare if not instance of same object
+        if(!(o instanceof CreationData other))
+            return null;
+
         ConflictFactory cf = new ConflictFactory();
 
         // Compare single String fields
