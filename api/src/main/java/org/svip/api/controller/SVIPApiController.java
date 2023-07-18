@@ -328,26 +328,39 @@ public class SVIPApiController {
     public ResponseEntity<String> generate(@RequestBody SBOMFile[] files,
                                            @RequestParam("name") String projectName,
                                            @RequestParam("schema") SerializerFactory.Schema schema, // todo implement this schema + format params in /convert
-                                           @RequestParam("format") SerializerFactory.Format format) throws JsonProcessingException {
+                                           @RequestParam("format") SerializerFactory.Format format){
 
         ParserController parserController = new ParserController(projectName, new HashMap<>());
+
+        String urlMsg = "GENERATE /svip/generate?projectName=" + projectName;
 
         for (SBOMFile f: files
              ) {
             if(f.hasNullProperties()){
-                LOGGER.error("GENERATE /svip/generate?fileName=" + f.getFileName() + "has null properties");
+                LOGGER.error(urlMsg + "/fileName=" + f.getFileName() + "has null properties");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             parserController.addFile(new VirtualPath(f.getFileName()), f.getContents());
         }
 
-        parserController.parseAll();
+        SVIPSBOM parsed;
+        try{
+            parserController.parseAll();
+            parsed = parserController.buildSBOM(schema);
+        } catch (Exception e) {
+            LOGGER.error(urlMsg + " error parsing into SBOM: " + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        SVIPSBOM parsed = parserController.buildSBOM(schema);
-
-        Serializer s = SerializerFactory.createSerializer(schema,format, true);
-
-        String contents = s.writeToString(parsed);
+        Serializer s;
+        String contents;
+        try{
+            s = SerializerFactory.createSerializer(schema,format, true);
+            contents = s.writeToString(parsed);
+        } catch (IllegalArgumentException | JsonProcessingException e) {
+            LOGGER.error(urlMsg + " error parsing into SBOM during serialization: " + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return Utils.encodeResponse(contents);
 
