@@ -1,14 +1,9 @@
 package org.svip.sbomanalysis.comparison.conflicts;
 
-import org.svip.sbom.model.shared.metadata.Contact;
-import org.svip.sbom.model.shared.metadata.CreationData;
-import org.svip.sbom.model.shared.util.LicenseCollection;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.LICENSE_MISMATCH;
 import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISSING;
 
 /**
@@ -132,7 +127,7 @@ public class ConflictFactory {
      * @param other Other value
      * @return True if they can be compared, false otherwise
      */
-    private boolean comparable(String field, Object target, Object other){
+    public boolean comparable(String field, Object target, Object other){
 
         // Both are missing, no conflict
         if(target == null && other == null)
