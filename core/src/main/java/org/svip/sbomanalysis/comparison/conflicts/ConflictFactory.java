@@ -61,7 +61,7 @@ public class ConflictFactory {
 
         // False: Skip, not comparable classes
         // True: Objects are of the same class to be compared
-        return !target.getClass().equals(other.getClass());
+        return target.getClass().equals(other.getClass());
 
     }
 
@@ -89,6 +89,36 @@ public class ConflictFactory {
             if(!target.contains(value))
                 addConflict(field, mismatchType, null, value);
         }
+    }
+
+
+    public void compareContacts(String field, Set<Contact> target, Set<Contact> other){
+        // Null check
+        if(!comparable(field, target, other))
+            return;
+
+        List<Contact> targetList = new ArrayList<>(target);
+        List<Contact> otherList = new ArrayList<>(other);
+
+        while(!targetList.isEmpty()){
+            Contact targetValue = targetList.remove(0);
+
+            boolean compared = false;   // track if comparison occurred
+            for(Contact otherValue : otherList){
+                if(targetValue.equals(otherValue)){
+                    addConflicts(targetValue.compare(otherValue));
+                    otherList.remove(otherValue);
+                    compared = true;
+                }
+            }
+
+            if(!compared)
+                addConflict(field, MISSING, target.toString(), null);
+        }
+
+        for(Contact otherValue : otherList)
+            addConflict(field, MISSING, null, otherValue.toString());
+
     }
 
     public void compareCreationData(String field, CreationData target, CreationData other){

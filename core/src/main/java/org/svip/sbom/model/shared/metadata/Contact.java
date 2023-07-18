@@ -1,5 +1,6 @@
 package org.svip.sbom.model.shared.metadata;
 
+import org.svip.sbomanalysis.comparison.conflicts.Comparable;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
 import org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
@@ -16,7 +17,7 @@ import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISC_MISMA
  *
  * @author Derek Garcia
  */
-public class Contact {
+public class Contact implements Comparable {
     private final String name;
     private final String email;
     private final String phone;
@@ -67,10 +68,15 @@ public class Contact {
     /**
      * Compare against other Contact
      *
-     * @param other Other contact
+     * @param o Other contact
      * @return list of conflicts
      */
-    public List<Conflict> compare(Contact other){
+    @Override
+    public List<Conflict> compare(Comparable o){
+        // Don't compare if not instance of same object
+        if(!(o instanceof Contact other))
+            return null;
+
         ConflictFactory cf = new ConflictFactory();
         cf.addConflict("Contact Name", MISC_MISMATCH, this.name, other.getName());
         cf.addConflict("Contact Email", MISC_MISMATCH, this.email, other.getEmail());
