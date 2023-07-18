@@ -139,6 +139,7 @@ public class SerializerFactory {
         Schema schema = null;
         Format format = null;
 
+        // TODO this takes a long time to search large files
         if (fileContents.toLowerCase().contains("bom-ref")) schema = CDX14;
         else if (fileContents.toLowerCase().contains("spdxversion")) schema = SPDX23;
         else if (fileContents.contains("rootComponent")) schema = SVIP; // Field unique to SVIP SBOM
@@ -150,9 +151,9 @@ public class SerializerFactory {
 
         String errorMessage;
         if (schema == null)
-            errorMessage = "Could not assert SBOM schema of fileContents.";
+            errorMessage = "Invalid SBOM schema.";
         else if (format == null)
-            errorMessage = "Could not assert file format of fileContents.";
+            errorMessage = "Invalid file format.";
         else
             return schema.getDeserializer(format);
 
