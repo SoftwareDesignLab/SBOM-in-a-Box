@@ -1,6 +1,6 @@
 package org.svip.sbomanalysis.comparison.merger;
 
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 
 public class MergerException extends Exception {
     public MergerException(String message) {
