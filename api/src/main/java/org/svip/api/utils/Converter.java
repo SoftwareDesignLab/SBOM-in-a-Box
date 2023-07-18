@@ -86,7 +86,6 @@ public class Converter {
             SerializerFactory.Schema originalSchema = Utils.assumeSchemaFromOriginal(sbom.getContents());
 
             builder.setFormat(String.valueOf(schema));
-            builder.setSpecVersion(String.valueOf(format));
             builder.setName(deserialized.getName());
             builder.setUID(deserialized.getUID());
             builder.setVersion(deserialized.getVersion());
@@ -120,19 +119,20 @@ public class Converter {
             if (deserialized.getExternalReferences() != null)
                 for (ExternalReference e : deserialized.getExternalReferences())
                     builder.addExternalReference(e);
-            SVIPSBOM built = builder.Build();
 
             // schema specific adjustments
-//            switch (schema) {
-//                case SPDX23 -> serialized = s.writeToString(built).replaceFirst("SPDX-null",
-//                        "SPDX-2.3");
-//
-//                case CDX14 -> serialized = s.writeToString(built).replaceFirst("\"bomFormat\" : \"SPDX\"",
-//                                "\"bomFormat\" : \"CycloneDX\"").
-//                        replaceFirst("specVersion\" : null",
-//                                "specVersion\" : \"1.4\"");
-//            }
-            serialized = s.writeToString(built);
+            switch (schema) {
+                case SPDX23 -> {
+                    builder.setSpecVersion("2.3");
+                    SVIPSBOM built = builder.Build();
+                    serialized = s.writeToString(built);
+                }
+                case CDX14 -> {
+                    builder.setSpecVersion("1.4");
+                    SVIPSBOM built = builder.Build();
+                    serialized = s.writeToString(built);
+                }
+            }
 
         } catch (Exception e) {
             return Utils.internalSerializerError(ret,
