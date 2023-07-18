@@ -3,6 +3,18 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v5.0.6-alpha] - (7/17/2023)
+
+### Added
+- /convert endpoint
+- Relevant unit tests in `ConvertFromAPITest`
+    - `invalidSchemaAndFormatTest()`
+    - `CDXTagValueTest()`
+    - `convertTest()`
+- Serializer + deserializer fixes
+### Changed
+- Moved conversion functionality from `Utils.java` to `Converter.java`
+
 ## [v5.0.5-alpha] - (7/13/2023)
 
 ### Added
@@ -19,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `generators` package as it has now been fully replaced by the `serializers` & `parsers` packages.
 - `translators` unit tests as the translators have been deprecated by the deserializers and will be removed once the 
   API endpoints have been refactored.
+
 
 ## [v5.0.4-alpha] - (7/13/2023)
 

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
+import org.svip.api.utils.Converter;
 import org.svip.api.utils.Utils;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Schema;
@@ -25,6 +26,7 @@ import org.svip.sbomfactory.serializers.deserializer.SPDX23TagValueDeserializer;
 import org.svip.sbomfactory.translators.TranslatorController;
 import org.svip.sbomfactory.translators.TranslatorException;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -154,11 +156,9 @@ public class SVIPApiController {
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
-        // Return SBOM or invalid ID
-        if (sbomFile.isEmpty()) {
-            LOGGER.info("GET /svip/view?id=" + id + " - FILE NOT FOUND");
-            return new ResponseEntity<>("Invalid SBOM ID.", HttpStatus.NOT_FOUND);
-        }
+        // Check if it exists
+        ResponseEntity<String> NOT_FOUND = Utils.checkIfExists(id, sbomFile, "view");
+        if (NOT_FOUND != null) return NOT_FOUND;
 
         // Log
         LOGGER.info("GET /svip/view?id=" + id + " - File: " + sbomFile.get().getFileName());
@@ -258,6 +258,68 @@ public class SVIPApiController {
         // Return deleted ID as confirmation
         return Utils.encodeResponse(sbomFile.get().getId());
     }
+
+    /**
+     * USAGE. Send CONVERT request to /convert an existing SBOM on the backend to a desired schema and format
+     *
+     * @param id of the SBOM
+     * @param schema to convert to
+     * @param format to convert to
+     * @param overwrite whether to overwrite original
+     * @return converted SBOM
+     */
+
+    @GetMapping("/convert")
+    public ResponseEntity<String> convert(@RequestParam("id") long id, @RequestParam("schema") String schema,
+                                          @RequestParam("format") String format,
+                                          @RequestParam("overwrite") Boolean overwrite){
+        // Get SBOM
+        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
+
+        // Check if it exists
+        ResponseEntity<String> NOT_FOUND = Utils.checkIfExists(id, sbomFile, "convert");
+        if (NOT_FOUND != null) return NOT_FOUND;
+
+        // Get and convert SBOM
+        SBOMFile toConvert = sbomFile.get();
+        HashMap<SBOMFile, String> conversionResult = Converter.convert(toConvert, schema, format);
+        String error = (String) conversionResult.values().toArray()[0];
+        SBOMFile converted = (SBOMFile) conversionResult.keySet().toArray()[0];
+
+        // Error message if needed
+        String defaultErrorMessage = "CONVERT /svip/convert?id=" + id + " - ERROR IN CONVERSION TO " + schema
+                + ((error.length() != 0) ? (": " + error) : "");
+
+        // bad request errors
+        if(error.toLowerCase().contains("not valid") && (
+                error.toLowerCase().contains("schema") || error.toLowerCase().contains("format"))){
+            LOGGER.error(defaultErrorMessage);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else if (schema.toLowerCase().contains("cdx") && format.equals("TAGVALUE")) {
+            LOGGER.error("CONVERT /svip/convert?id=" + id + "TAGVALUE unsupported by CDX14");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        // if anything went wrong, an SBOMFILE with a blank name and contents will be returned,
+        // paired with the message String
+        if (converted.hasNullProperties()) {
+            LOGGER.error(defaultErrorMessage);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // assign appropriate id and name
+        converted.setId(id);
+        converted.setFileName(toConvert.getFileName());
+
+        // overwrite
+        if(overwrite){
+            sbomFileRepository.deleteById(id);
+            sbomFileRepository.save(converted);
+        }
+
+        return Utils.encodeResponse(converted.getContents());
+    }
+
 
     //#region Deprecated Endpoints
 

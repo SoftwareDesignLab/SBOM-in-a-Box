@@ -2,7 +2,7 @@ package org.svip.api.controller.old;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.utils.Debug;
-import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
+//import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -113,34 +113,34 @@ public class APITest {
      *
      * @throws IOException If the SBOM merging is broken
      */
-    public static String[] testInput() throws IOException {
-        final ObjectMapper objectMapper = new ObjectMapper();
-        final List<String> schemaArray = new ArrayList<>();
-        final List<String> formatArray = new ArrayList<>();
-        final Map<String, String> fileMap = testFileMap();
-
-        String contentsString = objectMapper.writeValueAsString(fileMap.keySet());
-        String fileNamesString = objectMapper.writeValueAsString(fileMap.values());
-
-        for(int i = 0; i < 3; i++) {
-            schemaArray.add(GeneratorSchema.SPDX.name());
-            formatArray.add(GeneratorSchema.GeneratorFormat.SPDX.name());
-        }
-        for(int i = 0; i < 6; i++)
-            schemaArray.add(GeneratorSchema.CycloneDX.name());
-        for(int i = 0; i < 3; i++)
-            formatArray.add(GeneratorSchema.GeneratorFormat.XML.name());
-        for(int i = 0; i < 3; i++)
-            formatArray.add(GeneratorSchema.GeneratorFormat.JSON.name());
-        String schemaString = objectMapper.writeValueAsString(schemaArray);
-        String formatString = objectMapper.writeValueAsString(formatArray);
-
-        return new String[]{
-                contentsString,
-                fileNamesString,
-                String.valueOf(fileMap.size()),
-                schemaString,
-                formatString
-        };
-    }
+//    public static String[] testInput() throws IOException {
+//        final ObjectMapper objectMapper = new ObjectMapper();
+//        final List<String> schemaArray = new ArrayList<>();
+//        final List<String> formatArray = new ArrayList<>();
+//        final Map<String, String> fileMap = testFileMap();
+//
+//        String contentsString = objectMapper.writeValueAsString(fileMap.keySet());
+//        String fileNamesString = objectMapper.writeValueAsString(fileMap.values());
+//
+//        for(int i = 0; i < 3; i++) {
+//            schemaArray.add(GeneratorSchema.SPDX.name());
+//            formatArray.add(GeneratorSchema.GeneratorFormat.SPDX.name());
+//        }
+//        for(int i = 0; i < 6; i++)
+//            schemaArray.add(GeneratorSchema.CycloneDX.name());
+//        for(int i = 0; i < 3; i++)
+//            formatArray.add(GeneratorSchema.GeneratorFormat.XML.name());
+//        for(int i = 0; i < 3; i++)
+//            formatArray.add(GeneratorSchema.GeneratorFormat.JSON.name());
+//        String schemaString = objectMapper.writeValueAsString(schemaArray);
+//        String formatString = objectMapper.writeValueAsString(formatArray);
+//
+//        return new String[]{
+//                contentsString,
+//                fileNamesString,
+//                String.valueOf(fileMap.size()),
+//                schemaString,
+//                formatString
+//        };
+//    }
 }
