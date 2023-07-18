@@ -311,6 +311,30 @@ public class SVIPApiController {
         return Utils.encodeResponse(converted.getContents());
     }
 
+    /**
+     * USAGE. Send GENERATE request to /generate an SBOM from source file(s)
+     *
+     * @param files from project source
+     * @param schema to convert to
+     * @param format to convert to
+     * @return generated SBOM
+     */
+
+    @GetMapping("/generate")
+    public ResponseEntity<String> generate(@RequestBody SBOMFile[] files,
+                                           @RequestParam("schema") SerializerFactory.Schema schema, // todo implement this schema + format params in /convert
+                                           @RequestParam("format") SerializerFactory.Format format){
+
+        for (SBOMFile f: files
+             ) {
+            if(f.hasNullProperties()){
+                LOGGER.error("GENERATE /svip/generate?fileName=" + f.getFileName() + "has null properties");
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+        }
+
+        return null;
+    }
 
     //#region Deprecated Endpoints
 
