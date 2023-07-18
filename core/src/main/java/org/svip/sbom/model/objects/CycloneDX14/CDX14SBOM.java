@@ -240,10 +240,12 @@ public class CDX14SBOM implements CDX14Schema {
         // Compare Creation Data
         cf.addConflicts(this.creationData.compare(other.getCreationData()));
 
+        // Comparable Sets
+        cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
+
         // todo
         // compare relationships
         // compare Vulns
-        // compare external refs
 
         return cf.getConflicts();
     }
