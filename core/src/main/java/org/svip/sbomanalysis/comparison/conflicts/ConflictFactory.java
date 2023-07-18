@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.HASH_MISMATCH;
 import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISSING;
 
 /**
@@ -119,8 +120,35 @@ public class ConflictFactory {
         }
     }
 
-    public void compareHashes(String field, HashMap<String, String> target, HashMap<String, String> others){
+    /**
+     * Compare two sets of hashes
+     *
+     * @param field Name of the Comparison Field
+     * @param target Set of target values
+     * @param other Set of other values
+     */
+    public void compareHashes(String field, HashMap<String, String> target, HashMap<String, String> other){
+        // Null check
+        if(!comparable(field, target, other))
+            return;
 
+        // Round 1: Compare target against other if equal
+        for(String targetAlg : target.keySet()){
+            // If other doesn't contain hash, add as missing
+            if(!other.containsKey(targetAlg)){
+                addConflict(field, MISSING, "Contains " + field + " Data", null);
+                continue;
+            }
+            // Compare hash values
+            addConflict(field + " " + targetAlg + " Hash", HASH_MISMATCH, target.get(targetAlg), other.get(targetAlg));
+        }
+
+        // Round 2: Don't compare other against target, just checking if present
+        for(String otherAlg : other.keySet()){
+            // If target doesn't contain hash, add as missing
+            if(!target.containsKey(otherAlg))
+                addConflict(field, MISSING, null, "Contains " + field + " Data");
+        }
     }
 
 
