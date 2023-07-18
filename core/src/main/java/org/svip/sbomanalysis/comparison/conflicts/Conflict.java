@@ -1,4 +1,7 @@
 package org.svip.sbomanalysis.comparison.conflicts;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * file: Conflict.java
  * Representation for conflicts
@@ -8,9 +11,16 @@ package org.svip.sbomanalysis.comparison.conflicts;
  */
 public class Conflict {
 
+    @JsonProperty
     private final MismatchType type;
+
+    @JsonProperty
     private final String message;
+
+    @JsonProperty
     private final String target;
+
+    @JsonProperty
     private final String other;
 
     /**
