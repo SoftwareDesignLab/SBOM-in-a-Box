@@ -80,6 +80,12 @@ public class APITest {
                     "WithFrameworkAssembliesAndDependencies.nuspec", "nuspec.xsd"});
     private static final SampleProject empty =
             new SampleProject("Empty", new String[]{"empty.cs"});
+    private static final SampleProject subProcess =
+            new SampleProject("SubProcess", new String[]{"subprocess.py"});
+    private static final SampleProject ruby =
+            new SampleProject("Ruby", new String[]{"foo.rb"});
+    private static final SampleProject JS =
+            new SampleProject("JS", new String[]{"lib/bar.js", "lib/foo.js", "index.js"});
 
     @BeforeEach
     public void setup() {
@@ -150,6 +156,21 @@ public class APITest {
         sbomFiles = Utils.configureProjectTest(empty.getProjectFiles());
         files.add(sbomFiles);
         projectNames.add(empty.type);
+
+        // python
+        sbomFiles = Utils.configureProjectTest(subProcess.getProjectFiles());
+        files.add(sbomFiles);
+        projectNames.add(subProcess.type);
+
+        // Ruby
+        sbomFiles = Utils.configureProjectTest(ruby.getProjectFiles());
+        files.add(sbomFiles);
+        projectNames.add(ruby.type);
+
+        // JS
+        sbomFiles = Utils.configureProjectTest(JS.getProjectFiles());
+        files.add(sbomFiles);
+        projectNames.add(JS.type);
 
         final Map<Map<Long, String>, SBOMFile[]> resultMap = new HashMap<>();
         for (int i = 0; i < files.size(); i++) {
