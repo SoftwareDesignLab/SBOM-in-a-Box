@@ -11,10 +11,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @ExtendWith(MockitoExtension.class)
 public class APITest {
@@ -68,6 +65,13 @@ public class APITest {
     private static final SampleProject java = new SampleProject("Java",
             new String[]{"lib/Foo.java", "Bar.java", "build.gradle", "pom.xml"});
 
+    private static final SampleProject foobarCSharp =
+            new SampleProject("CSharp/Bar", new String[]{"foobar.cs", "sample.csproj"});
+
+    private static final SampleProject nugetCSharp =
+            new SampleProject("CSharp/Nuget", new String[]{"ErrLog.IO.nuspec", "Logger.cs",
+                    "WithFrameworkAssembliesAndDependencies.nuspec", "nuspec.xsd"});
+
     @BeforeEach
     public void setup() {
         // Init controller with mocked repository
@@ -113,27 +117,36 @@ public class APITest {
         return resultMap;
     }
 
-    public static Map<Long, SBOMFile[]> getTestProjectMap() throws IOException{
+    public static Map<Map<Long, String>, SBOMFile[]> getTestProjectMap() throws IOException{
 
         ArrayList<SBOMFile[]> files = new ArrayList<>();
+        ArrayList<String> projectNames = new ArrayList<>();
 
         // java
-        String[] projectFiles = java.getProjectFiles();
-        SBOMFile[] javaFiles = new SBOMFile[projectFiles.length];
-        for (int i = 0; i < projectFiles.length; i++) {
-            javaFiles[i] = new SBOMFile(projectFiles[i], new String(Files.readAllBytes(Paths.get(projectFiles[i]))));
-        }
-        files.add(javaFiles);
+        SBOMFile[] sbomFiles = configureProjectTest(java.getProjectFiles());
+        files.add(sbomFiles);
+        projectNames.add(java.type);
 
-        final Map<Long, SBOMFile[]> resultMap = new HashMap<>();
+        // foobar cs proj
+        sbomFiles = configureProjectTest(foobarCSharp.getProjectFiles());
+        files.add(sbomFiles);
+        projectNames.add(foobarCSharp.type);
+
+        // foobar cs proj
+        sbomFiles = configureProjectTest(nugetCSharp.getProjectFiles());
+        files.add(sbomFiles);
+        projectNames.add(nugetCSharp.type);
+
+        final Map<Map<Long,String>, SBOMFile[]> resultMap = new HashMap<>();
         for (int i = 0; i < files.size(); i++) {
 
+            HashMap<Long, String> idMap = new HashMap<>();
             long projectId = i* 10L; // project id
-
-            resultMap.put(projectId, files.get((int) projectId));
+            idMap.put(projectId, projectNames.get(i));
+            resultMap.put(idMap, files.get(i));
 
             int j = 0;
-            for (SBOMFile s: resultMap.get(projectId)
+            for (SBOMFile s: resultMap.get(idMap)
                  ) {
                 s.setId(projectId + j); // Set ID for testing purposes
                 j++;
@@ -142,6 +155,19 @@ public class APITest {
 
         return resultMap;
 
+    }
+
+    /**
+     * Configure SBOMFiles from project source files
+     * @param projectFiles project source files
+     * @return array of SBOMFiles we can use to test
+     */
+    private static SBOMFile[] configureProjectTest(String[] projectFiles) throws IOException {
+        SBOMFile[] sbomFiles = new SBOMFile[projectFiles.length];
+        for (int i = 0; i < projectFiles.length; i++) {
+            sbomFiles[i] = new SBOMFile(projectFiles[i], new String(Files.readAllBytes(Paths.get(projectFiles[i]))));
+        }
+        return sbomFiles;
     }
 
 }
