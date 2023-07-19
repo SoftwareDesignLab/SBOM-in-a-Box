@@ -57,7 +57,6 @@ class OSVClientTest {
     @Test
     public void test_generateVEX_valid_VEX_object_CDX_json_sbom() throws IOException {
         Organization test_org1 = new Organization("com.google.guava", "google.com");
-
         Organization test_org2 = new Organization("The Pallets Projects", "google.com");
 
         CDX14ComponentObject test_component1 = new CDX14ComponentObject(
