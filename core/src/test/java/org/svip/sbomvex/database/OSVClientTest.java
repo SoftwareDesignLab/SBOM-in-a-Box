@@ -1,20 +1,15 @@
 package org.svip.sbomvex.database;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONArray;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
-import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.shared.metadata.Organization;
-import org.svip.sbomanalysis.qualityattributes.pipelines.schemas.CycloneDX14.CDX14Pipeline;
-import org.svip.sbomfactory.serializers.deserializer.CDX14JSONDeserializer;
+
 import org.svip.sbomvex.model.VEX;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,10 +17,6 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 class OSVClientTest {
-
-    private final String CDX_14_JSON_SBOM = System.getProperty("user.dir") +
-            "/src/test/java/org/svip/sbomfactory/serializers/sample_boms/cdx_json/sbom.alpine.json";
-
     OSVClient client = new OSVClient();
 
     @Test
