@@ -2,12 +2,16 @@ package org.svip.sbomanalysis.comparison;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbomanalysis.comparison.conflicts.Comparable;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 
 import java.util.*;
+
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISSING;
 
 
 /**
@@ -33,8 +37,43 @@ public class DiffReport {
         public Comparison(SBOM target, SBOM other) {
             // Compare metadata
             this.componentConflicts.put(METADATA_TAG, target.compare(other));
-        }
 
+            // Round 1: Compare target against other if equal
+            for(Component targetComponent : target.getComponents()){
+                boolean compared = false;   // track if comparison occurred
+
+                // Test targetValue against otherValue
+                for(Component otherComponent : other.getComponents()){
+
+                    // If equal, compare
+                    if(targetComponent.equals(otherComponent)){
+                        this.componentConflicts.put(targetComponent.getName(), targetComponent.compare(otherComponent));
+                        compared = true;
+                    }
+                }
+                // targetValue not in other set
+                if(!compared)
+                    this.missingComponents.add(targetComponent.getName());
+            }
+
+            // Round 2: Don't compare other against target, just checking if present
+            for(Component otherComponent : other.getComponents()){
+                boolean compared = false;   // track if comparison occurred
+
+                // Attempt to see if otherValue exists in target
+                for(Component targetComponent : target.getComponents()){
+                    // otherValue is in targetValue
+                    if (otherComponent.equals(targetComponent)) {
+                        compared = true;
+                        break;
+                    }
+                }
+
+                // otherValue not in target set
+                if(!compared)
+                    this.missingComponents.add(otherComponent.getName());
+            }
+        }
     }
 
 
