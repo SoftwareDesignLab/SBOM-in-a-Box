@@ -5,6 +5,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v5.1.4-alpha] - (7/19/2023)
 
+### Added
+- QA API Endpoint
+
 ### Changed
 - `SBOMBuilders` instantiated with empty sets and hashmaps instead of null values
 - `.buildAndFlush()` methods now clear sets/hashmaps instead of setting to null
