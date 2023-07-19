@@ -3,6 +3,7 @@ package org.svip.sbom.model.objects.SPDX23;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
@@ -77,6 +78,7 @@ public class SPDX23FileObject implements SPDX23File {
     public String getFileNotice() {
         return this.fileNotice;
     }
+
     /**
      * Get the file's type
      * @return the file's type
@@ -168,43 +170,67 @@ public class SPDX23FileObject implements SPDX23File {
         this.attributionText = attributionText;
 
     }
+
+
+    @Override
     public List<Conflict> compare(Component other) {
         ConflictFactory cf = new ConflictFactory();
+
         // NAME
+        // shouldn't occur
         cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
+
         // AUTHOR
         cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
+
         // Licenses
-        cf.addConflicts(this.licenses.compare(other.getLicenses()));
-        // HASHES
-        cf.compareHashes("Hash", this.hashes, other.getHashes());
-//        // TODO SWIDs?
+        if(cf.comparable("License", this.licenses, other.getLicenses()))
+            cf.addConflicts(this.licenses.compare(other.getLicenses()));
+
+        // Copyright
+        cf.addConflict("Copyright", MISC_MISMATCH, this.copyright, other.getCopyright());
+
         return cf.getConflicts();
     }
-    public List<Conflict> compare(SPDX23Component other) {
+
+    /**
+     * Compare against another SPDX 2.3 Package
+     *
+     * @param other Other SPDX 2.3 Package to compare against
+     * @return List of conflicts
+     */
+    @Override
+    public List<Conflict> compare(SPDX23Component other){
         ConflictFactory cf = new ConflictFactory();
-        // NAME
-        cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
-        // AUTHOR
-        cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
-        // Licenses
-        cf.addConflicts(this.licenses.compare(other.getLicenses()));
-        // HASHES
-        cf.compareHashes("Hash", this.hashes, other.getHashes());
-//        // TODO SWIDs?
+
+        // Comment
+        cf.addConflict("Comment", MISC_MISMATCH, this.comment, other.getComment());
+
+        // Attribution Text
+        cf.addConflict("Attribution Text", MISC_MISMATCH, this.attributionText, other.getAttributionText());
+
+        // Compare component level details
+        cf.addConflicts( compare((Component) other));
+
         return cf.getConflicts();
     }
-    public List<Conflict> compare(SPDX23File other) {
+
+    /**
+     * Compare against another SPDX 2.3 File
+     *
+     * @param other Other SPDX 2.3 File to compare against
+     * @return List of conflicts
+     */
+    @Override
+    public List<Conflict> compare(SPDX23File other){
         ConflictFactory cf = new ConflictFactory();
-        // NAME
-        cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
-        // AUTHOR
-        cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
-        // Licenses
-        cf.addConflicts(this.licenses.compare(other.getLicenses()));
-        // HASHES
-        cf.compareHashes("Hash", this.hashes, other.getHashes());
-//        // TODO SWIDs?
+
+        // File Notice
+        cf.addConflict("File Notice", MISC_MISMATCH, this.fileNotice, other.getFileNotice());
+
+        // Compare component level details
+        cf.addConflicts( compare((SPDX23Component) other));
+
         return cf.getConflicts();
     }
 }
