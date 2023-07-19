@@ -239,7 +239,7 @@ public class SVIPComponentBuilderTest {
         test_packageBuilder.setDescription(description);
 
         test_file = test_packageBuilder.buildAndFlush();
-        assertEquals(description, test_file.getDescription());
+        assertEquals(description.getSummary(), test_file.getDescription().getSummary());
     }
 
     @Test
