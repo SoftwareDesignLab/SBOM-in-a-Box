@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>PackageWithGacReferences</id>
+        <version>1.0</version>
+        <authors>Author here</authors>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>
+            A package that has framework assemblyReferences depending
+            on the target framework.
+        </description>
+        <frameworkAssemblies>
+            <frameworkAssembly assemblyName="System.Web" targetFramework="net40" />
+        </frameworkAssemblies>
+    </metadata>
+</package>
