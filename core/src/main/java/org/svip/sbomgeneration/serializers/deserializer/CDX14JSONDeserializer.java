@@ -235,7 +235,7 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
         if (licenses != null) {
             LicenseCollection componentLicenses = new LicenseCollection();
             for (JsonNode license : licenses) {
-                    if (license.get("name") == null) continue;
+                if (license.get("name") == null) continue;
                 componentLicenses.addLicenseInfoFromFile(license.get("name").asText());
             }
 

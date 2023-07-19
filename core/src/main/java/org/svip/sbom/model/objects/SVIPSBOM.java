@@ -18,7 +18,14 @@ import java.util.*;
 
 import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
 import java.util.*;
+import java.util.*;
+
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
+import java.util.*;
 import java.util.HashSet;
+
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
+import java.util.List;
 
 import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
 

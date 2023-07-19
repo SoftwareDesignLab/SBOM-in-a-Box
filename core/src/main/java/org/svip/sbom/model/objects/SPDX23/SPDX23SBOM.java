@@ -3,6 +3,8 @@ package org.svip.sbom.model.objects.SPDX23;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.shared.metadata.CreationData;
+import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.util.ExternalReference;
 

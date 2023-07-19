@@ -189,7 +189,6 @@ public class CreationData implements Comparable{
         if(cf.comparable("Supplier", this.supplier, other.getSupplier()))
             cf.addConflicts(this.supplier.compare(other.getSupplier()));
 
-
         // todo
         //  properties
         return cf.getConflicts();
