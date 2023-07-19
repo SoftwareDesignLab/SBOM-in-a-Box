@@ -1,7 +1,7 @@
 package org.svip.sbomvex.database;
 
-
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.generics.SBOMPackage;
@@ -21,6 +21,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * file: OSVClient.java
@@ -61,17 +62,10 @@ public class OSVClient implements VulnerabilityDBClient {
                         .uri(URI.create(getVulnsByID)).GET().build();
             }
             // send the response and get the APIs response
-            HttpResponse<String> apiResponse = httpClient.send(request,
+            CompletableFuture<HttpResponse<String>> apiResponse = httpClient.sendAsync(request,
                     HttpResponse.BodyHandlers.ofString());
-            String responseBody = apiResponse.body();
-
-            if(apiResponse.statusCode() == 200){
-                ObjectMapper objectMapper = new ObjectMapper();
-                return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(responseBody);
-            }
-            else{
-                return null;
-            }
+            String responseBody = apiResponse.get().body();
+            return responseBody.replace("{\"vulns\":", "");
         }
         // error with the HttpRequest occurs
         catch (Exception e) {
@@ -173,59 +167,94 @@ public class OSVClient implements VulnerabilityDBClient {
         vexBuilder.setTimeLastUpdated(creationTime);
 
         for(Component c : sbom.getComponents()){
-            String jsonResponse;
+            String response;
             // cast to SBOMPackage to check for purls
             SBOMPackage component = (SBOMPackage) c;
             Set<String> purls = component.getPURLs();
 
             // if component has no purls, construct API request with
             // name and version
-            if(purls.isEmpty()){
+            if(purls == null || purls.isEmpty()){
                 String name = component.getName();
                 String version = component.getVersion();
-                jsonResponse = getOSVByNameVersionPost(name, version);
+                response = getOSVByNameVersionPost(name, version);
+                // some components require its group and name to search
+                // for vulnerabilities
+                if(response == null || response.equals("{}")){
+                    name = component.getAuthor() + ":" + component.getName();
+                    response = getOSVByNameVersionPost(name, version);
+                }
             }
             else{
+                // use the purl for the component instead to search for
+                // vulnerabilities
                 ArrayList<String> purlList = new ArrayList<>(purls);
                 String purlString = purlList.get(0);
-                jsonResponse = getOSVByPURLPost(purlString);
+                response = getOSVByPURLPost(purlString);
             }
 
             // if jsonResponse did not have an error and is not empty,
             // create a vex statement for every vulnerability in response
-            if(jsonResponse != null && !jsonResponse.equals("{}")){
-                //TODO extract info from response to get VEX Statements
-
-
-                VEXStatement vexStatement = generateVEXStatement();
-                vexBuilder.addVEXStatement(vexStatement);
+            if(response != null && !response.equals("{}")){
+                JSONArray vulns = new JSONArray(response);
+                for(int i=0; i<vulns.length(); i++){
+                    // get the singular vulnerability and create a
+                    // VEXStatement for it
+                    JSONObject vulnerability = vulns.getJSONObject(i);
+                    VEXStatement vexStatement =
+                            generateVEXStatement(vulnerability, component);
+                    vexBuilder.addVEXStatement(vexStatement);
+                }
             }
-
         }
 
         return vexBuilder.build();
     }
 
+    /**
+     * Build a new VEX Statement for a VEX Document
+     * @param vulnerabilityBody the vulnerability body from the APIs
+     * response to turn into a VEXStatement
+     * @return a new VEXStatement
+     */
+    public VEXStatement generateVEXStatement(JSONObject vulnerabilityBody, SBOMPackage c){
+        VEXStatement.Builder statement = new VEXStatement.Builder();
+        // add general fields to the statement
+        statement.setStatementID(vulnerabilityBody.getString("id"));
+        statement.setStatementVersion("1.0");
+        statement.setStatementFirstIssued(vulnerabilityBody
+                .getString("published"));
+        statement.setStatementLastUpdated(vulnerabilityBody
+                .getString("modified"));
 
-    public VEXStatement generateVEXStatement(){
-        return null;
-    }
+        // Set the statement's vulnerability
+        JSONArray aliases = vulnerabilityBody.getJSONArray("aliases");
+        String vulnID = aliases.getString(0);
+        String vulnDesc;
+        if(!vulnerabilityBody.has("summary")){
+            vulnDesc = vulnerabilityBody.getString("details");
+        }
+        else{
+            vulnDesc = vulnerabilityBody.getString("summary");
+        }
+        statement.setVulnerability(new Vulnerability(vulnID, vulnDesc));
 
-    public Status createAffectedStatus(String actionStatement){
-        return new Status(VulnStatus.AFFECTED, null, actionStatement,
-                null);
-    }
+        //set the statement's affected status
+        statement.setStatus(new Status(VulnStatus.AFFECTED,
+                Justification.NOT_APPLICABLE, vulnerabilityBody
+                .getString("details"), "N/A"));
 
-    public Status createNotAffectedStatus(Justification justification, String impactStatement){
-        return new Status(VulnStatus.NOT_AFFECTED, justification, null,
-                impactStatement);
-    }
-
-    public Product createProduct(String productID, String supplier){
-        return new Product(productID, supplier);
-    }
-
-    public Vulnerability createVulnerability(String id, String description){
-        return new Vulnerability(id, description);
+        //Get all products and add all to the VEX Statement
+        String supplier = c.getSupplier().getName();
+        JSONArray packages = vulnerabilityBody.getJSONArray("affected");
+        for(int i = 0; i<packages.length(); i++){
+            JSONObject vulnPackage = packages.getJSONObject(i);
+            JSONObject packageInfo = vulnPackage.getJSONObject("package");
+            String packageID = packageInfo.getString("name")
+                    + ":" + packageInfo.getString("ecosystem")
+            + ":" + c.getVersion();
+            statement.addProduct(new Product(packageID, supplier));
+        }
+        return statement.build();
     }
 }
