@@ -6,14 +6,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
+import org.svip.api.utils.Utils;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @ExtendWith(MockitoExtension.class)
 public class APITest {
@@ -43,6 +42,51 @@ public class APITest {
             + "/src/test/java/org/svip/api/sample_sboms/CDXGradlePlugin_deployed_cdx.json";
     private final static String syftSPDX23JSON = System.getProperty("user.dir")
             + "/src/test/java/org/svip/api/sample_sboms/syft-0.80.0-source-spdx-json.json";
+
+    /*
+    Sample projects for parsers
+     */
+
+    public static class SampleProject {
+        private final String dir = System.getProperty("user.dir")
+                + "/src/test/java/org/svip/api/sample_projects/";
+        public String type;
+        public String[] sourceFileNames;
+        private boolean gotten = false;
+
+        public SampleProject(String type, String[] sourceFileNames) {
+            this.type = type;
+            this.sourceFileNames = sourceFileNames;
+        }
+
+        public String[] getProjectFiles() {
+            if (!gotten)
+                for (int i = 0; i < sourceFileNames.length; i++)
+                    sourceFileNames[i] = dir + type + "/" + sourceFileNames[i];
+            gotten = true;
+
+            return sourceFileNames;
+        }
+    }
+
+    private static final SampleProject java = new SampleProject("Java",
+            new String[]{"lib/Foo.java", "Bar.java", "build.gradle", "pom.xml"});
+
+    private static final SampleProject foobarCSharp =
+            new SampleProject("CSharp/Bar", new String[]{"foobar.cs", "sample.csproj"});
+
+    private static final SampleProject nugetCSharp =
+            new SampleProject("CSharp/Nuget", new String[]{"ErrLog.IO.nuspec", "Logger.cs",
+                    "WithFrameworkAssembliesAndDependencies.nuspec", "nuspec.xsd"});
+    private static final SampleProject empty =
+            new SampleProject("Empty", new String[]{"empty.cs"});
+    private static final SampleProject subProcess =
+            new SampleProject("SubProcess", new String[]{"subprocess.py"});
+    private static final SampleProject ruby =
+            new SampleProject("Ruby", new String[]{"foo.rb"});
+    private static final SampleProject JS =
+            new SampleProject("JS", new String[]{"lib/bar.js", "lib/foo.js", "index.js"});
+
     @BeforeEach
     public void setup() {
         // Init controller with mocked repository
@@ -87,4 +131,65 @@ public class APITest {
 
         return resultMap;
     }
+
+    public static Map<Map<Long, String>, SBOMFile[]> getTestProjectMap() throws IOException {
+
+        ArrayList<SBOMFile[]> files = new ArrayList<>();
+        ArrayList<String> projectNames = new ArrayList<>();
+
+        // java
+        SBOMFile[] sbomFiles = Utils.configureProjectTest(java.getProjectFiles());
+        files.add(sbomFiles);
+        projectNames.add(java.type);
+
+        // foobar cs proj
+        sbomFiles = Utils.configureProjectTest(foobarCSharp.getProjectFiles());
+        files.add(sbomFiles);
+        projectNames.add(foobarCSharp.type);
+
+        // foobar cs proj
+        sbomFiles = Utils.configureProjectTest(nugetCSharp.getProjectFiles());
+        files.add(sbomFiles);
+        projectNames.add(nugetCSharp.type);
+
+        // empty cs proj
+        sbomFiles = Utils.configureProjectTest(empty.getProjectFiles());
+        files.add(sbomFiles);
+        projectNames.add(empty.type);
+
+        // python
+        sbomFiles = Utils.configureProjectTest(subProcess.getProjectFiles());
+        files.add(sbomFiles);
+        projectNames.add(subProcess.type);
+
+        // Ruby
+        sbomFiles = Utils.configureProjectTest(ruby.getProjectFiles());
+        files.add(sbomFiles);
+        projectNames.add(ruby.type);
+
+        // JS
+        sbomFiles = Utils.configureProjectTest(JS.getProjectFiles());
+        files.add(sbomFiles);
+        projectNames.add(JS.type);
+
+        final Map<Map<Long, String>, SBOMFile[]> resultMap = new HashMap<>();
+        for (int i = 0; i < files.size(); i++) {
+
+            HashMap<Long, String> idMap = new HashMap<>();
+            long projectId = i * 10L; // project id
+            idMap.put(projectId, projectNames.get(i));
+            resultMap.put(idMap, files.get(i));
+
+            int j = 0;
+            for (SBOMFile s : resultMap.get(idMap)
+            ) {
+                s.setId(projectId + j); // Set ID for testing purposes
+                j++;
+            }
+        }
+
+        return resultMap;
+
+    }
+
 }
