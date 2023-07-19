@@ -9,7 +9,6 @@ import org.svip.sbomvex.vexstatement.status.Justification;
 import org.svip.sbomvex.vexstatement.status.Status;
 import org.svip.sbomvex.vexstatement.status.VulnStatus;
 
-
 import java.io.IOException;
 
 

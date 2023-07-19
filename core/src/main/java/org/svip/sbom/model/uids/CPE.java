@@ -2,7 +2,7 @@ package org.svip.sbom.model.uids;
 
 import jregex.Matcher;
 import jregex.Pattern;
-import org.svip.sbomfactory.generators.utils.Debug;
+import org.svip.utils.Debug;
 
 import java.util.ArrayList;
 import java.util.Arrays;

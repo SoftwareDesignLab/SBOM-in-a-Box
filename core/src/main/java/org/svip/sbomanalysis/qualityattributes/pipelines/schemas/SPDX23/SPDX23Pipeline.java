@@ -7,13 +7,13 @@ import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.sbomanalysis.qualityattributes.tests.*;
-import org.svip.sbomanalysis.qualityattributes.tests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
 import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.schemas.SPDX23.SPDX23Tests;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.ResultFactory;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.INFO;
+import org.svip.sbomanalysis.qualityattributes.tests.*;
+import org.svip.sbomanalysis.qualityattributes.tests.enumerations.ATTRIBUTE;
 
 import java.util.*;
 

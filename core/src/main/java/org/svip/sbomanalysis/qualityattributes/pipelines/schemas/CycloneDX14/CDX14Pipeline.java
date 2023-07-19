@@ -8,16 +8,18 @@ import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbom.model.uids.Hash;
-import org.svip.sbomanalysis.qualityattributes.tests.*;
-import org.svip.sbomanalysis.qualityattributes.tests.enumerations.ATTRIBUTE;
 import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
 import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.schemas.CycloneDX14.CDX14Tests;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.ResultFactory;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.INFO;
+import org.svip.sbomanalysis.qualityattributes.tests.*;
+import org.svip.sbomanalysis.qualityattributes.tests.enumerations.ATTRIBUTE;
 
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * file: CDX14Pipeline.java
