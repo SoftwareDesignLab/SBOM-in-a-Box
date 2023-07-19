@@ -26,13 +26,13 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
     private String uid;
     private String version;
     private String specVersion;
-    private Set<String> licenses;
+    private Set<String> licenses = new HashSet<>();
     private CreationData creationData;
     private String documentComment;
     private Component rootComponent;
-    private Set<Component> components;
-    private HashMap<String, Set<Relationship>> relationships;
-    private Set<ExternalReference> externalReferences;
+    private Set<Component> components = new HashSet<>();
+    private HashMap<String, Set<Relationship>> relationships = new HashMap<>();
+    private Set<ExternalReference> externalReferences = new HashSet<>();
     /** Set<VEX> vulnerabilities;
     Set<Snippet> snippets;
     Set<LicenseInfo> additionalLicenseInformation;
@@ -77,10 +77,6 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
     @Override
     public SPDX23Builder addLicense(String license)
     {
-        // initialize the hash set
-        if (this.licenses == null) {
-            this.licenses = new HashSet<String>();
-        }
         this.licenses.add(license);
         return this;
     }
@@ -107,20 +103,12 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
 
     @Override
     public SPDX23Builder addComponent(Component component) {
-        // initialize the hash set
-        if (this.components == null) {
-            this.components = new HashSet<Component>();
-        }
         this.components.add(component);
         return this;
     }
 
     @Override
     public SPDX23Builder addSPDX23Component(SPDX23Component component) {
-        // initialize the hash set
-        if (this.components == null) {
-            this.components = new HashSet<Component>();
-        }
         this.components.add(component);
         return this;
     }
@@ -128,9 +116,6 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
     @Override
     public SPDX23Builder addRelationship(String componentName, Relationship relationship)
     {
-        if (this.relationships == null)
-            this.relationships = new HashMap<>();
-
         if( !relationships.containsKey(componentName))
             this.relationships.put(componentName, new HashSet<>());
 
@@ -141,8 +126,6 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
     @Override
     public SPDX23Builder addExternalReference(ExternalReference externalReference)
     {
-        if(this.externalReferences == null)
-            this.externalReferences = new HashSet<ExternalReference>();
         this.externalReferences.add(externalReference);
         return this;
     }
