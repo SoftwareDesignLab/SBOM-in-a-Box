@@ -52,8 +52,10 @@ public interface CDX14Package extends SBOMPackage, Component {
      */
 
     /**
-     * @param other
-     * @return component conflicts
+     * Compare against another CycloneDX 1.4 Package
+     *
+     * @param other Other CycloneDX 1.4 Package to compare against
+     * @return List of conflicts
      */
     List<Conflict> compare(CDX14Package other);
 }

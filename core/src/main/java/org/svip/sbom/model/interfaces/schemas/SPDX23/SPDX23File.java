@@ -22,8 +22,10 @@ public interface SPDX23File extends SPDX23Component{
     String getFileNotice();
 
     /**
-     * @param other
-     * @return component conflicts
+     * Compare against another SPDX 2.3 File
+     *
+     * @param other Other SPDX 2.3 File to compare against
+     * @return List of conflicts
      */
     List<Conflict> compare(SPDX23File other);
 }

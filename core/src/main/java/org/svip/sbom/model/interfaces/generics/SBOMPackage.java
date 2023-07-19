@@ -46,8 +46,10 @@ public interface SBOMPackage extends Component{
     Set<ExternalReference> getExternalReferences();
 
     /**
-     * @param other
-     * @return component conflicts
+     * Compare against another generic SBOM Package
+     *
+     * @param other Other SBOM Package to compare against
+     * @return List of conflicts
      */
     List<Conflict> compare(SBOMPackage other);
 }
