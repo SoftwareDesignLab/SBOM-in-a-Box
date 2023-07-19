@@ -1,13 +1,9 @@
-################# OSI Container v1.0.0
+#
+# File: Dockerfile
+# The Dockerfile to build and run the OSI Container v1.0.0.
+#
 # Author: Matt London
-
-# Use Ubuntu
-FROM ubuntu:latest
-
-# PHP install likes to ask questions, these variables say "No PHP, no questions for you"
-ENV DEBIAN_FRONTEND noninteractive
-ENV DEBCONF_NONINTERACTIVE_SEEN true
-ENV COMPOSER_ALLOW_SUPERUSER 1
+#
 
 ADD setup.sh setup.sh
 RUN ./setup.sh
