@@ -324,9 +324,9 @@ public class SVIPApiController {
      * @param format to convert to
      * @return generated SBOM
      */
-    @GetMapping("/generate")
-    public ResponseEntity<String> generate(@RequestBody SBOMFile[] files,
-                                           @RequestParam("name") String projectName,
+    @PostMapping("/generate/parsers")
+    public ResponseEntity<String> generateParsers(@RequestBody SBOMFile[] files,
+                                           @RequestParam("projectName") String projectName,
                                            @RequestParam("schema") SerializerFactory.Schema schema, // todo implement this schema + format params in /convert
                                            @RequestParam("format") SerializerFactory.Format format){
 
@@ -348,8 +348,9 @@ public class SVIPApiController {
             parserController.parseAll();
             parsed = parserController.buildSBOM(schema);
         } catch (Exception e) {
-            LOGGER.error(urlMsg + " error parsing into SBOM: " + e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            String error = "Error parsing into SBOM: " + e.getMessage();
+            LOGGER.error(urlMsg + " " + error);
+            return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
         }
 
         Serializer s;
@@ -358,12 +359,22 @@ public class SVIPApiController {
             s = SerializerFactory.createSerializer(schema,format, true);
             contents = s.writeToString(parsed);
         } catch (IllegalArgumentException | JsonProcessingException e) {
-            LOGGER.error(urlMsg + " error parsing into SBOM during serialization: " + e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            String error = "Error serializing parsed SBOM: " + e.getMessage();
+            LOGGER.error(urlMsg + " " + error);
+            return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
         }
 
         return Utils.encodeResponse(contents);
 
+    }
+
+    @PostMapping("/generate/osi")
+    public ResponseEntity<String> generateOSI(@RequestBody SBOMFile[] files,
+                                           @RequestParam("projectName") String projectName,
+                                           @RequestParam("schema") SerializerFactory.Schema schema, // todo implement this schema + format params in /convert
+                                           @RequestParam("format") SerializerFactory.Format format){
+        // TODO (separate branch)
+        return null;
     }
 
     //#region Deprecated Endpoints
