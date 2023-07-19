@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.generics.SBOMPackage;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbomvex.database.interfaces.VulnerabilityDBClient;
 import org.svip.sbomvex.model.VEX;
 import org.svip.sbomvex.model.VEXType;
@@ -53,7 +54,8 @@ public class OSVClient implements VulnerabilityDBClient {
             if(requestMethod.equals("post")){
                 request = HttpRequest.newBuilder()
                         .uri(URI.create(POST_ENDPOINT))
-                        .POST(HttpRequest.BodyPublishers.ofString(jsonBody)).build();
+                        .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                        .build();
             }
             // only one request uses get, specific to OSV ID
             else{
@@ -62,8 +64,8 @@ public class OSVClient implements VulnerabilityDBClient {
                         .uri(URI.create(getVulnsByID)).GET().build();
             }
             // send the response and get the APIs response
-            CompletableFuture<HttpResponse<String>> apiResponse = httpClient.sendAsync(request,
-                    HttpResponse.BodyHandlers.ofString());
+            CompletableFuture<HttpResponse<String>> apiResponse = httpClient
+                    .sendAsync(request, HttpResponse.BodyHandlers.ofString());
             String responseBody = apiResponse.get().body();
             return responseBody.replace("{\"vulns\":", "");
         }
@@ -82,10 +84,12 @@ public class OSVClient implements VulnerabilityDBClient {
      * @return the response from the OSV API request
      */
     public String getOSVByNameVersionPost(String componentName, String componentVersion) {
-        String jsonBody = "{\"version\": \"" + componentVersion +
-        "\", \"package\": {\"name\": \"" +
-                componentName + "\"}}";
-        return getOSVResponse(jsonBody, "post");
+        JSONObject body = new JSONObject();
+        body.put("version", componentVersion);
+        JSONObject packageJSON = new JSONObject();
+        packageJSON.put("name", componentName);
+        body.put("package", packageJSON);
+        return getOSVResponse(body.toString(), "post");
     }
 
     /**
@@ -98,11 +102,13 @@ public class OSVClient implements VulnerabilityDBClient {
      */
     public String getOSVByNameVersionEcosystemPost(
             String componentName, String componentVersion, String ecosystem) {
-        String jsonBody = "{\"version\": \"" +
-                componentVersion + "\", \"package\": {\"name\": \"" +
-                componentName + "\", \"ecosystem\": " +   "\"" +
-                ecosystem + "\"}}";
-        return getOSVResponse(jsonBody, "post");
+        JSONObject body = new JSONObject();
+        body.put("version", componentVersion);
+        JSONObject packageJSON = new JSONObject();
+        packageJSON.put("name", componentName);
+        packageJSON.put("ecosystem", ecosystem);
+        body.put("package", packageJSON);
+        return getOSVResponse(body.toString(), "post");
     }
 
     /**
@@ -111,9 +117,11 @@ public class OSVClient implements VulnerabilityDBClient {
      * @return the response from the OSV API request
      */
     public String getOSVByPURLPost(String purlString) {
-        String jsonBody = "{\"package\": {\"purl\": \"" +
-                purlString + "\"}} ";
-        return getOSVResponse(jsonBody, "post");
+        JSONObject body = new JSONObject();
+        JSONObject packageJSON = new JSONObject();
+        packageJSON.put("purl", purlString);
+        body.put("package", packageJSON);
+        return getOSVResponse(body.toString(), "post");
     }
 
     /**
@@ -123,9 +131,9 @@ public class OSVClient implements VulnerabilityDBClient {
      * @return the response from the OSV API request
      */
     public String getOSVByCommitPost(String commitString) {
-        String jsonBody = "{\"commit\": \"" +
-                commitString + "\"} ";
-        return getOSVResponse(jsonBody, "post");
+        JSONObject body = new JSONObject();
+        body.put("commit", commitString);
+        return getOSVResponse(body.toString(), "post");
     }
 
     /**
@@ -168,42 +176,46 @@ public class OSVClient implements VulnerabilityDBClient {
 
         for(Component c : sbom.getComponents()){
             String response;
-            // cast to SBOMPackage to check for purls
-            SBOMPackage component = (SBOMPackage) c;
-            Set<String> purls = component.getPURLs();
+            // check that component is not an SPDX23File, as it does not
+            // have the necessary fields to search for vulnerabilities
+            if(!(c instanceof SPDX23File)){
+                // cast to SBOMPackage to check for purls
+                SBOMPackage component = (SBOMPackage) c;
+                Set<String> purls = component.getPURLs();
 
-            // if component has no purls, construct API request with
-            // name and version
-            if(purls == null || purls.isEmpty()){
-                String name = component.getName();
-                String version = component.getVersion();
-                response = getOSVByNameVersionPost(name, version);
-                // some components require its group and name to search
-                // for vulnerabilities
-                if(response == null || response.equals("{}")){
-                    name = component.getAuthor() + ":" + component.getName();
+                // if component has no purls, construct API request with
+                // name and version
+                if(purls == null || purls.isEmpty()){
+                    String name = component.getName();
+                    String version = component.getVersion();
                     response = getOSVByNameVersionPost(name, version);
+                    // some components require its group and name to search
+                    // for vulnerabilities
+                    if(response == null || response.equals("{}")){
+                        name = component.getAuthor() + ":" + component.getName();
+                        response = getOSVByNameVersionPost(name, version);
+                    }
                 }
-            }
-            else{
-                // use the purl for the component instead to search for
-                // vulnerabilities
-                ArrayList<String> purlList = new ArrayList<>(purls);
-                String purlString = purlList.get(0);
-                response = getOSVByPURLPost(purlString);
-            }
+                else{
+                    // use the purl for the component instead to search for
+                    // vulnerabilities
+                    ArrayList<String> purlList = new ArrayList<>(purls);
+                    String purlString = purlList.get(0);
+                    response = getOSVByPURLPost(purlString);
+                }
 
-            // if jsonResponse did not have an error and is not empty,
-            // create a vex statement for every vulnerability in response
-            if(response != null && !response.equals("{}")){
-                JSONArray vulns = new JSONArray(response);
-                for(int i=0; i<vulns.length(); i++){
-                    // get the singular vulnerability and create a
-                    // VEXStatement for it
-                    JSONObject vulnerability = vulns.getJSONObject(i);
-                    VEXStatement vexStatement =
-                            generateVEXStatement(vulnerability, component);
-                    vexBuilder.addVEXStatement(vexStatement);
+                // if jsonResponse did not have an error and is not empty,
+                // create a vex statement for every vulnerability in response
+                if(response != null && !response.equals("{}")){
+                    JSONArray vulns = new JSONArray(response);
+                    for(int i=0; i<vulns.length(); i++){
+                        // get the singular vulnerability and create a
+                        // VEXStatement for it
+                        JSONObject vulnerability = vulns.getJSONObject(i);
+                        VEXStatement vexStatement =
+                                generateVEXStatement(vulnerability, component);
+                        vexBuilder.addVEXStatement(vexStatement);
+                    }
                 }
             }
         }
@@ -215,9 +227,10 @@ public class OSVClient implements VulnerabilityDBClient {
      * Build a new VEX Statement for a VEX Document
      * @param vulnerabilityBody the vulnerability body from the APIs
      * response to turn into a VEXStatement
+     * @param c component to extract info for the VEX Statement
      * @return a new VEXStatement
      */
-    public VEXStatement generateVEXStatement(JSONObject vulnerabilityBody, SBOMPackage c){
+    private VEXStatement generateVEXStatement(JSONObject vulnerabilityBody, SBOMPackage c){
         VEXStatement.Builder statement = new VEXStatement.Builder();
         // add general fields to the statement
         statement.setStatementID(vulnerabilityBody.getString("id"));
