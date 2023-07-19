@@ -126,9 +126,6 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14PackageBuilder addExternalReferences(ExternalReference externalReference) {
-        if (this.externalReferences == null) {
-            this.externalReferences = new HashSet<ExternalReference>();
-        }
         this.externalReferences.add(externalReference);
         return this;
     }
@@ -141,9 +138,6 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14PackageBuilder addProperty(String name, String value) {
-        if (this.properties == null)
-            this.properties = new HashMap<>();
-
         if( !this.properties.containsKey(name))
             this.properties.put(name, new HashSet<>());
 
@@ -226,9 +220,6 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14PackageBuilder addHash(String algorithm, String hash) {
-        if (this.hashes == null) {
-            this.hashes = new HashMap<String, String>();
-        }
         this.hashes.put(algorithm, hash);
         return this;
     }
@@ -273,9 +264,6 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14PackageBuilder addCPE(String cpe) {
-        if (this.cpes == null) {
-            this.cpes = new HashSet<String>();
-        }
         this.cpes.add(cpe);
         return this;
     }
@@ -287,10 +275,6 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14PackageBuilder addPURL(String purl) {
-        // initialize the hash set
-        if (this.purls == null) {
-            this.purls = new HashSet<String>();
-        }
         this.purls.add(purl);
         return this;
     }
@@ -302,10 +286,6 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14PackageBuilder addExternalReference(ExternalReference externalReference) {
-        // initialize the hash set
-        if (this.externalReferences == null) {
-            this.externalReferences = new HashSet<ExternalReference>();
-        }
         this.externalReferences.add(externalReference);
         return this;
     }
@@ -339,18 +319,18 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
         this.name = null;
         this.licenses = null;
         this.copyright = null;
-        this.hashes = null;
+        this.hashes.clear();
         this.supplier = null;
         this.version = null;
         this.description = null;
-        this.cpes = null;
-        this.purls = null;
+        this.cpes.clear();
+        this.purls.clear();
         this.mimeType = null;
         this.publisher = null;
         this.scope = null;
         this.group = null;
-        this.externalReferences = null;
-        this.properties = null;
+        this.externalReferences.clear();
+        this.properties.clear();
         return component;
     }
 }
