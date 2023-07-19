@@ -283,8 +283,7 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
             cf.addConflicts(this.creationData.compare(other.getCreationData()));
 
         // Comparable Sets
-        if(cf.comparable("External Reference", this.externalReferences, other.getExternalReferences()))
-            cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
+        cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
         // todo
         // compare relationships
         // compare Vulns
