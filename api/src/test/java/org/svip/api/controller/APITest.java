@@ -8,6 +8,7 @@ import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -43,6 +44,30 @@ public class APITest {
             + "/src/test/java/org/svip/api/sample_sboms/CDXGradlePlugin_deployed_cdx.json";
     private final static String syftSPDX23JSON = System.getProperty("user.dir")
             + "/src/test/java/org/svip/api/sample_sboms/syft-0.80.0-source-spdx-json.json";
+
+    /*
+    Sample projects for parsers
+     */
+
+    public static class SampleProject{
+        private final String dir = System.getProperty("user.dir")
+                + "/src/test/java/org/svip/api/sample_sboms/";
+        public String type;
+        public String[] sourceFileNames;
+        public SampleProject(String type, String[] sourceFileNames){
+            this.type = type;
+            this.sourceFileNames = sourceFileNames;
+        }
+        public String[] getProjectFiles(){
+            for(int i = 0; i < sourceFileNames.length; i++)
+                sourceFileNames[i] = dir + type + "/" + sourceFileNames[i];
+            return sourceFileNames;
+        }
+    }
+
+    private static final SampleProject java = new SampleProject("java",
+            new String[]{"lib/foo", "Bar.java", "build.gradle", "pom.xml"});
+
     @BeforeEach
     public void setup() {
         // Init controller with mocked repository
@@ -87,4 +112,39 @@ public class APITest {
 
         return resultMap;
     }
+
+    public static Map<Long, SBOMFile[]> getTestProjectMap() throws IOException{
+
+        ArrayList<SBOMFile[]> files = new ArrayList<>();
+
+        // java
+        String[] projectFiles = java.getProjectFiles();
+        SBOMFile[] javaFiles = new SBOMFile[projectFiles.length];
+        for (int i = 0; i < projectFiles.length; i++) {
+            javaFiles[i] = new SBOMFile(projectFiles[i], new String(Files.readAllBytes(Paths.get(projectFiles[i]))));
+        }
+        files.add(javaFiles);
+
+
+
+        final Map<Long, SBOMFile[]> resultMap = new HashMap<>();
+        for (int i = 0; i < files.size(); i++) {
+
+            long projectId = i* 10L; // project id
+
+            resultMap.put(projectId, files.get((int) projectId));
+
+            int j = 0;
+            for (SBOMFile s: resultMap.get(projectId)
+                 ) {
+                s.setId(projectId + j); // Set ID for testing purposes
+                j++;
+            }
+
+        }
+
+        return resultMap;
+
+    }
+
 }

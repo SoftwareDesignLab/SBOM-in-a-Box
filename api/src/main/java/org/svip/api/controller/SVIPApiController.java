@@ -324,7 +324,7 @@ public class SVIPApiController {
      * @param format to convert to
      * @return generated SBOM
      */
-    @PostMapping("/generate/parsers")
+    @PostMapping("/generators/parsers")
     public ResponseEntity<String> generateParsers(@RequestBody SBOMFile[] files,
                                            @RequestParam("projectName") String projectName,
                                            @RequestParam("schema") SerializerFactory.Schema schema, // todo implement this schema + format params in /convert
@@ -368,7 +368,7 @@ public class SVIPApiController {
 
     }
 
-    @PostMapping("/generate/osi")
+    @PostMapping("/generators/osi")
     public ResponseEntity<String> generateOSI(@RequestBody SBOMFile[] files,
                                            @RequestParam("projectName") String projectName,
                                            @RequestParam("schema") SerializerFactory.Schema schema, // todo implement this schema + format params in /convert
