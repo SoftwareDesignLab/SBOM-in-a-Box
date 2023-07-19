@@ -20,15 +20,17 @@ services:
       - COMPOSER_ALLOW_SUPERUSER=1
     build:
       context: core/src/main/java/org/svip/sbomgeneration/osi
-      dockerfile: Dockerfile
+#      dockerfile: Dockerfile
       # Move setup script and controller into container and run setup
-#      dockerfile_inline: |
-#        FROM ubuntu:latest
-#        ADD ./core/src/main/java/org/svip/sbomgeneration/osi/setup.sh setup.sh
-#        RUN ./setup.sh
-#        COPY ./core/src/main/java/org/svip/sbomgeneration/osi/ContainerController.py
-#        /usr/local/bin/ContainerController.py
-#        CMD ["python3", "/usr/local/bin/ContainerController.py"]
+      # TODO can this top section be removed
+      dockerfile_inline: |
+        FROM ubuntu:latest
+        ENV DEBIAN_FRONTEND noninteractive
+        ENV DEBCONF_NONINTERACTIVE_SEEN true
+        ENV COMPOSER_ALLOW_SUPERUSER 1
+        COPY setup.sh ContainerController.py /usr/local/bin/
+        RUN /bin/bash -c /usr/local/bin/setup.sh
+        CMD ["python3", "/usr/local/bin/ContainerController.py"]    volumes:
     volumes:
       - type: bind
         source: core/src/main/java/org/svip/sbomgeneration/osi/bound_dir/code

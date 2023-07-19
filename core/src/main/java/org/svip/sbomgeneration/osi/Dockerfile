@@ -12,7 +12,7 @@ ENV DEBCONF_NONINTERACTIVE_SEEN true
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
 COPY setup.sh ContainerController.py /usr/local/bin/
-RUN /bin/bash -c /setup.sh
+RUN /bin/bash -c /usr/local/bin/setup.sh
 
 # Launch the python program
 CMD ["python3", "/usr/local/bin/ContainerController.py"]
