@@ -335,6 +335,11 @@ public class SVIPApiController {
 
         String urlMsg = "GENERATE /svip/generate?projectName=" + projectName;
 
+        if(schema == SerializerFactory.Schema.CDX14 && format == SerializerFactory.Format.TAGVALUE){
+            LOGGER.error(urlMsg + " cannot parse into " + schema + " with incompatible format " + format);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         for (SBOMFile f: files
              ) {
             if(f.hasNullProperties()){

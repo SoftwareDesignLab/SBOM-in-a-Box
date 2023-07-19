@@ -71,6 +71,8 @@ public class APITest {
     private static final SampleProject nugetCSharp =
             new SampleProject("CSharp/Nuget", new String[]{"ErrLog.IO.nuspec", "Logger.cs",
                     "WithFrameworkAssembliesAndDependencies.nuspec", "nuspec.xsd"});
+    private static final SampleProject empty =
+            new SampleProject("Empty", new String[]{"empty.cs"});
 
     @BeforeEach
     public void setup() {
@@ -136,6 +138,11 @@ public class APITest {
         sbomFiles = configureProjectTest(nugetCSharp.getProjectFiles());
         files.add(sbomFiles);
         projectNames.add(nugetCSharp.type);
+
+        // empty cs proj
+        sbomFiles = configureProjectTest(empty.getProjectFiles());
+        files.add(sbomFiles);
+        projectNames.add(empty.type);
 
         final Map<Map<Long,String>, SBOMFile[]> resultMap = new HashMap<>();
         for (int i = 0; i < files.size(); i++) {

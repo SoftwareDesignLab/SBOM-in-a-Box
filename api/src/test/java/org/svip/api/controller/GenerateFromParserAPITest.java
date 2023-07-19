@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.model.SBOMFile;
+import org.svip.sbom.model.uids.Hash;
 import org.svip.sbomgeneration.serializers.SerializerFactory;
 
 import java.io.IOException;
@@ -27,8 +28,43 @@ public class GenerateFromParserAPITest extends APITest {
         testMap = getTestProjectMap();
     }
 
-    // todo invalid schema+format test
-    // todo empty project test
+    /**
+     * Tests bad SBOMFiles
+     */
+    @Test
+    @DisplayName("Invalid format test")
+    public void sbomFilesNullPropertiesTest() {
+
+        SBOMFile[] noName = new SBOMFile[]{new SBOMFile("", "int i = 3;")};
+        SBOMFile[] noContents = new SBOMFile[]{new SBOMFile("name.java", "")};
+        Collection<SBOMFile[]> files = testMap.values();
+        SBOMFile[] empty = (SBOMFile[]) files.toArray()[2];
+
+        assertEquals(HttpStatus.BAD_REQUEST, controller.generateParsers(noName,
+                        "Java", SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).
+                getStatusCode());
+
+        assertEquals(HttpStatus.BAD_REQUEST, controller.generateParsers(noContents,
+                        "cs", SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).
+                getStatusCode());
+
+        assertEquals(HttpStatus.BAD_REQUEST, controller.generateParsers(empty,
+                        "empty", SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).
+                getStatusCode());
+
+    }
+
+    /**
+     * CDX does not support Tag Value format
+     */
+    @Test
+    @DisplayName("Convert to CDX tag value test")
+    public void CDXTagValueTest() {
+
+        assertEquals(HttpStatus.BAD_REQUEST, controller.generateParsers((SBOMFile[]) testMap.entrySet().toArray()[0],
+                        "Java", SerializerFactory.Schema.CDX14, SerializerFactory.Format.JSON).
+                getStatusCode());
+    }
 
     @Test
     @DisplayName("Generate from parser test")
@@ -50,7 +86,7 @@ public class GenerateFromParserAPITest extends APITest {
                 for (String format: formats
                      ) {
 
-                    if(schema.equals("CDX14") && format.equals("TAGVALUE"))
+                    if(schema.equals("CDX14") && format.equals("TAGVALUE") || projectName.equals("Empty"))
                         continue;
 
                     if((projectName.equals("Java") || projectName.equals("CSharp/Nuget"))
