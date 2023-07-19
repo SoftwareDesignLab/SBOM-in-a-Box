@@ -281,6 +281,14 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
         // compare relationships
         // compare Vulns
 
+        // Compare SPDX specific fields
+        if( other instanceof SPDX23SBOM)
+            cf.addConflicts( compare((SPDX23SBOM) other) );
+
+        // Compare CDX specific fields
+        if( other instanceof CDX14SBOM)
+            cf.addConflicts( compare((CDX14SBOM) other) );
+
         return cf.getConflicts();
     }
 
@@ -300,9 +308,6 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
 
         // todo
         // snippets, additional license info, annotation info
-
-        // Compare shared items
-        cf.addConflicts(compare((SBOM) other));
 
         return cf.getConflicts();
     }
@@ -324,8 +329,6 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
         // Compositions
         // Signature
 
-        // Compare shared items
-        cf.addConflicts(compare((SBOM) other));
         return cf.getConflicts();
     }
 }

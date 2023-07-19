@@ -3,6 +3,7 @@ package org.svip.sbom.model.objects.CycloneDX14;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Schema;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
@@ -249,6 +250,10 @@ public class CDX14SBOM implements CDX14Schema {
         // compare relationships
         // compare Vulns
 
+        // Compare CDX specific fields
+        if( other instanceof CDX14SBOM)
+            cf.addConflicts( compare((CDX14SBOM) other) );
+
         return cf.getConflicts();
     }
 
@@ -268,8 +273,6 @@ public class CDX14SBOM implements CDX14Schema {
         // Compositions
         // Signature
 
-        // Compare shared items
-        cf.addConflicts(compare((SBOM) other));
         return cf.getConflicts();
     }
 }
