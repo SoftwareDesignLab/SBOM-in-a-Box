@@ -137,7 +137,7 @@ public class Utils {
     }
 
     /**
-     * Configure SBOMFiles from project source files
+     * Helper function for APITest
      *
      * @param projectFiles project source files
      * @return array of SBOMFiles we can use to test
