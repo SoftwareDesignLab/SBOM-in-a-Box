@@ -61,8 +61,10 @@ public interface SPDX23Package extends SBOMPackage, SPDX23Component {
     String getValidUntilDate();
 
     /**
-     * @param other
-     * @return component conflicts
+     * Compare against another SPDX 2.3 Package
+     *
+     * @param other Other SPDX 2.3 Package to compare against
+     * @return List of conflicts
      */
     List<Conflict> compare(SPDX23Package other);
 }

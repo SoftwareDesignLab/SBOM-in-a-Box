@@ -289,6 +289,14 @@ public class CDX14ComponentObject implements CDX14Package {
         this.properties = properties;
 
     }
+
+    /**
+     * Compare against another generic component
+     *
+     * @param other Other Component to compare against
+     * @return List of conflicts
+     */
+    @Override
     public List<Conflict> compare(Component other) {
         ConflictFactory cf = new ConflictFactory();
         // NAME
