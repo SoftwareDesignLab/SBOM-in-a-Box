@@ -202,7 +202,7 @@ public class OSI {
 
         private final String osiDockerfile;
         private final String osiBoundDir;
-        private final String OSI_CONTAINER_NAME = "OSI-Container";
+        private final String OSI_CONTAINER_NAME = "svip-osi";
 
         // Docker Components
         private final DockerClient dockerClient;

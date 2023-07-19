@@ -8,6 +8,14 @@
 
 services:
 
+  # OSI container
+  osi:
+    container_name: svip-osi
+    restart: unless-stopped
+    build:
+      context: core/src/main/java/org/svip/sbomgeneration/osi
+      dockerfile: core/src/main/java/org/svip/sbomgeneration/osi/Dockerfile
+
   # MySQL server
   mysql:
     container_name: svip-mysql

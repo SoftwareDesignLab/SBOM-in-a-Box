@@ -1,4 +1,6 @@
 ################# OSI Container v1.0.0
+# Author: Matt London
+
 # Use Ubuntu
 FROM ubuntu:latest
 
