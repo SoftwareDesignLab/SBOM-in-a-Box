@@ -34,13 +34,13 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     private String name;
 
     /**Component licenses*/
-    private LicenseCollection licenses;
+    private LicenseCollection licenses = new LicenseCollection();
 
     /**Component copyright*/
     private String copyright;
 
     /**Component hashes*/
-    private HashMap<String, String> hashes;
+    private HashMap<String, String> hashes = new HashMap<>();
 
     /**Component supplier*/
     private Organization supplier;
@@ -52,13 +52,13 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     private Description description;
 
     /**Component CPEs*/
-    private Set<String> cpes;
+    private Set<String> cpes = new HashSet<>();
 
     /**Component PURLs*/
-    private Set<String> purls;
+    private Set<String> purls = new HashSet<>();
 
     /**Component external references*/
-    private Set<ExternalReference> externalReferences;
+    private Set<ExternalReference> externalReferences = new HashSet<>();
 
     /**Component mime type*/
     private String mimeType;
@@ -73,7 +73,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     private String group;
 
     /**Component properties*/
-    private HashMap<String, Set<String>> properties;
+    private HashMap<String, Set<String>> properties = new HashMap<>();
 
     /**
      * Set the component's mime type
