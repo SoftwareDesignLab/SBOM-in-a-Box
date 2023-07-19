@@ -1,0 +1,309 @@
+{
+  "bomFormat" : "CycloneDX",
+  "specVersion" : "1.4",
+  "version" : "1.0.0",
+  "serialNumber" : "12345678",
+  "metadata" : {
+    "timestamp" : "TEST TIMESTAMP",
+    "tools" : [ {
+      "vendor" : "SVIP",
+      "name" : "SVIP Serializer",
+      "version" : "1.0.0",
+      "hashes" : [ {
+        "alg" : "SHA256",
+        "content" : "hash"
+      } ]
+    } ],
+    "authors" : [ {
+      "name" : "Test Author",
+      "email" : "author@publisher.xyz",
+      "phone" : "123-456-7890"
+    } ],
+    "manufacture" : {
+      "name" : "Manufacturer",
+      "url" : "svip.xyz",
+      "contact" : [ {
+        "name" : "SVIP",
+        "email" : "manufacturer@svip.xyz",
+        "phone" : "123-456-7890"
+      } ]
+    },
+    "supplier" : {
+      "name" : "Supplier",
+      "url" : "svip.xyz",
+      "contact" : [ {
+        "name" : "Supplier",
+        "email" : "supplier@svip.xyz",
+        "phone" : "123-456-7890"
+      } ]
+    },
+    "properties" : [ {
+      "name" : "creatorComment",
+      "value" : "This SBOM was created for serializer testing"
+    }, {
+      "name" : "creatorComment",
+      "value" : "This SBOM was generated using the SVIP serializer tooling."
+    }, {
+      "name" : "testProperty",
+      "value" : "testValue"
+    } ],
+    "licenses" : [ {
+      "name" : "MIT"
+    } ],
+    "component" : {
+      "bom-ref" : "uid0",
+      "name" : "COMPONENT 0",
+      "type" : "type0",
+      "mime-type" : "mimeType0",
+      "group" : "group0",
+      "version" : "version0",
+      "scope" : "scope0",
+      "copyright" : "copyright0",
+      "cpe" : "cpe0",
+      "purl" : "purl0",
+      "supplier" : {
+        "name" : "SVIP0",
+        "url" : "0.svip.xyz",
+        "contact" : [ {
+          "name" : "SVIP",
+          "email" : "svip@svip.xyz",
+          "phone" : "123-456-7890"
+        } ]
+      },
+      "author" : "author0",
+      "publisher" : "publisher0",
+      "description" : "Summary: summary0 | Details: extendedDescription0",
+      "hashes" : [ {
+        "alg" : "SHA256",
+        "content" : "hash0"
+      } ],
+      "licenses" : [ {
+        "name" : "licenseFileText0"
+      }, {
+        "name" : "declared0"
+      }, {
+        "name" : "concluded0"
+      } ],
+      "externalReferences" : [ {
+        "url" : "0.svip.xyz",
+        "comment" : "Category: testCategory",
+        "type" : "testRef0",
+        "hashes" : [ {
+          "alg" : "SHA256",
+          "content" : "hash0"
+        } ]
+      } ],
+      "releaseNotes" : "Release Date: releaseDate0",
+      "properties" : [ {
+        "name" : "property0",
+        "value" : "value0"
+      } ]
+    }
+  },
+  "components" : [ {
+    "bom-ref" : "uid2",
+    "name" : "COMPONENT 2",
+    "type" : "type2",
+    "mime-type" : "mimeType2",
+    "group" : "group2",
+    "version" : "version2",
+    "scope" : "scope2",
+    "copyright" : "copyright2",
+    "cpe" : "cpe2",
+    "purl" : "purl2",
+    "supplier" : {
+      "name" : "SVIP2",
+      "url" : "2.svip.xyz",
+      "contact" : [ {
+        "name" : "SVIP",
+        "email" : "svip@svip.xyz",
+        "phone" : "123-456-7890"
+      } ]
+    },
+    "author" : "author2",
+    "publisher" : "publisher2",
+    "description" : "Summary: summary2 | Details: extendedDescription2",
+    "hashes" : [ {
+      "alg" : "SHA256",
+      "content" : "hash2"
+    } ],
+    "licenses" : [ {
+      "name" : "concluded2"
+    }, {
+      "name" : "declared2"
+    }, {
+      "name" : "licenseFileText2"
+    } ],
+    "externalReferences" : [ {
+      "url" : "2.svip.xyz",
+      "comment" : "Category: testCategory",
+      "type" : "testRef2",
+      "hashes" : [ {
+        "alg" : "SHA256",
+        "content" : "hash2"
+      } ]
+    } ],
+    "releaseNotes" : "Release Date: releaseDate2",
+    "properties" : [ {
+      "name" : "property2",
+      "value" : "value2"
+    } ]
+  }, {
+    "bom-ref" : "uid3",
+    "name" : "COMPONENT 3",
+    "type" : "type3",
+    "mime-type" : "mimeType3",
+    "group" : "group3",
+    "version" : "version3",
+    "scope" : "scope3",
+    "copyright" : "copyright3",
+    "cpe" : "cpe3",
+    "purl" : "purl3",
+    "supplier" : {
+      "name" : "SVIP3",
+      "url" : "3.svip.xyz",
+      "contact" : [ {
+        "name" : "SVIP",
+        "email" : "svip@svip.xyz",
+        "phone" : "123-456-7890"
+      } ]
+    },
+    "author" : "author3",
+    "publisher" : "publisher3",
+    "description" : "Summary: summary3 | Details: extendedDescription3",
+    "hashes" : [ {
+      "alg" : "SHA256",
+      "content" : "hash3"
+    } ],
+    "licenses" : [ {
+      "name" : "concluded3"
+    }, {
+      "name" : "declared3"
+    }, {
+      "name" : "licenseFileText3"
+    } ],
+    "externalReferences" : [ {
+      "url" : "3.svip.xyz",
+      "comment" : "Category: testCategory",
+      "type" : "testRef3",
+      "hashes" : [ {
+        "alg" : "SHA256",
+        "content" : "hash3"
+      } ]
+    } ],
+    "releaseNotes" : "Release Date: releaseDate3",
+    "properties" : [ {
+      "name" : "property3",
+      "value" : "value3"
+    } ]
+  }, {
+    "bom-ref" : "uid1",
+    "name" : "COMPONENT 1",
+    "type" : "type1",
+    "mime-type" : "mimeType1",
+    "group" : "group1",
+    "version" : "version1",
+    "scope" : "scope1",
+    "copyright" : "copyright1",
+    "cpe" : "cpe1",
+    "purl" : "purl1",
+    "supplier" : {
+      "name" : "SVIP1",
+      "url" : "1.svip.xyz",
+      "contact" : [ {
+        "name" : "SVIP",
+        "email" : "svip@svip.xyz",
+        "phone" : "123-456-7890"
+      } ]
+    },
+    "author" : "author1",
+    "publisher" : "publisher1",
+    "description" : "Summary: summary1 | Details: extendedDescription1",
+    "hashes" : [ {
+      "alg" : "SHA256",
+      "content" : "hash1"
+    } ],
+    "licenses" : [ {
+      "name" : "concluded1"
+    }, {
+      "name" : "licenseFileText1"
+    }, {
+      "name" : "declared1"
+    } ],
+    "externalReferences" : [ {
+      "url" : "1.svip.xyz",
+      "comment" : "Category: testCategory",
+      "type" : "testRef1",
+      "hashes" : [ {
+        "alg" : "SHA256",
+        "content" : "hash1"
+      } ]
+    } ],
+    "releaseNotes" : "Release Date: releaseDate1",
+    "properties" : [ {
+      "name" : "property1",
+      "value" : "value1"
+    } ]
+  }, {
+    "bom-ref" : "uid0",
+    "name" : "COMPONENT 0",
+    "type" : "type0",
+    "mime-type" : "mimeType0",
+    "group" : "group0",
+    "version" : "version0",
+    "scope" : "scope0",
+    "copyright" : "copyright0",
+    "cpe" : "cpe0",
+    "purl" : "purl0",
+    "supplier" : {
+      "name" : "SVIP0",
+      "url" : "0.svip.xyz",
+      "contact" : [ {
+        "name" : "SVIP",
+        "email" : "svip@svip.xyz",
+        "phone" : "123-456-7890"
+      } ]
+    },
+    "author" : "author0",
+    "publisher" : "publisher0",
+    "description" : "Summary: summary0 | Details: extendedDescription0",
+    "hashes" : [ {
+      "alg" : "SHA256",
+      "content" : "hash0"
+    } ],
+    "licenses" : [ {
+      "name" : "licenseFileText0"
+    }, {
+      "name" : "declared0"
+    }, {
+      "name" : "concluded0"
+    } ],
+    "externalReferences" : [ {
+      "url" : "0.svip.xyz",
+      "comment" : "Category: testCategory",
+      "type" : "testRef0",
+      "hashes" : [ {
+        "alg" : "SHA256",
+        "content" : "hash0"
+      } ]
+    } ],
+    "releaseNotes" : "Release Date: releaseDate0",
+    "properties" : [ {
+      "name" : "property0",
+      "value" : "value0"
+    } ]
+  } ],
+  "externalReferences" : [ {
+    "url" : "svip.xyz",
+    "comment" : "Category: testCategory",
+    "type" : "testRef",
+    "hashes" : [ {
+      "alg" : "SHA256",
+      "content" : "hash"
+    } ]
+  } ],
+  "dependencies" : [ {
+    "ref" : "uid1",
+    "dependsOn" : [ "uid3" ]
+  } ]
+}

@@ -1,5 +1,6 @@
 package org.svip.api.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
+import org.svip.api.utils.Converter;
 import org.svip.api.utils.Utils;
-import org.svip.sbomfactory.translators.TranslatorController;
-import org.svip.sbomfactory.translators.TranslatorException;
+import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbomgeneration.serializers.SerializerFactory;
+import org.svip.sbomgeneration.serializers.deserializer.Deserializer;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -112,12 +116,14 @@ public class SVIPApiController {
         if (sbomFile.hasNullProperties())
             return new ResponseEntity<>("SBOM filename and/or contents may not be empty", HttpStatus.BAD_REQUEST);
 
+        String errorMsg = "Error processing file: " + sbomFile.getFileName();
         try {
-            TranslatorController.translateContents(sbomFile.getContents(), sbomFile.getFileName());
-        } catch (TranslatorException e) {
-            LOGGER.info("POST /svip/upload - Error translating file: " + sbomFile.getFileName());
+            Deserializer d = SerializerFactory.createDeserializer(sbomFile.getContents());
+            d.readFromString(sbomFile.getContents());
+        } catch (IllegalArgumentException | JsonProcessingException e) {
+            LOGGER.info("POST /svip/upload - " + errorMsg);
             LOGGER.error(e.getMessage());
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(errorMsg, HttpStatus.BAD_REQUEST);
         }
 
         // Upload
@@ -137,15 +143,13 @@ public class SVIPApiController {
      * @return The contents of the SBOM file.
      */
     @GetMapping("/view")
-    public ResponseEntity<String> view(@RequestParam("id") long id) {
+    public ResponseEntity<String> view(@RequestParam("id") Long id) {
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
-        // Return SBOM or invalid ID
-        if (sbomFile.isEmpty()) {
-            LOGGER.info("GET /svip/view?id=" + id + " - FILE NOT FOUND");
-            return new ResponseEntity<>("Invalid SBOM ID.", HttpStatus.NOT_FOUND);
-        }
+        // Check if it exists
+        ResponseEntity<String> NOT_FOUND = Utils.checkIfExists(id, sbomFile, "view");
+        if (NOT_FOUND != null) return NOT_FOUND;
 
         // Log
         LOGGER.info("GET /svip/view?id=" + id + " - File: " + sbomFile.get().getFileName());
@@ -176,6 +180,47 @@ public class SVIPApiController {
     }
 
     /**
+     * USAGE. Send GET request to /getSBOM with a URL parameter id to get the deserialized SBOM.
+     *
+     * The API will respond with an HTTP 200 and the SBOM object json
+     * todo: better ways to add more support?
+     *
+     * @param id The id of the SBOM contents to retrieve.
+     * @return The contents of the SBOM file.
+     */
+    @GetMapping("/getSBOM")
+    public ResponseEntity<?> getSBOM(@RequestParam("id") Long id){
+
+        String urlMsg = "GET /svip/getSBOM?id=" + id;    // for logging
+
+        // Get SBOM
+        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
+
+        // Return SBOM or invalid ID
+        if (sbomFile.isEmpty()) {
+            LOGGER.warn(urlMsg + " - FILE NOT FOUND");
+            return new ResponseEntity<>("Invalid SBOM ID", HttpStatus.NOT_FOUND);
+        }
+
+        // Deserialize SBOM into JSON Object
+        SBOM sbom;
+        try{
+            Deserializer d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
+            sbom = d.readFromString(sbomFile.get().getContents());
+        } catch (JsonProcessingException e ){
+            return new ResponseEntity<>("Failed to deserialize SBOM content, may be an unsupported format", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e){
+            return new ResponseEntity<>("Deserialization Error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // Log
+        LOGGER.info(urlMsg + " - File: " + sbomFile.get().getFileName());
+
+        return Utils.encodeResponse(sbom);
+    }
+
+
+    /**
      * USAGE. Send DELETE request to /delete with a URL parameter id to get the contents of the SBOM with the specified
      * ID.
      *
@@ -185,7 +230,7 @@ public class SVIPApiController {
      * @return The ID of the deleted file.
      */
     @DeleteMapping("/delete")
-    public ResponseEntity<Long> delete(@RequestParam("id") long id) {
+    public ResponseEntity<Long> delete(@RequestParam("id") Long id) {
         // Get SBOM to be deleted
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
@@ -204,6 +249,68 @@ public class SVIPApiController {
         // Return deleted ID as confirmation
         return Utils.encodeResponse(sbomFile.get().getId());
     }
+
+    /**
+     * USAGE. Send CONVERT request to /convert an existing SBOM on the backend to a desired schema and format
+     *
+     * @param id of the SBOM
+     * @param schema to convert to
+     * @param format to convert to
+     * @param overwrite whether to overwrite original
+     * @return converted SBOM
+     */
+
+    @GetMapping("/convert")
+    public ResponseEntity<String> convert(@RequestParam("id") long id, @RequestParam("schema") String schema,
+                                          @RequestParam("format") String format,
+                                          @RequestParam("overwrite") Boolean overwrite){
+        // Get SBOM
+        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
+
+        // Check if it exists
+        ResponseEntity<String> NOT_FOUND = Utils.checkIfExists(id, sbomFile, "convert");
+        if (NOT_FOUND != null) return NOT_FOUND;
+
+        // Get and convert SBOM
+        SBOMFile toConvert = sbomFile.get();
+        HashMap<SBOMFile, String> conversionResult = Converter.convert(toConvert, schema, format);
+        String error = (String) conversionResult.values().toArray()[0];
+        SBOMFile converted = (SBOMFile) conversionResult.keySet().toArray()[0];
+
+        // Error message if needed
+        String defaultErrorMessage = "CONVERT /svip/convert?id=" + id + " - ERROR IN CONVERSION TO " + schema
+                + ((error.length() != 0) ? (": " + error) : "");
+
+        // bad request errors
+        if(error.toLowerCase().contains("not valid") && (
+                error.toLowerCase().contains("schema") || error.toLowerCase().contains("format"))){
+            LOGGER.error(defaultErrorMessage);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else if (schema.toLowerCase().contains("cdx") && format.equals("TAGVALUE")) {
+            LOGGER.error("CONVERT /svip/convert?id=" + id + "TAGVALUE unsupported by CDX14");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        // if anything went wrong, an SBOMFILE with a blank name and contents will be returned,
+        // paired with the message String
+        if (converted.hasNullProperties()) {
+            LOGGER.error(defaultErrorMessage);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // assign appropriate id and name
+        converted.setId(id);
+        converted.setFileName(toConvert.getFileName());
+
+        // overwrite
+        if(overwrite){
+            sbomFileRepository.deleteById(id);
+            sbomFileRepository.save(converted);
+        }
+
+        return Utils.encodeResponse(converted.getContents());
+    }
+
 
     //#region Deprecated Endpoints
 

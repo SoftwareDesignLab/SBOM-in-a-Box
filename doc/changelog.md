@@ -2,6 +2,74 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [v5.1.1-alpha] - (7/18/2023)
+
+### Changed
+- Organized all builder interfaces and objects into `sbom.builder` package.
+- Organized all factory interfaces and objects into `sbom.model` package.
+
+### Removed
+- `translators` package as the translators have been deprecated by the deserializers
+- Legacy endpoint API unit tests
+
+## [v5.1.0-alpha] - (7/18/2023)
+
+### Added
+- /convert endpoint
+- Relevant unit tests in `ConvertFromAPITest`
+    - `invalidSchemaAndFormatTest()`
+    - `CDXTagValueTest()`
+    - `convertTest()`
+- Serializer + deserializer fixes
+### Changed
+- Moved conversion functionality from `Utils.java` to `Converter.java`
+
+## [v5.0.5-alpha] - (7/18/2023)
+
+### Added
+> NOTE: Serializers may serialize null fields; this should be fixed in a later version.
+- Refactored `parsers` package to use the new `SVIPSBOM` & `SVIPComponentObject`.
+  - Refactored all parser unit tests to reflect this (100% passing, code coverage TBD).
+- Refactored `SBOMGeneratorCLI` class to use `serializers` & `parsers` packages.
+
+### Changed
+- Moved `Debug`, `QueryWorker`, & `VirtualPath` classes to the base `utils` package.
+
+### Removed
+- `Resolver.java` as the new API endpoints don't take string file arguments anymore.
+- `generators` package as it has now been fully replaced by the `serializers` & `parsers` packages.
+- `translators` unit tests as the translators have been deprecated by the deserializers and will be removed once the 
+  API endpoints have been refactored.
+
+
+## [v5.0.4-alpha] - (7/13/2023)
+
+### Added
+- All unit tests for the `serializers` package at ~91% method code coverage.
+- New Metrics refactor to test SBOM and component fields:
+    - `ATTRIBUTE` - Enumeration  of all possible test attributes
+    - `MetricTest` - Abstract class that templates all tests (Except EmptyOrNull)
+      - `CPETest` - Class that holds all tests for CPEs
+      - `HashTest` - Class that holds all tests for Hashes
+      - `LicenseTest` - Class that holds all tests for licenses
+      - `PURLTest` - Class that holds all tests for PURLs
+    - `EmptyOrNullTest`
+    - `QualityReport` - Class to report all results through the pipelines
+    - `QAPipeline` - Generic interface for all pipelines
+    - `CDX14Tests` - Interface that hold CycloneDX 1.4 specific tests
+    - `SPDX23Tests` - Interface that holds SPDX 2.3 specific tests 
+    - `CDX14Pipeline` - Class that runs through all tests for a CycloneDX 1.4 sbom and components
+    - `SPDX23Pipeline` - Class that runs through all tests for a SPDX 2.3 sbom and components
+    - `SVIPPipeline` - Class that runs through all tests for an SVIP sbom and components
+- New Result class to output tests results:
+  - `ResultFactory` - Class that helps create new Results
+  - `Result` - Class that holds the basic information of a result
+  - `Text` - Class that helps provide messages and details for Results
+  - `INFO` - Enumeration that holds all possible info for a test
+  - `STATUS` - Enumeration that holds all statuses of a result
+- Unit tests to be completed for each test, pipeline, and ResultFactory
+
 ## [v5.0.3-alpha] - (7/12/2023)
 
 ### Added
@@ -17,7 +85,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         - `CDX14JSONDeserializer` Class - CycloneDX v1.4 JSON deserializer
         - `SPDX23JSONDeserializer` Class - SPDX v2.3 JSON deserializer
         - `SPDX23TagValueDeserializer` Class - SPDX v2.3 Tag-Value (.spdx) deserializer
-- Unit tests to be completed for each serializer/deserializer
 
 ## [v5.0.2-alpha] - (7/12/2023)
 

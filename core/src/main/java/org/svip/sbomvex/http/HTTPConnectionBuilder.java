@@ -1,6 +1,5 @@
 package org.svip.sbomvex.http;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Map;
 

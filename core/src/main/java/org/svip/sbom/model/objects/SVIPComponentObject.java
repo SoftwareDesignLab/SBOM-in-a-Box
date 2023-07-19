@@ -3,6 +3,7 @@ package org.svip.sbom.model.objects;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
+import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
@@ -34,7 +35,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
     private final String name;
 
     /**Component's licenses*/
-    private final LicenseCollection licenses;
+    private LicenseCollection licenses;
 
     /**Component's copyright*/
     private final String copyright;
@@ -153,6 +154,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
      */
     @Override
     public LicenseCollection getLicenses() {
+        if (this.licenses == null) this.licenses = new LicenseCollection();
         return this.licenses;
     }
 
@@ -429,7 +431,8 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         this.name = name;
         this.licenses = licenses;
         this.copyright = copyright;
-        this.hashes = hashes;
+        if (hashes == null) this.hashes = new HashMap<>();
+        else this.hashes = hashes;
         this.supplier = supplier;
         this.version = version;
         this.description = description;
@@ -454,4 +457,50 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         this.comment = comment;
         this.attributionText = attributionText;
     }
+
+        /*
+        Construct from other component objects
+     */
+
+    /**
+     * // Constructs an SVIPComponent object from an spdx23PackageObject
+     * @param spdx23PackageObject said object to construct from
+     */
+    public SVIPComponentObject(SPDX23PackageObject spdx23PackageObject){
+        this.type = spdx23PackageObject.getType();
+        this.uid = spdx23PackageObject.getUID();
+        this.author = spdx23PackageObject.getAuthor();
+        this.name = spdx23PackageObject.getName();
+        this.licenses = spdx23PackageObject.getLicenses();
+        this.copyright = spdx23PackageObject.getCopyright();
+        this.hashes = (HashMap<String, String>) spdx23PackageObject.getHashes();
+        this.supplier = spdx23PackageObject.getSupplier();
+        this.version = spdx23PackageObject.getVersion();
+        this.description = spdx23PackageObject.getDescription();
+        this.cpes = spdx23PackageObject.getCPEs();
+        this.purls = spdx23PackageObject.getPURLs();
+        this.externalReferences = spdx23PackageObject.getExternalReferences();
+        this.downloadLocation =spdx23PackageObject.getDownloadLocation();
+        this.fileName = spdx23PackageObject.getFileName();
+        this.filesAnalyzed = spdx23PackageObject.getFilesAnalyzed();
+        this.verificationCode = spdx23PackageObject.getVerificationCode();
+        this.homePage = spdx23PackageObject.getHomePage();
+        this.sourceInfo = spdx23PackageObject.getSourceInfo();
+        this.releaseDate = spdx23PackageObject.getReleaseDate();
+        this.builtDate = spdx23PackageObject.getBuiltDate();
+        this.validUntilDate = spdx23PackageObject.getValidUntilDate();
+        this.mimeType = spdx23PackageObject.getType();
+
+
+        // todo is this okay
+        this.publisher = "";
+        this.scope = "";
+        this.group = "";            // attributes not supported in spdx23PackageObject
+        this.properties = null;
+        this.fileNotice  = null;
+
+        this.comment = getComment();
+        this.attributionText = getAttributionText();
+    }
+
 }

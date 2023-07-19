@@ -1,29 +1,35 @@
 package org.svip;
 
-import org.svip.sbomfactory.generators.ParserController;
-import org.svip.sbomfactory.generators.utils.Debug;
-import org.svip.sbomfactory.generators.utils.generators.GeneratorSchema;
-import org.svip.sbomfactory.generators.utils.virtualtree.VirtualPath;
-import org.svip.sbomfactory.generators.utils.virtualtree.VirtualTree;
+import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.sbomgeneration.parsers.ParserController;
+import org.svip.sbomgeneration.serializers.SerializerFactory;
+import org.svip.sbomgeneration.serializers.serializer.Serializer;
+import org.svip.utils.Debug;
+import org.svip.utils.VirtualPath;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
-import static org.svip.sbomfactory.generators.utils.Debug.LOG_TYPE;
-import static org.svip.sbomfactory.generators.utils.Debug.log;
+import static org.svip.utils.Debug.LOG_TYPE;
+import static org.svip.utils.Debug.log;
 
 /**
- * file: GeneratorsTestMain.java
- * Description: SBOM Generation CLI Code
+ * file: SBOMGeneratorCLI.java
+ * Description: SBOM Generation CLI utility.
  *
  * @author Dylan Mulligan
  * @author Derek Garcia
+ * @author Ian Dunn
  */
 public class SBOMGeneratorCLI {
 
@@ -52,7 +58,6 @@ public class SBOMGeneratorCLI {
     private static final String PWD = System.getProperty("user.dir");   // System property for pwd
     private static final String OUT_DIRECTORY = "SBOMOut";               // Default Output directory
 
-    // TODO: Is it better practice to use something other than a block string?
     /**
      * This is the usage text.
      */
@@ -68,7 +73,7 @@ public class SBOMGeneratorCLI {
                   -s : Show Summary information, disabling ALL default messages.
               Key=value form:
                  -o=specification\s
-                      Output specification. Select a supported format (CycloneDX, SPDX) to output to,
+                      Output specification. Select a supported format (CDX14, SPDX23) to output to,
                       Output specification defaults to CycloneDX if not specified.
 
                  -f=format\s
@@ -84,10 +89,10 @@ public class SBOMGeneratorCLI {
                    Debug, Output as JSON: java -jar parser.jar MyProject/src -o=json -d
                    CycloneDX:
                        - CycloneDX JSON:            java -jar parser.jar MyProject/src -d
-                       - CycloneDX XML (no debug):  java -jar parser.jar MyProject/src -o=CycloneDX -f=XML
+                       - CycloneDX JSON (no debug):  java -jar parser.jar MyProject/src -o=CDX14 -f=JSON
                    SPDX:
-                       - SPDX JSON:                 java -jar parser.jar MyProject/src -d -o=SPDX
-                       - SPDX YAML (no debug):      java -jar parser.jar MyProject/src -o=SPDX -f=YAML
+                       - SPDX JSON:                 java -jar parser.jar MyProject/src -d -o=SPDX23
+                       - SPDX Tag-Value (no debug):      java -jar parser.jar MyProject/src -o=SPDX23 -f=TAG_VALUE
             """;
 
     /**
@@ -348,11 +353,9 @@ public class SBOMGeneratorCLI {
         // Enable debug console logging if indicated
         if (optArgs.containsKey("-d")) Debug.enableDebug();
 
-        // Build filesystem representation
-        VirtualTree tree = VirtualTree.buildVirtualTree(new VirtualPath(reqArgs.get(0)));
-
-        // Instantiate controller with the VirtualTree representation
-        final ParserController controller = new ParserController(tree);
+        // Instantiate controller with the filepath
+        VirtualPath sourcePath = new VirtualPath(reqArgs.get(0));
+        final ParserController controller = new ParserController(sourcePath.getFileName().toString(), buildFileMap(sourcePath));
         controller.parseAll(); // Parse all files
 
         // Build outPath
@@ -367,9 +370,9 @@ public class SBOMGeneratorCLI {
 //        outPath = null; // UNCOMMENT FOR TESTING ONLY, THIS DOES NOT GENERATE SBOM FILES, ONLY STRINGS
 
         // Get schema from optional args, if not present, default to CycloneDX
-        GeneratorSchema schema = GeneratorSchema.CycloneDX;
+        SerializerFactory.Schema schema = SerializerFactory.Schema.CDX14;
         if(optArgs.containsKey("-o")) {
-            try { schema = GeneratorSchema.valueOfArgument(optArgs.get("-o").toUpperCase()); }
+            try { schema = SerializerFactory.Schema.valueOf(optArgs.get("-o").toUpperCase()); }
             catch (IllegalArgumentException ignored) {
                 log(LOG_TYPE.WARN, String.format(
                         "Invalid schema type provided: '%s', defaulting to '%s'",
@@ -380,9 +383,9 @@ public class SBOMGeneratorCLI {
         }
 
         // Get format from optional args, if not present, default to JSON
-        GeneratorSchema.GeneratorFormat format = GeneratorSchema.GeneratorFormat.JSON;
+        SerializerFactory.Format format = SerializerFactory.Format.JSON;
         if(optArgs.containsKey("-f")) {
-            try { format = GeneratorSchema.GeneratorFormat.valueOf(optArgs.get("-f").toUpperCase()); }
+            try { format = SerializerFactory.Format.valueOf(optArgs.get("-f").toUpperCase()); }
             catch (IllegalArgumentException ignored) {
                 log(LOG_TYPE.WARN, String.format(
                         "Invalid format type provided: '%s', defaulting to '%s'",
@@ -394,10 +397,63 @@ public class SBOMGeneratorCLI {
 
         try {
             // Write to file
-            controller.toFile(outPath, schema, format);
+            Serializer s = SerializerFactory.createSerializer(schema, format, true);
+            SVIPSBOM sbom = controller.buildSBOM(schema);
+
+            Debug.log(LOG_TYPE.SUMMARY, "Serializing " + schema + " SBOM to " + format);
+            String serialized = s.writeToString(sbom);
+
+            String sbomFile = outPath + "/" + sbom.getName() + "_" + schema + "." + format.toString().toLowerCase();
+            Debug.log(LOG_TYPE.DEBUG, "Attempting to write SBOM to file " + sbomFile);
+            Files.createDirectories(Path.of(outPath));
+            PrintWriter out = new PrintWriter(sbomFile);
+            out.println(serialized);
+            out.close();
+            Debug.log(LOG_TYPE.SUMMARY, "SUCCESSFULLY WRITTEN " + schema + " " + format + " SBOM to path: " + sbomFile);
         } catch(IOException e) {
             log(Debug.LOG_TYPE.EXCEPTION, e);
             log(Debug.LOG_TYPE.ERROR, "Error writing to file " + outPath);
         }
+    }
+
+    /**
+     * Builds a VirtualTree from an existing file tree located in the user's filesystem given a source path. This loops
+     * through all files and directories using Files.walk() over the source path, and adds each file with its contents
+     * to the VirtualTree.
+     *
+     * @param src The source path to build the file tree representation from.
+     * @return A new VirtualTree that represents all files and directories in the source path.
+     */
+    public static Map<VirtualPath, String> buildFileMap(VirtualPath src) {
+        Map<VirtualPath, String> fileMap = new HashMap<>();
+        final long buildStart = System.currentTimeMillis();
+
+        AtomicInteger directoryCounter = new AtomicInteger();
+
+        // Build the tree by finding each file and adding to the virtual tree
+        try (Stream<Path> stream = Files.walk(src.getPath())) {
+            stream.forEach(filepath -> {
+                // Only add the directory + files of the path if the file is found - no empty directories
+                if (!Files.isDirectory(filepath)) {
+                    try {
+                        fileMap.put(new VirtualPath(filepath), Files.readString(filepath));
+                    } catch (IOException e) {
+                        Debug.log(Debug.LOG_TYPE.WARN, "Unable to read file contents of: " + filepath);
+                    }
+                } else directoryCounter.getAndIncrement();
+            });
+        } catch (Exception e) {
+            Debug.log(Debug.LOG_TYPE.ERROR, "Unable to access file");
+            Debug.log(Debug.LOG_TYPE.EXCEPTION, e.getMessage());
+        }
+
+        // Report stats
+        log(Debug.LOG_TYPE.SUMMARY, String.format("VirtualTree construction complete. " +
+                        "Found %s Directories and %s Files in %.2f seconds",
+                directoryCounter,
+                fileMap.size(),
+                (float)(System.currentTimeMillis() - buildStart) / 1000));
+
+        return fileMap;
     }
 }

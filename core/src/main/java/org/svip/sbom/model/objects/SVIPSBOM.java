@@ -3,12 +3,13 @@ package org.svip.sbom.model.objects;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Schema;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
-import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.Relationship;
+import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -239,10 +240,13 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
         this.creationData = creationData;
         this.documentComment = documentComment;
         this.rootComponent = rootComponent;
-        this.components = components;
-        this.relationships = relationships;
+        if (components == null) this.components = new HashSet<>();
+        else this.components = components;
+        if (relationships == null) this.relationships = new HashMap<>();
+        else this.relationships = relationships;
         this.externalReferences = externalReferences;
         this.SPDXLicenseListVersion = spdxLicenseListVersion;
 
     }
+
 }
