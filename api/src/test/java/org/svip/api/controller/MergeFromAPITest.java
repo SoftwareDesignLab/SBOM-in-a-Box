@@ -50,6 +50,8 @@ public class MergeFromAPITest extends APITest {
                 if(sbom1.getFileName().contains("xml") || sbom2.getFileName().contains("xml"))
                     continue;
 
+                // todo no cross schema merging?
+
                 LOGGER.info("MERGING " + sbom1.getFileName() + " and " +sbom2.getFileName());
 
                 ResponseEntity<String> response = controller.merge(new long[] {id1, id2});
