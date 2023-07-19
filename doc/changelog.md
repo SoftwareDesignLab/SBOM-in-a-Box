@@ -3,6 +3,21 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v5.1.2-alpha] - (7/18/2023)
+
+### Added
+- Utility classes to merge SBOMs together:
+  - `Merger` - Core merger class.
+  - `MergerCDX` - Merger for CDX14 SBOMs.
+  - `MergerController` - Controller to handle all SBOM merging.
+  - `MergerException` - Exception thrown for merge errors.
+  - `MergerSPDX` - Merger for SPDX23 SBOMs.
+  - `MergerSVIP` - Merger for SVIP SBOMs.
+- `MergerTest` class for unit testing.
+
+### Removed
+- Old `Merger` Class & Test
+
 ## [v5.1.1-alpha] - (7/18/2023)
 
 ### Changed

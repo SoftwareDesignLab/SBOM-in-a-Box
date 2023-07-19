@@ -1,22 +1,17 @@
 package org.svip.sbomanalysis.comparison;
 
-import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.builder.interfaces.schemas.SPDX23.SPDX23SBOMBuilder;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
-import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.objects.SVIPComponentObject;
-
+import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.Organization;
@@ -24,14 +19,13 @@ import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbomanalysis.comparison.merger.*;
-import org.svip.sbomfactory.translators.TranslatorCDXJSON;
 
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class NewMergerTest {
+public class MergerTest {
 
     /**
      * SVIP SBOM Test Constants Set 1
