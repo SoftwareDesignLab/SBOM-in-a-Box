@@ -497,6 +497,14 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         // Hashes
         cf.compareHashes("Component Hash", this.hashes, other.getHashes());
 
+        // Compare SPDX component specific fields
+        if( other instanceof SPDX23Component)
+            cf.addConflicts( compare((SPDX23Component) other) );
+
+        // Compare SBOMPackage specific fields
+        if( other instanceof SBOMPackage)
+            cf.addConflicts( compare((SBOMPackage) other) );
+
         return cf.getConflicts();
     }
 
@@ -533,8 +541,13 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         // External References
         cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
 
-        // Compare component level details
-        cf.addConflicts( compare((Component) other));
+        // Compare SBOMPackage specific fields
+        if( other instanceof SPDX23Package)
+            cf.addConflicts( compare((SPDX23Package) other) );
+
+        // Compare CDX14SBOMPackage specific fields
+        if( other instanceof CDX14Package)
+            cf.addConflicts( compare((CDX14Package) other) );
 
         return cf.getConflicts();
     }
@@ -563,9 +576,6 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         // todo
         // properties
 
-        // Compare Package level details
-        cf.addConflicts( compare((SBOMPackage) other));
-
         return cf.getConflicts();
     }
 
@@ -585,8 +595,9 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         // Attribution Text
         cf.addConflict("Attribution Text", MISC_MISMATCH, this.attributionText, other.getAttributionText());
 
-        // Compare component level details
-        cf.addConflicts( compare((Component) other));
+        // Compare SPDX File specific fields
+        if( other instanceof SPDX23File)
+            cf.addConflicts( compare((SPDX23File) other) );
 
         return cf.getConflicts();
     }
@@ -638,9 +649,6 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         // Valid Until Date
         cf.addConflict("Valid Until Date", TIMESTAMP_MISMATCH, this.validUntilDate, other.getValidUntilDate());
 
-        // Compare package level conflicts
-        cf.addConflicts(compare((SBOMPackage) other));
-
         return cf.getConflicts();
     }
 
@@ -658,8 +666,6 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         // File Notice
         cf.addConflict("File Notice", MISC_MISMATCH, this.fileNotice, other.getFileNotice());
 
-        // Compare component level details
-        cf.addConflicts( compare((SPDX23Component) other));
 
         return cf.getConflicts();
     }

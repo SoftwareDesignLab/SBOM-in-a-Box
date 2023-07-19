@@ -323,6 +323,10 @@ public class CDX14ComponentObject implements CDX14Package {
         // Hashes
         cf.compareHashes("Component Hash", this.hashes, other.getHashes());
 
+        // Compare SBOMPackage specific fields
+        if( other instanceof SBOMPackage)
+            cf.addConflicts( compare((SBOMPackage) other) );
+
         return cf.getConflicts();
     }
 
@@ -358,8 +362,9 @@ public class CDX14ComponentObject implements CDX14Package {
         // External References
         cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
 
-        // Compare component level details
-        cf.addConflicts( compare((Component) other));
+        // Compare CDX14SBOMPackage specific fields
+        if( other instanceof CDX14Package)
+            cf.addConflicts( compare((CDX14Package) other) );
 
         return cf.getConflicts();
     }
@@ -388,9 +393,6 @@ public class CDX14ComponentObject implements CDX14Package {
 
         // todo
         // properties
-
-        // Compare Package level details
-        cf.addConflicts( compare((SBOMPackage) other));
 
         return cf.getConflicts();
     }

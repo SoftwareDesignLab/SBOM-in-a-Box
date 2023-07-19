@@ -1,6 +1,7 @@
 package org.svip.sbom.model.objects.SPDX23;
 
 import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
@@ -204,6 +205,10 @@ public class SPDX23FileObject implements SPDX23File {
         // Hashes
         cf.compareHashes("Component Hash", this.hashes, other.getHashes());
 
+        // Compare SPDX component specific fields
+        if( other instanceof SPDX23Component)
+            cf.addConflicts( compare((SPDX23Component) other) );
+
         return cf.getConflicts();
     }
 
@@ -223,8 +228,9 @@ public class SPDX23FileObject implements SPDX23File {
         // Attribution Text
         cf.addConflict("Attribution Text", MISC_MISMATCH, this.attributionText, other.getAttributionText());
 
-        // Compare component level details
-        cf.addConflicts( compare((Component) other));
+        // Compare SPDX File specific fields
+        if( other instanceof SPDX23File)
+            cf.addConflicts( compare((SPDX23File) other) );
 
         return cf.getConflicts();
     }
@@ -241,9 +247,6 @@ public class SPDX23FileObject implements SPDX23File {
 
         // File Notice
         cf.addConflict("File Notice", MISC_MISMATCH, this.fileNotice, other.getFileNotice());
-
-        // Compare component level details
-        cf.addConflicts( compare((SPDX23Component) other));
 
         return cf.getConflicts();
     }
