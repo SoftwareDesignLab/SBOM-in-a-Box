@@ -1,17 +1,16 @@
 package org.svip.sbomanalysis.comparison.merger;
 
-import org.svip.builders.component.CDX14PackageBuilder;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
-
+import org.svip.sbom.builder.objects.schemas.CDX14.CDX14PackageBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
-
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
-
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * File: MergerCDX.java

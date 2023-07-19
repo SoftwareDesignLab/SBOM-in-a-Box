@@ -1,15 +1,10 @@
 package org.svip.sbomanalysis.comparison.merger;
 
-import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 
-import org.svip.sbom.model.shared.Relationship;
-import org.svip.sbom.model.shared.util.ExternalReference;
-import org.svip.sbomfactory.translators.*;
-
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.function.Function;
 
 /**

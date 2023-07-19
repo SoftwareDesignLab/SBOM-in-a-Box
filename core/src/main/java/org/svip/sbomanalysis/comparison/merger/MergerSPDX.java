@@ -1,17 +1,17 @@
 package org.svip.sbomanalysis.comparison.merger;
 
-import org.svip.builders.component.SPDX23PackageBuilder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
-
+import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23PackageBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
-
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * File: MergerSPDX.java
