@@ -12,6 +12,7 @@ import org.svip.sbom.model.shared.util.ExternalReference;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -40,10 +41,10 @@ public class CDX14Builder implements CDX14SBOMBuilder{
     private String specVersion;
 
     /**Holds the licenses of the SBOM*/
-    private Set<String> licenses;
+    private Set<String> licenses = new HashSet<>();
 
     /**Holds the creation data of the SBOM*/
-    private CreationData creationData;
+    private CreationData creationData = new CreationData();
 
     /**Holds the document comments of the SBOM*/
     private String documentComment;
@@ -52,13 +53,13 @@ public class CDX14Builder implements CDX14SBOMBuilder{
     private Component rootComponent;
 
     /**Holds the components of the SBOM*/
-    private Set<Component> components;
+    private Set<Component> components = new HashSet<>();
 
     /**Holds the relationships of components in the SBOM*/
-    private HashMap<String, Set<Relationship>> relationships;
+    private HashMap<String, Set<Relationship>> relationships = new HashMap<>();
 
     /**Holds the external references of the SBOM*/
-    private Set<ExternalReference> externalReferences;
+    private Set<ExternalReference> externalReferences = new HashSet<>();
 
     //TODO VEX needs implementation
     /**Holds the vulnerabilities expressed in the SBOM*/
@@ -138,10 +139,6 @@ public class CDX14Builder implements CDX14SBOMBuilder{
      */
     @Override
     public CDX14Builder addLicense(String license) {
-        // initialize the hash set
-        if (this.licenses == null) {
-            this.licenses = new HashSet<String>();
-        }
         this.licenses.add(license);
         return this;
     }
@@ -186,20 +183,12 @@ public class CDX14Builder implements CDX14SBOMBuilder{
      */
     @Override
     public CDX14Builder addComponent(Component component) {
-        // initialize the hash set
-        if (this.components == null) {
-            this.components = new HashSet<Component>();
-        }
         this.components.add(component);
         return this;
     }
 
     @Override
     public CDX14Builder addCDX14Package(CDX14Package cdx14Package) {
-        // initialize the hash set
-        if (this.components == null) {
-            this.components = new HashSet<Component>();
-        }
         this.components.add(cdx14Package);
         return this;
     }
@@ -212,8 +201,6 @@ public class CDX14Builder implements CDX14SBOMBuilder{
      */
     @Override
     public CDX14Builder addRelationship(String componentName, Relationship relationship) {
-        if (this.relationships == null)
-            this.relationships = new HashMap<>();
 
         if( !relationships.containsKey(componentName))
             this.relationships.put(componentName, new HashSet<>());
@@ -229,9 +216,6 @@ public class CDX14Builder implements CDX14SBOMBuilder{
      */
     @Override
     public CDX14Builder addExternalReference(ExternalReference externalReference) {
-        if (this.externalReferences == null)
-            this.externalReferences = new HashSet<>();
-
         this.externalReferences.add(externalReference);
         return this;
     }
