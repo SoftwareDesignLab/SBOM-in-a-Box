@@ -139,10 +139,6 @@ public class CDX14Builder implements CDX14SBOMBuilder{
      */
     @Override
     public CDX14Builder addLicense(String license) {
-        // initialize the hash set
-        if (this.licenses == null) {
-            this.licenses = new HashSet<String>();
-        }
         this.licenses.add(license);
         return this;
     }
@@ -187,20 +183,12 @@ public class CDX14Builder implements CDX14SBOMBuilder{
      */
     @Override
     public CDX14Builder addComponent(Component component) {
-        // initialize the hash set
-        if (this.components == null) {
-            this.components = new HashSet<Component>();
-        }
         this.components.add(component);
         return this;
     }
 
     @Override
     public CDX14Builder addCDX14Package(CDX14Package cdx14Package) {
-        // initialize the hash set
-        if (this.components == null) {
-            this.components = new HashSet<Component>();
-        }
         this.components.add(cdx14Package);
         return this;
     }
@@ -213,8 +201,6 @@ public class CDX14Builder implements CDX14SBOMBuilder{
      */
     @Override
     public CDX14Builder addRelationship(String componentName, Relationship relationship) {
-        if (this.relationships == null)
-            this.relationships = new HashMap<>();
 
         if( !relationships.containsKey(componentName))
             this.relationships.put(componentName, new HashSet<>());
@@ -230,9 +216,6 @@ public class CDX14Builder implements CDX14SBOMBuilder{
      */
     @Override
     public CDX14Builder addExternalReference(ExternalReference externalReference) {
-        if (this.externalReferences == null)
-            this.externalReferences = new HashSet<>();
-
         this.externalReferences.add(externalReference);
         return this;
     }
