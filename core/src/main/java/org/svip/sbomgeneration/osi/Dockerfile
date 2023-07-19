@@ -5,10 +5,14 @@
 # Author: Matt London
 #
 
-ADD setup.sh setup.sh
-RUN ./setup.sh
+FROM ubuntu:latest
 
-COPY ContainerController.py /usr/local/bin/ContainerController.py
+ENV DEBIAN_FRONTEND noninteractive
+ENV DEBCONF_NONINTERACTIVE_SEEN true
+ENV COMPOSER_ALLOW_SUPERUSER 1
+
+COPY setup.sh ContainerController.py /usr/local/bin/
+RUN /bin/bash -c /setup.sh
 
 # Launch the python program
 CMD ["python3", "/usr/local/bin/ContainerController.py"]

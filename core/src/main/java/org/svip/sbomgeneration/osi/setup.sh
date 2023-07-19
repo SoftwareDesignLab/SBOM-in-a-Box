@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # File: setup.sh
 # Setup OSI environment with required Languages, Package Managers, and Tools

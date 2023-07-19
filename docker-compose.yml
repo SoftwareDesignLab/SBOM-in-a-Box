@@ -20,12 +20,15 @@ services:
       - COMPOSER_ALLOW_SUPERUSER=1
     build:
       context: core/src/main/java/org/svip/sbomgeneration/osi
+      dockerfile: Dockerfile
       # Move setup script and controller into container and run setup
-      dockerfile_inline: |
-        ADD setup.sh setup.sh
-        RUN ./setup.sh
-        COPY ContainerController.py /usr/local/bin/ContainerController.py
-        CMD ["python3", "/usr/local/bin/ContainerController.py"]
+#      dockerfile_inline: |
+#        FROM ubuntu:latest
+#        ADD ./core/src/main/java/org/svip/sbomgeneration/osi/setup.sh setup.sh
+#        RUN ./setup.sh
+#        COPY ./core/src/main/java/org/svip/sbomgeneration/osi/ContainerController.py
+#        /usr/local/bin/ContainerController.py
+#        CMD ["python3", "/usr/local/bin/ContainerController.py"]
     volumes:
       - type: bind
         source: core/src/main/java/org/svip/sbomgeneration/osi/bound_dir/code
@@ -58,6 +61,8 @@ services:
     depends_on: # Start mysql server before starting API
       mysql:
         condition: service_healthy # Only start once the health check has passed
+      osi:
+        condition: service_healthy # Only start once the OSI container has been started
     build: .    # Build from Dockerfile located in root directory
     restart: on-failure
     ports:
