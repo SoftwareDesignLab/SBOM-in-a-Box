@@ -171,7 +171,12 @@ public class SPDX23FileObject implements SPDX23File {
 
     }
 
-
+    /**
+     * Compare against another generic SBOM Package
+     *
+     * @param other Other SBOM Package to compare against
+     * @return List of conflicts
+     */
     @Override
     public List<Conflict> compare(Component other) {
         ConflictFactory cf = new ConflictFactory();
@@ -194,9 +199,9 @@ public class SPDX23FileObject implements SPDX23File {
     }
 
     /**
-     * Compare against another SPDX 2.3 Package
+     * Compare against another SPDX 2.3 Component
      *
-     * @param other Other SPDX 2.3 Package to compare against
+     * @param other Other SPDX 2.3 Component to compare against
      * @return List of conflicts
      */
     @Override
