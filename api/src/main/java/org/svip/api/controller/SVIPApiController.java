@@ -14,16 +14,14 @@ import org.svip.api.utils.Converter;
 import org.svip.api.utils.Utils;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.sbomanalysis.comparison.merger.*;
 import org.svip.sbomgeneration.parsers.ParserController;
 import org.svip.sbomgeneration.serializers.SerializerFactory;
 import org.svip.sbomgeneration.serializers.deserializer.Deserializer;
 import org.svip.sbomgeneration.serializers.serializer.Serializer;
 import org.svip.utils.VirtualPath;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Spring API Controller for handling requests to the SVIP backend.
@@ -381,5 +379,94 @@ public class SVIPApiController {
                                            @RequestParam("format") SerializerFactory.Format format){
         // TODO (separate branch)
         return null;
+    }
+
+    /**
+     * Merge two existing SBOMs
+     * @param ids of the two SBOMs
+     * @return a merged sbomFile
+     */
+    @GetMapping("/merge")
+    public ResponseEntity<String> merge(@RequestParam("ids") long[] ids){
+
+        ArrayList<SBOM> sboms = new ArrayList<>();
+
+        String urlMsg = "DELETE /svip/merge?id=";
+
+        long idSum = 0L;
+
+        // check for bad files
+        for (Long id: ids
+        ) {
+
+            // Get SBOM
+            Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
+
+            // Check if it exists
+            ResponseEntity<String> NOT_FOUND = Utils.checkIfExists(id, sbomFile, "merge");
+            if (NOT_FOUND != null) return NOT_FOUND;
+            SBOMFile sbom = sbomFile.get();
+
+            if(sbom.hasNullProperties()){
+                LOGGER.info(urlMsg + sbomFile.get().getId() + " - ERROR IN MERGE - HAS NULL PROPERTIES");
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            // deserialize into SBOM object
+            Deserializer d;
+            SVIPSBOM deserialized;
+
+            try{
+                d = SerializerFactory.createDeserializer(sbom.getContents());
+                deserialized = (SVIPSBOM) d.readFromString(sbom.getContents());
+            }catch (Exception e){
+                LOGGER.info(urlMsg + sbomFile.get().getId() + "DURING DESERIALIZATION: " +
+                        e.getMessage());
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            sboms.add(deserialized);
+            idSum += id;
+        }
+
+
+        // todo, merging more than two SBOMs is not supported right now
+        SBOM merged;
+        try{
+            MergerController mergerController = new MergerController();
+            merged = mergerController.merge(sboms.get(0), sboms.get(1));
+        } catch (MergerException e) {
+            String error = "Error merging SBOMs: " + e.getMessage();
+            LOGGER.error(urlMsg + " " + error);
+            return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        }
+
+        Serializer s;
+        String contents;
+        try{
+            s = SerializerFactory.createSerializer(SerializerFactory.Schema.SPDX23, SerializerFactory.Format.TAGVALUE, // todo is this default?
+                    true);
+            contents = s.writeToString((SVIPSBOM) merged);
+        } catch (IllegalArgumentException | JsonProcessingException e) {
+            String error = "Error serializing parsed SBOM: " + Arrays.toString(e.getStackTrace());
+            LOGGER.error(urlMsg + " " + error);
+            return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        }
+
+        SBOMFile result = new SBOMFile(merged.getName(), contents);
+        Random rand = new Random();
+
+        // assign new id and name
+        while(!sbomFileRepository.existsById(idSum)){ // todo check if frontend are okay with this
+            idSum += (rand.nextLong() + idSum) % idSum;
+        }
+
+        result.setId(idSum);
+        result.setFileName(merged.getName());
+
+        sbomFileRepository.save(result);
+
+        return Utils.encodeResponse(result.toString());
+
     }
 }
