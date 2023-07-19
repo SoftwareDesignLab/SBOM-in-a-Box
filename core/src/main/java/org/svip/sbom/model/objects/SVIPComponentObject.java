@@ -463,155 +463,204 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         this.comment = comment;
         this.attributionText = attributionText;
     }
+
+    /**
+     * Compare against another generic SBOM Package
+     *
+     * @param other Other SBOM Package to compare against
+     * @return List of conflicts
+     */
+    @Override
     public List<Conflict> compare(Component other) {
         ConflictFactory cf = new ConflictFactory();
+
+        // Type
+        cf.addConflict("Type", MISC_MISMATCH, this.type, other.getType());
+
+        // UID
+        cf.addConflict("UID", MISC_MISMATCH, this.uid, other.getUID());
+
         // NAME
+        // shouldn't occur
         cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
+
         // AUTHOR
         cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
+
         // Licenses
-        cf.addConflicts(this.licenses.compare(other.getLicenses()));
-        // HASHES
-        cf.compareHashes("Hash", this.hashes, other.getHashes());
-        if (other instanceof SPDX23PackageObject) {
-            // VERSION
-            cf.addConflict("Version", VERSION_MISMATCH, this.version, ((SPDX23PackageObject) other).getVersion());
-            // SUPPLIER
-            if (this.supplier != null) {
-                cf.addConflicts(this.supplier.compare(((SPDX23PackageObject) other).getSupplier()));
-            }
-            // PURL
-            cf.compareStringSets("PURL", PURL_MISMATCH, this.purls, ((SPDX23PackageObject) other).getPURLs());
-            // CPE
-            cf.compareStringSets("CPE", CPE_MISMATCH, this.cpes, ((SPDX23PackageObject) other).getCPEs());
-        } else if (other instanceof CDX14ComponentObject) {
-            // VERSION
-            cf.addConflict("Version", VERSION_MISMATCH, this.version, ((CDX14ComponentObject) other).getVersion());
-            // SUPPLIER
-            if (this.supplier != null) {
-                cf.addConflicts(this.supplier.compare(((CDX14ComponentObject) other).getSupplier()));
-            }
-            // PURL
-            cf.compareStringSets("PURL", PURL_MISMATCH, this.purls, ((CDX14ComponentObject) other).getPURLs());
-            // CPE
-            cf.compareStringSets("CPE", CPE_MISMATCH, this.cpes, ((CDX14ComponentObject) other).getCPEs());
-            // PUBLISHER
-            cf.addConflict("Publisher", PUBLISHER_MISMATCH, this.publisher, ((CDX14ComponentObject)other).getPublisher());
-        }
-//        // TODO SWIDs?
+        if(cf.comparable("License", this.licenses, other.getLicenses()))
+            cf.addConflicts(this.licenses.compare(other.getLicenses()));
+
+        // Copyright
+        cf.addConflict("Copyright", MISC_MISMATCH, this.copyright, other.getCopyright());
+
+        // Hashes
+        cf.compareHashes("Component Hash", this.hashes, other.getHashes());
+
         return cf.getConflicts();
     }
-    public List<Conflict> compare(SPDX23Component other) {
-        ConflictFactory cf = new ConflictFactory();
-        // NAME
-        cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
-        // AUTHOR
-        cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
-        // Licenses
-        cf.addConflicts(this.licenses.compare(other.getLicenses()));
-        // HASHES
-        cf.compareHashes("Hash", this.hashes, other.getHashes());
-        if (other instanceof SPDX23PackageObject) {
-            // VERSION
-            cf.addConflict("Version", VERSION_MISMATCH, this.version, ((SPDX23PackageObject) other).getVersion());
-            // SUPPLIER
-            if (this.supplier != null) {
-                cf.addConflicts(this.supplier.compare(((SPDX23PackageObject) other).getSupplier()));
-            }
-            // PURL
-            cf.compareStringSets("PURL", PURL_MISMATCH, this.purls, ((SPDX23PackageObject) other).getPURLs());
-            // CPE
-            cf.compareStringSets("CPE", CPE_MISMATCH, this.cpes, ((SPDX23PackageObject) other).getCPEs());
-        }
-//        // TODO SWIDs?
-        return cf.getConflicts();
-    }
-    public List<Conflict> compare(SPDX23Package other) {
-        ConflictFactory cf = new ConflictFactory();
-        // NAME
-        cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
-        // AUTHOR
-        cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
-        // Licenses
-        cf.addConflicts(this.licenses.compare(other.getLicenses()));
-        // HASHES
-        cf.compareHashes("Hash", this.hashes, other.getHashes());
-        // VERSION
-        cf.addConflict("Version", VERSION_MISMATCH, this.version, other.getVersion());
-        // SUPPLIER
-        if (this.supplier != null) {
-            cf.addConflicts(this.supplier.compare(other.getSupplier()));
-        }
-        // PURL
-        cf.compareStringSets("PURL", PURL_MISMATCH, this.purls, other.getPURLs());
-        // CPE
-        cf.compareStringSets("CPE", CPE_MISMATCH, this.cpes, other.getCPEs());
-//        // TODO SWIDs?
-        return cf.getConflicts();
-    }
-    public List<Conflict> compare(SPDX23File other) {
-        ConflictFactory cf = new ConflictFactory();
-        // NAME
-        cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
-        // AUTHOR
-        cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
-        // Licenses
-        cf.addConflicts(this.licenses.compare(other.getLicenses()));
-        // HASHES
-        cf.compareHashes("Hash", this.hashes, other.getHashes());
-//        // TODO SWIDs?
-        return cf.getConflicts();
-    }
+
+    /**
+     * Compare against another generic SBOM Package
+     *
+     * @param other Other SBOM Package to compare against
+     * @return List of conflicts
+     */
+    @Override
     public List<Conflict> compare(SBOMPackage other) {
         ConflictFactory cf = new ConflictFactory();
-        // NAME
-        cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
-        // AUTHOR
-        cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
-        // Licenses
-        cf.addConflicts(this.licenses.compare(other.getLicenses()));
-        // HASHES
-        cf.compareHashes("Hash", this.hashes, other.getHashes());
-        // VERSION
-        cf.addConflict("Version", VERSION_MISMATCH, this.version, other.getVersion());
-        // SUPPLIER
-        if (this.supplier != null) {
+
+        // Supplier
+        if(cf.comparable("Supplier", this.supplier, other.getSupplier()))
             cf.addConflicts(this.supplier.compare(other.getSupplier()));
-        }
-        // PURL
+
+        // Version
+        // shouldn't occur
+        cf.addConflict("Version", VERSION_MISMATCH, this.version, other.getVersion());
+
+        // Description
+        if(cf.comparable("Description", this.description, other.getDescription()))
+            cf.addConflicts(this.description.compare(other.getDescription()));
+
+        // PURLs
+        // todo use util PURL objects?
         cf.compareStringSets("PURL", PURL_MISMATCH, this.purls, other.getPURLs());
-        // CPE
+
+        // CPEs
+        // todo use util CPE objects?
         cf.compareStringSets("CPE", CPE_MISMATCH, this.cpes, other.getCPEs());
-        if (other instanceof CDX14ComponentObject) {
-            // PUBLISHER
-            cf.addConflict("Publisher", PUBLISHER_MISMATCH, this.publisher, ((CDX14ComponentObject)other).getPublisher());
-        }
-//        // TODO SWIDs?
+
+        // External References
+        cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
+
+        // Compare component level details
+        cf.addConflicts( compare((Component) other));
+
         return cf.getConflicts();
     }
+
+    /**
+     * Compare against another CycloneDX 1.4 Package
+     *
+     * @param other Other CycloneDX 1.4 Package to compare against
+     * @return List of conflicts
+     */
+    @Override
     public List<Conflict> compare(CDX14Package other) {
         ConflictFactory cf = new ConflictFactory();
-        // NAME
-        cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
-        // AUTHOR
-        cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
-        // Licenses
-        cf.addConflicts(this.licenses.compare(other.getLicenses()));
-        // HASHES
-        cf.compareHashes("Hash", this.hashes, other.getHashes());
-        // VERSION
-        cf.addConflict("Version", VERSION_MISMATCH, this.version, (other).getVersion());
-        // SUPPLIER
-        if (this.supplier != null) {
-            cf.addConflicts(this.supplier.compare((other).getSupplier()));
-        }
-        // PURL
-        cf.compareStringSets("PURL", PURL_MISMATCH, this.purls, (other).getPURLs());
-        // CPE
-        cf.compareStringSets("CPE", CPE_MISMATCH, this.cpes, (other).getCPEs());
-        // PUBLISHER
+        // Mime Type
+        cf.addConflict("Mime Type", MISC_MISMATCH, this.mimeType, other.getMimeType());
+
+        // Publisher
         cf.addConflict("Publisher", PUBLISHER_MISMATCH, this.publisher, other.getPublisher());
-//        // TODO SWIDs?
+
+        // Scope
+        cf.addConflict("Scope", MISC_MISMATCH, this.scope, other.getScope());
+
+        // Group
+        cf.addConflict("Group", MISC_MISMATCH, this.group, other.getGroup());
+
+        // todo
+        // properties
+
+        // Compare Package level details
+        cf.addConflicts( compare((SBOMPackage) other));
+
+        return cf.getConflicts();
+    }
+
+    /**
+     * Compare against another SPDX 2.3 Component
+     *
+     * @param other Other SPDX 2.3 Component to compare against
+     * @return List of conflicts
+     */
+    @Override
+    public List<Conflict> compare(SPDX23Component other){
+        ConflictFactory cf = new ConflictFactory();
+
+        // Comment
+        cf.addConflict("Comment", MISC_MISMATCH, this.comment, other.getComment());
+
+        // Attribution Text
+        cf.addConflict("Attribution Text", MISC_MISMATCH, this.attributionText, other.getAttributionText());
+
+        // Compare component level details
+        cf.addConflicts( compare((Component) other));
+
+        return cf.getConflicts();
+    }
+
+    /**
+     * Compare against another SPDX 2.3 Package
+     *
+     * @param other Other SPDX 2.3 Package to compare against
+     * @return List of conflicts
+     */
+    @Override
+    public List<Conflict> compare(SPDX23Package other){
+        ConflictFactory cf = new ConflictFactory();
+
+        // Component Fields compare here to prevent duplicates
+
+        // Comment
+        cf.addConflict("Comment", MISC_MISMATCH, this.comment, other.getComment());
+
+        // Attribution Text
+        cf.addConflict("Attribution Text", MISC_MISMATCH, this.attributionText, other.getAttributionText());
+
+        // SPDX Package fields
+
+        // Download Location
+        cf.addConflict("Download Location", MISC_MISMATCH, this.downloadLocation, other.getDownloadLocation());
+
+        // File Name
+        cf.addConflict("File Name", MISC_MISMATCH, this.fileName, other.getFileName());
+
+        // Files Analyzed
+        cf.addConflict("Files Analyzed", MISC_MISMATCH, this.filesAnalyzed.toString(), other.getFilesAnalyzed().toString());
+
+        // Verification Code
+        cf.addConflict("Verification Code", MISC_MISMATCH, this.verificationCode, other.getVerificationCode());
+
+        // Home Page
+        cf.addConflict("Home Page", MISC_MISMATCH, this.homePage, other.getHomePage());
+
+        // Source Info
+        cf.addConflict("Source Info", MISC_MISMATCH, this.sourceInfo, other.getSourceInfo());
+
+        // Release Date
+        cf.addConflict("Release Date", TIMESTAMP_MISMATCH, this.releaseDate, other.getReleaseDate());
+
+        // Built Date
+        cf.addConflict("Built Date", TIMESTAMP_MISMATCH, this.builtDate, other.getBuiltDate());
+
+        // Valid Until Date
+        cf.addConflict("Valid Until Date", TIMESTAMP_MISMATCH, this.validUntilDate, other.getValidUntilDate());
+
+        // Compare package level conflicts
+        cf.addConflicts(compare((SBOMPackage) other));
+
+        return cf.getConflicts();
+    }
+
+
+    /**
+     * Compare against another SPDX 2.3 File
+     *
+     * @param other Other SPDX 2.3 File to compare against
+     * @return List of conflicts
+     */
+    @Override
+    public List<Conflict> compare(SPDX23File other){
+        ConflictFactory cf = new ConflictFactory();
+
+        // File Notice
+        cf.addConflict("File Notice", MISC_MISMATCH, this.fileNotice, other.getFileNotice());
+
+        // Compare component level details
+        cf.addConflicts( compare((SPDX23Component) other));
+
         return cf.getConflicts();
     }
 }

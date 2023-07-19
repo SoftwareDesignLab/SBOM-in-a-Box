@@ -371,6 +371,7 @@ public class CDX14ComponentObject implements CDX14Package {
      * @param other Other CycloneDX 1.4 Package to compare against
      * @return List of conflicts
      */
+    @Override
     public List<Conflict> compare(CDX14Package other) {
         ConflictFactory cf = new ConflictFactory();
         // Mime Type
