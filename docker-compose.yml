@@ -20,7 +20,19 @@ services:
       - COMPOSER_ALLOW_SUPERUSER=1
     build:
       context: core/src/main/java/org/svip/sbomgeneration/osi
-      dockerfile: core/src/main/java/org/svip/sbomgeneration/osi/Dockerfile
+      # Move setup script and controller into container and run setup
+      dockerfile_inline: |
+        ADD setup.sh setup.sh
+        RUN ./setup.sh
+        COPY ContainerController.py /usr/local/bin/ContainerController.py
+        CMD ["python3", "/usr/local/bin/ContainerController.py"]
+    volumes:
+      - type: bind
+        source: core/src/main/java/org/svip/sbomgeneration/osi/bound_dir/code
+        target: /bound_dir/code
+      - type: bind
+        source: core/src/main/java/org/svip/sbomgeneration/osi/bound_dir/sboms
+        target: /bound_dir/sboms
 
   # MySQL server
   mysql:
