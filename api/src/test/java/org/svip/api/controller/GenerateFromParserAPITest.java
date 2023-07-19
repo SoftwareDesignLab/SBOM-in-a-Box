@@ -60,9 +60,10 @@ public class GenerateFromParserAPITest extends APITest {
     @Test
     @DisplayName("Convert to CDX tag value test")
     public void CDXTagValueTest() {
-
-        assertEquals(HttpStatus.BAD_REQUEST, controller.generateParsers((SBOMFile[]) testMap.entrySet().toArray()[0],
-                        "Java", SerializerFactory.Schema.CDX14, SerializerFactory.Format.JSON).
+        Collection<SBOMFile[]> files = testMap.values();
+        SBOMFile[] sbomFiles = (SBOMFile[]) files.toArray()[0];
+        assertEquals(HttpStatus.BAD_REQUEST, controller.generateParsers(sbomFiles,
+                        "Java", SerializerFactory.Schema.CDX14, SerializerFactory.Format.TAGVALUE).
                 getStatusCode());
     }
 
@@ -72,12 +73,11 @@ public class GenerateFromParserAPITest extends APITest {
 
         Collection<SBOMFile[]> files = testMap.values();
 
-        long i = 0;
+        int i = 0;
         for (SBOMFile[] file : files) {
 
-            long projId = i * 10L;
-            HashMap<Long, String> projKey = (HashMap<Long, String>) testMap.keySet().toArray()[(int) i];
-            String projectName = projKey.get(projId);
+            HashMap<Long, String> projKey = (HashMap<Long, String>) testMap.keySet().toArray()[i];
+            String projectName = (String) projKey.values().toArray()[0];
 
             LOGGER.info("Parsing project: " + projectName);
 
@@ -85,6 +85,9 @@ public class GenerateFromParserAPITest extends APITest {
             ) {
                 for (String format : formats
                 ) {
+
+                    if (projectName == null)
+                        System.out.println("hi");
 
                     if (schema.equals("CDX14") && format.equals("TAGVALUE") || projectName.equals("Empty"))
                         continue;
