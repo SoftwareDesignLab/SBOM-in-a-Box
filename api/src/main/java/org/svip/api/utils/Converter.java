@@ -4,6 +4,7 @@ import org.svip.api.model.SBOMFile;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
@@ -85,40 +86,7 @@ public class Converter {
             s.setPrettyPrinting(true);
             SerializerFactory.Schema originalSchema = Utils.assumeSchemaFromOriginal(sbom.getContents());
 
-            builder.setFormat(String.valueOf(schema));
-            builder.setName(deserialized.getName());
-            builder.setUID(deserialized.getUID());
-            builder.setVersion(deserialized.getVersion());
-
-            if (deserialized.getLicenses() != null)
-                for (String license : deserialized.getLicenses()) {
-                    if (license == null) continue;
-                    builder.addLicense(license);
-                }
-
-            builder.setCreationData(deserialized.getCreationData());
-            builder.setDocumentComment(deserialized.getDocumentComment());
-
-            buildSVIPComponentObject(deserialized.getRootComponent(), originalSchema);
-            builder.setRootComponent(compBuilder.buildAndFlush());
-
-            if (deserialized.getComponents() != null)
-                for (Component c : deserialized.getComponents()
-                ) {
-                    if (c == null)
-                        continue;
-                    buildSVIPComponentObject(c, originalSchema);
-                    builder.addSPDX23Component(compBuilder.buildAndFlush());
-                }
-
-            if (deserialized.getRelationships() != null)
-                for (Map.Entry<String, Set<Relationship>> entry : deserialized.getRelationships().entrySet())
-                    for (Relationship r : entry.getValue())
-                        builder.addRelationship(entry.getKey(), r);
-
-            if (deserialized.getExternalReferences() != null)
-                for (ExternalReference e : deserialized.getExternalReferences())
-                    builder.addExternalReference(e);
+            buildSBOM(builder, deserialized, schema, originalSchema);
 
             // schema specific adjustments
             switch (schema) {
@@ -149,6 +117,49 @@ public class Converter {
     }
 
     /**
+     * Helper function to build an SBOM object from an object of the SBOM interface
+     * @param deserialized SBOM interface object
+     * @param schema desired schema
+     * @param originalSchema original schema
+     */
+    public static void buildSBOM(SVIPSBOMBuilder builder, SBOM deserialized, SerializerFactory.Schema schema, SerializerFactory.Schema originalSchema) {
+        builder.setFormat(String.valueOf(schema));
+        builder.setName(deserialized.getName());
+        builder.setUID(deserialized.getUID());
+        builder.setVersion(deserialized.getVersion());
+
+        if (deserialized.getLicenses() != null)
+            for (String license : deserialized.getLicenses()) {
+                if (license == null) continue;
+                builder.addLicense(license);
+            }
+
+        builder.setCreationData(deserialized.getCreationData());
+        builder.setDocumentComment(deserialized.getDocumentComment());
+
+        buildSVIPComponentObject(deserialized.getRootComponent(), originalSchema);
+        builder.setRootComponent(compBuilder.buildAndFlush());
+
+        if (deserialized.getComponents() != null)
+            for (Component c : deserialized.getComponents()
+            ) {
+                if (c == null)
+                    continue;
+                buildSVIPComponentObject(c, originalSchema);
+                builder.addSPDX23Component(compBuilder.buildAndFlush());
+            }
+
+        if (deserialized.getRelationships() != null)
+            for (Map.Entry<String, Set<Relationship>> entry : deserialized.getRelationships().entrySet())
+                for (Relationship r : entry.getValue())
+                    builder.addRelationship(entry.getKey(), r);
+
+        if (deserialized.getExternalReferences() != null)
+            for (ExternalReference e : deserialized.getExternalReferences())
+                builder.addExternalReference(e);
+    }
+
+    /**
      * Build an SVIP Component object
      *
      * @param component      original uncasted component
@@ -170,51 +181,52 @@ public class Converter {
                 compBuilder.addHash(entry.getKey(), entry.getValue());
 
         // schema specific
-        switch (originalSchema) {
-            case CDX14 -> {
+        if(originalSchema != null)
+            switch (originalSchema) {
+                case CDX14 -> {
 
-                CDX14ComponentObject cdx14ComponentObject = (CDX14ComponentObject) component;
-                compBuilder.setSupplier(cdx14ComponentObject.getSupplier());
-                compBuilder.setVersion(cdx14ComponentObject.getVersion());
-                compBuilder.setDescription(cdx14ComponentObject.getDescription());
+                    CDX14ComponentObject cdx14ComponentObject = (CDX14ComponentObject) component;
+                    compBuilder.setSupplier(cdx14ComponentObject.getSupplier());
+                    compBuilder.setVersion(cdx14ComponentObject.getVersion());
+                    compBuilder.setDescription(cdx14ComponentObject.getDescription());
 
-                if (cdx14ComponentObject.getCPEs() != null)
-                    for (String cpe : cdx14ComponentObject.getCPEs())
-                        compBuilder.addCPE(cpe);
+                    if (cdx14ComponentObject.getCPEs() != null)
+                        for (String cpe : cdx14ComponentObject.getCPEs())
+                            compBuilder.addCPE(cpe);
 
-                if (cdx14ComponentObject.getPURLs() != null)
-                    for (String purl : cdx14ComponentObject.getPURLs())
-                        compBuilder.addPURL(purl);
+                    if (cdx14ComponentObject.getPURLs() != null)
+                        for (String purl : cdx14ComponentObject.getPURLs())
+                            compBuilder.addPURL(purl);
 
-                if (cdx14ComponentObject.getExternalReferences() != null)
-                    for (ExternalReference ext : cdx14ComponentObject.getExternalReferences())
-                        compBuilder.addExternalReference(ext);
+                    if (cdx14ComponentObject.getExternalReferences() != null)
+                        for (ExternalReference ext : cdx14ComponentObject.getExternalReferences())
+                            compBuilder.addExternalReference(ext);
 
-                compBuilder.setMimeType(cdx14ComponentObject.getMimeType());
-                compBuilder.setPublisher(cdx14ComponentObject.getPublisher());
-                compBuilder.setScope(cdx14ComponentObject.getScope());
-                compBuilder.setGroup(cdx14ComponentObject.getGroup());
+                    compBuilder.setMimeType(cdx14ComponentObject.getMimeType());
+                    compBuilder.setPublisher(cdx14ComponentObject.getPublisher());
+                    compBuilder.setScope(cdx14ComponentObject.getScope());
+                    compBuilder.setGroup(cdx14ComponentObject.getGroup());
 
-                if (cdx14ComponentObject.getProperties() != null)
-                    for (Map.Entry<String, Set<String>> prop : cdx14ComponentObject.getProperties().entrySet())
-                        for (String value : prop.getValue())
-                            compBuilder.addProperty(prop.getKey(), value);
-            }
-            case SPDX23 -> {
+                    if (cdx14ComponentObject.getProperties() != null)
+                        for (Map.Entry<String, Set<String>> prop : cdx14ComponentObject.getProperties().entrySet())
+                            for (String value : prop.getValue())
+                                compBuilder.addProperty(prop.getKey(), value);
+                }
+                case SPDX23 -> {
 
-                // is this a package or file object?
-                if (component instanceof SPDX23PackageObject spdx23PackageObject) {
-                    compBuilder.setComment(spdx23PackageObject.getComment());
-                    compBuilder.setAttributionText(spdx23PackageObject.getAttributionText());
-                } else if (component instanceof SPDX23FileObject spdx23FileObject) {
-                    compBuilder.setComment(spdx23FileObject.getComment());
-                    compBuilder.setAttributionText(spdx23FileObject.getAttributionText());
-                    compBuilder.setFileNotice(spdx23FileObject.getFileNotice());
+                    // is this a package or file object?
+                    if (component instanceof SPDX23PackageObject spdx23PackageObject) {
+                        compBuilder.setComment(spdx23PackageObject.getComment());
+                        compBuilder.setAttributionText(spdx23PackageObject.getAttributionText());
+                    } else if (component instanceof SPDX23FileObject spdx23FileObject) {
+                        compBuilder.setComment(spdx23FileObject.getComment());
+                        compBuilder.setAttributionText(spdx23FileObject.getAttributionText());
+                        compBuilder.setFileNotice(spdx23FileObject.getFileNotice());
+                    }
+
                 }
 
             }
-
-        }
 
     }
 

@@ -12,6 +12,7 @@ import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.utils.Converter;
 import org.svip.api.utils.Utils;
+import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbomanalysis.comparison.merger.*;
@@ -391,7 +392,7 @@ public class SVIPApiController {
 
         ArrayList<SBOM> sboms = new ArrayList<>();
 
-        String urlMsg = "DELETE /svip/merge?id=";
+        String urlMsg = "MERGE /svip/merge?id=";
 
         long idSum = 0L;
 
@@ -414,11 +415,11 @@ public class SVIPApiController {
 
             // deserialize into SBOM object
             Deserializer d;
-            SVIPSBOM deserialized;
+            SBOM deserialized;
 
             try{
                 d = SerializerFactory.createDeserializer(sbom.getContents());
-                deserialized = (SVIPSBOM) d.readFromString(sbom.getContents());
+                deserialized = d.readFromString(sbom.getContents());
             }catch (Exception e){
                 LOGGER.info(urlMsg + sbomFile.get().getId() + "DURING DESERIALIZATION: " +
                         e.getMessage());
@@ -446,7 +447,10 @@ public class SVIPApiController {
         try{
             s = SerializerFactory.createSerializer(SerializerFactory.Schema.SPDX23, SerializerFactory.Format.TAGVALUE, // todo is this default?
                     true);
-            contents = s.writeToString((SVIPSBOM) merged);
+            SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
+            builder.setSpecVersion("2.3");
+            Converter.buildSBOM(builder, merged, SerializerFactory.Schema.SPDX23, null);
+            contents = s.writeToString(builder.Build());
         } catch (IllegalArgumentException | JsonProcessingException e) {
             String error = "Error serializing merged SBOM: " + Arrays.toString(e.getStackTrace());
             LOGGER.error(urlMsg + " " + error);
@@ -459,7 +463,7 @@ public class SVIPApiController {
 
         // assign new id and name
         int i = 0;
-        while(!sbomFileRepository.existsById(idSum)){ // todo check if frontend are okay with this
+        while(sbomFileRepository.existsById(idSum)){ // todo check if frontend are okay with this
             idSum += (rand.nextLong() + idSum) % ((i < 100) ? idSum : Long.MAX_VALUE);
             i++;
         }

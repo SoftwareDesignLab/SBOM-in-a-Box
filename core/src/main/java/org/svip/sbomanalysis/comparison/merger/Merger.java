@@ -139,29 +139,33 @@ public abstract class Merger {
         // New organization
         Organization organizationNew;
 
-        // Based on the contents of organization A and organization B, attempt to merge them
-        if(organizationA != null && organizationB == null) {
+        try{
+            // Based on the contents of organization A and organization B, attempt to merge them
+            if(organizationA != null && organizationB == null) {
 
-            // Condition three: Only A exists: merged Organization becomes Organization A
-            return organizationA;
+                // Condition three: Only A exists: merged Organization becomes Organization A
+                return organizationA;
 
-        } else if (organizationB != null && organizationA == null) {
+            } else if (organizationB != null && organizationA == null) {
 
-            // condition four: Only B exists: merged Organization becomes Organization B
-            return organizationB;
+                // condition four: Only B exists: merged Organization becomes Organization B
+                return organizationB;
 
-        } else if (organizationA == null && organizationB == null) {
+            } else if (organizationA == null && organizationB == null) {
 
-            return null;
+                return null;
 
-        } else if(organizationA.getName().equals(organizationB.getName()) && organizationA.getUrl().equals(organizationB.getUrl())) {
+            } else if(organizationA.getName().equals(organizationB.getName()) && organizationA.getUrl().equals(organizationB.getUrl())) {
 
-            // Condition one: both have same name and url: merge their authors into one
-            Set<Contact> manufactureAuthorsNew = mergeAuthors(organizationA.getContacts(), organizationB.getContacts());
-            organizationNew = new Organization(organizationA.getName(), organizationA.getUrl());
-            for(Contact manufacturer : manufactureAuthorsNew) { organizationNew.addContact(manufacturer); }
+                // Condition one: both have same name and url: merge their authors into one
+                Set<Contact> manufactureAuthorsNew = mergeAuthors(organizationA.getContacts(), organizationB.getContacts());
+                organizationNew = new Organization(organizationA.getName(), organizationA.getUrl());
+                for(Contact manufacturer : manufactureAuthorsNew) { organizationNew.addContact(manufacturer); }
 
-        } else { return organizationA; }
+            } else { return organizationA; }
+        }catch (NullPointerException e){
+            return new Organization("", "");
+        }
 
         // return new Organization
         return organizationNew;

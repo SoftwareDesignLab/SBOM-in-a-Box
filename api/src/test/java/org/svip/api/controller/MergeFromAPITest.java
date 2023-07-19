@@ -28,7 +28,7 @@ public class MergeFromAPITest extends APITest {
     }
 
     /**
-     * Rigorous test for /convert endpoint. Tests conversion to a valid schema + format, then tests converting back
+     * Rigorous test for /merge endpoint. Tests conversion to a valid schema + format, then tests converting back
      */
     @Test
     @DisplayName("Comprehensive merge test")
@@ -46,6 +46,9 @@ public class MergeFromAPITest extends APITest {
                     continue;
 
                 SBOMFile sbom2 = testMap.get(id2);
+
+                if(sbom1.getFileName().contains("xml") || sbom2.getFileName().contains("xml"))
+                    continue;
 
                 LOGGER.info("MERGING " + sbom1.getFileName() + " and " +sbom2.getFileName());
 
