@@ -299,92 +299,89 @@ public class CDX14ComponentObject implements CDX14Package {
     @Override
     public List<Conflict> compare(Component other) {
         ConflictFactory cf = new ConflictFactory();
+
         // NAME
+        // shouldn't occur
         cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
+
         // AUTHOR
         cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
+
         // Licenses
-        cf.addConflicts(this.licenses.compare(other.getLicenses()));
-        // HASHES
-        cf.compareHashes("Hash", this.hashes, other.getHashes());
-        if (other instanceof SPDX23PackageObject) {
-            // VERSION
-            cf.addConflict("Version", VERSION_MISMATCH, this.version, ((SPDX23PackageObject) other).getVersion());
-            // SUPPLIER
-            if (this.supplier != null) {
-                cf.addConflicts(this.supplier.compare(((SPDX23PackageObject) other).getSupplier()));
-            }
-            // PURL
-            cf.compareStringSets("PURL", PURL_MISMATCH, this.purls, ((SPDX23PackageObject) other).getPURLs());
-            // CPE
-            cf.compareStringSets("CPE", CPE_MISMATCH, this.cpes, ((SPDX23PackageObject) other).getCPEs());
-        } else if (other instanceof SVIPComponentObject) {
-            // VERSION
-            cf.addConflict("Version", VERSION_MISMATCH, this.version, ((SVIPComponentObject) other).getVersion());
-            // SUPPLIER
-            if (this.supplier != null) {
-                cf.addConflicts(this.supplier.compare(((SVIPComponentObject) other).getSupplier()));
-            }
-            // PURL
-            cf.compareStringSets("PURL", PURL_MISMATCH, this.purls, ((SVIPComponentObject) other).getPURLs());
-            // CPE
-            cf.compareStringSets("CPE", CPE_MISMATCH, this.cpes, ((SVIPComponentObject) other).getCPEs());
-            // PUBLISHER
-            cf.addConflict("Publisher", PUBLISHER_MISMATCH, this.publisher, ((SVIPComponentObject)other).getPublisher());
-        }
-//        // TODO SWIDs?
+        if(cf.comparable("License", this.licenses, other.getLicenses()))
+            cf.addConflicts(this.licenses.compare(other.getLicenses()));
+
+        // Copyright
+        cf.addConflict("Copyright", MISC_MISMATCH, this.copyright, other.getCopyright());
+
         return cf.getConflicts();
     }
+
+    /**
+     * Compare against another generic SBOM Package
+     *
+     * @param other Other SBOM Package to compare against
+     * @return List of conflicts
+     */
     public List<Conflict> compare(SBOMPackage other) {
         ConflictFactory cf = new ConflictFactory();
-        // NAME
-        cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
-        // AUTHOR
-        cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
-        // Licenses
-        cf.addConflicts(this.licenses.compare(other.getLicenses()));
-        // HASHES
-        cf.compareHashes("Hash", this.hashes, other.getHashes());
-        // VERSION
-        cf.addConflict("Version", VERSION_MISMATCH, this.version, other.getVersion());
-        // SUPPLIER
-        if (this.supplier != null) {
+
+        // Supplier
+        if(cf.comparable("Supplier", this.supplier, other.getSupplier()))
             cf.addConflicts(this.supplier.compare(other.getSupplier()));
-        }
-        // PURL
+
+        // Version
+        // shouldn't occur
+        cf.addConflict("Version", VERSION_MISMATCH, this.version, other.getVersion());
+
+        // Description
+        if(cf.comparable("Description", this.description, other.getDescription()))
+            cf.addConflicts(this.description.compare(other.getDescription()));
+
+        // PURLs
+        // todo use util PURL objects?
         cf.compareStringSets("PURL", PURL_MISMATCH, this.purls, other.getPURLs());
-        // CPE
+
+        // CPEs
+        // todo use util CPE objects?
         cf.compareStringSets("CPE", CPE_MISMATCH, this.cpes, other.getCPEs());
-        if (other instanceof CDX14ComponentObject) {
-            // PUBLISHER
-            cf.addConflict("Publisher", PUBLISHER_MISMATCH, this.publisher, ((CDX14ComponentObject)other).getPublisher());
-        }
-//        // TODO SWIDs?
+
+        // External References
+        cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
+
+        // Compare component level details
+        cf.addConflicts( compare((Component) other));
+
         return cf.getConflicts();
     }
+
+
+    /**
+     * Compare against another CycloneDX 1.4 Package
+     *
+     * @param other Other CycloneDX 1.4 Package to compare against
+     * @return List of conflicts
+     */
     public List<Conflict> compare(CDX14Package other) {
         ConflictFactory cf = new ConflictFactory();
-        // NAME
-        cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
-        // AUTHOR
-        cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
-        // Licenses
-        cf.addConflicts(this.licenses.compare(other.getLicenses()));
-        // HASHES
-        cf.compareHashes("Hash", this.hashes, other.getHashes());
-        // VERSION
-        cf.addConflict("Version", VERSION_MISMATCH, this.version, (other).getVersion());
-        // SUPPLIER
-        if (this.supplier != null) {
-            cf.addConflicts(this.supplier.compare((other).getSupplier()));
-        }
-        // PURL
-        cf.compareStringSets("PURL", PURL_MISMATCH, this.purls, (other).getPURLs());
-        // CPE
-        cf.compareStringSets("CPE", CPE_MISMATCH, this.cpes, (other).getCPEs());
-        // PUBLISHER
+        // Mime Type
+        cf.addConflict("Mime Type", MISC_MISMATCH, this.mimeType, other.getMimeType());
+
+        // Publisher
         cf.addConflict("Publisher", PUBLISHER_MISMATCH, this.publisher, other.getPublisher());
-//        // TODO SWIDs?
+
+        // Scope
+        cf.addConflict("Scope", MISC_MISMATCH, this.scope, other.getScope());
+
+        // Group
+        cf.addConflict("Group", MISC_MISMATCH, this.group, other.getGroup());
+
+        // todo
+        // properties
+
+        // Compare Package level details
+        cf.addConflicts( compare((SBOMPackage) other));
+
         return cf.getConflicts();
     }
 }
