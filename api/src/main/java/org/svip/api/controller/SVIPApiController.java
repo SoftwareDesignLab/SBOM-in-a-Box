@@ -458,9 +458,12 @@ public class SVIPApiController {
         Random rand = new Random();
 
         // assign new id and name
+        int i = 0;
         while(!sbomFileRepository.existsById(idSum)){ // todo check if frontend are okay with this
-            idSum += (rand.nextLong() + idSum) % idSum;
+            idSum += (rand.nextLong() + idSum) % ((i < 100) ? idSum : Long.MAX_VALUE);
+            i++;
         }
+
         result.setId(idSum);
         sbomFileRepository.save(result);
 
