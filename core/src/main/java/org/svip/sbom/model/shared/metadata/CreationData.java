@@ -180,10 +180,8 @@ public class CreationData implements Comparable{
         cf.compareStringSets("Creation Data: License", LICENSE_MISMATCH, this.licenses, other.getLicenses());
 
         // Comparable Sets
-        if(cf.comparable("Creation Data: Author", this.authors, other.getAuthors()))
-            cf.compareComparableSets("Creation Data: Author", new HashSet<>(this.authors), new HashSet<>(other.getAuthors()));
-        if(cf.comparable("Creation Data: Tool", this.creationTools, other.getCreationTools()))
-            cf.compareComparableSets("Creation Data: Tool", new HashSet<>(this.creationTools), new HashSet<>(other.getCreationTools()));
+        cf.compareComparableSets("Creation Data: Author", new HashSet<>(this.authors), new HashSet<>(other.getAuthors()));
+        cf.compareComparableSets("Creation Data: Tool", new HashSet<>(this.creationTools), new HashSet<>(other.getCreationTools()));
 
         // Compare Objects
         if(cf.comparable("Manufacture", this.manufacture, other.getManufacture()))
