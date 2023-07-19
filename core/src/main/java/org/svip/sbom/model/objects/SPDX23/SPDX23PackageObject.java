@@ -385,6 +385,12 @@ public class SPDX23PackageObject implements SPDX23Package {
     public List<Conflict> compare(Component other) {
         ConflictFactory cf = new ConflictFactory();
 
+        // Type
+        cf.addConflict("Type", MISC_MISMATCH, this.type, other.getType());
+
+        // UID
+        cf.addConflict("UID", MISC_MISMATCH, this.uid, other.getUID());
+
         // NAME
         // shouldn't occur
         cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
@@ -398,6 +404,9 @@ public class SPDX23PackageObject implements SPDX23Package {
 
         // Copyright
         cf.addConflict("Copyright", MISC_MISMATCH, this.copyright, other.getCopyright());
+
+        // Hashes
+        cf.compareHashes("Component Hash", this.hashes, other.getHashes());
 
         return cf.getConflicts();
     }
@@ -501,13 +510,13 @@ public class SPDX23PackageObject implements SPDX23Package {
         cf.addConflict("Source Info", MISC_MISMATCH, this.sourceInfo, other.getSourceInfo());
 
         // Release Date
-        cf.addConflict("Release Date", MISC_MISMATCH, this.releaseDate, other.getReleaseDate());
+        cf.addConflict("Release Date", TIMESTAMP_MISMATCH, this.releaseDate, other.getReleaseDate());
 
         // Built Date
-        cf.addConflict("Built Date", MISC_MISMATCH, this.builtDate, other.getBuiltDate());
+        cf.addConflict("Built Date", TIMESTAMP_MISMATCH, this.builtDate, other.getBuiltDate());
 
         // Valid Until Date
-        cf.addConflict("Valid Until Date", MISC_MISMATCH, this.validUntilDate, other.getValidUntilDate());
+        cf.addConflict("Valid Until Date", TIMESTAMP_MISMATCH, this.validUntilDate, other.getValidUntilDate());
 
         // Compare package level conflicts
         cf.addConflicts(compare((SBOMPackage) other));

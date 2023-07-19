@@ -300,6 +300,12 @@ public class CDX14ComponentObject implements CDX14Package {
     public List<Conflict> compare(Component other) {
         ConflictFactory cf = new ConflictFactory();
 
+        // Type
+        cf.addConflict("Type", MISC_MISMATCH, this.type, other.getType());
+
+        // UID
+        cf.addConflict("UID", MISC_MISMATCH, this.uid, other.getUID());
+
         // NAME
         // shouldn't occur
         cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
@@ -313,6 +319,9 @@ public class CDX14ComponentObject implements CDX14Package {
 
         // Copyright
         cf.addConflict("Copyright", MISC_MISMATCH, this.copyright, other.getCopyright());
+
+        // Hashes
+        cf.compareHashes("Component Hash", this.hashes, other.getHashes());
 
         return cf.getConflicts();
     }
