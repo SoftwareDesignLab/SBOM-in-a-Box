@@ -296,29 +296,16 @@ public class CDX14ComponentObject implements CDX14Package {
         // AUTHOR
         cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
         // Licenses
-//        cf.compareLicenseCollections("License", LICENSE_MISMATCH, this.licenses, other.getLicenses());
+        cf.addConflicts(this.licenses.compare(other.getLicenses()));
         // HASHES
-        if (this.hashes != null && other.getHashes() != null) {
-            // TODO Should we compare keys, values or both?
-            cf.compareStringSets("Hash", HASH_MISMATCH, new HashSet<String>(this.hashes.values()), new HashSet<String>(other.getHashes().values()));
-        } // TODO not currently possible to add missing conflicts if Hashes is null/empty in one component and not null/empty in another component
+        cf.compareHashes("Hash", this.hashes, other.getHashes());
         if (other instanceof SPDX23PackageObject) {
             // VERSION
             cf.addConflict("Version", VERSION_MISMATCH, this.version, ((SPDX23PackageObject) other).getVersion());
             // SUPPLIER
-            if (this.supplier != null && ((SPDX23PackageObject)other).getSupplier() != null) {
-                cf.addConflict("Supplier Name", SUPPLIER_MISMATCH, this.supplier.getName(), ((SPDX23PackageObject) other).getSupplier().getName());
-                cf.addConflict("Supplier URL", SUPPLIER_MISMATCH, this.supplier.getUrl(), ((SPDX23PackageObject) other).getSupplier().getUrl());
-                // TODO supplier contacts is a list of non-string objects, which cannot be used for missing conflicts yet,
-                //  and will need null checks and a for loop right here for mismatch conflict check
-                // cf.addConflict("Supplier Contact", SUPPLIER_MISMATCH, this.supplier.getContacts(), ((SPDX23PackageObject) other).getSupplier().getContacts());
+            if (this.supplier != null) {
+                cf.addConflicts(this.supplier.compare(((SPDX23PackageObject) other).getSupplier()));
             }
-            // TODO not currently possible to add missing conflicts for Organization as it is not a string or set<string>
-//            else if (this.supplier != null) {
-//                conflicts.add(new MissingConflict("supplier", this.supplier.getName(), null));
-//            } else if (((SPDX23PackageObject)other).getSupplier() != null) {
-//                conflicts.add(new MissingConflict("supplier", null, ((SPDX23PackageObject)other).getSupplier().getName()));
-//            }
             // PURL
             cf.compareStringSets("PURL", PURL_MISMATCH, this.purls, ((SPDX23PackageObject) other).getPURLs());
             // CPE
@@ -327,196 +314,70 @@ public class CDX14ComponentObject implements CDX14Package {
             // VERSION
             cf.addConflict("Version", VERSION_MISMATCH, this.version, ((SVIPComponentObject) other).getVersion());
             // SUPPLIER
-            if (this.supplier != null && ((SVIPComponentObject)other).getSupplier() != null) {
-                cf.addConflict("Supplier Name", SUPPLIER_MISMATCH, this.supplier.getName(), ((SVIPComponentObject) other).getSupplier().getName());
-                cf.addConflict("Supplier URL", SUPPLIER_MISMATCH, this.supplier.getUrl(), ((SVIPComponentObject) other).getSupplier().getUrl());
-                // TODO supplier contacts is a list of non-string objects, which cannot be used for missing conflicts yet,
-                //  and will need null checks and a for loop right here for mismatch conflict check
-                // cf.addConflict("Supplier Contact", SUPPLIER_MISMATCH, this.supplier.getContacts(), ((SPDX23PackageObject) other).getSupplier().getContacts());
+            if (this.supplier != null) {
+                cf.addConflicts(this.supplier.compare(((SVIPComponentObject) other).getSupplier()));
             }
-            // TODO not currently possible to add missing conflicts for Organization as it is not a string or set<string>
-//            else if (this.supplier != null) {
-//                conflicts.add(new MissingConflict("supplier", this.supplier.getName(), null));
-//            } else if (((SVIPComponentObject)other).getSupplier() != null) {
-//                conflicts.add(new MissingConflict("supplier", null, ((SVIPComponentObject)other).getSupplier().getName()));
-//            }
             // PURL
             cf.compareStringSets("PURL", PURL_MISMATCH, this.purls, ((SVIPComponentObject) other).getPURLs());
             // CPE
             cf.compareStringSets("CPE", CPE_MISMATCH, this.cpes, ((SVIPComponentObject) other).getCPEs());
+            // PUBLISHER
+            cf.addConflict("Publisher", PUBLISHER_MISMATCH, this.publisher, ((SVIPComponentObject)other).getPublisher());
         }
 //        // TODO SWIDs?
-//
-//        return conflicts.stream().toList();
         return cf.getConflicts();
     }
     public List<Conflict> compare(SBOMPackage other) {
-//        ArrayList<Conflict> conflicts = new ArrayList<>();
-//        // NAME
-//        if (this.name != null ^ other.getName() != null) {
-//            conflicts.add(new MissingConflict("name", this.name, other.getName()));
-//        } else if (!Objects.equals(this.name, other.getName()) && this.name != null) {
-//            conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
-//        }
-//        // VERSION
-//        if (this.version != null ^ other.getVersion() != null) {
-//            conflicts.add(new MissingConflict("version", this.version, other.getVersion()));
-//        } else if (!Objects.equals(this.version, other.getVersion()) && this.version != null) {
-//            conflicts.add(new MismatchConflict("version", this.version, other.getVersion(), VERSION_MISMATCH));
-//        }
-//        // SUPPLIER
-//        if (this.supplier != null && other.getSupplier() != null) {
-//            if (!Objects.equals(this.supplier.getName(), other.getSupplier().getName())) {
-//                conflicts.add(new MismatchConflict("supplier", this.supplier.getName(), other.getSupplier().getName(), SUPPLIER_MISMATCH));
-//            }
-//        } else if (this.supplier != null) {
-//            conflicts.add(new MissingConflict("supplier", this.supplier.getName(), null));
-//        } else if (other.getSupplier() != null) {
-//            conflicts.add(new MissingConflict("supplier", null, other.getSupplier().getName()));
-//        }
-//        // AUTHOR
-//        if (this.author != null ^ other.getAuthor() != null) {
-//            conflicts.add(new MissingConflict("author", this.author, other.getAuthor()));
-//        } else if (!Objects.equals(this.author, other.getAuthor()) && this.author != null) {
-//            conflicts.add(new MismatchConflict("author", this.author, other.getAuthor(), AUTHOR_MISMATCH));
-//        }
-//        // PURL
-//        if (this.purls != null && other.getPURLs() != null) {
-//            if (!this.purls.containsAll(other.getPURLs())) {
-//                conflicts.add(new MismatchConflict("purl", this.purls.toString(), other.getPURLs().toString(), PURL_MISMATCH));
-//            }
-//        } else if (this.purls != null) {
-//            conflicts.add(new MissingConflict("purl", this.purls.toString(), null));
-//        } else if (other.getPURLs() != null) {
-//            conflicts.add(new MissingConflict("purl", null, other.getPURLs().toString()));
-//        }
-//        // CPE
-//        if (this.cpes != null && other.getCPEs() != null) {
-//            if (!this.cpes.containsAll(other.getCPEs())) {
-//                conflicts.add(new MismatchConflict("cpe", this.cpes.toString(), other.getCPEs().toString(), CPE_MISMATCH));
-//            }
-//        } else if (this.cpes != null) {
-//            conflicts.add(new MissingConflict("cpe", this.cpes.toString(), null));
-//        } else if (other.getCPEs() != null) {
-//            conflicts.add(new MissingConflict("cpe", null, other.getCPEs().toString()));
-//        }
-//        // Licenses
-//        if (this.licenses != null && other.getLicenses() != null) {
-//            if (!this.licenses.getConcluded().containsAll(other.getLicenses().getConcluded())) {
-//                conflicts.add(new MismatchConflict("license", this.licenses.getConcluded().toString(), other.getLicenses().getConcluded().toString(), LICENSE_MISMATCH));
-//            }
-//            if (!this.licenses.getDeclared().containsAll(other.getLicenses().getDeclared())) {
-//                conflicts.add(new MismatchConflict("license", this.licenses.getDeclared().toString(), other.getLicenses().getDeclared().toString(), LICENSE_MISMATCH));
-//            }
-//            if (!this.licenses.getInfoFromFiles().containsAll(other.getLicenses().getInfoFromFiles())) {
-//                conflicts.add(new MismatchConflict("license", this.licenses.getInfoFromFiles().toString(), other.getLicenses().getInfoFromFiles().toString(), LICENSE_MISMATCH));
-//            }
-//        } else if (this.licenses != null && (this.licenses.getConcluded().size() > 0 || this.licenses.getDeclared().size() > 0 || this.licenses.getInfoFromFiles().size() > 0)) {
-//            conflicts.add(new MissingConflict("license", this.licenses.getConcluded().toString() + this.licenses.getDeclared().toString() + this.licenses.getInfoFromFiles().toString(), null));
-//        } else if (other.getLicenses() != null && (other.getLicenses().getConcluded().size() > 0 || other.getLicenses().getDeclared().size() > 0 || other.getLicenses().getInfoFromFiles().size() > 0)) {
-//            conflicts.add(new MissingConflict("license", null, other.getLicenses().getConcluded().toString() + other.getLicenses().getDeclared().toString() + other.getLicenses().getInfoFromFiles().toString()));
-//        }
-//        // HASHES
-//        if (this.hashes != null && other.getHashes() != null) {
-//            if (!this.hashes.values().containsAll(other.getHashes().values())) {
-//                conflicts.add(new MismatchConflict("hash", this.hashes.toString(), other.getHashes().toString(), HASH_MISMATCH));
-//            }
-//        } else if (this.hashes != null) {
-//            conflicts.add(new MissingConflict("hash", this.hashes.toString(), null));
-//        } else if (other.getHashes() != null) {
-//            conflicts.add(new MissingConflict("hash", null, other.getHashes().toString()));
-//        }
+        ConflictFactory cf = new ConflictFactory();
+        // NAME
+        cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
+        // AUTHOR
+        cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
+        // Licenses
+        cf.addConflicts(this.licenses.compare(other.getLicenses()));
+        // HASHES
+        cf.compareHashes("Hash", this.hashes, other.getHashes());
+        // VERSION
+        cf.addConflict("Version", VERSION_MISMATCH, this.version, other.getVersion());
+        // SUPPLIER
+        if (this.supplier != null) {
+            cf.addConflicts(this.supplier.compare(other.getSupplier()));
+        }
+        // PURL
+        cf.compareStringSets("PURL", PURL_MISMATCH, this.purls, other.getPURLs());
+        // CPE
+        cf.compareStringSets("CPE", CPE_MISMATCH, this.cpes, other.getCPEs());
+        if (other instanceof CDX14ComponentObject) {
+            // PUBLISHER
+            cf.addConflict("Publisher", PUBLISHER_MISMATCH, this.publisher, ((CDX14ComponentObject)other).getPublisher());
+        }
 //        // TODO SWIDs?
-//
-//        return conflicts.stream().toList();
-        return null;
+        return cf.getConflicts();
     }
     public List<Conflict> compare(CDX14Package other) {
-//        ArrayList<Conflict> conflicts = new ArrayList<>();
-//        // NAME
-//        if (this.name != null ^ other.getName() != null) {
-//            conflicts.add(new MissingConflict("name", this.name, other.getName()));
-//        } else if (!Objects.equals(this.name, other.getName()) && this.name != null) {
-//            conflicts.add(new MismatchConflict("name", this.name, other.getName(), NAME_MISMATCH));
-//        }
-//        // VERSION
-//        if (this.version != null ^ other.getVersion() != null) {
-//            conflicts.add(new MissingConflict("version", this.version, other.getVersion()));
-//        } else if (!Objects.equals(this.version, other.getVersion()) && this.version != null) {
-//            conflicts.add(new MismatchConflict("version", this.version, other.getVersion(), VERSION_MISMATCH));
-//        }
-//        // SUPPLIER
-//        if (this.supplier != null && other.getSupplier() != null) {
-//            if (!Objects.equals(this.supplier.getName(), other.getSupplier().getName())) {
-//                conflicts.add(new MismatchConflict("supplier", this.supplier.getName(), other.getSupplier().getName(), SUPPLIER_MISMATCH));
-//            }
-//        } else if (this.supplier != null) {
-//            conflicts.add(new MissingConflict("supplier", this.supplier.getName(), null));
-//        } else if (other.getSupplier() != null) {
-//            conflicts.add(new MissingConflict("supplier", null, other.getSupplier().getName()));
-//        }
-//        // AUTHOR
-//        if (this.author != null ^ other.getAuthor() != null) {
-//            conflicts.add(new MissingConflict("author", this.author, other.getAuthor()));
-//        } else if (!Objects.equals(this.author, other.getAuthor()) && this.author != null) {
-//            conflicts.add(new MismatchConflict("author", this.author, other.getAuthor(), AUTHOR_MISMATCH));
-//        }
-//        // PURL
-//        if (this.purls != null && other.getPURLs() != null) {
-//            if (!this.purls.containsAll(other.getPURLs())) {
-//                conflicts.add(new MismatchConflict("purl", this.purls.toString(), other.getPURLs().toString(), PURL_MISMATCH));
-//            }
-//        } else if (this.purls != null) {
-//            conflicts.add(new MissingConflict("purl", this.purls.toString(), null));
-//        } else if (other.getPURLs() != null) {
-//            conflicts.add(new MissingConflict("purl", null, other.getPURLs().toString()));
-//        }
-//        // CPE
-//        if (this.cpes != null && other.getCPEs() != null) {
-//            if (!this.cpes.containsAll(other.getCPEs())) {
-//                conflicts.add(new MismatchConflict("cpe", this.cpes.toString(), other.getCPEs().toString(), CPE_MISMATCH));
-//            }
-//        } else if (this.cpes != null) {
-//            conflicts.add(new MissingConflict("cpe", this.cpes.toString(), null));
-//        } else if (other.getCPEs() != null) {
-//            conflicts.add(new MissingConflict("cpe", null, other.getCPEs().toString()));
-//        }
-//        // Licenses
-//        if (this.licenses != null && other.getLicenses() != null) {
-//            if (!this.licenses.getConcluded().containsAll(other.getLicenses().getConcluded())) {
-//                conflicts.add(new MismatchConflict("license", this.licenses.getConcluded().toString(), other.getLicenses().getConcluded().toString(), LICENSE_MISMATCH));
-//            }
-//            if (!this.licenses.getDeclared().containsAll(other.getLicenses().getDeclared())) {
-//                conflicts.add(new MismatchConflict("license", this.licenses.getDeclared().toString(), other.getLicenses().getDeclared().toString(), LICENSE_MISMATCH));
-//            }
-//            if (!this.licenses.getInfoFromFiles().containsAll(other.getLicenses().getInfoFromFiles())) {
-//                conflicts.add(new MismatchConflict("license", this.licenses.getInfoFromFiles().toString(), other.getLicenses().getInfoFromFiles().toString(), LICENSE_MISMATCH));
-//            }
-//        } else if (this.licenses != null && (this.licenses.getConcluded().size() > 0 || this.licenses.getDeclared().size() > 0 || this.licenses.getInfoFromFiles().size() > 0)) {
-//            conflicts.add(new MissingConflict("license", this.licenses.getConcluded().toString() + this.licenses.getDeclared().toString() + this.licenses.getInfoFromFiles().toString(), null));
-//        } else if (other.getLicenses() != null && (other.getLicenses().getConcluded().size() > 0 || other.getLicenses().getDeclared().size() > 0 || other.getLicenses().getInfoFromFiles().size() > 0)) {
-//            conflicts.add(new MissingConflict("license", null, other.getLicenses().getConcluded().toString() + other.getLicenses().getDeclared().toString() + other.getLicenses().getInfoFromFiles().toString()));
-//        }
-//        // HASHES
-//        if (this.hashes != null && other.getHashes() != null) {
-//            if (!this.hashes.values().containsAll(other.getHashes().values())) {
-//                conflicts.add(new MismatchConflict("hash", this.hashes.toString(), other.getHashes().toString(), HASH_MISMATCH));
-//            }
-//        } else if (this.hashes != null) {
-//            conflicts.add(new MissingConflict("hash", this.hashes.toString(), null));
-//        } else if (other.getHashes() != null) {
-//            conflicts.add(new MissingConflict("hash", null, other.getHashes().toString()));
-//        }
-//        // PUBLISHER
-//        if (this.publisher != null ^ other.getPublisher() != null) {
-//            conflicts.add(new MissingConflict("publisher", this.publisher, other.getPublisher()));
-//        } else if (!Objects.equals(this.publisher, other.getPublisher()) && this.publisher != null) {
-//            conflicts.add(new MismatchConflict("publisher", this.publisher, other.getPublisher(), PUBLISHER_MISMATCH));
-//        }
+        ConflictFactory cf = new ConflictFactory();
+        // NAME
+        cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
+        // AUTHOR
+        cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
+        // Licenses
+        cf.addConflicts(this.licenses.compare(other.getLicenses()));
+        // HASHES
+        cf.compareHashes("Hash", this.hashes, other.getHashes());
+        // VERSION
+        cf.addConflict("Version", VERSION_MISMATCH, this.version, (other).getVersion());
+        // SUPPLIER
+        if (this.supplier != null) {
+            cf.addConflicts(this.supplier.compare((other).getSupplier()));
+        }
+        // PURL
+        cf.compareStringSets("PURL", PURL_MISMATCH, this.purls, (other).getPURLs());
+        // CPE
+        cf.compareStringSets("CPE", CPE_MISMATCH, this.cpes, (other).getCPEs());
+        // PUBLISHER
+        cf.addConflict("Publisher", PUBLISHER_MISMATCH, this.publisher, other.getPublisher());
 //        // TODO SWIDs?
-//
-//        return conflicts.stream().toList();
-        return null;
+        return cf.getConflicts();
     }
 }
 
