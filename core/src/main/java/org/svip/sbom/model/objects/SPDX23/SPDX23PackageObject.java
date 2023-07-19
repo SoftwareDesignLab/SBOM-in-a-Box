@@ -408,6 +408,14 @@ public class SPDX23PackageObject implements SPDX23Package {
         // Hashes
         cf.compareHashes("Component Hash", this.hashes, other.getHashes());
 
+        // Compare SPDX component specific fields
+        if( other instanceof SPDX23Component)
+            cf.addConflicts( compare((SPDX23Component) other) );
+
+        // Compare SBOMPackage specific fields
+        if( other instanceof SBOMPackage)
+            cf.addConflicts( compare((SBOMPackage) other) );
+
         return cf.getConflicts();
     }
 
@@ -443,8 +451,11 @@ public class SPDX23PackageObject implements SPDX23Package {
         // External References
         cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
 
-        // Compare component level details
-        cf.addConflicts( compare((Component) other));
+
+        // Compare SBOMPackage specific fields
+        if( other instanceof SPDX23Package)
+            cf.addConflicts( compare((SPDX23Package) other) );
+
 
         return cf.getConflicts();
     }
@@ -464,9 +475,6 @@ public class SPDX23PackageObject implements SPDX23Package {
 
         // Attribution Text
         cf.addConflict("Attribution Text", MISC_MISMATCH, this.attributionText, other.getAttributionText());
-
-        // Compare component level details
-        cf.addConflicts( compare((Component) other));
 
         return cf.getConflicts();
     }
@@ -517,9 +525,6 @@ public class SPDX23PackageObject implements SPDX23Package {
 
         // Valid Until Date
         cf.addConflict("Valid Until Date", TIMESTAMP_MISMATCH, this.validUntilDate, other.getValidUntilDate());
-
-        // Compare package level conflicts
-        cf.addConflicts(compare((SBOMPackage) other));
 
         return cf.getConflicts();
     }
