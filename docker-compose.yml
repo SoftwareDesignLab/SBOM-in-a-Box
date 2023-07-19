@@ -13,16 +13,9 @@ services:
     container_name: svip-osi
     restart: unless-stopped
     image: ubuntu:latest
-    environment:
-      # Default questions for PHP install
-      - DEBIAN_FRONTEND=noninteractive
-      - DEBCONF_NONINTERACTIVE_SEEN=true
-      - COMPOSER_ALLOW_SUPERUSER=1
     build:
       context: core/src/main/java/org/svip/sbomgeneration/osi
-#      dockerfile: Dockerfile
       # Move setup script and controller into container and run setup
-      # TODO can this top section be removed
       dockerfile_inline: |
         FROM ubuntu:latest
         ENV DEBIAN_FRONTEND noninteractive
