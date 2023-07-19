@@ -1,6 +1,9 @@
 package org.svip.sbom.model.interfaces.schemas.SPDX23;
 
 import org.svip.sbom.model.interfaces.generics.SBOMPackage;
+import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+
+import java.util.List;
 
 /**
  * File: SPDX23Package.java
@@ -56,4 +59,12 @@ public interface SPDX23Package extends SBOMPackage, SPDX23Component {
      * @return When the package will no longer be supported
      */
     String getValidUntilDate();
+
+    /**
+     * Compare against another SPDX 2.3 Package
+     *
+     * @param other Other SPDX 2.3 Package to compare against
+     * @return List of conflicts
+     */
+    List<Conflict> compare(SPDX23Package other);
 }

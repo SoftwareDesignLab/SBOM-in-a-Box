@@ -1,4 +1,4 @@
-package org.svip.sbomanalysis.comparison.conflicts;
+package org.svip.sbomanalysis.old;
 
 /**
  * Types of conflicts that can occur in an SBOM

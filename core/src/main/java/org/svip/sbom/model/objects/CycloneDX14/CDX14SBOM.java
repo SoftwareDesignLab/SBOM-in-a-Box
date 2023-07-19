@@ -1,14 +1,20 @@
 package org.svip.sbom.model.objects.CycloneDX14;
 
 import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Schema;
-import org.svip.sbom.model.shared.Relationship;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.metadata.CreationData;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbom.model.shared.metadata.CreationData;
+import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.util.ExternalReference;
+import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
 
 /**
  * file: CDX14SBOM.java
@@ -209,6 +215,65 @@ public class CDX14SBOM implements CDX14Schema {
         this.components = components;
         this.relationships = relationships;
         this.externalReferences = externalReferences;
+    }
 
+    /**
+     * Compare a CycloneDX 1.4 SBOM against another SBOM Metadata
+     *
+     * @param other Other SBOM to compare against
+     * @return List of Metadata conflicts
+     */
+    @Override
+    public List<Conflict> compare(SBOM other) {
+        // CDX - OTHER Comparison
+        ConflictFactory cf = new ConflictFactory();
+
+        // Compare single String fields
+        cf.addConflict("Format", ORIGIN_FORMAT_MISMATCH, this.format, other.getFormat());
+        cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
+        cf.addConflict("UID", MISC_MISMATCH, this.uid, other.getUID());
+        cf.addConflict("Version", VERSION_MISMATCH, this.version, other.getVersion());
+        cf.addConflict("Spec Version", SCHEMA_VERSION_MISMATCH, this.specVersion, other.getSpecVersion());
+        cf.addConflict("Document Comment", MISC_MISMATCH, this.documentComment, other.getDocumentComment());
+
+        // Compare Licenses
+        cf.compareStringSets("License", LICENSE_MISMATCH, this.licenses, other.getLicenses());
+
+        // Compare Creation Data
+        if(cf.comparable("Creation Data", this.creationData, other.getCreationData()))
+            cf.addConflicts(this.creationData.compare(other.getCreationData()));
+
+        // Comparable Sets
+        if(cf.comparable("External Reference", this.externalReferences, other.getExternalReferences()))
+            cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
+
+        // todo
+        // compare relationships
+        // compare Vulns
+
+        // Compare CDX specific fields
+        if( other instanceof CDX14SBOM)
+            cf.addConflicts( compare((CDX14SBOM) other) );
+
+        return cf.getConflicts();
+    }
+
+    /**
+     * Compare a CycloneDX 1.4 SBOM against another CycloneDX 1.4 SBOM Metadata
+     *
+     * @param other other CycloneDX 1.4 SBOM
+     * @return list of conflict
+     */
+    @Override
+    public List<Conflict> compare(CDX14SBOM other) {
+        // CDX - CDX Comparison
+        ConflictFactory cf = new ConflictFactory();
+
+        // todo
+        // Services
+        // Compositions
+        // Signature
+
+        return cf.getConflicts();
     }
 }

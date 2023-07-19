@@ -1,9 +1,6 @@
 package org.svip.sbomgeneration.serializers;
 
-import org.svip.sbomgeneration.serializers.deserializer.CDX14JSONDeserializer;
-import org.svip.sbomgeneration.serializers.deserializer.Deserializer;
-import org.svip.sbomgeneration.serializers.deserializer.SPDX23JSONDeserializer;
-import org.svip.sbomgeneration.serializers.deserializer.SPDX23TagValueDeserializer;
+import org.svip.sbomgeneration.serializers.deserializer.*;
 import org.svip.sbomgeneration.serializers.serializer.*;
 
 import java.util.HashMap;
