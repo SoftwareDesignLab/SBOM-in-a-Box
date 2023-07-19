@@ -6,14 +6,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
+import org.svip.api.utils.Utils;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 @ExtendWith(MockitoExtension.class)
 public class APITest {
@@ -133,22 +132,22 @@ public class APITest {
         ArrayList<String> projectNames = new ArrayList<>();
 
         // java
-        SBOMFile[] sbomFiles = configureProjectTest(java.getProjectFiles());
+        SBOMFile[] sbomFiles = Utils.configureProjectTest(java.getProjectFiles());
         files.add(sbomFiles);
         projectNames.add(java.type);
 
         // foobar cs proj
-        sbomFiles = configureProjectTest(foobarCSharp.getProjectFiles());
+        sbomFiles = Utils.configureProjectTest(foobarCSharp.getProjectFiles());
         files.add(sbomFiles);
         projectNames.add(foobarCSharp.type);
 
         // foobar cs proj
-        sbomFiles = configureProjectTest(nugetCSharp.getProjectFiles());
+        sbomFiles = Utils.configureProjectTest(nugetCSharp.getProjectFiles());
         files.add(sbomFiles);
         projectNames.add(nugetCSharp.type);
 
         // empty cs proj
-        sbomFiles = configureProjectTest(empty.getProjectFiles());
+        sbomFiles = Utils.configureProjectTest(empty.getProjectFiles());
         files.add(sbomFiles);
         projectNames.add(empty.type);
 
@@ -170,24 +169,6 @@ public class APITest {
 
         return resultMap;
 
-    }
-
-    /**
-     * Configure SBOMFiles from project source files
-     *
-     * @param projectFiles project source files
-     * @return array of SBOMFiles we can use to test
-     */
-    private static SBOMFile[] configureProjectTest(String[] projectFiles) throws IOException {
-        SBOMFile[] sbomFiles = new SBOMFile[projectFiles.length];
-        for (int i = 0; i < projectFiles.length; i++) {
-            try {
-                sbomFiles[i] = new SBOMFile(projectFiles[i], new String(Files.readAllBytes(Paths.get(projectFiles[i]))));
-            } catch (InvalidPathException e) {
-                i = -1;
-            }
-        }
-        return sbomFiles;
     }
 
 }
