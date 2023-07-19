@@ -267,6 +267,10 @@ public class SPDX23SBOM implements SPDX23Schema{
         // compare relationships
         // compare Vulns
 
+        // Compare SPDX specific fields
+        if( other instanceof SPDX23SBOM)
+            cf.addConflicts( compare((SPDX23SBOM) other) );
+
         return cf.getConflicts();
     }
 
@@ -286,9 +290,6 @@ public class SPDX23SBOM implements SPDX23Schema{
 
         // todo
         // snippets, additional license info, annotation info
-
-        // Compare shared items
-        cf.addConflicts(compare((SBOM) other));
 
         return cf.getConflicts();
     }

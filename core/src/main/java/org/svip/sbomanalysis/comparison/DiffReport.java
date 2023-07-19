@@ -30,22 +30,7 @@ public class DiffReport {
         @JsonProperty
         private final List<String> missingComponents = new ArrayList<>();
 
-        public Comparison(CDX14SBOM target, SPDX23SBOM other) {
-            // Compare metadata
-            this.componentConflicts.put(METADATA_TAG, target.compare(other));
-        }
-
-        public Comparison(SPDX23SBOM target, CDX14SBOM other) {
-            // Compare metadata
-            this.componentConflicts.put(METADATA_TAG, target.compare(other));
-        }
-
-        public Comparison(SPDX23SBOM target, SPDX23SBOM other) {
-            // Compare metadata
-            this.componentConflicts.put(METADATA_TAG, target.compare(other));
-        }
-
-        public Comparison(CDX14SBOM target, CDX14SBOM other) {
+        public Comparison(SBOM target, SBOM other) {
             // Compare metadata
             this.componentConflicts.put(METADATA_TAG, target.compare(other));
         }
@@ -78,7 +63,7 @@ public class DiffReport {
      * @param otherSBOM other SBOM to compare against
      */
     public void compare(String otherUID, SBOM otherSBOM) {
-        this.diffReport.put(otherUID, new Comparison((SPDX23SBOM) this.targetSBOM, (SPDX23SBOM) otherSBOM));
+        this.diffReport.put(otherUID, new Comparison(this.targetSBOM, otherSBOM));
     }
 
 }
