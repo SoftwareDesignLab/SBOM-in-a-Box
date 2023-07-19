@@ -7,7 +7,6 @@ import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -171,13 +170,6 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
     @Override
     public Set<Component> getComponents() {
         return this.components;
-    }
-
-    /**
-     * Get the SBOM's component as a Set of SVIPComponentObject
-     */
-    public Set<SVIPComponentObject> getSVIPComponents() {
-        return Collections.singleton((SVIPComponentObject) this.components);
     }
 
     /**
