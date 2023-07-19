@@ -231,6 +231,8 @@ public class OSVClient implements VulnerabilityDBClient {
         JSONArray aliases = vulnerabilityBody.getJSONArray("aliases");
         String vulnID = aliases.getString(0);
         String vulnDesc;
+        // check if summary key is in json object
+        // if not default to using details key
         if(!vulnerabilityBody.has("summary")){
             vulnDesc = vulnerabilityBody.getString("details");
         }
@@ -247,8 +249,10 @@ public class OSVClient implements VulnerabilityDBClient {
         //Get all products and add all to the VEX Statement
         String supplier = c.getSupplier().getName();
         JSONArray packages = vulnerabilityBody.getJSONArray("affected");
+        // for every package in the JSONArray
         for(int i = 0; i<packages.length(); i++){
             JSONObject vulnPackage = packages.getJSONObject(i);
+            // extract the package's info and create a new Product
             JSONObject packageInfo = vulnPackage.getJSONObject("package");
             String packageID = packageInfo.getString("name")
                     + ":" + packageInfo.getString("ecosystem")
