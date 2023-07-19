@@ -16,7 +16,6 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 public class GenerateFromParserAPITest extends APITest {
 
     private final String[] schemas = {"CDX14", "SPDX23"};
@@ -24,7 +23,7 @@ public class GenerateFromParserAPITest extends APITest {
     private static final Logger LOGGER = LoggerFactory.getLogger(SVIPApiController.class);
     private final Map<Map<Long, String>, SBOMFile[]> testMap;
 
-    public GenerateFromParserAPITest() throws IOException {
+    public GenerateFromParserAPITest() throws IOException, InterruptedException {
         testMap = getTestProjectMap();
     }
 

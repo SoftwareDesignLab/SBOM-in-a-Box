@@ -10,8 +10,10 @@ import org.svip.api.repository.SBOMFileRepository;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @ExtendWith(MockitoExtension.class)
 public class APITest {
@@ -51,6 +53,7 @@ public class APITest {
                 + "/src/test/java/org/svip/api/sample_projects/";
         public String type;
         public String[] sourceFileNames;
+        private boolean gotten = false;
 
         public SampleProject(String type, String[] sourceFileNames) {
             this.type = type;
@@ -58,8 +61,11 @@ public class APITest {
         }
 
         public String[] getProjectFiles() {
-            for (int i = 0; i < sourceFileNames.length; i++)
-                sourceFileNames[i] = dir + type + "/" + sourceFileNames[i];
+            if (!gotten)
+                for (int i = 0; i < sourceFileNames.length; i++)
+                    sourceFileNames[i] = dir + type + "/" + sourceFileNames[i];
+            gotten = true;
+
             return sourceFileNames;
         }
     }
@@ -175,7 +181,11 @@ public class APITest {
     private static SBOMFile[] configureProjectTest(String[] projectFiles) throws IOException {
         SBOMFile[] sbomFiles = new SBOMFile[projectFiles.length];
         for (int i = 0; i < projectFiles.length; i++) {
-            sbomFiles[i] = new SBOMFile(projectFiles[i], new String(Files.readAllBytes(Paths.get(projectFiles[i]))));
+            try {
+                sbomFiles[i] = new SBOMFile(projectFiles[i], new String(Files.readAllBytes(Paths.get(projectFiles[i]))));
+            } catch (InvalidPathException e) {
+                i = -1;
+            }
         }
         return sbomFiles;
     }
