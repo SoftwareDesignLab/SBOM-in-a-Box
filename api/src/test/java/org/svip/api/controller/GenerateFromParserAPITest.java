@@ -23,7 +23,7 @@ public class GenerateFromParserAPITest extends APITest {
     private static final Logger LOGGER = LoggerFactory.getLogger(SVIPApiController.class);
     private final Map<Map<Long, String>, SBOMFile[]> testMap;
 
-    public GenerateFromParserAPITest() throws IOException, InterruptedException {
+    public GenerateFromParserAPITest() throws IOException{
         testMap = getTestProjectMap();
     }
 
