@@ -189,12 +189,12 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
         return this.components;
     }
 
-    /**
+    /** TODO This breaks Jackson Serialization for some reason...
      * Get the SBOM's component as a Set of SVIPComponentObject
      */
-    public Set<SVIPComponentObject> getSVIPComponents() {
-        return Collections.singleton((SVIPComponentObject) this.components);
-    }
+//    public Set<SVIPComponentObject> getSVIPComponents() {
+//        return Collections.singleton((SVIPComponentObject) this.components);
+//    }
 
     /**
      * Get the SBOM's relationships
