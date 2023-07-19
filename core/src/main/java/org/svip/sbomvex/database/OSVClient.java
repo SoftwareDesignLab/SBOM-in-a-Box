@@ -37,7 +37,7 @@ public class OSVClient implements VulnerabilityDBClient {
     /**url endpoint to access OSV database GET method*/
     private final String GET_ENDPOINT = "https://api.osv.dev/v1/vulns/";
 
-    HttpClient httpClient = HttpClient.newHttpClient();
+    private HttpClient httpClient = HttpClient.newHttpClient();
 
     /**
      * Build the API Request, then get the OSV database's response
