@@ -46,17 +46,19 @@ public class APITest {
     Sample projects for parsers
      */
 
-    public static class SampleProject{
+    public static class SampleProject {
         private final String dir = System.getProperty("user.dir")
                 + "/src/test/java/org/svip/api/sample_projects/";
         public String type;
         public String[] sourceFileNames;
-        public SampleProject(String type, String[] sourceFileNames){
+
+        public SampleProject(String type, String[] sourceFileNames) {
             this.type = type;
             this.sourceFileNames = sourceFileNames;
         }
-        public String[] getProjectFiles(){
-            for(int i = 0; i < sourceFileNames.length; i++)
+
+        public String[] getProjectFiles() {
+            for (int i = 0; i < sourceFileNames.length; i++)
                 sourceFileNames[i] = dir + type + "/" + sourceFileNames[i];
             return sourceFileNames;
         }
@@ -119,7 +121,7 @@ public class APITest {
         return resultMap;
     }
 
-    public static Map<Map<Long, String>, SBOMFile[]> getTestProjectMap() throws IOException{
+    public static Map<Map<Long, String>, SBOMFile[]> getTestProjectMap() throws IOException {
 
         ArrayList<SBOMFile[]> files = new ArrayList<>();
         ArrayList<String> projectNames = new ArrayList<>();
@@ -144,17 +146,17 @@ public class APITest {
         files.add(sbomFiles);
         projectNames.add(empty.type);
 
-        final Map<Map<Long,String>, SBOMFile[]> resultMap = new HashMap<>();
+        final Map<Map<Long, String>, SBOMFile[]> resultMap = new HashMap<>();
         for (int i = 0; i < files.size(); i++) {
 
             HashMap<Long, String> idMap = new HashMap<>();
-            long projectId = i* 10L; // project id
+            long projectId = i * 10L; // project id
             idMap.put(projectId, projectNames.get(i));
             resultMap.put(idMap, files.get(i));
 
             int j = 0;
-            for (SBOMFile s: resultMap.get(idMap)
-                 ) {
+            for (SBOMFile s : resultMap.get(idMap)
+            ) {
                 s.setId(projectId + j); // Set ID for testing purposes
                 j++;
             }
@@ -166,6 +168,7 @@ public class APITest {
 
     /**
      * Configure SBOMFiles from project source files
+     *
      * @param projectFiles project source files
      * @return array of SBOMFiles we can use to test
      */
