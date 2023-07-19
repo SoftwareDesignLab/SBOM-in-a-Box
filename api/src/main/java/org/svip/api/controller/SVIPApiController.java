@@ -20,6 +20,7 @@ import org.svip.sbomgeneration.serializers.deserializer.Deserializer;
 import org.svip.sbomgeneration.serializers.serializer.Serializer;
 import org.svip.utils.VirtualPath;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -359,7 +360,7 @@ public class SVIPApiController {
             s = SerializerFactory.createSerializer(schema,format, true);
             contents = s.writeToString(parsed);
         } catch (IllegalArgumentException | JsonProcessingException e) {
-            String error = "Error serializing parsed SBOM: " + e.getMessage();
+            String error = "Error serializing parsed SBOM: " + Arrays.toString(e.getStackTrace());
             LOGGER.error(urlMsg + " " + error);
             return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
         }

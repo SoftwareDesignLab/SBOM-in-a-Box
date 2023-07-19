@@ -51,7 +51,7 @@ public class APITest {
 
     public static class SampleProject{
         private final String dir = System.getProperty("user.dir")
-                + "/src/test/java/org/svip/api/sample_sboms/";
+                + "/src/test/java/org/svip/api/sample_projects/";
         public String type;
         public String[] sourceFileNames;
         public SampleProject(String type, String[] sourceFileNames){
@@ -65,8 +65,8 @@ public class APITest {
         }
     }
 
-    private static final SampleProject java = new SampleProject("java",
-            new String[]{"lib/foo", "Bar.java", "build.gradle", "pom.xml"});
+    private static final SampleProject java = new SampleProject("Java",
+            new String[]{"lib/Foo.java", "Bar.java", "build.gradle", "pom.xml"});
 
     @BeforeEach
     public void setup() {
@@ -125,8 +125,6 @@ public class APITest {
         }
         files.add(javaFiles);
 
-
-
         final Map<Long, SBOMFile[]> resultMap = new HashMap<>();
         for (int i = 0; i < files.size(); i++) {
 
@@ -140,7 +138,6 @@ public class APITest {
                 s.setId(projectId + j); // Set ID for testing purposes
                 j++;
             }
-
         }
 
         return resultMap;
