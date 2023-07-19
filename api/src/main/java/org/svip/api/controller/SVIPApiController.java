@@ -448,11 +448,12 @@ public class SVIPApiController {
                     true);
             contents = s.writeToString((SVIPSBOM) merged);
         } catch (IllegalArgumentException | JsonProcessingException e) {
-            String error = "Error serializing parsed SBOM: " + Arrays.toString(e.getStackTrace());
+            String error = "Error serializing merged SBOM: " + Arrays.toString(e.getStackTrace());
             LOGGER.error(urlMsg + " " + error);
             return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
         }
 
+        // SBOMFile
         SBOMFile result = new SBOMFile(merged.getName(), contents);
         Random rand = new Random();
 
@@ -460,10 +461,7 @@ public class SVIPApiController {
         while(!sbomFileRepository.existsById(idSum)){ // todo check if frontend are okay with this
             idSum += (rand.nextLong() + idSum) % idSum;
         }
-
         result.setId(idSum);
-        result.setFileName(merged.getName());
-
         sbomFileRepository.save(result);
 
         return Utils.encodeResponse(result.toString());
