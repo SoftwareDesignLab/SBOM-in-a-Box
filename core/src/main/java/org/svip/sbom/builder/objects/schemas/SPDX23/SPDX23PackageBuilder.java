@@ -39,16 +39,13 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     private String copyright;
 
     /**File hashes*/
-    private HashMap<String, String> hashes;
+    private HashMap<String, String> hashes = new HashMap<>();
 
     /**File comment*/
     private String comment;
 
     /**File attribution text*/
     private String attributionText;
-
-    /**File's file notice*/
-    private String fileNotice;
 
     /**Component download location*/
     private String downloadLocation;
@@ -87,13 +84,13 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     private Description description;
 
     /**Component CPEs*/
-    private Set<String> cpes;
+    private Set<String> cpes = new HashSet<>();
 
     /**Component PURLs*/
-    private Set<String> purls;
+    private Set<String> purls = new HashSet<>();
 
     /**Component external references*/
-    private Set<ExternalReference> externalReferences;
+    private Set<ExternalReference> externalReferences = new HashSet<>();
 
     /**
      * Set the component's type
@@ -169,10 +166,6 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
      */
     @Override
     public SPDX23PackageBuilder addHash(String algorithm, String hash) {
-        // initialize the hash set
-        if (this.hashes == null) {
-            this.hashes = new HashMap<String, String>();
-        }
         this.hashes.put(algorithm, hash);
         return this;
     }
@@ -339,10 +332,6 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
      */
     @Override
     public SPDX23PackageBuilder addCPE(String cpe) {
-        // initialize the hash set
-        if (this.cpes == null) {
-            this.cpes = new HashSet<String>();
-        }
         this.cpes.add(cpe);
         return this;
     }
@@ -354,10 +343,6 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
      */
     @Override
     public SPDX23PackageBuilder addPURL(String purl) {
-        // initialize the hash set
-        if (this.purls == null) {
-            this.purls = new HashSet<String>();
-        }
         this.purls.add(purl);
         return this;
     }
@@ -369,10 +354,6 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
      */
     @Override
     public SPDX23PackageBuilder addExternalReference(ExternalReference externalReference) {
-        // initialize the hash set
-        if (this.externalReferences == null) {
-            this.externalReferences = new HashSet<ExternalReference>();
-        }
         this.externalReferences.add(externalReference);
         return this;
     }
@@ -406,13 +387,13 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
         this.name = null;
         this.licenses = null;
         this.copyright = null;
-        this.hashes = null;
+        this.hashes.clear();
         this.supplier = null;
         this.version = null;
         this.description = null;
-        this.cpes = null;
-        this.purls = null;
-        this.externalReferences = null;
+        this.cpes.clear();
+        this.purls.clear();
+        this.externalReferences.clear();
         this.downloadLocation = null;
         this.fileName = null;
         this.filesAnalyzed = null;
