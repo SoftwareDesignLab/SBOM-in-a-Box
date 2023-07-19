@@ -387,13 +387,13 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
         this.name = null;
         this.licenses = null;
         this.copyright = null;
-        this.hashes.clear();
+        this.hashes = new HashMap<>();
         this.supplier = null;
         this.version = null;
         this.description = null;
-        this.cpes.clear();
-        this.purls.clear();
-        this.externalReferences.clear();
+        this.cpes = new HashSet<>();
+        this.purls = new HashSet<>();
+        this.externalReferences = new HashSet<>();
         this.downloadLocation = null;
         this.fileName = null;
         this.filesAnalyzed = null;
