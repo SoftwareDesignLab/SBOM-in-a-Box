@@ -1,6 +1,7 @@
 package org.svip.sbomanalysis.comparison.merger;
 
 import org.svip.sbom.builder.interfaces.generics.SBOMBuilder;
+import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23PackageBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -50,7 +51,7 @@ public class MergerSPDX extends Merger {
 
     // todo move this to Utils
     private SBOM merge(SBOM A, SBOM B, Set<Component> componentsA, Set<Component> componentsB, SBOM mainSBOM,
-                       SBOMBuilder builder, SerializerFactory.Schema schema) {
+                       SBOMBuilder builder, SerializerFactory.Schema targetSchema) {
         /** Assign all top level data for the new SBOM **/
 
         // Format
@@ -67,7 +68,7 @@ public class MergerSPDX extends Merger {
 
         String specVersion;
         // Spec Version
-        switch (schema){
+        switch (targetSchema){
             case SPDX23 -> specVersion = "2.3";
             case CDX14 -> specVersion = "1.4";
             default -> specVersion = "1.0-a";
@@ -94,7 +95,7 @@ public class MergerSPDX extends Merger {
         builder.setRootComponent(mainSBOM.getRootComponent());
 
         // Components
-        Set<Component> mergedComponents = mergeComponents(componentsA, componentsB, schema);
+        Set<Component> mergedComponents = mergeComponents(componentsA, componentsB, targetSchema);
         for(Component mergedComponent : mergedComponents) {
             builder.addComponent(mergedComponent);
         }
@@ -112,7 +113,7 @@ public class MergerSPDX extends Merger {
 
     // todo move this to utils?
     @Override
-    protected Set<Component> mergeComponents(Set<Component> A, Set<Component> B, SerializerFactory.Schema schema) {
+    protected Set<Component> mergeComponents(Set<Component> A, Set<Component> B, SerializerFactory.Schema targetSchema) {
 
         // todo or extract and move below code to Utils
 
@@ -130,7 +131,7 @@ public class MergerSPDX extends Merger {
             // For every component in the second SBOM
             for(Component componentB : B) {
 
-                switch (schema){ // todo make this neater
+                switch (targetSchema){ // todo make this neater
                     case SPDX23 -> {
 
                         // Cast the generic component from SBOM A back to a SPDX component
@@ -140,7 +141,7 @@ public class MergerSPDX extends Merger {
                         // If the components are the same by Name and Version, merge then add them to the SBOM
                         if(componentA_SPDX.getName() == componentB_SPDX.getName() && componentA_SPDX.getVersion() == componentB_SPDX.getVersion()) {
 
-                            mergedComponents.add(mergeComponent(componentA, componentB));
+                            mergedComponents.add(mergeComponent(componentA, componentB, targetSchema));
                             removeB.add(componentB);
                             merged = true;
 
@@ -155,7 +156,7 @@ public class MergerSPDX extends Merger {
                         // If the components are the same by Name and Version, merge then add them to the SBOM
                         if(componentA_CDX.getName() == componentB_CDX.getName() && componentA_CDX.getVersion() == componentB_CDX.getVersion()) {
 
-                            mergedComponents.add(mergeComponent(componentA, componentB));
+                            mergedComponents.add(mergeComponent(componentA, componentB, targetSchema));
                             removeB.add(componentB);
                             merged = true;
 
@@ -170,7 +171,7 @@ public class MergerSPDX extends Merger {
                         // If the components are the same by Name and Version, merge then add them to the SBOM
                         if(componentA_SPDX.getName() == componentB_CDX.getName() && componentA_SPDX.getVersion() == componentB_CDX.getVersion()) {
 
-                            mergedComponents.add(mergeComponent(componentA, componentB));
+                            mergedComponents.add(mergeComponent(componentA, componentB, targetSchema));
                             removeB.add(componentB);
                             merged = true;
 
@@ -197,39 +198,39 @@ public class MergerSPDX extends Merger {
 
 
     @Override
-    protected Component mergeComponent(Component A, Component B) {
+    protected Component mergeComponent(Component A, Component B, SerializerFactory.Schema targetSchema) {
 
 
         // New builder for the merged component
-        SPDX23PackageBuilder compBuilder = new SPDX23PackageBuilder();
+        SVIPComponentBuilder compBuilder = new SVIPComponentBuilder();
 
-        SPDX23PackageObject componentA_SPDX = (SPDX23PackageObject) A;
-        SPDX23PackageObject componentB_SPDX = (SPDX23PackageObject) B;
+        Component componentA = A;
+        Component componentB = B;
 
         // Type : If A Type isn't empty or null, Merged Component uses A, otherwise use
-        if(componentA_SPDX.getType() != null && !componentA_SPDX.getType().isEmpty())
-            compBuilder.setType(componentA_SPDX.getType());
-        else compBuilder.setType(componentB_SPDX.getType());
+        if(componentA.getType() != null && !componentA.getType().isEmpty())
+            compBuilder.setType(componentA.getType());
+        else compBuilder.setType(componentB.getType());
 
         // UID : If A UID isn't empty or null, Merged Component uses A, otherwise use B
-        if(componentA_SPDX.getUID() != null && !componentA_SPDX.getUID().isEmpty())
-            compBuilder.setUID(componentA_SPDX.getUID());
-        else compBuilder.setUID(componentB_SPDX.getUID());
+        if(componentA.getUID() != null && !componentA.getUID().isEmpty())
+            compBuilder.setUID(componentA.getUID());
+        else compBuilder.setUID(componentB.getUID());
 
         // Author : If A 'Author' isn't empty or null, Merged Component uses A, otherwise use B
-        if(componentA_SPDX.getAuthor() != null && !componentA_SPDX.getAuthor().isEmpty())
-            compBuilder.setAuthor(componentA_SPDX.getAuthor());
-        else compBuilder.setAuthor(componentB_SPDX.getAuthor());
+        if(componentA.getAuthor() != null && !componentA.getAuthor().isEmpty())
+            compBuilder.setAuthor(componentA.getAuthor());
+        else compBuilder.setAuthor(componentB.getAuthor());
 
         // Name : If A 'Name' isn't empty or null, Merged Component uses A, otherwise use B
-        if(componentA_SPDX.getName() != null && !componentA_SPDX.getName().isEmpty())
-            compBuilder.setName(componentA_SPDX.getName());
-        else compBuilder.setName(componentB_SPDX.getName());
+        if(componentA.getName() != null && !componentA.getName().isEmpty())
+            compBuilder.setName(componentA.getName());
+        else compBuilder.setName(componentB.getName());
 
         // Licenses : Merge Licenses of A and B together
         LicenseCollection mergedLicenses = new LicenseCollection();
 
-        Set<String> concludedA = componentA_SPDX.getLicenses().getConcluded();
+        Set<String> concludedA = componentA.getLicenses().getConcluded();
 
         if(!concludedA.isEmpty() && concludedA != null) {
             concludedA.stream().forEach(
@@ -237,7 +238,7 @@ public class MergerSPDX extends Merger {
             );
         }
 
-        Set<String> declaredA = componentA_SPDX.getLicenses().getDeclared();
+        Set<String> declaredA = componentA.getLicenses().getDeclared();
 
         if(!declaredA.isEmpty() && !declaredA.equals(null)) {
             declaredA.stream().forEach(
@@ -245,7 +246,7 @@ public class MergerSPDX extends Merger {
             );
         }
 
-        Set<String> fileA = componentA_SPDX.getLicenses().getInfoFromFiles();
+        Set<String> fileA = componentA.getLicenses().getInfoFromFiles();
 
         if(!fileA.isEmpty() && !fileA.equals(null)) {
             fileA.stream().forEach(
@@ -253,7 +254,7 @@ public class MergerSPDX extends Merger {
             );
         }
 
-        Set<String> concludedB = componentB_SPDX.getLicenses().getConcluded();
+        Set<String> concludedB = componentB.getLicenses().getConcluded();
 
         if(!concludedB.isEmpty() && !concludedB.equals(null)) {
             concludedB.stream().forEach(
@@ -261,7 +262,7 @@ public class MergerSPDX extends Merger {
             );
         }
 
-        Set<String> declaredB = componentB_SPDX.getLicenses().getDeclared();
+        Set<String> declaredB = componentB.getLicenses().getDeclared();
 
         if(!declaredB.isEmpty() && !declaredB.equals(null)) {
             declaredB.stream().forEach(
@@ -269,7 +270,7 @@ public class MergerSPDX extends Merger {
             );
         }
 
-        Set<String> fileB = componentB_SPDX.getLicenses().getInfoFromFiles();
+        Set<String> fileB = componentB.getLicenses().getInfoFromFiles();
 
         if(!fileB.isEmpty() && !fileB.equals(null)) {
             fileB.stream().forEach(
@@ -279,124 +280,191 @@ public class MergerSPDX extends Merger {
 
         compBuilder.setLicenses(mergedLicenses);
 
-        // Copyright
-        String copyright = "";
-        if(componentA_SPDX.getCopyright()!=null && !componentA_SPDX.getCopyright().isEmpty())
-            copyright += "1) " + componentA_SPDX.getCopyright();
-        if(componentB_SPDX.getCopyright()!=null && !componentB_SPDX.getCopyright().isEmpty() && !copyright.isEmpty())
-            copyright += "\n2) " + componentB_SPDX.getCopyright();
-        else if(componentB_SPDX.getCopyright()!=null && !componentB_SPDX.getCopyright().isEmpty() && copyright.isEmpty())
-            copyright += "1) " + componentB_SPDX.getCopyright();
-
-        compBuilder.setCopyright(copyright);
+        /*
+            Target schema differences
+         */
 
         // Hashes
-        Map<String, String> hashesA = componentA_SPDX.getHashes();
-        Map<String, String> hashesB = componentB_SPDX.getHashes();
+        Map<String, String> hashesA = componentA.getHashes();
+        Map<String, String> hashesB = componentB.getHashes();
 
         for(String keyB : hashesB.keySet()) { compBuilder.addHash(keyB, hashesB.get(keyB)); }
         for(String keyA : hashesA.keySet()) { compBuilder.addHash(keyA, hashesA.get(keyA)); }
 
-        // Comment
-        String comment = "";
-        if(componentA_SPDX.getComment()!=null && !componentA_SPDX.getComment().isEmpty())
-            comment += "1) " + componentA_SPDX.getComment();
-        if(componentB_SPDX.getComment()!=null && !componentB_SPDX.getComment().isEmpty() && !comment.isEmpty())
-            comment += "\n2) " + componentB_SPDX.getComment();
-        else if(componentB_SPDX.getComment()!=null && !componentB_SPDX.getComment().isEmpty() && comment.isEmpty())
-            comment += "1) " + componentB_SPDX.getComment();
+        switch (targetSchema){
+            case SPDX23 -> {
+                // Copyright
+                String copyright = "";
+                if(componentA.getCopyright()!=null && !componentA.getCopyright().isEmpty())
+                    copyright += "1) " + componentA.getCopyright();
+                if(componentB.getCopyright()!=null && !componentB.getCopyright().isEmpty() && !copyright.isEmpty())
+                    copyright += "\n2) " + componentB.getCopyright();
+                else if(componentB.getCopyright()!=null && !componentB.getCopyright().isEmpty() && copyright.isEmpty())
+                    copyright += "1) " + componentB.getCopyright();
 
-        compBuilder.setComment(comment);
+                compBuilder.setCopyright(copyright);
 
-        // Attribution Text
-        if(componentA_SPDX.getAttributionText() != null && !componentA_SPDX.getAttributionText().isEmpty())
-            compBuilder.setAttributionText(componentA_SPDX.getAttributionText());
-        else compBuilder.setAttributionText(componentB_SPDX.getAttributionText());
+                SPDX23PackageObject spdx23PackageObjectA = (SPDX23PackageObject) componentA;
+                SPDX23PackageObject spdx23PackageObjectB = (SPDX23PackageObject) componentB;
 
-        // Download Location
-        if(componentA_SPDX.getDownloadLocation() != null && !componentA_SPDX.getDownloadLocation().isEmpty())
-            compBuilder.setDownloadLocation(componentA_SPDX.getDownloadLocation());
-        else compBuilder.setDownloadLocation(componentB_SPDX.getDownloadLocation());
+                // Comment
+                String comment = "";
+                if(spdx23PackageObjectA.getComment()!=null && !spdx23PackageObjectA.getComment().isEmpty())
+                    comment += "1) " + spdx23PackageObjectA.getComment();
+                if(spdx23PackageObjectB.getComment()!=null && !spdx23PackageObjectB.getComment().isEmpty() && !comment.isEmpty())
+                    comment += "\n2) " + spdx23PackageObjectB.getComment();
+                else if(spdx23PackageObjectB.getComment()!=null && !spdx23PackageObjectB.getComment().isEmpty() && comment.isEmpty())
+                    comment += "1) " + spdx23PackageObjectB.getComment();
 
-        // FileName
-        if(componentA_SPDX.getFileName() != null && !componentA_SPDX.getFileName().isEmpty())
-            compBuilder.setFileName(componentA_SPDX.getFileName());
-        else compBuilder.setFileName(componentB_SPDX.getFileName());
+                compBuilder.setComment(comment);
 
-        // Files Analyzed
-        // TODO: determine if a FilesAnalzyed mistmatch should return true or false
-        if(componentA_SPDX.getFilesAnalyzed() == true && componentA_SPDX.getFilesAnalyzed() == true)
-            compBuilder.setFilesAnalyzed(true);
-        else compBuilder.setFilesAnalyzed(false);
+                // Attribution Text
+                if(spdx23PackageObjectA.getAttributionText() != null && !spdx23PackageObjectA.getAttributionText().isEmpty())
+                    compBuilder.setAttributionText(spdx23PackageObjectA.getAttributionText());
+                else compBuilder.setAttributionText(spdx23PackageObjectB.getAttributionText());
 
-        // Verification Code
-        String verificationCode = "";
-        if(componentA_SPDX.getVerificationCode()!=null && !componentA_SPDX.getVerificationCode().isEmpty())
-            verificationCode += "1) " + componentA_SPDX.getVerificationCode();
-        if(componentB_SPDX.getVerificationCode()!=null && !componentB_SPDX.getVerificationCode().isEmpty() && !verificationCode.isEmpty())
-            verificationCode += "\n2) " + componentB_SPDX.getVerificationCode();
-        else if(componentB_SPDX.getVerificationCode()!=null && !componentB_SPDX.getVerificationCode().isEmpty() && verificationCode.isEmpty())
-            verificationCode += "1) " + componentB_SPDX.getVerificationCode();
+                // Download Location
+                if(spdx23PackageObjectA.getDownloadLocation() != null && !spdx23PackageObjectA.getDownloadLocation().isEmpty())
+                    compBuilder.setDownloadLocation(spdx23PackageObjectA.getDownloadLocation());
+                else compBuilder.setDownloadLocation(spdx23PackageObjectB.getDownloadLocation());
 
-        compBuilder.setVerificationCode(verificationCode);
+                // FileName
+                if(spdx23PackageObjectA.getFileName() != null && !spdx23PackageObjectA.getFileName().isEmpty())
+                    compBuilder.setFileName(spdx23PackageObjectA.getFileName());
+                else compBuilder.setFileName(spdx23PackageObjectB.getFileName());
 
-        // Homepage
-        String homepage = "";
-        if(componentA_SPDX.getHomePage()!=null && !componentA_SPDX.getHomePage().isEmpty())
-            homepage += "1) " + componentA_SPDX.getHomePage();
-        if(componentB_SPDX.getHomePage()!=null && !componentB_SPDX.getHomePage().isEmpty() && !homepage.isEmpty())
-            homepage += "\n2) " + componentB_SPDX.getVerificationCode();
-        else if(componentB_SPDX.getHomePage()!=null && !componentB_SPDX.getHomePage().isEmpty() && homepage.isEmpty())
-            homepage += "1) " + componentB_SPDX.getVerificationCode();
+                // Files Analyzed
+                // TODO: determine if a FilesAnalzyed mistmatch should return true or false
+                if(spdx23PackageObjectA.getFilesAnalyzed() == true && spdx23PackageObjectA.getFilesAnalyzed() == true)
+                    compBuilder.setFilesAnalyzed(true);
+                else compBuilder.setFilesAnalyzed(false);
 
-        compBuilder.setHomePage(homepage);
+                // Verification Code
+                String verificationCode = "";
+                if(spdx23PackageObjectA.getVerificationCode()!=null && !spdx23PackageObjectA.getVerificationCode().isEmpty())
+                    verificationCode += "1) " + spdx23PackageObjectA.getVerificationCode();
+                if(spdx23PackageObjectB.getVerificationCode()!=null && !spdx23PackageObjectB.getVerificationCode().isEmpty() && !verificationCode.isEmpty())
+                    verificationCode += "\n2) " + spdx23PackageObjectB.getVerificationCode();
+                else if(spdx23PackageObjectB.getVerificationCode()!=null && !spdx23PackageObjectB.getVerificationCode().isEmpty() && verificationCode.isEmpty())
+                    verificationCode += "1) " + spdx23PackageObjectB.getVerificationCode();
 
-        // Source Info
-        String sourceInfo = "";
-        if(componentA_SPDX.getSourceInfo()!=null && !componentA_SPDX.getSourceInfo().isEmpty())
-            sourceInfo += "1) " + componentA_SPDX.getSourceInfo();
-        if(componentB_SPDX.getSourceInfo()!=null && !componentB_SPDX.getSourceInfo().isEmpty() && !sourceInfo.isEmpty())
-            sourceInfo += "\n2) " + componentB_SPDX.getSourceInfo();
-        else if(componentB_SPDX.getSourceInfo()!=null && !componentB_SPDX.getSourceInfo().isEmpty() && sourceInfo.isEmpty())
-            sourceInfo += "1) " + componentB_SPDX.getSourceInfo();
+                compBuilder.setVerificationCode(verificationCode);
 
-        compBuilder.setSourceInfo(sourceInfo);
+                // Homepage
+                String homepage = "";
+                if(spdx23PackageObjectA.getHomePage()!=null && !spdx23PackageObjectA.getHomePage().isEmpty())
+                    homepage += "1) " + spdx23PackageObjectA.getHomePage();
+                if(spdx23PackageObjectB.getHomePage()!=null && !spdx23PackageObjectB.getHomePage().isEmpty() && !homepage.isEmpty())
+                    homepage += "\n2) " + spdx23PackageObjectB.getVerificationCode();
+                else if(spdx23PackageObjectB.getHomePage()!=null && !spdx23PackageObjectB.getHomePage().isEmpty() && homepage.isEmpty())
+                    homepage += "1) " + spdx23PackageObjectB.getVerificationCode();
 
-        // Release Date
-        if(componentA_SPDX.getReleaseDate() != null && !componentA_SPDX.getReleaseDate().isEmpty())
-            compBuilder.setReleaseDate(componentA_SPDX.getReleaseDate());
-        else compBuilder.setReleaseDate(componentB_SPDX.getReleaseDate());
+                compBuilder.setHomePage(homepage);
 
-        // Built Date
-        if(componentA_SPDX.getBuiltDate() != null && !componentA_SPDX.getBuiltDate().isEmpty())
-            compBuilder.setBuildDate(componentA_SPDX.getBuiltDate());
-        else compBuilder.setBuildDate(componentB_SPDX.getBuiltDate());
+                // Source Info
+                String sourceInfo = "";
+                if(spdx23PackageObjectA.getSourceInfo()!=null && !spdx23PackageObjectA.getSourceInfo().isEmpty())
+                    sourceInfo += "1) " + spdx23PackageObjectA.getSourceInfo();
+                if(spdx23PackageObjectB.getSourceInfo()!=null && !spdx23PackageObjectB.getSourceInfo().isEmpty() && !sourceInfo.isEmpty())
+                    sourceInfo += "\n2) " + spdx23PackageObjectB.getSourceInfo();
+                else if(spdx23PackageObjectB.getSourceInfo()!=null && !spdx23PackageObjectB.getSourceInfo().isEmpty() && sourceInfo.isEmpty())
+                    sourceInfo += "1) " + spdx23PackageObjectB.getSourceInfo();
 
-        // Valid Until Date
-        if(componentA_SPDX.getValidUntilDate() != null && !componentA_SPDX.getValidUntilDate().isEmpty())
-            compBuilder.setValidUntilDate(componentA_SPDX.getValidUntilDate());
-        else compBuilder.setValidUntilDate(componentB_SPDX.getValidUntilDate());
+                compBuilder.setSourceInfo(sourceInfo);
 
-        // Supplier
-        compBuilder.setSupplier(mergeOrganization(componentA_SPDX.getSupplier(), componentB_SPDX.getSupplier()));
+                // Release Date
+                if(spdx23PackageObjectA.getReleaseDate() != null && !spdx23PackageObjectA.getReleaseDate().isEmpty())
+                    compBuilder.setReleaseDate(spdx23PackageObjectA.getReleaseDate());
+                else compBuilder.setReleaseDate(spdx23PackageObjectB.getReleaseDate());
 
-        // Version
-        if(componentA_SPDX.getVersion() != null && !componentA_SPDX.getVersion().isEmpty())
-            compBuilder.setVersion(componentA_SPDX.getVersion());
-        else compBuilder.setVersion(componentB_SPDX.getVersion());
+                // Built Date
+                if(spdx23PackageObjectA.getBuiltDate() != null && !spdx23PackageObjectA.getBuiltDate().isEmpty())
+                    compBuilder.setBuildDate(spdx23PackageObjectA.getBuiltDate());
+                else compBuilder.setBuildDate(spdx23PackageObjectB.getBuiltDate());
 
-        // CPEs
-        for(String cpeA : componentA_SPDX.getCPEs()) { compBuilder.addCPE(cpeA); }
-        for(String cpeB : componentB_SPDX.getCPEs()) { compBuilder.addCPE(cpeB); }
+                // Valid Until Date
+                if(spdx23PackageObjectA.getValidUntilDate() != null && !spdx23PackageObjectA.getValidUntilDate().isEmpty())
+                    compBuilder.setValidUntilDate(spdx23PackageObjectA.getValidUntilDate());
+                else compBuilder.setValidUntilDate(spdx23PackageObjectB.getValidUntilDate());
 
-        // PURLs
-        for(String purlA : componentA_SPDX.getPURLs()) { compBuilder.addPURL(purlA); }
-        for(String purlB : componentB_SPDX.getPURLs()) { compBuilder.addPURL(purlB); }
+                // Supplier
+                compBuilder.setSupplier(mergeOrganization(spdx23PackageObjectA.getSupplier(), spdx23PackageObjectB.getSupplier()));
 
-        // External References
-        mergeExternalReferences(
-                componentA_SPDX.getExternalReferences(), componentB_SPDX.getExternalReferences()
-        ).forEach(x -> compBuilder.addExternalReference(x));
+                // Version
+                if(spdx23PackageObjectA.getVersion() != null && !spdx23PackageObjectA.getVersion().isEmpty())
+                    compBuilder.setVersion(spdx23PackageObjectA.getVersion());
+                else compBuilder.setVersion(spdx23PackageObjectB.getVersion());
+
+                // CPEs
+                for(String cpeA : spdx23PackageObjectA.getCPEs()) { compBuilder.addCPE(cpeA); }
+                for(String cpeB : spdx23PackageObjectB.getCPEs()) { compBuilder.addCPE(cpeB); }
+
+                // PURLs
+                for(String purlA : spdx23PackageObjectA.getPURLs()) { compBuilder.addPURL(purlA); }
+                for(String purlB : spdx23PackageObjectB.getPURLs()) { compBuilder.addPURL(purlB); }
+
+                // External References
+                mergeExternalReferences(
+                        spdx23PackageObjectA.getExternalReferences(), spdx23PackageObjectB.getExternalReferences()
+                ).forEach(x -> compBuilder.addExternalReference(x));
+
+            }
+            case CDX14 -> {
+
+                CDX14ComponentObject componentA_CDX = (CDX14ComponentObject) componentA;
+                CDX14ComponentObject componentB_CDX = (CDX14ComponentObject) componentB;
+
+                compBuilder.setCopyright("1) " + componentA_CDX.getCopyright() + "\n2) " + componentB_CDX.getCopyright());
+
+                // Supplier
+                compBuilder.setSupplier(mergeOrganization(componentA_CDX.getSupplier(), componentB_CDX.getSupplier()));
+
+                // Version : Since they already match, default it to component A version
+                compBuilder.setVersion(componentA_CDX.getVersion());
+
+                // Description
+                compBuilder.setDescription(componentA_CDX.getDescription());
+
+                // CPEs
+                for(String cpeA : componentA_CDX.getCPEs()) { compBuilder.addCPE(cpeA); }
+                for(String cpeB : componentB_CDX.getCPEs()) { compBuilder.addCPE(cpeB); }
+
+                // PURLs
+                for(String purlA : componentA_CDX.getPURLs()) { compBuilder.addPURL(purlA); }
+                for(String purlB : componentB_CDX.getPURLs()) { compBuilder.addPURL(purlB); }
+
+                // External References
+                mergeExternalReferences(
+                        componentA_CDX.getExternalReferences(), componentB_CDX.getExternalReferences()
+                ).forEach(x -> compBuilder.addExternalReference(x));
+
+                // Mime Type
+                compBuilder.setMimeType(componentA_CDX.getMimeType());
+
+                // Publisher
+                compBuilder.setPublisher(componentA_CDX.getPublisher());
+
+                // Scope
+                compBuilder.setScope(componentA_CDX.getScope());
+
+                // Group
+                compBuilder.setGroup(componentA_CDX.getGroup());
+
+                // Properties
+                if(componentB_CDX.getProperties() != null) componentB_CDX.getProperties().keySet().stream().forEach(
+                        x -> componentB_CDX.getProperties().get(x).stream().forEach(y -> compBuilder.addProperty(x, y))
+                );
+                if(componentA_CDX.getProperties() != null) componentA_CDX.getProperties().keySet().stream().forEach(
+                        x -> componentA_CDX.getProperties().get(x).stream().forEach(y -> compBuilder.addProperty(x, y))
+                );
+
+            }
+            default -> { // SVIP
+
+
+
+            }
+        }
 
         // Return the newly merged component
         return compBuilder.build();

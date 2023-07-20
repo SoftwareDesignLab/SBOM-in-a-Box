@@ -18,19 +18,15 @@ import java.util.Set;
 
 public abstract class Merger {
 
-    SBOM A;
-
-    SBOM B;
-
     public Merger() {
 
     }
 
     public abstract SBOM mergeSBOM(SBOM A, SBOM B);
 
-    protected abstract Set<Component> mergeComponents(Set<Component> A, Set<Component> B, SerializerFactory.Schema schema);
+    protected abstract Set<Component> mergeComponents(Set<Component> A, Set<Component> B, SerializerFactory.Schema targetSchema);
 
-    protected abstract Component mergeComponent(Component A, Component B);
+    protected abstract Component mergeComponent(Component A, Component B, SerializerFactory.Schema targetSchema);
 
     protected CreationData mergeCreationData(CreationData A, CreationData B) {
 

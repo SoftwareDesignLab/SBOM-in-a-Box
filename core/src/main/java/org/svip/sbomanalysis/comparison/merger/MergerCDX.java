@@ -94,7 +94,7 @@ public class MergerCDX extends Merger {
     }
 
     @Override
-    protected Set<Component> mergeComponents(Set<Component> A, Set<Component> B, SerializerFactory.Schema schema) {
+    protected Set<Component> mergeComponents(Set<Component> A, Set<Component> B, SerializerFactory.Schema targetSchema) {
 
         // New collection for merged components
         Set<Component> mergedComponents = new HashSet<>();
@@ -119,7 +119,7 @@ public class MergerCDX extends Merger {
                 // If the components are the same by Name and Version, merge then add them to the SBOM
                 if(componentA_CDX.getName() == componentB_CDX.getName() && componentA_CDX.getVersion() == componentB_CDX.getVersion()) {
 
-                    mergedComponents.add(mergeComponent(componentA, componentB));
+                    mergedComponents.add(mergeComponent(componentA, componentB, targetSchema));
                     removeB.add(componentB);
                     merged = true;
 
@@ -142,7 +142,7 @@ public class MergerCDX extends Merger {
     }
 
     @Override
-    protected Component mergeComponent(Component A, Component B) {
+    protected Component mergeComponent(Component A, Component B, SerializerFactory.Schema targetSchema) {
 
         // New builder for the merged component
         CDX14PackageBuilder compBuilder = new CDX14PackageBuilder();
