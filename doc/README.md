@@ -146,15 +146,18 @@ a cached image, the first build time should be much faster.
 To save the image for subsequent uses, ensure the image is built and then execute the following from the root 
 directory of the repository:
 ```shell
-$ docker save -o osi.tar ubuntu:latest | gzip > osi.tar.gz
+$ docker save -o core/src/main/java/org/svip/sbomgeneration/osi/images/osi.tar ubuntu:latest | gzip > core/src/main/java/org/svip/sbomgeneration/osi/images/osi.tar.gz
 ```
 
 To load a saved image into Docker, run the following command:
 ```shell
 docker load --input osi.tar.gz
 ```
+When starting the container, SVIP comes with a prebuilt OSI image to speed up deploy time. The default saved image 
+will be loaded unless manually rebuilt or removed. This uses [Git Large File Storage (LFS)](https://git-lfs.com/) to 
+store the compressed archive.
 
-> SVIP comes with a prebuilt OSI image to speed up boot time, but if any modifications are made to:
+> **NOTE:** , but if any modifications are made to:
 > 1. The inline Dockerfile in `docker-compose.yml`,
 > 2. The setup shell script in `core/src/main/java/org/svip/sbomgeneration/osi/scripts/setup.sh`, or
 > 3. The OSI tool controller in `core/src/main/java/org/svip/sbomgeneration/osi/scripts/ContainerController.py`,
