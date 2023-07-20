@@ -13,9 +13,14 @@ import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.utils.Converter;
 import org.svip.api.utils.Utils;
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.sbomgeneration.parsers.ParserController;
 import org.svip.sbomgeneration.serializers.SerializerFactory;
 import org.svip.sbomgeneration.serializers.deserializer.Deserializer;
+import org.svip.sbomgeneration.serializers.serializer.Serializer;
+import org.svip.utils.VirtualPath;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -311,196 +316,70 @@ public class SVIPApiController {
         return Utils.encodeResponse(converted.getContents());
     }
 
-
-    //#region Deprecated Endpoints
-
     /**
-     * Creates a Node Graph from the master SBOM and returns a JSON String representation of the Node Graph.
+     * USAGE. Send GENERATE request to /generate an SBOM from source file(s)
      *
-     * @return JSON String representation of the Node Graph
+     * @param projectName of project to be converted to SBOM
+     * @param files from project source
+     * @param schema to convert to
+     * @param format to convert to
+     * @return generated SBOM
      */
-    //    @GetMapping("/sbom-node-graph")
-    //    public ResponseEntity<?> getNodeGraph(@RequestBody String filePath) {
-    //        // TODO
-    //        return null;
-    //    }
+    @PostMapping("/generators/parsers")
+    public ResponseEntity<String> generateParsers(@RequestBody SBOMFile[] files,
+                                           @RequestParam("projectName") String projectName,
+                                           @RequestParam("schema") SerializerFactory.Schema schema, // todo implement this schema + format params in /convert
+                                           @RequestParam("format") SerializerFactory.Format format){
 
-    /**
-     * USAGE. Send POST request to /generateSBOM with one or more files. If a schema or format is not provided or is
-     * invalid, it will default to CycloneDX JSON.
-     * The API will respond with an HTTP 200 and an SBOM string in the given schema and format (if applicable).
-     *
-     * @param contentsArray JSON array of project file contents (the source files) as a string.
-     * @param fileArray JSON array of corresponding project file names as a string.
-     * @param schemaName The name of the schema to output to.
-     * @param formatName The name of the format to output to.
-     * @return A ResponseEntity with code HTTP 200 and the SBOM file in string format.
-     */
-//    @PostMapping("/generateSBOM")
-//    public ResponseEntity<?> generate(@RequestBody String contentsArray,
-//                                      @RequestBody String fileArray,
-//                                      @RequestBody String schemaName,
-//                                      @RequestBody String formatName) {
-//
-//        // VALIDATE/PARSE INPUT DATA
-//        // todo OSI
-//        Map<String, List<String>> contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
-//        if(contentsAndFiles == null) return new ResponseEntity<>("Invalid contents or filenames array.",
-//                HttpStatus.BAD_REQUEST);
-//
-//        // Get schema/format from parameters, if not valid, default to CycloneDX/JSON
-//        GeneratorSchema schema = Resolver.resolveSchema(schemaName, true);
-//        GeneratorSchema.GeneratorFormat format = Resolver.resolveFormat(formatName, true);
-//        if(!schema.supportsFormat(format)) format = schema.getDefaultFormat();
-//
-//        // BUILD FILE TREE REPRESENTATION
-//        // TODO talk to front-end and figure out what the project name should be, currently SVIP. Common directory?
-//        VirtualTree fileTree = new VirtualTree(new VirtualPath("SVIP"));
-//        for (int i = 0; i < contentsAndFiles.get("filePaths").size(); i++) {
-//            fileTree.addNode(
-//                    new VirtualPath(contentsAndFiles.get("filePaths").get(i)),
-//                    contentsAndFiles.get("fileContents").get(i));
-//        }
-//
-//        // PARSE FILES INTO SBOM
-//        final ParserController controller = new ParserController(fileTree);
-//        controller.parseAll();
-//
-//        // Generate SBOM to string and send
-//        try {
-//            return Utils.encodeResponse(controller.toFile(null, schema, format));
-//        } catch (IOException e) {
-//            return new ResponseEntity<>("Error generating SBOM.", HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+        ParserController parserController = new ParserController(projectName, new HashMap<>());
 
-    /**
-     * USAGE. Send POST request to /compare with two+ SBOM files.
-     * The first SBOM will be the baseline, and the rest will be compared to it.
-     * The API will respond with an HTTP 200 and a serialized DiffReport object.
-     *
-     * @param contentsArray Array of SBOM file contents (the actual cyclonedx/spdx files) as a JSON string
-     * @param fileArray Array of file names as a JSON string
-     * @return Wrapped Comparison object
-     */
-//    @PostMapping("/compare")
-//    public ResponseEntity<?> compare(@RequestBody String contentsArray,
-//                                              @RequestBody String fileArray) {
-//        Map<String, List<String>> contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
-//        if(contentsAndFiles == null) return new ResponseEntity<>("Invalid contents and/or files.",
-//                HttpStatus.BAD_REQUEST);
-//
-//        List<SBOM> sboms;
-//        try {
-//            sboms = Utils.translateMultiple(contentsAndFiles.get("fileContents"), contentsAndFiles.get(
-//                    "filePaths"));
-//        } catch (TranslatorException e) {
-//            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//
-//        if(sboms.size() < 2) return new ResponseEntity<>("Must provide 2 or more SBOMs.", HttpStatus.BAD_REQUEST);
-//
-//        Comparison report = new Comparison(sboms); // report to return
-//        report.runComparison();
-//
-//        //encode and send report
-//        return Utils.encodeResponse(report);
-//    }
+        String urlMsg = "GENERATE /svip/generate?projectName=" + projectName;
 
-    /**
-     * TODO USAGE. Send POST request to /qa with a single sbom file
-     * The API will respond with an HTTP 200 and a serialized report in the body.
-     *
-     * @param contents - File content of the SBOM to run metrics on
-     * @param fileName - Name of the SBOM file
-     * @return - wrapped QualityReport object, null if failed
-     */
-//    @PostMapping("/qa")
-//    public ResponseEntity<?> qa(@RequestBody String contents, @RequestBody String fileName) {
-//        // TODO ensure contents & fileName not null
-//        SBOM sbom;
-//        try {
-//            sbom = TranslatorController.translateContents(contents, fileName);
-//        } catch (TranslatorException e) {
-//            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//
-//        Set<AttributeProcessor> processors = new HashSet<>();
-//        processors.add(new CompletenessProcessor());
-//        processors.add(new UniquenessProcessor());
-//        processors.add(new RegisteredProcessor());
-//        processors.add(new LicensingProcessor());   // Add origin specific processors
-//
-//        //run the QA
-//        QualityReport report = QAPipeline.process(sbom.getHeadUUID().toString(), sbom, processors);
-//
-//        //encode and send report
-//        return Utils.encodeResponse(report);
-//    }
+        if(schema.equals(SerializerFactory.Schema.CDX14) && format.equals(SerializerFactory.Format.TAGVALUE)){
+            LOGGER.error(urlMsg + " cannot parse into " + schema + " with incompatible format " + format);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
+        for (SBOMFile f: files
+             ) {
+            if(f.hasNullProperties()){
+                LOGGER.error(urlMsg + "/fileName=" + f.getFileName() + "has null properties");
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            parserController.addFile(new VirtualPath(f.getFileName()), f.getContents());
+        }
 
-    /**
-     * Merge 2 SBOMs together, regardless of origin format
-     *
-     * @param contentsArray JSON string array of the contents of all provided SBOMs
-     * @param fileArray JSON string array of the filenames of all provided SBOMs
-     * @param schema String value of expected output schema (SPDX/CycloneDX)
-     * @param format String value of expected output format (JSON/XML/YAML)
-     * @return merged result SBOM
-     */
-//    @PostMapping("merge")
-//    public ResponseEntity<String> merge(@RequestParam("fileContents") String contentsArray,
-//                                   @RequestParam("fileNames") String fileArray
-//            , @RequestParam("schema") String schema, @RequestParam("format") String format){
-//
-//        Map<String, List<String>> contentsAndFiles = Utils.validateContentsAndNamesArrays(contentsArray, fileArray);
-//        if(contentsAndFiles == null) return new ResponseEntity<>("Invalid contents or filenames array.",
-//                HttpStatus.BAD_REQUEST);
-//
-//        List<SBOM> sboms;
-//        try {
-//            sboms = Utils.translateMultiple(contentsAndFiles.get("fileContents"), contentsAndFiles.get(
-//                    "filePaths"));
-//        } catch (TranslatorException e) {
-//            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//
-//        if(sboms.size() < 2) return new ResponseEntity<>("At least 2 SBOMs required to merge", HttpStatus.BAD_REQUEST);
-//
-//        GeneratorSchema generatorSchema = Resolver.resolveSchema(schema, false);
-//        GeneratorSchema.GeneratorFormat generatorFormat = Resolver.resolveFormat(format, false);
-//        if(generatorSchema == null || generatorFormat == null ||
-//                !generatorSchema.supportsFormat(generatorFormat))
-//            return new ResponseEntity<>("Invalid schema/format combination", HttpStatus.BAD_REQUEST);
-//
-//        Merger merger = new Merger();
-//        SBOM result = merger.merge(sboms); // report to return
-//
-//        String resultString = Utils.generateSBOM(result, generatorSchema, generatorFormat);
-//        return Utils.encodeResponse(resultString);
-//    }
+        SVIPSBOM parsed;
+        try{
+            parserController.parseAll();
+            parsed = parserController.buildSBOM(schema);
+        } catch (Exception e) {
+            String error = "Error parsing into SBOM: " + e.getMessage();
+            LOGGER.error(urlMsg + " " + error);
+            return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        }
 
-    /**
-     * Send post request to /parse and it will convert the file contents to an SBOM object, returns null if failed to parse
-     *
-     * @param contents File contents of the SBOM file to parse
-     * @param fileName Name of the file that the SBOM contents came from
-     * @return SBOM object, null if failed to parse
-     */
-//    @PostMapping("/parse")
-//    public ResponseEntity<?> parse(@RequestBody Utils.SBOMFile sbomFile) {
-//        if (sbomFile.hasNullProperties)
-//            return new ResponseEntity<>("SBOM filename and/or contents may not be empty", HttpStatus.BAD_REQUEST);
-//
-//        SBOM sbom;
-//        try {
-//            sbom = TranslatorController.translateContents(sbomFile.contents, sbomFile.fileName);
-//        } catch (TranslatorException e) {
-//            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//
-//        return Utils.encodeResponse(sbom);
-//    }
+        Serializer s;
+        String contents;
+        try{
+            s = SerializerFactory.createSerializer(schema,format, true);
+            contents = s.writeToString(parsed);
+        } catch (IllegalArgumentException | JsonProcessingException e) {
+            String error = "Error serializing parsed SBOM: " + Arrays.toString(e.getStackTrace());
+            LOGGER.error(urlMsg + " " + error);
+            return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        }
 
-    //#endregion
+        return Utils.encodeResponse(contents);
+
+    }
+
+    @PostMapping("/generators/osi")
+    public ResponseEntity<String> generateOSI(@RequestBody SBOMFile[] files,
+                                           @RequestParam("projectName") String projectName,
+                                           @RequestParam("schema") SerializerFactory.Schema schema, // todo implement this schema + format params in /convert
+                                           @RequestParam("format") SerializerFactory.Format format){
+        // TODO (separate branch)
+        return null;
+    }
 }

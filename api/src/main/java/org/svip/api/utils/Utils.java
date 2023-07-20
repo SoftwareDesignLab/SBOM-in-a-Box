@@ -8,6 +8,10 @@ import org.svip.api.controller.SVIPApiController;
 import org.svip.api.model.SBOMFile;
 import org.svip.sbomgeneration.serializers.SerializerFactory;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -130,6 +134,24 @@ public class Utils {
     public static SerializerFactory.Schema assumeSchemaFromOriginal(String contents) {
         return (contents.toLowerCase().contains("spdxversion")) ?
                 SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14;
+    }
+
+    /**
+     * Helper function for APITest
+     *
+     * @param projectFiles project source files
+     * @return array of SBOMFiles we can use to test
+     */
+    public static SBOMFile[] configureProjectTest(String[] projectFiles) throws IOException {
+        SBOMFile[] sbomFiles = new SBOMFile[projectFiles.length];
+        for (int i = 0; i < projectFiles.length; i++) {
+            try {
+                sbomFiles[i] = new SBOMFile(projectFiles[i], new String(Files.readAllBytes(Paths.get(projectFiles[i]))));
+            } catch (InvalidPathException e) {
+                i = -1;
+            }
+        }
+        return sbomFiles;
     }
 
 }

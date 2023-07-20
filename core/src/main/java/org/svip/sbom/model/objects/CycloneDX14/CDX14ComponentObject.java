@@ -1,14 +1,20 @@
 package org.svip.sbom.model.objects.CycloneDX14;
 
+import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
+import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
 
 /**
  * file: CDX14ComponentObject.java
@@ -284,5 +290,111 @@ public class CDX14ComponentObject implements CDX14Package {
 
     }
 
+    /**
+     * Compare against another generic component
+     *
+     * @param other Other Component to compare against
+     * @return List of conflicts
+     */
+    @Override
+    public List<Conflict> compare(Component other) {
+        ConflictFactory cf = new ConflictFactory();
+
+        // Type
+        cf.addConflict("Type", MISC_MISMATCH, this.type, other.getType());
+
+        // UID
+        cf.addConflict("UID", MISC_MISMATCH, this.uid, other.getUID());
+
+        // NAME
+        // shouldn't occur
+        cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
+
+        // AUTHOR
+        cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
+
+        // Licenses
+        if(cf.comparable("License", this.licenses, other.getLicenses()))
+            cf.addConflicts(this.licenses.compare(other.getLicenses()));
+
+        // Copyright
+        cf.addConflict("Copyright", MISC_MISMATCH, this.copyright, other.getCopyright());
+
+        // Hashes
+        cf.compareHashes("Component Hash", this.hashes, other.getHashes());
+
+        // Compare SBOMPackage specific fields
+        if( other instanceof SBOMPackage)
+            cf.addConflicts( compare((SBOMPackage) other) );
+
+        return cf.getConflicts();
+    }
+
+    /**
+     * Compare against another generic SBOM Package
+     *
+     * @param other Other SBOM Package to compare against
+     * @return List of conflicts
+     */
+    public List<Conflict> compare(SBOMPackage other) {
+        ConflictFactory cf = new ConflictFactory();
+
+        // Supplier
+        if(cf.comparable("Supplier", this.supplier, other.getSupplier()))
+            cf.addConflicts(this.supplier.compare(other.getSupplier()));
+
+        // Version
+        // shouldn't occur
+        cf.addConflict("Version", VERSION_MISMATCH, this.version, other.getVersion());
+
+        // Description
+        if(cf.comparable("Description", this.description, other.getDescription()))
+            cf.addConflicts(this.description.compare(other.getDescription()));
+
+        // PURLs
+        // todo use util PURL objects?
+        cf.compareStringSets("PURL", PURL_MISMATCH, this.purls, other.getPURLs());
+
+        // CPEs
+        // todo use util CPE objects?
+        cf.compareStringSets("CPE", CPE_MISMATCH, this.cpes, other.getCPEs());
+
+        // External References
+        cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
+
+        // Compare CDX14SBOMPackage specific fields
+        if( other instanceof CDX14Package)
+            cf.addConflicts( compare((CDX14Package) other) );
+
+        return cf.getConflicts();
+    }
+
+
+    /**
+     * Compare against another CycloneDX 1.4 Package
+     *
+     * @param other Other CycloneDX 1.4 Package to compare against
+     * @return List of conflicts
+     */
+    @Override
+    public List<Conflict> compare(CDX14Package other) {
+        ConflictFactory cf = new ConflictFactory();
+        // Mime Type
+        cf.addConflict("Mime Type", MISC_MISMATCH, this.mimeType, other.getMimeType());
+
+        // Publisher
+        cf.addConflict("Publisher", PUBLISHER_MISMATCH, this.publisher, other.getPublisher());
+
+        // Scope
+        cf.addConflict("Scope", MISC_MISMATCH, this.scope, other.getScope());
+
+        // Group
+        cf.addConflict("Group", MISC_MISMATCH, this.group, other.getGroup());
+
+        // todo
+        // properties
+
+        return cf.getConflicts();
+    }
 }
 

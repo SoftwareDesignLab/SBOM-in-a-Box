@@ -1,0 +1,924 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.4.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4",
+  "serialNumber": "urn:uuid:0cc53fab-5988-40ad-8377-f671092486b1",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2023-06-28T19:48:43-04:00",
+    "tools": [
+      {
+        "vendor": "anchore",
+        "name": "syft",
+        "version": "0.84.0"
+      }
+    ],
+    "component": {
+      "bom-ref": "e2340efdb9e3c96e",
+      "type": "file",
+      "name": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar"
+    }
+  },
+  "components": [
+    {
+      "bom-ref": "pkg:maven/org.example/Case1@1.0-SNAPSHOT?package-id=ea4751f8e84844e1",
+      "type": "library",
+      "group": "org.example",
+      "name": "Case1",
+      "version": "1.0-SNAPSHOT",
+      "cpe": "cpe:2.3:a:example:Case1:1.0-SNAPSHOT:*:*:*:*:*:*:*",
+      "purl": "pkg:maven/org.example/Case1@1.0-SNAPSHOT",
+      "externalReferences": [
+        {
+          "url": "",
+          "hashes": [
+            {
+              "alg": "SHA-1",
+              "content": "f68d98b189551127d6f806130ba4b044a22769c8"
+            }
+          ],
+          "type": "build-meta"
+        }
+      ],
+      "properties": [
+        {
+          "name": "syft:package:foundBy",
+          "value": "java-cataloger"
+        },
+        {
+          "name": "syft:package:language",
+          "value": "java"
+        },
+        {
+          "name": "syft:package:metadataType",
+          "value": "JavaMetadata"
+        },
+        {
+          "name": "syft:package:type",
+          "value": "java-archive"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:Case1:Case1:1.0-SNAPSHOT:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:Main:Case1:1.0-SNAPSHOT:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:location:0:path",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar"
+        },
+        {
+          "name": "syft:metadata:-:artifactID",
+          "value": "Case1"
+        },
+        {
+          "name": "syft:metadata:-:groupID",
+          "value": "org.example"
+        },
+        {
+          "name": "syft:metadata:virtualPath",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:maven/commons-codec/commons-codec@1.15?package-id=c660abc7588361f6",
+      "type": "library",
+      "group": "commons-codec",
+      "name": "commons-codec",
+      "version": "1.15",
+      "cpe": "cpe:2.3:a:apache:commons-codec:1.15:*:*:*:*:*:*:*",
+      "purl": "pkg:maven/commons-codec/commons-codec@1.15",
+      "properties": [
+        {
+          "name": "syft:package:foundBy",
+          "value": "java-cataloger"
+        },
+        {
+          "name": "syft:package:language",
+          "value": "java"
+        },
+        {
+          "name": "syft:package:metadataType",
+          "value": "JavaMetadata"
+        },
+        {
+          "name": "syft:package:type",
+          "value": "java-archive"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:apache:commons_codec:1.15:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:apache:commons:1.15:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:location:0:path",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar"
+        },
+        {
+          "name": "syft:metadata:-:artifactID",
+          "value": "commons-codec"
+        },
+        {
+          "name": "syft:metadata:-:groupID",
+          "value": "commons-codec"
+        },
+        {
+          "name": "syft:metadata:virtualPath",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar:commons-codec"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:maven/commons-io/commons-io@2.13.0?package-id=36146950e09a0765",
+      "type": "library",
+      "group": "commons-io",
+      "name": "commons-io",
+      "version": "2.13.0",
+      "cpe": "cpe:2.3:a:apache:commons-io:2.13.0:*:*:*:*:*:*:*",
+      "purl": "pkg:maven/commons-io/commons-io@2.13.0",
+      "properties": [
+        {
+          "name": "syft:package:foundBy",
+          "value": "java-cataloger"
+        },
+        {
+          "name": "syft:package:language",
+          "value": "java"
+        },
+        {
+          "name": "syft:package:metadataType",
+          "value": "JavaMetadata"
+        },
+        {
+          "name": "syft:package:type",
+          "value": "java-archive"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:apache:commons_io:2.13.0:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:apache:commons:2.13.0:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:location:0:path",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar"
+        },
+        {
+          "name": "syft:metadata:-:artifactID",
+          "value": "commons-io"
+        },
+        {
+          "name": "syft:metadata:-:groupID",
+          "value": "commons-io"
+        },
+        {
+          "name": "syft:metadata:virtualPath",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar:commons-io"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:maven/com.google.errorprone/error_prone_annotations@2.18.0?package-id=0911930721650424",
+      "type": "library",
+      "group": "com.google.errorprone",
+      "name": "error_prone_annotations",
+      "version": "2.18.0",
+      "cpe": "cpe:2.3:a:error-prone-annotations:error-prone-annotations:2.18.0:*:*:*:*:*:*:*",
+      "purl": "pkg:maven/com.google.errorprone/error_prone_annotations@2.18.0",
+      "properties": [
+        {
+          "name": "syft:package:foundBy",
+          "value": "java-cataloger"
+        },
+        {
+          "name": "syft:package:language",
+          "value": "java"
+        },
+        {
+          "name": "syft:package:metadataType",
+          "value": "JavaMetadata"
+        },
+        {
+          "name": "syft:package:type",
+          "value": "java-archive"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:error-prone-annotations:error_prone_annotations:2.18.0:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:error_prone_annotations:error-prone-annotations:2.18.0:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:error_prone_annotations:error_prone_annotations:2.18.0:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:error-prone:error-prone-annotations:2.18.0:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:error-prone:error_prone_annotations:2.18.0:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:error_prone:error-prone-annotations:2.18.0:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:error_prone:error_prone_annotations:2.18.0:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:errorprone:error-prone-annotations:2.18.0:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:errorprone:error_prone_annotations:2.18.0:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:google:error-prone-annotations:2.18.0:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:google:error_prone_annotations:2.18.0:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:error:error-prone-annotations:2.18.0:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:error:error_prone_annotations:2.18.0:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:location:0:path",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar"
+        },
+        {
+          "name": "syft:metadata:-:artifactID",
+          "value": "error_prone_annotations"
+        },
+        {
+          "name": "syft:metadata:-:groupID",
+          "value": "com.google.errorprone"
+        },
+        {
+          "name": "syft:metadata:virtualPath",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar:error_prone_annotations"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:maven/com.google.guava/failureaccess@1.0.1?package-id=e0631135e8d36b6b",
+      "type": "library",
+      "group": "com.google.guava",
+      "name": "failureaccess",
+      "version": "1.0.1",
+      "cpe": "cpe:2.3:a:failureaccess:failureaccess:1.0.1:*:*:*:*:*:*:*",
+      "purl": "pkg:maven/com.google.guava/failureaccess@1.0.1",
+      "properties": [
+        {
+          "name": "syft:package:foundBy",
+          "value": "java-cataloger"
+        },
+        {
+          "name": "syft:package:language",
+          "value": "java"
+        },
+        {
+          "name": "syft:package:metadataType",
+          "value": "JavaMetadata"
+        },
+        {
+          "name": "syft:package:type",
+          "value": "java-archive"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:google:failureaccess:1.0.1:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:guava:failureaccess:1.0.1:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:location:0:path",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar"
+        },
+        {
+          "name": "syft:metadata:-:artifactID",
+          "value": "failureaccess"
+        },
+        {
+          "name": "syft:metadata:-:groupID",
+          "value": "com.google.guava"
+        },
+        {
+          "name": "syft:metadata:virtualPath",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar:failureaccess"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:maven/com.google.guava/guava@32.0.1-jre?package-id=c0ecc5870a6467e3",
+      "type": "library",
+      "group": "com.google.guava",
+      "name": "guava",
+      "version": "32.0.1-jre",
+      "cpe": "cpe:2.3:a:google:guava:32.0.1-jre:*:*:*:*:*:*:*",
+      "purl": "pkg:maven/com.google.guava/guava@32.0.1-jre",
+      "properties": [
+        {
+          "name": "syft:package:foundBy",
+          "value": "java-cataloger"
+        },
+        {
+          "name": "syft:package:language",
+          "value": "java"
+        },
+        {
+          "name": "syft:package:metadataType",
+          "value": "JavaMetadata"
+        },
+        {
+          "name": "syft:package:type",
+          "value": "java-archive"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:guava:guava:32.0.1-jre:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:location:0:path",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar"
+        },
+        {
+          "name": "syft:metadata:-:artifactID",
+          "value": "guava"
+        },
+        {
+          "name": "syft:metadata:-:groupID",
+          "value": "com.google.guava"
+        },
+        {
+          "name": "syft:metadata:virtualPath",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar:guava"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:maven/com.google.j2objc/j2objc-annotations@2.8?package-id=a7600a9290863d0c",
+      "type": "library",
+      "group": "com.google.j2objc",
+      "name": "j2objc-annotations",
+      "version": "2.8",
+      "cpe": "cpe:2.3:a:j2objc-annotations:j2objc-annotations:2.8:*:*:*:*:*:*:*",
+      "purl": "pkg:maven/com.google.j2objc/j2objc-annotations@2.8",
+      "properties": [
+        {
+          "name": "syft:package:foundBy",
+          "value": "java-cataloger"
+        },
+        {
+          "name": "syft:package:language",
+          "value": "java"
+        },
+        {
+          "name": "syft:package:metadataType",
+          "value": "JavaMetadata"
+        },
+        {
+          "name": "syft:package:type",
+          "value": "java-archive"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:j2objc-annotations:j2objc_annotations:2.8:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:j2objc_annotations:j2objc-annotations:2.8:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:j2objc_annotations:j2objc_annotations:2.8:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:sonatype:j2objc-annotations:2.8:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:sonatype:j2objc_annotations:2.8:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:google:j2objc-annotations:2.8:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:google:j2objc_annotations:2.8:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:j2objc-annotations:j2objc:2.8:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:j2objc:j2objc-annotations:2.8:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:j2objc:j2objc_annotations:2.8:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:j2objc_annotations:j2objc:2.8:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:oss:j2objc-annotations:2.8:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:oss:j2objc_annotations:2.8:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:sonatype:j2objc:2.8:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:google:j2objc:2.8:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:j2objc:j2objc:2.8:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:oss:j2objc:2.8:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:location:0:path",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar"
+        },
+        {
+          "name": "syft:metadata:-:artifactID",
+          "value": "j2objc-annotations"
+        },
+        {
+          "name": "syft:metadata:-:groupID",
+          "value": "com.google.j2objc"
+        },
+        {
+          "name": "syft:metadata:virtualPath",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar:j2objc-annotations"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2?package-id=fc61bceb145a4f51",
+      "type": "library",
+      "group": "com.fasterxml.jackson.core",
+      "name": "jackson-annotations",
+      "version": "2.15.2",
+      "cpe": "cpe:2.3:a:jackson-annotations:jackson-annotations:2.15.2:*:*:*:*:*:*:*",
+      "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.15.2",
+      "properties": [
+        {
+          "name": "syft:package:foundBy",
+          "value": "java-cataloger"
+        },
+        {
+          "name": "syft:package:language",
+          "value": "java"
+        },
+        {
+          "name": "syft:package:metadataType",
+          "value": "JavaMetadata"
+        },
+        {
+          "name": "syft:package:type",
+          "value": "java-archive"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson-annotations:jackson_annotations:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson_annotations:jackson-annotations:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson_annotations:jackson_annotations:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:fasterxml:jackson-annotations:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:fasterxml:jackson_annotations:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson-annotations:jackson:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson:jackson-annotations:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson:jackson_annotations:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson_annotations:jackson:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:core:jackson-annotations:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:core:jackson_annotations:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:fasterxml:jackson:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson:jackson:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:core:jackson:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:location:0:path",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar"
+        },
+        {
+          "name": "syft:metadata:-:artifactID",
+          "value": "jackson-annotations"
+        },
+        {
+          "name": "syft:metadata:-:groupID",
+          "value": "com.fasterxml.jackson.core"
+        },
+        {
+          "name": "syft:metadata:virtualPath",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar:jackson-annotations"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.15.2?package-id=5cb4702919793d3a",
+      "type": "library",
+      "group": "com.fasterxml.jackson.core",
+      "name": "jackson-core",
+      "version": "2.15.2",
+      "cpe": "cpe:2.3:a:jackson-core:jackson-core:2.15.2:*:*:*:*:*:*:*",
+      "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.15.2",
+      "properties": [
+        {
+          "name": "syft:package:foundBy",
+          "value": "java-cataloger"
+        },
+        {
+          "name": "syft:package:language",
+          "value": "java"
+        },
+        {
+          "name": "syft:package:metadataType",
+          "value": "JavaMetadata"
+        },
+        {
+          "name": "syft:package:type",
+          "value": "java-archive"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson-core:jackson_core:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson_core:jackson-core:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson_core:jackson_core:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:fasterxml:jackson-core:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:fasterxml:jackson_core:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson-core:jackson:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson:jackson-core:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson:jackson_core:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson_core:jackson:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:core:jackson-core:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:core:jackson_core:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:fasterxml:jackson:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson-core:core:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson_core:core:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson:jackson:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:fasterxml:core:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:core:jackson:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson:core:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:core:core:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:location:0:path",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar"
+        },
+        {
+          "name": "syft:metadata:-:artifactID",
+          "value": "jackson-core"
+        },
+        {
+          "name": "syft:metadata:-:groupID",
+          "value": "com.fasterxml.jackson.core"
+        },
+        {
+          "name": "syft:metadata:virtualPath",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar:jackson-core"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.15.2?package-id=cdc168140d034495",
+      "type": "library",
+      "group": "com.fasterxml.jackson.core",
+      "name": "jackson-databind",
+      "version": "2.15.2",
+      "cpe": "cpe:2.3:a:jackson-databind:jackson-databind:2.15.2:*:*:*:*:*:*:*",
+      "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.15.2",
+      "properties": [
+        {
+          "name": "syft:package:foundBy",
+          "value": "java-cataloger"
+        },
+        {
+          "name": "syft:package:language",
+          "value": "java"
+        },
+        {
+          "name": "syft:package:metadataType",
+          "value": "JavaMetadata"
+        },
+        {
+          "name": "syft:package:type",
+          "value": "java-archive"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson-databind:jackson_databind:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson_databind:jackson-databind:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson_databind:jackson_databind:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:fasterxml:jackson-databind:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:fasterxml:jackson_databind:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson-databind:jackson:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson:jackson-databind:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson:jackson_databind:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson_databind:jackson:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:core:jackson-databind:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:core:jackson_databind:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:fasterxml:jackson:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jackson:jackson:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:core:jackson:2.15.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:location:0:path",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar"
+        },
+        {
+          "name": "syft:metadata:-:artifactID",
+          "value": "jackson-databind"
+        },
+        {
+          "name": "syft:metadata:-:groupID",
+          "value": "com.fasterxml.jackson.core"
+        },
+        {
+          "name": "syft:metadata:virtualPath",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar:jackson-databind"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:maven/com.google.code.findbugs/jsr305@3.0.2?package-id=2b725cd9d7cc2aa0",
+      "type": "library",
+      "group": "com.google.code.findbugs",
+      "name": "jsr305",
+      "version": "3.0.2",
+      "cpe": "cpe:2.3:a:findbugs:jsr305:3.0.2:*:*:*:*:*:*:*",
+      "purl": "pkg:maven/com.google.code.findbugs/jsr305@3.0.2",
+      "properties": [
+        {
+          "name": "syft:package:foundBy",
+          "value": "java-cataloger"
+        },
+        {
+          "name": "syft:package:language",
+          "value": "java"
+        },
+        {
+          "name": "syft:package:metadataType",
+          "value": "JavaMetadata"
+        },
+        {
+          "name": "syft:package:type",
+          "value": "java-archive"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:sonatype:jsr305:3.0.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:google:jsr305:3.0.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:jsr305:jsr305:3.0.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:code:jsr305:3.0.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:oss:jsr305:3.0.2:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:location:0:path",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar"
+        },
+        {
+          "name": "syft:metadata:-:artifactID",
+          "value": "jsr305"
+        },
+        {
+          "name": "syft:metadata:-:groupID",
+          "value": "com.google.code.findbugs"
+        },
+        {
+          "name": "syft:metadata:virtualPath",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar:jsr305"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:maven/com.google.guava/listenablefuture@9999.0-empty-to-avoid-conflict-with-guava?package-id=a74881e37ac13f98",
+      "type": "library",
+      "group": "com.google.guava",
+      "name": "listenablefuture",
+      "version": "9999.0-empty-to-avoid-conflict-with-guava",
+      "cpe": "cpe:2.3:a:listenablefuture:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava:*:*:*:*:*:*:*",
+      "purl": "pkg:maven/com.google.guava/listenablefuture@9999.0-empty-to-avoid-conflict-with-guava",
+      "properties": [
+        {
+          "name": "syft:package:foundBy",
+          "value": "java-cataloger"
+        },
+        {
+          "name": "syft:package:language",
+          "value": "java"
+        },
+        {
+          "name": "syft:package:metadataType",
+          "value": "JavaMetadata"
+        },
+        {
+          "name": "syft:package:type",
+          "value": "java-archive"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:google:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:cpe23",
+          "value": "cpe:2.3:a:guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava:*:*:*:*:*:*:*"
+        },
+        {
+          "name": "syft:location:0:path",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar"
+        },
+        {
+          "name": "syft:metadata:-:artifactID",
+          "value": "listenablefuture"
+        },
+        {
+          "name": "syft:metadata:-:groupID",
+          "value": "com.google.guava"
+        },
+        {
+          "name": "syft:metadata:virtualPath",
+          "value": "C:\\Users\\Kevin\\Documents\\GitHub\\Experiment3Projects\\Case1CLEANED\\target\\Case1-1.0-SNAPSHOT-jar-with-dependencies.jar:listenablefuture"
+        }
+      ]
+    }
+  ]
+}

@@ -3,6 +3,29 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v5.1.4-alpha] - (7/19/2023)
+
+### Changed
+- `SBOMBuilders` instantiated with empty sets and hashmaps instead of null values
+- `.buildAndFlush()` methods now clear sets/hashmaps instead of setting to null
+
+
+## [v5.1.3-alpha] - (7/19/2023)
+
+### Added
+- `/generators/parsers` endpoint in `SVIPApiController`.
+- Relevant unit tests in `GenerateFromParserAPITest`:
+  - `sbomFilesNullPropertiesTest`
+    - Asserts a 'bad request' is returned.
+  - `CDXTagValueTest`
+    - Asserts a 'bad request' is returned.
+  - `generateTest`
+    - Comprehensive test to ensure generation from parsers works in the API.
+
+### Changed
+- `APITest.java`:
+  - Is scalable for adding sample projects for future generator tests.
+
 ## [v5.1.2-alpha] - (7/18/2023)
 
 ### Added
