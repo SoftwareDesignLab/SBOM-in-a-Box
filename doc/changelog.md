@@ -3,6 +3,12 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v5.1.5-alpha] - (TBD)
+### Added
+- SBOM Objects have built in comparison methods
+- Added `hashcode` methods to components to use `name` and `version` as UIDs
+- 
+
 ## [v5.1.4-alpha] - (7/19/2023)
 
 ### Added
