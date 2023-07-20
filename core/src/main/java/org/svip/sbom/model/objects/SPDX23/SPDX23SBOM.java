@@ -1,14 +1,21 @@
 package org.svip.sbom.model.objects.SPDX23;
 
 import org.svip.sbom.model.interfaces.generics.Component;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
-import org.svip.sbom.model.shared.Relationship;
+import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.shared.metadata.CreationData;
+import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.shared.metadata.CreationData;
+import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.util.ExternalReference;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
+import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
+
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.TIMESTAMP_MISMATCH;
 
 /**
  * file: SPDX23SBOM.java
@@ -226,5 +233,66 @@ public class SPDX23SBOM implements SPDX23Schema{
         this.externalReferences = externalReferences;
         this.SPDXLicenseListVersion = spdxLicenseListVersion;
 
+    }
+
+    /**
+     * Compare a SPDX 2.3 SBOM against another SBOM Metadata
+     *
+     * @param other Other SBOM to compare against
+     * @return List of Metadata of conflicts
+     */
+    @Override
+    public List<Conflict> compare(SBOM other) {
+        // SPDX - OTHER Comparison
+        ConflictFactory cf = new ConflictFactory();
+
+        // Compare single String fields
+        cf.addConflict("Format", ORIGIN_FORMAT_MISMATCH, this.format, other.getFormat());
+        cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
+        cf.addConflict("UID", MISC_MISMATCH, this.uid, other.getUID());
+        cf.addConflict("Version", VERSION_MISMATCH, this.version, other.getVersion());
+        cf.addConflict("Spec Version", SCHEMA_VERSION_MISMATCH, this.specVersion, other.getSpecVersion());
+        cf.addConflict("Document Comment", MISC_MISMATCH, this.documentComment, other.getDocumentComment());
+
+        // Compare Licenses
+        cf.compareStringSets("License", LICENSE_MISMATCH, this.licenses, other.getLicenses());
+
+        // Compare Creation Data
+        if(cf.comparable("Creation Data", this.creationData, other.getCreationData()))
+            cf.addConflicts(this.creationData.compare(other.getCreationData()));
+
+        // Comparable Sets
+        if(cf.comparable("External Reference", this.externalReferences, other.getExternalReferences()))
+            cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
+
+        // todo
+        // compare relationships
+        // compare Vulns
+
+        // Compare SPDX specific fields
+        if( other instanceof SPDX23SBOM)
+            cf.addConflicts( compare((SPDX23SBOM) other) );
+
+        return cf.getConflicts();
+    }
+
+    /**
+     * Compare a SPDX 2.3 SBOM against another SPDX 2.3 SBOM Metadata
+     *
+     * @param other other SPDX 2.3 SBOM
+     * @return list of conflicts
+     */
+    @Override
+    public List<Conflict> compare(SPDX23SBOM other) {
+        // SPDX - SPDX Comparison
+
+        ConflictFactory cf = new ConflictFactory();
+        // Compare single String fields
+        cf.addConflict("SPDX License List Version", LICENSE_MISMATCH, this.SPDXLicenseListVersion, other.getSPDXLicenseListVersion());
+
+        // todo
+        // snippets, additional license info, annotation info
+
+        return cf.getConflicts();
     }
 }

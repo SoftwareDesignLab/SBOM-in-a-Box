@@ -1,14 +1,21 @@
 package org.svip.sbom.model.objects.SPDX23;
 
+import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.interfaces.generics.SBOMPackage;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
 
 /**
  * file: SPDX23PackageObject.java
@@ -368,4 +375,157 @@ public class SPDX23PackageObject implements SPDX23Package {
         this.attributionText = attributionText;
     }
 
+    /**
+     * Compare against another generic SBOM Package
+     *
+     * @param other Other SBOM Package to compare against
+     * @return List of conflicts
+     */
+    @Override
+    public List<Conflict> compare(Component other) {
+        ConflictFactory cf = new ConflictFactory();
+
+        // Type
+        cf.addConflict("Type", MISC_MISMATCH, this.type, other.getType());
+
+        // UID
+        cf.addConflict("UID", MISC_MISMATCH, this.uid, other.getUID());
+
+        // NAME
+        // shouldn't occur
+        cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
+
+        // AUTHOR
+        cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
+
+        // Licenses
+        if(cf.comparable("License", this.licenses, other.getLicenses()))
+            cf.addConflicts(this.licenses.compare(other.getLicenses()));
+
+        // Copyright
+        cf.addConflict("Copyright", MISC_MISMATCH, this.copyright, other.getCopyright());
+
+        // Hashes
+        cf.compareHashes("Component Hash", this.hashes, other.getHashes());
+
+        // Compare SPDX component specific fields
+        if( other instanceof SPDX23Component)
+            cf.addConflicts( compare((SPDX23Component) other) );
+
+        // Compare SBOMPackage specific fields
+        if( other instanceof SBOMPackage)
+            cf.addConflicts( compare((SBOMPackage) other) );
+
+        return cf.getConflicts();
+    }
+
+    /**
+     * Compare against another generic SBOM Package
+     *
+     * @param other Other SBOM Package to compare against
+     * @return List of conflicts
+     */
+    public List<Conflict> compare(SBOMPackage other) {
+        ConflictFactory cf = new ConflictFactory();
+
+        // Supplier
+        if(cf.comparable("Supplier", this.supplier, other.getSupplier()))
+            cf.addConflicts(this.supplier.compare(other.getSupplier()));
+
+        // Version
+        // shouldn't occur
+        cf.addConflict("Version", VERSION_MISMATCH, this.version, other.getVersion());
+
+        // Description
+        if(cf.comparable("Description", this.description, other.getDescription()))
+            cf.addConflicts(this.description.compare(other.getDescription()));
+
+        // PURLs
+        // todo use util PURL objects?
+        cf.compareStringSets("PURL", PURL_MISMATCH, this.purls, other.getPURLs());
+
+        // CPEs
+        // todo use util CPE objects?
+        cf.compareStringSets("CPE", CPE_MISMATCH, this.cpes, other.getCPEs());
+
+        // External References
+        cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
+
+
+        // Compare SBOMPackage specific fields
+        if( other instanceof SPDX23Package)
+            cf.addConflicts( compare((SPDX23Package) other) );
+
+
+        return cf.getConflicts();
+    }
+
+    /**
+     * Compare against another SPDX 2.3 Component
+     *
+     * @param other Other SPDX 2.3 Component to compare against
+     * @return List of conflicts
+     */
+    @Override
+    public List<Conflict> compare(SPDX23Component other){
+        ConflictFactory cf = new ConflictFactory();
+
+        // Comment
+        cf.addConflict("Comment", MISC_MISMATCH, this.comment, other.getComment());
+
+        // Attribution Text
+        cf.addConflict("Attribution Text", MISC_MISMATCH, this.attributionText, other.getAttributionText());
+
+        return cf.getConflicts();
+    }
+
+    /**
+     * Compare against another SPDX 2.3 Package
+     *
+     * @param other Other SPDX 2.3 Package to compare against
+     * @return List of conflicts
+     */
+    @Override
+    public List<Conflict> compare(SPDX23Package other){
+        ConflictFactory cf = new ConflictFactory();
+
+        // Component Fields compare here to prevent duplicates
+
+        // Comment
+        cf.addConflict("Comment", MISC_MISMATCH, this.comment, other.getComment());
+
+        // Attribution Text
+        cf.addConflict("Attribution Text", MISC_MISMATCH, this.attributionText, other.getAttributionText());
+
+        // SPDX Package fields
+
+        // Download Location
+        cf.addConflict("Download Location", MISC_MISMATCH, this.downloadLocation, other.getDownloadLocation());
+
+        // File Name
+        cf.addConflict("File Name", MISC_MISMATCH, this.fileName, other.getFileName());
+
+        // Files Analyzed
+        cf.addConflict("Files Analyzed", MISC_MISMATCH, this.filesAnalyzed.toString(), other.getFilesAnalyzed().toString());
+
+        // Verification Code
+        cf.addConflict("Verification Code", MISC_MISMATCH, this.verificationCode, other.getVerificationCode());
+
+        // Home Page
+        cf.addConflict("Home Page", MISC_MISMATCH, this.homePage, other.getHomePage());
+
+        // Source Info
+        cf.addConflict("Source Info", MISC_MISMATCH, this.sourceInfo, other.getSourceInfo());
+
+        // Release Date
+        cf.addConflict("Release Date", TIMESTAMP_MISMATCH, this.releaseDate, other.getReleaseDate());
+
+        // Built Date
+        cf.addConflict("Built Date", TIMESTAMP_MISMATCH, this.builtDate, other.getBuiltDate());
+
+        // Valid Until Date
+        cf.addConflict("Valid Until Date", TIMESTAMP_MISMATCH, this.validUntilDate, other.getValidUntilDate());
+
+        return cf.getConflicts();
+    }
 }

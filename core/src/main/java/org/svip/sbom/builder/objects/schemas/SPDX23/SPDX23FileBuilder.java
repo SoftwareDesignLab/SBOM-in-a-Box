@@ -35,7 +35,7 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
     private String copyright;
 
     /**File hashes*/
-    private HashMap<String, String> hashes;
+    private HashMap<String, String> hashes = new HashMap<>();
 
     /**File comment*/
     private String comment;
@@ -120,10 +120,6 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
      */
     @Override
     public SPDX23FileBuilder addHash(String algorithm, String hash) {
-        // initialize the hash set
-        if (this.hashes == null) {
-            this.hashes = new HashMap<String, String>();
-        }
         this.hashes.put(algorithm, hash);
         return this;
     }
@@ -186,7 +182,7 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
         this.name = null;
         this.licenses = null;
         this.copyright = null;
-        this.hashes = null;
+        this.hashes.clear();
         this.fileNotice = null;
         this.comment = null;
         this.attributionText = null;

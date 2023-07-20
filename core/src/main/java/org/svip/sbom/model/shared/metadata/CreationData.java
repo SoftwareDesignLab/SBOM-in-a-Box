@@ -1,9 +1,12 @@
 package org.svip.sbom.model.shared.metadata;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import org.svip.sbomanalysis.comparison.conflicts.Comparable;
+import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
+
+import java.util.*;
+
+import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
 
 /**
  * File: CreationData.java
@@ -11,7 +14,7 @@ import java.util.Set;
  *
  * @author Derek Garcia
  */
-public class CreationData {
+public class CreationData implements Comparable{
 
     // Time SBOM was created
     private String creationTime;
@@ -155,5 +158,39 @@ public class CreationData {
      */
     public String getCreatorComment() {
         return creatorComment;
+    }
+
+    ///
+    /// Util
+    ///
+    @Override
+    public List<Conflict> compare(Comparable o){
+        // Don't compare if not instance of same object
+        if(!(o instanceof CreationData other))
+            return null;
+
+        ConflictFactory cf = new ConflictFactory();
+
+        // Compare single String fields
+        cf.addConflict("Timestamp", TIMESTAMP_MISMATCH, this.creationTime, other.getCreationTime());
+        cf.addConflict("Creator Comment", MISC_MISMATCH, this.creatorComment, other.getCreatorComment());
+
+        // Compare licenses
+        // todo dif between this and sbom licenses?
+        cf.compareStringSets("Creation Data: License", LICENSE_MISMATCH, this.licenses, other.getLicenses());
+
+        // Comparable Sets
+        cf.compareComparableSets("Creation Data: Author", new HashSet<>(this.authors), new HashSet<>(other.getAuthors()));
+        cf.compareComparableSets("Creation Data: Tool", new HashSet<>(this.creationTools), new HashSet<>(other.getCreationTools()));
+
+        // Compare Objects
+        if(cf.comparable("Manufacture", this.manufacture, other.getManufacture()))
+            cf.addConflicts(this.manufacture.compare(other.getManufacture()));
+        if(cf.comparable("Supplier", this.supplier, other.getSupplier()))
+            cf.addConflicts(this.supplier.compare(other.getSupplier()));
+
+        // todo
+        //  properties
+        return cf.getConflicts();
     }
 }

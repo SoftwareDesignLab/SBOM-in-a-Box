@@ -42,7 +42,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
     private String copyright;
 
     /**Component hashes*/
-    private HashMap<String, String> hashes;
+    private HashMap<String, String> hashes = new HashMap<>();
 
     /**Component comment*/
     private String comment;
@@ -90,13 +90,13 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
     private Description description;
 
     /**Component CPEs*/
-    private Set<String> cpes;
+    private Set<String> cpes = new HashSet<>();
 
     /**Component PURLs*/
-    private Set<String> purls;
+    private Set<String> purls = new HashSet<>();
 
     /**Component external references*/
-    private Set<ExternalReference> externalReferences;
+    private Set<ExternalReference> externalReferences = new HashSet<>();
 
     /**Component mime type*/
     private String mimeType;
@@ -111,7 +111,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
     private String group;
 
     /**Component properties*/
-    private HashMap<String, Set<String>> properties;
+    private HashMap<String, Set<String>> properties = new HashMap<>();
 
     public SVIPComponentBuilder() {
 
@@ -201,10 +201,6 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
      */
     @Override
     public SVIPComponentBuilder addExternalReferences(ExternalReference externalReference) {
-        // initialize the hash set
-        if (this.externalReferences == null) {
-            this.externalReferences = new HashSet<ExternalReference>();
-        }
         this.externalReferences.add(externalReference);
         return this;
     }
@@ -217,20 +213,10 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
      */
     @Override
     public SVIPComponentBuilder addProperty(String name, String value) {
-        // initialize the hash set
-        if (this.properties == null) {
-            this.properties = new HashMap<String, Set<String>>();
-        }
+        if( !this.properties.containsKey(name))
+            this.properties.put(name, new HashSet<>());
 
-        Set<String> values;
-        if(this.properties.containsKey(name)){
-            values = this.properties.get(name);
-        }
-        else{
-            values = new HashSet<>();
-        }
-        values.add(value);
-        this.properties.put(name, values);
+        this.properties.get(name).add(value);
 
         return this;
     }
@@ -286,8 +272,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
      */
     @Override
     public SVIPComponentBuilder setLicenses(LicenseCollection licenses) {
-        if (licenses == null) this.licenses = new LicenseCollection();
-        else this.licenses = licenses;
+        this.licenses = licenses;
         return this;
     }
 
@@ -310,10 +295,6 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
      */
     @Override
     public SVIPComponentBuilder addHash(String algorithm, String hash) {
-        // initialize the hash set
-        if (this.hashes == null) {
-            this.hashes = new HashMap<String, String>();
-        }
         this.hashes.put(algorithm, hash);
         return this;
     }
@@ -358,10 +339,6 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
      */
     @Override
     public SVIPComponentBuilder addCPE(String cpe) {
-        // initialize the hash set
-        if (this.cpes == null) {
-            this.cpes = new HashSet<String>();
-        }
         this.cpes.add(cpe);
         return this;
     }
@@ -373,10 +350,6 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
      */
     @Override
     public SVIPComponentBuilder addPURL(String purl) {
-        // initialize the hash set
-        if (this.purls == null) {
-            this.purls = new HashSet<String>();
-        }
         this.purls.add(purl);
         return this;
     }
@@ -388,10 +361,6 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
      */
     @Override
     public SVIPComponentBuilder addExternalReference(ExternalReference externalReference) {
-        // initialize the hash set
-        if (this.externalReferences == null) {
-            this.externalReferences = new HashSet<ExternalReference>();
-        }
         this.externalReferences.add(externalReference);
         return this;
     }
@@ -560,13 +529,13 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
         this.name = null;
         this.licenses = null;
         this.copyright = null;
-        this.hashes = null;
+        this.hashes.clear();
         this.supplier = null;
         this.version = null;
         this.description = null;
-        this.cpes = null;
-        this.purls = null;
-        this.externalReferences = null;
+        this.cpes.clear();
+        this.purls.clear();
+        this.externalReferences.clear();
         this.downloadLocation = null;
         this.fileName = null;
         this.filesAnalyzed = null;
@@ -580,7 +549,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
         this.publisher = null;
         this.scope = null;
         this.group = null;
-        this.properties = null;
+        this.properties.clear();
         this.fileNotice = null;
         this.comment = null;
         this.attributionText = null;
