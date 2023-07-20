@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.model.SBOMFile;
+import org.svip.api.utils.Utils;
+import org.svip.sbomgeneration.serializers.SerializerFactory;
 
 import java.io.IOException;
 import java.util.Map;
@@ -39,6 +41,9 @@ public class MergeFromAPITest extends APITest {
         for (Long id1 : testMap.keySet()) {
 
             SBOMFile sbom1 = testMap.get(id1);
+            SerializerFactory.Schema schema1 = Utils.assumeSchemaFromOriginal(sbom1.getContents());
+            SerializerFactory.Format format1 = SerializerFactory.Format.
+                    valueOf(Utils.assumeFormatFromDocument(sbom1));
 
             for(Long id2: testMap.keySet()){
 
@@ -46,13 +51,22 @@ public class MergeFromAPITest extends APITest {
                     continue;
 
                 SBOMFile sbom2 = testMap.get(id2);
+                SerializerFactory.Schema schema2 = Utils.assumeSchemaFromOriginal(sbom2.getContents());
+                SerializerFactory.Format format2 = SerializerFactory.Format.
+                        valueOf(Utils.assumeFormatFromDocument(sbom2));
 
                 if(sbom1.getFileName().contains("xml") || sbom2.getFileName().contains("xml"))
                     continue;
 
-                // todo no cross schema merging?
+                // to prevent:
+                // MERGE /svip/merge?id= Error merging SBOMs: Cross format merging not supported for SPDX and CycloneDX.
+                if(
+                       // schema1 != schema2 &&
+                                format1 != format2)
+                    continue;
 
-                LOGGER.info("MERGING " + sbom1.getFileName() + " and " +sbom2.getFileName());
+                LOGGER.info("MERGING " + sbom1.getId() + "..." + sbom1.getFileName().substring(sbom1.getFileName().length()/2) +
+                        " and " + sbom2.getId() + "..." + sbom2.getFileName().substring(sbom2.getFileName().length()/2));
 
                 ResponseEntity<String> response = controller.merge(new long[] {id1, id2});
                 String responseBody = response.getBody();

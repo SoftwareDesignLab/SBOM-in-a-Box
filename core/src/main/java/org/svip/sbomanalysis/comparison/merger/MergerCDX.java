@@ -55,7 +55,8 @@ public class MergerCDX extends Merger {
         builder.setSpecVersion(mainSBOM.getSpecVersion());
 
         // Licenses
-        for(String license : mainSBOM.getLicenses()) { builder.addLicense(license); }
+        if(mainSBOM.getLicenses() != null)
+            for(String license : mainSBOM.getLicenses()) { builder.addLicense(license); }
 
         // Creation Data
         if(A.getCreationData() != null && B.getCreationData() != null) {
