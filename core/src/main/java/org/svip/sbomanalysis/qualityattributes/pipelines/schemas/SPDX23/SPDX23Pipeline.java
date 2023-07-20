@@ -73,148 +73,169 @@ public class SPDX23Pipeline implements SPDX23Tests {
 
         // add metadata results to the quality report
         qualityReport.addComponent("metadata", sbomResults);
+
+        // test each component's info and add its results to the quality report
         if(spdx23SBOM.getComponents() != null){
-            // test component info
             for(Component c : spdx23SBOM.getComponents()){
-                List<Result> componentResults = new ArrayList<>();
-
-                if(c.getClass() == SPDX23PackageObject.class) {
-                    SPDX23PackageObject component = (SPDX23PackageObject) c;
-
-                    String spdxID = component.getUID();
-                    componentResults.add(hasSPDXID("SPDXID", spdxID,
-                            component.getName()));
-
-                    String downloadLocation = component.getDownloadLocation();
-                    componentResults.add(hasDownloadLocation("Download Location",
-                            downloadLocation, component.getName()));
-
-                    boolean filesAnalyzed;
-                    if (component.getFilesAnalyzed() != null) {
-                        filesAnalyzed = component.getFilesAnalyzed();
-                    } else {
-                        filesAnalyzed = false;
-                    }
-
-                    String verificationCode = component.getVerificationCode();
-                    componentResults.add(hasVerificationCode("Verification Code",
-                            verificationCode, filesAnalyzed, component.getName()));
-
-                    // test component CPEs
-                    var cpeTest = new CPETest(component, ATTRIBUTE.UNIQUENESS,
-                            ATTRIBUTE.MINIMUM_ELEMENTS);
-                    Set<String> cpes = component.getCPEs();
-                    if (cpes != null) {
-                        for (String cpe : cpes) {
-                            componentResults.addAll(cpeTest.test("cpe", cpe));
-                        }
-                    }
-
-                    // test component PURLs
-                    var purlTest = new PURLTest(component, ATTRIBUTE.UNIQUENESS,
-                            ATTRIBUTE.MINIMUM_ELEMENTS);
-                    Set<String> purls = component.getPURLs();
-                    if (purls != null) {
-                        for (String purl : purls) {
-                            componentResults.addAll(purlTest.test("purl", purl));
-                        }
-                    }
-
-                    // test component Licenses
-                    var licenseTest = new LicenseTest(component.getName(), ATTRIBUTE.UNIQUENESS,
-                            ATTRIBUTE.MINIMUM_ELEMENTS);
-                    LicenseCollection licenses = component.getLicenses();
-                    if (licenses != null) {
-                        Set<String> declaredLicenses = licenses.getDeclared();
-                        for (String l : declaredLicenses) {
-                            componentResults.addAll(licenseTest.test("License", l));
-                        }
-                    }
-
-                    // test component Hashes
-                    var hashTest = new HashTest(component.getName(), ATTRIBUTE.UNIQUENESS,
-                            ATTRIBUTE.MINIMUM_ELEMENTS);
-                    Map<String, String> hashes = component.getHashes();
-                    if (hashes != null) {
-                        for (String hashAlgo : hashes.keySet()) {
-                            String hashValue = hashes.get(hashAlgo);
-                            componentResults.addAll(hashTest.test(hashAlgo, hashValue));
-                        }
-                    }
-
-                    // add the component and all its tests to the quality report
-                    qualityReport.addComponent(component.getName(), componentResults);
+                // Check what type of SPDX component it is
+                if(c instanceof SPDX23PackageObject) {
+                    qualityReport.addComponent(c.getName(), TestSPDX23Package(c));
                 }
-                else if(c.getClass() == SPDX23FileObject.class)
+                else if(c instanceof SPDX23FileObject)
                 {
-                    SPDX23FileObject component = (SPDX23FileObject) c;
-
-                    // TODO COMMENT
-                    String comment = component.getComment();
-
-                    componentResults.add(hasDownloadLocation("Comment",
-                            comment, component.getName()));
-
-                    // TODO ATTRIBUTION TEXT
-                    String attributionText = component.getAttributionText();
-
-                    componentResults.add(hasDownloadLocation("Attribution Text",
-                            attributionText, component.getName()));
-
-                    // TODO GET FILE NOTICE
-                    String fileNotice = component.getFileNotice();
-
-                    componentResults.add(hasDownloadLocation("File Notice",
-                            fileNotice, component.getName()));
-
-                    String spdxID = component.getUID();
-                    componentResults.add(hasSPDXID("SPDXID", spdxID,
-                            component.getName()));
-
-                    // TODO GET AUTHOR
-                    String author = component.getAuthor();
-
-                    componentResults.add(hasDownloadLocation("Author",
-                            author, component.getName()));
-
-                    // TODO GET NAME?
-
-
-                    // test component Licenses
-                    var licenseTest = new LicenseTest(component.getName(), ATTRIBUTE.UNIQUENESS,
-                            ATTRIBUTE.MINIMUM_ELEMENTS);
-                    LicenseCollection licenses = component.getLicenses();
-                    if (licenses != null) {
-                        Set<String> declaredLicenses = licenses.getDeclared();
-                        for (String l : declaredLicenses) {
-                            componentResults.addAll(licenseTest.test("License", l));
-                        }
-                    }
-
-                    // TODO GET COPYRIGHT
-                    String copyright = component.getCopyright();
-                    componentResults.add(hasDownloadLocation("Copyright",
-                            copyright, component.getName()));
-
-                    // test component Hashes
-                    var hashTest = new HashTest(component.getName(), ATTRIBUTE.UNIQUENESS,
-                            ATTRIBUTE.MINIMUM_ELEMENTS);
-                    Map<String, String> hashes = component.getHashes();
-                    if (hashes != null) {
-                        for (String hashAlgo : hashes.keySet()) {
-                            String hashValue = hashes.get(hashAlgo);
-                            componentResults.addAll(hashTest.test(hashAlgo, hashValue));
-                        }
-                    }
-
-                    // add the component and all its tests to the quality report
-                    qualityReport.addComponent(component.getName(), componentResults);
+                    qualityReport.addComponent(c.getName(), TestSPDX23File(c));
                 }
             }
         }
 
         return qualityReport;
     }
+
+    /**
+     * Tests specific to an SPDX 2.3 Package
+     * @param c the component to be tested
+     * @return a list of results from the component tests
+     */
+    private List<Result> TestSPDX23Package(Component c)
+    {
+        SPDX23PackageObject component = (SPDX23PackageObject) c;
+        List<Result> componentResults = new ArrayList<>();
+
+        String spdxID = component.getUID();
+        componentResults.add(hasSPDXID("SPDXID", spdxID,
+                component.getName()));
+
+        String downloadLocation = component.getDownloadLocation();
+        componentResults.add(hasDownloadLocation("Download Location",
+                downloadLocation, component.getName()));
+
+        boolean filesAnalyzed;
+        if (component.getFilesAnalyzed() != null) {
+            filesAnalyzed = component.getFilesAnalyzed();
+        } else {
+            filesAnalyzed = false;
+        }
+
+        String verificationCode = component.getVerificationCode();
+        componentResults.add(hasVerificationCode("Verification Code",
+                verificationCode, filesAnalyzed, component.getName()));
+
+        // test component CPEs
+        var cpeTest = new CPETest(component, ATTRIBUTE.UNIQUENESS,
+                ATTRIBUTE.MINIMUM_ELEMENTS);
+        Set<String> cpes = component.getCPEs();
+        if (cpes != null) {
+            for (String cpe : cpes) {
+                componentResults.addAll(cpeTest.test("cpe", cpe));
+            }
+        }
+
+        // test component PURLs
+        var purlTest = new PURLTest(component, ATTRIBUTE.UNIQUENESS,
+                ATTRIBUTE.MINIMUM_ELEMENTS);
+        Set<String> purls = component.getPURLs();
+        if (purls != null) {
+            for (String purl : purls) {
+                componentResults.addAll(purlTest.test("purl", purl));
+            }
+        }
+
+        // test component Licenses
+        var licenseTest = new LicenseTest(component.getName(), ATTRIBUTE.UNIQUENESS,
+                ATTRIBUTE.MINIMUM_ELEMENTS);
+        LicenseCollection licenses = component.getLicenses();
+        if (licenses != null) {
+            Set<String> declaredLicenses = licenses.getDeclared();
+            for (String l : declaredLicenses) {
+                componentResults.addAll(licenseTest.test("License", l));
+            }
+        }
+
+        // test component Hashes
+        var hashTest = new HashTest(component.getName(), ATTRIBUTE.UNIQUENESS,
+                ATTRIBUTE.MINIMUM_ELEMENTS);
+        Map<String, String> hashes = component.getHashes();
+        if (hashes != null) {
+            for (String hashAlgo : hashes.keySet()) {
+                String hashValue = hashes.get(hashAlgo);
+                componentResults.addAll(hashTest.test(hashAlgo, hashValue));
+            }
+        }
+
+        return componentResults;
+    }
+
+    /**
+     * Tests specific to an SPDX 2.3 File
+     * @param c the component to be tested
+     * @return a list of results from the component tests
+     */
+    private List<Result> TestSPDX23File(Component c)
+    {
+        SPDX23FileObject component = (SPDX23FileObject) c;
+        List<Result> componentResults = new ArrayList<>();
+
+        // TODO COMMENT
+        String comment = component.getComment();
+
+        componentResults.add(hasDownloadLocation("Comment",
+                comment, component.getName()));
+
+        // TODO ATTRIBUTION TEXT
+        String attributionText = component.getAttributionText();
+
+        componentResults.add(hasDownloadLocation("Attribution Text",
+                attributionText, component.getName()));
+
+        // TODO GET FILE NOTICE
+        String fileNotice = component.getFileNotice();
+
+        componentResults.add(hasDownloadLocation("File Notice",
+                fileNotice, component.getName()));
+
+        String spdxID = component.getUID();
+        componentResults.add(hasSPDXID("SPDXID", spdxID,
+                component.getName()));
+
+        // TODO GET AUTHOR
+        String author = component.getAuthor();
+
+        componentResults.add(hasDownloadLocation("Author",
+                author, component.getName()));
+
+        // TODO GET NAME?
+
+
+        // test component Licenses
+        var licenseTest = new LicenseTest(component.getName(), ATTRIBUTE.UNIQUENESS,
+                ATTRIBUTE.MINIMUM_ELEMENTS);
+        LicenseCollection licenses = component.getLicenses();
+        if (licenses != null) {
+            Set<String> declaredLicenses = licenses.getDeclared();
+            for (String l : declaredLicenses) {
+                componentResults.addAll(licenseTest.test("License", l));
+            }
+        }
+
+        // TODO GET COPYRIGHT
+        String copyright = component.getCopyright();
+        componentResults.add(hasDownloadLocation("Copyright",
+                copyright, component.getName()));
+
+        // test component Hashes
+        var hashTest = new HashTest(component.getName(), ATTRIBUTE.UNIQUENESS,
+                ATTRIBUTE.MINIMUM_ELEMENTS);
+        Map<String, String> hashes = component.getHashes();
+        if (hashes != null) {
+            for (String hashAlgo : hashes.keySet()) {
+                String hashValue = hashes.get(hashAlgo);
+                componentResults.addAll(hashTest.test(hashAlgo, hashValue));
+            }
+        }
+
+        return componentResults;
+    }
+
 
     /**
      * Test an SPDX 2.3 sbom for a bom version
