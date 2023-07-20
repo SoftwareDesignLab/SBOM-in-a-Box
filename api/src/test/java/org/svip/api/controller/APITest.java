@@ -10,9 +10,11 @@ import org.svip.api.utils.Utils;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
 public class APITest {
@@ -88,7 +90,7 @@ public class APITest {
             new SampleProject("JS", new String[]{"lib/bar.js", "lib/foo.js", "index.js"});
 
     @BeforeEach
-    public void setup() {
+    public void setup() throws IOException {
         // Init controller with mocked repository
         controller = new SVIPApiController(repository);
     }

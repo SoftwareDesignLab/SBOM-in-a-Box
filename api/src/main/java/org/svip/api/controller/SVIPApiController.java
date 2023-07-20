@@ -1,7 +1,6 @@
 package org.svip.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,21 +62,13 @@ public class SVIPApiController {
      */
     private OSI osiContainer;
 
-    /**
-     * buildOSI runs on startup to build the OSI container independent of the front-end.
-     */
-    @PostConstruct
-    public void buildOSI() throws IOException {
-        osiContainer = new OSI();
-    }
-
     @Autowired
-    public SVIPApiController(final SBOMFileRepository sbomFileRepository) {
+    public SVIPApiController(final SBOMFileRepository sbomFileRepository) throws IOException {
         headers = new HttpHeaders();
         headers.add("AccessControlAllowOrigin", "http://localhost:4200");
 
-//        files = new HashMap<>();
         this.sbomFileRepository = sbomFileRepository;
+        osiContainer = new OSI();
     }
 
     /**

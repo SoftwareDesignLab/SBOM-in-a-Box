@@ -1,9 +1,9 @@
 package org.svip.sbomgeneration.osi;
 
 import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.command.ListContainersCmd;
+import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.WaitContainerResultCallback;
-import com.github.dockerjava.api.model.Container;
+import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
@@ -11,15 +11,12 @@ import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
 import org.apache.commons.io.FileUtils;
 import org.svip.sbomgeneration.osi.exceptions.DockerNotAvailableException;
-import org.svip.utils.Debug;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream;
 
 /**
  * file name: OSI.java
@@ -30,10 +27,9 @@ import java.util.stream.Stream;
  * @author Ian Dunn
  **/
 public class OSI {
-    private static final String OSI_CONTAINER_NAME = "svip-osi";
     private static final String BOUND_DIR = "/src/main/java/org/svip/sbomgeneration/osi/bound_dir";
 
-    private final OSIClient osiClient;
+    private final OSIClient client;
 
     /**
      * Builds the docker container, but does not bind or run
@@ -58,8 +54,7 @@ public class OSI {
                 throw new DockerNotAvailableException("Docker is not installed");
         }
 
-        // Start new thread to build the docker image
-        this.osiClient = new OSIClient(OSI_CONTAINER_NAME);
+        this.client = new OSIClient(); // Create container
     }
 
     ///
@@ -73,11 +68,8 @@ public class OSI {
      */
     protected static int dockerCheck() {
         try {
-            // If backend is running inside container, docker is already installed and available
-            // https://stackoverflow.com/questions/52580008/how-does-java-application-know-it-is-running-within-a-docker-container
-            try (Stream<String> stream = Files.lines(Paths.get("/proc/1/cgroup"))) {
-                if (stream.anyMatch(line -> line.contains("/docker"))) return 0;
-            }
+            File f = new File("/.dockerenv");
+            if (f.exists()) return 0;
 
             // Check if docker is installed
             Process process = Runtime.getRuntime().exec("docker --version");
@@ -137,7 +129,7 @@ public class OSI {
      * @return success code
      */
     public Map<String, String> generateSBOMs() throws IOException {
-        int code = osiClient.runContainer();
+        int status = this.client.runContainer();
 
         cleanBoundDirectory("code");
 
@@ -145,7 +137,7 @@ public class OSI {
 
         File sbomDir = new File(System.getProperty("user.dir") + BOUND_DIR + "/sboms");
         // If container failed or files are null, return empty map.
-        if (code == 1 || !sbomDir.exists() || sbomDir.listFiles() == null) return sboms;
+        if (status == 1 || !sbomDir.exists() || sbomDir.listFiles() == null) return sboms;
 
         for (File file : sbomDir.listFiles())
             if (!file.getName().equalsIgnoreCase(".gitignore"))
@@ -178,7 +170,7 @@ public class OSI {
         /**
          * Inits default Docker Client Object to Use
          */
-        public OSIClient(String osiContainerName) {
+        public OSIClient() {
             // Check if docker is installed and running
             if (dockerCheck() != 0) {
                 System.err.println("Docker is not running or not installed");
@@ -198,21 +190,22 @@ public class OSI {
                     .build();
             this.dockerClient = DockerClientImpl.getInstance(config, httpClient);
 
-            this.osiContainerId = getOSIContainerId(osiContainerName);
-            if (this.osiContainerId == null) {
-                Debug.log(Debug.LOG_TYPE.ERROR, "Unable to find Docker OSI container.");
-                throw new DockerNotAvailableException(
-                        "OSI Container not found. Try running \"docker compose up\" to build the image and deploy the container.");
-            }
+            this.osiContainerId = createContainer();
         }
 
-        public String getOSIContainerId(String containerName) {
-            ListContainersCmd listContainersCmd = dockerClient.listContainersCmd().withShowAll(true);
-
-            for (Container container: listContainersCmd.exec())
-                if (container.toString().contains(containerName)) return container.getId();
-
-            return null;
+        protected String createContainer() {
+            try {
+                CreateContainerResponse containerResponse = dockerClient
+                        .createContainerCmd("ubuntu")
+                        .withName("svip-osi")
+                        .exec();
+                return containerResponse.getId();
+            } catch (ConflictException e) { // Container already exists
+                // Status 409: {"message":"Conflict. The container name \"/svip-osi\" is already in use by container \"f9762c4cf09e622daf09a95c22904b7fb39f6b9f2a2e2fea93010ea263260507\". You have to remove (or rename) that container to be able to reuse that name."}
+                int startIndex = e.getMessage().indexOf("\"", e.getMessage().indexOf("in use by container")) + 1;
+                int endIndex = e.getMessage().lastIndexOf("\\\"");
+                return e.getMessage().substring(startIndex, endIndex);
+            }
         }
 
         /**
@@ -220,7 +213,7 @@ public class OSI {
          *
          * @return Container exit code
          */
-        public int runContainer() {
+        protected int runContainer() {
             // Run Container
             this.dockerClient.startContainerCmd(this.osiContainerId).exec();
 
