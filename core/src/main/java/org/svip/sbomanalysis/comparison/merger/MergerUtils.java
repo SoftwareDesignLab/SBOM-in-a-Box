@@ -35,7 +35,10 @@ public abstract class MergerUtils extends Merger {
         if (targetSchema == SerializerFactory.Schema.SVIP)
             builder.setName(newName);
         else
-            builder.setName(mainSBOM.getName());
+            if(mainSBOM.getName() == null || mainSBOM.getName().length() == 0)
+                builder.setName(B.getName());
+            else
+                builder.setName(mainSBOM.getName());
 
         // UID (In this case, bom-ref)
         builder.setUID(mainSBOM.getUID());

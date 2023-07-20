@@ -27,7 +27,7 @@ public class MergerCrossSchema extends Merger {
         SPDX23SBOM SBOMA;
         CDX14SBOM SBOMB;
 
-        String name = A.getName();
+        String name = (A.getName() == null || A.getName().length() == 0) ? B.getName() : A.getName();
 
         if (A instanceof SPDX23SBOM) {
             SBOMA = (SPDX23SBOM) A;
