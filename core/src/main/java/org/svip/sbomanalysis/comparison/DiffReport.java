@@ -40,38 +40,29 @@ public class DiffReport {
 
             // Round 1: Compare target against other if equal
             for(Component targetComponent : target.getComponents()){
-                boolean compared = false;   // track if comparison occurred
+
+                // If other doesn't have component, skip
+                if(!other.getComponents().contains(targetComponent)){
+                    this.missingComponents.add(targetComponent.getName());
+                    continue;
+                }
 
                 // Test targetValue against otherValue
                 for(Component otherComponent : other.getComponents()){
-
-                    // If equal, compare
-                    if(targetComponent.equals(otherComponent)){
+                    // Compare hash codes to account for different schema representations of the same component
+                    if(targetComponent.hashCode() == other.hashCode())
                         this.componentConflicts.put(targetComponent.getName(), targetComponent.compare(otherComponent));
-                        compared = true;
-                    }
                 }
-                // targetValue not in other set
-                if(!compared)
-                    this.missingComponents.add(targetComponent.getName());
+
             }
 
-            // Round 2: Don't compare other against target, just checking if present
+            // Round 2: Check for components present in other but not in target
             for(Component otherComponent : other.getComponents()){
-                boolean compared = false;   // track if comparison occurred
-
-                // Attempt to see if otherValue exists in target
-                for(Component targetComponent : target.getComponents()){
-                    // otherValue is in targetValue
-                    if (otherComponent.equals(targetComponent)) {
-                        compared = true;
-                        break;
-                    }
-                }
-
-                // otherValue not in target set
-                if(!compared)
+                // If other doesn't have component, skip
+                if(!target.getComponents().contains(otherComponent)){
                     this.missingComponents.add(otherComponent.getName());
+                    continue;
+                }
             }
         }
     }
