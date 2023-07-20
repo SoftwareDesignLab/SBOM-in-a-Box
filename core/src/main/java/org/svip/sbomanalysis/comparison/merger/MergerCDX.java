@@ -93,7 +93,6 @@ public class MergerCDX extends Merger {
 
     }
 
-    @Override
     protected Set<Component> mergeComponents(Set<Component> A, Set<Component> B, SerializerFactory.Schema targetSchema) {
 
         // New collection for merged components
@@ -141,7 +140,6 @@ public class MergerCDX extends Merger {
 
     }
 
-    @Override
     protected Component mergeComponent(Component A, Component B, SerializerFactory.Schema targetSchema) {
 
         // New builder for the merged component

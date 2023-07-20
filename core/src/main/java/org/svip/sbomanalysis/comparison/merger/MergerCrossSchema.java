@@ -1,18 +1,20 @@
 package org.svip.sbomanalysis.comparison.merger;
 
+import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbomgeneration.serializers.SerializerFactory;
 
 import java.util.Set;
 
-public class MergerCrossSchema extends Merger{
+import static org.svip.sbomgeneration.serializers.SerializerFactory.Schema.SPDX23;
+import static org.svip.sbomgeneration.serializers.SerializerFactory.Schema.SVIP;
 
-    private SPDX23SBOM SBOMA;
-    private CDX14SBOM SBOMB;
+public class MergerCrossSchema extends Merger{
 
     public MergerCrossSchema(){}
 
@@ -25,7 +27,10 @@ public class MergerCrossSchema extends Merger{
     public SBOM mergeSBOM(SBOM A, SBOM B) {
 
         // for simplicity
-        if(A instanceof SPDX23SBOM spdx23SBOM){
+        SPDX23SBOM SBOMA;
+        CDX14SBOM SBOMB;
+
+        if(A instanceof SPDX23SBOM){
             SBOMA = (SPDX23SBOM) A;
             SBOMB = (CDX14SBOM) B;
         }
@@ -38,78 +43,14 @@ public class MergerCrossSchema extends Merger{
         Set<Component> componentsB = B.getComponents();
 
         // declare SBOM A as the main SBOM, cast it back to SPDX14SBOM
+        assert A instanceof SPDX23SBOM;
         SPDX23SBOM mainSBOM = (SPDX23SBOM) A;
 
         // Create a new builder for the new SBOM
-        SPDX23Builder builder = new SPDX23Builder();
+        SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
 
-        /** Assign all top level data for the new SBOM **/
+        return mergeToSchema(SBOMA, SBOMB, componentsA, componentsB, mainSBOM, builder, SVIP);
 
-        // Format
-        builder.setFormat(mainSBOM.getFormat());
-
-        // Name
-        builder.setName(mainSBOM.getName());
-
-        // UID (In this case, bom-ref)
-        builder.setUID(mainSBOM.getUID());
-
-        // SBOM Version
-        builder.setVersion(mainSBOM.getVersion());
-
-        // Spec Version (1.0-a)
-        builder.setSpecVersion("1.0-a");
-
-        // Licenses
-        for(String license : mainSBOM.getLicenses()) { builder.addLicense(license); }
-
-        // Creation Data
-        if(A.getCreationData() != null && B.getCreationData() != null) {
-            builder.setCreationData(mergeCreationData(A.getCreationData(), B.getCreationData()));
-        } else if (A.getCreationData() != null) {
-            builder.setCreationData(A.getCreationData());
-        } else if (B.getCreationData() != null) {
-            builder.setCreationData(B.getCreationData());
-        } else { builder.setCreationData(null); }
-
-        // Document Comment
-        builder.setDocumentComment(mainSBOM.getDocumentComment());
-
-        // Root Component
-        builder.setRootComponent(mainSBOM.getRootComponent());
-
-        // Components
-        Set<Component> mergedComponents = mergeComponents(componentsA, componentsB, SerializerFactory.Schema.SVIP);
-        for(Component mergedComponent : mergedComponents) {
-            builder.addComponent(mergedComponent);
-        }
-
-        // Relationships TODO: Add merging of relationships in future sprint
-
-        // External References
-        mergeExternalReferences(
-                A.getExternalReferences(), B.getExternalReferences()
-        ).forEach(x -> builder.addExternalReference(x));
-
-        // Return the newly built merged SBOM
-        return builder.Build();
     }
 
-    /**
-     * @param A
-     * @param B
-     * @return
-     */
-    protected Set<Component> mergeComponents(Set<Component> A, Set<Component> B, SerializerFactory.Schema targetSchema) {
-        return null;
-    }
-
-    /**
-     * @param A
-     * @param B
-     * @return
-     */
-    protected Component mergeComponent(Component A, Component B, SerializerFactory.Schema targetSchema) {
-        return null;
-    }
 }
