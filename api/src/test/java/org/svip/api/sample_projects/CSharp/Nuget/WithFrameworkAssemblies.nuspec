@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>PackageWithGacReferences</id>
+        <version>1.0</version>
+        <authors>Author here</authors>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>
+            A package that has framework assemblyReferences depending
+            on the target framework.
+        </description>
+        <frameworkAssemblies>
+            <frameworkAssembly assemblyName="System.Web" targetFramework="net40" />
+            <frameworkAssembly assemblyName="System.Net" targetFramework="net40-client, net40" />
+            <frameworkAssembly assemblyName="Microsoft.Devices.Sensors" targetFramework="sl4-wp" />
+            <frameworkAssembly assemblyName="System.Json" targetFramework="sl3" />
+        </frameworkAssemblies>
+    </metadata>
+</package>
