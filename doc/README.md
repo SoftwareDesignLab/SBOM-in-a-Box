@@ -14,6 +14,7 @@
   - [Quick Start](#quick-start-1)
   - [Supported Tools](#supported-tools)
   - [Building the Image](#building-the-image)
+    - [Saved Images](#saved-images)
   
 ---
 
@@ -111,6 +112,10 @@ Place the source files of the project into `core/src/main/java/org/svip/sbomgene
 
 Then run the following command to build the image and run the container to generate SBOMs:
 ```shell
+# Import the prebuilt image to save build time (See Building the Image for more details)
+# Note that this is only required for first-time setup. Once an image has been loaded, it will persist until removal.
+$ docker load --input core/src/main/java/org/svip/sbomgeneration/osi/images/osi.tar.gz
+# Deploy the container
 $ docker compose up osi
 ```
 
@@ -141,7 +146,13 @@ To manually build the image, execute the following from the root directory of th
 $ docker compose up osi --build
 ```
 The first build will take up to 6 minutes to complete, but subsequent builds will be significantly faster. If using 
-a cached image, the first build time should be much faster.
+a saved image, the first build time should be much faster.
+
+### Saved Images
+
+SVIP comes with a prebuilt OSI image archive to speed up deploy time. The default saved image can be loaded to
+drastically decrease the time cost of the first build. This uses [Git Large File Storage (LFS)](https://git-lfs.com/)
+to store the compressed archive.
 
 To save the image for subsequent uses, ensure the image is built and then execute the following from the root 
 directory of the repository:
@@ -151,13 +162,10 @@ $ docker save -o core/src/main/java/org/svip/sbomgeneration/osi/images/osi.tar u
 
 To load a saved image into Docker, run the following command:
 ```shell
-docker load --input osi.tar.gz
+$ docker load --input core/src/main/java/org/svip/sbomgeneration/osi/images/osi.tar.gz
 ```
-When starting the container, SVIP comes with a prebuilt OSI image to speed up deploy time. The default saved image 
-will be loaded unless manually rebuilt or removed. This uses [Git Large File Storage (LFS)](https://git-lfs.com/) to 
-store the compressed archive.
 
-> **NOTE:** , but if any modifications are made to:
+> **NOTE:** If any modifications are made to:
 > 1. The inline Dockerfile in `docker-compose.yml`,
 > 2. The setup shell script in `core/src/main/java/org/svip/sbomgeneration/osi/scripts/setup.sh`, or
 > 3. The OSI tool controller in `core/src/main/java/org/svip/sbomgeneration/osi/scripts/ContainerController.py`,
