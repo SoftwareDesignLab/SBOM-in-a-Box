@@ -471,7 +471,7 @@ public class SVIPApiController {
         result.setId(idSum);
         sbomFileRepository.save(result);
 
-        return Utils.encodeResponse(result.toString());
+        return Utils.encodeResponse(result.getContents());
 
     }
 }

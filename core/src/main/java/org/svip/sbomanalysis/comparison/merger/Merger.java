@@ -58,16 +58,17 @@ public abstract class Merger {
         // Properties
         Map<String, Set<String>> propertiesA = A.getProperties();
         Map<String, Set<String>> propertiesB = B.getProperties();
-        for(String keyA : propertiesA.keySet()) {
-            for (String entryA : propertiesA.get(keyA)) {
-                mergedCreationData.addProperty(keyA, entryA);
-            }
-        }
-        for(String keyB : propertiesB.keySet()) {
-            for (String entryB : propertiesA.get(keyB)) {
-                mergedCreationData.addProperty(keyB, entryB);
-            }
-        }
+        for(String keyA : propertiesA.keySet())
+            if(propertiesA.get(keyA) != null)
+                for (String entryA : propertiesA.get(keyA))
+                    mergedCreationData.addProperty(keyA, entryA);
+
+
+        for(String keyB : propertiesB.keySet())
+            if(propertiesB.get(keyB) != null && propertiesA.get(keyB) != null)
+                for (String entryB : propertiesA.get(keyB))
+                    mergedCreationData.addProperty(keyB, entryB);
+
 
         // Creation Tools
         Set<CreationTool> mergedTools = mergeCreationTools(A.getCreationTools(), B.getCreationTools());

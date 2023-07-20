@@ -11,9 +11,7 @@ import org.svip.api.utils.Utils;
 import org.svip.sbomgeneration.serializers.SerializerFactory;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -30,13 +28,14 @@ public class MergeFromAPITest extends APITest {
     }
 
     /**
-     * Rigorous test for /merge endpoint. Tests conversion to a valid schema + format, then tests converting back
+     * Rigorous test for /merge endpoint
      */
     @Test
     @DisplayName("Comprehensive merge test")
     public void mergeTest() {
 
         setupMockRepository();
+        ArrayList<HashMap<Long, Long>> testedPairs = new ArrayList<>();
 
         for (Long id1 : testMap.keySet()) {
 
@@ -45,9 +44,9 @@ public class MergeFromAPITest extends APITest {
             SerializerFactory.Format format1 = SerializerFactory.Format.
                     valueOf(Utils.assumeFormatFromDocument(sbom1));
 
-            for(Long id2: testMap.keySet()){
+            for (Long id2 : testMap.keySet()) {
 
-                if(Objects.equals(id1, id2))
+                if (Objects.equals(id1, id2))
                     continue;
 
                 SBOMFile sbom2 = testMap.get(id2);
@@ -55,20 +54,39 @@ public class MergeFromAPITest extends APITest {
                 SerializerFactory.Format format2 = SerializerFactory.Format.
                         valueOf(Utils.assumeFormatFromDocument(sbom2));
 
-                if(sbom1.getFileName().contains("xml") || sbom2.getFileName().contains("xml"))
+                if (sbom1.getFileName().endsWith(".xml") || sbom2.getFileName().endsWith(".xml"))
                     continue;
 
                 // to prevent:
                 // MERGE /svip/merge?id= Error merging SBOMs: Cross format merging not supported for SPDX and CycloneDX.
-                if(
-                       // schema1 != schema2 &&
-                                format1 != format2)
+                if (schema1 != schema2 || format1 != format2)
                     continue;
 
-                LOGGER.info("MERGING " + sbom1.getId() + "..." + sbom1.getFileName().substring(sbom1.getFileName().length()/2) +
-                        " and " + sbom2.getId() + "..." + sbom2.getFileName().substring(sbom2.getFileName().length()/2));
+                // to prevent testing different combinations of the same two SBOMs
+                boolean ignoreTest = false;
+                for (HashMap<Long, Long> pair : testedPairs
+                ) {
 
-                ResponseEntity<String> response = controller.merge(new long[] {id1, id2});
+                    if (pair.get(id2) == null)
+                        continue;
+
+                    if (pair.get(id2).equals(id1)) {
+                        ignoreTest = true;
+                        break;
+                    }
+
+                }
+                if (ignoreTest)
+                    continue;
+
+                HashMap<Long, Long> thisPair = new HashMap<>();
+                thisPair.put(id1, id2);
+                testedPairs.add(thisPair);
+
+                LOGGER.info("MERGING " + sbom1.getId() + "..." + sbom1.getFileName().substring(sbom1.getFileName().length() / 2) +
+                        " and " + sbom2.getId() + "..." + sbom2.getFileName().substring(sbom2.getFileName().length() / 2));
+
+                ResponseEntity<String> response = controller.merge(new long[]{id1, id2});
                 String responseBody = response.getBody();
 
                 assertEquals(HttpStatus.OK, response.getStatusCode());
