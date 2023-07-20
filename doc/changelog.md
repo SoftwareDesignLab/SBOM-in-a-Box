@@ -3,6 +3,11 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v7.1.1-alpha] - (7/28/2023)
+### Added
+- SBOM Objects have built in comparison methods
+- Added `hashcode` methods to components to use `name` and `version` as UIDs
+
 ## [v7.1.0-alpha] - (7/26/2023)
 ### Added
 - `/svip/generators/osi` endpoint to the `SVIPAPIController` class
