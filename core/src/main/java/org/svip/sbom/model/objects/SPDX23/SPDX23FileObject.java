@@ -250,4 +250,9 @@ public class SPDX23FileObject implements SPDX23File {
 
         return cf.getConflicts();
     }
+
+    @Override
+    public int hashCode() {
+        return this.name.hashCode();
+    }
 }
