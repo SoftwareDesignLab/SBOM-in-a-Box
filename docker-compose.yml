@@ -23,7 +23,7 @@ services:
         ENV COMPOSER_ALLOW_SUPERUSER 1
         COPY setup.sh ContainerController.py /usr/local/bin/
         RUN /bin/bash -c /usr/local/bin/setup.sh
-        CMD ["python3", "/usr/local/bin/ContainerController.py"]    volumes:
+        ENTRYPOINT ["python3", "/usr/local/bin/ContainerController.py"]
     volumes:
       - type: bind
         source: core/src/main/java/org/svip/sbomgeneration/osi/bound_dir/code
