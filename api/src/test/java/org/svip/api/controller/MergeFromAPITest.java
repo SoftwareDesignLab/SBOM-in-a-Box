@@ -67,19 +67,17 @@ public class MergeFromAPITest extends APITest {
                     }
 
                 }
-                if (ignoreTest
-                || Utils.assumeSchemaFromOriginal(sbom1.getContents()) == Utils.assumeSchemaFromOriginal(sbom2.getContents())
-                )
+                if (ignoreTest)
                     continue;
 
                 HashMap<Long, Long> thisPair = new HashMap<>();
                 thisPair.put(id1, id2);
                 testedPairs.add(thisPair);
 
-                LOGGER.info("MERGING " + schema1 + " SBOM "+ sbom1.getId() + "..." +
-                        sbom1.getFileName().substring(sbom1.getFileName().length()*2 / 3) +
-                        " and " + schema2 + " SBOM "+ sbom2.getId() + "..." +
-                        sbom2.getFileName().substring(sbom2.getFileName().length() *2 / 3));
+                LOGGER.info("MERGING " + schema1 + " SBOM " + sbom1.getId() + "..." +
+                        sbom1.getFileName().substring(sbom1.getFileName().length() * 2 / 3) +
+                        " and " + schema2 + " SBOM " + sbom2.getId() + "..." +
+                        sbom2.getFileName().substring(sbom2.getFileName().length() * 2 / 3));
 
                 ResponseEntity<String> response = controller.merge(new long[]{id1, id2});
                 String responseBody = response.getBody();

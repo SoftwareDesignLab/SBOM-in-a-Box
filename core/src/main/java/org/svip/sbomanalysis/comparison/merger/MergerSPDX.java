@@ -20,7 +20,7 @@ import static org.svip.sbomgeneration.serializers.SerializerFactory.Schema.SPDX2
 
 /**
  * File: MergerSPDX.java
- *
+ * <p>
  * Merges two SPDX SBOMs together.
  *
  * @author tyler_drake
@@ -32,7 +32,7 @@ public class MergerSPDX extends Merger {
     }
 
     @Override
-    public SBOM mergeSBOM(SBOM A, SBOM B){
+    public SBOM mergeSBOM(SBOM A, SBOM B) {
 
         Set<Component> componentsA = A.getComponents();
         Set<Component> componentsB = B.getComponents();
@@ -43,10 +43,9 @@ public class MergerSPDX extends Merger {
         // Create a new builder for the new SBOM
         SPDX23Builder builder = new SPDX23Builder();
 
-        return mergeToSchema(A, B, componentsA, componentsB, mainSBOM, builder, SPDX23, "");
+        return MergerUtils.mergeToSchema(A, B, componentsA, componentsB, mainSBOM, builder, SPDX23, "");
 
     }
-
 
 
 }

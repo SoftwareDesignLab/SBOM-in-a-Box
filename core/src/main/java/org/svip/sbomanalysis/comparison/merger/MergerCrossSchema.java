@@ -10,9 +10,10 @@ import java.util.Set;
 
 import static org.svip.sbomgeneration.serializers.SerializerFactory.Schema.SVIP;
 
-public class MergerCrossSchema extends Merger{
+public class MergerCrossSchema extends Merger {
 
-    public MergerCrossSchema(){}
+    public MergerCrossSchema() {
+    }
 
     /**
      * @param A
@@ -28,11 +29,10 @@ public class MergerCrossSchema extends Merger{
 
         String name = A.getName();
 
-        if(A instanceof SPDX23SBOM){
+        if (A instanceof SPDX23SBOM) {
             SBOMA = (SPDX23SBOM) A;
             SBOMB = (CDX14SBOM) B;
-        }
-        else{
+        } else {
             SBOMA = (SPDX23SBOM) B;
             SBOMB = (CDX14SBOM) A;
         }
@@ -46,7 +46,7 @@ public class MergerCrossSchema extends Merger{
         // Create a new builder for the new SBOM
         SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
 
-        return mergeToSchema(SBOMA, SBOMB, componentsA, componentsB, mainSBOM, builder, SVIP, name);
+        return MergerUtils.mergeToSchema(SBOMA, SBOMB, componentsA, componentsB, mainSBOM, builder, SVIP, name);
 
     }
 
