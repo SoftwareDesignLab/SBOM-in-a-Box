@@ -8,6 +8,7 @@ import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.ExternalReference;
+import org.svip.sbomgeneration.serializers.SerializerFactory;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -27,7 +28,7 @@ public abstract class Merger {
 
     public abstract SBOM mergeSBOM(SBOM A, SBOM B);
 
-    protected abstract Set<Component> mergeComponents(Set<Component> A, Set<Component> B);
+    protected abstract Set<Component> mergeComponents(Set<Component> A, Set<Component> B, SerializerFactory.Schema schema);
 
     protected abstract Component mergeComponent(Component A, Component B);
 

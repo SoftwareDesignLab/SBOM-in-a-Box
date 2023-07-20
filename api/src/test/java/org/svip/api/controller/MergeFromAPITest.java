@@ -57,14 +57,20 @@ public class MergeFromAPITest extends APITest {
                 if (sbom1.getFileName().endsWith(".xml") || sbom2.getFileName().endsWith(".xml"))
                     continue;
 
-//                // to prevent:
-//                // MERGE /svip/merge?id= Error merging SBOMs: Cross format merging not supported for SPDX and CycloneDX.
-//                if (schema1 != schema2 || format1 != format2)
-//                    continue;
+                boolean debugging = false;
 
-                if (schema1 == schema2
-                     //   || format1 == format2 // todo work on cross schema THEN cross format
-                ) continue; // faster debugging // todo remove
+//                if(!debugging)          // test if old tests still work
+
+                    // to prevent:
+                    // MERGE /svip/merge?id= Error merging SBOMs: Cross format merging not supported for SPDX and CycloneDX.
+                    if (schema1 != schema2 || format1 != format2)
+                        continue;
+
+//                else
+//
+//                    if (schema1 == schema2
+//                         //   || format1 == format2 // todo work on cross schema THEN cross format
+//                    ) continue; // faster debugging // todo remove
 
                 // to prevent testing different combinations of the same two SBOMs
                 boolean ignoreTest = false;

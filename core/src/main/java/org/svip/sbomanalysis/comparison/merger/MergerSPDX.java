@@ -1,17 +1,23 @@
 package org.svip.sbomanalysis.comparison.merger;
 
+import org.svip.sbom.builder.interfaces.generics.SBOMBuilder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23PackageBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+import org.svip.sbomgeneration.serializers.SerializerFactory;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import static org.svip.sbomgeneration.serializers.SerializerFactory.Schema.CDX14;
+import static org.svip.sbomgeneration.serializers.SerializerFactory.Schema.SPDX23;
 
 /**
  * File: MergerSPDX.java
@@ -38,6 +44,13 @@ public class MergerSPDX extends Merger {
         // Create a new builder for the new SBOM
         SPDX23Builder builder = new SPDX23Builder();
 
+        return merge(A, B, componentsA, componentsB, mainSBOM, builder, SPDX23);
+
+    }
+
+    // todo move this to Utils
+    private SBOM merge(SBOM A, SBOM B, Set<Component> componentsA, Set<Component> componentsB, SBOM mainSBOM,
+                       SBOMBuilder builder, SerializerFactory.Schema schema) {
         /** Assign all top level data for the new SBOM **/
 
         // Format
@@ -52,11 +65,18 @@ public class MergerSPDX extends Merger {
         // SBOM Version
         builder.setVersion(mainSBOM.getVersion());
 
-        // Spec Version (1.4)
-        builder.setSpecVersion(mainSBOM.getSpecVersion());
+        String specVersion;
+        // Spec Version
+        switch (schema){
+            case SPDX23 -> specVersion = "2.3";
+            case CDX14 -> specVersion = "1.4";
+            default -> specVersion = "1.0-a";
+        }
+        builder.setSpecVersion(specVersion);
 
         // Licenses
-        for(String license : mainSBOM.getLicenses()) { builder.addLicense(license); }
+        if(mainSBOM.getLicenses() != null)
+            for(String license : mainSBOM.getLicenses()) { builder.addLicense(license); }
 
         // Creation Data
         if(A.getCreationData() != null && B.getCreationData() != null) {
@@ -74,7 +94,7 @@ public class MergerSPDX extends Merger {
         builder.setRootComponent(mainSBOM.getRootComponent());
 
         // Components
-        Set<Component> mergedComponents = mergeComponents(componentsA, componentsB);
+        Set<Component> mergedComponents = mergeComponents(componentsA, componentsB, schema);
         for(Component mergedComponent : mergedComponents) {
             builder.addComponent(mergedComponent);
         }
@@ -88,11 +108,13 @@ public class MergerSPDX extends Merger {
 
         // Return the newly built merged SBOM
         return builder.Build();
-
     }
 
+    // todo move this to utils?
     @Override
-    protected Set<Component> mergeComponents(Set<Component> A, Set<Component> B) {
+    protected Set<Component> mergeComponents(Set<Component> A, Set<Component> B, SerializerFactory.Schema schema) {
+
+        // todo or extract and move below code to Utils
 
         // New Components collection
         Set<Component> mergedComponents = new HashSet<>();
@@ -105,23 +127,59 @@ public class MergerSPDX extends Merger {
             // Checks to see if component A was merged with another component
             boolean merged = false;
 
-            // Cast the generic component from SBOM A back to a SPDX component
-            SPDX23PackageObject componentA_SPDX = (SPDX23PackageObject) componentA;
-
             // For every component in the second SBOM
             for(Component componentB : B) {
 
-                // Cast the generic component from SBOM B back to a SPDX component
-                SPDX23Package componentB_SPDX = (SPDX23Package) componentB;
+                switch (schema){ // todo make this neater
+                    case SPDX23 -> {
 
-                // If the components are the same by Name and Version, merge then add them to the SBOM
-                if(componentA_SPDX.getName() == componentB_SPDX.getName() && componentA_SPDX.getVersion() == componentB_SPDX.getVersion()) {
+                        // Cast the generic component from SBOM A back to a SPDX component
+                        SPDX23PackageObject componentA_SPDX = (SPDX23PackageObject) componentA;
+                        SPDX23Package componentB_SPDX = (SPDX23Package) componentB;
 
-                    mergedComponents.add(mergeComponent(componentA, componentB));
-                    removeB.add(componentB);
-                    merged = true;
+                        // If the components are the same by Name and Version, merge then add them to the SBOM
+                        if(componentA_SPDX.getName() == componentB_SPDX.getName() && componentA_SPDX.getVersion() == componentB_SPDX.getVersion()) {
 
+                            mergedComponents.add(mergeComponent(componentA, componentB));
+                            removeB.add(componentB);
+                            merged = true;
+
+                        }
+                    }
+                    case CDX14 -> {
+
+                        // Cast the generic component from SBOM A back to a CDX component
+                        CDX14ComponentObject componentA_CDX = (CDX14ComponentObject) componentA;
+                        CDX14ComponentObject componentB_CDX = (CDX14ComponentObject) componentB;
+
+                        // If the components are the same by Name and Version, merge then add them to the SBOM
+                        if(componentA_CDX.getName() == componentB_CDX.getName() && componentA_CDX.getVersion() == componentB_CDX.getVersion()) {
+
+                            mergedComponents.add(mergeComponent(componentA, componentB));
+                            removeB.add(componentB);
+                            merged = true;
+
+                        }
+
+                    }
+                    default -> { // SVIP
+                        // Cast the generic component from SBOM A back to a SPDX component
+                        SPDX23PackageObject componentA_SPDX = (SPDX23PackageObject) componentA;
+                        CDX14ComponentObject componentB_CDX = (CDX14ComponentObject) componentB;
+
+                        // If the components are the same by Name and Version, merge then add them to the SBOM
+                        if(componentA_SPDX.getName() == componentB_CDX.getName() && componentA_SPDX.getVersion() == componentB_CDX.getVersion()) {
+
+                            mergedComponents.add(mergeComponent(componentA, componentB));
+                            removeB.add(componentB);
+                            merged = true;
+
+                        }
+                    }
                 }
+
+                // Cast the generic component from SBOM B back to a SPDX component
+
 
             }
             B.removeAll(removeB);

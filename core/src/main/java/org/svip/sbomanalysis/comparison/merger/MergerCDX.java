@@ -7,6 +7,8 @@ import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+import org.svip.sbomgeneration.serializers.SerializerFactory;
+import org.svip.sbomgeneration.serializers.serializer.Serializer;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -74,7 +76,7 @@ public class MergerCDX extends Merger {
         builder.setRootComponent(mainSBOM.getRootComponent());
 
         // Components
-        Set<Component> mergedComponents = mergeComponents(componentsA, componentsB);
+        Set<Component> mergedComponents = mergeComponents(componentsA, componentsB, SerializerFactory.Schema.CDX14);
         for(Component mergedComponent : mergedComponents) {
             builder.addComponent(mergedComponent);
         }
@@ -92,7 +94,7 @@ public class MergerCDX extends Merger {
     }
 
     @Override
-    protected Set<Component> mergeComponents(Set<Component> A, Set<Component> B) {
+    protected Set<Component> mergeComponents(Set<Component> A, Set<Component> B, SerializerFactory.Schema schema) {
 
         // New collection for merged components
         Set<Component> mergedComponents = new HashSet<>();
@@ -111,7 +113,7 @@ public class MergerCDX extends Merger {
             // For every component in the second SBOM
             for(Component componentB : B) {
 
-                // Cast the generic component from SBOM B back to a SPDX component
+                // Cast the generic component from SBOM B back to a CDX component
                 CDX14ComponentObject componentB_CDX = (CDX14ComponentObject) componentB;
 
                 // If the components are the same by Name and Version, merge then add them to the SBOM
