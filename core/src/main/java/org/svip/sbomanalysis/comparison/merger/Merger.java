@@ -1,5 +1,6 @@
 package org.svip.sbomanalysis.comparison.merger;
 
+import org.svip.sbom.builder.interfaces.generics.SBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 
@@ -25,10 +26,9 @@ public abstract class Merger {
     public abstract SBOM mergeSBOM(SBOM A, SBOM B);
 
     protected abstract Set<Component> mergeComponents(Set<Component> A, Set<Component> B, SerializerFactory.Schema targetSchema);
-
     protected abstract Component mergeComponent(Component A, Component B, SerializerFactory.Schema targetSchema);
 
-    protected CreationData mergeCreationData(CreationData A, CreationData B) {
+    protected static CreationData mergeCreationData(CreationData A, CreationData B) {
 
         CreationData mergedCreationData = new CreationData();
 
@@ -79,7 +79,7 @@ public abstract class Merger {
     }
 
 
-    protected Set<CreationTool> mergeCreationTools(Set<CreationTool> toolsA, Set<CreationTool> toolsB) {
+    protected static Set<CreationTool> mergeCreationTools(Set<CreationTool> toolsA, Set<CreationTool> toolsB) {
 
         // new creation tools set
         Set<CreationTool> mergedTools = new HashSet<>();
@@ -132,7 +132,7 @@ public abstract class Merger {
 
     }
 
-    protected Organization mergeOrganization(Organization organizationA, Organization organizationB) {
+    protected static Organization mergeOrganization(Organization organizationA, Organization organizationB) {
 
         // New organization
         Organization organizationNew;
@@ -170,7 +170,7 @@ public abstract class Merger {
 
     }
 
-    protected Set<Contact> mergeAuthors(Set<Contact> authorsA, Set<Contact> authorsB) {
+    protected static Set<Contact> mergeAuthors(Set<Contact> authorsA, Set<Contact> authorsB) {
 
         Set<Contact> authorsNew = new HashSet<>();
 
@@ -206,7 +206,7 @@ public abstract class Merger {
 
     }
 
-    protected Set<ExternalReference> mergeExternalReferences(Set<ExternalReference> refA, Set<ExternalReference> refB) {
+    protected static Set<ExternalReference> mergeExternalReferences(Set<ExternalReference> refA, Set<ExternalReference> refB) {
 
         // New set for merged External References
         Set<ExternalReference> mergedExternalReferences = new HashSet<>();
@@ -245,5 +245,7 @@ public abstract class Merger {
         return mergedExternalReferences;
 
     }
+
+
 
 }

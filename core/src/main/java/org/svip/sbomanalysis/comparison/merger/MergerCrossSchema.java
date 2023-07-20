@@ -100,7 +100,6 @@ public class MergerCrossSchema extends Merger{
      * @param B
      * @return
      */
-    @Override
     protected Set<Component> mergeComponents(Set<Component> A, Set<Component> B, SerializerFactory.Schema targetSchema) {
         return null;
     }
@@ -110,7 +109,6 @@ public class MergerCrossSchema extends Merger{
      * @param B
      * @return
      */
-    @Override
     protected Component mergeComponent(Component A, Component B, SerializerFactory.Schema targetSchema) {
         return null;
     }

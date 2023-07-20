@@ -3,7 +3,6 @@ package org.svip.sbomanalysis.comparison.merger;
 import org.svip.sbom.builder.interfaces.generics.SBOMBuilder;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
-import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23PackageBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
@@ -17,7 +16,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.svip.sbomgeneration.serializers.SerializerFactory.Schema.CDX14;
 import static org.svip.sbomgeneration.serializers.SerializerFactory.Schema.SPDX23;
 
 /**
@@ -49,9 +47,9 @@ public class MergerSPDX extends Merger {
 
     }
 
-    // todo move this to Utils
-    private SBOM merge(SBOM A, SBOM B, Set<Component> componentsA, Set<Component> componentsB, SBOM mainSBOM,
-                       SBOMBuilder builder, SerializerFactory.Schema targetSchema) {
+    protected SBOM merge(SBOM A, SBOM B, Set<Component> componentsA, Set<Component> componentsB, SBOM mainSBOM,
+                                SBOMBuilder builder, SerializerFactory.Schema targetSchema) {
+
         /** Assign all top level data for the new SBOM **/
 
         // Format
@@ -461,7 +459,121 @@ public class MergerSPDX extends Merger {
             }
             default -> { // SVIP
 
+                SPDX23PackageObject spdx23PackageObjectA = (SPDX23PackageObject) componentA;
+                CDX14ComponentObject componentB_CDX = (CDX14ComponentObject) componentB;
 
+
+                /*
+                    SPDX component A
+                 */
+
+                // Comment
+                String comment = "";
+                if(spdx23PackageObjectA.getComment()!=null && !spdx23PackageObjectA.getComment().isEmpty())
+                    comment += "1) " + spdx23PackageObjectA.getComment();
+
+                compBuilder.setComment(comment);
+
+                // Attribution Text
+                if(spdx23PackageObjectA.getAttributionText() != null && !spdx23PackageObjectA.getAttributionText().isEmpty())
+                    compBuilder.setAttributionText(spdx23PackageObjectA.getAttributionText());
+
+                // Download Location
+                if(spdx23PackageObjectA.getDownloadLocation() != null && !spdx23PackageObjectA.getDownloadLocation().isEmpty())
+                    compBuilder.setDownloadLocation(spdx23PackageObjectA.getDownloadLocation());
+
+                // FileName
+                if(spdx23PackageObjectA.getFileName() != null && !spdx23PackageObjectA.getFileName().isEmpty())
+                    compBuilder.setFileName(spdx23PackageObjectA.getFileName());
+
+                // Files Analyzed
+                // TODO: determine if a FilesAnalzyed mistmatch should return true or false
+                if(spdx23PackageObjectA.getFilesAnalyzed() == true && spdx23PackageObjectA.getFilesAnalyzed() == true)
+                    compBuilder.setFilesAnalyzed(true);
+                else compBuilder.setFilesAnalyzed(false);
+
+                // Verification Code
+                String verificationCode = "";
+                if(spdx23PackageObjectA.getVerificationCode()!=null && !spdx23PackageObjectA.getVerificationCode().isEmpty())
+                    verificationCode += "1) " + spdx23PackageObjectA.getVerificationCode();
+                compBuilder.setVerificationCode(verificationCode);
+
+                // Homepage
+                String homepage = "";
+                if(spdx23PackageObjectA.getHomePage()!=null && !spdx23PackageObjectA.getHomePage().isEmpty())
+                    homepage += "1) " + spdx23PackageObjectA.getHomePage();
+                compBuilder.setHomePage(homepage);
+
+                // Source Info
+                String sourceInfo = "";
+                if(spdx23PackageObjectA.getSourceInfo()!=null && !spdx23PackageObjectA.getSourceInfo().isEmpty())
+                    sourceInfo += "1) " + spdx23PackageObjectA.getSourceInfo();
+
+                compBuilder.setSourceInfo(sourceInfo);
+
+                // Release Date
+                if(spdx23PackageObjectA.getReleaseDate() != null && !spdx23PackageObjectA.getReleaseDate().isEmpty())
+                    compBuilder.setReleaseDate(spdx23PackageObjectA.getReleaseDate());
+
+                // Built Date
+                if(spdx23PackageObjectA.getBuiltDate() != null && !spdx23PackageObjectA.getBuiltDate().isEmpty())
+                    compBuilder.setBuildDate(spdx23PackageObjectA.getBuiltDate());
+
+                // Valid Until Date
+                if(spdx23PackageObjectA.getValidUntilDate() != null && !spdx23PackageObjectA.getValidUntilDate().isEmpty())
+                    compBuilder.setValidUntilDate(spdx23PackageObjectA.getValidUntilDate());
+
+                // Supplier
+                compBuilder.setSupplier(spdx23PackageObjectA.getSupplier());
+
+                // Version // default to comp A version
+                if(spdx23PackageObjectA.getVersion() != null && !spdx23PackageObjectA.getVersion().isEmpty())
+                    compBuilder.setVersion(spdx23PackageObjectA.getVersion());
+
+                // CPEs
+                for(String cpeA : spdx23PackageObjectA.getCPEs()) { compBuilder.addCPE(cpeA); }
+
+                // PURLs
+                for(String purlA : spdx23PackageObjectA.getPURLs()) { compBuilder.addPURL(purlA); }
+
+                /*
+                    CDX specific
+                 */
+
+                // Description
+                compBuilder.setDescription(componentB_CDX.getDescription());
+
+                // CPEs
+                for(String cpeB : componentB_CDX.getCPEs()) { compBuilder.addCPE(cpeB); }
+
+                // PURLs
+                for(String purlB : componentB_CDX.getPURLs()) { compBuilder.addPURL(purlB); }
+
+                // Mime Type
+                compBuilder.setMimeType(componentB_CDX.getMimeType());
+
+                // Publisher
+                compBuilder.setPublisher(componentB_CDX.getPublisher());
+
+                // Scope
+                compBuilder.setScope(componentB_CDX.getScope());
+
+                // Group
+                compBuilder.setGroup(componentB_CDX.getGroup());
+
+                // Properties
+                if(componentB_CDX.getProperties() != null) componentB_CDX.getProperties().keySet().stream().forEach(
+                        x -> componentB_CDX.getProperties().get(x).stream().forEach(y -> compBuilder.addProperty(x, y))
+                );
+
+                /*
+                    Both
+                 */
+
+                // External References
+                mergeExternalReferences(
+                        spdx23PackageObjectA.getExternalReferences(), componentB_CDX.getExternalReferences()
+                ).forEach(x -> compBuilder.addExternalReference(x));
 
             }
         }
