@@ -59,10 +59,8 @@ public class DiffReport {
             // Round 2: Check for components present in other but not in target
             for(Component otherComponent : other.getComponents()){
                 // If other doesn't have component, skip
-                if(!target.getComponents().contains(otherComponent)){
+                if(!target.getComponents().contains(otherComponent))
                     this.missingComponents.add(otherComponent.getName());
-                    continue;
-                }
             }
         }
     }
