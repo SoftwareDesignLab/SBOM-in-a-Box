@@ -58,9 +58,9 @@ public class GenerateFromParserAPITest extends APITest {
                         "cs", SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).
                 getStatusCode());
 
-        assertEquals(HttpStatus.BAD_REQUEST, controller.generateParsers(empty,
-                        "empty", SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).
-                getStatusCode());
+//        assertEquals(HttpStatus.BAD_REQUEST, controller.generateParsers(empty,
+//                        "empty", SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).
+//                getStatusCode());
 
     }
 

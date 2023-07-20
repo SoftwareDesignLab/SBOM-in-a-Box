@@ -182,7 +182,7 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
         this.name = null;
         this.licenses = null;
         this.copyright = null;
-        this.hashes.clear();
+        this.hashes = new HashMap<>();
         this.fileNotice = null;
         this.comment = null;
         this.attributionText = null;

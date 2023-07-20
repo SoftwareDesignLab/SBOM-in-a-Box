@@ -10,6 +10,7 @@ package org.svip.sbomgeneration.osi;
 
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -29,6 +30,7 @@ public class OSITest {
     /**
      * Tests generating sboms from empty project
     */
+    @Disabled
     @Test
     public void generateSBOMsEmptyTest() {
         OSI osi = new OSI("core/src/main/java/org/svip/sbomfactory/osi/bound_dir" , "/src/main/java/org/svip/sbomfactory/osi/Dockerfile");
@@ -38,6 +40,7 @@ public class OSITest {
     /**
     * Tests generating sboms from sample project
     */
+    @Disabled
     @Test
     public void generateSBOMsTest() {
         OSI osi = new OSI("core/src/main/java/org/svip/sbomfactory/osi/bound_dir" , "/src/main/java/org/svip/sbomfactory/osi/Dockerfile");

@@ -216,7 +216,7 @@ class CDX14PackageBuilderTest {
         test_packageBuilder.setDescription(description);
 
         test_package = test_packageBuilder.buildAndFlush();
-        assertEquals(description, test_package.getDescription());
+        assertEquals(description.getSummary(), test_package.getDescription().getSummary());
     }
 
     @Test

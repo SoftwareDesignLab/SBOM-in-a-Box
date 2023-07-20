@@ -529,13 +529,13 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
         this.name = null;
         this.licenses = null;
         this.copyright = null;
-        this.hashes.clear();
+        this.hashes = new HashMap<>();
         this.supplier = null;
         this.version = null;
         this.description = null;
-        this.cpes.clear();
-        this.purls.clear();
-        this.externalReferences.clear();
+        this.cpes = new HashSet<>();
+        this.purls = new HashSet<>();
+        this.externalReferences = new HashSet<>();
         this.downloadLocation = null;
         this.fileName = null;
         this.filesAnalyzed = null;
@@ -549,7 +549,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
         this.publisher = null;
         this.scope = null;
         this.group = null;
-        this.properties.clear();
+        this.properties = new HashMap<>();
         this.fileNotice = null;
         this.comment = null;
         this.attributionText = null;
