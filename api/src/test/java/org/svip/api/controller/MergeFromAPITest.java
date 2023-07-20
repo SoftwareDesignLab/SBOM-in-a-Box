@@ -62,7 +62,9 @@ public class MergeFromAPITest extends APITest {
 //                if (schema1 != schema2 || format1 != format2)
 //                    continue;
 
-                if (schema1 == schema2 || format1 == format2) continue; // faster debugging // todo remove
+                if (schema1 == schema2
+                     //   || format1 == format2 // todo work on cross schema THEN cross format
+                ) continue; // faster debugging // todo remove
 
                 // to prevent testing different combinations of the same two SBOMs
                 boolean ignoreTest = false;
