@@ -15,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 /**
  * Tests for the OSI class
  */
@@ -38,7 +40,7 @@ public class OSITest {
     public void generateSBOMsEmptyTest() throws IOException {
         OSI osi = new OSI();
         osi.addSourceDirectory(new File(OSI_PATH + "sampleProjectEmpty"));
-        assert osi.generateSBOMs() == 1;
+        assertEquals(0, osi.generateSBOMs().size());
     }
 
     /**
@@ -48,7 +50,7 @@ public class OSITest {
     public void generateSBOMsTest() throws IOException {
         OSI osi = new OSI();
         osi.addSourceDirectory(new File(OSI_PATH + "sampleProject"));
-        assert osi.generateSBOMs() == 0;
+        assertEquals(2, osi.generateSBOMs().size());
     }
 
 }

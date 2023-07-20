@@ -13,7 +13,10 @@ import org.apache.commons.io.FileUtils;
 import org.svip.sbomgeneration.osi.exceptions.DockerNotAvailableException;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * file name: OSI.java
@@ -24,7 +27,7 @@ import java.time.Duration;
  * @author Ian Dunn
  **/
 public class OSI {
-
+    private static final String OSI_CONTAINER_NAME = "svip-osi";
     private static final String BOUND_DIR = "/src/main/java/org/svip/sbomgeneration/osi/bound_dir";
 
     private final OSIClient osiClient;
@@ -53,7 +56,7 @@ public class OSI {
         }
 
         // Start new thread to build the docker image
-        this.osiClient = new OSIClient();
+        this.osiClient = new OSIClient(OSI_CONTAINER_NAME);
     }
 
     ///
@@ -124,13 +127,25 @@ public class OSI {
      *
      * @return success code
      */
-    public int generateSBOMs() throws IOException {
+    public Map<String, String> generateSBOMs() throws IOException {
         int code = osiClient.runContainer();
+
         cleanBoundDirectory("code");
-        return code;
+
+        Map<String, String> sboms = new HashMap<>();
+
+        File sbomDir = new File(System.getProperty("user.dir") + BOUND_DIR + "/sboms");
+        // If container failed or files are null, return empty map.
+        if (code == 1 || !sbomDir.exists() || sbomDir.listFiles() == null) return sboms;
+
+        for (File file : sbomDir.listFiles())
+            if (!file.getName().equalsIgnoreCase(".gitignore"))
+                sboms.put(file.getName(), Files.readString(file.toPath()));
+
+        return sboms;
     }
 
-    public void cleanBoundDirectory(String directoryName) throws IOException {
+    protected void cleanBoundDirectory(String directoryName) throws IOException {
         String path = System.getProperty("user.dir") + BOUND_DIR + "/" + directoryName;
         File dir = new File(path);
 
@@ -146,9 +161,7 @@ public class OSI {
      * OSI Client to interact with Docker
      */
     private static class OSIClient {
-        private final String OSI_CONTAINER_NAME = "svip-osi";
-
-        private String osiContainerId;
+        private final String osiContainerId;
 
         // Docker Components
         private final DockerClient dockerClient;
@@ -156,7 +169,7 @@ public class OSI {
         /**
          * Inits default Docker Client Object to Use
          */
-        public OSIClient() {
+        public OSIClient(String osiContainerName) {
             // Check if docker is installed and running
             if (dockerCheck() != 0) {
                 System.err.println("Docker is not running or not installed");
@@ -176,7 +189,9 @@ public class OSI {
                     .build();
             this.dockerClient = DockerClientImpl.getInstance(config, httpClient);
 
-            this.osiContainerId = getOSIContainerId(OSI_CONTAINER_NAME);
+            this.osiContainerId = getOSIContainerId(osiContainerName);
+            if (this.osiContainerId == null) throw new DockerNotAvailableException(
+                    "OSI Container not found. Try running \"docker compose up\" to build the image and deploy the container.");
         }
 
         public String getOSIContainerId(String containerName) {
