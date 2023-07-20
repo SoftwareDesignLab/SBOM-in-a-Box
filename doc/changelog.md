@@ -48,6 +48,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - `Merger.java`abstract class and overall architecture
 
+- Updated `API.md` documentation with the updated endpoints
+
 ## [v5.1.4-alpha] - (7/19/2023)
 
 ### Added
