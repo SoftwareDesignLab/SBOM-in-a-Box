@@ -443,14 +443,13 @@ public class SVIPApiController {
         Serializer s;
         String contents;
         try{
-            s = SerializerFactory.createSerializer(SerializerFactory.Schema.SPDX23, SerializerFactory.Format.TAGVALUE, // todo is this default?
-                    true);
+            s = SerializerFactory.createSerializer(SerializerFactory.Schema.SVIP, SerializerFactory.Format.JSON,true);
             SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
-            builder.setSpecVersion("2.3");
-            Converter.buildSBOM(builder, merged, SerializerFactory.Schema.SPDX23, null);
+            builder.setSpecVersion("1.0-a");
+            Converter.buildSBOM(builder, merged, SerializerFactory.Schema.SVIP, null);
             contents = s.writeToString(builder.Build());
         } catch (IllegalArgumentException | JsonProcessingException e) {
-            String error = "Error serializing merged SBOM: " + Arrays.toString(e.getStackTrace());
+            String error = "Error serializing merged SBOM: " + e.getMessage();
             LOGGER.error(urlMsg + " " + error);
             return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
         }

@@ -89,6 +89,8 @@ public class MergeFromAPITest extends APITest {
                 ResponseEntity<String> response = controller.merge(new long[]{id1, id2});
                 String responseBody = response.getBody();
 
+
+
                 assertEquals(HttpStatus.OK, response.getStatusCode());
                 assertNotNull(responseBody);
 

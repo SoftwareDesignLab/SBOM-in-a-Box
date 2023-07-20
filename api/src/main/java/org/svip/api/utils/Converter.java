@@ -128,7 +128,7 @@ public class Converter {
                 if (c == null)
                     continue;
                 buildSVIPComponentObject(c, originalSchema);
-                builder.addSPDX23Component(compBuilder.buildAndFlush());
+                builder.addComponent(compBuilder.buildAndFlush());
             }
 
         if (deserialized.getRelationships() != null)
@@ -165,51 +165,73 @@ public class Converter {
         // schema specific
         if(originalSchema != null)
             switch (originalSchema) {
-                case CDX14 -> {
-
-                    CDX14ComponentObject cdx14ComponentObject = (CDX14ComponentObject) component;
-                    compBuilder.setSupplier(cdx14ComponentObject.getSupplier());
-                    compBuilder.setVersion(cdx14ComponentObject.getVersion());
-                    compBuilder.setDescription(cdx14ComponentObject.getDescription());
-
-                    if (cdx14ComponentObject.getCPEs() != null)
-                        for (String cpe : cdx14ComponentObject.getCPEs())
-                            compBuilder.addCPE(cpe);
-
-                    if (cdx14ComponentObject.getPURLs() != null)
-                        for (String purl : cdx14ComponentObject.getPURLs())
-                            compBuilder.addPURL(purl);
-
-                    if (cdx14ComponentObject.getExternalReferences() != null)
-                        for (ExternalReference ext : cdx14ComponentObject.getExternalReferences())
-                            compBuilder.addExternalReference(ext);
-
-                    compBuilder.setMimeType(cdx14ComponentObject.getMimeType());
-                    compBuilder.setPublisher(cdx14ComponentObject.getPublisher());
-                    compBuilder.setScope(cdx14ComponentObject.getScope());
-                    compBuilder.setGroup(cdx14ComponentObject.getGroup());
-
-                    if (cdx14ComponentObject.getProperties() != null)
-                        for (Map.Entry<String, Set<String>> prop : cdx14ComponentObject.getProperties().entrySet())
-                            for (String value : prop.getValue())
-                                compBuilder.addProperty(prop.getKey(), value);
+                case CDX14 ->
+                    configurefromCDX14Object((CDX14ComponentObject) component);
+                case SPDX23 ->
+                    configureFromSPDX23Object(component);
+            }
+        else
+            // if original schema is unspecified, try both
+            try{
+                configureFromSPDX23Object(component);
+            }
+            catch (ClassCastException | NullPointerException e){
+                try{
+                    configurefromCDX14Object((CDX14ComponentObject) component);
                 }
-                case SPDX23 -> {
-
-                    // is this a package or file object?
-                    if (component instanceof SPDX23PackageObject spdx23PackageObject) {
-                        compBuilder.setComment(spdx23PackageObject.getComment());
-                        compBuilder.setAttributionText(spdx23PackageObject.getAttributionText());
-                    } else if (component instanceof SPDX23FileObject spdx23FileObject) {
-                        compBuilder.setComment(spdx23FileObject.getComment());
-                        compBuilder.setAttributionText(spdx23FileObject.getAttributionText());
-                        compBuilder.setFileNotice(spdx23FileObject.getFileNotice());
-                    }
-
-                }
-
+                catch (ClassCastException | NullPointerException e1){}
             }
 
+    }
+
+    /**
+     * Configure the SVIPComponentBuilder from an SPDX23 Component Object or File Object
+     * @param component SPDX23 object
+     */
+    private static void configureFromSPDX23Object(Component component) {
+        // is this a package or file object?
+        if (component instanceof SPDX23PackageObject spdx23PackageObject) {
+            compBuilder.setComment(spdx23PackageObject.getComment());
+            compBuilder.setAttributionText(spdx23PackageObject.getAttributionText());
+        } else if (component instanceof SPDX23FileObject spdx23FileObject) {
+            compBuilder.setComment(spdx23FileObject.getComment());
+            compBuilder.setAttributionText(spdx23FileObject.getAttributionText());
+            compBuilder.setFileNotice(spdx23FileObject.getFileNotice());
+        }
+        else if(component instanceof CDX14ComponentObject)
+            throw new ClassCastException();
+    }
+
+    /**
+     * Configure the SVIPComponentBuilder from an CDX14 Component Object
+     * @param component CDX14 component object
+     */
+    private static void configurefromCDX14Object(CDX14ComponentObject component) {
+        compBuilder.setSupplier(component.getSupplier());
+        compBuilder.setVersion(component.getVersion());
+        compBuilder.setDescription(component.getDescription());
+
+        if (component.getCPEs() != null)
+            for (String cpe : component.getCPEs())
+                compBuilder.addCPE(cpe);
+
+        if (component.getPURLs() != null)
+            for (String purl : component.getPURLs())
+                compBuilder.addPURL(purl);
+
+        if (component.getExternalReferences() != null)
+            for (ExternalReference ext : component.getExternalReferences())
+                compBuilder.addExternalReference(ext);
+
+        compBuilder.setMimeType(component.getMimeType());
+        compBuilder.setPublisher(component.getPublisher());
+        compBuilder.setScope(component.getScope());
+        compBuilder.setGroup(component.getGroup());
+
+        if (component.getProperties() != null)
+            for (Map.Entry<String, Set<String>> prop : component.getProperties().entrySet())
+                for (String value : prop.getValue())
+                    compBuilder.addProperty(prop.getKey(), value);
     }
 
 }
