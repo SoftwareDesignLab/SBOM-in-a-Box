@@ -43,7 +43,7 @@ public class MergerSPDX extends Merger {
         // Create a new builder for the new SBOM
         SPDX23Builder builder = new SPDX23Builder();
 
-        return mergeToSchema(A, B, componentsA, componentsB, mainSBOM, builder, SPDX23);
+        return mergeToSchema(A, B, componentsA, componentsB, mainSBOM, builder, SPDX23, "");
 
     }
 

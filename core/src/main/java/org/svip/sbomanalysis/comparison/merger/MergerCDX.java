@@ -44,7 +44,7 @@ public class MergerCDX extends Merger {
         // Create a new builder for the new SBOM
         CDX14Builder builder = new CDX14Builder();
 
-        return mergeToSchema(A, B, componentsA, componentsB, mainSBOM, builder, CDX14);
+        return mergeToSchema(A, B, componentsA, componentsB, mainSBOM, builder, CDX14, "");
 
     }
 

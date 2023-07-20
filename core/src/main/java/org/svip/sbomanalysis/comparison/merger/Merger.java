@@ -5,9 +5,12 @@ import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
+import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
@@ -271,17 +274,45 @@ public abstract class Merger {
                     case SPDX23 -> {
 
                         // Cast the generic component from SBOM A back to a SPDX component
-                        SPDX23PackageObject componentA_SPDX = (SPDX23PackageObject) componentA;
-                        SPDX23Package componentB_SPDX = (SPDX23Package) componentB;
+
+                        SPDX23PackageObject componentA_SPDX = null;
+                        SPDX23FileObject componentA_SPDXFile = null;
+                        try{
+                            componentA_SPDX = (SPDX23PackageObject) componentA;
+                        }
+                        catch (ClassCastException e){
+                            componentA_SPDXFile = (SPDX23FileObject) componentA;
+                        }
+
+                        SPDX23PackageObject componentB_SPDX = null;
+                        SPDX23FileObject componentB_SPDXFile = null;
+                        try{
+                            componentB_SPDX = (SPDX23PackageObject) componentB;
+                        }
+                        catch (ClassCastException e){
+                            componentB_SPDXFile = (SPDX23FileObject) componentB;
+                        }
 
                         // If the components are the same by Name and Version, merge then add them to the SBOM
-                        if(componentA_SPDX.getName() == componentB_SPDX.getName() && componentA_SPDX.getVersion() == componentB_SPDX.getVersion()) {
 
-                            mergedComponents.add(mergeComponentToSchema(componentA, componentB, targetSchema));
-                            removeB.add(componentB);
-                            merged = true;
+                        if(componentA_SPDX != null && componentB_SPDX != null) // if both packages then merge if appropriate
+                                if(componentA_SPDX.getName() == componentB_SPDX.getName() &&
+                                        componentA_SPDX.getVersion() == componentB_SPDX.getVersion()) {
 
-                        }
+                                    mergedComponents.add(mergeComponentToSchema(componentA, componentB, targetSchema));
+                                    removeB.add(componentB);
+                                    merged = true;
+
+                                }
+                        else if(componentA_SPDXFile != null && componentB_SPDXFile != null) // if both Files then merge if appropriate
+                                if(componentA_SPDXFile.getName() == componentB_SPDXFile.getName()) {
+
+                                    mergedComponents.add(mergeComponentToSchema(componentA, componentB, targetSchema));
+                                    removeB.add(componentB);
+                                    merged = true;
+
+                                }
+                                // otherwise don't merge
                     }
                     case CDX14 -> {
 
@@ -301,17 +332,25 @@ public abstract class Merger {
                     }
                     default -> { // SVIP
                         // Cast the generic component from SBOM A back to a SPDX component
-                        SPDX23PackageObject componentA_SPDX = (SPDX23PackageObject) componentA;
+                        SPDX23PackageObject componentA_SPDX = null;
+                        SPDX23FileObject componentA_SPDXFile = null;
+                        try{
+                            componentA_SPDX = (SPDX23PackageObject) componentA;
+                        }
+                        catch (ClassCastException e){
+                            componentA_SPDXFile = (SPDX23FileObject) componentA;
+                        }
                         CDX14ComponentObject componentB_CDX = (CDX14ComponentObject) componentB;
 
-                        // If the components are the same by Name and Version, merge then add them to the SBOM
-                        if(componentA_SPDX.getName() == componentB_CDX.getName() && componentA_SPDX.getVersion() == componentB_CDX.getVersion()) {
+                        if(componentA_SPDXFile == null)
+                            // If the components are the same by Name and Version, merge then add them to the SBOM
+                            if(componentA_SPDX.getName() == componentB_CDX.getName() && componentA_SPDX.getVersion() == componentB_CDX.getVersion()) {
 
-                            mergedComponents.add(mergeComponentToSchema(componentA, componentB, targetSchema));
-                            removeB.add(componentB);
-                            merged = true;
+                                mergedComponents.add(mergeComponentToSchema(componentA, componentB, targetSchema));
+                                removeB.add(componentB);
+                                merged = true;
 
-                        }
+                            }
                     }
                 }
 
@@ -334,7 +373,7 @@ public abstract class Merger {
 
 
     protected SBOM mergeToSchema(SBOM A, SBOM B, Set<Component> componentsA, Set<Component> componentsB, SBOM mainSBOM,
-                                 SBOMBuilder builder, SerializerFactory.Schema targetSchema) {
+                                 SBOMBuilder builder, SerializerFactory.Schema targetSchema, String newName) {
 
         /** Assign all top level data for the new SBOM **/
 
@@ -342,7 +381,10 @@ public abstract class Merger {
         builder.setFormat(mainSBOM.getFormat());
 
         // Name
-        builder.setName(mainSBOM.getName());
+        if(targetSchema == SerializerFactory.Schema.SVIP)
+            builder.setName(newName);
+        else
+            builder.setName(mainSBOM.getName());
 
         // UID (In this case, bom-ref)
         builder.setUID(mainSBOM.getUID());
@@ -376,7 +418,18 @@ public abstract class Merger {
         builder.setDocumentComment(mainSBOM.getDocumentComment());
 
         // Root Component
-        builder.setRootComponent(mainSBOM.getRootComponent());
+        if(targetSchema == SerializerFactory.Schema.SVIP){
+            try{
+                Component rootComponent = B.getRootComponent();
+                SVIPComponentBuilder compBuilder = new SVIPComponentBuilder();
+                buildSVIPComponentObject(rootComponent, compBuilder);
+                builder.setRootComponent(compBuilder.buildAndFlush()); // second sbom is cdx, which has a root component
+            }catch (ClassCastException e){
+                builder.setRootComponent(mainSBOM.getRootComponent());
+            }
+        }
+        else
+            builder.setRootComponent(mainSBOM.getRootComponent());
 
         // Components
         Set<Component> mergedComponents = mergeComponentsToSchema(componentsA, componentsB, targetSchema);
@@ -435,21 +488,7 @@ public abstract class Merger {
             );
         }
 
-        Set<String> declaredA = componentA.getLicenses().getDeclared();
-
-        if(!declaredA.isEmpty() && !declaredA.equals(null)) {
-            declaredA.stream().forEach(
-                    x -> mergedLicenses.addDeclaredLicense(x)
-            );
-        }
-
-        Set<String> fileA = componentA.getLicenses().getInfoFromFiles();
-
-        if(!fileA.isEmpty() && !fileA.equals(null)) {
-            fileA.stream().forEach(
-                    x -> mergedLicenses.addLicenseInfoFromFile(x)
-            );
-        }
+        addLicenses(componentA, mergedLicenses);
 
         Set<String> concludedB = componentB.getLicenses().getConcluded();
 
@@ -459,21 +498,7 @@ public abstract class Merger {
             );
         }
 
-        Set<String> declaredB = componentB.getLicenses().getDeclared();
-
-        if(!declaredB.isEmpty() && !declaredB.equals(null)) {
-            declaredB.stream().forEach(
-                    x -> mergedLicenses.addDeclaredLicense(x)
-            );
-        }
-
-        Set<String> fileB = componentB.getLicenses().getInfoFromFiles();
-
-        if(!fileB.isEmpty() && !fileB.equals(null)) {
-            fileB.stream().forEach(
-                    x -> mergedLicenses.addLicenseInfoFromFile(x)
-            );
-        }
+        addLicenses(componentB, mergedLicenses);
 
         compBuilder.setLicenses(mergedLicenses);
 
@@ -658,82 +683,116 @@ public abstract class Merger {
             }
             default -> { // SVIP
 
-                SPDX23PackageObject spdx23PackageObjectA = (SPDX23PackageObject) componentA;
-                CDX14ComponentObject componentB_CDX = (CDX14ComponentObject) componentB;
+                SPDX23PackageObject spdx23PackageObjectA = null;
+                SPDX23FileObject spdx23FileObject = null;
 
+                try{
+                    spdx23PackageObjectA = (SPDX23PackageObject) componentA;
+                }
+                catch (ClassCastException e){
+                    spdx23FileObject = (SPDX23FileObject) componentA; // leaving this in case at some point SPDX
+                                                                     // file objects can merge with CDXComponentObjects
+                }
+                CDX14ComponentObject componentB_CDX = (CDX14ComponentObject) componentB;
 
                 /*
                     SPDX component A
                  */
 
-                // Comment
                 String comment = "";
-                if(spdx23PackageObjectA.getComment()!=null && !spdx23PackageObjectA.getComment().isEmpty())
-                    comment += "1) " + spdx23PackageObjectA.getComment();
+                if(spdx23FileObject == null){
+                    // Download Location
+                    if(spdx23PackageObjectA.getDownloadLocation() != null && !spdx23PackageObjectA.getDownloadLocation().isEmpty())
+                        compBuilder.setDownloadLocation(spdx23PackageObjectA.getDownloadLocation());
 
-                compBuilder.setComment(comment);
+                    // FileName
+                    if(spdx23PackageObjectA.getFileName() != null && !spdx23PackageObjectA.getFileName().isEmpty())
+                        compBuilder.setFileName(spdx23PackageObjectA.getFileName());
 
-                // Attribution Text
-                if(spdx23PackageObjectA.getAttributionText() != null && !spdx23PackageObjectA.getAttributionText().isEmpty())
-                    compBuilder.setAttributionText(spdx23PackageObjectA.getAttributionText());
+                    // Files Analyzed
+                    // TODO: determine if a FilesAnalzyed mistmatch should return true or false
+                    if(spdx23PackageObjectA.getFilesAnalyzed() && spdx23PackageObjectA.getFilesAnalyzed())
+                        compBuilder.setFilesAnalyzed(true);
+                    else compBuilder.setFilesAnalyzed(false);
 
-                // Download Location
-                if(spdx23PackageObjectA.getDownloadLocation() != null && !spdx23PackageObjectA.getDownloadLocation().isEmpty())
-                    compBuilder.setDownloadLocation(spdx23PackageObjectA.getDownloadLocation());
+                    // Verification Code
+                    String verificationCode = "";
+                    if(spdx23PackageObjectA.getVerificationCode()!=null && !spdx23PackageObjectA.getVerificationCode().isEmpty())
+                        verificationCode += "1) " + spdx23PackageObjectA.getVerificationCode();
+                    compBuilder.setVerificationCode(verificationCode);
 
-                // FileName
-                if(spdx23PackageObjectA.getFileName() != null && !spdx23PackageObjectA.getFileName().isEmpty())
-                    compBuilder.setFileName(spdx23PackageObjectA.getFileName());
+                    // Homepage
+                    String homepage = "";
+                    if(spdx23PackageObjectA.getHomePage()!=null && !spdx23PackageObjectA.getHomePage().isEmpty())
+                        homepage += "1) " + spdx23PackageObjectA.getHomePage();
+                    compBuilder.setHomePage(homepage);
 
-                // Files Analyzed
-                // TODO: determine if a FilesAnalzyed mistmatch should return true or false
-                if(spdx23PackageObjectA.getFilesAnalyzed() == true && spdx23PackageObjectA.getFilesAnalyzed() == true)
-                    compBuilder.setFilesAnalyzed(true);
-                else compBuilder.setFilesAnalyzed(false);
+                    // Source Info
+                    String sourceInfo = "";
+                    if(spdx23PackageObjectA.getSourceInfo()!=null && !spdx23PackageObjectA.getSourceInfo().isEmpty())
+                        sourceInfo += "1) " + spdx23PackageObjectA.getSourceInfo();
 
-                // Verification Code
-                String verificationCode = "";
-                if(spdx23PackageObjectA.getVerificationCode()!=null && !spdx23PackageObjectA.getVerificationCode().isEmpty())
-                    verificationCode += "1) " + spdx23PackageObjectA.getVerificationCode();
-                compBuilder.setVerificationCode(verificationCode);
+                    compBuilder.setSourceInfo(sourceInfo);
 
-                // Homepage
-                String homepage = "";
-                if(spdx23PackageObjectA.getHomePage()!=null && !spdx23PackageObjectA.getHomePage().isEmpty())
-                    homepage += "1) " + spdx23PackageObjectA.getHomePage();
-                compBuilder.setHomePage(homepage);
+                    // Release Date
+                    if(spdx23PackageObjectA.getReleaseDate() != null && !spdx23PackageObjectA.getReleaseDate().isEmpty())
+                        compBuilder.setReleaseDate(spdx23PackageObjectA.getReleaseDate());
 
-                // Source Info
-                String sourceInfo = "";
-                if(spdx23PackageObjectA.getSourceInfo()!=null && !spdx23PackageObjectA.getSourceInfo().isEmpty())
-                    sourceInfo += "1) " + spdx23PackageObjectA.getSourceInfo();
+                    // Built Date
+                    if(spdx23PackageObjectA.getBuiltDate() != null && !spdx23PackageObjectA.getBuiltDate().isEmpty())
+                        compBuilder.setBuildDate(spdx23PackageObjectA.getBuiltDate());
 
-                compBuilder.setSourceInfo(sourceInfo);
+                    // Valid Until Date
+                    if(spdx23PackageObjectA.getValidUntilDate() != null && !spdx23PackageObjectA.getValidUntilDate().isEmpty())
+                        compBuilder.setValidUntilDate(spdx23PackageObjectA.getValidUntilDate());
 
-                // Release Date
-                if(spdx23PackageObjectA.getReleaseDate() != null && !spdx23PackageObjectA.getReleaseDate().isEmpty())
-                    compBuilder.setReleaseDate(spdx23PackageObjectA.getReleaseDate());
+                    // Supplier
+                    compBuilder.setSupplier(spdx23PackageObjectA.getSupplier());
 
-                // Built Date
-                if(spdx23PackageObjectA.getBuiltDate() != null && !spdx23PackageObjectA.getBuiltDate().isEmpty())
-                    compBuilder.setBuildDate(spdx23PackageObjectA.getBuiltDate());
+                    // Version // default to comp A version
+                    if(spdx23PackageObjectA.getVersion() != null && !spdx23PackageObjectA.getVersion().isEmpty())
+                        compBuilder.setVersion(spdx23PackageObjectA.getVersion());
 
-                // Valid Until Date
-                if(spdx23PackageObjectA.getValidUntilDate() != null && !spdx23PackageObjectA.getValidUntilDate().isEmpty())
-                    compBuilder.setValidUntilDate(spdx23PackageObjectA.getValidUntilDate());
+                    // CPEs
+                    for(String cpeA : spdx23PackageObjectA.getCPEs()) { compBuilder.addCPE(cpeA); }
 
-                // Supplier
-                compBuilder.setSupplier(spdx23PackageObjectA.getSupplier());
+                    // PURLs
+                    for(String purlA : spdx23PackageObjectA.getPURLs()) { compBuilder.addPURL(purlA); }
 
-                // Version // default to comp A version
-                if(spdx23PackageObjectA.getVersion() != null && !spdx23PackageObjectA.getVersion().isEmpty())
-                    compBuilder.setVersion(spdx23PackageObjectA.getVersion());
+                    // Comment
+                    if(spdx23PackageObjectA.getComment()!=null && !spdx23PackageObjectA.getComment().isEmpty())
+                        comment += "1) " + spdx23PackageObjectA.getComment();
 
-                // CPEs
-                for(String cpeA : spdx23PackageObjectA.getCPEs()) { compBuilder.addCPE(cpeA); }
+                    compBuilder.setComment(comment);
 
-                // PURLs
-                for(String purlA : spdx23PackageObjectA.getPURLs()) { compBuilder.addPURL(purlA); }
+                    // Attribution Text
+                    if(spdx23PackageObjectA.getAttributionText() != null && !spdx23PackageObjectA.getAttributionText().isEmpty())
+                        compBuilder.setAttributionText(spdx23PackageObjectA.getAttributionText());
+
+                                    /*
+                    Both (NOT FILE OBJECT)
+                 */
+
+                    // External References
+                    mergeExternalReferences(
+                            spdx23PackageObjectA.getExternalReferences(), componentB_CDX.getExternalReferences()
+                    ).forEach(x -> compBuilder.addExternalReference(x));
+
+                }
+                else{
+
+                    // Comment
+                    if(spdx23FileObject.getComment()!=null && !spdx23FileObject.getComment().isEmpty())
+                        comment += "1) " + spdx23FileObject.getComment();
+
+                    compBuilder.setComment(comment);
+
+                    // Attribution Text
+                    if(spdx23FileObject.getAttributionText() != null && !spdx23FileObject.getAttributionText().isEmpty())
+                        compBuilder.setAttributionText(spdx23FileObject.getAttributionText());
+
+                }
+
 
                 /*
                     CDX specific
@@ -765,14 +824,6 @@ public abstract class Merger {
                         x -> componentB_CDX.getProperties().get(x).stream().forEach(y -> compBuilder.addProperty(x, y))
                 );
 
-                /*
-                    Both
-                 */
-
-                // External References
-                mergeExternalReferences(
-                        spdx23PackageObjectA.getExternalReferences(), componentB_CDX.getExternalReferences()
-                ).forEach(x -> compBuilder.addExternalReference(x));
 
             }
         }
@@ -780,6 +831,78 @@ public abstract class Merger {
         // Return the newly merged component
         return compBuilder.build();
 
+    }
+
+    private void addLicenses(Component componentB, LicenseCollection mergedLicenses) {
+        Set<String> declaredB = componentB.getLicenses().getDeclared();
+
+        if(!declaredB.isEmpty() && !declaredB.equals(null)) {
+            declaredB.stream().forEach(
+                    x -> mergedLicenses.addDeclaredLicense(x)
+            );
+        }
+
+        Set<String> fileB = componentB.getLicenses().getInfoFromFiles();
+
+        if(!fileB.isEmpty() && !fileB.equals(null)) {
+            fileB.stream().forEach(
+                    x -> mergedLicenses.addLicenseInfoFromFile(x)
+            );
+        }
+    }
+
+    /**
+     * Build an SVIP Component object
+     *
+     * @param component      original uncasted component
+     */
+    public static void buildSVIPComponentObject(Component component, SVIPComponentBuilder compBuilder) {
+        if (component == null)
+            return;
+        compBuilder.setType(component.getType());
+        compBuilder.setUID(component.getUID());
+        compBuilder.setAuthor(component.getAuthor());
+        compBuilder.setName(component.getName());
+        compBuilder.setLicenses(component.getLicenses());
+        compBuilder.setCopyright(component.getCopyright());
+
+        if (component.getHashes() != null)
+            for (Map.Entry<String, String> entry : component.getHashes().entrySet())
+                compBuilder.addHash(entry.getKey(), entry.getValue());
+        configurefromCDX14Object((CDX14ComponentObject) component, compBuilder);
+
+    }
+
+    /**
+     * Configure the SVIPComponentBuilder from an CDX14 Component Object
+     * @param component CDX14 component object
+     */
+    private static void configurefromCDX14Object(CDX14ComponentObject component, SVIPComponentBuilder compBuilder) {
+        compBuilder.setSupplier(component.getSupplier());
+        compBuilder.setVersion(component.getVersion());
+        compBuilder.setDescription(component.getDescription());
+
+        if (component.getCPEs() != null)
+            for (String cpe : component.getCPEs())
+                compBuilder.addCPE(cpe);
+
+        if (component.getPURLs() != null)
+            for (String purl : component.getPURLs())
+                compBuilder.addPURL(purl);
+
+        if (component.getExternalReferences() != null)
+            for (ExternalReference ext : component.getExternalReferences())
+                compBuilder.addExternalReference(ext);
+
+        compBuilder.setMimeType(component.getMimeType());
+        compBuilder.setPublisher(component.getPublisher());
+        compBuilder.setScope(component.getScope());
+        compBuilder.setGroup(component.getGroup());
+
+        if (component.getProperties() != null)
+            for (Map.Entry<String, Set<String>> prop : component.getProperties().entrySet())
+                for (String value : prop.getValue())
+                    compBuilder.addProperty(prop.getKey(), value);
     }
 
 }

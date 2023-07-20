@@ -41,8 +41,6 @@ public class MergeFromAPITest extends APITest {
 
             SBOMFile sbom1 = testMap.get(id1);
             SerializerFactory.Schema schema1 = Utils.assumeSchemaFromOriginal(sbom1.getContents());
-            SerializerFactory.Format format1 = SerializerFactory.Format.
-                    valueOf(Utils.assumeFormatFromDocument(sbom1));
 
             for (Long id2 : testMap.keySet()) {
 
@@ -51,26 +49,9 @@ public class MergeFromAPITest extends APITest {
 
                 SBOMFile sbom2 = testMap.get(id2);
                 SerializerFactory.Schema schema2 = Utils.assumeSchemaFromOriginal(sbom2.getContents());
-                SerializerFactory.Format format2 = SerializerFactory.Format.
-                        valueOf(Utils.assumeFormatFromDocument(sbom2));
 
                 if (sbom1.getFileName().endsWith(".xml") || sbom2.getFileName().endsWith(".xml"))
                     continue;
-
-                boolean debugging = false;
-
-//                if(!debugging)          // test if old tests still work
-
-                    // to prevent:
-                    // MERGE /svip/merge?id= Error merging SBOMs: Cross format merging not supported for SPDX and CycloneDX.
-                    if (schema1 != schema2 || format1 != format2)
-                        continue;
-
-//                else
-//
-//                    if (schema1 == schema2
-//                         //   || format1 == format2 // todo work on cross schema THEN cross format
-//                    ) continue; // faster debugging // todo remove
 
                 // to prevent testing different combinations of the same two SBOMs
                 boolean ignoreTest = false;
@@ -86,7 +67,9 @@ public class MergeFromAPITest extends APITest {
                     }
 
                 }
-                if (ignoreTest)
+                if (ignoreTest
+                || Utils.assumeSchemaFromOriginal(sbom1.getContents()) == Utils.assumeSchemaFromOriginal(sbom2.getContents())
+                )
                     continue;
 
                 HashMap<Long, Long> thisPair = new HashMap<>();
