@@ -62,6 +62,8 @@ public class MergeFromAPITest extends APITest {
 //                if (schema1 != schema2 || format1 != format2)
 //                    continue;
 
+                if (schema1 == schema2 || format1 == format2) continue; // faster debugging // todo remove
+
                 // to prevent testing different combinations of the same two SBOMs
                 boolean ignoreTest = false;
                 for (HashMap<Long, Long> pair : testedPairs
@@ -83,9 +85,9 @@ public class MergeFromAPITest extends APITest {
                 thisPair.put(id1, id2);
                 testedPairs.add(thisPair);
 
-                LOGGER.info("MERGING " + schema1 + " SBOM"+ sbom1.getId() + "..." +
+                LOGGER.info("MERGING " + schema1 + " SBOM "+ sbom1.getId() + "..." +
                         sbom1.getFileName().substring(sbom1.getFileName().length()*2 / 3) +
-                        " and " + schema2 + " SBOM"+ sbom2.getId() + "..." +
+                        " and " + schema2 + " SBOM "+ sbom2.getId() + "..." +
                         sbom2.getFileName().substring(sbom2.getFileName().length() *2 / 3));
 
                 ResponseEntity<String> response = controller.merge(new long[]{id1, id2});
