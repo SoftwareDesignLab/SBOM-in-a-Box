@@ -14,8 +14,6 @@
   - [Quick Start](#quick-start-1)
   - [Supported Tools](#supported-tools)
   - [Building the Image](#building-the-image)
-  - [Running the Container](#running-the-container)
-  - [Result](#result)
   
 ---
 
@@ -106,10 +104,18 @@ SPDX:
 > project directory and generate CycloneDX and SPDX SBOMs into a target out directory.
 
 ## Quick Start
-> Make sure the Docker Daemon / Docker Desktop is running and running commands inside the directory with the Dockerfile
-1. `docker build -t svip-osi .`
-2. `docker run --rm --mount type=bind,source={project_path},target=/bound_dir/code --mount type=bind,source="$(pwd)"/bound_dir/sboms,target=/bound_dir/sboms -it svip-osi`
-   - `{project_path}`: path to target project
+> Make sure the Docker Daemon / Docker Desktop is running and the current working directory is the root of the 
+> repository.
+
+Place the source files of the project into `core/src/main/java/org/svip/sbomgeneration/osi/bound_dir/code`. 
+
+Then run the following command to build the image and run the container to generate SBOMs:
+```shell
+$ docker compose up osi
+```
+
+### Result
+The `/sboms` directory (also in `/bound_dir` will now contain generated SBOMs from the source project in `/code`.
 
 ## Supported Tools
 > OSI uses 8 open source tools to support 13 different languages. Please read the tool documentation to see if it fits 
@@ -129,27 +135,28 @@ SPDX:
 
 
 ## Building the Image
-To build the image navigate to the Dockerfile execute the following:
+To manually build the image, execute the following from the root directory of the repository:
 
 ```shell
-$ docker build -t svip-osi .
+$ docker compose up osi --build
 ```
-- `build`: Instructs docker to build a container
-- `-t`: Specifies the name of the container to create
-- `.`: Directory where docker should look for the build instructions (Dockerfile)
-The first build will take up to 6 minutes to complete, but subsequent builds will be significantly faster
+The first build will take up to 6 minutes to complete, but subsequent builds will be significantly faster. If using 
+a cached image, the first build time should be much faster.
 
-## Running the Container
-To run the container, first place your code in the code/ directory. Then execute the container and bind the folder:
-
+To save the image for subsequent uses, ensure the image is built and then execute the following from the root 
+directory of the repository:
 ```shell
-$ docker run --rm --mount type=bind,source={project_path},target=/bound_dir/code --mount type=bind,source="$(pwd)"/bound_dir/sboms,target=/bound_dir/sboms -it svip-osi
+$ docker save -o osi.tar ubuntu:latest | gzip > osi.tar.gz
 ```
-- `run`: Tells docker to run the given container
-- `--rm`: After running container cleanup and delete it from cache
-- `--mount ...`: Mount a folder on the host `$(pwd)/bound_dir` to a folder on the container `/bound_dir`
-- `-it`: Run in interactive mode (allows ^C and user input)
-- `svip-osi`:  Name of container to run
 
-## Result
-The `sboms/` directory will now contain generated SBOMs
+To load a saved image into Docker, run the following command:
+```shell
+docker load --input osi.tar.gz
+```
+
+> SVIP comes with a prebuilt OSI image to speed up boot time, but if any modifications are made to:
+> 1. The inline Dockerfile in `docker-compose.yml`,
+> 2. The setup shell script in `core/src/main/java/org/svip/sbomgeneration/osi/scripts/setup.sh`, or
+> 3. The OSI tool controller in `core/src/main/java/org/svip/sbomgeneration/osi/scripts/ContainerController.py`,
+> 
+> Then the image will need to be rebuilt.
