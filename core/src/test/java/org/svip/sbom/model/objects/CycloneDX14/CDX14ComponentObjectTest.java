@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14PackageBuilder;
 import org.svip.sbom.factory.objects.CycloneDX14.CDX14PackageBuilderFactory;
+import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
@@ -31,8 +32,8 @@ public class CDX14ComponentObjectTest {
         licenseCollection.addDeclaredLicense("Control License 2");
         Organization organization = new Organization("Control Inc.", "www.control.io");
         Description description = new Description("This is the control component.");
-        ExternalReference externalReferenceOne = new ExternalReference("www.refOne.com", "controlRef");
-        ExternalReference externalReferenceTwo = new ExternalReference("www.ref2.com", "controlRef");
+        ExternalReference externalReferenceOne = new ExternalReference("url","www.refOne.com", "controlRef");
+        ExternalReference externalReferenceTwo = new ExternalReference("url","www.ref2.com", "controlRef");
 
         packageBuilder.setType("CDX");
         packageBuilder.setUID("123456789");
@@ -67,8 +68,8 @@ public class CDX14ComponentObjectTest {
         licenseCollection.addDeclaredLicense("Control License 2");
         Organization organization = new Organization("Control Inc.", "www.control.io");
         Description description = new Description("This is the control component.");
-        ExternalReference externalReferenceOne = new ExternalReference("www.refOne.com", "controlRef");
-        ExternalReference externalReferenceTwo = new ExternalReference("www.ref2.com", "controlRef");
+        ExternalReference externalReferenceOne = new ExternalReference("url","www.refOne.com", "controlRef");
+        ExternalReference externalReferenceTwo = new ExternalReference("url","www.ref2.com", "controlRef");
 
         packageBuilder.setType("CDX");
         packageBuilder.setUID("123456789");
@@ -94,7 +95,8 @@ public class CDX14ComponentObjectTest {
         packageBuilder.addProperty("Control Property 2", "2");
         equalPackage = packageBuilder.buildAndFlush();
 
-        assertTrue(controlPackage.compare(equalPackage).isEmpty());
+        Component component = (Component) equalPackage;
+        assertTrue(controlPackage.compare(component).isEmpty());
     }
 
     @Test
@@ -105,8 +107,8 @@ public class CDX14ComponentObjectTest {
         licenseCollection.addDeclaredLicense("License 2");
         Organization organization = new Organization("Inc.", "www.c.io");
         Description description = new Description("This is the component.");
-        ExternalReference externalReferenceOne = new ExternalReference("www.One.com", "controlRef");
-        ExternalReference externalReferenceTwo = new ExternalReference("www.2.com", "controlRef");
+        ExternalReference externalReferenceOne = new ExternalReference("url","www.One.com", "controlRef");
+        ExternalReference externalReferenceTwo = new ExternalReference("url","www.2.com", "controlRef");
 
         packageBuilder.setType("SPDX");
         packageBuilder.setUID("0");
