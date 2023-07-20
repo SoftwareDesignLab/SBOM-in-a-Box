@@ -62,8 +62,6 @@ public class DiffReport {
                 // If target doesn't have component which shares name with other component, skip
                 if(target.getComponents().stream().noneMatch(o->o.getName() != null && o.getName().equals(otherComponent.getName())))
                     this.missingComponents.add(otherComponent.getName());
-                    continue;
-                }
             }
         }
     }
