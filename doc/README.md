@@ -112,9 +112,6 @@ Place the source files of the project into `core/src/main/java/org/svip/sbomgene
 
 Then run the following command to build the image and run the container to generate SBOMs:
 ```shell
-# Import the prebuilt image to save build time (See Building the Image for more details)
-# Note that this is only required for first-time setup. Once an image has been loaded, it will persist until removal.
-$ docker load --input core/src/main/java/org/svip/sbomgeneration/osi/images/osi.tar.gz
 # Deploy the container
 $ docker compose up osi
 ```
@@ -149,10 +146,10 @@ The first build will take up to 6 minutes to complete, but subsequent builds wil
 a saved image, the first build time should be much faster.
 
 ### Saved Images
+> **CURRENTLY NOT WORKING**
 
-SVIP comes with a prebuilt OSI image archive to speed up deploy time. The default saved image can be loaded to
-drastically decrease the time cost of the first build. This uses [Git Large File Storage (LFS)](https://git-lfs.com/)
-to store the compressed archive.
+A saved image can be loaded to drastically decrease the time cost of the first build. This uses 
+[Git Large File Storage (LFS)](https://git-lfs.com/) to store the compressed archive.
 
 To save the image for subsequent uses, ensure the image is built and then execute the following from the root 
 directory of the repository:

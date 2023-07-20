@@ -11,9 +11,6 @@ First ensure Docker is installed and running and then deploy using the docker-co
 ```shell
 # Ensure Docker is installed and running.
 $ docker ps
-# Import the prebuilt image to save build time
-# Note that this is only required for first-time setup. Once an image has been loaded, it will persist until removal.
-$ docker load --input core/src/main/java/org/svip/sbomgeneration/osi/images/osi.tar.gz
 # Build all other images and deploy containers.
 $ docker compose up
 ```
