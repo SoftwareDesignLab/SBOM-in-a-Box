@@ -14,6 +14,8 @@ import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.utils.Converter;
 import org.svip.api.utils.Utils;
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbomgeneration.parsers.ParserController;
 import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
@@ -364,9 +366,9 @@ public class SVIPApiController {
         }
 
         // Determine what QA Pipeline to use based on
-        if (d.getClass().equals(CDX14JSONDeserializer.class)) {
+        if (sbom instanceof CDX14SBOM) {
             qaPipeline = new CDX14Pipeline();
-        } else if (d.getClass().equals(SPDX23TagValueDeserializer.class) || d.getClass().equals(SPDX23JSONDeserializer.class)) {
+        } else if (sbom instanceof SPDX23SBOM) {
             qaPipeline = new SPDX23Pipeline();
         } else {
             return new ResponseEntity<>("Deserialization Error", HttpStatus.INTERNAL_SERVER_ERROR);
