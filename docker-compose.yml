@@ -56,7 +56,7 @@ services:
       mysql:
         condition: service_healthy # Only start once the health check has passed
       osi:
-        condition: service_healthy # Only start once the OSI container has been started
+        condition: service_started # Only start once the OSI container has been started
     build: .    # Build from Dockerfile located in root directory
     restart: on-failure
     ports:
