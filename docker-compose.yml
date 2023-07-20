@@ -63,6 +63,7 @@ services:
       - ${SPRING_LOCAL_PORT}:${SPRING_DOCKER_PORT}
     volumes:
       - .m2:/root/.m2
+      - /var/run/docker.sock:/var/run/docker.sock
     stdin_open: true
     tty: true
     environment: # Define environment variables for spring-boot application.properties
