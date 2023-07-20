@@ -173,7 +173,6 @@ public class SVIPApiController {
     @GetMapping("/sboms")
     public ResponseEntity<Long[]> viewFiles() {
         // Get file names
-//        String[] fileNames = files.keySet().toArray(new String[0]);
         List<SBOMFile> sbomFiles = sbomFileRepository.findAll();
 
         // Log

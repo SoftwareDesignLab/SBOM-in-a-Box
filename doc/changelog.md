@@ -3,6 +3,33 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v5.2.0-alpha] - (7/20/2023)
+
+### Changed
+- Updated endpoints to a REST-ful standard
+  - **Upload SBOM**
+    - prev: [get] http://localhost:8080/svip/upload
+    - new: [post] http://localhost:8080/svip/sboms
+
+  - **Get SBOM content by id**
+      - prev: [get] http://localhost:8080/svip/view
+      - new: [get]  http://localhost:8080/svip/sboms/content
+
+  - **Get SBOMs**
+    - prev: [get] http://localhost:8080/svip/viewFiles
+    - new:[get] http://localhost:8080/svip/sboms
+    > note: /getSBOM would instead use the /sboms endpoint and instead an id parameter should be used.
+    > 
+    > EX: [get] http://localhost:8080/svip/sboms?id={id}
+
+  - **Delete SBOM by id**
+    - prev: [delete] http://localhost:8080/svip/delete
+    - new: [delete] http://localhost:8080/svip/sboms?id={id}
+
+  - **Merge SBOMs**
+    - prev: [post] http://localhost:8080/svip/merge
+    - new: [post]  http://localhost:8080/svip/sboms/merge
+
 ## [v5.1.4-alpha] - (7/19/2023)
 
 ### Changed
