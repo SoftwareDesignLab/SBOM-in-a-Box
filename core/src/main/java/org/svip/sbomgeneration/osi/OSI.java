@@ -11,12 +11,15 @@ import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
 import org.apache.commons.io.FileUtils;
 import org.svip.sbomgeneration.osi.exceptions.DockerNotAvailableException;
+import org.svip.utils.Debug;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * file name: OSI.java
@@ -70,6 +73,12 @@ public class OSI {
      */
     protected static int dockerCheck() {
         try {
+            // If backend is running inside container, docker is already installed and available
+            // https://stackoverflow.com/questions/52580008/how-does-java-application-know-it-is-running-within-a-docker-container
+            try (Stream<String> stream = Files.lines(Paths.get("/proc/1/cgroup"))) {
+                if (stream.anyMatch(line -> line.contains("/docker"))) return 0;
+            }
+
             // Check if docker is installed
             Process process = Runtime.getRuntime().exec("docker --version");
             BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -190,8 +199,11 @@ public class OSI {
             this.dockerClient = DockerClientImpl.getInstance(config, httpClient);
 
             this.osiContainerId = getOSIContainerId(osiContainerName);
-            if (this.osiContainerId == null) throw new DockerNotAvailableException(
-                    "OSI Container not found. Try running \"docker compose up\" to build the image and deploy the container.");
+            if (this.osiContainerId == null) {
+                Debug.log(Debug.LOG_TYPE.ERROR, "Unable to find Docker OSI container.");
+                throw new DockerNotAvailableException(
+                        "OSI Container not found. Try running \"docker compose up\" to build the image and deploy the container.");
+            }
         }
 
         public String getOSIContainerId(String containerName) {
