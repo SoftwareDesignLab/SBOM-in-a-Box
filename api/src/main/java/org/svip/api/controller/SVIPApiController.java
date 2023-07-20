@@ -272,7 +272,7 @@ public class SVIPApiController {
     }
 
     /**
-     * USAGE. Send CONVERT request to /convert an existing SBOM on the backend to a desired schema and format
+     * USAGE. Send PUT request to /sboms an existing SBOM on the backend to a desired schema and format
      *
      * @param id of the SBOM
      * @param schema to convert to
@@ -280,8 +280,7 @@ public class SVIPApiController {
      * @param overwrite whether to overwrite original
      * @return converted SBOM
      */
-
-    @GetMapping("/convert")
+    @PutMapping("/sboms")
     public ResponseEntity<String> convert(@RequestParam("id") long id, @RequestParam("schema") String schema,
                                           @RequestParam("format") String format,
                                           @RequestParam("overwrite") Boolean overwrite){
