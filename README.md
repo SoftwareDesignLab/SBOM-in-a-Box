@@ -11,10 +11,15 @@ First ensure Docker is installed and running and then deploy using the docker-co
 ```shell
 # Ensure Docker is installed and running.
 $ docker ps
-# Build images & deploy and link API & MySQL containers.
+# Import the prebuilt image to save build time
+# Note that this is only required for first-time setup. Once an image has been loaded, it will persist until removal.
+$ docker load --input core/src/main/java/org/svip/sbomgeneration/osi/images/osi.tar.gz
+# Build all other images and deploy containers.
 $ docker compose up
 ```
-See the SVIP API section of [doc/API.md](doc/API.md) for detailed usage.
+See the SVIP API section of [doc/API.md](doc/API.md#api) for detailed usage.
+> For additional details on loading a prebuilt image, see the Open Source Integration section of 
+> [doc/README.md](doc/README.md#open-source-integration)
 
 ## Features
 This is a list of all "features", or sub-systems that SVIP contains. See [doc/README.md](doc/README.md) for 
