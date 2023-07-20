@@ -7,8 +7,9 @@
 - [**SVIP API**](#svip-api)
     - [Deployment](#deployment)
     - [Development](#development)
-    - [Usage](#usage-1)
-      - [MySQL Database](#mysql-database)
+    - [Endpoints](#endpoints)
+      - [Upload SBOM](#upload-sboms)
+    - [MySQL Database](#mysql-database)
 
 # System Requirements
 - Java 17
@@ -48,17 +49,47 @@ $ java -jar SVIP_API.jar
   skipping the tests saves 1-2 minutes per build.
 - To edit the MySQL configuration/Docker port mappings, edit the `.env` file in the repository root.
 
-## Usage
-The API is located on `localhost:8080/svip`.
+## Endpoints
+The API is located on `http://localhost:8080/svip`.
 
-Current Endpoints (`/svip/`):
-- `/upload` - Upload an SBOM to the server.
-- `/view` - View the raw contents of an SBOM file.
-- `/viewFiles` - View all file IDs uploaded to the server.
-- `/delete` - Delete a file from the server.
-- `/getSBOM` - Get an SBOM object from the server
+- [Upload SBOM](#upload-sboms)
 
-### MySQL Database
+### Upload SBOMs
+> Upload an SBOM file to the SQL Database
+
+**Endpoint:** `http://localhost:8080/svip/sboms`
+
+**Request Method:** `POST`
+
+**Parameters**
+
+TO BE USED WITH ENDPOINTS W/ PARAMS
+
+| Parameter | Type | Description | Is Required? |
+|:---------:|:----:|:-----------:|:------------:|
+
+**Request Body**
+
+|   Body   |  Type  |          Description          | Is Required? |
+|:--------:|:------:|:-----------------------------:|:------------:|
+| fileName | String |   The name of the SBOM file   |     YES      |
+| contents | String | The contents of the SBOM file |     YES      |
+
+**Responses**
+
+| Response Code |  Type  |                              Description                               |
+|:-------------:|:------:|:----------------------------------------------------------------------:|
+|      200      | String |               The ID corresponding to the uploaded file                |
+|      400      | String | Invalid field(s) / Unable to process SBOM. Body contains error message |
+
+**Example**
+```bash
+curl -X POST -d '{"fileName":"mySBOM","contents":"{SBOM Data...}"}' http://localhost:8080/svip/sboms
+```
+
+TODO OTHER ENDPOINTS
+
+## MySQL Database
 Located at `localhost:3306` while the `svip-mysql` Docker container is running.
 
 Use the following command to interact with the MySQL server instance:
