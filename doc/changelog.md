@@ -29,7 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - **Merge SBOMs**
         - prev: [post] http://localhost:8080/svip/merge
         - new: [post]  http://localhost:8080/svip/sboms/merge
-        
+
+- Updated `API.md` documentation with the updated endpoints
+
 ## [v5.1.5-alpha] - (7/21/2023)
 
 ### Added
@@ -45,9 +47,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - `Merger.java`abstract class and overall architecture
-
-
-- Updated `API.md` documentation with the updated endpoints
 
 ## [v5.1.4-alpha] - (7/19/2023)
 
