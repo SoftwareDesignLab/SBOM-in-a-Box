@@ -43,9 +43,10 @@ public class GenerateFromParserAPITest extends APITest {
              ) {
             for (SBOMFile s: file
                  ) {
-                s.hasNullProperties();
-                empty = file;
-                break;
+                if(s.hasNullProperties()) {
+                    empty = file;
+                    break;
+                }
             }
         }
 

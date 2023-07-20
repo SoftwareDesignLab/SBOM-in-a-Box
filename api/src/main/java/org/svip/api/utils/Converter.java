@@ -33,11 +33,12 @@ public class Converter {
     /**
      * Convert an SBOM to a desired schema
      *
-     * @param schemaString the desired schema
-     * @param formatString the desired format
+     * @param schema the desired schema
+     * @param format the desired format
      * @return converted SBOMFile and error message, if any
      */
-    public static HashMap<SBOMFile, String> convert(SBOMFile sbom, String schemaString, String formatString) {
+    public static HashMap<SBOMFile, String> convert(SBOMFile sbom, SerializerFactory.Schema schema,
+                                                    SerializerFactory.Format format) {
 
         HashMap<SBOMFile, String> ret = new HashMap<>();
 
@@ -56,25 +57,6 @@ public class Converter {
         if (deserialized == null)
             return Utils.internalSerializerError(ret, "", "DURING DESERIALIZATION");
 
-        // ensure schema is valid
-        SerializerFactory.Schema schema;
-        try {
-            schema = SerializerFactory.Schema.valueOf(schemaString);
-        } catch (Exception e) {
-            ret.put(new SBOMFile("", ""), "SCHEMA " + schemaString + " NOT VALID: " +
-                    e.getMessage());
-            return ret;
-        }
-
-        // ensure format is valid
-        SerializerFactory.Format format;
-        try {
-            format = SerializerFactory.Format.valueOf(formatString);
-        } catch (Exception e) {
-            ret.put(new SBOMFile("", ""), "FORMAT " + formatString + " NOT VALID: " +
-                    e.getMessage());
-            return ret;
-        }
 
         // serialize into desired format
         Serializer s;

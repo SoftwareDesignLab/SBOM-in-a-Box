@@ -263,10 +263,9 @@ public class SVIPApiController {
      * @param overwrite whether to overwrite original
      * @return converted SBOM
      */
-
     @GetMapping("/convert")
-    public ResponseEntity<String> convert(@RequestParam("id") long id, @RequestParam("schema") String schema,
-                                          @RequestParam("format") String format,
+    public ResponseEntity<String> convert(@RequestParam("id") long id, @RequestParam("schema") SerializerFactory.Schema schema,
+                                          @RequestParam("format") SerializerFactory.Format format,
                                           @RequestParam("overwrite") Boolean overwrite){
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
@@ -290,7 +289,7 @@ public class SVIPApiController {
                 error.toLowerCase().contains("schema") || error.toLowerCase().contains("format"))){
             LOGGER.error(defaultErrorMessage);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } else if (schema.toLowerCase().contains("cdx") && format.equals("TAGVALUE")) {
+        } else if (schema == SerializerFactory.Schema.CDX14 && format == SerializerFactory.Format.TAGVALUE) {
             LOGGER.error("CONVERT /svip/convert?id=" + id + "TAGVALUE unsupported by CDX14");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -327,7 +326,7 @@ public class SVIPApiController {
     @PostMapping("/generators/parsers")
     public ResponseEntity<String> generateParsers(@RequestBody SBOMFile[] files,
                                            @RequestParam("projectName") String projectName,
-                                           @RequestParam("schema") SerializerFactory.Schema schema, // todo implement this schema + format params in /convert
+                                           @RequestParam("schema") SerializerFactory.Schema schema,
                                            @RequestParam("format") SerializerFactory.Format format){
 
         ParserController parserController = new ParserController(projectName, new HashMap<>());
@@ -342,7 +341,7 @@ public class SVIPApiController {
         for (SBOMFile f: files
              ) {
             if(f.hasNullProperties()){
-                LOGGER.error(urlMsg + "/fileName=" + f.getFileName() + "has null properties");
+                LOGGER.error(urlMsg + "/fileName=" + f.getFileName() + " has null properties");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             parserController.addFile(new VirtualPath(f.getFileName()), f.getContents());
@@ -355,7 +354,7 @@ public class SVIPApiController {
         } catch (Exception e) {
             String error = "Error parsing into SBOM: " + e.getMessage();
             LOGGER.error(urlMsg + " " + error);
-            return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         Serializer s;
@@ -366,7 +365,7 @@ public class SVIPApiController {
         } catch (IllegalArgumentException | JsonProcessingException e) {
             String error = "Error serializing parsed SBOM: " + Arrays.toString(e.getStackTrace());
             LOGGER.error(urlMsg + " " + error);
-            return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return Utils.encodeResponse(contents);
@@ -376,7 +375,7 @@ public class SVIPApiController {
     @PostMapping("/generators/osi")
     public ResponseEntity<String> generateOSI(@RequestBody SBOMFile[] files,
                                            @RequestParam("projectName") String projectName,
-                                           @RequestParam("schema") SerializerFactory.Schema schema, // todo implement this schema + format params in /convert
+                                           @RequestParam("schema") SerializerFactory.Schema schema,
                                            @RequestParam("format") SerializerFactory.Format format){
         // TODO (separate branch)
         return null;
@@ -429,7 +428,6 @@ public class SVIPApiController {
             sboms.add(deserialized);
             idSum += id;
         }
-
 
         // todo, merging more than two SBOMs is not supported right now
         SBOM merged;
