@@ -126,7 +126,7 @@ public class SVIPApiController {
             Deserializer d = SerializerFactory.createDeserializer(sbomFile.getContents());
             d.readFromString(sbomFile.getContents());
         } catch (IllegalArgumentException | JsonProcessingException e) {
-            LOGGER.info("POST /svip/upload - " + errorMsg);
+            LOGGER.info("POST /svip/sboms - " + errorMsg);
             LOGGER.error(e.getMessage());
             return new ResponseEntity<>(errorMsg, HttpStatus.BAD_REQUEST);
         }
