@@ -87,6 +87,127 @@ TO BE USED WITH ENDPOINTS W/ PARAMS
 curl -X POST -d '{"fileName":"mySBOM","contents":"{SBOM Data...}"}' http://localhost:8080/svip/sboms
 ```
 
+### Delete SBOMs
+> Delete an SBOM file from the SQL Database using its ID
+
+**Endpoint:** `http://localhost:8080/svip/sboms`
+
+**Request Method:** `DELETE`
+
+**Parameters**
+
+| Parameter | Type |             Description             | Is Required? |
+|:---------:|:----:|:-----------------------------------:|:------------:|
+|    id     | Long | The ID of the SBOM file to retrieve |     YES      |
+
+**Request Body**
+
+|   Body   |  Type  |          Description          | Is Required? |
+|:--------:|:------:|:-----------------------------:|:------------:|
+
+**Responses**
+
+| Response Code |  Type  |          Description          |
+|:-------------:|:------:|:-----------------------------:|
+|      200      | String | The contents of the SBOM file |
+
+**Example**
+```bash
+curl -X DELETE -G http://localhost:8080/svip/sboms \
+-d 'id=<SBOM UID>'
+```
+
+### Get SBOMs
+> Get all existing uploaded file IDs
+
+**Endpoint:** `http://localhost:8080/svip/sboms`
+
+**Request Method:** `GET`
+
+**Parameters**
+
+| Parameter | Type | Description | Is Required? |
+|:---------:|:----:|:-----------:|:------------:|
+
+**Request Body**
+
+|   Body   |  Type  |          Description          | Is Required? |
+|:--------:|:------:|:-----------------------------:|:------------:|
+
+**Responses**
+
+| Response Code |  Type  |              Description              |
+|:-------------:|:------:|:-------------------------------------:|
+|      200      | String | A JSON array of all uploaded file IDs |
+
+**Example**
+```bash
+curl -X GET http://localhost:8080/svip/sboms
+```
+
+### Get Single SBOM
+> Get a single deserialized SBOM object from the SQL Database using its ID
+
+**Endpoint:** `http://localhost:8080/svip/sboms`
+
+**Request Method:** `GET`
+
+**Parameters**
+
+| Parameter | Type |             Description             | Is Required? |
+|:---------:|:----:|:-----------------------------------:|:------------:|
+|    id     | Long | The ID of the SBOM file to retrieve |     YES      |
+
+**Request Body**
+
+|   Body   |  Type  |          Description          | Is Required? |
+|:--------:|:------:|:-----------------------------:|:------------:|
+
+**Responses**
+
+| Response Code |  Type  |          Description          |
+|:-------------:|:------:|:-----------------------------:|
+|      200      | String |   A JSON of the SBOM Object   |
+|      404      | String |      File does not exist      |
+|      500      | String | Failed to deserialize content |
+
+**Example**
+```bash
+curl -X GET -G http://localhost:8080/svip/sboms \
+-d 'id=<SBOM UID>'
+```
+
+### Get SBOM Contents
+> Get a single SBOM object from the SQL Database using its ID
+
+**Endpoint:** `http://localhost:8080/svip/sboms/content`
+
+**Request Method:** `GET`
+
+**Parameters**
+
+| Parameter | Type |             Description             | Is Required? |
+|:---------:|:----:|:-----------------------------------:|:------------:|
+|    id     | Long | The ID of the SBOM file to retrieve |     YES      |
+
+**Request Body**
+
+|   Body   |  Type  |          Description          | Is Required? |
+|:--------:|:------:|:-----------------------------:|:------------:|
+
+**Responses**
+
+| Response Code |  Type  |          Description          |
+|:-------------:|:------:|:-----------------------------:|
+|      200      | String |   A JSON of the SBOM Object   |
+|      404      | String |      File does not exist      |
+
+**Example**
+```bash
+curl -X GET -G http://localhost:8080/svip/sboms/content \
+-d 'id=<SBOM UID>'
+```
+
 TODO OTHER ENDPOINTS
 
 ## MySQL Database
