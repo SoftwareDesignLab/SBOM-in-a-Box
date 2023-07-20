@@ -531,6 +531,7 @@ public class SPDX23PackageObject implements SPDX23Package {
 
     @Override
     public int hashCode() {
+        if(name == null || version == null) return super.hashCode();
         return this.name.hashCode() + this.version.hashCode();
     }
 }
