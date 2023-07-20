@@ -1,6 +1,7 @@
 package org.svip.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,14 @@ import org.svip.api.utils.Converter;
 import org.svip.api.utils.Utils;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.sbomgeneration.osi.OSI;
 import org.svip.sbomgeneration.parsers.ParserController;
 import org.svip.sbomgeneration.serializers.SerializerFactory;
 import org.svip.sbomgeneration.serializers.deserializer.Deserializer;
 import org.svip.sbomgeneration.serializers.serializer.Serializer;
 import org.svip.utils.VirtualPath;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -55,47 +58,18 @@ public class SVIPApiController {
      */
     private final SBOMFileRepository sbomFileRepository;
 
-    //#region OSI (unused)
-
     /**
      * OSI docker container representation
      */
-//    private OSI osiContainer;
+    private OSI osiContainer;
 
     /**
-     * Default OSI Bound Directory location
-     */
-//    private static String osiBoundDir = "src/main/java/com/svip/osi/core/bound_dir";
-
-    /**
-     * Default path to where dockerfile is located
-     */
-//    private static String dockerPath = "/core/src/main/java/org/svip/sbomfactory/osi/Dockerfile";
-
-    /**
-     * Current working directory
-     */
-//    private static String pwd = "/src/test/java/org/svip/api";
-
-    /** TODO OSI
      * buildOSI runs on startup to build the OSI container independent of the front-end.
      */
-//    @PostConstruct
-//    public void buildOSI() {
-//        // TODO: For SVIP v3, refactor to move OSI building operations into another class
-//        osiContainer = new OSI(osiBoundDir, dockerPath);
-//    }
-
-    /** TODO OSI
-     * To be called when the object is released by the garbage collector. DO NOT CALL MANUALLY
-     */
-    //    @PreDestroy
-    //    public void close() {
-    //        // Close the osi container so that we delete the instance
-    //        osiContainer.close();
-    //    }
-
-    //#endregion
+    @PostConstruct
+    public void buildOSI() throws IOException {
+        osiContainer = new OSI();
+    }
 
     @Autowired
     public SVIPApiController(final SBOMFileRepository sbomFileRepository) {
