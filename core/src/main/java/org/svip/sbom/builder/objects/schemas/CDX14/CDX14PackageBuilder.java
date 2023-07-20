@@ -319,18 +319,18 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
         this.name = null;
         this.licenses = null;
         this.copyright = null;
-        this.hashes.clear();
+        this.hashes = new HashMap<>();
         this.supplier = null;
         this.version = null;
         this.description = null;
-        this.cpes.clear();
-        this.purls.clear();
+        this.cpes = new HashSet<>();
+        this.purls = new HashSet<>();
         this.mimeType = null;
         this.publisher = null;
         this.scope = null;
         this.group = null;
-        this.externalReferences.clear();
-        this.properties.clear();
+        this.externalReferences = new HashSet<>();
+        this.properties = new HashMap<>();
         return component;
     }
 }

@@ -6,26 +6,13 @@ import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Schema;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
-import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
 
-import java.util.Collections;
 import java.util.*;
-
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
-import java.util.*;
-import java.util.*;
-
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
-import java.util.*;
-import java.util.HashSet;
-
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
-import java.util.List;
 
 import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
 
@@ -188,6 +175,13 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema{
     public Set<Component> getComponents() {
         return this.components;
     }
+
+    /** TODO This breaks Jackson Serialization for some reason...
+     * Get the SBOM's component as a Set of SVIPComponentObject
+     */
+//    public Set<SVIPComponentObject> getSVIPComponents() {
+//        return Collections.singleton((SVIPComponentObject) this.components);
+//    }
 
     /**
      * Get the SBOM's relationships
