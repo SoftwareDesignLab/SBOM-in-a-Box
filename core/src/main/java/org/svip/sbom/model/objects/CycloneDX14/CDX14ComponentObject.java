@@ -398,8 +398,13 @@ public class CDX14ComponentObject implements CDX14Package {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj == null || getClass() != obj.getClass()) return false;
+        return this.hashCode() == obj.hashCode();
+    }
+
+    @Override
     public int hashCode() {
-        if(name == null || version == null) return super.hashCode();
         return this.name.hashCode() + this.version.hashCode();
     }
 }
