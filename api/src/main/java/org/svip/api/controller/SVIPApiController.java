@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,8 +70,15 @@ public class SVIPApiController {
      */
     private final OSI osiContainer;
 
+    /**
+     * Autowired constructor. Initializes the API controller with a configured SBOMFileRepository instance and OSI
+     * enabled.
+     *
+     * @param sbomFileRepository The SBOMFileRepository to interact with the MySQL database server.
+     * @param startWithOSI Whether to start with OSI enabled. If false, the OSI endpoint will be disabled.
+     */
     @Autowired
-    public SVIPApiController(final SBOMFileRepository sbomFileRepository, boolean startWithOSI) throws IOException {
+    public SVIPApiController(final SBOMFileRepository sbomFileRepository, @Value("true") boolean startWithOSI) {
         this.headers = new HttpHeaders();
         this.headers.add("AccessControlAllowOrigin", "http://localhost:4200");
 
@@ -423,7 +431,7 @@ public class SVIPApiController {
                                            @RequestParam("format") SerializerFactory.Format format){
         // TODO (separate branch)
         if (osiContainer == null)
-            return new ResponseEntity<>("Docker error. See logs.", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
         return null;
     }
 }
