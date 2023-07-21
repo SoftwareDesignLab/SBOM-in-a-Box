@@ -1,6 +1,9 @@
 package org.svip.sbomanalysis.qualityattributes;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
@@ -25,7 +28,7 @@ public class GenerateQualityReportTest {
             "/src/test/java/org/svip/sbomgeneration/serializers/sample_boms/cdx_json/sbom.alpine.json";
 
     private final String SPDX23_JSON_SBOM = System.getProperty("user.dir") +
-            "/src/test/java/org/svip/sbomgeneration/serializers/sample_boms/syft-0.80.0-source-spdx-json.json";
+            "/src/test/java/org/svip/sbomgeneration/serializers/sample_boms/spdx_json/syft-0.80.0-source-spdx-json.json";
 
     @Test
     public void test_quality_report_cdx_pipeline_test() throws IOException {
@@ -35,6 +38,9 @@ public class GenerateQualityReportTest {
         CDX14SBOM sbom = cdx14Deserializer.readFromString(Files.readString(Path.of(CDX_14_JSON_SBOM)));
 
         QualityReport qualityReport = cdx14Pipeline.process(sbom.getUID(), sbom);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValueAsString(qualityReport);
     }
 
     @Test
@@ -42,9 +48,12 @@ public class GenerateQualityReportTest {
         SPDX23Pipeline spdx23Pipeline = new SPDX23Pipeline();
 
         SPDX23JSONDeserializer spdx23JSONDeserializer = new SPDX23JSONDeserializer();
-        SPDX23SBOM sbom = spdx23JSONDeserializer.readFromString(Files.readString(Path.of(CDX_14_JSON_SBOM)));
+        SPDX23SBOM sbom = spdx23JSONDeserializer.readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
 
         QualityReport qualityReport = spdx23Pipeline.process(sbom.getUID(), sbom);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValueAsString(qualityReport);
     }
 
 }
