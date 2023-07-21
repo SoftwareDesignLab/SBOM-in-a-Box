@@ -31,9 +31,13 @@ import java.util.concurrent.ExecutionException;
 public class NVDClient {
     private static final String ENDPOINT = "https://services.nvd.nist.gov/rest/json/cves/2.0";
     private HttpClient httpClient = HttpClient.newHttpClient();
+
+    //builds the url for the api request
     private String buildURL(String cpe){
         return ENDPOINT.concat("?cpeName=").concat(cpe);
     }
+
+    //runs the api request and returns the response
     private String vexFields(String cpe) throws ExecutionException, InterruptedException {
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(buildURL(cpe)))
