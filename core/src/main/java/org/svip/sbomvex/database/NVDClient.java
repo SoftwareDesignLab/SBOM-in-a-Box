@@ -75,6 +75,7 @@ public class NVDClient {
                 SBOMPackage component = (SBOMPackage) c;
                 Set<String> cpes = component.getCPEs();
 
+                //need to change this to check if resultsPerPage == 0
                 // if component has no cpes continue as we can only search if there are cpes
                 if(cpes == null || cpes.isEmpty()){
                    continue;
