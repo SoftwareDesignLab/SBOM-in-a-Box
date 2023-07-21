@@ -527,7 +527,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
         this.uid = null;
         this.author = null;
         this.name = null;
-        this.licenses = null;
+        this.licenses = new LicenseCollection();
         this.copyright = null;
         this.hashes = new HashMap<>();
         this.supplier = null;

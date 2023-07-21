@@ -385,7 +385,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
         this.uid = null;
         this.author = null;
         this.name = null;
-        this.licenses = null;
+        this.licenses = new LicenseCollection();
         this.copyright = null;
         this.hashes = new HashMap<>();
         this.supplier = null;
