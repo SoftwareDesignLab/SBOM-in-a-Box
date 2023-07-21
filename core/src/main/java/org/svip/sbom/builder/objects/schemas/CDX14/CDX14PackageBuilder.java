@@ -317,7 +317,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
         this.uid = null;
         this.author = null;
         this.name = null;
-        this.licenses = null;
+        this.licenses = new LicenseCollection();
         this.copyright = null;
         this.hashes = new HashMap<>();
         this.supplier = null;
