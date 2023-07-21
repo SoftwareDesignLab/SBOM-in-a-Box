@@ -36,4 +36,121 @@ public class CDX14ComponentObjectConflictsTest {
         assertEquals(MismatchType.MISSING, conflict.GetType());
         assertEquals("Type is missing", conflict.GetMessage());
     }
+
+    @Test
+    public void UID_is_conflicting_between_testPackage_and_controlPackage_test(){
+        packageBuilder.setUID("123");
+        conflictPackage = packageBuilder.buildAndFlush();
+
+        List<Conflict> conflictList = controlPackage.compare(conflictPackage);
+        Conflict conflict = conflictList.get(0);
+
+        assertEquals(1, conflictList.size());
+        assertEquals(MismatchType.MISSING, conflict.GetType());
+        assertEquals("UID is missing", conflict.GetMessage());
+    }
+
+    @Test
+    public void name_is_conflicting_between_testPackage_and_controlPackage_test(){
+        packageBuilder.setName("control");
+        controlPackage = packageBuilder.buildAndFlush();
+        packageBuilder.setName("name");
+        conflictPackage = packageBuilder.buildAndFlush();
+
+        List<Conflict> conflictList = controlPackage.compare(conflictPackage);
+        Conflict conflict = conflictList.get(0);
+
+        assertEquals(1, conflictList.size());
+        assertEquals(MismatchType.NAME_MISMATCH, conflict.GetType());
+        assertEquals("Name doesn't match", conflict.GetMessage());
+    }
+
+    @Test
+    public void author_is_conflicting_between_testPackage_and_controlPackage_test(){
+        packageBuilder.setAuthor("control");
+        controlPackage = packageBuilder.buildAndFlush();
+        packageBuilder.setAuthor("author");
+        conflictPackage = packageBuilder.buildAndFlush();
+
+        List<Conflict> conflictList = controlPackage.compare(conflictPackage);
+        Conflict conflict = conflictList.get(0);
+
+        assertEquals(1, conflictList.size());
+        assertEquals(MismatchType.AUTHOR_MISMATCH, conflict.GetType());
+        assertEquals("Author doesn't match", conflict.GetMessage());
+    }
+
+    @Test
+    public void license_is_conflicting_between_testPackage_and_controlPackage_test(){
+        LicenseCollection licenseCollection = new LicenseCollection();
+        licenseCollection.addDeclaredLicense("control license");
+        packageBuilder.setLicenses(licenseCollection);
+        controlPackage = packageBuilder.buildAndFlush();
+        LicenseCollection licenseCollectionTwo = new LicenseCollection();
+        licenseCollectionTwo.addDeclaredLicense("license");
+        packageBuilder.setLicenses(licenseCollectionTwo);
+        conflictPackage = packageBuilder.buildAndFlush();
+
+        List<Conflict> conflictList = controlPackage.compare(conflictPackage);
+        Conflict conflict = conflictList.get(0);
+
+        assertEquals(1, conflictList.size());
+        assertEquals(MismatchType.LICENSE_MISMATCH, conflict.GetType());
+        assertEquals("Licenses doesn't match", conflict.GetMessage());
+    }
+
+    @Test
+    public void copyright_is_conflicting_between_testPackage_and_controlPackage_test(){
+
+    }
+
+    @Test
+    public void componentHash_is_conflicting_between_testPackage_and_controlPackage_test(){
+
+    }
+
+    @Test
+    public void supplier_is_conflicting_between_testPackage_and_controlPackage_test(){
+
+    }
+
+    @Test
+    public void version_is_conflicting_between_testPackage_and_controlPackage_test(){
+
+    }
+
+    @Test
+    public void description_is_conflicting_between_testPackage_and_controlPackage_test(){
+
+    }
+
+    @Test
+    public void PURL_is_conflicting_between_testPackage_and_controlPackage_test(){
+
+    }
+
+    @Test
+    public void CPE_is_conflicting_between_testPackage_and_controlPackage_test(){
+
+    }
+
+    @Test
+    public void mimeType_is_conflicting_between_testPackage_and_controlPackage_test(){
+
+    }
+
+    @Test
+    public void publisher_is_conflicting_between_testPackage_and_controlPackage_test(){
+
+    }
+
+    @Test
+    public void scope_is_conflicting_between_testPackage_and_controlPackage_test(){
+
+    }
+
+    @Test
+    public void group_is_conflicting_between_testPackage_and_controlPackage_test(){
+
+    }
 }
