@@ -236,7 +236,7 @@ public class OSI {
         protected String createContainer() {
             try {
                 CreateContainerResponse containerResponse = dockerClient
-                        .createContainerCmd("ubuntu:latest")
+                        .createContainerCmd("ubuntu")
                         .withName("svip-osi")
                         .exec();
                 return containerResponse.getId();
