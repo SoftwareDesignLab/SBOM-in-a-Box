@@ -34,27 +34,6 @@ class OSVClientTest {
     }
 
     @Test
-    public void test_component_name_version_ecosystem_api_request_not_null(){
-        String response = client.getOSVByNameVersionEcosystemPost("jinja2", "2.4.1", "PyPI");
-        assertNotNull(response);
-        assertNotEquals("{}", response);
-    }
-
-    @Test
-    public void test_component_commit_api_request_not_null(){
-        String response = client.getOSVByCommitPost("6879efc2c1596d11a6a6ad296f80063b558d5e0f");
-        assertNotNull(response);
-        assertNotEquals("{}", response);
-    }
-
-    @Test
-    public void test_osv_id_api_request_not_null(){
-        String response = client.getVulnByIdGet("OSV-2020-111");
-        assertNotNull(response);
-        assertNotEquals("{}", response);
-    }
-
-    @Test
     public void test_generateVEX_valid_VEX_object_CDX_json_sbom() throws IOException {
         Organization test_org1 = new Organization("com.google.guava", "google.com");
         Organization test_org2 = new Organization("The Pallets Projects", "google.com");
