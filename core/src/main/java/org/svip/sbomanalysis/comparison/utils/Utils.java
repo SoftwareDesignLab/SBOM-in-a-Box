@@ -1,4 +1,4 @@
-package org.svip.sbomanalysis.comparison.Utils;
+package org.svip.sbomanalysis.comparison.utils;
 
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;

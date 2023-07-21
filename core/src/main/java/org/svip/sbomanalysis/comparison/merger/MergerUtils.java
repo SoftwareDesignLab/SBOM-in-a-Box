@@ -8,7 +8,7 @@ import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.sbomanalysis.comparison.Utils.Utils;
+import org.svip.sbomanalysis.comparison.utils.Utils;
 import org.svip.sbomgeneration.serializers.SerializerFactory;
 
 import java.util.HashSet;
