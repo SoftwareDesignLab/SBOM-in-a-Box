@@ -170,6 +170,8 @@ public class OSI {
             if (!file.getName().equalsIgnoreCase(".gitignore"))
                 sboms.put(file.getName(), Files.readString(file.toPath()));
 
+        cleanBoundDirectory("sboms");
+
         return sboms;
     }
 

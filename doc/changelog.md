@@ -3,7 +3,31 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v5.1.4-alpha] - (7/19/2023)
+## [v6.0.0-alpha] - (7/21/2023)
+> OSI Refactor Update (Docker build steps updated)
+
+### Added
+- `osi.scripts` package
+  - `setup.sh` called from the inline Dockerfile to install all SBOM utilities to the image.
+  - `ContainerController.py` - moved from `osi` package.
+- `DockerNotAvailableExceptionTest` unit tests to increase code coverage to >80%.
+- Methods to `OSI` class resulting in a higher abstraction level above Docker and the filesystem:
+  - `addSourceFile()` - Add a single source file to be processed
+  - `addSourceDirectory()` - Copy the contents of an entire directory to be processed (for unit tests)
+  - `generateSBOMs()` - Runs the container, clears directories, and returns a Map of all SBOM files
+
+### Changed
+- Updated `docker-compose.yml` to contain all setup and service details for OSI
+- `OSITest` unit tests
+- `SVIPAPIController` now attempts to construct an `OSI` instance on startup if a constructor flag is enabled, 
+  Docker is running, and an image/container exists.
+  - The constructor flag allows us to disable OSI construction for unit tests as well as the OSI endpoint itself.
+
+### Removed
+- `osi/Dockerfile` as all setup behavior is taken care of in the docker-compose file and the OSI class.
+
+
+## [v5.3.0-alpha] - (7/19/2023)
 
 ### Added
 - QA API Endpoint
@@ -12,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `SBOMBuilders` instantiated with empty sets and hashmaps instead of null values
 - `.buildAndFlush()` methods now clear sets/hashmaps instead of setting to null
 
-## [v5.1.3-alpha] - (7/19/2023)
+## [v5.2.0-alpha] - (7/19/2023)
 
 ### Added
 - `/generators/parsers` endpoint in `SVIPApiController`.
