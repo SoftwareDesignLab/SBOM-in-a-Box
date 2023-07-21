@@ -28,21 +28,6 @@ public class ConvertFromAPITest extends APITest {
     }
 
     /**
-     * Test bad requests regarding schema and format
-     */
-    @Test
-    @DisplayName("Invalid format test")
-    public void invalidSchemaAndFormatTest() {
-        setupMockRepository();
-
-        assertEquals(HttpStatus.BAD_REQUEST, controller.convert(0L, "123", "JSON", true).
-                getStatusCode());
-        assertEquals(HttpStatus.BAD_REQUEST, controller.convert(0L, "SPDX23", "321", true).
-                getStatusCode());
-
-    }
-
-    /**
      * CDX does not support Tag Value format
      */
     @Test
@@ -50,7 +35,8 @@ public class ConvertFromAPITest extends APITest {
     public void CDXTagValueTest() {
         setupMockRepository();
 
-        assertEquals(HttpStatus.BAD_REQUEST, controller.convert(0L, "CDX14", "TAGVALUE", true).
+        assertEquals(HttpStatus.BAD_REQUEST, controller.convert(0L, SerializerFactory.Schema.CDX14,
+                        SerializerFactory.Format.TAGVALUE, true).
                 getStatusCode());
     }
 
@@ -84,7 +70,8 @@ public class ConvertFromAPITest extends APITest {
                     LOGGER.info("ID: " + id + " Converting " + thisSchema.name() + " --> " + convertToSchema);
                     LOGGER.info("From             " + ((sbom.getFileName()).contains("json")
                             ? "JSON" : "TAGVALUE") + " --> " + convertToFormat);
-                    ResponseEntity<String> response = controller.convert(id, convertToSchema, convertToFormat, true);
+                    ResponseEntity<String> response = controller.convert(id, SerializerFactory.Schema.valueOf(convertToSchema),
+                            SerializerFactory.Format.valueOf(convertToFormat), true);
                     String responseBody = response.getBody();
 
                     // check if OK
@@ -103,9 +90,10 @@ public class ConvertFromAPITest extends APITest {
                         String originalFormat = Utils.assumeFormatFromDocument(sbom);
 
                         assertEquals("", Converter.convert(new SBOMFile("convertBack." +
-                                (originalFormat.equals("TAGVALUE") ? "json" : "spdx"),
+                                        (originalFormat.equals("TAGVALUE") ? "json" : "spdx"),
 
-                                responseBody), thisSchema.name(), originalFormat).values().toArray()[0]);
+                                        responseBody), thisSchema, SerializerFactory.Format.valueOf(originalFormat)).
+                                values().toArray()[0]);
                         LOGGER.info("Reconversion successful!");
 
                     } catch (Exception e) {
