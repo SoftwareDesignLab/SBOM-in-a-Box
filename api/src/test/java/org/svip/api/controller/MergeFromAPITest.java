@@ -41,8 +41,6 @@ public class MergeFromAPITest extends APITest {
 
             SBOMFile sbom1 = testMap.get(id1);
             SerializerFactory.Schema schema1 = Utils.assumeSchemaFromOriginal(sbom1.getContents());
-            SerializerFactory.Format format1 = SerializerFactory.Format.
-                    valueOf(Utils.assumeFormatFromDocument(sbom1));
 
             for (Long id2 : testMap.keySet()) {
 
@@ -51,15 +49,8 @@ public class MergeFromAPITest extends APITest {
 
                 SBOMFile sbom2 = testMap.get(id2);
                 SerializerFactory.Schema schema2 = Utils.assumeSchemaFromOriginal(sbom2.getContents());
-                SerializerFactory.Format format2 = SerializerFactory.Format.
-                        valueOf(Utils.assumeFormatFromDocument(sbom2));
 
                 if (sbom1.getFileName().endsWith(".xml") || sbom2.getFileName().endsWith(".xml"))
-                    continue;
-
-                // to prevent:
-                // MERGE /svip/merge?id= Error merging SBOMs: Cross format merging not supported for SPDX and CycloneDX.
-                if (schema1 != schema2 || format1 != format2)
                     continue;
 
                 // to prevent testing different combinations of the same two SBOMs
@@ -83,13 +74,13 @@ public class MergeFromAPITest extends APITest {
                 thisPair.put(id1, id2);
                 testedPairs.add(thisPair);
 
-                LOGGER.info("MERGING " + sbom1.getId() + "..." + sbom1.getFileName().substring(sbom1.getFileName().length() / 2) +
-                        " and " + sbom2.getId() + "..." + sbom2.getFileName().substring(sbom2.getFileName().length() / 2));
+                LOGGER.info("MERGING " + schema1 + " SBOM " + sbom1.getId() + "..." +
+                        sbom1.getFileName().substring(sbom1.getFileName().length() * 2 / 3) +
+                        " and " + schema2 + " SBOM " + sbom2.getId() + "..." +
+                        sbom2.getFileName().substring(sbom2.getFileName().length() * 2 / 3));
 
                 ResponseEntity<String> response = controller.merge(new long[]{id1, id2});
                 String responseBody = response.getBody();
-
-
 
                 assertEquals(HttpStatus.OK, response.getStatusCode());
                 assertNotNull(responseBody);

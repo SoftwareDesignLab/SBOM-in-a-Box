@@ -102,7 +102,9 @@ public class MergerController {
         switch (formatOne.toLowerCase() + ":" + formatTwo.toLowerCase()) {
             case "cyclonedx:cyclonedx" -> { return new MergerCDX(); }
             case "spdx:spdx" -> { return new MergerSPDX(); }
-            default -> { throw new MergerException(INVALID_FORMAT_TYPE.apply(formatOne + " and " +  formatTwo)); }
+            // case "svip:svip" -> { return new MergerSVIP()} // todo in later sprint?
+
+            default -> { return new MergerCrossSchema(); }
         }
     }
 }
