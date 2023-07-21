@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Utility classes for Merger
   - `MergerUtils.java`
   - `comparison/utils/Utils.java`
+- New NVD API Client implementation:
+    - `NVDClient` - Class that, when given an SBOM, will create a new VEX Document object with the NVD API database
 
 ### Changed
 - `Merger.java`abstract class and overall architecture

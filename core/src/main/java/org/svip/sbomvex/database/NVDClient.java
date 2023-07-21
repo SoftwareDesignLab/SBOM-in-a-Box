@@ -23,6 +23,7 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * file: NVDClient.java
@@ -111,7 +112,14 @@ public class NVDClient implements VulnerabilityDBClient {
                     ArrayList<String> cpesList = new ArrayList<>(cpes);
                     String cpeString = cpesList.get(0);
                     componentID = cpeString;
-                    response = vexFieldsWithCPE(cpeString);
+                    try{
+                        response = vexFieldsWithCPE(cpeString);
+                        TimeUnit.SECONDS.sleep(6);
+                    }
+                    // TODO add info for too many api requests in time frame?
+                    catch(Exception ignored){
+                        response = null;
+                    }
                 }
                 else{
                     componentID = null;
@@ -123,15 +131,17 @@ public class NVDClient implements VulnerabilityDBClient {
                     jsonResponse = new JSONObject(response);
                     JSONArray vulns = new JSONArray(
                             jsonResponse.getJSONArray("vulnerabilities"));
-                    for(int i=0; i<vulns.length(); i++){
+                    for (int i = 0; i < vulns.length(); i++) {
                         // get the singular vulnerability and create a
                         // VEXStatement for it
-                        JSONObject vulnerability = vulns.getJSONObject(i);
+                        JSONObject vulnerability = vulns.getJSONObject(i)
+                                .getJSONObject("cve");
                         VEXStatement vexStatement =
                                 generateVEXStatement(vulnerability,
                                         component, componentID);
                         vexBuilder.addVEXStatement(vexStatement);
                     }
+
                 }
             }
         }
@@ -175,7 +185,13 @@ public class NVDClient implements VulnerabilityDBClient {
 
         // add component as the product of the statement
         String productID = c.getName() + ":" + c.getVersion();
-        String supplier = c.getSupplier().getName();
+        String supplier;
+        if(c.getSupplier() != null){
+            supplier = c.getSupplier().getName();
+        }
+        else{
+            supplier = "Unknown";
+        }
         Product product = new Product(productID, supplier);
         statement.addProduct(product);
 
