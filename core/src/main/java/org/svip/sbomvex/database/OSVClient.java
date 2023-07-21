@@ -35,34 +35,22 @@ public class OSVClient implements VulnerabilityDBClient {
     /**url endpoint to access OSV database POST methods*/
     private final String POST_ENDPOINT = "https://api.osv.dev/v1/query";
 
-    /**url endpoint to access OSV database GET method*/
-    private final String GET_ENDPOINT = "https://api.osv.dev/v1/vulns/";
-
-    private HttpClient httpClient = HttpClient.newHttpClient();
+    private final HttpClient httpClient = HttpClient.newHttpClient();
 
     /**
      * Build the API Request, then get the OSV database's response
      * @param jsonBody the string body of the request or OSV ID for GET
-     * @param requestMethod the type of request method to differentiate
-     * the builder
      * @return OSV APIs response to the HttpRequest
      */
-    private String getOSVResponse(String jsonBody, String requestMethod) {
+    private String getOSVResponse(String jsonBody) {
         try {
             HttpRequest request;
-            // build the post method, most requests will follow this
-            if(requestMethod.equals("post")){
-                request = HttpRequest.newBuilder()
-                        .uri(URI.create(POST_ENDPOINT))
-                        .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
-                        .build();
-            }
-            // only one request uses get, specific to OSV ID
-            else{
-                String getVulnsByID = GET_ENDPOINT + jsonBody;
-                request = HttpRequest.newBuilder()
-                        .uri(URI.create(getVulnsByID)).GET().build();
-            }
+            // build the post method
+            request = HttpRequest.newBuilder()
+                    .uri(URI.create(POST_ENDPOINT))
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                    .build();
+
             // send the response and get the APIs response
             CompletableFuture<HttpResponse<String>> apiResponse = httpClient
                     .sendAsync(request, HttpResponse.BodyHandlers.ofString());
@@ -89,27 +77,9 @@ public class OSVClient implements VulnerabilityDBClient {
         JSONObject packageJSON = new JSONObject();
         packageJSON.put("name", componentName);
         body.put("package", packageJSON);
-        return getOSVResponse(body.toString(), "post");
+        return getOSVResponse(body.toString());
     }
 
-    /**
-     * Generate the json body for the API request using the component's
-     * name, version, and ecosystem
-     * @param componentName the component's name
-     * @param componentVersion the component's version
-     * @param ecosystem the component's ecosystem
-     * @return the response from the OSV API request
-     */
-    public String getOSVByNameVersionEcosystemPost(
-            String componentName, String componentVersion, String ecosystem) {
-        JSONObject body = new JSONObject();
-        body.put("version", componentVersion);
-        JSONObject packageJSON = new JSONObject();
-        packageJSON.put("name", componentName);
-        packageJSON.put("ecosystem", ecosystem);
-        body.put("package", packageJSON);
-        return getOSVResponse(body.toString(), "post");
-    }
 
     /**
      * Generate the json body for the API request with the component's PURL
@@ -121,28 +91,7 @@ public class OSVClient implements VulnerabilityDBClient {
         JSONObject packageJSON = new JSONObject();
         packageJSON.put("purl", purlString);
         body.put("package", packageJSON);
-        return getOSVResponse(body.toString(), "post");
-    }
-
-    /**
-     * Generate the json body for the API request with the most
-     * recent commit of the component
-     * @param commitString the commit string
-     * @return the response from the OSV API request
-     */
-    public String getOSVByCommitPost(String commitString) {
-        JSONObject body = new JSONObject();
-        body.put("commit", commitString);
-        return getOSVResponse(body.toString(), "post");
-    }
-
-    /**
-     * Find a vulnerability through its OSV ID
-     * @param osvID the OSV ID to search for
-     * @return the response from the OSV API request
-     */
-    public String getVulnByIdGet(String osvID){
-        return getOSVResponse(osvID, "get");
+        return getOSVResponse(body.toString());
     }
 
 
