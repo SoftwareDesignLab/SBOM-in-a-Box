@@ -466,7 +466,7 @@ public class SVIPApiController {
      * @throws JsonProcessingException
      */
     @PostMapping("/sboms/compare")
-    public ResponseEntity<DiffReport> Compare(@RequestParam("targetIndex") int targetIndex, @RequestParam("Ids") Long[] ids) throws JsonProcessingException {
+    public ResponseEntity<DiffReport> compare(@RequestParam("targetIndex") int targetIndex, @RequestParam("Ids") Long[] ids) throws JsonProcessingException {
         // Get Target SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(ids[targetIndex]);
         // Check if it exists
