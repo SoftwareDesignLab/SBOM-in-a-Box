@@ -30,6 +30,8 @@ public class Conflict {
     public String GetMessage(){
         return this.message;
     }
+    public String GetTarget(){return this.target;}
+    public String GetOther(){return this.other;}
 
     /**
      * Mismatch Conflict Constructor
