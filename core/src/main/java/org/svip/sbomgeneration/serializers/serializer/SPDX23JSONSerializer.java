@@ -257,8 +257,10 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
 
         jsonGenerator.writeStringField("SPDXID", file.getUID());
         jsonGenerator.writeStringField("fileName", file.getFileName());
-        jsonGenerator.writeObjectField("fileTypes", List.of(file.getType()));
-        jsonGenerator.writeObjectField("fileContributors", List.of(file.getAuthor()));
+        if (file.getType() != null)
+            jsonGenerator.writeObjectField("fileTypes", List.of(file.getType()));
+        if (file.getAuthor() != null)
+            jsonGenerator.writeObjectField("fileContributors", List.of(file.getAuthor()));
         if (file.getLicenses() != null) {
             jsonGenerator.writeStringField("licenseComments", file.getLicenses().getComment());
             jsonGenerator.writeObjectField("licenseConcluded", file.getLicenses().getConcluded());

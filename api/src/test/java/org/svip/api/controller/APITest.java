@@ -50,8 +50,7 @@ public class APITest {
      */
 
     public static class SampleProject {
-        private final String dir = System.getProperty("user.dir")
-                + "/src/test/java/org/svip/api/sample_projects/";
+        private final String dir = System.getProperty("user.dir") + "/src/test/java/org/svip/api/sample_projects/";
         public String type;
         public String[] sourceFileNames;
         private boolean gotten = false;
@@ -83,7 +82,7 @@ public class APITest {
     private static final SampleProject empty =
             new SampleProject("Empty", new String[]{"empty.cs"});
     private static final SampleProject subProcess =
-            new SampleProject("SubProcess", new String[]{"subprocess.py"});
+            new SampleProject("Subprocess", new String[]{"subprocess.py"});
     private static final SampleProject ruby =
             new SampleProject("Ruby", new String[]{"foo.rb"});
     private static final SampleProject JS =
