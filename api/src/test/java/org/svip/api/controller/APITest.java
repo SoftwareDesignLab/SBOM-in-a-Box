@@ -92,7 +92,8 @@ public class APITest {
     @BeforeEach
     public void setup() throws IOException {
         // Init controller with mocked repository
-        controller = new SVIPApiController(repository);
+        // Avoid starting with OSI to decrease test time
+        controller = new SVIPApiController(repository, false);
     }
 
     public static Map<Long, SBOMFile> getTestFileMap() throws IOException {

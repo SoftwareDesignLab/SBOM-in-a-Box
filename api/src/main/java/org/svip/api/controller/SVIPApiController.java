@@ -17,27 +17,19 @@ import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
-import org.svip.sbomgeneration.osi.OSI;
-import org.svip.sbomgeneration.parsers.ParserController;
 import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
 import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.generics.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.pipelines.schemas.CycloneDX14.CDX14Pipeline;
 import org.svip.sbomanalysis.qualityattributes.pipelines.schemas.SPDX23.SPDX23Pipeline;
+import org.svip.sbomgeneration.osi.OSI;
+import org.svip.sbomgeneration.parsers.ParserController;
 import org.svip.sbomgeneration.serializers.SerializerFactory;
-import org.svip.sbomgeneration.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.sbomgeneration.serializers.deserializer.Deserializer;
 import org.svip.sbomgeneration.serializers.serializer.Serializer;
 import org.svip.utils.VirtualPath;
 
 import java.io.IOException;
 import java.util.Arrays;
-import org.svip.sbomgeneration.serializers.deserializer.SPDX23JSONDeserializer;
-import org.svip.sbomgeneration.serializers.deserializer.SPDX23TagValueDeserializer;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -75,15 +67,29 @@ public class SVIPApiController {
     /**
      * OSI docker container representation
      */
-    private OSI osiContainer;
+    private final OSI osiContainer;
 
     @Autowired
-    public SVIPApiController(final SBOMFileRepository sbomFileRepository) throws IOException {
-        headers = new HttpHeaders();
-        headers.add("AccessControlAllowOrigin", "http://localhost:4200");
+    public SVIPApiController(final SBOMFileRepository sbomFileRepository, boolean startWithOSI) throws IOException {
+        this.headers = new HttpHeaders();
+        this.headers.add("AccessControlAllowOrigin", "http://localhost:4200");
 
         this.sbomFileRepository = sbomFileRepository;
-        osiContainer = new OSI();
+
+        // If starting with OSI is enabled, try starting the container
+        OSI container = null; // Disabled state
+        String error = "OSI ENDPOINT DISABLED -- ";
+        if (startWithOSI)
+            try {
+                container = new OSI();
+                LOGGER.info("OSI ENDPOINT ENABLED");
+            } catch (Exception e) {
+                // If we can't construct the OSI container for any reason, log and disable OSI.
+                LOGGER.warn(error + "Unable to setup OSI container.");
+                LOGGER.error("OSI Docker API response: " + e.getMessage());
+            }
+        else LOGGER.warn(error + "Disabled starting with OSI.");
+        this.osiContainer = container;
     }
 
     /**
@@ -416,6 +422,8 @@ public class SVIPApiController {
                                            @RequestParam("schema") SerializerFactory.Schema schema, // todo implement this schema + format params in /convert
                                            @RequestParam("format") SerializerFactory.Format format){
         // TODO (separate branch)
+        if (osiContainer == null)
+            return new ResponseEntity<>("Docker error. See logs.", HttpStatus.INTERNAL_SERVER_ERROR);
         return null;
     }
 }

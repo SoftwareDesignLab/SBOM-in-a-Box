@@ -4,6 +4,7 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.WaitContainerResultCallback;
 import com.github.dockerjava.api.exception.ConflictException;
+import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
@@ -42,6 +43,10 @@ public class OSI {
 
     /**
      * Cleans directories, checks that Docker is running, and then creates a container.
+     *
+     * @throws DockerNotAvailableException If Docker is not installed or not running, or if the container couldn't be
+     * constructed
+     * @throws IOException If one of the bound directories could not be cleaned.
      */
     public OSI() throws DockerNotAvailableException, IOException {
         // Remove all SBOMs and source files in the bound_dir folder
@@ -206,8 +211,10 @@ public class OSI {
 
         /**
          * Initializes default Docker client object and creates OSI container.
+         *
+         * @throws DockerNotAvailableException If an error occurred creating the container.
          */
-        public OSIClient() {
+        public OSIClient() throws DockerNotAvailableException {
             // Check if docker is installed and running
             if (dockerCheck() != 0) {
                 Debug.log(Debug.LOG_TYPE.ERROR, "Docker is not running or not installed");
@@ -232,8 +239,9 @@ public class OSI {
          * Method to create the container (or find its ID if already created) from the ubuntu:latest OSI image.
          *
          * @return The ID of the container.
+         * @throws DockerNotAvailableException If the image could not be located or some other error occurred.
          */
-        protected String createContainer() {
+        protected String createContainer() throws DockerNotAvailableException {
             try {
                 CreateContainerResponse containerResponse = dockerClient
                         .createContainerCmd("ubuntu")
@@ -245,6 +253,11 @@ public class OSI {
                 int startIndex = e.getMessage().indexOf("\"", e.getMessage().indexOf("in use by container")) + 1;
                 int endIndex = e.getMessage().lastIndexOf("\\\"");
                 return e.getMessage().substring(startIndex, endIndex);
+            } catch (NotFoundException e) {
+                throw new DockerNotAvailableException("Could not locate the image ubuntu:latest to build OSI " +
+                        "container from.");
+            } catch (Exception e) {
+                throw new DockerNotAvailableException(e.getMessage());
             }
         }
 

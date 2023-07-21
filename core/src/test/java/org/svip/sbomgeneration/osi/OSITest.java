@@ -8,9 +8,9 @@
 
 package org.svip.sbomgeneration.osi;
 
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.svip.utils.Debug;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * Tests for the OSI class
@@ -28,18 +29,28 @@ public class OSITest {
     private final OSI osi;
     private static final String OSI_PATH = System.getProperty("user.dir") + "/src/test/java/org/svip/sbomgeneration/osi/";
 
+    public OSITest() throws IOException {
+        OSI osi = null; // Disabled by default
+
+        try {
+            osi = new OSI(); // Try creating container
+        } catch (Exception ignored) {
+            // Ignore error, OSI disabled by default
+        } finally { // Log and set
+            if (osi == null) Debug.log(Debug.LOG_TYPE.WARN, "Could not create OSI container, disabling tests.");
+            this.osi = osi;
+        }
+
+        assumeTrue(this.osi != null); // If OSI is null disable tests
+    }
+
     /**
      * Checks to see if Docker is installed and running. If not, all tests in OSITest will be ignored.
      */
     @BeforeAll
     static void setup() {
         // Use OSI.dockerCheck() to check if docker is running
-        Assumptions.assumeTrue(org.svip.sbomgeneration.osi.OSI.dockerCheck() == 0);
-    }
-
-    public OSITest() throws IOException {
-        // Create new OSI instance
-        this.osi = new OSI();
+        assumeTrue(org.svip.sbomgeneration.osi.OSI.dockerCheck() == 0);
     }
 
     /**
