@@ -50,6 +50,7 @@ public class ConflictFactory {
      * @param field Name of the Comparison Field
      * @param target Set of target values
      * @param other Set of other values
+     *              TODO Doesn't seem to check sets properly. See CDX14ComponentObejctTest.java
      */
     public void compareComparableSets(String field, Set<Comparable> target, Set<Comparable> other){
 
