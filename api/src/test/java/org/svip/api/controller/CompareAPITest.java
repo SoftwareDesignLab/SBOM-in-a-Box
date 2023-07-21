@@ -38,7 +38,7 @@ public class CompareAPITest extends APITest {
     @Test
     @DisplayName("Generate Diff Report")
     public void generateDiffReport() throws JsonProcessingException {
-        // Get CDX14 JSON SBOM when requested
+        // Get SBOM when requested
         when(repository.findById(IDs[0])).thenAnswer(i -> Optional.of(fileMap.get(IDs[0])));
 
         // Make API Request
