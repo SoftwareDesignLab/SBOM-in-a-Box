@@ -2,6 +2,7 @@ package org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.schemas.Cyc
 
 import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.generics.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
+import org.svip.sbom.model.uids.Hash;
 
 /**
  * file: CDX14Tests.java
@@ -35,11 +36,11 @@ public interface CDX14Tests extends QAPipeline {
      * Check if a hash algorithm in the given CycloneDX 1.4 SBOM is supported
      * within CycloneDX
      * @param field the field that's tested
-     * @param value the bom ref tested
+     * @param hash the hash to be tested
      * @param componentName the component's name to product the result
      * @return the result of if the hash algorithm is supported
      */
-    Result supportedHash(String field, String value, String componentName);
+    Result supportedHash(String field, Hash hash, String componentName);
 
 
 }
