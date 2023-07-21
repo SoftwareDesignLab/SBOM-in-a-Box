@@ -11,6 +11,7 @@ import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
 import org.apache.commons.io.FileUtils;
 import org.svip.sbomgeneration.osi.exceptions.DockerNotAvailableException;
+import org.svip.utils.Debug;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -20,19 +21,27 @@ import java.util.Map;
 
 /**
  * file name: OSI.java
- * Open Source Integration. Interacts with Docker to build containers that use OS tools
+ *
+ * Open Source Integration. Interacts with Docker to build containers that use auto-detected open source tools to
+ * generate SBOMs.
  *
  * @author Derek Garcia
  * @author Matt London
  * @author Ian Dunn
  **/
 public class OSI {
+    /**
+     * The location of the bound directory relative to the build path (core).
+     */
     private static final String BOUND_DIR = "/src/main/java/org/svip/sbomgeneration/osi/bound_dir";
 
+    /**
+     * The OSIClient that manages the container.
+     */
     private final OSIClient client;
 
     /**
-     * Builds the docker container, but does not bind or run
+     * Cleans directories, checks that Docker is running, and then creates a container.
      */
     public OSI() throws DockerNotAvailableException, IOException {
         // Remove all SBOMs and source files in the bound_dir folder
@@ -57,17 +66,16 @@ public class OSI {
         this.client = new OSIClient(); // Create container
     }
 
-    ///
-    /// Static Methods
-    ///
-
     /**
      * Function to check if docker is installed and available
      *
-     * @return 0 if docker is installed and available, 1 if docker is not running but installed, 2 if docker is not installed
+     * @return 0 - Docker is installed and available,
+     *         1 - Docker is not running but installed,
+     *         2 - Docker is not installed
      */
     protected static int dockerCheck() {
         try {
+            // If running in a container, we know the Docker daemon is available (with a system host link)
             File f = new File("/.dockerenv");
             if (f.exists()) return 0;
 
@@ -103,6 +111,13 @@ public class OSI {
 
     }
 
+    /**
+     * Adds a source file to generate an SBOM from when the container is run.
+     *
+     * @param fileName The file name of the source file.
+     * @param fileContents The contents of the source file.
+     * @throws IOException If the file could not be written to the code bind directory.
+     */
     public void addSourceFile(String fileName, String fileContents) throws IOException {
         File project = new File(System.getProperty("user.dir") + BOUND_DIR + "/code");
 
@@ -115,6 +130,12 @@ public class OSI {
         }
     }
 
+    /**
+     * Copies an entire directory of source files to generate an SBOM from when the container is run.
+     *
+     * @param dirPath The File object representing the directory to copy.
+     * @throws IOException If one of the files in the copied directory could not be written to the code bind directory.
+     */
     public void addSourceDirectory(File dirPath) throws IOException {
         File project = new File(System.getProperty("user.dir") + BOUND_DIR + "/code");
 
@@ -124,9 +145,10 @@ public class OSI {
     }
 
     /**
-     * Uses Open Source tools to generate a series of SBOMs from the given source code
+     * Use the Open Source Integration container via OSIClient to generate a series of SBOMs from the
+     * given source code with a variety of tools (auto-detected).
      *
-     * @return success code
+     * @return A map of each SBOM's filename to its contents.
      */
     public Map<String, String> generateSBOMs() throws IOException {
         int status = this.client.runContainer();
@@ -146,6 +168,13 @@ public class OSI {
         return sboms;
     }
 
+    /**
+     * Cleans a subdirectory in the bound directory (sboms, code) to remove all files and then re-replace the
+     * .gitignore.
+     *
+     * @param directoryName The directory name to clean.
+     * @throws IOException If a file cannot be removed from the directory or if the .gitignore could not be written.
+     */
     protected void cleanBoundDirectory(String directoryName) throws IOException {
         String path = System.getProperty("user.dir") + BOUND_DIR + "/" + directoryName;
         File dir = new File(path);
@@ -158,28 +187,34 @@ public class OSI {
         try (PrintWriter w = new PrintWriter(path + "/.gitignore")) { w.print("*\n" + "!.gitignore"); }
     }
 
+
+
     /**
-     * OSI Client to interact with Docker
+     * OSI Client to interact with Docker.
      */
     private static class OSIClient {
+
+        /**
+         * The ID of the created OSI container.
+         */
         private final String osiContainerId;
 
-        // Docker Components
+        /**
+         * The main Docker API client.
+         */
         private final DockerClient dockerClient;
 
         /**
-         * Inits default Docker Client Object to Use
+         * Initializes default Docker client object and creates OSI container.
          */
         public OSIClient() {
             // Check if docker is installed and running
             if (dockerCheck() != 0) {
-                System.err.println("Docker is not running or not installed");
-
+                Debug.log(Debug.LOG_TYPE.ERROR, "Docker is not running or not installed");
                 throw new DockerNotAvailableException("Docker is not running or not installed");
             }
 
             // Default from GitHub
-            // todo review and update for our needs
             DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder().build();
             DockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
                     .dockerHost(config.getDockerHost())
@@ -193,10 +228,15 @@ public class OSI {
             this.osiContainerId = createContainer();
         }
 
+        /**
+         * Method to create the container (or find its ID if already created) from the ubuntu:latest OSI image.
+         *
+         * @return The ID of the container.
+         */
         protected String createContainer() {
             try {
                 CreateContainerResponse containerResponse = dockerClient
-                        .createContainerCmd("ubuntu")
+                        .createContainerCmd("ubuntu:latest")
                         .withName("svip-osi")
                         .exec();
                 return containerResponse.getId();
@@ -209,7 +249,7 @@ public class OSI {
         }
 
         /**
-         * Runs the OSI container
+         * Runs the OSI container to generate SBOMs on any source files.
          *
          * @return Container exit code
          */

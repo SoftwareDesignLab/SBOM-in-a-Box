@@ -11,7 +11,7 @@ First ensure Docker is installed and running and then deploy using the docker-co
 ```shell
 # Ensure Docker is installed and running.
 $ docker ps
-# Build all other images and deploy containers.
+# Build all images and deploy containers.
 $ docker compose up
 ```
 See the SVIP API section of [doc/API.md](doc/API.md#api) for detailed usage.

@@ -12,7 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `SBOMBuilders` instantiated with empty sets and hashmaps instead of null values
 - `.buildAndFlush()` methods now clear sets/hashmaps instead of setting to null
 
-
 ## [v5.1.3-alpha] - (7/19/2023)
 
 ### Added
