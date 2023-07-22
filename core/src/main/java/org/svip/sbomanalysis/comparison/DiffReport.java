@@ -51,7 +51,7 @@ public class DiffReport {
                 // Test targetValue against otherValue
                 for(Component otherComponent : other.getComponents()){
                     // Compare hash codes to account for different schema representations of the same component
-                    if(targetComponent.hashCode() == other.hashCode())
+                    if(targetComponent.hashCode() == otherComponent.hashCode())
                         this.componentConflicts.put(targetComponent.getName(), targetComponent.compare(otherComponent));
                 }
 
