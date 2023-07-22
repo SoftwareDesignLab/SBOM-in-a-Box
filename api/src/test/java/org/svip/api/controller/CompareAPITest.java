@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.model.SBOMFile;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbomanalysis.comparison.DiffReport;
 
 import java.util.Map;
