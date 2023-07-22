@@ -16,6 +16,7 @@ import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISC_MISMA
  * Represent a tool used to create the SBOM Data
  *
  * @author Derek Garcia
+ * @author Thomas Roman
  */
 public class CreationTool implements Comparable {
     private String vendor;
@@ -118,15 +119,15 @@ public class CreationTool implements Comparable {
         // todo more lax comparison like Contact?
 
         // Check if vendor equivalent
-        if(!this.vendor.equals(other.getVendor()))
+        if(this.vendor != null && !this.vendor.equals(other.getVendor()))
             return false;
 
         // Check if name equivalent
-        if(!this.name.equals(other.getName()))
+        if(this.name != null && !this.name.equals(other.getName()))
             return false;
 
         // Check if version equivalent
-        if(!this.version.equals(other.getVersion()))
+        if(this.version != null && !this.version.equals(other.getVersion()))
             return false;
 
         // Compare hashes
