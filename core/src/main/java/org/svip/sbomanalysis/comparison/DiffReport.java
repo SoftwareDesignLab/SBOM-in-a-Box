@@ -19,6 +19,7 @@ import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISSING;
  *
  * @author Matt London
  * @author Derek Garcia
+ * @author Thomas Roman
  */
 @JsonPropertyOrder({"target", "diffreport"})
 public class DiffReport {
@@ -41,8 +42,8 @@ public class DiffReport {
             // Round 1: Compare target against other if equal
             for(Component targetComponent : target.getComponents()){
 
-                // If other doesn't have component, skip
-                if(!other.getComponents().contains(targetComponent)){
+                // If other doesn't have component which shares name with target component, skip
+                if(other.getComponents().stream().noneMatch(o->o.getName() != null && o.getName().equals(targetComponent.getName()))){
                     this.missingComponents.add(targetComponent.getName());
                     continue;
                 }
@@ -58,8 +59,8 @@ public class DiffReport {
 
             // Round 2: Check for components present in other but not in target
             for(Component otherComponent : other.getComponents()){
-                // If other doesn't have component, skip
-                if(!target.getComponents().contains(otherComponent))
+                // If target doesn't have component which shares name with other component, skip
+                if(target.getComponents().stream().noneMatch(o->o.getName() != null && o.getName().equals(otherComponent.getName())))
                     this.missingComponents.add(otherComponent.getName());
             }
         }
