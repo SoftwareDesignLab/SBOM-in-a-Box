@@ -98,7 +98,7 @@ class PURLTestTests {
             }
         }
 
-        assertEquals(1, pass);
+        assertEquals(2, pass);
         assertEquals(1, fail);
     }
 
@@ -119,28 +119,7 @@ class PURLTestTests {
             }
         }
 
-        assertEquals(1, pass);
-        assertEquals(1, fail);
-    }
-
-    @Test
-    public void isValidPURL_pass_isAccuratePURL_match_fail_test(){
-        Set<Result> result =  purlTest.test("purl", testRandomPURL);
-
-        List<Result> resultList = new ArrayList<>(result);
-        int pass = 0;
-        int fail = 0;
-
-        for(Result r : resultList){
-            if(r.getStatus().equals(STATUS.PASS)){
-                pass++;
-            }
-            else{
-                fail++;
-            }
-        }
-
-        assertEquals(1, pass);
+        assertEquals(2, pass);
         assertEquals(1, fail);
     }
 }

@@ -194,8 +194,8 @@ class ResultFactoryTest {
                "Component Name", "Component Name");
 
         Result test_result = new Result(testAttributeList, testTestName,
-                "Name matches Component",
-                "Expected: Component Name\nActual: Component Name", STATUS.PASS);
+                "Name matches Component value",
+                "Expected: Component Name Actual: Component Name", STATUS.PASS);
 
         assertEquals(test_result.getAttributes(), r.getAttributes());
         assertEquals(test_result.getTest(), r.getTest());
