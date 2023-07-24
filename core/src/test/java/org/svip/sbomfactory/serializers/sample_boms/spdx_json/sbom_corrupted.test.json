@@ -1,0 +1,122 @@
+{
+  "SPDXID" : "SPDXRef-DOCUMENT",
+  "spdxVersion" : "SPDX-2.3",
+  "name" : "MINECRAFT",
+  "documentNamespace" : "12345678",
+  "comment" : "Test Document Comment",
+  "dataLicense" : "CC0-1.0",
+  "documentDescribes" : [ "uid1", "uid2", "uid3" ],
+  "creationInfo" : {
+    "comment" : "This SBOM was generated using the SVIP serializer tooling.",
+    "created" : "TEST TIMESTAMP",
+    "licenseListVersion" : "0.0",
+    "creators" : [ "Organization: Supplier (supplier@svip.xyz)", "Tool: SVIP Serializer-1.0.0", "Person: Test Author (author@publisher.xyz)" ]
+  },
+  "packages" : [ {
+    "name" : "COMPONENT 1",
+    "SPDXID" : "uid1",
+    "primaryPackagePurpose" : "type1",
+    "comment" : "comment1",
+    "versionInfo" : "version1",
+    "packageFileName" : "fileName1",
+    "supplier" : "Organization: SVIP1 (svip@svip.xyz)",
+    "originator" : "author1",
+    "downloadLocation" : "buygreto68gt3o78",
+    "filesAnalyzed" : true,
+    "homepage" : "homePage1",
+    "sourceInfo" : "sourceInfo1",
+    "licenseConcluded" : [ "concluded1" ],
+    "licenseDeclared" : [ "declared1" ],
+    "licenseInfoFromFiles" : [ "licenseFileText1" ],
+    "licenseComments" : "comment1",
+    "copyright" : "copyright1",
+    "summary" : "summary1",
+    "description" : "extendedDescription1",
+    "attributionText" : "attributionText1",
+    "builtDate" : "buildDate1",
+    "releaseDate" : "releaseDate1",
+    "validUntilDate" : "validUntilDate1",
+    "packageVerificationCode" : "verificationCode1",
+    "checksums" : [ {
+      "algorithm" : "SHA256",
+      "checksumValue" : "hash1"
+    } ],
+    "externalRefs" : [ {
+      "referenceCategory" : "SECURITY",
+      "referenceLocator" : "cpe1",
+      "referenceType" : "cpe23type"
+    }, {
+      "referenceCategory" : "testCategory",
+      "referenceLocator" : "1.svip.xyz",
+      "referenceType" : "testRef1"
+    }, {
+      "referenceCategory" : "PACKAGE-MANAGER",
+      "referenceLocator" : "purl1",
+      "referenceType" : "purl"
+    } ]
+  }, {
+    "name" : "COMPONENT 3",
+    "SPDXID" : "uid3",
+    "primaryPackagePurpose" : "type3",
+    "comment" : "comment3",
+    "versionInfo" : "version3",
+    "packageFileName" : "fileName3",
+    "supplier" : "Organization: SVIP3 (svip@svip.xyz)",
+    "downloadLocation" : "downloadLocation3",
+    "filesAnalyzed" : true,
+    "homepage" : "homePage3",
+    "sourceInfo" : "sourceInfo3",
+    "licenseConcluded" : [ "concluded3" ],
+    "licenseDeclared" : [ "declared3" ],
+    "licenseInfoFromFiles" : [ "h7ge7u47t38fggs" ],
+    "licenseComments" : "comment3",
+    "copyright" : "copyright3",
+    "summary" : "summary3",
+    "description" : "extendedDescription3",
+    "attributionText" : "attributionText3",
+    "builtDate" : "buildDate3",
+    "releaseDate" : "releaseDate3",
+    "validUntilDate" : "validUntilDate3",
+    "packageVerificationCode" : "verificationCode3",
+    "checksums" : [ {
+      "algorithm" : "SHA256",
+      "checksumValue" : "hash3"
+    } ],
+    "externalRefs" : [ {
+      "referenceCategory" : "PACKAGE-MANAGER",
+      "referenceLocator" : "purl3",
+      "referenceType" : "purl"
+    }, {
+      "referenceCategory" : "testCategory",
+      "referenceLocator" : "3.svip.xyz",
+      "referenceType" : "testRef3"
+    }, {
+      "referenceCategory" : "SECURITY",
+      "referenceLocator" : "cpe3",
+      "referenceType" : "cpe23type"
+    } ]
+  } ],
+  "files" : [ {
+    "SPDXID" : "uid2",
+    "fileName" : "fileName2",
+    "fileTypes" : [ "type2" ],
+    "fileContributors" : [ "author2" ],
+    "licenseComments" : "comment2",
+    "licenseConcluded" : [ "concluded2" ],
+    "licenseInfoInFiles" : [ "licenseFileText2" ],
+    "copyrightText" : "copyright2",
+    "comment" : "comment2",
+    "noticeText" : "fileNotice2",
+    "attributionText" : "attributionText2",
+    "checksums" : [ {
+      "algorithm" : "SHA256",
+      "checksumValue" : "h78yg349qwh"
+    } ]
+  } ],
+  "relationships" : [ {
+    "spdxElementId" : "uid1",
+    "relationshipType" : "DESCRIBES",
+    "relatedSpdxElement" : "uid3",
+    "comment" : "Test Relationship Comment"
+  } ]
+}
