@@ -1,6 +1,7 @@
 package org.svip.sbomanalysis.qualityattributes.pipelines.schemas.CycloneDX14;
 
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.model.uids.Hash;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.STATUS;
 
@@ -80,13 +81,15 @@ class CDX14PipelineTest {
 
     @Test
     void supportedHash_unsupported_fail_test() {
-        Result r = cdx14Pipeline.supportedHash("Hash Algorithm", testSPDXExclusiveHash, "Component");
+        Hash hash = new Hash(testSPDXExclusiveHash, "asdfasdfasdfasdfa");
+        Result r = cdx14Pipeline.supportedHash("Hash Algorithm", hash, "Component");
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
     @Test
     void supportedHash_supported_pass_test() {
-        Result r = cdx14Pipeline.supportedHash("Hash Algorithm", testSupportedHash, "Component");
+        Hash hash = new Hash(testSupportedHash, "asdfasdfasdfasdfa");
+        Result r = cdx14Pipeline.supportedHash("Hash Algorithm", hash, "Component");
         assertEquals(STATUS.PASS, r.getStatus());
     }
 }
