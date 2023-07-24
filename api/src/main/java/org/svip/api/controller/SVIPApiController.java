@@ -432,13 +432,47 @@ public class SVIPApiController {
 
     @PostMapping("/generators/osi")
     public ResponseEntity<String> generateOSI(@RequestBody SBOMFile[] files,
-                                           @RequestParam("projectName") String projectName,
                                            @RequestParam("schema") SerializerFactory.Schema schema,
-                                           @RequestParam("format") SerializerFactory.Format format){
-        // TODO (separate branch)
+                                           @RequestParam("format") SerializerFactory.Format format) {
         if (osiContainer == null)
             return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
-        return null;
+
+        long savedId;
+
+        try {
+            // Add files
+            for (SBOMFile srcFile : files)
+                osiContainer.addSourceFile(srcFile.getFileName(), srcFile.getContents());
+
+            // Generate SBOMs
+            Map<String, String> sboms = osiContainer.generateSBOMs();
+
+            // Deserialize SBOMs into list of SVIP SBOMs
+            Deserializer d;
+            List<SVIPSBOM> deserialized = new ArrayList<>();
+            for (Map.Entry<String, String> sbom : sboms.entrySet()) {
+                d = SerializerFactory.createDeserializer(sbom.getValue());
+                deserialized.add((SVIPSBOM) d.readFromString(sbom.getValue()));
+            }
+
+            // Merge SVIP SBOMs into one SVIP SBOM
+            MergerController merger = new MergerController();
+            SVIPSBOM osiMerged = (SVIPSBOM) merger.mergeAll(deserialized);
+
+            // Serialize SVIP SBOM to given schema and format and return
+            Serializer serializer = SerializerFactory.createSerializer(schema, format, true);
+            SBOMFile saved = sbomFileRepository.save(
+                    new SBOMFile("OSI_MERGED_SBOM", serializer.writeToString(osiMerged)));
+
+            // Get ID of saved SBOM
+            savedId = saved.getId();
+        } catch (Exception e) {
+            LOGGER.warn("Exception occurred while running OSI container.");
+            return new ResponseEntity<>("Exception occurred while running OSI container.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return Utils.encodeResponse(Long.toString(savedId));
     }
 
     /**
