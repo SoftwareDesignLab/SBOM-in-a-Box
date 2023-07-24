@@ -85,7 +85,6 @@ public class GenerateFromParserAPITest extends APITest {
     @DisplayName("")
     public void zipTest() throws IOException {
 
-        LOGGER.info(System.getProperty("user.dir"));
         ResponseEntity<Long> response = (ResponseEntity<Long>) controller.generateParsers(System.getProperty("user.dir")
                 + "/src/test/java/org/svip/api/sample_projects/Java.zip", "Java",
                 SerializerFactory.Schema.SPDX23, SerializerFactory.Format.TAGVALUE);

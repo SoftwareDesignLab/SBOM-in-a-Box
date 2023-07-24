@@ -29,8 +29,9 @@ public class ViewFromAPITest extends APITest {
         when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
 
         for (Long id : testMap.keySet()) {
-            ResponseEntity<String> response = controller.view(id);
-            assertEquals(testMap.get(id).getContents(), response.getBody());
+            ResponseEntity<Optional<SBOMFile>> response = (ResponseEntity<Optional<SBOMFile>>) controller.view(id);
+            SBOMFile s = response.getBody().get();
+            assertEquals(testMap.get(id).getContents(), s.getContents());
         }
     }
 
@@ -42,7 +43,7 @@ public class ViewFromAPITest extends APITest {
         // Simulate empty DB
         when(repository.findById(any())).thenAnswer(i -> Optional.empty());
 
-        ResponseEntity<String> response = controller.view(testId);
+        ResponseEntity<Optional<SBOMFile>> response = (ResponseEntity<Optional<SBOMFile>>) controller.view(testId);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 }

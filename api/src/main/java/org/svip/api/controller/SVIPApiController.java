@@ -161,7 +161,7 @@ public class SVIPApiController {
      * @return The contents of the SBOM file.
      */
     @GetMapping("/view")
-    public ResponseEntity<String> view(@RequestParam("id") Long id) {
+    public ResponseEntity<?> view(@RequestParam("id") Long id) {
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
@@ -172,7 +172,7 @@ public class SVIPApiController {
         // Log
         LOGGER.info("GET /svip/view?id=" + id + " - File: " + sbomFile.get().getFileName());
 
-        return Utils.encodeResponse(sbomFile.get().getContents());
+        return Utils.encodeResponse(sbomFile);
     }
 
     /**
@@ -390,7 +390,7 @@ public class SVIPApiController {
      * USAGE. Send GENERATE request to /generate an SBOM from source file(s)
      *
      * @param projectName of project to be converted to SBOM
-     * @param files from project source
+     * @param zipPath path to zip file
      * @param schema to convert to
      * @param format to convert to
      * @return generated SBOM
@@ -401,15 +401,14 @@ public class SVIPApiController {
                                            @RequestParam("schema") SerializerFactory.Schema schema,
                                            @RequestParam("format") SerializerFactory.Format format) throws IOException {
 
-        ArrayList<HashMap<SBOMFile, Integer>> unZipped = (ArrayList<HashMap<SBOMFile, Integer>>) Utils.unZip(zipPath);
-
-
         String urlMsg = "GENERATE /svip/generate?projectName=" + projectName;
 
         if(schema.equals(SerializerFactory.Schema.CDX14) && format.equals(SerializerFactory.Format.TAGVALUE)){
             LOGGER.error(urlMsg + " cannot parse into " + schema + " with incompatible format " + format);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
+        ArrayList<HashMap<SBOMFile, Integer>> unZipped = (ArrayList<HashMap<SBOMFile, Integer>>) Utils.unZip(zipPath);
 
         HashMap<VirtualPath, String> virtualPathStringHashMap = new HashMap<>();
 
