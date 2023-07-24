@@ -8,7 +8,14 @@
     - [Deployment](#deployment)
     - [Development](#development)
     - [Endpoints](#endpoints)
-      - [Upload SBOM](#upload-sboms)
+      - [Upload SBOMs](#upload-sboms)
+      - [Delete SBOMs](#delete-sboms)
+      - [Get SBOMs](#get-sboms)
+      - [Get Single SBOM](#get-single-sbom)
+      - [Get SBOM Object](#get-sbom-contents)
+      - [Convert SBOM](#convert-an-sbom)
+      - [Generate SBOM with SVIP](#generate-an-sbom-using-svip-parsers)
+      - [Apply SBOM Metrics](#quality-attributes-testing)
     - [MySQL Database](#mysql-database)
 
 # System Requirements
@@ -150,7 +157,7 @@ curl -X GET -G http://localhost:8080/svip/sboms \
 -d 'id=<SBOM UID>'
 ```
 
-### Get SBOM Contents
+### Get SBOM Object
 > Get a single SBOM object from the SQL Database using its ID
 
 **Endpoint:** `http://localhost:8080/svip/sboms/content`
