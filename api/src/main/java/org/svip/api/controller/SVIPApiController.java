@@ -139,7 +139,7 @@ public class SVIPApiController {
             Deserializer d = SerializerFactory.createDeserializer(sbomFile.getContents());
             d.readFromString(sbomFile.getContents());
         } catch (IllegalArgumentException | JsonProcessingException e) {
-            LOGGER.info("POST /svip/upload - " + errorMsg);
+            LOGGER.info("POST /svip/sboms - " + errorMsg);
             LOGGER.error(e.getMessage());
             return new ResponseEntity<>(errorMsg, HttpStatus.BAD_REQUEST);
         }
@@ -270,7 +270,7 @@ public class SVIPApiController {
     }
 
     /**
-     * USAGE. Send CONVERT request to /convert an existing SBOM on the backend to a desired schema and format
+     * USAGE. Send PUT request to /sboms an existing SBOM on the backend to a desired schema and format
      *
      * @param id of the SBOM
      * @param schema to convert to
@@ -278,7 +278,7 @@ public class SVIPApiController {
      * @param overwrite whether to overwrite original
      * @return converted SBOM
      */
-    @GetMapping("/convert")
+    @PutMapping("/sboms")
     public ResponseEntity<String> convert(@RequestParam("id") long id, @RequestParam("schema") SerializerFactory.Schema schema,
                                           @RequestParam("format") SerializerFactory.Format format,
                                           @RequestParam("overwrite") Boolean overwrite){
@@ -296,7 +296,7 @@ public class SVIPApiController {
         SBOMFile converted = (SBOMFile) conversionResult.keySet().toArray()[0];
 
         // Error message if needed
-        String defaultErrorMessage = "CONVERT /svip/convert?id=" + id + " - ERROR IN CONVERSION TO " + schema
+        String defaultErrorMessage = "CONVERT /svip/sboms?id=" + id + " - ERROR IN CONVERSION TO " + schema
                 + ((error.length() != 0) ? (": " + error) : "");
 
         // bad request errors
@@ -305,7 +305,7 @@ public class SVIPApiController {
             LOGGER.error(defaultErrorMessage);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else if (schema == SerializerFactory.Schema.CDX14 && format == SerializerFactory.Format.TAGVALUE) {
-            LOGGER.error("CONVERT /svip/convert?id=" + id + "TAGVALUE unsupported by CDX14");
+            LOGGER.error("CONVERT /svip/sboms?id=" + id + "TAGVALUE unsupported by CDX14");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

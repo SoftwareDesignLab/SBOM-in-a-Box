@@ -62,7 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated `API.md` documentation with the updated endpoints
 
-## [v5.1.5-alpha] - (7/21/2023)
+## [v5.2.1-alpha] - (7/21/2023)
 
 ### Added
 - Merge API Endpoint
@@ -77,6 +77,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - `Merger.java`abstract class and overall architecture
+
+## [v5.2.0-alpha] - (7/20/2023)
+
+### Changed
+- Updated endpoints to a REST-ful standard
+  - **Upload SBOM**
+    - prev: [get] http://localhost:8080/svip/upload
+    - new: [post] http://localhost:8080/svip/sboms
+
+  - **Get SBOM content by id**
+      - prev: [get] http://localhost:8080/svip/view
+      - new: [get]  http://localhost:8080/svip/sboms/content
+
+  - **Get SBOMs**
+    - prev: [get] http://localhost:8080/svip/viewFiles
+    - new:[get] http://localhost:8080/svip/sboms
+    > note: /getSBOM would instead use the /sboms endpoint and instead an id parameter should be used.
+    > 
+    > EX: [get] http://localhost:8080/svip/sboms?id={id}
+
+  - **Delete SBOM by id**
+    - prev: [delete] http://localhost:8080/svip/delete
+    - new: [delete] http://localhost:8080/svip/sboms?id={id}
+
+  - **Merge SBOMs**
+    - prev: [post] http://localhost:8080/svip/merge
+    - new: [post]  http://localhost:8080/svip/sboms/merge
+    
+  - **Convert SBOM by id**
+    - prev: [get] http://localhost:8080/svip/convert
+    - new: [put]  http://localhost:8080/svip/sboms
+
+  - **Merge SBOMs**
+    - prev: [post] http://localhost:8080/svip/merge
+    - new: [post]  http://localhost:8080/svip/sboms/merge
+
+  - **Generate SBOMs with SVIP**
+    - prev: [post] http://localhost:8080/svip/generate
+    - new: [post]  http://localhost:8080/svip/sboms/generate
+
+  - **Grade SBOMs**
+    - prev: [get] http://localhost:8080/svip/qa
+    - new: [get]  http://localhost:8080/svip/sboms/qa
 
 - Updated `API.md` documentation with the updated endpoints
 
