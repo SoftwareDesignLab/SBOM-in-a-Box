@@ -19,8 +19,9 @@
 ---
 
 # System Requirements
-- Java 17
-- Gradle
+- Java 17.X.X
+- Gradle 7.5.X
+- Docker 24.X.X
 
 ---
 

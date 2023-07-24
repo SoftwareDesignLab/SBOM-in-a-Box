@@ -2,9 +2,11 @@
 > The SBOM Visualization and Integration Platform (**SVIP**) is a unified platform to promote the 
 > production, consumption, and utilization of Software Bills of Materials.
 
-### Latest Release: [[v6.0.0-alpha] - (7/21/2023)](doc/changelog.md)
+### Latest Release: [[v7.0.0-alpha] - (7/21/2023)](doc/changelog.md)
 
 ## Quick Start
+
+> See [System Requirements](doc/README.md#system-requirements) for all system requirements.
 
 ### Deploy API with Docker
 First ensure Docker is installed and running and then deploy using the docker-compose script.
