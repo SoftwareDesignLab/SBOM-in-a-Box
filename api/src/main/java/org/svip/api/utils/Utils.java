@@ -16,7 +16,9 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import static org.svip.sbomgeneration.serializers.SerializerFactory.Format.TAGVALUE;
@@ -165,6 +167,48 @@ public class Utils {
             i++;
         }
         return id;
+    }
+
+    public static List<HashMap<SBOMFile, Integer>> unZip(ZipFile z) throws IOException{
+
+        ArrayList<HashMap<SBOMFile, Integer>> vpArray = new ArrayList<>();
+
+        byte[] buffer = new byte[1024];
+        Stream<? extends ZipEntry> entryStream  = z.stream();
+
+
+        entryStream.forEach(entry -> {//from  w ww .ja v a  2 s .c  o m
+            try {
+                // Get the input stream for the current zip entry
+                InputStream is = z.getInputStream(entry);
+                /* Read data for the entry using the is object */
+
+                int depth = entry.getName().split("[\\/]").length - 1; // todo we may not actually need depth
+
+                if(!entry.isDirectory()){
+                    StringBuilder contentsBuilder = new StringBuilder();
+                    int len;
+                    try{
+                        while ((len = is.read(buffer)) > 0) {
+                            contentsBuilder.append(new String(buffer));
+                        }
+                    }catch(EOFException e){
+                        is.close();
+                        LOGGER.error(e.getMessage());
+                    }
+
+                    HashMap<SBOMFile, Integer> hashMap = new HashMap<>();
+                    hashMap.put(new SBOMFile(entry.getName(), contentsBuilder.toString()), depth);
+                    vpArray.add(hashMap);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        return vpArray;
+
     }
 
     public static List<HashMap<SBOMFile, Integer>> unZip(String path) throws IOException{

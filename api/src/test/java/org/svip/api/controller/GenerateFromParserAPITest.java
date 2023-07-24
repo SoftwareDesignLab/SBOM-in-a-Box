@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.ZipFile;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -92,6 +93,18 @@ public class GenerateFromParserAPITest extends APITest {
         assertNotNull(response.getBody());
 
     }
+
+//    @Test
+//    @DisplayName("")
+//    public void zipFileTest() throws IOException {
+//
+//        ResponseEntity<Long> response = (ResponseEntity<Long>) controller.generateParsers(new ZipFile(System.getProperty("user.dir")
+//                        + "/src/test/java/org/svip/api/sample_projects/Java.zip"), "Java",
+//                SerializerFactory.Schema.SPDX23, SerializerFactory.Format.TAGVALUE);
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        assertNotNull(response.getBody());
+//
+//    }
 //
 //    @Test
 //    @DisplayName("Generate from parser test")

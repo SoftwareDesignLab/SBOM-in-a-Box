@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.zip.ZipFile;
 
 /**
  * Spring API Controller for handling requests to the SVIP backend.
@@ -396,10 +397,10 @@ public class SVIPApiController {
      * @return generated SBOM
      */
     @PostMapping("/generators/parsers")
-    public ResponseEntity<?> generateParsers(@RequestParam("zip") String zipPath,
-                                           @RequestParam("projectName") String projectName,
-                                           @RequestParam("schema") SerializerFactory.Schema schema,
-                                           @RequestParam("format") SerializerFactory.Format format) throws IOException {
+    public ResponseEntity<?> generateParsers(@RequestParam("zipPath") String zipPath,
+                                             @RequestParam("projectName") String projectName,
+                                             @RequestParam("schema") SerializerFactory.Schema schema,
+                                             @RequestParam("format") SerializerFactory.Format format) throws IOException {
 
         String urlMsg = "GENERATE /svip/generate?projectName=" + projectName;
 
