@@ -3,7 +3,21 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v5.2.0-alpha] - (7/24/2023)
+## [v5.2.1-alpha] - (7/21/2023)
+
+### Added
+- Merge API Endpoint
+- Merge API test `MergeFromAPITest.java`
+- `MergerCrossSchema.java`
+  - Allows merging two SBOMs regardless of origin format
+- Utility classes for Merger
+  - `MergerUtils.java`
+  - `comparison/utils/Utils.java`
+
+### Changed
+- `Merger.java`abstract class and overall architecture
+
+## [v5.2.0-alpha] - (7/20/2023)
 
 ### Changed
 - Updated endpoints to a REST-ful standard
@@ -29,6 +43,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - **Merge SBOMs**
         - prev: [post] http://localhost:8080/svip/merge
         - new: [post]  http://localhost:8080/svip/sboms/merge
+    
+    - **Convert SBOM by id**
+      - prev: [get] http://localhost:8080/svip/convert
+      - new: [put]  http://localhost:8080/svip/sboms
+
+    - **Merge SBOMs**
+      - prev: [post] http://localhost:8080/svip/merge
+      - new: [post]  http://localhost:8080/svip/sboms/merge
+
+    - **Generate SBOMs with SVIP**
+      - prev: [post] http://localhost:8080/svip/generate
+      - new: [post]  http://localhost:8080/svip/sboms/generate
+
+    - **Grade SBOMs**
+      - prev: [get] http://localhost:8080/svip/qa
+      - new: [get]  http://localhost:8080/svip/sboms/qa
 
 - Updated `API.md` documentation with the updated endpoints
 
