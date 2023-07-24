@@ -64,29 +64,30 @@ public class HashTest extends MetricTest{
      * @return a Result if the hash is valid or not
      */
     private Result isValidHash(String field, String value){
+        var rf = new ResultFactory("Valid Hash", ATTRIBUTE.COMPLETENESS, ATTRIBUTE.UNIQUENESS, ATTRIBUTE.MINIMUM_ELEMENTS);
         try{
             // create new hash object
             Hash hash = new Hash(field, value);
 
             // Check if hash algorithm is unknown
             if(hash.getAlgorithm() == Hash.Algorithm.UNKNOWN){
-                return resultFactory.fail(field, INFO.INVALID,
+                return rf.fail(field, INFO.INVALID,
                         value, componentName);
             }
 
             // Check if hash is valid
             if(!Hash.validateHash(hash.getAlgorithm(), hash.getValue())){
-                return resultFactory.fail(field, INFO.INVALID,
+                return rf.fail(field, INFO.INVALID,
                         value, componentName);
             } else {
-                return resultFactory.pass(field, INFO.VALID,
+                return rf.pass(field, INFO.VALID,
                         value, componentName);
             }
 
         }
         // failed to create a new Hash object, test automatically fails
         catch(Exception e){
-            return resultFactory.fail(field, INFO.INVALID,
+            return rf.fail(field, INFO.INVALID,
                     value, componentName);
         }
     }
