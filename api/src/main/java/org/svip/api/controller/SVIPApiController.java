@@ -129,7 +129,7 @@ public class SVIPApiController {
      * @return The uploaded filename used to identify the SBOM file.
      */
     @PostMapping("/sboms")
-    public ResponseEntity<?> upload(@RequestBody SBOMFile sbomFile) {
+    public ResponseEntity<?> uploadSBOM(@RequestBody SBOMFile sbomFile) {
         // Validate
         if (sbomFile.hasNullProperties())
             return new ResponseEntity<>("SBOM filename and/or contents may not be empty", HttpStatus.BAD_REQUEST);
@@ -161,7 +161,7 @@ public class SVIPApiController {
      * @return The contents of the SBOM file.
      */
     @GetMapping("/sboms/content")
-    public ResponseEntity<String> view(@RequestParam("id") Long id) {
+    public ResponseEntity<String> getSBOMContents(@RequestParam("id") Long id) {
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
@@ -184,7 +184,7 @@ public class SVIPApiController {
      * @return A JSON array of IDs of all currently uploaded SBOM files.
      */
     @GetMapping("/sboms")
-    public ResponseEntity<Long[]> viewFiles() {
+    public ResponseEntity<Long[]> getAllSBOMIds() {
         // Get file names
         List<SBOMFile> sbomFiles = sbomFileRepository.findAll();
 
@@ -207,8 +207,8 @@ public class SVIPApiController {
      * @param id The id of the SBOM contents to retrieve.
      * @return The contents of the SBOM file.
      */
-    @GetMapping("/sboms")
-    public ResponseEntity<?> getSBOM(@RequestParam("id") Long id){
+    @GetMapping("/sbom")
+    public ResponseEntity<?> getSBOMObject(@RequestParam("id") Long id){
 
         String urlMsg = "GET /svip/sboms?id=" + id;    // for logging
 
@@ -249,7 +249,7 @@ public class SVIPApiController {
      * @return The ID of the deleted file.
      */
     @DeleteMapping("/sboms")
-    public ResponseEntity<Long> delete(@RequestParam("id") Long id) {
+    public ResponseEntity<Long> deleteSBOM(@RequestParam("id") Long id) {
         // Get SBOM to be deleted
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
@@ -279,9 +279,9 @@ public class SVIPApiController {
      * @return converted SBOM
      */
     @PutMapping("/sboms")
-    public ResponseEntity<String> convert(@RequestParam("id") long id, @RequestParam("schema") SerializerFactory.Schema schema,
-                                          @RequestParam("format") SerializerFactory.Format format,
-                                          @RequestParam("overwrite") Boolean overwrite){
+    public ResponseEntity<String> convertSBOM(@RequestParam("id") long id, @RequestParam("schema") SerializerFactory.Schema schema,
+                                              @RequestParam("format") SerializerFactory.Format format,
+                                              @RequestParam("overwrite") Boolean overwrite){
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
@@ -338,7 +338,7 @@ public class SVIPApiController {
      * @return A JSON string of the Quality Report file.
      */
     @GetMapping("/sboms/qa")
-    public ResponseEntity<String> qa(@RequestParam("id") long id) throws IOException {
+    public ResponseEntity<String> generateQualityReport(@RequestParam("id") long id) throws IOException {
 
         SBOM sbom;
         Deserializer d;
@@ -458,7 +458,7 @@ public class SVIPApiController {
      * @return a merged sbomFile
      */
     @GetMapping("/merge")
-    public ResponseEntity<String> merge(@RequestParam("ids") long[] ids){
+    public ResponseEntity<String> mergeSBOMs(@RequestParam("ids") long[] ids){
 
         ArrayList<SBOM> sboms = new ArrayList<>();
 
