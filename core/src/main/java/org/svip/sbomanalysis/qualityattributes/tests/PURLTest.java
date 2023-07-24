@@ -120,19 +120,19 @@ public class PURLTest extends MetricTest{
         // test purl and component name
         String purlName = purl.getName();
         if(!purlName.equals(component.getName())){
-            results.add(rf.fail("PURL Name", INFO.INVALID,
+            results.add(rf.fail("PURL Name", INFO.NOT_MATCHING,
                     purl.getName(), component.getName()));
         } else {
-            results.add(rf.pass("PURL Name", INFO.VALID,
+            results.add(rf.pass("PURL Name", INFO.MATCHING,
                     purl.getName(), component.getName()));
         }
         // test purl and component version
         String purlVersion = purl.getVersion();
         if(!purlVersion.equals(component.getVersion())){
-            results.add(rf.fail("PURL Version", INFO.INVALID,
+            results.add(rf.fail("PURL Version", INFO.NOT_MATCHING,
                     purl.getVersion(), component.getVersion()));
         } else {
-            results.add(rf.pass("PURL Version", INFO.VALID,
+            results.add(rf.pass("PURL Version", INFO.MATCHING,
                     purl.getVersion(), component.getVersion()));
         }
         return results;

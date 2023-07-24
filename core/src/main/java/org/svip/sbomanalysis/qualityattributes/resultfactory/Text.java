@@ -60,6 +60,8 @@ public class Text {
             case INVALID -> message.append(value).append(" is an invalid ").append(field);
             case NULL -> message.append(field).append(" was a null value");
             case ERROR -> message.append(field).append(" had an error");
+            case MATCHING -> message.append(field).append(" matches Component value");
+            case NOT_MATCHING -> message.append(field).append(" does not match Component value");
         }
 
         return message.toString();
@@ -116,6 +118,8 @@ public class Text {
             case NULL -> details.append(field).append(" was a null value");
             case ERROR -> details.append(value).append(" had an error producing " +
                     "the following object: ").append(field);
+            case NOT_MATCHING, MATCHING -> details.append("Expected: ").append(value).append(" ")
+                    .append("Actual: ").append(this.context);
         }
         return details.toString();
     }
