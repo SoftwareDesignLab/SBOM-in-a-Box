@@ -14,7 +14,10 @@ import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.utils.Converter;
 import org.svip.api.utils.Utils;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
+import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.interfaces.generics.SBOMPackage;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
@@ -28,6 +31,12 @@ import org.svip.sbomanalysis.qualityattributes.pipelines.schemas.SPDX23.SPDX23Pi
 import org.svip.sbomgeneration.serializers.SerializerFactory;
 import org.svip.sbomgeneration.serializers.deserializer.Deserializer;
 import org.svip.sbomgeneration.serializers.serializer.Serializer;
+import org.svip.sbomvex.database.NVDClient;
+import org.svip.sbomvex.database.OSVClient;
+import org.svip.sbomvex.database.interfaces.VulnerabilityDBClient;
+import org.svip.sbomvex.model.VEX;
+import org.svip.sbomvex.model.VEXType;
+import org.svip.sbomvex.vexstatement.VEXStatement;
 import org.svip.utils.VirtualPath;
 
 import java.util.*;
@@ -541,5 +550,102 @@ public class SVIPApiController {
 
         return Utils.encodeResponse(result.getContents());
 
+    }
+
+    /** USAGE Send GET request to /vex to generate a VEX Document for an SBOM
+     * The API will respond with an HTTP 200 a VEX object, and a hashmap of
+     * and errors that occurred
+     *
+     * @param id The id of the SBOM contents to retrieve.
+     * @param format the format of teh VEX Document
+     * @param client the api client to use (currently NVD or OSV)
+     * @return A JSON string of the Quality Report file.
+     */
+    @GetMapping("/sboms/vex")
+    public ResponseEntity<String> vex(@RequestParam("id") long id,
+                                     @RequestParam("format") String format,
+                                     @RequestParam("client") String client) throws JsonProcessingException {
+        SBOM sbom;
+        Deserializer d;
+
+        // Get the SBOM to be tested
+        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
+
+        // Check if it exists
+        if (sbomFile.isEmpty()) {
+            LOGGER.info("VEX /svip/sboms/vex?id=" + id + " - FILE NOT FOUND");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Deserialize SBOM into JSON object
+        try{
+            d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
+            sbom = d.readFromString(sbomFile.get().getContents());
+        } catch (JsonProcessingException e ){
+            return new ResponseEntity<>("Failed to deserialize SBOM content, may be an unsupported format", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e){
+            return new ResponseEntity<>("Deserialization Error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        VulnerabilityDBClient vc;
+        // check that user entered a valid database client
+        switch(client.toLowerCase()){
+            case "osv" -> vc = new OSVClient();
+            case "nvd" -> vc = new NVDClient();
+            default -> {
+                LOGGER.info("VEX /svip/sboms/vex?client=" + client + " - INVALID CLIENT");
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        }
+
+        VEX.Builder vb = new VEX.Builder();
+        String creationTime = String.valueOf(java.time.LocalDateTime.now());
+        vb.setVEXIdentifier(sbom.getName());
+        vb.setDocVersion("1.0");
+        vb.setTimeFirstIssued(creationTime);
+        vb.setTimeLastUpdated(creationTime);
+
+        // check that user entered a valid format
+        switch(format.toLowerCase()){
+            case "cyclonedx" -> {
+                vb.setOriginType(VEXType.CYCLONE_DX);
+                vb.setSpecVersion("1.4");
+            }
+            case "csaf" -> {
+                vb.setOriginType(VEXType.CSAF);
+                vb.setSpecVersion("2.0");
+            }
+            default -> {
+                LOGGER.info("VEX /svip/sboms/vex?format=" + format + " - INVALID VEX FORMAT");
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        }
+
+        HashMap<String, String> error = new HashMap<>();
+        for(Component c : sbom.getComponents()){
+            if(c instanceof SBOMPackage){
+                try{
+                    var statements = vc.getVEXStatements((SBOMPackage) c);
+                    if(!statements.isEmpty())
+                        for(VEXStatement vs : statements)
+                            vb.addVEXStatement(vs);
+                    else{
+                        error.put(c.getName(), "No vulnerabilities found");
+                    }
+                } catch (Exception e) {
+                    error.put(c.getName(), e.getMessage());
+                }
+            }
+        }
+
+        VEX vex = vb.build();
+
+        // Log
+        LOGGER.info("VEX /svip/sboms/vex?id=" + id + " - VEX CREATED: " + sbomFile.get().getFileName());
+
+        // Return Quality Report as JSON to Frontend
+        ObjectMapper mapper = new ObjectMapper();
+        // TODO return error hashmap?
+        return new ResponseEntity<>(mapper.writeValueAsString(vex), HttpStatus.OK);
     }
 }
