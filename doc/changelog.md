@@ -43,6 +43,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Merge SBOMs**
     - prev: [post] http://localhost:8080/svip/merge
     - new: [post]  http://localhost:8080/svip/sboms/merge
+    
+  - **Convert SBOM by id**
+    - prev: [get] http://localhost:8080/svip/convert
+    - new: [put]  http://localhost:8080/svip/sboms
+
+  - **Merge SBOMs**
+    - prev: [post] http://localhost:8080/svip/merge
+    - new: [post]  http://localhost:8080/svip/sboms/merge
+
+  - **Generate SBOMs with SVIP**
+    - prev: [post] http://localhost:8080/svip/generate
+    - new: [post]  http://localhost:8080/svip/sboms/generate
+
+  - **Grade SBOMs**
+    - prev: [get] http://localhost:8080/svip/qa
+    - new: [get]  http://localhost:8080/svip/sboms/qa
 
 - Updated `API.md` documentation with the updated endpoints
 
