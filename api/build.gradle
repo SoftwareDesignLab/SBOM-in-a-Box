@@ -37,6 +37,17 @@ dependencies {
     implementation project(path: ':core')
 }
 
+test {
+    useJUnitPlatform()
+}
+
+sourceSets {
+    test {
+        java {
+            srcDir 'test'
+        }
+    }
+}
 
 bootJar {
     mainClassName = 'org.svip.api.SVIPApplication'
