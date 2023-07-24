@@ -141,7 +141,7 @@ public class SVIPApiController {
         } catch (IllegalArgumentException | JsonProcessingException e) {
             LOGGER.info("POST /svip/upload - " + errorMsg);
             LOGGER.error(e.getMessage());
-            return new ResponseEntity<>(errorMsg, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage() + " " + errorMsg, HttpStatus.BAD_REQUEST);
         }
 
         // Upload
