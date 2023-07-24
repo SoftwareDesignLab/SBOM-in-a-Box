@@ -155,8 +155,8 @@ public class CDX14Pipeline implements CDX14Tests {
         Pattern cdx14UIDPattern = new Pattern(CDX14_UID_REGEX, Pattern.DEFAULT);
 
         // set the attributes of this test to create a new ResultFactory
-        String testName = "ValidSerialNumber";
-        ResultFactory resultFactory = new ResultFactory(testName,
+        String testName = "Valid Serial Number";
+        var resultFactory = new ResultFactory(testName,
                 ATTRIBUTE.CDX14, ATTRIBUTE.COMPLETENESS);
 
         // first check if the sbom uid is not a null or empty string
@@ -201,8 +201,8 @@ public class CDX14Pipeline implements CDX14Tests {
      */
     @Override
     public Result supportedHash(String field, String value, String componentName) {
-        String testName = "SupportedCDXHash";
-        ResultFactory resultFactory = new ResultFactory(testName,
+        String testName = "Supported CycloneDX Hash";
+        var resultFactory = new ResultFactory(testName,
                 ATTRIBUTE.CDX14, ATTRIBUTE.UNIQUENESS);
 
         // hash is unsupported, test fails
