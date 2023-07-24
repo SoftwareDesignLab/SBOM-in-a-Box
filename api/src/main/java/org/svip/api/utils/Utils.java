@@ -11,6 +11,7 @@ import org.svip.sbomgeneration.serializers.SerializerFactory;
 import org.svip.utils.VirtualPath;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
@@ -166,66 +167,47 @@ public class Utils {
         return id;
     }
 
-    public static VirtualPath unZip(String path) throws IOException{
+    public static List<HashMap<SBOMFile, Integer>> unZip(String path) throws IOException{
+
+        ArrayList<HashMap<SBOMFile, Integer>> vpArray = new ArrayList<>();
 
         byte[] buffer = new byte[1024];
         ZipInputStream zs = new ZipInputStream(new FileInputStream(path));
         ZipEntry zipEntry = zs.getNextEntry();
 
-        int depth = 1;
+        int depth; // todo we may not actually need depth
+
         while (zipEntry != null){
 
-            File newFile = newFile(new File(System.getProperty("user.dir")), zipEntry);
-            if (zipEntry.isDirectory()) {
-                if (!newFile.isDirectory() && !newFile.mkdirs()) {
-                    throw new IOException("Failed to create directory " + newFile);
-                }
-                depth++;
-            } else {
-                // fix for Windows-created archives
-                File parent = newFile.getParentFile();
-                if (!parent.isDirectory() && !parent.mkdirs()) {
-                    throw new IOException("Failed to create directory " + parent);
-                }
+            depth = zipEntry.getName().split("[\\/]").length - 1;
 
+            if (!zipEntry.isDirectory())
+            {
                 // write file content
-                FileOutputStream fos = new FileOutputStream(newFile);
+                StringBuilder contentsBuilder = new StringBuilder();
                 int len;
                 try{
                     while ((len = zs.read(buffer)) > 0) {
-                        fos.write(buffer, 0, len);
+                        contentsBuilder.append(new String(buffer));
                     }
                 }catch(EOFException e){
-                    fos.close();
                     zs.close();
                     LOGGER.error(e.getMessage());
                     break;
                 }
 
-                fos.close();
+                HashMap<SBOMFile, Integer> hashMap = new HashMap<>();
+                hashMap.put(new SBOMFile(zipEntry.getName(), contentsBuilder.toString()), depth);
+                vpArray.add(hashMap);
             }
             zipEntry = zs.getNextEntry();
-
         }
 
         zs.closeEntry();
         zs.close();
 
-        return null;
+        return vpArray;
 
-    }
-
-    public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
-        File destFile = new File(destinationDir, zipEntry.getName());
-
-        String destDirPath = destinationDir.getCanonicalPath();
-        String destFilePath = destFile.getCanonicalPath();
-
-        if (!destFilePath.startsWith(destDirPath + File.separator)) {
-            throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
-        }
-
-        return destFile;
     }
 
 }

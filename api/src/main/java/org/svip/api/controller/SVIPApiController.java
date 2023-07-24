@@ -396,12 +396,13 @@ public class SVIPApiController {
      * @return generated SBOM
      */
     @PostMapping("/generators/parsers")
-    public ResponseEntity<?> generateParsers(@RequestBody SBOMFile[] files,
+    public ResponseEntity<?> generateParsers(@RequestParam("zip") String zipPath,
                                            @RequestParam("projectName") String projectName,
                                            @RequestParam("schema") SerializerFactory.Schema schema,
-                                           @RequestParam("format") SerializerFactory.Format format){
+                                           @RequestParam("format") SerializerFactory.Format format) throws IOException {
 
-        ParserController parserController = new ParserController(projectName, new HashMap<>());
+        ArrayList<HashMap<SBOMFile, Integer>> unZipped = (ArrayList<HashMap<SBOMFile, Integer>>) Utils.unZip(zipPath);
+
 
         String urlMsg = "GENERATE /svip/generate?projectName=" + projectName;
 
@@ -410,14 +411,24 @@ public class SVIPApiController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        for (SBOMFile f: files
+        HashMap<VirtualPath, String> virtualPathStringHashMap = new HashMap<>();
+
+        for (HashMap<SBOMFile, Integer> h: unZipped
              ) {
+
+            SBOMFile f = (SBOMFile) h.keySet().toArray()[0];
+
             if(f.hasNullProperties()){
                 LOGGER.error(urlMsg + "/fileName=" + f.getFileName() + " has null properties");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
-            parserController.addFile(new VirtualPath(f.getFileName()), f.getContents());
+
+            virtualPathStringHashMap.put(new VirtualPath(f.getFileName()), f.getContents());
+
         }
+
+        ParserController parserController = new ParserController(projectName, virtualPathStringHashMap);
+
 
         SVIPSBOM parsed;
         try{
