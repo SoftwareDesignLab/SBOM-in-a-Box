@@ -112,7 +112,7 @@ curl -X DELETE -G http://localhost:8080/svip/sboms \
 -d 'id=<SBOM UID>'
 ```
 
-### Get SBOMs
+### Get SBOMs IDs
 > Get all existing uploaded file IDs
 
 **Endpoint:** `http://localhost:8080/svip/sboms`
@@ -133,7 +133,7 @@ curl -X GET http://localhost:8080/svip/sboms
 ### Get Single SBOM
 > Get a single deserialized SBOM object from the SQL Database using its ID
 
-**Endpoint:** `http://localhost:8080/svip/sboms`
+**Endpoint:** `http://localhost:8080/svip/sbom`
 
 **Request Method:** `GET`
 
@@ -153,12 +153,12 @@ curl -X GET http://localhost:8080/svip/sboms
 
 **Example**
 ```bash
-curl -X GET -G http://localhost:8080/svip/sboms \
+curl -X GET -G http://localhost:8080/svip/sbom \
 -d 'id=<SBOM UID>'
 ```
 
-### Get SBOM Object
-> Get a single SBOM object from the SQL Database using its ID
+### Get SBOM Content
+> Get a raw SBOM contents from database
 
 **Endpoint:** `http://localhost:8080/svip/sboms/content`
 
@@ -174,7 +174,7 @@ curl -X GET -G http://localhost:8080/svip/sboms \
 
 | Response Code |  Type  |          Description          |
 |:-------------:|:------:|:-----------------------------:|
-|      200      | String |   A JSON of the SBOM Object   |
+|      200      | String | A String of the SBOM Contents |
 |      404      | String |      File does not exist      |
 |      500      | String | Failed to deserialize content |
 
