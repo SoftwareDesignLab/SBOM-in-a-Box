@@ -3,6 +3,20 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v5.2.1-alpha] - (7/21/2023)
+
+### Added
+- Merge API Endpoint
+- Merge API test `MergeFromAPITest.java`
+- `MergerCrossSchema.java`
+  - Allows merging two SBOMs regardless of origin format
+- Utility classes for Merger
+  - `MergerUtils.java`
+  - `comparison/utils/Utils.java`
+
+### Changed
+- `Merger.java`abstract class and overall architecture
+
 ## [v5.2.0-alpha] - (7/20/2023)
 
 ### Changed
