@@ -181,8 +181,8 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
         Pattern cdx14UIDPattern = new Pattern(UID_REGEX, Pattern.DEFAULT);
 
         // set the attributes of this test to create a new ResultFactory
-        String testName = "ValidSerialNumber";
-        ResultFactory resultFactory = new ResultFactory(testName,
+        String testName = "Valid Serial Number";
+        var resultFactory = new ResultFactory(testName,
                 ATTRIBUTE.CDX14, ATTRIBUTE.COMPLETENESS);
 
         // first check if the sbom uid is not a null or empty string
@@ -227,8 +227,8 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
      */
     @Override
     public Result supportedHash(String field, String value, String componentName) {
-        String testName = "SupportedCDXHash";
-        ResultFactory resultFactory = new ResultFactory(testName,
+        String testName = "Supported CycloneDX Hash";
+        var resultFactory = new ResultFactory(testName,
                 ATTRIBUTE.CDX14, ATTRIBUTE.UNIQUENESS);
 
         // hash is unsupported, test fails
@@ -253,10 +253,10 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
      */
     @Override
     public Result hasDataLicense(String field, Set<String> values, String sbomName) {
-        String testName = "HasDataLicense";
+        String testName = "Has Data License";
 
         // set the attributes of this test to create a new ResultFactory
-        ResultFactory resultFactory = new ResultFactory(testName,
+        var resultFactory = new ResultFactory(testName,
                 ATTRIBUTE.SPDX23, ATTRIBUTE.COMPLETENESS);
 
         // the required sbom license
@@ -287,9 +287,9 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
      */
     @Override
     public Result hasSPDXID(String field, String value, String componentName) {
-        String testName = "HasSPDXID";
+        String testName = "Has SPDXID";
         // set the attributes of this test to create a new ResultFactory
-        ResultFactory resultFactory = new ResultFactory(testName,
+        var resultFactory = new ResultFactory(testName,
                 ATTRIBUTE.SPDX23, ATTRIBUTE.UNIQUENESS);
 
         // SPDXID is present and not a null or empty String
@@ -343,7 +343,7 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
         // create a new EmptyOrNullTest and ResultFactory
         var emptyNullTest = new EmptyOrNullTest(ATTRIBUTE.SPDX23,
                 ATTRIBUTE.COMPLETENESS);
-        ResultFactory resultFactory = new ResultFactory("HasCreationInfo",
+        var resultFactory = new ResultFactory("Has Creation Info",
                 ATTRIBUTE.SPDX23, ATTRIBUTE.COMPLETENESS);
 
         // creation data is null, test automatically fails and ends
@@ -401,9 +401,9 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
      */
     @Override
     public Result hasVerificationCode(String field, String value, boolean filesAnalyzed, String componentName) {
-        String testName = "HasVerificationCode";
+        String testName = "Has Verification Code";
         // set the attributes of this test to create a new ResultFactory
-        ResultFactory resultFactory = new ResultFactory(testName,
+        var resultFactory = new ResultFactory(testName,
                 ATTRIBUTE.SPDX23, ATTRIBUTE.COMPLETENESS);
 
         // if files were analyzed, check if the verification code is present
