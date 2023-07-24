@@ -90,6 +90,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored `parsers` package to use the new `SVIPSBOM` & `SVIPComponentObject`.
   - Refactored all parser unit tests to reflect this (100% passing, code coverage TBD).
 - Refactored `SBOMGeneratorCLI` class to use `serializers` & `parsers` packages.
+- New OSV API Client implementation:
+  - `OSVClient` - Class that, when given an SBOM, will create a new VEX Document object with the OSV API database
 
 ### Changed
 - Moved `Debug`, `QueryWorker`, & `VirtualPath` classes to the base `utils` package.
