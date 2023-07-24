@@ -75,7 +75,7 @@ public class CPETest extends MetricTest{
             new CPE(value);    // throws error if given purl string is invalid
             return rf.pass(field, INFO.VALID, value, component.getName());
         } catch (Exception e){
-            return rf.error(field, INFO.ERROR, value, component.getName());
+            return rf.fail(field, INFO.ERROR, value, component.getName());
         }
     }
 
