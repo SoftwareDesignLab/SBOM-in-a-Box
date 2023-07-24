@@ -261,10 +261,10 @@ public class SPDX23Pipeline implements SPDX23Tests {
      */
     @Override
     public Result hasDataLicense(String field, Set<String> values, String sbomName) {
-        String testName = "HasDataLicense";
+        String testName = "Has Data License";
 
         // set the attributes of this test to create a new ResultFactory
-        ResultFactory resultFactory = new ResultFactory(testName,
+        var resultFactory = new ResultFactory(testName,
                 ATTRIBUTE.SPDX23, ATTRIBUTE.COMPLETENESS);
 
         // the required sbom license
@@ -295,9 +295,9 @@ public class SPDX23Pipeline implements SPDX23Tests {
      */
     @Override
     public Result hasSPDXID(String field, String value, String componentName) {
-        String testName = "HasSPDXID";
+        String testName = "Has SPDXID";
         // set the attributes of this test to create a new ResultFactory
-        ResultFactory resultFactory = new ResultFactory(testName,
+        var resultFactory = new ResultFactory(testName,
                 ATTRIBUTE.SPDX23, ATTRIBUTE.UNIQUENESS);
 
         // SPDXID is present and not a null or empty String
@@ -351,7 +351,7 @@ public class SPDX23Pipeline implements SPDX23Tests {
         // create a new EmptyOrNullTest and ResultFactory
         var emptyNullTest = new EmptyOrNullTest(ATTRIBUTE.SPDX23,
                 ATTRIBUTE.COMPLETENESS);
-        ResultFactory resultFactory = new ResultFactory("HasCreationInfo",
+        var resultFactory = new ResultFactory("Has Creation Info",
                 ATTRIBUTE.SPDX23, ATTRIBUTE.COMPLETENESS);
 
         // creation data is null, test automatically fails and ends
@@ -408,9 +408,9 @@ public class SPDX23Pipeline implements SPDX23Tests {
      */
     @Override
     public Result hasVerificationCode(String field, String value, boolean filesAnalyzed, String componentName) {
-        String testName = "HasVerificationCode";
+        String testName = "Has Verification Code";
         // set the attributes of this test to create a new ResultFactory
-        ResultFactory resultFactory = new ResultFactory(testName,
+        var resultFactory = new ResultFactory(testName,
                 ATTRIBUTE.SPDX23, ATTRIBUTE.COMPLETENESS);
 
         // if files were analyzed, check if the verification code is present
