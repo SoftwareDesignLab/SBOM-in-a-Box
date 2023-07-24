@@ -102,5 +102,16 @@ public class LicenseCollection implements Comparable {
         cf.compareStringSets("License", LICENSE_MISMATCH, this.getInfoFromFiles(), other.getInfoFromFiles());
         return cf.getConflicts();
     }
+
+    /**
+     * Test if Object is equal to current
+     * @param o Object
+     * @return List of Conflicts
+     */
+    @Override
+    public boolean equals(Object o){
+        // LC is just collection of licenses, if a collection then it is equal
+        return o != null && getClass() == o.getClass();
+    }
 }
 
