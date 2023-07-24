@@ -113,30 +113,30 @@ public class CPETest extends MetricTest{
         // test cpe and component name
         String cpeName = cpe.getProduct();
         if(!cpeName.equals(component.getName())){
-            results.add(rf.fail("CPE Name", INFO.INVALID,
+            results.add(rf.fail("CPE Name", INFO.NOT_MATCHING,
                     cpeName, component.getName()));
         } else {
-            results.add(rf.pass("CPE Name", INFO.VALID,
+            results.add(rf.pass("CPE Name", INFO.MATCHING,
                     cpeName, component.getName()));
         }
 
         // test cpe and component version
         String cpeVersion = cpe.getVersion();
         if(!cpeVersion.equals(component.getVersion())){
-            results.add(rf.fail("CPE Version", INFO.INVALID,
+            results.add(rf.fail("CPE Version", INFO.NOT_MATCHING,
                     cpeVersion, component.getVersion()));
         } else {
-            results.add(rf.pass("CPE Version", INFO.VALID,
+            results.add(rf.pass("CPE Version", INFO.MATCHING,
                     cpeVersion, component.getVersion()));
         }
 
         // test cpe vendor to component author
         String cpeVendor = cpe.getVendor();
         if(!cpeVendor.equals(component.getAuthor())){
-            results.add(rf.fail("CPE Vendor", INFO.INVALID,
+            results.add(rf.fail("CPE Vendor", INFO.NOT_MATCHING,
                     cpeVendor, component.getAuthor()));
         } else {
-            results.add(rf.fail("CPE Vendor", INFO.VALID,
+            results.add(rf.pass("CPE Vendor", INFO.MATCHING,
                     cpeVendor, component.getAuthor()));
         }
 

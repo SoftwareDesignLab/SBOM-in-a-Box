@@ -2,8 +2,6 @@ package org.svip.sbomanalysis.qualityattributes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
@@ -40,7 +38,9 @@ public class GenerateQualityReportTest {
         QualityReport qualityReport = cdx14Pipeline.process(sbom.getUID(), sbom);
 
         ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValueAsString(qualityReport);
+        // pretty print
+        String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(qualityReport);
+        System.out.println(json);
     }
 
     @Test

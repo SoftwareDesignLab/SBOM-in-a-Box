@@ -12,5 +12,7 @@ public enum INFO {
     VALID,
     INVALID,
     NULL,
-    ERROR
+    ERROR,
+    MATCHING,
+    NOT_MATCHING
 }
