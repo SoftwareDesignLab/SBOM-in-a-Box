@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.model.SBOMFile;
+import org.svip.api.utils.Utils;
 import org.svip.sbomgeneration.serializers.SerializerFactory;
 
 import java.io.IOException;
@@ -75,6 +76,19 @@ public class GenerateFromParserAPITest extends APITest {
         assertEquals(HttpStatus.BAD_REQUEST, controller.generateParsers(sbomFiles,
                         "Java", SerializerFactory.Schema.CDX14, SerializerFactory.Format.TAGVALUE).
                 getStatusCode());
+    }
+
+    /**
+     *
+     */
+    @Test
+    @DisplayName("")
+    public void zipTest() throws IOException {
+
+        LOGGER.info(System.getProperty("user.dir"));
+        Utils.unZip(System.getProperty("user.dir")
+                + "/src/test/java/org/svip/api/sample_projects/Java.zip");
+
     }
 
     @Test
