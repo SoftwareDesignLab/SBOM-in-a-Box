@@ -6,16 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.controller.SVIPApiController;
 import org.svip.api.model.SBOMFile;
+import org.svip.api.repository.SBOMFileRepository;
 import org.svip.sbomgeneration.serializers.SerializerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static org.svip.sbomgeneration.serializers.SerializerFactory.Format.TAGVALUE;
 
@@ -70,7 +68,7 @@ public class Utils {
      * Reusable code used in API controller to check if SBOMFile is empty/not found
      * Also eliminates the need for isPresent() check for Optionals
      */
-    public static ResponseEntity<String> checkIfExists(long id, Optional<SBOMFile> sbomFile, String call) {
+    public static ResponseEntity<Long> checkIfExists(long id, Optional<SBOMFile> sbomFile, String call) {
         if (sbomFile.isEmpty()) {
             LOGGER.info("DELETE /svip/" + call + "?id=" + id + " - FILE NOT FOUND. INVALID ID");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -152,6 +150,17 @@ public class Utils {
             }
         }
         return sbomFiles;
+    }
+
+
+    public static long generateNewId(long id, Random rand, SBOMFileRepository sbomFileRepository) {
+        // assign new id and name
+        int i = 0;
+        while(sbomFileRepository.existsById(id)){ // todo check if frontend are okay with this
+            id += (rand.nextLong() + id) % ((i < 100) ? id : Long.MAX_VALUE);
+            i++;
+        }
+        return id;
     }
 
 }

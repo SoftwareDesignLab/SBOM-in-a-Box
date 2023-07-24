@@ -166,8 +166,8 @@ public class SVIPApiController {
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
         // Check if it exists
-        ResponseEntity<String> NOT_FOUND = Utils.checkIfExists(id, sbomFile, "view");
-        if (NOT_FOUND != null) return NOT_FOUND;
+        ResponseEntity<Long> NOT_FOUND = Utils.checkIfExists(id, sbomFile, "view");
+        if (NOT_FOUND != null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         // Log
         LOGGER.info("GET /svip/view?id=" + id + " - File: " + sbomFile.get().getFileName());
@@ -278,14 +278,14 @@ public class SVIPApiController {
      * @return converted SBOM
      */
     @GetMapping("/convert")
-    public ResponseEntity<String> convert(@RequestParam("id") long id, @RequestParam("schema") SerializerFactory.Schema schema,
+    public ResponseEntity<Long> convert(@RequestParam("id") long id, @RequestParam("schema") SerializerFactory.Schema schema,
                                           @RequestParam("format") SerializerFactory.Format format,
                                           @RequestParam("overwrite") Boolean overwrite){
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
         // Check if it exists
-        ResponseEntity<String> NOT_FOUND = Utils.checkIfExists(id, sbomFile, "convert");
+        ResponseEntity<Long> NOT_FOUND = Utils.checkIfExists(id, sbomFile, "convert");
         if (NOT_FOUND != null) return NOT_FOUND;
 
         // Get and convert SBOM
@@ -320,12 +320,14 @@ public class SVIPApiController {
         converted.setFileName(toConvert.getFileName());
 
         // overwrite
-        if(overwrite){
+        if(overwrite)
             sbomFileRepository.deleteById(id);
-            sbomFileRepository.save(converted);
-        }
+        else
+            converted.setId(Utils.generateNewId(id, new Random(), sbomFileRepository));
 
-        return Utils.encodeResponse(converted.getContents());
+        sbomFileRepository.save(converted);
+
+        return Utils.encodeResponse(converted.getId());
     }
 
     /** USAGE Send GET request to /qa with a URL parameter id to conduct a quality assessment on the SBOM with
@@ -394,7 +396,7 @@ public class SVIPApiController {
      * @return generated SBOM
      */
     @PostMapping("/generators/parsers")
-    public ResponseEntity<String> generateParsers(@RequestBody SBOMFile[] files,
+    public ResponseEntity<?> generateParsers(@RequestBody SBOMFile[] files,
                                            @RequestParam("projectName") String projectName,
                                            @RequestParam("schema") SerializerFactory.Schema schema,
                                            @RequestParam("format") SerializerFactory.Format format){
@@ -438,12 +440,17 @@ public class SVIPApiController {
             return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return Utils.encodeResponse(contents);
+        SBOMFile result = new SBOMFile(projectName + ((format == SerializerFactory.Format.JSON)
+                 ? ".json" : ".spdx"),contents);
+        Random rand = new Random();
+        result.setId(Utils.generateNewId(rand.nextLong(), rand, sbomFileRepository));
+
+        return Utils.encodeResponse(result.getId());
 
     }
 
     @PostMapping("/generators/osi")
-    public ResponseEntity<String> generateOSI(@RequestBody SBOMFile[] files,
+    public ResponseEntity<Long> generateOSI(@RequestBody SBOMFile[] files,
                                            @RequestParam("projectName") String projectName,
                                            @RequestParam("schema") SerializerFactory.Schema schema,
                                            @RequestParam("format") SerializerFactory.Format format){
@@ -457,7 +464,7 @@ public class SVIPApiController {
      * @return a merged sbomFile
      */
     @GetMapping("/merge")
-    public ResponseEntity<String> merge(@RequestParam("ids") long[] ids){
+    public ResponseEntity<?> merge(@RequestParam("ids") long[] ids){
 
         ArrayList<SBOM> sboms = new ArrayList<>();
 
@@ -473,7 +480,7 @@ public class SVIPApiController {
             Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
             // Check if it exists
-            ResponseEntity<String> NOT_FOUND = Utils.checkIfExists(id, sbomFile, "merge");
+            ResponseEntity<Long> NOT_FOUND = Utils.checkIfExists(id, sbomFile, "merge");
             if (NOT_FOUND != null) return NOT_FOUND;
             SBOMFile sbom = sbomFile.get();
 
@@ -528,17 +535,13 @@ public class SVIPApiController {
         SBOMFile result = new SBOMFile(merged.getName(), contents);
         Random rand = new Random();
 
-        // assign new id and name
-        int i = 0;
-        while(sbomFileRepository.existsById(idSum)){ // todo check if frontend are okay with this
-            idSum += (rand.nextLong() + idSum) % ((i < 100) ? idSum : Long.MAX_VALUE);
-            i++;
-        }
+        idSum = Utils.generateNewId(idSum, rand, sbomFileRepository);
 
         result.setId(idSum);
         sbomFileRepository.save(result);
 
-        return Utils.encodeResponse(result.getContents());
+        return Utils.encodeResponse(idSum);
 
     }
+
 }
