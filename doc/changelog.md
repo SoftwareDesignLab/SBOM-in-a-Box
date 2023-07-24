@@ -27,6 +27,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `osi/Dockerfile` as all setup behavior is taken care of in the docker-compose file and the OSI class.
 
 
+## [v5.4.0-alpha] - (7/19/2023)
+
+### Added
+- Merge API Endpoint
+- Merge API test `MergeFromAPITest.java`
+- `MergerCrossSchema.java`
+  - Allows merging two SBOMs regardless of origin format
+- Utility classes for Merger
+  - `MergerUtils.java`
+  - `comparison/utils/Utils.java`
+- New NVD API Client implementation:
+    - `NVDClient` - Class that, when given an SBOM, will create a new VEX Document object with the NVD API database
+
+### Changed
+- `Merger.java`abstract class and overall architecture
+
+
 ## [v5.3.0-alpha] - (7/19/2023)
 
 ### Added
@@ -96,6 +113,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored `parsers` package to use the new `SVIPSBOM` & `SVIPComponentObject`.
   - Refactored all parser unit tests to reflect this (100% passing, code coverage TBD).
 - Refactored `SBOMGeneratorCLI` class to use `serializers` & `parsers` packages.
+- New OSV API Client implementation:
+  - `OSVClient` - Class that, when given an SBOM, will create a new VEX Document object with the OSV API database
 
 ### Changed
 - Moved `Debug`, `QueryWorker`, & `VirtualPath` classes to the base `utils` package.

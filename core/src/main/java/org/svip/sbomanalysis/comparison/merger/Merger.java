@@ -1,6 +1,5 @@
 package org.svip.sbomanalysis.comparison.merger;
 
-import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 
 import org.svip.sbom.model.shared.metadata.Contact;
@@ -17,21 +16,13 @@ import java.util.Set;
 
 public abstract class Merger {
 
-    SBOM A;
-
-    SBOM B;
-
     public Merger() {
 
     }
 
     public abstract SBOM mergeSBOM(SBOM A, SBOM B);
 
-    protected abstract Set<Component> mergeComponents(Set<Component> A, Set<Component> B);
-
-    protected abstract Component mergeComponent(Component A, Component B);
-
-    protected CreationData mergeCreationData(CreationData A, CreationData B) {
+    protected static CreationData mergeCreationData(CreationData A, CreationData B) {
 
         CreationData mergedCreationData = new CreationData();
 
@@ -42,7 +33,9 @@ public abstract class Merger {
 
         // Authors
         Set<Contact> authorsNew = mergeAuthors(A.getAuthors(), B.getAuthors());
-        for(Contact author : authorsNew) { mergedCreationData.addAuthor(author); }
+        for (Contact author : authorsNew) {
+            mergedCreationData.addAuthor(author);
+        }
 
         // Manufacturer
         mergedCreationData.setManufacture(mergeOrganization(A.getManufacture(), B.getManufacture()));
@@ -53,25 +46,30 @@ public abstract class Merger {
         // Licenses
         Set<String> mergedLicenses = A.getLicenses();
         mergedLicenses.addAll(B.getLicenses());
-        for(String license : mergedLicenses) {  mergedCreationData.addLicense(license); }
+        for (String license : mergedLicenses) {
+            mergedCreationData.addLicense(license);
+        }
 
         // Properties
         Map<String, Set<String>> propertiesA = A.getProperties();
         Map<String, Set<String>> propertiesB = B.getProperties();
-        for(String keyA : propertiesA.keySet()) {
-            for (String entryA : propertiesA.get(keyA)) {
-                mergedCreationData.addProperty(keyA, entryA);
-            }
-        }
-        for(String keyB : propertiesB.keySet()) {
-            for (String entryB : propertiesA.get(keyB)) {
-                mergedCreationData.addProperty(keyB, entryB);
-            }
-        }
+        for (String keyA : propertiesA.keySet())
+            if (propertiesA.get(keyA) != null)
+                for (String entryA : propertiesA.get(keyA))
+                    mergedCreationData.addProperty(keyA, entryA);
+
+
+        for (String keyB : propertiesB.keySet())
+            if (propertiesB.get(keyB) != null && propertiesA.get(keyB) != null)
+                for (String entryB : propertiesA.get(keyB))
+                    mergedCreationData.addProperty(keyB, entryB);
+
 
         // Creation Tools
         Set<CreationTool> mergedTools = mergeCreationTools(A.getCreationTools(), B.getCreationTools());
-        for(CreationTool mergedTool : mergedTools) { mergedCreationData.addCreationTool(mergedTool); }
+        for (CreationTool mergedTool : mergedTools) {
+            mergedCreationData.addCreationTool(mergedTool);
+        }
 
         // Document Comment
         mergedCreationData.setCreatorComment("1) " + A.getCreatorComment() + "\n2) " + B.getCreatorComment());
@@ -81,15 +79,15 @@ public abstract class Merger {
     }
 
 
-    protected Set<CreationTool> mergeCreationTools(Set<CreationTool> toolsA, Set<CreationTool> toolsB) {
+    protected static Set<CreationTool> mergeCreationTools(Set<CreationTool> toolsA, Set<CreationTool> toolsB) {
 
         // new creation tools set
         Set<CreationTool> mergedTools = new HashSet<>();
 
-        if(toolsA != null && !toolsA.isEmpty()) {
+        if (toolsA != null && !toolsA.isEmpty()) {
             for (CreationTool toolA : toolsA) {
                 boolean merged = false;
-                if(toolsB != null && !toolsB.isEmpty()) {
+                if (toolsB != null && !toolsB.isEmpty()) {
                     for (CreationTool toolB : toolsB) {
                         if (toolA.getName() == toolB.getName() && toolA.getVendor() == toolB.getVendor() && toolA.getVersion() == toolB.getVersion()) {
 
@@ -123,7 +121,7 @@ public abstract class Merger {
                 if (!merged) mergedTools.add(toolA);
             }
         }
-        if(toolsB != null && !toolsB.isEmpty()) {
+        if (toolsB != null && !toolsB.isEmpty()) {
             for (CreationTool toolB : toolsB) {
                 if (toolB != null) mergedTools.add(toolB);
             }
@@ -134,49 +132,57 @@ public abstract class Merger {
 
     }
 
-    protected Organization mergeOrganization(Organization organizationA, Organization organizationB) {
+    protected static Organization mergeOrganization(Organization organizationA, Organization organizationB) {
 
         // New organization
         Organization organizationNew;
 
-        // Based on the contents of organization A and organization B, attempt to merge them
-        if(organizationA != null && organizationB == null) {
+        try {
+            // Based on the contents of organization A and organization B, attempt to merge them
+            if (organizationA != null && organizationB == null) {
 
-            // Condition three: Only A exists: merged Organization becomes Organization A
-            return organizationA;
+                // Condition three: Only A exists: merged Organization becomes Organization A
+                return organizationA;
 
-        } else if (organizationB != null && organizationA == null) {
+            } else if (organizationB != null && organizationA == null) {
 
-            // condition four: Only B exists: merged Organization becomes Organization B
-            return organizationB;
+                // condition four: Only B exists: merged Organization becomes Organization B
+                return organizationB;
 
-        } else if (organizationA == null && organizationB == null) {
+            } else if (organizationA == null && organizationB == null) {
 
-            return null;
+                return null;
 
-        } else if(organizationA.getName().equals(organizationB.getName()) && organizationA.getUrl().equals(organizationB.getUrl())) {
+            } else if (organizationA.getName().equals(organizationB.getName()) && organizationA.getUrl().equals(organizationB.getUrl())) {
 
-            // Condition one: both have same name and url: merge their authors into one
-            Set<Contact> manufactureAuthorsNew = mergeAuthors(organizationA.getContacts(), organizationB.getContacts());
-            organizationNew = new Organization(organizationA.getName(), organizationA.getUrl());
-            for(Contact manufacturer : manufactureAuthorsNew) { organizationNew.addContact(manufacturer); }
+                // Condition one: both have same name and url: merge their authors into one
+                Set<Contact> manufactureAuthorsNew = mergeAuthors(organizationA.getContacts(), organizationB.getContacts());
+                organizationNew = new Organization(organizationA.getName(), organizationA.getUrl());
+                for (Contact manufacturer : manufactureAuthorsNew) {
+                    organizationNew.addContact(manufacturer);
+                }
 
-        } else { return organizationA; }
+            } else {
+                return organizationA;
+            }
+        } catch (NullPointerException e) {
+            return new Organization("", "");
+        }
 
         // return new Organization
         return organizationNew;
 
     }
 
-    protected Set<Contact> mergeAuthors(Set<Contact> authorsA, Set<Contact> authorsB) {
+    protected static Set<Contact> mergeAuthors(Set<Contact> authorsA, Set<Contact> authorsB) {
 
         Set<Contact> authorsNew = new HashSet<>();
 
         // Cycle through each primary SBOM author
-        if(authorsA != null && !authorsA.isEmpty()) {
+        if (authorsA != null && !authorsA.isEmpty()) {
             for (Contact authorA : authorsA) {
                 // Cycle through all authors from sbom B and compare them against current primary SBOM author
-                if(authorsB != null && !authorsB.isEmpty()) {
+                if (authorsB != null && !authorsB.isEmpty()) {
                     for (Contact authorB : authorsB) {
                         if (
                                 authorA.getName().contains(authorB.getName()) &&
@@ -193,7 +199,7 @@ public abstract class Merger {
             }
         }
         // Add all remaining authors from second SBOM into new authors
-        if(authorsB != null && !authorsB.isEmpty()) {
+        if (authorsB != null && !authorsB.isEmpty()) {
             for (Contact authorB : authorsB) {
                 authorsNew.add(authorB);
             }
@@ -204,15 +210,15 @@ public abstract class Merger {
 
     }
 
-    protected Set<ExternalReference> mergeExternalReferences(Set<ExternalReference> refA, Set<ExternalReference> refB) {
+    protected static Set<ExternalReference> mergeExternalReferences(Set<ExternalReference> refA, Set<ExternalReference> refB) {
 
         // New set for merged External References
         Set<ExternalReference> mergedExternalReferences = new HashSet<>();
 
-        if(refA != null && !refA.isEmpty()) {
+        if (refA != null && !refA.isEmpty()) {
             for (ExternalReference a : refA) {
                 boolean merged = false;
-                if(refB != null && !refB.isEmpty()) {
+                if (refB != null && !refB.isEmpty()) {
                     for (ExternalReference b : refB) {
                         if (a.getType() == b.getType() && a.getUrl() == b.getUrl()) {
                             ExternalReference mergedExRef = new ExternalReference(a.getUrl(), a.getType());
@@ -231,7 +237,7 @@ public abstract class Merger {
                 if (!merged) mergedExternalReferences.add(a);
             }
         }
-        if(refB != null) {
+        if (refB != null) {
             for (ExternalReference b : refB) {
                 if (b != null) {
                     mergedExternalReferences.add(b);
