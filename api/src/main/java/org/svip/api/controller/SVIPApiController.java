@@ -444,6 +444,7 @@ public class SVIPApiController {
                  ? ".json" : ".spdx"),contents);
         Random rand = new Random();
         result.setId(Utils.generateNewId(rand.nextLong(), rand, sbomFileRepository));
+        sbomFileRepository.save(result);
 
         return Utils.encodeResponse(result.getId());
 
