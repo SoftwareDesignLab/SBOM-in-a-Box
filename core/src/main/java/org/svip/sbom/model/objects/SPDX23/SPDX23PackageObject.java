@@ -507,8 +507,7 @@ public class SPDX23PackageObject implements SPDX23Package {
 
         // Files Analyzed
         // needs null check because you cannot call null.toString
-        if (this.filesAnalyzed != null)
-        cf.addConflict("Files Analyzed", MISC_MISMATCH, this.filesAnalyzed.toString(), other.getFilesAnalyzed().toString());
+        if (this.filesAnalyzed != null) cf.addConflict("Files Analyzed", MISC_MISMATCH, this.filesAnalyzed.toString(), other.getFilesAnalyzed().toString());
 
         // Verification Code
         cf.addConflict("Verification Code", MISC_MISMATCH, this.verificationCode, other.getVerificationCode());
