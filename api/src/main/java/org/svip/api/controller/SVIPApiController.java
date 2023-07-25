@@ -31,6 +31,7 @@ import org.svip.sbomanalysis.qualityattributes.pipelines.schemas.SPDX23.SPDX23Pi
 import org.svip.sbomgeneration.serializers.SerializerFactory;
 import org.svip.sbomgeneration.serializers.deserializer.Deserializer;
 import org.svip.sbomgeneration.serializers.serializer.Serializer;
+import org.svip.sbomvex.VEXResult;
 import org.svip.sbomvex.database.NVDClient;
 import org.svip.sbomvex.database.OSVClient;
 import org.svip.sbomvex.database.interfaces.VulnerabilityDBClient;
@@ -598,6 +599,7 @@ public class SVIPApiController {
             }
         }
 
+        // create new VEX builder and add sbom fields
         VEX.Builder vb = new VEX.Builder();
         String creationTime = String.valueOf(java.time.LocalDateTime.now());
         vb.setVEXIdentifier(sbom.getName());
@@ -645,7 +647,7 @@ public class SVIPApiController {
 
         // Return Quality Report as JSON to Frontend
         ObjectMapper mapper = new ObjectMapper();
-        // TODO return error hashmap?
-        return new ResponseEntity<>(mapper.writeValueAsString(vex), HttpStatus.OK);
+        return new ResponseEntity<>(mapper.writeValueAsString(
+                new VEXResult(vex, error)), HttpStatus.OK);
     }
 }
