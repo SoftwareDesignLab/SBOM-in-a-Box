@@ -435,10 +435,16 @@ public class SVIPApiController {
 
         String urlMsg = "POST /svip/generators/osi";
 
+        // Ensure schema has a valid serializer
+        try { schema.getSerializer(format); } catch (IllegalArgumentException e) {
+            LOGGER.error(urlMsg + ": " + e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
         for (SBOMFile srcFile : files) {
             if(srcFile.hasNullProperties()){
                 LOGGER.error(urlMsg + ": file " + srcFile.getFileName() + " has null properties");
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             try {
                 osiContainer.addSourceFile(srcFile.getFileName(), srcFile.getContents());
@@ -476,7 +482,7 @@ public class SVIPApiController {
         } catch (Exception e) {
             LOGGER.warn("Exception occurred while running OSI container.");
             return new ResponseEntity<>("Exception occurred while running OSI container.",
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+                    HttpStatus.NOT_FOUND);
         }
 
         return Utils.encodeResponse(Long.toString(savedId));
