@@ -32,8 +32,8 @@ public class SPDX23PackageObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISSING, conflict.GetType());
-        assertEquals("Type is missing", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
+        assertEquals("Type doesn't match", conflict.GetMessage());
     }
 
     @Test
@@ -47,8 +47,8 @@ public class SPDX23PackageObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISSING, conflict.GetType());
-        assertEquals("UID is missing", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
+        assertEquals("UID doesn't match", conflict.GetMessage());
     }
 
     @Test
