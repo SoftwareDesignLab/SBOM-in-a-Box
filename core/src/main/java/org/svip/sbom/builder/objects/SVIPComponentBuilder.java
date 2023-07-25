@@ -36,7 +36,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
     private String name;
 
     /**Component licenses*/
-    private LicenseCollection licenses;
+    private LicenseCollection licenses = new LicenseCollection();
 
     /**Component copyright*/
     private String copyright;
