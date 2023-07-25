@@ -23,6 +23,8 @@ public class SPDX23PackageObjectConflictsTest {
     @Test
     public void Type_is_Conflicting_between_testPackage_and_controlPackage_test()
     {
+        packageBuilder.setType("control");
+        controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setType("Type");
         conflictPackage = packageBuilder.buildAndFlush();
 
@@ -36,6 +38,8 @@ public class SPDX23PackageObjectConflictsTest {
 
     @Test
     public void UID_is_conflicting_between_testPackage_and_controlPackage_test(){
+        packageBuilder.setUID("control");
+        controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setUID("123");
         conflictPackage = packageBuilder.buildAndFlush();
 
