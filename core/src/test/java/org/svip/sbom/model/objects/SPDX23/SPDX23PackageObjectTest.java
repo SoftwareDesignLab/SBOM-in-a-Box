@@ -120,7 +120,7 @@ public class SPDX23PackageObjectTest {
         ExternalReference externalReferenceOne = new ExternalReference("url","www.One.com", "controlRef");
         //ExternalReference externalReferenceTwo = new ExternalReference("url","www.2.com", "controlRef");
 
-        packageBuilder.setType("SPDX");
+        packageBuilder.setType("CDX");
         packageBuilder.setUID("0");
         packageBuilder.setAuthor("Author");
         packageBuilder.setName("Component");
@@ -168,6 +168,6 @@ public class SPDX23PackageObjectTest {
         }
 
         // Unexpected number of results means something isn't working right
-        assertEquals(conflicts.size(), 29);
+        assertEquals(conflicts.size(), 30);
     }
 }
