@@ -278,28 +278,24 @@ public class SVIPApiController {
 
         // Get and convert SBOM
         SBOMFile toConvert = sbomFile.get();
-        HashMap<SBOMFile, String> conversionResult = Converter.convert(toConvert, schema, format);
-        String error = (String) conversionResult.values().toArray()[0];
-        SBOMFile converted = (SBOMFile) conversionResult.keySet().toArray()[0];
+        SBOMFile converted;
 
         // Error message if needed
-        String defaultErrorMessage = "CONVERT /svip/sboms?id=" + id + " - ERROR IN CONVERSION TO " + schema
-                + ((error.length() != 0) ? (": " + error) : "");
+        String urlMsg = "CONVERT /svip/sboms?id=" + id;
 
-        // bad request errors
-        if(error.toLowerCase().contains("not valid") && (
-                error.toLowerCase().contains("schema") || error.toLowerCase().contains("format"))){
-            LOGGER.error(defaultErrorMessage);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } else if (schema == SerializerFactory.Schema.CDX14 && format == SerializerFactory.Format.TAGVALUE) {
-            LOGGER.error("CONVERT /svip/sboms?id=" + id + "TAGVALUE unsupported by CDX14");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        // Ensure schema has a valid serializer
+        try {
+            converted = Converter.convert(toConvert, schema, format);
+            schema.getSerializer(format);
+        } catch (Exception e) {
+            LOGGER.error(urlMsg + ": " + e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
         // if anything went wrong, an SBOMFILE with a blank name and contents will be returned,
         // paired with the message String
         if (converted.hasNullProperties()) {
-            LOGGER.error(defaultErrorMessage);
+            LOGGER.error(urlMsg + ": SBOM has null properties");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -385,19 +381,19 @@ public class SVIPApiController {
     public ResponseEntity<String> generateParsers(@RequestBody SBOMFile[] files,
                                            @RequestParam("projectName") String projectName,
                                            @RequestParam("schema") SerializerFactory.Schema schema,
-                                           @RequestParam("format") SerializerFactory.Format format){
+                                           @RequestParam("format") SerializerFactory.Format format) {
 
         ParserController parserController = new ParserController(projectName, new HashMap<>());
 
         String urlMsg = "GENERATE /svip/generate?projectName=" + projectName;
 
-        if(schema.equals(SerializerFactory.Schema.CDX14) && format.equals(SerializerFactory.Format.TAGVALUE)){
-            LOGGER.error(urlMsg + " cannot parse into " + schema + " with incompatible format " + format);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        // Ensure schema has a valid serializer
+        try { schema.getSerializer(format); } catch (IllegalArgumentException e) {
+            LOGGER.error(urlMsg + ": " + e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        for (SBOMFile f: files
-             ) {
+        for (SBOMFile f: files) {
             if(f.hasNullProperties()){
                 LOGGER.error(urlMsg + "/fileName=" + f.getFileName() + " has null properties");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -437,13 +433,24 @@ public class SVIPApiController {
         if (osiContainer == null)
             return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
 
+        String urlMsg = "POST /svip/generators/osi";
+
+        for (SBOMFile srcFile : files) {
+            if(srcFile.hasNullProperties()){
+                LOGGER.error(urlMsg + ": file " + srcFile.getFileName() + " has null properties");
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            try {
+                osiContainer.addSourceFile(srcFile.getFileName(), srcFile.getContents());
+            } catch (IOException e) {
+                LOGGER.error(urlMsg + ": Error adding source file");
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+
         long savedId;
 
         try {
-            // Add files
-            for (SBOMFile srcFile : files)
-                osiContainer.addSourceFile(srcFile.getFileName(), srcFile.getContents());
-
             // Generate SBOMs
             Map<String, String> sboms = osiContainer.generateSBOMs();
 

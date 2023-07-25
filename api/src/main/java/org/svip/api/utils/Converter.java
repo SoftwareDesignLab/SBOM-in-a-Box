@@ -35,28 +35,23 @@ public class Converter {
      *
      * @param schema the desired schema
      * @param format the desired format
-     * @return converted SBOMFile and error message, if any
+     * @return converted SBOMFile
      */
-    public static HashMap<SBOMFile, String> convert(SBOMFile sbom, SerializerFactory.Schema schema,
-                                                    SerializerFactory.Format format) {
-
-        HashMap<SBOMFile, String> ret = new HashMap<>();
+    public static SBOMFile convert(SBOMFile sbom, SerializerFactory.Schema schema, SerializerFactory.Format format)
+            throws Exception {
 
         // deserialize into SBOM object
         Deserializer d;
-        org.svip.sbom.model.interfaces.generics.SBOM deserialized;
+        SBOM deserialized;
 
         try {
             d = SerializerFactory.createDeserializer(sbom.getContents());
             deserialized = d.readFromString(sbom.getContents());
         } catch (Exception e) {
-            return Utils.internalSerializerError(ret,
-                    ": " + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()),
-                    "DURING DESERIALIZATION");
+            throw new Exception("Deserialization Error: " + e.getMessage());
         }
-        if (deserialized == null)
-            return Utils.internalSerializerError(ret, "", "DURING DESERIALIZATION");
 
+        if (deserialized == null) throw new Exception("Deserialization Error");
 
         // serialize into desired format
         Serializer s;
@@ -66,7 +61,7 @@ public class Converter {
 
             s = SerializerFactory.createSerializer(schema, format, true);
             s.setPrettyPrinting(true);
-            SerializerFactory.Schema originalSchema = Utils.assumeSchemaFromOriginal(sbom.getContents());
+            SerializerFactory.Schema originalSchema = SerializerFactory.resolveSchema(sbom.getContents());
 
             buildSBOM(builder, deserialized, schema, originalSchema);
 
@@ -85,17 +80,12 @@ public class Converter {
             }
 
         } catch (Exception e) {
-            return Utils.internalSerializerError(ret,
-                    ": " + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()),
-                    "DURING SERIALIZATION");
-        }
-        if (serialized == null) {
-            return Utils.internalSerializerError(ret, "", "DURING SERIALIZATION");
+            throw new Exception("Serialization Error: " + e.getMessage());
         }
 
-        ret.put(new SBOMFile("SUCCESS", serialized), "");
-        return ret;
+        if (serialized == null) throw new Exception("Serialization Error");
 
+        return new SBOMFile("SUCCESS", serialized);
     }
 
     /**

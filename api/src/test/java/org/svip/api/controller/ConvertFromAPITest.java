@@ -60,7 +60,7 @@ public class ConvertFromAPITest extends APITest {
 
                     // retrieve test SBOM and assume schema
                     SBOMFile sbom = testMap.get(id);
-                    SerializerFactory.Schema thisSchema = Utils.assumeSchemaFromOriginal(sbom.getContents().toLowerCase());
+                    SerializerFactory.Schema thisSchema = SerializerFactory.resolveSchema(sbom.getContents());
 
                     // check if test is valid
                     if (Utils.convertTestController(convertToSchema, convertToFormat, id, thisSchema, testMap, sbom))
@@ -87,13 +87,13 @@ public class ConvertFromAPITest extends APITest {
                             continue;
                         }
 
-                        String originalFormat = Utils.assumeFormatFromDocument(sbom);
+                        SerializerFactory.Format originalFormat = SerializerFactory.resolveFormat(sbom.getContents());
 
-                        assertEquals("", Converter.convert(new SBOMFile("convertBack." +
-                                        (originalFormat.equals("TAGVALUE") ? "json" : "spdx"),
-
-                                        responseBody), thisSchema, SerializerFactory.Format.valueOf(originalFormat)).
-                                values().toArray()[0]);
+                        assertNotNull(Converter.convert(
+                                new SBOMFile(
+                                        "convertBack." + (originalFormat == SerializerFactory.Format.TAGVALUE ? "json" : "spdx"),
+                                        responseBody),
+                                thisSchema, originalFormat));
                         LOGGER.info("Reconversion successful!");
 
                     } catch (Exception e) {
