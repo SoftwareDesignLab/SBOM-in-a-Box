@@ -565,7 +565,7 @@ public class SVIPApiController {
     @GetMapping("/sboms/vex")
     public ResponseEntity<String> vex(@RequestParam("id") long id,
                                      @RequestParam("format") String format,
-                                     @RequestParam("client") String client) throws JsonProcessingException {
+                                     @RequestParam("client") String client) throws IOException {
         SBOM sbom;
         Deserializer d;
 
