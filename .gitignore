@@ -71,3 +71,6 @@ gradle-app.setting
 
 # ignore testing main classes
 [tT]est[mM]ain.java
+
+# Mac files
+.DS_Store
