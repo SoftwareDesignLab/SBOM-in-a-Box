@@ -33,7 +33,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     private String name;
 
     /**File licenses*/
-    private LicenseCollection licenses;
+    private LicenseCollection licenses = new LicenseCollection();
 
     /**File copyright*/
     private String copyright;

@@ -29,7 +29,7 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
     private String name;
 
     /**File licenses*/
-    private LicenseCollection licenses;
+    private LicenseCollection licenses = new LicenseCollection();
 
     /**File copyright*/
     private String copyright;
