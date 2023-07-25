@@ -63,7 +63,7 @@ public class ComparisonTest {
         ObjectMapper objectMapper = new ObjectMapper();
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(diffReport));
         Debug.logBlock();
-}
+    }
 
     public Deserializer getSPDXJSONDeserializer() {
         return new SPDX23JSONDeserializer();
