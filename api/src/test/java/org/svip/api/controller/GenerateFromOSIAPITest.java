@@ -101,10 +101,6 @@ public class GenerateFromOSIAPITest extends APITest {
 
             for (String schema : schemas) {
                 for (String format : formats) {
-
-                    if (projectName == null)
-                        System.out.println("hi");
-
                     if (schema.equals("CDX14") && format.equals("TAGVALUE") || projectName.equals("Empty"))
                         continue;
 

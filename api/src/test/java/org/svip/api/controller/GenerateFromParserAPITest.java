@@ -91,14 +91,8 @@ public class GenerateFromParserAPITest extends APITest {
 
             LOGGER.info("Parsing project: " + projectName);
 
-            for (String schema : schemas
-            ) {
-                for (String format : formats
-                ) {
-
-                    if (projectName == null)
-                        System.out.println("hi");
-
+            for (String schema : schemas) {
+                for (String format : formats) {
                     if (schema.equals("CDX14") && format.equals("TAGVALUE") || projectName.equals("Empty"))
                         continue;
 
