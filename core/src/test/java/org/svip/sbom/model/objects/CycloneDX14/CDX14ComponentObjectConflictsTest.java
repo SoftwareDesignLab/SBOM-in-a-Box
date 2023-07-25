@@ -341,6 +341,8 @@ public class CDX14ComponentObjectConflictsTest {
 
     @Test
     public void UID_is_conflicting_between_testPackage_and_controlPackage_test(){
+        packageBuilder.setUID("control");
+        controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setUID("123");
         conflictPackage = packageBuilder.buildAndFlush();
 
@@ -348,8 +350,8 @@ public class CDX14ComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISSING, conflict.GetType());
-        assertEquals("UID is missing", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
+        assertEquals("UID doesn't match", conflict.GetMessage());
     }
 
     @Test
