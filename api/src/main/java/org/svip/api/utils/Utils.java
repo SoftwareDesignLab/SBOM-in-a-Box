@@ -158,18 +158,24 @@ public class Utils {
         return sbomFiles;
     }
 
-
+    /**
+     * Generates new ID given old one
+     * @param id old ID
+     * @param rand Random class
+     * @param sbomFileRepository repository
+     * @return new ID
+     */
     public static long generateNewId(long id, Random rand, SBOMFileRepository sbomFileRepository) {
         // assign new id and name
         int i = 0;
-        while(sbomFileRepository.existsById(id)){ // todo check if frontend are okay with this
-            id += (rand.nextLong() + id) % ((i < 100) ? id : Long.MAX_VALUE);
+        while(sbomFileRepository.existsById(id)){
+            id += (Math.abs(rand.nextLong()) + id) % ((i < 100) ? id : Long.MAX_VALUE);
             i++;
         }
         return id;
     }
 
-    public static List<HashMap<SBOMFile, Integer>> unZip(ZipFile z) throws IOException{
+    public static List<HashMap<SBOMFile, Integer>> unZip(ZipFile z){
 
         ArrayList<HashMap<SBOMFile, Integer>> vpArray = new ArrayList<>();
 
