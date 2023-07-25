@@ -10,16 +10,7 @@ public class DockerNotAvailableException extends RuntimeException {
         super(message);
     }
 
-    public DockerNotAvailableException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public DockerNotAvailableException(Throwable cause) {
-        super(cause);
-    }
-
     public DockerNotAvailableException() {
         super();
     }
-
 }
