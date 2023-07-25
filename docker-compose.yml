@@ -12,17 +12,7 @@ services:
   osi:
     container_name: svip-osi
     image: ubuntu:latest
-    build:
-      context: core/src/main/java/org/svip/sbomgeneration/osi
-      # Move setup script and controller into container and run setup
-      dockerfile_inline: |
-        FROM ubuntu:latest
-        ENV DEBIAN_FRONTEND noninteractive
-        ENV DEBCONF_NONINTERACTIVE_SEEN true
-        ENV COMPOSER_ALLOW_SUPERUSER 1
-        COPY scripts/setup.sh scripts/ContainerController.py /usr/local/bin/
-        RUN /bin/bash -c /usr/local/bin/setup.sh
-        ENTRYPOINT ["python3", "/usr/local/bin/ContainerController.py"]
+    build: core/src/main/java/org/svip/sbomgeneration/osi/scripts
     volumes:
       - type: bind
         source: core/src/main/java/org/svip/sbomgeneration/osi/bound_dir/code
