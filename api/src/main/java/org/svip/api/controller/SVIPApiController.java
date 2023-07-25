@@ -30,6 +30,7 @@ import org.svip.sbomgeneration.serializers.deserializer.Deserializer;
 import org.svip.sbomgeneration.serializers.serializer.Serializer;
 import org.svip.utils.VirtualPath;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.Arrays;
 
@@ -397,7 +398,7 @@ public class SVIPApiController {
      * @return generated SBOM
      */
     @PostMapping("/generators/parsers")
-    public ResponseEntity<?> generateParsers(@RequestParam("zipPath") String zipPath,
+    public ResponseEntity<?> generateParsers(@RequestBody ZipFile zipPath,
                                              @RequestParam("projectName") String projectName,
                                              @RequestParam("schema") SerializerFactory.Schema schema,
                                              @RequestParam("format") SerializerFactory.Format format) throws IOException {
