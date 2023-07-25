@@ -73,19 +73,17 @@ public class NVDClient implements VulnerabilityDBClient {
         Set<String> cpes = s.getCPEs();
 
         // if component has no cpes continue as we can only search if there are cpes
-        if(cpes != null && !cpes.isEmpty()){
-            // use the cpes to search for vulnerabilities
-            ArrayList<String> cpesList = new ArrayList<>(cpes);
-            String cpeString = cpesList.get(0);
-            componentID = cpeString;
-            response = vexFieldsWithCPE(cpeString);
-            TimeUnit.SECONDS.sleep(6);
-
-        }
-        else{
+        if(cpes==null || cpes.isEmpty())
             throw new Exception("Component does not have CPEs " +
                     "to test with NVD API");
-        }
+
+        // use the cpes to search for vulnerabilities
+        ArrayList<String> cpesList = new ArrayList<>(cpes);
+        String cpeString = cpesList.get(0);
+        componentID = cpeString;
+        response = vexFieldsWithCPE(cpeString);
+        TimeUnit.SECONDS.sleep(6);
+
 
         // check that the response was not null to find vulnerabilities
         if(response != null){

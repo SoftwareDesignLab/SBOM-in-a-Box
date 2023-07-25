@@ -560,12 +560,12 @@ public class SVIPApiController {
      * @param id The id of the SBOM contents to retrieve.
      * @param format the format of teh VEX Document
      * @param client the api client to use (currently NVD or OSV)
-     * @return A JSON string of the Quality Report file.
+     * @return A new VEXResult of the VEX document and any errors that occurred
      */
     @GetMapping("/sboms/vex")
-    public ResponseEntity<String> vex(@RequestParam("id") long id,
+    public ResponseEntity<VEXResult> vex(@RequestParam("id") long id,
                                      @RequestParam("format") String format,
-                                     @RequestParam("client") String client) throws IOException {
+                                     @RequestParam("client") String client){
         SBOM sbom;
         Deserializer d;
 
@@ -583,9 +583,11 @@ public class SVIPApiController {
             d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
             sbom = d.readFromString(sbomFile.get().getContents());
         } catch (JsonProcessingException e ){
-            return new ResponseEntity<>("Failed to deserialize SBOM content, may be an unsupported format", HttpStatus.INTERNAL_SERVER_ERROR);
+            LOGGER.info("Failed to deserialize SBOM content, may be an unsupported format");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception e){
-            return new ResponseEntity<>("Deserialization Error", HttpStatus.INTERNAL_SERVER_ERROR);
+            LOGGER.info("Deserialization Error");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         VulnerabilityDBClient vc;
@@ -595,7 +597,7 @@ public class SVIPApiController {
             case "nvd" -> vc = new NVDClient();
             default -> {
                 LOGGER.info("VEX /svip/sboms/vex?client=" + client + " - INVALID CLIENT");
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
 
@@ -619,21 +621,19 @@ public class SVIPApiController {
             }
             default -> {
                 LOGGER.info("VEX /svip/sboms/vex?format=" + format + " - INVALID VEX FORMAT");
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
 
         HashMap<String, String> error = new HashMap<>();
+        // add vex statements and/or errors for every component
         for(Component c : sbom.getComponents()){
             if(c instanceof SBOMPackage){
                 try{
-                    var statements = vc.getVEXStatements((SBOMPackage) c);
+                    List<VEXStatement> statements = vc.getVEXStatements((SBOMPackage) c);
                     if(!statements.isEmpty())
                         for(VEXStatement vs : statements)
                             vb.addVEXStatement(vs);
-                    else{
-                        error.put(c.getName(), "No vulnerabilities found");
-                    }
                 } catch (Exception e) {
                     error.put(c.getName(), e.getMessage());
                 }
@@ -645,9 +645,8 @@ public class SVIPApiController {
         // Log
         LOGGER.info("VEX /svip/sboms/vex?id=" + id + " - VEX CREATED: " + sbomFile.get().getFileName());
 
-        // Return Quality Report as JSON to Frontend
-        ObjectMapper mapper = new ObjectMapper();
-        return new ResponseEntity<>(mapper.writeValueAsString(
-                new VEXResult(vex, error)), HttpStatus.OK);
+        // Return VEXResult
+        return new ResponseEntity<>(
+                new VEXResult(vex, error), HttpStatus.OK);
     }
 }

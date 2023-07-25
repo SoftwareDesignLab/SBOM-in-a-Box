@@ -48,7 +48,7 @@ public class GenerateVEXAPITest extends APITest{
         // Get CDX14 JSON SBOM when requested
         when(repository.findById(CDX14_JSON_ID)).thenAnswer(i -> Optional.of(fileMap.get(CDX14_JSON_ID)));
 
-        assertEquals(HttpStatus.UNAUTHORIZED, controller.vex(
+        assertEquals(HttpStatus.BAD_REQUEST, controller.vex(
                 CDX14_JSON_ID, "NotARealFormat", "OSV"
         ).getStatusCode());
     }
@@ -60,7 +60,7 @@ public class GenerateVEXAPITest extends APITest{
         // Get CDX14 JSON SBOM when requested
         when(repository.findById(CDX14_JSON_ID)).thenAnswer(i -> Optional.of(fileMap.get(CDX14_JSON_ID)));
 
-        assertEquals(HttpStatus.UNAUTHORIZED, controller.vex(
+        assertEquals(HttpStatus.BAD_REQUEST, controller.vex(
                 CDX14_JSON_ID, "CSAF", "NotARealClient"
         ).getStatusCode());
     }

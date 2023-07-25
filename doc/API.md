@@ -16,6 +16,7 @@
       - [Convert SBOM](#convert-an-sbom)
       - [Generate SBOM with SVIP](#generate-an-sbom-using-svip-parsers)
       - [Apply SBOM Metrics](#quality-attributes-testing)
+      - [Generate VEX OBject](#create-a-vex-document-with-an-sbom)
     - [MySQL Database](#mysql-database)
 
 # System Requirements
@@ -303,7 +304,7 @@ curl -X GET -G http://localhost:8080/svip/sboms/qa \
 | Response Code |   Type    |                  Description                  |
 |:-------------:|:---------:|:---------------------------------------------:|
 |      200      | VEXResult | A VEX and HashMap of any errors that occurred |
-|      401      |  String   |           Invalid Format or Client            |
+|      400      |  String   |           Invalid Format or Client            |
 |      404      |  String   |              SBOM does not exist              |
 |      500      |  String   |    The message of the error that occurred     |
 
