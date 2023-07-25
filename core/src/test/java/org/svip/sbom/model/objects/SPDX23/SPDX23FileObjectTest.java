@@ -84,7 +84,7 @@ public class SPDX23FileObjectTest {
         ExternalReference externalReferenceOne = new ExternalReference("url","www.One.com", "controlRef");
         //ExternalReference externalReferenceTwo = new ExternalReference("url","www.2.com", "controlRef");
 
-        fileBuilder.setType("SPDX");
+        fileBuilder.setType("CDX");
         fileBuilder.setUID("0");
         fileBuilder.setAuthor("Author");
         fileBuilder.setName("Component");
