@@ -19,6 +19,7 @@ import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.sbomanalysis.comparison.merger.Merger;
 import org.svip.sbomanalysis.comparison.merger.MergerController;
 import org.svip.sbomanalysis.comparison.merger.MergerException;
 import org.svip.sbomgeneration.parsers.ParserController;
@@ -441,51 +442,72 @@ public class SVIPApiController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
+        // Validate & add files
         for (SBOMFile srcFile : files) {
             if(srcFile.hasNullProperties()){
                 LOGGER.error(urlMsg + ": file " + srcFile.getFileName() + " has null properties");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             try {
-                osiContainer.addSourceFile(srcFile.getFileName(), srcFile.getContents());
+                // Remove any directories, causes issues with OSI paths (unless we take in a root directory?)
+                String fileName = srcFile.getFileName();
+                fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
+                osiContainer.addSourceFile(fileName, srcFile.getContents());
             } catch (IOException e) {
                 LOGGER.error(urlMsg + ": Error adding source file");
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         }
 
-        long savedId;
-
+        Map<String, String> sboms;
+        // Generate SBOMs
         try {
-            // Generate SBOMs
-            Map<String, String> sboms = osiContainer.generateSBOMs();
-
-            // Deserialize SBOMs into list of SVIP SBOMs
-            Deserializer d;
-            List<SVIPSBOM> deserialized = new ArrayList<>();
-            for (Map.Entry<String, String> sbom : sboms.entrySet()) {
-                d = SerializerFactory.createDeserializer(sbom.getValue());
-                deserialized.add((SVIPSBOM) d.readFromString(sbom.getValue()));
-            }
-
-            // Merge SVIP SBOMs into one SVIP SBOM
-            MergerController merger = new MergerController();
-            SVIPSBOM osiMerged = (SVIPSBOM) merger.mergeAll(deserialized);
-
-            // Serialize SVIP SBOM to given schema and format and return
-            Serializer serializer = SerializerFactory.createSerializer(schema, format, true);
-            SBOMFile saved = sbomFileRepository.save(
-                    new SBOMFile("OSI_MERGED_SBOM", serializer.writeToString(osiMerged)));
-
-            // Get ID of saved SBOM
-            savedId = saved.getId();
+            sboms = osiContainer.generateSBOMs();
         } catch (Exception e) {
-            LOGGER.warn("Exception occurred while running OSI container.");
+            LOGGER.warn("Exception occurred while running OSI container: " + e.getMessage());
             return new ResponseEntity<>("Exception occurred while running OSI container.",
                     HttpStatus.NOT_FOUND);
         }
 
-        return Utils.encodeResponse(Long.toString(savedId));
+
+        // Deserialize SBOMs into list of SVIP SBOMs
+        List<SVIPSBOM> deserialized = new ArrayList<>();
+        Deserializer d;
+        for (Map.Entry<String, String> sbom : sboms.entrySet())
+            try {
+                d = SerializerFactory.createDeserializer(sbom.getValue());
+                deserialized.add((SVIPSBOM) d.readFromString(sbom.getValue()));
+            } catch (JsonProcessingException e) {
+                LOGGER.warn("Exception occurred while deserializing SBOMs: " + e.getMessage());
+                return new ResponseEntity<>("Exception occurred while deserializing SBOMs.",
+                        HttpStatus.NOT_FOUND);
+            }
+
+        // Merge SVIP SBOMs into one SVIP SBOM
+        MergerController merger = new MergerController();
+        SVIPSBOM osiMerged;
+        try {
+            osiMerged = (SVIPSBOM) merger.mergeAll(deserialized);
+        } catch (MergerException e) {
+            LOGGER.warn("Exception occurred while merging SBOMs: " + e.getMessage());
+            return new ResponseEntity<>("Exception occurred while merging SBOMs.",
+                    HttpStatus.NOT_FOUND);
+        }
+
+        // Serialize SVIP SBOM to given schema and format
+        Serializer serializer = SerializerFactory.createSerializer(schema, format, true);
+        SBOMFile serializedSBOM;
+        try {
+            serializedSBOM = new SBOMFile("OSI_MERGED_SBOM", serializer.writeToString(osiMerged));
+        } catch (JsonProcessingException e) {
+            LOGGER.warn("Exception occurred while merging SBOMs: " + e.getMessage());
+            return new ResponseEntity<>("Exception occurred while merging SBOMs.",
+                    HttpStatus.NOT_FOUND);
+        }
+
+        // Save and return
+        SBOMFile saved = sbomFileRepository.save(serializedSBOM);
+        return Utils.encodeResponse(Long.toString(saved.getId()));
     }
 
     /**
