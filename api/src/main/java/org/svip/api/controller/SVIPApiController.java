@@ -217,10 +217,10 @@ public class SVIPApiController {
      * @param id The id of the SBOM contents to retrieve.
      * @return The contents of the SBOM file.
      */
-    @GetMapping("/sboms")
+    @GetMapping("/sbom")
     public ResponseEntity<?> getSBOM(@RequestParam("id") Long id){
 
-        String urlMsg = "GET /svip/sboms?id=" + id;    // for logging
+        String urlMsg = "GET /svip/sbom?id=" + id;    // for logging
 
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);

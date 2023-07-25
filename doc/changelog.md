@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v5.2.2-alpha] - (7/25/2023)
+## [v5.2.3-alpha] - (7/25/2023)
 
 ### Added
 - VEX API Endpoint
@@ -13,7 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Test SBOMs that contain vulnerable components
 
 ### Changed
+- Updated `API.md` documentation with the VEX endpoint
 
+## [v5.2.2-alpha] - (7/24/2023)
+### Changed
+- `/sboms` to `/sbom` when getting SBOM object
 
 ## [v5.2.1-alpha] - (7/21/2023)
 
@@ -27,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `comparison/utils/Utils.java`
 
 ### Changed
-- Updated `API.md` documentation with the VEX endpoint
+- `Merger.java`abstract class and overall architecture
 
 ## [v5.2.0-alpha] - (7/20/2023)
 
