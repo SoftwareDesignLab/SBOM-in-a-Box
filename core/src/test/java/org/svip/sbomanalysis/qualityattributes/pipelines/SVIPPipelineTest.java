@@ -3,6 +3,7 @@ package org.svip.sbomanalysis.qualityattributes.pipelines;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.Organization;
+import org.svip.sbom.model.uids.Hash;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.Result;
 import org.svip.sbomanalysis.qualityattributes.resultfactory.enumerations.STATUS;
 
@@ -101,13 +102,15 @@ class SVIPPipelineTest {
 
     @Test
     void supportedHash_unsupported_fail_test() {
-        Result r = svipPipeline.supportedHash("Hash Algorithm", testSPDXExclusiveHash, "Component");
+        Hash hash = new Hash(testSPDXExclusiveHash, "asdfasdfasdfasdfa");
+        Result r = svipPipeline.supportedHash("Hash Algorithm", hash, "Component");
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
     @Test
     void supportedHash_supported_pass_test() {
-        Result r = svipPipeline.supportedHash("Hash Algorithm", testSupportedHash, "Component");
+        Hash hash = new Hash(testSupportedHash, "asdfasdfasdfasdfa");
+        Result r = svipPipeline.supportedHash("Hash Algorithm", hash, "Component");
         assertEquals(STATUS.PASS, r.getStatus());
     }
 
