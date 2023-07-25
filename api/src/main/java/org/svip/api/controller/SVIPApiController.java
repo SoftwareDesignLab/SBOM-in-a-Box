@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,8 @@ import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
 import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.generics.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.pipelines.schemas.CycloneDX14.CDX14Pipeline;
 import org.svip.sbomanalysis.qualityattributes.pipelines.schemas.SPDX23.SPDX23Pipeline;
+import org.svip.sbomgeneration.osi.OSI;
+import org.svip.sbomgeneration.parsers.ParserController;
 import org.svip.sbomgeneration.serializers.SerializerFactory;
 import org.svip.sbomgeneration.serializers.deserializer.Deserializer;
 import org.svip.sbomgeneration.serializers.serializer.Serializer;
@@ -78,55 +81,39 @@ public class SVIPApiController {
      */
     private final SBOMFileRepository sbomFileRepository;
 
-    //#region OSI (unused)
-
     /**
      * OSI docker container representation
      */
-//    private OSI osiContainer;
+    private final OSI osiContainer;
 
     /**
-     * Default OSI Bound Directory location
+     * Autowired constructor. Initializes the API controller with a configured SBOMFileRepository instance and OSI
+     * enabled.
+     *
+     * @param sbomFileRepository The SBOMFileRepository to interact with the MySQL database server.
+     * @param startWithOSI Whether to start with OSI enabled. If false, the OSI endpoint will be disabled.
      */
-//    private static String osiBoundDir = "src/main/java/com/svip/osi/core/bound_dir";
-
-    /**
-     * Default path to where dockerfile is located
-     */
-//    private static String dockerPath = "/core/src/main/java/org/svip/sbomfactory/osi/Dockerfile";
-
-    /**
-     * Current working directory
-     */
-//    private static String pwd = "/src/test/java/org/svip/api";
-
-    /** TODO OSI
-     * buildOSI runs on startup to build the OSI container independent of the front-end.
-     */
-//    @PostConstruct
-//    public void buildOSI() {
-//        // TODO: For SVIP v3, refactor to move OSI building operations into another class
-//        osiContainer = new OSI(osiBoundDir, dockerPath);
-//    }
-
-    /** TODO OSI
-     * To be called when the object is released by the garbage collector. DO NOT CALL MANUALLY
-     */
-    //    @PreDestroy
-    //    public void close() {
-    //        // Close the osi container so that we delete the instance
-    //        osiContainer.close();
-    //    }
-
-    //#endregion
-
     @Autowired
-    public SVIPApiController(final SBOMFileRepository sbomFileRepository) {
-        headers = new HttpHeaders();
-        headers.add("AccessControlAllowOrigin", "http://localhost:4200");
+    public SVIPApiController(final SBOMFileRepository sbomFileRepository, @Value("true") boolean startWithOSI) {
+        this.headers = new HttpHeaders();
+        this.headers.add("AccessControlAllowOrigin", "http://localhost:4200");
 
-//        files = new HashMap<>();
         this.sbomFileRepository = sbomFileRepository;
+
+        // If starting with OSI is enabled, try starting the container
+        OSI container = null; // Disabled state
+        String error = "OSI ENDPOINT DISABLED -- ";
+        if (startWithOSI)
+            try {
+                container = new OSI();
+                LOGGER.info("OSI ENDPOINT ENABLED");
+            } catch (Exception e) {
+                // If we can't construct the OSI container for any reason, log and disable OSI.
+                LOGGER.warn(error + "Unable to setup OSI container.");
+                LOGGER.error("OSI Docker API response: " + e.getMessage());
+            }
+        else LOGGER.warn(error + "Disabled starting with OSI.");
+        this.osiContainer = container;
     }
 
     /**
@@ -459,6 +446,8 @@ public class SVIPApiController {
                                            @RequestParam("schema") SerializerFactory.Schema schema,
                                            @RequestParam("format") SerializerFactory.Format format){
         // TODO (separate branch)
+        if (osiContainer == null)
+            return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
         return null;
     }
 

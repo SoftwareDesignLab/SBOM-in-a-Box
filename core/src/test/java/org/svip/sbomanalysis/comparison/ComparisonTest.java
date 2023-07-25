@@ -19,23 +19,20 @@ import java.nio.file.Path;
 
 
 public class ComparisonTest {
-    protected static final String SBOM_1 = System.getProperty("user.dir") +
-            "/src/test/java/org/svip/sbomfactory/serializers/sample_boms/Benchmark_SBOM_Megacollection/cdxgen.json";
+    private static final String TEST_DIR = System.getProperty("user.dir") +
+            "/src/test/java/org/svip/sbomgeneration/serializers/sample_boms/Benchmark_SBOM_Megacollection/";
 
-    protected static final String SBOM_2 = System.getProperty("user.dir") +
-            "/src/test/java/org/svip/sbomfactory/serializers/sample_boms/Benchmark_SBOM_Megacollection/cyclonedxMavenPlugin.json";
+    protected static final String SBOM_1 = TEST_DIR + "cdxgen.json";
 
-    protected static final String SBOM_3 = System.getProperty("user.dir") +
-            "/src/test/java/org/svip/sbomfactory/serializers/sample_boms/Benchmark_SBOM_Megacollection/jbom-18172.json";
+    protected static final String SBOM_2 = TEST_DIR + "cyclonedxMavenPlugin.json";
 
-    protected static final String SBOM_4 = System.getProperty("user.dir") +
-            "/src/test/java/org/svip/sbomfactory/serializers/sample_boms/Benchmark_SBOM_Megacollection/jbom-Case1-1.0-SNAPSHOT-jar-with-dependencies.json";
+    protected static final String SBOM_3 = TEST_DIR + "jbom-18172.json";
 
-    protected static final String SBOM_5 = System.getProperty("user.dir") +
-            "/src/test/java/org/svip/sbomfactory/serializers/sample_boms/Benchmark_SBOM_Megacollection/spdx-sbom-generator.spdx";
+    protected static final String SBOM_4 = TEST_DIR + "jbom-Case1-1.0-SNAPSHOT-jar-with-dependencies.json";
 
-    protected static final String SBOM_6 = System.getProperty("user.dir") +
-            "/src/test/java/org/svip/sbomfactory/serializers/sample_boms/Benchmark_SBOM_Megacollection/syft.json";
+    protected static final String SBOM_5 = TEST_DIR + "spdx-sbom-generator.spdx";
+
+    protected static final String SBOM_6 = TEST_DIR + "syft.json";
 
     @Test
     public void compareSBOMs() throws IOException {

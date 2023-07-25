@@ -8,6 +8,19 @@
 
 services:
 
+  # OSI container
+  osi:
+    container_name: svip-osi
+    image: ubuntu:latest
+    build: core/src/main/java/org/svip/sbomgeneration/osi/scripts
+    volumes:
+      - type: bind
+        source: core/src/main/java/org/svip/sbomgeneration/osi/bound_dir/code
+        target: /bound_dir/code
+      - type: bind
+        source: core/src/main/java/org/svip/sbomgeneration/osi/bound_dir/sboms
+        target: /bound_dir/sboms
+
   # MySQL server
   mysql:
     container_name: svip-mysql
@@ -32,12 +45,15 @@ services:
     depends_on: # Start mysql server before starting API
       mysql:
         condition: service_healthy # Only start once the health check has passed
+      osi:
+        condition: service_started # Only start once the OSI container has been started
     build: .    # Build from Dockerfile located in root directory
     restart: on-failure
     ports:
       - ${SPRING_LOCAL_PORT}:${SPRING_DOCKER_PORT}
     volumes:
       - .m2:/root/.m2
+      - /var/run/docker.sock:/var/run/docker.sock
     stdin_open: true
     tty: true
     environment: # Define environment variables for spring-boot application.properties
