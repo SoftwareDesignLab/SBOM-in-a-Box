@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -61,6 +62,7 @@ public class OSITest {
         osi.addSourceDirectory(new File(OSI_PATH + "sampleProjectEmpty"));
 
         Map<String, String> resultMap = osi.generateSBOMs();
+        Debug.log(Debug.LOG_TYPE.SUMMARY, getSBOMFileList(resultMap));
         assertEquals(0, resultMap.size());
     }
 
@@ -72,6 +74,7 @@ public class OSITest {
         osi.addSourceDirectory(new File(OSI_PATH + "sampleProject"));
 
         Map<String, String> resultMap = osi.generateSBOMs();
+        Debug.log(Debug.LOG_TYPE.SUMMARY, getSBOMFileList(resultMap));
         assertEquals(2, resultMap.size());
     }
 
@@ -81,6 +84,14 @@ public class OSITest {
                 Files.readString(Path.of(OSI_PATH + "/sampleProject/SampleJavaClass.java")));
 
         Map<String, String> resultMap = osi.generateSBOMs();
+        Debug.log(Debug.LOG_TYPE.SUMMARY, getSBOMFileList(resultMap));
         assertEquals(2, resultMap.size());
+    }
+
+    private String getSBOMFileList(Map<String, String> resultMap) {
+        String out = "Found " + resultMap.size() + " generated SBOMs:\n";
+        for (String fileName : resultMap.keySet())
+            out += fileName + "\n";
+        return out;
     }
 }
