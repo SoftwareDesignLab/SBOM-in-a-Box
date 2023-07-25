@@ -102,11 +102,6 @@ public class GenerateFromParserAPITest extends APITest {
                     if (schema.equals("CDX14") && format.equals("TAGVALUE") || projectName.equals("Empty"))
                         continue;
 
-                    if ((projectName.equals("Java") || projectName.equals("CSharp/Nuget") || projectName.equals("SubProcess") // todo fix SPDXJSONSerializers
-                            || projectName.equals("JS") || projectName.equals("Ruby"))
-                            && schema.equals("SPDX23") && format.equals("JSON"))
-                        continue;
-
                     LOGGER.info("PARSING TO: " + schema + " + " + format);
 
                     ResponseEntity<?> response = controller.generateParsers(file, projectName,
