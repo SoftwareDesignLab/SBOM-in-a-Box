@@ -310,7 +310,7 @@ curl -X GET -G http://localhost:8080/svip/sboms/qa \
 
 **Example**
 ```bash
-curl -X GET -G http://localhost:8080/svip/sboms/qa \
+curl -X GET -G http://localhost:8080/svip/sboms/vex \
 -d 'id=<SBOM UID>' \
 -d 'format=CSAF' \
 -d 'client=OSV'
