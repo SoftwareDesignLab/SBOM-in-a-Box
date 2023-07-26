@@ -191,11 +191,15 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
             Matcher matcher = cdx14UIDPattern.matcher(value);
             // if regex fails to match to the uid string
             if(!matcher.find()){
-                return resultFactory.fail("SBOM Serial Number", INFO.INVALID, value, sbomName);
+                return resultFactory.failCustom("SBOM Serial Number",
+                        INFO.INVALID, value, sbomName, "UID does not follow " +
+                                "CycloneDX's regex pattern");
             }
             // regex matches to the uid string
             else{
-                return resultFactory.pass("SBOM Serial Number", INFO.VALID, value, sbomName);
+                return resultFactory.passCustom("SBOM Serial Number",
+                        INFO.VALID, value, sbomName, "UID follows " +
+                                "CycloneDX's regex pattern");
             }
         }
         // uid was null or an empty string
@@ -235,13 +239,15 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
         String algorithm = hash.getAlgorithm().toString();
         // hash is unsupported, test fails
         if(Hash.isSPDXExclusive(hash.getAlgorithm())){
-            return resultFactory.fail(field, INFO.INVALID, algorithm,
-                    componentName);
+            return resultFactory.failCustom(field, INFO.INVALID, algorithm,
+                    componentName, "Hash Algorithm is not supported " +
+                            "within CycloneDX: " + algorithm);
         }
         // hash is supported, test passes
         else{
-            return resultFactory.pass(field, INFO.VALID, algorithm,
-                    componentName);
+            return resultFactory.passCustom(field, INFO.VALID, algorithm,
+                    componentName, "Hash Algorithm is supported " +
+                            "within CycloneDX: " + algorithm);
         }
     }
 
@@ -309,8 +315,9 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
         }
         // SPDX starts with an invalid format, test fails
         else{
-            return resultFactory.fail(field, INFO.INVALID,
-                    value, componentName);
+            return resultFactory.failCustom(field, INFO.INVALID,
+                    value, componentName, "SPDXID must start with " +
+                            "\"SPDXRef-\"");
         }
     }
 

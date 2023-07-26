@@ -315,8 +315,9 @@ public class SPDX23Pipeline implements SPDX23Tests {
         }
         // SPDX starts with an invalid format, test fails
         else{
-            return resultFactory.fail(field, INFO.INVALID,
-                    value, componentName);
+            return resultFactory.failCustom(field, INFO.INVALID,
+                    value, componentName, "SPDXID must start with " +
+                            "\"SPDXRef-\"");
         }
     }
 
