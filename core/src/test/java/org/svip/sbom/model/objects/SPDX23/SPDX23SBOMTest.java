@@ -28,6 +28,7 @@ public class SPDX23SBOMTest {
     static SPDX23SBOMBuilderFactory sbomBuilderFactory = new SPDX23SBOMBuilderFactory();
     static SBOM controlSBOM;
     static SBOM equalSBOM;
+    // for root component
     static SPDX23PackageBuilderFactory packageBuilderFactory = new SPDX23PackageBuilderFactory();
 
     @BeforeAll
