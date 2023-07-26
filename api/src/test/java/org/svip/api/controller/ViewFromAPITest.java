@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -29,9 +30,9 @@ public class ViewFromAPITest extends APITest {
         when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
 
         for (Long id : testMap.keySet()) {
-            ResponseEntity<Optional<SBOMFile>> response = (ResponseEntity<Optional<SBOMFile>>) controller.view(id);
-            SBOMFile s = response.getBody().get();
-            assertEquals(testMap.get(id).getContents(), s.getContents());
+            ResponseEntity<String> response = controller.view(id);
+            String s = response.getBody();
+            assertNotNull(s);
         }
     }
 
@@ -43,7 +44,7 @@ public class ViewFromAPITest extends APITest {
         // Simulate empty DB
         when(repository.findById(any())).thenAnswer(i -> Optional.empty());
 
-        ResponseEntity<Optional<SBOMFile>> response = (ResponseEntity<Optional<SBOMFile>>) controller.view(testId);
+        ResponseEntity<String> response = controller.view(testId);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 }

@@ -160,27 +160,34 @@ public class Utils {
 
     /**
      * Generates new ID given old one
-     * @param id old ID
-     * @param rand Random class
+     *
+     * @param id                 old ID
+     * @param rand               Random class
      * @param sbomFileRepository repository
      * @return new ID
      */
     public static long generateNewId(long id, Random rand, SBOMFileRepository sbomFileRepository) {
         // assign new id and name
         int i = 0;
-        while(sbomFileRepository.existsById(id)){
+        while (sbomFileRepository.existsById(id)) {
             id += (Math.abs(rand.nextLong()) + id) % ((i < 100) ? id : Long.MAX_VALUE);
             i++;
         }
         return id;
     }
 
-    public static List<HashMap<SBOMFile, Integer>> unZip(ZipFile z){
+    /**
+     * Unzip a ZipFile of SBOMFiles
+     *
+     * @param z the zipped file
+     * @return List of file contents paired with an integer representing its depth in the project directory
+     */
+    public static List<HashMap<SBOMFile, Integer>> unZip(ZipFile z) {
 
         ArrayList<HashMap<SBOMFile, Integer>> vpArray = new ArrayList<>();
 
         byte[] buffer = new byte[1024];
-        Stream<? extends ZipEntry> entryStream  = z.stream();
+        Stream<? extends ZipEntry> entryStream = z.stream();
 
 
         entryStream.forEach(entry -> {//from  w ww .ja v a  2 s .c  o m
@@ -191,14 +198,14 @@ public class Utils {
 
                 int depth = entry.getName().split("[\\/]").length - 1; // todo we may not actually need depth
 
-                if(!entry.isDirectory()){
+                if (!entry.isDirectory()) {
                     StringBuilder contentsBuilder = new StringBuilder();
                     int len;
-                    try{
+                    try {
                         while ((len = is.read(buffer)) > 0) {
                             contentsBuilder.append(new String(buffer));
                         }
-                    }catch(EOFException e){
+                    } catch (EOFException e) {
                         is.close();
                         LOGGER.error(e.getMessage());
                     }
@@ -217,7 +224,13 @@ public class Utils {
 
     }
 
-    public static List<HashMap<SBOMFile, Integer>> unZip(String path) throws IOException{
+    /**
+     * Unzip a ZipFile of SBOMFiles
+     *
+     * @param path path of the zipped file
+     * @return List of file contents paired with an integer representing its depth in the project directory
+     */
+    public static List<HashMap<SBOMFile, Integer>> unZip(String path) throws IOException {
 
         ArrayList<HashMap<SBOMFile, Integer>> vpArray = new ArrayList<>();
 
@@ -227,20 +240,19 @@ public class Utils {
 
         int depth; // todo we may not actually need depth
 
-        while (zipEntry != null){
+        while (zipEntry != null) {
 
             depth = zipEntry.getName().split("[\\/]").length - 1;
 
-            if (!zipEntry.isDirectory())
-            {
+            if (!zipEntry.isDirectory()) {
                 // write file content
                 StringBuilder contentsBuilder = new StringBuilder();
                 int len;
-                try{
+                try {
                     while ((len = zs.read(buffer)) > 0) {
                         contentsBuilder.append(new String(buffer));
                     }
-                }catch(EOFException e){
+                } catch (EOFException e) {
                     zs.close();
                     LOGGER.error(e.getMessage());
                     break;

@@ -396,7 +396,7 @@ public class SVIPApiController {
      * @return generated SBOM
      */
     @PostMapping("/generators/parsers")
-    public ResponseEntity<?> generateParsers(@RequestBody ZipFile zipPath,
+    public ResponseEntity<?> generateParsers(@RequestParam("zipPath") String zipPath,
                                              @RequestParam("projectName") String projectName,
                                              @RequestParam("schema") SerializerFactory.Schema schema,
                                              @RequestParam("format") SerializerFactory.Format format) throws IOException {
@@ -461,7 +461,7 @@ public class SVIPApiController {
     }
 
     @PostMapping("/generators/osi")
-    public ResponseEntity<Long> generateOSI(@RequestBody SBOMFile[] files,
+    public ResponseEntity<?> generateOSI(@RequestBody SBOMFile[] files,
                                            @RequestParam("projectName") String projectName,
                                            @RequestParam("schema") SerializerFactory.Schema schema,
                                            @RequestParam("format") SerializerFactory.Format format){
