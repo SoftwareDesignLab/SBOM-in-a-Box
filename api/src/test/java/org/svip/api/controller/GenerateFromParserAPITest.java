@@ -19,8 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class GenerateFromParserAPITest extends APITest {
 
-    private final String[] schemas = {"CDX14", "SPDX23"};
-    private final String[] formats = {"JSON", "TAGVALUE"};
+    private final SerializerFactory.Schema[] schemas = {SerializerFactory.Schema.CDX14, SerializerFactory.Schema.SPDX23};
+    private final SerializerFactory.Format[] formats = {SerializerFactory.Format.JSON, SerializerFactory.Format.TAGVALUE};
     private static final Logger LOGGER = LoggerFactory.getLogger(SVIPApiController.class);
     private final Map<Map<Long, String>, SBOMFile[]> testMap;
 
@@ -91,18 +91,19 @@ public class GenerateFromParserAPITest extends APITest {
 
             LOGGER.info("Parsing project: " + projectName);
 
-            for (String schema : schemas) {
-                for (String format : formats) {
-                    if (schema.equals("CDX14") && format.equals("TAGVALUE") || projectName.equals("Empty"))
+            for (SerializerFactory.Schema schema : schemas) {
+                for (SerializerFactory.Format format : formats) {
+                    if (schema == SerializerFactory.Schema.CDX14 && format == SerializerFactory.Format.TAGVALUE ||
+                            projectName.equals("Empty"))
                         continue;
 
                     LOGGER.info("PARSING TO: " + schema + " + " + format);
 
-                    ResponseEntity<?> response = controller.generateParsers(file, projectName,
-                            SerializerFactory.Schema.valueOf(schema), SerializerFactory.Format.valueOf(format));
+                    ResponseEntity<?> response = controller.generateParsers(file, projectName, schema, format);
 
                     assertEquals(HttpStatus.OK, response.getStatusCode());
                     assertNotNull(response.getBody());
+                    // TODO more assertions
                 }
             }
             i++;

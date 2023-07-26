@@ -29,12 +29,9 @@ import static org.mockito.Mockito.when;
  */
 public class GenerateFromOSIAPITest extends APITest {
 
-    private final String[] schemas = {"CDX14", "SPDX23"};
-
-    private final String[] formats = {"JSON", "TAGVALUE"};
-
+    private final SerializerFactory.Schema[] schemas = {SerializerFactory.Schema.CDX14, SerializerFactory.Schema.SPDX23};
+    private final SerializerFactory.Format[] formats = {SerializerFactory.Format.JSON, SerializerFactory.Format.TAGVALUE};
     private static final Logger LOGGER = LoggerFactory.getLogger(SVIPApiController.class);
-
     private final Map<Map<Long, String>, SBOMFile[]> testMap;
 
     public GenerateFromOSIAPITest() throws IOException {
@@ -104,19 +101,20 @@ public class GenerateFromOSIAPITest extends APITest {
 
             LOGGER.info("Parsing project: " + projectName);
 
-            for (String schema : schemas) {
-                for (String format : formats) {
-                    if (schema.equals("CDX14") && format.equals("TAGVALUE") || projectName.equals("Empty"))
+            for (SerializerFactory.Schema schema : schemas) {
+                for (SerializerFactory.Format format : formats) {
+                    if (schema == SerializerFactory.Schema.CDX14 && format == SerializerFactory.Format.TAGVALUE
+                            || projectName.equals("Empty"))
                         continue;
 
                     LOGGER.info("PARSING TO: " + schema + " + " + format);
 
-                    ResponseEntity<?> response = controller.generateOSI(file,
-                            SerializerFactory.Schema.valueOf(schema), SerializerFactory.Format.valueOf(format));
+                    ResponseEntity<?> response = controller.generateOSI(file, schema, format);
 
                     if (!projectName.contains("CSharp")) {
                         assertEquals(HttpStatus.OK, response.getStatusCode());
                         assertNotNull(response.getBody());
+                        // TODO more assertions
                     } else assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
                 }
             }
