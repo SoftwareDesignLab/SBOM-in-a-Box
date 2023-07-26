@@ -148,9 +148,9 @@ public class SVIPSBOMConflictsTest {
     {
         SVIPSBOMBuilder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setSPDXLicenseListVersion("control");
-        controlSBOM = sbomBuilder.Build();
+        controlSBOM = sbomBuilder.buildSPDX23SBOM();
         sbomBuilder.setSPDXLicenseListVersion("license list version");
-        conflictSBOM = sbomBuilder.Build();
+        conflictSBOM = sbomBuilder.buildSPDX23SBOM();
 
         List<Conflict> conflictList = controlSBOM.compare(conflictSBOM);
         Conflict conflict = conflictList.get(0);
