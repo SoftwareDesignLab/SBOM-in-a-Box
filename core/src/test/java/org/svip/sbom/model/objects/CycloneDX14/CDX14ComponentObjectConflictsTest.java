@@ -402,9 +402,20 @@ public class CDX14ComponentObjectConflictsTest {
         List<Conflict> conflictList = controlPackage.compare(conflictPackage);
         Conflict conflict = conflictList.get(0);
 
-        assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.LICENSE_MISMATCH, conflict.GetType());
-        assertEquals("Licenses doesn't match", conflict.GetMessage());
+        assertEquals(2, conflictList.size());
+
+        for(Conflict c : conflictList)
+        {
+            if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "License is missing")) {
+                if(Objects.equals(c.GetTarget(), "control license") && c.GetOther() == null)
+                    c1 = true;
+                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "license"))
+                    c2 = true;
+            }
+        }
+
+        assertTrue(c1);
+        assertTrue(c2);
     }
 
     @Test
@@ -422,7 +433,7 @@ public class CDX14ComponentObjectConflictsTest {
         assertEquals("Copyright doesn't match", conflict.GetMessage());
     }
 
-    // TODO Breaks because of licenses (but why?)
+    // TODO Component Hash comparison doesn't return intuitive information...
     @Test
     public void componentHash_is_conflicting_between_testPackage_and_controlPackage_test(){
         packageBuilder.addHash("SHA1", "control");
@@ -431,19 +442,22 @@ public class CDX14ComponentObjectConflictsTest {
         conflictPackage = packageBuilder.buildAndFlush();
 
         List<Conflict> conflictList = controlPackage.compare(conflictPackage);
-        Conflict conflict = conflictList.get(0);
-        Conflict conflictTwo = conflictList.get(1);
-        Boolean hasAlgoConflict = false;
-        Boolean hasHashConflict = false;
+        boolean c1 = false;
+        boolean c2 = false;
+
+        assertEquals(2, conflictList.size());
 
         for(Conflict c : conflictList)
         {
-            if(c.GetType() == MismatchType.HASH_MISMATCH);
+            if(c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "Component Hash is missing"))
+                if(Objects.equals(c.GetTarget(),"Contains Component Hash Data") && c.GetOther() == null)
+                    c1 = true;
+                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "Contains Component Hash Data"))
+                    c2 = true;
         }
-        assertEquals(2, conflictList.size());
-        //assertTrue(conflictList.contains(controlHash));
-        assertEquals(MismatchType.HASH_MISMATCH, conflict.GetType());
-        assertEquals("Hash doesn't match", conflict.GetMessage());
+
+        assertTrue(c1);
+        assertTrue(c2);
     }
 
     @Test
@@ -456,11 +470,21 @@ public class CDX14ComponentObjectConflictsTest {
         conflictPackage = packageBuilder.buildAndFlush();
 
         List<Conflict> conflictList = controlPackage.compare(conflictPackage);
-        Conflict conflict = conflictList.get(0);
+        boolean c1 = false;
+        boolean c2 = false;
 
-        assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.SUPPLIER_MISMATCH, conflict.GetType());
-        assertEquals("Supplier doesn't match", conflict.GetMessage());
+        assertEquals(2, conflictList.size());
+
+        for(Conflict c : conflictList)
+        {
+            if(c.GetType() == MismatchType.NAME_MISMATCH && Objects.equals(c.GetMessage(), "Organization: Name doesn't match"))
+                c1 = true;
+            else if(c.GetType() == MismatchType.MISC_MISMATCH && Objects.equals(c.GetMessage(), "Organization: URL doesn't match"))
+                c2 = true;
+        }
+
+        assertTrue(c1);
+        assertTrue(c2);
     }
 
     @Test
@@ -503,11 +527,23 @@ public class CDX14ComponentObjectConflictsTest {
         conflictPackage = packageBuilder.buildAndFlush();
 
         List<Conflict> conflictList = controlPackage.compare(conflictPackage);
-        Conflict conflict = conflictList.get(0);
+        boolean c1 = false;
+        boolean c2 = false;
 
-        assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.PURL_MISMATCH, conflict.GetType());
-        assertEquals("PURL doesn't match", conflict.GetMessage());
+        assertEquals(2, conflictList.size());
+
+        for(Conflict c : conflictList)
+        {
+            if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "PURL is missing")) {
+                if(Objects.equals(c.GetTarget(), "control") && c.GetOther() == null)
+                    c1 = true;
+                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "purl"))
+                    c2 = true;
+            }
+        }
+
+        assertTrue(c1);
+        assertTrue(c2);
     }
 
     @Test
@@ -532,7 +568,6 @@ public class CDX14ComponentObjectConflictsTest {
                     c2 = true;
             }
         }
-
 
         assertTrue(c1);
         assertTrue(c2);
