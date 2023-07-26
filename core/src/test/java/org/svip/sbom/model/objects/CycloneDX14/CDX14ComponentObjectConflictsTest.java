@@ -476,20 +476,22 @@ public class CDX14ComponentObjectConflictsTest {
         assertEquals("Version doesn't match", conflict.GetMessage());
     }
 
-//    @Test
-//    public void description_is_conflicting_between_testPackage_and_controlPackage_test(){
-//        packageBuilder.setDescription(null); //TODO
-//        controlPackage = packageBuilder.buildAndFlush();
-//        packageBuilder.setDescription(null);
-//        conflictPackage = packageBuilder.buildAndFlush();
-//
-//        List<Conflict> conflictList = controlPackage.compare(conflictPackage);
-//        Conflict conflict = conflictList.get(0);
-//
-//        assertEquals(1, conflictList.size());
-//        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-//        assertEquals("Description doesn't match", conflict.GetMessage());
-//    }
+    @Test
+    public void description_is_conflicting_between_testPackage_and_controlPackage_test(){
+        Description controlDesc = new Description("control");
+        Description testDesc = new Description("description");
+        packageBuilder.setDescription(controlDesc);
+        controlPackage = packageBuilder.buildAndFlush();
+        packageBuilder.setDescription(testDesc);
+        conflictPackage = packageBuilder.buildAndFlush();
+
+        List<Conflict> conflictList = controlPackage.compare(conflictPackage);
+        Conflict conflict = conflictList.get(0);
+
+        assertEquals(1, conflictList.size());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
+        assertEquals("Summary doesn't match", conflict.GetMessage());
+    }
 
     @Test
     public void PURL_is_conflicting_between_testPackage_and_controlPackage_test(){
