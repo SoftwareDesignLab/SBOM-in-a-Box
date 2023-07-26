@@ -10,8 +10,10 @@ import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SPDX23FileObjectConflictsTest {
     static SPDX23FileBuilderFactory packageBuilderFactory = new SPDX23FileBuilderFactory();
@@ -92,11 +94,23 @@ public class SPDX23FileObjectConflictsTest {
         conflictPackage = packageBuilder.buildAndFlush();
 
         List<Conflict> conflictList = controlPackage.compare(conflictPackage);
-        Conflict conflict = conflictList.get(0);
+        boolean c1 = false;
+        boolean c2 = false;
 
-        assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.LICENSE_MISMATCH, conflict.GetType());
-        assertEquals("Licenses doesn't match", conflict.GetMessage());
+        assertEquals(2, conflictList.size());
+
+        for(Conflict c : conflictList)
+        {
+            if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "License is missing")) {
+                if(Objects.equals(c.GetTarget(), "control license") && c.GetOther() == null)
+                    c1 = true;
+                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "license"))
+                    c2 = true;
+            }
+        }
+
+        assertTrue(c1);
+        assertTrue(c2);
     }
 
     @Test
