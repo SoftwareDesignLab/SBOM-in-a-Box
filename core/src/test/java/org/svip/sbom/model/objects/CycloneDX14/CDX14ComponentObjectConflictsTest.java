@@ -166,41 +166,121 @@ public class CDX14ComponentObjectConflictsTest {
 
     @Test
     public void version_is_conflicting_between_testPackage_and_controlPackage_test(){
+        packageBuilder.setVersion("control");
+        controlPackage = packageBuilder.buildAndFlush();
+        packageBuilder.setVersion("version");
+        conflictPackage = packageBuilder.buildAndFlush();
 
+        List<Conflict> conflictList = controlPackage.compare(conflictPackage);
+        Conflict conflict = conflictList.get(0);
+
+        assertEquals(1, conflictList.size());
+        assertEquals(MismatchType.VERSION_MISMATCH, conflict.GetType());
+        assertEquals("Version doesn't match", conflict.GetMessage());
     }
 
-    @Test
-    public void description_is_conflicting_between_testPackage_and_controlPackage_test(){
-
-    }
+//    @Test
+//    public void description_is_conflicting_between_testPackage_and_controlPackage_test(){
+//        packageBuilder.setDescription(null); //TODO
+//        controlPackage = packageBuilder.buildAndFlush();
+//        packageBuilder.setDescription(null);
+//        conflictPackage = packageBuilder.buildAndFlush();
+//
+//        List<Conflict> conflictList = controlPackage.compare(conflictPackage);
+//        Conflict conflict = conflictList.get(0);
+//
+//        assertEquals(1, conflictList.size());
+//        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
+//        assertEquals("Description doesn't match", conflict.GetMessage());
+//    }
 
     @Test
     public void PURL_is_conflicting_between_testPackage_and_controlPackage_test(){
+        packageBuilder.addPURL("control");
+        controlPackage = packageBuilder.buildAndFlush();
+        packageBuilder.addPURL("purl");
+        conflictPackage = packageBuilder.buildAndFlush();
 
+        List<Conflict> conflictList = controlPackage.compare(conflictPackage);
+        Conflict conflict = conflictList.get(0);
+
+        assertEquals(1, conflictList.size());
+        assertEquals(MismatchType.PURL_MISMATCH, conflict.GetType());
+        assertEquals("PURL doesn't match", conflict.GetMessage());
     }
 
     @Test
     public void CPE_is_conflicting_between_testPackage_and_controlPackage_test(){
+        packageBuilder.addCPE("control");
+        controlPackage = packageBuilder.buildAndFlush();
+        packageBuilder.addCPE("cpe");
+        conflictPackage = packageBuilder.buildAndFlush();
 
+        List<Conflict> conflictList = controlPackage.compare(conflictPackage);
+        Conflict conflict = conflictList.get(0);
+
+        assertEquals(1, conflictList.size());
+        assertEquals(MismatchType.CPE_MISMATCH, conflict.GetType());
+        assertEquals("CPE doesn't match", conflict.GetMessage());
     }
 
     @Test
     public void mimeType_is_conflicting_between_testPackage_and_controlPackage_test(){
+        packageBuilder.setMimeType("control");
+        controlPackage = packageBuilder.buildAndFlush();
+        packageBuilder.setMimeType("mime type");
+        conflictPackage = packageBuilder.buildAndFlush();
 
+        List<Conflict> conflictList = controlPackage.compare(conflictPackage);
+        Conflict conflict = conflictList.get(0);
+
+        assertEquals(1, conflictList.size());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
+        assertEquals("Mime Type doesn't match", conflict.GetMessage());
     }
 
     @Test
     public void publisher_is_conflicting_between_testPackage_and_controlPackage_test(){
+        packageBuilder.setPublisher("control");
+        controlPackage = packageBuilder.buildAndFlush();
+        packageBuilder.setPublisher("publisher");
+        conflictPackage = packageBuilder.buildAndFlush();
 
+        List<Conflict> conflictList = controlPackage.compare(conflictPackage);
+        Conflict conflict = conflictList.get(0);
+
+        assertEquals(1, conflictList.size());
+        assertEquals(MismatchType.PUBLISHER_MISMATCH, conflict.GetType());
+        assertEquals("Publisher doesn't match", conflict.GetMessage());
     }
 
     @Test
     public void scope_is_conflicting_between_testPackage_and_controlPackage_test(){
+        packageBuilder.setScope("control");
+        controlPackage = packageBuilder.buildAndFlush();
+        packageBuilder.setScope("scope");
+        conflictPackage = packageBuilder.buildAndFlush();
 
+        List<Conflict> conflictList = controlPackage.compare(conflictPackage);
+        Conflict conflict = conflictList.get(0);
+
+        assertEquals(1, conflictList.size());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
+        assertEquals("Scope doesn't match", conflict.GetMessage());
     }
 
     @Test
     public void group_is_conflicting_between_testPackage_and_controlPackage_test(){
+        packageBuilder.setGroup("control");
+        controlPackage = packageBuilder.buildAndFlush();
+        packageBuilder.setGroup("group");
+        conflictPackage = packageBuilder.buildAndFlush();
 
+        List<Conflict> conflictList = controlPackage.compare(conflictPackage);
+        Conflict conflict = conflictList.get(0);
+
+        assertEquals(1, conflictList.size());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
+        assertEquals("Group doesn't match", conflict.GetMessage());
     }
 }
