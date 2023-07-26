@@ -1,14 +1,10 @@
-package org.svip.sbom.model.objects.SPDX23;
+package org.svip.sbom.model.objects;
 
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
-import org.svip.sbom.factory.objects.SPDX23.SPDX23SBOMBuilderFactory;
+import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
+import org.svip.sbom.factory.objects.SVIPSBOMBuilderFactory;
 import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.metadata.CreationData;
-import org.svip.sbom.model.shared.metadata.Organization;
-import org.svip.sbom.model.shared.util.Description;
-import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
 
@@ -16,15 +12,15 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SPDX23SBOMConflictsTest {
-    static SPDX23SBOMBuilderFactory sbomBuilderFactory = new SPDX23SBOMBuilderFactory();
+public class SVIPSBOMConflictsTest {
+    static SVIPSBOMBuilderFactory sbomBuilderFactory = new SVIPSBOMBuilderFactory();
     static SBOM controlSBOM;
     static SBOM conflictSBOM;
 
     @Test
     public void Format_is_Conflicting_between_testPackage_and_controlPackage_test()
     {
-        SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
+        SVIPSBOMBuilder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setFormat("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
         sbomBuilder.setFormat("format");
@@ -41,7 +37,7 @@ public class SPDX23SBOMConflictsTest {
     @Test
     public void Name_is_Conflicting_between_testPackage_and_controlPackage_test()
     {
-        SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
+        SVIPSBOMBuilder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setName("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
         sbomBuilder.setName("name");
@@ -58,7 +54,7 @@ public class SPDX23SBOMConflictsTest {
     @Test
     public void UID_is_Conflicting_between_testPackage_and_controlPackage_test()
     {
-        SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
+        SVIPSBOMBuilder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setUID("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
         sbomBuilder.setUID("uid");
@@ -75,7 +71,7 @@ public class SPDX23SBOMConflictsTest {
     @Test
     public void Version_is_Conflicting_between_testPackage_and_controlPackage_test()
     {
-        SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
+        SVIPSBOMBuilder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setVersion("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
         sbomBuilder.setVersion("version");
@@ -92,7 +88,7 @@ public class SPDX23SBOMConflictsTest {
     @Test
     public void SpecVersion_is_Conflicting_between_testPackage_and_controlPackage_test()
     {
-        SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
+        SVIPSBOMBuilder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setSpecVersion("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
         sbomBuilder.setSpecVersion("spec version");
@@ -109,10 +105,10 @@ public class SPDX23SBOMConflictsTest {
     @Test
     public void License_is_Conflicting_between_testPackage_and_controlPackage_test()
     {
-        SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
+        SVIPSBOMBuilder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.addLicense("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
-        SPDX23Builder sbomBuilder2 = sbomBuilderFactory.createBuilder();
+        SVIPSBOMBuilder sbomBuilder2 = sbomBuilderFactory.createBuilder();
         sbomBuilder2.addLicense("license");
         conflictSBOM = sbomBuilder2.buildSPDX23SBOM();
 
@@ -127,7 +123,7 @@ public class SPDX23SBOMConflictsTest {
     @Test
     public void DocumentComment_is_Conflicting_between_testPackage_and_controlPackage_test()
     {
-        SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
+        SVIPSBOMBuilder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setDocumentComment("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
         sbomBuilder.setDocumentComment("doc comment");
@@ -144,7 +140,7 @@ public class SPDX23SBOMConflictsTest {
     @Test
     public void SPDXLicenseListVersion_is_Conflicting_between_testPackage_and_controlPackage_test()
     {
-        SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
+        SVIPSBOMBuilder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setSPDXLicenseListVersion("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
         sbomBuilder.setSPDXLicenseListVersion("license list version");
@@ -161,7 +157,7 @@ public class SPDX23SBOMConflictsTest {
     @Test
     public void CreationTime_is_Conflicting_between_testPackage_and_controlPackage_test()
     {
-        SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
+        SVIPSBOMBuilder sbomBuilder = sbomBuilderFactory.createBuilder();
         CreationData creationData = new CreationData();
         creationData.setCreationTime("control");
         sbomBuilder.setCreationData(creationData);
@@ -182,7 +178,7 @@ public class SPDX23SBOMConflictsTest {
     @Test
     public void CreatorComment_is_Conflicting_between_testPackage_and_controlPackage_test()
     {
-        SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
+        SVIPSBOMBuilder sbomBuilder = sbomBuilderFactory.createBuilder();
         CreationData creationData = new CreationData();
         creationData.setCreatorComment("control");
         sbomBuilder.setCreationData(creationData);
