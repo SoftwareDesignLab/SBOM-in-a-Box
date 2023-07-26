@@ -1,12 +1,14 @@
 package org.svip.sbom.model.objects.SPDX23;
 
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.factory.objects.SPDX23.SPDX23SBOMBuilderFactory;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
+import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.LicenseCollection;
@@ -297,6 +299,31 @@ public class SPDX23SBOMConflictsTest {
     @Test
     public void CreationTool_is_Conflicting_between_testPackage_and_controlPackage_test()
     {
+        SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
+        CreationData creationData = new CreationData();
+        CreationTool creationTool = new CreationTool();
+        creationTool.setVendor("Control Vendor");
+        creationTool.setVersion("Control Version");
+        creationTool.setName("Control Name");
+        creationTool.addHash("Control Algorithm", "Control Hash");
+        creationData.addCreationTool(creationTool);
+        sbomBuilder.setCreationData(creationData);
+        controlSBOM = sbomBuilder.buildSPDX23SBOM();
+        CreationData creationData2 = new CreationData();
+        CreationTool creationTool2 = new CreationTool();
+        creationTool2.setVendor("Vendor");
+        creationTool2.setVersion("Version");
+        creationTool2.setName("Name");
+        creationTool2.addHash("Algorithm", "Hash");
+        creationData2.addCreationTool(creationTool2);
+        sbomBuilder.setCreationData(creationData2);
+        conflictSBOM = sbomBuilder.buildSPDX23SBOM();
 
+        List<Conflict> conflictList = controlSBOM.compare(conflictSBOM);
+        Conflict conflict = conflictList.get(0);
+
+        assertEquals(2, conflictList.size());
+        assertEquals(MismatchType.MISSING, conflict.GetType());
+        assertEquals("Creation Data: Tool is missing", conflict.GetMessage());
     }
 }

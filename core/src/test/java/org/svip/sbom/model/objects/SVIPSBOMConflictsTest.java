@@ -28,9 +28,9 @@ public class SVIPSBOMConflictsTest {
     {
         SVIPSBOMBuilder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setFormat("control");
-        controlSBOM = sbomBuilder.buildSPDX23SBOM();
+        controlSBOM = sbomBuilder.Build();
         sbomBuilder.setFormat("format");
-        conflictSBOM = sbomBuilder.buildSPDX23SBOM();
+        conflictSBOM = sbomBuilder.Build();
 
         List<Conflict> conflictList = controlSBOM.compare(conflictSBOM);
         Conflict conflict = conflictList.get(0);
@@ -45,9 +45,9 @@ public class SVIPSBOMConflictsTest {
     {
         SVIPSBOMBuilder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setName("control");
-        controlSBOM = sbomBuilder.buildSPDX23SBOM();
+        controlSBOM = sbomBuilder.Build();
         sbomBuilder.setName("name");
-        conflictSBOM = sbomBuilder.buildSPDX23SBOM();
+        conflictSBOM = sbomBuilder.Build();
 
         List<Conflict> conflictList = controlSBOM.compare(conflictSBOM);
         Conflict conflict = conflictList.get(0);
@@ -62,9 +62,9 @@ public class SVIPSBOMConflictsTest {
     {
         SVIPSBOMBuilder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setUID("control");
-        controlSBOM = sbomBuilder.buildSPDX23SBOM();
+        controlSBOM = sbomBuilder.Build();
         sbomBuilder.setUID("uid");
-        conflictSBOM = sbomBuilder.buildSPDX23SBOM();
+        conflictSBOM = sbomBuilder.Build();
 
         List<Conflict> conflictList = controlSBOM.compare(conflictSBOM);
         Conflict conflict = conflictList.get(0);
@@ -79,9 +79,9 @@ public class SVIPSBOMConflictsTest {
     {
         SVIPSBOMBuilder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setVersion("control");
-        controlSBOM = sbomBuilder.buildSPDX23SBOM();
+        controlSBOM = sbomBuilder.Build();
         sbomBuilder.setVersion("version");
-        conflictSBOM = sbomBuilder.buildSPDX23SBOM();
+        conflictSBOM = sbomBuilder.Build();
 
         List<Conflict> conflictList = controlSBOM.compare(conflictSBOM);
         Conflict conflict = conflictList.get(0);
@@ -96,9 +96,9 @@ public class SVIPSBOMConflictsTest {
     {
         SVIPSBOMBuilder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setSpecVersion("control");
-        controlSBOM = sbomBuilder.buildSPDX23SBOM();
+        controlSBOM = sbomBuilder.Build();
         sbomBuilder.setSpecVersion("spec version");
-        conflictSBOM = sbomBuilder.buildSPDX23SBOM();
+        conflictSBOM = sbomBuilder.Build();
 
         List<Conflict> conflictList = controlSBOM.compare(conflictSBOM);
         Conflict conflict = conflictList.get(0);
@@ -113,10 +113,10 @@ public class SVIPSBOMConflictsTest {
     {
         SVIPSBOMBuilder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.addLicense("control");
-        controlSBOM = sbomBuilder.buildSPDX23SBOM();
+        controlSBOM = sbomBuilder.Build();
         SVIPSBOMBuilder sbomBuilder2 = sbomBuilderFactory.createBuilder();
         sbomBuilder2.addLicense("license");
-        conflictSBOM = sbomBuilder2.buildSPDX23SBOM();
+        conflictSBOM = sbomBuilder2.Build();
 
         List<Conflict> conflictList = controlSBOM.compare(conflictSBOM);
         Conflict conflict = conflictList.get(0);
@@ -131,9 +131,9 @@ public class SVIPSBOMConflictsTest {
     {
         SVIPSBOMBuilder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setDocumentComment("control");
-        controlSBOM = sbomBuilder.buildSPDX23SBOM();
+        controlSBOM = sbomBuilder.Build();
         sbomBuilder.setDocumentComment("doc comment");
-        conflictSBOM = sbomBuilder.buildSPDX23SBOM();
+        conflictSBOM = sbomBuilder.Build();
 
         List<Conflict> conflictList = controlSBOM.compare(conflictSBOM);
         Conflict conflict = conflictList.get(0);
@@ -148,9 +148,9 @@ public class SVIPSBOMConflictsTest {
     {
         SVIPSBOMBuilder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setSPDXLicenseListVersion("control");
-        controlSBOM = sbomBuilder.buildSPDX23SBOM();
+        controlSBOM = sbomBuilder.Build();
         sbomBuilder.setSPDXLicenseListVersion("license list version");
-        conflictSBOM = sbomBuilder.buildSPDX23SBOM();
+        conflictSBOM = sbomBuilder.Build();
 
         List<Conflict> conflictList = controlSBOM.compare(conflictSBOM);
         Conflict conflict = conflictList.get(0);
@@ -167,11 +167,11 @@ public class SVIPSBOMConflictsTest {
         CreationData creationData = new CreationData();
         creationData.setCreationTime("control");
         sbomBuilder.setCreationData(creationData);
-        controlSBOM = sbomBuilder.buildSPDX23SBOM();
+        controlSBOM = sbomBuilder.Build();
         CreationData creationData2 = new CreationData();
         creationData2.setCreationTime("creation time");
         sbomBuilder.setCreationData(creationData2);
-        conflictSBOM = sbomBuilder.buildSPDX23SBOM();
+        conflictSBOM = sbomBuilder.Build();
 
         List<Conflict> conflictList = controlSBOM.compare(conflictSBOM);
         Conflict conflict = conflictList.get(0);
@@ -188,11 +188,11 @@ public class SVIPSBOMConflictsTest {
         CreationData creationData = new CreationData();
         creationData.setCreatorComment("control");
         sbomBuilder.setCreationData(creationData);
-        controlSBOM = sbomBuilder.buildSPDX23SBOM();
+        controlSBOM = sbomBuilder.Build();
         CreationData creationData2 = new CreationData();
         creationData2.setCreatorComment("creator comment");
         sbomBuilder.setCreationData(creationData2);
-        conflictSBOM = sbomBuilder.buildSPDX23SBOM();
+        conflictSBOM = sbomBuilder.Build();
 
         List<Conflict> conflictList = controlSBOM.compare(conflictSBOM);
         Conflict conflict = conflictList.get(0);
@@ -210,12 +210,12 @@ public class SVIPSBOMConflictsTest {
         Organization supplier = new Organization("control", "control");
         creationData.setSupplier(supplier);
         sbomBuilder.setCreationData(creationData);
-        controlSBOM = sbomBuilder.buildSPDX23SBOM();
+        controlSBOM = sbomBuilder.Build();
         CreationData creationData2 = new CreationData();
         Organization supplier2 = new Organization("name", "url");
         creationData2.setSupplier(supplier2);
         sbomBuilder.setCreationData(creationData2);
-        conflictSBOM = sbomBuilder.buildSPDX23SBOM();
+        conflictSBOM = sbomBuilder.Build();
 
         List<Conflict> conflictList = controlSBOM.compare(conflictSBOM);
 
@@ -244,12 +244,12 @@ public class SVIPSBOMConflictsTest {
         Organization manufacture = new Organization("control", "control");
         creationData.setManufacture(manufacture);
         sbomBuilder.setCreationData(creationData);
-        controlSBOM = sbomBuilder.buildSPDX23SBOM();
+        controlSBOM = sbomBuilder.Build();
         CreationData creationData2 = new CreationData();
         Organization manufacture2 = new Organization("name", "url");
         creationData2.setManufacture(manufacture2);
         sbomBuilder.setCreationData(creationData2);
-        conflictSBOM = sbomBuilder.buildSPDX23SBOM();
+        conflictSBOM = sbomBuilder.Build();
 
         List<Conflict> conflictList = controlSBOM.compare(conflictSBOM);
 
@@ -278,12 +278,12 @@ public class SVIPSBOMConflictsTest {
         Contact author = new Contact("control", "control", "control");
         creationData.addAuthor(author);
         sbomBuilder.setCreationData(creationData);
-        controlSBOM = sbomBuilder.buildSPDX23SBOM();
+        controlSBOM = sbomBuilder.Build();
         CreationData creationData2 = new CreationData();
         Contact author2 = new Contact("name", "email", "phone");
         creationData2.addAuthor(author2);
         sbomBuilder.setCreationData(creationData2);
-        conflictSBOM = sbomBuilder.buildSPDX23SBOM();
+        conflictSBOM = sbomBuilder.Build();
 
         List<Conflict> conflictList = controlSBOM.compare(conflictSBOM);
         Conflict conflict = conflictList.get(0);
@@ -305,16 +305,16 @@ public class SVIPSBOMConflictsTest {
         creationTool.addHash("Control Algorithm", "Control Hash");
         creationData.addCreationTool(creationTool);
         sbomBuilder.setCreationData(creationData);
-        controlSBOM = sbomBuilder.buildSPDX23SBOM();
+        controlSBOM = sbomBuilder.Build();
         CreationData creationData2 = new CreationData();
         CreationTool creationTool2 = new CreationTool();
-        creationTool2.setVendor("Control Vendor");
-        creationTool2.setVersion("Control Version");
-        creationTool2.setName("Control Name");
-        creationTool2.addHash("Control Algorithm", "Control Hash");
-        creationData.addCreationTool(creationTool2);
+        creationTool2.setVendor("Vendor");
+        creationTool2.setVersion("Version");
+        creationTool2.setName("Name");
+        creationTool2.addHash("Algorithm", "Hash");
+        creationData2.addCreationTool(creationTool2);
         sbomBuilder.setCreationData(creationData2);
-        conflictSBOM = sbomBuilder.buildSPDX23SBOM();
+        conflictSBOM = sbomBuilder.Build();
 
         List<Conflict> conflictList = controlSBOM.compare(conflictSBOM);
         Conflict conflict = conflictList.get(0);

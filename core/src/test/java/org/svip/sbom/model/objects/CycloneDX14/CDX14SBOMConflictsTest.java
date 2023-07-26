@@ -7,6 +7,7 @@ import org.svip.sbom.factory.objects.CycloneDX14.CDX14SBOMBuilderFactory;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
+import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
@@ -278,6 +279,31 @@ public class CDX14SBOMConflictsTest {
     @Test
     public void CreationTool_is_Conflicting_between_testPackage_and_controlPackage_test()
     {
+        CDX14Builder sbomBuilder = sbomBuilderFactory.createBuilder();
+        CreationData creationData = new CreationData();
+        CreationTool creationTool = new CreationTool();
+        creationTool.setVendor("Control Vendor");
+        creationTool.setVersion("Control Version");
+        creationTool.setName("Control Name");
+        creationTool.addHash("Control Algorithm", "Control Hash");
+        creationData.addCreationTool(creationTool);
+        sbomBuilder.setCreationData(creationData);
+        controlSBOM = sbomBuilder.buildCDX14SBOM();
+        CreationData creationData2 = new CreationData();
+        CreationTool creationTool2 = new CreationTool();
+        creationTool2.setVendor("Vendor");
+        creationTool2.setVersion("Version");
+        creationTool2.setName("Name");
+        creationTool2.addHash("Algorithm", "Hash");
+        creationData2.addCreationTool(creationTool2);
+        sbomBuilder.setCreationData(creationData2);
+        conflictSBOM = sbomBuilder.buildCDX14SBOM();
 
+        List<Conflict> conflictList = controlSBOM.compare(conflictSBOM);
+        Conflict conflict = conflictList.get(0);
+
+        assertEquals(2, conflictList.size());
+        assertEquals(MismatchType.MISSING, conflict.GetType());
+        assertEquals("Creation Data: Tool is missing", conflict.GetMessage());
     }
 }
