@@ -629,7 +629,8 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         cf.addConflict("File Name", MISC_MISMATCH, this.fileName, other.getFileName());
 
         // Files Analyzed
-        cf.addConflict("Files Analyzed", MISC_MISMATCH, this.filesAnalyzed.toString(), other.getFilesAnalyzed().toString());
+        // needs null check because cannot call null.toString
+        if (this.filesAnalyzed != null) cf.addConflict("Files Analyzed", MISC_MISMATCH, this.filesAnalyzed.toString(), other.getFilesAnalyzed().toString());
 
         // Verification Code
         cf.addConflict("Verification Code", MISC_MISMATCH, this.verificationCode, other.getVerificationCode());
