@@ -3,7 +3,20 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v7.0.2-alpha] - (7/25/2023)
+
+### Added
+- VEX API Endpoint
+- VEX API test `GenerateVEXAPITest`
+- `VEXResult.java`
+  - Class that holds both the VEX Object and any errors that occurred for the API endpoint
+- Test SBOMs that contain vulnerable components
+
+### Changed
+- Updated `API.md` documentation with the VEX endpoint
+
 ## [v7.0.1-alpha] - (7/24/2023)
+
 ### Changed
 - `/sboms` to `/sbom` when getting SBOM object
 

@@ -16,6 +16,7 @@
       - [Convert SBOM](#convert-an-sbom)
       - [Generate SBOM with SVIP](#generate-an-sbom-using-svip-parsers)
       - [Apply SBOM Metrics](#quality-attributes-testing)
+      - [Generate VEX OBject](#create-a-vex-document-with-an-sbom)
     - [MySQL Database](#mysql-database)
 
 # System Requirements
@@ -281,6 +282,38 @@ curl -X PUT -G http://localhost:8080/svip/sboms/content \
 ```bash
 curl -X GET -G http://localhost:8080/svip/sboms/qa \
 -d 'id=<SBOM UID>'
+```
+
+### Create a VEX Document With an SBOM
+> Generate a VEX document using an SBOM's components and information
+
+**Endpoint:** `http://localhost:8080/svip/sboms/vex`
+
+**Request Method:** `GET`
+
+**Parameters**
+
+| Parameter |  Type  |                    Description                     | Is Required? |
+|:---------:|:------:|:--------------------------------------------------:|:------------:|
+|    id     |  Long  | The ID of the SBOM file to get information for VEX |     YES      |
+|  format   | String |           The format of the VEX Document           |     YES      |
+|  client   | String |               The API Client to use                |     YES      |
+
+**Responses**
+
+| Response Code |   Type    |                  Description                  |
+|:-------------:|:---------:|:---------------------------------------------:|
+|      200      | VEXResult | A VEX and HashMap of any errors that occurred |
+|      400      |  String   |           Invalid Format or Client            |
+|      404      |  String   |              SBOM does not exist              |
+|      500      |  String   |    The message of the error that occurred     |
+
+**Example**
+```bash
+curl -X GET -G http://localhost:8080/svip/sboms/vex \
+-d 'id=<SBOM UID>' \
+-d 'format=CSAF' \
+-d 'client=OSV'
 ```
 
 ## MySQL Database

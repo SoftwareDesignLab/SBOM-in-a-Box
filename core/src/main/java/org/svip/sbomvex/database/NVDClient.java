@@ -2,13 +2,8 @@ package org.svip.sbomvex.database;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.svip.sbom.model.interfaces.generics.Component;
-import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.generics.SBOMPackage;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbomvex.database.interfaces.VulnerabilityDBClient;
-import org.svip.sbomvex.model.VEX;
-import org.svip.sbomvex.model.VEXType;
 import org.svip.sbomvex.vexstatement.Product;
 import org.svip.sbomvex.vexstatement.VEXStatement;
 import org.svip.sbomvex.vexstatement.status.Justification;
@@ -21,6 +16,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -49,104 +45,63 @@ public class NVDClient implements VulnerabilityDBClient {
      * run the api request and returns the response
      * @param cpe the cpe string
      * @return the response from the NVD API
+     * @throws Exception if an error occurs with getting NVD's response
      */
-    private String vexFieldsWithCPE(String cpe) {
-        try{
-            var request = HttpRequest.newBuilder()
-                    .uri(URI.create(buildURLWithCPE(cpe)))
-                    .GET()
-                    .build();
+    private String vexFieldsWithCPE(String cpe) throws Exception{
+        var request = HttpRequest.newBuilder()
+                .uri(URI.create(buildURLWithCPE(cpe)))
+                .GET()
+                .build();
 
-            CompletableFuture<HttpResponse<String>> apiResponse = httpClient
-                    .sendAsync(request, HttpResponse.BodyHandlers.ofString());
-            return apiResponse.get().body();
-        }
-        // an error occurs with the request
-        catch(Exception e){
-            return null;
-        }
+        CompletableFuture<HttpResponse<String>> apiResponse = httpClient
+                .sendAsync(request, HttpResponse.BodyHandlers.ofString());
+        return apiResponse.get().body();
     }
 
     /**
-     * Generate a new VEX document
-     * @param sbom the SBOM to create the VEX Document
-     * @return a new VEX object
+     * Get all vulnerabilities of a component using the NVD API
+     * @param s the SBOM package to create the VEX Statement for
+     * @return a List of VEX Statements if there are vulnerabilities or
+     * throw a general Exception if none are found
+     * @throws Exception if no vulnerabilities are found or an error occurs
      */
     @Override
-    public VEX generateVEX(SBOM sbom) {
-        // create vex builder to create VEX document
-        VEX.Builder vexBuilder = new VEX.Builder();
+    public List<VEXStatement> getVEXStatements(SBOMPackage s) throws Exception{
+        List<VEXStatement> vexStatements = new ArrayList<>();
+        String response;
+        String componentID;
+        Set<String> cpes = s.getCPEs();
 
-        // initially get the necessary fields for the VEX Document builder
-        String creationTime = String.valueOf(java.time.LocalDateTime.now());
-        vexBuilder.setVEXIdentifier(sbom.getName());
+        // if component has no cpes continue as we can only search if there are cpes
+        if(cpes==null || cpes.isEmpty())
+            throw new Exception("Component does not have CPEs " +
+                    "to test with NVD API");
 
-        // TODO better way to determine origin type and spec version?
-        String sbomFormat = sbom.getFormat().toLowerCase();
-        if(sbomFormat.contains("cyclonedx")){
-            vexBuilder.setOriginType(VEXType.CYCLONE_DX);
-            vexBuilder.setSpecVersion("1.4");
-        }
-        else{
-            vexBuilder.setOriginType(VEXType.CSAF);
-            vexBuilder.setSpecVersion("2.0");
-        }
-        vexBuilder.setDocVersion("1.0");
-        vexBuilder.setTimeFirstIssued(creationTime);
-        vexBuilder.setTimeLastUpdated(creationTime);
+        // use the cpes to search for vulnerabilities
+        ArrayList<String> cpesList = new ArrayList<>(cpes);
+        String cpeString = cpesList.get(0);
+        componentID = cpeString;
+        response = vexFieldsWithCPE(cpeString);
+        TimeUnit.SECONDS.sleep(6);
 
-        for(Component c : sbom.getComponents()){
-            String response;
-            JSONObject jsonResponse;
-            String componentID;
-            // check that component is not an SPDX23File, as it does not
-            // have the necessary fields to search for vulnerabilities
-            if(!(c instanceof SPDX23File)){
-                // cast to SBOMPackage to check for cpes
-                SBOMPackage component = (SBOMPackage) c;
-                Set<String> cpes = component.getCPEs();
 
-                // if component has no cpes continue as we can only search if there are cpes
-                if(cpes != null && !cpes.isEmpty()){
-                    // use the cpes to search for vulnerabilities
-                    ArrayList<String> cpesList = new ArrayList<>(cpes);
-                    String cpeString = cpesList.get(0);
-                    componentID = cpeString;
-                    try{
-                        response = vexFieldsWithCPE(cpeString);
-                        TimeUnit.SECONDS.sleep(6);
-                    }
-                    // TODO add info for too many api requests in time frame?
-                    catch(Exception ignored){
-                        response = null;
-                    }
-                }
-                else{
-                    componentID = null;
-                    response = null;
-                }
-
-                // check that the response was not null to find vulnerabilities
-                if(response != null){
-                    jsonResponse = new JSONObject(response);
-                    JSONArray vulns = new JSONArray(
-                            jsonResponse.getJSONArray("vulnerabilities"));
-                    for (int i = 0; i < vulns.length(); i++) {
-                        // get the singular vulnerability and create a
-                        // VEXStatement for it
-                        JSONObject vulnerability = vulns.getJSONObject(i)
-                                .getJSONObject("cve");
-                        VEXStatement vexStatement =
-                                generateVEXStatement(vulnerability,
-                                        component, componentID);
-                        vexBuilder.addVEXStatement(vexStatement);
-                    }
-
-                }
+        // check that the response was not null to find vulnerabilities
+        if(response != null){
+            JSONObject jsonResponse = new JSONObject(response);
+            JSONArray vulns = new JSONArray(
+                    jsonResponse.getJSONArray("vulnerabilities"));
+            for (int i = 0; i < vulns.length(); i++) {
+                // get the singular vulnerability and create a
+                // VEXStatement for it
+                JSONObject vulnerability = vulns.getJSONObject(i)
+                        .getJSONObject("cve");
+                VEXStatement statement =
+                        generateVEXStatement(vulnerability,
+                                s, componentID);
+                vexStatements.add(statement);
             }
         }
-
-        return vexBuilder.build();
+        return vexStatements;
     }
 
     /**

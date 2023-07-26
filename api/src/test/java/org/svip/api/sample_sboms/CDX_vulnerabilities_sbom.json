@@ -1,0 +1,103 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4",
+  "serialNumber": "urn:uuid:d1e4668d-c5ce-4d6d-a354-9044bf9c459b",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2022-10-12T14:13:35-04:00",
+    "tools": [
+      {
+        "vendor": "anchore",
+        "name": "syft",
+        "version": "0.58.0"
+      }
+    ],
+    "component": {
+      "bom-ref": "44ec942469dbbb3d",
+      "type": "file",
+      "name": "custom-sbom-file"
+    }
+  },
+  "components": [
+    {
+      "bom-ref": "pkg:maven/org.bouncycastle/fips_java_api?package-id=de3c95b9429a55cb",
+      "type": "library",
+      "name": "fips_java_api",
+      "version": "1.9.5",
+      "cpe": "cpe:2.3:a:bouncycastle:fips_java_api:1.0.2:*:*:*:*:*:*:*",
+      "purl": "pkg:maven/org.bouncycastle/bcpkix-jdk15on"
+    },
+    {
+      "bom-ref": "pkg:maven/com.ctrip.framework.apollo/apollo-client?package-id=35d7a193a542e6dc",
+      "type": "library",
+      "name": "apollo-client",
+      "version": "1.9.1",
+      "cpe": "cpe:2.3:a:apollo-client:apollo-client:1.9.1:*:*:*:*:*:*:*",
+      "purl": "pkg:maven/com.ctrip.framework.apollo/apollo-client"
+    },
+    {
+      "bom-ref": "pkg:maven/com.pen_atrium_project.framework.open_atrium/open_atrium?package-id=6sd7asd7sd7ga",
+      "type": "library",
+      "name": "open_atrium",
+      "version": "7.x-2.61",
+      "cpe": "cpe:2.3:a:open_atrium_project:open_atrium:7.x-2.61:*:*:*:*:drupal:*:*",
+      "purl": "pkg:maven/com.pen_atrium_project.framework.open_atrium"
+    },
+    {
+      "bom-ref": "pkg:maven/org.jboss.netty/netty?package-id=4ee680375fab1d07",
+      "type": "library",
+      "name": "netty",
+      "version": "4.1.61",
+      "cpe": "cpe:2.3:a:netty:netty:4.1.61:*:*:*:*:*:*:*",
+      "purl": "pkg:maven/org.jboss.netty/netty"
+    },
+    {
+      "bom-ref": "pkg:maven/com.user-login-history/user-login-history@1.5?package-id=8124sd8sff4353471ef17",
+      "type": "library",
+      "name": "user-login-history",
+      "version": "1.5",
+      "cpe": "cpe:2.3:a:pivotal_software:spring_data_commons:1.6.2:*:*:*:*:*:*:*",
+      "purl": "pkg:maven/com.hazelcast/hazelcast@1.5"
+    },
+    {
+      "bom-ref": "pkg:maven/com.hazelcast/hazelcast@1.9.3?package-id=814bd84faa71ef17",
+      "type": "library",
+      "name": "hazelcast",
+      "version": "1.9.3",
+      "cpe": "cpe:2.3:a:hazelcast:hazelcast:1.9.3:*:*:*:*:*:*:*",
+      "purl": "pkg:maven/com.hazelcast/hazelcast@1.9.3"
+    },
+    {
+      "bom-ref": "pkg:maven/com.octopus.tentacle/tentacle@6.0.375?package-id=112bdh4ffa78ef43",
+      "type": "library",
+      "name": "tentacle",
+      "version": "6.0.375",
+      "cpe": "cpe:2.3:a:octopus:tentacle:6.0.375:*:*:*:*:*:*:*",
+      "purl": "pkg:maven/com.octopus.tentacle/tentacle@6.0.375"
+    },
+    {
+      "bom-ref": "pkg:wordpress/com.iframe_project.iframe/iframe@3.0?package-id=112bdh4ffa78ef43",
+      "type": "library",
+      "name": "iframe_project",
+      "version": "3.0",
+      "cpe": "cpe:2.3:a:iframe_project:iframe:3.0:*:*:*:*:wordpress:*:*",
+      "purl": ""
+    },
+    {
+      "bom-ref": "pkg:maven/org.aspectj/aspectjweaver@1.9.5?package-id=771dbb96c5da7d79",
+      "type": "library",
+      "name": "aspectjweaver",
+      "version": "1.9.5",
+      "cpe": "cpe:2.3:a:aspectjweaver:aspectjweaver:1.9.5:*:*:*:*:*:*:*",
+      "purl": "pkg:maven/org.aspectj/aspectjweaver@1.9.5"
+    },
+    {
+      "bom-ref": "pkg:maven/org.asynchttpclient/async-http-client@2.0.35?package-id=251e133a0127875b",
+      "type": "library",
+      "name": "async-http-client",
+      "version": "2.0.35",
+      "cpe": "cpe:2.3:a:async-http-client:async-http-client:2.0.35:*:*:*:*:*:*:*",
+      "purl": "pkg:maven/org.asynchttpclient/async-http-client@2.0.35"
+    }
+  ]
+}

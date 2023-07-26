@@ -45,6 +45,12 @@ public class APITest {
     private final static String syftSPDX23JSON = System.getProperty("user.dir")
             + "/src/test/java/org/svip/api/sample_sboms/syft-0.80.0-source-spdx-json.json";
 
+    private final static String vulnerableSBOMNVD = System.getProperty("user.dir")
+            + "/src/test/java/org/svip/api/sample_sboms/CDX_vulnerabilities_sbom.json";
+
+    private final static String vulnerableSBOMOSV = System.getProperty("user.dir")
+            + "/src/test/java/org/svip/api/sample_sboms/CDX_vulns_osv_sbom.json";
+
     /*
     Sample projects for parsers
      */
@@ -111,6 +117,8 @@ public class APITest {
         contentsArray.add(new String(Files.readAllBytes(Paths.get(goSBOM))));
         contentsArray.add(new String(Files.readAllBytes(Paths.get(gradleSBOM))));
         contentsArray.add(new String(Files.readAllBytes(Paths.get(syftSPDX23JSON))));
+        contentsArray.add(new String(Files.readAllBytes(Paths.get(vulnerableSBOMNVD))));
+        contentsArray.add(new String(Files.readAllBytes(Paths.get(vulnerableSBOMOSV))));
 
         fileNamesArray.add(alpineSBOM);
         fileNamesArray.add(pythonSBOM);
@@ -124,6 +132,8 @@ public class APITest {
         fileNamesArray.add(goSBOM);
         fileNamesArray.add(gradleSBOM);
         fileNamesArray.add(syftSPDX23JSON);
+        fileNamesArray.add(vulnerableSBOMNVD);
+        fileNamesArray.add(vulnerableSBOMOSV);
 
         final Map<Long, SBOMFile> resultMap = new HashMap<>();
         for (int i = 0; i < contentsArray.size(); i++) {
