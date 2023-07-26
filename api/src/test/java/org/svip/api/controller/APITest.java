@@ -10,9 +10,11 @@ import org.svip.api.utils.Utils;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
 public class APITest {
@@ -43,13 +45,18 @@ public class APITest {
     private final static String syftSPDX23JSON = System.getProperty("user.dir")
             + "/src/test/java/org/svip/api/sample_sboms/syft-0.80.0-source-spdx-json.json";
 
+    private final static String vulnerableSBOMNVD = System.getProperty("user.dir")
+            + "/src/test/java/org/svip/api/sample_sboms/CDX_vulnerabilities_sbom.json";
+
+    private final static String vulnerableSBOMOSV = System.getProperty("user.dir")
+            + "/src/test/java/org/svip/api/sample_sboms/CDX_vulns_osv_sbom.json";
+
     /*
     Sample projects for parsers
      */
 
     public static class SampleProject {
-        private final String dir = System.getProperty("user.dir")
-                + "/src/test/java/org/svip/api/sample_projects/";
+        private final String dir = System.getProperty("user.dir") + "/src/test/java/org/svip/api/sample_projects/";
         public String type;
         public String[] sourceFileNames;
         private boolean gotten = false;
@@ -81,16 +88,17 @@ public class APITest {
     private static final SampleProject empty =
             new SampleProject("Empty", new String[]{"empty.cs"});
     private static final SampleProject subProcess =
-            new SampleProject("SubProcess", new String[]{"subprocess.py"});
+            new SampleProject("Subprocess", new String[]{"subprocess.py"});
     private static final SampleProject ruby =
             new SampleProject("Ruby", new String[]{"foo.rb"});
     private static final SampleProject JS =
             new SampleProject("JS", new String[]{"lib/bar.js", "lib/foo.js", "index.js"});
 
     @BeforeEach
-    public void setup() {
+    public void setup() throws IOException {
         // Init controller with mocked repository
-        controller = new SVIPApiController(repository);
+        // Avoid starting with OSI to decrease test time
+        controller = new SVIPApiController(repository, false);
     }
 
     public static Map<Long, SBOMFile> getTestFileMap() throws IOException {
@@ -109,6 +117,8 @@ public class APITest {
         contentsArray.add(new String(Files.readAllBytes(Paths.get(goSBOM))));
         contentsArray.add(new String(Files.readAllBytes(Paths.get(gradleSBOM))));
         contentsArray.add(new String(Files.readAllBytes(Paths.get(syftSPDX23JSON))));
+        contentsArray.add(new String(Files.readAllBytes(Paths.get(vulnerableSBOMNVD))));
+        contentsArray.add(new String(Files.readAllBytes(Paths.get(vulnerableSBOMOSV))));
 
         fileNamesArray.add(alpineSBOM);
         fileNamesArray.add(pythonSBOM);
@@ -122,6 +132,8 @@ public class APITest {
         fileNamesArray.add(goSBOM);
         fileNamesArray.add(gradleSBOM);
         fileNamesArray.add(syftSPDX23JSON);
+        fileNamesArray.add(vulnerableSBOMNVD);
+        fileNamesArray.add(vulnerableSBOMOSV);
 
         final Map<Long, SBOMFile> resultMap = new HashMap<>();
         for (int i = 0; i < contentsArray.size(); i++) {

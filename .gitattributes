@@ -1,0 +1,7 @@
+# Handle line endings automatically
+* text=auto
+
+# ALWAYS SET script line endings to LF
+*.sh text eol=lf
+
+osi.tar.gz filter=lfs diff=lfs merge=lfs -text

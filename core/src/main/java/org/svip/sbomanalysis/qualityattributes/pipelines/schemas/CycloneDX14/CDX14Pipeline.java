@@ -114,9 +114,10 @@ public class CDX14Pipeline implements CDX14Tests {
                 if(hashes != null){
                     for(String hashAlgo : hashes.keySet()){
                         String hashValue = hashes.get(hashAlgo);
+                        Hash hash = new Hash(hashAlgo, hashValue);
                         componentResults.addAll(hashTest.test(hashAlgo, hashValue));
                         componentResults.add(supportedHash("Supported CDX Hash",
-                                hashAlgo, component.getName()));
+                                hash, component.getName()));
                     }
                 }
 
@@ -195,24 +196,25 @@ public class CDX14Pipeline implements CDX14Tests {
      * Check if a hash algorithm in the given CycloneDX 1.4 SBOM is supported
      * within CycloneDX
      * @param field the field that's tested
-     * @param value the hash algorithm tested
+     * @param hash the hash to be tested
      * @param componentName the component's name to product the result
      * @return the result of if the hash algorithm is supported
      */
     @Override
-    public Result supportedHash(String field, String value, String componentName) {
+    public Result supportedHash(String field, Hash hash, String componentName) {
         String testName = "SupportedCDXHash";
         ResultFactory resultFactory = new ResultFactory(testName,
                 ATTRIBUTE.CDX14, ATTRIBUTE.UNIQUENESS);
 
+        String algorithm = hash.getAlgorithm().toString();
         // hash is unsupported, test fails
-        if(Hash.isSPDXExclusive(Hash.Algorithm.valueOf(value))){
-            return resultFactory.fail(field, INFO.INVALID, value,
+        if(Hash.isSPDXExclusive(hash.getAlgorithm())){
+            return resultFactory.fail(field, INFO.INVALID, algorithm,
                     componentName);
         }
         // hash is supported, test passes
         else{
-            return resultFactory.pass(field, INFO.VALID, value,
+            return resultFactory.pass(field, INFO.VALID, algorithm,
                     componentName);
         }
     }

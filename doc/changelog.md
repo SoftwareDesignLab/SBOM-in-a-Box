@@ -3,7 +3,93 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v5.1.5-alpha] - (7/21/2023)
+## [v7.0.2-alpha] - (7/25/2023)
+
+### Added
+- VEX API Endpoint
+- VEX API test `GenerateVEXAPITest`
+- `VEXResult.java`
+  - Class that holds both the VEX Object and any errors that occurred for the API endpoint
+- Test SBOMs that contain vulnerable components
+
+### Changed
+- Updated `API.md` documentation with the VEX endpoint
+
+## [v7.0.1-alpha] - (7/24/2023)
+
+### Changed
+- `/sboms` to `/sbom` when getting SBOM object
+
+## [v7.0.0-alpha] - (7/21/2023)
+> OSI Refactor Update (Docker build steps updated)
+
+### Added
+- `osi.scripts` package
+  - `setup.sh` called from the inline Dockerfile to install all SBOM utilities to the image.
+  - `ContainerController.py` - moved from `osi` package.
+- `DockerNotAvailableExceptionTest` unit tests to increase code coverage to >80%.
+- Methods to `OSI` class resulting in a higher abstraction level above Docker and the filesystem:
+  - `addSourceFile()` - Add a single source file to be processed
+  - `addSourceDirectory()` - Copy the contents of an entire directory to be processed (for unit tests)
+  - `generateSBOMs()` - Runs the container, clears directories, and returns a Map of all SBOM files
+
+### Changed
+- Updated `docker-compose.yml` to contain all setup and service details for OSI
+- `OSITest` unit tests
+- `SVIPAPIController` now attempts to construct an `OSI` instance on startup if a constructor flag is enabled, 
+  Docker is running, and an image/container exists.
+  - The constructor flag allows us to disable OSI construction for unit tests as well as the OSI endpoint itself.
+
+### Removed
+- `osi/Dockerfile` as all setup behavior is taken care of in the docker-compose file and the OSI class.
+
+## [v6.0.0-alpha] - (7/20/2023)
+> **Endpoint Standardization**
+
+### Changed
+- Updated endpoints to a REST-ful standard
+    - **Upload SBOM**
+        - prev: [get] http://localhost:8080/svip/upload
+        - new: [post] http://localhost:8080/svip/sboms
+
+    - **Get SBOM content by id**
+        - prev: [get] http://localhost:8080/svip/view
+        - new: [get]  http://localhost:8080/svip/sboms/content
+
+    - **Get SBOMs**
+        - prev: [get] http://localhost:8080/svip/viewFiles
+        - new:[get] http://localhost:8080/svip/sboms
+      > note: /getSBOM would instead use the /sboms endpoint and instead an id parameter should be used.
+      >
+      > EX: [get] http://localhost:8080/svip/sboms?id={id}
+
+    - **Delete SBOM by id**
+        - prev: [delete] http://localhost:8080/svip/delete
+        - new: [delete] http://localhost:8080/svip/sboms?id={id}
+
+    - **Merge SBOMs**
+        - prev: [post] http://localhost:8080/svip/merge
+        - new: [post]  http://localhost:8080/svip/sboms/merge
+
+    - **Convert SBOM by id**
+        - prev: [get] http://localhost:8080/svip/convert
+        - new: [put]  http://localhost:8080/svip/sboms
+
+    - **Merge SBOMs**
+        - prev: [post] http://localhost:8080/svip/merge
+        - new: [post]  http://localhost:8080/svip/sboms/merge
+
+    - **Generate SBOMs with SVIP**
+        - prev: [post] http://localhost:8080/svip/generate
+        - new: [post]  http://localhost:8080/svip/sboms/generate
+
+    - **Grade SBOMs**
+        - prev: [get] http://localhost:8080/svip/qa
+        - new: [get]  http://localhost:8080/svip/sboms/qa
+
+- Updated `API.md` documentation with the updated endpoints
+
+## [v5.4.0-alpha] - (7/19/2023)
 
 ### Added
 - Merge API Endpoint
@@ -13,12 +99,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Utility classes for Merger
   - `MergerUtils.java`
   - `comparison/utils/Utils.java`
+- New NVD API Client implementation:
+    - `NVDClient` - Class that, when given an SBOM, will create a new VEX Document object with the NVD API database
 
 ### Changed
 - `Merger.java`abstract class and overall architecture
 
-
-## [v5.1.4-alpha] - (7/19/2023)
+## [v5.3.0-alpha] - (7/19/2023)
 
 ### Added
 - QA API Endpoint
@@ -27,8 +114,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `SBOMBuilders` instantiated with empty sets and hashmaps instead of null values
 - `.buildAndFlush()` methods now clear sets/hashmaps instead of setting to null
 
-
-## [v5.1.3-alpha] - (7/19/2023)
+## [v5.2.0-alpha] - (7/19/2023)
 
 ### Added
 - `/generators/parsers` endpoint in `SVIPApiController`.
@@ -88,6 +174,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored `parsers` package to use the new `SVIPSBOM` & `SVIPComponentObject`.
   - Refactored all parser unit tests to reflect this (100% passing, code coverage TBD).
 - Refactored `SBOMGeneratorCLI` class to use `serializers` & `parsers` packages.
+- New OSV API Client implementation:
+  - `OSVClient` - Class that, when given an SBOM, will create a new VEX Document object with the OSV API database
 
 ### Changed
 - Moved `Debug`, `QueryWorker`, & `VirtualPath` classes to the base `utils` package.

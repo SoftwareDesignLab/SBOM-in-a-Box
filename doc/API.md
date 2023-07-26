@@ -7,8 +7,17 @@
 - [**SVIP API**](#svip-api)
     - [Deployment](#deployment)
     - [Development](#development)
-    - [Usage](#usage-1)
-      - [MySQL Database](#mysql-database)
+    - [Endpoints](#endpoints)
+      - [Upload SBOMs](#upload-sboms)
+      - [Delete SBOMs](#delete-sboms)
+      - [Get SBOMs](#get-sboms)
+      - [Get Single SBOM](#get-single-sbom)
+      - [Get SBOM Object](#get-sbom-contents)
+      - [Convert SBOM](#convert-an-sbom)
+      - [Generate SBOM with SVIP](#generate-an-sbom-using-svip-parsers)
+      - [Apply SBOM Metrics](#quality-attributes-testing)
+      - [Generate VEX OBject](#create-a-vex-document-with-an-sbom)
+    - [MySQL Database](#mysql-database)
 
 # System Requirements
 - Java 17
@@ -48,17 +57,266 @@ $ java -jar SVIP_API.jar
   skipping the tests saves 1-2 minutes per build.
 - To edit the MySQL configuration/Docker port mappings, edit the `.env` file in the repository root.
 
-## Usage
-The API is located on `localhost:8080/svip`.
+## Endpoints
+The API is located on `http://localhost:8080/svip`.
 
-Current Endpoints (`/svip/`):
-- `/upload` - Upload an SBOM to the server.
-- `/view` - View the raw contents of an SBOM file.
-- `/viewFiles` - View all file IDs uploaded to the server.
-- `/delete` - Delete a file from the server.
-- `/getSBOM` - Get an SBOM object from the server
+- [Upload SBOM](#upload-sboms)
 
-### MySQL Database
+### Upload SBOMs
+> Upload an SBOM file to the SQL Database
+
+**Endpoint:** `http://localhost:8080/svip/sboms`
+
+**Request Method:** `POST`
+
+**Request Body**
+
+|   Body   |  Type  |          Description          | Is Required? |
+|:--------:|:------:|:-----------------------------:|:------------:|
+| fileName | String |   The name of the SBOM file   |     YES      |
+| contents | String | The contents of the SBOM file |     YES      |
+
+**Responses**
+
+| Response Code |  Type  |                              Description                               |
+|:-------------:|:------:|:----------------------------------------------------------------------:|
+|      200      | String |               The ID corresponding to the uploaded file                |
+|      400      | String | Invalid field(s) / Unable to process SBOM. Body contains error message |
+
+**Example**
+```bash
+curl -X POST -d '{"fileName":"mySBOM","contents":"{SBOM Data...}"}' http://localhost:8080/svip/sboms
+```
+
+### Delete SBOMs
+> Delete an SBOM file from the SQL Database using its ID
+
+**Endpoint:** `http://localhost:8080/svip/sboms`
+
+**Request Method:** `DELETE`
+
+**Parameters**
+
+| Parameter | Type |             Description             | Is Required? |
+|:---------:|:----:|:-----------------------------------:|:------------:|
+|    id     | Long | The ID of the SBOM file to retrieve |     YES      |
+
+**Responses**
+
+| Response Code |  Type  |          Description          |
+|:-------------:|:------:|:-----------------------------:|
+|      200      | String | The contents of the SBOM file |
+
+**Example**
+```bash
+curl -X DELETE -G http://localhost:8080/svip/sboms \
+-d 'id=<SBOM UID>'
+```
+
+### Get SBOMs
+> Get all existing uploaded file IDs
+
+**Endpoint:** `http://localhost:8080/svip/sboms`
+
+**Request Method:** `GET`
+
+**Responses**
+
+| Response Code |  Type  |              Description              |
+|:-------------:|:------:|:-------------------------------------:|
+|      200      | String | A JSON array of all uploaded file IDs |
+
+**Example**
+```bash
+curl -X GET http://localhost:8080/svip/sboms
+```
+
+### Get Single SBOM
+> Get a single deserialized SBOM object from the SQL Database using its ID
+
+**Endpoint:** `http://localhost:8080/svip/sboms`
+
+**Request Method:** `GET`
+
+**Parameters**
+
+| Parameter | Type |             Description             | Is Required? |
+|:---------:|:----:|:-----------------------------------:|:------------:|
+|    id     | Long | The ID of the SBOM file to retrieve |     YES      |
+
+**Responses**
+
+| Response Code |  Type  |          Description          |
+|:-------------:|:------:|:-----------------------------:|
+|      200      | String |   A JSON of the SBOM Object   |
+|      404      | String |      File does not exist      |
+|      500      | String | Failed to deserialize content |
+
+**Example**
+```bash
+curl -X GET -G http://localhost:8080/svip/sboms \
+-d 'id=<SBOM UID>'
+```
+
+### Get SBOM Object
+> Get a single SBOM object from the SQL Database using its ID
+
+**Endpoint:** `http://localhost:8080/svip/sboms/content`
+
+**Request Method:** `GET`
+
+**Parameters**
+
+| Parameter | Type |             Description             | Is Required? |
+|:---------:|:----:|:-----------------------------------:|:------------:|
+|    id     | Long | The ID of the SBOM file to retrieve |     YES      |
+
+**Responses**
+
+| Response Code |  Type  |          Description          |
+|:-------------:|:------:|:-----------------------------:|
+|      200      | String |   A JSON of the SBOM Object   |
+|      404      | String |      File does not exist      |
+|      500      | String | Failed to deserialize content |
+
+**Example**
+```bash
+curl -X GET -G http://localhost:8080/svip/sboms/content \
+-d 'id=<SBOM UID>'
+```
+
+### Convert an SBOM
+> Convert an SBOM to a desired format and schema
+
+**Endpoint:** `http://localhost:8080/svip/sboms/`
+
+**Request Method:** `PUT`
+
+**Parameters**
+
+| Parameter |       Type        |            Description             | Is Required? |
+|:---------:|:-----------------:|:----------------------------------:|:------------:|
+|    id     |       Long        | The ID of the SBOM file to convert |     YES      |
+|  schema   | Serializer Schema |        Schema to convert to        |     YES      |
+|  format   | Serializer Format |        Format to convert to        |     YES      |
+| overwrite |      Boolean      |      Converted SBOM or Error       |     YES      |
+
+**Responses**
+
+| Response Code |  Type  |              Description               |
+|:-------------:|:------:|:--------------------------------------:|
+|      200      | String |             Converted SBOM             |
+|      204      | String |            No content found            |
+|      400      | String |         SBOM with ID not found         |
+|      500      | String | Description of error during conversion |
+
+**Example**
+```bash
+curl -X PUT -G http://localhost:8080/svip/sboms/content \
+-d 'id=<SBOM UID>' \
+-d 'schema=SPDX23' \
+-d 'format=TAGVALUE' \
+-d 'overwrite=true'
+```
+
+### Generate an SBOM using SVIP Parsers
+> Generates an SBOM with a given schema and format from project source files using SVIP parsers. 
+> Request body contains an array of multiple objects with properties fileName and contents (one for each source file)
+
+**Endpoint:** `http://localhost:8080/svip/generators/parsers`
+
+**Request Method:** `POST`
+
+**Parameters**
+
+| Parameter |       Type        |            Description             | Is Required? |
+|:---------:|:-----------------:|:----------------------------------:|:------------:|
+|    id     |       Long        | The ID of the SBOM file to convert |     YES      |
+|  schema   | Serializer Schema |        Schema to convert to        |     YES      |
+|  format   | Serializer Format |        Format to convert to        |     YES      |
+
+**Request Body**
+
+| Body  |    Type    |              Description               | Is Required? |
+|:-----:|:----------:|:--------------------------------------:|:------------:|
+| files | SBOMFile[] | fileName: string, fileContents: string |     YES      |
+
+**Responses**
+
+| Response Code |  Type  |               Description               |
+|:-------------:|:------:|:---------------------------------------:|
+|      200      | String |        A JSON of the SBOM Object        |
+|      404      | String | Description of error during generation  |
+|      400      | String | Schema, format or body contents invalid |
+
+**Example**
+```bash
+curl -X PUT -G http://localhost:8080/svip/sboms/content \
+-d 'id=<SBOM UID>' \
+-d 'schema=SPDX23' \
+-d 'format=TAGVALUE' \
+-d '[{"fileName": "testfile1.java", "contents": "..."}, {"fileName": "testfile2.java", "contents": "..."}]'
+```
+
+### Quality Attributes Testing
+> Analyze a given SBOM file and return a QualityReport
+
+**Endpoint:** `http://localhost:8080/svip/sboms/qa`
+
+**Request Method:** `GET`
+
+**Parameters**
+
+| Parameter | Type |                Description                 | Is Required? |
+|:---------:|:----:|:------------------------------------------:|:------------:|
+|    id     | Long | The ID of the SBOM file to run QA tests on |     YES      |
+
+**Responses**
+
+| Response Code |     Type      |              Description               |
+|:-------------:|:-------------:|:--------------------------------------:|
+|      200      | QualityReport |      A QualityReport of the SBOM       |
+|      500      |    String     | The message of the error that occurred |
+
+**Example**
+```bash
+curl -X GET -G http://localhost:8080/svip/sboms/qa \
+-d 'id=<SBOM UID>'
+```
+
+### Create a VEX Document With an SBOM
+> Generate a VEX document using an SBOM's components and information
+
+**Endpoint:** `http://localhost:8080/svip/sboms/vex`
+
+**Request Method:** `GET`
+
+**Parameters**
+
+| Parameter |  Type  |                    Description                     | Is Required? |
+|:---------:|:------:|:--------------------------------------------------:|:------------:|
+|    id     |  Long  | The ID of the SBOM file to get information for VEX |     YES      |
+|  format   | String |           The format of the VEX Document           |     YES      |
+|  client   | String |               The API Client to use                |     YES      |
+
+**Responses**
+
+| Response Code |   Type    |                  Description                  |
+|:-------------:|:---------:|:---------------------------------------------:|
+|      200      | VEXResult | A VEX and HashMap of any errors that occurred |
+|      400      |  String   |           Invalid Format or Client            |
+|      404      |  String   |              SBOM does not exist              |
+|      500      |  String   |    The message of the error that occurred     |
+
+**Example**
+```bash
+curl -X GET -G http://localhost:8080/svip/sboms/vex \
+-d 'id=<SBOM UID>' \
+-d 'format=CSAF' \
+-d 'client=OSV'
+```
+
+## MySQL Database
 Located at `localhost:3306` while the `svip-mysql` Docker container is running.
 
 Use the following command to interact with the MySQL server instance:
