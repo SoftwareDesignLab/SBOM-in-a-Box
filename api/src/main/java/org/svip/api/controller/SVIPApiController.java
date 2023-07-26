@@ -14,6 +14,7 @@ import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.utils.Converter;
 import org.svip.api.utils.Utils;
+import org.svip.sbom.builder.interfaces.generics.SBOMBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
@@ -297,7 +298,7 @@ public class SVIPApiController {
         // paired with the message String
         if (converted.hasNullProperties()) {
             LOGGER.error(urlMsg + ": SBOM has null properties");
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("SBOM has null properties", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         // assign appropriate id and name
@@ -464,43 +465,61 @@ public class SVIPApiController {
         try {
             sboms = osiContainer.generateSBOMs();
         } catch (Exception e) {
-            LOGGER.warn("Exception occurred while running OSI container: " + e.getMessage());
+            LOGGER.warn(urlMsg + ": Exception occurred while running OSI container: " + e.getMessage());
             return new ResponseEntity<>("Exception occurred while running OSI container.",
                     HttpStatus.NOT_FOUND);
         }
 
 
-        // Deserialize SBOMs into list of SVIP SBOMs
-        List<SVIPSBOM> deserialized = new ArrayList<>();
+        // Deserialize SBOMs into list of SBOMs
+        List<SBOM> deserialized = new ArrayList<>();
         Deserializer d;
         for (Map.Entry<String, String> sbom : sboms.entrySet())
             try {
                 d = SerializerFactory.createDeserializer(sbom.getValue());
-                deserialized.add((SVIPSBOM) d.readFromString(sbom.getValue()));
+                deserialized.add(d.readFromString(sbom.getValue()));
             } catch (JsonProcessingException e) {
-                LOGGER.warn("Exception occurred while deserializing SBOMs: " + e.getMessage());
+                LOGGER.warn(urlMsg + ": Exception occurred while deserializing SBOMs: " + e.getMessage());
                 return new ResponseEntity<>("Exception occurred while deserializing SBOMs.",
                         HttpStatus.NOT_FOUND);
-            }
+            } catch (IllegalArgumentException ignored) {} // TODO Skip any XML SBOMs, we don't support deserialization
 
-        // Merge SVIP SBOMs into one SVIP SBOM
+        if (deserialized.size() == 0)
+            return new ResponseEntity<>("No SBOMs generated for these files.", HttpStatus.NOT_FOUND);
+
+        // Merge SBOMs into one SBOM
         MergerController merger = new MergerController();
-        SVIPSBOM osiMerged;
+        SBOM osiMerged;
         try {
-            osiMerged = (SVIPSBOM) merger.mergeAll(deserialized);
+            osiMerged = merger.mergeAll(deserialized);
         } catch (MergerException e) {
-            LOGGER.warn("Exception occurred while merging SBOMs: " + e.getMessage());
+            LOGGER.warn(urlMsg + ": Exception occurred while merging SBOMs: " + e.getMessage());
             return new ResponseEntity<>("Exception occurred while merging SBOMs.",
                     HttpStatus.NOT_FOUND);
         }
 
-        // Serialize SVIP SBOM to given schema and format
+        // Convert final SBOM into SVIPSBOM
+        SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
+        SerializerFactory.Schema oldSchema;
+        switch (osiMerged.getFormat().toLowerCase()) {
+            case "cyclonedx" -> oldSchema = SerializerFactory.Schema.CDX14;
+            case "spdx" -> oldSchema = SerializerFactory.Schema.SPDX23;
+            default -> { // TODO We don't support SVIP SBOM merging
+                LOGGER.warn(urlMsg + ": Error converting final merged SBOM: SVIP schema unsupported.");
+                return new ResponseEntity<>("Error converting final merged SBOM: SVIP schema unsupported.",
+                        HttpStatus.NOT_FOUND);
+            }
+        }
+        Converter.buildSBOM(builder, osiMerged, schema, oldSchema);
+
+        // Serialize SVIPSBOM to given schema and format
         Serializer serializer = SerializerFactory.createSerializer(schema, format, true);
         SBOMFile serializedSBOM;
         try {
-            serializedSBOM = new SBOMFile("OSI_MERGED_SBOM", serializer.writeToString(osiMerged));
+            serializedSBOM = new SBOMFile("OSI_MERGED_SBOM",
+                    serializer.writeToString(builder.Build()));
         } catch (JsonProcessingException e) {
-            LOGGER.warn("Exception occurred while merging SBOMs: " + e.getMessage());
+            LOGGER.warn(urlMsg + "Exception occurred while merging SBOMs: " + e.getMessage());
             return new ResponseEntity<>("Exception occurred while merging SBOMs.",
                     HttpStatus.NOT_FOUND);
         }

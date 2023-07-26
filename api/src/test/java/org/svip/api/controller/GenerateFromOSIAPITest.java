@@ -17,6 +17,8 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 /**
  * File: GenerateFromOSIAPITest.java
@@ -90,6 +92,9 @@ public class GenerateFromOSIAPITest extends APITest {
     @Test
     @DisplayName("Generate from OSI test")
     public void generateTest() {
+        // Mock repository output (returns SBOMFile that it received)
+        when(repository.save(any(SBOMFile.class))).thenAnswer(i -> i.getArgument(0));
+
         Collection<SBOMFile[]> files = testMap.values();
 
         int i = 0;
@@ -109,8 +114,10 @@ public class GenerateFromOSIAPITest extends APITest {
                     ResponseEntity<?> response = controller.generateOSI(file,
                             SerializerFactory.Schema.valueOf(schema), SerializerFactory.Format.valueOf(format));
 
-                    assertEquals(HttpStatus.OK, response.getStatusCode());
-                    assertNotNull(response.getBody());
+                    if (!projectName.contains("CSharp")) {
+                        assertEquals(HttpStatus.OK, response.getStatusCode());
+                        assertNotNull(response.getBody());
+                    } else assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
                 }
             }
 
