@@ -12,6 +12,8 @@ import org.svip.sbom.model.uids.Hash;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -516,11 +518,24 @@ public class CDX14ComponentObjectConflictsTest {
         conflictPackage = packageBuilder.buildAndFlush();
 
         List<Conflict> conflictList = controlPackage.compare(conflictPackage);
-        Conflict conflict = conflictList.get(0);
+        boolean c1 = false;
+        boolean c2 = false;
 
-        assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.CPE_MISMATCH, conflict.GetType());
-        assertEquals("CPE doesn't match", conflict.GetMessage());
+        assertEquals(2, conflictList.size());
+
+        for(Conflict c : conflictList)
+        {
+            if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "CPE is missing")) {
+                if(Objects.equals(c.GetTarget(), "control") && c.GetOther() == null)
+                    c1 = true;
+                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "cpe"))
+                    c2 = true;
+            }
+        }
+
+
+        assertTrue(c1);
+        assertTrue(c2);
     }
 
     @Test
