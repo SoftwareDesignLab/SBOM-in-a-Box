@@ -294,24 +294,22 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
         ResultFactory resultFactory = new ResultFactory(testName,
                 ATTRIBUTE.SPDX23, ATTRIBUTE.UNIQUENESS);
 
-        // SPDXID is present and not a null or empty String
-        if(value != null && !value.isEmpty()){
-            // TODO Can we make this more thorough? Not just format?
-            // check that SPDXID is a valid format
-            // SPDXID starts with a valid format, test passes
-            if(value.startsWith("SPDXRef-")){
-                return resultFactory.pass(field, INFO.VALID,
-                        value, componentName);
-            }
-            // SPDX starts with an invalid format, test fails
-            else{
-                return resultFactory.fail(field, INFO.INVALID,
-                        value, componentName);
-            }
-        }
         // SPDXID is null or an empty value, test fails
-        else{
+        if(value == null || value.isEmpty())
             return resultFactory.fail(field, INFO.MISSING,
+                    value, componentName);
+
+        // SPDXID is present and not a null or empty String
+        // TODO Can we make this more thorough? Not just format?
+        // check that SPDXID is a valid format
+        // SPDXID starts with a valid format, test passes
+        if(value.startsWith("SPDXRef-")){
+            return resultFactory.pass(field, INFO.VALID,
+                    value, componentName);
+        }
+        // SPDX starts with an invalid format, test fails
+        else{
+            return resultFactory.fail(field, INFO.INVALID,
                     value, componentName);
         }
     }
@@ -360,15 +358,15 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
         if(creator == null){
             results.add(resultFactory.fail(field, INFO.MISSING,
                     "Creator Name", sbomName));
+            return results;
         }
-        else{
-            // check for the creator's name
-            String creatorName = creator.getName();
-            results.add(emptyNullTest.test(field, creatorName, sbomName));
-            // then check for creation time info
-            String creationTime = creationData.getCreationTime();
-            results.add(emptyNullTest.test(field, creationTime, sbomName));
-        }
+
+        // check for the creator's name
+        String creatorName = creator.getName();
+        results.add(emptyNullTest.test(field, creatorName, sbomName));
+        // then check for creation time info
+        String creationTime = creationData.getCreationTime();
+        results.add(emptyNullTest.test(field, creationTime, sbomName));
 
         return results;
     }
