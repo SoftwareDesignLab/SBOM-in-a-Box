@@ -174,11 +174,15 @@ public class SVIPComponentObjectTest {
             {
                 case "Type doesn't match", "UID doesn't match",
                         "Copyright doesn't match", "Mime Type doesn't match",
-                        "Scope doesn't match", "Group doesn't match"
+                        "Scope doesn't match", "Group doesn't match", "Download Location doesn't match",
+                            "File Name doesn't match", "Files Analyzed doesn't match",
+                            "Home Page doesn't match", "Source Info doesn't match"
                         -> assertEquals(MismatchType.MISC_MISMATCH, c.GetType());
                 case "Name doesn't match" -> assertEquals(MismatchType.NAME_MISMATCH, c.GetType());
                 case "Author doesn't match" -> assertEquals(MismatchType.AUTHOR_MISMATCH, c.GetType());
                 case "License doesn't match" -> assertEquals(MismatchType.LICENSE_MISMATCH, c.GetType());
+                case "Release Date doesn't match", "Build Date doesn't match",
+                        "Valid Until Date doesn't match" -> assertEquals(MismatchType.TIMESTAMP_MISMATCH, c.GetType());
             }
         }
 
