@@ -80,7 +80,7 @@ public class Contact implements Comparable {
         ConflictFactory cf = new ConflictFactory();
         cf.addConflict("Contact Name", MISC_MISMATCH, this.name, other.getName());
         cf.addConflict("Contact Email", MISC_MISMATCH, this.email, other.getEmail());
-        cf.addConflict("Contact Phone", MISC_MISMATCH, this.phone, other.getEmail());
+        cf.addConflict("Contact Phone", MISC_MISMATCH, this.phone, other.getPhone());
         return cf.getConflicts();
     }
 
