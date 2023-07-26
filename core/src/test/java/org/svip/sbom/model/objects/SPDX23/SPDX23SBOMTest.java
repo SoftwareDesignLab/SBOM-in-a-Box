@@ -4,8 +4,11 @@ import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
+import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23PackageBuilder;
+import org.svip.sbom.factory.objects.SPDX23.SPDX23PackageBuilderFactory;
 import org.svip.sbom.factory.objects.SPDX23.SPDX23SBOMBuilderFactory;
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
@@ -25,6 +28,7 @@ public class SPDX23SBOMTest {
     static SPDX23SBOMBuilderFactory sbomBuilderFactory = new SPDX23SBOMBuilderFactory();
     static SBOM controlSBOM;
     static SBOM equalSBOM;
+    static SPDX23PackageBuilderFactory packageBuilderFactory = new SPDX23PackageBuilderFactory();
 
     @BeforeAll
     public static void createTargetPackage(){
@@ -35,7 +39,7 @@ public class SPDX23SBOMTest {
         ExternalReference externalReferenceOne = new ExternalReference("url","www.refOne.com", "controlRef");
         //ExternalReference externalReferenceTwo = new ExternalReference("url","www.ref2.com", "controlRef");
 
-        // TODO: Creation Data
+        // Creation Data
         CreationData creationData = new CreationData();
         CreationTool creationTool = new CreationTool();
         creationTool.setVendor("Control Vendor");
@@ -50,11 +54,6 @@ public class SPDX23SBOMTest {
         creationData.addAuthor(contact);
         creationData.addLicense("Control License");
 
-        // TODO: Root Component
-        // TODO: Relationships
-        // TODO: Components?
-
-
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setFormat("SPDX");
         sbomBuilder.setName("Control SBOM");
@@ -65,6 +64,15 @@ public class SPDX23SBOMTest {
         sbomBuilder.setDocumentComment("Control Document Comment");
         sbomBuilder.setSPDXLicenseListVersion("Control License List Version");
         sbomBuilder.setCreationData(creationData);
+
+        // TODO: implement root component and relationship comparison in SVIP
+//        // Root Component
+//        SPDX23PackageBuilder packageBuilder = packageBuilderFactory.createBuilder();
+//        packageBuilder.setName("Control Root Component");
+//        sbomBuilder.setRootComponent(packageBuilder.buildAndFlush());
+//        // Relationships
+//        Relationship relationship = new Relationship("Control otherUID", "Control relationshipType");
+//        sbomBuilder.addRelationship("Control componentName", relationship);
 
         sbomBuilder.addExternalReference(externalReferenceOne);
         //packageBuilder.addExternalReference(externalReferenceTwo);
@@ -95,10 +103,6 @@ public class SPDX23SBOMTest {
         creationData.addAuthor(contact);
         creationData.addLicense("Control License");
 
-        // TODO: Root Component
-        // TODO: Relationships
-        // TODO: Components?
-
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setFormat("SPDX");
         sbomBuilder.setName("Control SBOM");
@@ -109,6 +113,15 @@ public class SPDX23SBOMTest {
         sbomBuilder.setDocumentComment("Control Document Comment");
         sbomBuilder.setSPDXLicenseListVersion("Control License List Version");
         sbomBuilder.setCreationData(creationData);
+
+        // TODO: implement root component and relationship comparison in SVIP
+//        // Root Component
+//        SPDX23PackageBuilder packageBuilder = packageBuilderFactory.createBuilder();
+//        packageBuilder.setName("Control Root Component");
+//        sbomBuilder.setRootComponent(packageBuilder.buildAndFlush());
+//        // Relationships
+//        Relationship relationship = new Relationship("Control otherUID", "Control relationshipType");
+//        sbomBuilder.addRelationship("Control componentName", relationship);
 
         sbomBuilder.addExternalReference(externalReferenceOne);
         //packageBuilder.addExternalReference(externalReferenceTwo);
@@ -144,10 +157,6 @@ public class SPDX23SBOMTest {
         creationData.addAuthor(contact);
         creationData.addLicense("License");
 
-        // TODO: Root Component
-        // TODO: Relationships
-        // TODO: Components?
-
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setFormat("CDX");
         sbomBuilder.setName("SBOM");
@@ -158,6 +167,15 @@ public class SPDX23SBOMTest {
         sbomBuilder.setDocumentComment("Document Comment");
         sbomBuilder.setSPDXLicenseListVersion("License List Version");
         sbomBuilder.setCreationData(creationData);
+
+        // TODO: implement root component and relationship comparison in SVIP
+//        // Root Component
+//        SPDX23PackageBuilder packageBuilder = packageBuilderFactory.createBuilder();
+//        packageBuilder.setName("Root Component");
+//        sbomBuilder.setRootComponent(packageBuilder.buildAndFlush());
+//        // Relationships
+//        Relationship relationship = new Relationship("otherUID", "relationshipType");
+//        sbomBuilder.addRelationship("componentName", relationship);
 
         sbomBuilder.addExternalReference(externalReferenceOne);
         //packageBuilder.addExternalReference(externalReferenceTwo);
