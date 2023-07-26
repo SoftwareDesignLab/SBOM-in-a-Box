@@ -104,7 +104,7 @@ public class CreationTool implements Comparable {
         ConflictFactory cf = new ConflictFactory();
         cf.addConflict("Tool Vendor", MISC_MISMATCH, this.vendor, other.getVendor());
         cf.addConflict("Tool Name", MISC_MISMATCH, this.name, other.getName());
-        cf.addConflict("Tool Version", MISC_MISMATCH, this.version, other.getVendor());
+        cf.addConflict("Tool Version", MISC_MISMATCH, this.version, other.getVersion());
         cf.compareHashes("Tool Hash", this.hashes, other.getHashes());
 
         return cf.getConflicts();

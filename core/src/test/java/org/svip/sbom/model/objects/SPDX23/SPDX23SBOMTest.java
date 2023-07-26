@@ -117,7 +117,7 @@ public class SPDX23SBOMTest {
         // Check there are no conflicts
         SBOM sbom = equalSBOM;
         List<Conflict> conflicts = controlSBOM.compare(sbom);
-        assertTrue(conflicts.isEmpty());
+        assertEquals(0, conflicts.size());
     }
 
     @Test
