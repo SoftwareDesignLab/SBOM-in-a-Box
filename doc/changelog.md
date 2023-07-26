@@ -3,6 +3,17 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v7.1.0-alpha] - (7/26/2023)
+### Added
+- `/svip/generators/osi` endpoint to the `SVIPAPIController` class
+- `GenerateFromOSIAPITest` class that contains unit tests for the OSI endpoint
+
+### Changed
+- Updated `GenerateFromParserAPITest` class to be consistent with `GenerateFromOSIAPITest` class
+- Cleaned up utilities in `api.utils` and moved some methods into their respective core classes as there was some 
+  duplicate code.
+- Fixed a bug where running OSI in the API would create bind directories in the API package instead of the core package.
+
 ## [v7.0.1-alpha] - (7/24/2023)
 ### Changed
 - `/sboms` to `/sbom` when getting SBOM object
