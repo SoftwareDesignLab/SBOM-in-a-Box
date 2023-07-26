@@ -7,6 +7,7 @@ import org.svip.sbom.factory.objects.SVIPSBOMComponentFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.shared.metadata.Organization;
+import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
@@ -174,20 +175,22 @@ public class SVIPComponentObjectConflictsTest {
         assertEquals("Version doesn't match", conflict.GetMessage());
     }
 
-//    @Test
-//    public void description_is_conflicting_between_testPackage_and_controlPackage_test(){
-//        packageBuilder.setDescription(null); //TODO
-//        controlPackage = packageBuilder.buildAndFlush();
-//        packageBuilder.setDescription(null);
-//        conflictPackage = packageBuilder.buildAndFlush();
-//
-//        List<Conflict> conflictList = controlPackage.compare(conflictPackage);
-//        Conflict conflict = conflictList.get(0);
-//
-//        assertEquals(1, conflictList.size());
-//        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-//        assertEquals("Description doesn't match", conflict.GetMessage());
-//    }
+    @Test
+    public void description_is_conflicting_between_testPackage_and_controlPackage_test(){
+        Description controlDesc = new Description("control");
+        Description testDesc = new Description("description");
+        packageBuilder.setDescription(controlDesc);
+        controlPackage = packageBuilder.buildAndFlush();
+        packageBuilder.setDescription(testDesc);
+        conflictPackage = packageBuilder.buildAndFlush();
+
+        List<Conflict> conflictList = controlPackage.compare(conflictPackage);
+        Conflict conflict = conflictList.get(0);
+
+        assertEquals(1, conflictList.size());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
+        assertEquals("Summary doesn't match", conflict.GetMessage());
+    }
 
     @Test
     public void PURL_is_conflicting_between_testPackage_and_controlPackage_test(){

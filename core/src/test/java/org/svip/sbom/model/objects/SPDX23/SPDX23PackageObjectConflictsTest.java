@@ -6,6 +6,8 @@ import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23PackageBuilder;
 import org.svip.sbom.factory.objects.SPDX23.SPDX23PackageBuilderFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
+import org.svip.sbom.model.shared.metadata.Organization;
+import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
@@ -120,20 +122,22 @@ public class SPDX23PackageObjectConflictsTest {
 
     }
 
-//    @Test
-//    public void supplier_is_conflicting_between_testPackage_and_controlPackage_test(){
-//        packageBuilder.setSupplier(null); //TODO
-//        controlPackage = packageBuilder.buildAndFlush();
-//        packageBuilder.setSupplier(null);
-//        conflictPackage = packageBuilder.buildAndFlush();
-//
-//        List<Conflict> conflictList = controlPackage.compare(conflictPackage);
-//        Conflict conflict = conflictList.get(0);
-//
-//        assertEquals(1, conflictList.size());
-//        assertEquals(MismatchType.SUPPLIER_MISMATCH, conflict.GetType());
-//        assertEquals("Supplier doesn't match", conflict.GetMessage());
-//    }
+    @Test
+    public void supplier_is_conflicting_between_testPackage_and_controlPackage_test(){
+        Organization controlOrg = new Organization("Control Org.","www.control.com");
+        Organization testOrg = new Organization("Test Org.", "www.test.com");
+        packageBuilder.setSupplier(controlOrg);
+        controlPackage = packageBuilder.buildAndFlush();
+        packageBuilder.setSupplier(testOrg);
+        conflictPackage = packageBuilder.buildAndFlush();
+
+        List<Conflict> conflictList = controlPackage.compare(conflictPackage);
+        Conflict conflict = conflictList.get(0);
+
+        assertEquals(1, conflictList.size());
+        assertEquals(MismatchType.SUPPLIER_MISMATCH, conflict.GetType());
+        assertEquals("Supplier doesn't match", conflict.GetMessage());
+    }
 
     @Test
     public void version_is_conflicting_between_testPackage_and_controlPackage_test(){
@@ -150,20 +154,22 @@ public class SPDX23PackageObjectConflictsTest {
         assertEquals("Version doesn't match", conflict.GetMessage());
     }
 
-//    @Test
-//    public void description_is_conflicting_between_testPackage_and_controlPackage_test(){
-//        packageBuilder.setDescription(null); //TODO
-//        controlPackage = packageBuilder.buildAndFlush();
-//        packageBuilder.setDescription(null);
-//        conflictPackage = packageBuilder.buildAndFlush();
-//
-//        List<Conflict> conflictList = controlPackage.compare(conflictPackage);
-//        Conflict conflict = conflictList.get(0);
-//
-//        assertEquals(1, conflictList.size());
-//        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-//        assertEquals("Description doesn't match", conflict.GetMessage());
-//    }
+    @Test
+    public void description_is_conflicting_between_testPackage_and_controlPackage_test(){
+        Description controlDesc = new Description("control");
+        Description testDesc = new Description("description");
+        packageBuilder.setDescription(controlDesc);
+        controlPackage = packageBuilder.buildAndFlush();
+        packageBuilder.setDescription(testDesc);
+        conflictPackage = packageBuilder.buildAndFlush();
+
+        List<Conflict> conflictList = controlPackage.compare(conflictPackage);
+        Conflict conflict = conflictList.get(0);
+
+        assertEquals(1, conflictList.size());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
+        assertEquals("Summary doesn't match", conflict.GetMessage());
+    }
 
     @Test
     public void PURL_is_conflicting_between_testPackage_and_controlPackage_test(){
