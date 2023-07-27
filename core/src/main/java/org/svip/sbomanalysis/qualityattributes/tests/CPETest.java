@@ -72,7 +72,7 @@ public class CPETest extends MetricTest{
     private Result isValidCPE(String field, String value){
         var rf = new ResultFactory("Valid CPE", ATTRIBUTE.COMPLETENESS, ATTRIBUTE.UNIQUENESS, ATTRIBUTE.MINIMUM_ELEMENTS);
         try{
-            new CPE(value);    // throws error if given purl string is invalid
+            new CPE(value);    // throws error if given cpe string is invalid
             return rf.pass(field, INFO.VALID, value, component.getName());
         } catch (Exception e){
             return rf.fail(field, INFO.ERROR, value, component.getName());
@@ -92,7 +92,7 @@ public class CPETest extends MetricTest{
             CPE cpeObj = new CPE(value);
             return match(cpeObj);
         }
-        // failed to create a new CPE object, test automatically fails
+        // failed to create a new cpe object, test automatically fails
         catch (Exception e){
             List<Result> result = new ArrayList<>();
             result.add(rf.fail(field, INFO.ERROR,
