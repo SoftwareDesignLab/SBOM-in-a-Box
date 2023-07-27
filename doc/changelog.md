@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added two new types of `INFO.java`: `MATCHING` and `NOT_MATCHING`
 - Updated QA Results to provide better and more useful information
 - `ResultFactory` is built for each method-test
+- Endpoints in `SVIPAPiController.java` to match documentation
+- `/generators/parsers` unzips a zipped project and parses it into an SBOM
 
 ## [v7.0.2-alpha] - (7/25/2023)
 
