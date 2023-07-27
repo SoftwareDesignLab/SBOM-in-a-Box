@@ -16,7 +16,7 @@
       - [Convert SBOM](#convert-an-sbom)
       - [Generate SBOM with SVIP](#generate-an-sbom-using-svip-parsers)
       - [Apply SBOM Metrics](#quality-attributes-testing)
-      - [Generate VEX OBject](#create-a-vex-document-with-an-sbom)
+      - [Generate VEX Object](#create-a-vex-document-with-an-sbom)
     - [MySQL Database](#mysql-database)
 
 # System Requirements
@@ -158,8 +158,8 @@ curl -X GET -G http://localhost:8080/svip/sboms \
 -d 'id=<SBOM UID>'
 ```
 
-### Get SBOM Object
-> Get a single SBOM object from the SQL Database using its ID
+### Get SBOM Contents
+> Get the contents of an uploaded SBOM file from its ID
 
 **Endpoint:** `http://localhost:8080/svip/sboms/content`
 
@@ -291,6 +291,13 @@ curl -X GET -G http://localhost:8080/svip/sboms/qa \
 
 **Request Method:** `GET`
 
+**Headers**
+
+| Parameter |  Type  |          Description          | Is Required? |
+|:---------:|:------:|:-----------------------------:|:------------:|
+|  apiKey   | String | The user's NVD API Key to use |      NO      |
+
+
 **Parameters**
 
 | Parameter |  Type  |                    Description                     | Is Required? |
@@ -311,6 +318,7 @@ curl -X GET -G http://localhost:8080/svip/sboms/qa \
 **Example**
 ```bash
 curl -X GET -G http://localhost:8080/svip/sboms/vex \
+-H 'apiKey: <API KEY>' \
 -d 'id=<SBOM UID>' \
 -d 'format=CSAF' \
 -d 'client=OSV'

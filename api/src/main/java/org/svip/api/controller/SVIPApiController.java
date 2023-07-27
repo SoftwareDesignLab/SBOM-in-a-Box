@@ -567,9 +567,10 @@ public class SVIPApiController {
      * @return A new VEXResult of the VEX document and any errors that occurred
      */
     @GetMapping("/sboms/vex")
-    public ResponseEntity<VEXResult> vex(@RequestParam("id") long id,
-                                     @RequestParam("format") String format,
-                                     @RequestParam("client") String client){
+    public ResponseEntity<VEXResult> vex(@RequestHeader(value = "apiKey", required = false) String apiKey,
+                                         @RequestParam("id") long id,
+                                         @RequestParam("format") String format,
+                                         @RequestParam("client") String client){
         SBOM sbom;
         Deserializer d;
 
@@ -634,7 +635,12 @@ public class SVIPApiController {
         for(Component c : sbom.getComponents()){
             if(c instanceof SBOMPackage){
                 try{
-                    List<VEXStatement> statements = vc.getVEXStatements((SBOMPackage) c);
+                    List<VEXStatement> statements;
+                    if(client.equalsIgnoreCase("nvd") && apiKey != null)
+                        statements = vc.getVEXStatements((SBOMPackage) c, apiKey);
+                    else
+                        statements = vc.getVEXStatements((SBOMPackage) c);
+
                     if(!statements.isEmpty())
                         for(VEXStatement vs : statements)
                             vb.addVEXStatement(vs);

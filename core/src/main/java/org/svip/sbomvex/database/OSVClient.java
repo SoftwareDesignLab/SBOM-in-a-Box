@@ -146,6 +146,12 @@ public class OSVClient implements VulnerabilityDBClient {
         return vexStatements;
     }
 
+    //Not used in OSV, so it is ignored and not used
+    @Override
+    public List<VEXStatement> getVEXStatements(SBOMPackage s, String key) throws Exception {
+        return null;
+    }
+
 
     /**
      * Build a new VEX Statement for a VEX Document
