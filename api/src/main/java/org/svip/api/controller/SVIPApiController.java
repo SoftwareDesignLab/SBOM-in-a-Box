@@ -567,7 +567,7 @@ public class SVIPApiController {
      * @return A new VEXResult of the VEX document and any errors that occurred
      */
     @GetMapping("/sboms/vex")
-    public ResponseEntity<VEXResult> vex(@RequestHeader("apiKey") String apiKey,
+    public ResponseEntity<VEXResult> vex(@RequestHeader(value = "apiKey", required = false) String apiKey,
                                          @RequestParam("id") long id,
                                          @RequestParam("format") String format,
                                          @RequestParam("client") String client){
@@ -636,7 +636,6 @@ public class SVIPApiController {
             if(c instanceof SBOMPackage){
                 try{
                     List<VEXStatement> statements;
-
                     if(client.equalsIgnoreCase("nvd") && apiKey != null)
                         statements = vc.getVEXStatements((SBOMPackage) c, apiKey);
                     else
