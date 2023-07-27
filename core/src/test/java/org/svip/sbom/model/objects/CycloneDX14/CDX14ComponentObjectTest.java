@@ -18,6 +18,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * file: CDX14ComponentObjectConflictsTest.java
+ * File to test the comparison of a CDX14 Component Object
+ *
+ * @author Kevin Laporte
+ */
 public class CDX14ComponentObjectTest {
     static CDX14PackageBuilderFactory packageBuilderFactory = new CDX14PackageBuilderFactory();
     static CDX14PackageBuilder packageBuilder = packageBuilderFactory.createBuilder();
@@ -158,16 +164,4 @@ public class CDX14ComponentObjectTest {
         // Unexpected number of results means something isn't working right
         assertEquals(conflicts.size(), 26);
         }
-
-
-    // TODO How do you test a generic package?
-//    @Test
-//    public void conflicts_isEmpty_equals_true_when_testGenericPackage_equals_controlPackage_test(){
-//        SBOMPackage testGenericPackage = controlPackage;
-//
-//
-//        List<Conflict> conflicts = controlPackage.compare(testGenericPackage);
-//
-//        assertTrue(conflicts.isEmpty());
-//    }
 }

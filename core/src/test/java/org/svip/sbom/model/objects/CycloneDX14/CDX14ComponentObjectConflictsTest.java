@@ -1,7 +1,5 @@
 package org.svip.sbom.model.objects.CycloneDX14;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14PackageBuilder;
 import org.svip.sbom.factory.objects.CycloneDX14.CDX14PackageBuilderFactory;
@@ -9,20 +7,23 @@ import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
-import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.sbom.model.uids.Hash;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * file: CDX14PackageBuilderTest
+ * File to test the individual comparison methods in the CDX14 Component Object
+ *
+ * @author Kevin Laporte
+ * @author Thomas Roman
+ */
 public class CDX14ComponentObjectConflictsTest {
     static CDX14PackageBuilderFactory packageBuilderFactory = new CDX14PackageBuilderFactory();
     static CDX14PackageBuilder packageBuilder = packageBuilderFactory.createBuilder();

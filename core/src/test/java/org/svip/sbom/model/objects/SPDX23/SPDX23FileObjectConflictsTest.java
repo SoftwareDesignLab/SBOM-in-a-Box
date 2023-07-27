@@ -15,6 +15,13 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * file: SPDX23FileObjectConflictsTest.java
+ * File to test the individual comparison methods in the SPDX23 File Object
+ *
+ * @author Thomas Roman
+ * @author Kevin Laporte
+ */
 public class SPDX23FileObjectConflictsTest {
     static SPDX23FileBuilderFactory packageBuilderFactory = new SPDX23FileBuilderFactory();
     static SPDX23FileBuilder packageBuilder = packageBuilderFactory.createBuilder();
