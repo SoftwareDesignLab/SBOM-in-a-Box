@@ -143,6 +143,7 @@ public class NVDClient implements VulnerabilityDBClient {
      * throw a general Exception if none are found
      * @throws Exception an error occurs when getting vulnerabilities
      */
+    @Override
     public List<VEXStatement> getVEXStatements(SBOMPackage s, String key) throws Exception {
         List<VEXStatement> vexStatements = new ArrayList<>();
         int waitTime = 2;
