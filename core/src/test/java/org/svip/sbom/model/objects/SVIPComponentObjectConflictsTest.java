@@ -1,11 +1,9 @@
 package org.svip.sbom.model.objects;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.factory.objects.SVIPSBOMComponentFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.LicenseCollection;
@@ -18,6 +16,13 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * file: SVIPComponentObjectConflictsTest.java
+ * File to test the individual comparison methods in the SVIP Component Object
+ *
+ * @author Thomas Roman
+ * @author Kevin Laporte
+ */
 public class SVIPComponentObjectConflictsTest {
     static SVIPSBOMComponentFactory packageBuilderFactory = new SVIPSBOMComponentFactory();
     static SVIPComponentBuilder packageBuilder = packageBuilderFactory.createBuilder();

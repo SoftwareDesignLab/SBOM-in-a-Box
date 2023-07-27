@@ -18,6 +18,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * file: SPDX23FileObjectTest.java
+ * File to test the comparison of a SPDX23 File Object
+ *
+ * @author Thomas Roman
+ */
 public class SPDX23FileObjectTest {
     static SPDX23FileBuilderFactory fileBuilderFactory = new SPDX23FileBuilderFactory();
     static SPDX23FileBuilder fileBuilder = fileBuilderFactory.createBuilder();

@@ -1,29 +1,30 @@
 package org.svip.sbom.model.objects.SPDX23;
 
-import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
-import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23PackageBuilder;
 import org.svip.sbom.factory.objects.SPDX23.SPDX23PackageBuilderFactory;
 import org.svip.sbom.factory.objects.SPDX23.SPDX23SBOMBuilderFactory;
 import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
-import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * file: SPDX23SBOMTest.java
+ * File to test the comparison of a SPDX23 SBOM Object
+ *
+ * @author Thomas Roman
+ */
 public class SPDX23SBOMTest {
     static SPDX23SBOMBuilderFactory sbomBuilderFactory = new SPDX23SBOMBuilderFactory();
     static SBOM controlSBOM;

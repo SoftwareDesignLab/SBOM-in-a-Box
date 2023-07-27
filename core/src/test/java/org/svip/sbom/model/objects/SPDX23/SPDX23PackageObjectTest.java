@@ -18,6 +18,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * file: SPDX23PackageObjectTest.java
+ * File to test the comparison of a SPDX23 Package Object
+ *
+ * @author Thomas Roman
+ */
 public class SPDX23PackageObjectTest {
     static SPDX23PackageBuilderFactory packageBuilderFactory = new SPDX23PackageBuilderFactory();
     static SPDX23PackageBuilder packageBuilder = packageBuilderFactory.createBuilder();

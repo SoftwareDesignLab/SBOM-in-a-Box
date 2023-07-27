@@ -18,6 +18,12 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * file: SVIPSBOMConflictsTest.java
+ * File to test the individual comparison methods in the SVIP SBOM Object
+ *
+ * @author Thomas Roman
+ */
 public class SVIPSBOMConflictsTest {
     static SVIPSBOMBuilderFactory sbomBuilderFactory = new SVIPSBOMBuilderFactory();
     static SBOM controlSBOM;

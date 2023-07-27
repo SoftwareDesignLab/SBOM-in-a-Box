@@ -17,8 +17,13 @@ import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * file: CDX14SBOMTest.java
+ * File to test the comparison of a CDX14 SBOM
+ *
+ * @author Thomas Roman
+ */
 public class CDX14SBOMTest {
     static CDX14SBOMBuilderFactory sbomBuilderFactory = new CDX14SBOMBuilderFactory();
     static SBOM controlSBOM;
