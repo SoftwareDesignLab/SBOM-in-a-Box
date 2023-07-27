@@ -18,6 +18,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * file: SVIPComponentObjectTest.java
+ * File to test the comparison of a SVIP Component Object
+ *
+ * @author Thomas Roman
+ */
 public class SVIPComponentObjectTest {
     static SVIPSBOMComponentFactory packageBuilderFactory = new SVIPSBOMComponentFactory();
     static SVIPComponentBuilder packageBuilder = packageBuilderFactory.createBuilder();

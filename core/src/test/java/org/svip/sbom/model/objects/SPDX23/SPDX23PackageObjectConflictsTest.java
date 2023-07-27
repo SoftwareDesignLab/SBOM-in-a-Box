@@ -1,6 +1,5 @@
 package org.svip.sbom.model.objects.SPDX23;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23PackageBuilder;
 import org.svip.sbom.factory.objects.SPDX23.SPDX23PackageBuilderFactory;
@@ -18,6 +17,13 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * file: SPDX23PackageObjectConflictsTest.java
+ * File to test the individual comparison methods in the SPDX23 Package Object
+ *
+ * @author Thomas Roman
+ * @author Kevin Laporte
+ */
 public class SPDX23PackageObjectConflictsTest {
     static SPDX23PackageBuilderFactory packageBuilderFactory = new SPDX23PackageBuilderFactory();
     static SPDX23PackageBuilder packageBuilder = packageBuilderFactory.createBuilder();

@@ -2,7 +2,6 @@ package org.svip.sbom.model.objects.CycloneDX14;
 
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
-import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.factory.objects.CycloneDX14.CDX14SBOMBuilderFactory;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.shared.metadata.Contact;
@@ -18,6 +17,12 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * file: CDX14SBOMConflictTest.java
+ * File to test the individual comparison methods in the CDX14 SBOM
+ *
+ * @author Thomas Roman
+ */
 public class CDX14SBOMConflictsTest {
     static CDX14SBOMBuilderFactory sbomBuilderFactory = new CDX14SBOMBuilderFactory();
     static SBOM controlSBOM;

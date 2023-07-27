@@ -21,6 +21,12 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * file: SPDX23SBOMConflictsTest.java
+ * File to test the individual comparison methods in the SPDX23 SBOM Object
+ *
+ * @author Thomas Roman
+ */
 public class SPDX23SBOMConflictsTest {
     static SPDX23SBOMBuilderFactory sbomBuilderFactory = new SPDX23SBOMBuilderFactory();
     static SBOM controlSBOM;
