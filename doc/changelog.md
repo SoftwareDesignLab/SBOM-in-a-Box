@@ -4,7 +4,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [v7.0.3-alpha] - (7/26/2023)
+
 ### Changed
+- `PURLTest.java` and `CPETest.java` updated:
+  - Provides results for each field tested in accuracy test instead of a single result
+- Added two new types of `INFO.java`: `MATCHING` and `NOT_MATCHING`
+- Updated QA Results to provide better and more useful information
+- `ResultFactory` is built for each method-test
 - Endpoints in `SVIPAPiController.java` to match documentation
 - `/generators/parsers` unzips a zipped project and parses it into an SBOM
 
