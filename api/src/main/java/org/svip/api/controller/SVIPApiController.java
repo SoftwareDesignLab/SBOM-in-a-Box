@@ -321,9 +321,9 @@ public class SVIPApiController {
 
         // overwrite
         if(overwrite){
-            sbomFileRepository.delete(toConvert);
+            sbomFileRepository.delete(sbomFile.get());
 
-            assert sbomFileRepository.findById(id).isEmpty(); // todo this assertion fails in unit tests
+            assert sbomFileRepository.findById(id).isEmpty(); // todo this assertion fails
 
             converted.setId(id);
             sbomFileRepository.save(converted);
