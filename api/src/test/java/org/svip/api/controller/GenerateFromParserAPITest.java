@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 import org.svip.api.model.SBOMFile;
 import org.svip.api.utils.Utils;
 import org.svip.sbomgeneration.serializers.SerializerFactory;
@@ -87,24 +88,26 @@ public class GenerateFromParserAPITest extends APITest {
 //    public void zipTest() throws IOException {
 //
 //        ResponseEntity<Long> response = (ResponseEntity<Long>) controller.generateParsers(System.getProperty("user.dir")
-//                + "/src/test/java/org/svip/api/sample_projects/Java.zip", "Java",
+//                + "/src/test/java/org/svip/api/sample_projects/Java.zip", "Java", // todo delete once not needed
 //                SerializerFactory.Schema.SPDX23, SerializerFactory.Format.TAGVALUE);
 //        assertEquals(HttpStatus.OK, response.getStatusCode());
 //        assertNotNull(response.getBody());
 //
 //    }
 //
-    @Test
-    @DisplayName("")
-    public void zipFileTest() throws IOException {
+//    @Test
+//    @DisplayName("")
+//    public void zipFileTest() throws IOException {
+//                                                          // todo MultipartFile method
+//
+//        ResponseEntity<Long> response = (ResponseEntity<Long>) controller.generateParsers(new ZipFile(System.getProperty("user.dir")
+//                        + "/src/test/java/org/svip/api/sample_projects/Java.zip"), "Java",
+//                SerializerFactory.Schema.SPDX23, SerializerFactory.Format.TAGVALUE);
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        assertNotNull(response.getBody());
+//
+//    }
 
-        ResponseEntity<Long> response = (ResponseEntity<Long>) controller.generateParsers(new ZipFile(System.getProperty("user.dir")
-                        + "/src/test/java/org/svip/api/sample_projects/Java.zip"), "Java",
-                SerializerFactory.Schema.SPDX23, SerializerFactory.Format.TAGVALUE);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-
-    }
 //
 //    @Test
 //    @DisplayName("Generate from parser test")
