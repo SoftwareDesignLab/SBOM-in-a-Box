@@ -14,12 +14,8 @@ services:
     image: ubuntu:latest
     build: core/src/main/java/org/svip/sbomgeneration/osi/scripts
     volumes:
-      - type: bind
-        source: core/src/main/java/org/svip/sbomgeneration/osi/bound_dir/code
-        target: /bound_dir/code
-      - type: bind
-        source: core/src/main/java/org/svip/sbomgeneration/osi/bound_dir/sboms
-        target: /bound_dir/sboms
+      - code:/bound_dir/code
+      - sboms:/bound_dir/sboms
 
   # MySQL server
   mysql:
@@ -54,6 +50,8 @@ services:
     volumes:
       - .m2:/root/.m2
       - /var/run/docker.sock:/var/run/docker.sock
+      - code:/src/main/java/org/svip/sbomgeneration/osi/bound_dir/code
+      - sboms:/src/main/java/org/svip/sbomgeneration/osi/bound_dir/sboms
     stdin_open: true
     tty: true
     environment: # Define environment variables for spring-boot application.properties
@@ -65,3 +63,5 @@ services:
       - SPRING_DOCKER_PORT=${SPRING_DOCKER_PORT}
 volumes:
   db: # Volume to store persistent data from MySQL server
+  code: # Volume to link osi bound_dir/code with api bound_dir/code
+  sboms: # Volume to link osi bound_dir/sboms with api bound_dir/sboms
