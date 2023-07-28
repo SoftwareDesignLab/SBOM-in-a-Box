@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.utils.Converter;
@@ -420,19 +421,25 @@ public class SVIPApiController {
      * @return generated SBOM
      */
     @PostMapping("/generators/parsers")
-    public ResponseEntity<?> generateParsers(@RequestPart ZipFile zipFile, // todo is RequestPart accurate?
+    public ResponseEntity<?> generateParsers(@RequestPart MultipartFile zipFile, // todo is RequestPart accurate?
                                              @RequestParam("projectName") String projectName,
                                              @RequestParam("schema") SerializerFactory.Schema schema,
-                                             @RequestParam("format") SerializerFactory.Format format){
+                                             @RequestParam("format") SerializerFactory.Format format) throws IOException {
 
         String urlMsg = "GENERATE /svip/generate?projectName=" + projectName;
+
+        if (!zipFile.getName().endsWith(".zip")){
+            LOGGER.error(urlMsg + " cannot unzip " + zipFile.getName() + ". Not a .zip file");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         if(schema.equals(SerializerFactory.Schema.CDX14) && format.equals(SerializerFactory.Format.TAGVALUE)){
             LOGGER.error(urlMsg + " cannot parse into " + schema + " with incompatible format " + format);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        ArrayList<HashMap<SBOMFile, Integer>> unZipped = (ArrayList<HashMap<SBOMFile, Integer>>) Utils.unZip(zipFile);
+        ArrayList<HashMap<SBOMFile, Integer>> unZipped = (ArrayList<HashMap<SBOMFile, Integer>>)
+                Utils.unZip(Objects.requireNonNull(Utils.convertMultipartToZip(zipFile)));
 
         HashMap<VirtualPath, String> virtualPathStringHashMap = new HashMap<>();
 
