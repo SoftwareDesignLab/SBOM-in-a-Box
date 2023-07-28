@@ -1,6 +1,5 @@
 package org.svip.api.controller;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -19,15 +18,12 @@ import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.generics.SBOMPackage;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbomanalysis.comparison.DiffReport;
 import org.svip.sbomanalysis.comparison.merger.MergerController;
 import org.svip.sbomanalysis.comparison.merger.MergerException;
-import org.svip.sbomanalysis.comparison.DiffReport;
-import org.svip.sbomgeneration.parsers.ParserController;
 import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
 import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.generics.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.pipelines.schemas.CycloneDX14.CDX14Pipeline;
@@ -46,15 +42,8 @@ import org.svip.sbomvex.model.VEXType;
 import org.svip.sbomvex.vexstatement.VEXStatement;
 import org.svip.utils.VirtualPath;
 
-import java.io.FileNotFoundException;
-import java.util.*;
-import java.util.Arrays;
-
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.zip.ZipFile;
+import java.util.*;
 
 /**
  * Spring API Controller for handling requests to the SVIP backend.
@@ -388,7 +377,7 @@ public class SVIPApiController {
         return new ResponseEntity<>(mapper.writeValueAsString(qualityReport), HttpStatus.OK);
     }
 
-    //#region Deprecated Endpoints
+
 
     /**
      * USAGE. Send GENERATE request to /generate an SBOM from source file(s)
@@ -488,44 +477,7 @@ public class SVIPApiController {
         // Get Target SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(ids[targetIndex]);
         // Check if it exists
-        ResponseEntity<String> NOT_FOUND = Utils.checkIfExists(ids[targetIndex], sbomFile, "/sboms/compare");
-        if (NOT_FOUND != null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        // create the Target SBOM object using the deserializer
-        Deserializer d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
-        SBOM targetSBOM = d.readFromString(sbomFile.get().getContents());
-        // create diff report
-        DiffReport diffReport = new DiffReport(targetSBOM.getUID(), targetSBOM);
-        // comparison sboms
-        for (int i = 0; i < ids.length; i++) {
-            if (i == targetIndex) continue;
-            // Get SBOM
-            sbomFile = sbomFileRepository.findById(ids[i]);
-            // Check if it exists
-            NOT_FOUND = Utils.checkIfExists(ids[i], sbomFile, "/sboms/compare");
-            if (NOT_FOUND != null) continue; // sbom not found, continue to next ID TODO check with front end what to do if 1 sbom is missing
-            // create an SBOM object using the deserializer
-            d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
-            SBOM sbom = d.readFromString(sbomFile.get().getContents());
-            // add the comparison to diff report
-            diffReport.compare(sbom.getUID(), sbom);
-        }
-        return Utils.encodeResponse(diffReport);
-    }
-
-    /**
-     * USAGE. Compares two or more given SBOMs (split into filename and contents), with the first one used as the baseline, and returns a comparison report.
-     *
-     * @param targetIndex the index of the target SBOM
-     * @param ids the ids of the SBOM files
-     * @return generated diff report
-     * @throws JsonProcessingException
-     */
-    @PostMapping("/sboms/compare")
-    public ResponseEntity<DiffReport> compare(@RequestParam("targetIndex") int targetIndex, @RequestParam("Ids") Long[] ids) throws JsonProcessingException {
-        // Get Target SBOM
-        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(ids[targetIndex]);
-        // Check if it exists
-        ResponseEntity<String> NOT_FOUND = Utils.checkIfExists(ids[targetIndex], sbomFile, "/sboms/compare");
+        ResponseEntity<Long> NOT_FOUND = Utils.checkIfExists(ids[targetIndex], sbomFile, "/sboms/compare");
         if (NOT_FOUND != null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         // create the Target SBOM object using the deserializer
         Deserializer d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
