@@ -3,7 +3,6 @@
 
 ## Index
 
-- [**System Requirements**](#system-requirements)
 - [**SVIP API**](API.md)
 - [**SBOM Generator CLI**](#sbom-generator-cli)
   - [Quick Start](#quick-start)
@@ -16,13 +15,6 @@
   - [Building the Image](#building-the-image)
     - [Saved Images](#saved-images)
   
----
-
-# System Requirements
-- Java 17.X.X
-- Gradle 7.5.X
-- Docker 24.X.X
-
 ---
 
 # SBOM Generator CLI

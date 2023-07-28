@@ -2,34 +2,44 @@
 > The SBOM Visualization and Integration Platform (**SVIP**) is a unified platform to promote the 
 > production, consumption, and utilization of Software Bills of Materials.
 
-### Latest Release: [[v7.1.0-alpha] - (7/26/2023)](doc/changelog.md)
+### Latest Release: [[v7.1.2-alpha] - (7/28/2023)](doc/changelog.md)
+
+## System Requirements
+- Java 17.X.X
+- Gradle 7.5.X
+- Docker 24.X.X
 
 ## Quick Start
 
-> See [System Requirements](doc/README.md#system-requirements) for all system requirements.
+**Launch the API**
+1. `docker ps`
+2. `docker compose up`
 
-### Deploy API with Docker
-First ensure Docker is installed and running and then deploy using the docker-compose script.
-```shell
-# Ensure Docker is installed and running.
-$ docker ps
-# Build all images and deploy containers.
-$ docker compose up
-```
+**Launch the GUI**
+1. Clone the [GUI](https://github.com/SoftwareDesignLab/svip-ui) repo and follow the quickstart
 
-If making changes to any source code, the Docker image(s) will need to be rebuilt. See 
-[Building the Image](doc/README.md#building-the-image) for detailed instructions. Also see 
-[SVIP API](doc/API.md#svip-api) for detailed API usage.
+> If making changes to any source code, the Docker image(s) will need to be rebuilt. See 
+> [Building the Image](doc/README.md#building-the-image) for detailed instructions. See 
+> [SVIP API](doc/API.md#svip-api) for detailed API usage.
 
 ## Features
-This is a list of all "features", or sub-systems that SVIP contains. See [doc/README.md](doc/README.md) for 
-detailed usage.
-- **Open Source Integrated SBOM Generation:** Makes use of open source libraries to generate SBOMs
+SVIP has a number of unique features to support:
+
+- **Open Source Integrated SBOM Generation:** Makes use of open source SBOM Generator Tools to generate SBOMs
 - **SBOM Generation:** Custom SBOM generation via source file and package manager file analysis
-- **SBOM VEX Generation:** 
-- **SBOM Metrics:** 
-- **SBOM Comparison:**
-- **SBOM Merging:**
+- **Vulnerability Exploitability eXchange (VEX) Generation:** Generate [VEX](https://www.cisa.gov/sites/default/files/2023-01/VEX_Use_Cases_Aprill2022.pdf) documents from SBOMs
+- **SBOM Metrics:** Grade SBOMs using a series of metric tests
+- **SBOM Comparison:** Compare SBOMs to identify key differences between them
+- **SBOM Merging:** Merge SBOMs into a single unified document
+
+Currently, SVIP Supports the following SBOM Types
+
+|                        Schema                        | JSON |              Tag:Value               |
+|:----------------------------------------------------:|:----:|:------------------------------------:|
+|  [SPDX 2.3](https://spdx.github.io/spdx-spec/v2.3/)  |  ✅   |                  ✅                   |
+| [CyloneDX 1.4](https://cyclonedx.org/docs/1.4/json/) |  ✅   | CycloneDX does not support Tag:Value |
+
+
 
 ## Contributors
 **Principal Investigator:** [Mehdi Mirakhorli](mailto:mxmvse@rit.edu)
@@ -52,6 +62,7 @@ detailed usage.
 - [Ping Liu](mailto:htk4363@rit.edu)
 - [Henry Lu](mailto:hyl2415@rit.edu)
 - [Matthew Morrison](mailto:msm8275@rit.edu)
+- [Ethan Numan](mailto:ehn4602@rit.edu)
 - [Henry Orsagh](mailto:hco4630@rit.edu)
 - [Juan Francisco Patino](mailto:jfp6815@rit.edu)
 - [Max Stein](mailto:mhs8558@rit.edu)
