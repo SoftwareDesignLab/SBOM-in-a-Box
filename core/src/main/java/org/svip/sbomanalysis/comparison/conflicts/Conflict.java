@@ -23,6 +23,16 @@ public class Conflict {
     @JsonProperty
     private final String other;
 
+    public MismatchType GetType(){
+        return this.type;
+    }
+
+    public String GetMessage(){
+        return this.message;
+    }
+    public String GetTarget(){return this.target;}
+    public String GetOther(){return this.other;}
+
     /**
      * Mismatch Conflict Constructor
      *

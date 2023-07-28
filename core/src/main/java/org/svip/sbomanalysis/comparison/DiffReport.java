@@ -19,6 +19,7 @@ import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISSING;
  *
  * @author Matt London
  * @author Derek Garcia
+ * @author Thomas Roman
  */
 @JsonPropertyOrder({"target", "diffreport"})
 public class DiffReport {
@@ -40,37 +41,26 @@ public class DiffReport {
 
             // Round 1: Compare target against other if equal
             for(Component targetComponent : target.getComponents()){
-                boolean compared = false;   // track if comparison occurred
+
+                // If other doesn't have component which shares name with target component, skip
+                if(other.getComponents().stream().noneMatch(o->o.getName() != null && o.getName().equals(targetComponent.getName()))){
+                    this.missingComponents.add(targetComponent.getName());
+                    continue;
+                }
 
                 // Test targetValue against otherValue
                 for(Component otherComponent : other.getComponents()){
-
-                    // If equal, compare
-                    if(targetComponent.equals(otherComponent)){
+                    // Compare hash codes to account for different schema representations of the same component
+                    if(targetComponent.hashCode() == otherComponent.hashCode())
                         this.componentConflicts.put(targetComponent.getName(), targetComponent.compare(otherComponent));
-                        compared = true;
-                    }
                 }
-                // targetValue not in other set
-                if(!compared)
-                    this.missingComponents.add(targetComponent.getName());
+
             }
 
-            // Round 2: Don't compare other against target, just checking if present
+            // Round 2: Check for components present in other but not in target
             for(Component otherComponent : other.getComponents()){
-                boolean compared = false;   // track if comparison occurred
-
-                // Attempt to see if otherValue exists in target
-                for(Component targetComponent : target.getComponents()){
-                    // otherValue is in targetValue
-                    if (otherComponent.equals(targetComponent)) {
-                        compared = true;
-                        break;
-                    }
-                }
-
-                // otherValue not in target set
-                if(!compared)
+                // If target doesn't have component which shares name with other component, skip
+                if(target.getComponents().stream().noneMatch(o->o.getName() != null && o.getName().equals(otherComponent.getName())))
                     this.missingComponents.add(otherComponent.getName());
             }
         }

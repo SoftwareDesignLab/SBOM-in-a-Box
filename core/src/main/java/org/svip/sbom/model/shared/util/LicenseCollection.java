@@ -1,5 +1,7 @@
 package org.svip.sbom.model.shared.util;
 
+import org.svip.sbom.model.shared.metadata.CreationTool;
+import org.svip.sbomanalysis.comparison.conflicts.Comparable;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
 
@@ -16,7 +18,7 @@ import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.LICENSE_MI
  * @author Derek Garcia
  * @author Thomas Roman
  */
-public class LicenseCollection {
+public class LicenseCollection implements Comparable {
     private final Set<String> declared = new HashSet<>();
     private final Set<String> infoFromFiles = new HashSet<>();
     private final Set<String> concluded = new HashSet<>();
@@ -83,17 +85,33 @@ public class LicenseCollection {
     }
 
     /**
-     * Compare against other license collection
+     * Compare to another Comparable Object
      *
-     * @param other Other license collection
-     * @return list of conflicts
+     * @param o Object
+     * @return List of Conflicts
      */
-    public List<Conflict> compare(LicenseCollection other) {
+    @Override
+    public List<Conflict> compare(Comparable o) {
+        // Don't compare if not instance of same object
+        if(!(o instanceof LicenseCollection other))
+            return null;
+
         ConflictFactory cf = new ConflictFactory();
         cf.compareStringSets("License", LICENSE_MISMATCH, this.getConcluded(), other.getConcluded());
         cf.compareStringSets("License", LICENSE_MISMATCH, this.getDeclared(), other.getDeclared());
         cf.compareStringSets("License", LICENSE_MISMATCH, this.getInfoFromFiles(), other.getInfoFromFiles());
         return cf.getConflicts();
+    }
+
+    /**
+     * Test if Object is equal to current
+     * @param o Object
+     * @return List of Conflicts
+     */
+    @Override
+    public boolean equals(Object o){
+        // LC is just collection of licenses, if a collection then it is equal
+        return o != null && getClass() == o.getClass();
     }
 }
 

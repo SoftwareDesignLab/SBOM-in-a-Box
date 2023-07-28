@@ -29,7 +29,7 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
     private String name;
 
     /**File licenses*/
-    private LicenseCollection licenses;
+    private LicenseCollection licenses = new LicenseCollection();
 
     /**File copyright*/
     private String copyright;
@@ -180,7 +180,7 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
         this.uid = null;
         this.author = null;
         this.name = null;
-        this.licenses = null;
+        this.licenses = new LicenseCollection();
         this.copyright = null;
         this.hashes = new HashMap<>();
         this.fileNotice = null;

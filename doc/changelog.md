@@ -3,12 +3,19 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [v7.1.2-alpha] - (7/28/2023)
+### Added
+- SBOM Objects have built in comparison methods
+- Added `hashcode` methods to components to use `name` and `version` as UIDs
+
 ## [v7.1.1-alpha] - (7/26/2023)
 
 ### Changed
 - `/sboms/content` returns the entire SBOMFile instead of just file contents
 
 ## [v7.1.0-alpha] - (7/26/2023)
+
 
 ### Added
 - `/svip/generators/osi` endpoint to the `SVIPAPIController` class
@@ -20,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   duplicate code.
 - Fixed a bug where running OSI in the API would create bind directories in the API package instead of the core package.
 
-## [v7.0.3-alpha] - (7/26/2023)
+## [v7.1.1-alpha] - (7/26/2023)
 
 ### Changed
 - `PURLTest.java` and `CPETest.java` updated:
@@ -31,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Endpoints in `SVIPAPiController.java` to match documentation
 - `/generators/parsers` unzips a zipped project and parses it into an SBOM
 
-## [v7.0.2-alpha] - (7/25/2023)
+## [v7.1.0-alpha] - (7/25/2023)
 
 ### Added
 - VEX API Endpoint
