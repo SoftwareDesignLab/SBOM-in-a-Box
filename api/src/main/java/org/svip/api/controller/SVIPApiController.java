@@ -316,13 +316,12 @@ public class SVIPApiController {
         }
 
         // assign appropriate id and name
+        converted.setId(id);
         converted.setFileName(toConvert.getFileName());
 
         // overwrite
-        if(overwrite){
+        if(overwrite)
             sbomFileRepository.deleteById(id);
-            converted.setId(id);
-        }
         else
             converted.setId(Utils.generateNewId(id, new Random(), sbomFileRepository));
 
