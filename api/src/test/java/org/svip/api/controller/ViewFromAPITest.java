@@ -30,8 +30,8 @@ public class ViewFromAPITest extends APITest {
         when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
 
         for (Long id : testMap.keySet()) {
-            ResponseEntity<String> response = controller.view(id);
-            String s = response.getBody();
+            ResponseEntity<SBOMFile> response = controller.view(id);
+            SBOMFile s = response.getBody();
             assertNotNull(s);
         }
     }
@@ -44,7 +44,7 @@ public class ViewFromAPITest extends APITest {
         // Simulate empty DB
         when(repository.findById(any())).thenAnswer(i -> Optional.empty());
 
-        ResponseEntity<String> response = controller.view(testId);
+        ResponseEntity<SBOMFile> response = controller.view(testId);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 }
