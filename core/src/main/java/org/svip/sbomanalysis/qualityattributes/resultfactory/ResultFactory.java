@@ -32,16 +32,6 @@ public class ResultFactory {
     }
 
     /**
-     * Constructor to create a new ResultFactory
-     * @param test name of test
-     * @param attributes list of attributes
-     */
-    public ResultFactory(String test, List<ATTRIBUTE> attributes){
-        this.attributes = attributes;
-        this.test = test;
-    }
-
-    /**
      * Create a new Result that has passed the test with multiple values
      * @param field the field that was tested
      * @param info info about the result
@@ -74,6 +64,22 @@ public class ResultFactory {
     }
 
     /**
+     * Create a new Result that has passed the test with a single value
+     * with custom details
+     * @param field the field that was tested
+     * @param info info about the result
+     * @param value the value of the test
+     * @param context the name of the component that is being passed through
+     * @param details the custom details that does not fit any INFO value
+     */
+    public Result passCustom(String field, INFO info, String value, String context, String details){
+        Text text = new Text(context, field);
+        String message = text.getMessage(info, value);
+        return new Result(this.attributes, this.test, message,
+                details, STATUS.PASS);
+    }
+
+    /**
      * Create a new Result that has passed the test with multiple values
      * @param field the field that was tested
      * @param info info about the result
@@ -101,6 +107,23 @@ public class ResultFactory {
         Text text = new Text(context, field);
         String message = text.getMessage(info, value);
         String details = text.getDetails(info, value);
+        return new Result(this.attributes, this.test, message,
+                details, STATUS.FAIL);
+    }
+
+    /**
+     * Create a new Result that has failed the test with a single value
+     * with custom details
+     * @param field the field that was tested
+     * @param info info about the result
+     * @param value the value of the test
+     * @param context the name of the component that is being passed through
+     * @param details the custom details that does not fit any INFO value
+     * @return a new Result with a fail status
+     */
+    public Result failCustom(String field, INFO info, String value, String context, String details){
+        Text text = new Text(context, field);
+        String message = text.getMessage(info, value);
         return new Result(this.attributes, this.test, message,
                 details, STATUS.FAIL);
     }

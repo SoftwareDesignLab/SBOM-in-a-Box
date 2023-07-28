@@ -6,16 +6,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.controller.SVIPApiController;
 import org.svip.api.model.SBOMFile;
+import org.svip.api.repository.SBOMFileRepository;
 import org.svip.sbomgeneration.serializers.SerializerFactory;
+import org.svip.utils.VirtualPath;
 
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 import static org.svip.sbomgeneration.serializers.SerializerFactory.Format.TAGVALUE;
 
@@ -54,7 +58,7 @@ public class Utils {
      * Reusable code used in API controller to check if SBOMFile is empty/not found
      * Also eliminates the need for isPresent() check for Optionals
      */
-    public static ResponseEntity<String> checkIfExists(long id, Optional<SBOMFile> sbomFile, String call) {
+    public static ResponseEntity<Long> checkIfExists(long id, Optional<SBOMFile> sbomFile, String call) {
         if (sbomFile.isEmpty()) {
             LOGGER.info("DELETE /svip/" + call + "?id=" + id + " - FILE NOT FOUND. INVALID ID");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -113,6 +117,120 @@ public class Utils {
             }
         }
         return sbomFiles;
+    }
+
+    /**
+     * Generates new ID given old one
+     *
+     * @param id                 old ID
+     * @param rand               Random class
+     * @param sbomFileRepository repository
+     * @return new ID
+     */
+    public static long generateNewId(long id, Random rand, SBOMFileRepository sbomFileRepository) {
+        // assign new id and name
+        int i = 0;
+        while (sbomFileRepository.existsById(id)) {
+            id += (Math.abs(rand.nextLong()) + id) % ((i < 100) ? id : Long.MAX_VALUE);
+            i++;
+        }
+        return id;
+    }
+
+    /**
+     * Unzip a ZipFile of SBOMFiles
+     *
+     * @param z the zipped file
+     * @return List of file contents paired with an integer representing its depth in the project directory
+     */
+    public static List<HashMap<SBOMFile, Integer>> unZip(ZipFile z) {
+
+        ArrayList<HashMap<SBOMFile, Integer>> vpArray = new ArrayList<>();
+
+        byte[] buffer = new byte[1024];
+        Stream<? extends ZipEntry> entryStream = z.stream();
+
+
+        entryStream.forEach(entry -> {//from  w ww .ja v a  2 s .c  o m
+            try {
+                // Get the input stream for the current zip entry
+                InputStream is = z.getInputStream(entry);
+                /* Read data for the entry using the is object */
+
+                int depth = entry.getName().split("[\\/]").length - 1; // todo we may not actually need depth
+
+                if (!entry.isDirectory()) {
+                    StringBuilder contentsBuilder = new StringBuilder();
+                    int len;
+                    try {
+                        while ((len = is.read(buffer)) > 0) {
+                            contentsBuilder.append(new String(buffer));
+                        }
+                    } catch (EOFException e) {
+                        is.close();
+                        LOGGER.error(e.getMessage());
+                    }
+
+                    HashMap<SBOMFile, Integer> hashMap = new HashMap<>();
+                    hashMap.put(new SBOMFile(entry.getName(), contentsBuilder.toString()), depth);
+                    vpArray.add(hashMap);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        return vpArray;
+
+    }
+
+    /**
+     * Unzip a ZipFile of SBOMFiles
+     *
+     * @param path path of the zipped file
+     * @return List of file contents paired with an integer representing its depth in the project directory
+     */
+    public static List<HashMap<SBOMFile, Integer>> unZip(String path) throws IOException {
+
+        ArrayList<HashMap<SBOMFile, Integer>> vpArray = new ArrayList<>();
+
+        byte[] buffer = new byte[1024];
+        ZipInputStream zs = new ZipInputStream(new FileInputStream(path));
+        ZipEntry zipEntry = zs.getNextEntry();
+
+        int depth; // todo we may not actually need depth
+
+        while (zipEntry != null) {
+
+            depth = zipEntry.getName().split("[\\/]").length - 1;
+
+            if (!zipEntry.isDirectory()) {
+                // write file content
+                StringBuilder contentsBuilder = new StringBuilder();
+                int len;
+                try {
+                    while ((len = zs.read(buffer)) > 0) {
+                        contentsBuilder.append(new String(buffer));
+                    }
+                } catch (EOFException e) {
+                    zs.close();
+                    LOGGER.error(e.getMessage());
+                    break;
+                }
+
+                HashMap<SBOMFile, Integer> hashMap = new HashMap<>();
+                hashMap.put(new SBOMFile(zipEntry.getName(), contentsBuilder.toString()), depth);
+                vpArray.add(hashMap);
+            }
+            zipEntry = zs.getNextEntry();
+        }
+
+        zs.closeEntry();
+        zs.close();
+
+        return vpArray;
+
     }
 
 }

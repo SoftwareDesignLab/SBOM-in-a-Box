@@ -2,13 +2,8 @@ package org.svip.sbomvex.database;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.svip.sbom.model.interfaces.generics.Component;
-import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.generics.SBOMPackage;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbomvex.database.interfaces.VulnerabilityDBClient;
-import org.svip.sbomvex.model.VEX;
-import org.svip.sbomvex.model.VEXType;
 import org.svip.sbomvex.vexstatement.Product;
 import org.svip.sbomvex.vexstatement.VEXStatement;
 import org.svip.sbomvex.vexstatement.status.Justification;
@@ -21,6 +16,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -41,9 +37,9 @@ public class OSVClient implements VulnerabilityDBClient {
      * Build the API Request, then get the OSV database's response
      * @param jsonBody the string body of the request or OSV ID for GET
      * @return OSV APIs response to the HttpRequest
+     * @throws Exception if an error occurs with getting OSV's response
      */
-    private String getOSVResponse(String jsonBody) {
-        try {
+    private String getOSVResponse(String jsonBody) throws Exception{
             HttpRequest request;
             // build the post method
             request = HttpRequest.newBuilder()
@@ -55,12 +51,13 @@ public class OSVClient implements VulnerabilityDBClient {
             CompletableFuture<HttpResponse<String>> apiResponse = httpClient
                     .sendAsync(request, HttpResponse.BodyHandlers.ofString());
             String responseBody = apiResponse.get().body();
+
+            // check if error code appeared with response and throw error if true
+            JSONObject jsonObject = new JSONObject(responseBody);
+            if(jsonObject.has("code") && jsonObject.getInt("code") == 3){
+                throw new Exception("Invalid call to OSV API");
+            }
             return responseBody.replace("{\"vulns\":", "");
-        }
-        // error with the HttpRequest occurs
-        catch (Exception e) {
-            return null;
-        }
     }
 
 
@@ -71,7 +68,7 @@ public class OSVClient implements VulnerabilityDBClient {
      * @param componentVersion the component's version
      * @return the response from the OSV API request
      */
-    public String getOSVByNameVersionPost(String componentName, String componentVersion) {
+    private String getOSVByNameVersionPost(String componentName, String componentVersion) throws Exception {
         JSONObject body = new JSONObject();
         body.put("version", componentVersion);
         JSONObject packageJSON = new JSONObject();
@@ -86,7 +83,7 @@ public class OSVClient implements VulnerabilityDBClient {
      * @param purlString the component's purl
      * @return the response from the OSV API request
      */
-    public String getOSVByPURLPost(String purlString) {
+    private String getOSVByPURLPost(String purlString) throws Exception {
         JSONObject body = new JSONObject();
         JSONObject packageJSON = new JSONObject();
         packageJSON.put("purl", purlString);
@@ -94,83 +91,67 @@ public class OSVClient implements VulnerabilityDBClient {
         return getOSVResponse(body.toString());
     }
 
-
     /**
-     * Generate a new VEX document
-     * @param sbom the SBOM to create the VEX Document
-     * @return a new VEX object
+     * Get all vulnerabilities of a component using the OSV API
+     * @param s the SBOM package to create the VEX Statement for
+     * @return a List of VEX Statements if there are vulnerabilities or
+     * throw a general Exception if none are found
+     * @throws Exception if no vulnerabilities are found or an error occurs
      */
     @Override
-    public VEX generateVEX(SBOM sbom) {
-        // create vex builder to create VEX document
-        VEX.Builder vexBuilder = new VEX.Builder();
-
-        // initially get the necessary fields for the VEX Document builder
-        String creationTime = String.valueOf(java.time.LocalDateTime.now());
-        vexBuilder.setVEXIdentifier(sbom.getName());
-
-        // TODO better way to determine origin type and spec version?
-        String sbomFormat = sbom.getFormat().toLowerCase();
-        if(sbomFormat.contains("cyclonedx")){
-            vexBuilder.setOriginType(VEXType.CYCLONE_DX);
-            vexBuilder.setSpecVersion("1.4");
+    public List<VEXStatement> getVEXStatements(SBOMPackage s) throws Exception {
+        List<VEXStatement> vexStatements = new ArrayList<>();
+        String response;
+        // check that component is not an SPDX23File, as it does not
+        // have the necessary fields to search for vulnerabilities
+        // cast to SBOMPackage to check for purls
+        Set<String> purls = s.getPURLs();
+        // check if the component has purls to test
+        if (purls != null && purls.size() >= 1) {
+            // use the purl for the component instead to search for
+            // vulnerabilities
+            ArrayList<String> purlList = new ArrayList<>(purls);
+            String purlString = purlList.get(0);
+            response = getOSVByPURLPost(purlString);
         }
-        else{
-            vexBuilder.setOriginType(VEXType.CSAF);
-            vexBuilder.setSpecVersion("2.0");
+        // if component has no purls, construct API request with
+        // name and version
+        else if (s.getName() != null && s.getVersion() != null) {
+            String name = s.getName();
+            String version = s.getVersion();
+            response = getOSVByNameVersionPost(name, version);
+            // some components require its group and name to search
+            // for vulnerabilities
+            if (response.equals("{}")) {
+                name = s.getAuthor() + ":" + s.getName();
+                response = getOSVByNameVersionPost(name, version);
+            }
+        } else {
+            throw new Exception("Component does not have necessary fields " +
+                    "to test with OSV API");
         }
-        vexBuilder.setDocVersion("1.0");
-        vexBuilder.setTimeFirstIssued(creationTime);
-        vexBuilder.setTimeLastUpdated(creationTime);
-
-        for(Component c : sbom.getComponents()){
-            String response;
-            // check that component is not an SPDX23File, as it does not
-            // have the necessary fields to search for vulnerabilities
-            if(!(c instanceof SPDX23File)){
-                // cast to SBOMPackage to check for purls
-                SBOMPackage component = (SBOMPackage) c;
-                Set<String> purls = component.getPURLs();
-
-                // if component has no purls, construct API request with
-                // name and version
-                if(purls == null || purls.isEmpty()){
-                    String name = component.getName();
-                    String version = component.getVersion();
-                    response = getOSVByNameVersionPost(name, version);
-                    // some components require its group and name to search
-                    // for vulnerabilities
-                    if(response == null || response.equals("{}")){
-                        name = component.getAuthor() + ":" + component.getName();
-                        response = getOSVByNameVersionPost(name, version);
-                    }
-                }
-                else{
-                    // use the purl for the component instead to search for
-                    // vulnerabilities
-                    ArrayList<String> purlList = new ArrayList<>(purls);
-                    String purlString = purlList.get(0);
-                    response = getOSVByPURLPost(purlString);
-                }
-
-                // if jsonResponse did not have an error and is not empty,
-                // create a vex statement for every vulnerability in response
-                if(response != null && !response.equals("{}")){
-                    JSONArray vulns = new JSONArray(response);
-                    for(int i=0; i<vulns.length(); i++){
-                        // get the singular vulnerability and create a
-                        // VEXStatement for it
-                        JSONObject vulnerability = vulns.getJSONObject(i);
-                        VEXStatement vexStatement =
-                                generateVEXStatement(vulnerability, component);
-                        vexBuilder.addVEXStatement(vexStatement);
-                    }
-                }
+        // if jsonResponse did not have an error and is not empty,
+        // create a vex statement for every vulnerability in response
+        if (!response.equals("{}")) {
+            JSONArray vulns = new JSONArray(response);
+            for (int i = 0; i < vulns.length(); i++) {
+                // get the singular vulnerability and create a
+                // VEXStatement for it
+                JSONObject vulnerability = vulns.getJSONObject(i);
+                VEXStatement vexStatement =
+                        generateVEXStatement(vulnerability, s);
+                vexStatements.add(vexStatement);
             }
         }
-
-        return vexBuilder.build();
+        return vexStatements;
     }
+
+    //Not used in OSV, so it is ignored and not used
+    @Override
+    public List<VEXStatement> getVEXStatements(SBOMPackage s, String key) throws Exception {
+        return null;
+    }
+
 
     /**
      * Build a new VEX Statement for a VEX Document

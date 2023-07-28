@@ -10,11 +10,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Updated `GenerateFromParserAPITest` class to be consistent with `GenerateFromOSIAPITest` class
-- Cleaned up utilities in `api.utils` and moved some methods into their respective core classes as there was some 
+- Cleaned up utilities in `api.utils` and moved some methods into their respective core classes as there was some
   duplicate code.
 - Fixed a bug where running OSI in the API would create bind directories in the API package instead of the core package.
 
+## [v7.0.3-alpha] - (7/26/2023)
+
+### Changed
+- `PURLTest.java` and `CPETest.java` updated:
+  - Provides results for each field tested in accuracy test instead of a single result
+- Added two new types of `INFO.java`: `MATCHING` and `NOT_MATCHING`
+- Updated QA Results to provide better and more useful information
+- `ResultFactory` is built for each method-test
+- Endpoints in `SVIPAPiController.java` to match documentation
+- `/generators/parsers` unzips a zipped project and parses it into an SBOM
+
+## [v7.0.2-alpha] - (7/25/2023)
+
+### Added
+- VEX API Endpoint
+- VEX API test `GenerateVEXAPITest`
+- `VEXResult.java`
+  - Class that holds both the VEX Object and any errors that occurred for the API endpoint
+- Test SBOMs that contain vulnerable components
+
+### Changed
+- Updated `API.md` documentation with the VEX endpoint
+
 ## [v7.0.1-alpha] - (7/24/2023)
+
 ### Changed
 - `/sboms` to `/sbom` when getting SBOM object
 

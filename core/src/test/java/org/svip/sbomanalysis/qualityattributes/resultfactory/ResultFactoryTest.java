@@ -187,4 +187,21 @@ class ResultFactoryTest {
         assertEquals(test_result.getStatus(), r.getStatus());
     }
 
+    @Test
+    public void result_matching_pass_single_value_test(){
+
+        Result r = resultFactory.pass("Name", INFO.MATCHING,
+               "Component Name", "Component Name");
+
+        Result test_result = new Result(testAttributeList, testTestName,
+                "Name matches Component value",
+                "Expected: Component Name Actual: Component Name", STATUS.PASS);
+
+        assertEquals(test_result.getAttributes(), r.getAttributes());
+        assertEquals(test_result.getTest(), r.getTest());
+        assertEquals(test_result.getMessage(), r.getMessage());
+        assertEquals(test_result.getDetails(), r.getDetails());
+        assertEquals(test_result.getStatus(), r.getStatus());
+    }
+
 }

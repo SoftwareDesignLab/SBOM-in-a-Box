@@ -17,6 +17,7 @@
       - [Generate SBOM with SVIP](#generate-an-sbom-using-svip-parsers)
       - [Generate SBOM with OSI](#generate-an-sbom-using-osi)
       - [Apply SBOM Metrics](#quality-attributes-testing)
+      - [Generate VEX Object](#create-a-vex-document-with-an-sbom)
     - [MySQL Database](#mysql-database)
 
 # System Requirements
@@ -158,8 +159,8 @@ curl -X GET -G http://localhost:8080/svip/sboms \
 -d 'id=<SBOM UID>'
 ```
 
-### Get SBOM Object
-> Get a single SBOM object from the SQL Database using its ID
+### Get SBOM Contents
+> Get the contents of an uploaded SBOM file from its ID
 
 **Endpoint:** `http://localhost:8080/svip/sboms/content`
 
@@ -320,6 +321,46 @@ curl -X PUT -G http://localhost:8080/svip/generators/osi \
 ```bash
 curl -X GET -G http://localhost:8080/svip/sboms/qa \
 -d 'id=<SBOM UID>'
+```
+
+### Create a VEX Document With an SBOM
+> Generate a VEX document using an SBOM's components and information
+
+**Endpoint:** `http://localhost:8080/svip/sboms/vex`
+
+**Request Method:** `GET`
+
+**Headers**
+
+| Parameter |  Type  |          Description          | Is Required? |
+|:---------:|:------:|:-----------------------------:|:------------:|
+|  apiKey   | String | The user's NVD API Key to use |      NO      |
+
+
+**Parameters**
+
+| Parameter |  Type  |                    Description                     | Is Required? |
+|:---------:|:------:|:--------------------------------------------------:|:------------:|
+|    id     |  Long  | The ID of the SBOM file to get information for VEX |     YES      |
+|  format   | String |           The format of the VEX Document           |     YES      |
+|  client   | String |               The API Client to use                |     YES      |
+
+**Responses**
+
+| Response Code |   Type    |                  Description                  |
+|:-------------:|:---------:|:---------------------------------------------:|
+|      200      | VEXResult | A VEX and HashMap of any errors that occurred |
+|      400      |  String   |           Invalid Format or Client            |
+|      404      |  String   |              SBOM does not exist              |
+|      500      |  String   |    The message of the error that occurred     |
+
+**Example**
+```bash
+curl -X GET -G http://localhost:8080/svip/sboms/vex \
+-H 'apiKey: <API KEY>' \
+-d 'id=<SBOM UID>' \
+-d 'format=CSAF' \
+-d 'client=OSV'
 ```
 
 ## MySQL Database

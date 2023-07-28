@@ -96,12 +96,13 @@ public class LicenseTest extends MetricTest{
      * @return a set of results
      */
     private Set<Result> isValidSPDXLicense(String field, String value){
+        var rf = new ResultFactory("Valid SPDX License", ATTRIBUTE.COMPLETENESS, ATTRIBUTE.UNIQUENESS, ATTRIBUTE.MINIMUM_ELEMENTS);
         Set<Result> results = new HashSet<>();
         Result r;
 
         // Error if can't populate sets
         if(!loadSPDXLicenseData()){
-            r = resultFactory.error(field, INFO.ERROR,
+            r = rf.error(field, INFO.ERROR,
                     "SPDX License Data", componentName);
             results.add(r);
             return results;
@@ -110,7 +111,7 @@ public class LicenseTest extends MetricTest{
         else {
             // if the license value is empty, test cannot be run
             if(value == null || value.equals("")){
-                r = resultFactory.error(field, INFO.MISSING,
+                r = rf.error(field, INFO.MISSING,
                         value, componentName);
                 results.add(r);
                 return results;
@@ -196,36 +197,36 @@ public class LicenseTest extends MetricTest{
      * its validity
      */
     private Result testSPDXLicense(String field, String value) {
-        Set<Result> results = new HashSet<>();
+        var rf = new ResultFactory("Valid SPDX License", ATTRIBUTE.COMPLETENESS, ATTRIBUTE.UNIQUENESS, ATTRIBUTE.MINIMUM_ELEMENTS);
 
         // TODO only held as a string. A License object should be created
 
         // Test if valid identifier
         if(SPDX_LICENSE_IDENTIFIERS.contains(value.toLowerCase())) {
-            return resultFactory.pass(field, INFO.VALID,
+            return rf.pass(field, INFO.VALID,
                     value, componentName);
         }
         // Test if valid name
         else if(SPDX_LICENSE_NAMES.contains(value.toLowerCase())){
-            return resultFactory.pass(field, INFO.VALID,
+            return rf.pass(field, INFO.VALID,
                     value, componentName);
         }
 
         // Test if depreciated Identifier
         else if(DEPRECIATED_SPDX_LICENSE_IDENTIFIERS.contains(value.toLowerCase())){
-            return resultFactory.fail(field, INFO.INVALID,
+            return rf.fail(field, INFO.INVALID,
                     value, componentName);
         }
 
         // Test if depreciated Name
         else if(DEPRECIATED_SPDX_LICENSE_NAMES.contains(value.toLowerCase())){
-            return resultFactory.fail(field, INFO.INVALID,
+            return rf.fail(field, INFO.INVALID,
                     value, componentName);
         }
 
         // name/id is in neither list and does not exist
         else {
-            return resultFactory.fail(field, INFO.INVALID,
+            return rf.fail(field, INFO.INVALID,
                     value, componentName);
         }
     }
