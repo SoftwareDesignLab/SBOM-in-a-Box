@@ -1,9 +1,11 @@
 package org.svip.api.utils;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 import org.svip.api.controller.SVIPApiController;
 import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
@@ -18,6 +20,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
@@ -235,6 +238,23 @@ public class Utils {
         zs.close();
 
         return vpArray;
+
+    }
+
+    public static ZipFile convertMultipartToZip(MultipartFile file) throws IOException {
+
+        File zip = File.createTempFile(UUID.randomUUID().toString(), "temp");
+        FileOutputStream o = new FileOutputStream(zip);
+        IOUtils.copy(file.getInputStream(), o);
+        o.close();
+
+        try {
+            return new ZipFile(zip);
+
+        } catch (ZipException e) {
+            e.printStackTrace();
+            return null;
+        }
 
     }
 
