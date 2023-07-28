@@ -51,7 +51,7 @@ public class OSITest {
     @BeforeAll
     static void setup() {
         // Use OSI.dockerCheck() to check if docker is running
-        assumeTrue(org.svip.sbomgeneration.osi.OSI.dockerCheck() == 0);
+        assumeTrue(OSI.dockerCheck() == 0);
     }
 
     /**

@@ -78,7 +78,7 @@ public class OSI {
      *         1 - Docker is not running but installed,
      *         2 - Docker is not installed
      */
-    protected static int dockerCheck() {
+    public static int dockerCheck() {
         try {
             // If running in a container, we know the Docker daemon is available (with a system host link)
             File f = new File("/.dockerenv");
