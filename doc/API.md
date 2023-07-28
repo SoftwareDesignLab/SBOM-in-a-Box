@@ -15,6 +15,7 @@
       - [Get SBOM Object](#get-sbom-contents)
       - [Convert SBOM](#convert-an-sbom)
       - [Generate SBOM with SVIP](#generate-an-sbom-using-svip-parsers)
+      - [Generate SBOM with OSI](#generate-an-sbom-using-osi)
       - [Apply SBOM Metrics](#quality-attributes-testing)
       - [Generate VEX Object](#create-a-vex-document-with-an-sbom)
     - [MySQL Database](#mysql-database)
@@ -229,17 +230,17 @@ curl -X PUT -G http://localhost:8080/svip/sboms/content \
 
 **Parameters**
 
-| Parameter |       Type        |            Description             | Is Required? |
-|:---------:|:-----------------:|:----------------------------------:|:------------:|
-|    id     |       Long        | The ID of the SBOM file to convert |     YES      |
-|  schema   | Serializer Schema |        Schema to convert to        |     YES      |
-|  format   | Serializer Format |        Format to convert to        |     YES      |
+|  Parameter  |       Type        |            Description             | Is Required? |
+|:-----------:|:-----------------:|:----------------------------------:|:------------:|
+| projectName |      String       | The name of the project to convert |     YES      |
+|   schema    | Serializer Schema |        Schema to convert to        |     YES      |
+|   format    | Serializer Format |        Format to convert to        |     YES      |
 
 **Request Body**
 
-| Body  |    Type    |              Description               | Is Required? |
-|:-----:|:----------:|:--------------------------------------:|:------------:|
-| files | SBOMFile[] | fileName: string, fileContents: string |     YES      |
+| Body  |    Type    |            Description             | Is Required? |
+|:-----:|:----------:|:----------------------------------:|:------------:|
+| files | SBOMFile[] | fileName: string, contents: string |     YES      |
 
 **Responses**
 
@@ -251,10 +252,48 @@ curl -X PUT -G http://localhost:8080/svip/sboms/content \
 
 **Example**
 ```bash
-curl -X PUT -G http://localhost:8080/svip/sboms/content \
--d 'id=<SBOM UID>' \
+curl -X POST -G http://localhost:8080/svip/generators/parsers \
+-d 'projectName=Java_Project_1' \
 -d 'schema=SPDX23' \
 -d 'format=TAGVALUE' \
+-d '[{"fileName": "testfile1.java", "contents": "..."}, {"fileName": "testfile2.java", "contents": "..."}]'
+```
+
+### Generate an SBOM using OSI
+> Generates an SBOM with a given schema and format from project source files using 
+> [Open Source Integration](README.md#open-source-integration).
+> Request body contains an array of multiple objects with properties fileName and contents (one for each source file)
+
+**Endpoint:** `http://localhost:8080/svip/generators/osi`
+
+**Request Method:** `POST`
+
+**Parameters**
+
+| Parameter |       Type        |            Description             | Is Required? |
+|:---------:|:-----------------:|:----------------------------------:|:------------:|
+|  schema   | Serializer Schema |        Schema to convert to        |     YES      |
+|  format   | Serializer Format |        Format to convert to        |     YES      |
+
+**Request Body**
+
+| Body  |    Type    |            Description             | Is Required? |
+|:-----:|:----------:|:----------------------------------:|:------------:|
+| files | SBOMFile[] | fileName: string, contents: string |     YES      |
+
+**Responses**
+
+| Response Code |  Type  |               Description               |
+|:-------------:|:------:|:---------------------------------------:|
+|      200      | String |        A JSON of the SBOM Object        |
+|      404      | String | Description of error during generation  |
+|      400      | String | Schema, format or body contents invalid |
+
+**Example**
+```bash
+curl -X PUT -G http://localhost:8080/svip/generators/osi \
+-d 'schema=CDX14' \
+-d 'format=JSON' \
 -d '[{"fileName": "testfile1.java", "contents": "..."}, {"fileName": "testfile2.java", "contents": "..."}]'
 ```
 
