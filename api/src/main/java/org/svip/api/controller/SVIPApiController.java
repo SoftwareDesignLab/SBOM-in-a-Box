@@ -1,6 +1,5 @@
 package org.svip.api.controller;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -383,7 +382,7 @@ public class SVIPApiController {
         return new ResponseEntity<>(mapper.writeValueAsString(qualityReport), HttpStatus.OK);
     }
 
-    //#region Deprecated Endpoints
+
 
     /**
      * USAGE. Send GENERATE request to /generate an SBOM from source file(s)
