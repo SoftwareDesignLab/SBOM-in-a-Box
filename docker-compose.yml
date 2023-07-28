@@ -64,4 +64,14 @@ services:
 volumes:
   db: # Volume to store persistent data from MySQL server
   code: # Volume to link osi bound_dir/code with api bound_dir/code
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/core/src/main/java/org/svip/sbomgeneration/osi/bound_dir/code
+      o: bind
   sboms: # Volume to link osi bound_dir/sboms with api bound_dir/sboms
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/core/src/main/java/org/svip/sbomgeneration/osi/bound_dir/sboms
+      o: bind
