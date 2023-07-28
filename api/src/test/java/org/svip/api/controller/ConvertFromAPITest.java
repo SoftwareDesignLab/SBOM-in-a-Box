@@ -70,7 +70,7 @@ public class ConvertFromAPITest extends APITest {
                     LOGGER.info("From             " + ((sbom.getFileName()).contains("json")
                             ? "JSON" : "TAGVALUE") + " --> " + convertToFormat);
                     ResponseEntity<Long> response = controller.convert(id, SerializerFactory.Schema.valueOf(convertToSchema),
-                            SerializerFactory.Format.valueOf(convertToFormat), true);
+                            SerializerFactory.Format.valueOf(convertToFormat), false);
                     Long responseBody = response.getBody();
 
                     // check if OK
