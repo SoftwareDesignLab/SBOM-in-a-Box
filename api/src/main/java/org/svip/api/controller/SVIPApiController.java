@@ -160,20 +160,20 @@ public class SVIPApiController {
      * @return The contents of the SBOM file.
      */
     @GetMapping("/sboms/content")
-    public ResponseEntity<String> view(@RequestParam("id") Long id) {
+    public ResponseEntity<SBOMFile> view(@RequestParam("id") Long id) {
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
         // Return SBOM or invalid ID
         if (sbomFile.isEmpty()) {
             LOGGER.info("GET /svip/sboms/content?id=" + id + " - FILE NOT FOUND");
-            return new ResponseEntity<>("Invalid SBOM ID.", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         // Log
         LOGGER.info("GET /svip/sboms/content?id=" + id + " - File: " + sbomFile.get().getFileName());
 
-        return Utils.encodeResponse(sbomFile.get().getContents());
+        return Utils.encodeResponse(sbomFile.get());
     }
 
     /**
