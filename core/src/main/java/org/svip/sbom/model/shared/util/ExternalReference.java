@@ -133,9 +133,9 @@ public class ExternalReference implements Comparable {
         if (o == null || getClass() != o.getClass()) return false;
         ExternalReference other = (ExternalReference) o;
 
-        // If urls match, then same External Reference
-        if((this.url != null && other.getUrl() != null && this.url.equals(other.getUrl())))
-            return true;
+        // If urls don't match then not same
+        if((this.url != null && other.getUrl() != null && !this.url.equals(other.getUrl())))
+            return false;
 
         // Check if category is equivalent
         if(!this.category.equals(other.getCategory()))
