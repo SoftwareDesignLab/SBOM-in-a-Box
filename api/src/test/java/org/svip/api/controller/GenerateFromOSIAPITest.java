@@ -120,7 +120,7 @@ public class GenerateFromOSIAPITest extends APITest {
                         assertEquals(HttpStatus.OK, response.getStatusCode());
                         assertNotNull(response.getBody());
                         // TODO more assertions
-                    } else assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+                    } else assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
                 }
             }
 
