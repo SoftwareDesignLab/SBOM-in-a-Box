@@ -64,13 +64,13 @@ public class GenerateFromOSIAPITest extends APITest {
                     break;
                 }
 
-        assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI(noName,
+        assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI(noName, "NoName",
                         SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).getStatusCode());
 
-        assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI(noContents,
+        assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI(noContents, "NoContents",
                         SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).getStatusCode());
 
-        assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI(empty,
+        assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI(empty, "Empty",
                         SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).getStatusCode());
     }
 
@@ -82,7 +82,7 @@ public class GenerateFromOSIAPITest extends APITest {
     public void CDXTagValueTest() {
         Collection<SBOMFile[]> files = testMap.values();
         SBOMFile[] sbomFiles = (SBOMFile[]) files.toArray()[0];
-        assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI(sbomFiles,
+        assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI(sbomFiles, "CDXTagValue",
                         SerializerFactory.Schema.CDX14, SerializerFactory.Format.TAGVALUE).getStatusCode());
     }
 
@@ -109,7 +109,7 @@ public class GenerateFromOSIAPITest extends APITest {
 
                     LOGGER.info("PARSING TO: " + schema + " + " + format);
 
-                    ResponseEntity<?> response = controller.generateOSI(file, schema, format);
+                    ResponseEntity<?> response = controller.generateOSI(file, projectName, schema, format);
 
                     if (!projectName.contains("CSharp")) {
                         assertEquals(HttpStatus.OK, response.getStatusCode());
