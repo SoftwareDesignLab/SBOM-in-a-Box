@@ -476,8 +476,8 @@ public class SVIPApiController {
      * @param ids of the two SBOMs
      * @return a merged sbomFile
      */
-    @GetMapping("/merge")
-    public ResponseEntity<?> merge(@RequestParam("ids") long[] ids){
+    @PostMapping("sboms/merge")
+    public ResponseEntity<?> merge(@RequestBody long[] ids){
 
         ArrayList<SBOM> sboms = new ArrayList<>();
 
