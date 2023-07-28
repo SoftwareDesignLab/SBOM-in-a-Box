@@ -3,12 +3,20 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v7.3.0-alpha] - (7/28/2023)
+
+## [v7.1.2-alpha] - (7/28/2023)
 ### Added
 - SBOM Objects have built in comparison methods
 - Added `hashcode` methods to components to use `name` and `version` as UIDs
 
-## [v7.2.0-alpha] - (7/26/2023)
+## [v7.1.1-alpha] - (7/26/2023)
+
+### Changed
+- `/sboms/content` returns the entire SBOMFile instead of just file contents
+
+## [v7.1.0-alpha] - (7/26/2023)
+
+
 ### Added
 - `/svip/generators/osi` endpoint to the `SVIPAPIController` class
 - `GenerateFromOSIAPITest` class that contains unit tests for the OSI endpoint
