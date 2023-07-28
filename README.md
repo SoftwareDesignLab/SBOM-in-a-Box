@@ -40,22 +40,19 @@ detailed usage.
 
 **Developer Team Leads**
 - [Schuyler Dillon](mailto:sdd4181@rit.edu)
-- [Tina DiLorenzo](mailto:tnd3015@rit.edu)
 - [Tyler Drake](mailto:txd3634@rit.edu)
+- [Kevin Laporte](mailto:kjl8898@rit.edu)
 - [Matt London](mailto:mrl2534@rit.edu)
 - [Dylan Mulligan](mailto:dtm5568@rit.edu)
 
 **Developer Team**
-- [Michael Alfonzetti](mailto:michael.alfonzetti93@gmail.com)
 - [Ian Dunn](mailto:itd3516@g.rit.edu)
 - [Asa Horn](mailto:aoh9470@rit.edu)
-- [Justin Jantzi](mailto:jwj7297@rit.edu)
 - [Henry Keena](mailto:htk4363@rit.edu)
-- [Kevin Laporte](mailto:kjl8898@rit.edu)
 - [Ping Liu](mailto:htk4363@rit.edu)
 - [Henry Lu](mailto:hyl2415@rit.edu)
 - [Matthew Morrison](mailto:msm8275@rit.edu)
 - [Henry Orsagh](mailto:hco4630@rit.edu)
 - [Juan Francisco Patino](mailto:jfp6815@rit.edu)
-- [Steven Simmons](mailto:sdsimmons44@gmail.com)
 - [Max Stein](mailto:mhs8558@rit.edu)
+- [Tom Roman](mailto:tfr8811@rit.edu)
