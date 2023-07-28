@@ -572,15 +572,6 @@ public class SVIPApiController {
      * @return generated diff report
      * @throws JsonProcessingException
      */
-
-    /**
-     * USAGE. Compares two or more given SBOMs (split into filename and contents), with the first one used as the baseline, and returns a comparison report.
-     *
-     * @param targetIndex the index of the target SBOM
-     * @param ids the ids of the SBOM files
-     * @return generated diff report
-     * @throws JsonProcessingException
-     */
     @PostMapping("/sboms/compare")
     public ResponseEntity<DiffReport> compare(@RequestParam("targetIndex") int targetIndex, @RequestParam("Ids") Long[] ids) throws JsonProcessingException {
         // Get Target SBOM
