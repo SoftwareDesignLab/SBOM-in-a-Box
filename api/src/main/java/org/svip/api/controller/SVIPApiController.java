@@ -2,6 +2,7 @@ package org.svip.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.mockito.internal.matchers.Null;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -314,16 +315,39 @@ public class SVIPApiController {
         }
 
         // assign appropriate id and name
-        converted.setId(id);
         converted.setFileName(toConvert.getFileName());
 
         // overwrite
-        if(overwrite)
-            sbomFileRepository.deleteById(id);
-        else
-            converted.setId(Utils.generateNewId(id, new Random(), sbomFileRepository));
+        if(overwrite){
+            sbomFileRepository.delete(toConvert);
 
-        sbomFileRepository.save(converted);
+            assert sbomFileRepository.findById(id).isEmpty(); // todo this assertion fails in unit tests
+
+            converted.setId(id);
+            sbomFileRepository.save(converted);
+
+            assert sbomFileRepository.findById(id).isPresent();
+        }
+        else{
+            long newId = Utils.generateNewId(id, new Random(), sbomFileRepository);
+            converted.setId(newId);
+
+            assert converted.getId() == newId;
+            sbomFileRepository.save(converted);
+
+            boolean caught = false;
+
+            try{
+                sbomFileRepository.findById(newId).isEmpty();
+            }
+            catch (NullPointerException e){
+                caught = true;
+            }
+
+            assert caught;
+
+        }
+
 
         return Utils.encodeResponse(converted.getId());
     }
