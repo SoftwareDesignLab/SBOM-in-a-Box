@@ -568,7 +568,7 @@ public class MergerTest {
                 SVIP_RELATIONSHIPS_TWO, SVIP_EXTRENAL_REFERENCES_TWO, SVIP_LICENSE_LIST_VERSION_TWO
         );
 
-        List<SVIPSBOM> sboms = new ArrayList<>(Arrays.asList(SBOM_one, SBOM_two));
+        List<SBOM> sboms = new ArrayList<>(Arrays.asList(SBOM_one, SBOM_two));
 
         MergerController mergerController = new MergerController();
 
