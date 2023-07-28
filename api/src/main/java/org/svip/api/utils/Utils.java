@@ -130,10 +130,15 @@ public class Utils {
     public static long generateNewId(long id, Random rand, SBOMFileRepository sbomFileRepository) {
         // assign new id and name
         int i = 0;
-        while (sbomFileRepository.existsById(id)) {
-            id += (Math.abs(rand.nextLong()) + id) % ((i < 100) ? id : Long.MAX_VALUE);
-            i++;
+        try{
+            while (sbomFileRepository.findById(id).isPresent()) {
+                id += (Math.abs(rand.nextLong()) + id) % ((i < 100 && id < 0) ? id : Long.MAX_VALUE);
+                i++;
+            }
+        }catch (NullPointerException e){
+            return id;
         }
+
         return id;
     }
 
