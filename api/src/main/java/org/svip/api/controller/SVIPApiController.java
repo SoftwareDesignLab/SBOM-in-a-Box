@@ -110,6 +110,15 @@ public class SVIPApiController {
     }
 
     /**
+     * Public method to check if OSI is enabled on this instance of the API controller.
+     *
+     * @return True if OSI is enabled, false otherwise.
+     */
+    public boolean isOSIEnabled() {
+        return osiContainer != null;
+    }
+
+    /**
      * USAGE. Send POST request to /sboms with one SBOM file.
      *   The SBOM file is made up of 2 JSON key-value pairs in the request body: fileName and contents.
      *

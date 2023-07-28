@@ -48,6 +48,9 @@ public class GenerateFromOSIAPITest extends APITest {
 
         // Init controller with mocked repository and enable OSI
         controller = new SVIPApiController(repository, true);
+
+        // Ensure controller was able to construct OSI
+        assumeTrue(controller.isOSIEnabled());
     }
 
     /**
