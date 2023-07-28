@@ -414,16 +414,16 @@ public class SVIPApiController {
      * USAGE. Send GENERATE request to /generate an SBOM from source file(s)
      *
      * @param projectName of project to be converted to SBOM
-     * @param zipPath path to zip file
+     * @param zipFile path to zip file
      * @param schema to convert to
      * @param format to convert to
      * @return generated SBOM
      */
     @PostMapping("/generators/parsers")
-    public ResponseEntity<?> generateParsers(@RequestParam("zipPath") String zipPath,
+    public ResponseEntity<?> generateParsers(@RequestPart ZipFile zipFile, // todo is RequestPart accurate?
                                              @RequestParam("projectName") String projectName,
                                              @RequestParam("schema") SerializerFactory.Schema schema,
-                                             @RequestParam("format") SerializerFactory.Format format) throws IOException {
+                                             @RequestParam("format") SerializerFactory.Format format){
 
         String urlMsg = "GENERATE /svip/generate?projectName=" + projectName;
 
@@ -432,7 +432,7 @@ public class SVIPApiController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        ArrayList<HashMap<SBOMFile, Integer>> unZipped = (ArrayList<HashMap<SBOMFile, Integer>>) Utils.unZip(zipPath);
+        ArrayList<HashMap<SBOMFile, Integer>> unZipped = (ArrayList<HashMap<SBOMFile, Integer>>) Utils.unZip(zipFile);
 
         HashMap<VirtualPath, String> virtualPathStringHashMap = new HashMap<>();
 
