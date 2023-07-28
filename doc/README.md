@@ -138,7 +138,7 @@ The `/sboms` directory (also in `/bound_dir` will now contain generated SBOMs fr
 
 
 ## Building the Image
-To manually build the image, execute the following from the root directory of the repository:
+To manually build/rebuild the image, execute the following from the root directory of the repository:
 
 ```shell
 $ docker compose up osi --build

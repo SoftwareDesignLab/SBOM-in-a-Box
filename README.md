@@ -16,9 +16,10 @@ $ docker ps
 # Build all images and deploy containers.
 $ docker compose up
 ```
-See the SVIP API section of [doc/API.md](doc/API.md#api) for detailed usage.
-> For additional details on loading a prebuilt image, see the Open Source Integration section of 
-> [doc/README.md](doc/README.md#open-source-integration)
+
+If making changes to any source code, the Docker image(s) will need to be rebuilt. See 
+[Building the Image](doc/README.md#building-the-image) for detailed instructions. Also see 
+[SVIP API](doc/API.md#svip-api) for detailed API usage.
 
 ## Features
 This is a list of all "features", or sub-systems that SVIP contains. See [doc/README.md](doc/README.md) for 
