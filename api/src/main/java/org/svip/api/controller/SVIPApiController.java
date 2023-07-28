@@ -430,6 +430,7 @@ public class SVIPApiController {
 
     @PostMapping("/generators/osi")
     public ResponseEntity<String> generateOSI(@RequestBody SBOMFile[] files,
+                                           @RequestParam("projectName") String projectName,
                                            @RequestParam("schema") SerializerFactory.Schema schema,
                                            @RequestParam("format") SerializerFactory.Format format) {
         if (osiContainer == null)
@@ -511,12 +512,13 @@ public class SVIPApiController {
             }
         }
         Converter.buildSBOM(builder, osiMerged, schema, oldSchema);
+        builder.setName(projectName); // Set SBOM name to specified project name TODO should this be done in OSI class?
 
         // Serialize SVIPSBOM to given schema and format
         Serializer serializer = SerializerFactory.createSerializer(schema, format, true);
         SBOMFile serializedSBOM;
         try {
-            serializedSBOM = new SBOMFile("OSI_MERGED_SBOM",
+            serializedSBOM = new SBOMFile(projectName,
                     serializer.writeToString(builder.Build()));
         } catch (JsonProcessingException e) {
             LOGGER.warn(urlMsg + "Exception occurred while merging SBOMs: " + e.getMessage());
