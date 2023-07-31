@@ -278,12 +278,12 @@ curl -X POST -G http://localhost:8080/svip/sboms/compare \
 
 **Responses**
 
-| Response Code |    Type    |                Description                |
-|:-------------:|:----------:|:-----------------------------------------:|
-|      200      | Comparison | A Comparison report of all provided SBOMs |
-|      400      |    ---     |         SBOM has null properties          |
-|      404      |    ---     |          Error in merging SBOMs           |
-|      500      |   String   |      SBOM Failed to be deserialized       |
+| Response Code |  Type  |          Description           |
+|:-------------:|:------:|:------------------------------:|
+|      200      |  Long  |     ID of the merged SBOM      |
+|      400      |  ---   |    SBOM has null properties    |
+|      404      |  ---   |     Error in merging SBOMs     |
+|      500      | String | SBOM Failed to be deserialized |
 
 **Example**
 ```bash
