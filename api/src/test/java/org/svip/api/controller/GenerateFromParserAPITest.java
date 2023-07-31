@@ -116,7 +116,7 @@ public class GenerateFromParserAPITest extends APITest {
                                                           // todo MultipartFile method
 
         ResponseEntity<Long> response = (ResponseEntity<Long>) controller.generateParsers(new MockMultipartFile(new File(System.getProperty("user.dir")
-                        + "/src/test/java/org/svip/api/sample_projects/Java.zip")), "Java",
+                        + "/src/test/java/org/svip/api/sample_projects/Conda_noEmptyFiles.zip")), "Conda",
                 SerializerFactory.Schema.SPDX23, SerializerFactory.Format.TAGVALUE);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
