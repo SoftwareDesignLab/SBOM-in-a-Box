@@ -8,16 +8,18 @@
     - [Deployment](#deployment)
     - [Development](#development)
     - [Endpoints](#endpoints)
-      - [Upload SBOMs](#upload-sboms)
+      - [Upload SBOM](#upload-sboms)
+      - [Get SBOM File](#get-sbom-file)
+      - [Get all SBOMs IDs](#get-all-sboms-ids)
+      - [Get SBOM Object](#get-sbom-object)
       - [Delete SBOMs](#delete-sboms)
-      - [Get SBOMs](#get-sboms)
-      - [Get Single SBOM](#get-single-sbom)
-      - [Get SBOM Object](#get-sbom-contents)
       - [Convert SBOM](#convert-an-sbom)
+      - [Compare SBOMs](#compare-sboms)
+      - [Merge SBOMs](#merge-sboms)
+      - [Generate Quality Report](#generate-quality-report)
       - [Generate SBOM with SVIP](#generate-an-sbom-using-svip-parsers)
       - [Generate SBOM with OSI](#generate-an-sbom-using-osi)
-      - [Apply SBOM Metrics](#quality-attributes-testing)
-      - [Generate VEX Object](#create-a-vex-document-with-an-sbom)
+      - [Generate VEX](#generate-vex)
     - [MySQL Database](#mysql-database)
 
 # System Requirements
@@ -28,7 +30,7 @@
 ---
 
 # SVIP API
-> The SVIP back-end API. See [Usage](#usage) for more details of the endpoints.
+> The SVIP back-end API. See [Endpoints](#endpoints) for detailed endpoint documentation.
 
 ## Deployment
 First ensure Docker is installed and running and then deploy using the docker-compose script.
@@ -62,9 +64,20 @@ $ java -jar SVIP_API.jar
 The API is located on `http://localhost:8080/svip`.
 
 - [Upload SBOM](#upload-sboms)
+- [Get SBOM File](#get-sbom-file)
+- [Get all SBOMs IDs](#get-all-sboms-ids)
+- [Get SBOM Object](#get-sbom-object)
+- [Delete SBOMs](#delete-sboms)
+- [Convert SBOM](#convert-an-sbom)
+- [Compare SBOMs](#compare-sboms)
+- [Merge SBOMs](#merge-sboms)
+- [Generate Quality Report](#generate-quality-report)
+- [Generate SBOM with SVIP](#generate-an-sbom-using-svip-parsers)
+- [Generate SBOM with OSI](#generate-an-sbom-using-osi)
+- [Generate VEX](#generate-vex)
 
 ### Upload SBOMs
-> Upload an SBOM file to the SQL Database
+> Upload an SBOM file to the Database
 
 **Endpoint:** `http://localhost:8080/svip/sboms`
 
@@ -81,12 +94,82 @@ The API is located on `http://localhost:8080/svip`.
 
 | Response Code |  Type  |                              Description                               |
 |:-------------:|:------:|:----------------------------------------------------------------------:|
-|      200      | String |               The ID corresponding to the uploaded file                |
+|      200      |  Long  |               The ID corresponding to the uploaded file                |
 |      400      | String | Invalid field(s) / Unable to process SBOM. Body contains error message |
 
 **Example**
 ```bash
-curl -X POST -d '{"fileName":"mySBOM","contents":"{SBOM Data...}"}' http://localhost:8080/svip/sboms
+curl -X POST -d '{"fileName":"mySBOM","contents":"SBOM Data"}' http://localhost:8080/svip/sboms
+```
+
+### Get SBOM File
+> Get an SBOM File from the Database
+
+**Endpoint:** `http://localhost:8080/svip/sboms/content`
+
+**Request Method:** `GET`
+
+**Parameters**
+
+| Parameter | Type |             Description             | Is Required? |
+|:---------:|:----:|:-----------------------------------:|:------------:|
+|    id     | Long | The ID of the SBOM file to retrieve |     YES      |
+
+**Responses**
+
+| Response Code |   Type   |                 Description                 |
+|:-------------:|:--------:|:-------------------------------------------:|
+|      200      | SBOMFile | JSON File containing SBOM name and contents |
+|      404      |  String  |      SBOM with given ID does not exist      |
+
+**Example**
+```bash
+curl -X GET -G http://localhost:8080/svip/sboms/content -d 'id=1'
+```
+
+### Get all SBOMs IDs
+> Get all SBOM ids stored in the database
+
+**Endpoint:** `http://localhost:8080/svip/sboms`
+
+**Request Method:** `GET`
+
+**Responses**
+
+| Response Code |  Type  |       Description       |
+|:-------------:|:------:|:-----------------------:|
+|      200      | Long[] |    Array of SBOM IDs    |
+|      204      |  ---   | No data in the database |
+
+**Example**
+```bash
+curl -X GET http://localhost:8080/svip/sboms
+```
+
+### Get SBOM Object
+> Get a single deserialized SBOM object from the database using its ID
+
+**Endpoint:** `http://localhost:8080/svip/sbom`
+
+**Request Method:** `GET`
+
+**Parameters**
+
+| Parameter | Type |             Description             | Is Required? |
+|:---------:|:----:|:-----------------------------------:|:------------:|
+|    id     | Long | The ID of the SBOM file to retrieve |     YES      |
+
+**Responses**
+
+| Response Code |  Type  |            Description            |
+|:-------------:|:------:|:---------------------------------:|
+|      200      |  SBOM  |     A JSON of the SBOM Object     |
+|      404      | String | SBOM with given ID does not exist |
+|      500      | String |   Failed to deserialize content   |
+
+**Example**
+```bash
+curl -X GET -G http://localhost:8080/svip/sbom -d 'id=1'
 ```
 
 ### Delete SBOMs
@@ -104,92 +187,20 @@ curl -X POST -d '{"fileName":"mySBOM","contents":"{SBOM Data...}"}' http://local
 
 **Responses**
 
-| Response Code |  Type  |          Description          |
-|:-------------:|:------:|:-----------------------------:|
-|      200      | String | The contents of the SBOM file |
+| Response Code | Type |            Description            |
+|:-------------:|:----:|:---------------------------------:|
+|      200      | Long |    The id of the deleted SBOM     |
+|      404      | ---  | SBOM with given ID does not exist |
 
 **Example**
 ```bash
-curl -X DELETE -G http://localhost:8080/svip/sboms \
--d 'id=<SBOM UID>'
-```
-
-### Get SBOMs
-> Get all existing uploaded file IDs
-
-**Endpoint:** `http://localhost:8080/svip/sboms`
-
-**Request Method:** `GET`
-
-**Responses**
-
-| Response Code |  Type  |              Description              |
-|:-------------:|:------:|:-------------------------------------:|
-|      200      | String | A JSON array of all uploaded file IDs |
-
-**Example**
-```bash
-curl -X GET http://localhost:8080/svip/sboms
-```
-
-### Get Single SBOM
-> Get a single deserialized SBOM object from the SQL Database using its ID
-
-**Endpoint:** `http://localhost:8080/svip/sboms`
-
-**Request Method:** `GET`
-
-**Parameters**
-
-| Parameter | Type |             Description             | Is Required? |
-|:---------:|:----:|:-----------------------------------:|:------------:|
-|    id     | Long | The ID of the SBOM file to retrieve |     YES      |
-
-**Responses**
-
-| Response Code |  Type  |          Description          |
-|:-------------:|:------:|:-----------------------------:|
-|      200      | String |   A JSON of the SBOM Object   |
-|      404      | String |      File does not exist      |
-|      500      | String | Failed to deserialize content |
-
-**Example**
-```bash
-curl -X GET -G http://localhost:8080/svip/sboms \
--d 'id=<SBOM UID>'
-```
-
-### Get SBOM Contents
-> Get the contents of an uploaded SBOM file from its ID
-
-**Endpoint:** `http://localhost:8080/svip/sboms/content`
-
-**Request Method:** `GET`
-
-**Parameters**
-
-| Parameter | Type |             Description             | Is Required? |
-|:---------:|:----:|:-----------------------------------:|:------------:|
-|    id     | Long | The ID of the SBOM file to retrieve |     YES      |
-
-**Responses**
-
-| Response Code |  Type  |          Description          |
-|:-------------:|:------:|:-----------------------------:|
-|      200      | String |   A JSON of the SBOM Object   |
-|      404      | String |      File does not exist      |
-|      500      | String | Failed to deserialize content |
-
-**Example**
-```bash
-curl -X GET -G http://localhost:8080/svip/sboms/content \
--d 'id=<SBOM UID>'
+curl -X DELETE -G http://localhost:8080/svip/sboms 'id=1'
 ```
 
 ### Convert an SBOM
 > Convert an SBOM to a desired format and schema
 
-**Endpoint:** `http://localhost:8080/svip/sboms/`
+**Endpoint:** `http://localhost:8080/svip/sboms`
 
 **Request Method:** `PUT`
 
@@ -198,26 +209,111 @@ curl -X GET -G http://localhost:8080/svip/sboms/content \
 | Parameter |       Type        |            Description             | Is Required? |
 |:---------:|:-----------------:|:----------------------------------:|:------------:|
 |    id     |       Long        | The ID of the SBOM file to convert |     YES      |
-|  schema   | Serializer Schema |        Schema to convert to        |     YES      |
-|  format   | Serializer Format |        Format to convert to        |     YES      |
-| overwrite |      Boolean      |      Converted SBOM or Error       |     YES      |
+|  schema   | Serializer.Schema |        Schema to convert to        |     YES      |
+|  format   | Serializer.Format |        Format to convert to        |     YES      |
+| overwrite |      Boolean      |        Overwrite given file        |     YES      |
+
+**Supported Schema Params:** `CDX14`, `SPDX23`, `SVIP`
+**Supported Format Params:** `JSON`, `TAGVALUE`
 
 **Responses**
 
-| Response Code |  Type  |              Description               |
-|:-------------:|:------:|:--------------------------------------:|
-|      200      | String |             Converted SBOM             |
-|      204      | String |            No content found            |
-|      400      | String |         SBOM with ID not found         |
-|      500      | String | Description of error during conversion |
+| Response Code |  Type  |            Description            |
+|:-------------:|:------:|:---------------------------------:|
+|      200      | String |          Converted SBOM           |
+|      204      |  ---   |         No content found          |
+|      404      |  ---   | SBOM with given ID does not exist |
+|      500      |  ---   |      SBOM Failed to convert       |
 
 **Example**
 ```bash
 curl -X PUT -G http://localhost:8080/svip/sboms/content \
--d 'id=<SBOM UID>' \
+-d 'id=1' \
 -d 'schema=SPDX23' \
 -d 'format=TAGVALUE' \
 -d 'overwrite=true'
+```
+
+### Compare SBOMs
+> Compares two or more given SBOMs (split into filename and contents), with the first one used as the baseline, and returns a comparison report.
+
+**Endpoint:** `http://localhost:8080/svip/sboms/compare`
+
+**Request Method:** `POST`
+
+**Parameters**
+
+|  Parameter  |  Type   |          Description          | Is Required? |
+|:-----------:|:-------:|:-----------------------------:|:------------:|
+|     ids     | Long[]  |       Array of SBOM IDs       |     YES      |
+| targetIndex | Integer | Index of target SBOM in array |     YES      |
+
+**Responses**
+
+| Response Code |    Type    |                    Description                    |
+|:-------------:|:----------:|:-------------------------------------------------:|
+|      200      | Comparison |     A Comparison report of all provided SBOMs     |
+|      400      |   String   | A list of invalid fields received from the client |
+|      500      |   String   |          SBOM Failed to be deserialized           |
+
+**Example**
+```bash
+curl -X POST -G http://localhost:8080/svip/sboms/compare \
+-d 'ids=[1,2]' \
+-d 'targetIndex=0'
+```
+
+### Merge SBOMs
+> Merge 2 SBOMs together, regardless of origin format
+
+**Endpoint:** `http://localhost:8080/svip/sboms/merge`
+
+**Request Method:** `POST`
+
+**Request Body**
+
+| Body |  Type   |          Description          | Is Required? |
+|:----:|:-------:|:-----------------------------:|:------------:|
+| ids  | Long[]  |       Array of SBOM IDs       |     YES      |
+
+**Responses**
+
+| Response Code |  Type  |          Description           |
+|:-------------:|:------:|:------------------------------:|
+|      200      |  Long  |     ID of the merged SBOM      |
+|      400      |  ---   |    SBOM has null properties    |
+|      404      |  ---   |     Error in merging SBOMs     |
+|      500      | String | SBOM Failed to be deserialized |
+
+**Example**
+```bash
+curl -X POST -d '{"ids":[1,2]}' http://localhost:8080/svip/sboms/merge
+```
+
+### Generate Quality Report
+> Analyze a given SBOM file and return a QualityReport
+
+**Endpoint:** `http://localhost:8080/svip/sboms/qa`
+
+**Request Method:** `GET`
+
+**Parameters**
+
+| Parameter | Type |                Description                 | Is Required? |
+|:---------:|:----:|:------------------------------------------:|:------------:|
+|    id     | Long | The ID of the SBOM file to run QA tests on |     YES      |
+
+**Responses**
+
+| Response Code |     Type      |            Description            |
+|:-------------:|:-------------:|:---------------------------------:|
+|      200      | QualityReport |  JSON QualityReport of the SBOM   |
+|      404      |      ---      | SBOM with given ID does not exist |
+|      500      |    String     |  SBOM Failed to be deserialized   |
+
+**Example**
+```bash
+curl -X GET -G http://localhost:8080/svip/sboms/qa -d 'id=1'
 ```
 
 ### Generate an SBOM using SVIP Parsers
@@ -230,11 +326,11 @@ curl -X PUT -G http://localhost:8080/svip/sboms/content \
 
 **Parameters**
 
-|  Parameter  |       Type        |            Description             | Is Required? |
-|:-----------:|:-----------------:|:----------------------------------:|:------------:|
-| projectName |      String       | The name of the project to convert |     YES      |
-|   schema    | Serializer Schema |        Schema to convert to        |     YES      |
-|   format    | Serializer Format |        Format to convert to        |     YES      |
+|  Parameter  |       Type        |       Description        | Is Required? |
+|:-----------:|:-----------------:|:------------------------:|:------------:|
+| projectName |      String       | Name of SBOM to generate |     YES      |
+|   schema    | Serializer Schema |   Schema to convert to   |     YES      |
+|   format    | Serializer Format |   Format to convert to   |     YES      |
 
 **Request Body**
 
@@ -244,11 +340,11 @@ curl -X PUT -G http://localhost:8080/svip/sboms/content \
 
 **Responses**
 
-| Response Code |  Type  |               Description               |
-|:-------------:|:------:|:---------------------------------------:|
-|      200      | String |        A JSON of the SBOM Object        |
-|      404      | String | Description of error during generation  |
-|      400      | String | Schema, format or body contents invalid |
+| Response Code |  Type  |                  Description                  |
+|:-------------:|:------:|:---------------------------------------------:|
+|      200      |  Long  | ID from Generated SBOM from supported project |
+|      404      | String |    Description of error during generation     |
+|      400      | String |    Schema, format or body contents invalid    |
 
 **Example**
 ```bash
@@ -270,10 +366,11 @@ curl -X POST -G http://localhost:8080/svip/generators/parsers \
 
 **Parameters**
 
-| Parameter |       Type        |            Description             | Is Required? |
-|:---------:|:-----------------:|:----------------------------------:|:------------:|
-|  schema   | Serializer Schema |        Schema to convert to        |     YES      |
-|  format   | Serializer Format |        Format to convert to        |     YES      |
+|  Parameter  |       Type        |       Description        | Is Required? |
+|:-----------:|:-----------------:|:------------------------:|:------------:|
+| projectName |      String       | Name of SBOM to generate |     YES      |
+|   schema    | Serializer Schema |   Schema to convert to   |     YES      |
+|   format    | Serializer Format |   Format to convert to   |     YES      |
 
 **Request Body**
 
@@ -283,47 +380,23 @@ curl -X POST -G http://localhost:8080/svip/generators/parsers \
 
 **Responses**
 
-| Response Code |  Type  |               Description               |
-|:-------------:|:------:|:---------------------------------------:|
-|      200      | String |        A JSON of the SBOM Object        |
-|      404      | String | Description of error during generation  |
-|      400      | String | Schema, format or body contents invalid |
+| Response Code |  Type  |                  Description                  |
+|:-------------:|:------:|:---------------------------------------------:|
+|      200      |  Long  | ID from Generated SBOM from supported project |
+|      404      | String |    Description of error during generation     |
+|      400      | String |    Schema, format or body contents invalid    |
+|      204      |        | No SBOMs were generated by the OSI container  |
 
 **Example**
 ```bash
-curl -X PUT -G http://localhost:8080/svip/generators/osi \
+curl -X POST -G http://localhost:8080/svip/generators/osi \
+-d 'projectName=Python_Project_1' \
 -d 'schema=CDX14' \
 -d 'format=JSON' \
--d '[{"fileName": "testfile1.java", "contents": "..."}, {"fileName": "testfile2.java", "contents": "..."}]'
+-d '[{"fileName": "testfile1.py", "contents": "..."}, {"fileName": "testfile2.py", "contents": "..."}]'
 ```
 
-### Quality Attributes Testing
-> Analyze a given SBOM file and return a QualityReport
-
-**Endpoint:** `http://localhost:8080/svip/sboms/qa`
-
-**Request Method:** `GET`
-
-**Parameters**
-
-| Parameter | Type |                Description                 | Is Required? |
-|:---------:|:----:|:------------------------------------------:|:------------:|
-|    id     | Long | The ID of the SBOM file to run QA tests on |     YES      |
-
-**Responses**
-
-| Response Code |     Type      |              Description               |
-|:-------------:|:-------------:|:--------------------------------------:|
-|      200      | QualityReport |      A QualityReport of the SBOM       |
-|      500      |    String     | The message of the error that occurred |
-
-**Example**
-```bash
-curl -X GET -G http://localhost:8080/svip/sboms/qa \
--d 'id=<SBOM UID>'
-```
-
-### Create a VEX Document With an SBOM
+### Generate VEX
 > Generate a VEX document using an SBOM's components and information
 
 **Endpoint:** `http://localhost:8080/svip/sboms/vex`
@@ -345,23 +418,29 @@ curl -X GET -G http://localhost:8080/svip/sboms/qa \
 |  format   | String |           The format of the VEX Document           |     YES      |
 |  client   | String |               The API Client to use                |     YES      |
 
+**Supported format Params:** `[CycloneDX`](https://github.com/CycloneDX/bom-examples/tree/master/VEX), [`CSAF`](https://github.com/oasis-tcs/csaf/tree/master/csaf_2.0/examples/csaf/csaf_vex)
+
+**Supported Client Params:** [`nvd`](https://nvd.nist.gov/), [`osv`](https://osv.dev/)
+
 **Responses**
 
 | Response Code |   Type    |                  Description                  |
 |:-------------:|:---------:|:---------------------------------------------:|
 |      200      | VEXResult | A VEX and HashMap of any errors that occurred |
-|      400      |  String   |           Invalid Format or Client            |
-|      404      |  String   |              SBOM does not exist              |
-|      500      |  String   |    The message of the error that occurred     |
+|      400      |    ---    |           Invalid Format or Client            |
+|      404      |    ---    |       SBOM with given ID does not exist       |
+|      500      |    ---    |    The message of the error that occurred     |
 
 **Example**
 ```bash
 curl -X GET -G http://localhost:8080/svip/sboms/vex \
--H 'apiKey: <API KEY>' \
--d 'id=<SBOM UID>' \
+-H 'apiKey: 0imfnc8mVLWwsAawjYr4Rx-Af50DDqtlx' \
+-d 'id=1' \
 -d 'format=CSAF' \
 -d 'client=OSV'
 ```
+
+---
 
 ## MySQL Database
 Located at `localhost:3306` while the `svip-mysql` Docker container is running.
@@ -371,8 +450,8 @@ Use the following command to interact with the MySQL server instance:
 $ docker exec -it svip-mysql mysql -uroot -psvipMySQL -D svip -e "<YOUR SQL STATEMENT HERE>"
 ```
 #### Table `files` Schema:
-| Field     | Type       | Null | Key | Default | Extra |
+|   Field   |    Type    | Null | Key | Default | Extra |
 |:---------:|:----------:|:----:|:---:|:-------:|:-----:|
-| id        | bigint(20) | NO   | PRI | NULL    |       |
-| contents  | longtext   | YES  |     | NULL    |       |
-| file_name | text       | YES  |     | NULL    |       |
+|    id     | bigint(20) |  NO  | PRI |  NULL   |       |
+| contents  |  longtext  | YES  |     |  NULL   |       |
+| file_name |    text    | YES  |     |  NULL   |       |
