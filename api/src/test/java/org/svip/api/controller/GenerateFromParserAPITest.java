@@ -7,10 +7,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
+import org.svip.api.model.MockMultipartFile;
 import org.svip.api.model.SBOMFile;
 import org.svip.api.utils.Utils;
 import org.svip.sbomgeneration.serializers.SerializerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -119,6 +121,20 @@ public class GenerateFromParserAPITest extends APITest {
 //        assertNotNull(response.getBody());
 //
 //    }
+
+        @Test
+    @DisplayName("")
+    public void zipFileTest() throws IOException {
+                                                          // todo MultipartFile method
+
+        ResponseEntity<Long> response = (ResponseEntity<Long>) controller.generateParsers(new MockMultipartFile(new File(System.getProperty("user.dir")
+                        + "/src/test/java/org/svip/api/sample_projects/Java.zip")), "Java",
+                SerializerFactory.Schema.SPDX23, SerializerFactory.Format.TAGVALUE);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+
+    }
+
 
 //
 //    @Test
