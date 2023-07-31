@@ -2,7 +2,6 @@ package org.svip.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.mockito.internal.matchers.Null;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +19,12 @@ import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.generics.SBOMPackage;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.sbomanalysis.comparison.DiffReport;
 import org.svip.sbomanalysis.comparison.merger.MergerController;
 import org.svip.sbomanalysis.comparison.merger.MergerException;
-import org.svip.sbomgeneration.parsers.ParserController;
 import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
 import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.generics.QAPipeline;
 import org.svip.sbomanalysis.qualityattributes.pipelines.schemas.CycloneDX14.CDX14Pipeline;
@@ -45,15 +43,9 @@ import org.svip.sbomvex.model.VEXType;
 import org.svip.sbomvex.vexstatement.VEXStatement;
 import org.svip.utils.VirtualPath;
 
-import java.io.FileNotFoundException;
-import java.util.*;
-import java.util.Arrays;
-
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.zip.ZipFile;
+import java.util.*;
+import java.util.zip.ZipException;
 
 /**
  * Spring API Controller for handling requests to the SVIP backend.
@@ -65,6 +57,7 @@ import java.util.zip.ZipFile;
  * @author Matt London
  * @author Ian Dunn
  * @author Juan Francisco Patino
+ * @author Thomas Roman
  */
 @RestController
 @RequestMapping("/svip")
@@ -95,7 +88,7 @@ public class SVIPApiController {
      * enabled.
      *
      * @param sbomFileRepository The SBOMFileRepository to interact with the MySQL database server.
-     * @param startWithOSI Whether to start with OSI enabled. If false, the OSI endpoint will be disabled.
+     * @param startWithOSI       Whether to start with OSI enabled. If false, the OSI endpoint will be disabled.
      */
     @Autowired
     public SVIPApiController(final SBOMFileRepository sbomFileRepository, @Value("true") boolean startWithOSI) {
@@ -121,9 +114,18 @@ public class SVIPApiController {
     }
 
     /**
-     * USAGE. Send POST request to /sboms with one SBOM file.
-     *   The SBOM file is made up of 2 JSON key-value pairs in the request body: fileName and contents.
+     * Public method to check if OSI is enabled on this instance of the API controller.
      *
+     * @return True if OSI is enabled, false otherwise.
+     */
+    public boolean isOSIEnabled() {
+        return osiContainer != null;
+    }
+
+    /**
+     * USAGE. Send POST request to /sboms with one SBOM file.
+     * The SBOM file is made up of 2 JSON key-value pairs in the request body: fileName and contents.
+     * <p>
      * The API will respond with an HTTP 200 and the ID used to identify the SBOM file.
      *
      * @param sbomFile 2 JSON key-value pairs in the request body: fileName and contents.
@@ -155,27 +157,27 @@ public class SVIPApiController {
 
     /**
      * USAGE. Send GET request to /sboms/content with a URL parameter id to get the contents of the SBOM with the specified ID.
-     *
+     * <p>
      * The API will respond with an HTTP 200 and the contents of the SBOM file.
      *
      * @param id The id of the SBOM contents to retrieve.
      * @return The contents of the SBOM file.
      */
     @GetMapping("/sboms/content")
-    public ResponseEntity<String> view(@RequestParam("id") Long id) {
+    public ResponseEntity<SBOMFile> view(@RequestParam("id") Long id) {
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
         // Return SBOM or invalid ID
         if (sbomFile.isEmpty()) {
             LOGGER.info("GET /svip/sboms/content?id=" + id + " - FILE NOT FOUND");
-            return new ResponseEntity<>("Invalid SBOM ID.", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         // Log
         LOGGER.info("GET /svip/sboms/content?id=" + id + " - File: " + sbomFile.get().getFileName());
 
-        return Utils.encodeResponse(sbomFile.get().getContents());
+        return Utils.encodeResponse(sbomFile.get());
     }
 
     /**
@@ -201,7 +203,7 @@ public class SVIPApiController {
 
     /**
      * USAGE. Send GET request to /sboms with a URL parameter id to get the deserialized SBOM.
-     *
+     * <p>
      * The API will respond with an HTTP 200 and the SBOM object json
      * todo: better ways to add more support?
      *
@@ -209,7 +211,7 @@ public class SVIPApiController {
      * @return The contents of the SBOM file.
      */
     @GetMapping("/sbom")
-    public ResponseEntity<?> getSBOM(@RequestParam("id") Long id){
+    public ResponseEntity<?> getSBOM(@RequestParam("id") Long id) {
 
         String urlMsg = "GET /svip/sbom?id=" + id;    // for logging
 
@@ -224,12 +226,12 @@ public class SVIPApiController {
 
         // Deserialize SBOM into JSON Object
         SBOM sbom;
-        try{
+        try {
             Deserializer d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
             sbom = d.readFromString(sbomFile.get().getContents());
-        } catch (JsonProcessingException e ){
+        } catch (JsonProcessingException e) {
             return new ResponseEntity<>("Failed to deserialize SBOM content, may be an unsupported format", HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>("Deserialization Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -243,7 +245,7 @@ public class SVIPApiController {
     /**
      * USAGE. Send DELETE request to /delete with a URL parameter id to get the contents of the SBOM with the specified
      * ID.
-     *
+     * <p>
      * The API will respond with an HTTP 200 and the ID of the deleted SBOM file (if found).
      *
      * @param id The id of the SBOM contents to retrieve.
@@ -273,16 +275,16 @@ public class SVIPApiController {
     /**
      * USAGE. Send PUT request to /sboms an existing SBOM on the backend to a desired schema and format
      *
-     * @param id of the SBOM
-     * @param schema to convert to
-     * @param format to convert to
+     * @param id        of the SBOM
+     * @param schema    to convert to
+     * @param format    to convert to
      * @param overwrite whether to overwrite original
      * @return converted SBOM
      */
     @PutMapping("/sboms")
     public ResponseEntity<Long> convert(@RequestParam("id") long id, @RequestParam("schema") SerializerFactory.Schema schema,
-                                          @RequestParam("format") SerializerFactory.Format format,
-                                          @RequestParam("overwrite") Boolean overwrite){
+                                        @RequestParam("format") SerializerFactory.Format format,
+                                        @RequestParam("overwrite") Boolean overwrite) {
         // Get SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
 
@@ -292,28 +294,24 @@ public class SVIPApiController {
 
         // Get and convert SBOM
         SBOMFile toConvert = sbomFile.get();
-        HashMap<SBOMFile, String> conversionResult = Converter.convert(toConvert, schema, format);
-        String error = (String) conversionResult.values().toArray()[0];
-        SBOMFile converted = (SBOMFile) conversionResult.keySet().toArray()[0];
+        SBOMFile converted;
 
         // Error message if needed
-        String defaultErrorMessage = "CONVERT /svip/sboms?id=" + id + " - ERROR IN CONVERSION TO " + schema
-                + ((error.length() != 0) ? (": " + error) : "");
+        String urlMsg = "CONVERT /svip/sboms?id=" + id;
 
-        // bad request errors
-        if(error.toLowerCase().contains("not valid") && (
-                error.toLowerCase().contains("schema") || error.toLowerCase().contains("format"))){
-            LOGGER.error(defaultErrorMessage);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } else if (schema == SerializerFactory.Schema.CDX14 && format == SerializerFactory.Format.TAGVALUE) {
-            LOGGER.error("CONVERT /svip/sboms?id=" + id + "TAGVALUE unsupported by CDX14");
+        // Ensure schema has a valid serializer
+        try {
+            converted = Converter.convert(toConvert, schema, format);
+            schema.getSerializer(format);
+        } catch (Exception e) {
+            LOGGER.error(urlMsg + ": " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         // if anything went wrong, an SBOMFILE with a blank name and contents will be returned,
         // paired with the message String
         if (converted.hasNullProperties()) {
-            LOGGER.error(defaultErrorMessage);
+            LOGGER.error(urlMsg + ": SBOM has null properties");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -321,7 +319,7 @@ public class SVIPApiController {
         converted.setFileName(toConvert.getFileName());
 
         // overwrite
-        if(overwrite){
+        if (overwrite) {
             sbomFileRepository.delete(sbomFile.get());
 
             assert sbomFileRepository.findById(id).isEmpty(); // todo this assertion fails
@@ -330,8 +328,7 @@ public class SVIPApiController {
             sbomFileRepository.save(converted);
 
             assert sbomFileRepository.findById(id).isPresent();
-        }
-        else{
+        } else {
             long newId = Utils.generateNewId(id, new Random(), sbomFileRepository);
             converted.setId(newId);
 
@@ -340,10 +337,9 @@ public class SVIPApiController {
 
             boolean caught = false;
 
-            try{
+            try {
                 sbomFileRepository.findById(newId).isEmpty();
-            }
-            catch (NullPointerException e){
+            } catch (NullPointerException e) {
                 caught = true;
             }
 
@@ -355,9 +351,10 @@ public class SVIPApiController {
         return Utils.encodeResponse(converted.getId());
     }
 
-    /** USAGE Send GET request to /qa with a URL parameter id to conduct a quality assessment on the SBOM with
+    /**
+     * USAGE Send GET request to /qa with a URL parameter id to conduct a quality assessment on the SBOM with
      * the specified ID.
-     *
+     * <p>
      * The API will respond with an HTTP 200 and a JSON string of the Quality Report (if SBOM was found).
      *
      * @param id The id of the SBOM contents to retrieve.
@@ -380,12 +377,12 @@ public class SVIPApiController {
         }
 
         // Deserialize SBOM into JSON Object
-        try{
+        try {
             d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
             sbom = d.readFromString(sbomFile.get().getContents());
-        } catch (JsonProcessingException e ){
+        } catch (JsonProcessingException e) {
             return new ResponseEntity<>("Failed to deserialize SBOM content, may be an unsupported format", HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>("Deserialization Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -409,41 +406,52 @@ public class SVIPApiController {
         return new ResponseEntity<>(mapper.writeValueAsString(qualityReport), HttpStatus.OK);
     }
 
-    //#region Deprecated Endpoints
 
     /**
      * USAGE. Send GENERATE request to /generate an SBOM from source file(s)
      *
      * @param projectName of project to be converted to SBOM
-     * @param zipFile path to zip file
-     * @param schema to convert to
-     * @param format to convert to
+     * @param zipFile     path to zip file
+     * @param schema      to convert to
+     * @param format      to convert to
      * @return generated SBOM
      */
     @PostMapping("/generators/parsers")
-    public ResponseEntity<?> generateParsers(@RequestParam("zipFile") MultipartFile zipFile, // todo is RequestPart accurate?
+    public ResponseEntity<?> generateParsers(@RequestParam("zipFile") MultipartFile zipFile,
                                              @RequestParam("projectName") String projectName,
                                              @RequestParam("schema") SerializerFactory.Schema schema,
                                              @RequestParam("format") SerializerFactory.Format format) throws IOException {
 
         String urlMsg = "GENERATE /svip/generate?projectName=" + projectName;
 
-        if(schema.equals(SerializerFactory.Schema.CDX14) && format.equals(SerializerFactory.Format.TAGVALUE)){
-            LOGGER.error(urlMsg + " cannot parse into " + schema + " with incompatible format " + format);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (schema == SerializerFactory.Schema.CDX14 && format == SerializerFactory.Format.TAGVALUE) {
+            return new ResponseEntity<>("CDX14 does not support TAGVALUE format", HttpStatus.BAD_REQUEST);
         }
 
-        ArrayList<HashMap<SBOMFile, Integer>> unZipped = (ArrayList<HashMap<SBOMFile, Integer>>)
-                Utils.unZip(Objects.requireNonNull(Utils.convertMultipartToZip(zipFile)));
+        // Ensure schema has a valid serializer
+        try {
+            schema.getSerializer(format);
+        } catch (IllegalArgumentException e) {
+            LOGGER.error(urlMsg + ": " + e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        ArrayList<HashMap<SBOMFile, Integer>> unZipped;
+        try {
+            unZipped = (ArrayList<HashMap<SBOMFile, Integer>>)
+                    Utils.unZip(Objects.requireNonNull(Utils.convertMultipartToZip(zipFile)));
+        } catch (ZipException e) {
+            LOGGER.error(urlMsg + ":" + e.getMessage());
+            return new ResponseEntity<>("Make sure attachment is a zip file (.zip): " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
 
         HashMap<VirtualPath, String> virtualPathStringHashMap = new HashMap<>();
 
-        for (HashMap<SBOMFile, Integer> h: unZipped
-             ) {
+        for (HashMap<SBOMFile, Integer> h : unZipped
+        ) {
 
             SBOMFile f = (SBOMFile) h.keySet().toArray()[0];
 
-            if(f.hasNullProperties()){
+            if (f.hasNullProperties()) {
                 LOGGER.error(urlMsg + "/fileName=" + f.getFileName() + " has null properties");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
@@ -456,7 +464,7 @@ public class SVIPApiController {
 
 
         SVIPSBOM parsed;
-        try{
+        try {
             parserController.parseAll();
             parsed = parserController.buildSBOM(schema);
         } catch (Exception e) {
@@ -467,8 +475,8 @@ public class SVIPApiController {
 
         Serializer s;
         String contents;
-        try{
-            s = SerializerFactory.createSerializer(schema,format, true);
+        try {
+            s = SerializerFactory.createSerializer(schema, format, true);
             contents = s.writeToString(parsed);
         } catch (IllegalArgumentException | JsonProcessingException e) {
             String error = "Error serializing parsed SBOM: " + Arrays.toString(e.getStackTrace());
@@ -477,7 +485,7 @@ public class SVIPApiController {
         }
 
         SBOMFile result = new SBOMFile(projectName + ((format == SerializerFactory.Format.JSON)
-                 ? ".json" : ".spdx"),contents);
+                ? ".json" : ".spdx"), contents);
         Random rand = new Random();
         result.setId(Utils.generateNewId(rand.nextLong(), rand, sbomFileRepository));
         sbomFileRepository.save(result);
@@ -488,22 +496,158 @@ public class SVIPApiController {
 
     @PostMapping("/generators/osi")
     public ResponseEntity<?> generateOSI(@RequestBody SBOMFile[] files,
-                                           @RequestParam("projectName") String projectName,
-                                           @RequestParam("schema") SerializerFactory.Schema schema,
-                                           @RequestParam("format") SerializerFactory.Format format){
-        // TODO (separate branch)
+                                         @RequestParam("projectName") String projectName,
+                                         @RequestParam("schema") SerializerFactory.Schema schema,
+                                         @RequestParam("format") SerializerFactory.Format format) {
         if (osiContainer == null)
             return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
-        return null;
+
+        String urlMsg = "POST /svip/generators/osi";
+
+        // Ensure schema has a valid serializer
+        try {
+            schema.getSerializer(format);
+        } catch (IllegalArgumentException e) {
+            LOGGER.error(urlMsg + ": " + e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        // Validate & add files
+        for (SBOMFile srcFile : files) {
+            if (srcFile.hasNullProperties()) {
+                LOGGER.error(urlMsg + ": file " + srcFile.getFileName() + " has null properties");
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            try {
+                // Remove any directories, causes issues with OSI paths (unless we take in a root directory?)
+                String fileName = srcFile.getFileName();
+                fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
+                osiContainer.addSourceFile(fileName, srcFile.getContents());
+            } catch (IOException e) {
+                LOGGER.error(urlMsg + ": Error adding source file");
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+
+        Map<String, String> sboms;
+        // Generate SBOMs
+        try {
+            sboms = osiContainer.generateSBOMs();
+        } catch (Exception e) {
+            LOGGER.warn(urlMsg + ": Exception occurred while running OSI container: " + e.getMessage());
+            return new ResponseEntity<>("Exception occurred while running OSI container.",
+                    HttpStatus.NOT_FOUND);
+        }
+
+
+        // Deserialize SBOMs into list of SBOMs
+        List<SBOM> deserialized = new ArrayList<>();
+        Deserializer d;
+        for (Map.Entry<String, String> sbom : sboms.entrySet())
+            try {
+                d = SerializerFactory.createDeserializer(sbom.getValue());
+                deserialized.add(d.readFromString(sbom.getValue()));
+            } catch (JsonProcessingException e) {
+                LOGGER.warn(urlMsg + ": Exception occurred while deserializing SBOMs: " + e.getMessage());
+                return new ResponseEntity<>("Exception occurred while deserializing SBOMs.",
+                        HttpStatus.NOT_FOUND);
+            } catch (IllegalArgumentException ignored) {
+            } // TODO Skip any XML SBOMs, we don't support deserialization
+
+        if (deserialized.size() == 0) {
+            LOGGER.warn(urlMsg + ": No SBOMs generated by OSI container.");
+            return new ResponseEntity<>("No SBOMs generated for these files.", HttpStatus.NO_CONTENT);
+        }
+
+        // Merge SBOMs into one SBOM
+        MergerController merger = new MergerController();
+        SBOM osiMerged;
+        try {
+            osiMerged = merger.mergeAll(deserialized);
+        } catch (MergerException e) {
+            LOGGER.warn(urlMsg + ": Exception occurred while merging SBOMs: " + e.getMessage());
+            return new ResponseEntity<>("Exception occurred while merging SBOMs.",
+                    HttpStatus.NOT_FOUND);
+        }
+
+        // Convert final SBOM into SVIPSBOM
+        SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
+        SerializerFactory.Schema oldSchema;
+        switch (osiMerged.getFormat().toLowerCase()) {
+            case "cyclonedx" -> oldSchema = SerializerFactory.Schema.CDX14;
+            case "spdx" -> oldSchema = SerializerFactory.Schema.SPDX23;
+            default -> { // TODO We don't support SVIP SBOM merging
+                LOGGER.warn(urlMsg + ": Error converting final merged SBOM: SVIP schema unsupported.");
+                return new ResponseEntity<>("Error converting final merged SBOM: SVIP schema unsupported.",
+                        HttpStatus.NOT_FOUND);
+            }
+        }
+        Converter.buildSBOM(builder, osiMerged, schema, oldSchema);
+        builder.setName(projectName); // Set SBOM name to specified project name TODO should this be done in OSI class?
+
+        // Serialize SVIPSBOM to given schema and format
+        Serializer serializer = SerializerFactory.createSerializer(schema, format, true);
+        SBOMFile serializedSBOM;
+        try {
+            serializedSBOM = new SBOMFile(projectName,
+                    serializer.writeToString(builder.Build()));
+        } catch (JsonProcessingException e) {
+            LOGGER.warn(urlMsg + "Exception occurred while merging SBOMs: " + e.getMessage());
+            return new ResponseEntity<>("Exception occurred while merging SBOMs.",
+                    HttpStatus.NOT_FOUND);
+        }
+
+        // Save and return
+        SBOMFile saved = sbomFileRepository.save(serializedSBOM);
+        return Utils.encodeResponse(Long.toString(saved.getId()));
+    }
+
+    /**
+     * USAGE. Compares two or more given SBOMs (split into filename and contents), with the first one used as the baseline, and returns a comparison report.
+     *
+     * @param targetIndex the index of the target SBOM
+     * @param ids         the ids of the SBOM files
+     * @return generated diff report
+     * @throws JsonProcessingException
+     */
+    @PostMapping("/sboms/compare")
+    public ResponseEntity<DiffReport> compare(@RequestParam("targetIndex") int targetIndex, @RequestParam("Ids") Long[] ids) throws JsonProcessingException {
+        // Get Target SBOM
+        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(ids[targetIndex]);
+        // Check if it exists
+        ResponseEntity<Long> NOT_FOUND = Utils.checkIfExists(ids[targetIndex], sbomFile, "/sboms/compare");
+        if (NOT_FOUND != null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        // create the Target SBOM object using the deserializer
+        Deserializer d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
+        SBOM targetSBOM = d.readFromString(sbomFile.get().getContents());
+        // create diff report
+        DiffReport diffReport = new DiffReport(targetSBOM.getUID(), targetSBOM);
+        // comparison sboms
+        for (int i = 0; i < ids.length; i++) {
+            if (i == targetIndex) continue;
+            // Get SBOM
+            sbomFile = sbomFileRepository.findById(ids[i]);
+            // Check if it exists
+            NOT_FOUND = Utils.checkIfExists(ids[i], sbomFile, "/sboms/compare");
+            if (NOT_FOUND != null)
+                continue; // sbom not found, continue to next ID TODO check with front end what to do if 1 sbom is missing
+            // create an SBOM object using the deserializer
+            d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
+            SBOM sbom = d.readFromString(sbomFile.get().getContents());
+            // add the comparison to diff report
+            diffReport.compare(sbom.getUID(), sbom);
+        }
+        return Utils.encodeResponse(diffReport);
     }
 
     /**
      * Merge two existing SBOMs
+     *
      * @param ids of the two SBOMs
      * @return a merged sbomFile
      */
-    @GetMapping("/merge")
-    public ResponseEntity<?> merge(@RequestParam("ids") long[] ids){
+    @PostMapping("sboms/merge")
+    public ResponseEntity<?> merge(@RequestBody long[] ids) {
 
         ArrayList<SBOM> sboms = new ArrayList<>();
 
@@ -512,7 +656,7 @@ public class SVIPApiController {
         long idSum = 0L;
 
         // check for bad files
-        for (Long id: ids
+        for (Long id : ids
         ) {
 
             // Get SBOM
@@ -523,7 +667,7 @@ public class SVIPApiController {
             if (NOT_FOUND != null) return NOT_FOUND;
             SBOMFile sbom = sbomFile.get();
 
-            if(sbom.hasNullProperties()){
+            if (sbom.hasNullProperties()) {
                 LOGGER.info(urlMsg + sbomFile.get().getId() + " - ERROR IN MERGE - HAS NULL PROPERTIES");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
@@ -532,10 +676,10 @@ public class SVIPApiController {
             Deserializer d;
             SBOM deserialized;
 
-            try{
+            try {
                 d = SerializerFactory.createDeserializer(sbom.getContents());
                 deserialized = d.readFromString(sbom.getContents());
-            }catch (Exception e){
+            } catch (Exception e) {
                 LOGGER.info(urlMsg + sbomFile.get().getId() + "DURING DESERIALIZATION: " +
                         e.getMessage());
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -547,7 +691,7 @@ public class SVIPApiController {
 
         // todo, merging more than two SBOMs is not supported right now
         SBOM merged;
-        try{
+        try {
             MergerController mergerController = new MergerController();
             merged = mergerController.merge(sboms.get(0), sboms.get(1));
         } catch (MergerException e) {
@@ -558,8 +702,8 @@ public class SVIPApiController {
 
         Serializer s;
         String contents;
-        try{
-            s = SerializerFactory.createSerializer(SerializerFactory.Schema.SVIP, SerializerFactory.Format.JSON,true);
+        try {
+            s = SerializerFactory.createSerializer(SerializerFactory.Schema.SVIP, SerializerFactory.Format.JSON, true);
             SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
             builder.setSpecVersion("1.0-a");
             Converter.buildSBOM(builder, merged, SerializerFactory.Schema.SVIP, null);
@@ -583,11 +727,12 @@ public class SVIPApiController {
 
     }
 
-    /** USAGE Send GET request to /vex to generate a VEX Document for an SBOM
+    /**
+     * USAGE Send GET request to /vex to generate a VEX Document for an SBOM
      * The API will respond with an HTTP 200 a VEX object, and a hashmap of
      * and errors that occurred
      *
-     * @param id The id of the SBOM contents to retrieve.
+     * @param id     The id of the SBOM contents to retrieve.
      * @param format the format of teh VEX Document
      * @param client the api client to use (currently NVD or OSV)
      * @return A new VEXResult of the VEX document and any errors that occurred
@@ -596,7 +741,7 @@ public class SVIPApiController {
     public ResponseEntity<VEXResult> vex(@RequestHeader(value = "apiKey", required = false) String apiKey,
                                          @RequestParam("id") long id,
                                          @RequestParam("format") String format,
-                                         @RequestParam("client") String client){
+                                         @RequestParam("client") String client) {
         SBOM sbom;
         Deserializer d;
 
@@ -610,20 +755,20 @@ public class SVIPApiController {
         }
 
         // Deserialize SBOM into JSON object
-        try{
+        try {
             d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
             sbom = d.readFromString(sbomFile.get().getContents());
-        } catch (JsonProcessingException e ){
+        } catch (JsonProcessingException e) {
             LOGGER.info("Failed to deserialize SBOM content, may be an unsupported format");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (Exception e){
+        } catch (Exception e) {
             LOGGER.info("Deserialization Error");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         VulnerabilityDBClient vc;
         // check that user entered a valid database client
-        switch(client.toLowerCase()){
+        switch (client.toLowerCase()) {
             case "osv" -> vc = new OSVClient();
             case "nvd" -> vc = new NVDClient();
             default -> {
@@ -641,7 +786,7 @@ public class SVIPApiController {
         vb.setTimeLastUpdated(creationTime);
 
         // check that user entered a valid format
-        switch(format.toLowerCase()){
+        switch (format.toLowerCase()) {
             case "cyclonedx" -> {
                 vb.setOriginType(VEXType.CYCLONE_DX);
                 vb.setSpecVersion("1.4");
@@ -658,17 +803,17 @@ public class SVIPApiController {
 
         HashMap<String, String> error = new HashMap<>();
         // add vex statements and/or errors for every component
-        for(Component c : sbom.getComponents()){
-            if(c instanceof SBOMPackage){
-                try{
+        for (Component c : sbom.getComponents()) {
+            if (c instanceof SBOMPackage) {
+                try {
                     List<VEXStatement> statements;
-                    if(client.equalsIgnoreCase("nvd") && apiKey != null)
+                    if (client.equalsIgnoreCase("nvd") && apiKey != null)
                         statements = vc.getVEXStatements((SBOMPackage) c, apiKey);
                     else
                         statements = vc.getVEXStatements((SBOMPackage) c);
 
-                    if(!statements.isEmpty())
-                        for(VEXStatement vs : statements)
+                    if (!statements.isEmpty())
+                        for (VEXStatement vs : statements)
                             vb.addVEXStatement(vs);
                 } catch (Exception e) {
                     error.put(c.getName(), e.getMessage());
