@@ -1,5 +1,0 @@
-name: simple
-
-dependencies:
-  - python=3.4
-  - numpy
