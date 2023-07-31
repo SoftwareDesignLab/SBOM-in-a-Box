@@ -245,7 +245,7 @@ public class Utils {
 
         File zip = File.createTempFile(UUID.randomUUID().toString(), "temp");
         FileOutputStream o = new FileOutputStream(zip);
-        IOUtils.copy(file.getInputStream(), o);
+        IOUtils.copy(file.getInputStream(), o); // todo fix nullpointer
         o.close();
 
         try {
