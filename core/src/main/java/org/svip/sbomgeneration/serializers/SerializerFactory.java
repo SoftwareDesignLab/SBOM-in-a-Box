@@ -94,7 +94,7 @@ public class SerializerFactory {
          * @return An instance of the serializer.
          * @throws IllegalArgumentException If the format is invalid.
          */
-        private Serializer getSerializer(Format format) throws IllegalArgumentException {
+        public Serializer getSerializer(Format format) throws IllegalArgumentException {
             if (!serializerMap.containsKey(format)) throw new IllegalArgumentException(String.format("Format \"%s\" " +
                     "incompatible with serializer schema \"%s\"", this, format));
             return serializerMap.get(format);
@@ -107,7 +107,7 @@ public class SerializerFactory {
          * @return An instance of the deserializer.
          * @throws IllegalArgumentException If the format is invalid.
          */
-        private Deserializer getDeserializer(Format format) throws IllegalArgumentException {
+        public Deserializer getDeserializer(Format format) throws IllegalArgumentException {
             if (!deserializerMap.containsKey(format)) throw new IllegalArgumentException(String.format("Format \"%s\"" +
                     " incompatible with deserializer schema \"%s\"", this, format));
             return deserializerMap.get(format);
@@ -122,6 +122,32 @@ public class SerializerFactory {
         TAGVALUE
     }
 
+    /** TODO find an accurate way to determine schema
+     * Resolves the SBOM schema of the contents of a file.
+     * @param fileContents The file contents to resolve the schema of.
+     * @return The schema, or null if no schema could be resolved.
+     */
+    public static Schema resolveSchema(String fileContents) {
+        // TODO this takes a long time to search large files
+        if (fileContents.toLowerCase().contains("bom-ref")) return CDX14;
+        else if (fileContents.toLowerCase().contains("spdxversion")) return SPDX23;
+        else if (fileContents.contains("rootComponent")) return SVIP; // Field unique to SVIP SBOM
+        else return null;
+    }
+
+    /** TODO find an accurate way to determine format
+     * Resolves the file format of the contents of a file.
+     * @param fileContents The file contents to resolve the format of.
+     * @return The format, or null if no format could be resolved.
+     */
+    public static Format resolveFormat(String fileContents) {
+        if (fileContents.contains("DocumentName:") || fileContents.contains("DocumentNamespace:"))
+            return TAGVALUE;
+        else if (fileContents.contains("{") && fileContents.contains("}"))
+            return JSON;
+        else return null;
+    }
+
     /**
      * Create a Deserializer for an SBOM file by auto-detecting its schema and format using its contents.
      *
@@ -130,21 +156,9 @@ public class SerializerFactory {
      * @throws IllegalArgumentException If a schema and/or format cannot be determined.
      */
     public static Deserializer createDeserializer(String fileContents) throws IllegalArgumentException {
-        // TODO figure out a 100% correct way of determining file schema and format, this was my quick and dirty soln
-
         // Defaults to CDX14JSONDeserializer
-        Schema schema = null;
-        Format format = null;
-
-        // TODO this takes a long time to search large files
-        if (fileContents.toLowerCase().contains("bom-ref")) schema = CDX14;
-        else if (fileContents.toLowerCase().contains("spdxversion")) schema = SPDX23;
-        else if (fileContents.contains("rootComponent")) schema = SVIP; // Field unique to SVIP SBOM
-
-        if (fileContents.contains("DocumentName:") || fileContents.contains("DocumentNamespace:"))
-            format = TAGVALUE;
-        else if (fileContents.contains("{") && fileContents.contains("}"))
-            format = JSON;
+        Schema schema = resolveSchema(fileContents);
+        Format format = resolveFormat(fileContents);
 
         String errorMessage;
         if (schema == null)

@@ -20,7 +20,7 @@ import java.nio.file.Path;
 
 public class ComparisonTest {
     private static final String TEST_DIR = System.getProperty("user.dir") +
-            "/src/test/java/org/svip/sbomgeneration/serializers/sample_boms/Benchmark_SBOM_Megacollection/";
+            "/src/test/resources/serializers/Benchmark_SBOM_Megacollection/";
 
     protected static final String SBOM_1 = TEST_DIR + "cdxgen.json";
 
@@ -49,15 +49,18 @@ public class ComparisonTest {
         sboms[3] = sbom4;
         sboms[4] = sbom5;
         sboms[5] = sbom6;
-        DiffReport diffReport = new DiffReport(sbom4.getUID(), sbom1);
+        DiffReport diffReport = new DiffReport(sbom1.getUID(), sbom1);
+        diffReport.compare(sbom2.getUID(), sbom2);
+        diffReport.compare(sbom3.getUID(), sbom3);
+        diffReport.compare(sbom4.getUID(), sbom4);
+        diffReport.compare(sbom5.getUID(), sbom5);
+        diffReport.compare(sbom6.getUID(), sbom6);
         // TODO figure out how to actually test the diff reports
         Debug.logBlockTitle("Diff Report");
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-        String diffReportString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(diffReport);
-        Debug.log(Debug.LOG_TYPE.SUMMARY, "Test Diff Report" + "\n" + diffReportString);
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(diffReport));
         Debug.logBlock();
-}
+    }
 
     public Deserializer getSPDXJSONDeserializer() {
         return new SPDX23JSONDeserializer();

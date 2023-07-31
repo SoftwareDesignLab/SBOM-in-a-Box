@@ -1,5 +1,8 @@
 name: Syft SBOM Generation
-on: push
+on:
+  push:
+    paths-ignore:
+      - '**/resources/**'
 
 jobs:
   get-sbom-type:

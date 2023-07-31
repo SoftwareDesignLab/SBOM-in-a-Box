@@ -25,7 +25,7 @@ public class MergerController {
      * @param SBOMs Collection of SBOM objects to merge together
      * @return Resulting merged bom
      */
-    public SBOM mergeAll(Collection<SVIPSBOM> SBOMs) throws MergerException {
+    public SBOM mergeAll(Collection<SBOM> SBOMs) throws MergerException {
         // Loop through and merge into a master SBOM
         if (SBOMs.size() == 0) {
             return null;
@@ -37,7 +37,7 @@ public class MergerController {
         }
 
         // Now we know there is at least two SBOMs
-        Iterator<SVIPSBOM> it = SBOMs.iterator();
+        Iterator<SBOM> it = SBOMs.iterator();
         SBOM a = it.next();
         SBOM b = it.next();
 

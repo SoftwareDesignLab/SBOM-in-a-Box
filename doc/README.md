@@ -3,7 +3,6 @@
 
 ## Index
 
-- [**System Requirements**](#system-requirements)
 - [**SVIP API**](API.md)
 - [**SBOM Generator CLI**](#sbom-generator-cli)
   - [Quick Start](#quick-start)
@@ -16,13 +15,6 @@
   - [Building the Image](#building-the-image)
     - [Saved Images](#saved-images)
   
----
-
-# System Requirements
-- Java 17.X.X
-- Gradle 7.5.X
-- Docker 24.X.X
-
 ---
 
 # SBOM Generator CLI
@@ -138,7 +130,7 @@ The `/sboms` directory (also in `/bound_dir` will now contain generated SBOMs fr
 
 
 ## Building the Image
-To manually build the image, execute the following from the root directory of the repository:
+To manually build/rebuild the image, execute the following from the root directory of the repository:
 
 ```shell
 $ docker compose up osi --build

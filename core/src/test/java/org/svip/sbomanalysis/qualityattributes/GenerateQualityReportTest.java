@@ -23,10 +23,10 @@ import java.nio.file.Path;
 public class GenerateQualityReportTest {
 
     private final String CDX_14_JSON_SBOM = System.getProperty("user.dir") +
-            "/src/test/java/org/svip/sbomgeneration/serializers/sample_boms/cdx_json/sbom.alpine.json";
+            "/src/test/resources/serializers/cdx_json/sbom.alpine.json";
 
     private final String SPDX23_JSON_SBOM = System.getProperty("user.dir") +
-            "/src/test/java/org/svip/sbomgeneration/serializers/sample_boms/spdx_json/syft-0.80.0-source-spdx-json.json";
+            "/src/test/resources/serializers/spdx_json/syft-0.80.0-source-spdx-json.json";
 
     @Test
     public void test_quality_report_cdx_pipeline_test() throws IOException {

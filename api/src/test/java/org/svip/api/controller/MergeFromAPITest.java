@@ -40,7 +40,7 @@ public class MergeFromAPITest extends APITest {
         for (Long id1 : testMap.keySet()) {
 
             SBOMFile sbom1 = testMap.get(id1);
-            SerializerFactory.Schema schema1 = Utils.assumeSchemaFromOriginal(sbom1.getContents());
+            SerializerFactory.Schema schema1 = SerializerFactory.resolveSchema(sbom1.getContents());
 
             for (Long id2 : testMap.keySet()) {
 
@@ -48,7 +48,7 @@ public class MergeFromAPITest extends APITest {
                     continue;
 
                 SBOMFile sbom2 = testMap.get(id2);
-                SerializerFactory.Schema schema2 = Utils.assumeSchemaFromOriginal(sbom2.getContents());
+                SerializerFactory.Schema schema2 = SerializerFactory.resolveSchema(sbom2.getContents());
 
                 if (sbom1.getFileName().endsWith(".xml") || sbom2.getFileName().endsWith(".xml"))
                     continue;

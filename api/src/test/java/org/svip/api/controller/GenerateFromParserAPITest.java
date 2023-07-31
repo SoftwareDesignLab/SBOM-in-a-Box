@@ -82,38 +82,12 @@ public class GenerateFromParserAPITest extends APITest {
 //                getStatusCode());
 //    }
 //
-    /**
-     *
-     */
-//    @Test
-//    @DisplayName("")
-//    public void zipTest() throws IOException {
-//
-//        ResponseEntity<Long> response = (ResponseEntity<Long>) controller.generateParsers(System.getProperty("user.dir")
-//                + "/src/test/java/org/svip/api/sample_projects/Java.zip", "Java", // todo delete once not needed
-//                SerializerFactory.Schema.SPDX23, SerializerFactory.Format.TAGVALUE);
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertNotNull(response.getBody());
-//
-//    }
-//
-//    @Test
-//    @DisplayName("")
-//    public void zipFileTest() throws IOException {
-//                                                          // todo MultipartFile method
-//
-//        ResponseEntity<Long> response = (ResponseEntity<Long>) controller.generateParsers(new ZipFile(System.getProperty("user.dir")
-//                        + "/src/test/java/org/svip/api/sample_projects/Java.zip"), "Java",
-//                SerializerFactory.Schema.SPDX23, SerializerFactory.Format.TAGVALUE);
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertNotNull(response.getBody());
-//
-//    }
+
 
         @Test
     @DisplayName("")
     public void zipFileTest() throws IOException {
-                                                          // todo MultipartFile method
+
 
         ResponseEntity<Long> response = (ResponseEntity<Long>) controller.generateParsers(new MockMultipartFile(new File(System.getProperty("user.dir")
                         + "/src/test/java/org/svip/api/sample_projects/Java.zip")), "Java",

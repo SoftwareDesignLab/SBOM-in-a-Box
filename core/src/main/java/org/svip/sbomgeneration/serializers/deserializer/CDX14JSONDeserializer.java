@@ -83,6 +83,7 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
 
         // FORMAT
         if (node.get("bomFormat") != null) sbomBuilder.setFormat(node.get("bomFormat").asText());
+        else sbomBuilder.setFormat("CycloneDX");
 
         // UID
         if (node.get("serialNumber") != null) sbomBuilder.setUID(node.get("serialNumber").asText());

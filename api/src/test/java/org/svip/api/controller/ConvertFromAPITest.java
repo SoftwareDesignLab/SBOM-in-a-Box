@@ -59,7 +59,7 @@ public class ConvertFromAPITest extends APITest {
 
                     // retrieve test SBOM and assume schema
                     SBOMFile sbom = testMap.get(id);
-                    SerializerFactory.Schema thisSchema = Utils.assumeSchemaFromOriginal(sbom.getContents().toLowerCase());
+                    SerializerFactory.Schema thisSchema = SerializerFactory.resolveSchema(sbom.getContents());
 
                     // check if test is valid
                     if (Utils.convertTestController(convertToSchema, convertToFormat, id, thisSchema, testMap, sbom))

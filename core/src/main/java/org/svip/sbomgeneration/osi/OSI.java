@@ -78,7 +78,7 @@ public class OSI {
      *         1 - Docker is not running but installed,
      *         2 - Docker is not installed
      */
-    protected static int dockerCheck() {
+    public static int dockerCheck() {
         try {
             // If running in a container, we know the Docker daemon is available (with a system host link)
             File f = new File("/.dockerenv");
@@ -124,14 +124,13 @@ public class OSI {
      * @throws IOException If the file could not be written to the code bind directory.
      */
     public void addSourceFile(String fileName, String fileContents) throws IOException {
-        File project = new File(System.getProperty("user.dir") + BOUND_DIR + "/code");
+        File project = getBoundDirPath("code");
 
-        if (!project.exists()) project.mkdirs();
-
-        try (PrintWriter writer = new PrintWriter(project.getAbsolutePath() + "/" + fileName)) {
+        // Constructing the printwriter with a file means that it takes care of all system-specific path problems
+        try (PrintWriter writer = new PrintWriter(new File(project.getAbsolutePath() + "/" + fileName))) {
             writer.println(fileContents);
         } catch (FileNotFoundException e) {
-            throw new IOException("Could not write file to /bound_dir/code/" + fileName);
+            throw new IOException("Could not write file to " + project);
         }
     }
 
@@ -142,9 +141,7 @@ public class OSI {
      * @throws IOException If one of the files in the copied directory could not be written to the code bind directory.
      */
     public void addSourceDirectory(File dirPath) throws IOException {
-        File project = new File(System.getProperty("user.dir") + BOUND_DIR + "/code");
-
-        if (!project.exists()) project.mkdirs();
+        File project = getBoundDirPath("code");
 
         FileUtils.copyDirectory(dirPath, project);
     }
@@ -162,7 +159,7 @@ public class OSI {
 
         Map<String, String> sboms = new HashMap<>();
 
-        File sbomDir = new File(System.getProperty("user.dir") + BOUND_DIR + "/sboms");
+        File sbomDir = getBoundDirPath("sboms");
         // If container failed or files are null, return empty map.
         if (status == 1 || !sbomDir.exists() || sbomDir.listFiles() == null) return sboms;
 
@@ -176,6 +173,22 @@ public class OSI {
     }
 
     /**
+     * Gets the path to the OSI bound_dir folder from anywhere in the system.
+     * @param directoryName The subdirectory of the bound_dir to access (code or sboms).
+     * @return A File containing a reference to that folder, which is guaranteed to exist.
+     */
+    protected File getBoundDirPath(String directoryName) {
+        String path = System.getProperty("user.dir") + BOUND_DIR + "/" + directoryName;
+        // Replace api from core if running in api working directory
+        File file = new File(path.replaceFirst("api", "core"));
+
+        // Make directories
+        if (!file.exists()) file.mkdirs();
+
+        return file;
+    }
+
+    /**
      * Cleans a subdirectory in the bound directory (sboms, code) to remove all files and then re-replace the
      * .gitignore.
      *
@@ -183,18 +196,13 @@ public class OSI {
      * @throws IOException If a file cannot be removed from the directory or if the .gitignore could not be written.
      */
     protected void cleanBoundDirectory(String directoryName) throws IOException {
-        String path = System.getProperty("user.dir") + BOUND_DIR + "/" + directoryName;
-        File dir = new File(path);
-
-        if (!dir.exists()) dir.mkdirs();
+        File dir = getBoundDirPath(directoryName);
 
         FileUtils.cleanDirectory(dir);
 
         // Add gitignore
-        try (PrintWriter w = new PrintWriter(path + "/.gitignore")) { w.print("*\n" + "!.gitignore"); }
+        try (PrintWriter w = new PrintWriter(dir + "/.gitignore")) { w.print("*\n" + "!.gitignore"); }
     }
-
-
 
     /**
      * OSI Client to interact with Docker.

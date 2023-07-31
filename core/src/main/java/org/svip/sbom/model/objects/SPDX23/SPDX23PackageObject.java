@@ -506,7 +506,8 @@ public class SPDX23PackageObject implements SPDX23Package {
         cf.addConflict("File Name", MISC_MISMATCH, this.fileName, other.getFileName());
 
         // Files Analyzed
-        cf.addConflict("Files Analyzed", MISC_MISMATCH, this.filesAnalyzed.toString(), other.getFilesAnalyzed().toString());
+        // needs null check because you cannot call null.toString
+        if (this.filesAnalyzed != null) cf.addConflict("Files Analyzed", MISC_MISMATCH, this.filesAnalyzed.toString(), other.getFilesAnalyzed().toString());
 
         // Verification Code
         cf.addConflict("Verification Code", MISC_MISMATCH, this.verificationCode, other.getVerificationCode());
@@ -527,5 +528,11 @@ public class SPDX23PackageObject implements SPDX23Package {
         cf.addConflict("Valid Until Date", TIMESTAMP_MISMATCH, this.validUntilDate, other.getValidUntilDate());
 
         return cf.getConflicts();
+    }
+
+    @Override
+    public int hashCode() {
+        if(name == null || version == null) return super.hashCode();
+        return this.name.hashCode() + this.version.hashCode();
     }
 }
