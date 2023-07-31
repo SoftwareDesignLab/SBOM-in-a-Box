@@ -59,7 +59,7 @@ public class MockMultipartFile implements MultipartFile {
 
     @Override
     public InputStream getInputStream() throws IOException {
-        return null;
+        return this.inputStream;
     }
 
     @Override
