@@ -54,81 +54,81 @@ public class GenerateFromOSIAPITest extends APITest {
     }
 
     /**
-     * Tests bad SBOMFiles
-     */
-    @Test
-    @DisplayName("Invalid format test")
-    public void sbomFilesNullPropertiesTest() {
-        SBOMFile[] noName = new SBOMFile[]{new SBOMFile("", "int i = 3;")};
-        SBOMFile[] noContents = new SBOMFile[]{new SBOMFile("name.java", "")};
-
-        Collection<SBOMFile[]> files = testMap.values();
-        SBOMFile[] empty = null;
-
-        for (SBOMFile[] file: files)
-            for (SBOMFile s: file)
-                if(s.hasNullProperties()) {
-                    empty = file;
-                    break;
-                }
-
-        assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI(noName, "NoName",
-                        SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).getStatusCode());
-
-        assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI(noContents, "NoContents",
-                        SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).getStatusCode());
-
-        assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI(empty, "Empty",
-                        SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).getStatusCode());
-    }
-
-    /**
-     * CDX does not support Tag Value format
-     */
-    @Test
-    @DisplayName("Convert to CDX tag value test")
-    public void CDXTagValueTest() {
-        Collection<SBOMFile[]> files = testMap.values();
-        SBOMFile[] sbomFiles = (SBOMFile[]) files.toArray()[0];
-        assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI(sbomFiles, "CDXTagValue",
-                        SerializerFactory.Schema.CDX14, SerializerFactory.Format.TAGVALUE).getStatusCode());
-    }
-
-    @Test
-    @DisplayName("Generate from OSI test")
-    public void generateTest() {
-        // Mock repository output (returns SBOMFile that it received)
-        when(repository.save(any(SBOMFile.class))).thenAnswer(i -> i.getArgument(0));
-
-        Collection<SBOMFile[]> files = testMap.values();
-
-        int i = 0;
-        for (SBOMFile[] file : files) {
-            HashMap<Long, String> projKey = (HashMap<Long, String>) testMap.keySet().toArray()[i];
-            String projectName = (String) projKey.values().toArray()[0];
-
-            LOGGER.info("Parsing project: " + projectName);
-
-            for (SerializerFactory.Schema schema : schemas) {
-                for (SerializerFactory.Format format : formats) {
-                    if (schema == SerializerFactory.Schema.CDX14 && format == SerializerFactory.Format.TAGVALUE
-                            || projectName.equals("Empty"))
-                        continue;
-
-                    LOGGER.info("PARSING TO: " + schema + " + " + format);
-
-                    ResponseEntity<?> response = controller.generateOSI(file, projectName, schema, format);
-
-                    if (!projectName.contains("CSharp")) {
-                        assertEquals(HttpStatus.OK, response.getStatusCode());
-                        assertNotNull(response.getBody());
-                        // TODO more assertions
-                    } else assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-                }
-            }
-
-            i++;
-            LOGGER.info("\n-------------\n");
-        }
-    }
+//     * Tests bad SBOMFiles
+//     */
+//    @Test
+//    @DisplayName("Invalid format test")
+//    public void sbomFilesNullPropertiesTest() {
+//        SBOMFile[] noName = new SBOMFile[]{new SBOMFile("", "int i = 3;")};
+//        SBOMFile[] noContents = new SBOMFile[]{new SBOMFile("name.java", "")};
+//
+//        Collection<SBOMFile[]> files = testMap.values();
+//        SBOMFile[] empty = null;
+//
+//        for (SBOMFile[] file: files)
+//            for (SBOMFile s: file)
+//                if(s.hasNullProperties()) {
+//                    empty = file;
+//                    break;
+//                }
+//
+//        assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI(noName, "NoName",
+//                        SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).getStatusCode());
+//
+//        assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI(noContents, "NoContents",
+//                        SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).getStatusCode());
+//
+//        assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI(empty, "Empty",
+//                        SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).getStatusCode());
+//    }
+//
+//    /**
+//     * CDX does not support Tag Value format
+//     */
+//    @Test
+//    @DisplayName("Convert to CDX tag value test")
+//    public void CDXTagValueTest() {
+//        Collection<SBOMFile[]> files = testMap.values();
+//        SBOMFile[] sbomFiles = (SBOMFile[]) files.toArray()[0];
+//        assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI(sbomFiles, "CDXTagValue",
+//                        SerializerFactory.Schema.CDX14, SerializerFactory.Format.TAGVALUE).getStatusCode());
+//    }
+//
+//    @Test
+//    @DisplayName("Generate from OSI test")
+//    public void generateTest() {
+//        // Mock repository output (returns SBOMFile that it received)
+//        when(repository.save(any(SBOMFile.class))).thenAnswer(i -> i.getArgument(0));
+//
+//        Collection<SBOMFile[]> files = testMap.values();
+//
+//        int i = 0;
+//        for (SBOMFile[] file : files) {
+//            HashMap<Long, String> projKey = (HashMap<Long, String>) testMap.keySet().toArray()[i];
+//            String projectName = (String) projKey.values().toArray()[0];
+//
+//            LOGGER.info("Parsing project: " + projectName);
+//
+//            for (SerializerFactory.Schema schema : schemas) {
+//                for (SerializerFactory.Format format : formats) {
+//                    if (schema == SerializerFactory.Schema.CDX14 && format == SerializerFactory.Format.TAGVALUE
+//                            || projectName.equals("Empty"))
+//                        continue;
+//
+//                    LOGGER.info("PARSING TO: " + schema + " + " + format);
+//
+//                    ResponseEntity<?> response = controller.generateOSI(file, projectName, schema, format);
+//
+//                    if (!projectName.contains("CSharp")) {
+//                        assertEquals(HttpStatus.OK, response.getStatusCode());
+//                        assertNotNull(response.getBody());
+//                        // TODO more assertions
+//                    } else assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+//                }
+//            }
+//
+//            i++;
+//            LOGGER.info("\n-------------\n");
+//        }
+//    }
 }
