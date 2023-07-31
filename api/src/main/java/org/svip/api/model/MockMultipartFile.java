@@ -3,10 +3,6 @@ package org.svip.api.model;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 public class MockMultipartFile implements MultipartFile {
 
@@ -14,15 +10,7 @@ public class MockMultipartFile implements MultipartFile {
     private byte[] bytes;
     private InputStream inputStream;
 
-//    public MockMultipartFile(ZipFile file){
-//
-//        this.name = file.getName(); // todo delete if unneeded
-//        Stream< ? extends ZipEntry> stream = file.stream();
-//
-//    }
-
     public MockMultipartFile(File file) throws FileNotFoundException {
-
         this.name = file.getName();
         this.inputStream = new FileInputStream(file);
     }
