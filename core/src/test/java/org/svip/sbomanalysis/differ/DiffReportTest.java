@@ -20,10 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DiffReportTest {
     protected static final String SBOM_1 = System.getProperty("user.dir") +
-            "/src/test/java/org/svip/sbomfactory/serializers/sample_boms/Diff_Report_Test_SBOMs/Test1_CDX.json";
+            "/src/test/resources/differ/Test1_CDX.json";
 
     protected static final String SBOM_2 = System.getProperty("user.dir") +
-            "/src/test/java/org/svip/sbomfactory/serializers/sample_boms/Diff_Report_Test_SBOMs/Test2_SPDX.json";
+            "/src/test/resources/differ/Test2_SPDX.json";
 
     @Test
     public void testDiffReport() throws IOException {

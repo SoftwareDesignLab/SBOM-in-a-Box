@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 public class OSITest {
 
     private final OSI osi;
-    private static final String OSI_PATH = System.getProperty("user.dir") + "/src/test/java/org/svip/sbomgeneration/osi/";
+    private static final String OSI_PATH = System.getProperty("user.dir") + "/src/test/java/resources/osi/";
 
     public OSITest() throws IOException {
         OSI osi = null; // Disabled by default

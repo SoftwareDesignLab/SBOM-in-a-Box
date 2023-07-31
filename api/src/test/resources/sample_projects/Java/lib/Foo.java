@@ -1,4 +1,4 @@
-package org.svip.api.sample_projects.Java.lib;
+package sample_projects.Java.lib;
 
 /**
  * Long Comment

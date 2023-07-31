@@ -1,4 +1,4 @@
-package Java;
+package parsers.Java;
 
 public class Bar {
     public static void main(String[] args) {

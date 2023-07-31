@@ -25,38 +25,38 @@ public class APITest {
     SBOMFileRepository repository;
 
     private final static String alpineSBOM = System.getProperty("user.dir")
-            + "/src/test/java/org/svip/api/sample_sboms/sbom.alpine-compare.2-3.spdx";
+            + "/src/test/resources/sample_sboms/sbom.alpine-compare.2-3.spdx";
     private final static String pythonSBOM = System.getProperty("user.dir")
-            + "/src/test/java/org/svip/api/sample_sboms/sbom.python.2-3.spdx";
+            + "/src/test/resources/sample_sboms/sbom.python.2-3.spdx";
     private final static String dockerSBOM = System.getProperty("user.dir")
-            + "/src/test/java/org/svip/api/sample_sboms/sbom.docker.2-2.spdx";
+            + "/src/test/resources/sample_sboms/sbom.docker.2-2.spdx";
     private final static String alpineSBOMCdx = System.getProperty("user.dir")
-            + "/src/test/java/org/svip/api/sample_sboms/sbom.alpine.xml";
+            + "/src/test/resources/sample_sboms/sbom.alpine.xml";
     private final static String jakeSBOM = System.getProperty("user.dir")
-            + "/src/test/java/org/svip/api/sample_sboms/jake_source_cdx.xml";
+            + "/src/test/resources/sample_sboms/jake_source_cdx.xml";
     private final static String condaSBOM = System.getProperty("user.dir")
-            + "/src/test/java/org/svip/api/sample_sboms/cyclonedx_source_cdx.xml";
+            + "/src/test/resources/sample_sboms/cyclonedx_source_cdx.xml";
     private final static String dotnetSBOM = System.getProperty("user.dir")
-            + "/src/test/java/org/svip/api/sample_sboms/cyclonedxfordotnetprojects_source_cdx.json";
+            + "/src/test/resources/sample_sboms/cyclonedxfordotnetprojects_source_cdx.json";
     private final static String goSBOM = System.getProperty("user.dir")
-            + "/src/test/java/org/svip/api/sample_sboms/cdx-gomod-1.4.0-bin.json";
+            + "/src/test/resources/sample_sboms/cdx-gomod-1.4.0-bin.json";
     private final static String gradleSBOM = System.getProperty("user.dir")
-            + "/src/test/java/org/svip/api/sample_sboms/CDXGradlePlugin_deployed_cdx.json";
+            + "/src/test/resources/sample_sboms/CDXGradlePlugin_deployed_cdx.json";
     private final static String syftSPDX23JSON = System.getProperty("user.dir")
-            + "/src/test/java/org/svip/api/sample_sboms/syft-0.80.0-source-spdx-json.json";
+            + "/src/test/resources/sample_sboms/syft-0.80.0-source-spdx-json.json";
 
     private final static String vulnerableSBOMNVD = System.getProperty("user.dir")
-            + "/src/test/java/org/svip/api/sample_sboms/CDX_vulnerabilities_sbom.json";
+            + "//src/test/resources/sample_sboms/CDX_vulnerabilities_sbom.json";
 
     private final static String vulnerableSBOMOSV = System.getProperty("user.dir")
-            + "/src/test/java/org/svip/api/sample_sboms/CDX_vulns_osv_sbom.json";
+            + "/src/test/resources/sample_sboms/CDX_vulns_osv_sbom.json";
 
     /*
     Sample projects for parsers
      */
 
     public static class SampleProject {
-        private final String dir = System.getProperty("user.dir") + "/src/test/java/org/svip/api/sample_projects/";
+        private final String dir = System.getProperty("user.dir") + "/src/test/resources/sample_projects/";
         public String type;
         public String[] sourceFileNames;
         private boolean gotten = false;

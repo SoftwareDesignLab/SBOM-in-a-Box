@@ -1,4 +1,4 @@
-package org.svip.sbomgeneration.osi.sampleProject;
+package projects.sampleProject;
 
 public class SampleJavaClass {
     public static void main(String[] args){

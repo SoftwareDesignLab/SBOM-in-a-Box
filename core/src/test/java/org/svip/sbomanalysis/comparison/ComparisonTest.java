@@ -20,7 +20,7 @@ import java.nio.file.Path;
 
 public class ComparisonTest {
     private static final String TEST_DIR = System.getProperty("user.dir") +
-            "/src/test/java/org/svip/sbomgeneration/serializers/sample_boms/Benchmark_SBOM_Megacollection/";
+            "/src/test/resources/serializers/Benchmark_SBOM_Megacollection/";
 
     protected static final String SBOM_1 = TEST_DIR + "cdxgen.json";
 

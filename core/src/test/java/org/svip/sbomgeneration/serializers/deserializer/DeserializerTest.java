@@ -2,7 +2,7 @@ package org.svip.sbomgeneration.serializers.deserializer;
 
 public abstract class DeserializerTest {
 
-    protected static final String TEST_DATA_PATH = "/src/test/java/org/svip/sbomgeneration/serializers/sample_boms/";
+    protected static final String TEST_DATA_PATH = "/src/test/resources/serializers/";
     protected static final String CDX_14_JSON_SBOM = System.getProperty("user.dir") +
             TEST_DATA_PATH + "cdx_json/sbom.test.json";
 

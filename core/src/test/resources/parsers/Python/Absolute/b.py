@@ -52,7 +52,7 @@ from . import (
 
 from .ifoo import ifee
 
-from .. import Absolute
+from parsers import Absolute
 from ..Absolute import (b,
 						a,
 						r)

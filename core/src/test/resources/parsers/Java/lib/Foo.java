@@ -1,4 +1,4 @@
-package org.svip.sbomgeneration.parsers.TestData.Java.lib;
+package parsers.Java.lib;
 
 /**
  * Long Comment
