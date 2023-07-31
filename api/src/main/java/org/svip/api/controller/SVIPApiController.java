@@ -421,17 +421,12 @@ public class SVIPApiController {
      * @return generated SBOM
      */
     @PostMapping("/generators/parsers")
-    public ResponseEntity<?> generateParsers(@RequestPart MultipartFile zipFile, // todo is RequestPart accurate?
+    public ResponseEntity<?> generateParsers(@RequestParam("zipFile") MultipartFile zipFile, // todo is RequestPart accurate?
                                              @RequestParam("projectName") String projectName,
                                              @RequestParam("schema") SerializerFactory.Schema schema,
                                              @RequestParam("format") SerializerFactory.Format format) throws IOException {
 
         String urlMsg = "GENERATE /svip/generate?projectName=" + projectName;
-
-        if (!zipFile.getName().endsWith(".zip")){
-            LOGGER.error(urlMsg + " cannot unzip " + zipFile.getName() + ". Not a .zip file");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
 
         if(schema.equals(SerializerFactory.Schema.CDX14) && format.equals(SerializerFactory.Format.TAGVALUE)){
             LOGGER.error(urlMsg + " cannot parse into " + schema + " with incompatible format " + format);
