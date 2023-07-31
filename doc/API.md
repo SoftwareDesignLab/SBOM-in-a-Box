@@ -235,9 +235,60 @@ curl -X PUT -G http://localhost:8080/svip/sboms/content \
 ```
 
 ### Compare SBOMs
+> Compares two or more given SBOMs (split into filename and contents), with the first one used as the baseline, and returns a comparison report.
+
+**Endpoint:** `http://localhost:8080/svip/sboms/compare`
+
+**Request Method:** `POST`
+
+**Parameters**
+
+|  Parameter  |  Type   |          Description          | Is Required? |
+|:-----------:|:-------:|:-----------------------------:|:------------:|
+|     ids     | Long[]  |       Array of SBOM IDs       |     YES      |
+| targetIndex | Integer | Index of target SBOM in array |     YES      |
+
+**Responses**
+
+| Response Code |    Type    |                    Description                    |
+|:-------------:|:----------:|:-------------------------------------------------:|
+|      200      | Comparison |     A Comparison report of all provided SBOMs     |
+|      400      |   String   | A list of invalid fields received from the client |
+|      500      |   String   |          SBOM Failed to be deserialized           |
+
+**Example**
+```bash
+curl -X POST -G http://localhost:8080/svip/sboms/compare \
+-d 'ids=[1,2]' \
+-d 'targetIndex=0'
+```
 
 ### Merge SBOMs
+> Merge 2 SBOMs together, regardless of origin format
 
+**Endpoint:** `http://localhost:8080/svip/sboms/merge`
+
+**Request Method:** `POST`
+
+**Request Body**
+
+| Body |  Type   |          Description          | Is Required? |
+|:----:|:-------:|:-----------------------------:|:------------:|
+| ids  | Long[]  |       Array of SBOM IDs       |     YES      |
+
+**Responses**
+
+| Response Code |    Type    |                Description                |
+|:-------------:|:----------:|:-----------------------------------------:|
+|      200      | Comparison | A Comparison report of all provided SBOMs |
+|      400      |    ---     |         SBOM has null properties          |
+|      404      |    ---     |          Error in merging SBOMs           |
+|      500      |   String   |      SBOM Failed to be deserialized       |
+
+**Example**
+```bash
+curl -X POST -d '{"ids":[1,2]}' http://localhost:8080/svip/sboms/merge
+```
 ### Generate Quality Report
 > Analyze a given SBOM file and return a QualityReport
 
