@@ -10,10 +10,8 @@ import org.svip.api.controller.SVIPApiController;
 import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
 import org.svip.sbomgeneration.serializers.SerializerFactory;
-import org.svip.utils.VirtualPath;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
@@ -23,8 +21,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
-
-import static org.svip.sbomgeneration.serializers.SerializerFactory.Format.TAGVALUE;
 
 /**
  * A static class containing helpful utilities for API calls and testing responses.
@@ -133,12 +129,12 @@ public class Utils {
     public static long generateNewId(long id, Random rand, SBOMFileRepository sbomFileRepository) {
         // assign new id and name
         int i = 0;
-        try{
+        try {
             while (sbomFileRepository.findById(id).isPresent()) {
                 id += (Math.abs(rand.nextLong()) + id) % ((i < 100 && id < 0) ? id : Long.MAX_VALUE);
                 i++;
             }
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             return id;
         }
 
@@ -241,6 +237,11 @@ public class Utils {
 
     }
 
+    /**
+     * Convert a MultiPart file to a ZipFile
+     * @param file MultiPart file, a .zip file
+     * @return Converted ZipFile object
+     */
     public static ZipFile convertMultipartToZip(MultipartFile file) throws IOException {
 
         File zip = File.createTempFile(UUID.randomUUID().toString(), "temp");
@@ -253,7 +254,7 @@ public class Utils {
 
         } catch (ZipException e) {
             e.printStackTrace();
-            return null;
+            throw new ZipException();
         }
 
     }
