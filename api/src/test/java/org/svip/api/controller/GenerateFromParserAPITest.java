@@ -17,6 +17,13 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+/**
+ * File: GenerateFromParserAPITest.java
+ *
+ * Holds the unit tests responsible for testing the Generator Parser API endpoint.
+ *
+ * @author Juan Francisco Patino
+ */
 public class GenerateFromParserAPITest extends APITest {
 
     private final Map<Map<Long, String>, SBOMFile[]> testMap;
@@ -55,10 +62,7 @@ public class GenerateFromParserAPITest extends APITest {
     @DisplayName("Generate from parser test")
     public void generateTest() throws IOException {
 
-        String[] zipFiles = {
-                "Conan", "Conda_noEmptyFiles",
-                // "Go", // todo Go doesn't work atm
-                "Perl_noEmptyFiles", "Rust_noEmptyFiles", "Scala"};
+        String[] zipFiles = {"Conan", "Conda_noEmptyFiles", "Perl_noEmptyFiles", "Rust_noEmptyFiles", "Scala"};
 
         for (String file : zipFiles
         ) {

@@ -154,13 +154,10 @@ public class Utils {
         byte[] buffer = new byte[1024];
         Stream<? extends ZipEntry> entryStream = z.stream();
 
-
-        entryStream.forEach(entry -> {//from  w ww .ja v a  2 s .c  o m
+        entryStream.forEach(entry -> {
             try {
                 // Get the input stream for the current zip entry
                 InputStream is = z.getInputStream(entry);
-                /* Read data for the entry using the is object */
-
                 int depth = entry.getName().split("[\\/]").length - 1; // todo we may not actually need depth
 
                 if (!entry.isDirectory()) {
@@ -249,13 +246,7 @@ public class Utils {
         IOUtils.copy(file.getInputStream(), o);
         o.close();
 
-        try {
-            return new ZipFile(zip);
-
-        } catch (ZipException e) {
-            e.printStackTrace();
-            throw new ZipException();
-        }
+        return new ZipFile(zip);
 
     }
 
