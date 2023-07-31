@@ -495,7 +495,7 @@ public class SVIPApiController {
     }
 
     @PostMapping("/generators/osi")
-    public ResponseEntity<?> generateOSI(@RequestBody SBOMFile[] files,
+    public ResponseEntity<?> generateOSI(@RequestParam("zipFile") MultipartFile zipFile,
                                          @RequestParam("projectName") String projectName,
                                          @RequestParam("schema") SerializerFactory.Schema schema,
                                          @RequestParam("format") SerializerFactory.Format format) {
@@ -512,8 +512,20 @@ public class SVIPApiController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
+        ArrayList<HashMap<SBOMFile, Integer>> unZipped;
+        try {
+            unZipped = (ArrayList<HashMap<SBOMFile, Integer>>)
+                    Utils.unZip(Objects.requireNonNull(Utils.convertMultipartToZip(zipFile)));
+        } catch (IOException e) {
+            LOGGER.error(urlMsg + ":" + e.getMessage());
+            return new ResponseEntity<>("Make sure attachment is a zip file (.zip): " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
         // Validate & add files
-        for (SBOMFile srcFile : files) {
+        for (HashMap<SBOMFile, Integer> h : unZipped) {
+
+            SBOMFile srcFile = (SBOMFile) h.keySet().toArray()[0];
+
             if (srcFile.hasNullProperties()) {
                 LOGGER.error(urlMsg + ": file " + srcFile.getFileName() + " has null properties");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
