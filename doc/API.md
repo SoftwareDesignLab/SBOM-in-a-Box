@@ -30,7 +30,7 @@
 ---
 
 # SVIP API
-> The SVIP back-end API. See [Usage](#usage) for more details of the endpoints.
+> The SVIP back-end API. See [Endpoints](#endpoints) for detailed endpoint documentation.
 
 ## Deployment
 First ensure Docker is installed and running and then deploy using the docker-compose script.
@@ -289,6 +289,7 @@ curl -X POST -G http://localhost:8080/svip/sboms/compare \
 ```bash
 curl -X POST -d '{"ids":[1,2]}' http://localhost:8080/svip/sboms/merge
 ```
+
 ### Generate Quality Report
 > Analyze a given SBOM file and return a QualityReport
 
@@ -395,14 +396,6 @@ curl -X POST -G http://localhost:8080/svip/generators/osi \
 -d '[{"fileName": "testfile1.py", "contents": "..."}, {"fileName": "testfile2.py", "contents": "..."}]'
 ```
 
-### Comparison
-
-> Work In Progress
-
-### Merge
-
-> Work In Progress
-
 ### Generate VEX
 > Generate a VEX document using an SBOM's components and information
 
@@ -457,8 +450,8 @@ Use the following command to interact with the MySQL server instance:
 $ docker exec -it svip-mysql mysql -uroot -psvipMySQL -D svip -e "<YOUR SQL STATEMENT HERE>"
 ```
 #### Table `files` Schema:
-| Field     | Type       | Null | Key | Default | Extra |
+|   Field   |    Type    | Null | Key | Default | Extra |
 |:---------:|:----------:|:----:|:---:|:-------:|:-----:|
-| id        | bigint(20) | NO   | PRI | NULL    |       |
-| contents  | longtext   | YES  |     | NULL    |       |
-| file_name | text       | YES  |     | NULL    |       |
+|    id     | bigint(20) |  NO  | PRI |  NULL   |       |
+| contents  |  longtext  | YES  |     |  NULL   |       |
+| file_name |    text    | YES  |     |  NULL   |       |
