@@ -10,6 +10,7 @@ import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.compare.conflicts.Conflict;
 import org.svip.compare.conflicts.ConflictFactory;
+import static org.svip.compare.conflicts.MismatchType.*;
 
 import java.util.*;
 
