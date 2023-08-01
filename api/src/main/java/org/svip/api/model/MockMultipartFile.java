@@ -4,11 +4,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 
+/**
+ * Implementation of the MultipartFile interface used for unit testing with binary/non encoded files
+ *
+ * @author Juan Francisco Patino
+ */
 public class MockMultipartFile implements MultipartFile {
 
-    private String name;
-    private byte[] bytes;
-    private InputStream inputStream;
+    private final String name;
+    private final InputStream inputStream;
 
     public MockMultipartFile(File file) throws FileNotFoundException {
         this.name = file.getName();
@@ -41,17 +45,17 @@ public class MockMultipartFile implements MultipartFile {
     }
 
     @Override
-    public byte[] getBytes() throws IOException {
-        return bytes;
+    public byte[] getBytes(){
+        return null;
     }
 
     @Override
-    public InputStream getInputStream() throws IOException {
+    public InputStream getInputStream(){
         return this.inputStream;
     }
 
     @Override
-    public void transferTo(File dest) throws IOException, IllegalStateException {
+    public void transferTo(File dest) throws IllegalStateException {
 
     }
 }
