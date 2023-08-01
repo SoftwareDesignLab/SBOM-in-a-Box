@@ -1,11 +1,11 @@
 package org.svip.generation;
 
-import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.generation.parsers.ParserController;
+import org.svip.generation.parsers.utils.VirtualPath;
+import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.serializer.Serializer;
 import org.svip.utils.Debug;
-import org.svip.generation.parsers.utils.VirtualPath;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -61,7 +61,7 @@ public class SBOMGeneratorCLI {
     /**
      * This is the usage text.
      */
-    private static final String USAGES =   """
+    private static final String USAGES = """
             Usages:
                  java -jar jarfile targetPath:[componentName] [options]
 
@@ -111,10 +111,9 @@ public class SBOMGeneratorCLI {
      * @param reqArgs an ArrayList of required arguments
      * @param optArgs a HashMap of optional arguments
      * @throws InvalidArgumentException if a required argument fails to validate
-     * @throws FileNotFoundException if a path to a valid file or directory is
-     *                               not given as the first required argument
+     * @throws FileNotFoundException    if a path to a valid file or directory is
+     *                                  not given as the first required argument
      * @throws IllegalArgumentException if an optional argument fails to validate
-     *
      */
     private static void validateArgs(ArrayList<String> reqArgs, HashMap<String, String> optArgs) throws InvalidArgumentException, FileNotFoundException, IllegalArgumentException {
         // Validate Required Arguments
@@ -132,7 +131,7 @@ public class SBOMGeneratorCLI {
             final String value = arg.getValue();
             // Make sure arg is at least 2 chars long and begins with '-'
             // Arg will be in the form of "-x"
-            if(key.length() < 2) throw new IllegalArgumentException("Argument not in correct form: '" + arg + "'");
+            if (key.length() < 2) throw new IllegalArgumentException("Argument not in correct form: '" + arg + "'");
 
             // Grabs prefix char from string
             final char prefix = key.charAt(1);
@@ -149,13 +148,14 @@ public class SBOMGeneratorCLI {
                     // Do this for all valued args
 
                     // If both key and value are not present, throw exception
-                    if(value.equals(""))
+                    if (value.equals(""))
                         throw new IllegalArgumentException("Argument not in correct form: '-" + key + "=<value>'");
                 }
 
                 // BOOLEAN ARGUMENTS
 
-                case 'd', 's', 'h' -> {} // No validation needed for boolean flags
+                case 'd', 's', 'h' -> {
+                } // No validation needed for boolean flags
                 default -> throw new IllegalArgumentException("Argument '" + arg + "' is Unrecognized or Unsupported");
             }
         }
@@ -186,7 +186,7 @@ public class SBOMGeneratorCLI {
         Scanner scanner = new Scanner(System.in);
 
         // Add minimum number of required slots for arguments
-        while(args.size() < 1) {
+        while (args.size() < 1) {
             args.add("");
         }
 
@@ -195,8 +195,8 @@ public class SBOMGeneratorCLI {
             System.out.print("\nTarget Directory: ");
             // Remove double-quotes and replace back-slashes with forward-slashes
             args.set(0, scanner.nextLine()
-                            .replace("\"", "")
-                            .replace('\\', '/'));
+                    .replace("\"", "")
+                    .replace('\\', '/'));
 
             // Check empty input was given
             if (args.get(0).equals("")) {
@@ -215,8 +215,8 @@ public class SBOMGeneratorCLI {
      *
      * @param args an array of arguments to format
      * @return a map containing two entries: <br/>
-     *         "reqArgs": ArrayList <br/>
-     *         "optArgs": HashMap
+     * "reqArgs": ArrayList <br/>
+     * "optArgs": HashMap
      */
     private static Map<String, Object> formatArgs(String[] args) {
         final ArrayList<String> reqArgs = new ArrayList<>();
@@ -225,7 +225,7 @@ public class SBOMGeneratorCLI {
         // Separate required and optional args
         for (final String arg : args) {
             // Log any
-            if(arg.startsWith("-")) {
+            if (arg.startsWith("-")) {
                 // Split "-k=value?" -> "k" : "value" or "k" : "" if value is not present
                 final int index = arg.lastIndexOf("=");
                 // Key is arg[0, index]
@@ -236,13 +236,12 @@ public class SBOMGeneratorCLI {
                 final String value = (index > 0 && index + 1 < arg.length()) ?
                         arg.substring(index + 1) : "";
                 optArgs.put(key, value);
-            }
-            else reqArgs.add(arg);
+            } else reqArgs.add(arg);
         }
 
         // If path was found, replace "\" with "/"
-        if(reqArgs.size() > 1)
-            reqArgs.set(0,  reqArgs.get(0).replace('\\', '/'));
+        if (reqArgs.size() > 1)
+            reqArgs.set(0, reqArgs.get(0).replace('\\', '/'));
 
         // Return formatted collections
         return new HashMap<>() {{
@@ -265,7 +264,7 @@ public class SBOMGeneratorCLI {
         int attempt = 0;
 
         // Input loop
-        for (;;) {
+        for (; ; ) {
             // Break if exceed allow attempts
             if (attempt > MAX_ALLOWED_ATTEMPTS) {
                 System.err.println("Exceeded Max Attempts; terminating. . .");
@@ -277,8 +276,8 @@ public class SBOMGeneratorCLI {
                 validateArgs(reqArgs, optArgs);
                 break;
             } // If parsing required args fails, re-acquire those args
-            catch (InvalidArgumentException|FileNotFoundException e) {
-                if (showUsages){
+            catch (InvalidArgumentException | FileNotFoundException e) {
+                if (showUsages) {
                     displayUsages("");
                 }
                 // Print error message and get new arguments
@@ -298,10 +297,11 @@ public class SBOMGeneratorCLI {
 
     /**
      * Display the usages of this program.
+     *
      * @param msg Custom text in addition to the {@code USAGES} for a developer to show where this method is invoked.
      *            Please pass empty string "" after done development.
      */
-    private static void displayUsages(String msg){
+    private static void displayUsages(String msg) {
         System.out.println(msg + "\n" + USAGES);
     }
 
@@ -343,7 +343,7 @@ public class SBOMGeneratorCLI {
         }
 
         // Show Usages if -h is on the cli and exit program
-        if(showUsages) {
+        if (showUsages) {
             displayUsages("");
             return;
         }
@@ -363,17 +363,18 @@ public class SBOMGeneratorCLI {
 
         // Language specific slash
         final String os = System.getProperty("os.name").toLowerCase();
-        if(os.contains("win")) outPath += '\\';
-        if(os.contains("mac") || os.contains("nix") || os.contains("nux") || os.contains("aix"))  outPath += '/';
+        if (os.contains("win")) outPath += '\\';
+        if (os.contains("mac") || os.contains("nix") || os.contains("nux") || os.contains("aix")) outPath += '/';
 
         outPath += OUT_DIRECTORY;
 //        outPath = null; // UNCOMMENT FOR TESTING ONLY, THIS DOES NOT GENERATE SBOM FILES, ONLY STRINGS
 
         // Get schema from optional args, if not present, default to CycloneDX
         SerializerFactory.Schema schema = SerializerFactory.Schema.CDX14;
-        if(optArgs.containsKey("-o")) {
-            try { schema = SerializerFactory.Schema.valueOf(optArgs.get("-o").toUpperCase()); }
-            catch (IllegalArgumentException ignored) {
+        if (optArgs.containsKey("-o")) {
+            try {
+                schema = SerializerFactory.Schema.valueOf(optArgs.get("-o").toUpperCase());
+            } catch (IllegalArgumentException ignored) {
                 log(LOG_TYPE.WARN, String.format(
                         "Invalid schema type provided: '%s', defaulting to '%s'",
                         optArgs.get("-o").toUpperCase(),
@@ -384,9 +385,10 @@ public class SBOMGeneratorCLI {
 
         // Get format from optional args, if not present, default to JSON
         SerializerFactory.Format format = SerializerFactory.Format.JSON;
-        if(optArgs.containsKey("-f")) {
-            try { format = SerializerFactory.Format.valueOf(optArgs.get("-f").toUpperCase()); }
-            catch (IllegalArgumentException ignored) {
+        if (optArgs.containsKey("-f")) {
+            try {
+                format = SerializerFactory.Format.valueOf(optArgs.get("-f").toUpperCase());
+            } catch (IllegalArgumentException ignored) {
                 log(LOG_TYPE.WARN, String.format(
                         "Invalid format type provided: '%s', defaulting to '%s'",
                         optArgs.get("-f").toUpperCase(),
@@ -410,7 +412,7 @@ public class SBOMGeneratorCLI {
             out.println(serialized);
             out.close();
             Debug.log(LOG_TYPE.SUMMARY, "SUCCESSFULLY WRITTEN " + schema + " " + format + " SBOM to path: " + sbomFile);
-        } catch(IOException e) {
+        } catch (IOException e) {
             log(Debug.LOG_TYPE.EXCEPTION, e);
             log(Debug.LOG_TYPE.ERROR, "Error writing to file " + outPath);
         }
@@ -452,7 +454,7 @@ public class SBOMGeneratorCLI {
                         "Found %s Directories and %s Files in %.2f seconds",
                 directoryCounter,
                 fileMap.size(),
-                (float)(System.currentTimeMillis() - buildStart) / 1000));
+                (float) (System.currentTimeMillis() - buildStart) / 1000));
 
         return fileMap;
     }

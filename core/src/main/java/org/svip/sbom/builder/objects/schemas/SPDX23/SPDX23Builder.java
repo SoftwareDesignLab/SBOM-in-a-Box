@@ -26,71 +26,65 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
     private String uid;
     private String version;
     private String specVersion;
-    private Set<String> licenses = new HashSet<>();
+    private final Set<String> licenses = new HashSet<>();
     private CreationData creationData;
     private String documentComment;
     private Component rootComponent;
-    private Set<Component> components = new HashSet<>();
-    private HashMap<String, Set<Relationship>> relationships = new HashMap<>();
-    private Set<ExternalReference> externalReferences = new HashSet<>();
-    /** Set<VEX> vulnerabilities;
-    Set<Snippet> snippets;
-    Set<LicenseInfo> additionalLicenseInformation;
-     Set<Annotation> annotationInformation;</Annotation>*/
+    private final Set<Component> components = new HashSet<>();
+    private final HashMap<String, Set<Relationship>> relationships = new HashMap<>();
+    private final Set<ExternalReference> externalReferences = new HashSet<>();
+    /**
+     * Set<VEX> vulnerabilities;
+     * Set<Snippet> snippets;
+     * Set<LicenseInfo> additionalLicenseInformation;
+     * Set<Annotation> annotationInformation;</Annotation>
+     */
     private String SPDXLicenseListVersion;
-    
+
     @Override
-    public SPDX23Builder setFormat(String format)
-    {
+    public SPDX23Builder setFormat(String format) {
         this.format = format;
         return this;
     }
 
     @Override
-    public SPDX23Builder setName(String name)
-    {
+    public SPDX23Builder setName(String name) {
         this.name = name;
         return this;
     }
 
     @Override
-    public SPDX23Builder setUID(String uid)
-    {
+    public SPDX23Builder setUID(String uid) {
         this.uid = uid;
         return this;
     }
 
     @Override
-    public SPDX23Builder setVersion(String version)
-    {
+    public SPDX23Builder setVersion(String version) {
         this.version = version;
         return this;
     }
 
     @Override
-    public SPDX23Builder setSpecVersion(String specVersion)
-    {
+    public SPDX23Builder setSpecVersion(String specVersion) {
         this.specVersion = specVersion;
         return this;
     }
 
     @Override
-    public SPDX23Builder addLicense(String license)
-    {
+    public SPDX23Builder addLicense(String license) {
         this.licenses.add(license);
         return this;
     }
 
     @Override
-    public SPDX23Builder setCreationData(CreationData creationData)
-    {
+    public SPDX23Builder setCreationData(CreationData creationData) {
         this.creationData = creationData;
         return this;
     }
 
     @Override
-    public SPDX23Builder setDocumentComment(String documentComment)
-    {
+    public SPDX23Builder setDocumentComment(String documentComment) {
         this.documentComment = documentComment;
         return this;
     }
@@ -114,9 +108,8 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
     }
 
     @Override
-    public SPDX23Builder addRelationship(String componentName, Relationship relationship)
-    {
-        if( !relationships.containsKey(componentName))
+    public SPDX23Builder addRelationship(String componentName, Relationship relationship) {
+        if (!relationships.containsKey(componentName))
             this.relationships.put(componentName, new HashSet<>());
 
         this.relationships.get(componentName).add(relationship);
@@ -124,8 +117,7 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
     }
 
     @Override
-    public SPDX23Builder addExternalReference(ExternalReference externalReference)
-    {
+    public SPDX23Builder addExternalReference(ExternalReference externalReference) {
         this.externalReferences.add(externalReference);
         return this;
     }

@@ -14,6 +14,7 @@ public class CDX14PackageBuilderFactory implements ComponentBuilderFactory {
 
     /**
      * Create a new Builder
+     *
      * @return a new CDX14PackageBuilder
      */
     @Override

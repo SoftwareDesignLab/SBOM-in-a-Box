@@ -20,7 +20,9 @@ import static org.svip.utils.Debug.log;
  * @author Ian Dunn
  */
 public class CSharpParser extends LanguageParser {
-    public CSharpParser() { super("https://learn.microsoft.com/en-us/dotnet/api/"); }
+    public CSharpParser() {
+        super("https://learn.microsoft.com/en-us/dotnet/api/");
+    }
 
     ///
     /// Abstract Method Implementation
@@ -43,7 +45,7 @@ public class CSharpParser extends LanguageParser {
         // If component is typed, count types and go to correct URL
         // "System.Func<string, string>" -> "System.Func-2"
         final int index = endpoint.indexOf('<');
-        if(index != -1) {
+        if (index != -1) {
             // Rebuild endpoint
             final int params = endpoint.substring(index).split(",").length;
             endpoint = endpoint.substring(0, index) + "-" + params;
@@ -54,9 +56,13 @@ public class CSharpParser extends LanguageParser {
         }
 
         // Query URL
-        try { return queryURL(this.STD_LIB_URL + endpoint, true).getResponseCode() == 200; }
+        try {
+            return queryURL(this.STD_LIB_URL + endpoint, true).getResponseCode() == 200;
+        }
         // If an error is thrown, return false
-        catch (Exception ignored) { return false; }
+        catch (Exception ignored) {
+            return false;
+        }
     }
 
     /**
@@ -85,6 +91,7 @@ public class CSharpParser extends LanguageParser {
     }
 
     // TODO: Rework to fit updated regex
+
     /**
      * Given a regex match, parse the result accordingly to get the correct component information
      *
@@ -95,7 +102,7 @@ public class CSharpParser extends LanguageParser {
     protected void parseRegexMatch(List<SVIPComponentBuilder> components, Matcher matcher) {
         // Capture match data
         String match;
-        if(matcher.group(2) != null) match = matcher.group(2);
+        if (matcher.group(2) != null) match = matcher.group(2);
         else {
             log(LOG_TYPE.WARN, "Match (" + matcher.group(0) + ") has no Groups; Skipping. . .");
             return;
@@ -109,7 +116,7 @@ public class CSharpParser extends LanguageParser {
 
         // Determine if "from" is present, if so split "from" and "name"
         String from = null;
-        if(tokens.length > 1) {
+        if (tokens.length > 1) {
             match = tokens[tokens.length - 1];
             from = String.join("/", Arrays.copyOfRange(tokens, 0, tokens.length - 1));
         }
@@ -120,7 +127,7 @@ public class CSharpParser extends LanguageParser {
         builder.setType("EXTERNAL"); // Default to EXTERNAL
 
         // Add "from" if found
-        if(from != null) builder.setGroup(from);
+        if (from != null) builder.setGroup(from);
 
         // If alias
 //        if(matcher.group(1) != null) {
@@ -129,7 +136,7 @@ public class CSharpParser extends LanguageParser {
 
         // Check if internal
         if (isInternalComponent(builder)) builder.setType("INTERNAL");
-        // Otherwise, check if Language
+            // Otherwise, check if Language
         else if (isLanguageComponent(builder)) builder.setType("LANGUAGE");
 
         // Remove generic type if found

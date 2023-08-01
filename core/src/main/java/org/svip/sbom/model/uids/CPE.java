@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 /**
  * file: CPE.java
- *
+ * <p>
  * Class representation of a CPE
  * Specifications can be found in NIST's Common Platform Enumeration: Naming Specification Version 2.3
  * <a href="https://nvlpubs.nist.gov/nistpubs/Legacy/IR/nistir7695.pdf">...</a>
@@ -33,7 +33,7 @@ public class CPE {
     private static final String WILDCARD_REGEX = ".*";
 
     // Supported types for CPE
-    public enum Type{
+    public enum Type {
         APPLICATION,
         HARDWARE,
         OPERATING_SYSTEMS
@@ -44,10 +44,10 @@ public class CPE {
     private final Type part;
 
     // "Values for this attribute SHOULD describe or identify the person or organization that manufactured or created the product."
-    private String vendor;
+    private final String vendor;
 
     // "Values for this attribute SHOULD describe or identify the most common and recognizable title or name of the product."
-    private String product;
+    private final String product;
 
     // "Values for this attribute SHOULD be vendor-specific alphanumeric strings characterizing the particular release
     // version of the product."
@@ -93,25 +93,25 @@ public class CPE {
         Matcher matcher = cpePattern.matcher(cpe);
 
         // Regex fails to match to string
-        if(!matcher.find()){
+        if (!matcher.find()) {
             Debug.log(Debug.LOG_TYPE.DEBUG, "Unable to parse cpe \"" + cpe + "\"");
             throw new Exception("Unable to parse cpe \"" + cpe + "\"");
         }
 
         // Check for missing fields
-        if(Arrays.stream(matcher.groups()).toList().contains(null)){
-            throw new Exception("Invalid CPE, missing the following: "+
-                    ( matcher.group(1) == null ? "Type " : "" ) +
-                    ( matcher.group(2) == null ? "Vendor " : "" ) +
-                    ( matcher.group(3) == null ? "Product " : "" ) +
-                    ( matcher.group(4) == null ? "Version " : "" ) +
-                    ( matcher.group(5) == null ? "Update " : "" ) +
-                    ( matcher.group(6) == null ? "Edition " : "" ) +
-                    ( matcher.group(7) == null ? "Language " : "" ) +
-                    ( matcher.group(8) == null ? "sw_edition " : "" ) +
-                    ( matcher.group(9) == null ? "target_sw " : "" ) +
-                    ( matcher.group(10) == null ? "target_hw " : "" ) +
-                    ( matcher.group(11) == null ? "other " : "" )
+        if (Arrays.stream(matcher.groups()).toList().contains(null)) {
+            throw new Exception("Invalid CPE, missing the following: " +
+                    (matcher.group(1) == null ? "Type " : "") +
+                    (matcher.group(2) == null ? "Vendor " : "") +
+                    (matcher.group(3) == null ? "Product " : "") +
+                    (matcher.group(4) == null ? "Version " : "") +
+                    (matcher.group(5) == null ? "Update " : "") +
+                    (matcher.group(6) == null ? "Edition " : "") +
+                    (matcher.group(7) == null ? "Language " : "") +
+                    (matcher.group(8) == null ? "sw_edition " : "") +
+                    (matcher.group(9) == null ? "target_sw " : "") +
+                    (matcher.group(10) == null ? "target_hw " : "") +
+                    (matcher.group(11) == null ? "other " : "")
             );
         }
 
@@ -167,16 +167,16 @@ public class CPE {
      * @param b String b
      * @return if a and b are equivalent
      */
-    public static boolean isEqualWildcard(String a, String b){
+    public static boolean isEqualWildcard(String a, String b) {
         // Check for direct equivalence first
-        if(a.equals(b))
+        if (a.equals(b))
             return true;
 
         String wildCardString = "";
         String other = "";
 
         // Get wildcard and target string
-        if(a.contains(WILDCARD)){
+        if (a.contains(WILDCARD)) {
             wildCardString = a;
             other = b;
         } else {
@@ -243,6 +243,7 @@ public class CPE {
     public String getOther() {
         return other;
     }
+
     @Override
     public boolean equals(Object o) {
         // Check if same object
@@ -286,7 +287,7 @@ public class CPE {
         ).toList());
 
         values = values.stream().map(v -> {
-            if(v == null) v = "ANY";
+            if (v == null) v = "ANY";
             return bindValueForFS(v);
         }).collect(Collectors.toList());
 
@@ -301,10 +302,16 @@ public class CPE {
      * @return
      */
     private String bindValueForFS(String value) {
-        switch(value) {
-            case "ANY" -> { return "*"; }
-            case "NA" -> { return "-"; }
-            default -> { return processQuotedChars(value); }
+        switch (value) {
+            case "ANY" -> {
+                return "*";
+            }
+            case "NA" -> {
+                return "-";
+            }
+            default -> {
+                return processQuotedChars(value);
+            }
         }
     }
 
@@ -319,13 +326,13 @@ public class CPE {
         StringBuilder processed = new StringBuilder();
 
         int idx = 0;
-        while(idx < value.length()) {
+        while (idx < value.length()) {
             char c = value.charAt(idx);
-            if(c != '\\') {
+            if (c != '\\') {
                 processed.append(c);
             } else {
                 char next = value.charAt(idx + 1);
-                if(next == '.' || next == '-' || next == '_') {
+                if (next == '.' || next == '-' || next == '_') {
                     processed.append(next);
                 } else {
                     processed.append('\\').append(next);

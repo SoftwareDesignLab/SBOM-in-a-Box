@@ -19,6 +19,7 @@ public interface Comparable {
 
     /**
      * Test if Object is equal to current
+     *
      * @param o Object
      * @return List of Conflicts
      */

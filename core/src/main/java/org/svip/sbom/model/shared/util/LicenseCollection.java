@@ -26,21 +26,21 @@ public class LicenseCollection implements Comparable {
     /**
      * @param license License
      */
-    public void addDeclaredLicense(String license){
+    public void addDeclaredLicense(String license) {
         this.declared.add(license);
     }
 
     /**
      * @param license License
      */
-    public void addLicenseInfoFromFile(String license){
+    public void addLicenseInfoFromFile(String license) {
         this.infoFromFiles.add(license);
     }
 
     /**
      * @param license License
      */
-    public void addConcludedLicenseString(String license){
+    public void addConcludedLicenseString(String license) {
         this.concluded.add(license);
     }
 
@@ -92,7 +92,7 @@ public class LicenseCollection implements Comparable {
     @Override
     public List<Conflict> compare(Comparable o) {
         // Don't compare if not instance of same object
-        if(!(o instanceof LicenseCollection other))
+        if (!(o instanceof LicenseCollection other))
             return null;
 
         ConflictFactory cf = new ConflictFactory();
@@ -104,11 +104,12 @@ public class LicenseCollection implements Comparable {
 
     /**
      * Test if Object is equal to current
+     *
      * @param o Object
      * @return List of Conflicts
      */
     @Override
-    public boolean equals(Object o){
+    public boolean equals(Object o) {
         // LC is just collection of licenses, if a collection then it is equal
         return o != null && getClass() == o.getClass();
     }

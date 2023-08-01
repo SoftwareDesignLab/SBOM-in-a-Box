@@ -1,12 +1,12 @@
 package org.svip.metrics.tests;
 
-import org.svip.sbom.model.interfaces.generics.Component;
-import org.svip.sbom.model.interfaces.generics.SBOMPackage;
-import org.svip.sbom.model.uids.PURL;
 import org.svip.metrics.resultfactory.Result;
 import org.svip.metrics.resultfactory.ResultFactory;
 import org.svip.metrics.resultfactory.enumerations.INFO;
 import org.svip.metrics.tests.enumerations.ATTRIBUTE;
+import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.interfaces.generics.SBOMPackage;
+import org.svip.sbom.model.uids.PURL;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,7 +20,7 @@ import java.util.Set;
  * @author Matthew Morrison
  * @author Derek Garcia
  */
-public class PURLTest extends MetricTest{
+public class PURLTest extends MetricTest {
 
     private final ResultFactory resultFactory;
 
@@ -30,7 +30,7 @@ public class PURLTest extends MetricTest{
     /**
      * Constructor to create a new PURLTest
      *
-     * @param component the component that is being tested
+     * @param component  the component that is being tested
      * @param attributes the list of attributes used
      */
     public PURLTest(Component component, ATTRIBUTE... attributes) {
@@ -42,6 +42,7 @@ public class PURLTest extends MetricTest{
 
     /**
      * Conduct a series of tests for a given PURL string
+     *
      * @param field the field being tested (purl)
      * @param value the value being tested (the purl string)
      * @return a set of results from each test
@@ -50,7 +51,7 @@ public class PURLTest extends MetricTest{
     public Set<Result> test(String field, String value) {
         Set<Result> results = new HashSet<>();
         // check that purl string value is not null
-        if(value != null) {
+        if (value != null) {
             results.add(isValidPURL(field, value));
             results.addAll(isAccuratePURL(field, value));
             // results.addAll(existsInRepo(field, value));
@@ -66,20 +67,21 @@ public class PURLTest extends MetricTest{
 
     /**
      * Test the purl string if it is valid and follows purl schema
+     *
      * @param field the field being tested (purl)
      * @param value the purl string
      * @return a result if the purl is valid or not
      */
-    private Result isValidPURL(String field, String value){
+    private Result isValidPURL(String field, String value) {
         var rf = new ResultFactory("Valid PURL", ATTRIBUTE.COMPLETENESS, ATTRIBUTE.UNIQUENESS, ATTRIBUTE.MINIMUM_ELEMENTS);
-        try{
+        try {
             // create new purl object
             new PURL(value);
             return rf.pass(field, INFO.VALID,
                     value, component.getName());
         }
         // failed to create new purl, test fails
-        catch(Exception e){
+        catch (Exception e) {
             return rf.fail(field, INFO.INVALID,
                     value, component.getName());
         }
@@ -87,20 +89,21 @@ public class PURLTest extends MetricTest{
 
     /**
      * Test the purl string for its accuracy against the component's fields
+     *
      * @param field the field to be tested
      * @param value the purl string
      * @return the result of if the purl's fields matches the
      * component's fields
      */
-    private List<Result> isAccuratePURL(String field, String value){
+    private List<Result> isAccuratePURL(String field, String value) {
         var rf = new ResultFactory("Accurate PURL", ATTRIBUTE.COMPLETENESS, ATTRIBUTE.UNIQUENESS, ATTRIBUTE.MINIMUM_ELEMENTS);
-        try{
+        try {
             PURL purl = new PURL(value);
             return match(purl);
 
         }
         // failed to create new purl, test automatically fails
-        catch(Exception e){
+        catch (Exception e) {
             List<Result> result = new ArrayList<>();
             result.add(rf.fail(field, INFO.ERROR,
                     value, component.getName()));
@@ -114,12 +117,12 @@ public class PURLTest extends MetricTest{
      * @param purl the purl to be tested
      * @return list of results with the findings
      */
-    private List<Result> match(PURL purl){
+    private List<Result> match(PURL purl) {
         var rf = new ResultFactory("Matching PURL", ATTRIBUTE.COMPLETENESS, ATTRIBUTE.UNIQUENESS, ATTRIBUTE.MINIMUM_ELEMENTS);
         List<Result> results = new ArrayList<>();
         // test purl and component name
         String purlName = purl.getName();
-        if(!purlName.equals(component.getName())){
+        if (!purlName.equals(component.getName())) {
             results.add(rf.fail("PURL Name", INFO.NOT_MATCHING,
                     purl.getName(), component.getName()));
         } else {
@@ -128,7 +131,7 @@ public class PURLTest extends MetricTest{
         }
         // test purl and component version
         String purlVersion = purl.getVersion();
-        if(!purlVersion.equals(component.getVersion())){
+        if (!purlVersion.equals(component.getVersion())) {
             results.add(rf.fail("PURL Version", INFO.NOT_MATCHING,
                     purl.getVersion(), component.getVersion()));
         } else {
@@ -140,12 +143,13 @@ public class PURLTest extends MetricTest{
 
     /**
      * Test if a purl string exists in its respective package manager repo
+     *
      * @param field the field being tested (purl)
      * @param value the purl string
      * @return a Set<Result> of if the purl string exists in its repo
      */
     //TODO wait for HTTPClient to implement
-    private Set<Result> existsInRepo(String field, String value){
+    private Set<Result> existsInRepo(String field, String value) {
         return null;
     }
 }

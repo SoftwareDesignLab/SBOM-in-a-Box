@@ -23,11 +23,13 @@ import java.util.Set;
  * @author Matthew Morrison
  * @author Derek Garcia
  */
-public class LicenseTest extends MetricTest{
+public class LicenseTest extends MetricTest {
 
     private final ResultFactory resultFactory;
 
-    /**For isValidSPDXLicense*/
+    /**
+     * For isValidSPDXLicense
+     */
     private static final String SPDX_LICENSE_LIST_URL = "https://spdx.org/licenses/";
 
     // Regexes
@@ -57,6 +59,7 @@ public class LicenseTest extends MetricTest{
 
     /**
      * Perform the tests for a license
+     *
      * @param field the field being tested
      * @param value the value being tested
      * @return a set of results from each test
@@ -65,7 +68,7 @@ public class LicenseTest extends MetricTest{
     public Set<Result> test(String field, String value) {
         Set<Result> results = new HashSet<>();
         // license is not a null value and does exist, tests can run
-        if(value != null && !value.equals("")) {
+        if (value != null && !value.equals("")) {
             results.addAll(isValidSPDXLicense(field, value));
         }
         // license is a null value and does not exist, tests cannot be run
@@ -80,28 +83,30 @@ public class LicenseTest extends MetricTest{
 
     /**
      * Test a license string to see if it is a valid license expression
+     *
      * @param field the field to test
      * @param value the license string
      * @return a set of results
      */
     //TODO implement once LicenseExpression Object is implemented and used
-    private Set<Result> isValidLicenseExpression(String field, String value){
+    private Set<Result> isValidLicenseExpression(String field, String value) {
         return null;
     }
 
     /**
      * Test a given license value if it is a valid SPDX license
+     *
      * @param field the field to test
      * @param value the license string
      * @return a set of results
      */
-    private Set<Result> isValidSPDXLicense(String field, String value){
+    private Set<Result> isValidSPDXLicense(String field, String value) {
         var rf = new ResultFactory("Valid SPDX License", ATTRIBUTE.COMPLETENESS, ATTRIBUTE.UNIQUENESS, ATTRIBUTE.MINIMUM_ELEMENTS);
         Set<Result> results = new HashSet<>();
         Result r;
 
         // Error if can't populate sets
-        if(!loadSPDXLicenseData()){
+        if (!loadSPDXLicenseData()) {
             r = rf.error(field, INFO.ERROR,
                     "SPDX License Data", componentName);
             results.add(r);
@@ -110,7 +115,7 @@ public class LicenseTest extends MetricTest{
         // sets were populated
         else {
             // if the license value is empty, test cannot be run
-            if(value == null || value.equals("")){
+            if (value == null || value.equals("")) {
                 r = rf.error(field, INFO.MISSING,
                         value, componentName);
                 results.add(r);
@@ -127,7 +132,7 @@ public class LicenseTest extends MetricTest{
      *
      * @return true if success, fails otherwise
      */
-    private boolean loadSPDXLicenseData(){
+    private boolean loadSPDXLicenseData() {
         try {
             // Open connection
             URL url = new URL(SPDX_LICENSE_LIST_URL);
@@ -135,7 +140,7 @@ public class LicenseTest extends MetricTest{
             huc.setRequestMethod("GET");
 
             // valid SPDX License Identifier
-            if(huc.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            if (huc.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 // Get HTML
                 InputStream in = huc.getInputStream();
                 String encoding = huc.getContentEncoding();
@@ -147,7 +152,7 @@ public class LicenseTest extends MetricTest{
                 Matcher m = p.matcher(html);
 
                 // Populate Active Licenses
-                if(!m.find()){
+                if (!m.find()) {
                     throw new Exception("Failed to parse SPDX License table");
                 } else {
                     // todo numNames != numIDs, names can have >1 Ids
@@ -155,13 +160,13 @@ public class LicenseTest extends MetricTest{
                 }
 
                 // Populate Depreciated Licenses
-                if(!m.find()){
+                if (!m.find()) {
                     throw new Exception("Failed to parse Depreciated SPDX License table");
                 } else {
                     popululateDataSets(m.group(1), DEPRECIATED_SPDX_LICENSE_NAMES, DEPRECIATED_SPDX_LICENSE_IDENTIFIERS);
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             // failure
             Debug.log(Debug.LOG_TYPE.ERROR, e);
             return false;
@@ -173,17 +178,17 @@ public class LicenseTest extends MetricTest{
     /**
      * Populate the given sets with table information
      *
-     * @param tableHTML html table details with spdx license info
-     * @param names Set of SPDX License Names to update
+     * @param tableHTML   html table details with spdx license info
+     * @param names       Set of SPDX License Names to update
      * @param identifiers Set of SPDX License Identifiers to update
      */
-    private void popululateDataSets(String tableHTML, Set<String> names, Set<String> identifiers){
+    private void popululateDataSets(String tableHTML, Set<String> names, Set<String> identifiers) {
         // build regex
         Pattern p = new Pattern(SPDX_ROW_REGEX, REFlags.MULTILINE);
         Matcher m = p.matcher(tableHTML);
 
         // Add all names and identifiers
-        while(m.find()){
+        while (m.find()) {
             names.add(m.group(1).toLowerCase());
             identifiers.add(m.group(2).toLowerCase());
         }
@@ -192,6 +197,7 @@ public class LicenseTest extends MetricTest{
     /**
      * Test a component's licenses to see if it is a valid SPDX license
      * via url
+     *
      * @param value the license string to be tested
      * @return a collection of results for each license of a component and
      * its validity
@@ -202,24 +208,24 @@ public class LicenseTest extends MetricTest{
         // TODO only held as a string. A License object should be created
 
         // Test if valid identifier
-        if(SPDX_LICENSE_IDENTIFIERS.contains(value.toLowerCase())) {
+        if (SPDX_LICENSE_IDENTIFIERS.contains(value.toLowerCase())) {
             return rf.pass(field, INFO.VALID,
                     value, componentName);
         }
         // Test if valid name
-        else if(SPDX_LICENSE_NAMES.contains(value.toLowerCase())){
+        else if (SPDX_LICENSE_NAMES.contains(value.toLowerCase())) {
             return rf.pass(field, INFO.VALID,
                     value, componentName);
         }
 
         // Test if depreciated Identifier
-        else if(DEPRECIATED_SPDX_LICENSE_IDENTIFIERS.contains(value.toLowerCase())){
+        else if (DEPRECIATED_SPDX_LICENSE_IDENTIFIERS.contains(value.toLowerCase())) {
             return rf.fail(field, INFO.INVALID,
                     value, componentName);
         }
 
         // Test if depreciated Name
-        else if(DEPRECIATED_SPDX_LICENSE_NAMES.contains(value.toLowerCase())){
+        else if (DEPRECIATED_SPDX_LICENSE_NAMES.contains(value.toLowerCase())) {
             return rf.fail(field, INFO.INVALID,
                     value, componentName);
         }
