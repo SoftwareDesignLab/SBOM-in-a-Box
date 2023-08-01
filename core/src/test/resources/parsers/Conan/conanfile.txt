@@ -1,0 +1,35 @@
+[requires]
+folly/2020.08.10.00
+openssl/1.1.1k
+imgui/1.79
+glfw/3.3.2
+glew/2.1.0
+opencv/2.4.13.7
+poco/[>1.0,<1.9]
+zlib/1.2.13#revision1  #This is a comment
+boost/1.70.0#revision2
+
+
+[generators]
+cmake
+CMakeDeps
+CMakeToolchain
+      # this is also a comment
+
+
+[tool_requires]
+7zip/16.00
+cmake/3.23.0
+
+
+[test_requires]
+gtest/1.12.1
+
+
+[options]
+poco*:shared=True
+openssl*:shared=True
+
+
+[layout]
+cmake_layout

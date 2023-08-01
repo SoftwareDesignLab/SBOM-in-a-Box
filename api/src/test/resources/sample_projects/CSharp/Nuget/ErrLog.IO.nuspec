@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package  xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>errlog.io</id>
+    <version>1.1.18</version>
+    <title>ErrLog.IO Error and Exception Logging Tool</title>
+    <authors>Matthew Proctor, Michael Sanders, Alastair Bateman</authors>
+    <owners>kutamo</owners>
+    <licenseUrl>https://errlog.io/terms</licenseUrl>
+    <projectUrl>https://errlog.io/docs/getting-started</projectUrl>
+    <iconUrl>https://www.errlog.io/images/errlog_dark_logo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>ErrLog.IO is an exception and error logging tool</description>
+    <releaseNotes>Bug fixes and performance improvements </releaseNotes>
+    <copyright>Copyright 2017 Kutamo Pty. Ltd.</copyright>
+    <tags>exceptions web http error logging</tags>
+    <dependencies>
+      <dependency id="Newtonsoft.Json" version="10.0"  />
+    </dependencies>
+    <summary>ErrLog.IO is an exception and error logging tool.</summary>
+  </metadata>
+  <files>
+    <file src="readme.md" target="" />
+  </files>
+</package>

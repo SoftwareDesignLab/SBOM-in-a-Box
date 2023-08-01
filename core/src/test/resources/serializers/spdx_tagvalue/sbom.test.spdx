@@ -1,0 +1,94 @@
+SPDXVersion: SPDX-2.3
+DataLicense: CC0-1.0
+SPDXID: SPDXRef-DOCUMENT
+DocumentName: Test SBOM
+DocumentNamespace: 12345678
+LicenseListVersion: 0.0
+Creator: Organization: Supplier (supplier@svip.xyz)
+Creator: Tool: SVIP Serializer-1.0.0
+Creator: Person: Test Author (author@publisher.xyz)
+Created: TEST TIMESTAMP
+CreatorComment: This SBOM was generated using the SVIP serializer tooling.
+DocumentComment: Test Document Comment
+
+### Package: COMPONENT 1
+
+SPDXID: uid1
+PackageName: COMPONENT 1
+PackageVersion: version1
+PackageSummary: summary1
+PackageDescription: extendedDescription1
+PackageComment: comment1
+PackageFileName: fileName1
+PackageSupplier: Organization: SVIP1 (svip@svip.xyz)
+PackageOriginator: author1
+PackageDownloadLocation: downloadLocation1
+FilesAnalyzed: true
+PackageVerificationCode: verificationCode1
+PackageChecksum: SHA256: hash1
+PackageHomePage: homePage1
+PackageSourceInfo: sourceInfo1
+PackageLicenseConcluded: concluded1
+PackageLicenseInfoFromFiles: licenseFileText1
+PackageLicenseDeclared: declared1
+PackageLicenseComments: comment1
+PackageCopyrightText: copyright1
+ExternalRef: SECURITY cpe23Type cpe1
+ExternalRef: testCategory testRef1 1.svip.xyz
+ExternalRef: PACKAGE-MANAGER purl purl1
+PackageAttributionText: attributionText1
+PrimaryPackagePurpose: type1
+ReleaseDate: releaseDate1
+BuiltDate: buildDate1
+ValidUntilDate: validUntilDate1
+
+### Package: COMPONENT 3
+
+SPDXID: uid3
+PackageName: COMPONENT 3
+PackageVersion: version3
+PackageSummary: summary3
+PackageDescription: extendedDescription3
+PackageComment: comment3
+PackageFileName: fileName3
+PackageSupplier: Organization: SVIP3 (svip@svip.xyz)
+PackageOriginator: author3
+PackageDownloadLocation: downloadLocation3
+FilesAnalyzed: true
+PackageVerificationCode: verificationCode3
+PackageChecksum: SHA256: hash3
+PackageHomePage: homePage3
+PackageSourceInfo: sourceInfo3
+PackageLicenseConcluded: concluded3
+PackageLicenseInfoFromFiles: licenseFileText3
+PackageLicenseDeclared: declared3
+PackageLicenseComments: comment3
+PackageCopyrightText: copyright3
+ExternalRef: PACKAGE-MANAGER purl purl3
+ExternalRef: testCategory testRef3 3.svip.xyz
+ExternalRef: SECURITY cpe23Type cpe3
+PackageAttributionText: attributionText3
+PrimaryPackagePurpose: type3
+ReleaseDate: releaseDate3
+BuiltDate: buildDate3
+ValidUntilDate: validUntilDate3
+
+
+### Unpackaged Files
+
+SPDXID: uid2
+FileName: fileName2
+FileType: type2
+FileComment: comment2
+PackageChecksum: SHA256: hash2
+LicenseConcluded: concluded2
+LicenseInfoInFile: licenseFileText2
+LicenseDeclared: declared2
+LicenseComments: comment2
+FileCopyrightText: copyright2
+FileNotice: fileNotice2
+FileContributor: author2
+FileAttributionText: attributionText2
+
+Relationship: uid1 DESCRIBES uid3
+RelationshipComment: Test Relationship Comment

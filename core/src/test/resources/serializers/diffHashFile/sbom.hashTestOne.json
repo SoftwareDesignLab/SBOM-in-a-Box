@@ -1,0 +1,54 @@
+{
+  "note": "This is a test file and not an official Software Bill of Materials.",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4",
+  "serialNumber": "urn:uuid:0735f780-5fdd-4863-99d5-1401eaf00669",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2023-04-27T13:58:56.965Z",
+    "tools": [
+      {
+        "vendor": "cyclonedx",
+        "name": "cdxgen",
+        "version": "8.2.1"
+      }
+    ],
+    "authors": [
+      {
+        "name": "Prabhu Subramanian",
+        "email": "prabhu@appthreat.com"
+      }
+    ],
+    "component": {
+      "publisher": "",
+      "group": "cyclonedx",
+      "name": "cdxgen",
+      "version": "8.4.0",
+      "description": "",
+      "licenses": [],
+      "purl": "pkg:application/cyclonedx/cdxgen@8.4.0",
+      "type": "application",
+      "bom-ref": "pkg:application/cyclonedx/cdxgen@8.4.0"
+    }
+  },
+  "components": [
+    {
+      "publisher": "",
+      "group": "ampproject",
+      "name": "remapping",
+      "version": "2.2.0",
+      "description": "",
+      "scope": "optional",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "b1f8f3b5f2b528b0b6fbd6c511cbd7403d292c3cd52cb135cba270835e80c6ad"
+        }
+      ],
+      "licenses": [],
+      "purl": "pkg:npm/ampproject/remapping@2.2.0",
+      "type": "library",
+      "bom-ref": "pkg:npm/ampproject/remapping@2.2.0"
+    }
+  ]
+}

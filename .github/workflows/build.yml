@@ -6,8 +6,9 @@ on:
       - 'dev'   # todo: replace with vars
       - 'main'  # todo: replace with vars
     paths-ignore:
-      - '**/sample_boms/**'
+      - '**/resources/**'
       - '**/sample_sboms/**'
+
 jobs:
   build:
     runs-on: windows-latest

@@ -5,14 +5,13 @@ on:
       - 'dev'   # todo: replace with vars
       - 'main'  # todo: replace with vars
       paths-ignore:
-        - '**/sample_boms/**'
-        - '**/sample_sboms/**'
+        - '**/resources/**'
   pull_request:
     branches:  
       - 'dev'   # todo: replace with vars
       - 'main'  # todo: replace with vars
     paths-ignore:
-      - '**/sample_boms/**'
+      - '**/resources/**'
       - '**/sample_sboms/**'
 jobs:
   build-test:
@@ -35,6 +34,8 @@ jobs:
         
       - name: Store Report
         uses: actions/upload-artifact@v3
+
+        if: always()
         with:
           name: reports
           path: "**/build/reports/"

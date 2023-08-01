@@ -1,19 +1,74 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 group 'org.svip'
 version '1.0.0-alpha'
 
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'org.svip.SBOMGeneratorCLI'
+        )
+    }
+}
+
 repositories {
     mavenCentral()
 }
 
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+            exclude '**/sbomfactory/generators/TestData**'
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src/test/java']
+            exclude '**/sbomfactory/generators/TestData**'
+        }
+    }
+}
+
 dependencies {
+    implementation 'com.github.docker-java:docker-java:3.2.14'
+    implementation 'org.springframework.boot:spring-boot-starter-web:3.0.2'
+    implementation 'org.cyclonedx:cyclonedx-core-java:7.3.2'
+    implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.2.14'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.14.2'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.14.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.2'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2'
+    implementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
+    implementation 'jakarta.annotation:jakarta.annotation-api:1.3.5'
+    implementation 'org.json:json:20230618'
+    implementation 'com.mikemybytes:junit5-formatted-source:0.2.0'
+    implementation 'com.mikemybytes:junit5-formatted-source:0.2.0'
+    implementation 'com.mikemybytes:junit5-formatted-source:0.2.0'
+    implementation 'com.mikemybytes:junit5-formatted-source-parent:0.2.0'
+    implementation 'com.mikemybytes:junit5-formatted-source:0.2.0'
+    implementation 'org.junit.jupiter:junit-jupiter-params:5.9.2'
+    implementation 'net.sourceforge.jregex:jregex:1.2_01'
+    implementation 'org.mockito:mockito-core:5.2.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation('com.fasterxml.jackson.core:jackson-databind:2.14.2')
+    // Work around for Java regex limitations
+    implementation 'net.sourceforge.jregex:jregex:1.2_01'
+    // This dependency is used by the application.
+    implementation 'com.google.guava:guava:31.1-jre'
+    implementation 'org.apache.commons:commons-compress:1.21'
 }
 
 test {
     useJUnitPlatform()
+}
+
+tasks.named('javadoc') {
+    source = sourceSets.main.allJava
+    options.memberLevel = JavadocMemberLevel.PRIVATE
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>sample</id>
+        <version>1.0.0</version>
+        <authors>Microsoft</authors>
+        <dependencies>
+
+            <group>
+                <dependency id="RouteMagic" version="1.1.0" />
+            </group>
+
+            <group targetFramework=".NETFramework4.7.2">
+                <dependency id="jQuery" version="1.6.2" />
+                <dependency id="WebActivator" version="1.4.4" />
+            </group>
+
+            <group targetFramework="netcoreapp3.1">
+            </group>
+
+        </dependencies>
+    </metadata>
+</package>

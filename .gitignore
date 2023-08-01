@@ -27,6 +27,9 @@ app/**/*.js.map
 *.tar.gz
 *.rar
 
+# Exclude our OSI image cache
+!core/src/main/java/org/svip/sbomgeneration/osi/images/osi.tar.gz
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
@@ -62,3 +65,12 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/angular
 *.icloud
 *.PIDS
+
+# MySQL docker bind directory
+.m2
+
+# ignore testing main classes
+[tT]est[mM]ain.java
+
+# Mac files
+.DS_Store

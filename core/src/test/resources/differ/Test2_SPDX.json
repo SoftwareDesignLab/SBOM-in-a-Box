@@ -1,0 +1,24 @@
+{
+  "documentNamespace" : "Test",
+  "documentDescribes" : [ "uid1", "uid2", "uid3" ],
+  "creationInfo" : {
+  },
+  "packages" : [ {
+    "name" : "COMPONENT 1",
+    "SPDXID" : "uid1",
+	"versionInfo" : "1"
+  }, {
+    "name" : "COMPONENT 3",
+    "SPDXID" : "uid3",
+	"versionInfo" : "1"
+  }, {
+    "name" : "COMPONENT 2",
+    "SPDXID" : "uid2",
+	"versionInfo" : "1"
+  } ],
+  "files" : [ {
+    "fileName" : "COMPONENT 4",
+    "SPDXID" : "uid4",
+	"versionInfo" : "1"
+  } ]
+}
