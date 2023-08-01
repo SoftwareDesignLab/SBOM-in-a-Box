@@ -1,5 +1,7 @@
 package org.svip.sbom.model.objects.CycloneDX14;
 
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.ConflictFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
@@ -7,8 +9,6 @@ import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.compare.conflicts.Conflict;
-import org.svip.compare.conflicts.ConflictFactory;
 
 import java.util.*;
 
@@ -23,62 +23,99 @@ import static org.svip.compare.conflicts.MismatchType.*;
  */
 public class CDX14ComponentObject implements CDX14Package {
 
-    /**Component's type*/
+    /**
+     * Component's type
+     */
     private final String type;
 
-    /**Component's uid*/
+    /**
+     * Component's uid
+     */
     private final String uid;
 
-    /**Component's author*/
+    /**
+     * Component's author
+     */
     private final String author;
 
-    /**Component's name*/
+    /**
+     * Component's name
+     */
     private final String name;
 
-    /**Component's licenses*/
+    /**
+     * Component's licenses
+     */
     private final LicenseCollection licenses;
 
-    /**Component's copyright*/
+    /**
+     * Component's copyright
+     */
     private final String copyright;
 
-    /**Component's hashes*/
+    /**
+     * Component's hashes
+     */
     private final HashMap<String, String> hashes;
 
-    /**Component's supplier*/
+    /**
+     * Component's supplier
+     */
     private final Organization supplier;
 
-    /**Component's version*/
+    /**
+     * Component's version
+     */
     private final String version;
 
-    /**Component's description*/
+    /**
+     * Component's description
+     */
     private final Description description;
 
-    /**Component's CPEs*/
+    /**
+     * Component's CPEs
+     */
     private final Set<String> cpes;
 
-    /**Component's PURLs*/
+    /**
+     * Component's PURLs
+     */
     private final Set<String> purls;
 
-    /**Component's mime type*/
+    /**
+     * Component's mime type
+     */
     private final String mimeType;
 
-    /**Component's publisher*/
+    /**
+     * Component's publisher
+     */
     private final String publisher;
 
-    /**Component's scope*/
+    /**
+     * Component's scope
+     */
     private final String scope;
 
-    /**Component's group*/
+    /**
+     * Component's group
+     */
     private final String group;
 
-    /**Component's external references*/
+    /**
+     * Component's external references
+     */
     private final Set<ExternalReference> externalReferences;
 
-    /**Component's properties*/
+    /**
+     * Component's properties
+     */
     private final HashMap<String, Set<String>> properties;
 
     /**
      * Get the component's type
+     *
      * @return the component's type
      */
     @Override
@@ -88,6 +125,7 @@ public class CDX14ComponentObject implements CDX14Package {
 
     /**
      * Get the component's uid
+     *
      * @return the component's uid
      */
     @Override
@@ -97,6 +135,7 @@ public class CDX14ComponentObject implements CDX14Package {
 
     /**
      * Get the component's author
+     *
      * @return the component's author
      */
     @Override
@@ -106,6 +145,7 @@ public class CDX14ComponentObject implements CDX14Package {
 
     /**
      * Get the component's name
+     *
      * @return the component's name
      */
     @Override
@@ -115,6 +155,7 @@ public class CDX14ComponentObject implements CDX14Package {
 
     /**
      * Get the component's licenses
+     *
      * @return the component's licenses
      */
     @Override
@@ -124,6 +165,7 @@ public class CDX14ComponentObject implements CDX14Package {
 
     /**
      * Get the component's copyright info
+     *
      * @return the component's copyright info
      */
     @Override
@@ -133,6 +175,7 @@ public class CDX14ComponentObject implements CDX14Package {
 
     /**
      * Get the component's hashes
+     *
      * @return the component's hashes
      */
     @Override
@@ -142,6 +185,7 @@ public class CDX14ComponentObject implements CDX14Package {
 
     /**
      * Get the component's supplier
+     *
      * @return The component's supplier
      */
     @Override
@@ -151,6 +195,7 @@ public class CDX14ComponentObject implements CDX14Package {
 
     /**
      * Get the component's version
+     *
      * @return the component's version
      */
     @Override
@@ -160,6 +205,7 @@ public class CDX14ComponentObject implements CDX14Package {
 
     /**
      * Get the component's description
+     *
      * @return the component's description
      */
     @Override
@@ -169,6 +215,7 @@ public class CDX14ComponentObject implements CDX14Package {
 
     /**
      * Get the component's CPEs
+     *
      * @return the component's CPEs
      */
     @Override
@@ -178,6 +225,7 @@ public class CDX14ComponentObject implements CDX14Package {
 
     /**
      * Get the component's PURLs
+     *
      * @return the component's PURLs
      */
     @Override
@@ -187,6 +235,7 @@ public class CDX14ComponentObject implements CDX14Package {
 
     /**
      * Get the component's external references
+     *
      * @return the component's external references
      */
     @Override
@@ -196,6 +245,7 @@ public class CDX14ComponentObject implements CDX14Package {
 
     /**
      * Get the component's mime type
+     *
      * @return the component's mime type
      */
     @Override
@@ -205,6 +255,7 @@ public class CDX14ComponentObject implements CDX14Package {
 
     /**
      * Get the component's publisher
+     *
      * @return the component's publisher
      */
     @Override
@@ -214,6 +265,7 @@ public class CDX14ComponentObject implements CDX14Package {
 
     /**
      * Get the component's scope
+     *
      * @return the component's scope
      */
     @Override
@@ -223,6 +275,7 @@ public class CDX14ComponentObject implements CDX14Package {
 
     /**
      * Get the component's group
+     *
      * @return the component's group
      */
     @Override
@@ -232,6 +285,7 @@ public class CDX14ComponentObject implements CDX14Package {
 
     /**
      * Get the component's properties
+     *
      * @return the component's properties
      */
     @Override
@@ -241,24 +295,25 @@ public class CDX14ComponentObject implements CDX14Package {
 
     /**
      * Constructor to build a new CDX 1.4 Component Object
-     * @param type component type
-     * @param uid component uid
-     * @param author component author
-     * @param name component name
-     * @param licenses component licenses
-     * @param copyright component copyright
-     * @param hashes component hashes
-     * @param supplier component supplier
-     * @param version component version
-     * @param description component description
-     * @param cpes component CPEs
-     * @param purls component PURLs
-     * @param mimeType component mime type
-     * @param publisher component publisher
-     * @param scope component scope
-     * @param group component group
+     *
+     * @param type               component type
+     * @param uid                component uid
+     * @param author             component author
+     * @param name               component name
+     * @param licenses           component licenses
+     * @param copyright          component copyright
+     * @param hashes             component hashes
+     * @param supplier           component supplier
+     * @param version            component version
+     * @param description        component description
+     * @param cpes               component CPEs
+     * @param purls              component PURLs
+     * @param mimeType           component mime type
+     * @param publisher          component publisher
+     * @param scope              component scope
+     * @param group              component group
      * @param externalReferences component external references
-     * @param properties component properties
+     * @param properties         component properties
      */
     public CDX14ComponentObject(String type, String uid, String author, String name,
                                 LicenseCollection licenses, String copyright,
@@ -266,7 +321,7 @@ public class CDX14ComponentObject implements CDX14Package {
                                 String version, Description description, Set<String> cpes,
                                 Set<String> purls, String mimeType, String publisher,
                                 String scope, String group, Set<ExternalReference> externalReferences,
-                                HashMap<String, Set<String>> properties){
+                                HashMap<String, Set<String>> properties) {
         this.type = type;
         this.uid = uid;
         this.author = author;
@@ -312,7 +367,7 @@ public class CDX14ComponentObject implements CDX14Package {
         cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
 
         // Licenses
-        if(cf.comparable("License", this.licenses, other.getLicenses()))
+        if (cf.comparable("License", this.licenses, other.getLicenses()))
             cf.addConflicts(this.licenses.compare(other.getLicenses()));
 
         // Copyright
@@ -322,8 +377,8 @@ public class CDX14ComponentObject implements CDX14Package {
         cf.compareHashes("Component Hash", this.hashes, other.getHashes());
 
         // Compare SBOMPackage specific fields
-        if( other instanceof SBOMPackage)
-            cf.addConflicts( compare((SBOMPackage) other) );
+        if (other instanceof SBOMPackage)
+            cf.addConflicts(compare((SBOMPackage) other));
 
         return cf.getConflicts();
     }
@@ -338,7 +393,7 @@ public class CDX14ComponentObject implements CDX14Package {
         ConflictFactory cf = new ConflictFactory();
 
         // Supplier
-        if(cf.comparable("Supplier", this.supplier, other.getSupplier()))
+        if (cf.comparable("Supplier", this.supplier, other.getSupplier()))
             cf.addConflicts(this.supplier.compare(other.getSupplier()));
 
         // Version
@@ -346,7 +401,7 @@ public class CDX14ComponentObject implements CDX14Package {
         cf.addConflict("Version", VERSION_MISMATCH, this.version, other.getVersion());
 
         // Description
-        if(cf.comparable("Description", this.description, other.getDescription()))
+        if (cf.comparable("Description", this.description, other.getDescription()))
             cf.addConflicts(this.description.compare(other.getDescription()));
 
         // PURLs
@@ -361,8 +416,8 @@ public class CDX14ComponentObject implements CDX14Package {
         cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
 
         // Compare CDX14SBOMPackage specific fields
-        if( other instanceof CDX14Package)
-            cf.addConflicts( compare((CDX14Package) other) );
+        if (other instanceof CDX14Package)
+            cf.addConflicts(compare((CDX14Package) other));
 
         return cf.getConflicts();
     }
@@ -397,7 +452,7 @@ public class CDX14ComponentObject implements CDX14Package {
 
     @Override
     public int hashCode() {
-        if(name == null || version == null) return super.hashCode();
+        if (name == null || version == null) return super.hashCode();
         return this.name.hashCode() + this.version.hashCode();
     }
 }

@@ -1,8 +1,8 @@
 package org.svip.generation.parsers.languages;
 
-import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.generation.parsers.Parser;
 import org.svip.generation.parsers.utils.VirtualPath;
+import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -19,7 +19,9 @@ import static org.svip.utils.Debug.log;
  * @author Ian Dunn
  */
 public class CppParser extends LanguageParser {
-    public CppParser() { super("https://cplusplus.com/reference/"); }
+    public CppParser() {
+        super("https://cplusplus.com/reference/");
+    }
 
     ///
     /// Abstract Method Implementation
@@ -36,9 +38,9 @@ public class CppParser extends LanguageParser {
         String name = getName(component);
         String group = getGroup(component);
 
-        for(VirtualPath internalComponent : sourceFiles) {
-            if(internalComponent.endsWith(new VirtualPath(name))) return true;
-            if(group != null && internalComponent.endsWith(new VirtualPath(group))) return true;
+        for (VirtualPath internalComponent : sourceFiles) {
+            if (internalComponent.endsWith(new VirtualPath(name))) return true;
+            if (group != null && internalComponent.endsWith(new VirtualPath(group))) return true;
         }
 
         return false;
@@ -53,18 +55,18 @@ public class CppParser extends LanguageParser {
     @Override
     protected boolean isLanguageComponent(SVIPComponentBuilder component) {
         // Attempt to find component
-        try{
-            if(Parser.queryURL(STD_LIB_URL + getName(component), true).getResponseCode() == 200) return true;
+        try {
+            if (Parser.queryURL(STD_LIB_URL + getName(component), true).getResponseCode() == 200) return true;
 
             // if external, test if header is in C Library (https://cplusplus.com/reference/clibrary/)
-            if(getType(component).equalsIgnoreCase("external") &&
+            if (getType(component).equalsIgnoreCase("external") &&
                     getName(component).contains(".h")) {
 
                 String clib = "c" + getName(component).split("\\.")[0];
                 log(LOG_TYPE.DEBUG, "EXTERNAL [ " + getName(component) + " ] not found, attempting clib");
                 return Parser.queryURL(STD_LIB_URL + clib, true).getResponseCode() == 200;
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             log(LOG_TYPE.EXCEPTION, e);
         }
         // Exception
