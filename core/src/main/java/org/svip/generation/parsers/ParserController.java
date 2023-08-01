@@ -13,21 +13,9 @@ import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
-<<<<<<<< HEAD:core/src/main/java/org/svip/generation/parsers/ParserManager.java
 import org.svip.serializers.Metadata;
 import org.svip.serializers.SerializerFactory;
 import org.svip.utils.Debug;
-========
-import org.svip.generation.parsers.contexts.ContextParser;
-import org.svip.generation.parsers.contexts.DeadImportParser;
-import org.svip.generation.parsers.contexts.SubprocessParser;
-import org.svip.generation.parsers.languages.*;
-import org.svip.generation.parsers.packagemanagers.*;
-import org.svip.serializers.Metadata;
-import org.svip.serializers.SerializerFactory;
-import org.svip.utils.Debug;
-import org.svip.generation.parsers.utils.VirtualPath;
->>>>>>>> 199be059c (Restructure core to be feature focused):core/src/main/java/org/svip/generation/parsers/ParserController.java
 
 import java.util.*;
 
@@ -35,7 +23,7 @@ import static org.svip.utils.Debug.LOG_TYPE;
 import static org.svip.utils.Debug.log;
 
 /**
- * <b>File</b>: ParserManager.java<br>
+ * <b>File</b>: ParserController.java<br>
  * <b>Description</b>: Central controller class that interfaces between
  * the main driver and the language specific parsers.
  *
@@ -43,7 +31,7 @@ import static org.svip.utils.Debug.log;
  * @author Derek Garcia
  * @author Ian Dunn
  */
-public class ParserManager {
+public class ParserController {
 
     //#region Attributes
     private final String projectName;
@@ -98,9 +86,9 @@ public class ParserManager {
 
     /**
      * TODO
-     * Create a new ParserManager.
+     * Create a new ParserController.
      */
-    public ParserManager(String projectName, Map<VirtualPath, String> files) {
+    public ParserController(String projectName, Map<VirtualPath, String> files) {
         this.projectName = projectName;
         this.components = new HashMap<>();
         this.files = files;
@@ -153,7 +141,7 @@ public class ParserManager {
     //#region Core Methods
 
     /**
-     * Parses all files passed into the ParserManager via the VirtualTree and logs the amount of time taken.
+     * Parses all files passed into the ParserController via the VirtualTree and logs the amount of time taken.
      */
     public void parseAll() {
         Set<VirtualPath> internalFiles = files.keySet();
@@ -240,13 +228,12 @@ public class ParserManager {
             SVIPComponentBuilder oldComponent = components.get(hash);
 
             // Dead import found
-            if(newComponent.getType() != null)
-                if (newComponent.getType().equalsIgnoreCase("dead_import")) {
-                    Debug.log(LOG_TYPE.DEBUG, "Removed dead import " + newComponent.getName());
-                    deadImportCounter++;
-                    totalRemoved++;
-                    continue;
-                }
+            if (newComponent.getType().equalsIgnoreCase("dead_import")) {
+                Debug.log(LOG_TYPE.DEBUG, "Removed dead import " + newComponent.getName());
+                deadImportCounter++;
+                totalRemoved++;
+                continue;
+            }
 
             // Duplicate found
             if (oldComponent != null) {

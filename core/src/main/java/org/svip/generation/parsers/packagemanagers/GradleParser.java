@@ -1,8 +1,8 @@
 package org.svip.generation.parsers.packagemanagers;
 
+import org.svip.generation.parsers.utils.QueryWorker;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.generation.parsers.utils.QueryWorker;
 
 import java.util.*;
 import java.util.regex.MatchResult;
@@ -54,7 +54,7 @@ public class GradleParser extends PackageManagerParser {
         // Get properties
         final ArrayList<String> ext = (ArrayList<String>) data.get("ext");
 
-        if(ext != null) {
+        if (ext != null) {
             // Store properties
             this.resolveProperties(
                     this.properties,
@@ -87,7 +87,7 @@ public class GradleParser extends PackageManagerParser {
             }
             if (d.containsKey("version")) builder.setVersion(d.get("version"));
 
-            if(getGroup(builder) == null) continue; // Prevent null groups in URL
+            if (getGroup(builder) == null) continue; // Prevent null groups in URL
 
             String url = STD_LIB_URL + getGroup(builder) + "/" + getName(builder) + "/" +
                     (getVersion(builder) == null ? "" : getVersion(builder));
@@ -97,7 +97,7 @@ public class GradleParser extends PackageManagerParser {
                     // Get page contents
                     final String contents = getUrlContents(queryURL(this.url, false));
 
-                    if(contents.length() == 0) {
+                    if (contents.length() == 0) {
                         return;
                     }
 
@@ -106,7 +106,7 @@ public class GradleParser extends PackageManagerParser {
                     final Matcher m = Pattern.compile("<li data-test=\\\"license\\\">(.*?)</li>", Pattern.MULTILINE).matcher(contents);
 
                     // Add all found licenses
-                    while(m.find()) {
+                    while (m.find()) {
                         LicenseCollection licenses = new LicenseCollection();
                         licenses.addConcludedLicenseString(m.group(1).trim());
                         this.builder.setLicenses(licenses);
@@ -154,14 +154,14 @@ public class GradleParser extends PackageManagerParser {
                 for (final MatchResult depResult : depMatcher.results().toList()) {
                     final LinkedHashMap<String, String> dep = new LinkedHashMap<>();
                     // Group 1 format: "org.springframework:spring-api:3.6"
-                    if(depResult.group(1) != null) {
+                    if (depResult.group(1) != null) {
                         // Extract values from dep string
                         final String[] depValues = depResult.group(1).split(":");
                         dep.put("groupId", depValues[0]);
-                        if(depValues.length > 1) dep.put("artifactId", depValues[1]);
-                        if(depValues.length > 2) dep.put("version", depValues[2]);
+                        if (depValues.length > 1) dep.put("artifactId", depValues[1]);
+                        if (depValues.length > 2) dep.put("version", depValues[2]);
                     } // Group 2 format: "group: 'org.springframework', name: 'spring-core', version: '2.5'"
-                    else if(depResult.group(2) != null) {
+                    else if (depResult.group(2) != null) {
                         final String[] depValues = depResult.group(2).split(",");
                         final HashMap<String, String> props = new HashMap<>(depValues.length);
                         Arrays.stream(depValues).forEach(d -> {
@@ -170,20 +170,20 @@ public class GradleParser extends PackageManagerParser {
                             final String dValue = d.substring(d.indexOf(":") + 1).trim();
                             props.put(dKey, dValue);
                         });
-                        if(props.containsKey("group")) dep.put("groupId", props.get("group"));
-                        if(props.containsKey("name")) dep.put("artifactId", props.get("name"));
-                        if(props.containsKey("version")) dep.put("version", props.get("version"));
+                        if (props.containsKey("group")) dep.put("groupId", props.get("group"));
+                        if (props.containsKey("name")) dep.put("artifactId", props.get("name"));
+                        if (props.containsKey("version")) dep.put("version", props.get("version"));
                     } // Group 3 format for file(s)/dir(s): "'hibernate.jar', 'libs/spring.jar'"
-                    else if(depResult.group(3) != null) {
+                    else if (depResult.group(3) != null) {
                         // Extract values from dep string
-                        final String[] depValues =  depResult.group(3)
+                        final String[] depValues = depResult.group(3)
                                 .replace("'", "")
                                 .replace("\"", "")
                                 .split(",");
 
                         // If one file is found, add its data to dep
                         if (depValues.length == 1) dep.put("artifactId", depValues[0].trim());
-                        // If more than one file is found, create and add a new LHM for each one
+                            // If more than one file is found, create and add a new LHM for each one
                         else {
                             for (final String depValue : depValues) {
                                 final String artifactId = depValue.trim();
@@ -196,7 +196,7 @@ public class GradleParser extends PackageManagerParser {
 
                     // Add any values found in group 4, if present
                     // This can only occur when group 1 or 2 != null
-                    if(depResult.group(4) != null) {
+                    if (depResult.group(4) != null) {
                         // TODO: Process group 4 values
                         //  Group 4 captures
                     }

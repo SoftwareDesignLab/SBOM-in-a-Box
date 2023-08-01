@@ -4,7 +4,11 @@ import jregex.Matcher;
 import jregex.Pattern;
 import org.svip.metrics.pipelines.interfaces.schemas.CycloneDX14.CDX14Tests;
 import org.svip.metrics.pipelines.interfaces.schemas.SPDX23.SPDX23Tests;
+import org.svip.metrics.resultfactory.Result;
+import org.svip.metrics.resultfactory.ResultFactory;
+import org.svip.metrics.resultfactory.enumerations.INFO;
 import org.svip.metrics.tests.*;
+import org.svip.metrics.tests.enumerations.ATTRIBUTE;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SVIPComponentObject;
@@ -13,10 +17,6 @@ import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbom.model.uids.Hash;
-import org.svip.metrics.resultfactory.Result;
-import org.svip.metrics.resultfactory.ResultFactory;
-import org.svip.metrics.resultfactory.enumerations.INFO;
-import org.svip.metrics.tests.enumerations.ATTRIBUTE;
 
 import java.util.*;
 
@@ -28,12 +28,15 @@ import java.util.*;
  */
 public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
 
-    /**UID Regex used for validSerialNumber test*/
+    /**
+     * UID Regex used for validSerialNumber test
+     */
     private static final String UID_REGEX = "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$";
 
     /**
      * Process the tests for the SBOM
-     * @param uid Unique filename used to ID the SBOM
+     *
+     * @param uid  Unique filename used to ID the SBOM
      * @param sbom the SBOM to run tests against
      * @return a Quality report for the sbom, its components and every test
      */
@@ -54,8 +57,8 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
 
         // test for SBOM's licenses
         var lt = new LicenseTest(svipsbom.getName(), ATTRIBUTE.LICENSING);
-        if(svipsbom.getLicenses() != null){
-            for(String l : svipsbom.getLicenses()){
+        if (svipsbom.getLicenses() != null) {
+            for (String l : svipsbom.getLicenses()) {
                 sbomResults.addAll(lt.test("License", l));
             }
         }
@@ -81,9 +84,9 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
         // add metadata results to the quality report
         qualityReport.addComponent("metadata", sbomResults);
 
-        if(svipsbom.getComponents() != null){
+        if (svipsbom.getComponents() != null) {
             // test component info
-            for(Component c : svipsbom.getComponents()){
+            for (Component c : svipsbom.getComponents()) {
                 List<Result> componentResults = new ArrayList<>();
                 SVIPComponentObject component = (SVIPComponentObject) c;
 
@@ -106,8 +109,8 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
                 var cpeTest = new CPETest(component, ATTRIBUTE.UNIQUENESS,
                         ATTRIBUTE.MINIMUM_ELEMENTS);
                 Set<String> cpes = component.getCPEs();
-                if(cpes != null){
-                    for(String cpe: cpes){
+                if (cpes != null) {
+                    for (String cpe : cpes) {
                         componentResults.addAll(cpeTest.test("cpe", cpe));
                     }
                 }
@@ -115,20 +118,20 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
                 // test component PURLs
                 var purlTest = new PURLTest(component, ATTRIBUTE.UNIQUENESS,
                         ATTRIBUTE.MINIMUM_ELEMENTS);
-                Set<String> purls =  component.getPURLs();
-                if(purls != null){
-                    for(String purl: purls){
+                Set<String> purls = component.getPURLs();
+                if (purls != null) {
+                    for (String purl : purls) {
                         componentResults.addAll(purlTest.test("purl", purl));
                     }
                 }
 
                 // test component Licenses
-                var licenseTest = new LicenseTest(component.getName(),ATTRIBUTE.UNIQUENESS,
+                var licenseTest = new LicenseTest(component.getName(), ATTRIBUTE.UNIQUENESS,
                         ATTRIBUTE.MINIMUM_ELEMENTS);
                 LicenseCollection licenses = component.getLicenses();
                 if (licenses != null) {
                     Set<String> declaredLicenses = licenses.getDeclared();
-                    for(String l: declaredLicenses){
+                    for (String l : declaredLicenses) {
                         componentResults.addAll(licenseTest.test("License", l));
                     }
                 }
@@ -137,8 +140,8 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
                 var hashTest = new HashTest(component.getName(), ATTRIBUTE.UNIQUENESS,
                         ATTRIBUTE.MINIMUM_ELEMENTS);
                 Map<String, String> hashes = component.getHashes();
-                if(hashes != null){
-                    for(String hashAlgo : hashes.keySet()){
+                if (hashes != null) {
+                    for (String hashAlgo : hashes.keySet()) {
                         String hashValue = hashes.get(hashAlgo);
                         Hash hash = new Hash(hashAlgo, hashValue);
                         componentResults.addAll(hashTest.test(hashAlgo, hashValue));
@@ -157,8 +160,9 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
 
     /**
      * Test an SVIP SBOM for a bom version
-     * @param field the field that's tested
-     * @param value the bom version tested
+     *
+     * @param field    the field that's tested
+     * @param value    the bom version tested
      * @param sbomName the sbom's name to product the result
      * @return the result of if the sbom has a bom version
      */
@@ -171,8 +175,9 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
 
     /**
      * Test an SVIP SBOM for a valid serial number UID
-     * @param field the field that's tested
-     * @param value the serial number tested
+     *
+     * @param field    the field that's tested
+     * @param value    the serial number tested
      * @param sbomName the sbom's name to product the result
      * @return the result of if the sbom has a valid serial number UID
      */
@@ -187,31 +192,32 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
                 ATTRIBUTE.CDX14, ATTRIBUTE.COMPLETENESS);
 
         // first check if the sbom uid is not a null or empty string
-        if(value != null && !value.isEmpty()){
+        if (value != null && !value.isEmpty()) {
             Matcher matcher = cdx14UIDPattern.matcher(value);
             // if regex fails to match to the uid string
-            if(!matcher.find()){
+            if (!matcher.find()) {
                 return resultFactory.failCustom("SBOM Serial Number",
                         INFO.INVALID, value, sbomName, "UID does not follow " +
                                 "CycloneDX's regex pattern");
             }
             // regex matches to the uid string
-            else{
+            else {
                 return resultFactory.passCustom("SBOM Serial Number",
                         INFO.VALID, value, sbomName, "UID follows " +
                                 "CycloneDX's regex pattern");
             }
         }
         // uid was null or an empty string
-        else{
+        else {
             return resultFactory.fail("SBOM Serial Number", INFO.MISSING, value, sbomName);
         }
     }
 
     /**
      * Test each component in a SVIP SBOM for a bom-ref
-     * @param field the field that's tested
-     * @param value the bom-ref tested
+     *
+     * @param field         the field that's tested
+     * @param value         the bom-ref tested
      * @param componentName the component's name to product the result
      * @return the result of if the component has a bom-ref
      */
@@ -225,8 +231,9 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
     /**
      * Check if a hash algorithm in the given SVIP SBOM is supported
      * within CycloneDX
-     * @param field the field that's tested
-     * @param hash the hash to be tested
+     *
+     * @param field         the field that's tested
+     * @param hash          the hash to be tested
      * @param componentName the component's name to product the result
      * @return the result of if the hash algorithm is supported
      */
@@ -238,13 +245,13 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
 
         String algorithm = hash.getAlgorithm().toString();
         // hash is unsupported, test fails
-        if(Hash.isSPDXExclusive(hash.getAlgorithm())){
+        if (Hash.isSPDXExclusive(hash.getAlgorithm())) {
             return resultFactory.failCustom(field, INFO.INVALID, algorithm,
                     componentName, "Hash Algorithm is not supported " +
                             "within CycloneDX: " + algorithm);
         }
         // hash is supported, test passes
-        else{
+        else {
             return resultFactory.passCustom(field, INFO.VALID, algorithm,
                     componentName, "Hash Algorithm is supported " +
                             "within CycloneDX: " + algorithm);
@@ -254,8 +261,9 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
     /**
      * Test the SVIP SBOM Metadata to see if it contains a data license of
      * CC0-1.0
-     * @param field the field that's tested
-     * @param values the data licenses tested
+     *
+     * @param field    the field that's tested
+     * @param values   the data licenses tested
      * @param sbomName the sbom's name to product the result
      * @return the result of checking for the CC0-1.0 data license
      */
@@ -270,17 +278,17 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
         // the required sbom license
         String requiredLicense = "CC0-1.0";
         // values is null or empty, test automatically fails
-        if(values == null || values.isEmpty()){
+        if (values == null || values.isEmpty()) {
             return resultFactory.fail(field, INFO.MISSING,
                     requiredLicense, sbomName);
         }
         // if the sbom's licenses contain the required license
-        else if(values.size() == 1 && values.contains(requiredLicense)){
+        else if (values.size() == 1 && values.contains(requiredLicense)) {
             return resultFactory.pass(field, INFO.HAS,
                     requiredLicense, sbomName);
         }
         // the sbom is missing the required license
-        else{
+        else {
             return resultFactory.fail(field, INFO.MISSING,
                     requiredLicense, sbomName);
         }
@@ -288,8 +296,9 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
 
     /**
      * Test every component in a given SVIP SBOM for a valid SPDXID
-     * @param field the field that's tested
-     * @param value the SPDXID tested
+     *
+     * @param field         the field that's tested
+     * @param value         the SPDXID tested
      * @param componentName the component's name to product the result
      * @return a set of results for each component in the sbom
      */
@@ -301,7 +310,7 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
                 ATTRIBUTE.SPDX23, ATTRIBUTE.UNIQUENESS);
 
         // SPDXID is null or an empty value, test fails
-        if(value == null || value.isEmpty())
+        if (value == null || value.isEmpty())
             return resultFactory.fail(field, INFO.MISSING,
                     value, componentName);
 
@@ -309,12 +318,12 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
         // TODO Can we make this more thorough? Not just format?
         // check that SPDXID is a valid format
         // SPDXID starts with a valid format, test passes
-        if(value.startsWith("SPDXRef-")){
+        if (value.startsWith("SPDXRef-")) {
             return resultFactory.pass(field, INFO.VALID,
                     value, componentName);
         }
         // SPDX starts with an invalid format, test fails
-        else{
+        else {
             return resultFactory.failCustom(field, INFO.INVALID,
                     value, componentName, "SPDXID must start with " +
                             "\"SPDXRef-\"");
@@ -323,8 +332,9 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
 
     /**
      * Test the SVIP sbom's metadata for a valid document namespace
-     * @param field the field that's tested
-     * @param value the document namespace tested
+     *
+     * @param field    the field that's tested
+     * @param value    the document namespace tested
      * @param sbomName the sbom's name to product the result
      * @return the result of if the sbom's metadata contains a valid
      * document namespace
@@ -337,9 +347,10 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
 
     /**
      * Given an SVIP SBOM, check that it has creator and created info
-     * @param field the field that's tested
+     *
+     * @param field        the field that's tested
      * @param creationData the creation data of the SBOM to be tested
-     * @param sbomName the sbom's name to product the result
+     * @param sbomName     the sbom's name to product the result
      * @return the result of if the sbom has creation info
      */
     @Override
@@ -354,7 +365,7 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
                 ATTRIBUTE.SPDX23, ATTRIBUTE.COMPLETENESS);
 
         // creation data is null, test automatically fails and ends
-        if(creationData == null){
+        if (creationData == null) {
             results.add(resultFactory.error(field, INFO.NULL,
                     "Creation Data", sbomName));
             return results;
@@ -362,7 +373,7 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
 
         //first check for creator info and if it is null
         Organization creator = creationData.getManufacture();
-        if(creator == null){
+        if (creator == null) {
             results.add(resultFactory.fail(field, INFO.MISSING,
                     "Creator Name", sbomName));
             return results;
@@ -381,8 +392,9 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
     /**
      * Test every component in the SVIP SBOM for the
      * PackageDownloadLocation field and that it has a value
-     * @param field the field that's tested
-     * @param value the download location tested
+     *
+     * @param field         the field that's tested
+     * @param value         the download location tested
      * @param componentName the component's name to product the result
      * @return the result of if the component has a download location
      */
@@ -399,8 +411,9 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
     /**
      * Test all components in a given SVIP SBOM for their verification
      * code based on FilesAnalyzed
-     * @param field the field that's tested
-     * @param value the verification code tested
+     *
+     * @param field         the field that's tested
+     * @param value         the verification code tested
      * @param filesAnalyzed if the component's files were analyzed
      * @param componentName the component's name to product the result
      * @return the result of the component's verification code based on its
@@ -414,25 +427,25 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
                 ATTRIBUTE.SPDX23, ATTRIBUTE.COMPLETENESS);
 
         // if files were analyzed, check if the verification code is present
-        if(filesAnalyzed){
-            if(value == null || value.equals("")){
+        if (filesAnalyzed) {
+            if (value == null || value.equals("")) {
                 return resultFactory.fail(field, INFO.MISSING,
                         value, componentName);
             }
             // verification code is not null and is present, test passes
-            else{
+            else {
                 return resultFactory.pass(field, INFO.HAS,
                         value, componentName);
             }
         }
         // files were not analyzed, check if the verification code is null
-        else{
-            if(value == null || value.equals("")){
+        else {
+            if (value == null || value.equals("")) {
                 return resultFactory.pass(field, INFO.MISSING,
                         value, componentName);
             }
             // verification code is not null and is present, test passes
-            else{
+            else {
                 return resultFactory.fail(field, INFO.HAS,
                         value, componentName);
             }

@@ -22,7 +22,7 @@ import java.util.Map;
 
 /**
  * file name: OSI.java
- *
+ * <p>
  * Open Source Integration. Interacts with Docker to build containers that use auto-detected open source tools to
  * generate SBOMs.
  *
@@ -45,8 +45,8 @@ public class OSI {
      * Cleans directories, checks that Docker is running, and then creates a container.
      *
      * @throws DockerNotAvailableException If Docker is not installed or not running, or if the container couldn't be
-     * constructed
-     * @throws IOException If one of the bound directories could not be cleaned.
+     *                                     constructed
+     * @throws IOException                 If one of the bound directories could not be cleaned.
      */
     public OSI() throws DockerNotAvailableException, IOException {
         // Remove all SBOMs and source files in the bound_dir folder
@@ -75,8 +75,8 @@ public class OSI {
      * Function to check if docker is installed and available
      *
      * @return 0 - Docker is installed and available,
-     *         1 - Docker is not running but installed,
-     *         2 - Docker is not installed
+     * 1 - Docker is not running but installed,
+     * 2 - Docker is not installed
      */
     public static int dockerCheck() {
         try {
@@ -104,8 +104,7 @@ public class OSI {
             if (line != null && line.startsWith("CONTAINER ID")) {
                 // This means docker is installed and running
                 return 0;
-            }
-            else {
+            } else {
                 // This means docker is not running
                 return 1;
             }
@@ -119,7 +118,7 @@ public class OSI {
     /**
      * Adds a source file to generate an SBOM from when the container is run.
      *
-     * @param fileName The file name of the source file.
+     * @param fileName     The file name of the source file.
      * @param fileContents The contents of the source file.
      * @throws IOException If the file could not be written to the code bind directory.
      */
@@ -174,6 +173,7 @@ public class OSI {
 
     /**
      * Gets the path to the OSI bound_dir folder from anywhere in the system.
+     *
      * @param directoryName The subdirectory of the bound_dir to access (code or sboms).
      * @return A File containing a reference to that folder, which is guaranteed to exist.
      */
@@ -201,7 +201,9 @@ public class OSI {
         FileUtils.cleanDirectory(dir);
 
         // Add gitignore
-        try (PrintWriter w = new PrintWriter(dir + "/.gitignore")) { w.print("*\n" + "!.gitignore"); }
+        try (PrintWriter w = new PrintWriter(dir + "/.gitignore")) {
+            w.print("*\n" + "!.gitignore");
+        }
     }
 
     /**

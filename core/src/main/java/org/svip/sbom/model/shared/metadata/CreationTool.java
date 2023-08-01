@@ -55,9 +55,9 @@ public class CreationTool implements Comparable {
 
     /**
      * @param algorithm Hash Algorithm
-     * @param hash Hash value
+     * @param hash      Hash value
      */
-    public void addHash(String algorithm, String hash){
+    public void addHash(String algorithm, String hash) {
         this.hashes.put(algorithm, hash);
     }
 
@@ -97,7 +97,7 @@ public class CreationTool implements Comparable {
     @Override
     public List<Conflict> compare(Comparable o) {
         // Don't compare if not instance of same object
-        if(!(o instanceof CreationTool other))
+        if (!(o instanceof CreationTool other))
             return null;
 
         ConflictFactory cf = new ConflictFactory();
@@ -118,24 +118,24 @@ public class CreationTool implements Comparable {
         // todo more lax comparison like Contact?
 
         // Check if vendor equivalent
-        if(this.vendor != null && !this.vendor.equals(other.getVendor()))
+        if (this.vendor != null && !this.vendor.equals(other.getVendor()))
             return false;
 
         // Check if name equivalent
-        if(this.name != null && !this.name.equals(other.getName()))
+        if (this.name != null && !this.name.equals(other.getName()))
             return false;
 
         // Check if version equivalent
-        if(this.version != null && !this.version.equals(other.getVersion()))
+        if (this.version != null && !this.version.equals(other.getVersion()))
             return false;
 
         // Compare hashes
-        for(String alg : this.hashes.keySet()){
+        for (String alg : this.hashes.keySet()) {
             // Missing hash, missing doesn't imply different
-            if(!other.getHashes().containsKey(alg))
+            if (!other.getHashes().containsKey(alg))
                 continue;
             // Same hash alg, different values
-            if(!other.getHashes().get(alg).equals(this.hashes.get(alg)))
+            if (!other.getHashes().get(alg).equals(this.hashes.get(alg)))
                 return false;
         }
 

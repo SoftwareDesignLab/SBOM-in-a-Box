@@ -94,22 +94,18 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
         // SPEC VERSION
         if (node.get("specVersion") != null) sbomBuilder.setSpecVersion(node.get("specVersion").asText());
 
-        if (node.get("metadata") != null) {
-
-             // LICENSES
-            if (node.get("metadata").get("licenses") != null) {
-                JsonNode licenses = node.get("metadata").get("licenses");
-                for (JsonNode license : licenses)
-                    sbomBuilder.addLicense(license.asText());
-            }
-
-            // ROOT COMPONENT
-            if (node.get("metadata").get("component") != null)
-                sbomBuilder.setRootComponent(resolveComponent(componentBuilder, node.get("metadata").get("component")));
-        }
+        // LICENSES
+        JsonNode licenses = node.get("metadata").get("licenses");
+        if (licenses != null)
+            for (JsonNode license : licenses)
+                sbomBuilder.addLicense(license.asText());
 
         // METADATA
         sbomBuilder.setCreationData(resolveMetadata(node.get("metadata"), sbomBuilder));
+
+        // ROOT COMPONENT
+        if (node.get("metadata").get("component") != null)
+            sbomBuilder.setRootComponent(resolveComponent(componentBuilder, node.get("metadata").get("component")));
 
         // COMPONENTS
         if (node.get("components") != null)
@@ -240,14 +236,8 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
         if (licenses != null) {
             LicenseCollection componentLicenses = new LicenseCollection();
             for (JsonNode license : licenses) {
-                if (license.get("license") == null) continue;
-
-                else if (license.get("license").get("id") != null) {
-                    componentLicenses.addLicenseInfoFromFile(license.get("license").get("id").asText());
-                }
-                else if (license.get("license").get("name") != null) {
-                    componentLicenses.addLicenseInfoFromFile(license.get("license").get("name").asText());
-                }
+                if (license.get("name") == null) continue;
+                componentLicenses.addLicenseInfoFromFile(license.get("name").asText());
             }
 
             builder.setLicenses(componentLicenses);
@@ -287,15 +277,13 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
     }
 
     private Contact resolveContact(JsonNode ct) {
-        String contactName = "";
-        String contactEmail = "";
-        String contactPhone = "";
-
-        if (ct.get("name") != null) contactName = ct.get("name").asText();
-        if (ct.get("email") != null) contactEmail = ct.get("email").asText();
-        if (ct.get("phone") != null) contactPhone = ct.get("phone").asText();
-
-        return new Contact(contactName, contactEmail, contactPhone);
+        try {
+            return new Contact(ct.get("name").asText(),
+                    ct.get("email").asText(),
+                    ct.get("phone").asText());
+        } catch (Exception e) {
+            return new Contact("", "", "");
+        }
     }
 
     private Organization resolveOrganization(JsonNode org) {

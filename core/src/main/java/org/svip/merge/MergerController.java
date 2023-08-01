@@ -49,8 +49,6 @@ public class MergerController {
         } catch (MergerException e) {
             mainBom = null;
             throw new MergerException(e.getMessage());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
 
         // Take the remaining SBOMs and merge them into the main SBOM
@@ -62,8 +60,6 @@ public class MergerController {
                 mainBom = merger.mergeSBOM(mainBom, nextBom);
             } catch (MergerException e) {
                 mainBom = null;
-                throw new MergerException(e.getMessage());
-            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
@@ -90,8 +86,6 @@ public class MergerController {
         } catch (MergerException e) {
             mainBom = null;
             throw new MergerException(e.getMessage());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
 
         return mainBom;
@@ -111,8 +105,8 @@ public class MergerController {
             case "spdx:spdx" -> {
                 return new MergerSPDX();
             }
-            case "svip:svip" -> { return new MergerSVIP();
-            }
+            // case "svip:svip" -> { return new MergerSVIP()} // todo in later sprint?
+
             default -> {
                 return new MergerCrossSchema();
             }
