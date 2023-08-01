@@ -1,7 +1,7 @@
 package org.svip.sbom.model.interfaces.schemas.SPDX23;
 
-import org.svip.compare.conflicts.Conflict;
 import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.compare.conflicts.Conflict;
 
 import java.util.List;
 

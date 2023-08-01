@@ -1,8 +1,8 @@
 package org.svip.generation.parsers.languages;
 
+import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.generation.parsers.Parser;
 import org.svip.generation.parsers.utils.VirtualPath;
-import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,9 +23,7 @@ import static org.svip.utils.Debug.log;
  */
 public class PythonParser extends LanguageParser {
 
-    public PythonParser() {
-        super("https://docs.python.org/3/library/");
-    }
+    public PythonParser() { super("https://docs.python.org/3/library/"); }
 
     /**
      * Checks for relative pathing and replaces with directory names.
@@ -36,20 +34,20 @@ public class PythonParser extends LanguageParser {
     private String formatPath(String rawPath) {
         // TODO this entire method **should** be able to be replaced by a VirtualPath instance
         int dirNum;
-        if (rawPath.startsWith("..")) dirNum = 2; // Up one directory (second to last)
-        else if (rawPath.startsWith(".")) dirNum = 1; // Current directory (last)
+        if(rawPath.startsWith("..")) dirNum = 2; // Up one directory (second to last)
+        else if(rawPath.startsWith(".")) dirNum = 1; // Current directory (last)
         else return rawPath; // Otherwise, no formatting to be done
 
         // Adjust path relatively and get terminus directory
-        if (dirNum == 2) this.PWD = this.PWD.getParent();
+        if(dirNum == 2) this.PWD = this.PWD.getParent();
 
         // Extract dir name and file extn
         String dir = this.PWD.getFileName().toString();
         final int extnIndex = dir.indexOf('.');
-        if (extnIndex != -1) dir = dir.substring(0, extnIndex);
+        if(extnIndex != -1) dir = dir.substring(0, extnIndex);
 
         // If token is only ".", set it to directory name
-        if (rawPath.equals(".") || rawPath.equals("..")) return dir;
+        if(rawPath.equals(".") || rawPath.equals("..")) return dir;
             // Otherwise, prepend directory name and a slash
         else return dir + "." + rawPath.substring(dirNum);
     }
@@ -71,9 +69,7 @@ public class PythonParser extends LanguageParser {
             return Parser.queryURL(this.STD_LIB_URL + endpoint.replace('/', '.') + ".html", false).getResponseCode() == 200;
         }
         // If an error is thrown, return false
-        catch (Exception ignored) {
-            return false;
-        }
+        catch (Exception ignored) { return false; }
     }
 
     /**
@@ -139,21 +135,21 @@ public class PythonParser extends LanguageParser {
             String alias;
 
             // If import is in the form "import foo"|"import foo as f"|"import foo.bar.baz as b"|"import (foo, bar, baz)"
-            if (matcher.group(1) == null) {
-                if (token.contains("..")) internal = true;
+            if(matcher.group(1) == null) {
+                if(token.contains("..")) internal = true;
                 token = formatPath(token);
 
                 final String[] innerTokens = token.split("\\."); // Split on "."
-                if (innerTokens.length > 1) { // Ensure more than 1 innerToken exists
+                if(innerTokens.length > 1) { // Ensure more than 1 innerToken exists
                     // Set from to all but the last token in innerTokens rejoined on "/"
                     from = String.join("/", Arrays.copyOfRange(innerTokens, 0, innerTokens.length - 1));
                 }
                 // If no name is present, skip match
-                if (innerTokens[innerTokens.length - 1].equals("")) continue;
+                if(innerTokens[innerTokens.length - 1].equals("")) continue;
                 // Set name to last token
                 name = innerTokens[innerTokens.length - 1];
             } else { // Otherwise: "from foo import bar"|"from foo.fee import bar as b"|"from foo import (fee, bar, baz)"
-                if (matcher.group(1).equals(".") || matcher.group(1).equals("..")) internal = true;
+                if(matcher.group(1).equals(".") || matcher.group(1).equals("..")) internal = true;
                 // Set name to token
                 name = token;
                 // Set from to Group 1 after replacing '.' with '/'
@@ -178,7 +174,7 @@ public class PythonParser extends LanguageParser {
             }
 
             builder.setName(name); // Create Component
-            if (from != null && !from.equals("/")) builder.setGroup(from);
+            if(from != null && !from.equals("/")) builder.setGroup(from);
 //            if(alias != null) c.setAlias(alias); TODO
 
             // Check if internal

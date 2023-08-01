@@ -1,6 +1,7 @@
 package org.svip.serializers;
 
-
+import org.svip.generation.serializers.deserializer.*;
+import org.svip.generation.serializers.serializer.*;
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
@@ -16,7 +17,7 @@ import static org.svip.serializers.SerializerFactory.Schema.*;
 
 /**
  * File: SerializerFactory.java
- * <p>
+ *
  * This class is responsible for managing serializer and deserializer schema/format mappings to allow creating any
  * serializer provided a schema and format, as well as any deserializer by auto-detecting schema and format.
  *
@@ -72,10 +73,10 @@ public class SerializerFactory {
         /**
          * Default constructor for Schema.
          *
-         * @param serializerMap   A map of valid formats to serializers.
+         * @param serializerMap A map of valid formats to serializers.
          * @param deserializerMap A map of valid formats to deserializers.
          */
-        Schema(String name, String version, Map<Format, Serializer> serializerMap,
+        private Schema(String name, String version, Map<Format, Serializer> serializerMap,
                        Map<Format, Deserializer> deserializerMap) {
             this.name = name;
             this.version = version;
@@ -126,10 +127,8 @@ public class SerializerFactory {
         TAGVALUE
     }
 
-    /**
-     * TODO find an accurate way to determine schema
+    /** TODO find an accurate way to determine schema
      * Resolves the SBOM schema of the contents of a file.
-     *
      * @param fileContents The file contents to resolve the schema of.
      * @return The schema, or null if no schema could be resolved.
      */
@@ -141,10 +140,8 @@ public class SerializerFactory {
         else return null;
     }
 
-    /**
-     * TODO find an accurate way to determine format
+    /** TODO find an accurate way to determine format
      * Resolves the file format of the contents of a file.
-     *
      * @param fileContents The file contents to resolve the format of.
      * @return The format, or null if no format could be resolved.
      */
@@ -183,8 +180,8 @@ public class SerializerFactory {
      * Create a Serializer for an SBOM object provided the schema, format, and whether to pretty-print the SBOM file
      * or not.
      *
-     * @param schema      The schema of the SBOM file.
-     * @param format      The format of the SBOM file.
+     * @param schema The schema of the SBOM file.
+     * @param format The format of the SBOM file.
      * @param prettyPrint Whether to pretty-print the SBOM file.
      * @return A Serializer to serialize the SBOM file.
      * @throws IllegalArgumentException If the schema/format combination provided is invalid.
