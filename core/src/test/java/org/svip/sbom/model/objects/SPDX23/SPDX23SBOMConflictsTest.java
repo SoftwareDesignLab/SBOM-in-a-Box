@@ -1,5 +1,6 @@
 package org.svip.sbom.model.objects.SPDX23;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
@@ -33,8 +34,7 @@ public class SPDX23SBOMConflictsTest {
     static SBOM conflictSBOM;
 
     @Test
-    public void Format_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Format_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setFormat("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
@@ -50,8 +50,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void Name_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Name_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setName("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
@@ -67,8 +66,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void UID_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void UID_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setUID("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
@@ -84,8 +82,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void Version_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Version_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setVersion("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
@@ -101,8 +98,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void SpecVersion_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void SpecVersion_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setSpecVersion("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
@@ -118,8 +114,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void License_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void License_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.addLicense("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
@@ -136,8 +131,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void DocumentComment_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void DocumentComment_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setDocumentComment("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
@@ -153,8 +147,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void SPDXLicenseListVersion_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void SPDXLicenseListVersion_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setSPDXLicenseListVersion("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
@@ -170,8 +163,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void CreationTime_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void CreationTime_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         CreationData creationData = new CreationData();
         creationData.setCreationTime("control");
@@ -191,8 +183,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void CreatorComment_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void CreatorComment_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         CreationData creationData = new CreationData();
         creationData.setCreatorComment("control");
@@ -212,8 +203,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void Supplier_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Supplier_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         CreationData creationData = new CreationData();
         Organization supplier = new Organization("control", "control");
@@ -246,8 +236,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void Manufacture_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Manufacture_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         CreationData creationData = new CreationData();
         Organization manufacture = new Organization("control", "control");
@@ -280,8 +269,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void Author_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Author_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         CreationData creationData = new CreationData();
         Contact author = new Contact("control", "control", "control");
@@ -303,8 +291,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void CreationTool_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void CreationTool_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         CreationData creationData = new CreationData();
         CreationTool creationTool = new CreationTool();

@@ -1,5 +1,6 @@
 package org.svip.sbom.model.objects;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
@@ -76,7 +77,7 @@ public class SVIPSBOMTest {
     }
 
     @Test
-    public void conflicts_isEmpty_equals_true_when_testPackage_equals_controlPackage_test() {
+    public void conflicts_isEmpty_equals_true_when_testPackage_equals_controlPackage_test() throws JsonProcessingException {
         // Build Equal SBOM
         Organization organization = new Organization("Control Inc.", "www.control.io");
         Description description = new Description("This is the control component.");
@@ -125,7 +126,7 @@ public class SVIPSBOMTest {
     }
 
     @Test
-    public void all_fields_conflict_when_unequalPackage_compared_to_controlPackage_test() {
+    public void all_fields_conflict_when_unequalPackage_compared_to_controlPackage_test() throws JsonProcessingException {
         // Build Unequal SBOM
         Organization organization = new Organization("Inc.", "www.org.io");
         Description description = new Description("This is the unequal component.");

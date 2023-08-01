@@ -1,5 +1,6 @@
 package org.svip.sbom.model.objects.SPDX23;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23FileBuilder;
@@ -53,7 +54,7 @@ public class SPDX23FileObjectTest {
     }
 
     @Test
-    public void conflicts_isEmpty_equals_true_when_testPackage_equals_controlPackage_test() {
+    public void conflicts_isEmpty_equals_true_when_testPackage_equals_controlPackage_test() throws JsonProcessingException {
         // Build Equal Component
         LicenseCollection licenseCollection = new LicenseCollection();
         licenseCollection.addDeclaredLicense("Control License One");
@@ -80,7 +81,7 @@ public class SPDX23FileObjectTest {
     }
 
     @Test
-    public void all_fields_conflict_when_unequalPackage_compared_to_controlPackage_test() {
+    public void all_fields_conflict_when_unequalPackage_compared_to_controlPackage_test() throws JsonProcessingException {
         // Build Unequal Component
         LicenseCollection licenseCollection = new LicenseCollection();
         licenseCollection.addDeclaredLicense("License One");

@@ -1,5 +1,6 @@
 package org.svip.sbom.model.objects.SPDX23;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23FileBuilder;
 import org.svip.sbom.factory.objects.SPDX23.SPDX23FileBuilderFactory;
@@ -8,6 +9,7 @@ import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
+import org.svip.sbomanalysis.qualityattributes.resultfactory.Text;
 
 import java.util.List;
 import java.util.Objects;
@@ -29,8 +31,7 @@ public class SPDX23FileObjectConflictsTest {
     static Component conflictPackage;
 
     @Test
-    public void Type_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Type_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setType("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setType("Type");
@@ -45,7 +46,7 @@ public class SPDX23FileObjectConflictsTest {
     }
 
     @Test
-    public void UID_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void UID_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setUID("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setUID("123");
@@ -60,7 +61,7 @@ public class SPDX23FileObjectConflictsTest {
     }
 
     @Test
-    public void name_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void name_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setName("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setName("name");
@@ -75,7 +76,7 @@ public class SPDX23FileObjectConflictsTest {
     }
 
     @Test
-    public void author_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void author_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setAuthor("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setAuthor("author");
@@ -90,7 +91,7 @@ public class SPDX23FileObjectConflictsTest {
     }
 
     @Test
-    public void license_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void license_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         LicenseCollection licenseCollection = new LicenseCollection();
         licenseCollection.addDeclaredLicense("control license");
         packageBuilder.setLicenses(licenseCollection);
@@ -106,12 +107,15 @@ public class SPDX23FileObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", "License");
+
         for(Conflict c : conflictList)
         {
             if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "License is missing")) {
-                if(Objects.equals(c.GetTarget(), "control license") && c.GetOther() == null)
+                if(Objects.equals(c.GetTarget(), "control license") && Objects.equals(c.GetOther(), text.getNullItemInSetResponse()))
                     c1 = true;
-                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "license"))
+                else if(Objects.equals(c.GetTarget(), text.getNullItemInSetResponse()) && Objects.equals(c.GetOther(), "license"))
                     c2 = true;
             }
         }
@@ -121,7 +125,7 @@ public class SPDX23FileObjectConflictsTest {
     }
 
     @Test
-    public void copyright_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void copyright_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setCopyright("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setCopyright("copyright");
@@ -141,7 +145,7 @@ public class SPDX23FileObjectConflictsTest {
     }
 
     @Test
-    public void fileNotice_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void fileNotice_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setFileNotice("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setFileNotice("notice");

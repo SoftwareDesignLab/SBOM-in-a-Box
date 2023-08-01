@@ -1,5 +1,6 @@
 package org.svip.sbom.model.objects;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.factory.objects.SVIPSBOMComponentFactory;
@@ -9,6 +10,7 @@ import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
+import org.svip.sbomanalysis.qualityattributes.resultfactory.Text;
 
 import java.util.List;
 import java.util.Objects;
@@ -30,8 +32,7 @@ public class SVIPComponentObjectConflictsTest {
     static Component conflictPackage;
 
     @Test
-    public void Type_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Type_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setType("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setType("Type");
@@ -46,7 +47,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void UID_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void UID_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setUID("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setUID("123");
@@ -61,7 +62,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void name_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void name_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setName("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setName("name");
@@ -76,7 +77,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void author_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void author_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setAuthor("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setAuthor("author");
@@ -92,7 +93,7 @@ public class SVIPComponentObjectConflictsTest {
 
     // TODO This is still breaking due to casting
     @Test
-    public void license_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void license_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         LicenseCollection licenseCollection = new LicenseCollection();
         licenseCollection.addDeclaredLicense("control license");
         packageBuilder.setLicenses(licenseCollection);
@@ -108,12 +109,15 @@ public class SVIPComponentObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", "License");
+
         for(Conflict c : conflictList)
         {
-            if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "License is missing")) {
-                if(Objects.equals(c.GetTarget(), "control license") && c.GetOther() == null)
+            if (c.GetType() == MismatchType.LICENSE_MISMATCH && Objects.equals(c.GetMessage(), "License doesn't match")) {
+                if(Objects.equals(c.GetTarget(), "control license") && Objects.equals(c.GetOther(), text.getNullItemInSetResponse()))
                     c1 = true;
-                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "license"))
+                else if(Objects.equals(c.GetTarget(), text.getNullItemInSetResponse()) && Objects.equals(c.GetOther(), "license"))
                     c2 = true;
             }
         }
@@ -123,7 +127,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void copyright_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void copyright_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setCopyright("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setCopyright("copyright");
@@ -139,7 +143,7 @@ public class SVIPComponentObjectConflictsTest {
 
     // TODO Breaks because of licenses (but why?)
     @Test
-    public void componentHash_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void componentHash_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.addHash("SHA1", "control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.addHash("SHA2", "hash");
@@ -151,12 +155,15 @@ public class SVIPComponentObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", "Component Hash");
+
         for(Conflict c : conflictList)
         {
             if(c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "Component Hash is missing"))
-                if(Objects.equals(c.GetTarget(),"Contains Component Hash Data") && c.GetOther() == null)
+                if(Objects.equals(c.GetTarget(),"Contains Component Hash Data") && Objects.equals(c.GetOther(), text.getNullResponse()))
                     c1 = true;
-                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "Contains Component Hash Data"))
+                else if(Objects.equals(c.GetTarget(), text.getNullResponse()) && Objects.equals(c.GetOther(), "Contains Component Hash Data"))
                     c2 = true;
         }
 
@@ -165,7 +172,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void supplier_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void supplier_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         Organization controlOrg = new Organization("Control Org.","www.control.com");
         Organization testOrg = new Organization("Test Org.", "www.test.com");
         packageBuilder.setSupplier(controlOrg);
@@ -192,7 +199,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void version_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void version_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setVersion("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setVersion("version");
@@ -207,7 +214,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void description_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void description_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         Description controlDesc = new Description("control");
         Description testDesc = new Description("description");
         packageBuilder.setDescription(controlDesc);
@@ -224,7 +231,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void PURL_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void PURL_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.addPURL("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.addPURL("purl");
@@ -236,12 +243,15 @@ public class SVIPComponentObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", "PURL");
+
         for(Conflict c : conflictList)
         {
-            if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "PURL is missing")) {
-                if(Objects.equals(c.GetTarget(), "control") && c.GetOther() == null)
+            if (c.GetType() == MismatchType.PURL_MISMATCH && Objects.equals(c.GetMessage(), "PURL doesn't match")) {
+                if(Objects.equals(c.GetTarget(), "control") && Objects.equals(c.GetOther(), text.getNullItemInSetResponse()))
                     c1 = true;
-                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "purl"))
+                else if(Objects.equals(c.GetTarget(), text.getNullItemInSetResponse()) && Objects.equals(c.GetOther(), "purl"))
                     c2 = true;
             }
         }
@@ -251,7 +261,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void CPE_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void CPE_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.addCPE("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.addCPE("cpe");
@@ -263,12 +273,15 @@ public class SVIPComponentObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", "CPE");
+
         for(Conflict c : conflictList)
         {
-            if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "CPE is missing")) {
-                if(Objects.equals(c.GetTarget(), "control") && c.GetOther() == null)
+            if (c.GetType() == MismatchType.CPE_MISMATCH && Objects.equals(c.GetMessage(), "CPE doesn't match")) {
+                if(Objects.equals(c.GetTarget(), "control") && Objects.equals(c.GetOther(), text.getNullItemInSetResponse()))
                     c1 = true;
-                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "cpe"))
+                else if(Objects.equals(c.GetTarget(), text.getNullItemInSetResponse()) && Objects.equals(c.GetOther(), "cpe"))
                     c2 = true;
             }
         }
@@ -278,7 +291,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void mimeType_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void mimeType_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setMimeType("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setMimeType("mime type");
@@ -293,7 +306,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void publisher_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void publisher_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setPublisher("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setPublisher("publisher");
@@ -308,7 +321,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void scope_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void scope_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setScope("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setScope("scope");
@@ -323,7 +336,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void group_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void group_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setGroup("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setGroup("group");
@@ -337,7 +350,7 @@ public class SVIPComponentObjectConflictsTest {
         assertEquals("Group doesn't match", conflict.GetMessage());
     }
     @Test
-    public void verificationCode_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void verificationCode_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setVerificationCode("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setVerificationCode("verification code");
@@ -352,7 +365,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void downloadLocation_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void downloadLocation_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setDownloadLocation("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setDownloadLocation("download location");
@@ -367,7 +380,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void fileName_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void fileName_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setFileName("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setFileName("file name");
@@ -382,7 +395,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void filesAnalyzed_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void filesAnalyzed_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setFilesAnalyzed(false);
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setFilesAnalyzed(true);
@@ -397,7 +410,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void homePage_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void homePage_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setHomePage("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setHomePage("homepage");
@@ -412,7 +425,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void sourceInfo_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void sourceInfo_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setSourceInfo("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setSourceInfo("source info");
@@ -427,7 +440,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void releaseDate_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void releaseDate_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setReleaseDate("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setReleaseDate("release date");
@@ -442,7 +455,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void buildDate_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void buildDate_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setBuildDate("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setBuildDate("build date");
@@ -457,7 +470,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void validUntilDate_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void validUntilDate_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setValidUntilDate("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setValidUntilDate("valid until date");
@@ -472,7 +485,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void fileNotice_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void fileNotice_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setFileNotice("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setFileNotice("notice");

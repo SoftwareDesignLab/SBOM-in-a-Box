@@ -1,5 +1,6 @@
 package org.svip.sbom.model.objects.CycloneDX14;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
 import org.svip.sbom.factory.objects.CycloneDX14.CDX14SBOMBuilderFactory;
@@ -10,6 +11,7 @@ import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
+import org.svip.sbomanalysis.qualityattributes.resultfactory.Text;
 
 import java.util.List;
 import java.util.Objects;
@@ -29,8 +31,7 @@ public class CDX14SBOMConflictsTest {
     static SBOM conflictSBOM;
 
     @Test
-    public void Format_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Format_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         CDX14Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setFormat("control");
         controlSBOM = sbomBuilder.buildCDX14SBOM();
@@ -46,8 +47,7 @@ public class CDX14SBOMConflictsTest {
     }
 
     @Test
-    public void Name_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Name_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         CDX14Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setName("control");
         controlSBOM = sbomBuilder.buildCDX14SBOM();
@@ -63,8 +63,7 @@ public class CDX14SBOMConflictsTest {
     }
 
     @Test
-    public void UID_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void UID_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         CDX14Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setUID("control");
         controlSBOM = sbomBuilder.buildCDX14SBOM();
@@ -80,8 +79,7 @@ public class CDX14SBOMConflictsTest {
     }
 
     @Test
-    public void Version_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Version_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         CDX14Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setVersion("control");
         controlSBOM = sbomBuilder.buildCDX14SBOM();
@@ -97,8 +95,7 @@ public class CDX14SBOMConflictsTest {
     }
 
     @Test
-    public void SpecVersion_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void SpecVersion_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         CDX14Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setSpecVersion("control");
         controlSBOM = sbomBuilder.buildCDX14SBOM();
@@ -114,8 +111,7 @@ public class CDX14SBOMConflictsTest {
     }
 
     @Test
-    public void License_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void License_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         CDX14Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.addLicense("control");
         controlSBOM = sbomBuilder.buildCDX14SBOM();
@@ -132,8 +128,7 @@ public class CDX14SBOMConflictsTest {
     }
 
     @Test
-    public void DocumentComment_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void DocumentComment_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         CDX14Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setDocumentComment("control");
         controlSBOM = sbomBuilder.buildCDX14SBOM();
@@ -149,8 +144,7 @@ public class CDX14SBOMConflictsTest {
     }
 
     @Test
-    public void CreationTime_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void CreationTime_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         CDX14Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         CreationData creationData = new CreationData();
         creationData.setCreationTime("control");
@@ -170,8 +164,7 @@ public class CDX14SBOMConflictsTest {
     }
 
     @Test
-    public void CreatorComment_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void CreatorComment_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         CDX14Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         CreationData creationData = new CreationData();
         creationData.setCreatorComment("control");
@@ -191,8 +184,7 @@ public class CDX14SBOMConflictsTest {
     }
 
     @Test
-    public void Supplier_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Supplier_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         CDX14Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         CreationData creationData = new CreationData();
         Organization supplier = new Organization("control", "control");
@@ -225,8 +217,7 @@ public class CDX14SBOMConflictsTest {
     }
 
     @Test
-    public void Manufacture_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Manufacture_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         CDX14Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         CreationData creationData = new CreationData();
         Organization manufacture = new Organization("control", "control");
@@ -259,8 +250,7 @@ public class CDX14SBOMConflictsTest {
     }
 
     @Test
-    public void Author_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Author_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         CDX14Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         CreationData creationData = new CreationData();
         Contact author = new Contact("control", "control", "control");
@@ -282,8 +272,7 @@ public class CDX14SBOMConflictsTest {
     }
 
     @Test
-    public void CreationTool_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void CreationTool_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         CDX14Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         CreationData creationData = new CreationData();
         CreationTool creationTool = new CreationTool();
