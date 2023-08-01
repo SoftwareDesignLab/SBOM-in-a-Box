@@ -1,7 +1,6 @@
 package org.svip.serializers;
 
-import org.svip.generation.serializers.deserializer.*;
-import org.svip.generation.serializers.serializer.*;
+
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
