@@ -12,6 +12,8 @@ import org.svip.compare.conflicts.ConflictFactory;
 
 import java.util.*;
 
+import static org.svip.compare.conflicts.MismatchType.*;
+
 /**
  * file: CDX14ComponentObject.java
  * Holds information for a CycloneDX 1.4 component object
