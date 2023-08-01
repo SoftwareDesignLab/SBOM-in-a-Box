@@ -28,7 +28,8 @@ public class GenerateFromParserAPITest extends APITest {
 
     private final Map<Map<Long, String>, SBOMFile[]> testMap;
     private static final Logger LOGGER = LoggerFactory.getLogger(SVIPApiController.class);
-
+    private final String sampleProjectDirectory = System.getProperty("user.dir")
+            + "/src/test/resources/sample_projects/";
     public GenerateFromParserAPITest() throws IOException {
         testMap = getTestProjectMap();
     }
