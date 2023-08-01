@@ -532,6 +532,7 @@ public class SVIPApiController {
         Deserializer d;
         for (Map.Entry<String, String> sbom : sboms.entrySet())
             try {
+                if (sbom.getValue().isEmpty()) continue; // Skip blank SBOMs if any returned
                 d = SerializerFactory.createDeserializer(sbom.getValue());
                 deserialized.add(d.readFromString(sbom.getValue()));
             } catch (JsonProcessingException e) {

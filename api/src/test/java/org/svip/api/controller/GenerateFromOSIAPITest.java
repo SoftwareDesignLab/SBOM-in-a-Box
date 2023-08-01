@@ -14,8 +14,6 @@ import org.svip.sbomgeneration.serializers.SerializerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -58,12 +56,16 @@ public class GenerateFromOSIAPITest extends APITest {
     @Test
     @DisplayName("Generate from parser test")
     public void generateTest() throws IOException {
+        // Mock repository output (returns SBOMFile that it received)
+        when(repository.save(any(SBOMFile.class))).thenAnswer(i -> i.getArgument(0));
 
-        String[] zipFiles = {"Conan", "Conda_noEmptyFiles", "Perl_noEmptyFiles", "Rust_noEmptyFiles", "Scala"};
+        // TODO No C#, Perl, or Scala OSI tools
+        String[] zipFiles = {"Conan", "Conda_noEmptyFiles", "Rust_noEmptyFiles"};
 
         for (String file : zipFiles
         ) {
 
+            // TODO Zip everything and transfer new test
             LOGGER.info("Parsing project: " + file);
 
             ResponseEntity<Long> response = (ResponseEntity<Long>) controller.generateOSI(new MockMultipartFile(new File(System.getProperty("user.dir")
@@ -143,7 +145,7 @@ public class GenerateFromOSIAPITest extends APITest {
 //
 //                    ResponseEntity<?> response = controller.generateOSI(file, projectName, schema, format);
 //
-//                    if (!projectName.contains("CSharp")) {
+//                    if (!projectName.contains("CSharp")) { // TODO This can be removed once C# OSI tools added
 //                        assertEquals(HttpStatus.OK, response.getStatusCode());
 //                        assertNotNull(response.getBody());
 //                        // TODO more assertions
