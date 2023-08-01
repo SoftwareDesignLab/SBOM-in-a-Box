@@ -34,7 +34,7 @@ public class OSI {
     /**
      * The location of the bound directory relative to the build path (core).
      */
-    private static final String BOUND_DIR = "/src/main/java/org/svip/sbomgeneration/osi/bound_dir";
+    private static final String BOUND_DIR = "/src/main/java/org/svip/generation/osi/bound_dir";
 
     /**
      * The OSIClient that manages the container.
