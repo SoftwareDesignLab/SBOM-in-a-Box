@@ -6,6 +6,8 @@ import org.svip.compare.conflicts.ConflictFactory;
 
 import java.util.*;
 
+import static org.svip.compare.conflicts.MismatchType.*;
+
 /**
  * File: CreationData.java
  * Contains additional creation details about the SBOM
