@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:core/src/main/java/org/svip/merge/utils/Utils.java
 package org.svip.merge.utils;
+========
+package org.svip.compare.utils;
+>>>>>>>> 199be059c (Restructure core to be feature focused):core/src/main/java/org/svip/compare/utils/Utils.java
 
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;

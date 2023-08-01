@@ -12,10 +12,7 @@ services:
   osi:
     container_name: svip-osi
     image: ubuntu:latest
-    build: core/src/main/java/org/svip/generation/osi/docker
-    restart: unless-stopped
-    ports:
-      - ${FLASK_LOCAL_PORT}:${FLASK_DOCKER_PORT}
+    build: core/src/main/java/org/svip/generation/osi/scripts
     volumes:
       - code:/bound_dir/code
       - sboms:/bound_dir/sboms
@@ -53,8 +50,8 @@ services:
     volumes:
       - .m2:/root/.m2
       - /var/run/docker.sock:/var/run/docker.sock
-      - code:/src/main/java/org/svip/generation/osi/bound_dir/code
-      - sboms:/src/main/java/org/svip/generation/osi/bound_dir/sboms
+      - code:/src/main/java/org/svip/sbomgeneration/osi/bound_dir/code
+      - sboms:/src/main/java/org/svip/sbomgeneration/osi/bound_dir/sboms
     stdin_open: true
     tty: true
     environment: # Define environment variables for spring-boot application.properties
@@ -70,11 +67,11 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: ./core/src/main/java/org/svip/generation/osi/bound_dir/code
+      device: ${PWD}/core/src/main/java/org/svip/sbomgeneration/osi/bound_dir/code
       o: bind
   sboms: # Volume to link osi bound_dir/sboms with api bound_dir/sboms
     driver: local
     driver_opts:
       type: none
-      device: ./core/src/main/java/org/svip/generation/osi/bound_dir/sboms
+      device: ${PWD}/core/src/main/java/org/svip/sbomgeneration/osi/bound_dir/sboms
       o: bind

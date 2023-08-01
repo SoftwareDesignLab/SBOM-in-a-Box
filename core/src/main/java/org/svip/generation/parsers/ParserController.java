@@ -13,9 +13,21 @@ import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
+<<<<<<<< HEAD:core/src/main/java/org/svip/generation/parsers/ParserManager.java
 import org.svip.serializers.Metadata;
 import org.svip.serializers.SerializerFactory;
 import org.svip.utils.Debug;
+========
+import org.svip.generation.parsers.contexts.ContextParser;
+import org.svip.generation.parsers.contexts.DeadImportParser;
+import org.svip.generation.parsers.contexts.SubprocessParser;
+import org.svip.generation.parsers.languages.*;
+import org.svip.generation.parsers.packagemanagers.*;
+import org.svip.serializers.Metadata;
+import org.svip.serializers.SerializerFactory;
+import org.svip.utils.Debug;
+import org.svip.generation.parsers.utils.VirtualPath;
+>>>>>>>> 199be059c (Restructure core to be feature focused):core/src/main/java/org/svip/generation/parsers/ParserController.java
 
 import java.util.*;
 

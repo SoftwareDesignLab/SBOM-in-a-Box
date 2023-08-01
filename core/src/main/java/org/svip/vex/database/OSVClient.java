@@ -6,9 +6,9 @@ import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 import org.svip.vex.database.interfaces.VulnerabilityDBClient;
 import org.svip.vex.vexstatement.Product;
 import org.svip.vex.vexstatement.VEXStatement;
-import org.svip.vex.vexstatement.Vulnerability;
 import org.svip.vex.vexstatement.status.Justification;
 import org.svip.vex.vexstatement.status.Status;
+import org.svip.vex.vexstatement.Vulnerability;
 import org.svip.vex.vexstatement.status.VulnStatus;
 
 import java.net.URI;
@@ -28,47 +28,43 @@ import java.util.concurrent.CompletableFuture;
  */
 public class OSVClient implements VulnerabilityDBClient {
 
-    /**
-     * url endpoint to access OSV database POST methods
-     */
+    /**url endpoint to access OSV database POST methods*/
     private final String POST_ENDPOINT = "https://api.osv.dev/v1/query";
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
     /**
      * Build the API Request, then get the OSV database's response
-     *
      * @param jsonBody the string body of the request or OSV ID for GET
      * @return OSV APIs response to the HttpRequest
      * @throws Exception if an error occurs with getting OSV's response
      */
-    private String getOSVResponse(String jsonBody) throws Exception {
-        HttpRequest request;
-        // build the post method
-        request = HttpRequest.newBuilder()
-                .uri(URI.create(POST_ENDPOINT))
-                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
-                .build();
+    private String getOSVResponse(String jsonBody) throws Exception{
+            HttpRequest request;
+            // build the post method
+            request = HttpRequest.newBuilder()
+                    .uri(URI.create(POST_ENDPOINT))
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                    .build();
 
-        // send the response and get the APIs response
-        CompletableFuture<HttpResponse<String>> apiResponse = httpClient
-                .sendAsync(request, HttpResponse.BodyHandlers.ofString());
-        String responseBody = apiResponse.get().body();
+            // send the response and get the APIs response
+            CompletableFuture<HttpResponse<String>> apiResponse = httpClient
+                    .sendAsync(request, HttpResponse.BodyHandlers.ofString());
+            String responseBody = apiResponse.get().body();
 
-        // check if error code appeared with response and throw error if true
-        JSONObject jsonObject = new JSONObject(responseBody);
-        if (jsonObject.has("code") && jsonObject.getInt("code") == 3) {
-            throw new Exception("Invalid call to OSV API");
-        }
-        return responseBody.replace("{\"vulns\":", "");
+            // check if error code appeared with response and throw error if true
+            JSONObject jsonObject = new JSONObject(responseBody);
+            if(jsonObject.has("code") && jsonObject.getInt("code") == 3){
+                throw new Exception("Invalid call to OSV API");
+            }
+            return responseBody.replace("{\"vulns\":", "");
     }
 
 
     /**
      * Generate the json body for the API request using the component's
      * name and version
-     *
-     * @param componentName    the component's name
+     * @param componentName the component's name
      * @param componentVersion the component's version
      * @return the response from the OSV API request
      */
@@ -84,7 +80,6 @@ public class OSVClient implements VulnerabilityDBClient {
 
     /**
      * Generate the json body for the API request with the component's PURL
-     *
      * @param purlString the component's purl
      * @return the response from the OSV API request
      */
@@ -98,7 +93,6 @@ public class OSVClient implements VulnerabilityDBClient {
 
     /**
      * Get all vulnerabilities of a component using the OSV API
-     *
      * @param s the SBOM package to create the VEX Statement for
      * @return a List of VEX Statements if there are vulnerabilities or
      * throw a general Exception if none are found
@@ -161,13 +155,12 @@ public class OSVClient implements VulnerabilityDBClient {
 
     /**
      * Build a new VEX Statement for a VEX Document
-     *
      * @param vulnerabilityBody the vulnerability body from the APIs
-     *                          response to turn into a VEXStatement
-     * @param c                 component to extract info for the VEX Statement
+     * response to turn into a VEXStatement
+     * @param c component to extract info for the VEX Statement
      * @return a new VEXStatement
      */
-    private VEXStatement generateVEXStatement(JSONObject vulnerabilityBody, SBOMPackage c) {
+    private VEXStatement generateVEXStatement(JSONObject vulnerabilityBody, SBOMPackage c){
         VEXStatement.Builder statement = new VEXStatement.Builder();
         // add general fields to the statement
         statement.setStatementID(vulnerabilityBody.getString("id"));
@@ -183,9 +176,10 @@ public class OSVClient implements VulnerabilityDBClient {
         String vulnDesc;
         // check if summary key is in json object
         // if not default to using details key
-        if (!vulnerabilityBody.has("summary")) {
+        if(!vulnerabilityBody.has("summary")){
             vulnDesc = vulnerabilityBody.getString("details");
-        } else {
+        }
+        else{
             vulnDesc = vulnerabilityBody.getString("summary");
         }
         statement.setVulnerability(new Vulnerability(vulnID, vulnDesc));
@@ -199,13 +193,13 @@ public class OSVClient implements VulnerabilityDBClient {
         String supplier = c.getSupplier().getName();
         JSONArray packages = vulnerabilityBody.getJSONArray("affected");
         // for every package in the JSONArray
-        for (int i = 0; i < packages.length(); i++) {
+        for(int i = 0; i<packages.length(); i++){
             JSONObject vulnPackage = packages.getJSONObject(i);
             // extract the package's info and create a new Product
             JSONObject packageInfo = vulnPackage.getJSONObject("package");
             String packageID = packageInfo.getString("name")
                     + ":" + packageInfo.getString("ecosystem")
-                    + ":" + c.getVersion();
+            + ":" + c.getVersion();
             statement.addProduct(new Product(packageID, supplier));
         }
         return statement.build();

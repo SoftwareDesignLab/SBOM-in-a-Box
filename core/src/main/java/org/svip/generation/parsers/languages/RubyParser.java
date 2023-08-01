@@ -1,8 +1,8 @@
 package org.svip.generation.parsers.languages;
 
+import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.generation.parsers.Parser;
 import org.svip.generation.parsers.utils.VirtualPath;
-import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -27,10 +27,7 @@ import static org.svip.utils.Debug.log;
  * @author Ian Dunn
  */
 public class RubyParser extends LanguageParser {
-    public RubyParser() {
-        super("https://docs.ruby-lang.org/en/2.1.0/");
-    }
-
+    public RubyParser() { super("https://docs.ruby-lang.org/en/2.1.0/"); }
     private final Map<String, String> RUBY_STD_PACKAGES_AND_CLASSES = fetchRubyPackagesClasses();
 
     /**
@@ -47,12 +44,12 @@ public class RubyParser extends LanguageParser {
         final HashMap<String, String> packages = new HashMap<>();
 
         // Attempt to get list of std packages
-        try {
+        try{
             // Attempt to perform a GET request on ORACLE_URL
             final HttpURLConnection connection = Parser.queryURL(STD_LIB_URL + "index.html", false);
 
             // If page cannot be reached, log failure and return empty set
-            if (connection.getResponseCode() != 200) {
+            if(connection.getResponseCode() != 200) {
                 log(LOG_TYPE.ERROR, "Failed to fetch package list");
                 return packages;
             }
@@ -80,8 +77,8 @@ public class RubyParser extends LanguageParser {
                 line = line.trim();
 
                 // Wait for line containing page element parent to package list
-                if (!found) {
-                    if (line.equals("<h3>Class and Module Index</h3>")) {
+                if(!found) {
+                    if(line.equals("<h3>Class and Module Index</h3>")) {
                         found = true;
                     }
                 }
@@ -91,14 +88,14 @@ public class RubyParser extends LanguageParser {
                     Matcher m = regex.matcher(line);
 
                     // If package is found add to hashset
-                    if (m.find() && m.group(1) != null) {
+                    if(m.find() && m.group(1) != null) {
                         packages.put(m.group(2).replace("::", "/").toLowerCase(), m.group(1));
                     }
                     // Terminate when classes/modules list ends
-                    else if (line.equals("</ul>")) break;
+                    else if(line.equals("</ul>")) break;
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception e){
             log(LOG_TYPE.EXCEPTION, e);
         }
 
@@ -123,8 +120,8 @@ public class RubyParser extends LanguageParser {
 
         VirtualPath internalPath = new VirtualPath((group == null ? "" : group) + "/" + name);
 
-        for (VirtualPath internalComponent : sourceFiles) {
-            if (internalComponent.removeFileExtension().endsWith(internalPath)) return true;
+        for(VirtualPath internalComponent : sourceFiles) {
+            if(internalComponent.removeFileExtension().endsWith(internalPath)) return true;
         }
 
         return false;
@@ -143,7 +140,7 @@ public class RubyParser extends LanguageParser {
         String key;
 
         // If from is defined, append name after a "/" and check full component path
-        if (getGroup(component) != null) {
+        if(getGroup(component) != null) {
             key = getGroup(component).toLowerCase() + "/" + getName(component).toLowerCase();
         } else {
             // Otherwise, use name only
@@ -198,10 +195,9 @@ public class RubyParser extends LanguageParser {
         String match = "";
 
         // Import validation
-        if (matcher.group(1) != null) match = matcher.group(1); // Look for Ruby "require" imports
-        else if (matcher.group(2) != null) match = matcher.group(2); // Look for Ruby "load" and "autoload" imports
-        else
-            log(LOG_TYPE.WARN, "Match (" + matcher.group(0) + ") has no Groups; Skipping. . ."); // Otherwise, invalid import
+        if(matcher.group(1) != null) match = matcher.group(1); // Look for Ruby "require" imports
+        else if(matcher.group(2) != null) match = matcher.group(2); // Look for Ruby "load" and "autoload" imports
+        else log(LOG_TYPE.WARN, "Match (" + matcher.group(0) + ") has no Groups; Skipping. . ."); // Otherwise, invalid import
 
         // Clean string and tokenize
         final String[] tokens = match
@@ -210,20 +206,20 @@ public class RubyParser extends LanguageParser {
                 .split("/");
 
         // If match has more than one token
-        if (tokens.length > 1) {
+        if(tokens.length > 1) {
             // Set name to last token (what exactly is being imported)
             builder.setName(tokens[tokens.length - 1]);
 
             // Start index for copy is 0 by default
             int start = 0;
             // If tokens[0] equals ".", set start to 1
-            if (tokens[0].equals(".")) start = 1;
+            if(tokens[0].equals(".")) start = 1;
 
             // Set from to sublist of tokens joined on "/"
             final String from = String.join("/", Arrays.copyOfRange(tokens, start, tokens.length - 1));
 
             // If from is not an empty string, set c.from to from
-            if (!from.equals("")) builder.setGroup(from);
+            if(!from.equals("")) builder.setGroup(from);
         } else {
             builder.setName(match);
         }
