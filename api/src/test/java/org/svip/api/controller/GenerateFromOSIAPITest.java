@@ -7,10 +7,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.svip.api.model.MockMultipartFile;
 import org.svip.api.model.SBOMFile;
 import org.svip.sbomgeneration.osi.OSI;
 import org.svip.sbomgeneration.serializers.SerializerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -52,6 +54,28 @@ public class GenerateFromOSIAPITest extends APITest {
         // Ensure controller was able to construct OSI
         assumeTrue(controller.isOSIEnabled());
     }
+
+    @Test
+    @DisplayName("Generate from parser test")
+    public void generateTest() throws IOException {
+
+        String[] zipFiles = {"Conan", "Conda_noEmptyFiles", "Perl_noEmptyFiles", "Rust_noEmptyFiles", "Scala"};
+
+        for (String file : zipFiles
+        ) {
+
+            LOGGER.info("Parsing project: " + file);
+
+            ResponseEntity<Long> response = (ResponseEntity<Long>) controller.generateOSI(new MockMultipartFile(new File(System.getProperty("user.dir")
+                            + "/src/test/java/org/svip/api/sample_projects/" + file + ".zip")), file,
+                    SerializerFactory.Schema.SPDX23, SerializerFactory.Format.TAGVALUE);
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+
+        }
+
+    }
+
 
     /**
 //     * Tests bad SBOMFiles

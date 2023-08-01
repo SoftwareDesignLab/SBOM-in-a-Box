@@ -3,201 +3,36 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v7.4.4-alpha] - (8/18/2023)
-
-### Changed
-- `CDX14JSONDeserializer.java`
-    - Component licenses can now be created with an `id` or a `name`. Previously you could only use `name`
-    - Authors in the metadata now only need at least one of the following: name/email/phone, rather than all three
-
-## [v7.4.3-alpha] - (8/16/2023)
-
-### Changed
-- `/generators/parsers` endpoint
-    - POST mapping in `ParserController` utilizing `SBOMFileService`
-- `/generators/osi` endpoint
-    - POST mapping in `OSIController` utilizing `SBOMFileService`
-- `/generators/osi/tools` endpoint
-    - GET mapping in `OSIController`
-
-## [v7.4.2-alpha] - (8/15/2023)
-
-### Added
-- `/sboms/merge` endpoint
-    - Functionality in `SBOMFileService.java`
-    - POST mapping in `SBOMController.java`
-
-## [v7.4.1-alpha] - (8/15/2023)
-
-### Added
-- `MergerSVIP.java`
-    - Merges two SVIPSBOMs into one
-- `ComponentMerger.java`
-    - Holds logic to merge two generic `Component` objects into one of a desired type
-
-### Changed
-- `MergerUtils.java`
-    - String.equals() fixes
-    - Allowed merging of components to `SVIPComponentObject`
-    - Duplicate component issue resolved
-        - If two components are of the same name, but one has a version that's null, and the other doesn't, then they can be merged
-
-
-## [v7.4.0-alpha] - (8/11/2023)
-
-> OSI v3 - Instead of creating a container dynamically, we now have a [Flask API](README.md#api) running inside of a
-> container with consistent uptime to send requests to and get/select certain tools to run.
-
-### Added
-#### API
-- `/generators/osi/tools` Endpoint - Returns a list of supported open source tool names that can be passed to
-  `/generators/osi` to select what tools to run.
-
-#### Core
-- `OSI` Class methods to get tools and generate with specific tools.
-- `OSIClient` Class - Moved it out of `OSI` & removed all reliance on `docker-java` external dependency.
-- `server` package to hold all Flask API utility files.
-    - `constants.py` - Holds all BOM, language, directory, etc. constants relevant to the API and open source tools.
-    - `OSIAPIController.py` - The main controller for the API with two endpoints: `/tools` & `/generate`
-    - `OSTool.py` - A dataclass to store attributes of the open source tools supported by OSI.
-    - `ToolMapper.py` - A list of currently available open source tools represented as `OSTools`.
-    - `ToolUtils.py` - Several utilities to clean directories, run tools, detect languages and manifest files, and
-      validate tools.
-
-### Changed
-- `/generators/osi` Endpoint - Now takes in an optional `tools` request body to determine what tools to run.
-
-### Removed
-- `ContainerController.py` - Separated functionality into multiple files & API.
-
-## [v7.3.2-alpha] - (8/14/2023)
-
-### Changed
-- Added null checks to the deserializers to avoid null metadata or files keys.
-
-## [v7.3.1-alpha] - (8/10/2023)
-
-> Know [Issue](https://github.com/SoftwareDesignLab/SVIP/issues/219): Deleting SBOMs with comparison references in fast
-> succession will cause errors in the database
-### Added
-- `DiffService` for handling database operations for Comparisons and Conflicts
-- `UploadComaprisonFileInput` to handle new Comparisons and ensure relationships are added correctly
-- `UploadConflictFileInput` to handle new Conflicts and ensure relationships are added correctly
-- `ComaprisonFile` that acts as a relationship table for sbom comparison
-- `ConflictFile` holds conflict details
-
-### Changed
-- Moved `/svip/sboms/compare` endpoint to `DiffController`
-- Diff Report logic has changed
-    - 1:1 comparisons between sboms are arrogated into a diffreport at request time.
-    - Comparisons are stored in the database and used to put diffreports together
-- Made `Comparison` its own class
-- Single delete sbom will delete any associated comparisons
-
-### Removed
-- Deprecated DiffReport.java file
-
-## [v7.2.3-alpha] - (8/7/2023)
-
-### Added
-- `Conversion.java`
-  - Core functionality of SBOM conversion
-- `Convert.java` interface
-  - `ConvertCDX14.java`
-  - `ConvertSPDX23.java`
-- `ConvertTest.java` Class containing comprehensive unit tests for both schema converters
-
-## [v7.3.0-alpha] - (8/9/2023)
-
-### Changed
-- Simplified table names by removing the `_file` suffix
-- Move `toSBOMObject` / `toSBOMObjectAsJSON` to the SBOMFile rather than object
-- Refactored services to reference other services instead of depending on contollers
-  - `saveQualityReport` and `saveVEX` moved to their respective services
-- Services take objects instead of ids
-
-## [v7.2.5-alpha] - (8/7/2023)
-
-### Added
-- Relevant exceptions for conversion endpoint
-  - `DeserializerException`
-  - `SerializerException`
-  - `SBOMBuilderException`
-- Convert endpoint in `SBOMController.java`
-
-### Changed
-- `ConvertFromApiTest.java`
-- Deleted old `Converter.java`
-
-## [v7.2.5-alpha] - (8/7/2023)
-
-### Added
-- Relevant exceptions for conversion endpoint
-  - `DeserializerException`
-  - `SerializerException`
-  - `SBOMBuilderException`
-- Convert endpoint in `SBOMController.java`
-
-### Changed
-- `ConvertFromApiTest.java`
-- Deleted old `Converter.java`
-
-## [v7.2.4-alpha] - (8/7/2023)
-
-### Added
-- `Conversion.java`
-    - Core functionality of SBOM conversion
-- `Convert.java` interface
-    - `ConvertCDX14.java`
-    - `ConvertSPDX23.java`
-- `ConvertTest.java` Class containing comprehensive unit tests for both schema converters
-
-
-## [v7.2.3-alpha] - (8/3/2023)
-### Added
-- `SBOMService` for handling database operations
-- `UploadSBOMFileInput` to handle new SBOM entries uploaded via API
-- `SBOMController` to handle SBOM API operations
-
-### Changed
-- Moved the following endpoints to `SBOMController` from `SVIPApiController`
-  - POST `/sboms`
-    > No longer takes `SBOMFile` as body, usage has not changed. Uses `UploadSBOMFileInput` instead
-  - GET `/sbom`
-    > Note: Now returns a JSON String
-  - GET `/sboms/content`
-  - GET `/sboms`
-  - DELETE `/sboms`
-
-## [v7.2.2-alpha] - (8/3/2023)
-
-### Added
-- `MockMultipartFile` for testing uploading binaries
-- `ParserController` null check
-- `SBOMFileIdentifierGenerator` ID generator class implementing JPA's IdentifierGenerator for `SBOMFile.id`
+## [v7.1.3-alpha] - (7/28/2023)
 
 ### Changed
 - `/generators/parsers` successfully takes in binary zip files of projects and generates an SBOM
-    - passes Postman tests and `GenerateFromParserAPITest`
-- `/generators/osi` should take in binary zip files of projects and generates an SBOM
-    - passes Postman tests and `GenerateFromOSIAPITest`
-- Maximum file upload and request size to 2GB in `application.properties`
-
-## [v7.2.1-alpha] - (8/1/2023)
-
-### Changed
-- Fix incorrect OSI filepaths not allowing API to build.
-
-## [v7.2.0-alpha] - (8/1/2023)
-
-### Changed
-- Overhaul directory structure to be feature focused
+  - passes Postman tests and `GenerateFromParserAPITest`
+- `/generators/parsers` should take in binary zip files of projects and generates an SBOM
+  - Method signature is changed to do so. Error with Docker prevents generation currently
 
 ## [v7.1.2-alpha] - (7/28/2023)
-
 ### Added
 - SBOM Objects have built in comparison methods
 - Added `hashcode` methods to components to use `name` and `version` as UIDs
+
+## [v7.1.1-alpha] - (7/26/2023)
+
+### Changed
+- `/sboms/content` returns the entire SBOMFile instead of just file contents
+
+## [v7.1.0-alpha] - (7/26/2023)
+
+
+### Added
+- `/svip/generators/osi` endpoint to the `SVIPAPIController` class
+- `GenerateFromOSIAPITest` class that contains unit tests for the OSI endpoint
+
+### Changed
+- Updated `GenerateFromParserAPITest` class to be consistent with `GenerateFromOSIAPITest` class
+- Cleaned up utilities in `api.utils` and moved some methods into their respective core classes as there was some
+  duplicate code.
+- Fixed a bug where running OSI in the API would create bind directories in the API package instead of the core package.
 
 ## [v7.1.1-alpha] - (7/26/2023)
 
@@ -209,7 +44,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ResultFactory` is built for each method-test
 - Endpoints in `SVIPAPiController.java` to match documentation
 - `/generators/parsers` unzips a zipped project and parses it into an SBOM
-- `/sboms/content` returns the entire SBOMFile instead of just file contents
 
 ## [v7.1.0-alpha] - (7/25/2023)
 
@@ -219,16 +53,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `VEXResult.java`
   - Class that holds both the VEX Object and any errors that occurred for the API endpoint
 - Test SBOMs that contain vulnerable components
-- `/svip/generators/osi` endpoint to the `SVIPAPIController` class
-- `GenerateFromOSIAPITest` class that contains unit tests for the OSI endpoint
 
 ### Changed
 - Updated `API.md` documentation with the VEX endpoint
-- Updated `GenerateFromParserAPITest` class to be consistent with `GenerateFromOSIAPITest` class
-- Cleaned up utilities in `api.utils` and moved some methods into their respective core classes as there was some
-  duplicate code.
-- Fixed a bug where running OSI in the API would create bind directories in the API package instead of the core package.
-
 
 ## [v7.0.1-alpha] - (7/24/2023)
 
