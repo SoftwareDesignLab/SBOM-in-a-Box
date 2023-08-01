@@ -2,7 +2,7 @@ package org.svip.sbom.model.interfaces.schemas.CycloneDX14;
 
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
-import org.svip.sbomanalysis.comparison.conflicts.Conflict;
+import org.svip.compare.conflicts.Conflict;
 
 import java.util.List;
 

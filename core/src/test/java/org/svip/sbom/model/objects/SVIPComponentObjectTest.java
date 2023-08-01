@@ -5,13 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.factory.objects.SVIPSBOMComponentFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.sbomanalysis.comparison.conflicts.Conflict;
-import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.MismatchType;
 
 import java.util.List;
 

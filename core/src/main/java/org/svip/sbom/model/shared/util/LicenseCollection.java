@@ -1,15 +1,14 @@
 package org.svip.sbom.model.shared.util;
 
-import org.svip.sbom.model.shared.metadata.CreationTool;
-import org.svip.sbomanalysis.comparison.conflicts.Comparable;
-import org.svip.sbomanalysis.comparison.conflicts.Conflict;
-import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
+import org.svip.compare.conflicts.Comparable;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.ConflictFactory;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.LICENSE_MISMATCH;
+import static org.svip.compare.conflicts.MismatchType.LICENSE_MISMATCH;
 
 /**
  * File: LicensesCollection.java

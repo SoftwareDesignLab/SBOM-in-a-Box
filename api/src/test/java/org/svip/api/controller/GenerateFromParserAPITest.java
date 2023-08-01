@@ -9,15 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 import org.svip.api.model.MockMultipartFile;
 import org.svip.api.model.SBOMFile;
-import org.svip.api.utils.Utils;
-import org.svip.sbomgeneration.serializers.SerializerFactory;
+import org.svip.serializers.SerializerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.ZipFile;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

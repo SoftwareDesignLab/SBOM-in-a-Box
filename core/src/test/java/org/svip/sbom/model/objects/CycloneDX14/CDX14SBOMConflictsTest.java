@@ -8,8 +8,8 @@ import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
-import org.svip.sbomanalysis.comparison.conflicts.Conflict;
-import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.MismatchType;
 
 import java.util.List;
 import java.util.Objects;
