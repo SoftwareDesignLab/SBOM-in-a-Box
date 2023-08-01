@@ -7,15 +7,17 @@ on:
       paths-ignore:
         - '**/resources/**'
   pull_request:
+    types: ['opened', 'edited', 'reopened', 'synchronize', 'ready_for_review']
     branches:  
       - 'dev'   # todo: replace with vars
       - 'main'  # todo: replace with vars
     paths-ignore:
       - '**/resources/**'
-      - '**/sample_sboms/**'
 jobs:
+  # only run on open pull request
   build-test:
-    runs-on: windows-latest
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
     steps:
       - name: checkout
         uses: actions/checkout@v3.5.2
