@@ -40,8 +40,8 @@ public class GenerateFromParserAPITest extends APITest {
     @Test
     @DisplayName("Convert to CDX tag value test")
     public void CDXTagValueTest() throws IOException {
-        assertEquals(HttpStatus.BAD_REQUEST, controller.generateParsers((new MockMultipartFile(new File(System.getProperty("user.dir")
-                                + "/src/test/java/org/svip/api/sample_projects/Scala.zip"))),
+        assertEquals(HttpStatus.BAD_REQUEST, controller.generateParsers((new MockMultipartFile(new File(
+                                sampleProjectDirectory + "Scala.zip"))),
                         "Java", SerializerFactory.Schema.CDX14, SerializerFactory.Format.TAGVALUE).
                 getStatusCode());
     }
@@ -52,8 +52,8 @@ public class GenerateFromParserAPITest extends APITest {
     @Test
     @DisplayName("Incorrect file type test")
     public void zipExceptionTest() throws IOException {
-        assertEquals(HttpStatus.BAD_REQUEST, controller.generateParsers((new MockMultipartFile(new File(System.getProperty("user.dir")
-                                + "/src/test/java/org/svip/api/sample_projects/Rust/lib/bar.rs"))),
+        assertEquals(HttpStatus.BAD_REQUEST, controller.generateParsers((new MockMultipartFile(new File(
+                sampleProjectDirectory + "Ruby/lib/bar.rb"))),
                         "Java", SerializerFactory.Schema.CDX14, SerializerFactory.Format.JSON).
                 getStatusCode());
     }
@@ -70,8 +70,8 @@ public class GenerateFromParserAPITest extends APITest {
 
             LOGGER.info("Parsing project: " + file);
 
-            ResponseEntity<Long> response = (ResponseEntity<Long>) controller.generateParsers(new MockMultipartFile(new File(System.getProperty("user.dir")
-                            + "/src/test/java/org/svip/api/sample_projects/" + file + ".zip")), file,
+            ResponseEntity<Long> response = (ResponseEntity<Long>) controller.generateParsers((new MockMultipartFile(
+                            new File(sampleProjectDirectory + file + ".zip"))), file,
                     SerializerFactory.Schema.SPDX23, SerializerFactory.Format.TAGVALUE);
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertNotNull(response.getBody());
