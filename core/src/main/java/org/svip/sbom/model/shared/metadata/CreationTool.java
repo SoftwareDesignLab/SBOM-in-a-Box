@@ -1,5 +1,6 @@
 package org.svip.sbom.model.shared.metadata;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.svip.sbomanalysis.comparison.conflicts.Comparable;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
@@ -96,7 +97,7 @@ public class CreationTool implements Comparable {
 
 
     @Override
-    public List<Conflict> compare(Comparable o) {
+    public List<Conflict> compare(Comparable o) throws JsonProcessingException {
         // Don't compare if not instance of same object
         if(!(o instanceof CreationTool other))
             return null;

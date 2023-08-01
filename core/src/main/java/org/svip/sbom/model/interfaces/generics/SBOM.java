@@ -1,5 +1,6 @@
 package org.svip.sbom.model.interfaces.generics;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
@@ -84,5 +85,5 @@ public interface SBOM {
      * @param other Other SBOM to compare against
      * @return List of Metadata of conflicts
      */
-    List<Conflict> compare(SBOM other);
+    List<Conflict> compare(SBOM other) throws JsonProcessingException;
 }

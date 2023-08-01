@@ -1,5 +1,6 @@
 package org.svip.sbom.model.objects.SPDX23;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
@@ -179,7 +180,7 @@ public class SPDX23FileObject implements SPDX23File {
      * @return List of conflicts
      */
     @Override
-    public List<Conflict> compare(Component other) {
+    public List<Conflict> compare(Component other) throws JsonProcessingException {
         ConflictFactory cf = new ConflictFactory();
 
         // Type

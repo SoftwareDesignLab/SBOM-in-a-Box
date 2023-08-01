@@ -1,5 +1,6 @@
 package org.svip.sbom.model.objects;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
@@ -471,7 +472,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
      * @return List of conflicts
      */
     @Override
-    public List<Conflict> compare(Component other) {
+    public List<Conflict> compare(Component other) throws JsonProcessingException {
         ConflictFactory cf = new ConflictFactory();
 
         // Type
@@ -515,7 +516,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
      * @return List of conflicts
      */
     @Override
-    public List<Conflict> compare(SBOMPackage other) {
+    public List<Conflict> compare(SBOMPackage other) throws JsonProcessingException {
         ConflictFactory cf = new ConflictFactory();
 
         // Supplier

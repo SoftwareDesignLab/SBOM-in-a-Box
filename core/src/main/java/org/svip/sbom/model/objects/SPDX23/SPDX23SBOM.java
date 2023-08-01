@@ -1,5 +1,6 @@
 package org.svip.sbom.model.objects.SPDX23;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.shared.metadata.CreationData;
@@ -242,7 +243,7 @@ public class SPDX23SBOM implements SPDX23Schema{
      * @return List of Metadata of conflicts
      */
     @Override
-    public List<Conflict> compare(SBOM other) {
+    public List<Conflict> compare(SBOM other) throws JsonProcessingException {
         // SPDX - OTHER Comparison
         ConflictFactory cf = new ConflictFactory();
 

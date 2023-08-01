@@ -1,5 +1,6 @@
 package org.svip.sbom.model.interfaces.generics;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 
@@ -56,6 +57,6 @@ public interface Component {
      * @param other Other Component to compare against
      * @return List of conflicts
      */
-    List<Conflict> compare(Component other);
+    List<Conflict> compare(Component other) throws JsonProcessingException;
 
 }

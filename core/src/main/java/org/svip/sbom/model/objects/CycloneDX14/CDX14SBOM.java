@@ -1,5 +1,6 @@
 package org.svip.sbom.model.objects.CycloneDX14;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Schema;
@@ -224,7 +225,7 @@ public class CDX14SBOM implements CDX14Schema {
      * @return List of Metadata conflicts
      */
     @Override
-    public List<Conflict> compare(SBOM other) {
+    public List<Conflict> compare(SBOM other) throws JsonProcessingException {
         // CDX - OTHER Comparison
         ConflictFactory cf = new ConflictFactory();
 

@@ -2,20 +2,24 @@ package org.svip.sbomanalysis.comparison.conflicts;
 
 import java.util.*;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.svip.sbomanalysis.qualityattributes.resultfactory.Text;
 import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.HASH_MISMATCH;
 import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISSING;
 import java.util.Set;
-
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.LICENSE_MISMATCH;
 
 /**
  * File: ConflictFactory.java
  * Handles creating new Conflicts
  *
  * @author Derek Garcia
+ * @author Thomas Roman
  */
 public class ConflictFactory {
     private final List<Conflict> conflicts = new ArrayList<>();
+    // for writing objects as strings
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Attempt to add a new Conflict. If there is no conflict, nothing is added
@@ -52,11 +56,14 @@ public class ConflictFactory {
      * @param other Set of other values
      *              TODO Doesn't seem to check sets properly. See CDX14ComponentObejctTest.java
      */
-    public void compareComparableSets(String field, Set<Comparable> target, Set<Comparable> other){
+    public void compareComparableSets(String field, Set<Comparable> target, Set<Comparable> other) throws JsonProcessingException {
 
         // Null check
         if(!comparable(field, target, other))
             return;
+
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", field);
 
         // Round 1: Compare target against other if equal
         for(Comparable targetValue : target){
@@ -73,7 +80,7 @@ public class ConflictFactory {
             }
             // targetValue not in other set
             if(!compared)
-                addConflict(field, MISSING, "Contains " + field + " Data", null);
+                addConflict(field, MISSING, objectMapper.writeValueAsString(targetValue), text.getNullItemInSetResponse());
         }
 
         // Round 2: Don't compare other against target, just checking if present
@@ -91,7 +98,7 @@ public class ConflictFactory {
 
             // otherValue not in target set
             if(!compared)
-                addConflict(field, MISSING, null, "Contains " + field + " Data");
+                addConflict(field, MISSING, text.getNullItemInSetResponse(), objectMapper.writeValueAsString(otherValue));
         }
     }
 
@@ -103,21 +110,24 @@ public class ConflictFactory {
      * @param target Set of target values
      * @param other Set of other values
      */
-    public void compareStringSets(String field, MismatchType mismatchType, Set<String> target, Set<String> other){
+    public void compareStringSets(String field, MismatchType mismatchType, Set<String> target, Set<String> other) throws JsonProcessingException {
         // Null check
         if(!comparable(field, target, other))
             return;
+
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", field);
 
         // Compare Strings
         for(String value : target){
             // Value in target and not in other
             if(!other.contains(value))
-                addConflict(field, mismatchType, value, null);
+                addConflict(field, mismatchType, value, text.getNullItemInSetResponse());
         }
         for(String value : other){
             // Value in other and not in target
             if(!target.contains(value))
-                addConflict(field, mismatchType, null, value);
+                addConflict(field, mismatchType, text.getNullItemInSetResponse(), value);
         }
     }
 
@@ -128,16 +138,19 @@ public class ConflictFactory {
      * @param target Set of target values
      * @param other Set of other values
      */
-    public void compareHashes(String field, Map<String, String> target, Map<String, String> other){
+    public void compareHashes(String field, Map<String, String> target, Map<String, String> other) throws JsonProcessingException {
         // Null check
         if(!comparable(field, target, other))
             return;
+
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", field);
 
         // Round 1: Compare target against other if equal
         for(String targetAlg : target.keySet()){
             // If other doesn't contain hash, add as missing
             if(!other.containsKey(targetAlg)){
-                addConflict(field, MISSING, "Contains " + field + " Data", null);
+                addConflict(field, MISSING, targetAlg + ", " + target.get(targetAlg), text.getNullResponse());
                 continue;
             }
             // Compare hash values
@@ -148,7 +161,7 @@ public class ConflictFactory {
         for(String otherAlg : other.keySet()){
             // If target doesn't contain hash, add as missing
             if(!target.containsKey(otherAlg))
-                addConflict(field, MISSING, null, "Contains " + field + " Data");
+                addConflict(field, MISSING, text.getNullResponse(), otherAlg + ", " + other.get(otherAlg));
         }
     }
 
@@ -161,16 +174,19 @@ public class ConflictFactory {
      * @param other Other value
      * @return True if they can be compared, false otherwise
      */
-    public boolean comparable(String field, Object target, Object other){
+    public boolean comparable(String field, Object target, Object other) throws JsonProcessingException {
 
         // Both are missing, no conflict
         if(target == null && other == null)
             return false;
 
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", field);
+
         // One is missing from the other
         // TODO Better way to handle this case
         if(target == null || other == null){
-            addConflict(field, MISSING, (target == null ? "Present" : null), (other == null ? "Present" : null));
+            addConflict(field, MISSING, (target == null ? objectMapper.writeValueAsString(other) : text.getNullResponse()), (other == null ? objectMapper.writeValueAsString(target) : text.getNullResponse()));
             return false;
         }
 

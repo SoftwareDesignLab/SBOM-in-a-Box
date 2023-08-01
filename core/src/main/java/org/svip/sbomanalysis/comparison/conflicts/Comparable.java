@@ -1,5 +1,7 @@
 package org.svip.sbomanalysis.comparison.conflicts;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import java.util.List;
 
 /**
@@ -15,7 +17,7 @@ public interface Comparable {
      * @param o Object
      * @return List of Conflicts
      */
-    List<Conflict> compare(Comparable o);
+    List<Conflict> compare(Comparable o) throws JsonProcessingException;
 
     /**
      * Test if Object is equal to current

@@ -1,5 +1,6 @@
 package org.svip.sbom.model.objects.CycloneDX14;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14PackageBuilder;
 import org.svip.sbom.factory.objects.CycloneDX14.CDX14PackageBuilderFactory;
@@ -10,6 +11,7 @@ import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
+import org.svip.sbomanalysis.qualityattributes.resultfactory.Text;
 
 import java.util.List;
 import java.util.Objects;
@@ -31,8 +33,7 @@ public class CDX14ComponentObjectConflictsTest {
     static Component conflictPackage;
 
     @Test
-    public void Type_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Type_is_Conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setType("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setType("Type");
@@ -47,7 +48,7 @@ public class CDX14ComponentObjectConflictsTest {
     }
 
     @Test
-    public void UID_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void UID_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setUID("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setUID("123");
@@ -62,7 +63,7 @@ public class CDX14ComponentObjectConflictsTest {
     }
 
     @Test
-    public void name_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void name_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setName("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setName("name");
@@ -77,7 +78,7 @@ public class CDX14ComponentObjectConflictsTest {
     }
 
     @Test
-    public void author_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void author_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setAuthor("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setAuthor("author");
@@ -93,7 +94,7 @@ public class CDX14ComponentObjectConflictsTest {
 
     // TODO This is still breaking due to casting
     @Test
-    public void license_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void license_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         LicenseCollection licenseCollection = new LicenseCollection();
         licenseCollection.addDeclaredLicense("control license");
         packageBuilder.setLicenses(licenseCollection);
@@ -109,12 +110,15 @@ public class CDX14ComponentObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", "License");
+
         for(Conflict c : conflictList)
         {
             if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "License is missing")) {
-                if(Objects.equals(c.GetTarget(), "control license") && c.GetOther() == null)
+                if(Objects.equals(c.GetTarget(), "control license") && Objects.equals(c.GetOther(), text.getNullItemInSetResponse()))
                     c1 = true;
-                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "license"))
+                else if(Objects.equals(c.GetTarget(), text.getNullItemInSetResponse()) && Objects.equals(c.GetOther(), "license"))
                     c2 = true;
             }
         }
@@ -124,7 +128,7 @@ public class CDX14ComponentObjectConflictsTest {
     }
 
     @Test
-    public void copyright_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void copyright_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setCopyright("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setCopyright("copyright");
@@ -140,7 +144,7 @@ public class CDX14ComponentObjectConflictsTest {
 
     // TODO Component Hash comparison doesn't return intuitive information...
     @Test
-    public void componentHash_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void componentHash_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.addHash("SHA1", "control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.addHash("SHA2", "hash");
@@ -152,12 +156,15 @@ public class CDX14ComponentObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", "Component Hash");
+
         for(Conflict c : conflictList)
         {
             if(c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "Component Hash is missing"))
-                if(Objects.equals(c.GetTarget(),"Contains Component Hash Data") && c.GetOther() == null)
+                if(Objects.equals(c.GetTarget(),"Contains Component Hash Data") && Objects.equals(c.GetOther(), text.getNullResponse()))
                     c1 = true;
-                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "Contains Component Hash Data"))
+                else if(Objects.equals(c.GetTarget(), text.getNullResponse()) && Objects.equals(c.GetOther(), "Contains Component Hash Data"))
                     c2 = true;
         }
 
@@ -166,7 +173,7 @@ public class CDX14ComponentObjectConflictsTest {
     }
 
     @Test
-    public void supplier_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void supplier_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         Organization controlOrg = new Organization("Control Org.","www.control.com");
         Organization testOrg = new Organization("Test Org.", "www.test.com");
         packageBuilder.setSupplier(controlOrg);
@@ -193,7 +200,7 @@ public class CDX14ComponentObjectConflictsTest {
     }
 
     @Test
-    public void version_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void version_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setVersion("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setVersion("version");
@@ -208,7 +215,7 @@ public class CDX14ComponentObjectConflictsTest {
     }
 
     @Test
-    public void description_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void description_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         Description controlDesc = new Description("control");
         Description testDesc = new Description("description");
         packageBuilder.setDescription(controlDesc);
@@ -225,7 +232,7 @@ public class CDX14ComponentObjectConflictsTest {
     }
 
     @Test
-    public void PURL_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void PURL_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.addPURL("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.addPURL("purl");
@@ -237,12 +244,15 @@ public class CDX14ComponentObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", "PURL");
+
         for(Conflict c : conflictList)
         {
             if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "PURL is missing")) {
-                if(Objects.equals(c.GetTarget(), "control") && c.GetOther() == null)
+                if(Objects.equals(c.GetTarget(), "control") && Objects.equals(c.GetOther(), text.getNullItemInSetResponse()))
                     c1 = true;
-                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "purl"))
+                else if(Objects.equals(c.GetTarget(), text.getNullItemInSetResponse()) && Objects.equals(c.GetOther(), "purl"))
                     c2 = true;
             }
         }
@@ -252,7 +262,7 @@ public class CDX14ComponentObjectConflictsTest {
     }
 
     @Test
-    public void CPE_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void CPE_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.addCPE("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.addCPE("cpe");
@@ -264,12 +274,15 @@ public class CDX14ComponentObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", "CPE");
+
         for(Conflict c : conflictList)
         {
             if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "CPE is missing")) {
-                if(Objects.equals(c.GetTarget(), "control") && c.GetOther() == null)
+                if(Objects.equals(c.GetTarget(), "control") && Objects.equals(c.GetOther(), text.getNullItemInSetResponse()))
                     c1 = true;
-                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "cpe"))
+                else if(Objects.equals(c.GetTarget(), text.getNullItemInSetResponse()) && Objects.equals(c.GetOther(), "cpe"))
                     c2 = true;
             }
         }
@@ -279,7 +292,7 @@ public class CDX14ComponentObjectConflictsTest {
     }
 
     @Test
-    public void mimeType_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void mimeType_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setMimeType("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setMimeType("mime type");
@@ -294,7 +307,7 @@ public class CDX14ComponentObjectConflictsTest {
     }
 
     @Test
-    public void publisher_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void publisher_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setPublisher("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setPublisher("publisher");
@@ -309,7 +322,7 @@ public class CDX14ComponentObjectConflictsTest {
     }
 
     @Test
-    public void scope_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void scope_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setScope("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setScope("scope");
@@ -324,7 +337,7 @@ public class CDX14ComponentObjectConflictsTest {
     }
 
     @Test
-    public void group_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void group_is_conflicting_between_testPackage_and_controlPackage_test() throws JsonProcessingException {
         packageBuilder.setGroup("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setGroup("group");

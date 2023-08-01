@@ -2,6 +2,7 @@ package org.svip.sbomanalysis.comparison;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
@@ -35,7 +36,7 @@ public class DiffReport {
         @JsonProperty
         private final List<String> missingComponents = new ArrayList<>();
 
-        public Comparison(SBOM target, SBOM other) {
+        public Comparison(SBOM target, SBOM other) throws JsonProcessingException {
             // Compare metadata
             this.componentConflicts.put(METADATA_TAG, target.compare(other));
 
@@ -91,7 +92,7 @@ public class DiffReport {
      * @param otherUID  UID of other SBOM
      * @param otherSBOM other SBOM to compare against
      */
-    public void compare(String otherUID, SBOM otherSBOM) {
+    public void compare(String otherUID, SBOM otherSBOM) throws JsonProcessingException {
         this.diffReport.put(otherUID, new Comparison(this.targetSBOM, otherSBOM));
     }
 

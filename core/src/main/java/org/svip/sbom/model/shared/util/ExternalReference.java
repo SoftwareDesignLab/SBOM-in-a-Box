@@ -1,5 +1,6 @@
 package org.svip.sbom.model.shared.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbomanalysis.comparison.conflicts.Comparable;
@@ -108,7 +109,7 @@ public class ExternalReference implements Comparable {
 
 
     @Override
-    public List<Conflict> compare(Comparable o) {
+    public List<Conflict> compare(Comparable o) throws JsonProcessingException {
         // Don't compare if not instance of same object
         if(!(o instanceof ExternalReference other))
             return null;

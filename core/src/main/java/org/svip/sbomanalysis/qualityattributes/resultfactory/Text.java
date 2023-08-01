@@ -9,6 +9,7 @@ import java.util.Collection;
  * Class that holds message details about test results
  *
  * @author Matthew Morrison
+ * @author Thomas Roman
  */
 public class Text {
 
@@ -122,5 +123,12 @@ public class Text {
                     .append("Actual: ").append(this.context);
         }
         return details.toString();
+    }
+    public String getNullResponse() {
+        return "Does not contain " + field;
+    }
+
+    public String getNullItemInSetResponse() {
+        return "Component " + field + "s does not contain this " + field;
     }
 }
