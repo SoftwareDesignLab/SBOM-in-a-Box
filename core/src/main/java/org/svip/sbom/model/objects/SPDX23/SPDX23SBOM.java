@@ -11,6 +11,7 @@ import java.util.*;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
 import org.svip.compare.conflicts.Conflict;
 import org.svip.compare.conflicts.ConflictFactory;
+import static org.svip.compare.conflicts.MismatchType.*;
 
 /**
  * file: SPDX23SBOM.java

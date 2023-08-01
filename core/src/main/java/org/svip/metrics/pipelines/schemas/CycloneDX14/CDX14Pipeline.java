@@ -14,7 +14,6 @@ import org.svip.metrics.pipelines.interfaces.schemas.CycloneDX14.CDX14Tests;
 import org.svip.metrics.resultfactory.Result;
 import org.svip.metrics.resultfactory.ResultFactory;
 import org.svip.metrics.resultfactory.enumerations.INFO;
-import org.svip.sbomanalysis.metrics.tests.*;
 import org.svip.metrics.tests.enumerations.ATTRIBUTE;
 
 import java.util.ArrayList;
