@@ -7,7 +7,6 @@ on:
       - 'main'  # todo: replace with vars
     paths-ignore:
       - '**/resources/**'
-      - '**/sample_sboms/**'
 
 jobs:
   build:

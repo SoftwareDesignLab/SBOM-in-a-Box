@@ -12,7 +12,6 @@ on:
       - 'main'  # todo: replace with vars
     paths-ignore:
       - '**/resources/**'
-      - '**/sample_sboms/**'
 jobs:
   build-test:
     runs-on: windows-latest
