@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 /**
  * File: GenerateFromOSIAPITest.java
- *
+ * <p>
  * Holds the unit tests responsible for testing the OSI API endpoint.
  *
  * @author Ian Dunn
@@ -35,6 +35,7 @@ public class GenerateFromOSIAPITest extends APITest {
     private static final Logger LOGGER = LoggerFactory.getLogger(SVIPApiController.class);
     private final String sampleProjectDirectory = System.getProperty("user.dir")
             + "/src/test/resources/sample_projects/";
+
     private final Map<Map<Long, String>, SBOMFile[]> testMap;
 
     public GenerateFromOSIAPITest() throws IOException {
@@ -56,7 +57,6 @@ public class GenerateFromOSIAPITest extends APITest {
 
     /**
      * Tests invalid projects
-     *
      */
     @Test
     @DisplayName("Invalid Project Test")
@@ -111,15 +111,28 @@ public class GenerateFromOSIAPITest extends APITest {
 
         for (String file : zipFiles
         ) {
-
-            // TODO Zip everything and transfer new test
             LOGGER.info("Parsing project: " + file);
 
-            ResponseEntity<Long> response = (ResponseEntity<Long>) controller.generateOSI(new MockMultipartFile(
-                            new File(sampleProjectDirectory + file + ".zip")), file,
-                    SerializerFactory.Schema.SPDX23, SerializerFactory.Format.TAGVALUE);
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertNotNull(response.getBody());
+            for (String schema : schemas
+            ) {
+
+                for (String format : formats
+                ) {
+
+                    if (schema.equals("CDX14") && format.equals("TAGVALUE"))
+                        continue;
+
+                    LOGGER.info("Into " + schema + (format.equals("TAGVALUE") ? ".spdx" : ".json"));
+
+                    ResponseEntity<Long> response = (ResponseEntity<Long>) controller.generateOSI(new MockMultipartFile(
+                                    new File(sampleProjectDirectory + file + ".zip")), file,
+                            SerializerFactory.Schema.valueOf(schema), SerializerFactory.Format.valueOf(format));
+                    assertEquals(HttpStatus.OK, response.getStatusCode());
+                    assertNotNull(response.getBody());
+                }
+
+            }
+
 
         }
 
