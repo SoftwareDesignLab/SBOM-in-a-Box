@@ -19,7 +19,6 @@ import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.sbomanalysis.compare.merge.*;
 
 import java.util.*;
 

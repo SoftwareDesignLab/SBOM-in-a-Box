@@ -16,7 +16,6 @@ import org.svip.sbom.model.uids.Hash;
 import org.svip.metrics.resultfactory.Result;
 import org.svip.metrics.resultfactory.ResultFactory;
 import org.svip.metrics.resultfactory.enumerations.INFO;
-import org.svip.sbomanalysis.metrics.tests.*;
 import org.svip.metrics.tests.enumerations.ATTRIBUTE;
 
 import java.util.*;
