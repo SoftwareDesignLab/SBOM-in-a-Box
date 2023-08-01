@@ -1,7 +1,7 @@
 package org.svip.generation.parsers.languages;
 
-import org.svip.generation.parsers.Parser;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
+import org.svip.generation.parsers.Parser;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -19,9 +19,7 @@ import static org.svip.utils.Debug.log;
  */
 public class ScalaParser extends LanguageParser {
     // Scala API
-    public ScalaParser() {
-        super("https://www.scala-lang.org/api/2.12.5/");
-    }
+    public ScalaParser() { super("https://www.scala-lang.org/api/2.12.5/"); }
 
     ///
     /// Abstract Method Implementation
@@ -36,21 +34,21 @@ public class ScalaParser extends LanguageParser {
     @Override
     protected boolean isLanguageComponent(SVIPComponentBuilder component) {
         // Attempt to find component
-        try {
+        try{
             // Initialize variables
             StringBuilder urlSB = new StringBuilder(STD_LIB_URL);
             final String from = getGroup(component);
             final String name = getName(component);
 
             // If component is not capitalized, component is package
-            if (from == null) {
+            if(from == null) {
                 // Append component name to URL
                 urlSB.append(name);
                 // package URLs end in "package/name/index.html"
                 urlSB.append("/index");
             }
             // Otherwise, if component is not "*", component is Class
-            else if (!name.equals("*")) {
+            else if(!name.equals("*")) {
                 // Append component from to URL
                 urlSB.append(from);
                 urlSB.append("/");
@@ -69,7 +67,7 @@ public class ScalaParser extends LanguageParser {
 
             // Test to see if page exists.
             return Parser.queryURL(urlSB.toString(), false).getResponseCode() == 200;
-        } catch (Exception e) {
+        } catch (Exception e){
             log(LOG_TYPE.EXCEPTION, e);
         }
         return false;
@@ -113,10 +111,9 @@ public class ScalaParser extends LanguageParser {
         String match = "";
 
         // Import validation
-        if (matcher.group(2) != null) match = matcher.group(2); // Look for Scala2 imports "bar.{foo => f, baz as b}"
-        else if (matcher.group(3) != null) match = matcher.group(3); // Look for Scala3 imports "bar.foo as f"
-        else
-            log(LOG_TYPE.WARN, "Match (" + matcher.group(0) + ") has no Groups; Skipping. . ."); // Otherwise, invalid import
+        if(matcher.group(2) != null) match = matcher.group(2); // Look for Scala2 imports "bar.{foo => f, baz as b}"
+        else if(matcher.group(3) != null) match = matcher.group(3); // Look for Scala3 imports "bar.foo as f"
+        else log(LOG_TYPE.WARN, "Match (" + matcher.group(0) + ") has no Groups; Skipping. . ."); // Otherwise, invalid import
 
         // Clean string and tokenize
         final String[] tokens = match
@@ -135,9 +132,9 @@ public class ScalaParser extends LanguageParser {
             SVIPComponentBuilder builder = new SVIPComponentBuilder();
             builder.setType("EXTERNAL"); // Default to EXTERNAL
 
-            if (aliasMatcher.find() && !aliasMatcher.group(1).equals("")) {
+            if(aliasMatcher.find() && !aliasMatcher.group(1).equals("")) {
                 // If component is not capitalized, component is package
-                if (Character.isLowerCase(aliasMatcher.group(1).charAt(0))) {
+                if(Character.isLowerCase(aliasMatcher.group(1).charAt(0))) {
                     // Create component with original matcher group 1 combined with aliasMatcher group 1
                     builder.setName(matcher.group(1).replace(".", "/") + "/" + aliasMatcher.group(1));
                 }
@@ -145,7 +142,7 @@ public class ScalaParser extends LanguageParser {
                 else {
                     // Change "import bar._" to "import bar.*" for consistency
                     String name = aliasMatcher.group(1);
-                    if (name.equals("_")) name = "*";
+                    if(name.equals("_")) name = "*";
 
                     // Create component with aliasMatcher group 1
                     builder.setName(name);
@@ -164,7 +161,7 @@ public class ScalaParser extends LanguageParser {
                 if (isInternalComponent(builder)) {
                     builder.setType("INTERNAL");
 
-                    // Otherwise, check if Language
+                // Otherwise, check if Language
                 } else if (isLanguageComponent(builder)) {
                     builder.setType("LANGUAGE");
                 }

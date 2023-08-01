@@ -1,17 +1,16 @@
 package org.svip.sbom.model.objects.SPDX23;
 
-import org.svip.compare.conflicts.Conflict;
-import org.svip.compare.conflicts.ConflictFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
-import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
+import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.util.ExternalReference;
 
 import java.util.*;
 
-import static org.svip.compare.conflicts.MismatchType.*;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.ConflictFactory;
 
 /**
  * file: SPDX23SBOM.java
@@ -20,66 +19,42 @@ import static org.svip.compare.conflicts.MismatchType.*;
  * @author Derek Garcia
  * @author Matthew Morrison
  */
-public class SPDX23SBOM implements SPDX23Schema {
+public class SPDX23SBOM implements SPDX23Schema{
 
-    /**
-     * SBOM's format
-     */
+    /**SBOM's format*/
     private final String format;
 
-    /**
-     * SBOM's name
-     */
+    /**SBOM's name*/
     private final String name;
 
-    /**
-     * SBOM's uid
-     */
+    /**SBOM's uid*/
     private final String uid;
 
-    /**
-     * SBOM's version
-     */
+    /**SBOM's version*/
     private final String version;
 
-    /**
-     * SBOM's spec version
-     */
+    /**SBOM's spec version*/
     private final String specVersion;
 
-    /**
-     * SBOM's licenses
-     */
+    /**SBOM's licenses*/
     private final Set<String> licenses;
 
-    /**
-     * SBOM's creation data
-     */
+    /**SBOM's creation data*/
     private final CreationData creationData;
 
-    /**
-     * SBOM's document comment
-     */
+    /**SBOM's document comment*/
     private final String documentComment;
 
-    /**
-     * SBOM's root component
-     */
+    /**SBOM's root component*/
     private final SPDX23PackageObject rootComponent;
 
-    /**
-     * SBOM's component's
-     */
+    /**SBOM's component's*/
     private final Set<Component> components;
 
-    /**
-     * SBOM's relationships
-     */
+    /**SBOM's relationships*/
     private final HashMap<String, Set<Relationship>> relationships;
 
-    /**
-     * SBOM's external references
-     */
+    /**SBOM's external references*/
     private final Set<ExternalReference> externalReferences;
 
     // TODO VEX needs implementation
@@ -94,14 +69,11 @@ public class SPDX23SBOM implements SPDX23Schema {
     // TODO Annotation needs implementation
     // private Set<Annotation> annotationInformation;
 
-    /**
-     * SBOM's license list version
-     */
+    /**SBOM's license list version*/
     private final String SPDXLicenseListVersion;
 
     /**
      * Get the SBOM's format
-     *
      * @return the SBOM's format
      */
     @Override
@@ -111,7 +83,6 @@ public class SPDX23SBOM implements SPDX23Schema {
 
     /**
      * Get the SBOM's name
-     *
      * @return the SBOM's name
      */
     @Override
@@ -121,7 +92,6 @@ public class SPDX23SBOM implements SPDX23Schema {
 
     /**
      * Get the SBOM's UID
-     *
      * @return the SBOM's UID
      */
     @Override
@@ -131,7 +101,6 @@ public class SPDX23SBOM implements SPDX23Schema {
 
     /**
      * Get the SBOM's version
-     *
      * @return the SBOM's version
      */
     @Override
@@ -141,7 +110,6 @@ public class SPDX23SBOM implements SPDX23Schema {
 
     /**
      * Get the SBOM's spec version
-     *
      * @return the SBOM's spec version
      */
     @Override
@@ -151,7 +119,6 @@ public class SPDX23SBOM implements SPDX23Schema {
 
     /**
      * Get the SBOM's licenses
-     *
      * @return the SBOM's licenses
      */
     @Override
@@ -161,7 +128,6 @@ public class SPDX23SBOM implements SPDX23Schema {
 
     /**
      * Get the SBOM's creation data
-     *
      * @return the SBOM's creation data
      */
     @Override
@@ -171,7 +137,6 @@ public class SPDX23SBOM implements SPDX23Schema {
 
     /**
      * Get the SBOM's document comment
-     *
      * @return the SBOM's document comment
      */
     @Override
@@ -181,7 +146,6 @@ public class SPDX23SBOM implements SPDX23Schema {
 
     /**
      * Get the SBOM's root component
-     *
      * @return the SBOM's root component
      */
     @Override
@@ -201,7 +165,6 @@ public class SPDX23SBOM implements SPDX23Schema {
 
     /**
      * Get the SBOM's relationships
-     *
      * @return the SBOM's relationships
      */
     @Override
@@ -211,7 +174,6 @@ public class SPDX23SBOM implements SPDX23Schema {
 
     /**
      * Get the SBOM's external references
-     *
      * @return the SBOM's external references
      */
     @Override
@@ -221,7 +183,6 @@ public class SPDX23SBOM implements SPDX23Schema {
 
     /**
      * Get the SBOM's SPDX license list version
-     *
      * @return the SBOM's SPDX license list version
      */
     @Override
@@ -231,19 +192,18 @@ public class SPDX23SBOM implements SPDX23Schema {
 
     /**
      * Constructor to make a new SPDX 2.3 SBOM
-     *
-     * @param format                 SBOM format
-     * @param name                   SBOM name
-     * @param uid                    SBOM uid
-     * @param version                SBOM version
-     * @param specVersion            SBOM spec version
-     * @param licenses               SBOM licenses
-     * @param creationData           SBOM creation data
-     * @param documentComment        SBOM document comment
-     * @param rootComponent          SBOM root component
-     * @param components             SBOM components
-     * @param relationships          SBOM relationships
-     * @param externalReferences     SBOM external references
+     * @param format SBOM format
+     * @param name SBOM name
+     * @param uid SBOM uid
+     * @param version SBOM version
+     * @param specVersion SBOM spec version
+     * @param licenses SBOM licenses
+     * @param creationData SBOM creation data
+     * @param documentComment SBOM document comment
+     * @param rootComponent SBOM root component
+     * @param components SBOM components
+     * @param relationships SBOM relationships
+     * @param externalReferences SBOM external references
      * @param spdxLicenseListVersion SBOM spdx license list version
      */
     //TODO add missing fields when implemented (VEX, Snippet, LicenseInfo, Annotation)
@@ -253,7 +213,7 @@ public class SPDX23SBOM implements SPDX23Schema {
                       SPDX23PackageObject rootComponent, Set<Component> components,
                       HashMap<String, Set<Relationship>> relationships,
                       Set<ExternalReference> externalReferences,
-                      String spdxLicenseListVersion) {
+                      String spdxLicenseListVersion){
         this.format = format;
         this.name = name;
         this.uid = uid;
@@ -293,11 +253,11 @@ public class SPDX23SBOM implements SPDX23Schema {
         cf.compareStringSets("License", LICENSE_MISMATCH, this.licenses, other.getLicenses());
 
         // Compare Creation Data
-        if (cf.comparable("Creation Data", this.creationData, other.getCreationData()))
+        if(cf.comparable("Creation Data", this.creationData, other.getCreationData()))
             cf.addConflicts(this.creationData.compare(other.getCreationData()));
 
         // Comparable Sets
-        if (cf.comparable("External Reference", this.externalReferences, other.getExternalReferences()))
+        if(cf.comparable("External Reference", this.externalReferences, other.getExternalReferences()))
             cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
 
         // todo
@@ -305,8 +265,8 @@ public class SPDX23SBOM implements SPDX23Schema {
         // compare Vulns
 
         // Compare SPDX specific fields
-        if (other instanceof SPDX23SBOM)
-            cf.addConflicts(compare((SPDX23SBOM) other));
+        if( other instanceof SPDX23SBOM)
+            cf.addConflicts( compare((SPDX23SBOM) other) );
 
         return cf.getConflicts();
     }

@@ -1,12 +1,12 @@
 package org.svip.metrics.tests;
 
+import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.interfaces.generics.SBOMPackage;
+import org.svip.sbom.model.uids.CPE;
 import org.svip.metrics.resultfactory.Result;
 import org.svip.metrics.resultfactory.ResultFactory;
 import org.svip.metrics.resultfactory.enumerations.INFO;
 import org.svip.metrics.tests.enumerations.ATTRIBUTE;
-import org.svip.sbom.model.interfaces.generics.Component;
-import org.svip.sbom.model.interfaces.generics.SBOMPackage;
-import org.svip.sbom.model.uids.CPE;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,7 +20,7 @@ import java.util.Set;
  * @author Matthew Morrison
  * @author Derek Garcia
  */
-public class CPETest extends MetricTest {
+public class CPETest extends MetricTest{
 
     private final ResultFactory resultFactory;
 
@@ -41,7 +41,6 @@ public class CPETest extends MetricTest {
 
     /**
      * Perform the tests for a CPE
-     *
      * @param field the field to test
      * @param value the value to test
      * @return a set of results as a result of each test
@@ -50,7 +49,7 @@ public class CPETest extends MetricTest {
     public Set<Result> test(String field, String value) {
         Set<Result> results = new HashSet<>();
         // cpe is not a null value and does exist, tests can run
-        if (value != null) {
+        if(value != null) {
             results.add(isValidCPE(field, value));
             results.addAll(isAccurateCPE(field, value));
         }
@@ -66,37 +65,35 @@ public class CPETest extends MetricTest {
 
     /**
      * Test if a given CPE value is valid or not
-     *
      * @param field the field that's tested (cpe)
      * @param value the cpe value to be tested
      * @return a result of if the cpe value is valid or not
      */
-    private Result isValidCPE(String field, String value) {
+    private Result isValidCPE(String field, String value){
         var rf = new ResultFactory("Valid CPE", ATTRIBUTE.COMPLETENESS, ATTRIBUTE.UNIQUENESS, ATTRIBUTE.MINIMUM_ELEMENTS);
-        try {
+        try{
             new CPE(value);    // throws error if given cpe string is invalid
             return rf.pass(field, INFO.VALID, value, component.getName());
-        } catch (Exception e) {
+        } catch (Exception e){
             return rf.fail(field, INFO.ERROR, value, component.getName());
         }
     }
 
     /**
      * Test if the CPE value matches the component's stored data
-     *
      * @param field the field that's tested (cpe)
      * @param value the cpe value to be tested
      * @return a list of Results of if the cpe matches that component's stored data
      */
-    private List<Result> isAccurateCPE(String field, String value) {
+    private List<Result> isAccurateCPE(String field, String value){
         var rf = new ResultFactory("Accurate CPE", ATTRIBUTE.COMPLETENESS, ATTRIBUTE.UNIQUENESS, ATTRIBUTE.MINIMUM_ELEMENTS);
-        try {
+        try{
             // try to create a cpe object and then call match method
             CPE cpeObj = new CPE(value);
             return match(cpeObj);
         }
         // failed to create a new cpe object, test automatically fails
-        catch (Exception e) {
+        catch (Exception e){
             List<Result> result = new ArrayList<>();
             result.add(rf.fail(field, INFO.ERROR,
                     value, component.getName()));
@@ -110,12 +107,12 @@ public class CPETest extends MetricTest {
      * @param cpe the cpe to be tested against
      * @return Result with the findings
      */
-    private List<Result> match(CPE cpe) {
+    private List<Result> match(CPE cpe){
         var rf = new ResultFactory("Matching CPE", ATTRIBUTE.COMPLETENESS, ATTRIBUTE.UNIQUENESS, ATTRIBUTE.MINIMUM_ELEMENTS);
         List<Result> results = new ArrayList<>();
         // test cpe and component name
         String cpeName = cpe.getProduct();
-        if (!cpeName.equals(component.getName())) {
+        if(!cpeName.equals(component.getName())){
             results.add(rf.fail("CPE Name", INFO.NOT_MATCHING,
                     cpeName, component.getName()));
         } else {
@@ -125,7 +122,7 @@ public class CPETest extends MetricTest {
 
         // test cpe and component version
         String cpeVersion = cpe.getVersion();
-        if (!cpeVersion.equals(component.getVersion())) {
+        if(!cpeVersion.equals(component.getVersion())){
             results.add(rf.fail("CPE Version", INFO.NOT_MATCHING,
                     cpeVersion, component.getVersion()));
         } else {
@@ -135,7 +132,7 @@ public class CPETest extends MetricTest {
 
         // test cpe vendor to component author
         String cpeVendor = cpe.getVendor();
-        if (!cpeVendor.equals(component.getAuthor())) {
+        if(!cpeVendor.equals(component.getAuthor())){
             results.add(rf.fail("CPE Vendor", INFO.NOT_MATCHING,
                     cpeVendor, component.getAuthor()));
         } else {

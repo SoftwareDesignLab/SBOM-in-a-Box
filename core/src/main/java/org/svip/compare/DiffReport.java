@@ -6,10 +6,7 @@ import org.svip.compare.conflicts.Conflict;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -38,27 +35,27 @@ public class DiffReport {
             this.componentConflicts.put(METADATA_TAG, target.compare(other));
 
             // Round 1: Compare target against other if equal
-            for (Component targetComponent : target.getComponents()) {
+            for(Component targetComponent : target.getComponents()){
 
                 // If other doesn't have component which shares name with target component, skip
-                if (other.getComponents().stream().noneMatch(o -> o.getName() != null && o.getName().equals(targetComponent.getName()))) {
+                if(other.getComponents().stream().noneMatch(o->o.getName() != null && o.getName().equals(targetComponent.getName()))){
                     this.missingComponents.add(targetComponent.getName());
                     continue;
                 }
 
                 // Test targetValue against otherValue
-                for (Component otherComponent : other.getComponents()) {
+                for(Component otherComponent : other.getComponents()){
                     // Compare hash codes to account for different schema representations of the same component
-                    if (targetComponent.hashCode() == otherComponent.hashCode())
+                    if(targetComponent.hashCode() == otherComponent.hashCode())
                         this.componentConflicts.put(targetComponent.getName(), targetComponent.compare(otherComponent));
                 }
 
             }
 
             // Round 2: Check for components present in other but not in target
-            for (Component otherComponent : other.getComponents()) {
+            for(Component otherComponent : other.getComponents()){
                 // If target doesn't have component which shares name with other component, skip
-                if (target.getComponents().stream().noneMatch(o -> o.getName() != null && o.getName().equals(otherComponent.getName())))
+                if(target.getComponents().stream().noneMatch(o->o.getName() != null && o.getName().equals(otherComponent.getName())))
                     this.missingComponents.add(otherComponent.getName());
             }
         }
@@ -66,7 +63,7 @@ public class DiffReport {
 
 
     @JsonProperty("target")
-    private final String targetUID;
+    private String targetUID;
     @JsonProperty
     private final HashMap<String, Comparison> diffReport = new HashMap<>();
     private final SBOM targetSBOM;
