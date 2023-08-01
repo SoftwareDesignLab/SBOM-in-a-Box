@@ -1,12 +1,12 @@
 package org.svip.sbom.model.shared.metadata;
 
-import org.svip.sbomanalysis.comparison.conflicts.Comparable;
-import org.svip.sbomanalysis.comparison.conflicts.Conflict;
-import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
+import org.svip.compare.conflicts.Comparable;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.ConflictFactory;
 
 import java.util.*;
 
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
+import static org.svip.compare.conflicts.MismatchType.*;
 
 /**
  * File: CreationData.java
@@ -14,7 +14,7 @@ import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
  *
  * @author Derek Garcia
  */
-public class CreationData implements Comparable{
+public class CreationData implements Comparable {
 
     // Time SBOM was created
     private String creationTime;
@@ -73,24 +73,24 @@ public class CreationData implements Comparable{
     /**
      * @param author Author of SBOM Data
      */
-    public void addAuthor(Contact author){
+    public void addAuthor(Contact author) {
         this.authors.add(author);
     }
 
     /**
      * @param license License
      */
-    public void addLicense(String license){
+    public void addLicense(String license) {
         this.licenses.add(license);
     }
 
     /**
-     * @param key Property key
+     * @param key   Property key
      * @param value Property Value
      */
-    public void addProperty(String key, String value){
+    public void addProperty(String key, String value) {
         // Create new index if one doesn't exist
-        if(!this.properties.containsKey(key))
+        if (!this.properties.containsKey(key))
             this.properties.put(key, new HashSet<>());
 
         this.properties.get(key).add(value);
@@ -164,9 +164,9 @@ public class CreationData implements Comparable{
     /// Util
     ///
     @Override
-    public List<Conflict> compare(Comparable o){
+    public List<Conflict> compare(Comparable o) {
         // Don't compare if not instance of same object
-        if(!(o instanceof CreationData other))
+        if (!(o instanceof CreationData other))
             return null;
 
         ConflictFactory cf = new ConflictFactory();
@@ -184,9 +184,9 @@ public class CreationData implements Comparable{
         cf.compareComparableSets("Creation Data: Tool", new HashSet<>(this.creationTools), new HashSet<>(other.getCreationTools()));
 
         // Compare Objects
-        if(cf.comparable("Manufacture", this.manufacture, other.getManufacture()))
+        if (cf.comparable("Manufacture", this.manufacture, other.getManufacture()))
             cf.addConflicts(this.manufacture.compare(other.getManufacture()));
-        if(cf.comparable("Supplier", this.supplier, other.getSupplier()))
+        if (cf.comparable("Supplier", this.supplier, other.getSupplier()))
             cf.addConflicts(this.supplier.compare(other.getSupplier()));
 
         // todo

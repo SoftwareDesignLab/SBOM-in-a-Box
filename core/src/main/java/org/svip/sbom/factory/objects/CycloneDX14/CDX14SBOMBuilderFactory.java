@@ -14,9 +14,8 @@ import org.svip.sbom.factory.interfaces.SBOMBuilderFactory;
 public class CDX14SBOMBuilderFactory implements SBOMBuilderFactory {
     private CDX14PackageBuilder packageBuilder;
 
-     @Override
-     public CDX14Builder createBuilder()
-     {
+    @Override
+    public CDX14Builder createBuilder() {
         return new CDX14Builder();
-     }
+    }
 }

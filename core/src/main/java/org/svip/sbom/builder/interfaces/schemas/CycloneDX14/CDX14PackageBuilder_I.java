@@ -14,6 +14,7 @@ public interface CDX14PackageBuilder_I extends PackageBuilder {
 
     /**
      * Set the mime type of the package
+     *
      * @param mimeType the package's mime type
      * @return a CDX14PackageBuilder_I
      */
@@ -21,6 +22,7 @@ public interface CDX14PackageBuilder_I extends PackageBuilder {
 
     /**
      * Set the publisher of the package
+     *
      * @param publisher the package's publisher
      * @return a CDX14PackageBuilder_I
      */
@@ -28,6 +30,7 @@ public interface CDX14PackageBuilder_I extends PackageBuilder {
 
     /**
      * Set the scope of the package
+     *
      * @param scope the package's scope
      * @return a CDX14PackageBuilder_I
      */
@@ -35,6 +38,7 @@ public interface CDX14PackageBuilder_I extends PackageBuilder {
 
     /**
      * Set the group for the package
+     *
      * @param group the package's group
      * @return a CDX14PackageBuilder_I
      */
@@ -42,6 +46,7 @@ public interface CDX14PackageBuilder_I extends PackageBuilder {
 
     /**
      * Add an external reference to the package
+     *
      * @param externalReference a package's external reference
      * @return a CDX14PackageBuilder_I
      */
@@ -50,7 +55,8 @@ public interface CDX14PackageBuilder_I extends PackageBuilder {
 
     /**
      * Add a property to the package
-     * @param name the name of the property
+     *
+     * @param name  the name of the property
      * @param value the value of the property
      * @return a CDX14PackageBuilder_I
      */

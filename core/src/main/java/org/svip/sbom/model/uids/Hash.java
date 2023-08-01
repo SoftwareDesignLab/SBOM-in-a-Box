@@ -14,7 +14,7 @@ import static org.svip.sbom.model.uids.Hash.Algorithm.*;
 public class Hash {
 
     // List of supported hashing algorithms for SPDX and CDX
-    public enum Algorithm{
+    public enum Algorithm {
         SHA1,
         SHA224,
         SHA256,
@@ -36,7 +36,7 @@ public class Hash {
     }
 
     // SPDX only Hashes
-    public enum SPDXAlgorithm{
+    public enum SPDXAlgorithm {
         SHA224,
         BLAKE2b512,
         MD2,
@@ -53,9 +53,9 @@ public class Hash {
      * Create a new hash object
      *
      * @param algorithm hash algorithm used
-     * @param value value of hash
+     * @param value     value of hash
      */
-    public Hash(String algorithm, String value){
+    public Hash(String algorithm, String value) {
         this.algorithm = toAlgorithmEnum(algorithm);
         this.value = value;
     }
@@ -66,12 +66,12 @@ public class Hash {
      * @param algorithm string of algorithm name
      * @return Enum of algorithm
      */
-    private Algorithm toAlgorithmEnum(String algorithm){
+    private Algorithm toAlgorithmEnum(String algorithm) {
         // sanitize input
-        algorithm = algorithm.toLowerCase().replaceAll("-","");
+        algorithm = algorithm.toLowerCase().replaceAll("-", "");
 
         // check each algo to find match
-        for(Algorithm algEnum : Algorithm.values()){
+        for (Algorithm algEnum : Algorithm.values()) {
             // return matching algo
             if (algEnum.toString().toLowerCase().equals(algorithm))
                 return algEnum;
@@ -86,26 +86,26 @@ public class Hash {
      * @param a Algorithm to check
      * @return true if exclusive, false otherwise
      */
-    public static boolean isSPDXExclusive(Algorithm a){
+    public static boolean isSPDXExclusive(Algorithm a) {
         return a == SHA224 ||
-               a == BLAKE2b512 ||
-               a == MD2 ||
-               a == MD4 ||
-               a == MD6 ||
-               a == ADLER32;
+                a == BLAKE2b512 ||
+                a == MD2 ||
+                a == MD4 ||
+                a == MD6 ||
+                a == ADLER32;
     }
 
     /**
      * Validates a hash function to make sure the length and content are correct
      *
-     * @param a Hash algorithm
+     * @param a    Hash algorithm
      * @param hash Hash string
      * @return True if hash passes, false otherwise
      */
-    public static boolean validateHash(Algorithm a, String hash){
+    public static boolean validateHash(Algorithm a, String hash) {
         String hashRegex;
         // Test against supported hashes
-        switch (a){
+        switch (a) {
             case ADLER32:
                 hashRegex = "^[a-fA-F0-9]{8}$";
                 break;
@@ -140,9 +140,9 @@ public class Hash {
             // todo better way to distinguish?
             case MD6:
                 Pattern p = new Pattern("^[a-fA-F0-9]{32}$", Pattern.MULTILINE);
-                if(p.matches(hash)) return true;
+                if (p.matches(hash)) return true;
                 p = new Pattern("^[a-fA-F0-9]{64}$", Pattern.MULTILINE);
-                if(p.matches(hash)) return true;
+                if (p.matches(hash)) return true;
                 p = new Pattern("^[a-fA-F0-9]{128}$", Pattern.MULTILINE);
                 return p.matches(hash);
             default:
@@ -178,7 +178,7 @@ public class Hash {
 
 
     /**
-     * @return  type:value
+     * @return type:value
      */
     @Override
     public String toString() {

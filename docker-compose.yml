@@ -12,7 +12,7 @@ services:
   osi:
     container_name: svip-osi
     image: ubuntu:latest
-    build: core/src/main/java/org/svip/sbomgeneration/osi/scripts
+    build: core/src/main/java/org/svip/generation/osi/scripts
     volumes:
       - code:/bound_dir/code
       - sboms:/bound_dir/sboms

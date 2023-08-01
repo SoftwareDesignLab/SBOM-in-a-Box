@@ -1,16 +1,12 @@
 package org.svip.sbom.model.shared.util;
 
-import org.checkerframework.checker.units.qual.C;
-import org.svip.sbom.model.shared.metadata.CreationData;
-import org.svip.sbom.model.shared.metadata.CreationTool;
-import org.svip.sbomanalysis.comparison.conflicts.Comparable;
-import org.svip.sbomanalysis.comparison.conflicts.Conflict;
-import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
-import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
+import org.svip.compare.conflicts.Comparable;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.ConflictFactory;
 
 import java.util.List;
 
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISC_MISMATCH;
+import static org.svip.compare.conflicts.MismatchType.MISC_MISMATCH;
 
 /**
  * File: Description.java
@@ -24,9 +20,10 @@ public class Description implements Comparable {
 
     /**
      * Create a new description with a brief
+     *
      * @param summary short summary
      */
-    public Description(String summary){
+    public Description(String summary) {
         this.summary = summary;
     }
 
@@ -60,7 +57,7 @@ public class Description implements Comparable {
     @Override
     public List<Conflict> compare(Comparable o) {
         // Don't compare if not instance of same object
-        if(!(o instanceof Description other))
+        if (!(o instanceof Description other))
             return null;
 
         ConflictFactory cf = new ConflictFactory();
@@ -77,7 +74,7 @@ public class Description implements Comparable {
         Description other = (Description) o;
 
         // compare summary
-        if(!this.summary.equals(other.getSummary()))
+        if (!this.summary.equals(other.getSummary()))
             return false;
 
         // compare descriptions
