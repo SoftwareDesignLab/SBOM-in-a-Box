@@ -1,15 +1,13 @@
 package org.svip.api.utils;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.multipart.MultipartFile;
 import org.svip.api.controller.SVIPApiController;
 import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
-import org.svip.sbomgeneration.serializers.SerializerFactory;
+import org.svip.serializers.SerializerFactory;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -18,7 +16,6 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
@@ -129,15 +126,10 @@ public class Utils {
     public static long generateNewId(long id, Random rand, SBOMFileRepository sbomFileRepository) {
         // assign new id and name
         int i = 0;
-        try {
-            while (sbomFileRepository.findById(id).isPresent()) {
-                id += (Math.abs(rand.nextLong()) + id) % ((i < 100 && id < 0) ? id : Long.MAX_VALUE);
-                i++;
-            }
-        } catch (NullPointerException e) {
-            return id;
+        while (sbomFileRepository.existsById(id)) {
+            id += (Math.abs(rand.nextLong()) + id) % ((i < 100) ? id : Long.MAX_VALUE);
+            i++;
         }
-
         return id;
     }
 
@@ -154,10 +146,13 @@ public class Utils {
         byte[] buffer = new byte[1024];
         Stream<? extends ZipEntry> entryStream = z.stream();
 
-        entryStream.forEach(entry -> {
+
+        entryStream.forEach(entry -> {//from  w ww .ja v a  2 s .c  o m
             try {
                 // Get the input stream for the current zip entry
                 InputStream is = z.getInputStream(entry);
+                /* Read data for the entry using the is object */
+
                 int depth = entry.getName().split("[\\/]").length - 1; // todo we may not actually need depth
 
                 if (!entry.isDirectory()) {
@@ -231,22 +226,6 @@ public class Utils {
         zs.close();
 
         return vpArray;
-
-    }
-
-    /**
-     * Convert a MultiPart file to a ZipFile
-     * @param file MultiPart file, a .zip file
-     * @return Converted ZipFile object
-     */
-    public static ZipFile convertMultipartToZip(MultipartFile file) throws IOException {
-
-        File zip = File.createTempFile(UUID.randomUUID().toString(), "temp");
-        FileOutputStream o = new FileOutputStream(zip);
-        IOUtils.copy(file.getInputStream(), o);
-        o.close();
-
-        return new ZipFile(zip);
 
     }
 

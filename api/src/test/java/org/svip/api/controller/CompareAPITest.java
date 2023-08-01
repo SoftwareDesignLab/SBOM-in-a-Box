@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.model.SBOMFile;
-import org.svip.sbomanalysis.comparison.DiffReport;
+import org.svip.compare.DiffReport;
 
 import java.util.Map;
 import java.util.Optional;
