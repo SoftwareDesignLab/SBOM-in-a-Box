@@ -424,10 +424,6 @@ public class SVIPApiController {
 
         String urlMsg = "GENERATE /svip/generate?projectName=" + projectName;
 
-        if (schema == SerializerFactory.Schema.CDX14 && format == SerializerFactory.Format.TAGVALUE) {
-            return new ResponseEntity<>("CDX14 does not support TAGVALUE format", HttpStatus.BAD_REQUEST);
-        }
-
         // Ensure schema has a valid serializer
         try {
             schema.getSerializer(format);
@@ -557,6 +553,7 @@ public class SVIPApiController {
         Deserializer d;
         for (Map.Entry<String, String> sbom : sboms.entrySet())
             try {
+                if (sbom.getValue().isEmpty()) continue; // Skip blank SBOMs if any returned
                 d = SerializerFactory.createDeserializer(sbom.getValue());
                 deserialized.add(d.readFromString(sbom.getValue()));
             } catch (JsonProcessingException e) {
