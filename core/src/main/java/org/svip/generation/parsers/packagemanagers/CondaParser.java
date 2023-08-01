@@ -15,7 +15,7 @@ import java.util.List;
  * @author Asa Horn ?
  * @author Ian Dunn
  */
-public class CondaParser extends PackageManagerParser{
+public class CondaParser extends PackageManagerParser {
 
     public CondaParser() {
         super(
@@ -31,7 +31,7 @@ public class CondaParser extends PackageManagerParser{
         this.properties = new HashMap<>();
 
         // get properties from channels
-        if(data.containsKey("channels")){
+        if (data.containsKey("channels")) {
             ArrayList<String> rawChannels;
             try {
                 rawChannels = (ArrayList<String>) data.get("channels");
@@ -47,7 +47,7 @@ public class CondaParser extends PackageManagerParser{
 
         // get properties from variables
         ArrayList<HashMap<String, String>> rawVariables;
-        if(data.containsKey("variables")) {
+        if (data.containsKey("variables")) {
             try {
                 rawVariables = (ArrayList<HashMap<String, String>>) data.get("variables");
             } catch (Exception e) {
@@ -66,14 +66,14 @@ public class CondaParser extends PackageManagerParser{
 
         //attempt the dangerous cast
         ArrayList<String> rawDependencies;
-        try{
+        try {
             rawDependencies = (ArrayList<String>) data.get("dependencies");
-        } catch (Exception e){
+        } catch (Exception e) {
             System.err.println("Error: Could not cast dependencies to ArrayList<String>");
             return;
         }
 
-        for (Object unknown : rawDependencies){
+        for (Object unknown : rawDependencies) {
             //cast to the correct data type and process. Need to handle hashmap sections, and single line strings
             boolean dependencyFoundFlag = false;
 
@@ -82,7 +82,7 @@ public class CondaParser extends PackageManagerParser{
             // dependencies:
             //   - python=3.6
             //   - numpy=1.13.1
-            try{
+            try {
                 String line = (String) unknown;
 
                 LinkedHashMap<String, String> newDependecy = new LinkedHashMap<>();
@@ -100,9 +100,9 @@ public class CondaParser extends PackageManagerParser{
 
                 this.dependencies.put(name, newDependecy);
                 dependencyFoundFlag = true;
-            } catch (ClassCastException e){
-                ; //perfectly normal, this means it is another datatype
-            } catch (Exception e){
+            } catch (ClassCastException e) {
+                //perfectly normal, this means it is another datatype
+            } catch (Exception e) {
                 System.err.println("Error: Could not parse dependency: " + unknown);
                 e.printStackTrace();
             }
@@ -119,12 +119,12 @@ public class CondaParser extends PackageManagerParser{
                 String sectionName = section.keySet().iterator().next();
                 dependencyFoundFlag = true;
 
-                for (String line : section.get(sectionName)){
+                for (String line : section.get(sectionName)) {
                     LinkedHashMap<String, String> newDependecy = new LinkedHashMap<>();
                     String[] temp;
 
                     //handle git links
-                    if(line.substring(0, 4).equals("git+")){
+                    if (line.startsWith("git+")) {
                         temp = line.split("@");
                         temp[0] = temp[0].substring(4, temp[0].length() - 4); //remove git+ and .git from string
                     }
@@ -144,14 +144,14 @@ public class CondaParser extends PackageManagerParser{
 
                     this.dependencies.put(sectionName + ':' + name, newDependecy);
                 }
-            } catch (ClassCastException e){
-                ; //perfectly normal, this means it is another datatype
-            } catch (Exception e){
+            } catch (ClassCastException e) {
+                //perfectly normal, this means it is another datatype
+            } catch (Exception e) {
                 System.err.println("Error: Could not parse dependency: " + unknown);
                 e.printStackTrace();
             }
 
-            if (!dependencyFoundFlag){
+            if (!dependencyFoundFlag) {
                 //not normal, because this last check this means we couldn't find the type
                 System.err.println("Error: Could not parse dependency: " + unknown);
             }

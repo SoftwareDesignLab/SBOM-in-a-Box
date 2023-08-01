@@ -99,11 +99,17 @@ public class MergerController {
      */
     private static Merger getMerger(String formatOne, String formatTwo) throws MergerException {
         switch (formatOne.toLowerCase() + ":" + formatTwo.toLowerCase()) {
-            case "cyclonedx:cyclonedx" -> { return new MergerCDX(); }
-            case "spdx:spdx" -> { return new MergerSPDX(); }
+            case "cyclonedx:cyclonedx" -> {
+                return new MergerCDX();
+            }
+            case "spdx:spdx" -> {
+                return new MergerSPDX();
+            }
             // case "svip:svip" -> { return new MergerSVIP()} // todo in later sprint?
 
-            default -> { return new MergerCrossSchema(); }
+            default -> {
+                return new MergerCrossSchema();
+            }
         }
     }
 }

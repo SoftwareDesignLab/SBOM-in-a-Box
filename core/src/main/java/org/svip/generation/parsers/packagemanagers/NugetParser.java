@@ -19,7 +19,7 @@ import static org.svip.utils.Debug.log;
  * @author Juan Francisco Patino
  * @author Ian Dunn
  */
-public class NugetParser extends PackageManagerParser{
+public class NugetParser extends PackageManagerParser {
 
     /**
      * Protected Constructor meant for use by parser implementations
@@ -67,19 +67,19 @@ public class NugetParser extends PackageManagerParser{
         this.dependencies = new HashMap<>();
         HashMap<String, String> metadata = new HashMap((LinkedHashMap<String, ArrayList<HashMap<String, String>>>) data.get("metadata"));
         String type;
-        for (Object o: metadata.values()
-             ) {
+        for (Object o : metadata.values()
+        ) {
 
             String s = o.toString();
 
-            if(s.contains("frameworkAssembly")){ // treat C# framework assemblies as dependencies
+            if (s.contains("frameworkAssembly")) { // treat C# framework assemblies as dependencies
                 type = "frameworkAssembly";
-                try{
+                try {
                     this.resolveProperties(
                             this.dependencies,
 
 
-                            new HashMap(((ArrayList<LinkedHashMap<String,String>>) (((LinkedHashMap<?, ?>)o).get(type)))
+                            new HashMap(((ArrayList<LinkedHashMap<String, String>>) (((LinkedHashMap<?, ?>) o).get(type)))
                                     .stream().collect(
                                             Collectors.toMap(
                                                     d -> d.get("assemblyName"),
@@ -92,7 +92,7 @@ public class NugetParser extends PackageManagerParser{
                                     )
                             )
                     );
-                }catch (ClassCastException c){
+                } catch (ClassCastException c) {
                     oneDependency(s, type);
                 }
 
@@ -104,10 +104,10 @@ public class NugetParser extends PackageManagerParser{
                 The group format cannot be intermixed with a flat list.
                  */
 
-                try{
+                try {
                     this.resolveProperties(this.dependencies,
 
-                            new HashMap(((ArrayList<LinkedHashMap<String,String>>) (((LinkedHashMap<?, ?>)o).get(type)))
+                            new HashMap(((ArrayList<LinkedHashMap<String, String>>) (((LinkedHashMap<?, ?>) o).get(type)))
                                     .stream().collect(
                                             Collectors.toMap(
                                                     d -> d.get("id"),
@@ -120,7 +120,7 @@ public class NugetParser extends PackageManagerParser{
                                     )
 
                             ));
-                }catch(ClassCastException e){ // only one dependency
+                } catch (ClassCastException e) { // only one dependency
 
                     oneDependency(s, type);
 
@@ -139,35 +139,33 @@ public class NugetParser extends PackageManagerParser{
     /**
      * Resolves one dependency of either type
      *
-     * @param s Metadata string
+     * @param s    Metadata string
      * @param type Dependency type
      */
     private void oneDependency(String s, String type) {
 
         String idType = "id";
-        if(type.equals("frameworkAssembly"))
+        if (type.equals("frameworkAssembly"))
             idType = "assemblyName";
 
         int i;
         String[] split = s.split("[=,}]");
         i = 0;
         LinkedHashMap<String, String> id = null;
-        for (String elem: split
-             ) {
+        for (String elem : split
+        ) {
 
-            if(elem.contains(idType)){
+            if (elem.contains(idType)) {
                 id = new LinkedHashMap<>();
-                id.put(idType,split[i+1]);
-                dependencies.put(split[i+1], id);
-            }
-            else if(elem.contains("version")){
-                assert(id != null);
-                id.put("version", split[i+1]);
+                id.put(idType, split[i + 1]);
+                dependencies.put(split[i + 1], id);
+            } else if (elem.contains("version")) {
+                assert (id != null);
+                id.put("version", split[i + 1]);
                 break;
-            }
-            else if(elem.contains("targetFramework") && type.equals("frameworkAssembly")){
-                assert(id != null);
-                id.put("targetFramework", split[i+1]);
+            } else if (elem.contains("targetFramework") && type.equals("frameworkAssembly")) {
+                assert (id != null);
+                id.put("targetFramework", split[i + 1]);
                 break;
             }
 

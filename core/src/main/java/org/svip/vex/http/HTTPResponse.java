@@ -10,11 +10,11 @@ import java.util.Map;
  */
 public class HTTPResponse {
 
-    public Integer getResponseCode(){
+    public Integer getResponseCode() {
         return null;
     }
 
-    public Map<String, String> getResponseValue(){
+    public Map<String, String> getResponseValue() {
         return null;
     }
 }

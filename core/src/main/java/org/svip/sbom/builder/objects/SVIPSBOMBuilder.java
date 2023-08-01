@@ -32,21 +32,24 @@ public class SVIPSBOMBuilder implements CDX14SBOMBuilder, SPDX23SBOMBuilder {
     private String uid;
     private String version;
     private String specVersion;
-    private Set<String> licenses = new HashSet<>();
+    private final Set<String> licenses = new HashSet<>();
     private CreationData creationData;
     private String documentComment;
     private Component rootComponent;
-    private Set<Component> components = new HashSet<>();
-    private HashMap<String, Set<Relationship>> relationships = new HashMap<>();
-    private Set<ExternalReference> externalReferences = new HashSet<>();
-    /** Set<VEX> vulnerabilities;
-     Set<Service> services;
-     Set<Composition> compositions;
-     Signature signature;
-     Set<Snippet> snippets;
-     Set<LicenseInfo> additionalLicenseInformation;
-     Set<Annotation> annotationInformation;</Annotation>*/
+    private final Set<Component> components = new HashSet<>();
+    private final HashMap<String, Set<Relationship>> relationships = new HashMap<>();
+    private final Set<ExternalReference> externalReferences = new HashSet<>();
+    /**
+     * Set<VEX> vulnerabilities;
+     * Set<Service> services;
+     * Set<Composition> compositions;
+     * Signature signature;
+     * Set<Snippet> snippets;
+     * Set<LicenseInfo> additionalLicenseInformation;
+     * Set<Annotation> annotationInformation;</Annotation>
+     */
     private String SPDXLicenseListVersion;
+
     @Override
     public SVIPSBOMBuilder addCDX14Package(CDX14Package cdx14Package) {
         this.components.add(cdx14Package);
@@ -115,7 +118,7 @@ public class SVIPSBOMBuilder implements CDX14SBOMBuilder, SPDX23SBOMBuilder {
 
     @Override
     public SVIPSBOMBuilder addRelationship(String componentName, Relationship relationship) {
-        if( !relationships.containsKey(componentName))
+        if (!relationships.containsKey(componentName))
             this.relationships.put(componentName, new HashSet<>());
 
         this.relationships.get(componentName).add(relationship);
@@ -140,17 +143,21 @@ public class SVIPSBOMBuilder implements CDX14SBOMBuilder, SPDX23SBOMBuilder {
         return this;
     }
 
-    /** TO DO: add constructors to SBOM */
+    /**
+     * TO DO: add constructors to SBOM
+     */
     @Override
     public SVIPSBOM Build() {
         return new SVIPSBOM(format, name, uid, version, specVersion, licenses, creationData, documentComment, (SVIPComponentObject) rootComponent, components, relationships,
                 externalReferences, SPDXLicenseListVersion);
     }
+
     @Override
     public SPDX23SBOM buildSPDX23SBOM() {
         return new SPDX23SBOM(format, name, uid, version, specVersion, licenses, creationData, documentComment,
                 (SPDX23PackageObject) rootComponent, components, relationships, externalReferences, SPDXLicenseListVersion);
     }
+
     @Override
     public CDX14SBOM buildCDX14SBOM() {
         return new CDX14SBOM(format, name, uid, version,

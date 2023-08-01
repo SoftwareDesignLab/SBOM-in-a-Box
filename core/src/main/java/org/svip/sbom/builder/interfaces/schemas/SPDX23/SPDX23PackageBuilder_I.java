@@ -13,6 +13,7 @@ public interface SPDX23PackageBuilder_I extends SPDX23ComponentBuilder, PackageB
 
     /**
      * Set the download location of the package
+     *
      * @param downloadLocation the package's download location
      * @return an SPDX23PackageBuilder_I
      */
@@ -20,6 +21,7 @@ public interface SPDX23PackageBuilder_I extends SPDX23ComponentBuilder, PackageB
 
     /**
      * Set the file name of the package
+     *
      * @param fileName the package's file name
      * @return an SPDX23PackageBuilder_I
      */
@@ -27,6 +29,7 @@ public interface SPDX23PackageBuilder_I extends SPDX23ComponentBuilder, PackageB
 
     /**
      * Set if the package's files were analyzed or not
+     *
      * @param filesAnalyzed a boolean if the files were analyzed
      * @return an SPDX23PackageBuilder_I
      */
@@ -34,6 +37,7 @@ public interface SPDX23PackageBuilder_I extends SPDX23ComponentBuilder, PackageB
 
     /**
      * Set the verification code of the package
+     *
      * @param verificationCode the package's verification code
      * @return an SPDX23PackageBuilder_I
      */
@@ -41,6 +45,7 @@ public interface SPDX23PackageBuilder_I extends SPDX23ComponentBuilder, PackageB
 
     /**
      * Set the home page of the package
+     *
      * @param homePage the package's home page
      * @return an SPDX23PackageBuilder_I
      */
@@ -48,6 +53,7 @@ public interface SPDX23PackageBuilder_I extends SPDX23ComponentBuilder, PackageB
 
     /**
      * Set the source information for the package
+     *
      * @param sourceInfo the package's source information
      * @return an SPDX23PackageBuilder_I
      */
@@ -55,6 +61,7 @@ public interface SPDX23PackageBuilder_I extends SPDX23ComponentBuilder, PackageB
 
     /**
      * Set the release date of the package
+     *
      * @param releaseDate the package's release date
      * @return an SPDX23PackageBuilder_I
      */
@@ -62,6 +69,7 @@ public interface SPDX23PackageBuilder_I extends SPDX23ComponentBuilder, PackageB
 
     /**
      * Set the build date of the package
+     *
      * @param buildDate the package's build date
      * @return an SPDX23PackageBuilder_I
      */
@@ -69,6 +77,7 @@ public interface SPDX23PackageBuilder_I extends SPDX23ComponentBuilder, PackageB
 
     /**
      * Set the valid until date for the package
+     *
      * @param validUntilDate the package's valid until date
      * @return an SPDX23PackageBuilder_I
      */

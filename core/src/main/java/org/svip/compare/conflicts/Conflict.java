@@ -23,25 +23,31 @@ public class Conflict {
     @JsonProperty
     private final String other;
 
-    public MismatchType GetType(){
+    public MismatchType GetType() {
         return this.type;
     }
 
-    public String GetMessage(){
+    public String GetMessage() {
         return this.message;
     }
-    public String GetTarget(){return this.target;}
-    public String GetOther(){return this.other;}
+
+    public String GetTarget() {
+        return this.target;
+    }
+
+    public String GetOther() {
+        return this.other;
+    }
 
     /**
      * Mismatch Conflict Constructor
      *
-     * @param field Name of the conflict field
+     * @param field        Name of the conflict field
      * @param mismatchType Type of mismatch
-     * @param target Target Value
-     * @param other Other Value
+     * @param target       Target Value
+     * @param other        Other Value
      */
-    private Conflict(String field, MismatchType mismatchType, String target, String other){
+    private Conflict(String field, MismatchType mismatchType, String target, String other) {
         this.type = mismatchType;
         this.message = getMismatchMessage(field);
         this.target = target;
@@ -51,11 +57,11 @@ public class Conflict {
     /**
      * Missing Conflict Constructor
      *
-     * @param field Name of the conflict field
+     * @param field  Name of the conflict field
      * @param target Target Value
-     * @param other Other Value
+     * @param other  Other Value
      */
-    private Conflict(String field, String target, String other){
+    private Conflict(String field, String target, String other) {
         this.type = MismatchType.MISSING;
         this.message = getMissingMessage(field);
         this.target = target;
@@ -72,7 +78,7 @@ public class Conflict {
      * @param field Name of the field that is missing
      * @return Missing message
      */
-    private String getMissingMessage(String field){
+    private String getMissingMessage(String field) {
         return field + " is missing";
     }
 
@@ -82,41 +88,40 @@ public class Conflict {
      * @param field Name of the field that is mismatched
      * @return Mismatch message
      */
-    private String getMismatchMessage(String field){
+    private String getMismatchMessage(String field) {
         return field + " doesn't match";
     }
 
     /**
      * Creates a new conflict if one exists, otherwise returns null
      *
-     * @param field Name of the conflict field
+     * @param field        Name of the conflict field
      * @param mismatchType Type of mismatch
-     * @param target Target Value
-     * @param other Other Value
+     * @param target       Target Value
+     * @param other        Other Value
      * @return New conflict object
      */
-    public static Conflict buildConflict(String field, MismatchType mismatchType, String target, String other){
+    public static Conflict buildConflict(String field, MismatchType mismatchType, String target, String other) {
 
         // Both are missing, no conflict
-        if(target == null && other == null)
+        if (target == null && other == null)
             return null;
 
         // Target is missing
-        if(target == null || target.isEmpty())
+        if (target == null || target.isEmpty())
             return new Conflict(field, target, other);
 
         // Other is missing
-        if(other == null || other.isEmpty())
+        if (other == null || other.isEmpty())
             return new Conflict(field, target, other);
 
         // Mismatch
-        if(!target.equals(other))
+        if (!target.equals(other))
             return new Conflict(field, mismatchType, target, other);
 
         // Default to no conflict
         return null;
     }
-
 
 
 }

@@ -14,6 +14,7 @@ public class SPDX23FileBuilderFactory implements ComponentBuilderFactory {
 
     /**
      * Create a new SPDX File Builder
+     *
      * @return a new SPDX23FileBuilder
      */
     @Override

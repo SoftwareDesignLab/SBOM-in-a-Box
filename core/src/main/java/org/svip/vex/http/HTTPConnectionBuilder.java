@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class HTTPConnectionBuilder {
 
-    private String endpoint;
+    private final String endpoint;
 
     private Map<String, String> params;
 
@@ -21,37 +21,37 @@ public class HTTPConnectionBuilder {
 
     private RequestMethod requestMethod = RequestMethod.GET;
 
-    public HTTPConnectionBuilder(String endpoint){
+    public HTTPConnectionBuilder(String endpoint) {
         this.endpoint = endpoint;
     }
 
-    public HTTPConnectionBuilder updateParam(String key, String value){
+    public HTTPConnectionBuilder updateParam(String key, String value) {
         this.params.put(key, value);
         return this;
     }
 
-    public HTTPConnectionBuilder updateRequestBody(String key, String value){
+    public HTTPConnectionBuilder updateRequestBody(String key, String value) {
         this.requestBody.put(key, value);
         return this;
     }
 
-    public HTTPConnectionBuilder setTimeout(Integer timeout){
+    public HTTPConnectionBuilder setTimeout(Integer timeout) {
         this.timeout = timeout;
         return this;
     }
 
-    public HTTPConnectionBuilder setRequestMethod(RequestMethod requestMethod){
+    public HTTPConnectionBuilder setRequestMethod(RequestMethod requestMethod) {
         this.requestMethod = requestMethod;
         return this;
     }
 
     //TODO implement
-    private String addParams(){
+    private String addParams() {
         return null;
     }
 
     //TODO implement
-    public HttpURLConnection buildConnection(){
+    public HttpURLConnection buildConnection() {
         return null;
     }
 }

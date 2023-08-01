@@ -16,6 +16,7 @@ import static org.svip.utils.Debug.log;
  * <p>
  * Abstract worker class that queries a URL and parses information to add to a ParserComponent.
  * </p>
+ *
  * @author Dylan Mulligan
  */
 public abstract class QueryWorker implements Runnable {
@@ -26,7 +27,7 @@ public abstract class QueryWorker implements Runnable {
      * Creates a new object with the url to be queried and the Component to store any collected information in.
      *
      * @param builder the component builder to store any collected information in
-     * @param url the url to be queried
+     * @param url     the url to be queried
      */
     protected QueryWorker(SVIPComponentBuilder builder, String url) {
         this.builder = builder;
@@ -46,7 +47,7 @@ public abstract class QueryWorker implements Runnable {
      * Queries a given URL and returns the HttpURLConnection
      * object containing response data.
      *
-     * @param urlString URL to be queried
+     * @param urlString      URL to be queried
      * @param allowRedirects whether or not to allow the connection to redirect
      * @return a HttpURLConnection object
      */
@@ -76,11 +77,10 @@ public abstract class QueryWorker implements Runnable {
             log(Debug.LOG_TYPE.DEBUG, String.format(
                     "Connection to URL: %s successful. Done in %s ms",
                     urlString,
-                    (int)((t2 - t1) / 1000000)
+                    (int) ((t2 - t1) / 1000000)
             ));
 
-        }
-        catch (IOException ignored) {
+        } catch (IOException ignored) {
             log(Debug.LOG_TYPE.WARN, String.format("Failed to query URL: '%s'", urlString));
         }
 

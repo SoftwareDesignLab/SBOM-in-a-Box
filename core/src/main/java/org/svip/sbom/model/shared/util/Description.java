@@ -20,9 +20,10 @@ public class Description implements Comparable {
 
     /**
      * Create a new description with a brief
+     *
      * @param summary short summary
      */
-    public Description(String summary){
+    public Description(String summary) {
         this.summary = summary;
     }
 
@@ -56,7 +57,7 @@ public class Description implements Comparable {
     @Override
     public List<Conflict> compare(Comparable o) {
         // Don't compare if not instance of same object
-        if(!(o instanceof Description other))
+        if (!(o instanceof Description other))
             return null;
 
         ConflictFactory cf = new ConflictFactory();
@@ -73,7 +74,7 @@ public class Description implements Comparable {
         Description other = (Description) o;
 
         // compare summary
-        if(!this.summary.equals(other.getSummary()))
+        if (!this.summary.equals(other.getSummary()))
             return false;
 
         // compare descriptions

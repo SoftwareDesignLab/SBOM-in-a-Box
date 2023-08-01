@@ -1,8 +1,8 @@
 package org.svip.generation.parsers.packagemanagers;
 
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
-import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.generation.parsers.utils.QueryWorker;
+import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 
 import java.util.*;
 
@@ -43,13 +43,13 @@ public class CSProjParser extends PackageManagerParser {
          */
 
         // Ensure ItemGroup is not null
-        if(data.get("ItemGroup") == null) return;
+        if (data.get("ItemGroup") == null) return;
 
         // List of all Item Groups
-        final ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>> itemgroups = (ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>>)data.get("ItemGroup");
+        final ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>> itemgroups = (ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>>) data.get("ItemGroup");
 
         // Iterate over itemgroups
-        for(HashMap<String, ArrayList<HashMap<String, String>>> itemgroup : itemgroups) {
+        for (HashMap<String, ArrayList<HashMap<String, String>>> itemgroup : itemgroups) {
 
             // Get all types in this itemgroup
             final Iterator types = itemgroup.entrySet().iterator();
@@ -63,8 +63,7 @@ public class CSProjParser extends PackageManagerParser {
                 if (type.getValue() instanceof HashMap) {
                     // Add component with type as HashMap
                     addComponent(components, type.getKey(), (HashMap<String, String>) type.getValue());
-                }
-                else { // Otherwise, there will be a list of hashmaps
+                } else { // Otherwise, there will be a list of hashmaps
                     for (HashMap<String, String> item : (ArrayList<HashMap<String, String>>) type.getValue()) {
                         // Add component with type as an ArrayList of HashMaps
                         addComponent(components, type.getKey(), item);
@@ -81,9 +80,10 @@ public class CSProjParser extends PackageManagerParser {
 
     /**
      * Reformats to ParserComponent and adds the component to the list.
+     *
      * @param components list to add component to
-     * @param type item type (Reference, Compile, etc)
-     * @param component component properties table
+     * @param type       item type (Reference, Compile, etc)
+     * @param component  component properties table
      */
     private void addComponent(List<SVIPComponentBuilder> components, String type, HashMap<String, String> component) {
 
@@ -91,14 +91,14 @@ public class CSProjParser extends PackageManagerParser {
         String include = component.get("Include");
 
         // Ensure include was found
-        if(include == null) return;
+        if (include == null) return;
 
         SVIPComponentBuilder builder = new SVIPComponentBuilder();
         builder.setType("EXTERNAL"); // Default to EXTERNAL
         builder.setName(component.get("Include")); // TODO is this a correct default name?
 
         // Convert hashmap to parser component
-        switch(type) {
+        switch (type) {
             // These types are external or language
             case "Reference", "PackageReference" -> {
                 // Split string on "."
@@ -108,7 +108,8 @@ public class CSProjParser extends PackageManagerParser {
                 builder.setName(split[split.length - 1]);
 
                 // If more than one element, rejoin elements on "/"
-                if (split.length > 1) builder.setGroup(String.join("/", Arrays.copyOfRange(split, 0, split.length - 1)));
+                if (split.length > 1)
+                    builder.setGroup(String.join("/", Arrays.copyOfRange(split, 0, split.length - 1)));
 
                 // Build url and worker object
                 this.queryWorkers.add(new QueryWorker(builder, this.buildURL(builder)) {
@@ -116,11 +117,12 @@ public class CSProjParser extends PackageManagerParser {
                     public void run() {
                         try {
                             // If query is sucessful, set type to LANGUAGE and return
-                            if(queryURL(url, true).getResponseCode() == 200) {
+                            if (queryURL(url, true).getResponseCode() == 200) {
                                 builder.setType("LANGUAGE");
                                 return;
                             }
-                        } catch (Exception ignored) { } // If an error is thrown, ignore it
+                        } catch (Exception ignored) {
+                        } // If an error is thrown, ignore it
 
                         // If this is reached, queryURL returned something other than
                         // 200, or an exception was thrown
@@ -146,7 +148,7 @@ public class CSProjParser extends PackageManagerParser {
                 builder.setName(filename.substring(0, filename.lastIndexOf('.')));
 
                 // No slashes (only one element) = no group
-                if(fileSplit.length == 1) break;
+                if (fileSplit.length == 1) break;
 
                 // Include without the filename is the group
                 builder.setGroup(include.substring(0, include.length() - 1 - filename.length()));
@@ -156,7 +158,7 @@ public class CSProjParser extends PackageManagerParser {
         some items have metadata which holds other information like version. I couldn't find a reference for
         what metadata properties there could be, other than Version which was in some of my testing projects.
          */
-        if(component.get("Version") != null) builder.setVersion(component.get("Version"));
+        if (component.get("Version") != null) builder.setVersion(component.get("Version"));
 
         // Add ParserComponent to components
         components.add(builder);
@@ -173,7 +175,7 @@ public class CSProjParser extends PackageManagerParser {
         // If component is typed, count types and go to correct URL
         // "System.Func<string, string>" -> "System.Func-2"
         final int index = endpoint.indexOf('<');
-        if(index != -1) {
+        if (index != -1) {
             // Rebuild endpoint
             final int params = endpoint.substring(index).split(",").length;
             endpoint = endpoint.substring(0, index) + "-" + params;
