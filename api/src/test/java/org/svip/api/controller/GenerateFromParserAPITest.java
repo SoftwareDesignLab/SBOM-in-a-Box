@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.model.MockMultipartFile;
 import org.svip.api.model.SBOMFile;
-import org.svip.sbomgeneration.serializers.SerializerFactory;
+import org.svip.serializers.SerializerFactory;
 
 import java.io.File;
 import java.io.IOException;

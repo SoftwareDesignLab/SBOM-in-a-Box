@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.svip.api.controller.SVIPApiController;
 import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
-import org.svip.sbomgeneration.serializers.SerializerFactory;
+import org.svip.serializers.SerializerFactory;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -18,7 +18,6 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
