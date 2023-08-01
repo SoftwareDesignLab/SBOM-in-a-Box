@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix incorrect OSI filepaths not allowing API to build.
 
 ## [v7.2.0-alpha] - (8/1/2023)
+### Changed
+- Overhaul directory structure to be feature focused
+
+## [v7.2.0-alpha] - (8/1/2023)
 
 ### Changed
 - Overhaul directory structure to be feature focused
