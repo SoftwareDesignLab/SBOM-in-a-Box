@@ -3,13 +3,17 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v7.1.3-alpha] - (8/1/2023)
+## [v7.2.1-alpha] - (8/1/2023)
 
 ### Changed
 - `/generators/parsers` successfully takes in binary zip files of projects and generates an SBOM
-  - passes Postman tests and `GenerateFromParserAPITest`
+    - passes Postman tests and `GenerateFromParserAPITest`
 - `/generators/parsers` should take in binary zip files of projects and generates an SBOM
     - passes Postman tests and `GenerateFromOSIAPITest`
+
+## [v7.2.0-alpha] - (8/1/2023)
+### Changed
+- Overhaul directory structure to be feature focused
 
 ## [v7.1.2-alpha] - (7/28/2023)
 ### Added

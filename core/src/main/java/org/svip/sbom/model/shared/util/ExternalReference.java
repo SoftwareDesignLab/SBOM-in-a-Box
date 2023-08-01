@@ -1,17 +1,14 @@
 package org.svip.sbom.model.shared.util;
 
-import org.svip.sbom.model.shared.metadata.CreationData;
-import org.svip.sbom.model.shared.metadata.CreationTool;
-import org.svip.sbomanalysis.comparison.conflicts.Comparable;
-import org.svip.sbomanalysis.comparison.conflicts.Conflict;
-import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
+import org.svip.compare.conflicts.Comparable;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.ConflictFactory;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISC_MISMATCH;
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.TIMESTAMP_MISMATCH;
+import static org.svip.compare.conflicts.MismatchType.MISC_MISMATCH;
 
 /**
  * File: ExternalReference.java
@@ -30,10 +27,10 @@ public class ExternalReference implements Comparable {
     /**
      * CDX Style External Reference constructor
      *
-     * @param url URL to reference
+     * @param url  URL to reference
      * @param type Type of External Reference
      */
-    public ExternalReference(String url, String type){
+    public ExternalReference(String url, String type) {
         this.url = url;
         this.type = type;
     }
@@ -42,10 +39,10 @@ public class ExternalReference implements Comparable {
      * SPDX Style External Reference constructor
      *
      * @param category Category of External Reference
-     * @param url URL to reference
-     * @param type Type of External Reference
+     * @param url      URL to reference
+     * @param type     Type of External Reference
      */
-    public ExternalReference(String category, String url, String type){
+    public ExternalReference(String category, String url, String type) {
         this.category = category;
         this.url = url;
         this.type = type;
@@ -54,16 +51,16 @@ public class ExternalReference implements Comparable {
 
     /**
      * @param algorithm Hash Algorithm
-     * @param hash Hash value
+     * @param hash      Hash value
      */
-    public void addHash(String algorithm, String hash){
+    public void addHash(String algorithm, String hash) {
         this.hashes.put(algorithm, hash);
     }
 
     /**
      * @param comment Reference comment
      */
-    public void setComment(String comment){
+    public void setComment(String comment) {
         this.comment = comment;
     }
 
@@ -95,7 +92,7 @@ public class ExternalReference implements Comparable {
     /**
      * @return comment
      */
-    public String getComment(){
+    public String getComment() {
         return this.comment;
     }
 
@@ -110,7 +107,7 @@ public class ExternalReference implements Comparable {
     @Override
     public List<Conflict> compare(Comparable o) {
         // Don't compare if not instance of same object
-        if(!(o instanceof ExternalReference other))
+        if (!(o instanceof ExternalReference other))
             return null;
 
         ConflictFactory cf = new ConflictFactory();
@@ -134,24 +131,24 @@ public class ExternalReference implements Comparable {
         ExternalReference other = (ExternalReference) o;
 
         // If urls don't match then not same
-        if((this.url != null && other.getUrl() != null && !this.url.equals(other.getUrl())))
+        if ((this.url != null && other.getUrl() != null && !this.url.equals(other.getUrl())))
             return false;
 
         // Check if category is equivalent
-        if(!this.category.equals(other.getCategory()))
+        if (!this.category.equals(other.getCategory()))
             return false;
 
         // Check if type is equivalent
-        if(!this.type.equals(other.getType()))
+        if (!this.type.equals(other.getType()))
             return false;
 
         // Compare hashes
-        for(String alg : this.hashes.keySet()){
+        for (String alg : this.hashes.keySet()) {
             // Missing hash, missing doesn't imply different
-            if(!other.getHashes().containsKey(alg))
+            if (!other.getHashes().containsKey(alg))
                 continue;
             // Same hash alg, different values
-            if(!other.getHashes().get(alg).equals(this.hashes.get(alg)))
+            if (!other.getHashes().get(alg).equals(this.hashes.get(alg)))
                 return false;
         }
 

@@ -14,6 +14,7 @@ public interface ComponentBuilderFactory {
 
     /**
      * Create a new ComponentBuilder object
+     *
      * @return a new ComponentBuilder
      */
     ComponentBuilder createBuilder();

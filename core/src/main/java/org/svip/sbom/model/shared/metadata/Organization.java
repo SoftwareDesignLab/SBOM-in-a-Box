@@ -1,20 +1,19 @@
 package org.svip.sbom.model.shared.metadata;
 
-import org.svip.sbomanalysis.comparison.conflicts.Comparable;
-import org.svip.sbomanalysis.comparison.conflicts.Conflict;
-import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
-import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
+import org.svip.compare.conflicts.Comparable;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.ConflictFactory;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISC_MISMATCH;
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.NAME_MISMATCH;
+import static org.svip.compare.conflicts.MismatchType.MISC_MISMATCH;
+import static org.svip.compare.conflicts.MismatchType.NAME_MISMATCH;
 
 /**
  * File: Organization
- *
+ * <p>
  * Represents an Organization
  *
  * @author Derek Garcia
@@ -28,9 +27,9 @@ public class Organization implements Comparable {
      * Create new Organization
      *
      * @param name Name of the organization
-     * @param url url of the organization
+     * @param url  url of the organization
      */
-    public Organization(String name, String url){
+    public Organization(String name, String url) {
         this.name = name;
         this.url = url;
     }
@@ -40,7 +39,7 @@ public class Organization implements Comparable {
      *
      * @param contact Contact details
      */
-    public void addContact(Contact contact){
+    public void addContact(Contact contact) {
         this.contacts.add(contact);
     }
 
@@ -57,7 +56,6 @@ public class Organization implements Comparable {
 
     /**
      * @return url
-     *
      */
     public String getUrl() {
         return url;
@@ -78,7 +76,7 @@ public class Organization implements Comparable {
     @Override
     public List<Conflict> compare(Comparable o) {
         // Don't compare if not instance of same object
-        if(!(o instanceof Organization other))
+        if (!(o instanceof Organization other))
             return null;
 
         ConflictFactory cf = new ConflictFactory();
@@ -105,7 +103,7 @@ public class Organization implements Comparable {
         Organization other = (Organization) o;
 
         // Check if name equivalent
-        if(this.name.equals(other.getName()))
+        if (this.name.equals(other.getName()))
             return true;
 
         // no fields match if url doesn't match

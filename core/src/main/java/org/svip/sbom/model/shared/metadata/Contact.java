@@ -1,18 +1,16 @@
 package org.svip.sbom.model.shared.metadata;
 
-import org.svip.sbomanalysis.comparison.conflicts.Comparable;
-import org.svip.sbomanalysis.comparison.conflicts.Conflict;
-import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
-import org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
+import org.svip.compare.conflicts.Comparable;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.ConflictFactory;
 
 import java.util.List;
-import java.util.Objects;
 
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISC_MISMATCH;
+import static org.svip.compare.conflicts.MismatchType.MISC_MISMATCH;
 
 /**
  * File: Contact.java
- *
+ * <p>
  * Represents contact information
  *
  * @author Derek Garcia
@@ -26,11 +24,11 @@ public class Contact implements Comparable {
     /**
      * Create new Contact
      *
-     * @param name Name of contact
+     * @param name  Name of contact
      * @param email Email of contact
      * @param phone Phone number of contact
      */
-    public Contact(String name, String email, String phone){
+    public Contact(String name, String email, String phone) {
         this.name = name;
         this.email = email;
         this.phone = phone;
@@ -72,9 +70,9 @@ public class Contact implements Comparable {
      * @return list of conflicts
      */
     @Override
-    public List<Conflict> compare(Comparable o){
+    public List<Conflict> compare(Comparable o) {
         // Don't compare if not instance of same object
-        if(!(o instanceof Contact other))
+        if (!(o instanceof Contact other))
             return null;
 
         ConflictFactory cf = new ConflictFactory();
@@ -97,11 +95,11 @@ public class Contact implements Comparable {
         Contact other = (Contact) o;
 
         // Check if name equivalent
-        if(this.name.equals(other.getName()))
+        if (this.name.equals(other.getName()))
             return true;
 
         // Check if email equivalent
-        if(this.email.equals(other.getEmail()))
+        if (this.email.equals(other.getEmail()))
             return true;
 
         // no fields match if phone doesn't match

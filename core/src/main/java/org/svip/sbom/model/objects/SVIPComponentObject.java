@@ -1,24 +1,21 @@
 package org.svip.sbom.model.objects;
 
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.ConflictFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
-import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.sbomanalysis.comparison.conflicts.Conflict;
-import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
 
 import java.util.*;
 
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.PUBLISHER_MISMATCH;
+import static org.svip.compare.conflicts.MismatchType.*;
 
 /**
  * file: SVIPComponentObject.java
@@ -29,98 +26,159 @@ import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.PUBLISHER_
  */
 public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23File {
 
-    /**Component's type*/
+    /**
+     * Component's type
+     */
     private final String type;
 
-    /**Component's uid*/
+    /**
+     * Component's uid
+     */
     private final String uid;
 
-    /**Component's author*/
+    /**
+     * Component's author
+     */
     private final String author;
 
-    /**Component's name*/
+    /**
+     * Component's name
+     */
     private final String name;
 
-    /**Component's licenses*/
+    /**
+     * Component's licenses
+     */
     private final LicenseCollection licenses;
 
-    /**Component's copyright*/
+    /**
+     * Component's copyright
+     */
     private final String copyright;
 
-    /**Component's hashes*/
+    /**
+     * Component's hashes
+     */
     private final HashMap<String, String> hashes;
 
-    /**Component's file notice*/
+    /**
+     * Component's file notice
+     */
     private final String fileNotice;
 
-    /**Component's supplier*/
+    /**
+     * Component's supplier
+     */
     private final Organization supplier;
 
-    /**Component's version*/
+    /**
+     * Component's version
+     */
     private final String version;
 
-    /**Component's description*/
+    /**
+     * Component's description
+     */
     private final Description description;
 
-    /**Component's CPEs*/
+    /**
+     * Component's CPEs
+     */
     private final Set<String> cpes;
 
-    /**Component's PURLs*/
+    /**
+     * Component's PURLs
+     */
     private final Set<String> purls;
 
-    /**Component's download location*/
+    /**
+     * Component's download location
+     */
     private final String downloadLocation;
 
-    /**Component's file name*/
+    /**
+     * Component's file name
+     */
     private final String fileName;
 
-    /**If component's files were analyzed*/
+    /**
+     * If component's files were analyzed
+     */
     private final Boolean filesAnalyzed;
 
-    /**Component's verification code*/
+    /**
+     * Component's verification code
+     */
     private final String verificationCode;
 
-    /**Component's home page*/
+    /**
+     * Component's home page
+     */
     private final String homePage;
 
-    /**Component's source info*/
+    /**
+     * Component's source info
+     */
     private final String sourceInfo;
 
-    /**Component's release date*/
+    /**
+     * Component's release date
+     */
     private final String releaseDate;
 
-    /**Component's built date*/
+    /**
+     * Component's built date
+     */
     private final String builtDate;
 
-    /**Component's valid until date*/
+    /**
+     * Component's valid until date
+     */
     private final String validUntilDate;
 
-    /**Component's mime type*/
+    /**
+     * Component's mime type
+     */
     private final String mimeType;
 
-    /**Component's publisher*/
+    /**
+     * Component's publisher
+     */
     private final String publisher;
 
-    /**Component's scope*/
+    /**
+     * Component's scope
+     */
     private final String scope;
 
-    /**Component's group*/
+    /**
+     * Component's group
+     */
     private final String group;
 
-    /**Component's external references*/
+    /**
+     * Component's external references
+     */
     private final Set<ExternalReference> externalReferences;
 
-    /**Component's properties*/
+    /**
+     * Component's properties
+     */
     private final HashMap<String, Set<String>> properties;
 
-    /**Component's comment*/
+    /**
+     * Component's comment
+     */
     private final String comment;
 
-    /**Component's attribution text*/
+    /**
+     * Component's attribution text
+     */
     private final String attributionText;
 
     /**
      * Get the component's type
+     *
      * @return the component's type
      */
     @Override
@@ -130,6 +188,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's uid
+     *
      * @return the component's uid
      */
     @Override
@@ -139,6 +198,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's author
+     *
      * @return the component's author
      */
     @Override
@@ -148,6 +208,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's name
+     *
      * @return the component's name
      */
     @Override
@@ -157,6 +218,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's licenses
+     *
      * @return the component's licenses
      */
     @Override
@@ -166,6 +228,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's copyright info
+     *
      * @return the component's copyright info
      */
     @Override
@@ -175,6 +238,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's hashes
+     *
      * @return the component's hashes
      */
     @Override
@@ -184,6 +248,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's supplier
+     *
      * @return The component's supplier
      */
     @Override
@@ -193,6 +258,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's version
+     *
      * @return the component's version
      */
     @Override
@@ -202,6 +268,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's description
+     *
      * @return the component's description
      */
     @Override
@@ -211,6 +278,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's CPEs
+     *
      * @return the component's CPEs
      */
     @Override
@@ -220,6 +288,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's PURLs
+     *
      * @return the component's PURLs
      */
     @Override
@@ -229,6 +298,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's external references
+     *
      * @return the component's external references
      */
     @Override
@@ -238,6 +308,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's mime type
+     *
      * @return the component's mime type
      */
     @Override
@@ -247,6 +318,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's publisher
+     *
      * @return the component's publisher
      */
     @Override
@@ -256,6 +328,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's scope
+     *
      * @return the component's scope
      */
     @Override
@@ -265,6 +338,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's group
+     *
      * @return the component's group
      */
     @Override
@@ -274,6 +348,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's properties
+     *
      * @return the component's properties
      */
     @Override
@@ -283,6 +358,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's comment
+     *
      * @return the component's comment
      */
     @Override
@@ -292,6 +368,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's attribution text
+     *
      * @return the component's attribution text
      */
     @Override
@@ -301,6 +378,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's file notice
+     *
      * @return the component's file notice
      */
     @Override
@@ -310,6 +388,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's download location
+     *
      * @return the component's download location
      */
     @Override
@@ -319,6 +398,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's file name
+     *
      * @return the component's file name
      */
     @Override
@@ -328,6 +408,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get if the component's files were analyzed
+     *
      * @return if the component's files were analyzed or not
      */
     @Override
@@ -337,6 +418,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's verification code
+     *
      * @return the component's verification code
      */
     @Override
@@ -346,6 +428,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's home page
+     *
      * @return the component's home page
      */
     @Override
@@ -355,6 +438,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's source info
+     *
      * @return the component's source info
      */
     @Override
@@ -364,6 +448,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's release data
+     *
      * @return the component's release data
      */
     @Override
@@ -373,6 +458,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's built date
+     *
      * @return the component's built date
      */
     @Override
@@ -382,6 +468,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Get the component's valid until date
+     *
      * @return the component's valid until date
      */
     @Override
@@ -391,34 +478,35 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     /**
      * Constructor to build the SVIP Component Object
-     * @param type component type
-     * @param uid component uid
-     * @param author component author
-     * @param name component name
-     * @param licenses component licenses
-     * @param copyright component copyright
-     * @param hashes component hashes
-     * @param supplier component supplier
-     * @param version component version
-     * @param description component description
-     * @param cpes component CPEs
-     * @param purls component PURLs
+     *
+     * @param type               component type
+     * @param uid                component uid
+     * @param author             component author
+     * @param name               component name
+     * @param licenses           component licenses
+     * @param copyright          component copyright
+     * @param hashes             component hashes
+     * @param supplier           component supplier
+     * @param version            component version
+     * @param description        component description
+     * @param cpes               component CPEs
+     * @param purls              component PURLs
      * @param externalReferences component external references
-     * @param downloadLocation component download location
-     * @param fileName component file name
-     * @param filesAnalyzed if component's files were analyzed
-     * @param verificationCode component verification code
-     * @param homePage component home page
-     * @param sourceInfo component source info
-     * @param releaseDate component release date
-     * @param builtDate component build date
-     * @param validUntilDate component valid until date
-     * @param mimeType component mime type
-     * @param publisher component publisher
-     * @param scope component scope
-     * @param group component group
-     * @param properties component properties
-     * @param fileNotice component file notice
+     * @param downloadLocation   component download location
+     * @param fileName           component file name
+     * @param filesAnalyzed      if component's files were analyzed
+     * @param verificationCode   component verification code
+     * @param homePage           component home page
+     * @param sourceInfo         component source info
+     * @param releaseDate        component release date
+     * @param builtDate          component build date
+     * @param validUntilDate     component valid until date
+     * @param mimeType           component mime type
+     * @param publisher          component publisher
+     * @param scope              component scope
+     * @param group              component group
+     * @param properties         component properties
+     * @param fileNotice         component file notice
      */
     public SVIPComponentObject(String type, String uid, String author, String name,
                                LicenseCollection licenses, String copyright,
@@ -430,7 +518,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
                                String releaseDate, String builtDate, String validUntilDate,
                                String mimeType, String publisher, String scope, String group,
                                HashMap<String, Set<String>> properties, String fileNotice,
-                               String comment, String attributionText){
+                               String comment, String attributionText) {
         this.type = type;
         this.uid = uid;
         this.author = author;
@@ -445,7 +533,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         this.cpes = cpes;
         this.purls = purls;
         this.externalReferences = externalReferences;
-        this.downloadLocation =downloadLocation;
+        this.downloadLocation = downloadLocation;
         this.fileName = fileName;
         this.filesAnalyzed = filesAnalyzed;
         this.verificationCode = verificationCode;
@@ -488,7 +576,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
 
         // Licenses
-        if(cf.comparable("License", this.licenses, other.getLicenses()))
+        if (cf.comparable("License", this.licenses, other.getLicenses()))
             cf.addConflicts(this.licenses.compare(other.getLicenses()));
 
         // Copyright
@@ -498,12 +586,12 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         cf.compareHashes("Component Hash", this.hashes, other.getHashes());
 
         // Compare SPDX component specific fields
-        if( other instanceof SPDX23Component)
-            cf.addConflicts( compare((SPDX23Component) other) );
+        if (other instanceof SPDX23Component)
+            cf.addConflicts(compare((SPDX23Component) other));
 
         // Compare SBOMPackage specific fields
-        if( other instanceof SBOMPackage)
-            cf.addConflicts( compare((SBOMPackage) other) );
+        if (other instanceof SBOMPackage)
+            cf.addConflicts(compare((SBOMPackage) other));
 
         return cf.getConflicts();
     }
@@ -519,7 +607,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         ConflictFactory cf = new ConflictFactory();
 
         // Supplier
-        if(cf.comparable("Supplier", this.supplier, other.getSupplier()))
+        if (cf.comparable("Supplier", this.supplier, other.getSupplier()))
             cf.addConflicts(this.supplier.compare(other.getSupplier()));
 
         // Version
@@ -527,7 +615,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         cf.addConflict("Version", VERSION_MISMATCH, this.version, other.getVersion());
 
         // Description
-        if(cf.comparable("Description", this.description, other.getDescription()))
+        if (cf.comparable("Description", this.description, other.getDescription()))
             cf.addConflicts(this.description.compare(other.getDescription()));
 
         // PURLs
@@ -542,12 +630,12 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         cf.compareComparableSets("External Reference", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
 
         // Compare SBOMPackage specific fields
-        if( other instanceof SPDX23Package)
-            cf.addConflicts( compare((SPDX23Package) other) );
+        if (other instanceof SPDX23Package)
+            cf.addConflicts(compare((SPDX23Package) other));
 
         // Compare CDX14SBOMPackage specific fields
-        if( other instanceof CDX14Package)
-            cf.addConflicts( compare((CDX14Package) other) );
+        if (other instanceof CDX14Package)
+            cf.addConflicts(compare((CDX14Package) other));
 
         return cf.getConflicts();
     }
@@ -586,7 +674,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
      * @return List of conflicts
      */
     @Override
-    public List<Conflict> compare(SPDX23Component other){
+    public List<Conflict> compare(SPDX23Component other) {
         ConflictFactory cf = new ConflictFactory();
 
         // Comment
@@ -596,8 +684,8 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
         cf.addConflict("Attribution Text", MISC_MISMATCH, this.attributionText, other.getAttributionText());
 
         // Compare SPDX File specific fields
-        if( other instanceof SPDX23File)
-            cf.addConflicts( compare((SPDX23File) other) );
+        if (other instanceof SPDX23File)
+            cf.addConflicts(compare((SPDX23File) other));
 
         return cf.getConflicts();
     }
@@ -609,7 +697,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
      * @return List of conflicts
      */
     @Override
-    public List<Conflict> compare(SPDX23Package other){
+    public List<Conflict> compare(SPDX23Package other) {
         ConflictFactory cf = new ConflictFactory();
 
         // Component Fields compare here to prevent duplicates
@@ -630,7 +718,8 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
         // Files Analyzed
         // needs null check because cannot call null.toString
-        if (this.filesAnalyzed != null) cf.addConflict("Files Analyzed", MISC_MISMATCH, this.filesAnalyzed.toString(), other.getFilesAnalyzed().toString());
+        if (this.filesAnalyzed != null)
+            cf.addConflict("Files Analyzed", MISC_MISMATCH, this.filesAnalyzed.toString(), other.getFilesAnalyzed().toString());
 
         // Verification Code
         cf.addConflict("Verification Code", MISC_MISMATCH, this.verificationCode, other.getVerificationCode());
@@ -661,7 +750,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
      * @return List of conflicts
      */
     @Override
-    public List<Conflict> compare(SPDX23File other){
+    public List<Conflict> compare(SPDX23File other) {
         ConflictFactory cf = new ConflictFactory();
 
         // File Notice
@@ -673,7 +762,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     @Override
     public int hashCode() {
-        if(name == null || version == null) return super.hashCode();
+        if (name == null || version == null) return super.hashCode();
         return this.name.hashCode() + this.version.hashCode();
     }
 }

@@ -13,9 +13,9 @@ import org.svip.sbom.factory.interfaces.SBOMBuilderFactory;
 
 public class SVIPSBOMBuilderFactory implements SBOMBuilderFactory {
     private SVIPComponentBuilder componentBuilder;
+
     @Override
-    public SVIPSBOMBuilder createBuilder()
-    {
+    public SVIPSBOMBuilder createBuilder() {
         return new SVIPSBOMBuilder();
     }
 }

@@ -22,26 +22,26 @@ import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
-import org.svip.sbomanalysis.comparison.DiffReport;
-import org.svip.sbomanalysis.comparison.merger.MergerController;
-import org.svip.sbomanalysis.comparison.merger.MergerException;
-import org.svip.sbomanalysis.qualityattributes.pipelines.QualityReport;
-import org.svip.sbomanalysis.qualityattributes.pipelines.interfaces.generics.QAPipeline;
-import org.svip.sbomanalysis.qualityattributes.pipelines.schemas.CycloneDX14.CDX14Pipeline;
-import org.svip.sbomanalysis.qualityattributes.pipelines.schemas.SPDX23.SPDX23Pipeline;
-import org.svip.sbomgeneration.osi.OSI;
-import org.svip.sbomgeneration.parsers.ParserController;
-import org.svip.sbomgeneration.serializers.SerializerFactory;
-import org.svip.sbomgeneration.serializers.deserializer.Deserializer;
-import org.svip.sbomgeneration.serializers.serializer.Serializer;
-import org.svip.sbomvex.VEXResult;
-import org.svip.sbomvex.database.NVDClient;
-import org.svip.sbomvex.database.OSVClient;
-import org.svip.sbomvex.database.interfaces.VulnerabilityDBClient;
-import org.svip.sbomvex.model.VEX;
-import org.svip.sbomvex.model.VEXType;
-import org.svip.sbomvex.vexstatement.VEXStatement;
-import org.svip.utils.VirtualPath;
+import org.svip.compare.DiffReport;
+import org.svip.merge.MergerController;
+import org.svip.merge.MergerException;
+import org.svip.metrics.pipelines.QualityReport;
+import org.svip.metrics.pipelines.interfaces.generics.QAPipeline;
+import org.svip.metrics.pipelines.schemas.CycloneDX14.CDX14Pipeline;
+import org.svip.metrics.pipelines.schemas.SPDX23.SPDX23Pipeline;
+import org.svip.generation.osi.OSI;
+import org.svip.generation.parsers.ParserController;
+import org.svip.serializers.SerializerFactory;
+import org.svip.serializers.deserializer.Deserializer;
+import org.svip.serializers.serializer.Serializer;
+import org.svip.vex.VEXResult;
+import org.svip.vex.database.NVDClient;
+import org.svip.vex.database.OSVClient;
+import org.svip.vex.database.interfaces.VulnerabilityDBClient;
+import org.svip.vex.model.VEX;
+import org.svip.vex.model.VEXType;
+import org.svip.vex.vexstatement.VEXStatement;
+import org.svip.generation.parsers.utils.VirtualPath;
 
 import java.io.IOException;
 import java.util.*;
@@ -620,7 +620,7 @@ public class SVIPApiController {
      * @throws JsonProcessingException
      */
     @PostMapping("/sboms/compare")
-    public ResponseEntity<DiffReport> compare(@RequestParam("targetIndex") int targetIndex, @RequestParam("Ids") Long[] ids) throws JsonProcessingException {
+    public ResponseEntity<DiffReport> compare(@RequestParam("targetIndex") int targetIndex, @RequestBody Long[] ids) throws JsonProcessingException {
         // Get Target SBOM
         Optional<SBOMFile> sbomFile = sbomFileRepository.findById(ids[targetIndex]);
         // Check if it exists
