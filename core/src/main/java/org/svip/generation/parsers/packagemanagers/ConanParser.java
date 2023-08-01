@@ -1,8 +1,8 @@
 package org.svip.generation.parsers.packagemanagers;
 
-import org.svip.generation.parsers.utils.QueryWorker;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+import org.svip.generation.parsers.utils.QueryWorker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,14 +51,14 @@ public class ConanParser extends PackageManagerParser {
             SVIPComponentBuilder builder = new SVIPComponentBuilder();
             builder.setName(d.get("artifactId"));
             builder.setType("EXTERNAL");
-            //c.setGroup("None");
+                  //c.setGroup("None");
             if (d.containsKey("version")) builder.setVersion(d.get("version"));
             //Query for Licenses
             String name = d.get("artifactId");
             // Build URL and worker object
-            if (name != null) {
+            if(name != null) {
                 // Create and add QueryWorker with Component reference and URL
-                this.queryWorkers.add(new QueryWorker(builder, this.STD_LIB_URL + name) {
+                this.queryWorkers.add(new QueryWorker(builder, this.STD_LIB_URL + name){
                     @Override
                     public void run() {
                         // Get page contents
@@ -67,12 +67,13 @@ public class ConanParser extends PackageManagerParser {
                         // example: https://regex101.com/r/EJMxrF/1
                         Matcher m = Pattern.compile("license\\s*=\\s*[\\\\]*\"([\\w.\\-]*)[\\\\]*\"", Pattern.MULTILINE).matcher(contents);
                         String r;
-                        if (m.find()) {
+                        if(m.find()) {
                             r = m.group(1).trim();
                             LicenseCollection licenses = new LicenseCollection();
                             licenses.addConcludedLicenseString(r);
                             this.builder.setLicenses(licenses);
-                        } else {
+                        }
+                        else {
                             // Parse license with content in the following form:
                             // <script (<----- matching this) data-n-head="ssr" type="application/ld+json">
                             //                                {
@@ -91,8 +92,8 @@ public class ConanParser extends PackageManagerParser {
                             //      }
                             //    </script>    <----- matching this also
                             // examples : https://regex101.com/r/OIM0dl/1 and https://regex101.com/r/OIM0dl/2
-                            m = Pattern.compile(String.format("<script.*\"name\"\\s*:\\s*\"%s\".*\"license\"\\s*:\\s*\"([\\w.\\\\-]*)\".*</script>", name), Pattern.MULTILINE).matcher(contents);
-                            if (m.find()) {
+                            m = Pattern.compile(String.format("<script.*\"name\"\\s*:\\s*\"%s\".*\"license\"\\s*:\\s*\"([\\w.\\\\-]*)\".*</script>",name), Pattern.MULTILINE).matcher(contents);
+                            if(m.find()) {
                                 r = m.group(1).trim();
                                 LicenseCollection licenses = new LicenseCollection();
                                 licenses.addConcludedLicenseString(r);
@@ -113,8 +114,7 @@ public class ConanParser extends PackageManagerParser {
     /**
      * Parse the fileContents based on the given regex to form key-value pairs,
      * then call parseData() for further process
-     *
-     * @param components   list of Components to add to
+     * @param components list of Components to add to
      * @param fileContents the contents of the file to be parsed
      */
     @Override
@@ -131,7 +131,7 @@ public class ConanParser extends PackageManagerParser {
         if (fileContents.contains(" requirements(self") && fileContents.contains("self.requires(")) {
             //System.out.println("conanfile.py content found!");
             //example: https://regex101.com/r/vYtDIV/1
-            m = Pattern.compile("(^|\\s*)(def\\s+[\\w]+\\(self.*\\)\\:)\\s*(((?!.*def\\s+[\\w]+\\(self.*\\)\\:).*\\s*)*)", Pattern.MULTILINE)
+            m = Pattern.compile("(^|\\s*)(def\\s+[\\w]+\\(self.*\\)\\:)\\s*(((?!.*def\\s+[\\w]+\\(self.*\\)\\:).*\\s*)*)",Pattern.MULTILINE)
                     .matcher(fileContents);
         }
 
@@ -139,21 +139,21 @@ public class ConanParser extends PackageManagerParser {
 
         for (final MatchResult mr : m.results().toList()) {
             // Get key and value
-            String key = mr.group(2).trim();
+                  String key = mr.group(2).trim();
             final String value = mr.group(3).trim();
             //keys:  "[requires]" from conanfile.txt files or "defrequirements(self):" from conanfile.py files
             //remove all white spaces in the key for conanfile.py files so that it becomes uniq
-            key = key.replaceAll("\\s+", "");
-            key = key.replaceAll("\\(self.*", "(self):");
+            key = key.replaceAll("\\s+","");
+            key = key.replaceAll("\\(self.*","(self):");
 
             // Dependencies will need to be parsed further, so pass raw string
-            switch (key) {
+            switch(key) {
                 case "[requires]":
                     String[] lines = value.split("\n");
                     // Process line by line
                     for (String line : lines) {
                         final LinkedHashMap<String, String> dep = new LinkedHashMap<>();
-                        if (procline(dep, line) != null) {
+                        if(procline(dep,  line) != null) {
                             // Insert value
                             deps.add(dep);
                         }
@@ -164,11 +164,11 @@ public class ConanParser extends PackageManagerParser {
                 case "defrequirements(self):":
                     lines = value.split("\n");
                     for (String line : lines) {
-                        if (line.contains("self.requires(\"") || line.contains("self.requires('")) {
+                        if(line.contains("self.requires(\"") || line.contains("self.requires('")) {
                             final LinkedHashMap<String, String> dep = new LinkedHashMap<>();
                             //getting the value in quotes by removing the rest
                             String tline = line.trim().replaceAll(".*self\\.requires\\([\"']|[\"']\\).*", "");
-                            if (procline(dep, tline) != null) {
+                            if(procline(dep,  tline) != null) {
                                 // Insert value
                                 deps.add(dep);
                             }
@@ -181,8 +181,8 @@ public class ConanParser extends PackageManagerParser {
                     break;
             }
         }
-        // Parse data
-        this.parseData(components, data);
+            // Parse data
+            this.parseData(components, data);
     }
 
     /**
@@ -192,19 +192,19 @@ public class ConanParser extends PackageManagerParser {
      * <head>
      * <style>
      * table {
-     * font-family: arial, sans-serif;
-     * border-collapse: collapse;
-     * width: 100%;
+     *   font-family: arial, sans-serif;
+     *   border-collapse: collapse;
+     *   width: 100%;
      * }
-     * <p>
+     *
      * td, th {
-     * border: 1px solid #dddddd;
-     * text-align: left;
-     * padding: 8px;
+     *   border: 1px solid #dddddd;
+     *   text-align: left;
+     *   padding: 8px;
      * }
-     * <p>
+     *
      * tr:nth-child(even) {
-     * background-color: #dddddd;
+     *   background-color: #dddddd;
      * }
      * </style>
      * </head>
@@ -261,7 +261,6 @@ public class ConanParser extends PackageManagerParser {
      *
      * </body>
      * </html>
-     *
      * @param text A file content from conanfile.txt or conanfile.py
      * @return The text without comments
      */
@@ -311,19 +310,19 @@ public class ConanParser extends PackageManagerParser {
 
     /**
      * Split the data {@code line} into key-value pair and store the pair in the param {@code dep} and returned
-     *
      * @param dep  Data storage to contain key-value pair to be returned
      * @param line Data source
      * @return The populated {@code dep} data storage, or {@code null} if no valid key in the {@code line} data source
      */
-    public LinkedHashMap<String, String> procline(LinkedHashMap<String, String> dep, String line) {
+    public LinkedHashMap<String, String> procline(LinkedHashMap<String, String> dep,  String line) {
         final String[] linei = line.trim().split("/");
-        if (linei.length > 0 && !linei[0].isEmpty()) {
+        if(linei.length > 0 && !linei[0].isEmpty()) {
             dep.put("artifactId", linei[0]);
-        } else
+        }
+        else
             return null;
 
-        if (linei.length > 1) dep.put("version", linei[1]);
+        if(linei.length > 1 ) dep.put("version", linei[1]);
 
         return dep;
     }

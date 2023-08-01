@@ -1,11 +1,5 @@
 package org.svip.generation.parsers;
 
-import org.svip.generation.parsers.contexts.ContextParser;
-import org.svip.generation.parsers.contexts.DeadImportParser;
-import org.svip.generation.parsers.contexts.SubprocessParser;
-import org.svip.generation.parsers.languages.*;
-import org.svip.generation.parsers.packagemanagers.*;
-import org.svip.generation.parsers.utils.VirtualPath;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.factory.objects.SVIPSBOMBuilderFactory;
@@ -13,9 +7,15 @@ import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
+import org.svip.generation.parsers.contexts.ContextParser;
+import org.svip.generation.parsers.contexts.DeadImportParser;
+import org.svip.generation.parsers.contexts.SubprocessParser;
+import org.svip.generation.parsers.languages.*;
+import org.svip.generation.parsers.packagemanagers.*;
 import org.svip.serializers.Metadata;
 import org.svip.serializers.SerializerFactory;
 import org.svip.utils.Debug;
+import org.svip.generation.parsers.utils.VirtualPath;
 
 import java.util.*;
 
@@ -84,8 +84,7 @@ public class ParserController {
 
     //#region Constructors
 
-    /**
-     * TODO
+    /** TODO
      * Create a new ParserController.
      */
     public ParserController(String projectName, Map<VirtualPath, String> files) {
@@ -148,7 +147,7 @@ public class ParserController {
         final long parseT1 = System.currentTimeMillis();
 
         int parseCounter = 0;
-        for (VirtualPath path : internalFiles) {
+        for(VirtualPath path : internalFiles) {
             parse(path, files.get(path), internalFiles);
             parseCounter++;
         }
@@ -159,12 +158,11 @@ public class ParserController {
         log(Debug.LOG_TYPE.SUMMARY, String.format("Component parsing complete. " +
                         "Parsed %d components in %.2f seconds.",
                 parseCounter,
-                (float) (parseT2 - parseT1) / 1000));
+                (float)(parseT2 - parseT1) / 1000));
     }
 
 
-    /**
-     * TODO
+    /** TODO
      * Internal parse method that takes a filepath and a parent Component (optionally).
      * If parent is null, this method will parse normally, otherwise, it will try to
      * append all found Components to the given parent Component.
@@ -186,13 +184,13 @@ public class ParserController {
         final Parser parser = EXTENSION_MAP.get(extn);
 
         // Skip if extn did not correlate to valid Parser
-        if (parser == null) {
+        if(parser == null) {
             log(LOG_TYPE.DEBUG, "Skipping file with ignored filetype: " + filename);
             return;
         } else log(LOG_TYPE.SUMMARY, "Parsing file '" + filename + "'");
 
         final ArrayList<ContextParser> contextParsers = new ArrayList<>();
-        if (parser instanceof LanguageParser) {
+        if(parser instanceof LanguageParser) {
 //            contextParsers.add(new CommentParser());
             contextParsers.add(new SubprocessParser());
             contextParsers.add(new DeadImportParser());
@@ -212,7 +210,7 @@ public class ParserController {
         found.forEach(Parser::generateHash); // Set all hashes
 
         // If file being parsed is a language file, execute the following additionally
-        if (parser instanceof LanguageParser) {
+        if(parser instanceof LanguageParser) {
             if (filename.equals("conanfile.py"))
                 new ConanParser().parse(found, fileContents);
             else
@@ -222,19 +220,18 @@ public class ParserController {
         int deadImportCounter = 0;
         int totalRemoved = 0;
         // Check for duplicate named components & dead imports
-        for (SVIPComponentBuilder c : found) {
+        for(SVIPComponentBuilder c : found) {
             SVIPComponentObject newComponent = c.build();
             String hash = newComponent.getHashes().get("SHA256");
             SVIPComponentBuilder oldComponent = components.get(hash);
 
             // Dead import found
-            if(newComponent.getType() != null)
-                if (newComponent.getType().equalsIgnoreCase("dead_import")) {
-                    Debug.log(LOG_TYPE.DEBUG, "Removed dead import " + newComponent.getName());
-                    deadImportCounter++;
-                    totalRemoved++;
-                    continue;
-                }
+            if (newComponent.getType().equalsIgnoreCase("dead_import")) {
+                Debug.log(LOG_TYPE.DEBUG, "Removed dead import " + newComponent.getName());
+                deadImportCounter++;
+                totalRemoved++;
+                continue;
+            }
 
             // Duplicate found
             if (oldComponent != null) {
@@ -255,7 +252,7 @@ public class ParserController {
         }
 
         String removedComponentsLog = "Removed " + totalRemoved + " Components parsed from file " + filename;
-        if (deadImportCounter > 0) removedComponentsLog += " (" + deadImportCounter + "/" + totalRemoved
+        if(deadImportCounter > 0) removedComponentsLog += " (" + deadImportCounter + "/" + totalRemoved
                 + " were dead imports)";
         Debug.log(LOG_TYPE.DEBUG, removedComponentsLog);
     }

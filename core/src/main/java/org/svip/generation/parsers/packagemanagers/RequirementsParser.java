@@ -1,8 +1,8 @@
 package org.svip.generation.parsers.packagemanagers;
 
-import org.svip.generation.parsers.utils.QueryWorker;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+import org.svip.generation.parsers.utils.QueryWorker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,13 +36,13 @@ public class RequirementsParser extends PackageManagerParser {
             final String name = req.get("name");
             SVIPComponentBuilder builder = new SVIPComponentBuilder();
             builder.setName(name);
-            if (req.containsKey("version")) builder.setVersion(req.get("version"));
-            if (req.containsKey("src")) builder.setGroup(req.get("src"));
+            if(req.containsKey("version")) builder.setVersion(req.get("version"));
+            if(req.containsKey("src")) builder.setGroup(req.get("src"));
 
             // Build URL and worker object
-            if (name != null) {
+            if(name != null) {
                 // Create and add QueryWorker with Component reference and URL
-                this.queryWorkers.add(new QueryWorker(builder, this.STD_LIB_URL + name) {
+                this.queryWorkers.add(new QueryWorker(builder, this.STD_LIB_URL + name){
                     @Override
                     public void run() {
                         // Get page contents
@@ -51,7 +51,7 @@ public class RequirementsParser extends PackageManagerParser {
                         // https://regex101.com/r/LKcQrx/1
                         final Matcher m = Pattern.compile("<p><strong>License:</strong>(.*?)</p>", Pattern.MULTILINE).matcher(contents);
 
-                        while (m.find()) {
+                        while(m.find()) {
                             LicenseCollection licenses = new LicenseCollection();
                             licenses.addConcludedLicenseString(m.group(1).trim());
                             this.builder.setLicenses(licenses);
@@ -85,7 +85,7 @@ public class RequirementsParser extends PackageManagerParser {
                         .matcher(fileContents);
 
         // Parse requirements from fileContents and add to list
-        while (m.find()) {
+        while(m.find()) {
             // Init match data structure
             final LinkedHashMap<String, String> req = new LinkedHashMap<>();
 
@@ -93,9 +93,9 @@ public class RequirementsParser extends PackageManagerParser {
             // Requirement name
             req.put("name", m.group(1));
             // Requirement version (Optional)
-            if (m.group(2) != null) req.put("version", m.group(2));
+            if(m.group(2) != null) req.put("version", m.group(2));
             // Requirement source (Optional)
-            if (m.group(3) != null) req.put("src", m.group(3));
+            if(m.group(3) != null) req.put("src", m.group(3));
 
             // Add collected information to list
             requirements.add(req);

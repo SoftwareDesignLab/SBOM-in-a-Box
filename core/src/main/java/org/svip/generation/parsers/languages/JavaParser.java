@@ -1,7 +1,7 @@
 package org.svip.generation.parsers.languages;
 
-import org.svip.generation.parsers.Parser;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
+import org.svip.generation.parsers.Parser;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -26,9 +26,7 @@ import static org.svip.utils.Debug.log;
 public class JavaParser extends LanguageParser {
     // Oracle API Reference: This reference currently supports Java8 only for LTS. Other versions of
     //Java will need additional code to fetch relevant package lists
-    public JavaParser() {
-        super("https://docs.oracle.com/javase/8/docs/api/overview-frame.html");
-    }
+    public JavaParser() { super("https://docs.oracle.com/javase/8/docs/api/overview-frame.html"); }
 
     private final HashSet<String> JAVA8_STD_PACKAGES = fetchJava8Packages();
 
@@ -43,12 +41,12 @@ public class JavaParser extends LanguageParser {
         final HashSet<String> packages = new HashSet<>();
 
         // Attempt to get list of std packages
-        try {
+        try{
             // Attempt to perform a GET request on ORACLE_URL
             final HttpURLConnection connection = Parser.queryURL(STD_LIB_URL, false);
 
             // If page cannot be reached, log failure and return empty set
-            if (connection.getResponseCode() != 200) {
+            if(connection.getResponseCode() != 200) {
                 log(LOG_TYPE.ERROR, "Failed to fetch package list");
                 return packages;
             }
@@ -65,8 +63,8 @@ public class JavaParser extends LanguageParser {
             // Parsing loop
             while ((line = r.readLine()) != null) {
                 // Wait for line containing page element parent to package list
-                if (!found) {
-                    if (line.equals("<div class=\"indexContainer\">")) {
+                if(!found) {
+                    if(line.equals("<div class=\"indexContainer\">")) {
                         found = true;
                     }
                 }
@@ -76,12 +74,12 @@ public class JavaParser extends LanguageParser {
                     Matcher m = regex.matcher(line);
 
                     // If package is found add to hashset
-                    if (m.find() && m.group(1) != null) {
+                    if(m.find() && m.group(1) != null) {
                         packages.add(m.group(1));
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception e){
             log(LOG_TYPE.EXCEPTION, e);
         }
 
@@ -105,8 +103,8 @@ public class JavaParser extends LanguageParser {
     @Override
     protected boolean isLanguageComponent(SVIPComponentBuilder component) {
         // If component is a standard package, return true
-        if (JAVA8_STD_PACKAGES.contains(getName(component).replace('/', '.'))) return true;
-        else if (getGroup(component) == null) return false;
+        if(JAVA8_STD_PACKAGES.contains(getName(component).replace('/', '.'))) return true;
+        else if(getGroup(component) == null) return false;
 
         // Otherwise, check if component is from a standard package
         return JAVA8_STD_PACKAGES.contains(getGroup(component).replace('/', '.'));
@@ -153,9 +151,9 @@ public class JavaParser extends LanguageParser {
         String match2 = matcher.group(2);
 
         // If valid import is found, matcher.group(2) will be true
-        if (match2 != null) {
+        if(match2 != null) {
             // Check if import is package (java.awt.color)
-            if (Character.isLowerCase(match2.charAt(0))) {
+            if(Character.isLowerCase(match2.charAt(0))) {
                 // Combine capture groups to complete package name
                 builder.setName((match1 + match2).replace('.', '/'));
             }
@@ -165,7 +163,7 @@ public class JavaParser extends LanguageParser {
                 builder.setName(match2);
 
                 // If group 1 exists, it is the package that has been imported from
-                if (!match1.equals("")) {
+                if(!match1.equals("")) {
                     // Set from to group 1 (and trim last ".")
                     builder.setGroup(match1.substring(0, match1.length() - 1).replace('.', '/'));
                 }

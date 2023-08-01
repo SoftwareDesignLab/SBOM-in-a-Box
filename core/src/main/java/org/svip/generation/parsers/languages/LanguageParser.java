@@ -1,9 +1,9 @@
 package org.svip.generation.parsers.languages;
 
-import org.svip.generation.parsers.Parser;
-import org.svip.generation.parsers.utils.VirtualPath;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
+import org.svip.generation.parsers.Parser;
 import org.svip.utils.Debug;
+import org.svip.generation.parsers.utils.VirtualPath;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,15 +48,15 @@ public abstract class LanguageParser extends Parser {
         String group = getGroup(component);
         VirtualPath internalPath = new VirtualPath((group == null ? "" : group) + "/" + name);
 
-        for (VirtualPath internalComponent : sourceFiles) {
+        for(VirtualPath internalComponent : sourceFiles) {
             VirtualPath noExtension = internalComponent.removeFileExtension();
 
-            if (internalComponent.endsWith(internalPath) || noExtension.endsWith(internalPath)) return true;
+            if(internalComponent.endsWith(internalPath) || noExtension.endsWith(internalPath)) return true;
 
-            if (internalComponent.getParent().endsWith(internalPath) || noExtension.getParent().endsWith(internalPath))
+            if(internalComponent.getParent().endsWith(internalPath) || noExtension.getParent().endsWith(internalPath))
                 return true;
 
-            if (group != null && (internalPath.endsWith(new VirtualPath(group))
+            if(group != null && (internalPath.endsWith(new VirtualPath(group))
                     || noExtension.endsWith(new VirtualPath(group))))
                 return true;
         }
@@ -88,7 +88,7 @@ public abstract class LanguageParser extends Parser {
      * and append found components to the provided ArrayList.
      *
      * @param components A list of ParserComponents that the found components will be appended to
-     * @param matcher    regex match pattern
+     * @param matcher regex match pattern
      */
     protected abstract void parseRegexMatch(List<SVIPComponentBuilder> components, Matcher matcher);
 
@@ -110,12 +110,12 @@ public abstract class LanguageParser extends Parser {
 
             List<SVIPComponentBuilder> componentsToRemove = new ArrayList<>();
 
-            for (SVIPComponentBuilder component : components) {
-                if (getName(component).equals("*")) {
+            for(SVIPComponentBuilder component : components) {
+                if(getName(component).equals("*")) {
                     Debug.log(Debug.LOG_TYPE.DEBUG, String.format("Import wildcard found in component %s with group %s",
                             getName(component), getGroup(component)));
 
-                    if (getGroup(component) != null) {
+                    if(getGroup(component) != null) {
                         // Get list of all subgroups in the component group
                         List<String> groups = new ArrayList<>(Arrays.stream(getGroup(component).split("/"))
                                 .toList());

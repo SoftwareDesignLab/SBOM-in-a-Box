@@ -1,17 +1,13 @@
 package org.svip.sbom.model.objects.SPDX23;
 
-import org.svip.compare.conflicts.Conflict;
-import org.svip.compare.conflicts.ConflictFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.ConflictFactory;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.svip.compare.conflicts.MismatchType.*;
+import java.util.*;
 
 /**
  * file: SPDX23FileObject.java
@@ -22,59 +18,38 @@ import static org.svip.compare.conflicts.MismatchType.*;
  */
 public class SPDX23FileObject implements SPDX23File {
 
-    /**
-     * File's type
-     */
+    /**File's type*/
     private final String type;
 
-    /**
-     * File's uid
-     */
+    /**File's uid*/
     private final String uid;
 
-    /**
-     * File's author
-     */
+    /**File's author*/
     private final String author;
 
-    /**
-     * File's name
-     */
+    /**File's name*/
     private final String name;
 
-    /**
-     * File's licenses
-     */
+    /**File's licenses*/
     private final LicenseCollection licenses;
 
-    /**
-     * File's copyright
-     */
+    /**File's copyright*/
     private final String copyright;
 
-    /**
-     * File's hashes
-     */
+    /**File's hashes*/
     private final HashMap<String, String> hashes;
 
-    /**
-     * File's file notice
-     */
+    /**File's file notice*/
     private final String fileNotice;
 
-    /**
-     * File's comment
-     */
+    /**File's comment*/
     private final String comment;
 
-    /**
-     * File's attribution text
-     */
+    /**File's attribution text*/
     private final String attributionText;
 
     /**
      * Get the file's comment
-     *
      * @return the file's comment
      */
     @Override
@@ -84,7 +59,6 @@ public class SPDX23FileObject implements SPDX23File {
 
     /**
      * Get the file's attribution text
-     *
      * @return the file's attribution text
      */
     @Override
@@ -94,7 +68,6 @@ public class SPDX23FileObject implements SPDX23File {
 
     /**
      * Get the file's file notice
-     *
      * @return the file's file notice
      */
     @Override
@@ -104,7 +77,6 @@ public class SPDX23FileObject implements SPDX23File {
 
     /**
      * Get the file's type
-     *
      * @return the file's type
      */
     @Override
@@ -114,7 +86,6 @@ public class SPDX23FileObject implements SPDX23File {
 
     /**
      * Get the file's uid
-     *
      * @return the file's uid
      */
     @Override
@@ -124,7 +95,6 @@ public class SPDX23FileObject implements SPDX23File {
 
     /**
      * Get the file's author
-     *
      * @return the file's author
      */
     @Override
@@ -134,7 +104,6 @@ public class SPDX23FileObject implements SPDX23File {
 
     /**
      * Get the file's name
-     *
      * @return the file's name
      */
     @Override
@@ -144,7 +113,6 @@ public class SPDX23FileObject implements SPDX23File {
 
     /**
      * Get the file's licenses
-     *
      * @return the file's licenses
      */
     @Override
@@ -154,7 +122,6 @@ public class SPDX23FileObject implements SPDX23File {
 
     /**
      * Get the file's copyright info
-     *
      * @return the file's copyright info
      */
     @Override
@@ -164,7 +131,6 @@ public class SPDX23FileObject implements SPDX23File {
 
     /**
      * Get the file's hashes
-     *
      * @return the file's hashes
      */
     @Override
@@ -174,21 +140,20 @@ public class SPDX23FileObject implements SPDX23File {
 
     /**
      * Constructor to build a new SPDX 2.3 File Object
-     *
-     * @param type       file type
-     * @param uid        file uid
-     * @param author     file author
-     * @param name       file name
-     * @param licenses   file licenses
-     * @param copyright  file copyright
-     * @param hashes     file hashes
+     * @param type file type
+     * @param uid file uid
+     * @param author file author
+     * @param name file name
+     * @param licenses file licenses
+     * @param copyright file copyright
+     * @param hashes file hashes
      * @param fileNotice file's file notice
-     * @param comment    file's comment
+     * @param comment file's comment
      */
     public SPDX23FileObject(String type, String uid, String author, String name,
-                            LicenseCollection licenses, String copyright,
-                            HashMap<String, String> hashes, String fileNotice,
-                            String comment, String attributionText) {
+                      LicenseCollection licenses, String copyright,
+                      HashMap<String, String> hashes, String fileNotice,
+                            String comment, String attributionText){
         this.type = type;
         this.uid = uid;
         this.author = author;
@@ -226,7 +191,7 @@ public class SPDX23FileObject implements SPDX23File {
         cf.addConflict("Author", AUTHOR_MISMATCH, this.author, other.getAuthor());
 
         // Licenses
-        if (cf.comparable("License", this.licenses, other.getLicenses()))
+        if(cf.comparable("License", this.licenses, other.getLicenses()))
             cf.addConflicts(this.licenses.compare(other.getLicenses()));
 
         // Copyright
@@ -236,8 +201,8 @@ public class SPDX23FileObject implements SPDX23File {
         cf.compareHashes("Component Hash", this.hashes, other.getHashes());
 
         // Compare SPDX component specific fields
-        if (other instanceof SPDX23Component)
-            cf.addConflicts(compare((SPDX23Component) other));
+        if( other instanceof SPDX23Component)
+            cf.addConflicts( compare((SPDX23Component) other) );
 
         return cf.getConflicts();
     }
@@ -249,7 +214,7 @@ public class SPDX23FileObject implements SPDX23File {
      * @return List of conflicts
      */
     @Override
-    public List<Conflict> compare(SPDX23Component other) {
+    public List<Conflict> compare(SPDX23Component other){
         ConflictFactory cf = new ConflictFactory();
 
         // Comment
@@ -259,8 +224,8 @@ public class SPDX23FileObject implements SPDX23File {
         cf.addConflict("Attribution Text", MISC_MISMATCH, this.attributionText, other.getAttributionText());
 
         // Compare SPDX File specific fields
-        if (other instanceof SPDX23File)
-            cf.addConflicts(compare((SPDX23File) other));
+        if( other instanceof SPDX23File)
+            cf.addConflicts( compare((SPDX23File) other) );
 
         return cf.getConflicts();
     }
@@ -272,7 +237,7 @@ public class SPDX23FileObject implements SPDX23File {
      * @return List of conflicts
      */
     @Override
-    public List<Conflict> compare(SPDX23File other) {
+    public List<Conflict> compare(SPDX23File other){
         ConflictFactory cf = new ConflictFactory();
 
         // File Notice
@@ -283,7 +248,7 @@ public class SPDX23FileObject implements SPDX23File {
 
     @Override
     public int hashCode() {
-        if (name == null) return super.hashCode();
+        if(name == null) return super.hashCode();
         return this.name.hashCode();
     }
 }

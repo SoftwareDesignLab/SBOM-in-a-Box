@@ -6,8 +6,8 @@ import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 import org.svip.vex.database.interfaces.VulnerabilityDBClient;
 import org.svip.vex.vexstatement.Product;
 import org.svip.vex.vexstatement.VEXStatement;
-import org.svip.vex.vexstatement.Vulnerability;
 import org.svip.vex.vexstatement.status.Justification;
+import org.svip.vex.vexstatement.Vulnerability;
 import org.svip.vex.vexstatement.status.Status;
 import org.svip.vex.vexstatement.status.VulnStatus;
 
@@ -35,34 +35,31 @@ public class NVDClient implements VulnerabilityDBClient {
     /**
      * build the url for the api request using the component's cpe and the
      * default endpoint
-     *
      * @param cpe the cpe string
      * @return a String of the concatenated URL string
      */
-    private String buildURLWithCPE(String cpe) {
+    private String buildURLWithCPE(String cpe){
         return DEFAULT_ENDPOINT.concat("?cpeName=").concat(cpe);
     }
 
     /**
      * build the url for the api request using the component's cpe and the
      * user's API key
-     *
      * @param cpe the cpe string
      * @param key the user's NVD API key to use
      * @return a String of the concatenated URL string
      */
-    private String buildURLWithUserKey(String cpe, String key) {
+    private String buildURLWithUserKey(String cpe, String key){
         return key.concat("?cpeName=").concat(cpe);
     }
 
     /**
      * run the api request and returns the response with the default key
-     *
      * @param cpe the cpe string
      * @return the response from the NVD API
      * @throws Exception if an error occurs with getting NVD's response
      */
-    private String accessNVD(String cpe) throws Exception {
+    private String accessNVD(String cpe) throws Exception{
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(buildURLWithCPE(cpe)))
                 .GET()
@@ -75,13 +72,12 @@ public class NVDClient implements VulnerabilityDBClient {
 
     /**
      * run the api request and returns the response with the user's key
-     *
      * @param cpe the cpe string
      * @param key the user's NVD API Key to use
      * @return the response from the NVD API
      * @throws Exception if an error occurs with getting NVD's response
      */
-    private String accessNVD(String cpe, String key) throws Exception {
+    private String accessNVD(String cpe, String key) throws Exception{
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(buildURLWithUserKey(cpe, key)))
                 .GET()
@@ -94,14 +90,13 @@ public class NVDClient implements VulnerabilityDBClient {
 
     /**
      * Get all vulnerabilities of a component using the NVD API default key
-     *
      * @param s the SBOM package to create the VEX Statement for
      * @return a List of VEX Statements if there are vulnerabilities or
      * throw a general Exception if none are found
      * @throws Exception an error occurs when getting vulnerabilities
      */
     @Override
-    public List<VEXStatement> getVEXStatements(SBOMPackage s) throws Exception {
+    public List<VEXStatement> getVEXStatements(SBOMPackage s) throws Exception{
         List<VEXStatement> vexStatements = new ArrayList<>();
         int waitTime = 6;
         String response;
@@ -109,7 +104,7 @@ public class NVDClient implements VulnerabilityDBClient {
         Set<String> cpes = s.getCPEs();
 
         // if component has no cpes continue as we can only search if there are cpes
-        if (cpes == null || cpes.isEmpty())
+        if(cpes==null || cpes.isEmpty())
             throw new Exception("Component does not have CPEs " +
                     "to test with NVD API");
 
@@ -122,7 +117,7 @@ public class NVDClient implements VulnerabilityDBClient {
 
 
         // check that the response was not null to find vulnerabilities
-        if (response != null) {
+        if(response != null){
             JSONObject jsonResponse = new JSONObject(response);
             JSONArray vulns = new JSONArray(
                     jsonResponse.getJSONArray("vulnerabilities"));
@@ -142,8 +137,7 @@ public class NVDClient implements VulnerabilityDBClient {
 
     /**
      * Get all vulnerabilities of a component using the user's API key
-     *
-     * @param s   the SBOM package to create the VEX Statement for
+     * @param s the SBOM package to create the VEX Statement for
      * @param key the user's NVD API key to use
      * @return a List of VEX Statements if there are vulnerabilities or
      * throw a general Exception if none are found
@@ -158,7 +152,7 @@ public class NVDClient implements VulnerabilityDBClient {
         Set<String> cpes = s.getCPEs();
 
         // if component has no cpes continue as we can only search if there are cpes
-        if (cpes == null || cpes.isEmpty())
+        if(cpes==null || cpes.isEmpty())
             throw new Exception("Component does not have CPEs " +
                     "to test with NVD API");
 
@@ -171,7 +165,7 @@ public class NVDClient implements VulnerabilityDBClient {
 
 
         // check that the response was not null to find vulnerabilities
-        if (response != null) {
+        if(response != null){
             JSONObject jsonResponse = new JSONObject(response);
             JSONArray vulns = new JSONArray(
                     jsonResponse.getJSONArray("vulnerabilities"));
@@ -192,11 +186,10 @@ public class NVDClient implements VulnerabilityDBClient {
 
     /**
      * Build a new VEX Statement for a VEX Document
-     *
      * @param vulnerabilityBody the vulnerability body from the APIs
-     *                          response to turn into a VEXStatement
-     * @param c                 component to extract info for the VEX Statement
-     * @param id                string used to identify VEX Statement
+     * response to turn into a VEXStatement
+     * @param c component to extract info for the VEX Statement
+     * @param id string used to identify VEX Statement
      * @return a new VEXStatement
      */
     private VEXStatement generateVEXStatement(JSONObject vulnerabilityBody,
@@ -228,9 +221,10 @@ public class NVDClient implements VulnerabilityDBClient {
         // add component as the product of the statement
         String productID = c.getName() + ":" + c.getVersion();
         String supplier;
-        if (c.getSupplier() != null) {
+        if(c.getSupplier() != null){
             supplier = c.getSupplier().getName();
-        } else {
+        }
+        else{
             supplier = "Unknown";
         }
         Product product = new Product(productID, supplier);
