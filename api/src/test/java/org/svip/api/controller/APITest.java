@@ -51,6 +51,9 @@ public class APITest {
     private final static String vulnerableSBOMOSV = System.getProperty("user.dir")
             + "/src/test/resources/sample_sboms/CDX_vulns_osv_sbom.json";
 
+    protected final String[] schemas = {"SPDX23", "CDX14"};
+    protected final String[] formats = {"TAGVALUE", "JSON"};
+
     /*
     Sample projects for parsers
      */
