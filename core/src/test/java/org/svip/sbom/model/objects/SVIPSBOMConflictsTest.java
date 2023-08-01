@@ -314,6 +314,6 @@ public class SVIPSBOMConflictsTest {
 
         assertEquals(2, conflictList.size());
         assertEquals(MismatchType.MISSING, conflict.GetType());
-        assertEquals("Creation Data: Tool doesn't match", conflict.GetMessage());
+        assertEquals("Creation Data: Tool is missing", conflict.GetMessage());
     }
 }

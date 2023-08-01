@@ -1,6 +1,7 @@
 package org.svip.sbomanalysis.comparison.conflicts;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.svip.sbomanalysis.qualityattributes.resultfactory.Text;
 
 /**
  * file: Conflict.java
@@ -101,12 +102,15 @@ public class Conflict {
         if(target == null && other == null)
             return null;
 
+        Text text = new Text("Conflict", field);
+
+        // added more extensive null checks to account for the different null responses
         // Target is missing
-        if(target == null || target.isEmpty())
+        if(target == null || target.isEmpty() || target.equals(text.getNullResponse()) || target.equals(text.getNullItemInSetResponse()))
             return new Conflict(field, target, other);
 
         // Other is missing
-        if(other == null || other.isEmpty())
+        if(other == null || other.isEmpty() || other.equals(text.getNullResponse()) || other.equals(text.getNullItemInSetResponse()))
             return new Conflict(field, target, other);
 
         // Mismatch
