@@ -1,7 +1,7 @@
 package org.svip.generation.parsers.languages;
 
-import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.generation.parsers.Parser;
+import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -21,7 +21,9 @@ import static org.svip.utils.Debug.log;
  * @author Ian Dunn
  */
 public class GoParser extends LanguageParser {
-    public GoParser() { super("https://pkg.go.dev/"); }
+    public GoParser() {
+        super("https://pkg.go.dev/");
+    }
 
     ///
     /// Abstract Method Implementation
@@ -38,18 +40,22 @@ public class GoParser extends LanguageParser {
         String endpoint;
         // Endpoint will either be "/from/name" or "/name"
         // If from is found, it is "/from/name"
-        if(getGroup(component) != null) {
+        if (getGroup(component) != null) {
             endpoint = getGroup(component).toLowerCase();
             // If name is not "*", endpoint is "/from/name"
-            if(!getName(component).equals("*"))
+            if (!getName(component).equals("*"))
                 endpoint += "/" + getName(component).toLowerCase();
             // Otherwise, endpoint is "/from"
         } else endpoint = getName(component); // Otherwise, it is "/name"
 
         // Return connection response (200 = true, else = false)
-        try { return Parser.queryURL(STD_LIB_URL + endpoint, false).getResponseCode() == 200; }
+        try {
+            return Parser.queryURL(STD_LIB_URL + endpoint, false).getResponseCode() == 200;
+        }
         // If an error is thrown, return false
-        catch (Exception ignored) { return false; }
+        catch (Exception ignored) {
+            return false;
+        }
     }
 
 
@@ -92,9 +98,9 @@ public class GoParser extends LanguageParser {
 
         // Import validation
         // Look for multi-line imports
-        if(matcher.group(1) != null) match = matcher.group(1);
-        // Look for single-line imports
-        else if(matcher.group(2) != null) match = matcher.group(2);
+        if (matcher.group(1) != null) match = matcher.group(1);
+            // Look for single-line imports
+        else if (matcher.group(2) != null) match = matcher.group(2);
         else { // Otherwise, invalid import
             log(LOG_TYPE.WARN, "Match (" + matcher.group(0) + ") has no Groups; Skipping. . .");
             return;
@@ -113,13 +119,13 @@ public class GoParser extends LanguageParser {
 
         // Find all components from tokens
         for (String token : tokens) {
-            if(token.trim().equals("")) continue; // Skip any empty tokens
+            if (token.trim().equals("")) continue; // Skip any empty tokens
             // Tokenize on "/" and store last token as match and all but last token as from
             final String[] parts = token.trim().split("/");
             // If there is more than one token
-            if(parts.length > 0) {
+            if (parts.length > 0) {
                 // Check for alias
-                if(parts[0].trim().contains(" ")) {
+                if (parts[0].trim().contains(" ")) {
                     // Split on space (there will always be at least 2 tokens here)
                     final String[] innerTokens = parts[0].trim().split(" ");
                     // Remove alias from first token
@@ -148,19 +154,19 @@ public class GoParser extends LanguageParser {
             Matcher aliasMatcher = aliasRegex.matcher(name);
 
             // Match for name and alias
-            if(aliasMatcher.find()) {
+            if (aliasMatcher.find()) {
                 String alias = null;
                 String cName = aliasMatcher.group(1); // Set group 1 to name by default
                 // Get "from" information from the matches LinkedHashMap with name as the key
                 String from = matches.get(name);
 
                 // If group 2 is found, group 1 is alias and group 2 is name
-                if(aliasMatcher.group(2) != null) {
+                if (aliasMatcher.group(2) != null) {
                     alias = aliasMatcher.group(1); // Alias = Group 1
                     cName = aliasMatcher.group(2); // Name = Group 2
-                    if(alias.equals("_")) continue; // Ignore "_" imports as they are unused
+                    if (alias.equals("_")) continue; // Ignore "_" imports as they are unused
                     // If alias is equal to "."
-                    if(alias.equals(".")) {
+                    if (alias.equals(".")) {
                         // Change "import bar as ." -> "import * from bar"
                         from = cName;
                         cName = "*";
@@ -170,7 +176,7 @@ public class GoParser extends LanguageParser {
 
                 builder.setName(cName);
 //                if(alias != null) c.setAlias(alias); // TODO Set alias if found
-                if(from != null) builder.setGroup(from); // Set from if found
+                if (from != null) builder.setGroup(from); // Set from if found
 
             } else continue; // If no match found, import must be invalid, skip component
 
