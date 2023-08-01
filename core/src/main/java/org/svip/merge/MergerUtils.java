@@ -1,6 +1,5 @@
 package org.svip.merge;
 
-import org.svip.compare.utils.Utils;
 import org.svip.sbom.builder.interfaces.generics.SBOMBuilder;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -9,6 +8,7 @@ import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+import org.svip.compare.utils.Utils;
 import org.svip.serializers.SerializerFactory;
 
 import java.util.HashSet;
@@ -34,10 +34,11 @@ public abstract class MergerUtils extends Merger {
         // Name
         if (targetSchema == SerializerFactory.Schema.SVIP)
             builder.setName(newName);
-        else if (mainSBOM.getName() == null || mainSBOM.getName().length() == 0)
-            builder.setName(B.getName());
         else
-            builder.setName(mainSBOM.getName());
+            if(mainSBOM.getName() == null || mainSBOM.getName().length() == 0)
+                builder.setName(B.getName());
+            else
+                builder.setName(mainSBOM.getName());
 
         // UID (In this case, bom-ref)
         builder.setUID(mainSBOM.getUID());
@@ -384,7 +385,9 @@ public abstract class MergerUtils extends Merger {
 
                     // Files Analyzed
                     // TODO: determine if a FilesAnalzyed mistmatch should return true or false
-                    compBuilder.setFilesAnalyzed(spdx23PackageObjectA.getFilesAnalyzed() && spdx23PackageObjectA.getFilesAnalyzed());
+                    if (spdx23PackageObjectA.getFilesAnalyzed() && spdx23PackageObjectA.getFilesAnalyzed())
+                        compBuilder.setFilesAnalyzed(true);
+                    else compBuilder.setFilesAnalyzed(false);
 
                     // Verification Code
                     String verificationCode = "";

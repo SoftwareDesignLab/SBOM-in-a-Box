@@ -2,19 +2,20 @@ package org.svip.metrics.pipelines.schemas.CycloneDX14;
 
 import jregex.Matcher;
 import jregex.Pattern;
-import org.svip.metrics.pipelines.QualityReport;
-import org.svip.metrics.pipelines.interfaces.schemas.CycloneDX14.CDX14Tests;
-import org.svip.metrics.resultfactory.Result;
-import org.svip.metrics.resultfactory.ResultFactory;
-import org.svip.metrics.resultfactory.enumerations.INFO;
 import org.svip.metrics.tests.*;
-import org.svip.metrics.tests.enumerations.ATTRIBUTE;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbom.model.uids.Hash;
+import org.svip.metrics.pipelines.QualityReport;
+import org.svip.metrics.pipelines.interfaces.schemas.CycloneDX14.CDX14Tests;
+import org.svip.metrics.resultfactory.Result;
+import org.svip.metrics.resultfactory.ResultFactory;
+import org.svip.metrics.resultfactory.enumerations.INFO;
+import org.svip.sbomanalysis.metrics.tests.*;
+import org.svip.metrics.tests.enumerations.ATTRIBUTE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,15 +30,12 @@ import java.util.Set;
  */
 public class CDX14Pipeline implements CDX14Tests {
 
-    /**
-     * UID Regex used for validSerialNumber test
-     */
+    /**UID Regex used for validSerialNumber test*/
     private static final String CDX14_UID_REGEX = "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$";
 
     /**
      * Process the tests for the SBOM
-     *
-     * @param uid  Unique filename used to ID the SBOM
+     * @param uid Unique filename used to ID the SBOM
      * @param sbom the SBOM to run tests against
      * @return a Quality report for the sbom, its components and every test
      */
@@ -57,8 +55,8 @@ public class CDX14Pipeline implements CDX14Tests {
 
         // test for SBOM's licenses
         var lt = new LicenseTest(cdx14SBOM.getName(), ATTRIBUTE.LICENSING);
-        if (cdx14SBOM.getLicenses() != null) {
-            for (String l : cdx14SBOM.getLicenses()) {
+        if(cdx14SBOM.getLicenses() != null){
+            for(String l : cdx14SBOM.getLicenses()){
                 sbomResults.addAll(lt.test("License", l));
             }
         }
@@ -69,9 +67,9 @@ public class CDX14Pipeline implements CDX14Tests {
 
         // add metadata results to the quality report
         qualityReport.addComponent("metadata", sbomResults);
-        if (cdx14SBOM.getComponents() != null) {
+        if(cdx14SBOM.getComponents() != null){
             // test component info
-            for (Component c : cdx14SBOM.getComponents()) {
+            for(Component c : cdx14SBOM.getComponents()){
                 List<Result> componentResults = new ArrayList<>();
                 CDX14ComponentObject component = (CDX14ComponentObject) c;
 
@@ -83,8 +81,8 @@ public class CDX14Pipeline implements CDX14Tests {
                 var cpeTest = new CPETest(component, ATTRIBUTE.UNIQUENESS,
                         ATTRIBUTE.MINIMUM_ELEMENTS);
                 Set<String> cpes = component.getCPEs();
-                if (cpes != null) {
-                    for (String cpe : cpes) {
+                if(cpes != null){
+                    for(String cpe: cpes){
                         componentResults.addAll(cpeTest.test("cpe", cpe));
                     }
                 }
@@ -92,9 +90,9 @@ public class CDX14Pipeline implements CDX14Tests {
                 // test component PURLs
                 var purlTest = new PURLTest(component, ATTRIBUTE.UNIQUENESS,
                         ATTRIBUTE.MINIMUM_ELEMENTS);
-                Set<String> purls = component.getPURLs();
-                if (purls != null) {
-                    for (String purl : purls) {
+                Set<String> purls =  component.getPURLs();
+                if(purls != null){
+                    for(String purl: purls){
                         componentResults.addAll(purlTest.test("purl", purl));
                     }
                 }
@@ -105,7 +103,7 @@ public class CDX14Pipeline implements CDX14Tests {
                 LicenseCollection licenses = component.getLicenses();
                 if (licenses != null) {
                     Set<String> declaredLicenses = licenses.getDeclared();
-                    for (String l : declaredLicenses) {
+                    for(String l: declaredLicenses){
                         componentResults.addAll(licenseTest.test("License", l));
                     }
                 }
@@ -114,8 +112,8 @@ public class CDX14Pipeline implements CDX14Tests {
                 var hashTest = new HashTest(component.getName(),
                         ATTRIBUTE.UNIQUENESS, ATTRIBUTE.MINIMUM_ELEMENTS);
                 Map<String, String> hashes = component.getHashes();
-                if (hashes != null) {
-                    for (String hashAlgo : hashes.keySet()) {
+                if(hashes != null){
+                    for(String hashAlgo : hashes.keySet()){
                         String hashValue = hashes.get(hashAlgo);
                         Hash hash = new Hash(hashAlgo, hashValue);
                         componentResults.addAll(hashTest.test(hashAlgo, hashValue));
@@ -134,9 +132,8 @@ public class CDX14Pipeline implements CDX14Tests {
 
     /**
      * Test a CycloneDX 1.4 sbom for a bom version
-     *
-     * @param field    the field that's tested
-     * @param value    the bom version tested
+     * @param field the field that's tested
+     * @param value the bom version tested
      * @param sbomName the sbom's name to product the result
      * @return the result of if the sbom has a bom version
      */
@@ -149,9 +146,8 @@ public class CDX14Pipeline implements CDX14Tests {
 
     /**
      * Test a CycloneDX 1.4 SBOM for a valid serial number UID
-     *
-     * @param field    the field that's tested
-     * @param value    the serial number tested
+     * @param field the field that's tested
+     * @param value the serial number tested
      * @param sbomName the sbom's name to product the result
      * @return the result of if the sbom has a valid serial number UID
      */
@@ -166,32 +162,31 @@ public class CDX14Pipeline implements CDX14Tests {
                 ATTRIBUTE.CDX14, ATTRIBUTE.COMPLETENESS);
 
         // first check if the sbom uid is not a null or empty string
-        if (value != null && !value.isEmpty()) {
+        if(value != null && !value.isEmpty()){
             Matcher matcher = cdx14UIDPattern.matcher(value);
             // if regex fails to match to the uid string
-            if (!matcher.find()) {
+            if(!matcher.find()){
                 return resultFactory.failCustom("SBOM Serial Number",
                         INFO.INVALID, value, sbomName, "UID does not follow " +
                                 "CycloneDX's regex pattern");
             }
             // regex matches to the uid string
-            else {
+            else{
                 return resultFactory.passCustom("SBOM Serial Number",
                         INFO.VALID, value, sbomName, "UID follows " +
                                 "CycloneDX's regex pattern");
             }
         }
         // uid was null or an empty string
-        else {
+        else{
             return resultFactory.fail("SBOM Serial Number", INFO.MISSING, value, sbomName);
         }
     }
 
     /**
      * Test each component in a CycloneDX 1.4 SBOM for a bom-ref
-     *
-     * @param field         the field that's tested
-     * @param value         the bom-ref tested
+     * @param field the field that's tested
+     * @param value the bom-ref tested
      * @param componentName the component's name to product the result
      * @return the result of if the component has a bom-ref
      */
@@ -205,9 +200,8 @@ public class CDX14Pipeline implements CDX14Tests {
     /**
      * Check if a hash algorithm in the given CycloneDX 1.4 SBOM is supported
      * within CycloneDX
-     *
-     * @param field         the field that's tested
-     * @param hash          the hash to be tested
+     * @param field the field that's tested
+     * @param hash the hash to be tested
      * @param componentName the component's name to product the result
      * @return the result of if the hash algorithm is supported
      */
@@ -219,13 +213,13 @@ public class CDX14Pipeline implements CDX14Tests {
 
         String algorithm = hash.getAlgorithm().toString();
         // hash is unsupported, test fails
-        if (Hash.isSPDXExclusive(hash.getAlgorithm())) {
+        if(Hash.isSPDXExclusive(hash.getAlgorithm())){
             return resultFactory.failCustom(field, INFO.INVALID, algorithm,
                     componentName, "Hash Algorithm is not supported " +
                             "within CycloneDX: " + algorithm);
         }
         // hash is supported, test passes
-        else {
+        else{
             return resultFactory.passCustom(field, INFO.VALID, algorithm,
                     componentName, "Hash Algorithm is supported " +
                             "within CycloneDX: " + algorithm);

@@ -3,12 +3,12 @@ package org.svip.generation.parsers.packagemanagers;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.svip.generation.parsers.Parser;
-import org.svip.generation.parsers.utils.QueryWorker;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbom.model.uids.CPE;
+import org.svip.generation.parsers.Parser;
 import org.svip.utils.Debug;
+import org.svip.generation.parsers.utils.QueryWorker;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public abstract class PackageManagerParser extends Parser {
         this.queryWorkers = new ArrayList<>();
         // Safely init ObjectMapper instance with the given factory
         // If factory is null, OM is assumed to not be used and is also set to null
-        if (factory == null) this.OM = null;
+        if(factory == null) this.OM = null;
         else {
             // ObjectMapper Initialization & Configuration
             this.OM = new ObjectMapper(factory);
@@ -89,7 +89,7 @@ public abstract class PackageManagerParser extends Parser {
      * @param data A HashMap with at least the required keys above.
      * @return A complete PURL string formatted to include the provided data.
      * @throws IllegalArgumentException If the data HashMap does not include required components to build a String, this
-     *                                  exception will be thrown.
+     * exception will be thrown.
      */
     protected static String buildPURL(HashMap<String, String> data) throws IllegalArgumentException {
         String type = "";
@@ -99,19 +99,19 @@ public abstract class PackageManagerParser extends Parser {
         String qualifiers = "";
         String subpath = "";
 
-        if (data.containsKey("type")) type = data.get("type");
+        if(data.containsKey("type")) type = data.get("type");
         else throw new IllegalArgumentException("Cannot build PURL without required component 'type'");
 
-        if (data.containsKey("namespace")) namespace = "/" + data.get("namespace");
+        if(data.containsKey("namespace")) namespace = "/" + data.get("namespace");
 
-        if (data.containsKey("name")) name = "/" + data.get("name");
+        if(data.containsKey("name")) name = "/" + data.get("name");
         else throw new IllegalArgumentException("Cannot build PURL without required component 'name'");
 
-        if (data.containsKey("version")) version = "@" + data.get("version");
+        if(data.containsKey("version")) version = "@" + data.get("version");
 
-        if (data.containsKey("qualifiers")) qualifiers = "?" + data.get("qualifiers");
+        if(data.containsKey("qualifiers")) qualifiers = "?" + data.get("qualifiers");
 
-        if (data.containsKey("subpath")) subpath = "#" + data.get("subpath");
+        if(data.containsKey("subpath")) subpath = "#" + data.get("subpath");
 
         // Build and return with safe data
         return String.format("pkg:%s%s%s%s%s%s",
@@ -131,15 +131,15 @@ public abstract class PackageManagerParser extends Parser {
      */
     protected static void queryURLs(List<QueryWorker> workers) {
         // Ensure worker list is not null
-        if (workers == null) return;
+        if(workers == null) return;
 
         // If list has 1 or more elements, construct query pool and start workers
-        if (workers.size() > 0) {
+        if(workers.size() > 0) {
             // Init ExecutorService with new thread pool
             final ExecutorService es = Executors.newCachedThreadPool();
 
             // Start each worker
-            for (QueryWorker qw : workers) {
+            for (QueryWorker qw: workers) {
                 es.execute(qw);
             }
 
@@ -147,9 +147,7 @@ public abstract class PackageManagerParser extends Parser {
             es.shutdown();
 
             // Wait for all tasks to complete, max timeout 1min
-            try {
-                es.awaitTermination(1, TimeUnit.MINUTES);
-            }
+            try { es.awaitTermination(1, TimeUnit.MINUTES); }
             // Catch and log any errors thrown during thread pooling
             catch (InterruptedException ignored) {
                 log(LOG_TYPE.WARN, "Error occurred during thread pooling.");
@@ -173,7 +171,7 @@ public abstract class PackageManagerParser extends Parser {
      * dependency file differently, as needed.
      *
      * @param components list of Components to add to
-     * @param data       map of data to be parsed
+     * @param data map of data to be parsed
      */
     protected abstract void parseData(List<SVIPComponentBuilder> components, HashMap<String, Object> data);
 
@@ -191,10 +189,10 @@ public abstract class PackageManagerParser extends Parser {
     @SuppressWarnings({"unchecked"})
     protected Object resolveProperty(Object value, HashMap<String, String> props) {
         // Ingore value if null
-        if (value == null) return value;
+        if(value == null) return value;
 
         // If value contains multiple values (is a map), store it as such
-        if (value instanceof HashMap) {
+        if(value instanceof HashMap) {
             // Get map of properties to resolve
             final HashMap<String, String> rawProperties = (HashMap<String, String>) value;
 
@@ -222,11 +220,13 @@ public abstract class PackageManagerParser extends Parser {
         map.forEach(
                 (k, v) -> {
                     final String keyString = (String) k;
-                    if (v instanceof final String valueString) {
+                    if(v instanceof String) {
+                        final String valueString = (String) v;
                         resolvedMap.put(keyString, this.resolveString(valueString, props));
-                    } else if (v instanceof final HashMap valueMap) {
+                    } else if(v instanceof HashMap) {
+                        final HashMap valueMap = (HashMap) v;
                         this.resolveMap(valueMap, props);
-                    } else if (v instanceof List) {
+                    } else if(v instanceof List) {
                         ((List<HashMap>) v).forEach(m -> resolveMap(m, props));
                     } else {
                         log(LOG_TYPE.WARN, String.format("Could not resolve illegal value of type: %s (Expected type: String)", v.getClass().getSimpleName()));
@@ -239,7 +239,7 @@ public abstract class PackageManagerParser extends Parser {
 
     private String resolveString(String string, HashMap<String, String> props) {
         // Get results
-        final List<MatchResult> results = this.TOKEN_PATTERN.matcher(string).results().toList();
+        final List<MatchResult> results =  this.TOKEN_PATTERN.matcher(string).results().toList();
 
         // Init resolved value to raw value
         String resolvedValue = string;
@@ -251,10 +251,10 @@ public abstract class PackageManagerParser extends Parser {
             String varValue = this.properties.get(varKey);
 
             // If no corresponding value, get value from props
-            if (varValue == null || this.TOKEN_PATTERN.matcher(varValue).find()) {
+            if(varValue == null || this.TOKEN_PATTERN.matcher(varValue).find()) {
                 varValue = props.get(varKey);
                 // If value is null, this property cannot be resolved, store original value
-                if (varValue == null) resolvedValue = string;
+                if(varValue == null)  resolvedValue = string;
                     // Otherwise, recurse resolution
                 else {
                     resolvedValue = string.substring(0, result.start()) + varValue + string.substring(result.end());
@@ -274,7 +274,7 @@ public abstract class PackageManagerParser extends Parser {
      * Parses a package manager dependency file and stores found Components
      * in the given list of Components.
      *
-     * @param components   list of Components to add to
+     * @param components list of Components to add to
      * @param fileContents the contents of the file to be parsed
      */
     @Override
@@ -282,16 +282,14 @@ public abstract class PackageManagerParser extends Parser {
         try {
             final HashMap<String, Object> data = this.OM.readValue(fileContents, HashMap.class);
             this.parseData(components, data);
-        } catch (IOException e) {
-            log(LOG_TYPE.EXCEPTION, e);
-        }
+        } catch (IOException e) { log(LOG_TYPE.EXCEPTION, e); }
     }
 
     /**
      * Builds URLs and instantiates ParserComponent objects
      *
-     * @param components     the ParserComponent array to fill
-     * @param parser         the package-manager parser
+     * @param components the ParserComponent array to fill
+     * @param parser the package-manager parser
      * @param packageManager the package manager
      */
     public static void buildURLs(List<SVIPComponentBuilder> components, PackageManagerParser parser, String packageManager) {
@@ -353,7 +351,7 @@ public abstract class PackageManagerParser extends Parser {
             // Build URL and worker object
             if (result.groupId() != null) {
                 String url = parser.STD_LIB_URL;
-                if (!nugetParser)
+                if(!nugetParser)
                     url += result.groupId();
                 url += "/" + id;
                 if (version != null) url += "/" + version;
@@ -365,7 +363,7 @@ public abstract class PackageManagerParser extends Parser {
                         // Get page contents
                         final String contents = getUrlContents(queryURL(this.url, false));
 
-                        if (contents.length() > 0) {
+                        if(contents.length() > 0){
                             // Parse license(s)
                             final Matcher m = Pattern.compile(finalLicenseRegex,
                                     Pattern.MULTILINE).matcher(contents);
@@ -390,20 +388,20 @@ public abstract class PackageManagerParser extends Parser {
 
     /**
      * Configures the buildURL method for either parser
-     *
-     * @param nugetParser  whether this is NugetParser
-     * @param d            data
+     * @param nugetParser whether this is NugetParser
+     * @param d data
      * @param licenseRegex license regex for parsing
      * @return this variable configuration
      */
     private static parserConfig getParserConfig(boolean nugetParser, HashMap<String, String> d, String licenseRegex) {
         String groupId;
-        if (nugetParser) {
+        if(nugetParser){
             licenseRegex = ">(.*?)</a>(?: *)license"; // Regex101: https://regex101.com/r/tskCMf/1
             groupId = d.get("id");
-            if (groupId == null)
+            if(groupId == null)
                 groupId = d.get("targetFramework").split("[.]")[0]; // framework assembly name
-        } else
+        }
+        else
             groupId = d.get("groupId");
         return new parserConfig(groupId, licenseRegex);
     }

@@ -1,7 +1,7 @@
 package org.svip.generation.parsers.languages;
 
-import org.svip.generation.parsers.utils.VirtualPath;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
+import org.svip.generation.parsers.utils.VirtualPath;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -21,14 +21,11 @@ import static org.svip.utils.Debug.log;
  * @author Ian Dunn
  */
 public class PerlParser extends LanguageParser {
-    public PerlParser() {
-        super("https://perldoc.perl.org/");
-    }
+    public PerlParser() { super("https://perldoc.perl.org/"); }
 
     /**
      * Determines if the given string is representative
      * of a version (in the form "1.2.3.4..." or "v1.2.3.4...")
-     *
      * @param string string to analyze
      * @return true if string is version, false otherwise
      */
@@ -39,7 +36,7 @@ public class PerlParser extends LanguageParser {
         string = String.join("", string.split("\\."));
 
         // If string is longer than 1 character, check for leading "v" and strip if found
-        if (string.length() >= 2 && string.charAt(0) == 'v') {
+        if(string.length() >= 2 && string.charAt(0) == 'v') {
             // Check if starts with "v" and strip if so
             string = string.substring(1);
         }
@@ -52,8 +49,7 @@ public class PerlParser extends LanguageParser {
 
             // Return true if successful
             return true;
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) { }
 
         // Otherwise, return false
         return false;
@@ -76,9 +72,9 @@ public class PerlParser extends LanguageParser {
 
         VirtualPath internalPath = new VirtualPath((group == null ? "" : group) + "/" + name);
 
-        for (VirtualPath internalComponent : sourceFiles) {
-            if (internalComponent.getFileExtension().equals("pl")) continue;
-            if (internalComponent.removeFileExtension().endsWith(internalPath)) return true;
+        for(VirtualPath internalComponent : sourceFiles) {
+            if(internalComponent.getFileExtension().equals("pl")) continue;
+            if(internalComponent.removeFileExtension().endsWith(internalPath)) return true;
         }
 
         return false;
@@ -98,18 +94,13 @@ public class PerlParser extends LanguageParser {
             String endpoint;
             // If from is defined, build URL with from and name
             // Replace "/" with "::"
-            if (getGroup(component) != null)
-                endpoint = String.join("::", getGroup(component).split("/")) + "::" + getName(component);
+            if(getGroup(component) != null) endpoint = String.join("::", getGroup(component).split("/")) + "::" + getName(component);
             else endpoint = getName(component);
 
             // Return connection response (200 = true, else = false)
-            try {
-                return queryURL(STD_LIB_URL + endpoint, false).getResponseCode() == 200;
-            }
+            try { return queryURL(STD_LIB_URL + endpoint, false).getResponseCode() == 200; }
             // If an error is thrown, return false
-            catch (Exception ignored) {
-                return false;
-            }
+            catch (Exception ignored) { return false; }
 
         } catch (Exception e) {
             log(LOG_TYPE.EXCEPTION, e);
@@ -166,8 +157,8 @@ public class PerlParser extends LanguageParser {
         // Check for groups 1-4, stop when a match is found
         do {
             groupNum++;
-            if (groupNum > 4) return; // If nothing is found, return
-        } while ((match = matcher.group(groupNum)) == null);
+            if(groupNum > 4) return; // If nothing is found, return
+        } while((match = matcher.group(groupNum)) == null);
 
         // Clean string
         match = match
@@ -178,10 +169,10 @@ public class PerlParser extends LanguageParser {
                 .trim();                            // rm leading/trailing whitespace
 
         // Determine if default import
-        if (KEYWORDS.contains(match)) return; // If default import, return
+        if(KEYWORDS.contains(match)) return; // If default import, return
 
         // Determine if Perl version declaration
-        if (isVersion(match)) return; // If Perl version declaration, return
+        if(isVersion(match)) return; // If Perl version declaration, return
 
         // Determine if alias is present
         // Regex101 link: https://regex101.com/r/qatI67/1
@@ -191,11 +182,11 @@ public class PerlParser extends LanguageParser {
         String alias = null;
         String version = null;
         String from = null;
-        if (aliasMatcher.find()) {
+        if(aliasMatcher.find()) {
             // Alias edge case #1
             //                 Group 1   Group 2
             // (package::alias 'Fbbq' => 'Foo::Barista::Bazoo::Qux';)
-            if (aliasMatcher.group(1) != null) {
+            if(aliasMatcher.group(1) != null) {
                 match = aliasMatcher.group(2);
                 alias = aliasMatcher.group(1);
             }
@@ -204,7 +195,7 @@ public class PerlParser extends LanguageParser {
             // (aliased 'Foo::Barista::Bazoo::Qux' => 'Fbbq';)
             //                   Group 3                       Group 4
             // (namespace::alias 'Foo::Barista::Bazoo::Qux' => 'Fbbq';)
-            else if (aliasMatcher.group(4) != null) {
+            else if(aliasMatcher.group(4) != null) {
                 match = aliasMatcher.group(3);
                 alias = aliasMatcher.group(4);
             }
@@ -215,18 +206,18 @@ public class PerlParser extends LanguageParser {
             String[] tokens = match.split(" ");
 
             // If more than one token is found
-            if (tokens.length > 1) {
+            if(tokens.length > 1) {
                 match = tokens[0]; // tokens[0] is the main match
                 // Check if second token is a version and store it if so
-                if (isVersion(tokens[1])) version = tokens[1];
+                if(isVersion(tokens[1])) version = tokens[1];
             }
 
             // Check for version declarations in group 5
             if (matcher.group(5) != null) {
-                if (isVersion(matcher.group(5))) version = matcher.group(5);
+                if(isVersion(matcher.group(5))) version = matcher.group(5);
             }
             // If group 6 is found, a sub-dependency is being imported
-            else if (matcher.group(6) != null) {
+            else if(matcher.group(6) != null) {
                 // Store match as from then reassign match to group 6
                 from = match; // from should be group 4
                 match = matcher.group(6).trim();
@@ -236,9 +227,9 @@ public class PerlParser extends LanguageParser {
 
         // If match has any number of delineations, use the last one
         //as the name and all but the last one as the from.
-        if (from == null) {
+        if(from == null) {
             // If no from is found explicitly, check match for delineations on "::"
-            if (match.contains("::")) {
+            if(match.contains("::")) {
                 String[] tokens = match.split("::");
                 match = tokens[tokens.length - 1];
                 from = String.join("/", Arrays.copyOfRange(tokens, 0, tokens.length - 1));
@@ -257,16 +248,16 @@ public class PerlParser extends LanguageParser {
 
         // Construct component
         builder.setName(match);
-        if (from != null) builder.setGroup(from.replace("::", "/")); // If a from has been found, assign it to c
+        if(from != null) builder.setGroup(from.replace("::", "/")); // If a from has been found, assign it to c
 //        if(alias != null) builder.setAlias(alias); // TODO If an alias has been found, assign it to c
-        if (version != null) builder.setVersion(version); // If a version has been found, assign it to c
+        if(version != null) builder.setVersion(version); // If a version has been found, assign it to c
 
 
         // Check if internal
         if (isInternalComponent(builder)) {
             builder.setType("INTERNAL");
 
-            // Otherwise, check if Language
+        // Otherwise, check if Language
         } else if (isLanguageComponent(builder)) {
             builder.setType("LANGUAGE");
         }
