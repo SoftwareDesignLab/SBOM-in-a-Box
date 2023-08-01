@@ -48,7 +48,6 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
      * Serializes an SBOM to a CDX 1.4 JSON file.
      *
      * @param sbom The SBOM to serialize.
-     *
      * @return A string containing the final SBOM file.
      */
     @Override
@@ -133,7 +132,7 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
 
             jsonGenerator.writeFieldName("dependsOn");
             jsonGenerator.writeStartArray();
-            for(Relationship rel : dep.getValue())
+            for (Relationship rel : dep.getValue())
                 jsonGenerator.writeString(rel.getOtherUID());
             jsonGenerator.writeEndArray();
             jsonGenerator.writeEndObject();
@@ -286,10 +285,10 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         jsonGenerator.writeFieldName("properties");
         jsonGenerator.writeStartArray();
 
-        for(Map.Entry<String, Set<String>> prop : properties.entrySet()) {
+        for (Map.Entry<String, Set<String>> prop : properties.entrySet()) {
             // Need a nested loop since we can't have multiple values under a single property
             // Instead, CDX supports having multiple properties with the same name
-            for(String value : prop.getValue()) {
+            for (String value : prop.getValue()) {
                 jsonGenerator.writeStartObject();
 
                 jsonGenerator.writeStringField("name", prop.getKey());
@@ -369,7 +368,7 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         if (component.getCPEs() != null)
             jsonGenerator.writeStringField("cpe", String.join(", ", component.getCPEs()));
         if (component.getPURLs() != null)
-        jsonGenerator.writeStringField("purl", String.join(", ", component.getPURLs()));
+            jsonGenerator.writeStringField("purl", String.join(", ", component.getPURLs()));
 
         if (component.getSupplier() != null) {
             jsonGenerator.writeFieldName("supplier");
@@ -381,7 +380,7 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
 
         if (component.getDescription() != null)
             jsonGenerator.writeStringField("description",
-                "Summary: " + component.getDescription().getSummary() + " | Details: " + component.getDescription().getDescription());
+                    "Summary: " + component.getDescription().getSummary() + " | Details: " + component.getDescription().getDescription());
 
         writeHashes(jsonGenerator, component.getHashes());
 

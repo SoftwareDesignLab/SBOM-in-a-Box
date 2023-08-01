@@ -15,9 +15,9 @@ import org.svip.sbom.factory.interfaces.SBOMBuilderFactory;
 public class SPDX23SBOMBuilderFactory implements SBOMBuilderFactory {
     private SPDX23PackageBuilder packageBuilder;
     private SPDX23FileBuilder fileBuilder;
+
     @Override
-    public SPDX23Builder createBuilder()
-    {
+    public SPDX23Builder createBuilder() {
         return new SPDX23Builder();
     }
 }

@@ -14,10 +14,10 @@ public class Relationship {
     /**
      * Create new relationship
      *
-     * @param otherUID UID of other component
+     * @param otherUID         UID of other component
      * @param relationshipType SDPX style relationship type
      */
-    public Relationship(String otherUID, String relationshipType){
+    public Relationship(String otherUID, String relationshipType) {
         this.otherUID = otherUID;
         this.relationshipType = relationshipType;
     }
@@ -27,7 +27,7 @@ public class Relationship {
      *
      * @param comment Comment
      */
-    public void setComment(String comment){
+    public void setComment(String comment) {
         this.comment = comment;
     }
 

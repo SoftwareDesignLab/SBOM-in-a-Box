@@ -14,6 +14,7 @@ public class SVIPSBOMComponentFactory implements ComponentBuilderFactory {
 
     /**
      * Create a new SVIP SBOM Builder
+     *
      * @return a new SVIPSBOMComponentBuilder
      */
     @Override
@@ -23,6 +24,7 @@ public class SVIPSBOMComponentFactory implements ComponentBuilderFactory {
 
     /**
      * Create a new SVIP SBOM Builder from an existing component.
+     *
      * @return a new SVIPSBOMComponentBuilder
      */
     public SVIPComponentBuilder createBuilder(SVIPComponentObject component) {

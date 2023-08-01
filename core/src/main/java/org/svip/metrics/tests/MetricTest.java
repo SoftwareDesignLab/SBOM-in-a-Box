@@ -16,14 +16,17 @@ import java.util.Set;
  */
 public abstract class MetricTest {
 
-    /**The list of attributes used for the Metric Tests*/
+    /**
+     * The list of attributes used for the Metric Tests
+     */
     List<ATTRIBUTE> attributes;
 
     /**
      * Constructor to create a new MetricTest
+     *
      * @param attributes the list of attributes used
      */
-    public MetricTest(ATTRIBUTE... attributes){
+    public MetricTest(ATTRIBUTE... attributes) {
         this.attributes = List.of(attributes);
     }
 

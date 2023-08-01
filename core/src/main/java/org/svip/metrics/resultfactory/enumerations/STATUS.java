@@ -15,6 +15,7 @@ public enum STATUS {
     Utilities to convert to ints
      */
     private final int code;
+
     STATUS(int code) {
         this.code = code;
     }

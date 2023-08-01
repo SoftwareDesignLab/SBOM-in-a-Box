@@ -13,6 +13,7 @@ public interface SPDX23ComponentBuilder extends ComponentBuilder {
 
     /**
      * Set the comment of the component
+     *
      * @param comment the comment for the component
      * @return an SPDX23ComponentBuilder
      */
@@ -20,6 +21,7 @@ public interface SPDX23ComponentBuilder extends ComponentBuilder {
 
     /**
      * Set the attribution text of the component
+     *
      * @param attributionText the attribution text of the component
      * @return an SPDX23ComponentBuilder
      */

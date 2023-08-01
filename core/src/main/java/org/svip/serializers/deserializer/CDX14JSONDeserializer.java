@@ -104,12 +104,12 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
         sbomBuilder.setCreationData(resolveMetadata(node.get("metadata"), sbomBuilder));
 
         // ROOT COMPONENT
-        if(node.get("metadata").get("component") != null)
+        if (node.get("metadata").get("component") != null)
             sbomBuilder.setRootComponent(resolveComponent(componentBuilder, node.get("metadata").get("component")));
 
         // COMPONENTS
         if (node.get("components") != null)
-            for(JsonNode component : node.get("components"))
+            for (JsonNode component : node.get("components"))
                 sbomBuilder.addCDX14Package(resolveComponent(componentBuilder, component));
 
         // EXTERNAL REFERENCES
@@ -277,23 +277,23 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
     }
 
     private Contact resolveContact(JsonNode ct) {
-        try{
+        try {
             return new Contact(ct.get("name").asText(),
                     ct.get("email").asText(),
                     ct.get("phone").asText());
-        }catch ( Exception e){
+        } catch (Exception e) {
             return new Contact("", "", "");
         }
     }
 
     private Organization resolveOrganization(JsonNode org) {
-        try{
+        try {
             Organization organization = new Organization(org.get("name").asText(), org.get("url").asText());
             if (org.get("contact") != null)
                 for (JsonNode contact : org.get("contact"))
                     organization.addContact(resolveContact(contact));
             return organization;
-        }catch ( Exception e){
+        } catch (Exception e) {
             return new Organization("", "");
         }
 
@@ -317,7 +317,7 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
 
         if (dep.get("dependsOn") == null) return relationships;
 
-        for(JsonNode dependency : dep.get("dependsOn")) {
+        for (JsonNode dependency : dep.get("dependsOn")) {
             if (dependency == null) continue;
             relationships.add(new Relationship(dependency.asText(), "DEPENDS_ON")); // TODO correct type?
         }

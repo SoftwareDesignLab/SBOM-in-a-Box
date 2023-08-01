@@ -18,12 +18,12 @@ public interface Deserializer {
      * @param fileContents The file contents of the SBOM to deserialize.
      * @return The deserialized SBOM object.
      */
-    public abstract SBOM readFromString(String fileContents) throws JsonProcessingException;
+    SBOM readFromString(String fileContents) throws JsonProcessingException;
 
     /**
      * Gets the ObjectMapper of the serializer to expose configuration.
      *
      * @return A reference to the ObjectMapper of the serializer.
      */
-    public ObjectMapper getObjectMapper();
+    ObjectMapper getObjectMapper();
 }
