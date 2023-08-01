@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * File: GenerateFromParserAPITest.java
- *
+ * <p>
  * Holds the unit tests responsible for testing the Generator Parser API endpoint.
  *
  * @author Juan Francisco Patino
@@ -30,6 +30,7 @@ public class GenerateFromParserAPITest extends APITest {
     private static final Logger LOGGER = LoggerFactory.getLogger(SVIPApiController.class);
     private final String sampleProjectDirectory = System.getProperty("user.dir")
             + "/src/test/resources/sample_projects/";
+
     public GenerateFromParserAPITest() throws IOException {
         testMap = getTestProjectMap();
     }
@@ -53,12 +54,14 @@ public class GenerateFromParserAPITest extends APITest {
     @DisplayName("Incorrect file type test")
     public void zipExceptionTest() throws IOException {
         assertEquals(HttpStatus.BAD_REQUEST, controller.generateParsers((new MockMultipartFile(new File(
-                sampleProjectDirectory + "Ruby/lib/bar.rb"))),
+                                sampleProjectDirectory + "Ruby/lib/bar.rb"))),
                         "Java", SerializerFactory.Schema.CDX14, SerializerFactory.Format.JSON).
                 getStatusCode());
     }
 
-
+    /**
+     * Main SBOM Generation test
+     */
     @Test
     @DisplayName("Generate from parser test")
     public void generateTest() throws IOException {

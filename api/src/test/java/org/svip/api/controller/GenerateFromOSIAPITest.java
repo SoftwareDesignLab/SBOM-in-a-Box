@@ -55,8 +55,9 @@ public class GenerateFromOSIAPITest extends APITest {
     }
 
     /**
-     //     * Tests bad SBOMFiles
-     //     */
+     * Tests invalid projects
+     *
+     */
     @Test
     @DisplayName("Invalid Project Test")
     public void invalidProjectTest() throws FileNotFoundException {
@@ -64,11 +65,11 @@ public class GenerateFromOSIAPITest extends APITest {
         String[] zipFiles = {"sampleProjectEmpty", "sampleProjectNullProperties"};
 
         assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI(new MockMultipartFile(new File(
-                sampleProjectDirectory + zipFiles[0] + ".zip")), "Empty Project Folder",
+                        sampleProjectDirectory + zipFiles[0] + ".zip")), "Empty Project Folder",
                 SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).getStatusCode());
 
         assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI(new MockMultipartFile(new File(
-                sampleProjectDirectory + zipFiles[1] + ".zip")), "Empty C file",
+                        sampleProjectDirectory + zipFiles[1] + ".zip")), "Empty C file",
                 SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).getStatusCode());
     }
 
@@ -79,7 +80,7 @@ public class GenerateFromOSIAPITest extends APITest {
     @DisplayName("Convert to CDX tag value test")
     public void CDXTagValueTest() throws IOException {
         assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI((new MockMultipartFile(new File(
-                sampleProjectDirectory + "Scala.zip"))),
+                                sampleProjectDirectory + "Scala.zip"))),
                         "Java", SerializerFactory.Schema.CDX14, SerializerFactory.Format.TAGVALUE).
                 getStatusCode());
     }
@@ -91,11 +92,14 @@ public class GenerateFromOSIAPITest extends APITest {
     @DisplayName("Incorrect file type test")
     public void zipExceptionTest() throws IOException {
         assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI((new MockMultipartFile(new File(
-                sampleProjectDirectory + "Ruby/lib/bar.rb"))),
+                                sampleProjectDirectory + "Ruby/lib/bar.rb"))),
                         "Java", SerializerFactory.Schema.CDX14, SerializerFactory.Format.JSON).
                 getStatusCode());
     }
 
+    /**
+     * Main SBOM Generation test
+     */
     @Test
     @DisplayName("Generate from parser test")
     public void generateTest() throws IOException {
@@ -112,7 +116,7 @@ public class GenerateFromOSIAPITest extends APITest {
             LOGGER.info("Parsing project: " + file);
 
             ResponseEntity<Long> response = (ResponseEntity<Long>) controller.generateOSI(new MockMultipartFile(
-                    new File(sampleProjectDirectory + file + ".zip")), file,
+                            new File(sampleProjectDirectory + file + ".zip")), file,
                     SerializerFactory.Schema.SPDX23, SerializerFactory.Format.TAGVALUE);
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertNotNull(response.getBody());
