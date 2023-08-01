@@ -7,11 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.svip.api.controller.SVIPApiController;
 import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
-import org.svip.sbomgeneration.serializers.SerializerFactory;
-import org.svip.utils.VirtualPath;
+import org.svip.serializers.SerializerFactory;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
@@ -20,8 +18,6 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
-
-import static org.svip.sbomgeneration.serializers.SerializerFactory.Format.TAGVALUE;
 
 /**
  * A static class containing helpful utilities for API calls and testing responses.

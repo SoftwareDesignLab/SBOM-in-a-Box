@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.model.SBOMFile;
-import org.svip.sbomgeneration.osi.OSI;
-import org.svip.sbomgeneration.serializers.SerializerFactory;
+import org.svip.generation.osi.OSI;
+import org.svip.serializers.SerializerFactory;
 
 import java.io.IOException;
 import java.util.Collection;

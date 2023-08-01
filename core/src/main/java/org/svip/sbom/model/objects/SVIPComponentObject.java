@@ -6,19 +6,16 @@ import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
-import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.sbomanalysis.comparison.conflicts.Conflict;
-import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.ConflictFactory;
 
 import java.util.*;
 
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.PUBLISHER_MISMATCH;
+import static org.svip.compare.conflicts.MismatchType.PUBLISHER_MISMATCH;
 
 /**
  * file: SVIPComponentObject.java
