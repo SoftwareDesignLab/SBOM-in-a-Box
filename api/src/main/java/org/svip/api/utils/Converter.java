@@ -11,12 +11,10 @@ import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.util.ExternalReference;
-import org.svip.sbomgeneration.serializers.SerializerFactory;
-import org.svip.sbomgeneration.serializers.deserializer.Deserializer;
-import org.svip.sbomgeneration.serializers.serializer.Serializer;
+import org.svip.serializers.SerializerFactory;
+import org.svip.serializers.deserializer.Deserializer;
+import org.svip.serializers.serializer.Serializer;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 

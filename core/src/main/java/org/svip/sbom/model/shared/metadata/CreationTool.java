@@ -1,15 +1,14 @@
 package org.svip.sbom.model.shared.metadata;
 
-import org.svip.sbomanalysis.comparison.conflicts.Comparable;
-import org.svip.sbomanalysis.comparison.conflicts.Conflict;
-import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
+import org.svip.compare.conflicts.Comparable;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.ConflictFactory;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.HASH_MISMATCH;
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.MISC_MISMATCH;
+import static org.svip.compare.conflicts.MismatchType.MISC_MISMATCH;
 
 /**
  * File: CreationTool.java

@@ -5,11 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
-import org.svip.sbomanalysis.comparison.DiffReport;
-import org.svip.sbomgeneration.serializers.deserializer.CDX14JSONDeserializer;
-import org.svip.sbomgeneration.serializers.deserializer.Deserializer;
-import org.svip.sbomgeneration.serializers.deserializer.SPDX23JSONDeserializer;
-import org.svip.sbomgeneration.serializers.deserializer.SPDX23TagValueDeserializer;
+import org.svip.compare.DiffReport;
+import org.svip.serializers.deserializer.CDX14JSONDeserializer;
+import org.svip.serializers.deserializer.Deserializer;
+import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
+import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
 import org.svip.utils.Debug;
 
 import java.io.IOException;
