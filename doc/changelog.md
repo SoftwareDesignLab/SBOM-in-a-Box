@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v7.2.1-alpha] - (8/1/2023)
 
+### Added
+- `MockMultipartFile` for testing uploading binaries
+- `ParserController` null check
+
 ### Changed
 - `/generators/parsers` successfully takes in binary zip files of projects and generates an SBOM
     - passes Postman tests and `GenerateFromParserAPITest`
