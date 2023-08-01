@@ -28,7 +28,7 @@ app/**/*.js.map
 *.rar
 
 # Exclude our OSI image cache
-!core/src/main/java/org/svip/sbomgeneration/osi/images/osi.tar.gz
+!core/src/main/java/org/svip/generation/osi/images/osi.tar.gz
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
