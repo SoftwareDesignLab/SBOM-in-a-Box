@@ -1,12 +1,10 @@
 package org.svip.sbom.model.shared.metadata;
 
-import org.svip.sbomanalysis.comparison.conflicts.Comparable;
-import org.svip.sbomanalysis.comparison.conflicts.Conflict;
-import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
+import org.svip.compare.conflicts.Comparable;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.ConflictFactory;
 
 import java.util.*;
-
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
 
 /**
  * File: CreationData.java

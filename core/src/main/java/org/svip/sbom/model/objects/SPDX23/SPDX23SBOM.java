@@ -3,19 +3,14 @@ package org.svip.sbom.model.objects.SPDX23;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.shared.metadata.CreationData;
-import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.util.ExternalReference;
 
 import java.util.*;
 
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Schema;
-import org.svip.sbomanalysis.comparison.conflicts.Conflict;
-import org.svip.sbomanalysis.comparison.conflicts.ConflictFactory;
-
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.*;
-import static org.svip.sbomanalysis.comparison.conflicts.MismatchType.TIMESTAMP_MISMATCH;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.ConflictFactory;
 
 /**
  * file: SPDX23SBOM.java
