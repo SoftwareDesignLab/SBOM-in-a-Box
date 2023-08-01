@@ -15,7 +15,7 @@ import org.svip.compare.conflicts.ConflictFactory;
 
 import java.util.*;
 
-import static org.svip.compare.conflicts.MismatchType.PUBLISHER_MISMATCH;
+import static org.svip.compare.conflicts.MismatchType.*;
 
 /**
  * file: SVIPComponentObject.java
