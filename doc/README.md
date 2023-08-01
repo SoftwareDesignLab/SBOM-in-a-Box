@@ -6,7 +6,7 @@
 - [**SVIP API**](API.md)
 - [**SBOM Generator CLI**](#sbom-generator-cli)
   - [Quick Start](#quick-start)
-  - [Usage](#usage-1)
+  - [Usage](#usage)
   - [Supported Source Files](#supported-source-files)
   - [NLP Techniques](#nlp-techniques)
 - [**Open Source Intergration (OSI)**](#open-source-integration)
@@ -22,7 +22,7 @@
 > source code and manifest files
 
 ## Quick Start
-> CLI Driver can be found [here](../core/src/main/java/org/svip/SBOMGeneratorCLI.java)
+> CLI Driver can be found [here](../core/src/main/java/org/svip/generation/SBOMGeneratorCLI.java)
 
 To build from scratch, use:
 ```shell
@@ -101,7 +101,7 @@ SPDX:
 > Make sure the Docker Daemon / Docker Desktop is running and the current working directory is the root of the 
 > repository.
 
-Place the source files of the project into `core/src/main/java/org/svip/sbomgeneration/osi/bound_dir/code`. 
+Place the source files of the project into `core/src/main/java/org/svip/generation/osi/bound_dir/code`. 
 
 Then run the following command to build the image and run the container to generate SBOMs:
 ```shell
@@ -147,17 +147,17 @@ A saved image can be loaded to drastically decrease the time cost of the first b
 To save the image for subsequent uses, ensure the image is built and then execute the following from the root 
 directory of the repository:
 ```shell
-$ docker save -o core/src/main/java/org/svip/sbomgeneration/osi/images/osi.tar ubuntu:latest | gzip > core/src/main/java/org/svip/sbomgeneration/osi/images/osi.tar.gz
+$ docker save -o core/src/main/java/org/svip/generation/osi/images/osi.tar ubuntu:latest | gzip > core/src/main/java/org/svip/generation/osi/images/osi.tar.gz
 ```
 
 To load a saved image into Docker, run the following command:
 ```shell
-$ docker load --input core/src/main/java/org/svip/sbomgeneration/osi/images/osi.tar.gz
+$ docker load --input core/src/main/java/org/svip/generation/osi/images/osi.tar.gz
 ```
 
 > **NOTE:** If any modifications are made to:
 > 1. The inline Dockerfile in `docker-compose.yml`,
-> 2. The setup shell script in `core/src/main/java/org/svip/sbomgeneration/osi/scripts/setup.sh`, or
-> 3. The OSI tool controller in `core/src/main/java/org/svip/sbomgeneration/osi/scripts/ContainerController.py`,
+> 2. The setup shell script in `core/src/main/java/org/svip/generation/osi/scripts/setup.sh`, or
+> 3. The OSI tool controller in `core/src/main/java/org/svip/generation/osi/scripts/ContainerController.py`,
 > 
 > Then the image will need to be rebuilt.
