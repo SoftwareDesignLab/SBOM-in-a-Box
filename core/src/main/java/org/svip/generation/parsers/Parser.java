@@ -1,8 +1,8 @@
 package org.svip.generation.parsers;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.generation.parsers.utils.VirtualPath;
+import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -75,7 +75,9 @@ public abstract class Parser {
      *
      * @param PWD The current working directory of the parser.
      */
-    public void setPWD(VirtualPath PWD) { this.PWD = PWD; }
+    public void setPWD(VirtualPath PWD) {
+        this.PWD = PWD;
+    }
 
     /**
      * Sets the current internal files list of the parser, enabling the parser to check for internal components. The
@@ -95,7 +97,7 @@ public abstract class Parser {
      * Queries a given URL and returns the HttpURLConnection
      * object containing response data.
      *
-     * @param urlString URL to be queried
+     * @param urlString      URL to be queried
      * @param allowRedirects whether or not to allow the connection to redirect
      * @return HttpURLConnection object
      * @throws IOException if an exception is thrown while
@@ -124,7 +126,7 @@ public abstract class Parser {
             log(LOG_TYPE.DEBUG, String.format(
                     "Connection to URL: %s successful. Done in %s ms",
                     urlString,
-                    (int)((t2 - t1) / 1000000)
+                    (int) ((t2 - t1) / 1000000)
             ));
 
             // Return connection (with response data)
@@ -188,6 +190,7 @@ public abstract class Parser {
 
     /**
      * Utility method to generate and set a component's unique SHA256 hash.
+     *
      * @param component The component to set the hash of.
      */
     protected static void generateHash(SVIPComponentBuilder component) {
@@ -203,7 +206,7 @@ public abstract class Parser {
      * Parses given fileContents through language specific regex and appends the found components to the provided
      * ArrayList.
      *
-     * @param components A list of ParserComponents that the found components will be appended to.
+     * @param components   A list of ParserComponents that the found components will be appended to.
      * @param fileContents file contents to be parsed
      */
     public abstract void parse(List<SVIPComponentBuilder> components, String fileContents);

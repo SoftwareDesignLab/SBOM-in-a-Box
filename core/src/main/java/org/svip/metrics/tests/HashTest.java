@@ -1,10 +1,10 @@
 package org.svip.metrics.tests;
 
-import org.svip.sbom.model.uids.Hash;
 import org.svip.metrics.resultfactory.Result;
 import org.svip.metrics.resultfactory.ResultFactory;
 import org.svip.metrics.resultfactory.enumerations.INFO;
 import org.svip.metrics.tests.enumerations.ATTRIBUTE;
+import org.svip.sbom.model.uids.Hash;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,7 +15,7 @@ import java.util.Set;
  *
  * @author Matthew Morrison
  */
-public class HashTest extends MetricTest{
+public class HashTest extends MetricTest {
     private final ResultFactory resultFactory;
     private final String componentName;
 
@@ -34,6 +34,7 @@ public class HashTest extends MetricTest{
 
     /**
      * Test a single hash if it is valid
+     *
      * @param field the hash algorithm to test
      * @param value the hash value to test
      * @return a Result if the hash data is valid or not
@@ -42,13 +43,13 @@ public class HashTest extends MetricTest{
     public Set<Result> test(String field, String value) {
         Set<Result> results = new HashSet<>();
         // hash  is not a null value and does exist, tests can run
-        if(value != null && field != null) {
+        if (value != null && field != null) {
             results.add(isValidHash(field, value));
 
         }
         // Hash has a null algo or value, tests cannot be run
         // return missing Result
-        else{
+        else {
             Result r = resultFactory.error(field, INFO.NULL,
                     value, componentName);
             results.add(r);
@@ -59,24 +60,25 @@ public class HashTest extends MetricTest{
 
     /**
      * Test the hash if it is a valid schema and type
+     *
      * @param field the hash algorithm
      * @param value the hash value
      * @return a Result if the hash is valid or not
      */
-    private Result isValidHash(String field, String value){
+    private Result isValidHash(String field, String value) {
         var rf = new ResultFactory("Valid Hash", ATTRIBUTE.COMPLETENESS, ATTRIBUTE.UNIQUENESS, ATTRIBUTE.MINIMUM_ELEMENTS);
-        try{
+        try {
             // create new hash object
             Hash hash = new Hash(field, value);
 
             // Check if hash algorithm is unknown
-            if(hash.getAlgorithm() == Hash.Algorithm.UNKNOWN){
+            if (hash.getAlgorithm() == Hash.Algorithm.UNKNOWN) {
                 return rf.fail(field, INFO.INVALID,
                         value, componentName);
             }
 
             // Check if hash is valid
-            if(!Hash.validateHash(hash.getAlgorithm(), hash.getValue())){
+            if (!Hash.validateHash(hash.getAlgorithm(), hash.getValue())) {
                 return rf.fail(field, INFO.INVALID,
                         value, componentName);
             } else {
@@ -86,7 +88,7 @@ public class HashTest extends MetricTest{
 
         }
         // failed to create a new Hash object, test automatically fails
-        catch(Exception e){
+        catch (Exception e) {
             return rf.fail(field, INFO.INVALID,
                     value, componentName);
         }
