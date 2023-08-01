@@ -1,9 +1,9 @@
 package org.svip.sbom.model.interfaces.generics;
 
+import org.svip.compare.conflicts.Conflict;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
-import org.svip.compare.conflicts.Conflict;
 
 import java.util.List;
 import java.util.Map;

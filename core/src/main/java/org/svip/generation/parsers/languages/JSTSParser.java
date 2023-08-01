@@ -1,7 +1,7 @@
 package org.svip.generation.parsers.languages;
 
-import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.generation.parsers.utils.VirtualPath;
+import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -18,7 +18,9 @@ import static org.svip.utils.Debug.log;
  * @author Ian Dunn
  */
 public class JSTSParser extends LanguageParser {
-    public JSTSParser() { super(""); }
+    public JSTSParser() {
+        super("");
+    }
 
     /**
      * Determines if the component is Internal
@@ -31,9 +33,9 @@ public class JSTSParser extends LanguageParser {
         String name = getName(component);
         String group = getGroup(component);
 
-        for(VirtualPath internalComponent : sourceFiles) {
-            if(internalComponent.endsWith(new VirtualPath(name))) return true;
-            if(group != null && internalComponent.endsWith(new VirtualPath(group))) return true;
+        for (VirtualPath internalComponent : sourceFiles) {
+            if (internalComponent.endsWith(new VirtualPath(name))) return true;
+            if (group != null && internalComponent.endsWith(new VirtualPath(group))) return true;
         }
 
         return false;
@@ -91,13 +93,13 @@ public class JSTSParser extends LanguageParser {
         // Check for groups 1-5
         String match = null;
         for (int i = 1; i <= 5; i++) {
-            if(matcher.group(i) != null) {
+            if (matcher.group(i) != null) {
                 match = matcher.group(i);
                 break;
             }
         }
         // If no match is found in any group (1-5), log it and skip this component
-        if(match == null) {
+        if (match == null) {
             log(LOG_TYPE.WARN, "Match has no Groups; Skipping. . ."); // warn because this may be intentional
             return;
         }
@@ -124,7 +126,7 @@ public class JSTSParser extends LanguageParser {
             // If no whitespace, component does not have an alias
             if (!token.contains(" ")) {
                 // Ensure token is not commented in-line
-                if(!token.contains("/*") && !token.contains("*/")) {
+                if (!token.contains("/*") && !token.contains("*/")) {
                     // Create component
                     builder.setName(token);
                 }
@@ -154,7 +156,7 @@ public class JSTSParser extends LanguageParser {
                 if (isInternalComponent(builder)) {
                     builder.setType("INTERNAL");
 
-                // Otherwise, check if Language
+                    // Otherwise, check if Language
                 } else if (isLanguageComponent(builder)) {
                     builder.setType("LANGUAGE");
                 }

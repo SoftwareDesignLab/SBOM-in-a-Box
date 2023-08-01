@@ -1,7 +1,6 @@
 package org.svip.merge;
 
 import org.svip.sbom.model.interfaces.generics.SBOM;
-
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;

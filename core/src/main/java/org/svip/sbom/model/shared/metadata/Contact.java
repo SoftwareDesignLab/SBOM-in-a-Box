@@ -10,7 +10,7 @@ import static org.svip.compare.conflicts.MismatchType.MISC_MISMATCH;
 
 /**
  * File: Contact.java
- *
+ * <p>
  * Represents contact information
  *
  * @author Derek Garcia
@@ -24,11 +24,11 @@ public class Contact implements Comparable {
     /**
      * Create new Contact
      *
-     * @param name Name of contact
+     * @param name  Name of contact
      * @param email Email of contact
      * @param phone Phone number of contact
      */
-    public Contact(String name, String email, String phone){
+    public Contact(String name, String email, String phone) {
         this.name = name;
         this.email = email;
         this.phone = phone;
@@ -70,9 +70,9 @@ public class Contact implements Comparable {
      * @return list of conflicts
      */
     @Override
-    public List<Conflict> compare(Comparable o){
+    public List<Conflict> compare(Comparable o) {
         // Don't compare if not instance of same object
-        if(!(o instanceof Contact other))
+        if (!(o instanceof Contact other))
             return null;
 
         ConflictFactory cf = new ConflictFactory();
@@ -95,11 +95,11 @@ public class Contact implements Comparable {
         Contact other = (Contact) o;
 
         // Check if name equivalent
-        if(this.name.equals(other.getName()))
+        if (this.name.equals(other.getName()))
             return true;
 
         // Check if email equivalent
-        if(this.email.equals(other.getEmail()))
+        if (this.email.equals(other.getEmail()))
             return true;
 
         // no fields match if phone doesn't match

@@ -131,14 +131,15 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         Matcher mHeader = TAG_VALUE_PATTERN.matcher(header);
         CreationData creationData = new CreationData();
         List<String> creators = new ArrayList<>();
-        while(mHeader.find()) {
+        while (mHeader.find()) {
             switch (mHeader.group(1)) {
                 // NAME
                 case DOCUMENT_NAME_TAG -> sbomBuilder.setName(mHeader.group(2));
                 // UID
                 case DOCUMENT_NAMESPACE_TAG -> sbomBuilder.setUID(mHeader.group(2));
                 // SPEC VERSION
-                case SPEC_VERSION_TAG -> sbomBuilder.setSpecVersion(mHeader.group(2).substring(mHeader.group(2).lastIndexOf('-') + 1)); // Get text after "SPDX-"
+                case SPEC_VERSION_TAG ->
+                        sbomBuilder.setSpecVersion(mHeader.group(2).substring(mHeader.group(2).lastIndexOf('-') + 1)); // Get text after "SPDX-"
                 // LICENSE
                 case DATA_LICENSE_TAG -> sbomBuilder.addLicense(mHeader.group(2));
                 // LICENSE LIST VERSION
@@ -161,14 +162,13 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         List<String> lines = new ArrayList<>(List.of(fileContents.split("\n")));
         // Find all relationships in the file contents regardless of where they are
         Matcher relationship = RELATIONSHIP_PATTERN.matcher(fileContents);
-        while(relationship.find()) {
+        while (relationship.find()) {
             Relationship r = new Relationship(relationship.group(3), relationship.group(2));
 
             String nextLine;
-            try{
+            try {
                 nextLine = lines.get(lines.indexOf(relationship.group()) + 1);
-            }
-            catch (IndexOutOfBoundsException e){
+            } catch (IndexOutOfBoundsException e) {
                 break;
             }
             if (nextLine.startsWith("RelationshipComment: ")) {
@@ -195,7 +195,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         List<String> files = new ArrayList<>(List.of(unpackagedFilesContents.split("\n\n"))); // Split over newline
         files.remove(UNPACKAGED_TAG);
 
-        for(String fileBlock : files) {
+        for (String fileBlock : files) {
             if (fileBlock.strip().equals("")) continue;
             sbomBuilder.addSPDX23Component(buildFile(fileBuilder, fileBlock));
         }
@@ -272,8 +272,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                     default ->
                             builder.addExternalReference(new ExternalReference(externalRefMatcher.group(1), externalRefMatcher.group(3), externalRefMatcher.group(2)));
                 }
-            }
-            else componentMaterials.put(mPackages.group(1), mPackages.group(2));
+            } else componentMaterials.put(mPackages.group(1), mPackages.group(2));
         }
 
         builder.setName(componentMaterials.get("PackageName"));
@@ -291,7 +290,8 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         }
 
         // AUTHOR
-        if (componentMaterials.get("PackageOriginator") != null) builder.setAuthor(componentMaterials.get("PackageOriginator"));
+        if (componentMaterials.get("PackageOriginator") != null)
+            builder.setAuthor(componentMaterials.get("PackageOriginator"));
 
         // LICENSE EXPRESSION
         LicenseCollection licenseCollection = new LicenseCollection();
@@ -357,7 +357,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
     private SPDX23FileObject buildFile(SPDX23FileBuilder builder, String contents) {
         Matcher mFiles = TAG_VALUE_PATTERN.matcher(contents);
         HashMap<String, String> fileMaterials = new HashMap<>();
-        while(mFiles.find()) fileMaterials.put(mFiles.group(1), mFiles.group(2));
+        while (mFiles.find()) fileMaterials.put(mFiles.group(1), mFiles.group(2));
 
         // Create new component from materials
         // FILE NAME
@@ -399,7 +399,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
      * Files). The tags will be located anywhere in the file; the order of tags does not impact translation of the SBOM.
      *
      * @param fileContents The file contents to get the tag from.
-     * @param tag The tag to get all tag-value pairs of.
+     * @param tag          The tag to get all tag-value pairs of.
      * @return An "excerpt" from the {@code fileContents} string containing all tag-value pairs categorized under {@code
      * tag}.
      */
@@ -429,7 +429,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
      * the {@code externalLicenses} map with each entry having an ID (key) and name (value).
      *
      * @param extractedLicenseBlock An extracted licensing information "block" in the document.
-     * @param externalLicenses The map of external licenses to append to.
+     * @param externalLicenses      The map of external licenses to append to.
      */
     private void parseExternalLicense(String extractedLicenseBlock, Map<String, Map<String, String>> externalLicenses) {
         // Required fields
@@ -440,7 +440,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         Map<String, String> attributes = new HashMap<>();
 
         Matcher m = TAG_VALUE_PATTERN.matcher(extractedLicenseBlock);
-        while(m.find()) {
+        while (m.find()) {
             switch (m.group(1)) {
                 case EXTRACTED_LICENSE_ID -> id = m.group(2);
                 case EXTRACTED_LICENSE_NAME -> name = m.group(2);
@@ -452,7 +452,8 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                     attributes.put("text", text); // Add the attribute
                 }
                 case EXTRACTED_LICENSE_CROSSREF -> attributes.put("crossRef", m.group(2));
-                default -> {} // TODO more fields?
+                default -> {
+                } // TODO more fields?
             }
         }
 

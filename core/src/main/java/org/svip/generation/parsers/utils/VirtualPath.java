@@ -11,7 +11,7 @@ import java.util.Objects;
 
 /**
  * File: VirtualPath.java
- *
+ * <p>
  * VirtualPath is a representation of a filepath, similar to Java's Path implementation. It contains functionality to
  * auto-remove . and .., as well as finding the root and file/extension. It also contains traditional string
  * manipulation functions, such as concatenation and endsWith to make path construction and comparison easier. It is
@@ -29,7 +29,7 @@ public class VirtualPath {
      * A broken down list of "parts" of the path, a.k.a. a list of all directories and the last directory or file at the
      * end.
      */
-    private List<String> pathParts;
+    private final List<String> pathParts;
 
     //#endregion
 
@@ -66,27 +66,33 @@ public class VirtualPath {
      * @param pathParts The list of path parts.
      */
     protected VirtualPath(List<String> pathParts) {
-        if(pathParts.size() == 0) throw new IllegalArgumentException("Empty path string provided");
-        if(pathParts.size() == 1 && pathParts.get(0).equals(""))
+        if (pathParts.size() == 0) throw new IllegalArgumentException("Empty path string provided");
+        if (pathParts.size() == 1 && pathParts.get(0).equals(""))
             throw new IllegalArgumentException("Empty path string provided");
 
         List<String> tempPathParts = new ArrayList<>(pathParts);
         // Remove / at beginning if something like /SVIP/...
-        if(tempPathParts.get(0).equals("")) tempPathParts.remove(0);
+        if (tempPathParts.get(0).equals("")) tempPathParts.remove(0);
         // Remove / at end if something like SVIP/core/
-        if(tempPathParts.get(tempPathParts.size() - 1).equals("")) tempPathParts.remove(tempPathParts.size() - 1);
+        if (tempPathParts.get(tempPathParts.size() - 1).equals("")) tempPathParts.remove(tempPathParts.size() - 1);
 
-        if(String.join("", tempPathParts).equals(""))
+        if (String.join("", tempPathParts).equals(""))
             throw new IllegalArgumentException("Invalid path string provided");
 
         this.pathParts = new ArrayList<>();
 
         // Handle any . or .. path elements passed in and modify the path accordingly
-        for(int i = 0; i < tempPathParts.size(); i++) {
-            switch(tempPathParts.get(i)) {
-                case "." -> { continue; }
-                case ".." -> { this.pathParts.remove(i); } // TODO make sure this works
-                default -> { this.pathParts.add(tempPathParts.get(i)); }
+        for (int i = 0; i < tempPathParts.size(); i++) {
+            switch (tempPathParts.get(i)) {
+                case "." -> {
+                    continue;
+                }
+                case ".." -> {
+                    this.pathParts.remove(i);
+                } // TODO make sure this works
+                default -> {
+                    this.pathParts.add(tempPathParts.get(i));
+                }
             }
         }
     }
@@ -101,7 +107,7 @@ public class VirtualPath {
      * @return The parent of the current VirtualPath.
      */
     public VirtualPath getParent() {
-        if(this.pathParts.size() > 1)
+        if (this.pathParts.size() > 1)
             return new VirtualPath(this.pathParts.subList(0, this.pathParts.size() - 1));
         else
             return this;
@@ -149,7 +155,7 @@ public class VirtualPath {
      * @return The file extension of the VirtualPath. If the VirtualPath is a directory, return null.
      */
     public String getFileExtension() {
-        if(!this.isFile()) return null;
+        if (!this.isFile()) return null;
 
         String fileName = this.getFileName().toString();
         return fileName.substring(fileName.lastIndexOf('.') + 1);
@@ -176,7 +182,7 @@ public class VirtualPath {
      */
     public VirtualPath removeRoot() {
         List<String> newPathParts = this.pathParts.subList(1, this.pathParts.size());
-        if(newPathParts.size() == 0) return null;
+        if (newPathParts.size() == 0) return null;
 
         return new VirtualPath(newPathParts);
     }
@@ -187,7 +193,7 @@ public class VirtualPath {
      * @return A new VirtualPath with the file extension removed.
      */
     public VirtualPath removeFileExtension() {
-        if(!this.isFile()) return this;
+        if (!this.isFile()) return this;
 
         return new VirtualPath(this.toString().substring(0, this.toString().lastIndexOf('.')));
     }
@@ -213,12 +219,12 @@ public class VirtualPath {
      * @param other the path to be checked
      * @return True if this path ends with other, false otherwise
      */
-    public boolean endsWith(VirtualPath other){
-        try{
-            if(this.toString().endsWith(other.toString())) {
+    public boolean endsWith(VirtualPath other) {
+        try {
+            if (this.toString().endsWith(other.toString())) {
                 return this.getFileName().equals(other.getFileName()); // Ensure last part of path is fully complete
-            };
-        } catch (InvalidPathException e){
+            }
+        } catch (InvalidPathException e) {
             Debug.log(Debug.LOG_TYPE.ERROR, "Invalid Path");
             Debug.log(Debug.LOG_TYPE.EXCEPTION, e.getMessage());
         }

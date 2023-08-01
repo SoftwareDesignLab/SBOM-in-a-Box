@@ -13,7 +13,9 @@ import java.util.HashMap;
  */
 public record VEXResult(VEX vex, HashMap<String, String> error) {
 
-     /**Getters*/
+    /**
+     * Getters
+     */
     public VEX vex() {
         return this.vex;
     }

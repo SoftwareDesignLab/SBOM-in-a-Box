@@ -32,11 +32,8 @@ public class SPDX23TagValueSerializer implements Serializer {
      */
     @Override
     public String writeToString(SVIPSBOM sbom) {
-        StringBuilder out = new StringBuilder();
 
-        out.append(getDocumentInfo(sbom));
-
-        return out.toString();
+        return getDocumentInfo(sbom);
     }
 
     private String buildTagValue(String tag, String value) {
@@ -213,20 +210,20 @@ public class SPDX23TagValueSerializer implements Serializer {
     }
 
     private String getFileInfo(SVIPComponentObject file) {
-        StringBuilder out = new StringBuilder();
 
-        out.append(buildTagValue("SPDXID", file.getUID()));
-        out.append(buildTagValue("FileName", file.getName()));
-        out.append(buildTagValue("FileType", file.getType()));
-        out.append(buildTagValue("FileComment", file.getComment()));
-        out.append(getChecksum(file.getHashes()));
-        out.append(getLicenseInfo(file.getLicenses(), true));
-        out.append(buildTagValue("FileCopyrightText", file.getCopyright()));
-        out.append(buildTagValue("FileNotice", file.getFileNotice()));
-        out.append(buildTagValue("FileContributor", file.getAuthor()));
-        out.append(buildTagValue("FileAttributionText", file.getAttributionText()));
+        String out = buildTagValue("SPDXID", file.getUID()) +
+                buildTagValue("FileName", file.getName()) +
+                buildTagValue("FileType", file.getType()) +
+                buildTagValue("FileComment", file.getComment()) +
+                getChecksum(file.getHashes()) +
+                getLicenseInfo(file.getLicenses(), true) +
+                buildTagValue("FileCopyrightText", file.getCopyright()) +
+                buildTagValue("FileNotice", file.getFileNotice()) +
+                buildTagValue("FileContributor", file.getAuthor()) +
+                buildTagValue("FileAttributionText", file.getAttributionText()) +
+                "\n";
 
-        return out.append("\n").toString();
+        return out;
     }
 
     private String getRelationships(Map<String, Set<Relationship>> relationships) {
@@ -262,6 +259,5 @@ public class SPDX23TagValueSerializer implements Serializer {
     @Override
     public void setPrettyPrinting(boolean prettyPrint) {
         // We don't need pretty printing for tag value either
-        return;
     }
 }

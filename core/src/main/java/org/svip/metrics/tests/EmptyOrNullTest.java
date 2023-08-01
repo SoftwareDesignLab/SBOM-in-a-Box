@@ -57,7 +57,7 @@ public class EmptyOrNullTest {
 
         // value is a collection of value
         // Check for empty collection is value is instance of a collection
-        else{
+        else {
             // if value is an empty collection, test fails
             if (((Collection<?>) value).isEmpty()) {
                 return resultFactory.fail(field, INFO.MISSING,

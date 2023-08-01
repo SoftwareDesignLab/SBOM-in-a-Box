@@ -1,7 +1,7 @@
+import glob
 import os
 import sys
 from enum import Enum
-import glob
 
 """
 file: ContainerController.py
@@ -100,37 +100,38 @@ class ToolMapper(object):
     tool_list = [
         OSTool("Jake", BOMFormat.CYCLONE_DX, [Language.PYTHON], [
             "cd {code}",
-            "jake sbom -t PIP -f {manifest} --output-format xml -o {output}/"+SBOM_TEMP_NAME+"."+SBOM_FORMAT
+            "jake sbom -t PIP -f {manifest} --output-format xml -o {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT
         ], True),
         # TODO figure out how to get output to only be SBOM and no messages
         OSTool("CycloneDX Conan", BOMFormat.CYCLONE_DX, [Language.C_CPLUSPLUS], [
-            "cyclonedx-conan {manifest} > {output}/"+SBOM_TEMP_NAME+"."+SBOM_FORMAT
+            "cyclonedx-conan {manifest} > {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT
         ], True),
         OSTool("CycloneDX Generator", BOMFormat.CYCLONE_DX, [
             Language.JAVA, Language.PHP, Language.PYTHON, Language.GO, Language.RUBY, Language.RUST, Language.DART,
             Language.HASKELL, Language.C_CPLUSPLUS
         ], [
-            "cd {code}", "cdxgen -r -o {output}/"+SBOM_TEMP_NAME+"."+SBOM_FORMAT
-        ]),
+                   "cd {code}", "cdxgen -r -o {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT
+               ]),
         OSTool("CycloneDX Python", BOMFormat.CYCLONE_DX, [Language.PYTHON], [
-            "cd {code}", "cyclonedx-py --format xml -r -i {manifest} -o {output}/"+SBOM_TEMP_NAME+"."+SBOM_FORMAT
+            "cd {code}", "cyclonedx-py --format xml -r -i {manifest} -o {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT
         ], True),
         # TODO Fix cargo pkgid error
         OSTool("SPDX SBOM Generator", BOMFormat.SPDX, [
             Language.GO, Language.RUST, Language.PHP, Language.JAVA, Language.JAVASCRIPT, Language.PYTHON,
             Language.RUBY, Language.SWIFT
         ], [
-            "cd {code}", "spdx-sbom-generator -p . -o {output}/"
-        ]),
+                   "cd {code}", "spdx-sbom-generator -p . -o {output}/"
+               ]),
         OSTool("CycloneDX PHP", BOMFormat.CYCLONE_DX, [Language.PHP], [
-            "cd {code}", "composer make-bom --output-format=XML --output-file={output}/"+SBOM_TEMP_NAME+"."+SBOM_FORMAT
-                         + " {manifest}"
+            "cd {code}",
+            "composer make-bom --output-format=XML --output-file={output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT
+            + " {manifest}"
         ], True),
         OSTool("Ochrona CLI", BOMFormat.OTHER, [], []),
         OSTool("Syft CDX", BOMFormat.CYCLONE_DX, [
             Language.C_CPLUSPLUS, Language.DART, Language.ERLANG, Language.GO, Language.HASKELL, Language.JAVA,
             Language.JAVASCRIPT, Language.PHP, Language.PYTHON, Language.RUBY, Language.RUST, Language.SWIFT
-        ], ["syft {code} -vv -o cyclonedx-xml > {output}/"+SBOM_TEMP_NAME+"."+SBOM_FORMAT]),
+        ], ["syft {code} -vv -o cyclonedx-xml > {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
         OSTool("JBOM Jar", BOMFormat.CYCLONE_DX, [Language.JAVA_JAR], [
             "java -jar /usr/local/bin/jbom.jar -f {code} -o {output}"
         ]),
@@ -138,13 +139,13 @@ class ToolMapper(object):
             "java -jar /usr/local/bin/jbom.jar -d {code} -o {output}"
         ]),
         # todo can add '--no-wfp-output' to skip fingerprinting. Removed because only generates JSON SBOMs
-        #OSTool("Scanoss Python", BOMFormat.CYCLONE_DX, [Language.PYTHON], [
+        # OSTool("Scanoss Python", BOMFormat.CYCLONE_DX, [Language.PYTHON], [
         #    "cd {code}", "scanoss-py scan --dependencies --format cyclonedx -o {output}/"+SBOM_TEMP_NAME+"."+SBOM_FORMAT+" ."
-        #]),
+        # ]),
         OSTool("Syft SPDX", BOMFormat.SPDX, [
             Language.C_CPLUSPLUS, Language.DART, Language.ERLANG, Language.GO, Language.HASKELL, Language.JAVA,
             Language.JAVASCRIPT, Language.PHP, Language.PYTHON, Language.RUBY, Language.RUST, Language.SWIFT
-        ], ["syft {code} -vv -o spdx-tag-value > {output}/"+SBOM_TEMP_NAME+".spdx"]),
+        ], ["syft {code} -vv -o spdx-tag-value > {output}/" + SBOM_TEMP_NAME + ".spdx"]),
     ]
 
     # Add tools into a list dictionary keyed by language
@@ -284,17 +285,20 @@ class ContainerController(object):
                         if self.manifestMap[manifest_file.split("/")[-1].lower()] not in tool.languages:
                             continue
 
-                    command = (" && ".join(tool.usage)).format(code=code_path, manifest=manifest_file, output=output_path)
+                    command = (" && ".join(tool.usage)).format(code=code_path, manifest=manifest_file,
+                                                               output=output_path)
 
                     # Snapshot directory
-                    file_contents_before = set([f for f in os.listdir(output_path) if os.path.isfile(os.path.join(output_path, f))])
+                    file_contents_before = set(
+                        [f for f in os.listdir(output_path) if os.path.isfile(os.path.join(output_path, f))])
 
                     # Execute command
                     print("Running: {}, with: {}".format(tool.name, command))
                     os.system(command)
 
                     # Snapshot directory again to see what has changed
-                    file_contents_after = set([f for f in os.listdir(output_path) if os.path.isfile(os.path.join(output_path, f))])
+                    file_contents_after = set(
+                        [f for f in os.listdir(output_path) if os.path.isfile(os.path.join(output_path, f))])
 
                     # Find the list of generated files
                     generated_files = file_contents_after.difference(file_contents_before)
@@ -317,7 +321,7 @@ class ContainerController(object):
                             continue
 
                         os.system("mv {}/{}.{format} {}/{}.{format}".format(output_path, curr_name, output_path,
-                                                                            gen_count+1, format=extension))
+                                                                            gen_count + 1, format=extension))
 
                         gen_count += 1
 

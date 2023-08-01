@@ -61,8 +61,7 @@ public class CommentParser extends ContextParser {
                         if (StringUtils.countMatches(line, "\"\"\"") == 1) {
                             final String[] segments = line.split("\"\"\"");
                             runningComment.append(segments[segments.length - 1]);
-                        }
-                        else this.context.add(StringUtils.substringBetween(line, "\"\"\"", "\"\"\""));
+                        } else this.context.add(StringUtils.substringBetween(line, "\"\"\"", "\"\"\""));
                     }
                 }
             } else { // Otherwise, comment is already being parsed
@@ -87,7 +86,7 @@ public class CommentParser extends ContextParser {
     /**
      * Overridden method for handling parsing of source file comments.
      *
-     * @param components A list of ParserComponents that the found components will be appended to.
+     * @param components   A list of ParserComponents that the found components will be appended to.
      * @param fileContents file contents to be parsed
      */
     @Override
@@ -102,7 +101,7 @@ public class CommentParser extends ContextParser {
         log(Debug.LOG_TYPE.DEBUG, String.format("%s Source Comments Detected", this.context.size()));
 
         // TODO: Better way to handle this? Currently the entire call is stored as name and type is set to EXTERNAL
-        for(final String comment : this.context) {
+        for (final String comment : this.context) {
             // Create ParserComponent
             final SVIPComponentBuilder builder = new SVIPComponentBuilder();
             builder.setName(comment);
