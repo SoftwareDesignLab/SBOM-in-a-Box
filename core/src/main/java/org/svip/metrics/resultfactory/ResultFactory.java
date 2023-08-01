@@ -15,31 +15,37 @@ import java.util.List;
  */
 public class ResultFactory {
 
-    /**List of attributes associated with result*/
+    /**
+     * List of attributes associated with result
+     */
     private final List<ATTRIBUTE> attributes;
 
-    /**Test name*/
+    /**
+     * Test name
+     */
     private final String test;
 
     /**
      * Constructor to create a new ResultFactory
-     * @param test name of test
+     *
+     * @param test       name of test
      * @param attributes list of attributes
      */
-    public ResultFactory(String test, ATTRIBUTE... attributes){
+    public ResultFactory(String test, ATTRIBUTE... attributes) {
         this.attributes = List.of(attributes);
         this.test = test;
     }
 
     /**
      * Create a new Result that has passed the test with multiple values
-     * @param field the field that was tested
-     * @param info info about the result
-     * @param values the values of the test
+     *
+     * @param field   the field that was tested
+     * @param info    info about the result
+     * @param values  the values of the test
      * @param context the name of the component that is being passed through
      * @return a new Result with a pass status
      */
-    public Result pass(String field, INFO info, Collection<String> values, String context){
+    public Result pass(String field, INFO info, Collection<String> values, String context) {
         Text text = new Text(context, field);
         String message = text.getMessage(info, values);
         String details = text.getDetails(info, values);
@@ -49,13 +55,14 @@ public class ResultFactory {
 
     /**
      * Create a new Result that has passed the test with a single value
-     * @param field the field that was tested
-     * @param info info about the result
-     * @param value the value of the test
+     *
+     * @param field   the field that was tested
+     * @param info    info about the result
+     * @param value   the value of the test
      * @param context the name of the component that is being passed through
      * @return a new Result with a pass status
      */
-    public Result pass(String field, INFO info, String value, String context){
+    public Result pass(String field, INFO info, String value, String context) {
         Text text = new Text(context, field);
         String message = text.getMessage(info, value);
         String details = text.getDetails(info, value);
@@ -66,13 +73,14 @@ public class ResultFactory {
     /**
      * Create a new Result that has passed the test with a single value
      * with custom details
-     * @param field the field that was tested
-     * @param info info about the result
-     * @param value the value of the test
+     *
+     * @param field   the field that was tested
+     * @param info    info about the result
+     * @param value   the value of the test
      * @param context the name of the component that is being passed through
      * @param details the custom details that does not fit any INFO value
      */
-    public Result passCustom(String field, INFO info, String value, String context, String details){
+    public Result passCustom(String field, INFO info, String value, String context, String details) {
         Text text = new Text(context, field);
         String message = text.getMessage(info, value);
         return new Result(this.attributes, this.test, message,
@@ -81,13 +89,14 @@ public class ResultFactory {
 
     /**
      * Create a new Result that has passed the test with multiple values
-     * @param field the field that was tested
-     * @param info info about the result
-     * @param values the values of the test
+     *
+     * @param field   the field that was tested
+     * @param info    info about the result
+     * @param values  the values of the test
      * @param context the name of the component that is being passed through
      * @return a new Result with a pass status
      */
-    public Result fail(String field, INFO info, Collection<String> values, String context){
+    public Result fail(String field, INFO info, Collection<String> values, String context) {
         Text text = new Text(context, field);
         String message = text.getMessage(info, values);
         String details = text.getDetails(info, values);
@@ -97,13 +106,14 @@ public class ResultFactory {
 
     /**
      * Create a new Result that has failed the test with a single value
-     * @param field the field that was tested
-     * @param info info about the result
-     * @param value the value of the test
+     *
+     * @param field   the field that was tested
+     * @param info    info about the result
+     * @param value   the value of the test
      * @param context the name of the component that is being passed through
      * @return a new Result with a fail status
      */
-    public Result fail(String field, INFO info, String value, String context){
+    public Result fail(String field, INFO info, String value, String context) {
         Text text = new Text(context, field);
         String message = text.getMessage(info, value);
         String details = text.getDetails(info, value);
@@ -114,14 +124,15 @@ public class ResultFactory {
     /**
      * Create a new Result that has failed the test with a single value
      * with custom details
-     * @param field the field that was tested
-     * @param info info about the result
-     * @param value the value of the test
+     *
+     * @param field   the field that was tested
+     * @param info    info about the result
+     * @param value   the value of the test
      * @param context the name of the component that is being passed through
      * @param details the custom details that does not fit any INFO value
      * @return a new Result with a fail status
      */
-    public Result failCustom(String field, INFO info, String value, String context, String details){
+    public Result failCustom(String field, INFO info, String value, String context, String details) {
         Text text = new Text(context, field);
         String message = text.getMessage(info, value);
         return new Result(this.attributes, this.test, message,
@@ -130,13 +141,14 @@ public class ResultFactory {
 
     /**
      * Create a new Result that had an error in the test
-     * @param field the field that was tested
-     * @param info info about the result
-     * @param value the value of the test
+     *
+     * @param field   the field that was tested
+     * @param info    info about the result
+     * @param value   the value of the test
      * @param context the name of the component that is being passed through
      * @return a new Result with a fail status
      */
-    public Result error(String field, INFO info, String value, String context){
+    public Result error(String field, INFO info, String value, String context) {
         Text text = new Text(context, field);
         String message = text.getMessage(info, value);
         String details = text.getDetails(info, value);
@@ -146,13 +158,14 @@ public class ResultFactory {
 
     /**
      * Create a new Result that had an error in the test
-     * @param field the field that was tested
-     * @param info info about the result
-     * @param values the values of the test
+     *
+     * @param field   the field that was tested
+     * @param info    info about the result
+     * @param values  the values of the test
      * @param context the name of the component that is being passed through
      * @return a new Result with a fail status
      */
-    public Result error(String field, INFO info, Collection<String> values, String context){
+    public Result error(String field, INFO info, Collection<String> values, String context) {
         Text text = new Text(context, field);
         String message = text.getMessage(info, values);
         String details = text.getDetails(info, values);

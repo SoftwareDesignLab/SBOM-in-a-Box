@@ -42,6 +42,7 @@ public class Debug {
             return shortName;
         }
     }
+
     private static final String blockChar = "="; // Block character to use
     private static final int defaultBlockLength = 50;
     private static boolean debugMode = false; // Boolean toggle to allow debug logs
@@ -98,10 +99,10 @@ public class Debug {
                     if (e.getMessage() != null)
                         out += " | " + e.getMessage();
                     // Append root of stack trace if one exists
-                    if(Debug.debugMode) {
+                    if (Debug.debugMode) {
                         final StackTraceElement[] stackTrace = e.getStackTrace();
                         final String[] shortStack = Arrays.stream(Arrays.copyOfRange(stackTrace, 0, 5)).map(StackTraceElement::toString).toArray(String[]::new);
-                        if(shortStack.length > 0)
+                        if (shortStack.length > 0)
                             out += " | " + String.join("\n", shortStack);
                     }
                     System.err.println(out);
@@ -121,7 +122,7 @@ public class Debug {
      * block will be concluded by a newline. An ending log block will match the length of its preceding log block.
      */
     public static void logBlock() {
-        if(blockLength != -1) {
+        if (blockLength != -1) {
             System.out.println(blockChar.repeat(blockLength) + "\n");
             blockLength = -1;
         } else {
@@ -137,7 +138,7 @@ public class Debug {
      * @param title The title of the log block.
      */
     public static void logBlockTitle(String title) {
-        if(title == null || title.equals("")) {
+        if (title == null || title.equals("")) {
             logBlock();
             return;
         }
@@ -147,8 +148,8 @@ public class Debug {
         String logBlock = block + formattedTitle + block;
 
         // Test for uneven blocks
-        if(logBlock.length() == defaultBlockLength - 1) logBlock += blockChar;
-        if(logBlock.length() == defaultBlockLength + 1) logBlock = logBlock.substring(0, logBlock.length() - 1);
+        if (logBlock.length() == defaultBlockLength - 1) logBlock += blockChar;
+        if (logBlock.length() == defaultBlockLength + 1) logBlock = logBlock.substring(0, logBlock.length() - 1);
 
         System.out.println("\n" + logBlock);
         blockLength = logBlock.length();

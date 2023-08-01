@@ -18,11 +18,11 @@ import static org.svip.utils.Debug.log;
 
 /**
  * file: SubprocessParser.java
- * @description Context parser class responsible for parsing source files for calls to outside processes.
  *
  * @author Dylan Mulligan
  * @author Henry Keena
  * @author Ian Dunn
+ * @description Context parser class responsible for parsing source files for calls to outside processes.
  */
 public class SubprocessParser extends ContextParser {
     // Declares Class Attributes
@@ -52,10 +52,10 @@ public class SubprocessParser extends ContextParser {
         // Iterate over file lines
         for (final String line : lines) {
             // If line starts with any comment prefix, continue
-            if(StringUtils.startsWithAny(line, commentPrefix)) continue;
+            if (StringUtils.startsWithAny(line, commentPrefix)) continue;
 
             // If line contains any keywords, continue
-            if(!StringUtils.containsAny(line, keywords) && !StringUtils.containsAny(line, capKeywords)) continue;
+            if (!StringUtils.containsAny(line, keywords) && !StringUtils.containsAny(line, capKeywords)) continue;
 
             // If line is import, continue
             if (line.contains("import ") || line.contains("from ")) continue;
@@ -65,7 +65,7 @@ public class SubprocessParser extends ContextParser {
 
             // Get results and skip line if no valid subprocess call was found
             final MatchResult[] results = m.results().toArray(MatchResult[]::new);
-            if(results.length == 0) continue;
+            if (results.length == 0) continue;
 
             // Build process call string and add to this.context
             this.context.add(String.join(" ", Arrays.stream(results).map(r -> r.group(1)).toList()).trim());
@@ -90,7 +90,7 @@ public class SubprocessParser extends ContextParser {
     /**
      * Overridden method for handling parsing and logging subprocess calls.
      *
-     * @param components A list of ParserComponents that the found components will be appended to.
+     * @param components   A list of ParserComponents that the found components will be appended to.
      * @param fileContents file contents to be parsed
      */
     @Override

@@ -18,28 +18,30 @@ import java.util.Map;
  * @author Derek Garcia
  * @author Matthew Morrison
  */
-@JsonPropertyOrder({"uid", "componentResults" })
+@JsonPropertyOrder({"uid", "componentResults"})
 public class QualityReport {
     @JsonProperty
     private final String uid;
 
     @JsonProperty
-    private Map<String, Map<String, List<Result>>> components = new HashMap<>();
+    private final Map<String, Map<String, List<Result>>> components = new HashMap<>();
 
     /**
      * Create a new QualityReport
+     *
      * @param uid unique identifier for the quality report
      */
-    public QualityReport(String uid){
+    public QualityReport(String uid) {
         this.uid = uid;
     }
 
     /**
      * add a component to the quality report
+     *
      * @param componentName the name of the component to add
-     * @param results list of test results
+     * @param results       list of test results
      */
-    public void addComponent(String componentName, List<Result> results){
+    public void addComponent(String componentName, List<Result> results) {
         // init test results
         Map<String, List<Result>> testResults =
                 this.components.computeIfAbsent(componentName, k -> new HashMap<>());

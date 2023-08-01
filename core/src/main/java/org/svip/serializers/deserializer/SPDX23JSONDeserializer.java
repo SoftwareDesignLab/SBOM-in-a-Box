@@ -112,10 +112,12 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
             if (creationInfo.get("created") != null) creationData.setCreationTime(creationInfo.get("created").asText());
 
             // COMMENT
-            if (creationInfo.get("comment") != null) creationData.setCreatorComment(creationInfo.get("comment").asText());
+            if (creationInfo.get("comment") != null)
+                creationData.setCreatorComment(creationInfo.get("comment").asText());
 
             // LICENSE LIST VERSION:
-            if (creationInfo.get("licenseListVersion") != null) sbomBuilder.setSPDXLicenseListVersion(creationInfo.get("licenseListVersion").asText());
+            if (creationInfo.get("licenseListVersion") != null)
+                sbomBuilder.setSPDXLicenseListVersion(creationInfo.get("licenseListVersion").asText());
 
             // CREATION TOOL
             if (creationInfo.get("creators") != null) {
@@ -144,8 +146,8 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
         if (node.get("relationships") != null)
             for (JsonNode rel : node.get("relationships"))
                 if (rel.get("relatedSpdxElement") != null
-                 && rel.get("relationshipType") != null
-                 && rel.get("spdxElementId") != null) {
+                        && rel.get("relationshipType") != null
+                        && rel.get("spdxElementId") != null) {
 
                     Relationship relationship = new Relationship(
                             rel.get("relatedSpdxElement").asText(), rel.get("relationshipType").asText());
