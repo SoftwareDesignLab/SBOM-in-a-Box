@@ -1,15 +1,21 @@
 package org.svip.compare.conflicts;
 
+import org.svip.metrics.resultfactory.Text;
+import org.svip.metrics.resultfactory.enumerations.INFO;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static org.svip.metrics.resultfactory.enumerations.INFO.DIFF_NULL_HASH;
 
 /**
  * File: ConflictFactory.java
  * Handles creating new Conflicts
  *
  * @author Derek Garcia
+ * @author Thomas Roman
  */
 public class ConflictFactory {
     private final List<Conflict> conflicts = new ArrayList<>();
@@ -55,6 +61,9 @@ public class ConflictFactory {
         if (!comparable(field, target, other))
             return;
 
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", field);
+
         // Round 1: Compare target against other if equal
         for (Comparable targetValue : target) {
             boolean compared = false;   // track if comparison occurred
@@ -70,7 +79,7 @@ public class ConflictFactory {
             }
             // targetValue not in other set
             if (!compared)
-                addConflict(field, MismatchType.MISSING, "Contains " + field + " Data", null);
+                addConflict(field, MismatchType.MISSING, targetValue.toString(), text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, ""));
         }
 
         // Round 2: Don't compare other against target, just checking if present
@@ -88,7 +97,7 @@ public class ConflictFactory {
 
             // otherValue not in target set
             if (!compared)
-                addConflict(field, MismatchType.MISSING, null, "Contains " + field + " Data");
+                addConflict(field, MismatchType.MISSING, text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, ""), otherValue.toString());
         }
     }
 
@@ -105,16 +114,19 @@ public class ConflictFactory {
         if (!comparable(field, target, other))
             return;
 
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", field);
+
         // Compare Strings
         for (String value : target) {
             // Value in target and not in other
             if (!other.contains(value))
-                addConflict(field, mismatchType, value, null);
+                addConflict(field, mismatchType, value, text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, ""));
         }
         for (String value : other) {
             // Value in other and not in target
             if (!target.contains(value))
-                addConflict(field, mismatchType, null, value);
+                addConflict(field, mismatchType, text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, ""), value);
         }
     }
 
@@ -130,22 +142,25 @@ public class ConflictFactory {
         if (!comparable(field, target, other))
             return;
 
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", field);
+
         // Round 1: Compare target against other if equal
         for (String targetAlg : target.keySet()) {
             // If other doesn't contain hash, add as missing
             if (!other.containsKey(targetAlg)) {
-                addConflict(field, MismatchType.MISSING, "Contains " + field + " Data", null);
+                addConflict(field, MismatchType.MISSING, text.getHashMessage(targetAlg, target.get(targetAlg)), text.getMessage(DIFF_NULL_HASH, ""));
                 continue;
             }
             // Compare hash values
-            addConflict(field + " " + targetAlg + " Hash", MismatchType.HASH_MISMATCH, target.get(targetAlg), other.get(targetAlg));
+            addConflict(text.getMessage(INFO.DIFF_HASH_ALG, targetAlg), MismatchType.HASH_MISMATCH, target.get(targetAlg), other.get(targetAlg));
         }
 
         // Round 2: Don't compare other against target, just checking if present
         for (String otherAlg : other.keySet()) {
             // If target doesn't contain hash, add as missing
             if (!target.containsKey(otherAlg))
-                addConflict(field, MismatchType.MISSING, null, "Contains " + field + " Data");
+                addConflict(field, MismatchType.MISSING, text.getMessage(DIFF_NULL_HASH, ""), text.getHashMessage(otherAlg, other.get(otherAlg)));
         }
     }
 
@@ -164,10 +179,14 @@ public class ConflictFactory {
         if (target == null && other == null)
             return false;
 
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", field);
+
         // One is missing from the other
         // TODO Better way to handle this case
         if (target == null || other == null) {
-            addConflict(field, MismatchType.MISSING, (target == null ? "Present" : null), (other == null ? "Present" : null));
+            addConflict(field, MismatchType.MISSING, (target == null ? other.toString() : text.getMessage(INFO.DIFF_NULL_VALUE, "")),
+                                                     (other == null ? target.toString() : text.getMessage(INFO.DIFF_NULL_VALUE, "")));
             return false;
         }
 
