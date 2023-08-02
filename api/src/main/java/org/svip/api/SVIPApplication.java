@@ -18,16 +18,4 @@ public class SVIPApplication extends SpringBootServletInitializer {
         SpringApplication.run(SVIPApplication.class, args);
     }
 
-    /***
-     * Overwrites the default max post size default of 2MB
-     */
-    @Bean
-    public WebServerFactoryCustomizer<TomcatServletWebServerFactory> tomcatCustomizer() {
-        return (factory) -> {
-            factory.addConnectorCustomizers((connector) -> {
-                connector.setMaxPostSize(Integer.MAX_VALUE); //About 2GB
-            });
-        };
-    }
-
 }
