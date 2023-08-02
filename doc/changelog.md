@@ -13,11 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Overhaul directory structure to be feature focused
 
-## [v7.2.0-alpha] - (8/1/2023)
-
-### Changed
-- Overhaul directory structure to be feature focused
-
 ## [v7.1.2-alpha] - (7/28/2023)
 
 ### Added
