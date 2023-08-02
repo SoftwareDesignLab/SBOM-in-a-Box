@@ -606,12 +606,6 @@ public class MergerTest {
 
         builder_one.addComponent(comp_cdx_green);
 
-        builder_one.addComponent(comp_cdx_yellow);
-
-        Relationship green_to_yellow = new Relationship(comp_cdx_yellow.getUID(), "Depends on");
-
-        builder_one.addRelationship(comp_cdx_green.getUID(), green_to_yellow);
-
         ExternalReference exRefSBOMOne = new ExternalReference("www.testsbom.test", "test_sbom_one");
 
         builder_one.addExternalReference(exRefSBOMOne);
@@ -640,15 +634,15 @@ public class MergerTest {
 
         builder_two.setDocumentComment("This is a test comment for the second SBOM");
 
-        builder_two.setRootComponent(comp_cdx_green);
+        builder_two.setRootComponent(comp_cdx_yellow);
 
-        builder_two.addComponent(comp_cdx_green);
+        builder_two.addComponent(comp_cdx_yellow);
 
         builder_two.addComponent(comp_cdx_blue);
 
-        Relationship green_to_blue = new Relationship(comp_cdx_blue.getUID(), "Depends on");
+        Relationship yellow_to_blue = new Relationship(comp_cdx_blue.getUID(), "Depends on");
 
-        builder_two.addRelationship(comp_cdx_green.getUID(), green_to_blue);
+        builder_two.addRelationship(comp_cdx_yellow.getUID(), yellow_to_blue);
 
         ExternalReference exRefSBOMTwo = new ExternalReference("www.testsbom.test", "test_sbom_two");
 
@@ -656,11 +650,49 @@ public class MergerTest {
 
         CDX14SBOM SBOM_two = builder_two.buildCDX14SBOM();
 
+        // SBOM Three
+
+        CDX14Builder builder_three = new CDX14Builder();
+
+        builder_three.setFormat("CycloneDX");
+
+        builder_three.setName("test_sbom_three");
+
+        builder_three.setUID("urn:uuid:aaaa0000-a000-aaaa-aa0a-aaaa000000aa");
+
+        builder_three.setVersion("1");
+
+        builder_three.setSpecVersion("1.4");
+
+        builder_three.addLicense("test_license");
+
+        CreationData creationDataSBOMThree = new CreationData();
+
+        builder_three.setCreationData(creationDataSBOMThree);
+
+        builder_three.setDocumentComment("This is a test comment for the third SBOM");
+
+        builder_three.setRootComponent(comp_cdx_green);
+
+        builder_three.addComponent(comp_cdx_green);
+
+        builder_three.addComponent(comp_cdx_blue);
+
+        Relationship green_to_blue = new Relationship(comp_cdx_blue.getUID(), "Depends on");
+
+        builder_three.addRelationship(comp_cdx_green.getUID(), green_to_blue);
+
+        ExternalReference exRefSBOMThree = new ExternalReference("www.testsbom.test", "test_sbom_three");
+
+        builder_two.addExternalReference(exRefSBOMThree);
+
+        CDX14SBOM SBOM_three = builder_three.buildCDX14SBOM();
+
         // New merger and SBOM list
 
         MergerController mergerController = new MergerController();
 
-        List<SBOM> SBOMs = Arrays.asList(SBOM_one, SBOM_two);
+        List<SBOM> SBOMs = Arrays.asList(SBOM_one, SBOM_two, SBOM_three);
 
         // Merged SBOM Result
 
@@ -684,7 +716,7 @@ public class MergerTest {
 
         assertEquals(3, result.getComponents().size());
 
-        assertEquals(2, result.getExternalReferences().size());
+        assertEquals(3, result.getExternalReferences().size());
 
     }
 
