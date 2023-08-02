@@ -447,12 +447,8 @@ public class SVIPApiController {
 
             SBOMFile f = (SBOMFile) h.keySet().toArray()[0];
 
-            if (f.hasNullProperties()) {
-                LOGGER.error(urlMsg + "/fileName=" + f.getFileName() + " has null properties");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
-            virtualPathStringHashMap.put(new VirtualPath(f.getFileName()), f.getContents());
+            if (!f.hasNullProperties()) // project files that are empty should just be ignored
+                    virtualPathStringHashMap.put(new VirtualPath(f.getFileName()), f.getContents());
 
         }
 
@@ -464,7 +460,7 @@ public class SVIPApiController {
             parserController.parseAll();
             parsed = parserController.buildSBOM(schema);
         } catch (Exception e) {
-            String error = "Error parsing into SBOM: " + e.getMessage();
+            String error = "Error parsing into SBOM: " + Arrays.toString(e.getStackTrace());
             LOGGER.error(urlMsg + " " + error);
             return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -522,18 +518,15 @@ public class SVIPApiController {
 
             SBOMFile srcFile = (SBOMFile) h.keySet().toArray()[0];
 
-            if (srcFile.hasNullProperties()) {
-                LOGGER.error(urlMsg + ": file " + srcFile.getFileName() + " has null properties");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-            try {
-                // Remove any directories, causes issues with OSI paths (unless we take in a root directory?)
-                String fileName = srcFile.getFileName();
-                fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
-                osiContainer.addSourceFile(fileName, srcFile.getContents());
-            } catch (IOException e) {
-                LOGGER.error(urlMsg + ": Error adding source file");
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            if (!srcFile.hasNullProperties()) // project files that are empty should just be ignored
+                try {
+                    // Remove any directories, causes issues with OSI paths (unless we take in a root directory?)
+                    String fileName = srcFile.getFileName();
+                    fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
+                    osiContainer.addSourceFile(fileName, srcFile.getContents());
+                } catch (IOException e) {
+                    LOGGER.error(urlMsg + ": Error adding source file");
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         }
 
