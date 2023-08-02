@@ -14,6 +14,7 @@ import static org.svip.compare.conflicts.MismatchType.MISC_MISMATCH;
  * Represents contact information
  *
  * @author Derek Garcia
+ * @author Thomas Roman
  */
 public class Contact implements Comparable {
     private final String name;
@@ -104,5 +105,10 @@ public class Contact implements Comparable {
 
         // no fields match if phone doesn't match
         return this.phone.equals(other.getPhone());
+    }
+
+    @Override
+    public String toString() {
+        return "Organization: " + this.name + "(" + this.email + ")";
     }
 }
