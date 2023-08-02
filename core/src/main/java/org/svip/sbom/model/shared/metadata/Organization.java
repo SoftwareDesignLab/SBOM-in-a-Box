@@ -17,6 +17,7 @@ import static org.svip.compare.conflicts.MismatchType.NAME_MISMATCH;
  * Represents an Organization
  *
  * @author Derek Garcia
+ * @author Thomas Roman
  */
 public class Organization implements Comparable {
     private final String name;
@@ -108,5 +109,10 @@ public class Organization implements Comparable {
 
         // no fields match if url doesn't match
         return this.url.equals(other.getUrl());
+    }
+
+    @Override
+    public String toString() {
+        return "Organization: " + this.name + "(" + this.url + ")";
     }
 }

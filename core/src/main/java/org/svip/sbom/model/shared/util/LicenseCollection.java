@@ -113,5 +113,28 @@ public class LicenseCollection implements Comparable {
         // LC is just collection of licenses, if a collection then it is equal
         return o != null && getClass() == o.getClass();
     }
+
+
+    public String toString() {
+        StringBuilder concludedString = new StringBuilder();
+        StringBuilder declaredString = new StringBuilder();
+        StringBuilder infoFromFilesString = new StringBuilder();
+        for (String license : this.concluded) {
+            concludedString.append(license).append(", ");
+        }
+        // chop of the last comma
+        if (concludedString.length() > 0) concludedString.setLength(concludedString.length()-2);
+        for (String license : this.declared) {
+            declaredString.append(license).append(", ");
+        }
+        // chop of the last comma
+        if (declaredString.length() > 0) declaredString.setLength(declaredString.length()-2);
+        for (String license : this.infoFromFiles) {
+            infoFromFilesString.append(license).append(", ");
+        }
+        // chop of the last comma
+        if (infoFromFilesString.length() > 0) infoFromFilesString.setLength(infoFromFilesString.length()-2);
+        return "LicenseConcluded: (" + concludedString + "), LicenseDeclared: (" + declaredString + "), LicenseInfoFromFiles: (" + infoFromFilesString + ")";
+    }
 }
 

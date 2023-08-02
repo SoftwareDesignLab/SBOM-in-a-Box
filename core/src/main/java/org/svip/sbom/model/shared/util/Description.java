@@ -13,6 +13,7 @@ import static org.svip.compare.conflicts.MismatchType.MISC_MISMATCH;
  * Utility object to hold description information
  *
  * @author Derek Garcia
+ * @author Thomas Roman
  */
 public class Description implements Comparable {
     private final String summary;
@@ -79,5 +80,9 @@ public class Description implements Comparable {
 
         // compare descriptions
         return this.description.equals(other.getDescription());
+    }
+
+    public String toString() {
+        return "Summary: " + this.summary + ", Description: " + this.description;
     }
 }
