@@ -155,4 +155,9 @@ public class ExternalReference implements Comparable {
         // Don't compare free text comment, pass all tests
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "ExternalRef: Type: " + this.type + ", URL: " + this.url + ", Category: " + this.category + ", Comment: " + this.comment + ", Hashes: " + this.hashes;
+    }
 }
