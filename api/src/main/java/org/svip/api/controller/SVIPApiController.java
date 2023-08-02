@@ -122,7 +122,7 @@ public class SVIPApiController {
 
     /**
      * USAGE. Send POST request to /sboms with one SBOM file.
-     *   The SBOM file is made up of 2 JSON key-value pairs in the request body: fileName and contents.
+     *  The SBOM file is made up of 2 JSON key-value pairs in the request body: fileName and contents.
      *
      * The API will respond with an HTTP 200 and the ID used to identify the SBOM file.
      *
