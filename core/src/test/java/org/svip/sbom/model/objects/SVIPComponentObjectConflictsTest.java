@@ -1,6 +1,8 @@
 package org.svip.sbom.model.objects;
 
 import org.junit.jupiter.api.Test;
+import org.svip.metrics.resultfactory.Text;
+import org.svip.metrics.resultfactory.enumerations.INFO;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.factory.objects.SVIPSBOMComponentFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -108,12 +110,15 @@ public class SVIPComponentObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", "License");
+
         for(Conflict c : conflictList)
         {
             if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "License is missing")) {
-                if(Objects.equals(c.GetTarget(), "control license") && c.GetOther() == null)
+                if(Objects.equals(c.GetTarget(), "control license") && Objects.equals(c.GetOther(), text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, "")))
                     c1 = true;
-                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "license"))
+                else if(Objects.equals(c.GetTarget(), text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, "")) && Objects.equals(c.GetOther(), "license"))
                     c2 = true;
             }
         }
@@ -151,12 +156,17 @@ public class SVIPComponentObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", "Component Hash");
+
         for(Conflict c : conflictList)
         {
             if(c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "Component Hash is missing"))
-                if(Objects.equals(c.GetTarget(),"Contains Component Hash Data") && c.GetOther() == null)
+                if(Objects.equals(c.GetTarget(),text.getHashMessage("SHA1", "control")) &&
+                        Objects.equals(c.GetOther(), text.getMessage(INFO.DIFF_NULL_HASH, "SHA1")))
                     c1 = true;
-                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "Contains Component Hash Data"))
+                else if(Objects.equals(c.GetTarget(), text.getMessage(INFO.DIFF_NULL_HASH, "SHA2")) &&
+                        Objects.equals(c.GetOther(), text.getHashMessage("SHA2", "hash")))
                     c2 = true;
         }
 
@@ -236,12 +246,15 @@ public class SVIPComponentObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", "PURL");
+
         for(Conflict c : conflictList)
         {
             if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "PURL is missing")) {
-                if(Objects.equals(c.GetTarget(), "control") && c.GetOther() == null)
+                if(Objects.equals(c.GetTarget(), "control") && Objects.equals(c.GetOther(), text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, "")))
                     c1 = true;
-                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "purl"))
+                else if(Objects.equals(c.GetTarget(), text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, "")) && Objects.equals(c.GetOther(), "purl"))
                     c2 = true;
             }
         }
@@ -263,12 +276,15 @@ public class SVIPComponentObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", "CPE");
+
         for(Conflict c : conflictList)
         {
             if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "CPE is missing")) {
-                if(Objects.equals(c.GetTarget(), "control") && c.GetOther() == null)
+                if(Objects.equals(c.GetTarget(), "control") && Objects.equals(c.GetOther(), text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, "")))
                     c1 = true;
-                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "cpe"))
+                else if(Objects.equals(c.GetTarget(), text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, "")) && Objects.equals(c.GetOther(), "cpe"))
                     c2 = true;
             }
         }

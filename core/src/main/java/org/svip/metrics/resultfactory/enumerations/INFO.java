@@ -5,6 +5,7 @@ package org.svip.metrics.resultfactory.enumerations;
  * Enumeration that holds the types of information a result could have
  *
  * @author Matthew Morrison
+ * @author Thomas Roman
  */
 public enum INFO {
     MISSING,
@@ -14,5 +15,9 @@ public enum INFO {
     NULL,
     ERROR,
     MATCHING,
-    NOT_MATCHING
+    NOT_MATCHING,
+    DIFF_NULL_VALUE,
+    DIFF_NULL_VALUE_IN_SET,
+    DIFF_HASH_ALG,
+    DIFF_NULL_HASH
 }
