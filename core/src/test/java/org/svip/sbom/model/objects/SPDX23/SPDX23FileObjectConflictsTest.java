@@ -1,6 +1,8 @@
 package org.svip.sbom.model.objects.SPDX23;
 
 import org.junit.jupiter.api.Test;
+import org.svip.metrics.resultfactory.Text;
+import org.svip.metrics.resultfactory.enumerations.INFO;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23FileBuilder;
 import org.svip.sbom.factory.objects.SPDX23.SPDX23FileBuilderFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -106,12 +108,15 @@ public class SPDX23FileObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", "License");
+
         for(Conflict c : conflictList)
         {
             if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "License is missing")) {
-                if(Objects.equals(c.GetTarget(), "control license") && c.GetOther() == null)
+                if(Objects.equals(c.GetTarget(), "control license") && Objects.equals(c.GetOther(), text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, "")))
                     c1 = true;
-                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "license"))
+                else if(Objects.equals(c.GetTarget(), text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, "")) && Objects.equals(c.GetOther(), "license"))
                     c2 = true;
             }
         }
