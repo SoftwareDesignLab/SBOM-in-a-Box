@@ -73,20 +73,20 @@ public class GenerateFromParserAPITest extends APITest {
 
             LOGGER.info("Parsing project: " + file);
 
-            for (String schema : schemas
+            for (SerializerFactory.Schema schema : schemas
             ) {
 
-                for (String format : formats
+                for (SerializerFactory.Format format : formats
                 ) {
 
-                    if (schema.equals("CDX14") && format.equals("TAGVALUE"))
+                    if (schema == SerializerFactory.Schema.CDX14 && format == SerializerFactory.Format.TAGVALUE)
                         continue;
 
-                    LOGGER.info("Into " + schema + (format.equals("TAGVALUE") ? ".spdx" : ".json"));
+                    LOGGER.info("Into " + schema + ((format == SerializerFactory.Format.TAGVALUE) ? ".spdx" : ".json"));
 
                     ResponseEntity<Long> response = (ResponseEntity<Long>) controller.generateParsers(new MockMultipartFile(
                                     new File(sampleProjectDirectory + file + ".zip")), file,
-                            SerializerFactory.Schema.valueOf(schema), SerializerFactory.Format.valueOf(format));
+                            schema, format);
                     assertEquals(HttpStatus.OK, response.getStatusCode());
                     assertNotNull(response.getBody());
                 }
