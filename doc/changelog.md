@@ -3,105 +3,40 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v7.3.2-alpha] - (8/15/2023)
-
+## [v7.2.1-alpha] - (8/2/2023)
 ### Added
-- `/sboms/merge` endpoint
-  - Functionality in `SBOMFileService.java`
-  - POST mapping in `SBOMController.java`
-
-## [v7.3.1-alpha] - (8/15/2023)
-
-### Added
-- `MergerSVIP.java`
-  - Merges two SVIPSBOMs into one
-- `ComponentMerger.java`
-  - Holds logic to merge two generic `Component` objects into one of a desired type
-
-### Changed
-- `MergerUtils.java`
-  - String.equals() fixes
-  - Allowed merging of components to `SVIPComponentObject`
-  - Duplicate component issue resolved
-    - If two components are of the same name, but one has a version that's null, and the other doesn't, then they can be merged
-
-## [v7.3.0-alpha] - (8/9/2023)
-
-### Changed
-- Simplified table names by removing the `_file` suffix
-- Move `toSBOMObject` / `toSBOMObjectAsJSON` to the SBOMFile rather than object
-- Refactored services to reference other services instead of depending on contollers
-  - `saveQualityReport` and `saveVEX` moved to their respective services
-- Services take objects instead of ids
-
-## [v7.2.5-alpha] - (8/7/2023)
-### Added
-- `VEXFileService` for handling database operations
-- `UploadVEXFileInput` to handle new VEX and ensure relationships are added correctly
-- `VEXFile` that stores VEX information and schema/format details
-- `VEXController` to handle VEX API generation
-
-### Changed
-- Moved `/svip/sboms/vex` endpoint to `VEXController`
-- VEX are generated only once and stored in database. Subsequent request query the database
-- `/delete` deletes VEX stored in database for a SBOM that is deleted
-
-## [v7.2.4-alpha] - (8/7/2023)
-### Added
-- `QualityReportFileService` for handling database operations
-- `UploadQualityReportFileInput` to handle new QA and ensure relationships are added correctly
-- `QAController` to handle Metric API operations
-
-### Changed
-- Moved `/svip/sboms/qa` endpoint to `QAController`
-- Quality reports are generated only once and stored in database. Subsequent request query the database
-- `/delete` deletes QA Report stored in database for a SBOM that is deleted
-
-## [v7.2.3-alpha] - (8/3/2023)
-### Added
-- `SBOMService` for handling database operations
-- `UploadSBOMFileInput` to handle new SBOM entries uploaded via API
-- `SBOMController` to handle SBOM API operations
-
-### Changed
-- Moved the following endpoints to `SBOMController` from `SVIPApiController`
-  - POST `/sboms`
-    > No longer takes `SBOMFile` as body, usage has not changed. Uses `UploadSBOMFileInput` instead
-  - GET `/sbom`
-    > Note: Now returns a JSON String
-  - GET `/sboms/content`
-  - GET `/sboms`
-  - DELETE `/sboms`
-
-## [v7.2.2-alpha] - (8/3/2023)
-
-### Added
-- `MockMultipartFile` for testing uploading binaries
-- `ParserController` null check
-- `SBOMFileIdentifierGenerator` ID generator class implementing JPA's IdentifierGenerator for `SBOMFile.id`
-
-### Changed
-- `/generators/parsers` successfully takes in binary zip files of projects and generates an SBOM
-    - passes Postman tests and `GenerateFromParserAPITest`
-- `/generators/osi` should take in binary zip files of projects and generates an SBOM
-    - passes Postman tests and `GenerateFromOSIAPITest`
-- Maximum file upload and request size to 2GB in `application.properties`
-
-## [v7.2.1-alpha] - (8/1/2023)
-
-### Changed
-- Fix incorrect OSI filepaths not allowing API to build.
+- Improved Diff Report readability
+- SBOM Objects have built in toString methods
+- `/metrics/resultFactory/enumerations/INFO` now has info for diff reports
+- `/metrics/resultFactory/Text` now has outputs for getting diff report messages
+- `/compare/conflicts` has been reworked to avoid using plain text, instead relying on `Text` class
 
 ## [v7.2.0-alpha] - (8/1/2023)
-
 ### Changed
 - Overhaul directory structure to be feature focused
 
 ## [v7.1.2-alpha] - (7/28/2023)
-
 ### Added
 - SBOM Objects have built in comparison methods
 - Added `hashcode` methods to components to use `name` and `version` as UIDs
+
+## [v7.1.1-alpha] - (7/26/2023)
+
+### Changed
+- `/sboms/content` returns the entire SBOMFile instead of just file contents
+
+## [v7.1.0-alpha] - (7/26/2023)
+
+
+### Added
+- `/svip/generators/osi` endpoint to the `SVIPAPIController` class
+- `GenerateFromOSIAPITest` class that contains unit tests for the OSI endpoint
+
+### Changed
+- Updated `GenerateFromParserAPITest` class to be consistent with `GenerateFromOSIAPITest` class
+- Cleaned up utilities in `api.utils` and moved some methods into their respective core classes as there was some
+  duplicate code.
+- Fixed a bug where running OSI in the API would create bind directories in the API package instead of the core package.
 
 ## [v7.1.1-alpha] - (7/26/2023)
 
@@ -113,7 +48,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ResultFactory` is built for each method-test
 - Endpoints in `SVIPAPiController.java` to match documentation
 - `/generators/parsers` unzips a zipped project and parses it into an SBOM
-- `/sboms/content` returns the entire SBOMFile instead of just file contents
 
 ## [v7.1.0-alpha] - (7/25/2023)
 
@@ -123,16 +57,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `VEXResult.java`
   - Class that holds both the VEX Object and any errors that occurred for the API endpoint
 - Test SBOMs that contain vulnerable components
-- `/svip/generators/osi` endpoint to the `SVIPAPIController` class
-- `GenerateFromOSIAPITest` class that contains unit tests for the OSI endpoint
 
 ### Changed
 - Updated `API.md` documentation with the VEX endpoint
-- Updated `GenerateFromParserAPITest` class to be consistent with `GenerateFromOSIAPITest` class
-- Cleaned up utilities in `api.utils` and moved some methods into their respective core classes as there was some
-  duplicate code.
-- Fixed a bug where running OSI in the API would create bind directories in the API package instead of the core package.
-
 
 ## [v7.0.1-alpha] - (7/24/2023)
 
