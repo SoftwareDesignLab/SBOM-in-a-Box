@@ -101,7 +101,7 @@ public class GenerateFromOSIAPITest extends APITest {
      * Main SBOM Generation test
      */
     @Test
-    @DisplayName("Generate from parser test")
+    @DisplayName("Generate from OSI test")
     public void generateTest() throws IOException {
         // Mock repository output (returns SBOMFile that it received)
         when(repository.save(any(SBOMFile.class))).thenAnswer(i -> i.getArgument(0));
