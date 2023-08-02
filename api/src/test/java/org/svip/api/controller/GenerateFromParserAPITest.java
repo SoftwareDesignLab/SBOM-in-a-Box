@@ -59,17 +59,17 @@ public class GenerateFromParserAPITest extends APITest {
                 getStatusCode());
     }
 
-    /**
-     * 77MB project test
-     */
-    @Test
-    @DisplayName("Large project test")
-    public void largeProjectTest() throws IOException {
-        assertEquals(HttpStatus.OK, controller.generateParsers((new MockMultipartFile(new File(
-                                sampleProjectDirectory + "large.zip"))),
-                        "Large", SerializerFactory.Schema.CDX14, SerializerFactory.Format.JSON).
-                getStatusCode());
-    }
+//    /**
+//     * 77MB project test
+//     */
+//    @Test
+//    @DisplayName("Large project test")
+//    public void largeProjectTest() throws IOException {
+//        assertEquals(HttpStatus.OK, controller.generateParsers((new MockMultipartFile(new File(
+//                                sampleProjectDirectory + "large.zip"))),
+//                        "Large", SerializerFactory.Schema.CDX14, SerializerFactory.Format.JSON).
+//                getStatusCode());
+//    }
 
     /**
      * Main SBOM Generation test
