@@ -41,13 +41,6 @@ public class ComparisonTest {
         CDX14SBOM sbom4 = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_4)));
         SPDX23SBOM sbom5 = (SPDX23SBOM) getSPDXTagValueDeserializer().readFromString(Files.readString(Path.of(SBOM_5)));
         CDX14SBOM sbom6 = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_6)));
-        SBOM[] sboms = new SBOM[6];
-        sboms[0] = sbom1;
-        sboms[1] = sbom2;
-        sboms[2] = sbom3;
-        sboms[3] = sbom4;
-        sboms[4] = sbom5;
-        sboms[5] = sbom6;
         DiffReport diffReport = new DiffReport(sbom1.getUID(), sbom1);
         diffReport.compare(sbom2.getUID(), sbom2);
         diffReport.compare(sbom3.getUID(), sbom3);
