@@ -86,7 +86,7 @@ public class DiffReport {
     /**
      * Generate a report of the differences between two SBOMs and store the results
      *
-     * @param otherUID  UID of other SBOM
+     * @param otherUID  UID of other SBOM.
      * @param otherSBOM other SBOM to compare against
      */
     public void compare(String otherUID, SBOM otherSBOM) {
