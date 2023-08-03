@@ -1,11 +1,12 @@
-package org.svip.api.model;
+package org.svip.api.entities;
 
 import jakarta.persistence.*;
 
 /**
+ * SBOM Table for database
+ *
  * @author Derek Garcia
  **/
-
 @Entity
 @Table(name = "SBOMS")
 public class SBOM {
@@ -43,6 +44,9 @@ public class SBOM {
     private FileType fileType;
 
 
+    /**
+     * @return SBOM ID
+     */
     public Long getId() {
         return id;
     }
