@@ -3,30 +3,6 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v7.2.5-alpha] - (8/7/2023)
-
-### Added
-- Relevant exceptions for conversion endpoint
-  - `DeserializerException`
-  - `SerializerException`
-  - `SBOMBuilderException`
-- Convert endpoint in `SBOMController.java`
-
-### Changed
-- `ConvertFromApiTest.java`
-- Deleted old `Converter.java`
-
-## [v7.2.4-alpha] - (8/7/2023)
-
-### Added
-- `Conversion.java`
-    - Core functionality of SBOM conversion
-- `Convert.java` interface
-    - `ConvertCDX14.java`
-    - `ConvertSPDX23.java`
-- `ConvertTest.java` Class containing comprehensive unit tests for both schema converters
-
-
 ## [v7.2.3-alpha] - (8/3/2023)
 ### Added
 - `SBOMService` for handling database operations
