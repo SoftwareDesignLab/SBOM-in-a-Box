@@ -42,4 +42,8 @@ public class SBOM {
     @Column(nullable = false, name = "file_type")
     private FileType fileType;
 
+
+    public Long getId() {
+        return id;
+    }
 }
