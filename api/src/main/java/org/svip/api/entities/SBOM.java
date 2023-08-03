@@ -94,6 +94,17 @@ public class SBOM {
     }
 
     /**
+     * Simple set schema
+     * @param schema schema type
+     * @return SBOM
+     */
+    public SBOM setSchema(Schema schema){
+        this.schema = schema;
+        return this;
+    }
+
+
+    /**
      * Set SBOM File Type
      * @param d deserializer to infer file type from
      * @return SBOM
@@ -107,6 +118,16 @@ public class SBOM {
         if(d instanceof SPDX23TagValueDeserializer)
             this.fileType = FileType.TAG_VALUE;
 
+        return this;
+    }
+
+    /**
+     * Simple set schema
+     * @param fileType file type
+     * @return SBOM
+     */
+    public SBOM setFileType(FileType fileType){
+        this.fileType = fileType;
         return this;
     }
 
@@ -133,5 +154,19 @@ public class SBOM {
      */
     public String getContent(){
         return this.content;
+    }
+
+    /**
+     * @return SBOM Schema
+     */
+    public Schema getSchema(){
+        return this.schema;
+    }
+
+    /**
+     * @return SBOM FileType
+     */
+    public FileType getFileType() {
+        return this.fileType;
     }
 }

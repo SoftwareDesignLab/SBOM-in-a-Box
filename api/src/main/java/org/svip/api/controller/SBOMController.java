@@ -7,8 +7,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
+import org.svip.api.utils.Converter;
+import org.svip.api.utils.Utils;
+import org.svip.serializers.SerializerFactory;
+
+import java.util.Optional;
+import java.util.Random;
 
 /**
  * REST API Controller for managing SBOM and SBOM operations
@@ -72,6 +79,33 @@ public class SBOMController {
             LOGGER.error("POST /svip/sboms - " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+
+    ///
+    /// PUT
+    ///
+    /**
+     * USAGE. Send PUT request to /sboms an existing SBOM on the backend to a desired schema and format
+     *
+     * @param id        of the SBOM
+     * @param schema    to convert to
+     * @param format    to convert to
+     * @param overwrite whether to overwrite original
+     * @return converted SBOM
+     */
+    @PutMapping("/sboms")
+    public ResponseEntity<Long> convert(@RequestParam("id") Long id, @RequestParam("schema") SerializerFactory.Schema schema,
+                                        @RequestParam("format") SerializerFactory.Format format,
+                                        @RequestParam("overwrite") Boolean overwrite) {
+
+        Long convertID = this.sbomService.convert(id, schema, format, overwrite);
+        // todo convert should probably throw errors instead of returning null if error occurs
+        if(convertID == null)
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        // Return converted ID
+        return new ResponseEntity<>(convertID, HttpStatus.OK);
     }
 
 
