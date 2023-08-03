@@ -57,14 +57,18 @@ public class Conversion {
      * @param sbom
      * @return SVIPSBOM
      */
-    private static SVIPSBOM toSVIP(SBOM sbom) throws Exception {
+    private static SVIPSBOM toSVIP(SBOM sbom, SerializerFactory.Schema originalSchema) throws Exception {
 
         try {
             return (SVIPSBOM) sbom;
-        } catch (Exception e) {
-            throw new Exception("Couldn't standardize SBOM to SVIPSBOM: " + e.getMessage());
+        } catch (ClassCastException c) {
+            try{
+                buildSBOM(sbom, SerializerFactory.Schema.SVIP, originalSchema);
+                return builder.Build();
+            }catch (Exception e){
+                throw new Exception("Couldn't standardize SBOM to SVIPSBOM: " + e.getMessage());
+            }
         }
-
     }
 
     /**
@@ -74,17 +78,16 @@ public class Conversion {
      * @param desiredSchema
      * @return
      */
-    public static SBOM convertSBOM(SBOM sbom, SerializerFactory.Schema desiredSchema) throws Exception {
+    public static SBOM convertSBOM(SBOM sbom, SerializerFactory.Schema desiredSchema,
+                                   SerializerFactory.Schema originalSchema) throws Exception {
 
         // todo deserialization happens in controller
 
         // Get the converter
         Convert converter = getConvert(desiredSchema);
 
-
-
         // Standardize SBOM to an SVIPSBOM
-        SVIPSBOM svipsbom = toSVIP(sbom);
+        SVIPSBOM svipsbom = toSVIP(sbom, originalSchema);
 
         // If no converter was found, return the SBOM as an SVIPSBOM
         return converter == null ? svipsbom : converter.convert(svipsbom);
