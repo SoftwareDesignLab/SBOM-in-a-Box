@@ -61,6 +61,16 @@ public class SBOMController {
         try {
             // Attempt to upload input
             SBOM sbom = uploadSBOMInput.toSBOMFile();
+            // Attempt to deserialize
+            // todo move this to service
+            Deserializer d = SerializerFactory.createDeserializer(sbom.getContent());
+            d.readFromString(sbom.getContent());
+
+            // If reach here, SBOM is valid, set additional fields
+            sbom.setSchema(d)
+                .setFileType(d);
+
+            // Upload File
             this.sbomService.upload(sbom);
 
             // Log
@@ -190,6 +200,32 @@ public class SBOMController {
     }
 
 
+    /**
+     * USAGE. Send GET request to /sboms with a URL parameter id to get the deserialized SBOM.
+     *
+     * The API will respond with an HTTP 200 and the SBOM object json
+     *
+     * @param id The id of the SBOM contents to retrieve.
+     * @return A deserialized SBOM Object
+     */
+    @GetMapping("/sbom")
+    public ResponseEntity<org.svip.sbom.model.interfaces.generics.SBOM> getSBOMObject(@RequestParam("id") Long id){
+
+        try{
+            org.svip.sbom.model.interfaces.generics.SBOM sbom = this.sbomService.getSBOMObject(id);
+
+            // No SBOM was found
+            if(sbom == null)
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+            // Else return the object
+            return new ResponseEntity<>(sbom, HttpStatus.OK);
+
+        } catch (JsonProcessingException e ){
+            // error with Deserialization
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     /**
      * USAGE. Send GET request to /sboms/content with a URL parameter id to get the contents of the SBOM with the specified ID.
      *
