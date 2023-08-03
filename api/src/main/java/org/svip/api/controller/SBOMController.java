@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.svip.api.entities.SBOM;
-import org.svip.api.requests.UploadSBOMInput;
+import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMService;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
@@ -47,22 +47,19 @@ public class SBOMController {
      * @return The ID of the new SBOM
      */
     @PostMapping("/sboms")
-    public ResponseEntity<Long> upload(@RequestBody UploadSBOMInput uploadSBOMInput) {
-        SBOM sbom = uploadSBOMInput.toSBOM();
+    public ResponseEntity<Long> upload(@RequestBody UploadSBOMFileInput uploadSBOMInput) {
 
-        // Validate SBOM with deserializers
+        // Attempt to upload input
         try {
-            // Attempt to deserialize
-            // todo move this to service
-            Deserializer d = SerializerFactory.createDeserializer(sbom.getContent());
-            d.readFromString(sbom.getContent());
 
-            // If reach here, SBOM is valid, set additional fields
-            sbom.setSchema(d)
-                .setFileType(d);
-
-            // Upload File
+            SBOM sbom = uploadSBOMInput.toSBOMFile();
             this.sbomService.upload(sbom);
+
+            // Log
+            LOGGER.info("POST /svip/sboms - Uploaded SBOM with ID " + sbom.getId() + ": " + sbom.getName());
+
+            // Return ID
+            return new ResponseEntity<>(sbom.getId(), HttpStatus.OK);
 
         } catch (IllegalArgumentException | JsonProcessingException e) {
             // Problem with parsing
@@ -73,12 +70,6 @@ public class SBOMController {
             LOGGER.error("POST /svip/sboms - " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        // Log
-        LOGGER.info("POST /svip/sboms - Uploaded SBOM with ID " + sbom.getId() + ": " + sbom.getName());
-
-        // Return ID
-        return new ResponseEntity<>(sbom.getId(), HttpStatus.OK);
     }
 
 
@@ -88,7 +79,7 @@ public class SBOMController {
      * The API will respond with an HTTP 200 and the SBOM object json
      *
      * @param id The id of the SBOM contents to retrieve.
-     * @return A deserialized SBOM Object
+     * @return A deserialized SBOM Object in JSON form
      */
     @GetMapping("/sbom")
     public ResponseEntity<String> getSBOMObjectAsJSON(@RequestParam("id") Long id){
