@@ -7,18 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.svip.api.entities.SBOM;
-import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
-import org.svip.api.services.SBOMService;
-import org.svip.api.utils.Utils;
-import org.svip.serializers.SerializerFactory;
-import org.svip.serializers.deserializer.Deserializer;
-
-import java.util.Optional;
+import org.svip.api.services.SBOMFileService;
 
 /**
  * REST API Controller for managing SBOM and SBOM operations
