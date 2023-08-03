@@ -7,10 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMService;
+import org.svip.api.utils.Utils;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
+
+import java.util.Optional;
 
 /**
  * REST API Controller for Managing SBOM and SBOM operations
@@ -38,6 +42,10 @@ public class SBOMController {
     }
 
 
+    ///
+    /// POST
+    ///
+
     /**
      * USAGE. Send POST request to /sboms with one SBOM Input data.
      *
@@ -49,9 +57,9 @@ public class SBOMController {
     @PostMapping("/sboms")
     public ResponseEntity<Long> upload(@RequestBody UploadSBOMFileInput uploadSBOMInput) {
 
-        // Attempt to upload input
-        try {
 
+        try {
+            // Attempt to upload input
             SBOM sbom = uploadSBOMInput.toSBOMFile();
             this.sbomService.upload(sbom);
 
@@ -72,6 +80,10 @@ public class SBOMController {
         }
     }
 
+
+    ///
+    /// GET
+    ///
 
     /**
      * USAGE. Send GET request to /sboms with a URL parameter id to get the deserialized SBOM.
@@ -99,6 +111,8 @@ public class SBOMController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
     /**
      * USAGE. Send GET request to /sboms/content with a URL parameter id to get the contents of the SBOM with the specified ID.
      *
@@ -115,8 +129,8 @@ public class SBOMController {
 
         // Return SBOM or invalid ID
         if (sbomFile == null) {
-            LOGGER.info("GET /svip/sboms/content?id=" + id + " - FILE NOT FOUND");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            LOGGER.warn("GET /svip/sboms/content?id=" + id + " - FILE NOT FOUND");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         // Log
@@ -147,6 +161,36 @@ public class SBOMController {
 
         // Else return the array of stored IDs
         return new ResponseEntity<>(ids, HttpStatus.OK);
+    }
+
+
+    ///
+    /// DELETE
+    ///
+
+    /**
+     * USAGE. Send DELETE request to /delete with a URL parameter id to get the contents of the SBOM with the specified
+     * ID.
+     *
+     * The API will respond with an HTTP 200 and the ID of the deleted SBOM file (if found).
+     *
+     * @param id The id of the SBOM contents to retrieve.
+     * @return The ID of the deleted file.
+     */
+    @DeleteMapping("/sboms")
+    public ResponseEntity<Long> delete(@RequestParam("id") Long id) {
+
+        // Attempt to delete id
+        if(this.sbomService.deleteSBOMFile(id) == null){
+            LOGGER.warn("DELETE /svip/sboms?id=" + id + " - FILE NOT FOUND");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        // Log
+        LOGGER.info("DELETE /svip/sboms?id=" + id);
+
+        // Return deleted ID as confirmation
+        return new ResponseEntity<>(id, HttpStatus.OK);
     }
 
 }

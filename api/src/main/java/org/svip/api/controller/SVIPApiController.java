@@ -124,36 +124,6 @@ public class SVIPApiController {
 
 
     /**
-     * USAGE. Send DELETE request to /delete with a URL parameter id to get the contents of the SBOM with the specified
-     * ID.
-     * <p>
-     * The API will respond with an HTTP 200 and the ID of the deleted SBOM file (if found).
-     *
-     * @param id The id of the SBOM contents to retrieve.
-     * @return The ID of the deleted file.
-     */
-    @DeleteMapping("/sboms")
-    public ResponseEntity<Long> delete(@RequestParam("id") Long id) {
-        // Get SBOM to be deleted
-        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
-
-        // Check if it exists
-        if (sbomFile.isEmpty()) {
-            LOGGER.info("DELETE /svip/sboms?id=" + id + " - FILE NOT FOUND");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        // Delete
-        sbomFileRepository.delete(sbomFile.get());
-
-        // Log
-        LOGGER.info("DELETE /svip/sboms?id=" + id + " - File: " + sbomFile.get().getFileName());
-
-        // Return deleted ID as confirmation
-        return Utils.encodeResponse(sbomFile.get().getId());
-    }
-
-    /**
      * USAGE. Send PUT request to /sboms an existing SBOM on the backend to a desired schema and format
      *
      * @param id        of the SBOM
