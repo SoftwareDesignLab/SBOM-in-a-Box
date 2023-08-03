@@ -7,10 +7,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
-import org.svip.api.services.QualityReportFileService;
 import org.svip.api.services.SBOMFileService;
-import org.svip.api.services.VEXFileService;
+import org.svip.api.utils.Converter;
+import org.svip.api.utils.Utils;
+import org.svip.serializers.SerializerFactory;
+
+import java.util.Optional;
+import java.util.Random;
 
 /**
  * REST API Controller for managing SBOM and SBOM operations
@@ -27,19 +32,14 @@ public class SBOMController {
     private static final Logger LOGGER = LoggerFactory.getLogger(SBOMController.class);
 
     private final SBOMFileService sbomService;
-    private final QualityReportFileService qualityReportFileService;
-    private final VEXFileService vexFileService;
 
     /**
      * Create new Controller with services
      *
      * @param sbomService Service for handling SBOM queries
-     * @param qualityReportFileService Service for handling QA queries
      */
-    public SBOMController(SBOMFileService sbomService, QualityReportFileService qualityReportFileService, VEXFileService vexFileService){
+    public SBOMController(SBOMFileService sbomService){
         this.sbomService = sbomService;
-        this.qualityReportFileService = qualityReportFileService;
-        this.vexFileService = vexFileService;
     }
 
 
@@ -83,6 +83,33 @@ public class SBOMController {
 
 
     ///
+    /// PUT
+    ///
+    /**
+     * USAGE. Send PUT request to /sboms an existing SBOM on the backend to a desired schema and format
+     *
+     * @param id        of the SBOM
+     * @param schema    to convert to
+     * @param format    to convert to
+     * @param overwrite whether to overwrite original
+     * @return converted SBOM
+     */
+    @PutMapping("/sboms")
+    public ResponseEntity<Long> convert(@RequestParam("id") Long id, @RequestParam("schema") SerializerFactory.Schema schema,
+                                        @RequestParam("format") SerializerFactory.Format format,
+                                        @RequestParam("overwrite") Boolean overwrite) {
+
+        Long convertID = this.sbomService.convert(id, schema, format, overwrite);
+        // todo convert should probably throw errors instead of returning null if error occurs
+        if(convertID == null)
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        // Return converted ID
+        return new ResponseEntity<>(convertID, HttpStatus.OK);
+    }
+
+
+    ///
     /// GET
     ///
 
@@ -98,14 +125,14 @@ public class SBOMController {
     public ResponseEntity<String> getSBOMObjectAsJSON(@RequestParam("id") Long id){
 
         try{
-            SBOM sbomFile = this.sbomService.getSBOMFile(id);
+            String sbom = this.sbomService.getSBOMObjectAsJSON(id);
 
             // No SBOM was found
-            if(sbomFile == null)
+            if(sbom == null)
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
             // Else return the object
-            return new ResponseEntity<>(sbomFile.toSBOMObjectAsJSON(), HttpStatus.OK);
+            return new ResponseEntity<>(sbom, HttpStatus.OK);
 
         } catch (JsonProcessingException e ){
             // error with Deserialization
@@ -181,15 +208,11 @@ public class SBOMController {
     @DeleteMapping("/sboms")
     public ResponseEntity<Long> delete(@RequestParam("id") Long id) {
 
-        SBOM sbomFile = this.sbomService.getSBOMFile(id);
         // Attempt to delete id
-        if(sbomFile == null){
+        if(this.sbomService.deleteSBOMFile(id) == null){
             LOGGER.warn("DELETE /svip/sboms?id=" + id + " - FILE NOT FOUND");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-
-        // Delete SBOM file
-        this.sbomService.deleteSBOMFile(sbomFile);
 
         // Log
         LOGGER.info("DELETE /svip/sboms?id=" + id);
