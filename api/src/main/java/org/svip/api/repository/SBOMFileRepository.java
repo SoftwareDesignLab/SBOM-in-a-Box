@@ -1,7 +1,7 @@
 package org.svip.api.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.svip.api.model.SBOMFile;
+import org.svip.api.entities.SBOMFile;
 
 import java.util.List;
 
