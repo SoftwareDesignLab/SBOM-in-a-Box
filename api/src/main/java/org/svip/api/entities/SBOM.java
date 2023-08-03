@@ -8,7 +8,7 @@ import jakarta.persistence.*;
  * @author Derek Garcia
  **/
 @Entity
-@Table(name = "SBOMS")
+@Table(name = "SBOMs")
 public class SBOM {
 
     // Schema of SBOM
@@ -43,6 +43,53 @@ public class SBOM {
     @Column(nullable = false, name = "file_type")
     private FileType fileType;
 
+    ///
+    /// Setters
+    ///
+
+    /**
+     * Set File Name
+     * @param name filename of SBOM
+     * @return SBOM
+     */
+    public SBOM setName(String name){
+        this.name = name;
+        return this;
+    }
+
+    /**
+     * Set File Content
+     * @param content SBOM string contents
+     * @return SBOM
+     */
+    public SBOM setContent(String content){
+        this.content = content;
+        return this;
+    }
+
+    /**
+     * Set SBOM Schema
+     * @param schema SBOM schema
+     * @return SBOM
+     */
+    public SBOM setSchema(Schema schema){
+        this.schema = schema;
+        return this;
+    }
+
+    /**
+     * Set SBOM File Type
+     * @param fileType File Type
+     * @return SBOM
+     */
+    public SBOM setFileType(FileType fileType){
+        this.fileType = fileType;
+        return this;
+    }
+
+    ///
+    /// Getters
+    ///
 
     /**
      * @return SBOM ID
