@@ -3,13 +3,13 @@ package org.svip.api.entities;
 import jakarta.persistence.*;
 
 /**
- * VEX Table for the database
+ * Diff Report Table for the database
  *
  * @author Derek Garcia
  **/
 @Entity
-@Table(name = "vex_file")
-public class VEXFile {
+@Table(name = "diff_report_file")
+public class DiffReportFile {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
