@@ -7,11 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.svip.api.entities.SBOM;
-import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
+import org.svip.api.services.SBOMFileService;
 import org.svip.api.services.SBOMFileService;
 import org.svip.api.services.SBOMFileService;
 
