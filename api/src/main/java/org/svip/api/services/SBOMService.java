@@ -1,6 +1,7 @@
 package org.svip.api.services;
 
 import org.springframework.stereotype.Service;
+import org.svip.api.entities.SBOM;
 import org.svip.api.repository.SBOMRepository;
 
 import java.util.ArrayList;
@@ -24,6 +25,21 @@ public class SBOMService {
         this.sbomRepository = sbomRepository;
     }
 
+
+    /**
+     * Create a new sbom entry in the database
+     *
+     * @param sbom sbom to upload
+     * @return uploaded sbom entry
+     */
+    public SBOM upload(SBOM sbom) throws Exception {
+        try{
+            return this.sbomRepository.save(sbom);
+        } catch (Exception e){
+            // todo custom exception instead of generic
+            throw new Exception("Failed to upload to Database: " + e.getMessage());
+        }
+    }
 
     /**
      * Get all the IDs of the store SBOMs in the database
