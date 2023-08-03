@@ -228,12 +228,13 @@ public class ParserController {
             SVIPComponentBuilder oldComponent = components.get(hash);
 
             // Dead import found
-            if (newComponent.getType().equalsIgnoreCase("dead_import")) {
-                Debug.log(LOG_TYPE.DEBUG, "Removed dead import " + newComponent.getName());
-                deadImportCounter++;
-                totalRemoved++;
-                continue;
-            }
+            if(newComponent.getType() != null)
+                if (newComponent.getType().equalsIgnoreCase("dead_import")) {
+                    Debug.log(LOG_TYPE.DEBUG, "Removed dead import " + newComponent.getName());
+                    deadImportCounter++;
+                    totalRemoved++;
+                    continue;
+                }
 
             // Duplicate found
             if (oldComponent != null) {

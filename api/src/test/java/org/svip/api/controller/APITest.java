@@ -7,6 +7,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.svip.api.model.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.utils.Utils;
+import org.svip.serializers.SerializerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -50,6 +51,9 @@ public class APITest {
 
     private final static String vulnerableSBOMOSV = System.getProperty("user.dir")
             + "/src/test/resources/sample_sboms/CDX_vulns_osv_sbom.json";
+
+    protected final SerializerFactory.Schema[] schemas = {SerializerFactory.Schema.SPDX23, SerializerFactory.Schema.CDX14};
+    protected final SerializerFactory.Format[] formats = {SerializerFactory.Format.TAGVALUE, SerializerFactory.Format.JSON};
 
     /*
     Sample projects for parsers
