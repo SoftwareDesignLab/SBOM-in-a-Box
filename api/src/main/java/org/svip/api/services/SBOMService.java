@@ -7,17 +7,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Business logic for accessing the SBOM table
+ *
  * @author Derek Garcia
  **/
 @Service
 public class SBOMService {
     private final SBOMRepository sbomRepository;
 
+    /**
+     * Create new Service for a target repository
+     *
+     * @param sbomRepository SBOM repository to access
+     */
     public SBOMService(SBOMRepository sbomRepository){
         this.sbomRepository = sbomRepository;
     }
 
 
+    /**
+     * Get all the IDs of the store SBOMs in the database
+     *
+     * @return list of sbom IDs
+     */
     public Long[] getAllIDs(){
         List<Long> sbomIDs = new ArrayList<>();
 
