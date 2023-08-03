@@ -43,6 +43,7 @@ public class SBOMService {
      *
      * @param sbom sbom to upload
      * @return uploaded sbom entry
+     * @throws Exception Error uploading to the Database
      */
     public SBOM upload(SBOM sbom) throws Exception {
         try{
@@ -109,5 +110,21 @@ public class SBOMService {
 
         // convert to long array
         return sbomIDs.toArray(new Long[0]);
+    }
+
+
+    public Long deleteSBOMFile(Long id){
+        // Get SBOM to be deleted
+        SBOM sbomFile = getSBOMFile(id);
+
+        // Check if it exists
+        if (sbomFile == null)
+            return null;
+
+        // Delete from repository
+        this.sbomRepository.delete(sbomFile);
+
+        // return confirmation id
+        return id;
     }
 }
