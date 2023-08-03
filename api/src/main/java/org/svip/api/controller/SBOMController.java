@@ -12,8 +12,14 @@ import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
 import org.svip.api.utils.Converter;
 import org.svip.api.utils.Utils;
+import org.svip.merge.MergerController;
+import org.svip.merge.MergerException;
+import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.serializers.SerializerFactory;
+import org.svip.serializers.deserializer.Deserializer;
+import org.svip.serializers.serializer.Serializer;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Random;
 
@@ -58,7 +64,6 @@ public class SBOMController {
     @PostMapping("/sboms")
     public ResponseEntity<Long> upload(@RequestBody UploadSBOMFileInput uploadSBOMInput) {
 
-
         try {
             // Attempt to upload input
             SBOM sbom = uploadSBOMInput.toSBOMFile();
@@ -82,9 +87,31 @@ public class SBOMController {
     }
 
 
+    /**
+     * Merge two or more SBOMs
+     * todo remove old SBOMs from DB?
+     *
+     * @param ids list of IDs to merge
+     * @return ID of merged SBOM
+     */
+    @PostMapping("/sboms/merge")
+    public ResponseEntity<Long> merge(@RequestBody Long[] ids) {
+
+        Long mergeID = this.sbomService.merge(ids);
+        // todo convert should probably throw errors instead of returning null if error occurs
+        if(mergeID == null)
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        // Return final merged ID
+        return new ResponseEntity<>(mergeID, HttpStatus.OK);
+    }
+
+
     ///
     /// PUT
     ///
+
+
     /**
      * USAGE. Send PUT request to /sboms an existing SBOM on the backend to a desired schema and format
      *
@@ -92,7 +119,7 @@ public class SBOMController {
      * @param schema    to convert to
      * @param format    to convert to
      * @param overwrite whether to overwrite original
-     * @return converted SBOM
+     * @return ID of converted SBOM
      */
     @PutMapping("/sboms")
     public ResponseEntity<Long> convert(@RequestParam("id") Long id, @RequestParam("schema") SerializerFactory.Schema schema,
