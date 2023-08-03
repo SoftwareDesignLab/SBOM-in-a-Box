@@ -1,9 +1,6 @@
 package org.svip.compare.conflicts;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.svip.metrics.resultfactory.Text;
-
-import static org.svip.metrics.resultfactory.enumerations.INFO.*;
 
 /**
  * file: Conflict.java
@@ -109,10 +106,6 @@ public class Conflict {
         // Both are missing, no conflict
         if (target == null && other == null)
             return null;
-
-        Text text = new Text("Conflict", field);
-
-        // added more extensive null checks to account for the different null responses
 
         // Target is missing
         if (target == null || target.isEmpty())
