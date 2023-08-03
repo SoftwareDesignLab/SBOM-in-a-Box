@@ -11,6 +11,7 @@ import org.svip.serializers.deserializer.Deserializer;
  * @author Derek Garcia
  **/
 public record UploadSBOMFileInput(String fileName, String contents) {
+
     /**
      * Create a new SBOM File Object
      * @return SBOM File
