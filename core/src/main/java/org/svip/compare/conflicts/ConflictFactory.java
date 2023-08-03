@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.svip.metrics.resultfactory.enumerations.INFO.DIFF_NULL_HASH;
-
 /**
  * File: ConflictFactory.java
  * Handles creating new Conflicts
@@ -61,9 +59,6 @@ public class ConflictFactory {
         if (!comparable(field, target, other))
             return;
 
-        // Construct Text to use for diff report conflict messages
-        Text text = new Text("Conflict", field);
-
         // Round 1: Compare target against other if equal
         for (Comparable targetValue : target) {
             boolean compared = false;   // track if comparison occurred
@@ -79,7 +74,7 @@ public class ConflictFactory {
             }
             // targetValue not in other set
             if (!compared)
-                addConflict(field, MismatchType.MISSING, targetValue.toString(), text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, ""));
+                addConflict(field, MismatchType.MISSING, targetValue.toString(), null);
         }
 
         // Round 2: Don't compare other against target, just checking if present
@@ -97,7 +92,7 @@ public class ConflictFactory {
 
             // otherValue not in target set
             if (!compared)
-                addConflict(field, MismatchType.MISSING, text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, ""), otherValue.toString());
+                addConflict(field, MismatchType.MISSING, null, otherValue.toString());
         }
     }
 
@@ -114,19 +109,16 @@ public class ConflictFactory {
         if (!comparable(field, target, other))
             return;
 
-        // Construct Text to use for diff report conflict messages
-        Text text = new Text("Conflict", field);
-
         // Compare Strings
         for (String value : target) {
             // Value in target and not in other
             if (!other.contains(value))
-                addConflict(field, mismatchType, value, text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, ""));
+                addConflict(field, mismatchType, value, null);
         }
         for (String value : other) {
             // Value in other and not in target
             if (!target.contains(value))
-                addConflict(field, mismatchType, text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, ""), value);
+                addConflict(field, mismatchType, null, value);
         }
     }
 
@@ -149,7 +141,7 @@ public class ConflictFactory {
         for (String targetAlg : target.keySet()) {
             // If other doesn't contain hash, add as missing
             if (!other.containsKey(targetAlg)) {
-                addConflict(field, MismatchType.MISSING, text.getHashMessage(targetAlg, target.get(targetAlg)), text.getMessage(DIFF_NULL_HASH, ""));
+                addConflict(field, MismatchType.MISSING, targetAlg, null);
                 continue;
             }
             // Compare hash values
@@ -160,7 +152,7 @@ public class ConflictFactory {
         for (String otherAlg : other.keySet()) {
             // If target doesn't contain hash, add as missing
             if (!target.containsKey(otherAlg))
-                addConflict(field, MismatchType.MISSING, text.getMessage(DIFF_NULL_HASH, ""), text.getHashMessage(otherAlg, other.get(otherAlg)));
+                addConflict(field, MismatchType.MISSING, null, otherAlg);
         }
     }
 
@@ -179,14 +171,11 @@ public class ConflictFactory {
         if (target == null && other == null)
             return false;
 
-        // Construct Text to use for diff report conflict messages
-        Text text = new Text("Conflict", field);
-
         // One is missing from the other
         // TODO Better way to handle this case
         if (target == null || other == null) {
-            addConflict(field, MismatchType.MISSING, (target == null ? other.toString() : text.getMessage(INFO.DIFF_NULL_VALUE, "")),
-                                                     (other == null ? target.toString() : text.getMessage(INFO.DIFF_NULL_VALUE, "")));
+            addConflict(field, MismatchType.MISSING, (target == null ? other.toString() : null),
+                                                     (other == null ? target.toString() : null));
             return false;
         }
 
