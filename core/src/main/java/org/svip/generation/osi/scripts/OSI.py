@@ -9,25 +9,22 @@ Container.
 
 from flask import Flask
 from constants import CONTAINER_BIND_CODE, CONTAINER_BIND_SBOM
-from ToolMapper import ToolMapper
+from ToolMapper import get_tool, get_tool_names
 from ToolUtils import cleanup, detect_language, clean_manifest, get_tools, run_tools
 
 # Create Flask app
 app = Flask(__name__)
 
-# Create tool mapper
-tool_mapper = ToolMapper()
-
 
 @app.route('/tools', methods=['GET'])
-def getTools():
+def get_tools():
     """
     Endpoint: GET http://localhost:8081/tools
 
     Returns: A list of names of valid open-source tools.
     """
 
-    return tool_mapper.get_tool_names()
+    return get_tool_names()
 
 
 @app.route('/generate', methods=['GET'])
@@ -52,7 +49,7 @@ def generate(tool_names):
     print("Tools selected:")
     for name in tool_names:
         # Make sure tool exists
-        tool = tool_mapper.get_tool(name)
+        tool = get_tool(name)
         if tool is None:
             print(name, " -- Invalid tool name. Skipping.")
 
