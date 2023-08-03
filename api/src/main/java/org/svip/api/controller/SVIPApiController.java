@@ -13,10 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
-import org.svip.api.services.SBOMFileService;
+import org.svip.api.utils.Converter;
 import org.svip.api.utils.Utils;
-import org.svip.conversion.Conversion;
-import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
@@ -124,7 +122,234 @@ public class SVIPApiController {
         return osiContainer != null;
     }
 
+    /**
+     * USAGE. Send POST request to /sboms with one SBOM file.
+     * The SBOM file is made up of 2 JSON key-value pairs in the request body: fileName and contents.
+     * <p>
+     * The API will respond with an HTTP 200 and the ID used to identify the SBOM file.
+     *
+     * @param sbomFile 2 JSON key-value pairs in the request body: fileName and contents.
+     * @return The uploaded filename used to identify the SBOM file.
+     */
+//    @PostMapping("/sboms")
+//    public ResponseEntity<?> upload(@RequestBody SBOMFile sbomFile) {
+//        // Validate
+//        if (sbomFile.hasNullProperties())
+//            return new ResponseEntity<>("SBOM filename and/or contents may not be empty", HttpStatus.BAD_REQUEST);
+//
+//        String errorMsg = "Error processing file: " + sbomFile.getFileName();
+//        try {
+//            Deserializer d = SerializerFactory.createDeserializer(sbomFile.getContents());
+//            d.readFromString(sbomFile.getContents());
+//        } catch (IllegalArgumentException | JsonProcessingException e) {
+//            LOGGER.info("POST /svip/sboms - " + errorMsg);
+//            LOGGER.error(e.getMessage());
+//            return new ResponseEntity<>(e.getMessage() + " " + errorMsg, HttpStatus.BAD_REQUEST);
+//        }
+//
+//        // Upload
+//        sbomFileRepository.save(sbomFile);
+//        LOGGER.info("POST /svip/sboms - Uploaded SBOM with ID " + sbomFile.getId() + ": " + sbomFile.getFileName());
+//
+//        // Return ID
+//        return Utils.encodeResponse(sbomFile.getId());
+//    }
 
+    /**
+     * USAGE. Send GET request to /sboms/content with a URL parameter id to get the contents of the SBOM with the specified ID.
+     * <p>
+     * The API will respond with an HTTP 200 and the contents of the SBOM file.
+     *
+     * @param id The id of the SBOM contents to retrieve.
+     * @return The contents of the SBOM file.
+     */
+    @GetMapping("/sboms/content")
+    public ResponseEntity<SBOMFile> view(@RequestParam("id") Long id) {
+        // Get SBOM
+        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
+
+        // Return SBOM or invalid ID
+        if (sbomFile.isEmpty()) {
+            LOGGER.info("GET /svip/sboms/content?id=" + id + " - FILE NOT FOUND");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Log
+        LOGGER.info("GET /svip/sboms/content?id=" + id + " - File: " + sbomFile.get().getFileName());
+
+        return Utils.encodeResponse(sbomFile.get());
+    }
+
+    /**
+     * USAGE. Send GET request to /sboms.
+     * The API will respond with an HTTP 200 and a JSON array of all IDs of currently uploaded SBOM files.
+     *
+     * @return A JSON array of IDs of all currently uploaded SBOM files.
+     */
+    @GetMapping("/sboms")
+    public ResponseEntity<Long[]> viewFiles() {
+        // Get file names
+        List<SBOMFile> sbomFiles = sbomFileRepository.findAll();
+
+        // Log
+        LOGGER.info("GET /svip/sboms - Found " + sbomFiles.size() + " file(s).");
+
+        if (sbomFiles.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        // Return file names
+        return Utils.encodeResponse(sbomFiles.stream().map(SBOMFile::getId).toList().toArray(new Long[0]));
+    }
+
+    /**
+     * USAGE. Send GET request to /sboms with a URL parameter id to get the deserialized SBOM.
+     * <p>
+     * The API will respond with an HTTP 200 and the SBOM object json
+     * todo: better ways to add more support?
+     *
+     * @param id The id of the SBOM contents to retrieve.
+     * @return The contents of the SBOM file.
+     */
+    @GetMapping("/sbom")
+    public ResponseEntity<?> getSBOM(@RequestParam("id") Long id) {
+
+        String urlMsg = "GET /svip/sbom?id=" + id;    // for logging
+
+        // Get SBOM
+        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
+
+        // Return SBOM or invalid ID
+        if (sbomFile.isEmpty()) {
+            LOGGER.warn(urlMsg + " - FILE NOT FOUND");
+            return new ResponseEntity<>("Invalid SBOM ID", HttpStatus.NOT_FOUND);
+        }
+
+        // Deserialize SBOM into JSON Object
+        SBOM sbom;
+        try {
+            Deserializer d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
+            sbom = d.readFromString(sbomFile.get().getContents());
+        } catch (JsonProcessingException e) {
+            return new ResponseEntity<>("Failed to deserialize SBOM content, may be an unsupported format", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Deserialization Error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // Log
+        LOGGER.info(urlMsg + " - File: " + sbomFile.get().getFileName());
+
+        return Utils.encodeResponse(sbom);
+    }
+
+
+    /**
+     * USAGE. Send DELETE request to /delete with a URL parameter id to get the contents of the SBOM with the specified
+     * ID.
+     * <p>
+     * The API will respond with an HTTP 200 and the ID of the deleted SBOM file (if found).
+     *
+     * @param id The id of the SBOM contents to retrieve.
+     * @return The ID of the deleted file.
+     */
+    @DeleteMapping("/sboms")
+    public ResponseEntity<Long> delete(@RequestParam("id") Long id) {
+        // Get SBOM to be deleted
+        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
+
+        // Check if it exists
+        if (sbomFile.isEmpty()) {
+            LOGGER.info("DELETE /svip/sboms?id=" + id + " - FILE NOT FOUND");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Delete
+        sbomFileRepository.delete(sbomFile.get());
+
+        // Log
+        LOGGER.info("DELETE /svip/sboms?id=" + id + " - File: " + sbomFile.get().getFileName());
+
+        // Return deleted ID as confirmation
+        return Utils.encodeResponse(sbomFile.get().getId());
+    }
+
+    /**
+     * USAGE. Send PUT request to /sboms an existing SBOM on the backend to a desired schema and format
+     *
+     * @param id        of the SBOM
+     * @param schema    to convert to
+     * @param format    to convert to
+     * @param overwrite whether to overwrite original
+     * @return converted SBOM
+     */
+    @PutMapping("/sboms")
+    public ResponseEntity<Long> convert(@RequestParam("id") long id, @RequestParam("schema") SerializerFactory.Schema schema,
+                                        @RequestParam("format") SerializerFactory.Format format,
+                                        @RequestParam("overwrite") Boolean overwrite) {
+        // Get SBOM
+        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
+
+        // Check if it exists
+        ResponseEntity<Long> NOT_FOUND = Utils.checkIfExists(id, sbomFile, "convert");
+        if (NOT_FOUND != null) return NOT_FOUND;
+
+        // Get and convert SBOM
+        SBOMFile toConvert = sbomFile.get();
+        SBOMFile converted;
+
+        // Error message if needed
+        String urlMsg = "CONVERT /svip/sboms?id=" + id;
+
+        // Ensure schema has a valid serializer
+        try {
+            converted = Converter.convert(toConvert, schema, format);
+            schema.getSerializer(format);
+        } catch (Exception e) {
+            LOGGER.error(urlMsg + ": " + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        // if anything went wrong, an SBOMFILE with a blank name and contents will be returned,
+        // paired with the message String
+        if (converted.hasNullProperties()) {
+            LOGGER.error(urlMsg + ": SBOM has null properties");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // assign appropriate id and name
+        converted.setFileName(toConvert.getFileName());
+
+        // overwrite
+        if (overwrite) {
+            sbomFileRepository.delete(sbomFile.get());
+
+            assert sbomFileRepository.findById(id).isEmpty(); // todo this assertion fails
+
+            converted.setId(id);
+            sbomFileRepository.save(converted);
+
+            assert sbomFileRepository.findById(id).isPresent();
+        } else {
+            long newId = Utils.generateNewId(id, new Random(), sbomFileRepository);
+            converted.setId(newId);
+
+            assert converted.getId() == newId;
+            sbomFileRepository.save(converted);
+
+            boolean caught = false;
+
+            try {
+                sbomFileRepository.findById(newId).isEmpty();
+            } catch (NullPointerException e) {
+                caught = true;
+            }
+
+            assert caught;
+
+        }
+
+
+        return Utils.encodeResponse(converted.getId());
+    }
 
     /**
      * USAGE Send GET request to /qa with a URL parameter id to conduct a quality assessment on the SBOM with
@@ -253,7 +478,8 @@ public class SVIPApiController {
 
         SBOMFile result = new SBOMFile(projectName + ((format == SerializerFactory.Format.JSON)
                 ? ".json" : ".spdx"), contents);
-        result.setId(SBOMFileService.generateSBOMFileId());
+        Random rand = new Random();
+        result.setId(Utils.generateNewId(rand.nextLong(), rand, sbomFileRepository));
         sbomFileRepository.save(result);
 
         return Utils.encodeResponse(result.getId());
@@ -264,7 +490,7 @@ public class SVIPApiController {
     public ResponseEntity<?> generateOSI(@RequestParam("zipFile") MultipartFile zipFile,
                                          @RequestParam("projectName") String projectName,
                                          @RequestParam("schema") SerializerFactory.Schema schema,
-                                         @RequestParam("format") SerializerFactory.Format format) throws SBOMBuilderException {
+                                         @RequestParam("format") SerializerFactory.Format format) {
         if (osiContainer == null)
             return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
 
@@ -358,8 +584,7 @@ public class SVIPApiController {
                         HttpStatus.NOT_FOUND);
             }
         }
-
-        Conversion.buildSBOM(osiMerged, schema, oldSchema);
+        Converter.buildSBOM(builder, osiMerged, schema, oldSchema);
         builder.setName(projectName); // Set SBOM name to specified project name TODO should this be done in OSI class?
 
         // Serialize SVIPSBOM to given schema and format
@@ -417,6 +642,92 @@ public class SVIPApiController {
         return Utils.encodeResponse(diffReport);
     }
 
+    /**
+     * Merge two existing SBOMs
+     *
+     * @param ids of the two SBOMs
+     * @return a merged sbomFile
+     */
+    @PostMapping("sboms/merge")
+    public ResponseEntity<?> merge(@RequestBody long[] ids) {
+
+        ArrayList<SBOM> sboms = new ArrayList<>();
+
+        String urlMsg = "MERGE /svip/merge?id=";
+
+        long idSum = 0L;
+
+        // check for bad files
+        for (Long id : ids
+        ) {
+
+            // Get SBOM
+            Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
+
+            // Check if it exists
+            ResponseEntity<Long> NOT_FOUND = Utils.checkIfExists(id, sbomFile, "merge");
+            if (NOT_FOUND != null) return NOT_FOUND;
+            SBOMFile sbom = sbomFile.get();
+
+            if (sbom.hasNullProperties()) {
+                LOGGER.info(urlMsg + sbomFile.get().getId() + " - ERROR IN MERGE - HAS NULL PROPERTIES");
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            // deserialize into SBOM object
+            Deserializer d;
+            SBOM deserialized;
+
+            try {
+                d = SerializerFactory.createDeserializer(sbom.getContents());
+                deserialized = d.readFromString(sbom.getContents());
+            } catch (Exception e) {
+                LOGGER.info(urlMsg + sbomFile.get().getId() + "DURING DESERIALIZATION: " +
+                        e.getMessage());
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            sboms.add(deserialized);
+            idSum += id;
+        }
+
+        // todo, merging more than two SBOMs is not supported right now
+        SBOM merged;
+        try {
+            MergerController mergerController = new MergerController();
+            merged = mergerController.merge(sboms.get(0), sboms.get(1));
+        } catch (MergerException e) {
+            String error = "Error merging SBOMs: " + e.getMessage();
+            LOGGER.error(urlMsg + " " + error);
+            return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        }
+
+        Serializer s;
+        String contents;
+        try {
+            s = SerializerFactory.createSerializer(SerializerFactory.Schema.SVIP, SerializerFactory.Format.JSON, true);
+            SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
+            builder.setSpecVersion("1.0-a");
+            Converter.buildSBOM(builder, merged, SerializerFactory.Schema.SVIP, null);
+            contents = s.writeToString(builder.Build());
+        } catch (IllegalArgumentException | JsonProcessingException e) {
+            String error = "Error serializing merged SBOM: " + e.getMessage();
+            LOGGER.error(urlMsg + " " + error);
+            return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        }
+
+        // SBOMFile
+        SBOMFile result = new SBOMFile(merged.getName(), contents);
+        Random rand = new Random();
+
+        idSum = Utils.generateNewId(idSum, rand, sbomFileRepository);
+
+        result.setId(idSum);
+        sbomFileRepository.save(result);
+
+        return Utils.encodeResponse(idSum);
+
+    }
 
     /**
      * USAGE Send GET request to /vex to generate a VEX Document for an SBOM
