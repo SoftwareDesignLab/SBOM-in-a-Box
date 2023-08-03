@@ -120,30 +120,6 @@ public class SVIPApiController {
         return osiContainer != null;
     }
 
-    /**
-     * USAGE. Send GET request to /sboms/content with a URL parameter id to get the contents of the SBOM with the specified ID.
-     *
-     * The API will respond with an HTTP 200 and the contents of the SBOM file.
-     *
-     * @param id The id of the SBOM contents to retrieve.
-     * @return The contents of the SBOM file.
-     */
-    @GetMapping("/sboms/content")
-    public ResponseEntity<SBOMFile> view(@RequestParam("id") Long id) {
-        // Get SBOM
-        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
-
-        // Return SBOM or invalid ID
-        if (sbomFile.isEmpty()) {
-            LOGGER.info("GET /svip/sboms/content?id=" + id + " - FILE NOT FOUND");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        // Log
-        LOGGER.info("GET /svip/sboms/content?id=" + id + " - File: " + sbomFile.get().getFileName());
-
-        return Utils.encodeResponse(sbomFile.get());
-    }
 
     /**
      * USAGE. Send GET request to /sboms with a URL parameter id to get the deserialized SBOM.

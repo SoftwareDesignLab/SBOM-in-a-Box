@@ -33,20 +33,25 @@ public class SBOM {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
+    @JsonProperty
     private Long id;
 
     @Column(nullable = false)
+    @JsonProperty("fileName")
     private String name;
 
     @Column(nullable = false, columnDefinition="LONGTEXT")
+    @JsonProperty("contents")
     private String content;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "schema_type")
+    @JsonProperty
     private Schema schema;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "file_type")
+    @JsonProperty
     private FileType fileType;
 
     ///
