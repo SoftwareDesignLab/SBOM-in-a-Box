@@ -1,7 +1,9 @@
 package org.svip.sbomanalysis.compare;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.svip.merge.*;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
@@ -24,7 +26,6 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class MergerTest {
 
@@ -1086,6 +1087,36 @@ public class MergerTest {
         assertEquals(1, result.getComponents().size());
 
         assertEquals(1, result.getExternalReferences().size());
+
+    }
+
+    @Test
+    public void merger_should_fail_with_null_SBOM() {
+
+        // SBOM One
+
+        CDX14SBOM SBOM_one = null;
+
+        // SBOM Two
+
+        CDX14Builder builder_two = new CDX14Builder();
+
+        CDX14SBOM SBOM_two = builder_two.buildCDX14SBOM();
+
+        // New merger
+
+        Merger merger = new MergerCDX();
+
+        // Merged SBOM Result
+
+        Assertions.assertThrows(NullPointerException.class, new Executable() {
+
+                @Override
+                public void execute() throws Throwable {
+                        SBOM result = merger.mergeSBOM(SBOM_one, SBOM_two);
+                }
+                
+        });
 
     }
 
