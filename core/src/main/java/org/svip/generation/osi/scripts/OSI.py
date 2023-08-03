@@ -7,12 +7,16 @@ Container.
 @author Ian Dunn
 """
 
-from flask import Flask, jsonify, request
-from config import CONTAINER_BIND_CODE, CONTAINER_BIND_SBOM
+from flask import Flask
+from constants import CONTAINER_BIND_CODE, CONTAINER_BIND_SBOM
+from ToolMapper import ToolMapper
 from ToolUtils import cleanup, detect_language, clean_manifest, get_tools, run_tools
 
 # Create Flask app
 app = Flask(__name__)
+
+# Create tool mapper
+tool_mapper = ToolMapper()
 
 
 @app.route('/tools', methods=['GET'])
@@ -20,31 +24,48 @@ def getTools():
     """
     Endpoint: GET http://localhost:8081/tools
 
-    Returns: A list of valid open-source tools.
+    Returns: A list of names of valid open-source tools.
     """
 
-    if request.method == 'GET':
-        data = "hello world"
-        return jsonify({'data': data})
+    return tool_mapper.get_tool_names()
 
 
 @app.route('/generate', methods=['GET'])
-def generate(tools):
+def generate(tool_names):
     """
     Endpoint: GET http://localhost:8081/generate
 
-    Parameter: A list of tool IDs to use in generation. If null, defaults to all tools.
+    Parameter: A list of tool names to use in generation. If null, defaults to all tools.
     Returns:   Generated SBOMs in osi/bound_dir/sboms
     """
 
+    # Cleanup, detect languages
     cleanup(True)
     langs, manifest_files = detect_language(CONTAINER_BIND_CODE)
     manifest_clean = clean_manifest(manifest_files)
-    tools = get_tools(langs)
-    print("Will use:")
-    for i in tools:
-        print(i.name, end=", ")
+
+    # Get valid tools
+    valid_tools = get_tools(langs)
+    tools = list()
+
+    # Select tools given names
+    print("Tools selected:")
+    for name in tool_names:
+        # Make sure tool exists
+        tool = tool_mapper.get_tool(name)
+        if tool is None:
+            print(name, " -- Invalid tool name. Skipping.")
+
+        # Add tool if valid
+        if tool in valid_tools:
+            tools.append(tool)
+            print(name, end=", ")
+        else:
+            print(name, " -- Invalid tool for detected languages. Skipping.")
+
     print()
+
+    # Run tools and cleanup
     gen_count = run_tools(tools, manifest_clean, CONTAINER_BIND_CODE, CONTAINER_BIND_SBOM)
     cleanup()
 
