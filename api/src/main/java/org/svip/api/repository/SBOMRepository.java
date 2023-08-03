@@ -1,7 +1,7 @@
 package org.svip.api.repository;
 
 import org.springframework.data.repository.CrudRepository;
-import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.api.model.SBOM;
 
 /**
  * @author Derek Garcia
