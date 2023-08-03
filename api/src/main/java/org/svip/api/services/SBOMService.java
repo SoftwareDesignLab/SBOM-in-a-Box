@@ -1,11 +1,18 @@
 package org.svip.api.services;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMRepository;
+import org.svip.api.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Business logic for accessing the SBOM table
@@ -39,6 +46,19 @@ public class SBOMService {
             // todo custom exception instead of generic
             throw new Exception("Failed to upload to Database: " + e.getMessage());
         }
+    }
+
+
+    public SBOM getSBOMFile(Long id) {
+        // Get SBOM
+        Optional<SBOM> sbomFile = this.sbomRepository.findById(id);
+
+        // No SBOM with the given ID
+        if (sbomFile.isEmpty())
+            return null;
+
+        // Else return file
+        return sbomFile.get();
     }
 
     /**
