@@ -11,8 +11,12 @@ import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMRepository;
 import org.svip.api.utils.Converter;
 import org.svip.api.utils.Utils;
+import org.svip.merge.MergerController;
+import org.svip.merge.MergerException;
+import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
+import org.svip.serializers.serializer.Serializer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +58,16 @@ public class SBOMFileService {
         }
     }
 
+
+    /**
+     * Convert an SBOM to different Schema and/or FileType
+     *
+     * @param id        of the SBOM
+     * @param schema    to convert to
+     * @param format    to convert to
+     * @param overwrite whether to overwrite original
+     * @return ID of converted SBOM
+     */
     public Long convert(Long id, SerializerFactory.Schema schema, SerializerFactory.Format format, Boolean overwrite){
 
         // Retrieve SBOMFile and check that it exists
@@ -83,6 +97,23 @@ public class SBOMFileService {
         return null;
     }
 
+
+    /**
+     * Merge two or more SBOMs
+     * todo remove old SBOMs from DB?
+     *
+     * @param ids list of IDs to merge
+     * @return ID of merged SBOM
+     */
+    public Long merge(Long[] ids){
+
+      /*
+        TODO MERGE LOGIC HERE
+
+        */
+
+        return null;
+    }
 
 
     /**
@@ -177,6 +208,14 @@ public class SBOMFileService {
         return d.readFromString(sbomFile.getContent());
     }
 
+
+    /**
+     * Update an entry in the database
+     *
+     * @param id ID of SBOM File to update
+     * @param patch Patch SBOM File with updated information
+     * @return id of the updated SBOM
+     */
     private Long update(Long id, SBOM patch) {
         // Retrieve SBOMFile and check that it exists
         SBOM sbomFile = getSBOMFile(id);
