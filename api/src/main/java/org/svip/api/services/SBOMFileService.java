@@ -48,20 +48,36 @@ public class SBOMFileService {
         }
     }
 
-    public org.svip.sbom.model.interfaces.generics.SBOM getSBOMObject(Long id) throws JsonProcessingException {
-        SBOM sbomFile = getSBOMFile(id);
 
+    /**
+     * Retrieve SBOM File from the database as an SBOM Object
+     *
+     * @param id of the SBOM to retrieve
+     * @return deserialized SBOM Object
+     * @throws JsonProcessingException SBOM failed to be deserialized
+     */
+    public org.svip.sbom.model.interfaces.generics.SBOM getSBOMObject(Long id) throws JsonProcessingException {
+        // Retrieve SBOMFile and check that it exists
+        SBOM sbomFile = getSBOMFile(id);
         if(sbomFile == null)
             return null;
 
+        // Attempt to deserialize and return the object
         Deserializer d = SerializerFactory.createDeserializer(sbomFile.getContent());
         return d.readFromString(sbomFile.getContent());
     }
 
 
+    /**
+     * Retrieve SBOM File from the database as an JSON String
+     *
+     * @param id of the SBOM to retrieve
+     * @return deserialized SBOM Object
+     * @throws JsonProcessingException SBOM failed to be deserialized
+     */
     public String getSBOMObjectAsJSON(Long id) throws JsonProcessingException {
+        // Retrieve SBOM Object and check that it exists
         org.svip.sbom.model.interfaces.generics.SBOM sbom = getSBOMObject(id);
-
         if(sbom == null)
             return null;
 
@@ -70,20 +86,19 @@ public class SBOMFileService {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 
+        // Return JSON String
         return mapper.writeValueAsString(sbom);
     }
 
     /**
      * Get SBOM file from database
      *
-     * @param id ID of the SBOM to query
+     * @param id of the SBOM to retrieve
      * @return SBOMFile if it exists
      */
     public SBOM getSBOMFile(Long id) {
-        // Get SBOM
+        // Retrieve SBOM File and check that it exists
         Optional<SBOM> sbomFile = this.sbomRepository.findById(id);
-
-        // No SBOM with the given ID
         if (sbomFile.isEmpty())
             return null;
 
@@ -107,11 +122,15 @@ public class SBOMFileService {
     }
 
 
+    /**
+     * Delete a target SBOM File from the database
+     *
+     * @param id of the SBOM to delete
+     * @return id of deleted SBOM on success
+     */
     public Long deleteSBOMFile(Long id){
-        // Get SBOM to be deleted
+        // Retrieve SBOM File and check that it exists
         SBOM sbomFile = getSBOMFile(id);
-
-        // Check if it exists
         if (sbomFile == null)
             return null;
 
