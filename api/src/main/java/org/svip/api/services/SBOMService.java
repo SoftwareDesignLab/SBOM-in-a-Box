@@ -1,5 +1,6 @@
 package org.svip.api.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,8 @@ import org.svip.api.entities.SBOM;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMRepository;
 import org.svip.api.utils.Utils;
+import org.svip.serializers.SerializerFactory;
+import org.svip.serializers.deserializer.Deserializer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +51,23 @@ public class SBOMService {
         }
     }
 
+    public org.svip.sbom.model.interfaces.generics.SBOM getSBOMObject(Long id) throws JsonProcessingException {
+        SBOM sbomFile = getSBOMFile(id);
 
+        if(sbomFile == null)
+            return null;
+
+        Deserializer d = SerializerFactory.createDeserializer(sbomFile.getContent());
+        return d.readFromString(sbomFile.getContent());
+    }
+
+
+    /**
+     * Get SBOM file from database
+     *
+     * @param id ID of the SBOM to query
+     * @return SBOMFile if it exists
+     */
     public SBOM getSBOMFile(Long id) {
         // Get SBOM
         Optional<SBOM> sbomFile = this.sbomRepository.findById(id);
