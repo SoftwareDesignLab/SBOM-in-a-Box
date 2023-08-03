@@ -1,4 +1,7 @@
-from config import *
+from typing import Optional
+
+from constants import *
+from toolmap import TOOL_MAP
 
 """
 file: ToolMapper.py
@@ -33,61 +36,18 @@ class OSTool(object):
         self.usage = usage
         self.manifest_required = manifest_required
 
+    def __str__(self):
+        """
+        Convert an OSTool to its string representation (currently name)
+        """
+        return self.name
+
 
 class ToolMapper(object):
     """
     Class to hold all tools and map languages to a list of tools
     """
-    tool_list = [
-        OSTool("Jake", BOMFormat.CYCLONE_DX, [Language.PYTHON], [
-            "cd {code}",
-            "jake sbom -t PIP -f {manifest} --output-format xml -o {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT
-        ], True),
-        # TODO figure out how to get output to only be SBOM and no messages
-        OSTool("CycloneDX Conan", BOMFormat.CYCLONE_DX, [Language.C_CPLUSPLUS], [
-            "cyclonedx-conan {manifest} > {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT
-        ], True),
-        OSTool("CycloneDX Generator", BOMFormat.CYCLONE_DX, [
-            Language.JAVA, Language.PHP, Language.PYTHON, Language.GO, Language.RUBY, Language.RUST, Language.DART,
-            Language.HASKELL, Language.C_CPLUSPLUS
-        ], [
-                   "cd {code}", "cdxgen -r -o {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT
-               ]),
-        OSTool("CycloneDX Python", BOMFormat.CYCLONE_DX, [Language.PYTHON], [
-            "cd {code}", "cyclonedx-py --format xml -r -i {manifest} -o {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT
-        ], True),
-        # TODO Fix cargo pkgid error
-        OSTool("SPDX SBOM Generator", BOMFormat.SPDX, [
-            Language.GO, Language.RUST, Language.PHP, Language.JAVA, Language.JAVASCRIPT, Language.PYTHON,
-            Language.RUBY, Language.SWIFT
-        ], [
-                   "cd {code}", "spdx-sbom-generator -p . -o {output}/"
-               ]),
-        OSTool("CycloneDX PHP", BOMFormat.CYCLONE_DX, [Language.PHP], [
-            "cd {code}",
-            "composer make-bom --output-format=XML --output-file={output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT
-            + " {manifest}"
-        ], True),
-        OSTool("Ochrona CLI", BOMFormat.OTHER, [], []),
-        OSTool("Syft CDX", BOMFormat.CYCLONE_DX, [
-            Language.C_CPLUSPLUS, Language.DART, Language.ERLANG, Language.GO, Language.HASKELL, Language.JAVA,
-            Language.JAVASCRIPT, Language.PHP, Language.PYTHON, Language.RUBY, Language.RUST, Language.SWIFT
-        ], ["syft {code} -vv -o cyclonedx-xml > {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
-        OSTool("JBOM Jar", BOMFormat.CYCLONE_DX, [Language.JAVA_JAR], [
-            "java -jar /usr/local/bin/jbom.jar -f {code} -o {output}"
-        ]),
-        OSTool("JBOM", BOMFormat.CYCLONE_DX, [Language.JAVA], [
-            "java -jar /usr/local/bin/jbom.jar -d {code} -o {output}"
-        ]),
-        # todo can add '--no-wfp-output' to skip fingerprinting. Removed because only generates JSON SBOMs
-        # OSTool("Scanoss Python", BOMFormat.CYCLONE_DX, [Language.PYTHON], [
-        #    "cd {code}", "scanoss-py scan --dependencies --format cyclonedx -o {output}/"+SBOM_TEMP_NAME+"."+SBOM_FORMAT+" ."
-        # ]),
-        OSTool("Syft SPDX", BOMFormat.SPDX, [
-            Language.C_CPLUSPLUS, Language.DART, Language.ERLANG, Language.GO, Language.HASKELL, Language.JAVA,
-            Language.JAVASCRIPT, Language.PHP, Language.PYTHON, Language.RUBY, Language.RUST, Language.SWIFT
-        ], ["syft {code} -vv -o spdx-tag-value > {output}/" + SBOM_TEMP_NAME + ".spdx"]),
-    ]
+    tool_map = TOOL_MAP
 
     # Add tools into a list dictionary keyed by language
     mapping = {}
@@ -97,11 +57,14 @@ class ToolMapper(object):
         langList = []
 
         # No this is not a for loop in a for loop...
-        for tool in tool_list:
+        for tool in tool_map:
             if language in tool.languages:
                 langList.append(tool)
 
         mapping[language] = langList
+
+    def get_tool_names(self) -> list[str]:
+        return list(map(str, self.tool_map))
 
     def get_tools(self, language: Language) -> list[OSTool]:
         """
@@ -111,3 +74,12 @@ class ToolMapper(object):
         :return: List of tools
         """
         return self.mapping[language]
+
+    def get_tool(self, name: str) -> Optional[OSTool]:
+        """
+        Gets an OSTool instance given a tool name. If no tool could be found, returns None.
+        """
+        for tool in self.tool_map:
+            if tool.name == name:
+                return tool
+        return
