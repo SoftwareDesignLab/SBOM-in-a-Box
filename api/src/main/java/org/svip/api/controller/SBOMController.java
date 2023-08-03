@@ -7,11 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMInput;
 import org.svip.api.services.SBOMService;
 import org.svip.api.utils.Utils;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
+
+import java.util.Optional;
 
 /**
  * REST API Controller for Managing SBOM and SBOM operations
@@ -79,6 +82,33 @@ public class SBOMController {
 
         // Return ID
         return new ResponseEntity<>(sbom.getId(), HttpStatus.OK);
+    }
+
+
+    /**
+     * USAGE. Send GET request to /sboms/content with a URL parameter id to get the contents of the SBOM with the specified ID.
+     *
+     * The API will respond with an HTTP 200 and the contents of the SBOM file.
+     *
+     * @param id The id of the SBOM contents to retrieve.
+     * @return The contents of the SBOM file.
+     */
+    @GetMapping("/sboms/content")
+    public ResponseEntity<SBOM> getContent(@RequestParam("id") Long id) {
+        // todo rename endpoint? Returns more than just content
+        // Get SBOM
+        SBOM sbomFile = this.sbomService.getSBOMFile(id);
+
+        // Return SBOM or invalid ID
+        if (sbomFile == null) {
+            LOGGER.info("GET /svip/sboms/content?id=" + id + " - FILE NOT FOUND");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Log
+        LOGGER.info("GET /svip/sboms/content?id=" + id + " - File: " + sbomFile.getName());
+
+        return new ResponseEntity<>(sbomFile, HttpStatus.OK);
     }
 
 
