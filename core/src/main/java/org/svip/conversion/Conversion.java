@@ -1,6 +1,6 @@
 package org.svip.api.utils;
 
-import org.svip.api.model.SBOMFile;
+import org.svip.api.entities.SBOMFile;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
