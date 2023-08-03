@@ -12,8 +12,14 @@ public class SBOM {
 
     // Schema of SBOM
     public enum Schema{
-        CYCLONE_DX_14,
+        CYCLONEDX_14,
         SPDX_23
+    }
+
+    // File Type of SBOM
+    public enum FileType{
+        JSON,
+        TAG_VALUE
     }
 
     @Id
@@ -28,7 +34,12 @@ public class SBOM {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, name = "schema_type")
     private Schema schema;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, name = "file_type")
+    private FileType fileType;
 
 }
