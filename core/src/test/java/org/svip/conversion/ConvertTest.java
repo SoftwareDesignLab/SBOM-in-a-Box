@@ -7,6 +7,7 @@ import org.svip.compare.DiffReport;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.serializers.deserializer.Deserializer;
@@ -36,22 +37,21 @@ public class ConvertTest {
     protected static final String SBOM_5 = TEST_DIR + "spdx-sbom-generator.spdx";
 
     protected static final String SBOM_6 = TEST_DIR + "syft.json";
+
+
+    protected final SerializerFactory.Schema[] schemas = {SerializerFactory.Schema.SVIP,
+            SerializerFactory.Schema.SPDX23, SerializerFactory.Schema.CDX14};
+
     protected static final SBOM[] sboms = new SBOM[6];
 
     @BeforeAll
     static void setupTestSboms() throws IOException {
-        CDX14SBOM sbom1 = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_1)));
-        CDX14SBOM sbom2 = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_2)));
-        CDX14SBOM sbom3 = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_3)));
-        CDX14SBOM sbom4 = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_4)));
-        SPDX23SBOM sbom5 = (SPDX23SBOM) getSPDXTagValueDeserializer().readFromString(Files.readString(Path.of(SBOM_5)));
-        CDX14SBOM sbom6 = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_6)));
-        sboms[0] = sbom1;
-        sboms[1] = sbom2;
-        sboms[2] = sbom3;
-        sboms[3] = sbom4;
-        sboms[4] = sbom5;
-        sboms[5] = sbom6;
+        sboms[0] = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_1)));
+        sboms[1] = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_2)));
+        sboms[2] = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_3)));
+        sboms[3] = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_4)));
+        sboms[4] = (SPDX23SBOM) getSPDXTagValueDeserializer().readFromString(Files.readString(Path.of(SBOM_5)));
+        sboms[5] = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_6)));
     }
 
     @Test
@@ -68,38 +68,33 @@ public class ConvertTest {
 
     }
 
-    /*
-        // todo
-     */
-    @Test
-    public void convertSPDXCDX() throws Exception {
-
-
-    }
 
     @Test
-    public void convertCDXSPDX() throws Exception {
+    public void convertTest() throws Exception {
+        for (SBOM sbom : sboms
+        ) {
+            for (SerializerFactory.Schema schema : schemas
+            ) {
 
+                SerializerFactory.Schema originalSchema = (sbom instanceof CDX14SBOM) ? SerializerFactory.Schema.CDX14 : SerializerFactory.Schema.SPDX23;
 
-    }
+                if (originalSchema == schema)
+                    continue;
 
-    @Test
-    public void convertTest(){
-        for (SBOM s:  sboms
-             ) {
+                assertNotNull(Conversion.convertSBOM(sbom, schema, originalSchema));
 
-            // todo for each schema, convert
-
-
+            }
         }
     }
 
     public Deserializer getSPDXJSONDeserializer() {
         return new SPDX23JSONDeserializer();
     }
+
     public static Deserializer getCDXJSONDeserializer() {
         return new CDX14JSONDeserializer();
     }
+
     public static Deserializer getSPDXTagValueDeserializer() {
         return new SPDX23TagValueDeserializer();
     }
