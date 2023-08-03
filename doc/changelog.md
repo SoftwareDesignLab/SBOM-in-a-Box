@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - passes Postman tests and `GenerateFromParserAPITest`
 - `/generators/osi` should take in binary zip files of projects and generates an SBOM
     - passes Postman tests and `GenerateFromOSIAPITest`
+- Maximum file upload and request size to 2GB in `application.properties`
 
 ## [v7.2.1-alpha] - (8/1/2023)
 
