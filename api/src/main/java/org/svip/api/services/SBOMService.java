@@ -3,6 +3,9 @@ package org.svip.api.services;
 import org.springframework.stereotype.Service;
 import org.svip.api.repository.SBOMRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Derek Garcia
  **/
@@ -14,5 +17,14 @@ public class SBOMService {
         this.sbomRepository = sbomRepository;
     }
 
-    // todo business logic using the repository
+
+    public Long[] getAllIDs(){
+        List<Long> sbomIDs = new ArrayList<>();
+
+        // Get all sboms and add their ID to the ID list
+        this.sbomRepository.findAll().forEach( sbom -> sbomIDs.add(sbom.getId()) );
+
+        // convert to long array
+        return sbomIDs.toArray(new Long[0]);
+    }
 }
