@@ -3,13 +3,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v7.2.1-alpha] - (8/2/2023)
+## [v7.2.1-alpha] - (8/3/2023)
 ### Added
 - Improved Diff Report readability
 - SBOM Objects have built in toString methods
 - `/metrics/resultFactory/enumerations/INFO` now has info for diff reports
 - `/metrics/resultFactory/Text` now has outputs for getting diff report messages
-- `/compare/conflicts` has been reworked to avoid using plain text, instead relying on `Text` class
+- `/compare/conflicts/ConflictFactory` has been reworked to avoid using plain text, instead relying on `Text` class
 
 ## [v7.2.0-alpha] - (8/1/2023)
 ### Changed

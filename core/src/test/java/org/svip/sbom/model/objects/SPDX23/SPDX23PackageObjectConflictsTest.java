@@ -110,15 +110,12 @@ public class SPDX23PackageObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
-        // Construct Text to use for diff report conflict messages
-        Text text = new Text("Conflict", "License");
-
         for(Conflict c : conflictList)
         {
             if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "License is missing")) {
-                if(Objects.equals(c.GetTarget(), "control license") && Objects.equals(c.GetOther(), text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, "")))
+                if(Objects.equals(c.GetTarget(), "control license") && c.GetOther() == null)
                     c1 = true;
-                else if(Objects.equals(c.GetTarget(), text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, "")) && Objects.equals(c.GetOther(), "license"))
+                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "license"))
                     c2 = true;
             }
         }
@@ -219,15 +216,12 @@ public class SPDX23PackageObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
-        // Construct Text to use for diff report conflict messages
-        Text text = new Text("Conflict", "PURL");
-
         for(Conflict c : conflictList)
         {
             if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "PURL is missing")) {
-                if(Objects.equals(c.GetTarget(), "control") && Objects.equals(c.GetOther(), text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, "")))
+                if(Objects.equals(c.GetTarget(), "control") && c.GetOther() == null)
                     c1 = true;
-                else if(Objects.equals(c.GetTarget(), text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, "")) && Objects.equals(c.GetOther(), "purl"))
+                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "purl"))
                     c2 = true;
             }
         }
@@ -249,15 +243,12 @@ public class SPDX23PackageObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
-        // Construct Text to use for diff report conflict messages
-        Text text = new Text("Conflict", "CPE");
-
         for(Conflict c : conflictList)
         {
             if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "CPE is missing")) {
-                if(Objects.equals(c.GetTarget(), "control") && Objects.equals(c.GetOther(), text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, "")))
+                if(Objects.equals(c.GetTarget(), "control") && c.GetOther() == null)
                     c1 = true;
-                else if(Objects.equals(c.GetTarget(), text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, "")) && Objects.equals(c.GetOther(), "cpe"))
+                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "cpe"))
                     c2 = true;
             }
         }

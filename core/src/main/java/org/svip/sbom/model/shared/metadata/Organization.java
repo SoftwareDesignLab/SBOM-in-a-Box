@@ -113,6 +113,6 @@ public class Organization implements Comparable {
 
     @Override
     public String toString() {
-        return "Organization: " + this.name + "(" + this.url + ")";
+        return "Organization: " + this.name + " (" + this.url + ")";
     }
 }

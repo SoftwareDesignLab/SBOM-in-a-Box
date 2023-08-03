@@ -70,17 +70,10 @@ public class Text {
             case ERROR -> message.append(field).append(" had an error");
             case MATCHING -> message.append(field).append(" matches Component value");
             case NOT_MATCHING -> message.append(field).append(" does not match Component value");
-            case DIFF_NULL_VALUE -> message.append("Does not contain ").append(field);
-            case DIFF_NULL_VALUE_IN_SET -> message.append("Component ").append(field).append("s does not contain this ").append(field);
             case DIFF_HASH_ALG -> message.append(field).append(" ").append(value).append(" Hash");
-            case DIFF_NULL_HASH -> message.append("Component Hashes does not contain this Hash");
         }
 
         return message.toString();
-    }
-
-    public String getHashMessage(String algorithm, String value) {
-        return algorithm + ", " + value;
     }
 
     /**

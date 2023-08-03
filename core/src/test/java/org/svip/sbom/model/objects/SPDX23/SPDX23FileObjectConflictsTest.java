@@ -108,15 +108,12 @@ public class SPDX23FileObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
-        // Construct Text to use for diff report conflict messages
-        Text text = new Text("Conflict", "License");
-
         for(Conflict c : conflictList)
         {
             if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "License is missing")) {
-                if(Objects.equals(c.GetTarget(), "control license") && Objects.equals(c.GetOther(), text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, "")))
+                if(Objects.equals(c.GetTarget(), "control license") && c.GetOther() == null)
                     c1 = true;
-                else if(Objects.equals(c.GetTarget(), text.getMessage(INFO.DIFF_NULL_VALUE_IN_SET, "")) && Objects.equals(c.GetOther(), "license"))
+                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "license"))
                     c2 = true;
             }
         }

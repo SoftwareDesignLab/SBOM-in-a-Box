@@ -109,6 +109,6 @@ public class Contact implements Comparable {
 
     @Override
     public String toString() {
-        return "Organization: " + this.name + "(" + this.email + ")";
+        return "Organization: " + this.name + " (" + this.email + ")";
     }
 }

@@ -115,13 +115,11 @@ public class Conflict {
         // added more extensive null checks to account for the different null responses
 
         // Target is missing
-        if (target == null || target.isEmpty() || target.equals(text.getMessage(DIFF_NULL_VALUE, "")) ||
-                target.equals(text.getMessage(DIFF_NULL_VALUE_IN_SET, "")) || target.equals(text.getMessage(DIFF_NULL_HASH, "")))
+        if (target == null || target.isEmpty())
             return new Conflict(field, target, other);
 
         // Other is missing
-        if (other == null || other.isEmpty() || other.equals(text.getMessage(DIFF_NULL_VALUE, "")) ||
-                other.equals(text.getMessage(DIFF_NULL_VALUE_IN_SET, "")) || other.equals(text.getMessage(DIFF_NULL_HASH, "")))
+        if (other == null || other.isEmpty())
             return new Conflict(field, target, other);
 
         // Mismatch
