@@ -1,6 +1,8 @@
 package org.svip.api.services;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -61,6 +63,20 @@ public class SBOMService {
         return d.readFromString(sbomFile.getContent());
     }
 
+
+    public String getSBOMObjectAsJSON(Long id) throws JsonProcessingException {
+        org.svip.sbom.model.interfaces.generics.SBOM sbom = getSBOMObject(id);
+
+        if(sbom == null)
+            return null;
+
+        // Configure object mapper to remove null and empty arrays
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+
+        return mapper.writeValueAsString(sbom);
+    }
 
     /**
      * Get SBOM file from database
