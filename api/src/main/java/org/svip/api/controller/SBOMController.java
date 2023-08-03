@@ -12,8 +12,11 @@ import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
 import org.svip.api.requests.UploadSBOMInput;
 import org.svip.api.services.SBOMService;
+import org.svip.api.utils.Utils;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
+
+import java.util.Optional;
 
 /**
  * REST API Controller for managing SBOM and SBOM operations
@@ -175,6 +178,8 @@ public class SBOMController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
     /**
      * USAGE. Send GET request to /sboms/content with a URL parameter id to get the contents of the SBOM with the specified ID.
      *
@@ -191,8 +196,8 @@ public class SBOMController {
 
         // Return SBOM or invalid ID
         if (sbomFile == null) {
-            LOGGER.info("GET /svip/sboms/content?id=" + id + " - FILE NOT FOUND");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            LOGGER.warn("GET /svip/sboms/content?id=" + id + " - FILE NOT FOUND");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         // Log
