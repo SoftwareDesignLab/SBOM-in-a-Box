@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.svip.api.model.MockMultipartFile;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.entities.SBOMFile;
+import org.svip.api.entities.SBOMFile;
 import org.svip.serializers.SerializerFactory;
 
 import java.io.File;
