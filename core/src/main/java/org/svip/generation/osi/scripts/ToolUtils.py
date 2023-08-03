@@ -1,6 +1,6 @@
 import glob
 import os
-from config import Language, LANGUAGE_MAP, MANIFEST_MAP, SBOM_FORMAT, CONTAINER_BIND_SBOM, CONTAINER_BIND_CODE
+from constants import Language, LANGUAGE_MAP, MANIFEST_MAP, SBOM_FORMAT, CONTAINER_BIND_SBOM, CONTAINER_BIND_CODE
 from ToolMapper import OSTool, ToolMapper
 
 """
