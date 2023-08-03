@@ -201,47 +201,6 @@ public class SVIPApiController {
     }
 
     /**
-     * USAGE. Send GET request to /sboms with a URL parameter id to get the deserialized SBOM.
-     *
-     * The API will respond with an HTTP 200 and the SBOM object json
-     * todo: better ways to add more support?
-     *
-     * @param id The id of the SBOM contents to retrieve.
-     * @return The contents of the SBOM file.
-     */
-    @GetMapping("/sbom")
-    public ResponseEntity<?> getSBOM(@RequestParam("id") Long id){
-
-        String urlMsg = "GET /svip/sbom?id=" + id;    // for logging
-
-        // Get SBOM
-        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
-
-        // Return SBOM or invalid ID
-        if (sbomFile.isEmpty()) {
-            LOGGER.warn(urlMsg + " - FILE NOT FOUND");
-            return new ResponseEntity<>("Invalid SBOM ID", HttpStatus.NOT_FOUND);
-        }
-
-        // Deserialize SBOM into JSON Object
-        SBOM sbom;
-        try{
-            Deserializer d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
-            sbom = d.readFromString(sbomFile.get().getContents());
-        } catch (JsonProcessingException e ){
-            return new ResponseEntity<>("Failed to deserialize SBOM content, may be an unsupported format", HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (Exception e){
-            return new ResponseEntity<>("Deserialization Error", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        // Log
-        LOGGER.info(urlMsg + " - File: " + sbomFile.get().getFileName());
-
-        return Utils.encodeResponse(sbom);
-    }
-
-
-    /**
      * USAGE. Send DELETE request to /delete with a URL parameter id to get the contents of the SBOM with the specified
      * ID.
      *
