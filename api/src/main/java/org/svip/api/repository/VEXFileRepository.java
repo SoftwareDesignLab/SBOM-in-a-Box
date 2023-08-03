@@ -4,7 +4,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.svip.api.entities.VEXFile;
 
 /**
- * File: VEXFileRepository.java
  * Repository for storing VEX Files
  * CRUD methods: https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/CrudRepository.html
  *
