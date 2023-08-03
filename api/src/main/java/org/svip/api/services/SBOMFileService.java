@@ -3,15 +3,21 @@ package org.svip.api.services;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMRepository;
+import org.svip.api.utils.Converter;
+import org.svip.api.utils.Utils;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 /**
  * Business logic for accessing the SBOM File table
@@ -48,24 +54,35 @@ public class SBOMFileService {
         }
     }
 
+    public Long convert(Long id, SerializerFactory.Schema schema, SerializerFactory.Format format, Boolean overwrite){
 
-    /**
-     * Retrieve SBOM File from the database as an SBOM Object
-     *
-     * @param id of the SBOM to retrieve
-     * @return deserialized SBOM Object
-     * @throws JsonProcessingException SBOM failed to be deserialized
-     */
-    public org.svip.sbom.model.interfaces.generics.SBOM getSBOMObject(Long id) throws JsonProcessingException {
         // Retrieve SBOMFile and check that it exists
         SBOM sbomFile = getSBOMFile(id);
         if(sbomFile == null)
             return null;
 
-        // Attempt to deserialize and return the object
-        Deserializer d = SerializerFactory.createDeserializer(sbomFile.getContent());
-        return d.readFromString(sbomFile.getContent());
+
+        /*
+        TODO CONVERT LOGIC HERE
+
+        SBOM converted = new SBOM()
+                .setName(name)
+                .setContent(content)
+                .setSchema(schema)
+                .setFileType(fileType);
+
+
+        if(overwrite) {
+            update(id, converted);
+            return id;
+        } else {
+            this.sbomRepository.save(converted);
+            return converted.getID();
+        }
+         */
+        return null;
     }
+
 
 
     /**
@@ -139,5 +156,40 @@ public class SBOMFileService {
 
         // return confirmation id
         return id;
+    }
+
+
+    /**
+     * Retrieve SBOM File from the database as an SBOM Object
+     *
+     * @param id of the SBOM to retrieve
+     * @return deserialized SBOM Object
+     * @throws JsonProcessingException SBOM failed to be deserialized
+     */
+    private org.svip.sbom.model.interfaces.generics.SBOM getSBOMObject(Long id) throws JsonProcessingException {
+        // Retrieve SBOMFile and check that it exists
+        SBOM sbomFile = getSBOMFile(id);
+        if(sbomFile == null)
+            return null;
+
+        // Attempt to deserialize and return the object
+        Deserializer d = SerializerFactory.createDeserializer(sbomFile.getContent());
+        return d.readFromString(sbomFile.getContent());
+    }
+
+    private Long update(Long id, SBOM patch) {
+        // Retrieve SBOMFile and check that it exists
+        SBOM sbomFile = getSBOMFile(id);
+        if (sbomFile == null)
+            return null;
+
+        sbomFile.setName(patch.getName())
+                .setContent(patch.getContent())
+                .setSchema(patch.getSchema())
+                .setFileType(patch.getFileType());
+
+        this.sbomRepository.save(sbomFile);
+
+        return sbomFile.getId();
     }
 }
