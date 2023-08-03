@@ -2,18 +2,15 @@ package org.svip.api.requests;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.svip.api.entities.SBOM;
-import org.svip.api.services.SBOMFileService;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
 
 /**
- * File: UploadSBOMFileInput.java
  * Input request to create a new SBOM File via API
  *
  * @author Derek Garcia
  **/
 public record UploadSBOMFileInput(String fileName, String contents) {
-
     /**
      * Create a new SBOM File Object
      * @return SBOM File
