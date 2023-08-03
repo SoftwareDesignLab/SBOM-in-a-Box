@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `MockMultipartFile` for testing uploading binaries
 - `ParserController` null check
+- `SBOMFileIdentifierGenerator` ID generator class implementing JPA's IdentifierGenerator for `SBOMFile.id`
 
 ### Changed
 - `/generators/parsers` successfully takes in binary zip files of projects and generates an SBOM
