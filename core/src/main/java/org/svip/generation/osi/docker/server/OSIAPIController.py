@@ -1,5 +1,5 @@
 """
-file: OSI.py
+file: OSIAPIController.py
 
 API that exposes endpoints to manage the generations of SBOMs using Open Source Tools inside the svip-osi Docker
 Container.
