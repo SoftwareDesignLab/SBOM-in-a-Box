@@ -6,6 +6,12 @@ import org.svip.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
 import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
+import org.cyclonedx.CycloneDxSchema;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.serializers.deserializer.CDX14JSONDeserializer;
+import org.svip.serializers.deserializer.Deserializer;
+import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
+import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
 
 /**
  * SBOM Table for the database
