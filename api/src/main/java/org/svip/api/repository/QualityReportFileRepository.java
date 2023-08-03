@@ -1,13 +1,13 @@
 package org.svip.api.repository;
 
 import org.springframework.data.repository.CrudRepository;
-import org.svip.api.entities.SBOM;
+import org.svip.api.entities.QualityReportFile;
 
 /**
- * Repository for storing SBOM Files
+ * Repository for storing Quality Report Files
  * CRUD methods: https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/CrudRepository.html
- * todo rename SBOMFileRepository
+ *
  * @author Derek Garcia
  **/
-public interface SBOMRepository extends CrudRepository<SBOM, Long> {
+public interface QualityReportFileRepository extends CrudRepository<QualityReportFile, Long> {
 }
