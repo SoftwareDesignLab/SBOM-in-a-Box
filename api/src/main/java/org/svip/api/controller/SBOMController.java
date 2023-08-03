@@ -14,7 +14,7 @@ import org.svip.api.services.SBOMService;
 @RequestMapping("/svip")
 public class SBOMController {
 
-    public SBOMService sbomService;
+    private final SBOMService sbomService;
 
 
     public SBOMController(SBOMService sbomService){
@@ -22,8 +22,14 @@ public class SBOMController {
     }
 
     @GetMapping("/sboms")
-    public ResponseEntity<String> getAllIds(){
-        return new ResponseEntity<>("Pong!", HttpStatus.OK);
+    public ResponseEntity<Long[]> getAllIds(){
+
+        Long[] ids = this.sbomService.getAllIDs();
+
+        if(ids.length == 0)
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        return new ResponseEntity<>(ids, HttpStatus.OK);
     }
 
 }
