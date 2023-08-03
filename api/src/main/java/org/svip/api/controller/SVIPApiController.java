@@ -121,39 +121,6 @@ public class SVIPApiController {
     }
 
     /**
-     * USAGE. Send POST request to /sboms with one SBOM file.
-     *   The SBOM file is made up of 2 JSON key-value pairs in the request body: fileName and contents.
-     *
-     * The API will respond with an HTTP 200 and the ID used to identify the SBOM file.
-     *
-     * @param sbomFile 2 JSON key-value pairs in the request body: fileName and contents.
-     * @return The uploaded filename used to identify the SBOM file.
-     */
-//    @PostMapping("/sboms")
-//    public ResponseEntity<?> upload(@RequestBody SBOMFile sbomFile) {
-//        // Validate
-//        if (sbomFile.hasNullProperties())
-//            return new ResponseEntity<>("SBOM filename and/or contents may not be empty", HttpStatus.BAD_REQUEST);
-//
-//        String errorMsg = "Error processing file: " + sbomFile.getFileName();
-//        try {
-//            Deserializer d = SerializerFactory.createDeserializer(sbomFile.getContents());
-//            d.readFromString(sbomFile.getContents());
-//        } catch (IllegalArgumentException | JsonProcessingException e) {
-//            LOGGER.info("POST /svip/sboms - " + errorMsg);
-//            LOGGER.error(e.getMessage());
-//            return new ResponseEntity<>(e.getMessage() + " " + errorMsg, HttpStatus.BAD_REQUEST);
-//        }
-//
-//        // Upload
-//        sbomFileRepository.save(sbomFile);
-//        LOGGER.info("POST /svip/sboms - Uploaded SBOM with ID " + sbomFile.getId() + ": " + sbomFile.getFileName());
-//
-//        // Return ID
-//        return Utils.encodeResponse(sbomFile.getId());
-//    }
-
-    /**
      * USAGE. Send GET request to /sboms/content with a URL parameter id to get the contents of the SBOM with the specified ID.
      *
      * The API will respond with an HTTP 200 and the contents of the SBOM file.
@@ -177,27 +144,6 @@ public class SVIPApiController {
 
         return Utils.encodeResponse(sbomFile.get());
     }
-
-    /**
-     * USAGE. Send GET request to /sboms.
-     * The API will respond with an HTTP 200 and a JSON array of all IDs of currently uploaded SBOM files.
-     *
-     * @return A JSON array of IDs of all currently uploaded SBOM files.
-     */
-//    @GetMapping("/sboms")
-//    public ResponseEntity<Long[]> viewFiles() {
-//        // Get file names
-//        List<SBOMFile> sbomFiles = sbomFileRepository.findAll();
-//
-//        // Log
-//        LOGGER.info("GET /svip/sboms - Found " + sbomFiles.size() + " file(s).");
-//
-//        if (sbomFiles.isEmpty())
-//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//
-//        // Return file names
-//        return Utils.encodeResponse(sbomFiles.stream().map(SBOMFile::getId).toList().toArray(new Long[0]));
-//    }
 
     /**
      * USAGE. Send GET request to /sboms with a URL parameter id to get the deserialized SBOM.
