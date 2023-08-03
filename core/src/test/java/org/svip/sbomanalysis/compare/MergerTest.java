@@ -1006,4 +1006,87 @@ public class MergerTest {
 
     }
 
+    @Test
+    public void merger_should_mergeAll_empty_CDX_SBOMs() {
+
+        // SBOM One
+
+        CDX14Builder builder_one = new CDX14Builder();
+
+        builder_one.setFormat("CycloneDX");
+
+        builder_one.setName("test_sbom_one");
+
+        builder_one.setUID("urn:uuid:0000a000-0aaa-0000-00a0-0000aaa00000");
+
+        builder_one.setVersion("1");
+
+        builder_one.setSpecVersion("1.4");
+
+        builder_one.addLicense("test_license");
+
+        CreationData creationDataSBOMOne = new CreationData();
+
+        builder_one.setCreationData(creationDataSBOMOne);
+
+        builder_one.setDocumentComment("This is a test comment for the first SBOM");
+
+        builder_one.setRootComponent(comp_cdx_green);
+
+        builder_one.addComponent(comp_cdx_green);
+
+        ExternalReference exRefSBOMOne = new ExternalReference("www.testsbom.test", "test_sbom_one");
+
+        builder_one.addExternalReference(exRefSBOMOne);
+
+        CDX14SBOM SBOM_one = builder_one.buildCDX14SBOM();
+
+        // SBOM Two, format is required for mergeAll
+
+        CDX14Builder builder_two = new CDX14Builder();
+
+        builder_two.setFormat("CycloneDX");
+
+        CDX14SBOM SBOM_two = builder_two.buildCDX14SBOM();
+
+        // SBOM Three, format is required for mergeAll
+
+        CDX14Builder builder_three = new CDX14Builder();
+
+        builder_three.setFormat("CycloneDX");
+
+        CDX14SBOM SBOM_three = builder_three.buildCDX14SBOM();
+
+        // New merger and SBOM list
+
+        MergerController mergerController = new MergerController();
+
+        List<SBOM> SBOMs = Arrays.asList(SBOM_one, SBOM_two, SBOM_three);
+
+        // Merged SBOM Result
+
+        SBOM result;
+        try {
+                result = mergerController.mergeAll(SBOMs);
+        } catch (MergerException e) {
+                result = null;
+                e.printStackTrace();
+        }
+
+        // Assertions
+
+        assertNotNull(result);
+
+        assertEquals("test_sbom_one", result.getName());
+
+        assertEquals("test_component_green_cdx", result.getRootComponent().getName());
+
+        assertEquals("urn:uuid:0000a000-0aaa-0000-00a0-0000aaa00000", result.getUID());
+
+        assertEquals(1, result.getComponents().size());
+
+        assertEquals(1, result.getExternalReferences().size());
+
+    }
+
 }
