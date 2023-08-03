@@ -935,4 +935,75 @@ public class MergerTest {
 
     }
 
+    @Test
+    public void merger_should_merge_empty_second_SPDX_SBOM() {
+
+        // SBOM One
+
+        SPDX23Builder builder_one = new SPDX23Builder();
+
+        builder_one.setFormat("SPDX");
+
+        builder_one.setName("test_sbom_one");
+
+        builder_one.setUID("0000a000-0aaa-0000-00a0-0000aaa00000");
+
+        builder_one.setVersion("1");
+
+        builder_one.setSpecVersion("2.3");
+
+        builder_one.addLicense("test_license");
+
+        CreationData creationDataSBOMOne = new CreationData();
+
+        builder_one.setCreationData(creationDataSBOMOne);
+
+        builder_one.setDocumentComment("This is a test comment for the second SBOM");
+
+        builder_one.setRootComponent(comp_spdx_green);
+
+        builder_one.addComponent(comp_spdx_green);
+
+        builder_one.addComponent(comp_spdx_yellow);
+
+        Relationship green_to_yellow = new Relationship(comp_spdx_yellow.getUID(), "Depends on");
+
+        builder_one.addRelationship(comp_spdx_green.getUID(), green_to_yellow);
+
+        ExternalReference exRefSBOMOne = new ExternalReference("www.testsbom.test", "test_sbom_one");
+
+        builder_one.addExternalReference(exRefSBOMOne);
+
+        SPDX23SBOM SBOM_one = builder_one.buildSPDX23SBOM();
+
+        // SBOM Two
+
+        SPDX23Builder builder_two = new SPDX23Builder();
+
+        SPDX23SBOM SBOM_two = builder_two.buildSPDX23SBOM();
+
+        // New Merger
+
+        Merger merger = new MergerSPDX();
+
+        // Merged SBOM Result
+
+        SBOM result = merger.mergeSBOM(SBOM_one, SBOM_two);
+
+        // Assertions
+
+        assertNotNull(result);
+
+        assertEquals("test_sbom_one", result.getName());
+
+        assertEquals("test_component_green_spdx", result.getRootComponent().getName());
+
+        assertEquals("0000a000-0aaa-0000-00a0-0000aaa00000", result.getUID());
+
+        assertEquals(2, result.getComponents().size());
+
+        assertEquals(1, result.getExternalReferences().size());
+
+    }
+
 }
