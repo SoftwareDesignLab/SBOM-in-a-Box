@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
-import org.svip.api.entities.QualityReportFile;
 import org.svip.api.entities.SBOM;
 import org.svip.api.repository.SBOMRepository;
 import org.svip.serializers.SerializerFactory;
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * file: SBOMFileService.java
  * Business logic for accessing the SBOM File table
  *
  * @author Derek Garcia
@@ -50,15 +48,42 @@ public class SBOMFileService {
         }
     }
 
+    public org.svip.sbom.model.interfaces.generics.SBOM getSBOMObject(Long id) throws JsonProcessingException {
+        SBOM sbomFile = getSBOMFile(id);
+
+        if(sbomFile == null)
+            return null;
+
+        Deserializer d = SerializerFactory.createDeserializer(sbomFile.getContent());
+        return d.readFromString(sbomFile.getContent());
+    }
+
+
+    public String getSBOMObjectAsJSON(Long id) throws JsonProcessingException {
+        org.svip.sbom.model.interfaces.generics.SBOM sbom = getSBOMObject(id);
+
+        if(sbom == null)
+            return null;
+
+        // Configure object mapper to remove null and empty arrays
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+
+        return mapper.writeValueAsString(sbom);
+    }
+
     /**
      * Get SBOM file from database
      *
-     * @param id of the SBOM to retrieve
+     * @param id ID of the SBOM to query
      * @return SBOMFile if it exists
      */
     public SBOM getSBOMFile(Long id) {
-        // Retrieve SBOM File and check that it exists
+        // Get SBOM
         Optional<SBOM> sbomFile = this.sbomRepository.findById(id);
+
+        // No SBOM with the given ID
         if (sbomFile.isEmpty())
             return null;
 
@@ -82,18 +107,18 @@ public class SBOMFileService {
     }
 
 
-    /**
-     * Delete a target SBOM File from the database
-     *
-     * @param sbomFile SBOM file to delete
-     * @return id of deleted SBOM on success
-     */
-    public Long deleteSBOMFile(SBOM sbomFile){
+    public Long deleteSBOMFile(Long id){
+        // Get SBOM to be deleted
+        SBOM sbomFile = getSBOMFile(id);
+
+        // Check if it exists
+        if (sbomFile == null)
+            return null;
 
         // Delete from repository
         this.sbomRepository.delete(sbomFile);
 
         // return confirmation id
-        return sbomFile.getId();
+        return id;
     }
 }
