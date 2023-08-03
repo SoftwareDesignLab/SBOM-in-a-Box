@@ -1,6 +1,13 @@
 package org.svip.api.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import org.cyclonedx.CycloneDxSchema;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.serializers.deserializer.CDX14JSONDeserializer;
+import org.svip.serializers.deserializer.Deserializer;
+import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
+import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
 
 /**
  * SBOM Table for database
@@ -31,8 +38,7 @@ public class SBOM {
     @Column(nullable = false)
     private String name;
 
-    @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition="LONGTEXT")
     private String content;
 
     @Enumerated(EnumType.STRING)
@@ -69,21 +75,35 @@ public class SBOM {
 
     /**
      * Set SBOM Schema
-     * @param schema SBOM schema
+     * @param d deserializer to infer schema from
      * @return SBOM
      */
-    public SBOM setSchema(Schema schema){
-        this.schema = schema;
+    public SBOM setSchema(Deserializer d){
+        // todo better method to determine schema
+
+        if(d instanceof CDX14JSONDeserializer)
+            this.schema = Schema.CYCLONEDX_14;
+
+        if(d instanceof SPDX23JSONDeserializer || d instanceof SPDX23TagValueDeserializer)
+            this.schema = Schema.SPDX_23;
+
         return this;
     }
 
     /**
      * Set SBOM File Type
-     * @param fileType File Type
+     * @param d deserializer to infer file type from
      * @return SBOM
      */
-    public SBOM setFileType(FileType fileType){
-        this.fileType = fileType;
+    public SBOM setFileType(Deserializer d){
+        // todo better method to determine schema
+
+        if(d instanceof CDX14JSONDeserializer || d instanceof SPDX23JSONDeserializer)
+            this.fileType = FileType.JSON;
+
+        if(d instanceof SPDX23TagValueDeserializer)
+            this.fileType = FileType.TAG_VALUE;
+
         return this;
     }
 
@@ -95,6 +115,20 @@ public class SBOM {
      * @return SBOM ID
      */
     public Long getId() {
-        return id;
+        return this.id;
+    }
+
+    /**
+     * @return SBOM name
+     */
+    public String getName(){
+        return this.name;
+    }
+
+    /**
+     * @return SBOM Content
+     */
+    public String getContent(){
+        return this.content;
     }
 }
