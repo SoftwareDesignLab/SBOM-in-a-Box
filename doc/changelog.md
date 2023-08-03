@@ -132,6 +132,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - ConvertSPDX23.java
 - `ConvertTest.java` Class containing comprehensive unit tests for both schema converters
 
+## [v7.2.3-alpha] - (8/3/2023)
+### Added
+- `SBOMService` for handling database operations
+- `UploadSBOMFileInput` to handle new SBOM entries uploaded via API
+- `SBOMController` to handle SBOM API operations
+
+### Changed
+- Moved the following endpoints to `SBOMController` from `SVIPApiController`
+  - POST `/sboms`
+    > No longer takes `SBOMFile` as body, usage has not changed. Uses `UploadSBOMFileInput` instead
+  - GET `/sbom`
+    > Note: Now returns a JSON String
+  - GET `/sboms/content`
+  - GET `/sboms`
+  - DELETE `/sboms`
+  
 ## [v7.2.1-alpha] - (8/3/2023)
 ### Added
 - `SBOMService` for handling database operations
