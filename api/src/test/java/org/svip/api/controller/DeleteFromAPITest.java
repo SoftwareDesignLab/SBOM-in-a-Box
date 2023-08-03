@@ -3,7 +3,7 @@ package org.svip.api.controller;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.svip.api.model.SBOMFile;
+import org.svip.api.entities.SBOMFile;
 import org.svip.utils.Debug;
 
 import java.io.IOException;
