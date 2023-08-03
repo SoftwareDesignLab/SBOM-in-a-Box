@@ -1,4 +1,4 @@
-# Use Ubunutu
+# Use Ubuntu
 FROM ubuntu:latest
 
 # PHP Setup
@@ -6,10 +6,12 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN true
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
-# Copy Scripts
-COPY setup.sh ContainerController.py /usr/local/bin/
+# Copy startup script
+COPY scripts/setup.sh /usr/local/bin/
+# Copy Flask webserver scripts
+COPY server/ /application/
 
 # Run setup script
 RUN /bin/bash -c /usr/local/bin/setup.sh
 
-ENTRYPOINT ["python3", "/usr/local/bin/ContainerController.py"]
+ENTRYPOINT ["python3", "/application/OSIAPIController.py"]
