@@ -10,8 +10,10 @@ import org.svip.api.entities.SBOM;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
-
-import java.util.Optional;
+import org.svip.api.requests.UploadSBOMInput;
+import org.svip.api.services.SBOMService;
+import org.svip.serializers.SerializerFactory;
+import org.svip.serializers.deserializer.Deserializer;
 
 /**
  * REST API Controller for managing SBOM and SBOM operations
@@ -156,10 +158,10 @@ public class SBOMController {
      * @return A deserialized SBOM Object
      */
     @GetMapping("/sbom")
-    public ResponseEntity<org.svip.sbom.model.interfaces.generics.SBOM> getSBOMObject(@RequestParam("id") Long id){
+    public ResponseEntity<String> getSBOMObjectAsJSON(@RequestParam("id") Long id){
 
         try{
-            org.svip.sbom.model.interfaces.generics.SBOM sbom = this.sbomService.getSBOMObject(id);
+            String sbom = this.sbomService.getSBOMObjectAsJSON(id);
 
             // No SBOM was found
             if(sbom == null)
