@@ -1,8 +1,7 @@
-import sys
 from typing import Optional
 
 from constants import *
-from OSTool import OSTool
+from ToolUtils import OSTool
 
 """
 file: ToolMapper.py
