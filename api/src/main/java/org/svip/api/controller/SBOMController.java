@@ -1,11 +1,16 @@
 package org.svip.api.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.services.SBOMService;
+import org.svip.api.utils.Utils;
+import org.svip.serializers.SerializerFactory;
+import org.svip.serializers.deserializer.Deserializer;
 
 /**
  * REST API Controller for Managing SBOM and SBOM operations
@@ -16,8 +21,12 @@ import org.svip.api.services.SBOMService;
 @RequestMapping("/svip")
 public class SBOMController {
 
-    private final SBOMService sbomService;
+    /**
+     * Spring-configured logger
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(SBOMController.class);
 
+    private final SBOMService sbomService;
 
     /**
      * Create new Controller with services
@@ -27,6 +36,7 @@ public class SBOMController {
     public SBOMController(SBOMService sbomService){
         this.sbomService = sbomService;
     }
+
 
 
     /**
@@ -40,6 +50,9 @@ public class SBOMController {
 
         // Get all ids
         Long[] ids = this.sbomService.getAllIDs();
+
+        // Log
+        LOGGER.info("GET /svip/sboms - Found " + ids.length + " sbom" + (ids.length == 0 ? "." : "s."));
 
         // report nothing if no SBOMs in the database
         if(ids.length == 0)
