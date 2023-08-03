@@ -3,15 +3,9 @@ package org.svip.api.services;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.svip.api.entities.SBOM;
-import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMRepository;
-import org.svip.api.utils.Utils;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
 
@@ -20,12 +14,12 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Business logic for accessing the SBOM table
+ * Business logic for accessing the SBOM File table
  *
  * @author Derek Garcia
  **/
 @Service
-public class SBOMService {
+public class SBOMFileService {
     private final SBOMRepository sbomRepository;
 
     /**
@@ -33,7 +27,7 @@ public class SBOMService {
      *
      * @param sbomRepository SBOM repository to access
      */
-    public SBOMService(SBOMRepository sbomRepository){
+    public SBOMFileService(SBOMRepository sbomRepository){
         this.sbomRepository = sbomRepository;
     }
 
