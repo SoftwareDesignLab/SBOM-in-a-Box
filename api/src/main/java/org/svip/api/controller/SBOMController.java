@@ -10,7 +10,7 @@ import org.svip.api.entities.SBOM;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
 import org.svip.api.entities.SBOMFile;
-import org.svip.api.requests.UploadSBOMInput;
+import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
 import org.svip.api.services.SBOMService;
 import org.svip.serializers.SerializerFactory;
@@ -66,11 +66,7 @@ public class SBOMController {
             Deserializer d = SerializerFactory.createDeserializer(sbom.getContent());
             d.readFromString(sbom.getContent());
 
-            // If reach here, SBOM is valid, set additional fields
-            sbom.setSchema(d)
-                .setFileType(d);
-
-            // Upload File
+            SBOM sbom = uploadSBOMInput.toSBOMFile();
             this.sbomService.upload(sbom);
 
             // Log
@@ -211,7 +207,7 @@ public class SBOMController {
      * The API will respond with an HTTP 200 and the SBOM object json
      *
      * @param id The id of the SBOM contents to retrieve.
-     * @return A deserialized SBOM Object
+     * @return A deserialized SBOM Object in JSON form
      */
     @GetMapping("/sbom")
     public ResponseEntity<String> getSBOMObjectAsJSON(@RequestParam("id") Long id){
