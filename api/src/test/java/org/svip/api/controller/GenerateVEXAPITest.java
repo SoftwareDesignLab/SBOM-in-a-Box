@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.svip.api.model.SBOMFile;
+import org.svip.api.entities.SBOMFile;
 
 import java.io.IOException;
 import java.util.Map;

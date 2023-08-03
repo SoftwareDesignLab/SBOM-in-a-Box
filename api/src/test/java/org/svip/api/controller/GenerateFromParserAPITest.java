@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.svip.api.model.SBOMFile;
+import org.svip.api.entities.SBOMFile;
 import org.svip.serializers.SerializerFactory;
 
 import java.io.IOException;
