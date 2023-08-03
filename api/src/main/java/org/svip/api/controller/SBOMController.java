@@ -1,5 +1,6 @@
 package org.svip.api.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +22,8 @@ public class SBOMController {
     }
 
     @GetMapping("/sboms")
-    public ResponseEntity<Long[]> getAllIds(){
-        return null;
+    public ResponseEntity<String> getAllIds(){
+        return new ResponseEntity<>("Pong!", HttpStatus.OK);
     }
 
 }
