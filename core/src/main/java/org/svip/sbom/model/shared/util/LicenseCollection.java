@@ -114,26 +114,14 @@ public class LicenseCollection implements Comparable {
         return o != null && getClass() == o.getClass();
     }
 
-
+    @Override
     public String toString() {
-        StringBuilder concludedString = new StringBuilder();
-        StringBuilder declaredString = new StringBuilder();
-        StringBuilder infoFromFilesString = new StringBuilder();
-        for (String license : this.concluded) {
-            concludedString.append(license).append(", ");
-        }
-        // chop of the last comma
-        if (concludedString.length() > 0) concludedString.setLength(concludedString.length()-2);
-        for (String license : this.declared) {
-            declaredString.append(license).append(", ");
-        }
-        // chop of the last comma
-        if (declaredString.length() > 0) declaredString.setLength(declaredString.length()-2);
-        for (String license : this.infoFromFiles) {
-            infoFromFilesString.append(license).append(", ");
-        }
-        // chop of the last comma
-        if (infoFromFilesString.length() > 0) infoFromFilesString.setLength(infoFromFilesString.length()-2);
+        String concludedString = "";
+        String declaredString = "";
+        String infoFromFilesString = "";
+        concludedString = String.join(", ", this.concluded);
+        declaredString = String.join(", ", this.declared);
+        infoFromFilesString = String.join(", ", this.infoFromFiles);
         return "LicenseConcluded: (" + concludedString + "), LicenseDeclared: (" + declaredString + "), LicenseInfoFromFiles: (" + infoFromFilesString + ")";
     }
 }
