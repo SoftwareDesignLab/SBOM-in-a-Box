@@ -28,6 +28,10 @@ public class SBOM {
         TAG_VALUE
     }
 
+    ///
+    /// Metadata
+    ///
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
@@ -51,6 +55,13 @@ public class SBOM {
     @Column(nullable = false, name = "file_type")
     @JsonProperty
     private FileType fileType;
+
+    ///
+    /// Relationships
+    ///
+    @OneToOne
+    @JoinColumn(name = "qa_id", referencedColumnName = "id")
+    private QualityReportFile qualityReportFile;
 
     ///
     /// Setters
