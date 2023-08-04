@@ -14,4 +14,10 @@ public class QualityReportFile {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private Long id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @OneToOne(mappedBy = "quality_report_file")
+    private SBOM sbom;
 }
