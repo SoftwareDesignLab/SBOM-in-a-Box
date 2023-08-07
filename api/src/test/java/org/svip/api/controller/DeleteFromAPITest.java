@@ -30,8 +30,8 @@ public class DeleteFromAPITest extends APITest {
         // Mock no ids in the database since delete doesn't return any confirmation
         when(oldRepository.findById(any(Long.class))).thenAnswer(i -> Optional.empty());
 
-//        ResponseEntity<?> response = oldController.delete(id);
-//        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        ResponseEntity<?> response = oldController.delete(id);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test
@@ -49,8 +49,8 @@ public class DeleteFromAPITest extends APITest {
 
         for (Long id : getTestFileMap().keySet()) { // Use copy of map to avoid concurrent modification
             Debug.log(Debug.LOG_TYPE.SUMMARY, "Deleting ID " + id);
-//            ResponseEntity<?> response = oldController.delete(id);
-//            assertEquals(id, response.getBody());
+            ResponseEntity<?> response = oldController.delete(id);
+            assertEquals(id, response.getBody());
         }
     }
 }

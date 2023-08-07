@@ -78,11 +78,11 @@ public class MergeFromAPITest extends APITest {
                         " and " + schema2 + " SBOM " + sbom2.getId() + "..." +
                         sbom2.getFileName().substring(sbom2.getFileName().length() * 2 / 3));
 
-//                ResponseEntity<Long> response = (ResponseEntity<Long>) oldController.merge(new long[]{id1, id2});
-//                Long responseBody = response.getBody();
-//
-//                assertEquals(HttpStatus.OK, response.getStatusCode());
-//                assertNotNull(responseBody);
+                ResponseEntity<Long> response = (ResponseEntity<Long>) oldController.merge(new long[]{id1, id2});
+                Long responseBody = response.getBody();
+
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+                assertNotNull(responseBody);
 
             }
 
