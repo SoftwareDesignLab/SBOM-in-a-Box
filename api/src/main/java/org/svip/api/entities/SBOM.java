@@ -51,7 +51,7 @@ public class SBOM {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     @JsonProperty
-    private Long id;
+    public Long id; // todo make private again
 
     @Column(nullable = false)
     @JsonProperty("fileName")
@@ -250,4 +250,5 @@ public class SBOM {
     public VEXFile getVEXFile(){
         return this.vexFile;
     }
+
 }
