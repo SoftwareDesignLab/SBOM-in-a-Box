@@ -11,12 +11,9 @@ import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.serializers.SerializerFactory;
-import org.svip.serializers.deserializer.Deserializer;
 
 import java.util.Map;
 import java.util.Set;
-
-import static org.svip.compare.utils.Utils.buildSVIPComponentObject;
 
 /**
  * Name: Conversion.java
