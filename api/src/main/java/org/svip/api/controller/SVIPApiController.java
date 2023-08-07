@@ -179,8 +179,7 @@ public class SVIPApiController {
 
         SBOMFile result = new SBOMFile(projectName + ((format == SerializerFactory.Format.JSON)
                 ? ".json" : ".spdx"), contents);
-        Random rand = new Random();
-        result.setId(Utils.generateNewId(rand.nextLong(), rand, sbomFileRepository));
+        result.setId(Utils.generateSBOMFileId());
         sbomFileRepository.save(result);
 
         return Utils.encodeResponse(result.getId());
