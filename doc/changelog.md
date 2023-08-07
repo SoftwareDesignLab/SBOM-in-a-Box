@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Core functionality of SBOM conversion
 - `Convert.java` interface
   - `ConvertCDX14.java`
-  - ConvertSPDX23.java
+  - `ConvertSPDX23.java`
 - `ConvertTest.java` Class containing comprehensive unit tests for both schema converters
 
 ## [v7.2.2-alpha] - (8/3/2023)
