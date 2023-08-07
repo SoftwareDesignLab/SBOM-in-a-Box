@@ -23,6 +23,7 @@ import org.svip.serializers.serializer.Serializer;
 import java.util.*;
 
 /**
+ * file: SBOMFileService.java
  * Business logic for accessing the SBOM File table
  *
  * @author Derek Garcia
