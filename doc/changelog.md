@@ -66,27 +66,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Services take objects instead of ids
 
 ## [v7.2.5-alpha] - (8/7/2023)
+
 ### Added
-- `VEXFileService` for handling database operations
-- `UploadVEXFileInput` to handle new VEX and ensure relationships are added correctly
-- `VEXFile` that stores VEX information and schema/format details
-- `VEXController` to handle VEX API generation
+- Relevant exceptions for conversion endpoint
+  - `DeserializerException`
+  - `SerializerException`
+  - `SBOMBuilderException`
+- Convert endpoint in `SBOMController.java`
 
 ### Changed
-- Moved `/svip/sboms/vex` endpoint to `VEXController`
-- VEX are generated only once and stored in database. Subsequent request query the database
-- `/delete` deletes VEX stored in database for a SBOM that is deleted
+- `ConvertFromApiTest.java`
 
 ## [v7.2.4-alpha] - (8/7/2023)
-### Added
-- `QualityReportFileService` for handling database operations
-- `UploadQualityReportFileInput` to handle new QA and ensure relationships are added correctly
-- `QAController` to handle Metric API operations
 
-### Changed
-- Moved `/svip/sboms/qa` endpoint to `QAController`
-- Quality reports are generated only once and stored in database. Subsequent request query the database
-- `/delete` deletes QA Report stored in database for a SBOM that is deleted
+### Added
+- `Conversion.java`
+    - Core functionality of SBOM conversion
+- `Convert.java` interface
+    - `ConvertCDX14.java`
+    - `ConvertSPDX23.java`
+- `ConvertTest.java` Class containing comprehensive unit tests for both schema converters
+
 
 ## [v7.2.3-alpha] - (8/3/2023)
 ### Added
@@ -103,7 +103,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - GET `/sboms/content`
   - GET `/sboms`
   - DELETE `/sboms`
-  
+
 ## [v7.2.2-alpha] - (8/3/2023)
 
 ### Added
@@ -118,14 +118,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - passes Postman tests and `GenerateFromOSIAPITest`
 - Maximum file upload and request size to 2GB in `application.properties`
 
-## [v7.2.1-alpha] - (8/3/2023)
-
-### Added
-- Improved Diff Report readability
-- SBOM Objects have built in toString methods
-- `/metrics/resultFactory/enumerations/INFO` now has info for diff reports
-- `/metrics/resultFactory/Text` now has outputs for getting diff report messages
-- `/compare/conflicts/ConflictFactory` has been reworked to avoid using plain text, instead relying on `Text` class
+## [v7.2.1-alpha] - (8/1/2023)
 
 ### Changed
 - Fix incorrect OSI filepaths not allowing API to build.
