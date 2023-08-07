@@ -14,4 +14,13 @@ public class VEXFile {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private Long id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false, columnDefinition="LONGTEXT")
+    private String content;
+
+    @OneToOne(mappedBy = "vex")   // name of field in SBOMFile NOT DB
+    private SBOM sbom;
 }
