@@ -69,8 +69,7 @@ public class Utils {
      *
      * @return whether it is valid to proceed with this test
      */
-    public static boolean convertTestController(SerializerFactory.Schema convertToSchema,
-                                                SerializerFactory.Format convertToFormat, Long id,
+    public static boolean convertTestController(String convertToSchema, String convertToFormat, Long id,
                                                 SerializerFactory.Schema thisSchema, Map<Long, SBOMFile> testMap,
                                                 SBOMFile original) {
         Long[] validTests = {0L, 2L, 6L, 7L};
@@ -87,16 +86,14 @@ public class Utils {
         SerializerFactory.Format thisFormat = SerializerFactory.resolveFormat(original.getContents());
         if (thisFormat == null) return false;
 
-        if (thisSchema == SerializerFactory.Schema.SPDX23 && (convertToSchema == SerializerFactory.Schema.SPDX23))
+        if (thisSchema == SerializerFactory.Schema.SPDX23 && (convertToSchema.equals("SPDX23")))
             if (Objects.equals(convertToFormat, thisFormat.toString()))
                 return true;
 
-        if (thisSchema == SerializerFactory.Schema.CDX14 && (convertToSchema == SerializerFactory.Schema.CDX14))
-            return true;
+        if (thisSchema == SerializerFactory.Schema.CDX14 && (convertToSchema.equals("CDX14"))) return true;
 
         // tagvalue format unsupported for cdx14
-        if (convertToSchema == SerializerFactory.Schema.CDX14 && convertToFormat == SerializerFactory.Format.TAGVALUE)
-            return true;
+        if (convertToSchema.equals("CDX14") && convertToFormat.equals("TAGVALUE")) return true;
 
         // we don't support xml deserialization right now
         return testMap.get(id).getContents().contains("xml");
@@ -120,6 +117,16 @@ public class Utils {
         return sbomFiles;
     }
 
+    /**
+     * Generates new SBOMFile id
+     *
+     */
+    public static long generateSBOMFileId() {
+        Random rand = new Random();
+        long id = rand.nextLong();
+        id += (rand.nextLong()) % ((id < 0) ? id : Long.MAX_VALUE);
+        return Math.abs(id);
+    }
 
     /**
      * Unzip a ZipFile of SBOMFiles
