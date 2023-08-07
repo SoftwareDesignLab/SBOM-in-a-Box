@@ -50,12 +50,12 @@ public class ConvertFromAPITest extends APITest {
 
         setupMockRepository();
 
-        String[] schemas = {"CDX14", "SPDX23"};
-        String[] formats = {"JSON", "TAGVALUE"};
+        SerializerFactory.Schema[] schemas = {SerializerFactory.Schema.CDX14, SerializerFactory.Schema.SPDX23};
+        SerializerFactory.Format[] formats = {SerializerFactory.Format.JSON, SerializerFactory.Format.TAGVALUE};
 
-        for (String convertToSchema : schemas
+        for (SerializerFactory.Schema convertToSchema : schemas
         ) {
-            for (String convertToFormat : formats
+            for (SerializerFactory.Format convertToFormat : formats
             ) {
                 for (Long id : testMap.keySet()) {
 
@@ -64,15 +64,18 @@ public class ConvertFromAPITest extends APITest {
                     SerializerFactory.Schema thisSchema = SerializerFactory.resolveSchema(sbom.getContents());
 
                     // check if test is valid
-                    if (Utils.convertTestController(convertToSchema, convertToFormat, id, thisSchema, testMap, sbom))
-                        continue;
+                    if (Utils.convertTestController(convertToSchema, convertToFormat, id,
+                            thisSchema, testMap, sbom)) continue;
 
                     // test conversion to schema and format
                     LOGGER.info("ID: " + id + " Converting " + thisSchema.name() + " --> " + convertToSchema);
                     LOGGER.info("From             " + ((sbom.getFileName()).contains("json")
                             ? "JSON" : "TAGVALUE") + " --> " + convertToFormat);
-                    ResponseEntity<Long> response = (ResponseEntity<Long>) controller.convert(id, SerializerFactory.Schema.valueOf(convertToSchema),
-                            SerializerFactory.Format.valueOf(convertToFormat), false);
+
+                    ResponseEntity<?> resposeObject = controller.convert(id, convertToSchema, convertToFormat, false);
+                    assertInstanceOf(Long.class, resposeObject.getBody());
+
+                    ResponseEntity<Long> response = (ResponseEntity<Long>) resposeObject;
                     Long responseBody = response.getBody();
 
                     // check if OK
