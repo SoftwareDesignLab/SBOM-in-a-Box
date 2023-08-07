@@ -4,25 +4,19 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.api.entities.QualityReportFile;
-import org.svip.api.entities.SBOM;
 import org.svip.metrics.pipelines.QualityReport;
 
 /**
- * file: UploadQRFileInput.java
- * Input request to create a new QA FIle
- *
  * @author Derek Garcia
  **/
-public record UploadQRFileInput(QualityReport qa) {
+public class UploadQRFileInput {
 
     /**
      * Create a new Quality Report File Object
-     *
-     * @param sbom SBOM of the qa was run on
      * @return SBOM File
      * @throws JsonProcessingException Failed to parse SBOM and is invalid
      */
-    public QualityReportFile toQualityReportFile(SBOM sbom) throws JsonProcessingException {
+    public QualityReportFile toQualityReportFile(QualityReport qa) throws JsonProcessingException {
         QualityReportFile qaf = new QualityReportFile();
 
         // Configure object mapper to remove null and empty arrays
@@ -31,9 +25,7 @@ public record UploadQRFileInput(QualityReport qa) {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 
         // Set attributes
-        qaf.setName(qa.getUid())
-           .setContent(mapper.writeValueAsString(qa))
-           .setSBOM(sbom);      // adds relationship
+        qaf.setName(qa.getUid()).setContent(mapper.writeValueAsString(qa));
 
         return qaf;
     }
