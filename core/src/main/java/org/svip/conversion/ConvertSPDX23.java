@@ -27,7 +27,7 @@ public class ConvertSPDX23 implements Convert {
         SPDX23Builder builder = new SPDX23Builder();
 
         // Format
-        builder.setFormat(sbom.getFormat());
+        builder.setFormat("SPDX");
 
         // Name
         builder.setName(sbom.getName());
@@ -39,7 +39,7 @@ public class ConvertSPDX23 implements Convert {
         builder.setVersion(sbom.getVersion());
 
         // Spec Version
-        builder.setSpecVersion(sbom.getSpecVersion());
+        builder.setSpecVersion("2.3");
 
         // Stream Licenses into new SBOM
         if(sbom.getLicenses() != null) sbom.getLicenses().stream().forEach(x -> builder.addLicense(x));
@@ -53,7 +53,8 @@ public class ConvertSPDX23 implements Convert {
         // Root Component
         builder.setRootComponent(convertComponent(sbom.getRootComponent()));
 
-        // Components
+        // Stream components from SVIP SBOM, convert them, then put into SPDX SBOM
+        sbom.getComponents().stream().forEach(x -> builder.addComponent(convertComponent(x)));
 
         // Stream Relationship data into new SBOM
         if (sbom.getRelationships() != null) sbom.getRelationships().keySet().forEach(
