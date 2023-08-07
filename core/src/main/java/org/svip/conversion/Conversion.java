@@ -1,5 +1,6 @@
 package org.svip.conversion;
 
+import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -57,7 +58,7 @@ public class Conversion {
      * @param sbom
      * @return SVIPSBOM
      */
-    private static SVIPSBOM toSVIP(SBOM sbom, SerializerFactory.Schema originalSchema) throws Exception {
+    private static SVIPSBOM toSVIP(SBOM sbom, SerializerFactory.Schema originalSchema) throws SBOMBuilderException {
 
         try {
 
@@ -76,7 +77,7 @@ public class Conversion {
             } catch (Exception e) {
 
                 // Throw exception if we couldn't convert the SBOM
-                throw new Exception("Couldn't standardize SBOM to SVIPSBOM: " + e.getMessage());
+                throw new SBOMBuilderException("Couldn't standardize SBOM to SVIPSBOM: " + e.getMessage());
 
             }
         }
@@ -90,9 +91,7 @@ public class Conversion {
      * @return
      */
     public static SBOM convertSBOM(SBOM sbom, SerializerFactory.Schema desiredSchema,
-                                   SerializerFactory.Schema originalSchema) throws Exception {
-
-        // todo deserialization happens in controller
+                                   SerializerFactory.Schema originalSchema) throws SBOMBuilderException {
 
         // Get the converter
         Convert converter = getConvert(desiredSchema);
