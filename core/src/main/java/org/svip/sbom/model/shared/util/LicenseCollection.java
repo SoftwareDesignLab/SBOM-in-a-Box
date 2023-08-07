@@ -113,5 +113,16 @@ public class LicenseCollection implements Comparable {
         // LC is just collection of licenses, if a collection then it is equal
         return o != null && getClass() == o.getClass();
     }
+
+    @Override
+    public String toString() {
+        String concludedString = "";
+        String declaredString = "";
+        String infoFromFilesString = "";
+        concludedString = String.join(", ", this.concluded);
+        declaredString = String.join(", ", this.declared);
+        infoFromFilesString = String.join(", ", this.infoFromFiles);
+        return "LicenseConcluded: (" + concludedString + "), LicenseDeclared: (" + declaredString + "), LicenseInfoFromFiles: (" + infoFromFilesString + ")";
+    }
 }
 

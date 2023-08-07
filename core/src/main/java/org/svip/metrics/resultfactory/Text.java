@@ -9,6 +9,7 @@ import java.util.Collection;
  * Class that holds message details about test results
  *
  * @author Matthew Morrison
+ * @author Thomas Roman
  */
 public class Text {
 
@@ -69,6 +70,7 @@ public class Text {
             case ERROR -> message.append(field).append(" had an error");
             case MATCHING -> message.append(field).append(" matches Component value");
             case NOT_MATCHING -> message.append(field).append(" does not match Component value");
+            case DIFF_HASH_ALG -> message.append(field).append(" ").append(value).append(" Hash");
         }
 
         return message.toString();

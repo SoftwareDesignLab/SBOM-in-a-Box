@@ -1,6 +1,8 @@
 package org.svip.sbom.model.objects.SPDX23;
 
 import org.junit.jupiter.api.Test;
+import org.svip.metrics.resultfactory.Text;
+import org.svip.metrics.resultfactory.enumerations.INFO;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23FileBuilder;
 import org.svip.sbom.factory.objects.SPDX23.SPDX23FileBuilderFactory;
 import org.svip.sbom.model.interfaces.generics.Component;

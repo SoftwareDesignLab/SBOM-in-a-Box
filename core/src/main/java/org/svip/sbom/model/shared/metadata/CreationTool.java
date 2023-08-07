@@ -142,4 +142,9 @@ public class CreationTool implements Comparable {
         // All checks pass
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Tool: " + this.name + "-" + this.version;
+    }
 }

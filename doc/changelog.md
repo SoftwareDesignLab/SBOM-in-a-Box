@@ -17,7 +17,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - passes Postman tests and `GenerateFromOSIAPITest`
 - Maximum file upload and request size to 2GB in `application.properties`
 
-## [v7.2.1-alpha] - (8/1/2023)
+## [v7.2.1-alpha] - (8/3/2023)
+
+### Added
+- Improved Diff Report readability
+- SBOM Objects have built in toString methods
+- `/metrics/resultFactory/enumerations/INFO` now has info for diff reports
+- `/metrics/resultFactory/Text` now has outputs for getting diff report messages
+- `/compare/conflicts/ConflictFactory` has been reworked to avoid using plain text, instead relying on `Text` class
 
 ### Changed
 - Fix incorrect OSI filepaths not allowing API to build.
