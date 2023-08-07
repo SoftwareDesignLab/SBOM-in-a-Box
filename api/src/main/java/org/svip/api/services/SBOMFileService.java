@@ -113,6 +113,9 @@ public class SBOMFileService {
 
         converted.id = Utils.generateSBOMFileId(); // todo temporary fix?
 
+        if(SerializerFactory.resolveSchema(contents) != schema || SerializerFactory.resolveFormat(contents) != format)
+            return null; // extra assertion outside of unit tests
+
         if (overwrite) {
             update(id, converted);
             return id;
