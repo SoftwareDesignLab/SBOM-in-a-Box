@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Moved `/svip/sboms/qa` endpoint to `QAController`
 - Quality reports are generated only once and stored in database. Subsequent request query the database
+- `/delete` deletes QA Report stored in database for a SBOM that is deleted
 
 ## [v7.2.3-alpha] - (8/3/2023)
 ### Added
