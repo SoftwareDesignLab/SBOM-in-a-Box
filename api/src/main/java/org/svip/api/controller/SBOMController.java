@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.svip.api.entities.SBOM;
 import org.svip.api.requests.UploadSBOMFileInput;
+import org.svip.api.services.QualityReportFileService;
 import org.svip.api.services.SBOMFileService;
 import org.svip.api.requests.UploadSBOMInput;
 import org.svip.api.services.SBOMFileService;
@@ -27,14 +28,17 @@ public class SBOMController {
     private static final Logger LOGGER = LoggerFactory.getLogger(SBOMController.class);
 
     private final SBOMFileService sbomService;
+    private final QualityReportFileService qualityReportFileService;
 
     /**
      * Create new Controller with services
      *
      * @param sbomService Service for handling SBOM queries
+     * @param qualityReportFileService Service for handling QA queries
      */
-    public SBOMController(SBOMFileService sbomService){
+    public SBOMController(SBOMFileService sbomService, QualityReportFileService qualityReportFileService){
         this.sbomService = sbomService;
+        this.qualityReportFileService = qualityReportFileService;
     }
 
 
@@ -241,11 +245,20 @@ public class SBOMController {
     @DeleteMapping("/sboms")
     public ResponseEntity<Long> delete(@RequestParam("id") Long id) {
 
+        SBOM sbomFile = this.sbomService.getSBOMFile(id);
         // Attempt to delete id
-        if(this.sbomService.deleteSBOMFile(id) == null){
+        if(sbomFile == null){
             LOGGER.warn("DELETE /svip/sboms?id=" + id + " - FILE NOT FOUND");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+
+        // Attempt to delete any related data
+        if(sbomFile.getQualityReportFile() != null)
+            this.qualityReportFileService.deleteQualityReportFile(sbomFile.getQualityReportFile().getID());
+        // todo dif + vex
+
+        // Delete actual SBOM file
+        this.sbomService.deleteSBOMFile(sbomFile.getId());
 
         // Log
         LOGGER.info("DELETE /svip/sboms?id=" + id);
