@@ -23,7 +23,7 @@ import java.util.Set;
  *
  * @author Juan Francisco Patino
  */
-public class Converter {
+public class Converter { // todo delete class
 
     private static final SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
     private static final SVIPComponentBuilder compBuilder = new SVIPComponentBuilder();
