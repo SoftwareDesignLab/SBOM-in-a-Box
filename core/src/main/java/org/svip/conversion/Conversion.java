@@ -22,11 +22,12 @@ import static org.svip.compare.utils.Utils.buildSVIPComponentObject;
  * Name: Conversion.java
  * Description: Converts an SBOM from one schema to another.
  *
- * @author tyler_drake
+ * @author Tyler Drake
+ * @author Juan Francisco Patino
  */
 public class Conversion {
 
-    private static final SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
+    private static SVIPSBOMBuilder builder;
     private static final SVIPComponentBuilder compBuilder = new SVIPComponentBuilder();
 
     /**
@@ -60,13 +61,24 @@ public class Conversion {
     private static SVIPSBOM toSVIP(SBOM sbom, SerializerFactory.Schema originalSchema) throws Exception {
 
         try {
+
+            // Return the cast SBOM
             return (SVIPSBOM) sbom;
+
         } catch (ClassCastException c) {
+
             try{
+
+                // Create a new SVIP Builder and build a new SVIP from it
+                builder = new SVIPSBOMBuilder();
                 buildSBOM(sbom, SerializerFactory.Schema.SVIP, originalSchema);
                 return builder.Build();
-            }catch (Exception e){
+
+            } catch (Exception e){
+
+                // Throw exception if we couldn't convert the SBOM
                 throw new Exception("Couldn't standardize SBOM to SVIPSBOM: " + e.getMessage());
+
             }
         }
     }
