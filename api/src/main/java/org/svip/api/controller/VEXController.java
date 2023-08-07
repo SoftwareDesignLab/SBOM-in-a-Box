@@ -6,9 +6,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.svip.api.entities.QualityReportFile;
 import org.svip.api.entities.SBOMFile;
+import org.svip.api.entities.VEXFile;
+import org.svip.api.requests.UploadQRFileInput;
+import org.svip.api.requests.UploadVEXFileInput;
 import org.svip.api.services.SBOMFileService;
 import org.svip.api.services.VEXFileService;
+import org.svip.metrics.pipelines.QualityReport;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.generics.SBOMPackage;
@@ -68,14 +73,51 @@ public class VEXController {
      * @return A new VEXResult of the VEX document and any errors that occurred
      */
     @GetMapping("/sboms/vex")
-    public ResponseEntity<VEXResult> vex(@RequestHeader(value = "apiKey", required = false) String apiKey,
+    public ResponseEntity<String> vex(@RequestHeader(value = "apiKey", required = false) String apiKey,
                                          @RequestParam("id") Long id,
                                          @RequestParam("format") String format,
                                          @RequestParam("client") String client) {
 
+        try{
+            org.svip.api.entities.SBOM sbomFile = this.sbomFileService.getSBOMFile(id);
 
+            // No SBOM was found
+            if(sbomFile == null){
+                LOGGER.info("VEX /svip/sboms/vex?id=" + id + " - FILE NOT FOUND");
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
 
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+            // Get stored content
+            // todo more than 1 vex stored? Ie 1 from nvd, could run for osv
+            // todo POST / arg to force rerun vex??
+//            if(sbomFile.getVEXFile() != null)
+//                return new ResponseEntity<>(sbomFile.getVEXFile().getContent(), HttpStatus.OK);
+
+            // No VEX stored, generate one
+            org.svip.sbom.model.interfaces.generics.SBOM sbomObject = this.sbomFileService.getSBOMObject(id);
+            VEXResult vexResult = this.vexFileService.generateVEX(sbomObject, client, format, apiKey);
+
+            // todo better way to get datasource
+            VEXFile.Database datasource = (client.equalsIgnoreCase("osv") ? VEXFile.Database.OSV : VEXFile.Database.NVD);
+
+            // Create vexFile and upload to db
+            VEXFile vf = new UploadVEXFileInput(vexResult).toVEXFile(sbomFile, datasource);
+            this.vexFileService.upload(vf);
+            this.sbomFileService.setVEX(id, vf);     // update sbom relation
+
+            // Log
+            LOGGER.info("VEX /svip/sboms/vex?id=" + id);
+
+            // Return JSON result
+            return new ResponseEntity<>(vf.getContent(), HttpStatus.OK);
+
+        } catch (JsonProcessingException e ){
+            // error with Deserialization
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            // error with QA
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
     }
 }

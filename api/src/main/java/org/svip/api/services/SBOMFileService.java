@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.svip.api.entities.QualityReportFile;
 import org.svip.api.entities.SBOM;
+import org.svip.api.entities.VEXFile;
 import org.svip.api.repository.SBOMRepository;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
@@ -70,6 +71,28 @@ public class SBOMFileService {
         this.sbomRepository.save(sbom);
 
         return qaf.getID();
+    }
+
+
+    /**
+     * Set a vex association for a given SBOM
+     *
+     * @param id id of the SBOM File
+     * @param vf vex file associated with the SBOM
+     * @return ID of qaf
+     */
+    public Long setVEX(Long id, VEXFile vf){
+        SBOM sbom = getSBOMFile(id);
+
+        // todo better return than null?
+        if(sbom == null)
+            return null;
+
+        // Set and update SBOM File
+        sbom.setVEXFile(vf);
+        this.sbomRepository.save(sbom);
+
+        return vf.getID();
     }
 
 
