@@ -42,7 +42,7 @@ public class ConvertSPDX23 implements Convert {
         builder.setSpecVersion("2.3");
 
         // Stream Licenses into new SBOM
-        if(sbom.getLicenses() != null) sbom.getLicenses().stream().forEach(x -> builder.addLicense(x));
+        if (sbom.getLicenses() != null) sbom.getLicenses().stream().forEach(x -> builder.addLicense(x));
 
         // Creation Data
         builder.setCreationData(sbom.getCreationData());
@@ -110,7 +110,7 @@ public class ConvertSPDX23 implements Convert {
 
         // get hashes then stream them into new CDX component
         Map<String, String> hashesSVIP = componentSVIP.getHashes();
-        if(hashesSVIP != null) hashesSVIP.keySet().forEach(x -> builder.addHash(x, hashesSVIP.get(x)));
+        if (hashesSVIP != null) hashesSVIP.keySet().forEach(x -> builder.addHash(x, hashesSVIP.get(x)));
 
         // Comment
         builder.setComment(componentSVIP.getComment());
@@ -155,13 +155,13 @@ public class ConvertSPDX23 implements Convert {
         builder.setDescription(componentSVIP.getDescription());
 
         // Stream CPEs into new SPDX Component
-        if(componentSVIP.getCPEs() != null) componentSVIP.getCPEs().stream().forEach(x -> builder.addCPE(x));
+        if (componentSVIP.getCPEs() != null) componentSVIP.getCPEs().stream().forEach(x -> builder.addCPE(x));
 
         // Stream PURLs into new SPDX Component
-        if(componentSVIP.getPURLs() != null) componentSVIP.getPURLs().stream().forEach(x -> builder.addPURL(x));
+        if (componentSVIP.getPURLs() != null) componentSVIP.getPURLs().stream().forEach(x -> builder.addPURL(x));
 
         // Stream External References into new SPDX Component
-        if(componentSVIP.getExternalReferences() != null) {
+        if (componentSVIP.getExternalReferences() != null) {
             componentSVIP.getExternalReferences().stream().forEach(x -> builder.addExternalReference(x));
         }
 
