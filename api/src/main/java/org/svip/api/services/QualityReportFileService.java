@@ -1,7 +1,5 @@
 package org.svip.api.services;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.svip.api.entities.QualityReportFile;
 import org.svip.api.repository.QualityReportFileRepository;
@@ -40,7 +38,7 @@ public class QualityReportFileService {
      * Create a new quality report entry in the database
      *
      * @param qaf Quality Report to upload
-     * @return uploaded sbom entry
+     * @return uploaded Quality Report entry
      * @throws Exception Error uploading to the Database
      */
     public QualityReportFile upload(QualityReportFile qaf) throws Exception {
