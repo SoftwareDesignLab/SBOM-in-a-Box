@@ -15,7 +15,7 @@ import java.util.Map;
  * Description: Builds a CycloneDX 1.4 SBOM using
  * the information from an SVIPSBOM.
  *
- * @author tyler_drake
+ * @author Tyler Drake
  */
 public class ConvertCDX14 implements Convert {
 

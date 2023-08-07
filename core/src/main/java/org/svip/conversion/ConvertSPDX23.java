@@ -3,7 +3,6 @@ package org.svip.conversion;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23PackageBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPComponentObject;
@@ -16,7 +15,7 @@ import java.util.Map;
  * Description: Builds a SPDX 2.3 SBOM using
  * the information from an SVIPSBOM.
  *
- * @author tyler_drake
+ * @author Tyler Drake
  */
 public class ConvertSPDX23 implements Convert {
 
