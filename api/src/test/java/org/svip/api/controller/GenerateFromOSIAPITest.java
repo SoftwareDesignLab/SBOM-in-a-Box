@@ -11,6 +11,7 @@ import org.svip.api.entities.SBOMFile;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.entities.SBOMFile;
 import org.svip.generation.osi.OSI;
+import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.serializers.SerializerFactory;
 
 import java.io.File;
@@ -61,7 +62,7 @@ public class GenerateFromOSIAPITest extends APITest {
      */
     @Test
     @DisplayName("Invalid Project Test")
-    public void invalidProjectTest() throws FileNotFoundException {
+    public void invalidProjectTest() throws FileNotFoundException, SBOMBuilderException {
 
         String[] zipFiles = {"sampleProjectEmpty", "sampleProjectNullProperties"};
 
@@ -79,7 +80,7 @@ public class GenerateFromOSIAPITest extends APITest {
      */
     @Test
     @DisplayName("Convert to CDX tag value test")
-    public void CDXTagValueTest() throws IOException {
+    public void CDXTagValueTest() throws IOException, SBOMBuilderException {
         assertEquals(HttpStatus.BAD_REQUEST, oldController.generateOSI((new MockMultipartFile(new File(
                                 sampleProjectDirectory + "Scala.zip"))),
                         "Java", SerializerFactory.Schema.CDX14, SerializerFactory.Format.TAGVALUE).
@@ -91,7 +92,7 @@ public class GenerateFromOSIAPITest extends APITest {
      */
     @Test
     @DisplayName("Incorrect file type test")
-    public void zipExceptionTest() throws IOException {
+    public void zipExceptionTest() throws IOException, SBOMBuilderException {
         assertEquals(HttpStatus.BAD_REQUEST, oldController.generateOSI((new MockMultipartFile(new File(
                                 sampleProjectDirectory + "Ruby/lib/bar.rb"))),
                         "Java", SerializerFactory.Schema.CDX14, SerializerFactory.Format.JSON).
@@ -103,7 +104,7 @@ public class GenerateFromOSIAPITest extends APITest {
      */
     @Test
     @DisplayName("Generate from OSI test")
-    public void generateTest() throws IOException {
+    public void generateTest() throws IOException, SBOMBuilderException {
         // Mock repository output (returns SBOMFile that it received)
         when(oldRepository.save(any(SBOMFile.class))).thenAnswer(i -> i.getArgument(0));
 
