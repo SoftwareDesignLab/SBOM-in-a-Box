@@ -76,6 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - `ConvertFromApiTest.java`
+- Deleted old `Converter.java`
 
 ## [v7.2.4-alpha] - (8/7/2023)
 
