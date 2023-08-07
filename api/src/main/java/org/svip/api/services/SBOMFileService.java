@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.svip.api.entities.SBOM;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMRepository;
+import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.utils.Utils;
 import org.svip.conversion.Conversion;
 import org.svip.sbom.builder.SBOMBuilderException;
@@ -106,15 +107,10 @@ public class SBOMFileService {
             throw new SerializerException("Serialized SBOM does not match format=" + format + " (" + resolvedFormat + ")");
         }
 
-        // Save according to overwrite boolean
-        SBOM converted = new SBOM().
-                setName(sbomFile.getName()).
-                setContent(contents).
-                setSchema((schema == SerializerFactory.Schema.SPDX23) ? // original schema of SBOM
-                        SBOM.Schema.SPDX_23 : SBOM.Schema.CYCLONEDX_14).
-                setFileType((format == SerializerFactory.Format.TAGVALUE) ? // original schema of SBOM
-                        SBOM.FileType.TAG_VALUE : SBOM.FileType.JSON);
+        UploadSBOMFileInput u = new UploadSBOMFileInput(sbomFile.getName(), contents);
 
+        // Save according to overwrite boolean
+        SBOM converted = u.toSBOMFile();
         converted.id = Utils.generateSBOMFileId();
 
         if (overwrite) {
@@ -122,7 +118,7 @@ public class SBOMFileService {
             return id;
         }
 
-        this.sbomRepository.save(converted); // todo should this not generate an ID automatically? (using SBOMFileIdentifierGenerator)
+        this.sbomRepository.save(converted);
         return converted.getId();
 
     }
