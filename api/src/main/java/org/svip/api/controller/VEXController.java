@@ -78,7 +78,9 @@ public class VEXController {
                                          @RequestParam("format") String format,
                                          @RequestParam("client") String client) {
 
-        try{
+
+
+try{
             org.svip.api.entities.SBOM sbomFile = this.sbomFileService.getSBOMFile(id);
 
             // No SBOM was found
