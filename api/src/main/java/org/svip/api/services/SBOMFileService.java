@@ -100,7 +100,7 @@ public class SBOMFileService {
         String contents = s.writeToString((SVIPSBOM) Converted);
         SerializerFactory.Schema resolvedSchema = SerializerFactory.resolveSchema(contents);
         SerializerFactory.Format resolvedFormat = SerializerFactory.resolveFormat(contents);
-        if(resolvedSchema != schema )
+        if (resolvedSchema != schema)
             throw new SerializerException("Serialized SBOM does not match schema=" + schema + " (" + resolvedSchema + ")");
         else if (resolvedFormat != format) {
             throw new SerializerException("Serialized SBOM does not match format=" + format + " (" + resolvedFormat + ")");
@@ -111,7 +111,7 @@ public class SBOMFileService {
                 setName(sbomFile.getName()).
                 setContent(contents).
                 setSchema((schema == SerializerFactory.Schema.SPDX23) ? // original schema of SBOM
-                        SBOM.Schema.SPDX_23: SBOM.Schema.CYCLONEDX_14).
+                        SBOM.Schema.SPDX_23 : SBOM.Schema.CYCLONEDX_14).
                 setFileType((format == SerializerFactory.Format.TAGVALUE) ? // original schema of SBOM
                         SBOM.FileType.TAG_VALUE : SBOM.FileType.JSON);
 
@@ -184,10 +184,9 @@ public class SBOMFileService {
 
          */
 
-        try{
+        try {
             SBOM try_ = sbomFile.get();
-        }
-        catch (ClassCastException e){
+        } catch (ClassCastException e) {
 
             Object tmp = this.sbomRepository.findById(id).get();
             SBOMFile oldSbomFile = (SBOMFile) tmp;
