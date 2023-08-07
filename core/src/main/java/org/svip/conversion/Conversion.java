@@ -11,12 +11,9 @@ import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.serializers.SerializerFactory;
-import org.svip.serializers.deserializer.Deserializer;
 
 import java.util.Map;
 import java.util.Set;
-
-import static org.svip.compare.utils.Utils.buildSVIPComponentObject;
 
 /**
  * Name: Conversion.java
@@ -47,7 +44,9 @@ public class Conversion {
             case CDX14 -> {
                 return new ConvertCDX14();
             }
-            default -> { return null; }
+            default -> {
+                return null;
+            }
         }
     }
 
@@ -67,14 +66,14 @@ public class Conversion {
 
         } catch (ClassCastException c) {
 
-            try{
+            try {
 
                 // Create a new SVIP Builder and build a new SVIP from it
                 builder = new SVIPSBOMBuilder();
                 buildSBOM(sbom, SerializerFactory.Schema.SVIP, originalSchema);
                 return builder.Build();
 
-            } catch (Exception e){
+            } catch (Exception e) {
 
                 // Throw exception if we couldn't convert the SBOM
                 throw new Exception("Couldn't standardize SBOM to SVIPSBOM: " + e.getMessage());
@@ -109,8 +108,9 @@ public class Conversion {
 
     /**
      * Helper function to build an SBOM object from an object of the SBOM interface
-     * @param deserialized SBOM interface object
-     * @param schema desired schema
+     *
+     * @param deserialized   SBOM interface object
+     * @param schema         desired schema
      * @param originalSchema original schema
      */
     public static void buildSBOM(SBOM deserialized, SerializerFactory.Schema schema, SerializerFactory.Schema originalSchema) {
@@ -172,29 +172,27 @@ public class Conversion {
                 compBuilder.addHash(entry.getKey(), entry.getValue());
 
         // schema specific
-        if(originalSchema != null)
+        if (originalSchema != null)
             switch (originalSchema) {
-                case CDX14 ->
-                        configurefromCDX14Object((CDX14ComponentObject) component);
-                case SPDX23 ->
-                        configureFromSPDX23Object(component);
+                case CDX14 -> configurefromCDX14Object((CDX14ComponentObject) component);
+                case SPDX23 -> configureFromSPDX23Object(component);
             }
         else
             // if original schema is unspecified, try both
-            try{
+            try {
                 configureFromSPDX23Object(component);
-            }
-            catch (ClassCastException | NullPointerException e){
-                try{
+            } catch (ClassCastException | NullPointerException e) {
+                try {
                     configurefromCDX14Object((CDX14ComponentObject) component);
+                } catch (ClassCastException | NullPointerException e1) {
                 }
-                catch (ClassCastException | NullPointerException e1){}
             }
 
     }
 
     /**
      * Configure the SVIPComponentBuilder from an SPDX23 Component Object or File Object
+     *
      * @param component SPDX23 object
      */
     private static void configureFromSPDX23Object(Component component) {
@@ -206,13 +204,13 @@ public class Conversion {
             compBuilder.setComment(spdx23FileObject.getComment());
             compBuilder.setAttributionText(spdx23FileObject.getAttributionText());
             compBuilder.setFileNotice(spdx23FileObject.getFileNotice());
-        }
-        else if(component instanceof CDX14ComponentObject)
+        } else if (component instanceof CDX14ComponentObject)
             throw new ClassCastException();
     }
 
     /**
      * Configure the SVIPComponentBuilder from an CDX14 Component Object
+     *
      * @param component CDX14 component object
      */
     private static void configurefromCDX14Object(CDX14ComponentObject component) {
