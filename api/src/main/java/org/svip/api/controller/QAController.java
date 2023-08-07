@@ -45,6 +45,9 @@ public class QAController {
         this.qualityReportFileService = qualityReportFileService;
     }
 
+    ///
+    /// GET
+    ///
 
     /**
      * USAGE Send GET request to /qa with a URL parameter id to conduct a quality assessment on the SBOM with
