@@ -75,77 +75,76 @@ public class SBOMFileService {
         if (sbomFile == null)
             return null;
 
+        SerializerFactory.Schema originalSchema = (sbomFile.getSchema() == SBOM.Schema.SPDX_23) ? // original schema of SBOM
+                SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14;
+
         // deserialize into SBOM object
         Deserializer d;
         org.svip.sbom.model.interfaces.generics.SBOM deserialized;
-
         try {
             d = SerializerFactory.createDeserializer(sbomFile.getContent());
             deserialized = d.readFromString(sbomFile.getContent());
         } catch (Exception e) {
             throw new DeserializerException("Deserialization Error: " + e.getMessage());
         }
-
         if (deserialized == null) throw new DeserializerException("Deserialization Error: Deserializer is null");
 
-        SerializerFactory.Schema originalSchema =
-                (sbomFile.getSchema() == SBOM.Schema.SPDX_23) ?
-                        SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14;
 
+        // use core Conversion functionality
         org.svip.sbom.model.interfaces.generics.SBOM Converted =
                 Conversion.convertSBOM(deserialized, schema, originalSchema);
 
 
         // serialize into desired format
+        String contents = serialize(schema, format, Converted, originalSchema);
+
+
+        // Save according to overwrite boolean
+        SBOM converted = new SBOM().
+                setName(sbomFile.getName()).
+                setContent(contents).
+                setSchema(d).
+                setFileType(d);
+
+        if (overwrite) {
+            update(id, converted);
+            return id;
+        }
+
+        this.sbomRepository.save(converted);
+        return converted.getId();
+
+    }
+
+    /**
+     * Helper function to serialize an already converted SBOM
+     *
+     * @param schema         file schema
+     * @param format         file format
+     * @param sbom           original SBOM object
+     * @param originalSchema original schema of sbom
+     * @return sbom contents
+     */
+    private static String serialize(SerializerFactory.Schema schema, SerializerFactory.Format format,
+                                    org.svip.sbom.model.interfaces.generics.SBOM sbom,
+                                    SerializerFactory.Schema originalSchema) throws SerializerException {
+
         Serializer s;
-        String serialized = null;
+        String serialized;
         try {
             // serialize into requested schema
 
             s = SerializerFactory.createSerializer(schema, format, true);
             s.setPrettyPrinting(true);
 
-            Conversion.buildSBOM(deserialized, schema, originalSchema);
-
-            // schema specific adjustments
-            switch (schema) {
-                case SPDX23 -> {
-                    builder.setSpecVersion("2.3");
-                    SVIPSBOM built = builder.Build();
-                    serialized = s.writeToString(built);
-                }
-                case CDX14 -> {
-                    builder.setSpecVersion("1.4");
-                    SVIPSBOM built = builder.Build();
-                    serialized = s.writeToString(built);
-                }
-            }
+            Conversion.buildSBOM(sbom, schema, originalSchema);
+            SVIPSBOM built = builder.Build();
+            serialized = s.writeToString(built);
 
         } catch (Exception e) {
             throw new SerializerException("Serialization Error: " + e.getMessage());
         }
-
-
-
-        /*
-        TODO CONVERT LOGIC HERE
-
-        SBOM converted = new SBOM()
-                .setName(name)
-                .setContent(content)
-                .setSchema(schema)
-                .setFileType(fileType);
-
-
-        if(overwrite) {
-            update(id, converted);
-            return id;
-        } else {
-            this.sbomRepository.save(converted);
-            return converted.getID();
-        }
-         */
-        return null;
+        return serialized;
     }
 
 
