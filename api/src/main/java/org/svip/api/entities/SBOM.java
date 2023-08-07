@@ -77,9 +77,9 @@ public class SBOM {
     ///
     /// Relationships
     ///
-//    @OneToOne
-//    @JoinColumn(name = "qa_id", referencedColumnName = "id")
-//    private QualityReportFile qualityReportFile;
+    @OneToOne
+    @JoinColumn(name = "qa_id", referencedColumnName = "id")
+    private QualityReportFile qualityReportFile;
 
     /**
      * Convert SBOMFile to SBOM Object
