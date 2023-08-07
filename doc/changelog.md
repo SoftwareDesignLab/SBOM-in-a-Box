@@ -3,6 +3,18 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v7.2.5-alpha] - (8/7/2023)
+### Added
+- `VEXFileService` for handling database operations
+- `UploadVEXFileInput` to handle new VEX and ensure relationships are added correctly
+- `VEXFile` that stores VEX information and schema/format details
+- `VEXController` to handle VEX API generation
+
+### Changed
+- Moved `/svip/sboms/vex` endpoint to `VEXController`
+- VEX are generated only once and stored in database. Subsequent request query the database
+- `/delete` deletes VEX stored in database for a SBOM that is deleted
+
 ## [v7.2.4-alpha] - (8/7/2023)
 ### Added
 - `QualityReportFileService` for handling database operations
