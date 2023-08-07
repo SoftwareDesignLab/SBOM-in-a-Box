@@ -38,10 +38,10 @@ public class CompareAPITest extends APITest {
     @DisplayName("Generate Diff Report")
     public void generateDiffReport() throws JsonProcessingException {
         // Get SBOM when requested
-        when(repository.findById(IDs[0])).thenAnswer(i -> Optional.of(fileMap.get(IDs[0])));
+        when(oldRepository.findById(IDs[0])).thenAnswer(i -> Optional.of(fileMap.get(IDs[0])));
 
         // Make API Request
-        ResponseEntity<?> response = controller.compare(0, IDs);
+        ResponseEntity<?> response = oldController.compare(0, IDs);
 
         // Assert correct object was returned
         assertEquals(response.getStatusCode(), HttpStatus.OK);

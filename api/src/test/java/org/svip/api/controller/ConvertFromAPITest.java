@@ -77,30 +77,6 @@ public class ConvertFromAPITest extends APITest {
                     assertEquals(HttpStatus.OK, response.getStatusCode());
                     assertNotNull(responseBody);
 
-//                    // assert we can convert again
-//                    try {
-//
-//                        // this test in particular takes several minutes, it passes
-//                        if (id == 6 && thisSchema == SerializerFactory.Schema.CDX14 && convertToFormat.equals("TAGVALUE")) {
-//                            LOGGER.info("Reconversion ignored for the sake of time.\n-------------\n");
-//                            continue;
-//                        }
-//
-//                        String originalFormat = Utils.assumeFormatFromDocument(sbom);
-//                                                                                              // todo with convert returning a long, we can't reconvert
-//                        assertEquals("", Converter.convert(new SBOMFile("convertBack." +
-//                                        (originalFormat.equals("TAGVALUE") ? "json" : "spdx"),
-//
-//                                        responseBody), thisSchema, SerializerFactory.Format.valueOf(originalFormat)).
-//                                values().toArray()[0]);
-//                        LOGGER.info("Reconversion successful!");
-//
-//                    } catch (Exception e) {
-//
-//                        LOGGER.error("Cannot reconvert: " + e.getMessage());
-//                        fail();
-//
-//                    }
                     LOGGER.info("\n-------------\n");
                 }
             }
@@ -111,7 +87,7 @@ public class ConvertFromAPITest extends APITest {
      * Reused code to set up mock repository for tests
      */
     private void setupMockRepository() {
-        when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
+        when(oldRepository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
     }
 
 }
