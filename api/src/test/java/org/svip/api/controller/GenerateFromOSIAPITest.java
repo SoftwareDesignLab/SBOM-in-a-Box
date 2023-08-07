@@ -49,10 +49,10 @@ public class GenerateFromOSIAPITest extends APITest {
         assumeTrue(OSI.dockerCheck() == 0);
 
         // Init controller with mocked repository and enable OSI
-        controller = new SVIPApiController(repository, true);
+        oldController = new SVIPApiController(oldRepository, true);
 
         // Ensure controller was able to construct OSI
-        assumeTrue(controller.isOSIEnabled());
+        assumeTrue(oldController.isOSIEnabled());
     }
 
     /**
@@ -64,11 +64,11 @@ public class GenerateFromOSIAPITest extends APITest {
 
         String[] zipFiles = {"sampleProjectEmpty", "sampleProjectNullProperties"};
 
-        assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI(new MockMultipartFile(new File(
+        assertEquals(HttpStatus.BAD_REQUEST, oldController.generateOSI(new MockMultipartFile(new File(
                         sampleProjectDirectory + zipFiles[0] + ".zip")), "Empty Project Folder",
                 SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).getStatusCode());
 
-        assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI(new MockMultipartFile(new File(
+        assertEquals(HttpStatus.BAD_REQUEST, oldController.generateOSI(new MockMultipartFile(new File(
                         sampleProjectDirectory + zipFiles[1] + ".zip")), "Empty C file",
                 SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).getStatusCode());
     }
@@ -79,7 +79,7 @@ public class GenerateFromOSIAPITest extends APITest {
     @Test
     @DisplayName("Convert to CDX tag value test")
     public void CDXTagValueTest() throws IOException {
-        assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI((new MockMultipartFile(new File(
+        assertEquals(HttpStatus.BAD_REQUEST, oldController.generateOSI((new MockMultipartFile(new File(
                                 sampleProjectDirectory + "Scala.zip"))),
                         "Java", SerializerFactory.Schema.CDX14, SerializerFactory.Format.TAGVALUE).
                 getStatusCode());
@@ -91,7 +91,7 @@ public class GenerateFromOSIAPITest extends APITest {
     @Test
     @DisplayName("Incorrect file type test")
     public void zipExceptionTest() throws IOException {
-        assertEquals(HttpStatus.BAD_REQUEST, controller.generateOSI((new MockMultipartFile(new File(
+        assertEquals(HttpStatus.BAD_REQUEST, oldController.generateOSI((new MockMultipartFile(new File(
                                 sampleProjectDirectory + "Ruby/lib/bar.rb"))),
                         "Java", SerializerFactory.Schema.CDX14, SerializerFactory.Format.JSON).
                 getStatusCode());
@@ -104,7 +104,7 @@ public class GenerateFromOSIAPITest extends APITest {
     @DisplayName("Generate from OSI test")
     public void generateTest() throws IOException {
         // Mock repository output (returns SBOMFile that it received)
-        when(repository.save(any(SBOMFile.class))).thenAnswer(i -> i.getArgument(0));
+        when(oldRepository.save(any(SBOMFile.class))).thenAnswer(i -> i.getArgument(0));
 
         // TODO No C#, Perl, or Scala OSI tools
         String[] zipFiles = {"Conan", "Conda_noEmptyFiles", "Rust_noEmptyFiles"};
@@ -124,7 +124,7 @@ public class GenerateFromOSIAPITest extends APITest {
 
                     LOGGER.info("Into " + schema + ((format == SerializerFactory.Format.TAGVALUE) ? ".spdx" : ".json"));
 
-                    ResponseEntity<Long> response = (ResponseEntity<Long>) controller.generateOSI(new MockMultipartFile(
+                    ResponseEntity<Long> response = (ResponseEntity<Long>) oldController.generateOSI(new MockMultipartFile(
                                     new File(sampleProjectDirectory + file + ".zip")), file,
                             schema, format);
                     assertEquals(HttpStatus.OK, response.getStatusCode());
