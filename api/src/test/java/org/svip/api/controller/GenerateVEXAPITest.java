@@ -35,7 +35,7 @@ public class GenerateVEXAPITest extends APITest{
     @Test
     @DisplayName("Invalid SBOM Test")
     public void test_invalid_sbom_id_test() {
-        assertEquals(HttpStatus.NOT_FOUND, vexController.vex(
+        assertEquals(HttpStatus.NOT_FOUND, oldController.vex(
                 null, CDX14_JSON_ID, "CSAF", "OSV"
         ).getStatusCode());
     }
@@ -48,7 +48,7 @@ public class GenerateVEXAPITest extends APITest{
         // Get CDX14 JSON SBOM when requested
         when(oldRepository.findById(CDX14_JSON_ID)).thenAnswer(i -> Optional.of(fileMap.get(CDX14_JSON_ID)));
 
-        assertEquals(HttpStatus.BAD_REQUEST, vexController.vex(
+        assertEquals(HttpStatus.BAD_REQUEST, oldController.vex(
                 null, CDX14_JSON_ID, "NotARealFormat", "OSV"
         ).getStatusCode());
     }
@@ -60,7 +60,7 @@ public class GenerateVEXAPITest extends APITest{
         // Get CDX14 JSON SBOM when requested
         when(oldRepository.findById(CDX14_JSON_ID)).thenAnswer(i -> Optional.of(fileMap.get(CDX14_JSON_ID)));
 
-        assertEquals(HttpStatus.BAD_REQUEST, vexController.vex(
+        assertEquals(HttpStatus.BAD_REQUEST, oldController.vex(
                 null, CDX14_JSON_ID, "CSAF", "NotARealClient"
         ).getStatusCode());
     }
@@ -73,7 +73,7 @@ public class GenerateVEXAPITest extends APITest{
                 Optional.of(fileMap.get(VULNERABLE_SBOM_NVD_ID)));
 
 
-        ResponseEntity<?> response = vexController.vex(null, VULNERABLE_SBOM_NVD_ID,
+        ResponseEntity<?> response = oldController.vex(null, VULNERABLE_SBOM_NVD_ID,
                 "CSAF", "NVD");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -93,7 +93,7 @@ public class GenerateVEXAPITest extends APITest{
                 Optional.of(fileMap.get(VULNERABLE_SBOM_NVD_ID)));
 
 
-        ResponseEntity<?> response = vexController.vex(null, VULNERABLE_SBOM_NVD_ID,
+        ResponseEntity<?> response = oldController.vex(null, VULNERABLE_SBOM_NVD_ID,
                 "CycloneDX", "NVD");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -112,7 +112,7 @@ public class GenerateVEXAPITest extends APITest{
         when(oldRepository.findById(VULNERABLE_SBOM_NVD_ID)).thenAnswer(i ->
                 Optional.of(fileMap.get(VULNERABLE_SBOM_NVD_ID)));
 
-        ResponseEntity<?> response = vexController.vex("AAAAAAAAAA", VULNERABLE_SBOM_NVD_ID,
+        ResponseEntity<?> response = oldController.vex("AAAAAAAAAA", VULNERABLE_SBOM_NVD_ID,
                 "CycloneDX", "NVD");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -131,7 +131,7 @@ public class GenerateVEXAPITest extends APITest{
         when(oldRepository.findById(VULNERABLE_SBOM_NVD_ID)).thenAnswer(i ->
                 Optional.of(fileMap.get(VULNERABLE_SBOM_NVD_ID)));
 
-        ResponseEntity<?> response = vexController.vex("AAAAAAAAAA", VULNERABLE_SBOM_NVD_ID,
+        ResponseEntity<?> response = oldController.vex("AAAAAAAAAA", VULNERABLE_SBOM_NVD_ID,
                 "CSAF", "NVD");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -151,7 +151,7 @@ public class GenerateVEXAPITest extends APITest{
                 Optional.of(fileMap.get(VULNERABLE_SBOM_OSV_ID)));
 
 
-        ResponseEntity<?> response = vexController.vex(null, VULNERABLE_SBOM_OSV_ID,
+        ResponseEntity<?> response = oldController.vex(null, VULNERABLE_SBOM_OSV_ID,
                 "CycloneDX", "OSV");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -171,7 +171,7 @@ public class GenerateVEXAPITest extends APITest{
                 Optional.of(fileMap.get(VULNERABLE_SBOM_OSV_ID)));
 
 
-        ResponseEntity<?> response = vexController.vex(null, VULNERABLE_SBOM_OSV_ID,
+        ResponseEntity<?> response = oldController.vex(null, VULNERABLE_SBOM_OSV_ID,
                 "CSAF", "OSV");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());

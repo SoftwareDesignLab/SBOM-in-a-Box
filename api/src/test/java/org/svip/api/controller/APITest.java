@@ -25,17 +25,6 @@ public class APITest {
     SVIPApiController oldController;
     SBOMController controller;
 
-    DiffController diffController;
-
-    OSIController osiController;
-
-    ParserController parserController;
-
-    QAController qaController;
-    VEXController vexController;
-
-
-
     @Mock
     SBOMFileRepository oldRepository;
     @Mock

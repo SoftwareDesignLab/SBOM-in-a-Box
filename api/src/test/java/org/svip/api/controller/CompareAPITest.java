@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.entities.SBOMFile;
-import org.svip.api.services.DiffService;
 
 import java.util.Map;
 import java.util.Optional;
@@ -41,11 +40,10 @@ public class CompareAPITest extends APITest {
         when(oldRepository.findById(IDs[0])).thenAnswer(i -> Optional.of(fileMap.get(IDs[0])));
 
         // Make API Request
-        ResponseEntity<?> response = diffController.compare(0, IDs);
+        ResponseEntity<?> response = oldController.compare(0, IDs);
 
         // Assert correct object was returned
         assertEquals(response.getStatusCode(), HttpStatus.OK);
-        // TODO no diff report class?
-        //assertInstanceOf(DiffReport.class, response.getBody());
+        assertInstanceOf(DiffReport.class, response.getBody());
     }
 }
