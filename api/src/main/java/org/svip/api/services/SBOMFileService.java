@@ -307,6 +307,9 @@ public class SBOMFileService {
         // Save according to overwrite boolean
         SBOM converted = u.toSBOMFile();
 
+        if(SerializerFactory.resolveSchema(contents) != schema || SerializerFactory.resolveFormat(contents) != format)
+            return null; // extra assertion outside of unit tests
+
         if (overwrite) {
             update(id, converted);
             return id;
