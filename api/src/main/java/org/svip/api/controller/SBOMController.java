@@ -17,6 +17,7 @@ import org.svip.merge.MergerException;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
+import org.svip.serializers.exceptions.DeserializerException;
 import org.svip.serializers.serializer.Serializer;
 
 import java.util.ArrayList;
@@ -124,7 +125,7 @@ public class SBOMController {
     @PutMapping("/sboms")
     public ResponseEntity<Long> convert(@RequestParam("id") Long id, @RequestParam("schema") SerializerFactory.Schema schema,
                                         @RequestParam("format") SerializerFactory.Format format,
-                                        @RequestParam("overwrite") Boolean overwrite) {
+                                        @RequestParam("overwrite") Boolean overwrite) throws DeserializerException {
 
         Long convertID = this.sbomService.convert(id, schema, format, overwrite);
         // todo convert should probably throw errors instead of returning null if error occurs
