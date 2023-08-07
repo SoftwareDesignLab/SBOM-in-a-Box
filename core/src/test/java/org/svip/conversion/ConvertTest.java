@@ -52,7 +52,9 @@ public class ConvertTest {
 
     protected static final SBOM[] sboms = new SBOM[6];
 
-    /** Helper Functions **/
+    /**
+     * Helper Functions
+     **/
 
     public static Deserializer getCDXJSONDeserializer() {
         return new CDX14JSONDeserializer();
@@ -62,7 +64,9 @@ public class ConvertTest {
         return new SPDX23TagValueDeserializer();
     }
 
-    /** Setup **/
+    /**
+     * Setup
+     **/
     @BeforeAll
     static void setupTestSboms() throws IOException {
         sboms[0] = getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_1)));
@@ -73,7 +77,9 @@ public class ConvertTest {
         sboms[5] = getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_6)));
     }
 
-    /** Tests **/
+    /**
+     * Tests
+     **/
 
     @Test
     public void convertCDXSVIP() throws Exception {
