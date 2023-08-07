@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.utils.Utils;
 import org.svip.serializers.SerializerFactory;
+import org.svip.serializers.exceptions.DeserializerException;
 
 import java.io.IOException;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class ConvertFromAPITest extends APITest {
      */
     @Test
     @DisplayName("Convert to CDX tag value test")
-    public void CDXTagValueTest() {
+    public void CDXTagValueTest() throws DeserializerException {
         setupMockRepository();
 
         assertEquals(HttpStatus.BAD_REQUEST, controller.convert(0L, SerializerFactory.Schema.CDX14,
@@ -44,7 +45,7 @@ public class ConvertFromAPITest extends APITest {
      */
     @Test
     @DisplayName("Convert, then convert back to original schema and format")
-    public void convertTest() {
+    public void convertTest() throws DeserializerException {
 
         setupMockRepository();
 
