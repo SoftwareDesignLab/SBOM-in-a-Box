@@ -21,8 +21,8 @@ public class QualityReportFile {
     @Column(nullable = false, columnDefinition="LONGTEXT")
     private String content;
 
-//    @OneToOne(mappedBy = "quality_report_file")
-//    private SBOM sbom;
+    @OneToOne(mappedBy = "qualityReportFile")   // name of field in SBOMFile NOT DB
+    private SBOM sbom;
 
 
     ///
@@ -49,9 +49,21 @@ public class QualityReportFile {
         return this;
     }
 
+    public QualityReportFile setSBOM(SBOM sbom){
+        this.sbom = sbom;
+        return this;
+    }
+
     ///
     /// Getters
     ///
+
+    /**
+     * @return id of qa
+     */
+    public Long getID(){
+        return this.id;
+    }
 
     /**
      * @return content of qa
