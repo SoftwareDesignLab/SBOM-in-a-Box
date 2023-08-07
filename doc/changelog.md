@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v7.2.2-alpha] - (8/3/2023)
 
 ### Added
+- `Conversion.java`
+  - Core functionality of SBOM conversion
+- `Convert.java` interface
+  - `ConvertCDX14.java`
+  - ConvertSPDX23.java
+- `ConvertTest.java` Class containing comprehensive unit tests for both schema converters
+
+## [v7.2.2-alpha] - (8/3/2023)
+
+### Added
 - `MockMultipartFile` for testing uploading binaries
 - `ParserController` null check
 - `SBOMFileIdentifierGenerator` ID generator class implementing JPA's IdentifierGenerator for `SBOMFile.id`
