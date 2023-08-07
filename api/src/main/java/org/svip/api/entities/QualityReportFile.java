@@ -3,6 +3,7 @@ package org.svip.api.entities;
 import jakarta.persistence.*;
 
 /**
+ * file: QualityReportFile.java
  * Quality Report Table for the database
  *
  * @author Derek Garcia
