@@ -28,16 +28,16 @@ public class DeleteFromAPITest extends APITest {
         long id = 0;
 
         // Mock no ids in the database since delete doesn't return any confirmation
-        when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.empty());
+        when(oldRepository.findById(any(Long.class))).thenAnswer(i -> Optional.empty());
 
-        ResponseEntity<?> response = controller.delete(id);
+        ResponseEntity<?> response = oldController.delete(id);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test
     public void deleteValidIDTest() throws IOException {
         // Mock a map of test files in the DB
-        when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
+        when(oldRepository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
 
         // Remove value from test map when id is valid
         doAnswer(i -> {
@@ -45,11 +45,11 @@ public class DeleteFromAPITest extends APITest {
 
             testMap.values().remove(toRemove);
             return null;
-        }).when(repository).delete(any(SBOMFile.class));
+        }).when(oldRepository).delete(any(SBOMFile.class));
 
         for (Long id : getTestFileMap().keySet()) { // Use copy of map to avoid concurrent modification
             Debug.log(Debug.LOG_TYPE.SUMMARY, "Deleting ID " + id);
-            ResponseEntity<?> response = controller.delete(id);
+            ResponseEntity<?> response = oldController.delete(id);
             assertEquals(id, response.getBody());
         }
     }
