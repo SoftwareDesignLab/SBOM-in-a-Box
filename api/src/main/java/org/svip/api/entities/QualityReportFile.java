@@ -21,8 +21,8 @@ public class QualityReportFile {
     @Column(nullable = false, columnDefinition="LONGTEXT")
     private String content;
 
-    @OneToOne(mappedBy = "quality_report_file")
-    private SBOM sbom;
+//    @OneToOne(mappedBy = "quality_report_file")
+//    private SBOM sbom;
 
 
     ///
