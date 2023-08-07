@@ -119,7 +119,6 @@ public class Utils {
 
     /**
      * Generates new SBOMFile id
-     *
      */
     public static long generateSBOMFileId() {
         Random rand = new Random();
