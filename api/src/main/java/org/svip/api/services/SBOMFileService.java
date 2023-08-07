@@ -51,6 +51,21 @@ public class SBOMFileService {
     }
 
 
+    public Long setQualityReport(Long id, QualityReportFile qaf){
+        SBOM sbom = getSBOMFile(id);
+
+        // todo better return than null?
+        if(sbom == null)
+            return null;
+
+        sbom.setQualityReport(qaf);
+        this.sbomRepository.save(sbom);
+        
+        return qaf.getID();
+
+    }
+
+
     /**
      * Set a qa association for a given SBOM
      *
