@@ -77,7 +77,12 @@ public class QAController {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
 
-            // Generate QA
+            // Get stored content
+            // todo POST / arg to force rerun qa?
+            if(sbomFile.getQualityReportFile() != null)
+                return new ResponseEntity<>(sbomFile.getQualityReportFile().getContent(), HttpStatus.OK);
+
+            // No QA stored, generate instead
             org.svip.sbom.model.interfaces.generics.SBOM sbomObject = this.sbomService.getSBOMObject(id);
             QualityReport qa = this.qualityReportFileService.generateQualityReport(sbomObject);
 
