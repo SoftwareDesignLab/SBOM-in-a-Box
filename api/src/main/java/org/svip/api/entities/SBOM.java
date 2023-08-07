@@ -14,6 +14,8 @@ import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
 import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
 
 /**
+ * file: SBOMFile.java
+ *
  * SBOM Table for the database
  * TODO rename SBOMFile
  * @author Derek Garcia
