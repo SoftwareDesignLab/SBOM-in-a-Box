@@ -18,6 +18,7 @@ import org.svip.vex.vexstatement.VEXStatement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * File: VEXFileService.java
@@ -114,6 +115,26 @@ public class VEXFileService {
 
         // Return VEXResult
         return new VEXResult(vex, error);
+    }
+
+
+    /**
+     * Delete a target VEX File from the database
+     *
+     * @param id of the VEX to delete
+     * @return id of deleted VEX on success
+     */
+    public Long deleteSBOMFile(Long id){
+        // Retrieve SBOM File and check that it exists
+        Optional<VEXFile> vexFile = this.vexFileRepository.findById(id);
+        if (vexFile.isEmpty())
+            return null;
+
+        // Delete from repository
+        this.vexFileRepository.delete(vexFile.get());
+
+        // return confirmation id
+        return id;
     }
 
 
