@@ -3,59 +3,28 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
-## [v7.3.1-alpha] - (8/10/2023)
-> Know [Issue](https://github.com/SoftwareDesignLab/SVIP/issues/219): Deleting SBOMs with comparison references in fast
-> succession will cause errors in the database
-### Added
-- `DiffService` for handling database operations for Comparisons and Conflicts
-- `UploadComaprisonFileInput` to handle new Comparisons and ensure relationships are added correctly
-- `UploadConflictFileInput` to handle new Conflicts and ensure relationships are added correctly
-- `ComaprisonFile` that acts as a relationship table for sbom comparison
-- `ConflictFile` holds conflict details
-
-### Changed
-- Moved `/svip/sboms/compare` endpoint to `DiffController`
-- Diff Report logic has changed
-  - 1:1 comparisons between sboms are arrogated into a diffreport at request time.
-  - Comparisons are stored in the database and used to put diffreports together
-- Made `Comparison` its own class
-- Single delete sbom will delete any associated comparisons
-
-### Removed
-- Deprecated DiffReport.java file
-
-## [v7.3.0-alpha] - (8/9/2023)
-
-### Changed
-- Simplified table names by removing the `_file` suffix
-- Move `toSBOMObject` / `toSBOMObjectAsJSON` to the SBOMFile rather than object
-- Refactored services to reference other services instead of depending on contollers
-  - `saveQualityReport` and `saveVEX` moved to their respective services
-- Services take objects instead of ids
-
 ## [v7.2.5-alpha] - (8/7/2023)
+
 ### Added
-- `VEXFileService` for handling database operations
-- `UploadVEXFileInput` to handle new VEX and ensure relationships are added correctly
-- `VEXFile` that stores VEX information and schema/format details
-- `VEXController` to handle VEX API generation
+- Relevant exceptions for conversion endpoint
+  - `DeserializerException`
+  - `SerializerException`
+  - `SBOMBuilderException`
+- Convert endpoint in `SBOMController.java`
 
 ### Changed
-- Moved `/svip/sboms/vex` endpoint to `VEXController`
-- VEX are generated only once and stored in database. Subsequent request query the database
-- `/delete` deletes VEX stored in database for a SBOM that is deleted
+- `ConvertFromApiTest.java`
 
 ## [v7.2.4-alpha] - (8/7/2023)
-### Added
-- `QualityReportFileService` for handling database operations
-- `UploadQualityReportFileInput` to handle new QA and ensure relationships are added correctly
-- `QAController` to handle Metric API operations
 
-### Changed
-- Moved `/svip/sboms/qa` endpoint to `QAController`
-- Quality reports are generated only once and stored in database. Subsequent request query the database
-- `/delete` deletes QA Report stored in database for a SBOM that is deleted
+### Added
+- `Conversion.java`
+    - Core functionality of SBOM conversion
+- `Convert.java` interface
+    - `ConvertCDX14.java`
+    - `ConvertSPDX23.java`
+- `ConvertTest.java` Class containing comprehensive unit tests for both schema converters
+
 
 ## [v7.2.3-alpha] - (8/3/2023)
 ### Added
@@ -72,7 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - GET `/sboms/content`
   - GET `/sboms`
   - DELETE `/sboms`
-  
+
 ## [v7.2.2-alpha] - (8/3/2023)
 
 ### Added
@@ -87,14 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - passes Postman tests and `GenerateFromOSIAPITest`
 - Maximum file upload and request size to 2GB in `application.properties`
 
-## [v7.2.1-alpha] - (8/3/2023)
-
-### Added
-- Improved Diff Report readability
-- SBOM Objects have built in toString methods
-- `/metrics/resultFactory/enumerations/INFO` now has info for diff reports
-- `/metrics/resultFactory/Text` now has outputs for getting diff report messages
-- `/compare/conflicts/ConflictFactory` has been reworked to avoid using plain text, instead relying on `Text` class
+## [v7.2.1-alpha] - (8/1/2023)
 
 ### Changed
 - Fix incorrect OSI filepaths not allowing API to build.
