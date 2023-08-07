@@ -92,7 +92,7 @@ public class ConvertFromAPITest extends APITest {
      * Reused code to set up mock repository for tests
      */
     private void setupMockRepository() {
-        when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
+        when(oldRepository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
     }
 
 }
