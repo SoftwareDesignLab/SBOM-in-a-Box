@@ -14,6 +14,7 @@ import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.exceptions.DeserializerException;
+import org.svip.serializers.exceptions.SerializerException;
 import org.svip.serializers.serializer.Serializer;
 
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ public class SBOMFileService {
      * @return ID of converted SBOM
      */
     public Long convert(Long id, SerializerFactory.Schema schema, SerializerFactory.Format format, Boolean overwrite)
-            throws DeserializerException, SBOMBuilderException, JsonProcessingException {
+            throws DeserializerException, JsonProcessingException, SerializerException, SBOMBuilderException {
 
         // Retrieve SBOMFile and check that it exists
         SBOM sbomFile = getSBOMFile(id);
@@ -97,6 +98,13 @@ public class SBOMFileService {
         Serializer s = SerializerFactory.createSerializer(schema, format, true); // todo serializers don't adjust the format nor specversion
         s.setPrettyPrinting(true);
         String contents = s.writeToString((SVIPSBOM) Converted);
+        SerializerFactory.Schema resolvedSchema = SerializerFactory.resolveSchema(contents);
+        SerializerFactory.Format resolvedFormat = SerializerFactory.resolveFormat(contents);
+        if(resolvedSchema != schema )
+            throw new SerializerException("Serialized SBOM does not match schema=" + schema + " (" + resolvedSchema + ")");
+        else if (resolvedFormat != format) {
+            throw new SerializerException("Serialized SBOM does not match format=" + format + " (" + resolvedFormat + ")");
+        }
 
         // Save according to overwrite boolean
         SBOM converted = new SBOM().
@@ -108,9 +116,6 @@ public class SBOMFileService {
                         SBOM.FileType.TAG_VALUE : SBOM.FileType.JSON);
 
         converted.id = Utils.generateSBOMFileId();
-
-        if(SerializerFactory.resolveSchema(contents) != schema || SerializerFactory.resolveFormat(contents) != format)
-            return null; // extra assertion outside of unit tests
 
         if (overwrite) {
             update(id, converted);

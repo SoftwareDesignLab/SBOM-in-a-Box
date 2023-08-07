@@ -46,7 +46,7 @@ public class ConvertFromAPITest extends APITest {
      */
     @Test
     @DisplayName("Convert, then convert back to original schema and format")
-    public void convertTest() throws DeserializerException, SBOMBuilderException, SerializerException, JsonProcessingException {
+    public void convertTest(){
 
         setupMockRepository();
 
@@ -71,7 +71,7 @@ public class ConvertFromAPITest extends APITest {
                     LOGGER.info("ID: " + id + " Converting " + thisSchema.name() + " --> " + convertToSchema);
                     LOGGER.info("From             " + ((sbom.getFileName()).contains("json")
                             ? "JSON" : "TAGVALUE") + " --> " + convertToFormat);
-                    ResponseEntity<Long> response = controller.convert(id, SerializerFactory.Schema.valueOf(convertToSchema),
+                    ResponseEntity<Long> response = (ResponseEntity<Long>) controller.convert(id, SerializerFactory.Schema.valueOf(convertToSchema),
                             SerializerFactory.Format.valueOf(convertToFormat), false);
                     Long responseBody = response.getBody();
 
