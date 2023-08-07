@@ -1,5 +1,6 @@
 package org.svip.api.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -45,7 +46,7 @@ public class ConvertFromAPITest extends APITest {
      */
     @Test
     @DisplayName("Convert, then convert back to original schema and format")
-    public void convertTest() throws DeserializerException, SBOMBuilderException, SerializerException {
+    public void convertTest() throws DeserializerException, SBOMBuilderException, SerializerException, JsonProcessingException {
 
         setupMockRepository();
 
