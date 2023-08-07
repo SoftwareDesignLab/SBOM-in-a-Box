@@ -81,19 +81,20 @@ public class QualityReportFileService {
 
 
     /**
-     * Get QA file from database
+     * Delete Quality Report from repo
      *
-     * @param id of the QA to retrieve
-     * @return Quality Report File if it exists
+     * @param id of the QA to delete
+     * @return ID of removed Quality Report File if it exists
      */
-    public QualityReportFile getQualityReportFile(Long id) {
+    public Long deleteQualityReportFile(Long id) {
         // Retrieve QA File and check that it exists
         Optional<QualityReportFile> qaf = this.qualityReportFileRepository.findById(id);
         // todo throw error?
         if (qaf.isEmpty())
             return null;
 
+        this.qualityReportFileRepository.delete(qaf.get());
         // Else return file
-        return qaf.get();
+        return qaf.get().getID();
     }
 }
