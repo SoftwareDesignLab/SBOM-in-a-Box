@@ -10,12 +10,10 @@ import org.svip.api.repository.SBOMRepository;
 import org.svip.api.utils.Utils;
 import org.svip.conversion.Conversion;
 import org.svip.sbom.builder.SBOMBuilderException;
-import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.exceptions.DeserializerException;
-import org.svip.serializers.exceptions.SerializerException;
 import org.svip.serializers.serializer.Serializer;
 
 import java.util.ArrayList;
@@ -30,8 +28,6 @@ import java.util.Optional;
 @Service
 public class SBOMFileService {
     private final SBOMRepository sbomRepository;
-    private static final SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
-
 
     /**
      * Create new Service for a target repository
@@ -98,7 +94,7 @@ public class SBOMFileService {
 
 
         // serialize into desired format
-        Serializer s = SerializerFactory.createSerializer(schema, format, true);
+        Serializer s = SerializerFactory.createSerializer(schema, format, true); // todo serializers don't adjust the format nor specversion
         s.setPrettyPrinting(true);
         String contents = s.writeToString((SVIPSBOM) Converted);
 
@@ -111,7 +107,7 @@ public class SBOMFileService {
                 setFileType((format == SerializerFactory.Format.TAGVALUE) ? // original schema of SBOM
                         SBOM.FileType.TAG_VALUE : SBOM.FileType.JSON);
 
-        converted.id = Utils.generateSBOMFileId(); // todo temporary fix?
+        converted.id = Utils.generateSBOMFileId();
 
         if(SerializerFactory.resolveSchema(contents) != schema || SerializerFactory.resolveFormat(contents) != format)
             return null; // extra assertion outside of unit tests
@@ -121,7 +117,7 @@ public class SBOMFileService {
             return id;
         }
 
-        this.sbomRepository.save(converted);
+        this.sbomRepository.save(converted); // todo should this not generate an ID automatically? (using SBOMFileIdentifierGenerator)
         return converted.getId();
 
     }
@@ -177,10 +173,16 @@ public class SBOMFileService {
 
         Optional<SBOM> sbomFile = this.sbomRepository.findById(id);
 
+        /*
+
+        // TODO this is a temporary fix
+
+         */
+
         try{
             SBOM try_ = sbomFile.get();
         }
-        catch (ClassCastException e){ // TODO this is a temporary fix
+        catch (ClassCastException e){
 
             Object tmp = this.sbomRepository.findById(id).get();
             SBOMFile oldSbomFile = (SBOMFile) tmp;
@@ -193,6 +195,9 @@ public class SBOMFileService {
 
     }
 
+    /**
+     * Temporary fix
+     */
     private static SBOM getSbom(SBOMFile oldSbomFile) {
         SBOM sbom = new SBOM();
 
