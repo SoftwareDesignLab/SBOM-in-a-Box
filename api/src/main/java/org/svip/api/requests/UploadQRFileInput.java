@@ -7,16 +7,18 @@ import org.svip.api.entities.QualityReportFile;
 import org.svip.metrics.pipelines.QualityReport;
 
 /**
+ * Input request to create a new QA FIle
+ *
  * @author Derek Garcia
  **/
-public class UploadQRFileInput {
+public record UploadQRFileInput(QualityReport qa) {
 
     /**
      * Create a new Quality Report File Object
      * @return SBOM File
      * @throws JsonProcessingException Failed to parse SBOM and is invalid
      */
-    public QualityReportFile toQualityReportFile(QualityReport qa) throws JsonProcessingException {
+    public QualityReportFile toQualityReportFile() throws JsonProcessingException {
         QualityReportFile qaf = new QualityReportFile();
 
         // Configure object mapper to remove null and empty arrays
