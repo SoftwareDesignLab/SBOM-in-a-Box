@@ -34,12 +34,10 @@ public class ConvertFromAPITest extends APITest {
      */
     @Test
     @DisplayName("Convert to CDX tag value test")
-    public void CDXTagValueTest() throws DeserializerException, SBOMBuilderException, SerializerException {
+    public void CDXTagValueTest(){
         setupMockRepository();
-
-        assertEquals(HttpStatus.BAD_REQUEST, controller.convert(0L, SerializerFactory.Schema.CDX14,
-                        SerializerFactory.Format.TAGVALUE, true).
-                getStatusCode());
+        assertThrows(SerializerException.class, () -> controller.convert(0L, SerializerFactory.Schema.CDX14,
+                        SerializerFactory.Format.TAGVALUE, true));
     }
 
     /**
@@ -90,7 +88,7 @@ public class ConvertFromAPITest extends APITest {
      * Reused code to set up mock repository for tests
      */
     private void setupMockRepository() {
-        when(oldRepository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
+        when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
     }
 
 }
