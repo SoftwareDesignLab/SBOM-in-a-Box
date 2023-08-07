@@ -10,6 +10,7 @@ import org.svip.api.entities.SBOM;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.QualityReportFileService;
 import org.svip.api.services.SBOMFileService;
+import org.svip.api.services.VEXFileService;
 
 /**
  * REST API Controller for managing SBOM and SBOM operations
@@ -27,6 +28,7 @@ public class SBOMController {
 
     private final SBOMFileService sbomService;
     private final QualityReportFileService qualityReportFileService;
+    private final VEXFileService vexFileService;
 
     /**
      * Create new Controller with services
@@ -34,9 +36,10 @@ public class SBOMController {
      * @param sbomService Service for handling SBOM queries
      * @param qualityReportFileService Service for handling QA queries
      */
-    public SBOMController(SBOMFileService sbomService, QualityReportFileService qualityReportFileService){
+    public SBOMController(SBOMFileService sbomService, QualityReportFileService qualityReportFileService, VEXFileService vexFileService){
         this.sbomService = sbomService;
         this.qualityReportFileService = qualityReportFileService;
+        this.vexFileService = vexFileService;
     }
 
 
@@ -188,7 +191,10 @@ public class SBOMController {
         // Attempt to delete any related data
         if(sbomFile.getQualityReportFile() != null)
             this.qualityReportFileService.deleteQualityReportFile(sbomFile.getQualityReportFile().getID());
-        // todo dif + vex
+
+        if(sbomFile.getVEXFile() != null)
+            this.vexFileService.deleteSBOMFile(sbomFile.getVEXFile().getID());
+        // todo dif
 
         // Delete actual SBOM file
         this.sbomService.deleteSBOMFile(sbomFile.getId());
