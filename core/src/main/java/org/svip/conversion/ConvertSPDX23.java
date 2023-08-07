@@ -51,7 +51,7 @@ public class ConvertSPDX23 implements Convert {
         builder.setDocumentComment(sbom.getDocumentComment());
 
         // Root Component
-        builder.setRootComponent(sbom.getRootComponent());
+        builder.setRootComponent(convertComponent(sbom.getRootComponent()));
 
         // Components
 
