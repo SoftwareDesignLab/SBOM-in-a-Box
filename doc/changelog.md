@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - `ConvertFromApiTest.java`
+- Deleted old `Converter.java`
 
 ## [v7.2.2-alpha] - (8/3/2023)
 ### Added
