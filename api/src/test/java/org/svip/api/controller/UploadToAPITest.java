@@ -26,10 +26,10 @@ public class UploadToAPITest extends APITest {
                 .toList();
 
         // Mock repository output (returns SBOMFile that it recieived)
-        when(repository.save(any(SBOMFile.class))).thenAnswer(i -> i.getArgument(0));
+        when(oldRepository.save(any(SBOMFile.class))).thenAnswer(i -> i.getArgument(0));
 
         for (SBOMFile file : files) {
-            ResponseEntity<?> response = controller.upload(file);
+            ResponseEntity<?> response = oldController.upload(file);
 
             assertEquals(HttpStatus.OK, response.getStatusCode());
             assertEquals(file.getId(), response.getBody());
@@ -42,7 +42,7 @@ public class UploadToAPITest extends APITest {
     public void uploadEmptyFileNameTest(String fileName) {
         SBOMFile file = new SBOMFile(fileName, "test contents");
 
-        ResponseEntity<?> response = controller.upload(file);
+        ResponseEntity<?> response = oldController.upload(file);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
@@ -53,7 +53,7 @@ public class UploadToAPITest extends APITest {
     public void uploadEmptyFileContentsTest(String fileContents) {
         SBOMFile file = new SBOMFile("filename", fileContents);
 
-        ResponseEntity<?> response = controller.upload(file);
+        ResponseEntity<?> response = oldController.upload(file);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
