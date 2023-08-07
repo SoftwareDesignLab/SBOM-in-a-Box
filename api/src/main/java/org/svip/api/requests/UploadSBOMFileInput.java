@@ -6,6 +6,7 @@ import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
 
 /**
+ * File: UploadSBOMFileInput.java
  * Input request to create a new SBOM File via API
  *
  * @author Derek Garcia
