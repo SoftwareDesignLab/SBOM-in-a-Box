@@ -16,6 +16,7 @@ import org.svip.merge.MergerException;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
+import org.svip.serializers.exceptions.DeserializerException;
 import org.svip.serializers.serializer.Serializer;
 
 import java.util.ArrayList;
@@ -68,13 +69,25 @@ public class SBOMFileService {
      * @param overwrite whether to overwrite original
      * @return ID of converted SBOM
      */
-    public Long convert(Long id, SerializerFactory.Schema schema, SerializerFactory.Format format, Boolean overwrite){
+    public Long convert(Long id, SerializerFactory.Schema schema, SerializerFactory.Format format, Boolean overwrite) throws DeserializerException {
 
         // Retrieve SBOMFile and check that it exists
         SBOM sbomFile = getSBOMFile(id);
         if(sbomFile == null)
             return null;
 
+        // deserialize into SBOM object
+        Deserializer d;
+        org.svip.sbom.model.interfaces.generics.SBOM deserialized;
+
+        try {
+            d = SerializerFactory.createDeserializer(sbomFile.getContent());
+            deserialized = d.readFromString(sbomFile.getContent());
+        } catch (Exception e) {
+            throw new DeserializerException("Deserialization Error: " + e.getMessage());
+        }
+
+        if (deserialized == null) throw new DeserializerException("Deserialization Error: Deserializer is null");
 
         /*
         TODO CONVERT LOGIC HERE
