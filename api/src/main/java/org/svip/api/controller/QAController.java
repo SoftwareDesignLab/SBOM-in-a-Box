@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.svip.api.entities.QualityReportFile;
 import org.svip.api.entities.SBOMFile;
+import org.svip.api.requests.UploadQRFileInput;
 import org.svip.api.services.QualityReportFileService;
 import org.svip.api.services.SBOMFileService;
 import org.svip.metrics.pipelines.QualityReport;
@@ -65,68 +67,35 @@ public class QAController {
      * @return A JSON string of the Quality Report file.
      */
     @GetMapping("/sboms/qa")
-    public ResponseEntity<String> qa(@RequestParam("id") Long id) throws IOException {
+    public ResponseEntity<String> qa(@RequestParam("id") Long id) {
         try{
             SBOM sbom = this.sbomService.getSBOMObject(id);
 
             // No SBOM was found
-            if(sbom == null)
+            if(sbom == null){
+                LOGGER.info("QA /svip/sboms/qa?id=" + id + " - FILE NOT FOUND");
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
 
-            /*
-            qa.generateQAFile(SBOM) -> qaFile (has all data and parent sbom id)
-            qa.upload -> (SBOM, QA)?
 
-             */
-            return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+            // Generate QA and upload to DB
+            QualityReport qa = this.qualityReportFileService.generateQualityReport(sbom);
+            QualityReportFile qaf = new UploadQRFileInput(qa).toQualityReportFile();
+            this.qualityReportFileService.upload(qaf);
+
+            // Log
+            LOGGER.info("QA /svip/sboms/?id=" + id + " - TESTED: " + sbom.getName());
+
+            // Return JSON result
+            return new ResponseEntity<>(qaf.getContent(), HttpStatus.OK);
 
         } catch (JsonProcessingException e ){
             // error with Deserialization
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            // error with QA
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-//
-//        SBOM sbom;
-//        Deserializer d;
-//        QAPipeline qaPipeline;
-//
-//        // Get the SBOM to be tested
-//        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(id);
-//
-//        // Check if it exists
-//        if (sbomFile.isEmpty()) {
-//            LOGGER.info("QA /svip/sboms/qa?id=" + id + " - FILE NOT FOUND");
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//
-//        // Deserialize SBOM into JSON Object
-//        try {
-//            d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
-//            sbom = d.readFromString(sbomFile.get().getContents());
-//        } catch (JsonProcessingException e) {
-//            return new ResponseEntity<>("Failed to deserialize SBOM content, may be an unsupported format", HttpStatus.INTERNAL_SERVER_ERROR);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>("Deserialization Error", HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//
-//        // Determine what QA Pipeline to use based on
-//        if (sbom instanceof CDX14SBOM) {
-//            qaPipeline = new CDX14Pipeline();
-//        } else if (sbom instanceof SPDX23SBOM) {
-//            qaPipeline = new SPDX23Pipeline();
-//        } else {
-//            return new ResponseEntity<>("Deserialization Error", HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//
-//        // QA test SBOM
-//        QualityReport qualityReport = qaPipeline.process(String.valueOf(id), sbom);
-//
-//        // Log
-//        LOGGER.info("QA /svip/sboms/?id=" + id + " - TESTED: " + sbomFile.get().getFileName());
-//
-//        // Return Quality Report as JSON to Frontend
-//        ObjectMapper mapper = new ObjectMapper();
-//        return new ResponseEntity<>(mapper.writeValueAsString(qualityReport), HttpStatus.OK);
-//    }
 
 }
