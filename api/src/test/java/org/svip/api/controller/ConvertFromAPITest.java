@@ -1,6 +1,5 @@
 package org.svip.api.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -9,10 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.utils.Utils;
-import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.exceptions.DeserializerException;
-import org.svip.serializers.exceptions.SerializerException;
 
 import java.io.IOException;
 import java.util.Map;
@@ -35,10 +32,12 @@ public class ConvertFromAPITest extends APITest {
      */
     @Test
     @DisplayName("Convert to CDX tag value test")
-    public void CDXTagValueTest() {
+    public void CDXTagValueTest() throws DeserializerException {
         setupMockRepository();
-        assertThrows(SerializerException.class, () -> controller.convert(0L, SerializerFactory.Schema.CDX14,
-                SerializerFactory.Format.TAGVALUE, true));
+
+        assertEquals(HttpStatus.BAD_REQUEST, controller.convert(0L, SerializerFactory.Schema.CDX14,
+                        SerializerFactory.Format.TAGVALUE, true).
+                getStatusCode());
     }
 
     /**
@@ -46,16 +45,16 @@ public class ConvertFromAPITest extends APITest {
      */
     @Test
     @DisplayName("Convert, then convert back to original schema and format")
-    public void convertTest() {
+    public void convertTest() throws DeserializerException {
 
         setupMockRepository();
 
-        SerializerFactory.Schema[] schemas = {SerializerFactory.Schema.CDX14, SerializerFactory.Schema.SPDX23};
-        SerializerFactory.Format[] formats = {SerializerFactory.Format.JSON, SerializerFactory.Format.TAGVALUE};
+        String[] schemas = {"CDX14", "SPDX23"};
+        String[] formats = {"JSON", "TAGVALUE"};
 
-        for (SerializerFactory.Schema convertToSchema : schemas
+        for (String convertToSchema : schemas
         ) {
-            for (SerializerFactory.Format convertToFormat : formats
+            for (String convertToFormat : formats
             ) {
                 for (Long id : testMap.keySet()) {
 
@@ -64,18 +63,15 @@ public class ConvertFromAPITest extends APITest {
                     SerializerFactory.Schema thisSchema = SerializerFactory.resolveSchema(sbom.getContents());
 
                     // check if test is valid
-                    if (Utils.convertTestController(convertToSchema, convertToFormat, id,
-                            thisSchema, testMap, sbom)) continue;
+                    if (Utils.convertTestController(convertToSchema, convertToFormat, id, thisSchema, testMap, sbom))
+                        continue;
 
                     // test conversion to schema and format
                     LOGGER.info("ID: " + id + " Converting " + thisSchema.name() + " --> " + convertToSchema);
                     LOGGER.info("From             " + ((sbom.getFileName()).contains("json")
                             ? "JSON" : "TAGVALUE") + " --> " + convertToFormat);
-
-                    ResponseEntity<?> resposeObject = controller.convert(id, convertToSchema, convertToFormat, false);
-                    assertInstanceOf(Long.class, resposeObject.getBody());
-
-                    ResponseEntity<Long> response = (ResponseEntity<Long>) resposeObject;
+                    ResponseEntity<Long> response = controller.convert(id, SerializerFactory.Schema.valueOf(convertToSchema),
+                            SerializerFactory.Format.valueOf(convertToFormat), false);
                     Long responseBody = response.getBody();
 
                     // check if OK
