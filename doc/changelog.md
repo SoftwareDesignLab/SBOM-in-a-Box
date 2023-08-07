@@ -3,6 +3,16 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v7.2.4-alpha] - (8/7/2023)
+### Added
+- `QualityReportFileService` for handling database operations
+- `UploadQualityReportFileInput` to handle new QA and ensure relationships are added correctly
+- `QAController` to handle Metric API operations
+
+### Changed
+- Moved `/svip/sboms/qa` endpoint to `QAController`
+- Quality reports are generated only once and stored in database. Subsequent request query the database
+
 ## [v7.2.3-alpha] - (8/3/2023)
 ### Added
 - `SBOMService` for handling database operations
