@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.svip.api.entities.QualityReportFile;
 import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMRepository;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
@@ -58,12 +59,41 @@ public class SBOMFileService {
      */
     public SBOM getSBOMFile(Long id) {
         // Retrieve SBOM File and check that it exists
-        Optional<SBOM> sbomFile = this.sbomRepository.findById(id);
-        if (sbomFile.isEmpty())
-            return null;
 
-        // Else return file
-        return sbomFile.get();
+        Optional<SBOM> sbomFile = this.sbomRepository.findById(id);
+
+        try{
+            SBOM try_ = sbomFile.get();
+        }
+        catch (ClassCastException e){ // TODO this is a temporary fix
+
+            Object tmp = this.sbomRepository.findById(id).get();
+            SBOMFile oldSbomFile = (SBOMFile) tmp;
+            sbomFile = Optional.of(getSbom(oldSbomFile));
+            sbomFile.get().id = oldSbomFile.getId();
+
+        }
+
+        return sbomFile.orElse(null);
+
+    }
+
+    private static SBOM getSbom(SBOMFile oldSbomFile) {
+        SBOM sbom = new SBOM();
+
+        sbom.setName(oldSbomFile.getFileName());
+        sbom.setContent(oldSbomFile.getContents());
+
+        SBOM.Schema schema = sbom.getName().endsWith(".spdx") && sbom.getContent().toLowerCase().contains("spdx") ?
+                SBOM.Schema.SPDX_23 : SBOM.Schema.CYCLONEDX_14;
+
+        sbom.setSchema(schema);
+
+        SBOM.FileType fileType = schema == SBOM.Schema.CYCLONEDX_14 && !sbom.getContent().toLowerCase().contains("spdx") ?
+                SBOM.FileType.JSON : SBOM.FileType.TAG_VALUE;
+
+        sbom.setFileType(fileType);
+        return sbom;
     }
 
     /**
