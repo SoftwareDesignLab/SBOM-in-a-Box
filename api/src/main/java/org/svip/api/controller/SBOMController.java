@@ -116,7 +116,7 @@ public class SBOMController {
     public ResponseEntity<Long> convert(@RequestParam("id") Long id, @RequestParam("schema") SerializerFactory.Schema schema,
                                         @RequestParam("format") SerializerFactory.Format format,
                                         @RequestParam("overwrite") Boolean overwrite) throws DeserializerException,
-            SBOMBuilderException, SerializerException {
+            SBOMBuilderException, SerializerException, JsonProcessingException {
 
         Long convertID = this.sbomService.convert(id, schema, format, overwrite);
         // todo convert should probably throw errors instead of returning null if error occurs

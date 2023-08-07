@@ -2,17 +2,14 @@ package org.svip.api.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import org.svip.api.entities.diff.ComparisonFile;
+import org.hibernate.annotations.GenericGenerator;
+import org.svip.api.repository.SBOMFileIdentifierGenerator;
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
 import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
 
-import java.util.Set;
-
 /**
- * file: SBOMFile.java
- *
  * SBOM Table for the database
  * TODO rename SBOMFile
  * @author Derek Garcia
@@ -33,14 +30,12 @@ public class SBOM {
         TAG_VALUE
     }
 
-    ///
-    /// Metadata
-    ///
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     @JsonProperty
+    @GeneratedValue(generator = SBOMFileIdentifierGenerator.generatorName)
+    @GenericGenerator(name = SBOMFileIdentifierGenerator.generatorName,
+            strategy = "org.svip.api.repository.SBOMFileIdentifierGenerator")
     public Long id; // todo make private again
 
     @Column(nullable = false)
@@ -60,26 +55,6 @@ public class SBOM {
     @Column(nullable = false, name = "file_type")
     @JsonProperty
     private FileType fileType;
-
-    ///
-    /// Relationships
-    ///
-
-    @OneToOne
-    @JoinColumn(name = "qa_id", referencedColumnName = "id")
-    private QualityReportFile qualityReportFile;
-
-    @OneToOne
-    @JoinColumn(name = "vex_id", referencedColumnName = "id")
-    private VEXFile vexFile;
-
-    // Collection of comparisons where this was the target
-    @OneToMany(mappedBy = "targetSBOM", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<ComparisonFile> comparisonsAsTarget;
-
-    // Collection of comparisons where this was the other
-    @OneToMany(mappedBy = "otherSBOM", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<ComparisonFile> comparisonsAsOther;
 
     ///
     /// Setters
@@ -123,6 +98,17 @@ public class SBOM {
     }
 
     /**
+     * Simple set schema
+     * @param schema schema type
+     * @return SBOM
+     */
+    public SBOM setSchema(Schema schema){
+        this.schema = schema;
+        return this;
+    }
+
+
+    /**
      * Set SBOM File Type
      * @param d deserializer to infer file type from
      * @return SBOM
@@ -139,37 +125,13 @@ public class SBOM {
         return this;
     }
 
-
     /**
-     * Set Quality Report File
-     *
-     * @param qaf Quality Report File
+     * Simple set schema
+     * @param fileType file type
      * @return SBOM
      */
-    public SBOM setQualityReport(QualityReportFile qaf){
-        this.qualityReportFile = qaf;
-        return this;
-    }
-
-
-    /**
-     * Set VEX File
-     *
-     * @param vf VEX File
-     * @return SBOM
-     */
-    public SBOM setVEXFile(VEXFile vf){
-        this.vexFile = vf;
-        return this;
-    }
-
-    public SBOM addComparisonFileAsTarget(ComparisonFile cf){
-        this.comparisonsAsTarget.add(cf);
-        return this;
-    }
-
-    public SBOM addComparisonFileAsOther(ComparisonFile cf){
-        this.comparisonsAsOther.add(cf);
+    public SBOM setFileType(FileType fileType){
+        this.fileType = fileType;
         return this;
     }
 
@@ -199,17 +161,17 @@ public class SBOM {
     }
 
     /**
-     * @return QualityReportFile
+     * @return SBOM Schema
      */
-    public QualityReportFile getQualityReportFile(){
-        return this.qualityReportFile;
+    public Schema getSchema(){
+        return this.schema;
     }
 
     /**
-     * @return vexFile
+     * @return SBOM FileType
      */
-    public VEXFile getVEXFile(){
-        return this.vexFile;
+    public FileType getFileType() {
+        return this.fileType;
     }
 
 }
