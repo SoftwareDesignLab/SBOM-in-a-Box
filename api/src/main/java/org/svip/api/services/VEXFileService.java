@@ -1,7 +1,6 @@
 package org.svip.api.services;
 
 import org.springframework.stereotype.Service;
-import org.svip.api.entities.QualityReportFile;
 import org.svip.api.entities.VEXFile;
 import org.svip.api.repository.VEXFileRepository;
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -17,7 +16,6 @@ import org.svip.vex.vexstatement.VEXStatement;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -58,6 +56,16 @@ public class VEXFileService {
         }
     }
 
+    /**
+     * Generate VEX for a given SBOM
+     *
+     * @param sbom SBOM to generate VEX from
+     * @param client Vulnerability datasource to use
+     * @param format VEX Schema to use
+     * @param apiKey Optional API key
+     * @return VEXResult with VEX and any errors
+     * @throws Exception Failed to generate VEX
+     */
     public VEXResult generateVEX(SBOM sbom, String client, String format, String apiKey) throws Exception {
 
         VulnerabilityDBClient vc;
