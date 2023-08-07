@@ -5,12 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
-import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.serializers.deserializer.Deserializer;
-import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
 import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
 
 import java.io.IOException;
@@ -24,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * Name: ConvertTest.java
  * Description: Test class for Convert functionality
  *
- * @author Juan Patino
+ * @author Juan Francisco Patino
  * @author Tyler Drake
  */
 public class ConvertTest {
@@ -56,10 +54,6 @@ public class ConvertTest {
 
     /** Helper Functions **/
 
-    public Deserializer getSPDXJSONDeserializer() {
-        return new SPDX23JSONDeserializer();
-    }
-
     public static Deserializer getCDXJSONDeserializer() {
         return new CDX14JSONDeserializer();
     }
@@ -71,12 +65,12 @@ public class ConvertTest {
     /** Setup **/
     @BeforeAll
     static void setupTestSboms() throws IOException {
-        sboms[0] = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_1)));
-        sboms[1] = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_2)));
-        sboms[2] = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_3)));
-        sboms[3] = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_4)));
-        sboms[4] = (SPDX23SBOM) getSPDXTagValueDeserializer().readFromString(Files.readString(Path.of(SBOM_5)));
-        sboms[5] = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_6)));
+        sboms[0] = getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_1)));
+        sboms[1] = getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_2)));
+        sboms[2] = getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_3)));
+        sboms[3] = getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_4)));
+        sboms[4] = getSPDXTagValueDeserializer().readFromString(Files.readString(Path.of(SBOM_5)));
+        sboms[5] = getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_6)));
     }
 
     /** Tests **/
@@ -84,10 +78,16 @@ public class ConvertTest {
     @Test
     public void convertCDXSVIP() throws Exception {
 
+        // Get the source SBOM
         SBOM original = sboms[0];
 
-        SBOM result = Conversion.convertSBOM(original, SerializerFactory.Schema.SVIP, SerializerFactory.Schema.CDX14);
+        // Create new conversion
+        Conversion conversion = new Conversion();
 
+        // Convert the SPDX SBOM to an SVIP SBOM using Conversion
+        SBOM result = conversion.convertSBOM(original, SerializerFactory.Schema.SVIP, SerializerFactory.Schema.CDX14);
+
+        // Check if result shows proper data
         assertNotNull(result);
         assertEquals("SVIP", result.getFormat());
         assertEquals(original.getName(), result.getName());
@@ -98,10 +98,16 @@ public class ConvertTest {
     @Test
     public void convertSPDXSVIP() throws Exception {
 
+        // Get the source SBOM
         SBOM original = sboms[4];
 
-        SBOM result = Conversion.convertSBOM(original, SerializerFactory.Schema.SVIP, SerializerFactory.Schema.SPDX23);
+        // Create new conversion
+        Conversion conversion = new Conversion();
 
+        // Convert the SPDX SBOM to an SVIP SBOM using Conversion
+        SBOM result = conversion.convertSBOM(original, SerializerFactory.Schema.SVIP, SerializerFactory.Schema.SPDX23);
+
+        // Check it result shows proper data
         assertEquals("SVIP", result.getFormat());
         assertEquals(original.getName(), result.getName());
         assertEquals(original.getComponents().size(), result.getComponents().size());
@@ -111,10 +117,16 @@ public class ConvertTest {
     @Test
     public void convertCDXSPDX() throws Exception {
 
+        // Get the source SBOM
         SBOM original = sboms[0];
 
-        SBOM result = Conversion.convertSBOM(original, SerializerFactory.Schema.SPDX23, SerializerFactory.Schema.CDX14);
+        // Create new conversion
+        Conversion conversion = new Conversion();
 
+        // Convert the CDX SBOM to an SPDX SBOM using Conversion
+        SBOM result = conversion.convertSBOM(original, SerializerFactory.Schema.SPDX23, SerializerFactory.Schema.CDX14);
+
+        // Check if result shows proper data
         assertNotNull(result);
         assertEquals("SPDX", result.getFormat());
         assertEquals(original.getName(), result.getName());
@@ -125,10 +137,16 @@ public class ConvertTest {
     @Test
     public void convertSPDXCDX() throws Exception {
 
+        // Set the source SBOM
         SBOM original = sboms[4];
 
-        SBOM result = Conversion.convertSBOM(original, SerializerFactory.Schema.CDX14, SerializerFactory.Schema.SPDX23);
+        // Create new conversion
+        Conversion conversion = new Conversion();
 
+        // Convert the SPDX SBOM to a CycloneDX SBOM using Conversion
+        SBOM result = conversion.convertSBOM(original, SerializerFactory.Schema.CDX14, SerializerFactory.Schema.SPDX23);
+
+        // Check if result shows proper data
         assertNotNull(result);
         assertEquals("CycloneDX", result.getFormat());
         assertEquals(original.getName(), result.getName());
@@ -138,17 +156,29 @@ public class ConvertTest {
 
     @Test
     public void convertAllTest() throws Exception {
+
+        // For every SBOM in the SBOM list
         for (SBOM sbom : sboms
         ) {
+            // For every Schema in the Schema list
             for (SerializerFactory.Schema schema : schemas
             ) {
 
+                // Get the original Schema for the SBOM
                 SerializerFactory.Schema originalSchema = (sbom instanceof CDX14SBOM) ? SerializerFactory.Schema.CDX14 : SerializerFactory.Schema.SPDX23;
 
                 if (originalSchema == schema)
                     continue;
 
-                assertNotNull(Conversion.convertSBOM(sbom, schema, originalSchema));
+                // Create new conversion
+                Conversion conversion = new Conversion();
+
+                // Convert the SBOM to a different SBOM schema using Conversion
+                SBOM result = conversion.convertSBOM(sbom, schema, originalSchema);
+
+                assertNotNull(result);
+
+                assertEquals(sbom.getComponents().size(), result.getComponents().size());
 
             }
         }
