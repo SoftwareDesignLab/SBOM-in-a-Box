@@ -118,26 +118,14 @@ public class Utils {
     }
 
     /**
-     * Generates new ID given old one
+     * Generates new SBOMFile id
      *
-     * @param id                 old ID
-     * @param rand               Random class
-     * @param sbomFileRepository repository
-     * @return new ID
      */
-    public static long generateNewId(long id, Random rand, SBOMFileRepository sbomFileRepository) {
-        // assign new id and name
-        int i = 0;
-        try {
-            while (sbomFileRepository.findById(id).isPresent()) {
-                id += (Math.abs(rand.nextLong()) + id) % ((i < 100 && id < 0) ? id : Long.MAX_VALUE);
-                i++;
-            }
-        } catch (NullPointerException e) {
-            return id;
-        }
-
-        return id;
+    public static long generateSBOMFileId() {
+        Random rand = new Random();
+        long id = rand.nextLong();
+        id += (rand.nextLong()) % ((id < 0) ? id : Long.MAX_VALUE);
+        return Math.abs(id);
     }
 
     /**
