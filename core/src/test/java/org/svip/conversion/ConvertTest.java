@@ -1,27 +1,37 @@
 package org.svip.conversion;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.svip.compare.DiffReport;
+
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
-import org.svip.sbom.model.objects.SVIPSBOM;
+
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
 import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
-import org.svip.utils.Debug;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+/**
+ * Name: ConvertTest.java
+ * Description: Test class for Convert functionality
+ *
+ * @author Juan Patino
+ * @author Tyler Drake
+ */
 public class ConvertTest {
+
+    /**
+     * Test Constants
+     */
 
     private static final String TEST_DIR = System.getProperty("user.dir") +
             "/src/test/resources/serializers/Benchmark_SBOM_Megacollection/";
@@ -44,6 +54,21 @@ public class ConvertTest {
 
     protected static final SBOM[] sboms = new SBOM[6];
 
+    /** Helper Functions **/
+
+    public Deserializer getSPDXJSONDeserializer() {
+        return new SPDX23JSONDeserializer();
+    }
+
+    public static Deserializer getCDXJSONDeserializer() {
+        return new CDX14JSONDeserializer();
+    }
+
+    public static Deserializer getSPDXTagValueDeserializer() {
+        return new SPDX23TagValueDeserializer();
+    }
+
+    /** Setup **/
     @BeforeAll
     static void setupTestSboms() throws IOException {
         sboms[0] = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_1)));
@@ -54,23 +79,65 @@ public class ConvertTest {
         sboms[5] = (CDX14SBOM) getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_6)));
     }
 
+    /** Tests **/
+
     @Test
     public void convertCDXSVIP() throws Exception {
 
-        assertNotNull(Conversion.convertSBOM(sboms[0], SerializerFactory.Schema.SVIP, SerializerFactory.Schema.CDX14));
+        SBOM original = sboms[0];
+
+        SBOM result = Conversion.convertSBOM(original, SerializerFactory.Schema.SVIP, SerializerFactory.Schema.CDX14);
+
+        assertNotNull(result);
+        assertEquals("SVIP", result.getFormat());
+        assertEquals(original.getName(), result.getName());
+        assertEquals(original.getComponents().size(), result.getComponents().size());
 
     }
 
     @Test
     public void convertSPDXSVIP() throws Exception {
 
-        assertNotNull(Conversion.convertSBOM(sboms[0], SerializerFactory.Schema.SVIP, SerializerFactory.Schema.SPDX23));
+        SBOM original = sboms[4];
+
+        SBOM result = Conversion.convertSBOM(original, SerializerFactory.Schema.SVIP, SerializerFactory.Schema.SPDX23);
+
+        assertEquals("SVIP", result.getFormat());
+        assertEquals(original.getName(), result.getName());
+        assertEquals(original.getComponents().size(), result.getComponents().size());
 
     }
 
+    @Test
+    public void convertCDXSPDX() throws Exception {
+
+        SBOM original = sboms[0];
+
+        SBOM result = Conversion.convertSBOM(original, SerializerFactory.Schema.SPDX23, SerializerFactory.Schema.CDX14);
+
+        assertNotNull(result);
+        assertEquals("SPDX", result.getFormat());
+        assertEquals(original.getName(), result.getName());
+        assertEquals(original.getComponents().size(), result.getComponents().size());
+
+    }
 
     @Test
-    public void convertTest() throws Exception {
+    public void convertSPDXCDX() throws Exception {
+
+        SBOM original = sboms[4];
+
+        SBOM result = Conversion.convertSBOM(original, SerializerFactory.Schema.CDX14, SerializerFactory.Schema.SPDX23);
+
+        assertNotNull(result);
+        assertEquals("CycloneDX", result.getFormat());
+        assertEquals(original.getName(), result.getName());
+        assertEquals(original.getComponents().size(), result.getComponents().size());
+
+    }
+
+    @Test
+    public void convertAllTest() throws Exception {
         for (SBOM sbom : sboms
         ) {
             for (SerializerFactory.Schema schema : schemas
@@ -86,17 +153,4 @@ public class ConvertTest {
             }
         }
     }
-
-    public Deserializer getSPDXJSONDeserializer() {
-        return new SPDX23JSONDeserializer();
-    }
-
-    public static Deserializer getCDXJSONDeserializer() {
-        return new CDX14JSONDeserializer();
-    }
-
-    public static Deserializer getSPDXTagValueDeserializer() {
-        return new SPDX23TagValueDeserializer();
-    }
-
 }
