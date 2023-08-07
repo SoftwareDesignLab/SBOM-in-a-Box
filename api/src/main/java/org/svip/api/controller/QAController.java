@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.svip.api.entities.QualityReportFile;
+import org.svip.api.entities.SBOM;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadQRFileInput;
 import org.svip.api.services.QualityReportFileService;
@@ -19,7 +20,6 @@ import org.svip.metrics.pipelines.QualityReport;
 import org.svip.metrics.pipelines.interfaces.generics.QAPipeline;
 import org.svip.metrics.pipelines.schemas.CycloneDX14.CDX14Pipeline;
 import org.svip.metrics.pipelines.schemas.SPDX23.SPDX23Pipeline;
-import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.serializers.SerializerFactory;
@@ -69,22 +69,25 @@ public class QAController {
     @GetMapping("/sboms/qa")
     public ResponseEntity<String> qa(@RequestParam("id") Long id) {
         try{
-            SBOM sbom = this.sbomService.getSBOMObject(id);
+            SBOM sbomFile = this.sbomService.getSBOMFile(id);
 
             // No SBOM was found
-            if(sbom == null){
+            if(sbomFile == null){
                 LOGGER.info("QA /svip/sboms/qa?id=" + id + " - FILE NOT FOUND");
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
 
+            // Generate QA
+            org.svip.sbom.model.interfaces.generics.SBOM sbomObject = this.sbomService.getSBOMObject(id);
+            QualityReport qa = this.qualityReportFileService.generateQualityReport(sbomObject);
 
-            // Generate QA and upload to DB
-            QualityReport qa = this.qualityReportFileService.generateQualityReport(sbom);
-            QualityReportFile qaf = new UploadQRFileInput(qa).toQualityReportFile();
+            // Create qaf and upload to db
+            QualityReportFile qaf = new UploadQRFileInput(qa).toQualityReportFile(sbomFile);
             this.qualityReportFileService.upload(qaf);
+            this.sbomService.setQualityReport(id, qaf);     // update sbom relation
 
             // Log
-            LOGGER.info("QA /svip/sboms/?id=" + id + " - TESTED: " + sbom.getName());
+            LOGGER.info("QA /svip/sboms/?id=" + id);
 
             // Return JSON result
             return new ResponseEntity<>(qaf.getContent(), HttpStatus.OK);

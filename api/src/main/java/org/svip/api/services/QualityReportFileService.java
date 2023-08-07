@@ -36,7 +36,7 @@ public class QualityReportFileService {
     /**
      * Create a new quality report entry in the database
      *
-     * @param qaf sbom to upload
+     * @param qaf Quality Report to upload
      * @return uploaded sbom entry
      * @throws Exception Error uploading to the Database
      */

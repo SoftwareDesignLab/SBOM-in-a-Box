@@ -65,9 +65,9 @@ public class SBOM {
     ///
     /// Relationships
     ///
-//    @OneToOne
-//    @JoinColumn(name = "qa_id", referencedColumnName = "id")
-//    private QualityReportFile qualityReportFile;
+    @OneToOne
+    @JoinColumn(name = "qa_id", referencedColumnName = "id")
+    private QualityReportFile qualityReportFile;
 
     ///
     /// Setters
@@ -124,6 +124,18 @@ public class SBOM {
         if(d instanceof SPDX23TagValueDeserializer)
             this.fileType = FileType.TAG_VALUE;
 
+        return this;
+    }
+
+
+    /**
+     * Set Quality Report File
+     *
+     * @param qaf Quality Report File
+     * @return SBOM
+     */
+    public SBOM setQualityReport(QualityReportFile qaf){
+        this.qualityReportFile = qaf;
         return this;
     }
 
