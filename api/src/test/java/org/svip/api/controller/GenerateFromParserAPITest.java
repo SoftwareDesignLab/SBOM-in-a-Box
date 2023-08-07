@@ -6,143 +6,107 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.svip.api.entities.MockMultipartFile;
 import org.svip.api.entities.SBOMFile;
 import org.svip.serializers.SerializerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+/**
+ * File: GenerateFromParserAPITest.java
+ * <p>
+ * Holds the unit tests responsible for testing the Generator Parser API endpoint.
+ *
+ * @author Juan Francisco Patino
+ */
 public class GenerateFromParserAPITest extends APITest {
 
-    private final String[] schemas = {"CDX14", "SPDX23"};
-    private final String[] formats = {"JSON", "TAGVALUE"};
-    private static final Logger LOGGER = LoggerFactory.getLogger(SVIPApiController.class);
     private final Map<Map<Long, String>, SBOMFile[]> testMap;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SVIPApiController.class);
+    private final String sampleProjectDirectory = System.getProperty("user.dir")
+            + "/src/test/resources/sample_projects/";
 
-    public GenerateFromParserAPITest() throws IOException{
+    public GenerateFromParserAPITest() throws IOException {
         testMap = getTestProjectMap();
     }
 
-//    /**
-//     * Tests bad SBOMFiles
-//     */
-//    @Test
-//    @DisplayName("Invalid format test")
-//    public void sbomFilesNullPropertiesTest() {
-//
-//        SBOMFile[] noName = new SBOMFile[]{new SBOMFile("", "int i = 3;")};
-//        SBOMFile[] noContents = new SBOMFile[]{new SBOMFile("name.java", "")};
-//        Collection<SBOMFile[]> files = testMap.values();
-//        SBOMFile[] empty = null;
-//        for (SBOMFile[] file: files
-//             ) {
-//            for (SBOMFile s: file
-//                 ) {
-//                if(s.hasNullProperties()) {
-//                    empty = file;
-//                    break;
-//                }
-//            }
-//        }
-//
-//        assertEquals(HttpStatus.BAD_REQUEST, controller.generateParsers(noName,
-//                        "Java", SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).
-//                getStatusCode());
-//
-//        assertEquals(HttpStatus.BAD_REQUEST, controller.generateParsers(noContents,
-//                        "cs", SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).
-//                getStatusCode());
-//
-//        assertEquals(HttpStatus.BAD_REQUEST, controller.generateParsers(empty,
-//                        "empty", SerializerFactory.Schema.SPDX23, SerializerFactory.Format.JSON).
-//                getStatusCode());
-//
-//    }
-//
-//    /**
-//     * CDX does not support Tag Value format
-//     */
-//    @Test
-//    @DisplayName("Convert to CDX tag value test")
-//    public void CDXTagValueTest() {
-//        Collection<SBOMFile[]> files = testMap.values();
-//        SBOMFile[] sbomFiles = (SBOMFile[]) files.toArray()[0];
-//        assertEquals(HttpStatus.BAD_REQUEST, controller.generateParsers(sbomFiles,
-//                        "Java", SerializerFactory.Schema.CDX14, SerializerFactory.Format.TAGVALUE).
-//                getStatusCode());
-//    }
-//
     /**
-     *
+     * CDX does not support Tag Value format
      */
     @Test
-    @DisplayName("")
-    public void zipTest() throws IOException {
+    @DisplayName("Convert to CDX tag value test")
+    public void CDXTagValueTest() throws IOException {
+        assertEquals(HttpStatus.BAD_REQUEST, oldController.generateParsers((new MockMultipartFile(new File(
+                                sampleProjectDirectory + "Scala.zip"))),
+                        "Java", SerializerFactory.Schema.CDX14, SerializerFactory.Format.TAGVALUE).
+                getStatusCode());
+    }
 
-        ResponseEntity<Long> response = (ResponseEntity<Long>) controller.generateParsers(System.getProperty("user.dir")
-                + "/src/test/resources/sample_projects/Java.zip", "Java",
-                SerializerFactory.Schema.SPDX23, SerializerFactory.Format.TAGVALUE);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
+    /**
+     * File must be a zip file
+     */
+    @Test
+    @DisplayName("Incorrect file type test")
+    public void zipExceptionTest() throws IOException {
+        assertEquals(HttpStatus.BAD_REQUEST, oldController.generateParsers((new MockMultipartFile(new File(
+                                sampleProjectDirectory + "Ruby/lib/bar.rb"))),
+                        "Java", SerializerFactory.Schema.CDX14, SerializerFactory.Format.JSON).
+                getStatusCode());
+    }
+
+//    /**
+//     * 77MB project test
+//     */
+//    @Test
+//    @DisplayName("Large project test")
+//    public void largeProjectTest() throws IOException {
+//        assertEquals(HttpStatus.OK, controller.generateParsers((new MockMultipartFile(new File(
+//                                sampleProjectDirectory + "large.zip"))),
+//                        "Large", SerializerFactory.Schema.CDX14, SerializerFactory.Format.JSON).
+//                getStatusCode());
+//    }
+
+    /**
+     * Main SBOM Generation test
+     */
+    @Test
+    @DisplayName("Generate from parser test")
+    public void generateTest() throws IOException {
+
+        String[] zipFiles = {"Conan", "Conda_noEmptyFiles", "Perl_noEmptyFiles", "Rust_noEmptyFiles", "Scala"};
+
+        for (String file : zipFiles
+        ) {
+
+            LOGGER.info("Parsing project: " + file);
+
+            for (SerializerFactory.Schema schema : schemas
+            ) {
+
+                for (SerializerFactory.Format format : formats
+                ) {
+
+                    if (schema == SerializerFactory.Schema.CDX14 && format == SerializerFactory.Format.TAGVALUE)
+                        continue;
+
+                    LOGGER.info("Into " + schema + ((format == SerializerFactory.Format.TAGVALUE) ? ".spdx" : ".json"));
+
+                    ResponseEntity<Long> response = (ResponseEntity<Long>) oldController.generateParsers(new MockMultipartFile(
+                                    new File(sampleProjectDirectory + file + ".zip")), file,
+                            schema, format);
+                    assertEquals(HttpStatus.OK, response.getStatusCode());
+                    assertNotNull(response.getBody());
+                }
+
+            }
+
+        }
 
     }
-//
-//    @Test
-//    @DisplayName("")
-//    public void zipFileTest() throws IOException {
-//
-//        ResponseEntity<Long> response = (ResponseEntity<Long>) controller.generateParsers(new ZipFile(System.getProperty("user.dir")
-//                        + "/src/test/java/org/svip/api/sample_projects/Java.zip"), "Java",
-//                SerializerFactory.Schema.SPDX23, SerializerFactory.Format.TAGVALUE);
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertNotNull(response.getBody());
-//
-//    }
-//
-//    @Test
-//    @DisplayName("Generate from parser test")
-//    public void generateTest() {
-//
-//        Collection<SBOMFile[]> files = testMap.values();
-//
-//        int i = 0;
-//        for (SBOMFile[] file : files) {
-//
-//            HashMap<Long, String> projKey = (HashMap<Long, String>) testMap.keySet().toArray()[i];
-//            String projectName = (String) projKey.values().toArray()[0];
-//
-//            LOGGER.info("Parsing project: " + projectName);
-//
-//            for (String schema : schemas
-//            ) {
-//                for (String format : formats
-//                ) {
-//
-//                    if (projectName == null)
-//                        System.out.println("hi");
-//
-//                    if (schema.equals("CDX14") && format.equals("TAGVALUE") || projectName.equals("Empty"))
-//                        continue;
-//
-//                    if ((projectName.equals("Java") || projectName.equals("CSharp/Nuget") || projectName.equals("SubProcess") // todo fix SPDXJSONSerializers
-//                            || projectName.equals("JS") || projectName.equals("Ruby"))
-//                            && schema.equals("SPDX23") && format.equals("JSON"))
-//                        continue;
-//
-//                    LOGGER.info("PARSING TO: " + schema + " + " + format);
-//
-//                    ResponseEntity<?> response = controller.generateParsers(file, projectName,
-//                            SerializerFactory.Schema.valueOf(schema), SerializerFactory.Format.valueOf(format));
-//
-//                    assertEquals(HttpStatus.OK, response.getStatusCode());
-//                    assertNotNull(response.getBody());
-//                }
-//            }
-//            i++;
-//            LOGGER.info("\n-------------\n");
-//        }
-//    }
+
 }

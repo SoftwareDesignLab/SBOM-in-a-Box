@@ -23,9 +23,9 @@ public class ViewAllFromAPITest extends APITest {
     @Test
     @DisplayName("View All Files")
     public void viewAllFilesTest() {
-        when(repository.findAll()).thenAnswer(i -> files);
+        when(oldRepository.findAll()).thenAnswer(i -> files);
 
-        ResponseEntity<Long[]> response = controller.viewFiles();
+        ResponseEntity<Long[]> response = oldController.viewFiles();
         assertEquals(files.size(), response.getBody().length);
     }
 }

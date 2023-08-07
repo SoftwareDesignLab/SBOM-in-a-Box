@@ -42,10 +42,10 @@ public class GetSBOMAPITest extends APITest{
     @DisplayName("Parse Valid CDX14 JSON")
     public void get_valid_CDX_14_SBOM_JSON() {
         // Get CDX14 JSON SBOM when requested
-        when(repository.findById(CDX14_JSON_ID)).thenAnswer(i -> Optional.of(fileMap.get(CDX14_JSON_ID)));
+        when(oldRepository.findById(CDX14_JSON_ID)).thenAnswer(i -> Optional.of(fileMap.get(CDX14_JSON_ID)));
 
         // Make API Request
-        ResponseEntity<?> response = controller.getSBOM(CDX14_JSON_ID);
+        ResponseEntity<?> response = oldController.getSBOM(CDX14_JSON_ID);
 
         // Assert correct object was returned
         assertEquals(response.getStatusCode(), HttpStatus.OK);
@@ -56,10 +56,10 @@ public class GetSBOMAPITest extends APITest{
     @DisplayName("Parse Valid SPDX23 Tag Value")
     public void get_valid_SPDX_23_SBOM_TAGVALUE(){
         // Get SPDX23 Tagvalue SBOM when requested
-        when(repository.findById(SPDX23_TAGVALUE_ID)).thenAnswer(i -> Optional.of(fileMap.get(SPDX23_TAGVALUE_ID)));
+        when(oldRepository.findById(SPDX23_TAGVALUE_ID)).thenAnswer(i -> Optional.of(fileMap.get(SPDX23_TAGVALUE_ID)));
 
         // Make API Request
-        ResponseEntity<?> response = controller.getSBOM(SPDX23_TAGVALUE_ID);
+        ResponseEntity<?> response = oldController.getSBOM(SPDX23_TAGVALUE_ID);
 
         // Assert correct object was returned
         assertEquals(response.getStatusCode(), HttpStatus.OK);
@@ -70,10 +70,10 @@ public class GetSBOMAPITest extends APITest{
     @DisplayName("Parse Valid SPDX23 JSON")
     public void get_valid_SPDX23_SBOM_JSON(){
         // Get SPDX23 JSON SBOM when requested
-        when(repository.findById(SPDX23_JSON_ID)).thenAnswer(i -> Optional.of(fileMap.get(SPDX23_JSON_ID)));
+        when(oldRepository.findById(SPDX23_JSON_ID)).thenAnswer(i -> Optional.of(fileMap.get(SPDX23_JSON_ID)));
 
         // Make API Request
-        ResponseEntity<?> response = controller.getSBOM(SPDX23_JSON_ID);
+        ResponseEntity<?> response = oldController.getSBOM(SPDX23_JSON_ID);
 
         // Assert correct object was returned
         assertEquals(response.getStatusCode(), HttpStatus.OK);
@@ -84,10 +84,10 @@ public class GetSBOMAPITest extends APITest{
     @DisplayName("Parse Unsupported SBOM")
     public void get_unsupported_SBOM_format(){
         // Get CDX14 XML SBOM when requested
-        when(repository.findById(CDX14_XML_ID)).thenAnswer(i -> Optional.of(fileMap.get(CDX14_XML_ID)));
+        when(oldRepository.findById(CDX14_XML_ID)).thenAnswer(i -> Optional.of(fileMap.get(CDX14_XML_ID)));
 
         // Make API Request
-        ResponseEntity<?> response = controller.getSBOM(CDX14_XML_ID);
+        ResponseEntity<?> response = oldController.getSBOM(CDX14_XML_ID);
 
         // Assert correct object was returned
         assertEquals(response.getStatusCode(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -99,10 +99,10 @@ public class GetSBOMAPITest extends APITest{
 
         // Get a bad id
         long missingID = 99999;
-        when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.empty());
+        when(oldRepository.findById(any(Long.class))).thenAnswer(i -> Optional.empty());
 
         // Make API Request
-        ResponseEntity<?> response = controller.getSBOM(missingID);
+        ResponseEntity<?> response = oldController.getSBOM(missingID);
 
         // Assert correct object was returned
         assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
