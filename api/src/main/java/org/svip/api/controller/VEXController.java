@@ -1,6 +1,8 @@
 package org.svip.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * file: VEXController.java
  * REST API Controller for generating VEX
  *
  * @author Derek Garcia
@@ -33,12 +36,25 @@ import java.util.Optional;
 @RequestMapping("/svip")
 public class VEXController {
 
-    private final VEXFileService vexFileService;
-    private final SBOMFileService sbomFileService;
+    /**
+     * Spring-configured logger
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(VEXController.class);
 
-    public VEXController(VEXFileService vexFileService, SBOMFileService sbomFileService){
-        this.vexFileService = vexFileService;
+
+    private final SBOMFileService sbomFileService;
+    private final VEXFileService vexFileService;
+
+
+    /**
+     * Create new Controller with services
+     *
+     * @param sbomFileService Service for handling SBOM queries
+     * @param vexFileService Service for handling VEX queries
+     */
+    public VEXController(SBOMFileService sbomFileService,VEXFileService vexFileService){
         this.sbomFileService = sbomFileService;
+        this.vexFileService = vexFileService;
     }
 
     /**
@@ -56,6 +72,8 @@ public class VEXController {
                                          @RequestParam("id") long id,
                                          @RequestParam("format") String format,
                                          @RequestParam("client") String client) {
+
+
 
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
