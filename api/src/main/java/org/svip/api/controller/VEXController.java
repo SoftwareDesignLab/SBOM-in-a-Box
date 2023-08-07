@@ -90,8 +90,8 @@ public class VEXController {
             // Get stored content
             // todo more than 1 vex stored? Ie 1 from nvd, could run for osv
             // todo POST / arg to force rerun vex??
-//            if(sbomFile.getVEXFile() != null)
-//                return new ResponseEntity<>(sbomFile.getVEXFile().getContent(), HttpStatus.OK);
+            if(sbomFile.getVEXFile() != null)
+                return new ResponseEntity<>(sbomFile.getVEXFile().getContent(), HttpStatus.OK);
 
             // No VEX stored, generate one
             org.svip.sbom.model.interfaces.generics.SBOM sbomObject = this.sbomFileService.getSBOMObject(id);
