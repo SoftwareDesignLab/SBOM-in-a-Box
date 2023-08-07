@@ -1,7 +1,9 @@
 package org.svip.sbomanalysis.compare;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.svip.merge.*;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
@@ -574,6 +576,547 @@ public class MergerTest {
 
         mergerController.mergeAll(sboms);
 
+
+    }
+
+    @Test
+    public void merger_should_mergeAll_basic_CDX_SBOMs() {
+
+        // SBOM One
+
+        CDX14Builder builder_one = new CDX14Builder();
+
+        builder_one.setFormat("CycloneDX");
+
+        builder_one.setName("test_sbom_one");
+
+        builder_one.setUID("urn:uuid:0000a000-0aaa-0000-00a0-0000aaa00000");
+
+        builder_one.setVersion("1");
+
+        builder_one.setSpecVersion("1.4");
+
+        builder_one.addLicense("test_license");
+
+        CreationData creationDataSBOMOne = new CreationData();
+
+        builder_one.setCreationData(creationDataSBOMOne);
+
+        builder_one.setDocumentComment("This is a test comment for the first SBOM");
+
+        builder_one.setRootComponent(comp_cdx_green);
+
+        builder_one.addComponent(comp_cdx_green);
+
+        ExternalReference exRefSBOMOne = new ExternalReference("www.testsbom.test", "test_sbom_one");
+
+        builder_one.addExternalReference(exRefSBOMOne);
+
+        CDX14SBOM SBOM_one = builder_one.buildCDX14SBOM();
+
+        // SBOM Two
+
+        CDX14Builder builder_two = new CDX14Builder();
+
+        builder_two.setFormat("CycloneDX");
+
+        builder_two.setName("test_sbom_two");
+
+        builder_two.setUID("urn:uuid:aaaa0aaa-a000-aaaa-aa0a-aaaa000aaaaa");
+
+        builder_two.setVersion("1");
+
+        builder_two.setSpecVersion("1.4");
+
+        builder_two.addLicense("test_license");
+
+        CreationData creationDataSBOMTwo = new CreationData();
+
+        builder_two.setCreationData(creationDataSBOMTwo);
+
+        builder_two.setDocumentComment("This is a test comment for the second SBOM");
+
+        builder_two.setRootComponent(comp_cdx_yellow);
+
+        builder_two.addComponent(comp_cdx_yellow);
+
+        builder_two.addComponent(comp_cdx_blue);
+
+        Relationship yellow_to_blue = new Relationship(comp_cdx_blue.getUID(), "Depends on");
+
+        builder_two.addRelationship(comp_cdx_yellow.getUID(), yellow_to_blue);
+
+        ExternalReference exRefSBOMTwo = new ExternalReference("www.testsbom.test", "test_sbom_two");
+
+        builder_one.addExternalReference(exRefSBOMTwo);
+
+        CDX14SBOM SBOM_two = builder_two.buildCDX14SBOM();
+
+        // SBOM Three
+
+        CDX14Builder builder_three = new CDX14Builder();
+
+        builder_three.setFormat("CycloneDX");
+
+        builder_three.setName("test_sbom_three");
+
+        builder_three.setUID("urn:uuid:aaaa0000-a000-aaaa-aa0a-aaaa000000aa");
+
+        builder_three.setVersion("1");
+
+        builder_three.setSpecVersion("1.4");
+
+        builder_three.addLicense("test_license");
+
+        CreationData creationDataSBOMThree = new CreationData();
+
+        builder_three.setCreationData(creationDataSBOMThree);
+
+        builder_three.setDocumentComment("This is a test comment for the third SBOM");
+
+        builder_three.setRootComponent(comp_cdx_green);
+
+        builder_three.addComponent(comp_cdx_green);
+
+        builder_three.addComponent(comp_cdx_blue);
+
+        Relationship green_to_blue = new Relationship(comp_cdx_blue.getUID(), "Depends on");
+
+        builder_three.addRelationship(comp_cdx_green.getUID(), green_to_blue);
+
+        ExternalReference exRefSBOMThree = new ExternalReference("www.testsbom.test", "test_sbom_three");
+
+        builder_two.addExternalReference(exRefSBOMThree);
+
+        CDX14SBOM SBOM_three = builder_three.buildCDX14SBOM();
+
+        // New merger and SBOM list
+
+        MergerController mergerController = new MergerController();
+
+        List<SBOM> SBOMs = Arrays.asList(SBOM_one, SBOM_two, SBOM_three);
+
+        // Merged SBOM Result
+
+        SBOM result;
+        try {
+                result = mergerController.mergeAll(SBOMs);
+        } catch (MergerException e) {
+                result = null;
+                e.printStackTrace();
+        }
+
+        // Assertions
+
+        assertNotNull(result);
+
+        assertEquals("test_sbom_one", result.getName());
+
+        assertEquals("test_component_green_cdx", result.getRootComponent().getName());
+
+        assertEquals("urn:uuid:0000a000-0aaa-0000-00a0-0000aaa00000", result.getUID());
+
+        assertEquals(3, result.getComponents().size());
+
+        assertEquals(3, result.getExternalReferences().size());
+
+    }
+
+    @Test
+    public void merger_should_mergeAll_basic_SPDX_SBOMs() {
+
+        // SBOM One
+
+        SPDX23Builder builder_one = new SPDX23Builder();
+
+        builder_one.setFormat("SPDX");
+
+        builder_one.setName("test_sbom_one");
+
+        builder_one.setUID("0000a000-0aaa-0000-00a0-0000aaa00000");
+
+        builder_one.setVersion("1");
+
+        builder_one.setSpecVersion("2.3");
+
+        builder_one.addLicense("test_license");
+
+        CreationData creationDataSBOMOne = new CreationData();
+
+        builder_one.setCreationData(creationDataSBOMOne);
+
+        builder_one.setDocumentComment("This is a test comment for the second SBOM");
+
+        builder_one.setRootComponent(comp_spdx_green);
+
+        builder_one.addComponent(comp_spdx_green);
+
+        ExternalReference exRefSBOMOne = new ExternalReference("www.testsbom.test", "test_sbom_one");
+
+        builder_one.addExternalReference(exRefSBOMOne);
+
+        SPDX23SBOM SBOM_one = builder_one.buildSPDX23SBOM();
+
+        // SBOM Two
+
+        SPDX23Builder builder_two = new SPDX23Builder();
+
+        builder_two.setFormat("SPDX");
+
+        builder_two.setName("test_sbom_two");
+
+        builder_two.setUID("aaaa0aaa-a000-aaaa-aa0a-aaaa000aaaaa");
+
+        builder_two.setVersion("1");
+
+        builder_two.setSpecVersion("2.3");
+
+        builder_two.addLicense("test_license");
+
+        CreationData creationDataSBOMTwo = new CreationData();
+
+        builder_two.setCreationData(creationDataSBOMTwo);
+
+        builder_two.setDocumentComment("This is a test comment for the second SBOM");
+
+        builder_two.setRootComponent(comp_spdx_yellow);
+
+        builder_two.addComponent(comp_spdx_yellow);
+
+        builder_two.addComponent(comp_spdx_blue);
+
+        Relationship yellow_to_blue = new Relationship(comp_spdx_blue.getUID(), "Depends on");
+
+        builder_one.addRelationship(comp_spdx_yellow.getUID(), yellow_to_blue);
+
+        ExternalReference exRefSBOMTwo = new ExternalReference("www.testsbom.test", "test_sbom_two");
+
+        builder_two.addExternalReference(exRefSBOMTwo);
+
+        SPDX23SBOM SBOM_two = builder_two.buildSPDX23SBOM();
+
+        // SBOM Three
+
+        SPDX23Builder builder_three = new SPDX23Builder();
+
+        builder_three.setFormat("SPDX");
+
+        builder_three.setName("test_sbom_three");
+
+        builder_three.setUID("aaaa0000-a000-aaaa-aa0a-aaaa000000aa");
+
+        builder_three.setVersion("1");
+
+        builder_three.setSpecVersion("2.3");
+
+        builder_three.addLicense("test_license");
+
+        CreationData creationDataSBOMThree = new CreationData();
+
+        builder_three.setCreationData(creationDataSBOMThree);
+
+        builder_three.setDocumentComment("This is a test comment for the third SBOM");
+
+        builder_three.setRootComponent(comp_spdx_green);
+
+        builder_three.addComponent(comp_spdx_green);
+
+        builder_three.addComponent(comp_spdx_blue);
+
+        Relationship green_to_blue = new Relationship(comp_spdx_blue.getUID(), "Depends on");
+
+        builder_one.addRelationship(comp_spdx_green.getUID(), green_to_blue);
+
+        ExternalReference exRefSBOMThree = new ExternalReference("www.testsbom.test", "test_sbom_three");
+
+        builder_two.addExternalReference(exRefSBOMThree);
+
+        SPDX23SBOM SBOM_three = builder_three.buildSPDX23SBOM();
+
+        // New merger and SBOM list
+
+        MergerController mergerController = new MergerController();
+
+        List<SBOM> SBOMs = Arrays.asList(SBOM_one, SBOM_two, SBOM_three);
+
+        // Merged SBOM Result
+
+        SBOM result;
+        try {
+                result = mergerController.mergeAll(SBOMs);
+        } catch (MergerException e) {
+                result = null;
+                e.printStackTrace();
+        }
+
+        // Assertions
+
+        assertNotNull(result);
+
+        assertEquals("test_sbom_one", result.getName());
+
+        assertEquals("test_component_green_spdx", result.getRootComponent().getName());
+
+        assertEquals("0000a000-0aaa-0000-00a0-0000aaa00000", result.getUID());
+
+        assertEquals(3, result.getComponents().size());
+
+        assertEquals(3, result.getExternalReferences().size());
+
+    }
+
+    @Test
+    public void merger_should_merge_empty_second_CDX_SBOM() {
+
+        // SBOM One
+
+        CDX14Builder builder_one = new CDX14Builder();
+
+        builder_one.setFormat("CycloneDX");
+
+        builder_one.setName("test_sbom_one");
+
+        builder_one.setUID("urn:uuid:0000a000-0aaa-0000-00a0-0000aaa00000");
+
+        builder_one.setVersion("1");
+
+        builder_one.setSpecVersion("1.4");
+
+        builder_one.addLicense("test_license");
+
+        CreationData creationDataSBOMOne = new CreationData();
+
+        builder_one.setCreationData(creationDataSBOMOne);
+
+        builder_one.setDocumentComment("This is a test comment for the first SBOM");
+
+        builder_one.setRootComponent(comp_cdx_green);
+
+        builder_one.addComponent(comp_cdx_green);
+
+        builder_one.addComponent(comp_cdx_yellow);
+
+        Relationship green_to_yellow = new Relationship(comp_cdx_yellow.getUID(), "Depends on");
+
+        builder_one.addRelationship(comp_cdx_green.getUID(), green_to_yellow);
+
+        ExternalReference exRefSBOMOne = new ExternalReference("www.testsbom.test", "test_sbom_one");
+
+        builder_one.addExternalReference(exRefSBOMOne);
+
+        CDX14SBOM SBOM_one = builder_one.buildCDX14SBOM();
+
+        // SBOM Two
+
+        CDX14Builder builder_two = new CDX14Builder();
+
+        CDX14SBOM SBOM_two = builder_two.buildCDX14SBOM();
+
+        // New merger
+
+        Merger merger = new MergerCDX();
+
+        // Merged SBOM Result
+
+        SBOM result = merger.mergeSBOM(SBOM_one, SBOM_two);
+
+        // Assertions
+
+        assertNotNull(result);
+
+        assertEquals("test_sbom_one", result.getName());
+
+        assertEquals("test_component_green_cdx", result.getRootComponent().getName());
+
+        assertEquals("urn:uuid:0000a000-0aaa-0000-00a0-0000aaa00000", result.getUID());
+
+        assertEquals(2, result.getComponents().size());
+
+        assertEquals(1, result.getExternalReferences().size());
+
+    }
+
+    @Test
+    public void merger_should_merge_empty_second_SPDX_SBOM() {
+
+        // SBOM One
+
+        SPDX23Builder builder_one = new SPDX23Builder();
+
+        builder_one.setFormat("SPDX");
+
+        builder_one.setName("test_sbom_one");
+
+        builder_one.setUID("0000a000-0aaa-0000-00a0-0000aaa00000");
+
+        builder_one.setVersion("1");
+
+        builder_one.setSpecVersion("2.3");
+
+        builder_one.addLicense("test_license");
+
+        CreationData creationDataSBOMOne = new CreationData();
+
+        builder_one.setCreationData(creationDataSBOMOne);
+
+        builder_one.setDocumentComment("This is a test comment for the second SBOM");
+
+        builder_one.setRootComponent(comp_spdx_green);
+
+        builder_one.addComponent(comp_spdx_green);
+
+        builder_one.addComponent(comp_spdx_yellow);
+
+        Relationship green_to_yellow = new Relationship(comp_spdx_yellow.getUID(), "Depends on");
+
+        builder_one.addRelationship(comp_spdx_green.getUID(), green_to_yellow);
+
+        ExternalReference exRefSBOMOne = new ExternalReference("www.testsbom.test", "test_sbom_one");
+
+        builder_one.addExternalReference(exRefSBOMOne);
+
+        SPDX23SBOM SBOM_one = builder_one.buildSPDX23SBOM();
+
+        // SBOM Two
+
+        SPDX23Builder builder_two = new SPDX23Builder();
+
+        SPDX23SBOM SBOM_two = builder_two.buildSPDX23SBOM();
+
+        // New Merger
+
+        Merger merger = new MergerSPDX();
+
+        // Merged SBOM Result
+
+        SBOM result = merger.mergeSBOM(SBOM_one, SBOM_two);
+
+        // Assertions
+
+        assertNotNull(result);
+
+        assertEquals("test_sbom_one", result.getName());
+
+        assertEquals("test_component_green_spdx", result.getRootComponent().getName());
+
+        assertEquals("0000a000-0aaa-0000-00a0-0000aaa00000", result.getUID());
+
+        assertEquals(2, result.getComponents().size());
+
+        assertEquals(1, result.getExternalReferences().size());
+
+    }
+
+    @Test
+    public void merger_should_mergeAll_empty_CDX_SBOMs() {
+
+        // SBOM One
+
+        CDX14Builder builder_one = new CDX14Builder();
+
+        builder_one.setFormat("CycloneDX");
+
+        builder_one.setName("test_sbom_one");
+
+        builder_one.setUID("urn:uuid:0000a000-0aaa-0000-00a0-0000aaa00000");
+
+        builder_one.setVersion("1");
+
+        builder_one.setSpecVersion("1.4");
+
+        builder_one.addLicense("test_license");
+
+        CreationData creationDataSBOMOne = new CreationData();
+
+        builder_one.setCreationData(creationDataSBOMOne);
+
+        builder_one.setDocumentComment("This is a test comment for the first SBOM");
+
+        builder_one.setRootComponent(comp_cdx_green);
+
+        builder_one.addComponent(comp_cdx_green);
+
+        ExternalReference exRefSBOMOne = new ExternalReference("www.testsbom.test", "test_sbom_one");
+
+        builder_one.addExternalReference(exRefSBOMOne);
+
+        CDX14SBOM SBOM_one = builder_one.buildCDX14SBOM();
+
+        // SBOM Two, format is required for mergeAll
+
+        CDX14Builder builder_two = new CDX14Builder();
+
+        builder_two.setFormat("CycloneDX");
+
+        CDX14SBOM SBOM_two = builder_two.buildCDX14SBOM();
+
+        // SBOM Three, format is required for mergeAll
+
+        CDX14Builder builder_three = new CDX14Builder();
+
+        builder_three.setFormat("CycloneDX");
+
+        CDX14SBOM SBOM_three = builder_three.buildCDX14SBOM();
+
+        // New merger and SBOM list
+
+        MergerController mergerController = new MergerController();
+
+        List<SBOM> SBOMs = Arrays.asList(SBOM_one, SBOM_two, SBOM_three);
+
+        // Merged SBOM Result
+
+        SBOM result;
+        try {
+                result = mergerController.mergeAll(SBOMs);
+        } catch (MergerException e) {
+                result = null;
+                e.printStackTrace();
+        }
+
+        // Assertions
+
+        assertNotNull(result);
+
+        assertEquals("test_sbom_one", result.getName());
+
+        assertEquals("test_component_green_cdx", result.getRootComponent().getName());
+
+        assertEquals("urn:uuid:0000a000-0aaa-0000-00a0-0000aaa00000", result.getUID());
+
+        assertEquals(1, result.getComponents().size());
+
+        assertEquals(1, result.getExternalReferences().size());
+
+    }
+
+    @Test
+    public void merger_should_fail_with_null_SBOM() {
+
+        // SBOM One
+
+        CDX14SBOM SBOM_one = null;
+
+        // SBOM Two
+
+        CDX14Builder builder_two = new CDX14Builder();
+
+        CDX14SBOM SBOM_two = builder_two.buildCDX14SBOM();
+
+        // New merger
+
+        Merger merger = new MergerCDX();
+
+        // Merged SBOM Result
+
+        Assertions.assertThrows(NullPointerException.class, new Executable() {
+
+                @Override
+                public void execute() throws Throwable {
+                        SBOM result = merger.mergeSBOM(SBOM_one, SBOM_two);
+                }
+                
+        });
 
     }
 

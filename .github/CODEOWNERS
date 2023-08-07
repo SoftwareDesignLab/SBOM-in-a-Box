@@ -1,0 +1,10 @@
+# CODEOWNERS FILE
+
+# API
+# Any Changes to the API MUST be reviewed by at least 1 Frontend and 1 Backend Developer
+api/        @dlg1206 @ian1dunn @txdvse @juanfpatino @tfr8811 @liamthemailman @jwj7297 @Marrufof @maxstein16
+doc/API.md  @dlg1206 @ian1dunn @txdvse @juanfpatino @tfr8811 @liamthemailman @jwj7297 @Marrufof @maxstein16
+
+# CORE
+# Any Changes to the core MUST be reviewed by 1 Backend Developer
+core/   @dlg1206 @ian1dunn @txdvse @juanfpatino @tfr8811 @liamthemailman
