@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ConvertTest {
@@ -57,14 +58,27 @@ public class ConvertTest {
     @Test
     public void convertCDXSVIP() throws Exception {
 
-        assertNotNull(Conversion.convertSBOM(sboms[0], SerializerFactory.Schema.SVIP, SerializerFactory.Schema.CDX14));
+        SBOM original = sboms[0];
+
+        SBOM result = Conversion.convertSBOM(original, SerializerFactory.Schema.SVIP, SerializerFactory.Schema.CDX14);
+
+        assertNotNull(result);
+        assertEquals("SVIP", result.getFormat());
+        assertEquals(original.getName(), result.getName());
+        assertEquals(original.getComponents().size(), result.getComponents().size());
 
     }
 
     @Test
     public void convertSPDXSVIP() throws Exception {
 
-        assertNotNull(Conversion.convertSBOM(sboms[0], SerializerFactory.Schema.SVIP, SerializerFactory.Schema.SPDX23));
+        SBOM original = sboms[4];
+
+        SBOM result = Conversion.convertSBOM(original, SerializerFactory.Schema.SVIP, SerializerFactory.Schema.SPDX23);
+
+        assertEquals("SVIP", result.getFormat());
+        assertEquals(original.getName(), result.getName());
+        assertEquals(original.getComponents().size(), result.getComponents().size());
 
     }
 
