@@ -3,9 +3,10 @@ package org.svip.api.repository;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.IdentifierGenerator;
+import org.svip.api.utils.Utils;
 
 import java.io.Serializable;
-import java.util.Random;
+
 
 /**
  * ID generator class implementing JPA's IdentifierGenerator
@@ -19,9 +20,7 @@ public class SBOMFileIdentifierGenerator implements IdentifierGenerator {
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
         // assign new id and name
-        Random rand = new Random();
-        long id = rand.nextLong();
-        id += (rand.nextLong()) % ((id < 0) ? id : Long.MAX_VALUE);
-        return Math.abs(id);
+        return Utils.generateSBOMFileId();
     }
+
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.svip.api.entities.SBOM;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMRepository;
+import org.svip.api.utils.Utils;
 import org.svip.conversion.Conversion;
 import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
@@ -69,7 +70,7 @@ public class SBOMFileService {
      * @return ID of converted SBOM
      */
     public Long convert(Long id, SerializerFactory.Schema schema, SerializerFactory.Format format, Boolean overwrite)
-            throws DeserializerException, SBOMBuilderException, SerializerException {
+            throws DeserializerException, SBOMBuilderException, JsonProcessingException {
 
         // Retrieve SBOMFile and check that it exists
         SBOM sbomFile = getSBOMFile(id);
@@ -93,19 +94,24 @@ public class SBOMFileService {
 
         // use core Conversion functionality
         org.svip.sbom.model.interfaces.generics.SBOM Converted =
-                Conversion.convertSBOM(deserialized, schema, originalSchema);
+                Conversion.convertSBOM(deserialized, SerializerFactory.Schema.SVIP, originalSchema);
 
 
         // serialize into desired format
-        String contents = serialize(schema, format, Converted, originalSchema);
-
+        Serializer s = SerializerFactory.createSerializer(schema, format, true);
+        s.setPrettyPrinting(true);
+        String contents = s.writeToString((SVIPSBOM) Converted);
 
         // Save according to overwrite boolean
         SBOM converted = new SBOM().
                 setName(sbomFile.getName()).
                 setContent(contents).
-                setSchema(d).
-                setFileType(d);
+                setSchema((schema == SerializerFactory.Schema.SPDX23) ? // original schema of SBOM
+                        SBOM.Schema.SPDX_23: SBOM.Schema.CYCLONEDX_14).
+                setFileType((format == SerializerFactory.Format.TAGVALUE) ? // original schema of SBOM
+                        SBOM.FileType.TAG_VALUE : SBOM.FileType.JSON);
+
+        converted.id = Utils.generateSBOMFileId(); // todo temporary fix?
 
         if (overwrite) {
             update(id, converted);
@@ -116,38 +122,6 @@ public class SBOMFileService {
         return converted.getId();
 
     }
-
-    /**
-     * Helper function to serialize an already converted SBOM
-     *
-     * @param schema         file schema
-     * @param format         file format
-     * @param sbom           original SBOM object
-     * @param originalSchema original schema of sbom
-     * @return sbom contents
-     */
-    private static String serialize(SerializerFactory.Schema schema, SerializerFactory.Format format,
-                                    org.svip.sbom.model.interfaces.generics.SBOM sbom,
-                                    SerializerFactory.Schema originalSchema) throws SerializerException {
-
-        Serializer s;
-        String serialized;
-        try {
-            // serialize into requested schema
-
-            s = SerializerFactory.createSerializer(schema, format, true);
-            s.setPrettyPrinting(true);
-
-            Conversion.buildSBOM(sbom, schema, originalSchema);
-            SVIPSBOM built = builder.Build();
-            serialized = s.writeToString(built);
-
-        } catch (Exception e) {
-            throw new SerializerException("Serialization Error: " + e.getMessage());
-        }
-        return serialized;
-    }
-
 
     /**
      * Merge two or more SBOMs

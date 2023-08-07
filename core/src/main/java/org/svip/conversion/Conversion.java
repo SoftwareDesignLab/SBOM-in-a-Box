@@ -112,7 +112,7 @@ public class Conversion {
      * @param schema         desired schema
      * @param originalSchema original schema
      */
-    public static void buildSBOM(SBOM deserialized, SerializerFactory.Schema schema, SerializerFactory.Schema originalSchema) {
+    public static void buildSBOM(SBOM deserialized, SerializerFactory.Schema schema, SerializerFactory.Schema originalSchema) throws SBOMBuilderException {
         builder.setFormat(String.valueOf(schema));
         builder.setName(deserialized.getName());
         builder.setUID(deserialized.getUID());
@@ -156,7 +156,7 @@ public class Conversion {
      * @param originalSchema the original Schema we are converting from
      */
     public static void buildSVIPComponentObject(Component component,
-                                                SerializerFactory.Schema originalSchema) {
+                                                SerializerFactory.Schema originalSchema) throws SBOMBuilderException {
         if (component == null)
             return;
         compBuilder.setType(component.getType());
@@ -184,6 +184,7 @@ public class Conversion {
                 try {
                     configurefromCDX14Object((CDX14ComponentObject) component);
                 } catch (ClassCastException | NullPointerException e1) {
+                    throw new SBOMBuilderException(e1.getMessage());
                 }
             }
 
@@ -204,7 +205,7 @@ public class Conversion {
             compBuilder.setAttributionText(spdx23FileObject.getAttributionText());
             compBuilder.setFileNotice(spdx23FileObject.getFileNotice());
         } else if (component instanceof CDX14ComponentObject)
-            throw new ClassCastException();
+            return;
     }
 
     /**
