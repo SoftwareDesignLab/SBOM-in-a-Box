@@ -50,7 +50,7 @@ public class ConvertCDX14 implements Convert {
         builder.setDocumentComment(sbom.getDocumentComment());
 
         // Root Component
-        builder.setRootComponent(sbom.getRootComponent());
+        builder.setRootComponent(convertComponent(sbom.getRootComponent()));
 
         // Stream components from SVIP SBOM, convert them, then put into CDX SBOM
         sbom.getComponents().stream().forEach(x -> builder.addComponent(convertComponent(x)));
