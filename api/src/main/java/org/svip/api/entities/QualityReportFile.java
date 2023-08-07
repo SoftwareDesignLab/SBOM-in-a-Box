@@ -48,4 +48,15 @@ public class QualityReportFile {
         this.content = content;
         return this;
     }
+
+    ///
+    /// Getters
+    ///
+
+    /**
+     * @return content of qa
+     */
+    public String getContent(){
+        return this.content;
+    }
 }
