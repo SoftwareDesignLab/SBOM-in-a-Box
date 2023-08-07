@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
+import org.svip.api.entities.QualityReportFile;
 import org.svip.api.entities.SBOM;
 import org.svip.api.repository.SBOMRepository;
 import org.svip.serializers.SerializerFactory;
@@ -46,6 +47,21 @@ public class SBOMFileService {
             // todo custom exception instead of generic
             throw new Exception("Failed to upload to Database: " + e.getMessage());
         }
+    }
+
+
+    public Long setQualityReport(Long id, QualityReportFile qaf){
+        SBOM sbom = getSBOMFile(id);
+
+        // todo better return than null?
+        if(sbom == null)
+            return null;
+
+        sbom.setQualityReport(qaf);
+        this.sbomRepository.save(sbom);
+        
+        return qaf.getID();
+
     }
 
 
