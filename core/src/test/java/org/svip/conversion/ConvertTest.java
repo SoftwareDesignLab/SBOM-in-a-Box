@@ -82,6 +82,33 @@ public class ConvertTest {
 
     }
 
+    @Test
+    public void convertCDXSPDX() throws Exception {
+
+        SBOM original = sboms[0];
+
+        SBOM result = Conversion.convertSBOM(original, SerializerFactory.Schema.SPDX23, SerializerFactory.Schema.CDX14);
+
+        assertNotNull(result);
+        assertEquals("SPDX", result.getFormat());
+        assertEquals(original.getName(), result.getName());
+        assertEquals(original.getComponents().size(), result.getComponents().size());
+
+    }
+
+    @Test
+    public void convertSPDXCDX() throws Exception {
+
+        SBOM original = sboms[4];
+
+        SBOM result = Conversion.convertSBOM(original, SerializerFactory.Schema.CDX14, SerializerFactory.Schema.SPDX23);
+
+        assertNotNull(result);
+        assertEquals("CycloneDX", result.getFormat());
+        assertEquals(original.getName(), result.getName());
+        assertEquals(original.getComponents().size(), result.getComponents().size());
+
+    }
 
     @Test
     public void convertTest() throws Exception {

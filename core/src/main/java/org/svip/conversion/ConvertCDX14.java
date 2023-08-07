@@ -26,7 +26,7 @@ public class ConvertCDX14 implements Convert {
         CDX14Builder builder = new CDX14Builder();
 
         // Format
-        builder.setFormat(sbom.getFormat());
+        builder.setFormat("CycloneDX");
 
         // Name
         builder.setName(sbom.getName());
@@ -35,7 +35,7 @@ public class ConvertCDX14 implements Convert {
         builder.setUID(sbom.getUID());
 
         // Version
-        builder.setVersion(sbom.getVersion());
+        builder.setVersion("1.4");
 
         // Spec Version
         builder.setSpecVersion(sbom.getSpecVersion());
