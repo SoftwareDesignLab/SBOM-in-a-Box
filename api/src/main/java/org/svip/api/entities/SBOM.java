@@ -157,4 +157,11 @@ public class SBOM {
     public String getContent(){
         return this.content;
     }
+
+    /**
+     * @return QualityReportFile
+     */
+    public QualityReportFile getQualityReportFile(){
+        return this.qualityReportFile;
+    }
 }
