@@ -13,6 +13,8 @@ import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 
+import java.util.Optional;
+
 /**
  * Business logic for accessing the Quality Report File table
  *
@@ -51,6 +53,13 @@ public class QualityReportFileService {
     }
 
 
+    /**
+     * Generate a Quality Report for a given SBOM
+     *
+     * @param sbom SBOM to run QA on
+     * @return Quality Report
+     * @throws Exception SBOM not supported for metrics
+     */
     public QualityReport generateQualityReport(SBOM sbom) throws Exception {
 
         // todo QAPipeline factory to handle this? similar to serializerFactory?
@@ -67,5 +76,23 @@ public class QualityReportFileService {
 
         // QA test SBOM and return result
         return qaPipeline.process(sbom.getUID(), sbom);
+    }
+
+
+    /**
+     * Get QA file from database
+     *
+     * @param id of the QA to retrieve
+     * @return Quality Report File if it exists
+     */
+    public QualityReportFile getQualityReportFile(Long id) {
+        // Retrieve QA File and check that it exists
+        Optional<QualityReportFile> qaf = this.qualityReportFileRepository.findById(id);
+        // todo throw error?
+        if (qaf.isEmpty())
+            return null;
+
+        // Else return file
+        return qaf.get();
     }
 }
