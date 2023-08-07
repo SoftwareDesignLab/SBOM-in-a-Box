@@ -27,10 +27,10 @@ public class ViewFromAPITest extends APITest {
     @DisplayName("View File")
     public void viewFileTest() {
         // Mock a map of test files in the DB
-        when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
+        when(oldRepository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
 
         for (Long id : testMap.keySet()) {
-            ResponseEntity<SBOMFile> response = controller.view(id);
+            ResponseEntity<SBOMFile> response = oldController.view(id);
             SBOMFile s = response.getBody();
             assertNotNull(s);
         }
@@ -42,9 +42,9 @@ public class ViewFromAPITest extends APITest {
         long testId = 0;
 
         // Simulate empty DB
-        when(repository.findById(any())).thenAnswer(i -> Optional.empty());
+        when(oldRepository.findById(any())).thenAnswer(i -> Optional.empty());
 
-        ResponseEntity<SBOMFile> response = controller.view(testId);
+        ResponseEntity<SBOMFile> response = oldController.view(testId);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 }
