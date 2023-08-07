@@ -69,7 +69,7 @@ public class VEXController {
      */
     @GetMapping("/sboms/vex")
     public ResponseEntity<VEXResult> vex(@RequestHeader(value = "apiKey", required = false) String apiKey,
-                                         @RequestParam("id") long id,
+                                         @RequestParam("id") Long id,
                                          @RequestParam("format") String format,
                                          @RequestParam("client") String client) {
 
