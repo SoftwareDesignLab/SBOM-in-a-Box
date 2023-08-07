@@ -41,7 +41,7 @@ public class QAController {
     /**
      * Spring-configured logger
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(SBOMController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(QAController.class);
 
     private final SBOMFileService sbomService;
     private final QualityReportFileService qualityReportFileService;

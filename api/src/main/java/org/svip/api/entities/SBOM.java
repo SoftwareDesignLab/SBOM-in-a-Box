@@ -61,9 +61,15 @@ public class SBOM {
     ///
     /// Relationships
     ///
+
     @OneToOne
     @JoinColumn(name = "qa_id", referencedColumnName = "id")
     private QualityReportFile qualityReportFile;
+
+    @OneToOne
+    @JoinColumn(name = "vex_id", referencedColumnName = "id")
+    private VEXFile vex;
+
 
     ///
     /// Setters
