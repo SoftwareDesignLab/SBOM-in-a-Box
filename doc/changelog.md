@@ -2,6 +2,14 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [v7.2.2-alpha] - (8/3/2023)
+### Added
+- `Conversion.java`
+    - Core functionality of SBOM conversion
+- `Convert.java` interface
+    - `ConvertCDX14.java`
+    - ConvertSPDX23.java
+- `ConvertTest.java` Class containing comprehensive unit tests for both schema converters
 
 ## [v7.2.1-alpha] - (8/3/2023)
 ### Added
@@ -20,7 +28,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - DELETE `/sboms`
   
 ## [v7.2.1-alpha] - (8/1/2023)
-
 ### Changed
 - Fix incorrect OSI filepaths not allowing API to build.
 
@@ -30,7 +37,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Overhaul directory structure to be feature focused
 
 ## [v7.1.3-alpha] - (8/1/2023)
-
 ### Added
 - `MockMultipartFile` for testing uploading binaries
 - `ParserController` null check
@@ -44,13 +50,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Maximum file upload and request size to 2GB in `application.properties`
 
 ## [v7.1.2-alpha] - (7/28/2023)
-
 ### Added
 - SBOM Objects have built in comparison methods
 - Added `hashcode` methods to components to use `name` and `version` as UIDs
 
 ## [v7.1.1-alpha] - (7/26/2023)
-
 ### Changed
 - `PURLTest.java` and `CPETest.java` updated:
   - Provides results for each field tested in accuracy test instead of a single result
@@ -62,7 +66,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `/sboms/content` returns the entire SBOMFile instead of just file contents
 
 ## [v7.1.0-alpha] - (7/25/2023)
-
 ### Added
 - VEX API Endpoint
 - VEX API test `GenerateVEXAPITest`
@@ -81,7 +84,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [v7.0.1-alpha] - (7/24/2023)
-
 ### Changed
 - `/sboms` to `/sbom` when getting SBOM object
 
@@ -155,7 +157,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `API.md` documentation with the updated endpoints
 
 ## [v5.4.0-alpha] - (7/19/2023)
-
 ### Added
 - Merge API Endpoint
 - Merge API test `MergeFromAPITest.java`
@@ -171,7 +172,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Merger.java`abstract class and overall architecture
 
 ## [v5.3.0-alpha] - (7/19/2023)
-
 ### Added
 - QA API Endpoint
 
@@ -180,7 +180,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `.buildAndFlush()` methods now clear sets/hashmaps instead of setting to null
 
 ## [v5.2.0-alpha] - (7/19/2023)
-
 ### Added
 - `/generators/parsers` endpoint in `SVIPApiController`.
 - Relevant unit tests in `GenerateFromParserAPITest`:
@@ -196,7 +195,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Is scalable for adding sample projects for future generator tests.
 
 ## [v5.1.2-alpha] - (7/18/2023)
-
 ### Added
 - Utility classes to merge SBOMs together:
   - `Merger` - Core merger class.
@@ -211,7 +209,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Old `Merger` Class & Test
 
 ## [v5.1.1-alpha] - (7/18/2023)
-
 ### Changed
 - Organized all builder interfaces and objects into `sbom.builder` package.
 - Organized all factory interfaces and objects into `sbom.model` package.
@@ -221,7 +218,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Legacy endpoint API unit tests
 
 ## [v5.1.0-alpha] - (7/18/2023)
-
 ### Added
 - /convert endpoint
 - Relevant unit tests in `ConvertFromAPITest`
@@ -233,7 +229,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Moved conversion functionality from `Utils.java` to `Converter.java`
 
 ## [v5.0.5-alpha] - (7/18/2023)
-
 ### Added
 > NOTE: Serializers may serialize null fields; this should be fixed in a later version.
 - Refactored `parsers` package to use the new `SVIPSBOM` & `SVIPComponentObject`.
@@ -253,7 +248,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [v5.0.4-alpha] - (7/13/2023)
-
 ### Added
 - All unit tests for the `serializers` package at ~91% method code coverage.
 - New Metrics refactor to test SBOM and component fields:
@@ -280,7 +274,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unit tests to be completed for each test, pipeline, and ResultFactory
 
 ## [v5.0.3-alpha] - (7/12/2023)
-
 ### Added
 - New Serializer refactor and implementation of the old generator serializers to use the SBOM object:
     - `SerializerFactory` Class - Responsible for recieving parameters and constructing/configuring
@@ -296,7 +289,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         - `SPDX23TagValueDeserializer` Class - SPDX v2.3 Tag-Value (.spdx) deserializer
 
 ## [v5.0.2-alpha] - (7/12/2023)
-
 ### Added
 - New VEX and VEXStatement Implementation. This covers the following files:
     - `VEX` - Class that build a VEX Document object
@@ -308,12 +300,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `VulnStatus` -  An enumeration for all the possible statuses of a VEX Statement
     - `Justification` - An enumeration of all possible justifications for a NOT_AFFECTED VEX Statement
 
-### Changed
-
-### Removed
-
 ## [v5.0.2-alpha] - (7/12/2023)
-
 ### Added
 - Unit tests for SBOM and Component Builders.
 
@@ -324,7 +311,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         
 
 ## [v5.0.2-alpha] - (7/12/2023)
-
 ### Added
 - Unit tests for SBOM and Component Builders.
 
@@ -335,7 +321,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         
 
 ## [v5.0.1-alpha] - (7/3/2023)
-
 ### Added
 - New SBOM Refactor and Implementation. This covers the following files: 
     - `SBOM` - An interface that covers SBOM information that is similar to both CycloneDX and SPDX formats
@@ -359,13 +344,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `SVIPComponentObject` - A class that is used to file for an SVIP component
     - `CDX14ComponentObject` - A class that is used to file for a CycloneDX 1.4 component
 
-### Changed
-
-### Removed
-
-
 ## [v5.0.0-alpha] - (6/29/2023)
-
 ### Added
 - `Dockerfile` & `docker-compose.yml` to build the API and run a MySQL server with persistent storage in separate 
   Docker containers.
@@ -383,7 +362,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Old API endpoints & tests (`compare`, `generateSBOM`, `merge`, `parse`, & `qa`)
 
 ## [v4.5.0-alpha] - (5/24/2023)
-
 This update focuses on caching the filesystem at program start via the `VirtualTree` implementation and using this to
 enable fixing all unit tests.
 
@@ -418,7 +396,6 @@ enable fixing all unit tests.
 - Updated `OSITest` to check if Docker is running, and if not simply ignore the tests.
 
 ## [v4.4.2-alpha] - (05/19/2023)
-
 This update focuses mainly on adding several test cases for most generator classes and fixing bugs in the stores,
 serializers, and translators.
 
@@ -474,7 +451,6 @@ serializers, and translators.
 - Removed all old sample SBOMs in `doc/Sample SBOMs`.
 
 ## [v4.4.1-alpha] - (05/17/2023)
-
 ### Added
 
 - Added a new `APPLICATION` type to `ParserComponent.Type` Enum to reflect the type of subprocess calls.
@@ -484,8 +460,8 @@ serializers, and translators.
 ### Changed
 - Updated `LicenseManager.parseLicense()` Method to more accurately and efficiently match an arbitrary license string to
   =======
-## [v4.4.1-alpha] - (05/XX/2023)
 
+## [v4.4.1-alpha] - (05/XX/2023)
 ### Added
 
 - `NugetParser` which parses the main configuration file of Nuget projects, and queries the Nuget package-manager for any existing licenses.
@@ -509,7 +485,6 @@ serializers, and translators.
   `ContextParser`s were set up to store components.
 
 ## [v4.4.0-alpha] - (05/15/2023)
-
 ### Added
 
 - Add `SPDXTagValueWriter` Class to serialize an instance of `SPDXStore` to a tag-value document and output to either a
@@ -522,7 +497,6 @@ serializers, and translators.
   tag-value format.
 
 ## [v4.3.2-alpha] - (05/12/2023)
-
 ### Added
 
 - Add `LicenseManager.getConcatenatedLicenseString()` method to concisely concatenate all tool licenses to use when
@@ -536,7 +510,6 @@ serializers, and translators.
   `ToXmlGenerator`.
 
 ## [v4.3.1-alpha] - (05/11/2023)
-
 ### Added
 
 - Add `CycloneDXXMLSerializer` Class.
@@ -571,7 +544,6 @@ serializers, and translators.
 
 
 ## [v4.3.0-alpha] - (05/08/2023)
-
 ### Added
 
 - Add `CPE` Class that generates CPE format strings by adding properties one-at-a-time as they are found.
@@ -621,7 +593,6 @@ serializers, and translators.
 
 
 ## [v4.2.0-alpha] - (05/01/2023)
-
 ### Added
 
 - Add `CycloneDXStore` & `CycloneDXSerializer` Classes
@@ -657,7 +628,6 @@ serializers, and translators.
     - All functionality has been moved into `SBOMGenerator`
 
 ## [v4.1.1-alpha] - (04/21/2023)
-
 ### Added
 
 - Added `SPDXStore`, `SPDXStoreSerializer`, & `SPDXStoreException` Classes
@@ -692,7 +662,6 @@ serializers, and translators.
 - `DependencyTreeSerializer` as it has been deprecated by the `SPDXStoreSerializer` class.
 
 ## [v4.1.0-alpha] - (04/21/2023)
-
 ### Added
 
 - Added `GeneratorSchema` & `GeneratorFormat` Enumerations
@@ -737,7 +706,6 @@ serializers, and translators.
           to the n-th level. This code is mostly written, but it is not functional currently
 
 ## [v4.0.0-alpha] - (04/14/2023)
-
 ### Added
 
 - Added `SBOMGenerator` Class
@@ -788,7 +756,6 @@ serializers, and translators.
 
 
 ## [v3.0.1-alpha] - (04/05/2023)
-
 ### Added
 
 - `SRC` Property to `ParserCore` and `Parser` to store a static reference to project src.
@@ -818,7 +785,6 @@ serializers, and translators.
 ### Removed
 
 ## [v3.0.0-alpha] - (03/24/2023)
-
 ### Added
 
 - `ParserController` Class added to house the logic in-between the Main file
@@ -872,7 +838,6 @@ serializers, and translators.
 - VEXFactory has an incompatibility with NVIP API. This breaks vulnerability discovery and all features which rely on VEX data.
 
 ## [v2.0.0] - (03/24/2023)
-
 ### Added
 
 - `Conflicts`: Now when creating a master SBOM, conflicts between SBOMS are noted and sent to user.
@@ -895,7 +860,6 @@ serializers, and translators.
 - VEXFactory has an incompatibility with NVIP API. This breaks vulnerability discovery and all features which rely on VEX data.
 
 ## [v1.0.0] - (02/27/2023)
-
 ### Added
 
 - `WebApp` : Contains the frontend which uses Angular and ElectronJS.
