@@ -1,6 +1,8 @@
 package org.svip.api.services;
 
 import org.springframework.stereotype.Service;
+import org.svip.api.entities.QualityReportFile;
+import org.svip.api.entities.VEXFile;
 import org.svip.api.repository.VEXFileRepository;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
@@ -36,6 +38,23 @@ public class VEXFileService {
      */
     public VEXFileService(VEXFileRepository vexFileRepository){
         this.vexFileRepository = vexFileRepository;
+    }
+
+
+    /**
+     * Create a new vex entry in the database
+     *
+     * @param vf VEX to upload
+     * @return uploaded VEX entry
+     * @throws Exception Error uploading to the Database
+     */
+    public VEXFile upload(VEXFile vf) throws Exception {
+        try{
+            return this.vexFileRepository.save(vf);
+        } catch (Exception e){
+            // todo custom exception instead of generic
+            throw new Exception("Failed to upload to Database: " + e.getMessage());
+        }
     }
 
     public VEXResult generateVEX(SBOM sbom, String client, String format, String apiKey) throws Exception {
