@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
+import org.svip.api.entities.QualityReportFile;
 import org.svip.api.entities.SBOM;
 import org.svip.api.repository.SBOMRepository;
 import org.svip.serializers.SerializerFactory;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * file: SBOMFileService.java
  * Business logic for accessing the SBOM File table
  *
  * @author Derek Garcia
@@ -46,6 +48,28 @@ public class SBOMFileService {
             // todo custom exception instead of generic
             throw new Exception("Failed to upload to Database: " + e.getMessage());
         }
+    }
+
+
+    /**
+     * Set a qa association for a given SBOM
+     *
+     * @param id id of the SBOM File
+     * @param qaf QA file associated with the SBOM
+     * @return ID of qaf
+     */
+    public Long setQualityReport(Long id, QualityReportFile qaf){
+        SBOM sbom = getSBOMFile(id);
+
+        // todo better return than null?
+        if(sbom == null)
+            return null;
+
+        // Set and update SBOM File
+        sbom.setQualityReport(qaf);
+        this.sbomRepository.save(sbom);
+
+        return qaf.getID();
     }
 
 

@@ -8,6 +8,8 @@ import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
 import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
 
 /**
+ * file: SBOMFile.java
+ *
  * SBOM Table for the database
  * TODO rename SBOMFile
  * @author Derek Garcia
@@ -27,6 +29,10 @@ public class SBOM {
         JSON,
         TAG_VALUE
     }
+
+    ///
+    /// Metadata
+    ///
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -51,6 +57,13 @@ public class SBOM {
     @Column(nullable = false, name = "file_type")
     @JsonProperty
     private FileType fileType;
+
+    ///
+    /// Relationships
+    ///
+    @OneToOne
+    @JoinColumn(name = "qa_id", referencedColumnName = "id")
+    private QualityReportFile qualityReportFile;
 
     ///
     /// Setters
@@ -110,6 +123,18 @@ public class SBOM {
         return this;
     }
 
+
+    /**
+     * Set Quality Report File
+     *
+     * @param qaf Quality Report File
+     * @return SBOM
+     */
+    public SBOM setQualityReport(QualityReportFile qaf){
+        this.qualityReportFile = qaf;
+        return this;
+    }
+
     ///
     /// Getters
     ///
@@ -133,5 +158,12 @@ public class SBOM {
      */
     public String getContent(){
         return this.content;
+    }
+
+    /**
+     * @return QualityReportFile
+     */
+    public QualityReportFile getQualityReportFile(){
+        return this.qualityReportFile;
     }
 }
