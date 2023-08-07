@@ -35,10 +35,10 @@ public class ConvertFromAPITest extends APITest {
      */
     @Test
     @DisplayName("Convert to CDX tag value test")
-    public void CDXTagValueTest(){
+    public void CDXTagValueTest() {
         setupMockRepository();
         assertThrows(SerializerException.class, () -> controller.convert(0L, SerializerFactory.Schema.CDX14,
-                        SerializerFactory.Format.TAGVALUE, true));
+                SerializerFactory.Format.TAGVALUE, true));
     }
 
     /**
@@ -46,7 +46,7 @@ public class ConvertFromAPITest extends APITest {
      */
     @Test
     @DisplayName("Convert, then convert back to original schema and format")
-    public void convertTest(){
+    public void convertTest() {
 
         setupMockRepository();
 
