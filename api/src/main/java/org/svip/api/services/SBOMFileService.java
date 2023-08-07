@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMRepository;
 import org.svip.conversion.Conversion;
 import org.svip.sbom.builder.SBOMBuilderException;
@@ -207,7 +208,7 @@ public class SBOMFileService {
             Object tmp = this.sbomRepository.findById(id).get();
             SBOMFile oldSbomFile = (SBOMFile) tmp;
             sbomFile = Optional.of(getSbom(oldSbomFile));
-            //sbomFile.get().id = oldSbomFile.getId(); // uncomment for (old) unit tests
+            sbomFile.get().id = oldSbomFile.getId();
 
         }
 
