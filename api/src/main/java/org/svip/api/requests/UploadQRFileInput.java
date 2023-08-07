@@ -8,6 +8,7 @@ import org.svip.api.entities.SBOM;
 import org.svip.metrics.pipelines.QualityReport;
 
 /**
+ * file: UploadQRFileInput.java
  * Input request to create a new QA FIle
  *
  * @author Derek Garcia
