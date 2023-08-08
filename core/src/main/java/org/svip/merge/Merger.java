@@ -19,7 +19,7 @@ public abstract class Merger {
 
     }
 
-    public abstract SBOM mergeSBOM(SBOM A, SBOM B);
+    public abstract SBOM mergeSBOM(SBOM A, SBOM B) throws Exception;
 
     protected static CreationData mergeCreationData(CreationData A, CreationData B) {
 
