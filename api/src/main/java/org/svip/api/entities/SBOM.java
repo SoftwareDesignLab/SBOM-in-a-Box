@@ -2,10 +2,13 @@ package org.svip.api.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import org.svip.api.entities.diff.ComparisonFile;
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
 import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
+
+import java.util.Set;
 
 /**
  * file: SBOMFile.java
@@ -69,6 +72,13 @@ public class SBOM {
     @OneToOne
     @JoinColumn(name = "vex_id", referencedColumnName = "id")
     private VEXFile vexFile;
+
+    @ManyToMany
+    @JoinTable(
+            name = "sbom_comparison",
+            joinColumns = @JoinColumn(name = "sbom_id"),
+            inverseJoinColumns = @JoinColumn(name = "comparison_id"))
+    private Set<ComparisonFile> comparisons;
 
 
     ///
