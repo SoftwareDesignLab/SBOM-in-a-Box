@@ -49,9 +49,9 @@ public class MergerCrossSchema extends Merger {
 
     public SBOM standardizeSBOM(SBOM sbom) throws Exception {
         if(sbom instanceof CDX14SBOM) {
-            return Conversion.convertSBOM(sbom, CDX14, SVIP);
+            return Conversion.convertSBOM(sbom, SVIP, CDX14);
         } else if(sbom instanceof SPDX23SBOM) {
-            return Conversion.convertSBOM(sbom, SPDX23, SVIP);
+            return Conversion.convertSBOM(sbom, SVIP, SPDX23);
         } else if(sbom instanceof SVIPSBOM) {
             return sbom;
         } else {
