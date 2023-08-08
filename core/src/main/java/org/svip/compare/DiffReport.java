@@ -51,4 +51,9 @@ public class DiffReport {
         this.diffReport.put(otherUID, new Comparison(this.targetSBOM, otherSBOM));
     }
 
+
+    public void addComparison(String otherUID, Comparison comparison){
+        this.diffReport.put(otherUID, comparison);
+    }
+
 }
