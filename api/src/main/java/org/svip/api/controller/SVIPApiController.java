@@ -437,43 +437,6 @@ public class SVIPApiController {
         return Utils.encodeResponse(Long.toString(saved.getId()));
     }
 
-    /**
-     * USAGE. Compares two or more given SBOMs (split into filename and contents), with the first one used as the baseline, and returns a comparison report.
-     *
-     * @param targetIndex the index of the target SBOM
-     * @param ids         the ids of the SBOM files
-     * @return generated diff report
-     * @throws JsonProcessingException
-     */
-    @PostMapping("/sboms/compare")
-    public ResponseEntity<DiffReport> compare(@RequestParam("targetIndex") int targetIndex, @RequestBody Long[] ids) throws JsonProcessingException {
-        // Get Target SBOM
-        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(ids[targetIndex]);
-        // Check if it exists
-        ResponseEntity<Long> NOT_FOUND = Utils.checkIfExists(ids[targetIndex], sbomFile, "/sboms/compare");
-        if (NOT_FOUND != null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        // create the Target SBOM object using the deserializer
-        Deserializer d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
-        SBOM targetSBOM = d.readFromString(sbomFile.get().getContents());
-        // create diff report
-        DiffReport diffReport = new DiffReport(targetSBOM.getUID(), targetSBOM);
-        // comparison sboms
-        for (int i = 0; i < ids.length; i++) {
-            if (i == targetIndex) continue;
-            // Get SBOM
-            sbomFile = sbomFileRepository.findById(ids[i]);
-            // Check if it exists
-            NOT_FOUND = Utils.checkIfExists(ids[i], sbomFile, "/sboms/compare");
-            if (NOT_FOUND != null)
-                continue; // sbom not found, continue to next ID TODO check with front end what to do if 1 sbom is missing
-            // create an SBOM object using the deserializer
-            d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
-            SBOM sbom = d.readFromString(sbomFile.get().getContents());
-            // add the comparison to diff report
-            diffReport.compare(sbom.getUID(), sbom);
-        }
-        return Utils.encodeResponse(diffReport);
-    }
 
     /**
      * Merge two existing SBOMs
