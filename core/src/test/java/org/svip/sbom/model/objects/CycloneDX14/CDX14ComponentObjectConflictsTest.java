@@ -1,6 +1,8 @@
 package org.svip.sbom.model.objects.CycloneDX14;
 
 import org.junit.jupiter.api.Test;
+import org.svip.metrics.resultfactory.Text;
+import org.svip.metrics.resultfactory.enumerations.INFO;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14PackageBuilder;
 import org.svip.sbom.factory.objects.CycloneDX14.CDX14PackageBuilderFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -152,12 +154,15 @@ public class CDX14ComponentObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
+        // Construct Text to use for diff report conflict messages
+        Text text = new Text("Conflict", "Component Hash");
+
         for(Conflict c : conflictList)
         {
             if(c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "Component Hash is missing"))
-                if(Objects.equals(c.GetTarget(),"Contains Component Hash Data") && c.GetOther() == null)
+                if(Objects.equals(c.GetTarget(),"SHA1") && c.GetOther() == null)
                     c1 = true;
-                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "Contains Component Hash Data"))
+                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "SHA2"))
                     c2 = true;
         }
 

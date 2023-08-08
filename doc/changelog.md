@@ -3,7 +3,38 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v7.2.1-alpha] - (8/1/2023)
+## [v7.2.3-alpha] - (8/7/2023)
+
+### Added
+- `Conversion.java`
+  - Core functionality of SBOM conversion
+- `Convert.java` interface
+  - `ConvertCDX14.java`
+  - `ConvertSPDX23.java`
+- `ConvertTest.java` Class containing comprehensive unit tests for both schema converters
+
+## [v7.2.2-alpha] - (8/3/2023)
+
+### Added
+- `MockMultipartFile` for testing uploading binaries
+- `ParserController` null check
+- `SBOMFileIdentifierGenerator` ID generator class implementing JPA's IdentifierGenerator for `SBOMFile.id`
+
+### Changed
+- `/generators/parsers` successfully takes in binary zip files of projects and generates an SBOM
+    - passes Postman tests and `GenerateFromParserAPITest`
+- `/generators/osi` should take in binary zip files of projects and generates an SBOM
+    - passes Postman tests and `GenerateFromOSIAPITest`
+- Maximum file upload and request size to 2GB in `application.properties`
+
+## [v7.2.1-alpha] - (8/3/2023)
+
+### Added
+- Improved Diff Report readability
+- SBOM Objects have built in toString methods
+- `/metrics/resultFactory/enumerations/INFO` now has info for diff reports
+- `/metrics/resultFactory/Text` now has outputs for getting diff report messages
+- `/compare/conflicts/ConflictFactory` has been reworked to avoid using plain text, instead relying on `Text` class
 
 ### Changed
 - Fix incorrect OSI filepaths not allowing API to build.
