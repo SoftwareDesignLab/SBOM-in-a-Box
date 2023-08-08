@@ -73,7 +73,7 @@ public class SBOMFileService {
         // Retrieve SBOMFile and check that it exists
         SBOM sbomFile = getSBOMFile(id);
         if (sbomFile == null)
-            return null;
+            throw new DeserializerException("Unable to retrieve SBOM with id " + id + " to deserialize"); // todo should we make a DB exception? This is probably a BADREQUEST
 
         SerializerFactory.Schema originalSchema = (sbomFile.getSchema() == SBOM.Schema.SPDX_23) ? // original schema of SBOM
                 SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14;
@@ -111,14 +111,13 @@ public class SBOMFileService {
 
         // Save according to overwrite boolean
         SBOM converted = u.toSBOMFile();
-        converted.id = generateSBOMFileId();
 
         if (overwrite) {
             update(id, converted);
             return id;
         }
 
-        this.sbomRepository.save(converted);
+        this.sbomRepository.save(converted); // todo JPA repository does not assign a newly generated ID
         return converted.getId();
 
     }
@@ -174,12 +173,6 @@ public class SBOMFileService {
 
         Optional<SBOM> sbomFile = this.sbomRepository.findById(id);
 
-        /*
-
-        // TODO this is a temporary fix
-
-         */
-
         try {
             SBOM try_ = sbomFile.get();
         } catch (ClassCastException e) {
@@ -196,7 +189,7 @@ public class SBOMFileService {
     }
 
     /**
-     * Temporary fix
+     * // todo temporary fix until we store the new SBOMFile object in the repository
      */
     private static SBOM getSbom(SBOMFile oldSbomFile) {
         SBOM sbom = new SBOM();
