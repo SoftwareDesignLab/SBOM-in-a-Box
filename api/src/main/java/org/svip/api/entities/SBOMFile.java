@@ -2,6 +2,7 @@ package org.svip.api.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * Dataclass containing JSON-friendly SBOM objects. Contains {@code fileName} & {@code contents} fields that are capable
@@ -21,6 +22,8 @@ public class SBOMFile {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(nullable = false)
+    @JsonProperty
     private long id;
 
     /**
