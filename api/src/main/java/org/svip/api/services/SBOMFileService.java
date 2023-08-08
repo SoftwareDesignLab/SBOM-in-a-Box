@@ -87,7 +87,6 @@ public class SBOMFileService {
         org.svip.sbom.model.interfaces.generics.SBOM Converted =
                 Conversion.convertSBOM(deserialized, SerializerFactory.Schema.SVIP, originalSchema);
 
-
         // serialize into desired format
         Serializer s = SerializerFactory.createSerializer(schema, format, true); // todo serializers don't adjust the format nor specversion
         s.setPrettyPrinting(true);
@@ -100,7 +99,8 @@ public class SBOMFileService {
             throw new SerializerException("Serialized SBOM does not match format=" + format + " (" + resolvedFormat + ")");
         }
 
-        String newName = (deserialized.getName() == null) ? "null" : deserialized.getName() + "." + schema;
+        Random rand = new Random();
+        String newName = ((deserialized.getName() == null) ? Math.abs(rand.nextInt()) : deserialized.getName()) + "." + schema;
 
         UploadSBOMFileInput u = new UploadSBOMFileInput(newName, contents);
 
