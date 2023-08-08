@@ -10,5 +10,9 @@ import org.svip.api.entities.diff.ConflictFile;
  *
  * @author Derek Garcia
  **/
+<<<<<<<< HEAD:api/src/main/java/org/svip/api/repository/ConflictFileRepository.java
 public interface ConflictFileRepository extends CrudRepository<ConflictFile, Long> {
+========
+public interface ComparisonFileRepository extends CrudRepository<ComparisonFile, Long> {
+>>>>>>>> 7cb48d129 (Change DiffReport name to Comparison):api/src/main/java/org/svip/api/repository/ComparisonFileRepository.java
 }
