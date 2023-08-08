@@ -32,7 +32,7 @@ public class SBOM {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     @JsonProperty
-    public Long id; // todo make private again
+    private Long id;
 
     @Column(nullable = false)
     @JsonProperty("fileName")
