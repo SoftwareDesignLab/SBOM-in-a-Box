@@ -138,7 +138,7 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
                 sbomBuilder.addSPDX23Component(buildPackage(packageBuilder, pkg));
 
         // Files
-        if (node.get("packages") != null)
+        if (node.get("files") != null)
             for (JsonNode file : node.get("files"))
                 sbomBuilder.addSPDX23Component(buildFile(fileBuilder, file));
 
