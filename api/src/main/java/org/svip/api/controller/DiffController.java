@@ -8,18 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.svip.api.entities.SBOMFile;
-import org.svip.api.services.DiffReportFileService;
+import org.svip.api.services.ComparisonFileService;
 import org.svip.api.services.SBOMFileService;
-import org.svip.api.utils.Utils;
 import org.svip.compare.DiffReport;
 import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.serializers.SerializerFactory;
-import org.svip.serializers.deserializer.Deserializer;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * File: DiffController.java
@@ -37,17 +29,17 @@ public class DiffController {
     private static final Logger LOGGER = LoggerFactory.getLogger(DiffController.class);
 
     private final SBOMFileService sbomFileService;
-    private final DiffReportFileService diffReportFileService;
+    private final ComparisonFileService comparisonFileService;
 
     /**
      * Create new Controller with services
      *
      * @param sbomService Service for handling SBOM queries
-     * @param diffReportFileService Service for handling QA queries
+     * @param comparisonFileService Service for handling QA queries
      */
-    public DiffController(SBOMFileService sbomService, DiffReportFileService diffReportFileService){
+    public DiffController(SBOMFileService sbomService, ComparisonFileService comparisonFileService){
         this.sbomFileService = sbomService;
-        this.diffReportFileService = diffReportFileService;
+        this.comparisonFileService = comparisonFileService;
     }
 
 
