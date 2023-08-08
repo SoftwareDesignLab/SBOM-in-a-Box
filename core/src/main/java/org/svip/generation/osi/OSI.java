@@ -1,10 +1,8 @@
 package org.svip.generation.osi;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.command.CreateContainerResponse;
-import com.github.dockerjava.api.command.WaitContainerResultCallback;
-import com.github.dockerjava.api.exception.ConflictException;
-import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
@@ -15,9 +13,12 @@ import org.svip.generation.osi.exceptions.DockerNotAvailableException;
 import org.svip.utils.Debug;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -145,6 +146,10 @@ public class OSI {
         FileUtils.copyDirectory(dirPath, project);
     }
 
+    public List<String> getAllTools() {
+        return client.getAllTools();
+    }
+
     /**
      * Use the Open Source Integration container via OSIClient to generate a series of SBOMs from the
      * given source code with a variety of tools (auto-detected).
@@ -152,7 +157,7 @@ public class OSI {
      * @return A map of each SBOM's filename to its contents.
      */
     public Map<String, String> generateSBOMs() throws IOException {
-        int status = this.client.runContainer();
+//        int status = this.client.runContainer();
 
         cleanBoundDirectory("code");
 
@@ -160,7 +165,7 @@ public class OSI {
 
         File sbomDir = getBoundDirPath("sboms");
         // If container failed or files are null, return empty map.
-        if (status == 1 || !sbomDir.exists() || sbomDir.listFiles() == null) return sboms;
+//        if (status == 1 || !sbomDir.exists() || sbomDir.listFiles() == null) return sboms;
 
         for (File file : sbomDir.listFiles())
             if (!file.getName().equalsIgnoreCase(".gitignore"))
@@ -211,10 +216,7 @@ public class OSI {
      */
     private static class OSIClient {
 
-        /**
-         * The ID of the created OSI container.
-         */
-        private final String osiContainerId;
+        private static final String url = "http://localhost:5000/";
 
         /**
          * The main Docker API client.
@@ -243,51 +245,38 @@ public class OSI {
                     .responseTimeout(Duration.ofSeconds(45))
                     .build();
             this.dockerClient = DockerClientImpl.getInstance(config, httpClient);
-
-            this.osiContainerId = createContainer();
         }
 
-        /**
-         * Method to create the container (or find its ID if already created) from the ubuntu:latest OSI image.
-         *
-         * @return The ID of the container.
-         * @throws DockerNotAvailableException If the image could not be located or some other error occurred.
-         */
-        protected String createContainer() throws DockerNotAvailableException {
+        protected List<String> getAllTools() {
+            String jsonString;
+            HttpURLConnection conn = null;
+
             try {
-                CreateContainerResponse containerResponse = dockerClient
-                        .createContainerCmd("ubuntu")
-                        .withName("svip-osi")
-                        .exec();
-                return containerResponse.getId();
-            } catch (ConflictException e) { // Container already exists
-                // Status 409: {"message":"Conflict. The container name \"/svip-osi\" is already in use by container \"f9762c4cf09e622daf09a95c22904b7fb39f6b9f2a2e2fea93010ea263260507\". You have to remove (or rename) that container to be able to reuse that name."}
-                int startIndex = e.getMessage().indexOf("\"", e.getMessage().indexOf("in use by container")) + 1;
-                int endIndex = e.getMessage().lastIndexOf("\\\"");
-                return e.getMessage().substring(startIndex, endIndex);
-            } catch (NotFoundException e) {
-                throw new DockerNotAvailableException("Could not locate the image ubuntu:latest to build OSI " +
-                        "container from.");
-            } catch (Exception e) {
-                throw new DockerNotAvailableException(e.getMessage());
+                URL tools = new URL(url + "tools");
+                conn = (HttpURLConnection) tools.openConnection();
+                conn.setRequestMethod("GET");
+                BufferedReader bufferedReader =
+                        new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder builder = new StringBuilder();
+
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    builder.append(line).append('\n');
+                }
+
+                jsonString = builder.toString();
+            } catch (IOException e) {
+                return null;
+            } finally {
+                if (conn != null) conn.disconnect();
             }
-        }
 
-        /**
-         * Runs the OSI container to generate SBOMs on any source files.
-         *
-         * @return Container exit code
-         */
-        protected int runContainer() {
-            // Run Container
-            this.dockerClient.startContainerCmd(this.osiContainerId).exec();
-
-            // Await completion
-            int status = dockerClient.waitContainerCmd(this.osiContainerId)
-                    .exec(new WaitContainerResultCallback())
-                    .awaitStatusCode();
-
-            return status;  // Docker exit code
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                return (List<String>) mapper.readValue(jsonString, List.class);
+            } catch (JsonProcessingException e) {
+                return null;
+            }
         }
     }
 }
