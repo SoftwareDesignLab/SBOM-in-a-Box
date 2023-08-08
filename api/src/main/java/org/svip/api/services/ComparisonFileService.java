@@ -2,6 +2,8 @@ package org.svip.api.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
+import org.svip.api.entities.QualityReportFile;
+import org.svip.api.entities.diff.ComparisonFile;
 import org.svip.api.repository.ComparisonFileRepository;
 import org.svip.compare.DiffReport;
 import org.svip.sbom.model.interfaces.generics.SBOM;
@@ -26,8 +28,17 @@ public class ComparisonFileService {
         this.comparisonFileRepository = comparisonFileRepository;
     }
 
+    public ComparisonFile upload(ComparisonFile qf) throws Exception {
+        try {
+            // todo relation logic for sbom?
+            return this.comparisonFileRepository.save(qf);
+        } catch (Exception e) {
+            // todo custom exception instead of generic
+            throw new Exception("Failed to upload to Database: " + e.getMessage());
+        }
+    }
 
-    public DiffReport compare(SBOM target, SBOM other) throws JsonProcessingException {
+//    public DiffReport compare(SBOM target, SBOM other) throws JsonProcessingException {
 //        // Get Target SBOM
 //        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(ids[targetIndex]);
 //        // Check if it exists
@@ -54,6 +65,6 @@ public class ComparisonFileService {
 //            diffReport.compare(sbom.getUID(), sbom);
 //        }
 //        return Utils.encodeResponse(diffReport);
-        return null;
-    }
+//        return null;
+//    }
 }
