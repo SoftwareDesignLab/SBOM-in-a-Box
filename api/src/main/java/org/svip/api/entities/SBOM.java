@@ -61,9 +61,15 @@ public class SBOM {
     ///
     /// Relationships
     ///
+
     @OneToOne
     @JoinColumn(name = "qa_id", referencedColumnName = "id")
     private QualityReportFile qualityReportFile;
+
+    @OneToOne
+    @JoinColumn(name = "vex_id", referencedColumnName = "id")
+    private VEXFile vexFile;
+
 
     ///
     /// Setters
@@ -135,6 +141,18 @@ public class SBOM {
         return this;
     }
 
+
+    /**
+     * Set VEX File
+     *
+     * @param vf VEX File
+     * @return SBOM
+     */
+    public SBOM setVEXFile(VEXFile vf){
+        this.vexFile = vf;
+        return this;
+    }
+
     ///
     /// Getters
     ///
@@ -165,5 +183,12 @@ public class SBOM {
      */
     public QualityReportFile getQualityReportFile(){
         return this.qualityReportFile;
+    }
+
+    /**
+     * @return vexFile
+     */
+    public VEXFile getVEXFile(){
+        return this.vexFile;
     }
 }
