@@ -1,6 +1,8 @@
 package org.svip.api.controller;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,8 @@ import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -53,36 +57,37 @@ public class DiffController {
      * @param targetIndex the index of the target SBOM
      * @param ids         the ids of the SBOM files
      * @return generated diff report
-     * @throws JsonProcessingException
+     * @throws JsonProcessingException Error processing the report
      */
     @PostMapping("/sboms/compare")
-    public ResponseEntity<DiffReport> compare(@RequestParam("targetIndex") int targetIndex, @RequestBody Long[] ids) throws JsonProcessingException {
-//        // Get Target SBOM
-//        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(ids[targetIndex]);
-//        // Check if it exists
-//        ResponseEntity<Long> NOT_FOUND = Utils.checkIfExists(ids[targetIndex], sbomFile, "/sboms/compare");
-//        if (NOT_FOUND != null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        // create the Target SBOM object using the deserializer
-//        Deserializer d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
-//        SBOM targetSBOM = d.readFromString(sbomFile.get().getContents());
-//        // create diff report
-//        DiffReport diffReport = new DiffReport(targetSBOM.getUID(), targetSBOM);
-//        // comparison sboms
-//        for (int i = 0; i < ids.length; i++) {
-//            if (i == targetIndex) continue;
-//            // Get SBOM
-//            sbomFile = sbomFileRepository.findById(ids[i]);
-//            // Check if it exists
-//            NOT_FOUND = Utils.checkIfExists(ids[i], sbomFile, "/sboms/compare");
-//            if (NOT_FOUND != null)
-//                continue; // sbom not found, continue to next ID TODO check with front end what to do if 1 sbom is missing
-//            // create an SBOM object using the deserializer
-//            d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
-//            SBOM sbom = d.readFromString(sbomFile.get().getContents());
-//            // add the comparison to diff report
-//            diffReport.compare(sbom.getUID(), sbom);
-//        }
-//        return Utils.encodeResponse(diffReport);
-        return null;
+    public ResponseEntity<String> compare(@RequestParam("targetIndex") int targetIndex, @RequestBody Long[] ids) throws JsonProcessingException {
+        try{
+            // get target
+            long targetID = ids[targetIndex];
+            SBOM targetSBOM = this.sbomFileService.getSBOMObject(targetID);
+
+            // create diff report
+            DiffReport diffReport = new DiffReport(targetSBOM.getUID(), targetSBOM);
+
+            // Compare against all other ids
+            for(Long id : ids){
+                // don't compare against self
+                if(targetID == id)
+                    continue;
+                // todo handle bad sbom but not break?
+                diffReport.compare(id.toString(), this.sbomFileService.getSBOMObject(id));
+            }
+
+            // Configure object mapper to remove null and empty arrays
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+
+            return new ResponseEntity<>(mapper.writeValueAsString(diffReport), HttpStatus.OK);
+
+
+        } catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
