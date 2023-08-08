@@ -62,6 +62,47 @@ public class DiffController {
     @PostMapping("/sboms/compare")
     public ResponseEntity<String> compare(@RequestParam("targetIndex") int targetIndex, @RequestBody Long[] ids) throws JsonProcessingException {
         try{
+            /*
+            // Get target
+            long targetID = ids[targetIndex];
+            SBOM targetSBOMFile = this.sbomFileService.getSBOMFile(targetID);
+
+            if(targetSBOMFile == null)
+                return null;
+
+            SBOM targetSBOM = this.sbomFileService.getSBOMObject(targetID);
+
+            // create diff report
+            DiffReport diffReport = new DiffReport(targetSBOM.getUID(), targetSBOM);
+
+             // Compare against all other ids
+            for(Long id : ids){
+                // don't compare against self
+                if(targetID == id)
+                    continue;
+
+                ComparisonFile cf = this.diffReportFileService.getComparisonFile(targetID, id);
+                // todo make method?
+                if(cf == null){
+                    SBOM otherSBOM = this.sbomFileService.getSBOMObject(id);
+                    if(other == null)
+                        continue;
+                    Comparison comparison = new Comparison(targetSBOM, otherSBOM);
+                    cf = new UploadComparisonFileInput(comparison).toComparisonFile(targetSBOMFile);
+                    this.diffReportFileService.upload(cf);
+                }
+                diffReport.addComparison(id, cf.toComparison());
+            }
+
+
+            // Configure object mapper to remove null and empty arrays
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+
+            return new ResponseEntity<>(mapper.writeValueAsString(diffReport), HttpStatus.OK);      // track status?
+
+             */
             // get target
             long targetID = ids[targetIndex];
             SBOM targetSBOM = this.sbomFileService.getSBOMObject(targetID);
