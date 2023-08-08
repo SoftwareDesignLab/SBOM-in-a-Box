@@ -177,7 +177,7 @@ public class SBOMFileService {
             SBOM try_ = sbomFile.get();
         } catch (ClassCastException e) {
 
-            Object tmp = this.sbomRepository.findById(id).get();
+            Object tmp = this.sbomRepository.findById(id).get(); // todo remove after new unit tests are written
             SBOMFile oldSbomFile = (SBOMFile) tmp;
             sbomFile = Optional.of(getSbom(oldSbomFile));
             //sbomFile.get().id = oldSbomFile.getId(); // uncomment for (old) unit tests
@@ -189,7 +189,7 @@ public class SBOMFileService {
     }
 
     /**
-     * // todo temporary fix until we store the new SBOMFile object in the repository
+     * // todo temporary fix until new tests are written
      */
     private static SBOM getSbom(SBOMFile oldSbomFile) {
         SBOM sbom = new SBOM();
