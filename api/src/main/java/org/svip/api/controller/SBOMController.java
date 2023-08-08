@@ -114,14 +114,14 @@ public class SBOMController {
      */
     @PutMapping("/sboms")
     public ResponseEntity<?> convert(@RequestParam("id") Long id, @RequestParam("schema") SerializerFactory.Schema schema,
-                                        @RequestParam("format") SerializerFactory.Format format,
-                                        @RequestParam("overwrite") Boolean overwrite){
+                                     @RequestParam("format") SerializerFactory.Format format,
+                                     @RequestParam("overwrite") Boolean overwrite) {
         Long convertID;
-        try{
+        try {
             convertID = this.sbomService.convert(id, schema, format, overwrite);
+        } catch (DeserializerException | SBOMBuilderException | SerializerException | JsonProcessingException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        catch (DeserializerException | SBOMBuilderException | SerializerException | JsonProcessingException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);}
 
         // Return converted ID
         return new ResponseEntity<>(convertID, HttpStatus.OK);
