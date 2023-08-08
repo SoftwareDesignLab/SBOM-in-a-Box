@@ -120,15 +120,6 @@ public class Utils {
         return sbomFiles;
     }
 
-    /**
-     * Generates new SBOMFile id
-     */
-    public static long generateSBOMFileId() {
-        Random rand = new Random();
-        long id = rand.nextLong();
-        id += (rand.nextLong()) % ((id < 0) ? id : Long.MAX_VALUE);
-        return Math.abs(id);
-    }
 
     /**
      * Unzip a ZipFile of SBOMFiles
