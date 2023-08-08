@@ -1,6 +1,8 @@
 import glob
 import os
-from constants import Language, LANGUAGE_MAP, MANIFEST_MAP, SBOM_FORMAT, CONTAINER_BIND_SBOM, BOMFormat
+from constants import Language, LANGUAGE_MAP, MANIFEST_MAP, SBOM_FORMAT, CONTAINER_BIND_SBOM
+import ToolMapper
+from OSTool import OSTool
 
 """
 file: ToolUtils.py
@@ -10,36 +12,6 @@ Collection of utilities to validate, run, and organize the output of Open Source
 @author Matt London
 @author Ian Dunn
 """
-
-
-class OSTool(object):
-    """
-    Tool object for each supported OSI tool. This will hold name, languages, and usage
-    """
-
-    def __init__(self, name: str, generation_type: BOMFormat, languages: list[Language], usage: list[str],
-                 manifest_required: bool = False):
-        """
-        Constructor for an OSTool
-
-        :param name: Name of the tool
-        :param generation_type: Type of BOM the tool generates
-        :param languages: List of languages it supports
-        :param usage: List of commands needed to execute the tool on a project ({code} for code path,
-            {output} for output path, {manifest} for potential manifest files)
-        :param manifest_required: If the tool requires a passed in manifest file to function
-        """
-        self.name = name
-        self.generationType = generation_type
-        self.languages = languages
-        self.usage = usage
-        self.manifest_required = manifest_required
-
-    def __str__(self):
-        """
-        Convert an OSTool to its string representation (currently name)
-        """
-        return self.name
 
 
 def detect_language(path: str) -> tuple[list[Language], list[str]]:
@@ -83,11 +55,9 @@ def get_tools(languages: list[Language]) -> list[OSTool]:
     :return: List of tools
     """
     # Loop through languages and get tool mapping
-    tool_mapper = ToolMapper()
-
     tools = set()
     for language in languages:
-        tools.update(get_tools(language))
+        tools.update(ToolMapper.get_tools(language))
 
     return list(tools)
 
