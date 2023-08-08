@@ -1,15 +1,16 @@
-package org.svip.api.entities;
+package org.svip.api.entities.diff;
 
 import jakarta.persistence.*;
 
 /**
- * Diff Report Table for the database
+ * File: ConflictFile.java
+ * Conflicts to be stored in the database
  *
  * @author Derek Garcia
  **/
 @Entity
-@Table(name = "diff_report_file")
-public class DiffReportFile {
+@Table(name = "conflict")
+public class ConflictFile {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
