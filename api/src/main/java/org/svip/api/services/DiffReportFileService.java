@@ -2,32 +2,43 @@ package org.svip.api.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
-import org.svip.api.repository.DiffReportFileRepository;
+import org.svip.api.entities.QualityReportFile;
+import org.svip.api.entities.diff.ComparisonFile;
+import org.svip.api.repository.ComparisonFileRepository;
 import org.svip.compare.DiffReport;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 
 /**
- * File: DiffReportFileService.java
- * Business logic for accessing the Diff Report File table
+ * File: ComparisonFileService.java
+ * Business logic for accessing the Diff Reports
  *
  * @author Derek Garcia
  **/
 @Service
-public class DiffReportFileService {
+public class ComparisonFileService {
 
-    private final DiffReportFileRepository diffReportFileRepository;
+    private final ComparisonFileRepository comparisonFileRepository;
 
     /**
      * Create new Service for a target repository
      *
-     * @param diffReportFileRepository Diff report repository to access
+     * @param comparisonFileRepository Diff report repository to access
      */
-    public DiffReportFileService(DiffReportFileRepository diffReportFileRepository){
-        this.diffReportFileRepository = diffReportFileRepository;
+    public ComparisonFileService(ComparisonFileRepository comparisonFileRepository){
+        this.comparisonFileRepository = comparisonFileRepository;
     }
 
+    public ComparisonFile upload(ComparisonFile qf) throws Exception {
+        try {
+            // todo relation logic for sbom?
+            return this.comparisonFileRepository.save(qf);
+        } catch (Exception e) {
+            // todo custom exception instead of generic
+            throw new Exception("Failed to upload to Database: " + e.getMessage());
+        }
+    }
 
-    public DiffReport compare(SBOM target, SBOM other) throws JsonProcessingException {
+//    public DiffReport compare(SBOM target, SBOM other) throws JsonProcessingException {
 //        // Get Target SBOM
 //        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(ids[targetIndex]);
 //        // Check if it exists
@@ -54,6 +65,6 @@ public class DiffReportFileService {
 //            diffReport.compare(sbom.getUID(), sbom);
 //        }
 //        return Utils.encodeResponse(diffReport);
-        return null;
-    }
+//        return null;
+//    }
 }
