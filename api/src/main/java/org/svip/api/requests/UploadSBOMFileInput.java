@@ -31,7 +31,7 @@ public record UploadSBOMFileInput(String fileName, String contents) {
 
         // If reach here, SBOM is valid, set additional fields
         sbom.setSchema(d)
-            .setFileType(d);
+            .setFileType(d).id = SBOMFileService.generateSBOMFileId();
 
         return sbom;
     }
