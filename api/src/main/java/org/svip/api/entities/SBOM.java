@@ -2,8 +2,6 @@ package org.svip.api.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import org.hibernate.annotations.GenericGenerator;
-import org.svip.api.repository.SBOMFileIdentifierGenerator;
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
@@ -31,11 +29,9 @@ public class SBOM {
     }
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     @JsonProperty
-    @GeneratedValue(generator = SBOMFileIdentifierGenerator.generatorName)
-    @GenericGenerator(name = SBOMFileIdentifierGenerator.generatorName,
-            strategy = "org.svip.api.repository.SBOMFileIdentifierGenerator")
     public Long id; // todo make private again
 
     @Column(nullable = false)
