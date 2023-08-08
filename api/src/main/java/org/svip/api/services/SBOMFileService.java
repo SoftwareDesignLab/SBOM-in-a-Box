@@ -8,7 +8,6 @@ import org.svip.api.entities.SBOM;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
-import org.svip.api.utils.Utils;
 import org.svip.conversion.Conversion;
 import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.sbom.model.objects.SVIPSBOM;
@@ -21,6 +20,7 @@ import org.svip.serializers.serializer.Serializer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 /**
  * Business logic for accessing the SBOM File table
@@ -111,7 +111,7 @@ public class SBOMFileService {
 
         // Save according to overwrite boolean
         SBOM converted = u.toSBOMFile();
-        converted.id = Utils.generateSBOMFileId();
+        converted.id = generateSBOMFileId();
 
         if (overwrite) {
             update(id, converted);
@@ -293,4 +293,16 @@ public class SBOMFileService {
 
         return sbomFile.getId();
     }
+
+
+    /**
+     * Generates new SBOMFile id
+     */
+    public static long generateSBOMFileId() {
+        Random rand = new Random();
+        long id = rand.nextLong();
+        id += (rand.nextLong()) % ((id < 0) ? id : Long.MAX_VALUE);
+        return Math.abs(id);
+    }
+
 }
