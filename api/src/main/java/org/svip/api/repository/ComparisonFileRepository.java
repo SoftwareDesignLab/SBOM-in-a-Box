@@ -10,5 +10,5 @@ import org.svip.api.entities.diff.ComparisonFile;
  *
  * @author Derek Garcia
  **/
-public interface DiffReportFileRepository extends CrudRepository<ComparisonFile, Long> {
+public interface ComparisonFileRepository extends CrudRepository<ComparisonFile, Long> {
 }
