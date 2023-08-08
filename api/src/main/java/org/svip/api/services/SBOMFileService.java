@@ -10,6 +10,8 @@ import org.svip.api.repository.SBOMRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.conversion.Conversion;
 import org.svip.sbom.builder.SBOMBuilderException;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
@@ -17,10 +19,7 @@ import org.svip.serializers.exceptions.DeserializerException;
 import org.svip.serializers.exceptions.SerializerException;
 import org.svip.serializers.serializer.Serializer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Business logic for accessing the SBOM File table
@@ -70,25 +69,22 @@ public class SBOMFileService {
     public Long convert(Long id, SerializerFactory.Schema schema, SerializerFactory.Format format, Boolean overwrite)
             throws DeserializerException, JsonProcessingException, SerializerException, SBOMBuilderException {
 
-        // Retrieve SBOMFile and check that it exists
-        SBOM sbomFile = getSBOMFile(id);
-        if (sbomFile == null)
-            throw new DeserializerException("Unable to retrieve SBOM with id " + id + " to deserialize"); // todo should we make a DB exception? This is probably a BADREQUEST
-
-        SerializerFactory.Schema originalSchema = (sbomFile.getSchema() == SBOM.Schema.SPDX_23) ? // original schema of SBOM
-                SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14;
-
         // deserialize into SBOM object
-        Deserializer d;
+        HashMap<String, org.svip.sbom.model.interfaces.generics.SBOM> databaseResult; // variable to store table name and SBOM object
         org.svip.sbom.model.interfaces.generics.SBOM deserialized;
         try {
-            d = SerializerFactory.createDeserializer(sbomFile.getContent());
-            deserialized = d.readFromString(sbomFile.getContent());
+            databaseResult = getSBOMObject(id);
+            deserialized = (org.svip.sbom.model.interfaces.generics.SBOM)
+                    Objects.requireNonNull(databaseResult.values().toArray()[0]);
         } catch (Exception e) {
             throw new DeserializerException("Deserialization Error: " + e.getMessage());
         }
-        if (deserialized == null) throw new DeserializerException("Deserialization Error: Deserializer is null");
+        if (deserialized == null) throw new DeserializerException("Cannot retrieve SBOM with id " + id + " to deserialize");
 
+        SBOM.Schema ogSchema = (deserialized instanceof SPDX23SBOM) ? SBOM.Schema.SPDX_23 : SBOM.Schema.CYCLONEDX_14;
+
+        SerializerFactory.Schema originalSchema = (ogSchema == SBOM.Schema.SPDX_23) ? // original schema of SBOM
+                SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14;
 
         // use core Conversion functionality
         org.svip.sbom.model.interfaces.generics.SBOM Converted =
@@ -107,7 +103,8 @@ public class SBOMFileService {
             throw new SerializerException("Serialized SBOM does not match format=" + format + " (" + resolvedFormat + ")");
         }
 
-        UploadSBOMFileInput u = new UploadSBOMFileInput(sbomFile.getName(), contents);
+        UploadSBOMFileInput u = new UploadSBOMFileInput((String)
+                Objects.requireNonNull(databaseResult.keySet().toArray()[0]), contents);
 
         // Save according to overwrite boolean
         SBOM converted = u.toSBOMFile();
@@ -117,7 +114,7 @@ public class SBOMFileService {
             return id;
         }
 
-        this.sbomRepository.save(converted); // todo JPA repository does not assign a newly generated ID
+        this.sbomRepository.save(converted);
         return converted.getId();
 
     }
@@ -149,7 +146,9 @@ public class SBOMFileService {
      */
     public String getSBOMObjectAsJSON(Long id) throws JsonProcessingException {
         // Retrieve SBOM Object and check that it exists
-        org.svip.sbom.model.interfaces.generics.SBOM sbom = getSBOMObject(id);
+        org.svip.sbom.model.interfaces.generics.SBOM sbom =
+                (org.svip.sbom.model.interfaces.generics.SBOM)
+                        Objects.requireNonNull(getSBOMObject(id)).values().toArray()[0];
         if (sbom == null)
             return null;
 
@@ -249,10 +248,10 @@ public class SBOMFileService {
      * Retrieve SBOM File from the database as an SBOM Object
      *
      * @param id of the SBOM to retrieve
-     * @return deserialized SBOM Object
+     * @return table name of SBOM and deserialized SBOM Object
      * @throws JsonProcessingException SBOM failed to be deserialized
      */
-    private org.svip.sbom.model.interfaces.generics.SBOM getSBOMObject(Long id) throws JsonProcessingException {
+    private HashMap<String,org.svip.sbom.model.interfaces.generics.SBOM> getSBOMObject(Long id) throws JsonProcessingException {
         // Retrieve SBOMFile and check that it exists
         SBOM sbomFile = getSBOMFile(id);
         if (sbomFile == null)
@@ -260,7 +259,10 @@ public class SBOMFileService {
 
         // Attempt to deserialize and return the object
         Deserializer d = SerializerFactory.createDeserializer(sbomFile.getContent());
-        return d.readFromString(sbomFile.getContent());
+
+        HashMap<String, org.svip.sbom.model.interfaces.generics.SBOM> result = new HashMap<>();
+        result.put(sbomFile.getName(), d.readFromString(sbomFile.getContent()));
+        return result;
     }
 
 
