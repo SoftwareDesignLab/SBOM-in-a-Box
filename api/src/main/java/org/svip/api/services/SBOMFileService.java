@@ -75,7 +75,7 @@ public class SBOMFileService {
         try {
             databaseResult = getSBOMObject(id);
             deserialized = (org.svip.sbom.model.interfaces.generics.SBOM)
-                    Objects.requireNonNull(databaseResult.values().toArray()[0]);
+                    (databaseResult.values().toArray()[0]);
         } catch (Exception e) {
             throw new DeserializerException("Deserialization Error: " + e.getMessage());
         }
