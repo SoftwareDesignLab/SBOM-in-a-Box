@@ -9,7 +9,6 @@ import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SVIPComponentObject;
-import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.serializers.SerializerFactory;
 
@@ -90,28 +89,12 @@ public abstract class MergerUtils extends Merger {
             builder.setRootComponent(mainSBOM.getRootComponent());
 
         // Components
-        Set<Component> mergedComponents = null;
-        if(componentsA != null && componentsB != null) {
-            mergedComponents = mergeComponentsToSchema(componentsA, componentsB, targetSchema);
-        } else if(componentsA != null && componentsB == null) {
-            mergedComponents = componentsA;
-        } else if(componentsA == null && componentsB != null) {
-            mergedComponents = componentsB;
+        Set<Component> mergedComponents = mergeComponentsToSchema(componentsA, componentsB, targetSchema);
+        for (Component mergedComponent : mergedComponents) {
+            builder.addComponent(mergedComponent);
         }
 
-        if(mergedComponents != null) mergedComponents.forEach(x -> builder.addComponent(x));
-
-
-        // Relationships
-        if(A.getRelationships() != null) {
-            Map<String, Set<Relationship>> relationshipsA = A.getRelationships();
-            relationshipsA.keySet().forEach(x -> relationshipsA.get(x).forEach(y -> builder.addRelationship(x, y)));
-        }
-
-        if(B.getRelationships() != null) {
-            Map<String, Set<Relationship>> relationshipsB = B.getRelationships();
-            relationshipsB.keySet().forEach(x -> relationshipsB.get(x).forEach(y -> builder.addRelationship(x, y)));
-        }
+        // Relationships TODO: Add merging of relationships in future sprint
 
         // External References
         mergeExternalReferences(
@@ -604,18 +587,29 @@ public abstract class MergerUtils extends Merger {
 
                     }
                     default -> { // SVIP
-                        // Cast the generic component from SBOM A back to a CDX component
-                        SVIPComponentObject componentA_SVIP = (SVIPComponentObject) componentA;
-                        SVIPComponentObject componentB_SVIP = (SVIPComponentObject) componentB;
-
-                        // If the components are the same by Name and Version, merge then add them to the SBOM
-                        if (componentA_SVIP.getName() == componentB_SVIP.getName() && componentA_SVIP.getVersion() == componentB_SVIP.getVersion()) {
-
-                            mergedComponents.add(mergeComponentToSchema(componentA, componentB, targetSchema));
-                            removeB.add(componentB);
-                            merged = true;
-
+                        // Cast the generic component from SBOM A back to a SPDX component
+                        SVIPComponentObject componentA_SVIP = null;
+                        try {
+                            componentA_SVIP = (SVIPComponentObject) componentA;
+                        } catch (ClassCastException e) {
+                            throw new MergerException("Could not cast component back to SVIP Component.");
                         }
+                        SVIPComponentObject componentB_SVIP = null;
+                        try {
+                            componentB_SVIP = (SVIPComponentObject) componentB;
+                        } catch (ClassCastException e) {
+                            throw new MergerException("Could not cast component back to SVIP Component.");
+                        }
+
+                        if (componentA_SVIP == null)
+                            // If the components are the same by Name and Version, merge then add them to the SBOM
+                            if (componentA_SVIP.getName() == componentB_SVIP.getName() && componentA_SVIP.getVersion() == componentB_SVIP.getVersion()) {
+
+                                mergedComponents.add(mergeComponentToSchema(componentA, componentB, targetSchema));
+                                removeB.add(componentB);
+                                merged = true;
+
+                            }
                     }
                 }
 
