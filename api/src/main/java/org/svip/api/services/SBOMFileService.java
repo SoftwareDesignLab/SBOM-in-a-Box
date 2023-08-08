@@ -70,7 +70,7 @@ public class SBOMFileService {
             Object tmp = this.sbomRepository.findById(id).get();
             SBOMFile oldSbomFile = (SBOMFile) tmp;
             sbomFile = Optional.of(getSbom(oldSbomFile));
-            sbomFile.get().id = oldSbomFile.getId();
+            //sbomFile.get().id = oldSbomFile.getId(); // uncomment for (old) unit tests
 
         }
 
