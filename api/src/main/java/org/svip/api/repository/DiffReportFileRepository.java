@@ -1,7 +1,7 @@
 package org.svip.api.repository;
 
 import org.springframework.data.repository.CrudRepository;
-import org.svip.api.entities.DiffReportFile;
+import org.svip.api.entities.diff.ComparisonFile;
 
 /**
  * File: DiffReportFileRepository.java
@@ -10,5 +10,5 @@ import org.svip.api.entities.DiffReportFile;
  *
  * @author Derek Garcia
  **/
-public interface DiffReportFileRepository extends CrudRepository<DiffReportFile, Long> {
+public interface DiffReportFileRepository extends CrudRepository<ComparisonFile, Long> {
 }
