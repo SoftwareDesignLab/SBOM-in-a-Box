@@ -345,7 +345,7 @@ public class MergerTest {
 
 
     @Test
-    public void merger_should_merge_basic_CDX_SBOMs() {
+    public void merger_should_merge_basic_CDX_SBOMs() throws Exception {
 
         // SBOM One
 
@@ -448,7 +448,7 @@ public class MergerTest {
     }
 
     @Test
-    public void merger_should_merge_basic_SPDX_SBOMs() {
+    public void merger_should_merge_basic_SPDX_SBOMs() throws Exception {
 
         // SBOM One
 
@@ -866,7 +866,7 @@ public class MergerTest {
     }
 
     @Test
-    public void merger_should_merge_empty_second_CDX_SBOM() {
+    public void merger_should_merge_empty_second_CDX_SBOM() throws Exception {
 
         // SBOM One
 
@@ -937,7 +937,7 @@ public class MergerTest {
     }
 
     @Test
-    public void merger_should_merge_empty_second_SPDX_SBOM() {
+    public void merger_should_merge_empty_second_SPDX_SBOM() throws Exception {
 
         // SBOM One
 
