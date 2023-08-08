@@ -1,12 +1,10 @@
 package org.svip.api.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.svip.api.repository.DiffReportFileRepository;
 import org.svip.compare.DiffReport;
+import org.svip.sbom.model.interfaces.generics.SBOM;
 
 /**
  * File: DiffReportFileService.java
@@ -29,7 +27,7 @@ public class DiffReportFileService {
     }
 
 
-    public ResponseEntity<DiffReport> compare(Integer targetIndex, Long[] ids) throws JsonProcessingException {
+    public DiffReport compare(SBOM target, SBOM other) throws JsonProcessingException {
 //        // Get Target SBOM
 //        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(ids[targetIndex]);
 //        // Check if it exists
