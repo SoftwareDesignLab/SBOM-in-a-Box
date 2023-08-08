@@ -282,6 +282,22 @@ public class SVIPApiController {
 
     }
 
+    @GetMapping("/generators/osi/getTools")
+    public ResponseEntity<?> getOSITools() {
+        if (osiContainer == null)
+            return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
+
+        String urlMsg = "POST /svip/generators/osi";
+
+        List<String> tools = osiContainer.getAllTools();
+        if (tools == null) {
+            LOGGER.error(urlMsg + ": " + "Error getting tool list from Docker container.");
+            return new ResponseEntity<>("Error getting tool list from Docker container.", HttpStatus.NOT_FOUND);
+        }
+
+        return Utils.encodeResponse(tools);
+    }
+
     @PostMapping("/generators/osi")
     public ResponseEntity<?> generateOSI(@RequestParam("zipFile") MultipartFile zipFile,
                                          @RequestParam("projectName") String projectName,
