@@ -7,10 +7,12 @@ Container.
 @author Ian Dunn
 """
 
-from flask import Flask
-from constants import CONTAINER_BIND_CODE, CONTAINER_BIND_SBOM
+from flask import Flask, request
+
+import ToolUtils
+from OSTool import OSTool
+from constants import CONTAINER_BIND_CODE, CONTAINER_BIND_SBOM, Language
 from ToolMapper import get_tool, get_tool_names
-from ToolUtils import cleanup, detect_language, clean_manifest, get_tools, run_tools
 
 # Create Flask app
 app = Flask(__name__)
@@ -19,7 +21,7 @@ app = Flask(__name__)
 @app.route('/tools', methods=['GET'])
 def get_tools():
     """
-    Endpoint: GET http://localhost:8081/tools
+    Endpoint: GET http://localhost:5000/tools
 
     Returns: A list of names of valid open-source tools.
     """
@@ -27,48 +29,62 @@ def get_tools():
     return get_tool_names()
 
 
-@app.route('/generate', methods=['GET'])
-def generate(tool_names):
+@app.route('/generate', methods=['POST'])
+def generate():
     """
-    Endpoint: GET http://localhost:8081/generate
+    Endpoint: GET http://localhost:5000/generate
 
-    Parameter: A list of tool names to use in generation. If null, defaults to all tools.
-    Returns:   Generated SBOMs in osi/bound_dir/sboms
+    Request Body: A JSON list of tool names to use in generation. If null, defaults to all tools.
+    Returns:      Generated SBOMs in osi/bound_dir/sboms.
+    Returns:      200 if SBOMs were generated, 204 otherwise.
     """
 
     # Cleanup, detect languages
-    cleanup(True)
-    langs, manifest_files = detect_language(CONTAINER_BIND_CODE)
-    manifest_clean = clean_manifest(manifest_files)
+    ToolUtils.cleanup(True)
+    langs, manifest_files = ToolUtils.detect_language(CONTAINER_BIND_CODE)
+    manifest_clean = ToolUtils.clean_manifest(manifest_files)
 
-    # Get valid tools
-    valid_tools = get_tools(langs)
-    tools = list()
+    tools = []
+    if request.is_json and len(request.get_json()) > 0:
+        tools = parse_tools(request.get_json(), langs)
+    else:
+        app.logger.info("No tools provided. Defaulting to all tools.")
+        tools = ToolUtils.get_tools(langs)
 
-    # Select tools given names
-    print("Tools selected:")
+    # Run tools and cleanup
+    gen_count = ToolUtils.run_tools(tools, manifest_clean, CONTAINER_BIND_CODE, CONTAINER_BIND_SBOM)
+    ToolUtils.cleanup()
+
+    # Return 200 (ok) if sboms were generated, otherwise return 204 (no content)
+    if gen_count > 0:
+        app.logger.info("{} SBOMs generated.", gen_count)
+        return "Successfully generated SBOMs.", 200
+    else:
+        app.logger.info("No SBOMs generated.")
+        return "No SBOMs generated.", 204
+
+
+def parse_tools(tool_names: str, langs: list[Language]) -> list[OSTool]:
+    tools = []
+    valid_tools = ToolUtils.get_tools(langs)
+
+    app.logger.info("Tools selected:")
     for name in tool_names:
         # Make sure tool exists
         tool = get_tool(name)
         if tool is None:
-            print(name, " -- Invalid tool name. Skipping.")
+            app.logger.warning(name + " -- Invalid tool name. Skipping.")
+            continue
 
         # Add tool if valid
         if tool in valid_tools:
             tools.append(tool)
-            print(name, end=", ")
+            app.logger.info(name)
         else:
-            print(name, " -- Invalid tool for detected languages. Skipping.")
+            app.logger.warning(name + " -- Invalid tool for detected languages. Skipping.")
 
-    print()
-
-    # Run tools and cleanup
-    gen_count = run_tools(tools, manifest_clean, CONTAINER_BIND_CODE, CONTAINER_BIND_SBOM)
-    cleanup()
-
-    # Return 0 if sboms were generated, otherwise return 1
-    return int(not (gen_count > 0))
+    return tools
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')  # TODO move to config
+    app.run(host='0.0.0.0', debug=True)  # TODO move to config
