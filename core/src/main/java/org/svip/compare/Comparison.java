@@ -23,13 +23,8 @@ public class Comparison {
 
     @JsonProperty
     private final Map<String, List<Conflict>> componentConflicts = new HashMap<>();
-
-    // todo replace with the "from" arrays
     @JsonProperty
     private final List<String> missingComponents = new ArrayList<>();
-
-    private final List<String> missingFromTarget = new ArrayList<>();
-    private final List<String> missingFromOther = new ArrayList<>();
 
 
     /**
@@ -47,7 +42,7 @@ public class Comparison {
 
             // If other doesn't have component which shares name with target component, skip
             if (other.getComponents().stream().noneMatch(o -> o.getName() != null && o.getName().equals(targetComponent.getName()))) {
-                this.missingFromOther.add(targetComponent.getName());
+                this.missingComponents.add(targetComponent.getName());
                 continue;
             }
 
@@ -64,63 +59,7 @@ public class Comparison {
         for (Component otherComponent : other.getComponents()) {
             // If target doesn't have component which shares name with other component, skip
             if (target.getComponents().stream().noneMatch(o -> o.getName() != null && o.getName().equals(otherComponent.getName())))
-                this.missingFromTarget.add(otherComponent.getName());
+                this.missingComponents.add(otherComponent.getName());
         }
-
-        // Add all missing mastering missing
-        this.missingComponents.addAll(this.missingFromTarget);
-        this.missingComponents.addAll(this.missingFromOther);
-    }
-
-    ///
-    /// Getters
-    ///
-
-    /**
-     * @return List of component conflicts
-     */
-    public Map<String, List<Conflict>> getComponentConflicts() {
-        return this.componentConflicts;
-    }
-
-    public List<String> getMissingFromTarget() {
-        return this.missingFromTarget;
-    }
-
-    public List<String> getMissingFromOther() {
-        return this.missingFromOther;
-    }
-
-    ///
-    /// Getters
-    ///
-
-    /**
-     * @return List of component conflicts
-     */
-    public Map<String, List<Conflict>> getComponentConflicts() {
-        return this.componentConflicts;
-    }
-
-    ///
-    /// Getters
-    ///
-
-    /**
-     * @return List of component conflicts
-     */
-    public Map<String, List<Conflict>> getComponentConflicts() {
-        return this.componentConflicts;
-    }
-
-    ///
-    /// Getters
-    ///
-
-    /**
-     * @return List of component conflicts
-     */
-    public Map<String, List<Conflict>> getComponentConflicts() {
-        return this.componentConflicts;
     }
 }
