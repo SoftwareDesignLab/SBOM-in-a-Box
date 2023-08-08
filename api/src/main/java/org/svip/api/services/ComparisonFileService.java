@@ -2,28 +2,28 @@ package org.svip.api.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
-import org.svip.api.repository.DiffReportFileRepository;
+import org.svip.api.repository.ComparisonFileRepository;
 import org.svip.compare.DiffReport;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 
 /**
- * File: DiffReportFileService.java
- * Business logic for accessing the Diff Report File table
+ * File: ComparisonFileService.java
+ * Business logic for accessing the Diff Reports
  *
  * @author Derek Garcia
  **/
 @Service
-public class DiffReportFileService {
+public class ComparisonFileService {
 
-    private final DiffReportFileRepository diffReportFileRepository;
+    private final ComparisonFileRepository comparisonFileRepository;
 
     /**
      * Create new Service for a target repository
      *
-     * @param diffReportFileRepository Diff report repository to access
+     * @param comparisonFileRepository Diff report repository to access
      */
-    public DiffReportFileService(DiffReportFileRepository diffReportFileRepository){
-        this.diffReportFileRepository = diffReportFileRepository;
+    public ComparisonFileService(ComparisonFileRepository comparisonFileRepository){
+        this.comparisonFileRepository = comparisonFileRepository;
     }
 
 
