@@ -1,6 +1,9 @@
 package org.svip.api.entities.diff;
 
 import jakarta.persistence.*;
+import org.svip.api.entities.SBOM;
+
+import java.util.Set;
 
 /**
  * File: ComparisonFile.java
@@ -15,4 +18,11 @@ public class ComparisonFile {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private Long id;
+
+    ///
+    /// Relationships
+    ///
+
+    @ManyToMany(mappedBy = "comparisons")
+    private Set<SBOM> sboms;
 }

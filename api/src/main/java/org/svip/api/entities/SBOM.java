@@ -11,12 +11,6 @@ import org.svip.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
 import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
-import org.cyclonedx.CycloneDxSchema;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
-import org.svip.serializers.deserializer.CDX14JSONDeserializer;
-import org.svip.serializers.deserializer.Deserializer;
-import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
-import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
 
 import java.util.Set;
 
@@ -83,13 +77,13 @@ public class SBOM {
     @JoinColumn(name = "vex_id", referencedColumnName = "id")
     private VEXFile vexFile;
 
-    // Collection of comparisons where this was the target
-    @OneToMany(mappedBy = "targetSBOM", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<ComparisonFile> comparisonsAsTarget;
+    @ManyToMany
+    @JoinTable(
+            name = "sbom_comparison",
+            joinColumns = @JoinColumn(name = "sbom_id"),
+            inverseJoinColumns = @JoinColumn(name = "comparison_id"))
+    private Set<ComparisonFile> comparisons;
 
-    // Collection of comparisons where this was the other
-    @OneToMany(mappedBy = "otherSBOM", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<ComparisonFile> comparisonsAsOther;
 
     /**
      * Convert SBOMFile to SBOM Object
@@ -199,16 +193,6 @@ public class SBOM {
      */
     public SBOM setVEXFile(VEXFile vf){
         this.vexFile = vf;
-        return this;
-    }
-
-    public SBOM addComparisonFileAsTarget(ComparisonFile cf){
-        this.comparisonsAsTarget.add(cf);
-        return this;
-    }
-
-    public SBOM addComparisonFileAsOther(ComparisonFile cf){
-        this.comparisonsAsOther.add(cf);
         return this;
     }
 
