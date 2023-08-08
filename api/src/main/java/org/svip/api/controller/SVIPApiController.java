@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
+import org.svip.api.services.SBOMFileService;
 import org.svip.api.utils.Utils;
 import org.svip.conversion.Conversion;
 import org.svip.sbom.builder.SBOMBuilderException;
@@ -180,7 +181,7 @@ public class SVIPApiController {
 
         SBOMFile result = new SBOMFile(projectName + ((format == SerializerFactory.Format.JSON)
                 ? ".json" : ".spdx"), contents);
-        result.setId(Utils.generateSBOMFileId());
+        result.setId(SBOMFileService.generateSBOMFileId());
         sbomFileRepository.save(result);
 
         return Utils.encodeResponse(result.getId());
