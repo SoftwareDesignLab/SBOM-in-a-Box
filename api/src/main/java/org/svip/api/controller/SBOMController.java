@@ -189,7 +189,7 @@ public class SBOMController {
         }
 
         // Delete SBOM file
-        this.sbomService.deleteSBOMFile(sbomFile.getId());
+        this.sbomService.deleteSBOMFile(sbomFile);
 
         // Log
         LOGGER.info("DELETE /svip/sboms?id=" + id);
