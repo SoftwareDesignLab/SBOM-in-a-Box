@@ -19,12 +19,22 @@ public class ComparisonFile {
     @Column(nullable = false)
     private Long id;
 
+    // Target SBOM ID for comparison
+    @Column(nullable = false)
+    private Long targetID;
+
+    // Other SBOM ID for comparison
+    @Column(nullable = false)
+    private Long otherID;
+
+
     ///
     /// Relationships
     ///
 
+    // Target SBOM
     @ManyToOne
-    @JoinColumn(name="sbom_id", nullable=false)
+    @JoinColumn(name = "sbom_id", nullable = false)
     private SBOM sbom;
 
     ///
