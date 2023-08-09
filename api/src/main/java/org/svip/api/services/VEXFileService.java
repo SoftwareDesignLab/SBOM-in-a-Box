@@ -47,7 +47,7 @@ public class VEXFileService {
      * @return uploaded VEX entry
      * @throws Exception Error uploading to the Database
      */
-    public VEXFile upload(VEXFile vf) throws Exception {
+     public VEXFile upload(VEXFile vf) throws Exception {
         try{
             return this.vexFileRepository.save(vf);
         } catch (Exception e){
@@ -124,26 +124,5 @@ public class VEXFileService {
         // Return VEXResult
         return new VEXResult(vex, error);
     }
-
-
-    /**
-     * Delete a target VEX File from the database
-     *
-     * @param id of the VEX to delete
-     * @return id of deleted VEX on success
-     */
-    public Long deleteSBOMFile(Long id){
-        // Retrieve SBOM File and check that it exists
-        Optional<VEXFile> vexFile = this.vexFileRepository.findById(id);
-        if (vexFile.isEmpty())
-            return null;
-
-        // Delete from repository
-        this.vexFileRepository.delete(vexFile.get());
-
-        // return confirmation id
-        return id;
-    }
-
 
 }

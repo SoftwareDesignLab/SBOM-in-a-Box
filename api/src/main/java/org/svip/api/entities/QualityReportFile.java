@@ -9,7 +9,7 @@ import jakarta.persistence.*;
  * @author Derek Garcia
  **/
 @Entity
-@Table(name = "quality_report_file")
+@Table(name = "quality_report")
 public class QualityReportFile {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -71,5 +71,12 @@ public class QualityReportFile {
      */
     public String getContent(){
         return this.content;
+    }
+
+    /**
+     * @return SBOM of QA
+     */
+    public SBOM getSBOM(){
+        return this.sbom;
     }
 }

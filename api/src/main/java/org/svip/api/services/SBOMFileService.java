@@ -51,92 +51,6 @@ public class SBOMFileService {
         }
     }
 
-
-    /**
-     * Set a qa association for a given SBOM
-     *
-     * @param id id of the SBOM File
-     * @param qaf QA file associated with the SBOM
-     * @return ID of qaf
-     */
-    public Long setQualityReport(Long id, QualityReportFile qaf){
-        SBOM sbom = getSBOMFile(id);
-
-        // todo better return than null?
-        if(sbom == null)
-            return null;
-
-        // Set and update SBOM File
-        sbom.setQualityReport(qaf);
-        this.sbomRepository.save(sbom);
-
-        return qaf.getID();
-    }
-
-
-    /**
-     * Set a vex association for a given SBOM
-     *
-     * @param id id of the SBOM File
-     * @param vf vex file associated with the SBOM
-     * @return ID of qaf
-     */
-    public Long setVEX(Long id, VEXFile vf){
-        SBOM sbom = getSBOMFile(id);
-
-        // todo better return than null?
-        if(sbom == null)
-            return null;
-
-        // Set and update SBOM File
-        sbom.setVEXFile(vf);
-        this.sbomRepository.save(sbom);
-
-        return vf.getID();
-    }
-
-
-    /**
-     * Retrieve SBOM File from the database as an SBOM Object
-     *
-     * @param id of the SBOM to retrieve
-     * @return deserialized SBOM Object
-     * @throws JsonProcessingException SBOM failed to be deserialized
-     */
-    public org.svip.sbom.model.interfaces.generics.SBOM getSBOMObject(Long id) throws JsonProcessingException {
-        // Retrieve SBOMFile and check that it exists
-        SBOM sbomFile = getSBOMFile(id);
-        if(sbomFile == null)
-            return null;
-
-        // Attempt to deserialize and return the object
-        Deserializer d = SerializerFactory.createDeserializer(sbomFile.getContent());
-        return d.readFromString(sbomFile.getContent());
-    }
-
-
-    /**
-     * Retrieve SBOM File from the database as an JSON String
-     *
-     * @param id of the SBOM to retrieve
-     * @return deserialized SBOM Object
-     * @throws JsonProcessingException SBOM failed to be deserialized
-     */
-    public String getSBOMObjectAsJSON(Long id) throws JsonProcessingException {
-        // Retrieve SBOM Object and check that it exists
-        org.svip.sbom.model.interfaces.generics.SBOM sbom = getSBOMObject(id);
-        if(sbom == null)
-            return null;
-
-        // Configure object mapper to remove null and empty arrays
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-
-        // Return JSON String
-        return mapper.writeValueAsString(sbom);
-    }
-
     /**
      * Get SBOM file from database
      *
@@ -172,19 +86,15 @@ public class SBOMFileService {
     /**
      * Delete a target SBOM File from the database
      *
-     * @param id of the SBOM to delete
+     * @param sbomFile SBOM file to delete
      * @return id of deleted SBOM on success
      */
-    public Long deleteSBOMFile(Long id){
-        // Retrieve SBOM File and check that it exists
-        SBOM sbomFile = getSBOMFile(id);
-        if (sbomFile == null)
-            return null;
+    public Long deleteSBOMFile(SBOM sbomFile){
 
         // Delete from repository
         this.sbomRepository.delete(sbomFile);
 
         // return confirmation id
-        return id;
+        return sbomFile.getId();
     }
 }

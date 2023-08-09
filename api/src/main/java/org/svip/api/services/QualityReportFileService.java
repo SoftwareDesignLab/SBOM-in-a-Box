@@ -51,7 +51,6 @@ public class QualityReportFileService {
         }
     }
 
-
     /**
      * Generate a Quality Report for a given SBOM
      *
@@ -75,24 +74,5 @@ public class QualityReportFileService {
 
         // QA test SBOM and return result
         return qaPipeline.process(sbom.getUID(), sbom);
-    }
-
-
-    /**
-     * Delete Quality Report from repo
-     *
-     * @param id of the QA to delete
-     * @return ID of removed Quality Report File if it exists
-     */
-    public Long deleteQualityReportFile(Long id) {
-        // Retrieve QA File and check that it exists
-        Optional<QualityReportFile> qaf = this.qualityReportFileRepository.findById(id);
-        // todo throw error?
-        if (qaf.isEmpty())
-            return null;
-
-        this.qualityReportFileRepository.delete(qaf.get());
-        // Else return file
-        return qaf.get().getID();
     }
 }

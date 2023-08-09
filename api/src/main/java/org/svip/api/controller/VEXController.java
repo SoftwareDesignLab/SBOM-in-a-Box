@@ -94,16 +94,14 @@ public class VEXController {
                 return new ResponseEntity<>(sbomFile.getVEXFile().getContent(), HttpStatus.OK);
 
             // No VEX stored, generate one
-            org.svip.sbom.model.interfaces.generics.SBOM sbomObject = this.sbomFileService.getSBOMObject(id);
-            VEXResult vexResult = this.vexFileService.generateVEX(sbomObject, client, format, apiKey);
+            VEXResult vexResult = this.vexFileService.generateVEX(sbomFile.toSBOMObject(), client, format, apiKey);
 
             // todo better way to get datasource
             VEXFile.Database datasource = (client.equalsIgnoreCase("osv") ? VEXFile.Database.OSV : VEXFile.Database.NVD);
 
             // Create vexFile and upload to db
             VEXFile vf = new UploadVEXFileInput(vexResult).toVEXFile(sbomFile, datasource);
-            this.vexFileService.upload(vf);
-            this.sbomFileService.setVEX(id, vf);     // update sbom relation
+            this.vexFileService.upload(vf);   // update sbom relation
 
             // Log
             LOGGER.info("VEX /svip/sboms/vex?id=" + id);
