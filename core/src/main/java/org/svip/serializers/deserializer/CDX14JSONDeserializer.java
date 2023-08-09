@@ -94,18 +94,21 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
         // SPEC VERSION
         if (node.get("specVersion") != null) sbomBuilder.setSpecVersion(node.get("specVersion").asText());
 
-        // LICENSES
-        JsonNode licenses = node.get("metadata").get("licenses");
-        if (licenses != null)
-            for (JsonNode license : licenses)
-                sbomBuilder.addLicense(license.asText());
+        if(node.get("metadata") != null){
 
-        // METADATA
-        sbomBuilder.setCreationData(resolveMetadata(node.get("metadata"), sbomBuilder));
+            // LICENSES
+            JsonNode licenses = node.get("metadata").get("licenses");
+            if (licenses != null)
+                for (JsonNode license : licenses)
+                    sbomBuilder.addLicense(license.asText());
 
-        // ROOT COMPONENT
-        if (node.get("metadata").get("component") != null)
-            sbomBuilder.setRootComponent(resolveComponent(componentBuilder, node.get("metadata").get("component")));
+            // METADATA
+            sbomBuilder.setCreationData(resolveMetadata(node.get("metadata"), sbomBuilder));
+
+            // ROOT COMPONENT
+            if (node.get("metadata").get("component") != null)
+                sbomBuilder.setRootComponent(resolveComponent(componentBuilder, node.get("metadata").get("component")));
+        }
 
         // COMPONENTS
         if (node.get("components") != null)
