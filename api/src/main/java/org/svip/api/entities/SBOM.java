@@ -73,11 +73,8 @@ public class SBOM {
     @JoinColumn(name = "vex_id", referencedColumnName = "id")
     private VEXFile vexFile;
 
-    @ManyToMany
-    @JoinTable(
-            name = "sbom_comparison",
-            joinColumns = @JoinColumn(name = "sbom_id"),
-            inverseJoinColumns = @JoinColumn(name = "comparison_id"))
+    @OneToMany(mappedBy = "sbom")
+    @JoinColumn(name = "sbom_id", insertable = false, updatable = false)
     private Set<ComparisonFile> comparisons;
 
 
