@@ -64,4 +64,29 @@ public class ComparisonFile {
         return this;
     }
 
+    ///
+    /// Getters
+    ///
+
+    /**
+     * @return ID
+     */
+    public Long getID(){
+        return this.id;
+    }
+
+    /**
+     * @return Target SBOM
+     */
+    public SBOM getTargetSBOM(){
+        return this.targetSBOM;
+    }
+
+    /**
+     * @return Other SBOM
+     */
+    public SBOM getOtherSBOM(){
+        return this.otherSBOM;
+    }
+
 }
