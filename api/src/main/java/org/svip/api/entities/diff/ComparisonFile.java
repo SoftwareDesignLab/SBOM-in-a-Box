@@ -77,6 +77,17 @@ public class ComparisonFile {
         return this;
     }
 
+    /**
+     * Add a new conflict file
+     *
+     * @param conflictFile file with conflict details
+     * @return Comparison file
+     */
+    public ComparisonFile addConflictFile(ConflictFile conflictFile){
+        this.conflicts.add(conflictFile);
+        return this;
+    }
+
     ///
     /// Getters
     ///
