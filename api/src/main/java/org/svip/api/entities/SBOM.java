@@ -84,7 +84,6 @@ public class SBOM {
     private VEXFile vexFile;
 
     @OneToMany(mappedBy = "sbom")
-    @JoinColumn(name = "sbom_id", insertable = false, updatable = false)
     private Set<ComparisonFile> comparisons;
 
 
