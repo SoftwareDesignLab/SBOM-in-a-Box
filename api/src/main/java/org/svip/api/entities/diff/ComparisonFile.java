@@ -26,4 +26,18 @@ public class ComparisonFile {
     @ManyToOne
     @JoinColumn(name="sbom_id", nullable=false)
     private SBOM sbom;
+
+    ///
+    /// Setters
+    ///
+
+    /**
+     * Set Target SBOM
+     * @param sbom target sbom
+     * @return Comparison file
+     */
+    public ComparisonFile setSBOM(SBOM sbom){
+        this.sbom = sbom;
+        return this;
+    }
 }
