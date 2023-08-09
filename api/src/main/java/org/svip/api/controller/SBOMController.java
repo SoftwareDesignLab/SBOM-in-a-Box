@@ -98,14 +98,14 @@ public class SBOMController {
     public ResponseEntity<String> getSBOMObjectAsJSON(@RequestParam("id") Long id){
 
         try{
-            String sbom = this.sbomService.getSBOMObjectAsJSON(id);
+            SBOM sbomFile = this.sbomService.getSBOMFile(id);
 
             // No SBOM was found
-            if(sbom == null)
+            if(sbomFile == null)
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
             // Else return the object
-            return new ResponseEntity<>(sbom, HttpStatus.OK);
+            return new ResponseEntity<>(sbomFile.toSBOMObjectAsJSON(), HttpStatus.OK);
 
         } catch (JsonProcessingException e ){
             // error with Deserialization
