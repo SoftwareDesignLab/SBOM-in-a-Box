@@ -190,7 +190,7 @@ public class SBOMController {
 
         // Attempt to delete any related data
         if(sbomFile.getQualityReportFile() != null)
-            this.qualityReportFileService.deleteQualityReportFile(sbomFile.getQualityReportFile().getID());
+            this.qualityReportFileService.deleteQualityReportFile(sbomFile.getQualityReportFile());
 
         if(sbomFile.getVEXFile() != null)
             this.vexFileService.deleteSBOMFile(sbomFile.getVEXFile().getID());
