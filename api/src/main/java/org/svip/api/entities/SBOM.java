@@ -15,7 +15,7 @@ import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
  * @author Derek Garcia
  **/
 @Entity
-@Table(name = "sbom_file")
+@Table(name = "sbom")
 public class SBOM {
 
     // Schema of SBOM
