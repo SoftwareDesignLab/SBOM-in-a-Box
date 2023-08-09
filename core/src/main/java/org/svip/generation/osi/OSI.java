@@ -164,17 +164,18 @@ public class OSI {
     public Map<String, String> generateSBOMs(List<String> toolNames) throws IOException {
         boolean status = this.client.generateSBOMs(toolNames);
 
+        cleanBoundDirectory("code");
+
         Map<String, String> sboms = new HashMap<>();
 
         File sbomDir = getBoundDirPath("sboms");
         // If container failed or files are null, return empty map.
-        if (!status || !sbomDir.exists() || sbomDir.listFiles() == null) return sboms;
+        if (status || !sbomDir.exists() || sbomDir.listFiles() == null) return sboms;
 
         for (File file : sbomDir.listFiles())
             if (!file.getName().equalsIgnoreCase(".gitignore"))
                 sboms.put(file.getName(), Files.readString(file.toPath()));
 
-        cleanBoundDirectory("code");
         cleanBoundDirectory("sboms");
 
         return sboms;
@@ -300,6 +301,10 @@ public class OSI {
                 }
 
                 conn.connect();
+
+                // DO NOT REMOVE THIS LINE. This is needed for a connection to actually be made, regardless of
+                // calling .connect()
+                if (conn.getResponseCode() != 200 || conn.getResponseCode() != 204) return false;
             } catch (IOException e) {
                 return false;
             } finally {
