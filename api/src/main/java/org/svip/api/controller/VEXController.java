@@ -101,7 +101,7 @@ public class VEXController {
 
             // Create vexFile and upload to db
             VEXFile vf = new UploadVEXFileInput(vexResult).toVEXFile(sbomFile, datasource);
-            this.vexFileService.saveVEX(this.sbomFileService, vf);   // update sbom relation
+            this.vexFileService.upload(vf);   // update sbom relation
 
             // Log
             LOGGER.info("VEX /svip/sboms/vex?id=" + id);
