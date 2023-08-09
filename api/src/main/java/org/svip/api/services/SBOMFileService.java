@@ -94,28 +94,6 @@ public class SBOMFileService {
         return qaf.getID();
     }
 
-
-    /**
-     * Set a qa association for a given SBOM
-     *
-     * @param id id of the SBOM File
-     * @param qaf QA file associated with the SBOM
-     * @return ID of qaf
-     */
-    public Long setQualityReport(Long id, QualityReportFile qaf){
-        SBOM sbom = getSBOMFile(id);
-
-        // todo better return than null?
-        if(sbom == null)
-            return null;
-
-        // Set and update SBOM File
-        sbom.setQualityReport(qaf);
-        this.sbomRepository.save(sbom);
-
-        return qaf.getID();
-    }
-
     /**
      * Get SBOM file from database
      *
