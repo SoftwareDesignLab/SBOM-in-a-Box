@@ -1,7 +1,9 @@
 package org.svip.api.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.persistence.*;
+import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
@@ -76,6 +78,18 @@ public class SBOM {
     @JoinColumn(name = "vex_id", referencedColumnName = "id")
     private VEXFile vexFile;
 
+
+    /**
+     * Convert SBOMFile to SBOM Object
+     *
+     * @return deserialized SBOM Object
+     * @throws JsonProcessingException SBOM failed to be deserialized
+     */
+    public org.svip.sbom.model.interfaces.generics.SBOM toSBOMObject() throws JsonProcessingException {
+        // Attempt to deserialize and return the object
+        Deserializer d = SerializerFactory.createDeserializer(this.content);
+        return d.readFromString(this.getContent());
+    }
 
     ///
     /// Setters
