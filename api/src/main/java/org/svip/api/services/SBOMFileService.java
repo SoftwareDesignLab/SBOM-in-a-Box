@@ -86,19 +86,15 @@ public class SBOMFileService {
     /**
      * Delete a target SBOM File from the database
      *
-     * @param id of the SBOM to delete
+     * @param sbomFile SBOM file to delete
      * @return id of deleted SBOM on success
      */
-    public Long deleteSBOMFile(Long id){
-        // Retrieve SBOM File and check that it exists
-        SBOM sbomFile = getSBOMFile(id);
-        if (sbomFile == null)
-            return null;
+    public Long deleteSBOMFile(SBOM sbomFile){
 
         // Delete from repository
         this.sbomRepository.delete(sbomFile);
 
         // return confirmation id
-        return id;
+        return sbomFile.getId();
     }
 }
