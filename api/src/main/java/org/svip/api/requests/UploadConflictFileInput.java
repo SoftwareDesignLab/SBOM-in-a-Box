@@ -21,8 +21,15 @@ public record UploadConflictFileInput(Conflict conflict) {
     public ConflictFile toConflictFile(ComparisonFile cf) {
         ConflictFile conflictFile = new ConflictFile();
 
-        // set relationship
+        // Set content
+        conflictFile.setMessage(conflict.getMessage())
+                    .setMismatchType(conflict.getType())
+                    .setTargetValue(conflict.getTarget())
+                    .setOtherValue(conflict.getOther())
+                    .setComparison(cf);     // set parent relationship
 
+        // set relationship to comparison
+        cf.addConflictFile(conflictFile);
 
         return conflictFile;
     }
