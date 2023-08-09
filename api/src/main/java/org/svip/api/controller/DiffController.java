@@ -65,7 +65,7 @@ public class DiffController {
             if(targetSBOMFile == null)
                 return null;
 
-            SBOM targetSBOM = this.sbomFileService.getSBOMObject(targetID);
+            SBOM targetSBOM = targetSBOMFile.toSBOMObject();
 
             // create diff report
             DiffReport diffReport = new DiffReport(targetSBOM.getUID(), targetSBOM);
@@ -86,7 +86,7 @@ public class DiffController {
                 // todo make method?
                 if(cf == null){
 
-                    SBOM otherSBOM = this.sbomFileService.getSBOMObject(id);
+                    SBOM otherSBOM = otherSBOMFile.toSBOMObject();
 
                     Comparison comparison = new Comparison(targetSBOM, otherSBOM);
                     cf = new UploadComparisonFileInput(comparison).toQualityReportFile(targetSBOMFile, otherSBOMFile);
