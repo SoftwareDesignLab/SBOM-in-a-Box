@@ -63,8 +63,7 @@ public class QualityReportFileService {
         // Upload qaf
         upload(qaf);
 
-        // Set and update SBOM File
-        qaf.getSBOM().setQualityReport(qaf);
+        // update SBOM File
         sfs.upload(qaf.getSBOM());
 
         return qaf.getID();
