@@ -26,7 +26,7 @@ public record UploadComparisonFileInput(Comparison qa) {
     public ComparisonFile toQualityReportFile(SBOM targetSBOM) throws JsonProcessingException {
         ComparisonFile qf = new ComparisonFile();
         // todo requests to convert missing and conflicts in the Comparison
-        // Set attributes
+        qf.setSBOM(targetSBOM);
         return qf;
     }
 }
