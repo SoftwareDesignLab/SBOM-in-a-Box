@@ -10,7 +10,7 @@ import org.svip.compare.conflicts.Conflict;
  *
  * @author Derek Garcia
  **/
-public record UploadConflictFileInput(Conflict conflict) {
+public record UploadConflictFileInput(String name, Conflict conflict) {
 
     /**
      * Create a new Conflict File Object
@@ -22,7 +22,8 @@ public record UploadConflictFileInput(Conflict conflict) {
         ConflictFile conflictFile = new ConflictFile();
 
         // Set content
-        conflictFile.setMessage(conflict.getMessage())
+        conflictFile.setName(this.name)
+                    .setMessage(conflict.getMessage())
                     .setMismatchType(conflict.getType())
                     .setTargetValue(conflict.getTarget())
                     .setOtherValue(conflict.getOther())
