@@ -1,6 +1,6 @@
 import glob
 import os
-import sys
+from subprocess import DEVNULL, STDOUT, check_call, CalledProcessError
 
 from constants import Language, LANGUAGE_MAP, MANIFEST_MAP, SBOM_FORMAT, CONTAINER_BIND_SBOM
 import ToolMapper
@@ -60,7 +60,6 @@ def get_tools(languages: list[Language]) -> list[OSTool]:
     for language in languages:
         tools.update(ToolMapper.get_tools(language))
 
-    print("ToolUtils.get_tools(" + str(languages) + "): " + str(list(tools)), flush=True)
     return list(tools)
 
 
@@ -88,7 +87,7 @@ def run_tools(tools: list[OSTool], manifest_files: list[str], code_path: str, ou
 
             # Check if command requires a manifest file and if that exists
             if tool.manifest_required and len(manifest_files) == 0:
-                print("{} requires a manifest file but none were found. Skipping...".format(tool.name))
+                print("{} requires a manifest file but none were found. Skipping...".format(tool.name), flush=True)
                 continue
 
             # Loop through manifest files, if none then loop once
@@ -110,8 +109,13 @@ def run_tools(tools: list[OSTool], manifest_files: list[str], code_path: str, ou
                     [f for f in os.listdir(output_path) if os.path.isfile(os.path.join(output_path, f))])
 
                 # Execute command
-                print("Running: {}, with: {}".format(tool.name, command))
-                os.system(command)
+                print("Running      : {}, with: {}".format(tool.name, command), flush=True)
+                # Run command using subprocess and output any errors
+                try:
+                    check_call(command, stdout=DEVNULL, stderr=STDOUT, shell=True)
+                    print("Completed    : {}, with: {}".format(tool.name, command), flush=True)
+                except CalledProcessError as e:
+                    print("Error running: {}, exit code: {}".format(tool.name, e.returncode), flush=True)
 
                 # Snapshot directory again to see what has changed
                 file_contents_after = set(
@@ -146,7 +150,7 @@ def run_tools(tools: list[OSTool], manifest_files: list[str], code_path: str, ou
                 if not tool.manifest_required:
                     break
         except KeyboardInterrupt:
-            print("Skipping tool: {}".format(tool.name))
+            print("Skipping tool: {}".format(tool.name), flush=True)
             continue
 
     return gen_count

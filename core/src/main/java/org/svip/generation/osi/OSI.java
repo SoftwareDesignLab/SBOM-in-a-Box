@@ -164,8 +164,6 @@ public class OSI {
     public Map<String, String> generateSBOMs(List<String> toolNames) throws IOException {
         boolean status = this.client.generateSBOMs(toolNames);
 
-        cleanBoundDirectory("code");
-
         Map<String, String> sboms = new HashMap<>();
 
         File sbomDir = getBoundDirPath("sboms");
@@ -176,6 +174,7 @@ public class OSI {
             if (!file.getName().equalsIgnoreCase(".gitignore"))
                 sboms.put(file.getName(), Files.readString(file.toPath()));
 
+        cleanBoundDirectory("code");
         cleanBoundDirectory("sboms");
 
         return sboms;
