@@ -3,10 +3,12 @@ package org.svip.api.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
 import org.svip.api.entities.QualityReportFile;
+import org.svip.api.entities.SBOM;
 import org.svip.api.entities.diff.ComparisonFile;
 import org.svip.api.repository.ComparisonFileRepository;
 import org.svip.compare.DiffReport;
-import org.svip.sbom.model.interfaces.generics.SBOM;
+
+import java.util.Optional;
 
 /**
  * File: ComparisonFileService.java
@@ -36,6 +38,11 @@ public class ComparisonFileService {
             // todo custom exception instead of generic
             throw new Exception("Failed to upload to Database: " + e.getMessage());
         }
+    }
+
+    public ComparisonFile getComparisonFile(Long targetID, Long otherID){
+        // Retrieve Comparison File and check that it exists
+        return this.comparisonFileRepository.findByTargetIDAndOtherID(targetID, otherID);
     }
 
 //    public DiffReport compare(SBOM target, SBOM other) throws JsonProcessingException {
