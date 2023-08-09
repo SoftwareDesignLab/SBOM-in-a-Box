@@ -41,7 +41,7 @@ public class QualityReportFileService {
      * @return uploaded Quality Report entry
      * @throws Exception Error uploading to the Database
      */
-    public QualityReportFile upload(QualityReportFile qaf) throws Exception {
+    private QualityReportFile upload(QualityReportFile qaf) throws Exception {
         try{
             // todo relation logic for sbom?
             return this.qualityReportFileRepository.save(qaf);
@@ -51,6 +51,25 @@ public class QualityReportFileService {
         }
     }
 
+    /**
+     * Save a new Quality Report
+     *
+     * @param sfs SBOMFileService to use to update SBOM
+     * @param sbomFile SBOM File qa was generated for
+     * @param qaf QA file associated with the SBOM
+     * @return ID of qaf
+     */
+    public Long saveQualityReport(SBOMFileService sfs, org.svip.api.entities.SBOM sbomFile, QualityReportFile qaf) throws Exception {
+
+        // Upload qaf
+        upload(qaf);
+
+        // Set and update SBOM File
+        sbomFile.setQualityReport(qaf);
+        sfs.upload(sbomFile);
+
+        return qaf.getID();
+    }
 
     /**
      * Generate a Quality Report for a given SBOM
@@ -75,24 +94,5 @@ public class QualityReportFileService {
 
         // QA test SBOM and return result
         return qaPipeline.process(sbom.getUID(), sbom);
-    }
-
-
-    /**
-     * Delete Quality Report from repo
-     *
-     * @param id of the QA to delete
-     * @return ID of removed Quality Report File if it exists
-     */
-    public Long deleteQualityReportFile(Long id) {
-        // Retrieve QA File and check that it exists
-        Optional<QualityReportFile> qaf = this.qualityReportFileRepository.findById(id);
-        // todo throw error?
-        if (qaf.isEmpty())
-            return null;
-
-        this.qualityReportFileRepository.delete(qaf.get());
-        // Else return file
-        return qaf.get().getID();
     }
 }

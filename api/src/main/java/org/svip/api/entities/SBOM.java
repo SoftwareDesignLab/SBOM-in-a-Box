@@ -1,8 +1,12 @@
 package org.svip.api.entities;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import org.svip.api.entities.diff.ComparisonFile;
+import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
@@ -18,7 +22,7 @@ import java.util.Set;
  * @author Derek Garcia
  **/
 @Entity
-@Table(name = "sbom_file")
+@Table(name = "sbom")
 public class SBOM {
 
     // Schema of SBOM
@@ -65,11 +69,11 @@ public class SBOM {
     /// Relationships
     ///
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)   // delete all qa on sbom deletion
     @JoinColumn(name = "qa_id", referencedColumnName = "id")
     private QualityReportFile qualityReportFile;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)   // delete all vex on sbom deletion
     @JoinColumn(name = "vex_id", referencedColumnName = "id")
     private VEXFile vexFile;
 
@@ -80,6 +84,35 @@ public class SBOM {
     // Collection of comparisons where this was the other
     @OneToMany(mappedBy = "otherSBOM")
     private Set<ComparisonFile> comparisonsAsOther;
+
+    /**
+     * Convert SBOMFile to SBOM Object
+     *
+     * @return deserialized SBOM Object
+     * @throws JsonProcessingException SBOM failed to be deserialized
+     */
+    public org.svip.sbom.model.interfaces.generics.SBOM toSBOMObject() throws JsonProcessingException {
+        // Attempt to deserialize and return the object
+        Deserializer d = SerializerFactory.createDeserializer(this.content);
+        return d.readFromString(this.getContent());
+    }
+
+    /**
+     * Convert SBOM File to a JSON String
+     *
+     * @return deserialized SBOM Object as a JSON String
+     * @throws JsonProcessingException SBOM failed to be deserialized
+     */
+    public String toSBOMObjectAsJSON() throws JsonProcessingException {
+
+        // Configure object mapper to remove null and empty arrays
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+
+        // Return JSON String
+        return mapper.writeValueAsString(toSBOMObject());
+    }
 
     ///
     /// Setters
