@@ -7,8 +7,8 @@ import org.svip.api.entities.diff.ComparisonFile;
 import java.util.List;
 
 /**
- * File: DiffReportFileRepository.java
- * Repository for storing Diff Report Files
+ * File: ComparisonFileRepository.java
+ * Repository for storing Comparisons used for Diff Report Files
  * CRUD methods: https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/CrudRepository.html
  *
  * @author Derek Garcia

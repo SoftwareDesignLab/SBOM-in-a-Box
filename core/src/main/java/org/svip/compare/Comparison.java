@@ -62,4 +62,15 @@ public class Comparison {
                 this.missingComponents.add(otherComponent.getName());
         }
     }
+
+    ///
+    /// Getters
+    ///
+
+    /**
+     * @return List of component conflicts
+     */
+    public Map<String, List<Conflict>> getComponentConflicts() {
+        return this.componentConflicts;
+    }
 }

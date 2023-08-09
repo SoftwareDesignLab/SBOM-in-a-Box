@@ -3,6 +3,7 @@ package org.svip.api.requests;
 import org.svip.api.entities.SBOM;
 import org.svip.api.entities.diff.ComparisonFile;
 import org.svip.compare.Comparison;
+import org.svip.compare.conflicts.Conflict;
 
 /**
  * file: UploadComparisonFileInput.java
@@ -19,17 +20,26 @@ public record UploadComparisonFileInput(Comparison comparison) {
      * @param otherSBOM otherSBOM for comparison
      * @return ComparisonFile
      */
-    public ComparisonFile toQualityReportFile(SBOM targetSBOM, SBOM otherSBOM) {
-        ComparisonFile qf = new ComparisonFile();
-        // todo requests to convert missing and conflicts in the Comparison
-        qf.setTargetSBOM(targetSBOM)
+    public ComparisonFile toComparisonFile(SBOM targetSBOM, SBOM otherSBOM) {
+        ComparisonFile cf = new ComparisonFile();
+        // todo requests to convert missing
+        // Add all conflicts
+        for(String key : this.comparison.getComponentConflicts().keySet()){
+            for(Conflict c : this.comparison.getComponentConflicts().get(key)){
+                // Convert to ConflictFile and add
+                cf.addConflictFile(new UploadConflictFileInput(key, c).toConflictFile(cf));
+            }
+        }
+
+        // set parent relationships
+        cf.setTargetSBOM(targetSBOM)
            .setOtherSBOM(otherSBOM);
 
         // Add SBOM Relationships
-        targetSBOM.addComparisonFileAsTarget(qf);
-        otherSBOM.addComparisonFileAsOther(qf);
+        targetSBOM.addComparisonFileAsTarget(cf);
+        otherSBOM.addComparisonFileAsOther(cf);
 
 
-        return qf;
+        return cf;
     }
 }
