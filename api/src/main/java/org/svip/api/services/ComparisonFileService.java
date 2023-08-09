@@ -40,9 +40,9 @@ public class ComparisonFileService {
         }
     }
 
-    public ComparisonFile getComparisonFile(Long targetID, Long otherID){
+    public ComparisonFile getComparisonFile(SBOM targetID, SBOM otherID){
         // Retrieve Comparison File and check that it exists
-        return this.comparisonFileRepository.findByTargetIDAndOtherID(targetID, otherID);
+        return this.comparisonFileRepository.findByTargetSBOMAndOtherSBOM(targetID, otherID);
     }
 
 //    public DiffReport compare(SBOM target, SBOM other) throws JsonProcessingException {
