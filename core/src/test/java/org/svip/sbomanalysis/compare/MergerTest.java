@@ -638,6 +638,9 @@ public class MergerTest {
         SBOM result = merger.merge(SBOM_one, SBOM_two);
 
         assertNotNull(result);
+
+        assertEquals(4, result.getComponents().size());
+
     }
 
     @Disabled("Functionality disabled for now.")
