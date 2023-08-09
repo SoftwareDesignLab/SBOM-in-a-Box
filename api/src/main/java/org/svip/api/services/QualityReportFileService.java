@@ -72,18 +72,6 @@ public class QualityReportFileService {
     }
 
     /**
-     * Delete Quality Report from repo
-     *
-     * @param qaf QualityReport to delete
-     * @return ID of removed Quality Report File if it exists
-     */
-    public Long deleteQualityReportFile(QualityReportFile qaf) {
-        this.qualityReportFileRepository.delete(qaf);
-        // Else return file
-        return qaf.getID();
-    }
-
-    /**
      * Generate a Quality Report for a given SBOM
      *
      * @param sbom SBOM to run QA on

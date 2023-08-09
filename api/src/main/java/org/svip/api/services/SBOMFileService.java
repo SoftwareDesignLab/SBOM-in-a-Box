@@ -51,28 +51,6 @@ public class SBOMFileService {
         }
     }
 
-
-    /**
-     * Set a vex association for a given SBOM
-     *
-     * @param id id of the SBOM File
-     * @param vf vex file associated with the SBOM
-     * @return ID of qaf
-     */
-    public Long setVEX(Long id, VEXFile vf){
-        SBOM sbom = getSBOMFile(id);
-
-        // todo better return than null?
-        if(sbom == null)
-            return null;
-
-        // Set and update SBOM File
-        sbom.setVEXFile(vf);
-        this.sbomRepository.save(sbom);
-
-        return vf.getID();
-    }
-
     /**
      * Get SBOM file from database
      *
