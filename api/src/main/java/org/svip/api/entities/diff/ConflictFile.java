@@ -1,7 +1,6 @@
 package org.svip.api.entities.diff;
 
 import jakarta.persistence.*;
-import org.svip.api.entities.SBOM;
 import org.svip.compare.conflicts.MismatchType;
 
 /**
@@ -19,7 +18,7 @@ public class ConflictFile {
     private Long id;
 
     @Column(nullable = false)
-    private String field;
+    private String message;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "mismatch_type")
@@ -46,12 +45,12 @@ public class ConflictFile {
     ///
 
     /**
-     * Set the sbom / component field name
-     * @param field name of field
+     * Set the sbom / component conflict message
+     * @param message message
      * @return ConflictFile
      */
-    public ConflictFile setField(String field) {
-        this.field = field;
+    public ConflictFile setMessage(String message) {
+        this.message = message;
         return this;
     }
 
@@ -83,6 +82,17 @@ public class ConflictFile {
      */
     public ConflictFile setOtherValue(String otherValue) {
         this.otherValue = otherValue;
+        return this;
+    }
+
+    /**
+     * Set the parent comparison file
+     *
+     * @param cf parent comparison file
+     * @return Conflict File
+     */
+    public ConflictFile setComparison(ComparisonFile cf) {
+        this.comparison = cf;
         return this;
     }
 }
