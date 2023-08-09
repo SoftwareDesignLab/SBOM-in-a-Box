@@ -56,45 +56,11 @@ public class DiffController {
      */
     @PostMapping("/sboms/compare")
     public ResponseEntity<String> compare(@RequestParam("targetIndex") int targetIndex, @RequestBody Long[] ids) throws JsonProcessingException {
+
         try{
 
-            // Get target
-            long targetID = ids[targetIndex];
-            org.svip.api.entities.SBOM targetSBOMFile = this.sbomFileService.getSBOMFile(targetID);
-
-            if(targetSBOMFile == null)
-                return null;
-
-            SBOM targetSBOM = targetSBOMFile.toSBOMObject();
-
-            // create diff report
-            DiffReport diffReport = new DiffReport(targetSBOM.getUID(), targetSBOM);
-
-             // Compare against all other ids
-            for(Long id : ids){
-
-                // don't compare against self
-                if(targetID == id)
-                    continue;
-
-                org.svip.api.entities.SBOM otherSBOMFile = this.sbomFileService.getSBOMFile(id);
-                // skip if failed to parse
-                if(otherSBOMFile == null)
-                    continue;
-
-                ComparisonFile cf = this.comparisonFileService.getComparisonFile(targetSBOMFile, otherSBOMFile);
-                // todo make method?
-                if(cf == null){
-
-                    SBOM otherSBOM = otherSBOMFile.toSBOMObject();
-
-                    Comparison comparison = new Comparison(targetSBOM, otherSBOM);
-                    cf = new UploadComparisonFileInput(comparison).toQualityReportFile(targetSBOMFile, otherSBOMFile);
-                    this.comparisonFileService.upload(cf);
-                }
-                diffReport.addComparison(id.toString(), cf.toComparison());
-            }
-
+            // Generate Diff report
+            DiffReport diffReport = this.comparisonFileService.generateDiffReport(this.sbomFileService, ids[targetIndex], ids);
 
             // Configure object mapper to remove null and empty arrays
             ObjectMapper mapper = new ObjectMapper();
@@ -102,30 +68,6 @@ public class DiffController {
             mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 
             return new ResponseEntity<>(mapper.writeValueAsString(diffReport), HttpStatus.OK);      // track status?
-
-
-            // get target
-//            long targetID = ids[targetIndex];
-//            SBOM targetSBOM = this.sbomFileService.getSBOMObject(targetID);
-//
-//            // create diff report
-//            DiffReport diffReport = new DiffReport(targetSBOM.getUID(), targetSBOM);
-//
-//            // Compare against all other ids
-//            for(Long id : ids){
-//                // don't compare against self
-//                if(targetID == id)
-//                    continue;
-//                // todo handle bad sbom but not break?
-//                diffReport.compare(id.toString(), this.sbomFileService.getSBOMObject(id));
-//            }
-//
-//            // Configure object mapper to remove null and empty arrays
-//            ObjectMapper mapper = new ObjectMapper();
-//            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-//            mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-//
-//            return new ResponseEntity<>(mapper.writeValueAsString(diffReport), HttpStatus.OK);
 
 
         } catch (Exception e){
