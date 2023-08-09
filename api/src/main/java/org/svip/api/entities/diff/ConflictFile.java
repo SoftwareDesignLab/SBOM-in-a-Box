@@ -18,6 +18,9 @@ public class ConflictFile {
     private Long id;
 
     @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
     private String message;
 
     @Enumerated(EnumType.STRING)
@@ -43,6 +46,17 @@ public class ConflictFile {
     ///
     /// Setters
     ///
+
+    /**
+     * Set name that the conflict occurred in
+     *
+     * @param name name
+     * @return ConflictFile
+     */
+    public ConflictFile setName(String name){
+        this.name = name;
+        return this;
+    }
 
     /**
      * Set the sbom / component conflict message
