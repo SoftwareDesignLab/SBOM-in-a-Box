@@ -25,6 +25,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Quality reports are generated only once and stored in database. Subsequent request query the database
 - `/delete` deletes QA Report stored in database for a SBOM that is deleted
 
+## [v7.3.0-alpha] - (8/9/2023)
+
+### Changed
+- Simplified table names by removing the `_file` suffix
+- Move `toSBOMObject` / `toSBOMObjectAsJSON` to the SBOMFile rather than object
+- Refactored services to reference other services instead of depending on contollers
+  - `saveQualityReport` and `saveVEX` moved to their respective services
+- Services take objects instead of ids
+
 ## [v7.2.5-alpha] - (8/7/2023)
 ### Added
 - `VEXFileService` for handling database operations
