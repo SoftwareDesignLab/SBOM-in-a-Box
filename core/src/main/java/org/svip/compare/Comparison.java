@@ -90,4 +90,15 @@ public class Comparison {
     public List<String> getMissingFromOther() {
         return this.missingFromOther;
     }
+
+    ///
+    /// Getters
+    ///
+
+    /**
+     * @return List of component conflicts
+     */
+    public Map<String, List<Conflict>> getComponentConflicts() {
+        return this.componentConflicts;
+    }
 }
