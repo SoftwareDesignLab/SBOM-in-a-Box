@@ -71,10 +71,10 @@ public class DiffController {
             DiffReport diffReport = new DiffReport(targetSBOM.getUID(), targetSBOM);
 
              // Compare against all other ids
-            for(Long id : ids){
-                // don't compare against self
-                if(targetID == id)
-                    continue;
+//            for(Long id : ids){
+//                // don't compare against self
+//                if(targetID == id)
+//                    continue;
 
 //                ComparisonFile cf = this.comparisonFileService.getComparisonFile(targetID, id);
 //                // todo make method?
@@ -87,7 +87,7 @@ public class DiffController {
 //                    this.comparisonFileService.upload(cf);
 //                }
 //                diffReport.addComparison(id, cf.toComparison());
-            }
+//            }
 
 
             // Configure object mapper to remove null and empty arrays
