@@ -43,12 +43,6 @@ public class ComparisonFileService {
     }
 
 
-    public ComparisonFile getComparisonFile(SBOM targetID, SBOM otherID){
-        // Retrieve Comparison File and check that it exists
-        return this.comparisonFileRepository.findByTargetSBOMAndOtherSBOM(targetID, otherID);
-    }
-
-
     public DiffReport generateDiffReport(SBOMFileService sfs, long targetID, Long[] ids) throws Exception {
 
         // Get target
@@ -75,7 +69,8 @@ public class ComparisonFileService {
             if (otherSBOMFile == null)
                 continue;
 
-            ComparisonFile cf = getComparisonFile(targetSBOMFile, otherSBOMFile);
+            ComparisonFile cf = this.comparisonFileRepository.findByTargetSBOMAndOtherSBOM(targetSBOMFile, otherSBOMFile);
+
             // todo make method?
             if (cf == null) {
 
