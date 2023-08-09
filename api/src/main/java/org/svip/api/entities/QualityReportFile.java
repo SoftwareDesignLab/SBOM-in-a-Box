@@ -72,4 +72,11 @@ public class QualityReportFile {
     public String getContent(){
         return this.content;
     }
+
+    /**
+     * @return SBOM of QA
+     */
+    public SBOM getSBOM(){
+        return this.sbom;
+    }
 }

@@ -55,18 +55,17 @@ public class QualityReportFileService {
      * Save a new Quality Report
      *
      * @param sfs SBOMFileService to use to update SBOM
-     * @param sbomFile SBOM File qa was generated for
      * @param qaf QA file associated with the SBOM
      * @return ID of qaf
      */
-    public Long saveQualityReport(SBOMFileService sfs, org.svip.api.entities.SBOM sbomFile, QualityReportFile qaf) throws Exception {
+    public Long saveQualityReport(SBOMFileService sfs, QualityReportFile qaf) throws Exception {
 
         // Upload qaf
         upload(qaf);
 
         // Set and update SBOM File
-        sbomFile.setQualityReport(qaf);
-        sfs.upload(sbomFile);
+        qaf.getSBOM().setQualityReport(qaf);
+        sfs.upload(qaf.getSBOM());
 
         return qaf.getID();
     }
