@@ -116,4 +116,11 @@ public class VEXFile {
     public String getContent() {
         return this.content;
     }
+
+    /**
+     * @return SBOM of VEX
+     */
+    public SBOM getSBOM(){
+        return this.sbom;
+    }
 }
