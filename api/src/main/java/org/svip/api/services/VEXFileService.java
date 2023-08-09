@@ -47,13 +47,33 @@ public class VEXFileService {
      * @return uploaded VEX entry
      * @throws Exception Error uploading to the Database
      */
-    public VEXFile upload(VEXFile vf) throws Exception {
+    private VEXFile upload(VEXFile vf) throws Exception {
         try{
             return this.vexFileRepository.save(vf);
         } catch (Exception e){
             // todo custom exception instead of generic
             throw new Exception("Failed to upload to Database: " + e.getMessage());
         }
+    }
+
+    /**
+     * Save a new VEX
+     *
+     * @param sfs SBOMFileService to use to update SBOM
+     * @param sbomFile SBOM File vex was generated from
+     * @param vf VEX file associated with the SBOM
+     * @return ID of vex file
+     */
+    public Long saveVEX(SBOMFileService sfs, org.svip.api.entities.SBOM sbomFile, VEXFile vf) throws Exception {
+
+        // Upload vf
+        upload(vf);
+
+        // Set and update SBOM File
+        sbomFile.setVEXFile(vf);
+        sfs.upload(sbomFile);
+
+        return vf.getID();
     }
 
     /**

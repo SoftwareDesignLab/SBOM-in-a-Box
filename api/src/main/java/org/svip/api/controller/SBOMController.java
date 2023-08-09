@@ -188,11 +188,7 @@ public class SBOMController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        if(sbomFile.getVEXFile() != null)
-            this.vexFileService.deleteSBOMFile(sbomFile.getVEXFile().getID());
-        // todo dif
-
-        // Delete actual SBOM file
+        // Delete SBOM file
         this.sbomService.deleteSBOMFile(sbomFile.getId());
 
         // Log
