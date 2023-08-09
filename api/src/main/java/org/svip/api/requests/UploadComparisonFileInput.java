@@ -15,7 +15,7 @@ import org.svip.metrics.pipelines.QualityReport;
  *
  * @author Derek Garcia
  **/
-public record UploadComparisonFileInput(Comparison qa) {
+public record UploadComparisonFileInput(Comparison comparison) {
 
     /**
      * Create a new Comparison File Object
@@ -23,10 +23,17 @@ public record UploadComparisonFileInput(Comparison qa) {
      * @param targetSBOM Target SBOM for comparison
      * @return ComparisonFile
      */
-    public ComparisonFile toQualityReportFile(SBOM targetSBOM) throws JsonProcessingException {
+    public ComparisonFile toQualityReportFile(SBOM targetSBOM, SBOM otherSBOM) {
         ComparisonFile qf = new ComparisonFile();
         // todo requests to convert missing and conflicts in the Comparison
-        qf.setSBOM(targetSBOM);
+        qf.setTargetSBOM(targetSBOM)
+           .setOtherSBOM(otherSBOM);
+
+        // Add SBOM Relationships
+        targetSBOM.addComparisonFileAsTarget(qf);
+        otherSBOM.addComparisonFileAsOther(qf);
+
+
         return qf;
     }
 }
