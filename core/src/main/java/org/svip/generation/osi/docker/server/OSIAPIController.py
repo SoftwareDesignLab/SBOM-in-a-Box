@@ -44,7 +44,7 @@ def generate():
     langs, manifest_files = ToolUtils.detect_language(CONTAINER_BIND_CODE)
     manifest_clean = ToolUtils.clean_manifest(manifest_files)
 
-    app.logger.info("Detected languages: " + str(langs))
+    app.logger.info("Detected languages: " + str([l.name for l in langs]))
     app.logger.info("Detected manifest files: " + str(manifest_files))
 
     tools = []
@@ -61,7 +61,7 @@ def generate():
 
     # Return 200 (ok) if sboms were generated, otherwise return 204 (no content)
     if gen_count > 0:
-        app.logger.info("{} SBOMs generated.", gen_count)
+        app.logger.info(str(gen_count) + " SBOMs generated.")
         return "Successfully generated SBOMs.", 200
     else:
         app.logger.info("No SBOMs generated.")

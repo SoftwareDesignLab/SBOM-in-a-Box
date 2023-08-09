@@ -29,3 +29,9 @@ class OSTool(object):
         Convert an OSTool to its string representation (currently name)
         """
         return self.name
+
+    def __repr__(self):
+        """
+        Convert an OSTool representation to its string value
+        """
+        return self.__str__()

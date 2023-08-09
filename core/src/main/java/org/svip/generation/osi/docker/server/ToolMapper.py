@@ -106,5 +106,4 @@ def get_tools(language: Language) -> list[OSTool]:
     :param language: Language to get tools for
     :return: List of tools
     """
-    print("ToolMapper.get_tools(" + str(language) + "): " + str(TOOL_MAPPING[language]), flush=True)
     return TOOL_MAPPING[language]
