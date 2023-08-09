@@ -8,13 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.svip.api.entities.diff.ComparisonFile;
-import org.svip.api.requests.UploadComparisonFileInput;
-import org.svip.api.services.ComparisonFileService;
+import org.svip.api.services.DiffService;
 import org.svip.api.services.SBOMFileService;
-import org.svip.compare.Comparison;
 import org.svip.compare.DiffReport;
-import org.svip.sbom.model.interfaces.generics.SBOM;
 
 /**
  * File: DiffController.java
@@ -32,17 +28,17 @@ public class DiffController {
     private static final Logger LOGGER = LoggerFactory.getLogger(DiffController.class);
 
     private final SBOMFileService sbomFileService;
-    private final ComparisonFileService comparisonFileService;
+    private final DiffService diffService;
 
     /**
      * Create new Controller with services
      *
      * @param sbomService Service for handling SBOM queries
-     * @param comparisonFileService Service for handling QA queries
+     * @param diffService Service for handling QA queries
      */
-    public DiffController(SBOMFileService sbomService, ComparisonFileService comparisonFileService){
+    public DiffController(SBOMFileService sbomService, DiffService diffService){
         this.sbomFileService = sbomService;
-        this.comparisonFileService = comparisonFileService;
+        this.diffService = diffService;
     }
 
 
@@ -60,7 +56,7 @@ public class DiffController {
         try{
 
             // Generate Diff report
-            DiffReport diffReport = this.comparisonFileService.generateDiffReport(this.sbomFileService, ids[targetIndex], ids);
+            DiffReport diffReport = this.diffService.generateDiffReport(this.sbomFileService, ids[targetIndex], ids);
 
             // Configure object mapper to remove null and empty arrays
             ObjectMapper mapper = new ObjectMapper();
