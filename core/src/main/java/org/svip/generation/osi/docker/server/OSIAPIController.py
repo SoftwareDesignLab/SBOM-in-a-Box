@@ -44,6 +44,9 @@ def generate():
     langs, manifest_files = ToolUtils.detect_language(CONTAINER_BIND_CODE)
     manifest_clean = ToolUtils.clean_manifest(manifest_files)
 
+    app.logger.info("Detected languages: " + str(langs))
+    app.logger.info("Detected manifest files: " + str(manifest_files))
+
     tools = []
     if request.is_json and len(request.get_json()) > 0:
         tools = parse_tools(request.get_json(), langs)
@@ -52,6 +55,7 @@ def generate():
         tools = ToolUtils.get_tools(langs)
 
     # Run tools and cleanup
+    app.logger.info("Running with tools: " + str(tools))
     gen_count = ToolUtils.run_tools(tools, manifest_clean, CONTAINER_BIND_CODE, CONTAINER_BIND_SBOM)
     ToolUtils.cleanup()
 

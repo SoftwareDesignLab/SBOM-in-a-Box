@@ -1,5 +1,7 @@
 import glob
 import os
+import sys
+
 from constants import Language, LANGUAGE_MAP, MANIFEST_MAP, SBOM_FORMAT, CONTAINER_BIND_SBOM
 import ToolMapper
 from OSTool import OSTool
@@ -43,7 +45,6 @@ def detect_language(path: str) -> tuple[list[Language], list[str]]:
             languages.add(MANIFEST_MAP[file_cleaned.lower()])
             manifest_paths.add(filename.replace("\\", "/").replace("./", ""))
 
-    print("Detected languages: " + str(languages))
     return list(languages), list(manifest_paths)
 
 
@@ -59,6 +60,7 @@ def get_tools(languages: list[Language]) -> list[OSTool]:
     for language in languages:
         tools.update(ToolMapper.get_tools(language))
 
+    print("ToolUtils.get_tools(" + str(languages) + "): " + str(list(tools)), flush=True)
     return list(tools)
 
 
