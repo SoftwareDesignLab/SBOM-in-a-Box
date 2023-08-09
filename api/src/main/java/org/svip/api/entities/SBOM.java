@@ -72,7 +72,7 @@ public class SBOM {
     /// Relationships
     ///
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)   // delete all qa on sbom deletion
     @JoinColumn(name = "qa_id", referencedColumnName = "id")
     private QualityReportFile qualityReportFile;
 
