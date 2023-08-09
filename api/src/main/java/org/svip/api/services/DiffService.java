@@ -1,41 +1,54 @@
 package org.svip.api.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
-import org.svip.api.entities.QualityReportFile;
-import org.svip.api.entities.SBOM;
 import org.svip.api.entities.diff.ComparisonFile;
+import org.svip.api.entities.diff.ConflictFile;
 import org.svip.api.repository.ComparisonFileRepository;
+import org.svip.api.repository.ConflictFileRepository;
 import org.svip.api.requests.UploadComparisonFileInput;
 import org.svip.compare.Comparison;
 import org.svip.compare.DiffReport;
 
-import java.util.Optional;
-
 /**
- * File: ComparisonFileService.java
+ * File: DiffFileService.java
  * Business logic for accessing the Diff Reports
  *
  * @author Derek Garcia
  **/
 @Service
-public class ComparisonFileService {
+public class DiffService {
 
     private final ComparisonFileRepository comparisonFileRepository;
+    private final ConflictFileRepository conflictFileRepository;
 
     /**
      * Create new Service for a target repository
      *
-     * @param comparisonFileRepository Diff report repository to access
+     * @param comparisonFileRepository comparison repository to access
+     * @param conflictFileRepository conflict reporsitory to access
      */
-    public ComparisonFileService(ComparisonFileRepository comparisonFileRepository){
+    public DiffService(ComparisonFileRepository comparisonFileRepository, ConflictFileRepository conflictFileRepository){
         this.comparisonFileRepository = comparisonFileRepository;
+        this.conflictFileRepository = conflictFileRepository;
     }
 
-    public ComparisonFile upload(ComparisonFile cf) throws Exception {
+    private ComparisonFile uploadComparisonFile(ComparisonFile cf) throws Exception {
         try {
-            // todo relation logic for sbom?
+            // todo better way to handle this?
+            // upload all conflict files
+            for(ConflictFile conflictFile : cf.getConflicts())
+                uploadConflictFile(conflictFile);
+
             return this.comparisonFileRepository.save(cf);
+        } catch (Exception e) {
+            // todo custom exception instead of generic
+            throw new Exception("Failed to upload to Database: " + e.getMessage());
+        }
+    }
+
+    private ConflictFile uploadConflictFile(ConflictFile cf) throws Exception {
+        try {
+            return this.conflictFileRepository.save(cf);
         } catch (Exception e) {
             // todo custom exception instead of generic
             throw new Exception("Failed to upload to Database: " + e.getMessage());
@@ -77,8 +90,8 @@ public class ComparisonFileService {
                 org.svip.sbom.model.interfaces.generics.SBOM otherSBOM = otherSBOMFile.toSBOMObject();
 
                 Comparison comparison = new Comparison(targetSBOM, otherSBOM);
-                cf = new UploadComparisonFileInput(comparison).toQualityReportFile(targetSBOMFile, otherSBOMFile);
-                upload(cf);
+                cf = new UploadComparisonFileInput(comparison).toComparisonFile(targetSBOMFile, otherSBOMFile);
+                uploadComparisonFile(cf);
             }
             diffReport.addComparison(id.toString(), cf.toComparison());
         }
