@@ -23,6 +23,7 @@ public class ComparisonFile {
     /// Relationships
     ///
 
-    @ManyToMany(mappedBy = "comparisons")
-    private Set<SBOM> sboms;
+    @ManyToOne
+    @JoinColumn(name="sbom_id", nullable=false)
+    private SBOM sbom;
 }
