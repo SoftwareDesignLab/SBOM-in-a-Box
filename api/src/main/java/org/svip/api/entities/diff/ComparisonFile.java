@@ -2,6 +2,7 @@ package org.svip.api.entities.diff;
 
 import jakarta.persistence.*;
 import org.svip.api.entities.SBOM;
+import org.svip.compare.Comparison;
 
 import java.util.Set;
 
@@ -19,23 +20,25 @@ public class ComparisonFile {
     @Column(nullable = false)
     private Long id;
 
-    // Target SBOM ID for comparison
-    @Column(nullable = false)
-    private Long targetID;
-
-    // Other SBOM ID for comparison
-    @Column(nullable = false)
-    private Long otherID;
-
-
     ///
     /// Relationships
     ///
 
     // Target SBOM
     @ManyToOne
-    @JoinColumn(name = "sbom_id", nullable = false)
-    private SBOM sbom;
+    @JoinColumn(name = "target_sbom", nullable = false)
+    private SBOM targetSBOM;
+
+    // Other SBOM
+    @ManyToOne
+    @JoinColumn(name = "other_sbom", nullable = false)
+    private SBOM otherSBOM;
+
+
+    public Comparison toComparison(){
+        // todo use CF fields to make new comparison object
+        return null;
+    }
 
     ///
     /// Setters
@@ -43,11 +46,22 @@ public class ComparisonFile {
 
     /**
      * Set Target SBOM
-     * @param sbom target sbom
+     * @param targetSBOM target sbom
      * @return Comparison file
      */
-    public ComparisonFile setSBOM(SBOM sbom){
-        this.sbom = sbom;
+    public ComparisonFile setTargetSBOM(SBOM targetSBOM){
+        this.targetSBOM = targetSBOM;
         return this;
     }
+
+    /**
+     * Set other SBOM
+     * @param otherSBOM target sbom
+     * @return Comparison file
+     */
+    public ComparisonFile setOtherSBOM(SBOM otherSBOM){
+        this.otherSBOM = otherSBOM;
+        return this;
+    }
+
 }
