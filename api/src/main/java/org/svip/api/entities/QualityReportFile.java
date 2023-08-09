@@ -9,7 +9,7 @@ import jakarta.persistence.*;
  * @author Derek Garcia
  **/
 @Entity
-@Table(name = "quality_report_file")
+@Table(name = "quality_report")
 public class QualityReportFile {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
