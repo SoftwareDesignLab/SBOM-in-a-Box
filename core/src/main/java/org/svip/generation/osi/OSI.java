@@ -15,6 +15,7 @@ import org.svip.utils.Debug;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.util.HashMap;
@@ -150,14 +151,18 @@ public class OSI {
         return client.getAllTools();
     }
 
+    public Map<String, String> generateSBOMs() throws IOException {
+        return this.generateSBOMs(null);
+    }
+
     /**
      * Use the Open Source Integration container via OSIClient to generate a series of SBOMs from the
      * given source code with a variety of tools (auto-detected).
      *
      * @return A map of each SBOM's filename to its contents.
      */
-    public Map<String, String> generateSBOMs() throws IOException {
-//        int status = this.client.runContainer();
+    public Map<String, String> generateSBOMs(List<String> toolNames) throws IOException {
+        boolean status = this.client.generateSBOMs(toolNames);
 
         cleanBoundDirectory("code");
 
@@ -165,7 +170,7 @@ public class OSI {
 
         File sbomDir = getBoundDirPath("sboms");
         // If container failed or files are null, return empty map.
-//        if (status == 1 || !sbomDir.exists() || sbomDir.listFiles() == null) return sboms;
+        if (!status || !sbomDir.exists() || sbomDir.listFiles() == null) return sboms;
 
         for (File file : sbomDir.listFiles())
             if (!file.getName().equalsIgnoreCase(".gitignore"))
@@ -277,6 +282,32 @@ public class OSI {
             } catch (JsonProcessingException e) {
                 return null;
             }
+        }
+
+        protected boolean generateSBOMs(List<String> toolNames) {
+            HttpURLConnection conn = null;
+
+            try {
+                URL tools = new URL(url + "generate");
+                conn = (HttpURLConnection) tools.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setDoOutput(true);
+
+                try (OutputStream os = conn.getOutputStream()) {
+                    try (OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8)) {
+                        if (toolNames != null) osw.write(toolNames.toString());
+                        osw.flush();
+                    }
+                }
+
+                conn.connect();
+            } catch (IOException e) {
+                return false;
+            } finally {
+                if (conn != null) conn.disconnect();
+            }
+
+            return true;
         }
     }
 }
