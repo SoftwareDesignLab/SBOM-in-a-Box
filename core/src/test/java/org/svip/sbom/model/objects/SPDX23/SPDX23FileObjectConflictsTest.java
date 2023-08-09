@@ -40,8 +40,8 @@ public class SPDX23FileObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-        assertEquals("Type doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
+        assertEquals("Type doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -55,8 +55,8 @@ public class SPDX23FileObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-        assertEquals("UID doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
+        assertEquals("UID doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -70,8 +70,8 @@ public class SPDX23FileObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.NAME_MISMATCH, conflict.GetType());
-        assertEquals("Name doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.NAME_MISMATCH, conflict.getType());
+        assertEquals("Name doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -85,8 +85,8 @@ public class SPDX23FileObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.AUTHOR_MISMATCH, conflict.GetType());
-        assertEquals("Author doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.AUTHOR_MISMATCH, conflict.getType());
+        assertEquals("Author doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -108,10 +108,10 @@ public class SPDX23FileObjectConflictsTest {
 
         for(Conflict c : conflictList)
         {
-            if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "License is missing")) {
-                if(Objects.equals(c.GetTarget(), "control license") && c.GetOther() == null)
+            if (c.getType() == MismatchType.MISSING && Objects.equals(c.getMessage(), "License is missing")) {
+                if(Objects.equals(c.getTarget(), "control license") && c.getOther() == null)
                     c1 = true;
-                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "license"))
+                else if(c.getTarget() == null && Objects.equals(c.getOther(), "license"))
                     c2 = true;
             }
         }
@@ -131,8 +131,8 @@ public class SPDX23FileObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-        assertEquals("Copyright doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
+        assertEquals("Copyright doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -151,7 +151,7 @@ public class SPDX23FileObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-        assertEquals("File Notice doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
+        assertEquals("File Notice doesn't match", conflict.getMessage());
     }
 }
