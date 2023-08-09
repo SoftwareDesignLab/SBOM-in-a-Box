@@ -10,7 +10,7 @@ import org.svip.vex.model.VEXType;
  * @author Derek Garcia
  **/
 @Entity
-@Table(name = "vex_file")
+@Table(name = "vex")
 public class VEXFile {
 
     // Database used for generation
