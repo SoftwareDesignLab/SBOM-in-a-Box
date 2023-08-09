@@ -6,6 +6,7 @@ import org.svip.compare.Comparison;
 
 import java.util.Set;
 
+
 /**
  * File: ComparisonFile.java
  * Comparison Table for the database
@@ -35,7 +36,7 @@ public class ComparisonFile {
     private SBOM otherSBOM;
 
     // Conflict collection
-    @OneToMany(mappedBy = "comparison")
+    @OneToMany(mappedBy = "comparison", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<ConflictFile> conflicts;
 
 
@@ -104,4 +105,10 @@ public class ComparisonFile {
         return this.otherSBOM;
     }
 
+    /**
+     * @return Conflicts
+     */
+    public Set<ConflictFile> getConflicts() {
+        return this.conflicts;
+    }
 }
