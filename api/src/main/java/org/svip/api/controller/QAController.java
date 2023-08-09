@@ -75,8 +75,7 @@ public class QAController {
                 return new ResponseEntity<>(sbomFile.getQualityReportFile().getContent(), HttpStatus.OK);
 
             // No QA stored, generate instead
-            org.svip.sbom.model.interfaces.generics.SBOM sbomObject = this.sbomFileService.getSBOMObject(id);
-            QualityReport qa = this.qualityReportFileService.generateQualityReport(sbomObject);
+            QualityReport qa = this.qualityReportFileService.generateQualityReport(sbomFile.toSBOMObject());
 
             // Create qaf and upload to db
             QualityReportFile qaf = new UploadQRFileInput(qa).toQualityReportFile(sbomFile);

@@ -97,25 +97,6 @@ public class SBOMFileService {
 
 
     /**
-     * Retrieve SBOM File from the database as an SBOM Object
-     *
-     * @param id of the SBOM to retrieve
-     * @return deserialized SBOM Object
-     * @throws JsonProcessingException SBOM failed to be deserialized
-     */
-    public org.svip.sbom.model.interfaces.generics.SBOM getSBOMObject(Long id) throws JsonProcessingException {
-        // Retrieve SBOMFile and check that it exists
-        SBOM sbomFile = getSBOMFile(id);
-        if(sbomFile == null)
-            return null;
-
-        // Attempt to deserialize and return the object
-        Deserializer d = SerializerFactory.createDeserializer(sbomFile.getContent());
-        return d.readFromString(sbomFile.getContent());
-    }
-
-
-    /**
      * Retrieve SBOM File from the database as an JSON String
      *
      * @param id of the SBOM to retrieve
@@ -124,7 +105,7 @@ public class SBOMFileService {
      */
     public String getSBOMObjectAsJSON(Long id) throws JsonProcessingException {
         // Retrieve SBOM Object and check that it exists
-        org.svip.sbom.model.interfaces.generics.SBOM sbom = getSBOMObject(id);
+        SBOM sbom = getSBOMFile(id);
         if(sbom == null)
             return null;
 
@@ -134,7 +115,7 @@ public class SBOMFileService {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 
         // Return JSON String
-        return mapper.writeValueAsString(sbom);
+        return mapper.writeValueAsString(sbom.toSBOMObject());
     }
 
     /**
