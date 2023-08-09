@@ -38,6 +38,9 @@ public record  UploadVEXFileInput(VEXResult vexResult) {
           .setDatasource(database)
           .setSBOM(sbom);      // adds relationship
 
+        // add to sbom
+        sbom.setVEXFile(vf);
+
         return vf;
     }
 }
