@@ -35,6 +35,9 @@ public record UploadQRFileInput(QualityReport qa) {
            .setContent(mapper.writeValueAsString(qa))
            .setSBOM(sbom);      // adds relationship
 
+        // add to sbom
+        sbom.setQualityReport(qaf);
+
         return qaf;
     }
 }
