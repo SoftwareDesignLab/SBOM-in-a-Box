@@ -99,7 +99,6 @@ public class VEXFile {
         return this;
     }
 
-
     ///
     /// Getters
     ///
