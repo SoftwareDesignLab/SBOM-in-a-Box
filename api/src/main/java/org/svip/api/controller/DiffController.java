@@ -8,18 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.svip.api.entities.SBOMFile;
-import org.svip.api.services.DiffReportFileService;
+import org.svip.api.entities.diff.ComparisonFile;
+import org.svip.api.requests.UploadComparisonFileInput;
+import org.svip.api.services.ComparisonFileService;
 import org.svip.api.services.SBOMFileService;
-import org.svip.api.utils.Utils;
+import org.svip.compare.Comparison;
 import org.svip.compare.DiffReport;
 import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.serializers.SerializerFactory;
-import org.svip.serializers.deserializer.Deserializer;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * File: DiffController.java
@@ -37,17 +32,17 @@ public class DiffController {
     private static final Logger LOGGER = LoggerFactory.getLogger(DiffController.class);
 
     private final SBOMFileService sbomFileService;
-    private final DiffReportFileService diffReportFileService;
+    private final ComparisonFileService comparisonFileService;
 
     /**
      * Create new Controller with services
      *
      * @param sbomService Service for handling SBOM queries
-     * @param diffReportFileService Service for handling QA queries
+     * @param comparisonFileService Service for handling QA queries
      */
-    public DiffController(SBOMFileService sbomService, DiffReportFileService diffReportFileService){
+    public DiffController(SBOMFileService sbomService, ComparisonFileService comparisonFileService){
         this.sbomFileService = sbomService;
-        this.diffReportFileService = diffReportFileService;
+        this.comparisonFileService = comparisonFileService;
     }
 
 
@@ -62,10 +57,10 @@ public class DiffController {
     @PostMapping("/sboms/compare")
     public ResponseEntity<String> compare(@RequestParam("targetIndex") int targetIndex, @RequestBody Long[] ids) throws JsonProcessingException {
         try{
-            /*
+
             // Get target
             long targetID = ids[targetIndex];
-            SBOM targetSBOMFile = this.sbomFileService.getSBOMFile(targetID);
+            org.svip.api.entities.SBOM targetSBOMFile = this.sbomFileService.getSBOMFile(targetID);
 
             if(targetSBOMFile == null)
                 return null;
@@ -81,17 +76,17 @@ public class DiffController {
                 if(targetID == id)
                     continue;
 
-                ComparisonFile cf = this.diffReportFileService.getComparisonFile(targetID, id);
-                // todo make method?
-                if(cf == null){
-                    SBOM otherSBOM = this.sbomFileService.getSBOMObject(id);
-                    if(other == null)
-                        continue;
-                    Comparison comparison = new Comparison(targetSBOM, otherSBOM);
-                    cf = new UploadComparisonFileInput(comparison).toComparisonFile(targetSBOMFile);
-                    this.diffReportFileService.upload(cf);
-                }
-                diffReport.addComparison(id, cf.toComparison());
+//                ComparisonFile cf = this.comparisonFileService.getComparisonFile(targetID, id);
+//                // todo make method?
+//                if(cf == null){
+//                    SBOM otherSBOM = this.sbomFileService.getSBOMObject(id);
+//                    if(other == null)
+//                        continue;
+//                    Comparison comparison = new Comparison(targetSBOM, otherSBOM);
+//                    cf = new UploadComparisonFileInput(comparison).toComparisonFile(targetSBOMFile);
+//                    this.comparisonFileService.upload(cf);
+//                }
+//                diffReport.addComparison(id, cf.toComparison());
             }
 
 
@@ -102,29 +97,29 @@ public class DiffController {
 
             return new ResponseEntity<>(mapper.writeValueAsString(diffReport), HttpStatus.OK);      // track status?
 
-             */
+
             // get target
-            long targetID = ids[targetIndex];
-            SBOM targetSBOM = this.sbomFileService.getSBOMObject(targetID);
-
-            // create diff report
-            DiffReport diffReport = new DiffReport(targetSBOM.getUID(), targetSBOM);
-
-            // Compare against all other ids
-            for(Long id : ids){
-                // don't compare against self
-                if(targetID == id)
-                    continue;
-                // todo handle bad sbom but not break?
-                diffReport.compare(id.toString(), this.sbomFileService.getSBOMObject(id));
-            }
-
-            // Configure object mapper to remove null and empty arrays
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-            mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-
-            return new ResponseEntity<>(mapper.writeValueAsString(diffReport), HttpStatus.OK);
+//            long targetID = ids[targetIndex];
+//            SBOM targetSBOM = this.sbomFileService.getSBOMObject(targetID);
+//
+//            // create diff report
+//            DiffReport diffReport = new DiffReport(targetSBOM.getUID(), targetSBOM);
+//
+//            // Compare against all other ids
+//            for(Long id : ids){
+//                // don't compare against self
+//                if(targetID == id)
+//                    continue;
+//                // todo handle bad sbom but not break?
+//                diffReport.compare(id.toString(), this.sbomFileService.getSBOMObject(id));
+//            }
+//
+//            // Configure object mapper to remove null and empty arrays
+//            ObjectMapper mapper = new ObjectMapper();
+//            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+//            mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+//
+//            return new ResponseEntity<>(mapper.writeValueAsString(diffReport), HttpStatus.OK);
 
 
         } catch (Exception e){
