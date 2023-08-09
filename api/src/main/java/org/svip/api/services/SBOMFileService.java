@@ -95,29 +95,6 @@ public class SBOMFileService {
         return vf.getID();
     }
 
-
-    /**
-     * Retrieve SBOM File from the database as an JSON String
-     *
-     * @param id of the SBOM to retrieve
-     * @return deserialized SBOM Object
-     * @throws JsonProcessingException SBOM failed to be deserialized
-     */
-    public String getSBOMObjectAsJSON(Long id) throws JsonProcessingException {
-        // Retrieve SBOM Object and check that it exists
-        SBOM sbom = getSBOMFile(id);
-        if(sbom == null)
-            return null;
-
-        // Configure object mapper to remove null and empty arrays
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-
-        // Return JSON String
-        return mapper.writeValueAsString(sbom.toSBOMObject());
-    }
-
     /**
      * Get SBOM file from database
      *
