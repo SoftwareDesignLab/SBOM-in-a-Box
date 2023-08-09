@@ -60,18 +60,17 @@ public class VEXFileService {
      * Save a new VEX
      *
      * @param sfs SBOMFileService to use to update SBOM
-     * @param sbomFile SBOM File vex was generated from
      * @param vf VEX file associated with the SBOM
      * @return ID of vex file
      */
-    public Long saveVEX(SBOMFileService sfs, org.svip.api.entities.SBOM sbomFile, VEXFile vf) throws Exception {
+    public Long saveVEX(SBOMFileService sfs, VEXFile vf) throws Exception {
 
         // Upload vf
         upload(vf);
 
         // Set and update SBOM File
-        sbomFile.setVEXFile(vf);
-        sfs.upload(sbomFile);
+        vf.getSBOM().setVEXFile(vf);
+        sfs.upload(vf.getSBOM());
 
         return vf.getID();
     }
@@ -144,26 +143,5 @@ public class VEXFileService {
         // Return VEXResult
         return new VEXResult(vex, error);
     }
-
-
-    /**
-     * Delete a target VEX File from the database
-     *
-     * @param id of the VEX to delete
-     * @return id of deleted VEX on success
-     */
-    public Long deleteSBOMFile(Long id){
-        // Retrieve SBOM File and check that it exists
-        Optional<VEXFile> vexFile = this.vexFileRepository.findById(id);
-        if (vexFile.isEmpty())
-            return null;
-
-        // Delete from repository
-        this.vexFileRepository.delete(vexFile.get());
-
-        // return confirmation id
-        return id;
-    }
-
 
 }
