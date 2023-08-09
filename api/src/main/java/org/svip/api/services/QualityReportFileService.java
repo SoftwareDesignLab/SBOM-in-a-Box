@@ -41,7 +41,7 @@ public class QualityReportFileService {
      * @return uploaded Quality Report entry
      * @throws Exception Error uploading to the Database
      */
-    private QualityReportFile upload(QualityReportFile qaf) throws Exception {
+    public QualityReportFile upload(QualityReportFile qaf) throws Exception {
         try{
             // todo relation logic for sbom?
             return this.qualityReportFileRepository.save(qaf);
@@ -49,24 +49,6 @@ public class QualityReportFileService {
             // todo custom exception instead of generic
             throw new Exception("Failed to upload to Database: " + e.getMessage());
         }
-    }
-
-    /**
-     * Save a new Quality Report
-     *
-     * @param sfs SBOMFileService to use to update SBOM
-     * @param qaf QA file associated with the SBOM
-     * @return ID of qaf
-     */
-    public Long saveQualityReport(SBOMFileService sfs, QualityReportFile qaf) throws Exception {
-
-        // Upload qaf
-        upload(qaf);
-
-        // update SBOM File
-        sfs.upload(qaf.getSBOM());
-
-        return qaf.getID();
     }
 
     /**
