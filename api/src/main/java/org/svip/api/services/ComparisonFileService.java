@@ -6,6 +6,8 @@ import org.svip.api.entities.QualityReportFile;
 import org.svip.api.entities.SBOM;
 import org.svip.api.entities.diff.ComparisonFile;
 import org.svip.api.repository.ComparisonFileRepository;
+import org.svip.api.requests.UploadComparisonFileInput;
+import org.svip.compare.Comparison;
 import org.svip.compare.DiffReport;
 
 import java.util.Optional;
@@ -30,48 +32,71 @@ public class ComparisonFileService {
         this.comparisonFileRepository = comparisonFileRepository;
     }
 
-    public ComparisonFile upload(ComparisonFile qf) throws Exception {
+    public ComparisonFile upload(ComparisonFile cf) throws Exception {
         try {
             // todo relation logic for sbom?
-            return this.comparisonFileRepository.save(qf);
+            return this.comparisonFileRepository.save(cf);
         } catch (Exception e) {
             // todo custom exception instead of generic
             throw new Exception("Failed to upload to Database: " + e.getMessage());
         }
     }
 
+    public Long saveComparison(SBOMFileService sfs, ComparisonFile cf) throws Exception {
+        // Upload qaf
+        upload(cf);
+
+        // Save sbomFile todo needed?
+        sfs.upload(cf.getTargetSBOM());
+        sfs.upload(cf.getOtherSBOM());
+
+        return cf.getID();
+    }
+
+
     public ComparisonFile getComparisonFile(SBOM targetID, SBOM otherID){
         // Retrieve Comparison File and check that it exists
         return this.comparisonFileRepository.findByTargetSBOMAndOtherSBOM(targetID, otherID);
     }
 
-//    public DiffReport compare(SBOM target, SBOM other) throws JsonProcessingException {
-//        // Get Target SBOM
-//        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(ids[targetIndex]);
-//        // Check if it exists
-//        ResponseEntity<Long> NOT_FOUND = Utils.checkIfExists(ids[targetIndex], sbomFile, "/sboms/compare");
-//        if (NOT_FOUND != null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        // create the Target SBOM object using the deserializer
-//        Deserializer d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
-//        SBOM targetSBOM = d.readFromString(sbomFile.get().getContents());
-//        // create diff report
-//        DiffReport diffReport = new DiffReport(targetSBOM.getUID(), targetSBOM);
-//        // comparison sboms
-//        for (int i = 0; i < ids.length; i++) {
-//            if (i == targetIndex) continue;
-//            // Get SBOM
-//            sbomFile = sbomFileRepository.findById(ids[i]);
-//            // Check if it exists
-//            NOT_FOUND = Utils.checkIfExists(ids[i], sbomFile, "/sboms/compare");
-//            if (NOT_FOUND != null)
-//                continue; // sbom not found, continue to next ID TODO check with front end what to do if 1 sbom is missing
-//            // create an SBOM object using the deserializer
-//            d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
-//            SBOM sbom = d.readFromString(sbomFile.get().getContents());
-//            // add the comparison to diff report
-//            diffReport.compare(sbom.getUID(), sbom);
-//        }
-//        return Utils.encodeResponse(diffReport);
-//        return null;
-//    }
+    public DiffReport generateDiffReport(SBOMFileService sfs, long targetID, Long[] ids) throws Exception {
+
+        // Get target
+        org.svip.api.entities.SBOM targetSBOMFile = sfs.getSBOMFile(targetID);
+
+        // todo throw error
+        if (targetSBOMFile == null)
+            return null;
+
+        org.svip.sbom.model.interfaces.generics.SBOM targetSBOM = targetSBOMFile.toSBOMObject();
+
+        // create diff report
+        DiffReport diffReport = new DiffReport(targetSBOM.getUID(), targetSBOM);
+
+        // Compare against all other ids
+        for (Long id : ids) {
+
+            // don't compare against self
+            if (targetID == id)
+                continue;
+
+            org.svip.api.entities.SBOM otherSBOMFile = sfs.getSBOMFile(id);
+            // skip if failed to parse
+            if (otherSBOMFile == null)
+                continue;
+
+            ComparisonFile cf = getComparisonFile(targetSBOMFile, otherSBOMFile);
+            // todo make method?
+            if (cf == null) {
+
+                org.svip.sbom.model.interfaces.generics.SBOM otherSBOM = otherSBOMFile.toSBOMObject();
+
+                Comparison comparison = new Comparison(targetSBOM, otherSBOM);
+                cf = new UploadComparisonFileInput(comparison).toQualityReportFile(targetSBOMFile, otherSBOMFile);
+                saveComparison(sfs, cf);
+            }
+            diffReport.addComparison(id.toString(), cf.toComparison());
+        }
+        return diffReport;
+    }
 }
