@@ -69,7 +69,8 @@ public class Utils {
      *
      * @return whether it is valid to proceed with this test
      */
-    public static boolean convertTestController(String convertToSchema, String convertToFormat, Long id,
+    public static boolean convertTestController(SerializerFactory.Schema convertToSchema,
+                                                SerializerFactory.Format convertToFormat, Long id,
                                                 SerializerFactory.Schema thisSchema, Map<Long, SBOMFile> testMap,
                                                 SBOMFile original) {
         Long[] validTests = {0L, 2L, 6L, 7L};
@@ -86,14 +87,16 @@ public class Utils {
         SerializerFactory.Format thisFormat = SerializerFactory.resolveFormat(original.getContents());
         if (thisFormat == null) return false;
 
-        if (thisSchema == SerializerFactory.Schema.SPDX23 && (convertToSchema.equals("SPDX23")))
+        if (thisSchema == SerializerFactory.Schema.SPDX23 && (convertToSchema == SerializerFactory.Schema.SPDX23))
             if (Objects.equals(convertToFormat, thisFormat.toString()))
                 return true;
 
-        if (thisSchema == SerializerFactory.Schema.CDX14 && (convertToSchema.equals("CDX14"))) return true;
+        if (thisSchema == SerializerFactory.Schema.CDX14 && (convertToSchema == SerializerFactory.Schema.CDX14))
+            return true;
 
         // tagvalue format unsupported for cdx14
-        if (convertToSchema.equals("CDX14") && convertToFormat.equals("TAGVALUE")) return true;
+        if (convertToSchema == SerializerFactory.Schema.CDX14 && convertToFormat == SerializerFactory.Format.TAGVALUE)
+            return true;
 
         // we don't support xml deserialization right now
         return testMap.get(id).getContents().contains("xml");
@@ -117,28 +120,6 @@ public class Utils {
         return sbomFiles;
     }
 
-    /**
-     * Generates new ID given old one
-     *
-     * @param id                 old ID
-     * @param rand               Random class
-     * @param sbomFileRepository repository
-     * @return new ID
-     */
-    public static long generateNewId(long id, Random rand, SBOMFileRepository sbomFileRepository) {
-        // assign new id and name
-        int i = 0;
-        try {
-            while (sbomFileRepository.findById(id).isPresent()) {
-                id += (Math.abs(rand.nextLong()) + id) % ((i < 100 && id < 0) ? id : Long.MAX_VALUE);
-                i++;
-            }
-        } catch (NullPointerException e) {
-            return id;
-        }
-
-        return id;
-    }
 
     /**
      * Unzip a ZipFile of SBOMFiles

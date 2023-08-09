@@ -169,4 +169,5 @@ public class SBOM {
     public FileType getFileType() {
         return this.fileType;
     }
+
 }

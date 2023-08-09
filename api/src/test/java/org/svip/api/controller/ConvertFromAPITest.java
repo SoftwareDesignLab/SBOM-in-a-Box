@@ -1,5 +1,6 @@
 package org.svip.api.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -8,7 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.utils.Utils;
+import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.serializers.SerializerFactory;
+import org.svip.serializers.exceptions.DeserializerException;
+import org.svip.serializers.exceptions.SerializerException;
 
 import java.io.IOException;
 import java.util.Map;
@@ -33,10 +37,8 @@ public class ConvertFromAPITest extends APITest {
     @DisplayName("Convert to CDX tag value test")
     public void CDXTagValueTest() {
         setupMockRepository();
-
-        assertEquals(HttpStatus.BAD_REQUEST, controller.convert(0L, SerializerFactory.Schema.CDX14,
-                        SerializerFactory.Format.TAGVALUE, true).
-                getStatusCode());
+        assertThrows(SerializerException.class, () -> controller.convert(0L, SerializerFactory.Schema.CDX14,
+                SerializerFactory.Format.TAGVALUE, true));
     }
 
     /**
@@ -48,12 +50,12 @@ public class ConvertFromAPITest extends APITest {
 
         setupMockRepository();
 
-        String[] schemas = {"CDX14", "SPDX23"};
-        String[] formats = {"JSON", "TAGVALUE"};
+        SerializerFactory.Schema[] schemas = {SerializerFactory.Schema.CDX14, SerializerFactory.Schema.SPDX23};
+        SerializerFactory.Format[] formats = {SerializerFactory.Format.JSON, SerializerFactory.Format.TAGVALUE};
 
-        for (String convertToSchema : schemas
+        for (SerializerFactory.Schema convertToSchema : schemas
         ) {
-            for (String convertToFormat : formats
+            for (SerializerFactory.Format convertToFormat : formats
             ) {
                 for (Long id : testMap.keySet()) {
 
@@ -62,45 +64,24 @@ public class ConvertFromAPITest extends APITest {
                     SerializerFactory.Schema thisSchema = SerializerFactory.resolveSchema(sbom.getContents());
 
                     // check if test is valid
-                    if (Utils.convertTestController(convertToSchema, convertToFormat, id, thisSchema, testMap, sbom))
-                        continue;
+                    if (Utils.convertTestController(convertToSchema, convertToFormat, id,
+                            thisSchema, testMap, sbom)) continue;
 
                     // test conversion to schema and format
                     LOGGER.info("ID: " + id + " Converting " + thisSchema.name() + " --> " + convertToSchema);
                     LOGGER.info("From             " + ((sbom.getFileName()).contains("json")
                             ? "JSON" : "TAGVALUE") + " --> " + convertToFormat);
-                    ResponseEntity<Long> response = controller.convert(id, SerializerFactory.Schema.valueOf(convertToSchema),
-                            SerializerFactory.Format.valueOf(convertToFormat), false);
+
+                    ResponseEntity<?> resposeObject = controller.convert(id, convertToSchema, convertToFormat, false);
+                    assertInstanceOf(Long.class, resposeObject.getBody());
+
+                    ResponseEntity<Long> response = (ResponseEntity<Long>) resposeObject;
                     Long responseBody = response.getBody();
 
                     // check if OK
                     assertEquals(HttpStatus.OK, response.getStatusCode());
                     assertNotNull(responseBody);
 
-//                    // assert we can convert again
-//                    try {
-//
-//                        // this test in particular takes several minutes, it passes
-//                        if (id == 6 && thisSchema == SerializerFactory.Schema.CDX14 && convertToFormat.equals("TAGVALUE")) {
-//                            LOGGER.info("Reconversion ignored for the sake of time.\n-------------\n");
-//                            continue;
-//                        }
-//
-//                        String originalFormat = Utils.assumeFormatFromDocument(sbom);
-//                                                                                              // todo with convert returning a long, we can't reconvert
-//                        assertEquals("", Converter.convert(new SBOMFile("convertBack." +
-//                                        (originalFormat.equals("TAGVALUE") ? "json" : "spdx"),
-//
-//                                        responseBody), thisSchema, SerializerFactory.Format.valueOf(originalFormat)).
-//                                values().toArray()[0]);
-//                        LOGGER.info("Reconversion successful!");
-//
-//                    } catch (Exception e) {
-//
-//                        LOGGER.error("Cannot reconvert: " + e.getMessage());
-//                        fail();
-//
-//                    }
                     LOGGER.info("\n-------------\n");
                 }
             }

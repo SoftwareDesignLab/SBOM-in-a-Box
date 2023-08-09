@@ -2,6 +2,7 @@ package org.svip.api.requests;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.svip.api.entities.SBOM;
+import org.svip.api.services.SBOMFileService;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
 
