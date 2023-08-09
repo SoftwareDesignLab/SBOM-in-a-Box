@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
+import org.svip.api.entities.diff.ComparisonFile;
 import org.svip.serializers.SerializerFactory;
 import org.svip.api.entities.diff.ComparisonFile;
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
