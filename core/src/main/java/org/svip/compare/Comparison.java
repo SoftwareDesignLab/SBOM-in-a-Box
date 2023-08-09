@@ -145,4 +145,15 @@ public class Comparison {
     public Map<String, List<Conflict>> getComponentConflicts() {
         return this.componentConflicts;
     }
+
+    ///
+    /// Getters
+    ///
+
+    /**
+     * @return List of component conflicts
+     */
+    public Map<String, List<Conflict>> getComponentConflicts() {
+        return this.componentConflicts;
+    }
 }
