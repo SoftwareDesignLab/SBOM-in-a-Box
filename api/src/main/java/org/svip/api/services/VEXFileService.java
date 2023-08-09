@@ -60,18 +60,17 @@ public class VEXFileService {
      * Save a new VEX
      *
      * @param sfs SBOMFileService to use to update SBOM
-     * @param sbomFile SBOM File vex was generated from
      * @param vf VEX file associated with the SBOM
      * @return ID of vex file
      */
-    public Long saveVEX(SBOMFileService sfs, org.svip.api.entities.SBOM sbomFile, VEXFile vf) throws Exception {
+    public Long saveVEX(SBOMFileService sfs, VEXFile vf) throws Exception {
 
         // Upload vf
         upload(vf);
 
         // Set and update SBOM File
-        sbomFile.setVEXFile(vf);
-        sfs.upload(sbomFile);
+        vf.getSBOM().setVEXFile(vf);
+        sfs.upload(vf.getSBOM());
 
         return vf.getID();
     }
