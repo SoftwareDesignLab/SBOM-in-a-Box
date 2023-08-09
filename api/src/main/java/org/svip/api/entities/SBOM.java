@@ -76,7 +76,7 @@ public class SBOM {
     @JoinColumn(name = "qa_id", referencedColumnName = "id")
     private QualityReportFile qualityReportFile;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)   // delete all vex on sbom deletion
     @JoinColumn(name = "vex_id", referencedColumnName = "id")
     private VEXFile vexFile;
 
