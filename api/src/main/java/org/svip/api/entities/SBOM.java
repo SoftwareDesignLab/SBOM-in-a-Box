@@ -83,9 +83,13 @@ public class SBOM {
     @JoinColumn(name = "vex_id", referencedColumnName = "id")
     private VEXFile vexFile;
 
-    @OneToMany(mappedBy = "sbom")
-    private Set<ComparisonFile> comparisons;
+    // Collection of comparisons where this was the target
+    @OneToMany(mappedBy = "targetSBOM")
+    private Set<ComparisonFile> comparisonsAsTarget;
 
+    // Collection of comparisons where this was the other
+    @OneToMany(mappedBy = "otherSBOM")
+    private Set<ComparisonFile> comparisonsAsOther;
 
     /**
      * Convert SBOMFile to SBOM Object
@@ -195,6 +199,16 @@ public class SBOM {
      */
     public SBOM setVEXFile(VEXFile vf){
         this.vexFile = vf;
+        return this;
+    }
+
+    public SBOM addComparisonFileAsTarget(ComparisonFile cf){
+        this.comparisonsAsTarget.add(cf);
+        return this;
+    }
+
+    public SBOM addComparisonFileAsOther(ComparisonFile cf){
+        this.comparisonsAsOther.add(cf);
         return this;
     }
 

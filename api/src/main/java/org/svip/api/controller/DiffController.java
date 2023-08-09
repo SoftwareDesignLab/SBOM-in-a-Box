@@ -71,23 +71,29 @@ public class DiffController {
             DiffReport diffReport = new DiffReport(targetSBOM.getUID(), targetSBOM);
 
              // Compare against all other ids
-//            for(Long id : ids){
-//                // don't compare against self
-//                if(targetID == id)
-//                    continue;
+            for(Long id : ids){
 
-//                ComparisonFile cf = this.comparisonFileService.getComparisonFile(targetID, id);
-//                // todo make method?
-//                if(cf == null){
-//                    SBOM otherSBOM = this.sbomFileService.getSBOMObject(id);
-//                    if(other == null)
-//                        continue;
-//                    Comparison comparison = new Comparison(targetSBOM, otherSBOM);
-//                    cf = new UploadComparisonFileInput(comparison).toComparisonFile(targetSBOMFile);
-//                    this.comparisonFileService.upload(cf);
-//                }
-//                diffReport.addComparison(id, cf.toComparison());
-//            }
+                // don't compare against self
+                if(targetID == id)
+                    continue;
+
+                org.svip.api.entities.SBOM otherSBOMFile = this.sbomFileService.getSBOMFile(id);
+                // skip if failed to parse
+                if(otherSBOMFile == null)
+                    continue;
+
+                ComparisonFile cf = this.comparisonFileService.getComparisonFile(targetSBOMFile, otherSBOMFile);
+                // todo make method?
+                if(cf == null){
+
+                    SBOM otherSBOM = this.sbomFileService.getSBOMObject(id);
+
+                    Comparison comparison = new Comparison(targetSBOM, otherSBOM);
+                    cf = new UploadComparisonFileInput(comparison).toQualityReportFile(targetSBOMFile, otherSBOMFile);
+                    this.comparisonFileService.upload(cf);
+                }
+                diffReport.addComparison(id.toString(), cf.toComparison());
+            }
 
 
             // Configure object mapper to remove null and empty arrays
