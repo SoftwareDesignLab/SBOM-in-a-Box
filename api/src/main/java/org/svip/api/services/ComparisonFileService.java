@@ -42,17 +42,6 @@ public class ComparisonFileService {
         }
     }
 
-    public Long saveComparison(SBOMFileService sfs, ComparisonFile cf) throws Exception {
-        // Upload cf
-        upload(cf);
-
-        // Save SBOMss
-        sfs.upload(cf.getTargetSBOM());
-        sfs.upload(cf.getOtherSBOM());
-
-        return cf.getID();
-    }
-
 
     public ComparisonFile getComparisonFile(SBOM targetID, SBOM otherID){
         // Retrieve Comparison File and check that it exists
@@ -94,7 +83,7 @@ public class ComparisonFileService {
 
                 Comparison comparison = new Comparison(targetSBOM, otherSBOM);
                 cf = new UploadComparisonFileInput(comparison).toQualityReportFile(targetSBOMFile, otherSBOMFile);
-                saveComparison(sfs, cf);
+                upload(cf);
             }
             diffReport.addComparison(id.toString(), cf.toComparison());
         }
