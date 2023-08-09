@@ -43,6 +43,10 @@ public class ComparisonFile {
     @JoinColumn(name = "other_sbom", nullable = false)
     private SBOM otherSBOM;
 
+    // Conflict collection
+    @OneToMany(mappedBy = "comparison")
+    private Set<ConflictFile> conflicts;
+
 
     public Comparison toComparison(){
         // todo use CF fields to make new comparison object
