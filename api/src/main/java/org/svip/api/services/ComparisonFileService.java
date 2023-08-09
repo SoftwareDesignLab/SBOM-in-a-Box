@@ -43,10 +43,10 @@ public class ComparisonFileService {
     }
 
     public Long saveComparison(SBOMFileService sfs, ComparisonFile cf) throws Exception {
-        // Upload qaf
+        // Upload cf
         upload(cf);
 
-        // Save sbomFile todo needed?
+        // Save SBOMss
         sfs.upload(cf.getTargetSBOM());
         sfs.upload(cf.getOtherSBOM());
 
@@ -58,6 +58,7 @@ public class ComparisonFileService {
         // Retrieve Comparison File and check that it exists
         return this.comparisonFileRepository.findByTargetSBOMAndOtherSBOM(targetID, otherID);
     }
+
 
     public DiffReport generateDiffReport(SBOMFileService sfs, long targetID, Long[] ids) throws Exception {
 
