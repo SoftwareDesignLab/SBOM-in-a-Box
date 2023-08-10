@@ -1,5 +1,6 @@
 package org.svip.api.entities.diff;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.svip.compare.conflicts.Conflict;
@@ -20,6 +21,7 @@ public class ConflictFile {
     private Long id;
 
     @Column(nullable = false)
+    @JsonIgnore
     private String name;
 
     @Column(nullable = false)
