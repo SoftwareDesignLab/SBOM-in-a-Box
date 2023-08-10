@@ -1,7 +1,6 @@
 package org.svip.api.services;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
@@ -12,7 +11,6 @@ import org.svip.api.repository.ComparisonFileRepository;
 import org.svip.api.repository.ConflictFileRepository;
 import org.svip.api.requests.diff.UploadComparisonFileInput;
 import org.svip.compare.Comparison;
-import org.svip.compare.DiffReport;
 import org.svip.compare.conflicts.MismatchType;
 
 import java.util.ArrayList;
