@@ -1,13 +1,17 @@
 package org.svip.api.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
+import org.svip.api.entities.SBOM;
 import org.svip.api.entities.diff.ComparisonFile;
 import org.svip.api.entities.diff.ConflictFile;
 import org.svip.api.repository.ComparisonFileRepository;
 import org.svip.api.repository.ConflictFileRepository;
 import org.svip.api.requests.UploadComparisonFileInput;
+import org.svip.api.requests.UploadConflictFileInput;
 import org.svip.compare.Comparison;
 import org.svip.compare.DiffReport;
+import org.svip.compare.conflicts.Conflict;
 
 /**
  * File: DiffFileService.java
@@ -32,13 +36,9 @@ public class DiffService {
         this.conflictFileRepository = conflictFileRepository;
     }
 
+
     private ComparisonFile uploadComparisonFile(ComparisonFile cf) throws Exception {
         try {
-            // todo better way to handle this?
-            // upload all conflict files
-            for(ConflictFile conflictFile : cf.getConflicts())
-                uploadConflictFile(conflictFile);
-
             return this.comparisonFileRepository.save(cf);
         } catch (Exception e) {
             // todo custom exception instead of generic
@@ -53,6 +53,29 @@ public class DiffService {
             // todo custom exception instead of generic
             throw new Exception("Failed to upload to Database: " + e.getMessage());
         }
+    }
+
+    private ComparisonFile uploadNewComparison(SBOM targetSBOMFile, SBOM otherSBOMFile) throws Exception {
+
+        Comparison comparison = new Comparison(targetSBOMFile.toSBOMObject(), otherSBOMFile.toSBOMObject());
+
+        // upload new comparison
+        ComparisonFile cf = new UploadComparisonFileInput(comparison).toComparisonFile(targetSBOMFile, otherSBOMFile);
+        cf = uploadComparisonFile(cf);
+
+        var foo = this.comparisonFileRepository.findById(cf.getID()).get();
+
+        // add all conflicts
+        for(String key : comparison.getComponentConflicts().keySet()){
+            for(Conflict c : comparison.getComponentConflicts().get(key)){
+                // Convert to ConflictFile and upload
+                ConflictFile conflictFile = new UploadConflictFileInput(key, c).toConflictFile(cf);
+                uploadConflictFile(conflictFile);
+            }
+        }
+        // todo add all missing
+
+        return cf;
     }
 
 
@@ -82,17 +105,12 @@ public class DiffService {
             if (otherSBOMFile == null)
                 continue;
 
-            ComparisonFile cf = this.comparisonFileRepository.findByTargetSBOMAndOtherSBOM(targetSBOMFile, otherSBOMFile);
-
+//            ComparisonFile cf = this.comparisonFileRepository.findByTargetSBOMAndOtherSBOM(targetSBOMFile, otherSBOMFile);
+            ComparisonFile cf = uploadNewComparison(targetSBOMFile, otherSBOMFile);
             // todo make method?
-            if (cf == null) {
-
-                org.svip.sbom.model.interfaces.generics.SBOM otherSBOM = otherSBOMFile.toSBOMObject();
-
-                Comparison comparison = new Comparison(targetSBOM, otherSBOM);
-                cf = new UploadComparisonFileInput(comparison).toComparisonFile(targetSBOMFile, otherSBOMFile);
-                uploadComparisonFile(cf);
-            }
+//            if (cf == null) {
+//
+//            }
             diffReport.addComparison(id.toString(), cf.toComparison());
         }
         return diffReport;

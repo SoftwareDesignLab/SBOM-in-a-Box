@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.svip.api.entities.SBOM;
 import org.svip.compare.Comparison;
 
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -45,8 +46,9 @@ public class ComparisonFile {
     private SBOM otherSBOM;
 
     // Conflict collection
-    @OneToMany(mappedBy = "comparison", orphanRemoval = true, cascade = CascadeType.ALL)
-    private Set<ConflictFile> conflicts;
+//    @OneToMany(mappedBy = "comparison", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "comparison")
+    private Set<ConflictFile> conflicts = new HashSet<>();
 
 
     public Comparison toComparison(){
