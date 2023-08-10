@@ -39,7 +39,12 @@ public class DiffService {
 
     private ComparisonFile uploadComparisonFile(ComparisonFile cf) throws Exception {
         try {
-            return this.comparisonFileRepository.save(cf);
+            this.comparisonFileRepository.save(cf);
+            // upload conflicts
+            for(ConflictFile c : cf.getConflicts())
+                uploadConflictFile(c);
+            // todo missing?
+            return cf;
         } catch (Exception e) {
             // todo custom exception instead of generic
             throw new Exception("Failed to upload to Database: " + e.getMessage());
@@ -61,19 +66,7 @@ public class DiffService {
 
         // upload new comparison
         ComparisonFile cf = new UploadComparisonFileInput(comparison).toComparisonFile(targetSBOMFile, otherSBOMFile);
-        cf = uploadComparisonFile(cf);
-
-        var foo = this.comparisonFileRepository.findById(cf.getID()).get();
-
-        // add all conflicts
-        for(String key : comparison.getComponentConflicts().keySet()){
-            for(Conflict c : comparison.getComponentConflicts().get(key)){
-                // Convert to ConflictFile and upload
-                ConflictFile conflictFile = new UploadConflictFileInput(key, c).toConflictFile(cf);
-                uploadConflictFile(conflictFile);
-            }
-        }
-        // todo add all missing
+        uploadComparisonFile(cf);
 
         return cf;
     }

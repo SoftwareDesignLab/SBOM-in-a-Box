@@ -17,20 +17,20 @@ public class ConflictFile {
     @Column(nullable = false)
     private Long id;
 
-    @Column(nullable = false)
+    @Column()
     private String name;
 
-    @Column(nullable = false)
+    @Column()
     private String message;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "mismatch_type")
     private MismatchType mismatchType;
 
-    @Column(nullable = false, name = "target_value")
+    @Column(name = "target_value")
     private String targetValue;
 
-    @Column(nullable = false, name = "other_value")
+    @Column(name = "other_value")
     private String otherValue;
 
     ///
