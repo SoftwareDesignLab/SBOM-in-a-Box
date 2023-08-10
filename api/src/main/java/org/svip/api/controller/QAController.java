@@ -98,8 +98,8 @@ public class QAController {
 
             // Create qaf and upload to db
             QualityReportFile qaf = new UploadQRFileInput(qa).toQualityReportFile(sbomFile);
-//            this.qualityReportFileService.saveQualityReport(this.sbomFileService, qaf);     // update sbom relation
             this.qualityReportFileService.upload(qaf);
+
             // Log
             LOGGER.info("QA /svip/sboms/?id=" + id);
 
