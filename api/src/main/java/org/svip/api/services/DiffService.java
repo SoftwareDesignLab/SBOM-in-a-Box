@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.svip.api.entities.SBOM;
 import org.svip.api.entities.diff.ComparisonFile;
 import org.svip.api.entities.diff.ConflictFile;
@@ -25,6 +26,7 @@ import java.util.Map;
  * @author Derek Garcia
  **/
 @Service
+@Transactional
 public class DiffService {
 
     // Utility to hold JSON Formatted Diff Report
@@ -80,6 +82,14 @@ public class DiffService {
      */
     private ConflictFile uploadConflictFile(ConflictFile cf) throws Exception {
         try {
+            /* TODO HOTFIX
+                Handles edge case where an SBOM object has only null values, guess is regex failure and not enough
+                info to build in the deserialization stage. UPLOAD SHOULD FAIL IF NAME IS NULL, this just prevents
+                that from happening
+            */
+            if(cf.getName() == null)
+                return null;
+
             return this.conflictFileRepository.save(cf);
         } catch (Exception e) {
             // todo custom exception instead of generic
@@ -126,13 +136,12 @@ public class DiffService {
             ComparisonFile cf = this.comparisonFileRepository.findByTargetSBOMAndOtherSBOM(targetSBOMFile, otherSBOMFile);
             if(cf == null){
                 Comparison comparison = new Comparison(targetSBOM, otherSBOMFile.toSBOMObject());
-                upload(new UploadComparisonFileInput(comparison).toComparisonFile(targetSBOMFile, otherSBOMFile));
+                cf = upload(new UploadComparisonFileInput(comparison).toComparisonFile(targetSBOMFile, otherSBOMFile));
             }
 
             // Sort component conflicts
             Map<String, List<ConflictFile>> componentConflicts = new HashMap<>();
             List<String> missingComponents = new ArrayList<>();
-            assert cf != null;
             for(ConflictFile c : cf.getConflicts()){
                 // Add to missing if missing
                 if(c.getMismatchType() == MismatchType.MISSING_COMPONENT){
