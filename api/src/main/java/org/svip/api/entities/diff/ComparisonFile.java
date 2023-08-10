@@ -54,11 +54,6 @@ public class ComparisonFile {
     private Set<ConflictFile> conflicts = new HashSet<>();
 
 
-    public Comparison toComparison(){
-        // todo use CF fields to make new comparison object
-        return null;
-    }
-
     ///
     /// Setters
     ///

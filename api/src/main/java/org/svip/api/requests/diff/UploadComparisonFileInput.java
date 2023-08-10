@@ -1,8 +1,7 @@
-package org.svip.api.requests;
+package org.svip.api.requests.diff;
 
 import org.svip.api.entities.SBOM;
 import org.svip.api.entities.diff.ComparisonFile;
-import org.svip.api.entities.diff.ConflictFile;
 import org.svip.compare.Comparison;
 import org.svip.compare.conflicts.Conflict;
 
@@ -38,7 +37,7 @@ public record UploadComparisonFileInput(Comparison comparison) {
 
         for(String component : this.comparison().getMissingFromOther())
             cf.addConflictFile(new UploadConflictFileInput(component).toMissingConflictFile(cf, true));
-        
+
         // set parent relationships
         cf.setTargetSBOM(targetSBOM)
            .setOtherSBOM(otherSBOM);
