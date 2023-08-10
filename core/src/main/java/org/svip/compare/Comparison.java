@@ -28,8 +28,8 @@ public class Comparison {
     @JsonProperty
     private final List<String> missingComponents = new ArrayList<>();
 
-    private List<String> missingFromTarget = new ArrayList<>();
-    private List<String> missingFromOther = new ArrayList<>();
+    private final List<String> missingFromTarget = new ArrayList<>();
+    private final List<String> missingFromOther = new ArrayList<>();
 
 
     /**

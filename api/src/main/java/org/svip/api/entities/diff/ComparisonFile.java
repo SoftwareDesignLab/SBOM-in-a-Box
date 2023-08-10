@@ -1,6 +1,8 @@
 package org.svip.api.entities.diff;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.svip.api.entities.SBOM;
 import org.svip.compare.Comparison;
 
@@ -38,15 +40,17 @@ public class ComparisonFile {
     // Target SBOM
     @ManyToOne
     @JoinColumn(name = "target_sbom_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private SBOM targetSBOM;
 
     // Other SBOM
     @ManyToOne
     @JoinColumn(name = "other_sbom_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private SBOM otherSBOM;
 
     // Conflict collection
-    @OneToMany(mappedBy = "comparison")
+    @OneToMany(mappedBy = "comparison", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<ConflictFile> conflicts = new HashSet<>();
 
 
@@ -99,20 +103,6 @@ public class ComparisonFile {
      */
     public Long getID(){
         return this.id;
-    }
-
-    /**
-     * @return Target SBOM
-     */
-    public SBOM getTargetSBOM(){
-        return this.targetSBOM;
-    }
-
-    /**
-     * @return Other SBOM
-     */
-    public SBOM getOtherSBOM(){
-        return this.otherSBOM;
     }
 
     /**
