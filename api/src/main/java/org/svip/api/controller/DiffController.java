@@ -1,20 +1,13 @@
 package org.svip.api.controller;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.svip.api.entities.diff.ComparisonFile;
-import org.svip.api.requests.UploadComparisonFileInput;
-import org.svip.api.requests.UploadConflictFileInput;
 import org.svip.api.services.DiffService;
 import org.svip.api.services.SBOMFileService;
-import org.svip.compare.Comparison;
-import org.svip.compare.DiffReport;
 
 /**
  * File: DiffController.java
