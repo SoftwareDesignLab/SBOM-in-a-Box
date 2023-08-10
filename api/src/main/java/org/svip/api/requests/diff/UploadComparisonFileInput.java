@@ -32,31 +32,11 @@ public record UploadComparisonFileInput(Comparison comparison) {
         }
 
         // Add missing conflicts
-        for(String component : this.comparison().getMissingFromTarget()){
-            /* TODO HOTFIX
-                Handles edge case where an SBOM object has only null values, guess is regex failure and not enough
-                info to build in the deserialization stage. UPLOAD SHOULD FAIL IF NAME IS NULL, this just prevents
-                that from happening
-            */
-            if(component == null)
-                continue;
-            // end hotfix
+        for(String component : this.comparison().getMissingFromTarget())
             cf.addConflictFile(new UploadConflictFileInput(component).toMissingConflictFile(cf, false));
-        }
 
-
-        for(String component : this.comparison().getMissingFromOther()){
-            /* TODO HOTFIX
-                Handles edge case where an SBOM object has only null values, guess is regex failure and not enough
-                info to build in the deserialization stage. UPLOAD SHOULD FAIL IF NAME IS NULL, this just prevents
-                that from happening
-            */
-            if(component == null)
-                continue;
-            // end hotfix
+        for(String component : this.comparison().getMissingFromOther())
             cf.addConflictFile(new UploadConflictFileInput(component).toMissingConflictFile(cf, true));
-        }
-
 
         // set parent relationships
         cf.setTargetSBOM(targetSBOM)
@@ -65,6 +45,7 @@ public record UploadComparisonFileInput(Comparison comparison) {
         // Add SBOM Relationships
         targetSBOM.addComparisonFileAsTarget(cf);
         otherSBOM.addComparisonFileAsOther(cf);
+
 
         return cf;
     }
