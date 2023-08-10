@@ -4,15 +4,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
-import org.svip.api.entities.QualityReportFile;
 import org.svip.api.entities.SBOM;
-import org.svip.api.entities.VEXFile;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.conversion.Conversion;
 import org.svip.sbom.builder.SBOMBuilderException;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.SerializerFactory;
@@ -79,7 +76,8 @@ public class SBOMFileService {
         } catch (Exception e) {
             throw new DeserializerException("Deserialization Error: " + e.getMessage());
         }
-        if (deserialized == null) throw new DeserializerException("Cannot retrieve SBOM with id " + id + " to deserialize");
+        if (deserialized == null)
+            throw new DeserializerException("Cannot retrieve SBOM with id " + id + " to deserialize");
 
         SBOM.Schema ogSchema = (deserialized instanceof SPDX23SBOM) ? SBOM.Schema.SPDX_23 : SBOM.Schema.CYCLONEDX_14;
 
@@ -170,42 +168,10 @@ public class SBOMFileService {
         // Retrieve SBOM File and check that it exists
 
         Optional<SBOM> sbomFile = this.sbomRepository.findById(id);
-
-        try {
-            SBOM try_ = sbomFile.get();
-        } catch (ClassCastException e) {
-
-            Object tmp = this.sbomRepository.findById(id).get(); // todo remove after new unit tests are written
-            SBOMFile oldSbomFile = (SBOMFile) tmp;
-            sbomFile = Optional.of(getSbom(oldSbomFile));
-            //sbomFile.get().id = oldSbomFile.getId(); // uncomment for (old) unit tests
-
-        }
-
         return sbomFile.orElse(null);
 
     }
 
-    /**
-     * // todo temporary fix until new tests are written
-     */
-    private static SBOM getSbom(SBOMFile oldSbomFile) {
-        SBOM sbom = new SBOM();
-
-        sbom.setName(oldSbomFile.getFileName());
-        sbom.setContent(oldSbomFile.getContents());
-
-        SBOM.Schema schema = sbom.getName().endsWith(".spdx") && sbom.getContent().toLowerCase().contains("spdx") ?
-                SBOM.Schema.SPDX_23 : SBOM.Schema.CYCLONEDX_14;
-
-        sbom.setSchema(schema);
-
-        SBOM.FileType fileType = schema == SBOM.Schema.CYCLONEDX_14 && !sbom.getContent().toLowerCase().contains("spdx") ?
-                SBOM.FileType.JSON : SBOM.FileType.TAG_VALUE;
-
-        sbom.setFileType(fileType);
-        return sbom;
-    }
 
     /**
      * Get all the IDs of the store SBOMs in the database
@@ -229,7 +195,7 @@ public class SBOMFileService {
      * @param sbomFile SBOM file to delete
      * @return id of deleted SBOM on success
      */
-    public Long deleteSBOMFile(SBOM sbomFile){
+    public Long deleteSBOMFile(SBOM sbomFile) {
 
         // Delete from repository
         this.sbomRepository.delete(sbomFile);
