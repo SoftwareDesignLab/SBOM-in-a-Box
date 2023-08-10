@@ -1,6 +1,8 @@
 package org.svip.api.entities.diff;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import org.svip.compare.conflicts.Conflict;
 import org.svip.compare.conflicts.MismatchType;
 
 /**
@@ -21,16 +23,20 @@ public class ConflictFile {
     private String name;
 
     @Column
+    @JsonProperty("message")
     private String message;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "mismatch_type")
+    @JsonProperty("type")
     private MismatchType mismatchType;
 
     @Column(name = "target_value")
+    @JsonProperty("target")
     private String targetValue;
 
     @Column(name = "other_value")
+    @JsonProperty("other")
     private String otherValue;
 
     ///
@@ -41,7 +47,7 @@ public class ConflictFile {
     @ManyToOne
     @JoinColumn(name = "comparison_id", nullable = false)
     private ComparisonFile comparison;
-    
+
     
     ///
     /// Setters
@@ -108,5 +114,17 @@ public class ConflictFile {
     public ConflictFile setComparison(ComparisonFile cf) {
         this.comparison = cf;
         return this;
+    }
+
+    ///
+    /// Getters
+    ///
+
+    public String getName() {
+        return this.name;
+    }
+
+    public MismatchType getMismatchType(){
+        return this.mismatchType;
     }
 }
