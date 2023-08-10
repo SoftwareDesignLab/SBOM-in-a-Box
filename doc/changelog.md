@@ -3,6 +3,27 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v7.3.0-alpha] - (8/9/2023)
+
+### Changed
+- Simplified table names by removing the `_file` suffix
+- Move `toSBOMObject` / `toSBOMObjectAsJSON` to the SBOMFile rather than object
+- Refactored services to reference other services instead of depending on contollers
+  - `saveQualityReport` and `saveVEX` moved to their respective services
+- Services take objects instead of ids
+
+## [v7.2.5-alpha] - (8/7/2023)
+### Added
+- `VEXFileService` for handling database operations
+- `UploadVEXFileInput` to handle new VEX and ensure relationships are added correctly
+- `VEXFile` that stores VEX information and schema/format details
+- `VEXController` to handle VEX API generation
+
+### Changed
+- Moved `/svip/sboms/vex` endpoint to `VEXController`
+- VEX are generated only once and stored in database. Subsequent request query the database
+- `/delete` deletes VEX stored in database for a SBOM that is deleted
+
 ## [v7.2.5-alpha] - (8/7/2023)
 
 ### Added
@@ -26,8 +47,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `ConvertSPDX23.java`
 - `ConvertTest.java` Class containing comprehensive unit tests for both schema converters
 
+### Added
+- `QualityReportFileService` for handling database operations
+- `UploadQualityReportFileInput` to handle new QA and ensure relationships are added correctly
+- `QAController` to handle Metric API operations
 
-## [v7.2.3-alpha] - (8/3/2023)
+### Changed
+- Moved `/svip/sboms/qa` endpoint to `QAController`
+- Quality reports are generated only once and stored in database. Subsequent request query the database
+- `/delete` deletes QA Report stored in database for a SBOM that is deleted
+
 ### Added
 - `SBOMService` for handling database operations
 - `UploadSBOMFileInput` to handle new SBOM entries uploaded via API

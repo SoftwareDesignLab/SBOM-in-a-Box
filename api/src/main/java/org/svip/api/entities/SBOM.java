@@ -1,19 +1,25 @@
 package org.svip.api.entities;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
+import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
 import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
 
 /**
+ * file: SBOMFile.java
+ *
  * SBOM Table for the database
  * TODO rename SBOMFile
  * @author Derek Garcia
  **/
 @Entity
-@Table(name = "sbom_file")
+@Table(name = "sbom")
 public class SBOM {
 
     // Schema of SBOM
@@ -27,6 +33,10 @@ public class SBOM {
         JSON,
         TAG_VALUE
     }
+
+    ///
+    /// Metadata
+    ///
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -51,6 +61,48 @@ public class SBOM {
     @Column(nullable = false, name = "file_type")
     @JsonProperty
     private FileType fileType;
+
+    ///
+    /// Relationships
+    ///
+
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)   // delete all qa on sbom deletion
+    @JoinColumn(name = "qa_id", referencedColumnName = "id")
+    private QualityReportFile qualityReportFile;
+
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)   // delete all vex on sbom deletion
+    @JoinColumn(name = "vex_id", referencedColumnName = "id")
+    private VEXFile vexFile;
+
+
+    /**
+     * Convert SBOMFile to SBOM Object
+     *
+     * @return deserialized SBOM Object
+     * @throws JsonProcessingException SBOM failed to be deserialized
+     */
+    public org.svip.sbom.model.interfaces.generics.SBOM toSBOMObject() throws JsonProcessingException {
+        // Attempt to deserialize and return the object
+        Deserializer d = SerializerFactory.createDeserializer(this.content);
+        return d.readFromString(this.getContent());
+    }
+
+    /**
+     * Convert SBOM File to a JSON String
+     *
+     * @return deserialized SBOM Object as a JSON String
+     * @throws JsonProcessingException SBOM failed to be deserialized
+     */
+    public String toSBOMObjectAsJSON() throws JsonProcessingException {
+
+        // Configure object mapper to remove null and empty arrays
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+
+        // Return JSON String
+        return mapper.writeValueAsString(toSBOMObject());
+    }
 
     ///
     /// Setters
@@ -121,6 +173,30 @@ public class SBOM {
         return this;
     }
 
+
+    /**
+     * Set Quality Report File
+     *
+     * @param qaf Quality Report File
+     * @return SBOM
+     */
+    public SBOM setQualityReport(QualityReportFile qaf){
+        this.qualityReportFile = qaf;
+        return this;
+    }
+
+
+    /**
+     * Set VEX File
+     *
+     * @param vf VEX File
+     * @return SBOM
+     */
+    public SBOM setVEXFile(VEXFile vf){
+        this.vexFile = vf;
+        return this;
+    }
+
     /**
      * Simple set schema
      * @param fileType file type
@@ -154,6 +230,20 @@ public class SBOM {
      */
     public String getContent(){
         return this.content;
+    }
+
+    /**
+     * @return QualityReportFile
+     */
+    public QualityReportFile getQualityReportFile(){
+        return this.qualityReportFile;
+    }
+
+    /**
+     * @return vexFile
+     */
+    public VEXFile getVEXFile(){
+        return this.vexFile;
     }
 
     /**

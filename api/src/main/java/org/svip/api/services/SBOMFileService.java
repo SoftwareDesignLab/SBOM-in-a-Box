@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
+import org.svip.api.entities.QualityReportFile;
 import org.svip.api.entities.SBOM;
+import org.svip.api.entities.VEXFile;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
@@ -22,6 +24,7 @@ import org.svip.serializers.serializer.Serializer;
 import java.util.*;
 
 /**
+ * file: SBOMFileService.java
  * Business logic for accessing the SBOM File table
  *
  * @author Derek Garcia
@@ -223,20 +226,16 @@ public class SBOMFileService {
     /**
      * Delete a target SBOM File from the database
      *
-     * @param id of the SBOM to delete
+     * @param sbomFile SBOM file to delete
      * @return id of deleted SBOM on success
      */
-    public Long deleteSBOMFile(Long id) {
-        // Retrieve SBOM File and check that it exists
-        SBOM sbomFile = getSBOMFile(id);
-        if (sbomFile == null)
-            return null;
+    public Long deleteSBOMFile(SBOM sbomFile){
 
         // Delete from repository
         this.sbomRepository.delete(sbomFile);
 
         // return confirmation id
-        return id;
+        return sbomFile.getId();
     }
 
 
