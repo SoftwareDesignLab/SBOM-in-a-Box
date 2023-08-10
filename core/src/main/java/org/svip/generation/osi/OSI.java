@@ -2,12 +2,6 @@ package org.svip.generation.osi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.core.DefaultDockerClientConfig;
-import com.github.dockerjava.core.DockerClientConfig;
-import com.github.dockerjava.core.DockerClientImpl;
-import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
-import com.github.dockerjava.transport.DockerHttpClient;
 import org.apache.commons.io.FileUtils;
 import org.svip.generation.osi.exceptions.DockerNotAvailableException;
 import org.svip.utils.Debug;
@@ -17,7 +11,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -151,14 +144,11 @@ public class OSI {
         return client.getAllTools();
     }
 
-    public Map<String, String> generateSBOMs() throws IOException {
-        return this.generateSBOMs(null);
-    }
-
     /**
      * Use the Open Source Integration container via OSIClient to generate a series of SBOMs from the
-     * given source code with a variety of tools (auto-detected).
+     * given source code given a list of tool names to use.
      *
+     * @param toolNames A list of tool names. Invalid/non-applicable tool names will be skipped.
      * @return A map of each SBOM's filename to its contents.
      */
     public Map<String, String> generateSBOMs(List<String> toolNames) throws IOException {
@@ -224,11 +214,6 @@ public class OSI {
         private static final String url = "http://localhost:5000/";
 
         /**
-         * The main Docker API client.
-         */
-        private final DockerClient dockerClient;
-
-        /**
          * Initializes default Docker client object and creates OSI container.
          *
          * @throws DockerNotAvailableException If an error occurred creating the container.
@@ -239,17 +224,6 @@ public class OSI {
                 Debug.log(Debug.LOG_TYPE.ERROR, "Docker is not running or not installed");
                 throw new DockerNotAvailableException("Docker is not running or not installed");
             }
-
-            // Default from GitHub
-            DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder().build();
-            DockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
-                    .dockerHost(config.getDockerHost())
-                    .sslConfig(config.getSSLConfig())
-                    .maxConnections(100)
-                    .connectionTimeout(Duration.ofSeconds(30))
-                    .responseTimeout(Duration.ofSeconds(45))
-                    .build();
-            this.dockerClient = DockerClientImpl.getInstance(config, httpClient);
         }
 
         protected List<String> getAllTools() {
@@ -295,7 +269,8 @@ public class OSI {
 
                 try (OutputStream os = conn.getOutputStream()) {
                     try (OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8)) {
-                        if (toolNames != null) osw.write(toolNames.toString());
+                        // Ensure there is at least one valid tool, if not don't put anything in the request body
+                        if (toolNames != null && toolNames.size() > 0) osw.write(toolNames.toString());
                         osw.flush();
                     }
                 }
