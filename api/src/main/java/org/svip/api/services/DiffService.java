@@ -50,7 +50,13 @@ public class DiffService {
         this.conflictFileRepository = conflictFileRepository;
     }
 
-
+    /**
+     * Upload a comparison file and its conflicts to the database
+     *
+     * @param cf ComparisonFile to upload
+     * @return ComparisonFile
+     * @throws Exception failed to upload ComparisonFile
+     */
     private ComparisonFile upload(ComparisonFile cf) throws Exception {
         try {
             this.comparisonFileRepository.save(cf);
@@ -65,6 +71,13 @@ public class DiffService {
         }
     }
 
+    /**
+     * Upload a conflict file the database
+     *
+     * @param cf ConflictFile to upload
+     * @return ConflictFile
+     * @throws Exception failed to upload ComparisonFile
+     */
     private ConflictFile uploadConflictFile(ConflictFile cf) throws Exception {
         try {
             return this.conflictFileRepository.save(cf);
@@ -75,10 +88,19 @@ public class DiffService {
     }
 
 
+    /**
+     * Generate a Diff Report for a collection of SBOMs
+     *
+     * @param sfs SBOM File Service to access SBOMs
+     * @param targetID Target SBOM ID
+     * @param otherIDs collection of SBOM IDs to compare to
+     * @return JSON String of a diff report
+     * @throws Exception
+     */
     public String generateDiffReportAsJSON(SBOMFileService sfs, long targetID, Long[] otherIDs) throws Exception {
 
+        // Get target SBOM
         SBOM targetSBOMFile = sfs.getSBOMFile(targetID);
-
         // todo throw error
         if(targetSBOMFile == null)
             return null;
@@ -87,6 +109,7 @@ public class DiffService {
 
         // create diff report
         Map<Long, ComparisonJSON> comparisons = new HashMap<>();
+
         // Compare against all other ids
         for (Long id : otherIDs) {
 
@@ -95,10 +118,11 @@ public class DiffService {
                 continue;
 
             org.svip.api.entities.SBOM otherSBOMFile = sfs.getSBOMFile(id);
-            // skip if failed to parse
+            // skip if none failed
             if (otherSBOMFile == null)
                 continue;
 
+            // Attempt to get comparison, generate and upload if one doesn't exist.
             ComparisonFile cf = this.comparisonFileRepository.findByTargetSBOMAndOtherSBOM(targetSBOMFile, otherSBOMFile);
             if(cf == null){
                 Comparison comparison = new Comparison(targetSBOM, otherSBOMFile.toSBOMObject());
@@ -120,6 +144,7 @@ public class DiffService {
                 componentConflicts.get(c.getName()).add(c);
             }
 
+            // add to comparisons list
             comparisons.put(id, new ComparisonJSON(componentConflicts, missingComponents));
         }
 
