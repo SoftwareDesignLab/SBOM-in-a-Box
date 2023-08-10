@@ -78,11 +78,11 @@ public class SBOM {
     private VEXFile vexFile;
 
     // Collection of comparisons where this was the target
-    @OneToMany(mappedBy = "targetSBOM")
+    @OneToMany(mappedBy = "targetSBOM", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<ComparisonFile> comparisonsAsTarget;
 
     // Collection of comparisons where this was the other
-    @OneToMany(mappedBy = "otherSBOM")
+    @OneToMany(mappedBy = "otherSBOM", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<ComparisonFile> comparisonsAsOther;
 
     /**
