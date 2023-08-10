@@ -1,6 +1,8 @@
 package org.svip.api.services;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.svip.api.entities.SBOM;
 import org.svip.api.entities.diff.ComparisonFile;
@@ -37,7 +39,7 @@ public class DiffService {
     }
 
 
-    private ComparisonFile uploadComparisonFile(ComparisonFile cf) throws Exception {
+    private ComparisonFile upload(ComparisonFile cf) throws Exception {
         try {
             this.comparisonFileRepository.save(cf);
             // upload conflicts
@@ -60,25 +62,14 @@ public class DiffService {
         }
     }
 
-    private ComparisonFile uploadNewComparison(SBOM targetSBOMFile, SBOM otherSBOMFile) throws Exception {
-
-        Comparison comparison = new Comparison(targetSBOMFile.toSBOMObject(), otherSBOMFile.toSBOMObject());
-
-        // upload new comparison
-        ComparisonFile cf = new UploadComparisonFileInput(comparison).toComparisonFile(targetSBOMFile, otherSBOMFile);
-        uploadComparisonFile(cf);
-
-        return cf;
-    }
 
 
-    public DiffReport generateDiffReport(SBOMFileService sfs, long targetID, Long[] ids) throws Exception {
+    public String generateDiffReportAsJSON(SBOMFileService sfs, long targetID, Long[] otherIDs) throws Exception {
 
-        // Get target
-        org.svip.api.entities.SBOM targetSBOMFile = sfs.getSBOMFile(targetID);
+        SBOM targetSBOMFile = sfs.getSBOMFile(targetID);
 
         // todo throw error
-        if (targetSBOMFile == null)
+        if(targetSBOMFile == null)
             return null;
 
         org.svip.sbom.model.interfaces.generics.SBOM targetSBOM = targetSBOMFile.toSBOMObject();
@@ -87,7 +78,7 @@ public class DiffService {
         DiffReport diffReport = new DiffReport(targetSBOM.getUID(), targetSBOM);
 
         // Compare against all other ids
-        for (Long id : ids) {
+        for (Long id : otherIDs) {
 
             // don't compare against self
             if (targetID == id)
@@ -98,14 +89,20 @@ public class DiffService {
             if (otherSBOMFile == null)
                 continue;
 
-//            ComparisonFile cf = this.comparisonFileRepository.findByTargetSBOMAndOtherSBOM(targetSBOMFile, otherSBOMFile);
-            ComparisonFile cf = uploadNewComparison(targetSBOMFile, otherSBOMFile);
+            ComparisonFile cf = this.comparisonFileRepository.findByTargetSBOMAndOtherSBOM(targetSBOMFile, otherSBOMFile);
             // todo make method?
-//            if (cf == null) {
-//
-//            }
+            if (cf == null) {
+                Comparison comparison = new Comparison(targetSBOM, otherSBOMFile.toSBOMObject());
+                cf = upload(new UploadComparisonFileInput(comparison).toComparisonFile(targetSBOMFile, otherSBOMFile));
+            }
             diffReport.addComparison(id.toString(), cf.toComparison());
         }
-        return diffReport;
+
+        // Configure object mapper to remove null and empty arrays
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+
+        return mapper.writeValueAsString(diffReport);
     }
 }
