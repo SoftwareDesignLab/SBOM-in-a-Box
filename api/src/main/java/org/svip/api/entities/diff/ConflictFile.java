@@ -120,10 +120,16 @@ public class ConflictFile {
     /// Getters
     ///
 
+    /**
+     * @return Name
+     */
     public String getName() {
         return this.name;
     }
 
+    /**
+     * @return Mismatch type
+     */
     public MismatchType getMismatchType(){
         return this.mismatchType;
     }
