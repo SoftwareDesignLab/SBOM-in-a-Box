@@ -34,6 +34,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Added null checks to the deserializers to avoid null metadata or files keys.
 
+
+## [v7.3.1-alpha] - (8/10/2023)
+> Know [Issue](https://github.com/SoftwareDesignLab/SVIP/issues/219): Deleting SBOMs with comparison references in fast
+> succession will cause errors in the database
+### Added
+- `DiffService` for handling database operations for Comparisons and Conflicts
+- `UploadComaprisonFileInput` to handle new Comparisons and ensure relationships are added correctly
+- `UploadConflictFileInput` to handle new Conflicts and ensure relationships are added correctly
+- `ComaprisonFile` that acts as a relationship table for sbom comparison
+- `ConflictFile` holds conflict details
+
+### Changed
+- Moved `/svip/sboms/compare` endpoint to `DiffController`
+- Diff Report logic has changed
+  - 1:1 comparisons between sboms are arrogated into a diffreport at request time.
+  - Comparisons are stored in the database and used to put diffreports together
+- Made `Comparison` its own class
+- Single delete sbom will delete any associated comparisons
+
+### Removed
+- Deprecated DiffReport.java file
+
 ## [v7.3.0-alpha] - (8/9/2023)
 
 ### Changed
