@@ -22,14 +22,6 @@ public record UploadComparisonFileInput(Comparison comparison) {
      */
     public ComparisonFile toComparisonFile(SBOM targetSBOM, SBOM otherSBOM) {
         ComparisonFile cf = new ComparisonFile();
-        // todo requests to convert missing
-        // Add all conflicts
-        for(String key : this.comparison.getComponentConflicts().keySet()){
-            for(Conflict c : this.comparison.getComponentConflicts().get(key)){
-                // Convert to ConflictFile and add
-                cf.addConflictFile(new UploadConflictFileInput(key, c).toConflictFile(cf));
-            }
-        }
 
         // set parent relationships
         cf.setTargetSBOM(targetSBOM)

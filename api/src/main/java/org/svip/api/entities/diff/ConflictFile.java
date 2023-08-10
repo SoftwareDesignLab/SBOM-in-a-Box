@@ -39,7 +39,7 @@ public class ConflictFile {
 
     // source comparison
     @ManyToOne
-    @JoinColumn(name = "comparison", nullable = false)
+    @JoinColumn(name = "comparisons", nullable = false)
     private ComparisonFile comparison;
     
     
