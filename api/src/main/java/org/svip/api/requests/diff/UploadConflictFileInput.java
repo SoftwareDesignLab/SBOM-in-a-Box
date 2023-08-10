@@ -1,4 +1,4 @@
-package org.svip.api.requests;
+package org.svip.api.requests.diff;
 
 import org.svip.api.entities.diff.ComparisonFile;
 import org.svip.api.entities.diff.ConflictFile;
@@ -50,7 +50,7 @@ public record UploadConflictFileInput(String name) {
         // Set content
         conflictFile.setName(this.name)
                 .setMessage("Component is missing")
-                .setMismatchType(MismatchType.MISSING)
+                .setMismatchType(MismatchType.MISSING_COMPONENT)
                 .setComparison(cf);     // set parent relationship
 
         // Set the name in the value that it's present in
