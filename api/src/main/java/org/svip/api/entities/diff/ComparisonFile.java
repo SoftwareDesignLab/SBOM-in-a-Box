@@ -28,16 +28,15 @@ public class ComparisonFile {
 
     // Target SBOM
     @ManyToOne
-    @JoinColumn(name = "target_sbom", nullable = false)
+    @JoinColumn(name = "target_sbom_id", nullable = false)
     private SBOM targetSBOM;
 
     // Other SBOM
     @ManyToOne
-    @JoinColumn(name = "other_sbom", nullable = false)
+    @JoinColumn(name = "other_sbom_id", nullable = false)
     private SBOM otherSBOM;
 
     // Conflict collection
-//    @OneToMany(mappedBy = "comparison", orphanRemoval = true, cascade = CascadeType.ALL)
     @OneToMany(mappedBy = "comparison")
     private Set<ConflictFile> conflicts = new HashSet<>();
 
