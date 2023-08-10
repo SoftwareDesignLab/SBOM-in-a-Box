@@ -23,6 +23,8 @@ public class Comparison {
 
     @JsonProperty
     private final Map<String, List<Conflict>> componentConflicts = new HashMap<>();
+
+    // todo replace with the "from" arrays
     @JsonProperty
     private final List<String> missingComponents = new ArrayList<>();
 
