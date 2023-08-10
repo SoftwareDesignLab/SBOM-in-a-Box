@@ -33,10 +33,10 @@ public class SBOMController {
     /**
      * Create new Controller with services
      *
-     * @param sbomService Service for handling SBOM queries
+     * @param sbomService              Service for handling SBOM queries
      * @param qualityReportFileService Service for handling QA queries
      */
-    public SBOMController(SBOMFileService sbomService, QualityReportFileService qualityReportFileService, VEXFileService vexFileService){
+    public SBOMController(SBOMFileService sbomService, QualityReportFileService qualityReportFileService, VEXFileService vexFileService) {
         this.sbomService = sbomService;
         this.qualityReportFileService = qualityReportFileService;
         this.vexFileService = vexFileService;
@@ -97,11 +97,11 @@ public class SBOMController {
     @GetMapping("/sbom")
     public ResponseEntity<String> getSBOMObjectAsJSON(@RequestParam("id") Long id){
 
-        try{
+        try {
             SBOM sbomFile = this.sbomService.getSBOMFile(id);
 
             // No SBOM was found
-            if(sbomFile == null)
+            if (sbomFile == null)
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
             // Else return the object
@@ -183,7 +183,7 @@ public class SBOMController {
 
         SBOM sbomFile = this.sbomService.getSBOMFile(id);
         // Attempt to delete id
-        if(sbomFile == null){
+        if (sbomFile == null) {
             LOGGER.warn("DELETE /svip/sboms?id=" + id + " - FILE NOT FOUND");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
