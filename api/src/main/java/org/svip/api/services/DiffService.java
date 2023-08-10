@@ -45,7 +45,7 @@ public class DiffService {
             // upload conflicts
             for(ConflictFile c : cf.getConflicts())
                 uploadConflictFile(c);
-            // todo missing?
+
             return cf;
         } catch (Exception e) {
             // todo custom exception instead of generic
