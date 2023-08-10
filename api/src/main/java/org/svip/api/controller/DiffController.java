@@ -53,9 +53,7 @@ public class DiffController {
         try{
 
             String diffReport = this.diffService.generateDiffReportAsJSON(this.sbomFileService, ids[targetIndex], ids);
-
             return new ResponseEntity<>(diffReport, HttpStatus.OK);      // track status?
-
 
         } catch (Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -46,7 +46,6 @@ public record UploadComparisonFileInput(Comparison comparison) {
         targetSBOM.addComparisonFileAsTarget(cf);
         otherSBOM.addComparisonFileAsOther(cf);
 
-
         return cf;
     }
 }
