@@ -28,12 +28,17 @@ public record UploadComparisonFileInput(Comparison comparison) {
         for(String key : this.comparison.getComponentConflicts().keySet()){
             for(Conflict c : this.comparison.getComponentConflicts().get(key)){
                 // Convert to ConflictFile
-                cf.addConflictFile(new UploadConflictFileInput(key, c).toConflictFile(cf));
+                cf.addConflictFile(new UploadConflictFileInput(key).toConflictFile(cf, c));
             }
         }
 
-        //todo missing
+        // Add missing conflicts
+        for(String component : this.comparison().getMissingFromTarget())
+            cf.addConflictFile(new UploadConflictFileInput(component).toMissingConflictFile(cf, false));
 
+        for(String component : this.comparison().getMissingFromOther())
+            cf.addConflictFile(new UploadConflictFileInput(component).toMissingConflictFile(cf, true));
+        
         // set parent relationships
         cf.setTargetSBOM(targetSBOM)
            .setOtherSBOM(otherSBOM);
