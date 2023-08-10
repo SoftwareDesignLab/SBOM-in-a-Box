@@ -2,6 +2,7 @@ package org.svip.api.requests;
 
 import org.svip.api.entities.SBOM;
 import org.svip.api.entities.diff.ComparisonFile;
+import org.svip.api.entities.diff.ConflictFile;
 import org.svip.compare.Comparison;
 import org.svip.compare.conflicts.Conflict;
 
@@ -22,6 +23,16 @@ public record UploadComparisonFileInput(Comparison comparison) {
      */
     public ComparisonFile toComparisonFile(SBOM targetSBOM, SBOM otherSBOM) {
         ComparisonFile cf = new ComparisonFile();
+
+        // add all conflicts
+        for(String key : this.comparison.getComponentConflicts().keySet()){
+            for(Conflict c : this.comparison.getComponentConflicts().get(key)){
+                // Convert to ConflictFile
+                cf.addConflictFile(new UploadConflictFileInput(key, c).toConflictFile(cf));
+            }
+        }
+
+        //todo missing
 
         // set parent relationships
         cf.setTargetSBOM(targetSBOM)
