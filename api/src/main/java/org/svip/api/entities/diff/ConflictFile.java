@@ -17,10 +17,10 @@ public class ConflictFile {
     @Column(nullable = false)
     private Long id;
 
-    @Column()
+    @Column
     private String name;
 
-    @Column()
+    @Column
     private String message;
 
     @Enumerated(EnumType.STRING)
@@ -39,7 +39,7 @@ public class ConflictFile {
 
     // source comparison
     @ManyToOne
-    @JoinColumn(name = "comparisons", nullable = false)
+    @JoinColumn(name = "comparison_id", nullable = false)
     private ComparisonFile comparison;
     
     
