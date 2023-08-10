@@ -8,8 +8,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.svip.api.entities.diff.ComparisonFile;
+import org.svip.api.requests.UploadComparisonFileInput;
+import org.svip.api.requests.UploadConflictFileInput;
 import org.svip.api.services.DiffService;
 import org.svip.api.services.SBOMFileService;
+import org.svip.compare.Comparison;
 import org.svip.compare.DiffReport;
 
 /**
@@ -55,15 +59,9 @@ public class DiffController {
 
         try{
 
-            // Generate Diff report
-            DiffReport diffReport = this.diffService.generateDiffReport(this.sbomFileService, ids[targetIndex], ids);
+            String diffReport = this.diffService.generateDiffReportAsJSON(this.sbomFileService, ids[targetIndex], ids);
 
-            // Configure object mapper to remove null and empty arrays
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-            mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-
-            return new ResponseEntity<>(mapper.writeValueAsString(diffReport), HttpStatus.OK);      // track status?
+            return new ResponseEntity<>(diffReport, HttpStatus.OK);      // track status?
 
 
         } catch (Exception e){
