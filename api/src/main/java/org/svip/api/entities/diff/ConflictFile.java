@@ -20,10 +20,7 @@ public class ConflictFile {
     @Column(nullable = false)
     private Long id;
 
-    @Column()
-    private String name;
-
-    @Column()
+    @Column(nullable = false)
     @JsonIgnore
     private String name;
 

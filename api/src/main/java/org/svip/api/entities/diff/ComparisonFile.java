@@ -50,8 +50,7 @@ public class ComparisonFile {
     private SBOM otherSBOM;
 
     // Conflict collection
-//    @OneToMany(mappedBy = "comparison", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @OneToMany(mappedBy = "comparison")
+    @OneToMany(mappedBy = "comparison", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<ConflictFile> conflicts = new HashSet<>();
 
 
