@@ -1,6 +1,5 @@
-package org.svip.api.utils;
+package org.svip.conversion;
 
-import org.svip.api.entities.SBOMFile;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -8,91 +7,114 @@ import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.serializers.SerializerFactory;
-import org.svip.serializers.deserializer.Deserializer;
-import org.svip.serializers.serializer.Serializer;
 
 import java.util.Map;
 import java.util.Set;
 
 /**
- * Utility class for SBOM conversion functionality
+ * Name: Conversion.java
+ * Description: Converts an SBOM from one schema to another.
  *
+ * @author Tyler Drake
  * @author Juan Francisco Patino
  */
-public class Converter {
+public class Conversion {
 
-    private static final SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
+    private static SVIPSBOMBuilder builder;
     private static final SVIPComponentBuilder compBuilder = new SVIPComponentBuilder();
 
     /**
-     * Convert an SBOM to a desired schema
+     * Gets the appropriate converter based on the desired schema requested
      *
-     * @param schema the desired schema
-     * @param format the desired format
-     * @return converted SBOMFile
+     * @param desiredSchema
+     * @return (A Convert object)
      */
-    public static SBOMFile convert(SBOMFile sbom, SerializerFactory.Schema schema, SerializerFactory.Format format)
-            throws Exception {
+    private static Convert getConvert(SerializerFactory.Schema desiredSchema) {
 
-        // deserialize into SBOM object
-        Deserializer d;
-        SBOM deserialized;
-
-        try {
-            d = SerializerFactory.createDeserializer(sbom.getContents());
-            deserialized = d.readFromString(sbom.getContents());
-        } catch (Exception e) {
-            throw new Exception("Deserialization Error: " + e.getMessage());
-        }
-
-        if (deserialized == null) throw new Exception("Deserialization Error");
-
-        // serialize into desired format
-        Serializer s;
-        String serialized = null;
-        try {
-            // serialize into requested schema
-
-            s = SerializerFactory.createSerializer(schema, format, true);
-            s.setPrettyPrinting(true);
-            SerializerFactory.Schema originalSchema = SerializerFactory.resolveSchema(sbom.getContents());
-
-            buildSBOM(builder, deserialized, schema, originalSchema);
-
-            // schema specific adjustments
-            switch (schema) {
-                case SPDX23 -> {
-                    builder.setSpecVersion("2.3");
-                    SVIPSBOM built = builder.Build();
-                    serialized = s.writeToString(built);
-                }
-                case CDX14 -> {
-                    builder.setSpecVersion("1.4");
-                    SVIPSBOM built = builder.Build();
-                    serialized = s.writeToString(built);
-                }
+        // Return appropriate Converter depending on the desired schema
+        // If it is SVIPSBOM or not found, return null
+        switch (desiredSchema) {
+            case SPDX23 -> {
+                return new ConvertSPDX23();
             }
-
-        } catch (Exception e) {
-            throw new Exception("Serialization Error: " + e.getMessage());
+            case CDX14 -> {
+                return new ConvertCDX14();
+            }
+            default -> {
+                return null;
+            }
         }
-
-        if (serialized == null) throw new Exception("Serialization Error");
-
-        return new SBOMFile("SUCCESS", serialized);
     }
 
     /**
+     * A simple function for standardizing the sent SBOM as a SVIPSBOM.
+     * Any other handling that may be needed shall be done here.
+     *
+     * @param sbom
+     * @return SVIPSBOM
+     */
+    private static SVIPSBOM toSVIP(SBOM sbom, SerializerFactory.Schema originalSchema) throws Exception {
+
+        try {
+
+            // Return the cast SBOM
+            return (SVIPSBOM) sbom;
+
+        } catch (ClassCastException c) {
+
+            try {
+
+                // Create a new SVIP Builder and build a new SVIP from it
+                builder = new SVIPSBOMBuilder();
+                buildSBOM(sbom, SerializerFactory.Schema.SVIP, originalSchema);
+                return builder.Build();
+
+            } catch (Exception e) {
+
+                // Throw exception if we couldn't convert the SBOM
+                throw new Exception("Couldn't standardize SBOM to SVIPSBOM: " + e.getMessage());
+
+            }
+        }
+    }
+
+    /**
+     * Main driver for directing SBOM conversion.
+     *
+     * @param sbom
+     * @param desiredSchema
+     * @return
+     */
+    public static SBOM convertSBOM(SBOM sbom, SerializerFactory.Schema desiredSchema,
+                                   SerializerFactory.Schema originalSchema) throws Exception {
+
+        // todo deserialization happens in controller
+
+        // Get the converter
+        Convert converter = getConvert(desiredSchema);
+
+        // Standardize SBOM to an SVIPSBOM
+        SVIPSBOM svipsbom = toSVIP(sbom, originalSchema);
+
+        // If no converter was found, return the SBOM as an SVIPSBOM
+        return converter == null ? svipsbom : converter.convert(svipsbom);
+
+    }
+
+
+    /**
      * Helper function to build an SBOM object from an object of the SBOM interface
-     * @param deserialized SBOM interface object
-     * @param schema desired schema
+     *
+     * @param deserialized   SBOM interface object
+     * @param schema         desired schema
      * @param originalSchema original schema
      */
-    public static void buildSBOM(SVIPSBOMBuilder builder, SBOM deserialized, SerializerFactory.Schema schema, SerializerFactory.Schema originalSchema) {
+    public static void buildSBOM(SBOM deserialized, SerializerFactory.Schema schema, SerializerFactory.Schema originalSchema) {
         builder.setFormat(String.valueOf(schema));
         builder.setName(deserialized.getName());
         builder.setUID(deserialized.getUID());
@@ -115,8 +137,14 @@ public class Converter {
             ) {
                 if (c == null)
                     continue;
-                buildSVIPComponentObject(c, originalSchema);
-                builder.addComponent(compBuilder.buildAndFlush());
+                try {
+                    SVIPComponentObject d = (SVIPComponentObject) c;
+                    builder.addComponent(d);
+                } catch (Exception e) {
+                    System.err.println("ok");
+                    buildSVIPComponentObject(c, originalSchema);
+                    builder.addComponent(compBuilder.buildAndFlush());
+                }
             }
 
         if (deserialized.getRelationships() != null)
@@ -151,29 +179,27 @@ public class Converter {
                 compBuilder.addHash(entry.getKey(), entry.getValue());
 
         // schema specific
-        if(originalSchema != null)
+        if (originalSchema != null)
             switch (originalSchema) {
-                case CDX14 ->
-                    configurefromCDX14Object((CDX14ComponentObject) component);
-                case SPDX23 ->
-                    configureFromSPDX23Object(component);
+                case CDX14 -> configureFromCDX14Object((CDX14ComponentObject) component);
+                case SPDX23 -> configureFromSPDX23Object(component);
             }
         else
             // if original schema is unspecified, try both
-            try{
+            try {
                 configureFromSPDX23Object(component);
-            }
-            catch (ClassCastException | NullPointerException e){
-                try{
-                    configurefromCDX14Object((CDX14ComponentObject) component);
+            } catch (ClassCastException | NullPointerException e) {
+                try {
+                    configureFromCDX14Object((CDX14ComponentObject) component);
+                } catch (ClassCastException | NullPointerException e1) {
                 }
-                catch (ClassCastException | NullPointerException e1){}
             }
 
     }
 
     /**
      * Configure the SVIPComponentBuilder from an SPDX23 Component Object or File Object
+     *
      * @param component SPDX23 object
      */
     private static void configureFromSPDX23Object(Component component) {
@@ -185,16 +211,52 @@ public class Converter {
             compBuilder.setComment(spdx23FileObject.getComment());
             compBuilder.setAttributionText(spdx23FileObject.getAttributionText());
             compBuilder.setFileNotice(spdx23FileObject.getFileNotice());
+        } else {
+            throw new ClassCastException("Component cannot be configured to an SPDX Package or an SPFX File Object.");
         }
-        else if(component instanceof CDX14ComponentObject)
-            throw new ClassCastException();
+    }
+
+    /**
+     * Configure the SVIPComponentBuilder from an SPDX23 Package Object
+     */
+    private static void configureFromSPDX23Package(SPDX23PackageObject component) {
+
+        compBuilder.setType(component.getType());
+        compBuilder.setUID(component.getUID());
+        compBuilder.setAuthor(component.getAuthor());
+        compBuilder.setName(component.getName());
+        compBuilder.setLicenses(component.getLicenses());
+        compBuilder.setCopyright(component.getCopyright());
+
+        component.getHashes().forEach(compBuilder::addHash);
+
+        compBuilder.setComment(component.getComment());
+        compBuilder.setAttributionText(component.getAttributionText());
+        compBuilder.setDownloadLocation(component.getDownloadLocation());
+        compBuilder.setFileName(component.getFileName());
+        compBuilder.setFilesAnalyzed(component.getFilesAnalyzed());
+        compBuilder.setVerificationCode(component.getVerificationCode());
+        compBuilder.setHomePage(component.getHomePage());
+        compBuilder.setSourceInfo(component.getSourceInfo());
+        compBuilder.setReleaseDate(component.getReleaseDate());
+        compBuilder.setBuildDate(component.getBuiltDate());
+        compBuilder.setValidUntilDate(component.getValidUntilDate());
+        compBuilder.setSupplier(component.getSupplier());
+        compBuilder.setVersion(component.getVersion());
+        compBuilder.setDescription(component.getDescription());
+
+        component.getCPEs().forEach(compBuilder::addCPE);
+        component.getPURLs().forEach(compBuilder::addPURL);
+        component.getExternalReferences().forEach(compBuilder::addExternalReference);
+
     }
 
     /**
      * Configure the SVIPComponentBuilder from an CDX14 Component Object
+     *
      * @param component CDX14 component object
      */
-    private static void configurefromCDX14Object(CDX14ComponentObject component) {
+    private static void configureFromCDX14Object(CDX14ComponentObject component) {
         compBuilder.setSupplier(component.getSupplier());
         compBuilder.setVersion(component.getVersion());
         compBuilder.setDescription(component.getDescription());
