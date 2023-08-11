@@ -515,7 +515,9 @@ public class SVIPApiController {
      * @param projectName The name of the project.
      * @param schema The schema of the desired SBOM.
      * @param format The file format of the desired SBOM.
-     * @return A list of string tool names.
+     * @param toolNames An optional list of tool names to use when running OSI. If not provided or empty, all
+     *                  possible tools will be used.
+     * @return The ID of the uploaded SBOM.
      */
     @PostMapping("/generators/osi")
     public ResponseEntity<?> generateOSI(@RequestParam("zipFile") MultipartFile zipFile,
