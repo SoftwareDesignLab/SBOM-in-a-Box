@@ -130,38 +130,16 @@ public class OSIClient {
      */
     public static int dockerCheck() {
         try {
-            // If running in a container, we know the Docker daemon is available (with a system host link)
-            File f = new File("/.dockerenv");
-            if (f.exists()) return 0;
+            HttpURLConnection conn = connectToURL(URL.GET_TOOLS);
 
-            // Check if docker is installed
-            Process process = Runtime.getRuntime().exec("docker --version");
-            BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line = br.readLine();
-            br.close();
-            // See if it returns the expected response for an installed application
-            if (line == null || !line.startsWith("Docker version")) {
-                // This means docker is not installed
-                return 2;
-            }
-
-            // Check if Docker daemon is running
-            process = Runtime.getRuntime().exec("docker ps");
-            br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            line = br.readLine();
-            br.close();
-
-            if (line != null && line.startsWith("CONTAINER ID")) {
-                // This means docker is installed and running
-                return 0;
-            } else {
-                // This means docker is not running
-                return 1;
-            }
+            conn.connect();
+            if (conn.getResponseCode() != 200) return 1;
+            conn.disconnect();
         } catch (IOException e) {
-            // This means that the command hit an unknown error, we can assume that means docker is not installed
-            return 2;
+            return 1;
         }
+
+        return 0;
     }
 
     /**
