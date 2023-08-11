@@ -9,8 +9,9 @@
   - [Usage](#usage)
   - [Supported Source Files](#supported-source-files)
   - [NLP Techniques](#nlp-techniques)
-- [**Open Source Intergration (OSI)**](#open-source-integration)
+- [**Open Source Integration (OSI)**](#open-source-integration)
   - [Quick Start](#quick-start-1)
+  - [API](#api)
   - [Supported Tools](#supported-tools)
   - [Building the Image](#building-the-image)
     - [Saved Images](#saved-images)
@@ -103,29 +104,66 @@ SPDX:
 
 Place the source files of the project into `core/src/main/java/org/svip/generation/osi/bound_dir/code`. 
 
-Then run the following command to build the image and run the container to generate SBOMs:
+Then run the following command to build the image and send an API request to the container to generate SBOMs:
 ```shell
 # Deploy the container
 $ docker compose up osi
+# Send API request to container to generate SBOMs with ALL tools. To specify tools, add a request body of tool names.
+$ curl -X POST -G http://localhost:5000/generate
 ```
 
 ### Result
 The `/sboms` directory (also in `/bound_dir` will now contain generated SBOMs from the source project in `/code`.
 
-## Supported Tools
-> OSI uses 8 open source tools to support 13 different languages. Please read the tool documentation to see if it fits 
-> the need of your project
+## API
+> After deploying the OSI container using `docker compose up osi`, an API will be started at `http://localhost:5000`.
+> Sending requests to the API will allow users to get a list of valid tool names to be used or generate SBOMs with 
+> specified tools.
 
-|          Tool           |                          Github                           | Supported Language                                                                                                             |
-|:-----------------------:|:---------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------|
-|        **Syft**         |              https://github.com/anchore/syft              | `Java`<br>`Python`<br>`Go`<br>`PHP`<br>`Ruby`<br>`Rust`<br>`Dart`<br>`Haskell`<br>`Javascript`<br>`Swift`<br>`C++`<br>`Erlang` |
-| **SPDX SBOM Generator** | https://github.com/opensbom-generator/spdx-sbom-generator | `Java`<br>`Python`<br>`Go`<br>`PHP`<br>`Ruby`<br>`Rust`<br>`Javascript`<br>`Swift`                                             |
-| **CycloneDX Generator** |            https://github.com/CycloneDX/cdxgen            | `Java`<br>`Python`<br>`Go`<br>`PHP`<br>`Ruby`<br>`Rust`<br>`Dart`<br>`Haskell`<br>`C++`                                        |
-|    **Sonatype Jake**    |     https://github.com/sonatype-nexus-community/jake      | `Python`                                                                                                                       |
-|   **CycloneDX Conan**   |       https://github.com/CycloneDX/cyclonedx-conan        | `C++`                                                                                                                          |
-|  **CycloneDX Python**   |       https://github.com/CycloneDX/cyclonedx-python       | `Python`                                                                                                                       |
-|    **CycloneDX PHP**    |    https://github.com/CycloneDX/cyclonedx-php-composer    | `PHP`                                                                                                                          |
-|        **JBOM**         |              https://github.com/eclipse/jbom              | `Java`                                                                                                                         |
+### Generate SBOMs
+**Endpoint:** `http://localhost:5000/generate`
+
+**Request Method:** `POST`
+
+**Request Body**
+
+| Body  |   Type   |                                                                                                               Description                                                                                                               | Is Required? |
+|:-----:|:--------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:------------:|
+| tools | String[] | A JSON string array of tool names. If no tools are provided, the container will generate SBOMs <br/>using all possible tools. If a tool name is invalid or doesn't support the project languages or manifest files, it will be ignored. |      NO      |
+
+**Responses**
+
+| Response Code |  Type  |               Description                |
+|:-------------:|:------:|:----------------------------------------:|
+|      200      | String | Successfully generated one or more SBOMs |
+|      204      | String |         No SBOMs were generated          |
+
+### Get Tools
+**Endpoint:** `http://localhost:5000/tools`
+
+**Request Method:** `GET`
+
+**Responses**
+
+| Response Code |   Type   |                            Description                            |
+|:-------------:|:--------:|:-----------------------------------------------------------------:|
+|      200      | String[] | A JSON string array of all currently supported open-source tools. |
+
+
+## Supported Tools
+> OSI uses 8 open source tools to support 17 different languages multiple times over. Please read the tool documentation 
+> to see if it fits the need of your project.
+
+|          Tool           |                          Github                           | Supported Language(s)                                                                                                                                                        |
+|:-----------------------:|:---------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|        **Syft**         |              https://github.com/anchore/syft              | `C`<br>`C++`<br>`Dart`<br>`.NET`<br>`Objective-C`<br>`Elixir`<br>`Erlang`<br>`Go`<br>`Haskell`<br>`Java`<br>`JavaScript`<br>`PHP`<br>`Python`<br>`Ruby`<br>`Rust`<br>`Swift` |
+| **SPDX SBOM Generator** | https://github.com/opensbom-generator/spdx-sbom-generator | `.NET`<br>`Go`<br>`Java`<br>`JavaScript`<br>`PHP`<br>`Python`<br>`Ruby`<br>`Rust`<br>`Swift`<br>                                                                             |
+| **CycloneDX Generator** |            https://github.com/CycloneDX/cdxgen            | `C`<br>`C++`<br>`Clojure`<br>`Go`<br>`.NET`<br>`JavaScript`<br>`Java`<br>`PHP`<br>`Python`<br>`Ruby`<br>`Rust`<br>`Dart`<br>`Haskell`<br>`Elixir`<br>`Swift`<br>             |
+|    **Sonatype Jake**    |     https://github.com/sonatype-nexus-community/jake      | `Python`                                                                                                                                                                     |
+|   **CycloneDX Conan**   |       https://github.com/CycloneDX/cyclonedx-conan        | `C`<br>`C++`                                                                                                                                                                 |
+|  **CycloneDX Python**   |       https://github.com/CycloneDX/cyclonedx-python       | `Python`                                                                                                                                                                     |
+|    **CycloneDX PHP**    |    https://github.com/CycloneDX/cyclonedx-php-composer    | `PHP`                                                                                                                                                                        |
+|        **JBOM**         |              https://github.com/eclipse/jbom              | `Java`                                                                                                                                                                       |
 
 
 
