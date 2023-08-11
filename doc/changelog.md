@@ -3,9 +3,9 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v7.3.0-alpha] - (8/11/2023)
-> OSI v3 - Instead of creating a container dynamically, we now have a [Flask API](README.md#api) running inside of a 
-> container with consistent uptime to send requests to and get/select certain tools to run.
+## [v7.3.0-alpha] - (8/7/2023)
+> OSI v3 - Instead of creating a container dynamically, we now have a Flask API running inside of a container with 
+> consistent uptime to send requests to and get/select certain tools to run.
 
 ### Added
 #### API
@@ -29,10 +29,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - `ContainerController.py` - Separated functionality into multiple files & API.
 
-## [v7.2.4-alpha] - (8/14/2023)
+## [v7.2.3-alpha] - (8/7/2023)
 
-### Changed
-- Added null checks to the deserializers to avoid null metadata or files keys.
+### Added
+- `Conversion.java`
+  - Core functionality of SBOM conversion
+- `Convert.java` interface
+  - `ConvertCDX14.java`
+  - `ConvertSPDX23.java`
+- `ConvertTest.java` Class containing comprehensive unit tests for both schema converters
 
 ## [v7.2.2-alpha] - (8/3/2023)
 
