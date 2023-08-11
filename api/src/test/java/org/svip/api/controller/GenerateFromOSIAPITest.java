@@ -7,8 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.svip.api.entities.SBOMFile;
-import org.svip.generation.osi.OSI;
+import org.svip.api.model.MockMultipartFile;
+import org.svip.api.model.SBOMFile;
 import org.svip.serializers.SerializerFactory;
 
 import java.io.File;
@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.svip.generation.osi.OSIClient.dockerCheck;
 
 /**
  * File: GenerateFromOSIAPITest.java
@@ -45,7 +46,7 @@ public class GenerateFromOSIAPITest extends APITest {
     @BeforeEach
     public void setup() {
         // Use OSI.dockerCheck() to check if docker is running
-        assumeTrue(OSI.dockerCheck() == 0);
+        assumeTrue(dockerCheck() == 0);
 
         // Init controller with mocked repository and enable OSI
         controller = new SVIPApiController(repository, true);
