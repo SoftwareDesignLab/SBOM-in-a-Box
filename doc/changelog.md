@@ -3,13 +3,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v7.3.2-alpha] - (8/15/2023)
+## [v7.4.2-alpha] - (8/15/2023)
 ### Added
 - `/sboms/merge` endpoint
   - Functionality in `SBOMFileService.java`
   - POST mapping in `SBOMController.java`
 
-## [v7.3.1-alpha] - (8/15/2023)
+## [v7.4.1-alpha] - (8/15/2023)
 ### Added
 - `MergerSVIP.java`
   - Merges two SVIPSBOMs into one
@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Duplicate component issue resolved
     - If two components are of the same name, but one has a version that's null, and the other doesn't, then they can be merged
 
-## [v7.3.0-alpha] - (8/9/2023)
+## [v7.4.0-alpha] - (8/9/2023)
 ### Changed
 - Simplified table names by removing the `_file` suffix
 - Move `toSBOMObject` / `toSBOMObjectAsJSON` to the SBOMFile rather than object
@@ -31,7 +31,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `saveQualityReport` and `saveVEX` moved to their respective services
 - Services take objects instead of ids
 
-## [v7.2.7-alpha] - (8/7/2023)
+## [v7.3.0-alpha] - (8/7/2023)
+> OSI v3 - Instead of creating a container dynamically, we now have a Flask API running inside of a container with
+> consistent uptime to send requests to and get/select certain tools to run.
+
+### Added
+#### API
+- `/generators/osi/tools` Endpoint - Returns a list of supported open source tool names that can be passed to
+  `/generators/osi` to select what tools to run.
+
+#### Core
+- `OSI` Class methods to get tools and generate with specific tools.
+- `OSIClient` Class - Moved it out of `OSI` & removed all reliance on `docker-java` external dependency.
+- `server` package to hold all Flask API utility files.
+    - `constants.py` - Holds all BOM, language, directory, etc. constants relevant to the API and open source tools.
+    - `OSIAPIController.py` - The main controller for the API with two endpoints: `/tools` & `/generate`
+    - `OSTool.py` - A dataclass to store attributes of the open source tools supported by OSI.
+    - `ToolMapper.py` - A list of currently available open source tools represented as `OSTools`.
+    - `ToolUtils.py` - Several utilities to clean directories, run tools, detect languages and manifest files, and
+      validate tools.
+
+### Changed
+- `/generators/osi` Endpoint - Now takes in an optional `tools` request body to determine what tools to run.
+
+### Removed
+- `ContainerController.py` - Separated functionality into multiple files & API.
+
+## [v7.2.8-alpha] - (8/7/2023)
 ### Added
 - `VEXFileService` for handling database operations
 - `UploadVEXFileInput` to handle new VEX and ensure relationships are added correctly
@@ -43,7 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - VEX are generated only once and stored in database. Subsequent request query the database
 - `/delete` deletes VEX stored in database for a SBOM that is deleted
 
-## [v7.2.6-alpha] - (8/7/2023)
+## [v7.2.7-alpha] - (8/7/2023)
 ### Added
 - Relevant exceptions for conversion endpoint
     - `DeserializerException`
@@ -54,6 +80,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - `ConvertFromApiTest.java`
 - Deleted old `Converter.java`
+
+## [v7.2.6-alpha] - (8/7/2023)
+### Added
+- `QualityReportFileService` for handling database operations
+- `UploadQualityReportFileInput` to handle new QA and ensure relationships are added correctly
+- `QAController` to handle Metric API operations
+
+### Changed
+- Moved `/svip/sboms/qa` endpoint to `QAController`
+- Quality reports are generated only once and stored in database. Subsequent request query the database
+- `/delete` deletes QA Report stored in database for a SBOM that is deleted
 
 ## [v7.2.5-alpha] - (8/7/2023)
 ### Added
@@ -66,18 +103,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Quality reports are generated only once and stored in database. Subsequent request query the database
 - `/delete` deletes QA Report stored in database for a SBOM that is deleted
 
-## [v7.2.4-alpha] - (8/7/2023)
-### Added
-- `QualityReportFileService` for handling database operations
-- `UploadQualityReportFileInput` to handle new QA and ensure relationships are added correctly
-- `QAController` to handle Metric API operations
-
-### Changed
-- Moved `/svip/sboms/qa` endpoint to `QAController`
-- Quality reports are generated only once and stored in database. Subsequent request query the database
-- `/delete` deletes QA Report stored in database for a SBOM that is deleted
-
-## [v7.2.3-alpha] - (8/3/2023)
+## [v7.2.4-alpha] - (8/3/2023)
 ### Added
 - `SBOMService` for handling database operations
 - `UploadSBOMFileInput` to handle new SBOM entries uploaded via API
@@ -93,8 +119,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - GET `/sboms`
   - DELETE `/sboms`
 
-## [v7.2.4-alpha] - (8/14/2023)
-
+## [v7.2.3-alpha] - (8/14/2023)
 ### Changed
 - Added null checks to the deserializers to avoid null metadata or files keys.
 
