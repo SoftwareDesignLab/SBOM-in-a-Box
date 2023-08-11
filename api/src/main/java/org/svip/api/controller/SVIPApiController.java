@@ -492,7 +492,7 @@ public class SVIPApiController {
      *
      * @return A list of string tool names.
      */
-    @GetMapping("/generators/osi/getTools")
+    @GetMapping("/generators/osi/tools")
     public ResponseEntity<?> getOSITools() {
         if (osiContainer == null)
             return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
