@@ -96,11 +96,15 @@ public abstract class MergerUtils extends Merger {
         }
 
         // Relationships TODO: Add merging of relationships in future sprint
-        Map<String, Set<Relationship>> relationshipsA = A.getRelationships();
-        Map<String, Set<Relationship>> relationshipsB = B.getRelationships();
-        relationshipsA.keySet().forEach(x -> relationshipsA.get(x).forEach(y -> builder.addRelationship(x, y)));
-        relationshipsB.keySet().forEach(x -> relationshipsB.get(x).forEach(y -> builder.addRelationship(x, y)));
+        if(A.getRelationships() != null) {
+            Map<String, Set<Relationship>> relationshipsA = A.getRelationships();
+            relationshipsA.keySet().forEach(x -> relationshipsA.get(x).forEach(y -> builder.addRelationship(x, y)));
+        }
 
+        if(B.getRelationships() != null) {
+            Map<String, Set<Relationship>> relationshipsB = B.getRelationships();
+            relationshipsB.keySet().forEach(x -> relationshipsB.get(x).forEach(y -> builder.addRelationship(x, y)));
+        }
 
         // External References
         mergeExternalReferences(
