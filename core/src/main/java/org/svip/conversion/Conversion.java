@@ -4,6 +4,7 @@ import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
@@ -205,12 +206,9 @@ public class Conversion {
     private static void configureFromSPDX23Object(Component component) {
         // is this a package or file object?
         if (component instanceof SPDX23PackageObject spdx23PackageObject) {
-            compBuilder.setComment(spdx23PackageObject.getComment());
-            compBuilder.setAttributionText(spdx23PackageObject.getAttributionText());
+            configureFromSPDX23Package(spdx23PackageObject);
         } else if (component instanceof SPDX23FileObject spdx23FileObject) {
-            compBuilder.setComment(spdx23FileObject.getComment());
-            compBuilder.setAttributionText(spdx23FileObject.getAttributionText());
-            compBuilder.setFileNotice(spdx23FileObject.getFileNotice());
+            configureFromSPDX23File(spdx23FileObject);
         } else {
             throw new ClassCastException("Component cannot be configured to an SPDX Package or an SPFX File Object.");
         }
@@ -249,6 +247,26 @@ public class Conversion {
         component.getPURLs().forEach(compBuilder::addPURL);
         component.getExternalReferences().forEach(compBuilder::addExternalReference);
 
+    }
+
+    /**
+     * Configure the SVIPComponentBuilder from an SPDX23 File Object
+     */
+    private static void configureFromSPDX23File(SPDX23FileObject component) {
+
+        compBuilder.setType(component.getType());
+        compBuilder.setUID(component.getUID());
+        compBuilder.setAuthor(component.getAuthor());
+        compBuilder.setName(component.getName());
+        compBuilder.setLicenses(component.getLicenses());
+        compBuilder.setCopyright(component.getCopyright());
+
+        component.getHashes().forEach(compBuilder::addHash);
+
+        compBuilder.setComment(component.getComment());
+        compBuilder.setAttributionText(component.getAttributionText());
+
+        compBuilder.setFileNotice(component.getFileNotice());
     }
 
     /**
