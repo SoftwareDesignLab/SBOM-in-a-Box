@@ -71,12 +71,7 @@ public class OSIClient {
         }
     }
 
-    /**
-     * Sends a request to the OSI API to retrieve a list of all available tool names.
-     *
-     * @return A list of all available tool names.
-     */
-    public List<String> getAllTools() {
+    protected List<String> getAllTools() {
         try {
             HttpURLConnection conn = connectToURL(URL.GET_TOOLS);
 
@@ -100,14 +95,7 @@ public class OSIClient {
         }
     }
 
-    /**
-     * Sends a request to the OSI API to generate SBOMs using a provided list of tool names.
-     *
-     * @param toolNames A list of tool names. If null or empty, all tools will be used by default. Any invalid or
-     *                  non-applicable tool names will be skipped.
-     * @return True if the SBOMs were successfully generated in the /sboms directory, false if otherwise.
-     */
-    public boolean generateSBOMs(List<String> toolNames) {
+    protected boolean generateSBOMs(List<String> toolNames) {
         try {
             HttpURLConnection conn = connectToURL(URL.GENERATE);
 
@@ -134,23 +122,46 @@ public class OSIClient {
     }
 
     /**
-     * Function to check if the Docker API is running.
+     * Function to check if docker is installed and available
      *
-     * @return 0 - The Docker API is running and can accept connections.
-     *         1 - The Docker API returned an error when pinging.
+     * @return 0 - Docker is installed and available,
+     *         1 - Docker is not running but installed,
+     *         2 - Docker is not installed
      */
     public static int dockerCheck() {
         try {
-            HttpURLConnection conn = connectToURL(URL.GET_TOOLS);
+            // If running in a container, we know the Docker daemon is available (with a system host link)
+            File f = new File("/.dockerenv");
+            if (f.exists()) return 0;
 
-            conn.connect();
-            if (conn.getResponseCode() != 200) return 1;
-            conn.disconnect();
+            // Check if docker is installed
+            Process process = Runtime.getRuntime().exec("docker --version");
+            BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line = br.readLine();
+            br.close();
+            // See if it returns the expected response for an installed application
+            if (line == null || !line.startsWith("Docker version")) {
+                // This means docker is not installed
+                return 2;
+            }
+
+            // Check if Docker daemon is running
+            process = Runtime.getRuntime().exec("docker ps");
+            br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            line = br.readLine();
+            br.close();
+
+            if (line != null && line.startsWith("CONTAINER ID")) {
+                // This means docker is installed and running
+                return 0;
+            } else {
+                // This means docker is not running
+                return 1;
+            }
         } catch (IOException e) {
-            return 1;
+            // This means that the command hit an unknown error, we can assume that means docker is not installed
+            return 2;
         }
-
-        return 0;
     }
 
     /**
