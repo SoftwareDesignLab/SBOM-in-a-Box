@@ -643,9 +643,8 @@ public class MergerTest {
 
     }
 
-    @Disabled("Functionality disabled for now.")
     @Test
-    public void merger_should_merge_basic_SVIP_SBOMs() throws MergerException {
+    public void merger_should_merge_basic_SVIP_SBOMs_no_components() throws MergerException {
 
         Set<Component> SVIP_components_one = new HashSet<>(Arrays.asList(comp_svip_blue, comp_svip_yellow));
 
