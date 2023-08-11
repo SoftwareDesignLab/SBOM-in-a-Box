@@ -7,6 +7,7 @@ import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.util.ExternalReference;
@@ -136,8 +137,14 @@ public class Conversion {
             ) {
                 if (c == null)
                     continue;
-                buildSVIPComponentObject(c, originalSchema);
-                builder.addComponent(compBuilder.buildAndFlush());
+                try {
+                    SVIPComponentObject d = (SVIPComponentObject) c;
+                    builder.addComponent(d);
+                } catch (Exception e) {
+                    System.err.println("ok");
+                    buildSVIPComponentObject(c, originalSchema);
+                    builder.addComponent(compBuilder.buildAndFlush());
+                }
             }
 
         if (deserialized.getRelationships() != null)
@@ -174,7 +181,7 @@ public class Conversion {
         // schema specific
         if (originalSchema != null)
             switch (originalSchema) {
-                case CDX14 -> configurefromCDX14Object((CDX14ComponentObject) component);
+                case CDX14 -> configureFromCDX14Object((CDX14ComponentObject) component);
                 case SPDX23 -> configureFromSPDX23Object(component);
             }
         else
@@ -183,7 +190,7 @@ public class Conversion {
                 configureFromSPDX23Object(component);
             } catch (ClassCastException | NullPointerException e) {
                 try {
-                    configurefromCDX14Object((CDX14ComponentObject) component);
+                    configureFromCDX14Object((CDX14ComponentObject) component);
                 } catch (ClassCastException | NullPointerException e1) {
                 }
             }
@@ -204,8 +211,44 @@ public class Conversion {
             compBuilder.setComment(spdx23FileObject.getComment());
             compBuilder.setAttributionText(spdx23FileObject.getAttributionText());
             compBuilder.setFileNotice(spdx23FileObject.getFileNotice());
-        } else if (component instanceof CDX14ComponentObject)
-            throw new ClassCastException();
+        } else {
+            throw new ClassCastException("Component cannot be configured to an SPDX Package or an SPFX File Object.");
+        }
+    }
+
+    /**
+     * Configure the SVIPComponentBuilder from an SPDX23 Package Object
+     */
+    private static void configureFromSPDX23Package(SPDX23PackageObject component) {
+
+        compBuilder.setType(component.getType());
+        compBuilder.setUID(component.getUID());
+        compBuilder.setAuthor(component.getAuthor());
+        compBuilder.setName(component.getName());
+        compBuilder.setLicenses(component.getLicenses());
+        compBuilder.setCopyright(component.getCopyright());
+
+        component.getHashes().forEach(compBuilder::addHash);
+
+        compBuilder.setComment(component.getComment());
+        compBuilder.setAttributionText(component.getAttributionText());
+        compBuilder.setDownloadLocation(component.getDownloadLocation());
+        compBuilder.setFileName(component.getFileName());
+        compBuilder.setFilesAnalyzed(component.getFilesAnalyzed());
+        compBuilder.setVerificationCode(component.getVerificationCode());
+        compBuilder.setHomePage(component.getHomePage());
+        compBuilder.setSourceInfo(component.getSourceInfo());
+        compBuilder.setReleaseDate(component.getReleaseDate());
+        compBuilder.setBuildDate(component.getBuiltDate());
+        compBuilder.setValidUntilDate(component.getValidUntilDate());
+        compBuilder.setSupplier(component.getSupplier());
+        compBuilder.setVersion(component.getVersion());
+        compBuilder.setDescription(component.getDescription());
+
+        component.getCPEs().forEach(compBuilder::addCPE);
+        component.getPURLs().forEach(compBuilder::addPURL);
+        component.getExternalReferences().forEach(compBuilder::addExternalReference);
+
     }
 
     /**
@@ -213,7 +256,7 @@ public class Conversion {
      *
      * @param component CDX14 component object
      */
-    private static void configurefromCDX14Object(CDX14ComponentObject component) {
+    private static void configureFromCDX14Object(CDX14ComponentObject component) {
         compBuilder.setSupplier(component.getSupplier());
         compBuilder.setVersion(component.getVersion());
         compBuilder.setDescription(component.getDescription());
