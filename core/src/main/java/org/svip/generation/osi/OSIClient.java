@@ -71,7 +71,12 @@ public class OSIClient {
         }
     }
 
-    protected List<String> getAllTools() {
+    /**
+     * Sends a request to the OSI API to retrieve a list of all available tool names.
+     *
+     * @return A list of all available tool names.
+     */
+    public List<String> getAllTools() {
         try {
             HttpURLConnection conn = connectToURL(URL.GET_TOOLS);
 
@@ -95,7 +100,14 @@ public class OSIClient {
         }
     }
 
-    protected boolean generateSBOMs(List<String> toolNames) {
+    /**
+     * Sends a request to the OSI API to generate SBOMs using a provided list of tool names.
+     *
+     * @param toolNames A list of tool names. If null or empty, all tools will be used by default. Any invalid or
+     *                  non-applicable tool names will be skipped.
+     * @return True if the SBOMs were successfully generated in the /sboms directory, false if otherwise.
+     */
+    public boolean generateSBOMs(List<String> toolNames) {
         try {
             HttpURLConnection conn = connectToURL(URL.GENERATE);
 
@@ -122,11 +134,10 @@ public class OSIClient {
     }
 
     /**
-     * Function to check if docker is installed and available
+     * Function to check if the Docker API is running.
      *
-     * @return 0 - Docker is installed and available,
-     *         1 - Docker is not running but installed,
-     *         2 - Docker is not installed
+     * @return 0 - The Docker API is running and can accept connections.
+     *         1 - The Docker API returned an error when pinging.
      */
     public static int dockerCheck() {
         try {

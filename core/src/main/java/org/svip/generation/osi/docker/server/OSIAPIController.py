@@ -69,6 +69,15 @@ def generate():
 
 
 def parse_tools(tool_names: str, langs: list[Language]) -> list[OSTool]:
+    """
+    Helper method to parse a list of tool names and project languages into a list of valid, applicable OSTool instances.
+
+    Parameter: tool_names - A list of tool names.
+    Parameter: langs      - A list of project languages.
+    Returns: A list of valid, applicable OSTool instances that correspond to tool names. If a tool name is invalid or
+             not applicable, it will be skipped.
+    """
+
     tools = []
     valid_tools = ToolUtils.get_tools(langs)
 
