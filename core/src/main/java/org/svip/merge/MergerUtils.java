@@ -9,6 +9,7 @@ import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SVIPComponentObject;
+import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.serializers.SerializerFactory;
 
@@ -95,6 +96,11 @@ public abstract class MergerUtils extends Merger {
         }
 
         // Relationships TODO: Add merging of relationships in future sprint
+        Map<String, Set<Relationship>> relationshipsA = A.getRelationships();
+        Map<String, Set<Relationship>> relationshipsB = B.getRelationships();
+        relationshipsA.keySet().forEach(x -> relationshipsA.get(x).forEach(y -> builder.addRelationship(x, y)));
+        relationshipsB.keySet().forEach(x -> relationshipsB.get(x).forEach(y -> builder.addRelationship(x, y)));
+
 
         // External References
         mergeExternalReferences(
