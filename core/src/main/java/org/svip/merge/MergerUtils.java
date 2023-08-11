@@ -90,12 +90,19 @@ public abstract class MergerUtils extends Merger {
             builder.setRootComponent(mainSBOM.getRootComponent());
 
         // Components
-        Set<Component> mergedComponents = mergeComponentsToSchema(componentsA, componentsB, targetSchema);
-        for (Component mergedComponent : mergedComponents) {
-            builder.addComponent(mergedComponent);
+        Set<Component> mergedComponents = null;
+        if(componentsA != null && componentsB != null) {
+            mergedComponents = mergeComponentsToSchema(componentsA, componentsB, targetSchema);
+        } else if(componentsA != null && componentsB == null) {
+            mergedComponents = componentsA;
+        } else if(componentsA == null && componentsB != null) {
+            mergedComponents = componentsB;
         }
 
-        // Relationships TODO: Add merging of relationships in future sprint
+        if(mergedComponents != null) mergedComponents.forEach(x -> builder.addComponent(x));
+
+
+        // Relationships
         if(A.getRelationships() != null) {
             Map<String, Set<Relationship>> relationshipsA = A.getRelationships();
             relationshipsA.keySet().forEach(x -> relationshipsA.get(x).forEach(y -> builder.addRelationship(x, y)));
