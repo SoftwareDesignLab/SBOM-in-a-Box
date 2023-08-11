@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.svip.api.entities.QualityReportFile;
 import org.svip.api.entities.SBOM;
+import org.svip.api.entities.VEXFile;
 import org.svip.api.repository.SBOMRepository;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
