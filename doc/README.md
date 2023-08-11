@@ -165,6 +165,14 @@ The `/sboms` directory (also in `/bound_dir` will now contain generated SBOMs fr
 |    **CycloneDX PHP**    |    https://github.com/CycloneDX/cyclonedx-php-composer    | `PHP`                                                                                                                                                                        |
 |        **JBOM**         |              https://github.com/eclipse/jbom              | `Java`                                                                                                                                                                       |
 
+### Adding More Tools
+To add additional open source tools, there are 2 steps:
+1. Add any additional dependencies as well as the tool installation command to [`setup.sh`](../core/src/main/java/org/svip/generation/osi/docker/scripts/setup.sh)
+2. Register the tool in [`ToolMapper.py`](../core/src/main/java/org/svip/generation/osi/docker/server/ToolMapper.py) 
+   by adding an entry to `TOOL_LIST` describing the generated BOM format, languages used, and commands required. See 
+   the current entries for examples.
+
+> After completing these steps, the Docker Flask API and SVIP API will automatically recognize and use the tool.
 
 
 ## Building the Image
