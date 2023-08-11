@@ -2,7 +2,7 @@
 > The SBOM Visualization and Integration Platform (**SVIP**) is a unified platform to promote the 
 > production, consumption, and utilization of Software Bills of Materials.
 
-### Latest Release: [[v8.0.0-alpha] - (8/22/2023)](doc/changelog.md)
+### Latest Release: [[v7.3.0-alpha] - (8/11/2023)](doc/changelog.md)
 
 ## System Requirements
 - Java 17.X.X
@@ -51,12 +51,12 @@ Currently, SVIP Supports the following SBOM Types
 **Developer Team Leads**
 - [Schuyler Dillon](mailto:sdd4181@rit.edu)
 - [Tyler Drake](mailto:txd3634@rit.edu)
-- [Ian Dunn](mailto:itd3516@g.rit.edu)
 - [Kevin Laporte](mailto:kjl8898@rit.edu)
 - [Matt London](mailto:mrl2534@rit.edu)
 - [Dylan Mulligan](mailto:dtm5568@rit.edu)
 
 **Developer Team**
+- [Ian Dunn](mailto:itd3516@g.rit.edu)
 - [Asa Horn](mailto:aoh9470@rit.edu)
 - [Henry Keena](mailto:htk4363@rit.edu)
 - [Ping Liu](mailto:htk4363@rit.edu)
@@ -67,4 +67,3 @@ Currently, SVIP Supports the following SBOM Types
 - [Juan Francisco Patino](mailto:jfp6815@rit.edu)
 - [Max Stein](mailto:mhs8558@rit.edu)
 - [Tom Roman](mailto:tfr8811@rit.edu)
-- [Liam Wilkins](mailto:ljw1484@rit.edu)
