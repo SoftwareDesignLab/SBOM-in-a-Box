@@ -12,15 +12,23 @@ import java.util.Set;
 
 import static org.svip.serializers.SerializerFactory.Schema.*;
 
+/**
+ * Name: MergerCrossSchema.java
+ * Description: Merges two SBOMs of different formats together into one.
+ *
+ * @author Tyler Drake
+ */
 public class MergerCrossSchema extends Merger {
 
     public MergerCrossSchema() {
     }
 
     /**
-     * @param A
-     * @param B
-     * @return
+     * Takes in two SBOMs and merged them together
+     *
+     * @param A The Primary SBOM
+     * @param B Secondary SBOM
+     * @return An SVIP SBOM made from both SBOMs
      */
     @Override
     public SBOM mergeSBOM(SBOM A, SBOM B) throws Exception {
@@ -47,6 +55,13 @@ public class MergerCrossSchema extends Merger {
 
     }
 
+    /**
+     * Standardizes the SBOM to an SVIP SBOM based upon its original schema
+     *
+     * @param sbom Internal SBOM Object to be standardized
+     * @return SVIP SBOM
+     * @throws Exception
+     */
     public SBOM standardizeSBOM(SBOM sbom) throws Exception {
         if(sbom instanceof CDX14SBOM) {
             return Conversion.convertSBOM(sbom, SVIP, CDX14);
