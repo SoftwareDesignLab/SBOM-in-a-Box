@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v7.2.4-alpha] - (8/14/2023)
 
 ### Changed
-- Fixed a bug so deserializers can now handle additional missing data
+- Added null checks to the deserializers to avoid null metadata or files keys.
 
 ## [v7.2.3-alpha] - (8/7/2023)
 
