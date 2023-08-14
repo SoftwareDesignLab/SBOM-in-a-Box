@@ -1,5 +1,7 @@
 package org.svip.conversion;
 
+import org.checkerframework.checker.units.qual.C;
+import org.svip.merge.MergerException;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -66,7 +68,7 @@ public class Conversion {
      * @param sbom
      * @return SVIPSBOM
      */
-    private static SVIPSBOM toSVIP(SBOM sbom, SerializerFactory.Schema originalSchema) throws Exception {
+    private static SVIPSBOM toSVIP(SBOM sbom, SerializerFactory.Schema originalSchema) throws ConversionException {
 
         try {
 
@@ -75,19 +77,11 @@ public class Conversion {
 
         } catch (ClassCastException c) {
 
-            try {
+            // Create a new SVIP Builder and build a new SVIP from it
+            builder = new SVIPSBOMBuilder();
+            buildSBOM(sbom, SerializerFactory.Schema.SVIP, originalSchema);
+            return builder.Build();
 
-                // Create a new SVIP Builder and build a new SVIP from it
-                builder = new SVIPSBOMBuilder();
-                buildSBOM(sbom, SerializerFactory.Schema.SVIP, originalSchema);
-                return builder.Build();
-
-            } catch (Exception e) {
-
-                // Throw exception if we couldn't convert the SBOM
-                throw new Exception("Couldn't standardize SBOM to SVIPSBOM: " + e.getMessage());
-
-            }
         }
     }
 
@@ -99,7 +93,7 @@ public class Conversion {
      * @return
      */
     public static SBOM convertSBOM(SBOM sbom, SerializerFactory.Schema desiredSchema,
-                                   SerializerFactory.Schema originalSchema) throws Exception {
+                                   SerializerFactory.Schema originalSchema) throws ConversionException {
 
         // TODO: deserialization happens in controller
 
@@ -122,7 +116,7 @@ public class Conversion {
      * @param schema         desired schema
      * @param originalSchema original schema
      */
-    public static void buildSBOM(SBOM deserialized, SerializerFactory.Schema schema, SerializerFactory.Schema originalSchema) {
+    public static void buildSBOM(SBOM deserialized, SerializerFactory.Schema schema, SerializerFactory.Schema originalSchema) throws ConversionException {
 
         // Set Format
         builder.setFormat(String.valueOf(schema));
@@ -171,7 +165,7 @@ public class Conversion {
                         SVIPComponentObject d = (SVIPComponentObject) c;
                         builder.addComponent(d);
 
-                    } catch (Exception e) {
+                    } catch (ClassCastException e) {
 
                         buildSVIPComponentObject(c, originalSchema);
                         builder.addComponent(compBuilder.buildAndFlush());
@@ -201,7 +195,7 @@ public class Conversion {
      * @param component      original uncasted component
      * @param originalSchema the original Schema we are converting from
      */
-    public static void buildSVIPComponentObject(Component component, SerializerFactory.Schema originalSchema) {
+    public static void buildSVIPComponentObject(Component component, SerializerFactory.Schema originalSchema) throws ConversionException {
 
         // If the component doesn't exist, return
         if (component == null) return;
@@ -277,7 +271,7 @@ public class Conversion {
      *
      * @param component SPDX23 object
      */
-    private static void configureFromSPDX23Object(Component component) {
+    private static void configureFromSPDX23Object(Component component) throws ConversionException {
 
         // If Component is an SPDX 2.3 Package, configure the package
         // If Component is an SPDX 2.3 File, configure the file
@@ -292,7 +286,7 @@ public class Conversion {
 
         } else {
 
-            throw new ClassCastException("Component cannot be configured to an SPDX Package or an SPFX File Object.");
+            throw new ConversionException("Component cannot be configured to an SPDX Package or an SPFX File Object.");
 
         }
 
