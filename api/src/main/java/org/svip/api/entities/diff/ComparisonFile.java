@@ -24,15 +24,6 @@ public class ComparisonFile {
     @Column(nullable = false)
     private Long id;
 
-    // Target SBOM ID for comparison
-    @Column(nullable = false)
-    private Long targetID;
-
-    // Other SBOM ID for comparison
-    @Column(nullable = false)
-    private Long otherID;
-
-
     ///
     /// Relationships
     ///
