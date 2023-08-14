@@ -235,10 +235,10 @@ public class Conversion {
             // Find the appropriate configuration method for component based on schema
             switch (originalSchema) {
 
-                // If Schema is CDX14, Configure CDX14 Object
+                // If Schema is CDX14, Configure from CDX14 Object
                 case CDX14 -> configureFromCDX14Object((CDX14ComponentObject) component);
 
-                // If Schema is SPDX23, Configure SPDX23 Object
+                // If Schema is SPDX23, Configure from SPDX23 Object
                 case SPDX23 -> configureFromSPDX23Object(component);
 
             }
