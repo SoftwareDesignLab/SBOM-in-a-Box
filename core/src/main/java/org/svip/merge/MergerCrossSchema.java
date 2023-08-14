@@ -39,7 +39,7 @@ public class MergerCrossSchema extends Merger {
         Set<Component> componentsA = SBOMA.getComponents();
         Set<Component> componentsB = SBOMB.getComponents();
 
-        // declare SBOM A as the main SBOM, cast it back to SPDX14SBOM
+        // declare SBOM A as the main SBOM
         SVIPSBOM mainSBOM = SBOMA;
 
         // Create a new builder for the new SBOM
