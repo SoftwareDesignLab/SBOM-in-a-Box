@@ -189,15 +189,11 @@ public class SBOMFileService {
             return null; // internal server error
         }
 
-        // serialize merged SBOM
-        SerializerFactory.Schema schema;
-//        if(merged instanceof SVIPSBOM) // todo serializers do not support SVIP yet
-//            schema = SerializerFactory.Schema.SVIP;
-        schema = (merged instanceof CDX14SBOM) ? SerializerFactory.Schema.CDX14 : SerializerFactory.Schema.SPDX23;
+        SerializerFactory.Schema schema = SerializerFactory.Schema.SPDX23;
 
         // serialize merged SBOM
-        Serializer s = SerializerFactory.createSerializer(schema, SerializerFactory.Format.JSON, // todo default to JSON for now?
-                true); // todo serializers don't adjust the format nor specversion
+        Serializer s = SerializerFactory.createSerializer(schema, SerializerFactory.Format.TAGVALUE, // todo default to SPDX JSON for now?
+                true);
         s.setPrettyPrinting(true);
         String contents;
         try {

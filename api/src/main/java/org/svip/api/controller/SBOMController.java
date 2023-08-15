@@ -93,15 +93,15 @@ public class SBOMController {
      * @return ID of merged SBOM
      */
     @PostMapping("/sboms/merge")
-    public ResponseEntity<Long> merge(@RequestBody Long[] ids){
+    public ResponseEntity<Long> merge(@RequestBody Long[] ids) {
 
         Long mergeID = this.sbomService.merge(ids);
         // todo convert should probably throw errors instead of returning null if error occurs
         if (mergeID == null)
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        else if(mergeID == -1)
+        else if (mergeID == -1)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        else if(mergeID < 0)
+        else if (mergeID < 0)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         // Return final merged ID
