@@ -77,7 +77,7 @@ public class SBOMFileService {
         // deserialize into SBOM object
         org.svip.sbom.model.interfaces.generics.SBOM deserialized;
         try {
-            deserialized = getSBOMObject(id);
+            deserialized = getSBOMFile(id).toSBOMObject();
         } catch (Exception e) {
             throw new DeserializerException("Deserialization Error: " + e.getMessage());
         }
@@ -147,7 +147,7 @@ public class SBOMFileService {
 
             org.svip.sbom.model.interfaces.generics.SBOM sbomObj;
             try {
-                sbomObj = getSBOMObject(id);
+                sbomObj = getSBOMFile(id).toSBOMObject();
             } catch (JsonProcessingException e) {
                 LOGGER.info(urlMsg + id + "DURING DESERIALIZATION: " +
                         e.getMessage());
@@ -226,7 +226,7 @@ public class SBOMFileService {
      */
     public String getSBOMObjectAsJSON(Long id) throws JsonProcessingException {
         // Retrieve SBOM Object and check that it exists
-        org.svip.sbom.model.interfaces.generics.SBOM sbom = getSBOMObject(id);
+        org.svip.sbom.model.interfaces.generics.SBOM sbom = getSBOMFile(id).toSBOMObject();
         if (sbom == null)
             return null;
 
@@ -285,25 +285,6 @@ public class SBOMFileService {
         return sbomFile.getId();
     }
 
-
-    /**
-     * Retrieve SBOM File from the database as an SBOM Object
-     *
-     * @param id of the SBOM to retrieve
-     * @return deserialized SBOM Object
-     * @throws JsonProcessingException SBOM failed to be deserialized
-     */
-    private org.svip.sbom.model.interfaces.generics.SBOM getSBOMObject(Long id) throws JsonProcessingException {
-        // Retrieve SBOMFile and check that it exists
-        SBOM sbomFile = getSBOMFile(id);
-        if (sbomFile == null)
-            return null;
-
-        // Attempt to deserialize and return the object
-        Deserializer d = SerializerFactory.createDeserializer(sbomFile.getContent());
-
-        return d.readFromString(sbomFile.getContent());
-    }
 
 
     /**
