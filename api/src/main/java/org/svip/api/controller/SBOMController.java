@@ -8,13 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.svip.api.entities.SBOM;
 import org.svip.api.requests.UploadSBOMFileInput;
-import org.svip.api.services.QualityReportFileService;
-import org.svip.api.services.SBOMFileService;
+import org.svip.api.services.*;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
 import org.svip.api.services.SBOMFileService;
 import org.svip.api.services.SBOMFileService;
+import org.svip.serializers.SerializerFactory;
+import org.svip.serializers.deserializer.Deserializer;
 
 /**
  * REST API Controller for managing SBOM and SBOM operations
@@ -67,11 +68,8 @@ public class SBOMController {
             // Attempt to upload input
             SBOM sbom = uploadSBOMInput.toSBOMFile();
             // Attempt to deserialize
-            // todo move this to service
-            Deserializer d = SerializerFactory.createDeserializer(sbom.getContent());
-            d.readFromString(sbom.getContent());
+            sbom.toSBOMObject();
 
-            SBOM sbom = uploadSBOMInput.toSBOMFile();
             this.sbomService.upload(sbom);
 
             // Log
@@ -142,169 +140,6 @@ public class SBOMController {
         if (sbomFile == null) {
             LOGGER.warn("GET /svip/sboms/content?id=" + id + " - FILE NOT FOUND");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        // Log
-        LOGGER.info("GET /svip/sboms/content?id=" + id + " - File: " + sbomFile.getName());
-
-        return new ResponseEntity<>(sbomFile, HttpStatus.OK);
-    }
-
-
-    /**
-     * USAGE. Send GET request to /sboms with a URL parameter id to get the deserialized SBOM.
-     *
-     * The API will respond with an HTTP 200 and the SBOM object json
-     *
-     * @param id The id of the SBOM contents to retrieve.
-     * @return A deserialized SBOM Object
-     */
-    @GetMapping("/sbom")
-    public ResponseEntity<String> getSBOMObjectAsJSON(@RequestParam("id") Long id){
-
-        try{
-            String sbom = this.sbomService.getSBOMObjectAsJSON(id);
-
-            // No SBOM was found
-            if(sbom == null)
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-            // Else return the object
-            return new ResponseEntity<>(sbom, HttpStatus.OK);
-
-        } catch (JsonProcessingException e ){
-            // error with Deserialization
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-
-    /**
-     * USAGE. Send GET request to /sboms/content with a URL parameter id to get the contents of the SBOM with the specified ID.
-     *
-     * The API will respond with an HTTP 200 and the contents of the SBOM file.
-     *
-     * @param id The id of the SBOM contents to retrieve.
-     * @return The contents of the SBOM file.
-     */
-    @GetMapping("/sboms/content")
-    public ResponseEntity<SBOM> getContent(@RequestParam("id") Long id) {
-        // todo rename endpoint? Returns more than just content
-        // Get SBOM
-        SBOM sbomFile = this.sbomService.getSBOMFile(id);
-
-        // Return SBOM or invalid ID
-        if (sbomFile == null) {
-            LOGGER.warn("GET /svip/sboms/content?id=" + id + " - FILE NOT FOUND");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        // Log
-        LOGGER.info("GET /svip/sboms/content?id=" + id + " - File: " + sbomFile.getName());
-
-        return new ResponseEntity<>(sbomFile, HttpStatus.OK);
-    }
-
-
-    /**
-     * USAGE. Send GET request to /sboms with a URL parameter id to get the deserialized SBOM.
-     *
-     * The API will respond with an HTTP 200 and the SBOM object json
-     *
-     * @param id The id of the SBOM contents to retrieve.
-     * @return A deserialized SBOM Object in JSON form
-     */
-    @GetMapping("/sbom")
-    public ResponseEntity<String> getSBOMObjectAsJSON(@RequestParam("id") Long id){
-
-        try{
-            String sbom = this.sbomService.getSBOMObjectAsJSON(id);
-
-            // No SBOM was found
-            if(sbom == null)
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-            // Else return the object
-            return new ResponseEntity<>(sbom, HttpStatus.OK);
-
-        } catch (JsonProcessingException e ){
-            // error with Deserialization
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-
-    /**
-     * USAGE. Send GET request to /sboms/content with a URL parameter id to get the contents of the SBOM with the specified ID.
-     *
-     * The API will respond with an HTTP 200 and the contents of the SBOM file.
-     *
-     * @param id The id of the SBOM contents to retrieve.
-     * @return The contents of the SBOM file.
-     */
-    @GetMapping("/sboms/content")
-    public ResponseEntity<SBOM> getContent(@RequestParam("id") Long id) {
-        // todo rename endpoint? Returns more than just content
-        // Get SBOM
-        SBOM sbomFile = this.sbomService.getSBOMFile(id);
-
-        // Return SBOM or invalid ID
-        if (sbomFile == null) {
-            LOGGER.warn("GET /svip/sboms/content?id=" + id + " - FILE NOT FOUND");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        // Log
-        LOGGER.info("GET /svip/sboms/content?id=" + id + " - File: " + sbomFile.getName());
-
-        return new ResponseEntity<>(sbomFile, HttpStatus.OK);
-    }
-
-
-    /**
-     * USAGE. Send GET request to /sboms with a URL parameter id to get the deserialized SBOM.
-     *
-     * The API will respond with an HTTP 200 and the SBOM object json
-     *
-     * @param id The id of the SBOM contents to retrieve.
-     * @return A deserialized SBOM Object
-     */
-    @GetMapping("/sbom")
-    public ResponseEntity<String> getSBOMObjectAsJSON(@RequestParam("id") Long id){
-
-        try{
-            String sbom = this.sbomService.getSBOMObjectAsJSON(id);
-
-            // No SBOM was found
-            if(sbom == null)
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-            // Else return the object
-            return new ResponseEntity<>(sbom, HttpStatus.OK);
-
-        } catch (JsonProcessingException e ){
-            // error with Deserialization
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    /**
-     * USAGE. Send GET request to /sboms/content with a URL parameter id to get the contents of the SBOM with the specified ID.
-     *
-     * The API will respond with an HTTP 200 and the contents of the SBOM file.
-     *
-     * @param id The id of the SBOM contents to retrieve.
-     * @return The contents of the SBOM file.
-     */
-    @GetMapping("/sboms/content")
-    public ResponseEntity<SBOM> getContent(@RequestParam("id") Long id) {
-        // todo rename endpoint? Returns more than just content
-        // Get SBOM
-        SBOM sbomFile = this.sbomService.getSBOMFile(id);
-
-        // Return SBOM or invalid ID
-        if (sbomFile == null) {
-            LOGGER.info("GET /svip/sboms/content?id=" + id + " - FILE NOT FOUND");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         // Log
