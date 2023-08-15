@@ -8,6 +8,7 @@ import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.serializers.SerializerFactory;
 
@@ -50,7 +51,7 @@ public abstract class MergerUtils extends Merger {
         switch (targetSchema) {
             case SPDX23 -> specVersion = "2.3";
             case CDX14 -> specVersion = "1.4";
-            default -> specVersion = "1.0-a";
+            default -> specVersion = "1.0-a"; // SVIP
         }
         builder.setSpecVersion(specVersion);
 
@@ -586,25 +587,45 @@ public abstract class MergerUtils extends Merger {
 
                     }
                     default -> { // SVIP
-                        // Cast the generic component from SBOM A back to a SPDX component
-                        SPDX23PackageObject componentA_SPDX = null;
-                        SPDX23FileObject componentA_SPDXFile = null;
-                        try {
-                            componentA_SPDX = (SPDX23PackageObject) componentA;
-                        } catch (ClassCastException e) {
-                            componentA_SPDXFile = (SPDX23FileObject) componentA;
-                        }
-                        CDX14ComponentObject componentB_CDX = (CDX14ComponentObject) componentB;
 
-                        if (componentA_SPDXFile == null)
+                        if(componentA instanceof SVIPComponentObject && componentB instanceof SVIPComponentObject){ // todo this whole method could be neater
+                            // both components are generic SVIP type, and we want to merge to SVIP
+
+                            SVIPComponentObject componentA_SVIP = (SVIPComponentObject) componentA;
+                            SVIPComponentObject componentB_SVIP = (SVIPComponentObject) componentB;
+
                             // If the components are the same by Name and Version, merge then add them to the SBOM
-                            if (componentA_SPDX.getName() == componentB_CDX.getName() && componentA_SPDX.getVersion() == componentB_CDX.getVersion()) {
+                            if (componentA_SVIP.getName() == componentB_SVIP.getName() && componentA_SVIP.getVersion() == componentB_SVIP.getVersion()) {
 
                                 mergedComponents.add(mergeComponentToSchema(componentA, componentB, targetSchema));
                                 removeB.add(componentB);
                                 merged = true;
 
                             }
+
+                        }
+                        else {
+                            // Cast the generic component from SBOM A back to a SPDX component
+                            SPDX23PackageObject componentA_SPDX = null;
+                            SPDX23FileObject componentA_SPDXFile = null;
+                            try {
+                                componentA_SPDX = (SPDX23PackageObject) componentA;
+                            } catch (ClassCastException e) {
+                                componentA_SPDXFile = (SPDX23FileObject) componentA;
+                            }
+                            CDX14ComponentObject componentB_CDX = (CDX14ComponentObject) componentB;
+
+                            if (componentA_SPDXFile == null)
+                                // If the components are the same by Name and Version, merge then add them to the SBOM
+                                if (componentA_SPDX.getName() == componentB_CDX.getName() && componentA_SPDX.getVersion() == componentB_CDX.getVersion()) {
+
+                                    mergedComponents.add(mergeComponentToSchema(componentA, componentB, targetSchema));
+                                    removeB.add(componentB);
+                                    merged = true;
+
+                                }
+                        }
+
                     }
                 }
 
