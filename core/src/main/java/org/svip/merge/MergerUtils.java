@@ -203,9 +203,6 @@ public abstract class MergerUtils extends Merger {
                                 componentB instanceof SVIPComponentObject componentB_SVIP) {
                             // both components are generic SVIP type, and we want to merge to SVIP
 
-                            if (Objects.equals(componentA_SVIP.getName(), componentB_SVIP.getName())) // todo delete after debugging
-                                if(!(componentA_SVIP.getVersion() != null && componentB_SVIP.getVersion() != null))
-                                    System.out.println();
 
                             // If the components are the same by Name and Version, merge then add them to the SBOM
                             if (Objects.equals(componentA_SVIP.getName(), componentB_SVIP.getName()) &&
