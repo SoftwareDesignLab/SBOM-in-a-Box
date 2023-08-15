@@ -34,6 +34,9 @@ function installCargo() {
 # TOOLS : Installed with Package Manager
 #
 function installWithPIP(){
+  # Install flask for web server
+  pip install flask
+
   # Install jake, cyclonedx-conan, cyclonedx-python, ochrona, scanoss
   pip install jake cyclonedx-conan cyclonedx-bom ochrona scanoss
 

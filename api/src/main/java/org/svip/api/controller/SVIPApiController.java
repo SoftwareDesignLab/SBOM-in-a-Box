@@ -486,11 +486,45 @@ public class SVIPApiController {
 
     }
 
+    /**
+     * USAGE. Send GET request to /generators/osi/getTools to get a list of valid tool names that can be used to
+     * generate an SBOM from source file(s).
+     *
+     * @return A list of string tool names.
+     */
+    @GetMapping("/generators/osi/tools")
+    public ResponseEntity<?> getOSITools() {
+        if (osiContainer == null)
+            return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
+
+        String urlMsg = "POST /svip/generators/osi";
+
+        List<String> tools = osiContainer.getAllTools();
+        if (tools == null) {
+            LOGGER.error(urlMsg + ": " + "Error getting tool list from Docker container.");
+            return new ResponseEntity<>("Error getting tool list from Docker container.", HttpStatus.NOT_FOUND);
+        }
+
+        return Utils.encodeResponse(tools);
+    }
+
+    /**
+     * USAGE. Send POST request to /generators/osi to generate an SBOM from source file(s).
+     *
+     * @param zipFile The zip file of source files to generate an SBOM from.
+     * @param projectName The name of the project.
+     * @param schema The schema of the desired SBOM.
+     * @param format The file format of the desired SBOM.
+     * @param toolNames An optional list of tool names to use when running OSI. If not provided or empty, all
+     *                  possible tools will be used.
+     * @return The ID of the uploaded SBOM.
+     */
     @PostMapping("/generators/osi")
     public ResponseEntity<?> generateOSI(@RequestParam("zipFile") MultipartFile zipFile,
                                          @RequestParam("projectName") String projectName,
                                          @RequestParam("schema") SerializerFactory.Schema schema,
-                                         @RequestParam("format") SerializerFactory.Format format) {
+                                         @RequestParam("format") SerializerFactory.Format format,
+                                         @RequestBody String[] toolNames) {
         if (osiContainer == null)
             return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
 
@@ -533,7 +567,10 @@ public class SVIPApiController {
         Map<String, String> sboms;
         // Generate SBOMs
         try {
-            sboms = osiContainer.generateSBOMs();
+            List<String> tools = null;
+            if (toolNames != null && toolNames.length > 0) tools = List.of(toolNames);
+
+            sboms = osiContainer.generateSBOMs(tools);
         } catch (Exception e) {
             LOGGER.warn(urlMsg + ": Exception occurred while running OSI container: " + e.getMessage());
             return new ResponseEntity<>("Exception occurred while running OSI container.",

@@ -12,7 +12,10 @@ services:
   osi:
     container_name: svip-osi
     image: ubuntu:latest
-    build: core/src/main/java/org/svip/generation/osi/scripts
+    build: core/src/main/java/org/svip/generation/osi/docker
+    restart: unless-stopped
+    ports:
+      - ${FLASK_LOCAL_PORT}:${FLASK_DOCKER_PORT}
     volumes:
       - code:/bound_dir/code
       - sboms:/bound_dir/sboms

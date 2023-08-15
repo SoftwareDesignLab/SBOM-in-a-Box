@@ -3,6 +3,32 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v7.3.0-alpha] - (8/11/2023)
+> OSI v3 - Instead of creating a container dynamically, we now have a [Flask API](README.md#api) running inside of a 
+> container with consistent uptime to send requests to and get/select certain tools to run.
+
+### Added
+#### API
+- `/generators/osi/tools` Endpoint - Returns a list of supported open source tool names that can be passed to 
+  `/generators/osi` to select what tools to run.
+
+#### Core
+- `OSI` Class methods to get tools and generate with specific tools.
+- `OSIClient` Class - Moved it out of `OSI` & removed all reliance on `docker-java` external dependency.
+- `server` package to hold all Flask API utility files.
+  - `constants.py` - Holds all BOM, language, directory, etc. constants relevant to the API and open source tools.
+  - `OSIAPIController.py` - The main controller for the API with two endpoints: `/tools` & `/generate`
+  - `OSTool.py` - A dataclass to store attributes of the open source tools supported by OSI.
+  - `ToolMapper.py` - A list of currently available open source tools represented as `OSTools`.
+  - `ToolUtils.py` - Several utilities to clean directories, run tools, detect languages and manifest files, and 
+    validate tools.
+
+### Changed
+- `/generators/osi` Endpoint - Now takes in an optional `tools` request body to determine what tools to run.
+
+### Removed
+- `ContainerController.py` - Separated functionality into multiple files & API.
+
 ## [v7.2.4-alpha] - (8/14/2023)
 
 ### Changed
