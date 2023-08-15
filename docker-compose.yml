@@ -12,7 +12,10 @@ services:
   osi:
     container_name: svip-osi
     image: ubuntu:latest
-    build: core/src/main/java/org/svip/generation/osi/scripts
+    build: core/src/main/java/org/svip/generation/osi/docker
+    restart: unless-stopped
+    ports:
+      - ${FLASK_LOCAL_PORT}:${FLASK_DOCKER_PORT}
     volumes:
       - code:/bound_dir/code
       - sboms:/bound_dir/sboms
@@ -67,11 +70,11 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/core/src/main/java/org/svip/generation/osi/bound_dir/code
+      device: ./core/src/main/java/org/svip/generation/osi/bound_dir/code
       o: bind
   sboms: # Volume to link osi bound_dir/sboms with api bound_dir/sboms
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/core/src/main/java/org/svip/generation/osi/bound_dir/sboms
+      device: ./core/src/main/java/org/svip/generation/osi/bound_dir/sboms
       o: bind

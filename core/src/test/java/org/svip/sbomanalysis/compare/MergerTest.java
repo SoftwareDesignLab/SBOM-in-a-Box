@@ -345,7 +345,7 @@ public class MergerTest {
 
 
     @Test
-    public void merger_should_merge_basic_CDX_SBOMs() {
+    public void merger_should_merge_basic_CDX_SBOMs() throws Exception {
 
         // SBOM One
 
@@ -448,7 +448,7 @@ public class MergerTest {
     }
 
     @Test
-    public void merger_should_merge_basic_SPDX_SBOMs() {
+    public void merger_should_merge_basic_SPDX_SBOMs() throws Exception {
 
         // SBOM One
 
@@ -550,9 +550,101 @@ public class MergerTest {
 
     }
 
-    @Disabled("Functionality disabled for now.")
     @Test
-    public void merger_should_merge_basic_SVIP_SBOMs() throws MergerException {
+    public void merger_should_merge_cross_schema_SBOMs() throws MergerException {
+
+        // SBOM One (CycloneDX)
+
+        CDX14Builder builder_one = new CDX14Builder();
+
+        builder_one.setFormat("CycloneDX");
+
+        builder_one.setName("test_sbom_one");
+
+        builder_one.setUID("urn:uuid:0000a000-0aaa-0000-00a0-0000aaa00000");
+
+        builder_one.setVersion("1");
+
+        builder_one.setSpecVersion("1.4");
+
+        builder_one.addLicense("test_license");
+
+        CreationData creationDataSBOMOne = new CreationData();
+
+        builder_one.setCreationData(creationDataSBOMOne);
+
+        builder_one.setDocumentComment("This is a test comment for the first SBOM");
+
+        builder_one.setRootComponent(comp_cdx_green);
+
+        builder_one.addComponent(comp_cdx_green);
+
+        builder_one.addComponent(comp_cdx_yellow);
+
+        Relationship green_to_yellow = new Relationship(comp_cdx_yellow.getUID(), "Depends on");
+
+        builder_one.addRelationship(comp_cdx_green.getUID(), green_to_yellow);
+
+        ExternalReference exRefSBOMOne = new ExternalReference("www.testsbom.test", "test_sbom_one");
+
+        builder_one.addExternalReference(exRefSBOMOne);
+
+        CDX14SBOM SBOM_one = builder_one.buildCDX14SBOM();
+
+        // SBOM Two (SPDX)
+
+        SPDX23Builder builder_two = new SPDX23Builder();
+
+        builder_two.setFormat("SPDX");
+
+        builder_two.setName("test_sbom_two");
+
+        builder_two.setUID("aaaa0aaa-a000-aaaa-aa0a-aaaa000aaaaa");
+
+        builder_two.setVersion("1");
+
+        builder_two.setSpecVersion("2.3");
+
+        builder_two.addLicense("test_license");
+
+        CreationData creationDataSBOMTwo = new CreationData();
+
+        builder_two.setCreationData(creationDataSBOMTwo);
+
+        builder_two.setDocumentComment("This is a test comment for the second SBOM");
+
+        builder_two.setRootComponent(comp_spdx_green);
+
+        builder_two.addComponent(comp_spdx_green);
+
+        builder_two.addComponent(comp_spdx_blue);
+
+        Relationship green_to_blue = new Relationship(comp_spdx_blue.getUID(), "Depends on");
+
+        builder_one.addRelationship(comp_spdx_green.getUID(), green_to_blue);
+
+        ExternalReference exRefSBOMTwo = new ExternalReference("www.testsbom.test", "test_sbom_two");
+
+        builder_two.addExternalReference(exRefSBOMTwo);
+
+        SPDX23SBOM SBOM_two = builder_two.buildSPDX23SBOM();
+
+        // New Merger
+
+        MergerController merger = new MergerController();
+
+        // Merged SBOM Result
+
+        SBOM result = merger.merge(SBOM_one, SBOM_two);
+
+        assertNotNull(result);
+
+        assertEquals(4, result.getComponents().size());
+
+    }
+
+    @Test
+    public void merger_should_merge_basic_SVIP_SBOMs_no_components() throws MergerException {
 
         Set<Component> SVIP_components_one = new HashSet<>(Arrays.asList(comp_svip_blue, comp_svip_yellow));
 
@@ -866,7 +958,7 @@ public class MergerTest {
     }
 
     @Test
-    public void merger_should_merge_empty_second_CDX_SBOM() {
+    public void merger_should_merge_empty_second_CDX_SBOM() throws Exception {
 
         // SBOM One
 
@@ -937,7 +1029,7 @@ public class MergerTest {
     }
 
     @Test
-    public void merger_should_merge_empty_second_SPDX_SBOM() {
+    public void merger_should_merge_empty_second_SPDX_SBOM() throws Exception {
 
         // SBOM One
 

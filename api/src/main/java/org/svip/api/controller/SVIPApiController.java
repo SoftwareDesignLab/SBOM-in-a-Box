@@ -1,7 +1,6 @@
 package org.svip.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,36 +12,18 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
-import org.svip.api.services.SBOMFileService;
+import org.svip.api.utils.Converter;
 import org.svip.api.utils.Utils;
-import org.svip.conversion.Conversion;
-import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
-import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbom.model.interfaces.generics.SBOMPackage;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
-import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
-import org.svip.compare.DiffReport;
 import org.svip.merge.MergerController;
 import org.svip.merge.MergerException;
-import org.svip.metrics.pipelines.QualityReport;
-import org.svip.metrics.pipelines.interfaces.generics.QAPipeline;
-import org.svip.metrics.pipelines.schemas.CycloneDX14.CDX14Pipeline;
-import org.svip.metrics.pipelines.schemas.SPDX23.SPDX23Pipeline;
 import org.svip.generation.osi.OSI;
 import org.svip.generation.parsers.ParserController;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.serializer.Serializer;
-import org.svip.vex.VEXResult;
-import org.svip.vex.database.NVDClient;
-import org.svip.vex.database.OSVClient;
-import org.svip.vex.database.interfaces.VulnerabilityDBClient;
-import org.svip.vex.model.VEX;
-import org.svip.vex.model.VEXType;
-import org.svip.vex.vexstatement.VEXStatement;
 import org.svip.generation.parsers.utils.VirtualPath;
 
 import java.io.IOException;
@@ -198,18 +179,52 @@ public class SVIPApiController {
 
         SBOMFile result = new SBOMFile(projectName + ((format == SerializerFactory.Format.JSON)
                 ? ".json" : ".spdx"), contents);
-        result.setId(SBOMFileService.generateSBOMFileId());
+        result.setId(Utils.generateSBOMFileId());
         sbomFileRepository.save(result);
 
         return Utils.encodeResponse(result.getId());
 
     }
 
+    /**
+     * USAGE. Send GET request to /generators/osi/getTools to get a list of valid tool names that can be used to
+     * generate an SBOM from source file(s).
+     *
+     * @return A list of string tool names.
+     */
+    @GetMapping("/generators/osi/tools")
+    public ResponseEntity<?> getOSITools() {
+        if (osiContainer == null)
+            return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
+
+        String urlMsg = "POST /svip/generators/osi";
+
+        List<String> tools = osiContainer.getAllTools();
+        if (tools == null) {
+            LOGGER.error(urlMsg + ": " + "Error getting tool list from Docker container.");
+            return new ResponseEntity<>("Error getting tool list from Docker container.", HttpStatus.NOT_FOUND);
+        }
+
+        return Utils.encodeResponse(tools);
+    }
+
+    /**
+     * USAGE. Send POST request to /generators/osi to generate an SBOM from source file(s).
+     *
+     * @param zipFile The zip file of source files to generate an SBOM from.
+     * @param projectName The name of the project.
+     * @param schema The schema of the desired SBOM.
+     * @param format The file format of the desired SBOM.
+     * @param toolNames An optional list of tool names to use when running OSI. If not provided or empty, all
+     *                  possible tools will be used.
+     * @return The ID of the uploaded SBOM.
+     */
     @PostMapping("/generators/osi")
     public ResponseEntity<?> generateOSI(@RequestParam("zipFile") MultipartFile zipFile,
                                          @RequestParam("projectName") String projectName,
                                          @RequestParam("schema") SerializerFactory.Schema schema,
-                                         @RequestParam("format") SerializerFactory.Format format) throws SBOMBuilderException {
+                                         @RequestParam("format") SerializerFactory.Format format,
+                                         @RequestBody String[] toolNames) {
         if (osiContainer == null)
             return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
 
@@ -252,7 +267,10 @@ public class SVIPApiController {
         Map<String, String> sboms;
         // Generate SBOMs
         try {
-            sboms = osiContainer.generateSBOMs();
+            List<String> tools = null;
+            if (toolNames != null && toolNames.length > 0) tools = List.of(toolNames);
+
+            sboms = osiContainer.generateSBOMs(tools);
         } catch (Exception e) {
             LOGGER.warn(urlMsg + ": Exception occurred while running OSI container: " + e.getMessage());
             return new ResponseEntity<>("Exception occurred while running OSI container.",
@@ -303,8 +321,7 @@ public class SVIPApiController {
                         HttpStatus.NOT_FOUND);
             }
         }
-
-        Conversion.buildSBOM(osiMerged, schema, oldSchema);
+        Converter.buildSBOM(builder, osiMerged, schema, oldSchema);
         builder.setName(projectName); // Set SBOM name to specified project name TODO should this be done in OSI class?
 
         // Serialize SVIPSBOM to given schema and format
@@ -324,43 +341,6 @@ public class SVIPApiController {
         return Utils.encodeResponse(Long.toString(saved.getId()));
     }
 
-    /**
-     * USAGE. Compares two or more given SBOMs (split into filename and contents), with the first one used as the baseline, and returns a comparison report.
-     *
-     * @param targetIndex the index of the target SBOM
-     * @param ids         the ids of the SBOM files
-     * @return generated diff report
-     * @throws JsonProcessingException
-     */
-    @PostMapping("/sboms/compare")
-    public ResponseEntity<DiffReport> compare(@RequestParam("targetIndex") int targetIndex, @RequestBody Long[] ids) throws JsonProcessingException {
-        // Get Target SBOM
-        Optional<SBOMFile> sbomFile = sbomFileRepository.findById(ids[targetIndex]);
-        // Check if it exists
-        ResponseEntity<Long> NOT_FOUND = Utils.checkIfExists(ids[targetIndex], sbomFile, "/sboms/compare");
-        if (NOT_FOUND != null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        // create the Target SBOM object using the deserializer
-        Deserializer d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
-        SBOM targetSBOM = d.readFromString(sbomFile.get().getContents());
-        // create diff report
-        DiffReport diffReport = new DiffReport(targetSBOM.getUID(), targetSBOM);
-        // comparison sboms
-        for (int i = 0; i < ids.length; i++) {
-            if (i == targetIndex) continue;
-            // Get SBOM
-            sbomFile = sbomFileRepository.findById(ids[i]);
-            // Check if it exists
-            NOT_FOUND = Utils.checkIfExists(ids[i], sbomFile, "/sboms/compare");
-            if (NOT_FOUND != null)
-                continue; // sbom not found, continue to next ID TODO check with front end what to do if 1 sbom is missing
-            // create an SBOM object using the deserializer
-            d = SerializerFactory.createDeserializer(sbomFile.get().getContents());
-            SBOM sbom = d.readFromString(sbomFile.get().getContents());
-            // add the comparison to diff report
-            diffReport.compare(sbom.getUID(), sbom);
-        }
-        return Utils.encodeResponse(diffReport);
-    }
 
 
 

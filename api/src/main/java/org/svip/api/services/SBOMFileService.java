@@ -257,6 +257,25 @@ public class SBOMFileService {
         Optional<SBOM> sbomFile = this.sbomRepository.findById(id);
         return sbomFile.orElse(null);
 
+        try{
+            SBOM try_ = sbomFile.get();
+        }
+        catch (ClassCastException e){ // TODO this is a temporary fix
+
+            Object tmp = this.sbomRepository.findById(id).get();
+            SBOMFile oldSbomFile = (SBOMFile) tmp;
+            sbomFile = Optional.of(getSbom(oldSbomFile));
+            //sbomFile.get().id = oldSbomFile.getId(); // uncomment for (old) unit tests
+
+        }
+
+        return sbomFile.orElse(null);
+
+    }
+
+    private static SBOM getSbom(SBOMFile oldSbomFile) {
+        SBOM sbom = new SBOM();
+
     }
 
 

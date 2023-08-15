@@ -8,8 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.svip.api.entities.SBOM;
 import org.svip.api.requests.UploadSBOMFileInput;
-import org.svip.api.services.QualityReportFileService;
+import org.svip.api.services.*;
+import org.svip.api.entities.SBOMFile;
+import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
+import org.svip.api.services.SBOMFileService;
+import org.svip.api.services.SBOMFileService;
+import org.svip.serializers.SerializerFactory;
+import org.svip.serializers.deserializer.Deserializer;
 import org.svip.api.services.VEXFileService;
 import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.serializers.SerializerFactory;
@@ -65,6 +71,9 @@ public class SBOMController {
         try {
             // Attempt to upload input
             SBOM sbom = uploadSBOMInput.toSBOMFile();
+            // Attempt to deserialize
+            sbom.toSBOMObject();
+
             this.sbomService.upload(sbom);
 
             // Log

@@ -20,6 +20,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.svip.generation.osi.OSIClient.dockerCheck;
 
 /**
  * Tests for the OSI class
@@ -29,7 +30,7 @@ public class OSITest {
     private final OSI osi;
     private static final String OSI_PATH = System.getProperty("user.dir") + "/src/test/java/resources/osi/";
 
-    public OSITest() throws IOException {
+    public OSITest() {
         OSI osi = null; // Disabled by default
 
         try {
@@ -50,7 +51,7 @@ public class OSITest {
     @BeforeAll
     static void setup() {
         // Use OSI.dockerCheck() to check if docker is running
-        assumeTrue(OSI.dockerCheck() == 0);
+        assumeTrue(dockerCheck() == 0);
     }
 
     /**
@@ -60,7 +61,7 @@ public class OSITest {
     public void generateSBOMsEmptyTest() throws IOException {
         osi.addSourceDirectory(new File(OSI_PATH + "sampleProjectEmpty"));
 
-        Map<String, String> resultMap = osi.generateSBOMs();
+        Map<String, String> resultMap = osi.generateSBOMs(null);
         Debug.log(Debug.LOG_TYPE.SUMMARY, getSBOMFileList(resultMap));
         assertEquals(0, resultMap.size());
     }
@@ -72,7 +73,7 @@ public class OSITest {
     public void generateSBOMsDirectoryTest() throws IOException {
         osi.addSourceDirectory(new File(OSI_PATH + "sampleProject"));
 
-        Map<String, String> resultMap = osi.generateSBOMs();
+        Map<String, String> resultMap = osi.generateSBOMs(null);
         Debug.log(Debug.LOG_TYPE.SUMMARY, getSBOMFileList(resultMap));
         assertEquals(2, resultMap.size());
     }
@@ -82,7 +83,7 @@ public class OSITest {
         this.osi.addSourceFile("SampleJavaClass.java",
                 Files.readString(Path.of(OSI_PATH + "/sampleProject/SampleJavaClass.java")));
 
-        Map<String, String> resultMap = osi.generateSBOMs();
+        Map<String, String> resultMap = osi.generateSBOMs(null);
         Debug.log(Debug.LOG_TYPE.SUMMARY, getSBOMFileList(resultMap));
         assertEquals(2, resultMap.size());
     }
