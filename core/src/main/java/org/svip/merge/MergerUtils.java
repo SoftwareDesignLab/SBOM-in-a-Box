@@ -162,7 +162,8 @@ public abstract class MergerUtils extends Merger {
 
                         if (componentA_SPDX != null && componentB_SPDX != null) // if both packages then merge if appropriate
                             if (Objects.equals(componentA_SPDX.getName(), componentB_SPDX.getName()) &&
-                                    Objects.equals(componentA_SPDX.getVersion(), componentB_SPDX.getVersion())) {
+                                    Objects.equals(componentA_SPDX.getVersion(), componentB_SPDX.getVersion())
+                            || versionsCanBeMerged(componentA_SPDX.getVersion(), componentB_SPDX.getVersion())) {
 
                                 mergedComponents.add(ComponentMerger.mergeComponentToSchema(componentA, componentB, targetSchema));
                                 removeB.add(componentB);
@@ -186,7 +187,8 @@ public abstract class MergerUtils extends Merger {
 
                         // If the components are the same by Name and Version, merge then add them to the SBOM
                         if (Objects.equals(componentA_CDX.getName(), componentB_CDX.getName()) &&
-                                Objects.equals(componentA_CDX.getVersion(), componentB_CDX.getVersion())) {
+                                Objects.equals(componentA_CDX.getVersion(), componentB_CDX.getVersion())
+                        || versionsCanBeMerged(componentA_CDX.getVersion(), componentB_CDX.getVersion())) {
 
                             mergedComponents.add(ComponentMerger.mergeComponentToSchema(componentA, componentB, targetSchema));
                             removeB.add(componentB);
@@ -207,8 +209,8 @@ public abstract class MergerUtils extends Merger {
 
                             // If the components are the same by Name and Version, merge then add them to the SBOM
                             if (Objects.equals(componentA_SVIP.getName(), componentB_SVIP.getName()) &&
-                                    (Objects.equals(componentA_SVIP.getVersion(), componentB_SVIP.getVersion()) ||
-                                            versionsCanBeMerged(componentA_SVIP.getVersion(), componentB_SVIP.getVersion()))) {
+                                    (Objects.equals(componentA_SVIP.getVersion(), componentB_SVIP.getVersion())
+                                            || versionsCanBeMerged(componentA_SVIP.getVersion(), componentB_SVIP.getVersion()))) {
 
                                 mergedComponents.add(ComponentMerger.mergeComponentToSchema(componentA, componentB, targetSchema));
                                 removeB.add(componentB);
@@ -230,7 +232,8 @@ public abstract class MergerUtils extends Merger {
                             if (componentA_SPDXFile == null)
                                 // If the components are the same by Name and Version, merge then add them to the SBOM
                                 if (Objects.equals(componentA_SPDX.getName(), componentB_CDX.getName()) &&
-                                        Objects.equals(componentA_SPDX.getVersion(), componentB_CDX.getVersion())) {
+                                        Objects.equals(componentA_SPDX.getVersion(), componentB_CDX.getVersion())
+                                || versionsCanBeMerged(componentA_SPDX.getVersion(), componentB_CDX.getVersion())) {
 
                                     mergedComponents.add(ComponentMerger.mergeComponentToSchema(componentA, componentB, targetSchema));
                                     removeB.add(componentB);
