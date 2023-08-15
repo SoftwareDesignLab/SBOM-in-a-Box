@@ -9,17 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import org.svip.api.entities.SBOM;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.*;
-import org.svip.api.entities.SBOMFile;
-import org.svip.api.requests.UploadSBOMFileInput;
-import org.svip.api.services.SBOMFileService;
-import org.svip.api.services.SBOMFileService;
 import org.svip.api.services.SBOMFileService;
 import org.svip.conversion.ConversionException;
 import org.svip.serializers.SerializerFactory;
-import org.svip.serializers.deserializer.Deserializer;
 import org.svip.api.services.VEXFileService;
 import org.svip.sbom.builder.SBOMBuilderException;
-import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.exceptions.DeserializerException;
 import org.svip.serializers.exceptions.SerializerException;
 
