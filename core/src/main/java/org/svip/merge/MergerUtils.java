@@ -254,4 +254,21 @@ public abstract class MergerUtils extends Merger {
 
     }
 
+
+    /**
+     * Helper method to reduce code repetitiveness in merging two SVIP component objects
+     * (used to configure verification code, home page, and source info)
+     * @param aString string from SVIPComponent A
+     * @param bString string from SVIPComponent B
+     * @return String configured from between the two
+     */
+    public static String configureComponentString(String aString, String bString) {
+        String string = "";
+        if (aString != null && !aString.isEmpty())
+            string += "1) " + aString;
+        else if (bString != null && !bString.isEmpty())
+            string += "1) " + bString;
+        return string;
+    }
+
 }
