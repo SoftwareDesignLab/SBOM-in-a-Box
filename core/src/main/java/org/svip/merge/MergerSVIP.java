@@ -22,7 +22,7 @@ public class MergerSVIP extends Merger  {
         super();
     }
     @Override
-    public SBOM mergeSBOM(SBOM A, SBOM B) {
+    public SBOM mergeSBOM(SBOM A, SBOM B) throws MergerException {
 
         Set<Component> componentsA = A.getComponents();
         Set<Component> componentsB = B.getComponents();
