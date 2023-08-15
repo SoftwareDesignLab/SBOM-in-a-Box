@@ -3,12 +3,19 @@ package org.svip.api.services;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.svip.api.controller.SVIPApiController;
 import org.svip.api.entities.SBOM;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.conversion.Conversion;
+import org.svip.merge.MergerController;
+import org.svip.merge.MergerException;
 import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
@@ -19,6 +26,9 @@ import org.svip.serializers.exceptions.SerializerException;
 import org.svip.serializers.serializer.Serializer;
 
 import java.util.*;
+
+import static org.svip.api.controller.SBOMController.LOGGER;
+
 
 /**
  * file: SBOMFileService.java
@@ -127,12 +137,82 @@ public class SBOMFileService {
      */
     public Long merge(Long[] ids) {
 
-      /*
-        TODO MERGE LOGIC HERE
+        // prefix to error messages
+        String urlMsg = "MERGE /svip/merge?id=";
 
-        */
+        // ensure there are at least two SBOMs to potentially merge
+        if (ids.length < 2)
+            return -2L; // bad request
 
-        return null;
+        // collect and deserialize SBOMs
+        ArrayList<org.svip.sbom.model.interfaces.generics.SBOM> sboms = new ArrayList<>();
+
+        for (Long id : ids
+        ) {
+
+            org.svip.sbom.model.interfaces.generics.SBOM sbomObj;
+
+            try {
+                sbomObj = getSBOMObject(id);
+            } catch (JsonProcessingException e) {
+                LOGGER.info(urlMsg + id + "DURING DESERIALIZATION: " +
+                        e.getMessage());
+                return null; // internal server error
+            }
+
+            if (sbomObj == null)
+                return -1L; // not found
+
+            sboms.add(sbomObj);
+
+        }
+
+        // merge
+        org.svip.sbom.model.interfaces.generics.SBOM merged;
+        try {
+            MergerController mergerController = new MergerController();
+            merged = mergerController.mergeAll(sboms);
+        } catch (MergerException e) {
+            String error = "Error merging SBOMs: " + e.getMessage();
+            LOGGER.error(urlMsg + " " + error);
+            return null; // internal server error
+        }
+
+        // serialize merged SBOM
+        SerializerFactory.Schema schema;
+//        if(merged instanceof SVIPSBOM) // todo serializers do not support SVIP yet
+//            schema = SerializerFactory.Schema.SVIP;
+        schema = (merged instanceof SPDX23SBOM) ? SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14;
+
+        // serialize merged SBOM
+        Serializer s = SerializerFactory.createSerializer(schema, SerializerFactory.Format.JSON, // todo default to JSON for now?
+                true); // todo serializers don't adjust the format nor specversion
+        s.setPrettyPrinting(true);
+        String contents;
+        try {
+            contents = s.writeToString((SVIPSBOM) merged);
+        } catch (JsonProcessingException e) {
+            String error = "Error deserializing merged SBOM: " + e.getMessage();
+            LOGGER.error(urlMsg + " " + error);
+            return null; // internal server error
+        }
+
+        // save to db
+        Random rand = new Random();
+        String newName = ((merged.getName() == null) ? Math.abs(rand.nextInt()) : merged.getName()) + "." +
+                schema.getName();
+
+        UploadSBOMFileInput u = new UploadSBOMFileInput(newName, contents);
+        SBOM mergedSBOMFile;
+        try {
+            mergedSBOMFile = u.toSBOMFile();
+        } catch (JsonProcessingException e) {
+            String error = "Error: " + e.getMessage();
+            LOGGER.error(urlMsg + " " + error);
+            return null; // internal server error
+        }
+        this.sbomRepository.save(mergedSBOMFile);
+        return mergedSBOMFile.getId();
     }
 
 
