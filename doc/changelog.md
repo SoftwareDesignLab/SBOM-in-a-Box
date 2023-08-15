@@ -3,6 +3,21 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v7.3.1-alpha] - (8/15/2023)
+
+### Added
+- `MergerSVIP.java`
+  - Merges two SVIPSBOMs into one
+- `ComponentMerger.java`
+  - Holds logic to merge two generic `Component` objects into one of a desired type
+
+### Changed
+- `MergerUtils.java`
+  - String.equals() fixes
+  - Allowed merging of components to `SVIPComponentObject`
+  - Duplicate component issue resolved
+    - If two components are of the same name, but one has a version that's null, and the other doesn't, then they can be merged
+
 ## [v7.3.0-alpha] - (8/9/2023)
 
 ### Changed
