@@ -91,36 +91,4 @@ public class Comparison {
         return this.missingFromOther;
     }
 
-    ///
-    /// Getters
-    ///
-
-    /**
-     * @return List of component conflicts
-     */
-    public Map<String, List<Conflict>> getComponentConflicts() {
-        return this.componentConflicts;
-    }
-
-    ///
-    /// Getters
-    ///
-
-    /**
-     * @return List of component conflicts
-     */
-    public Map<String, List<Conflict>> getComponentConflicts() {
-        return this.componentConflicts;
-    }
-
-    ///
-    /// Getters
-    ///
-
-    /**
-     * @return List of component conflicts
-     */
-    public Map<String, List<Conflict>> getComponentConflicts() {
-        return this.componentConflicts;
-    }
 }

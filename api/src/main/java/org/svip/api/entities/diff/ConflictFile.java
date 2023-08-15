@@ -21,9 +21,6 @@ public class ConflictFile {
     private Long id;
 
     @Column()
-    private String name;
-
-    @Column()
     @JsonIgnore
     private String name;
 
