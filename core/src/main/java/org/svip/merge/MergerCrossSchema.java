@@ -16,9 +16,11 @@ public class MergerCrossSchema extends Merger {
     }
 
     /**
-     * @param A
-     * @param B
-     * @return
+     * Merge two SBOMs of different schemas, currently between SPDX23 and CDX14
+     *
+     * @param A SBOM A
+     * @param B SBOM B
+     * @return merged SBOM of format SVIP
      */
     @Override
     public SBOM mergeSBOM(SBOM A, SBOM B) {
