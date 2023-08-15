@@ -5,15 +5,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.svip.api.entities.SBOM;
-import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.conversion.Conversion;
+import org.svip.conversion.ConversionException;
 import org.svip.merge.MergerController;
 import org.svip.merge.MergerException;
 import org.svip.sbom.builder.SBOMBuilderException;
-import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.SerializerFactory;
@@ -24,7 +22,11 @@ import org.svip.serializers.serializer.Serializer;
 
 import java.util.*;
 
+import static org.svip.api.controller.SBOMController.LOGGER;
+
+
 /**
+ * file: SBOMFileService.java
  * Business logic for accessing the SBOM File table
  *
  * @author Derek Garcia
@@ -70,7 +72,7 @@ public class SBOMFileService {
      * @return ID of converted SBOM
      */
     public Long convert(Long id, SerializerFactory.Schema schema, SerializerFactory.Format format, Boolean overwrite)
-            throws DeserializerException, JsonProcessingException, SerializerException, SBOMBuilderException {
+            throws DeserializerException, JsonProcessingException, SerializerException, SBOMBuilderException, ConversionException {
 
         // deserialize into SBOM object
         org.svip.sbom.model.interfaces.generics.SBOM deserialized;
@@ -79,7 +81,8 @@ public class SBOMFileService {
         } catch (Exception e) {
             throw new DeserializerException("Deserialization Error: " + e.getMessage());
         }
-        if (deserialized == null) throw new DeserializerException("Cannot retrieve SBOM with id " + id + " to deserialize");
+        if (deserialized == null)
+            throw new DeserializerException("Cannot retrieve SBOM with id " + id + " to deserialize");
 
         SBOM.Schema ogSchema = (deserialized instanceof SPDX23SBOM) ? SBOM.Schema.SPDX_23 : SBOM.Schema.CYCLONEDX_14;
 
@@ -127,66 +130,90 @@ public class SBOMFileService {
      * @param ids list of IDs to merge
      * @return ID of merged SBOM
      */
-    public Long merge(Long[] ids) throws DeserializerException, MergerException, SBOMBuilderException, JsonProcessingException {
+    public Long merge(Long[] ids) {
 
-        ArrayList<org.svip.sbom.model.interfaces.generics.SBOM> sboms = new ArrayList<>();
-
+        // prefix to error messages
         String urlMsg = "MERGE /svip/merge?id=";
 
-        long idSum = 0L;
+        // ensure there are at least two SBOMs to potentially merge
+        if (ids.length < 2)
+            return -2L; // bad request
 
-        // check for bad files
+        // collect and deserialize SBOMs
+        ArrayList<org.svip.sbom.model.interfaces.generics.SBOM> sboms = new ArrayList<>();
+
         for (Long id : ids
         ) {
 
-            // deserialize into SBOM object
-            org.svip.sbom.model.interfaces.generics.SBOM deserialized;
+            org.svip.sbom.model.interfaces.generics.SBOM sbomObj;
             try {
-                deserialized = getSBOMObject(id);
-            } catch (Exception e) {
-                throw new DeserializerException("Deserialization Error: " + e.getMessage());
+                sbomObj = getSBOMObject(id);
+            } catch (JsonProcessingException e) {
+                LOGGER.info(urlMsg + id + "DURING DESERIALIZATION: " +
+                        e.getMessage());
+                return null; // internal server error
             }
-            if (deserialized == null)
-                throw new DeserializerException("Cannot retrieve SBOM with id " + id + " to deserialize");
 
+            if (sbomObj == null)
+                return -1L; // not found // todo custom exception
 
-            sboms.add(deserialized);
-            idSum += id;
+            // convert to SVIPSBOM
+            try {
+                sbomObj = Conversion.convertSBOM(sbomObj, SerializerFactory.Schema.SVIP,
+                        (sbomObj.getFormat().toLowerCase().contains("spdx")) ?
+                                SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14);
+            } catch (ConversionException e) {
+                LOGGER.info(urlMsg + id + "DURING CONVERSION TO SVIP: " +
+                        e.getMessage());
+                return null; // internal server error
+            }
+
+            sboms.add(sbomObj);
+
         }
 
-        // todo, merging more than two SBOMs is not supported right now
+        // merge
         org.svip.sbom.model.interfaces.generics.SBOM merged;
         try {
             MergerController mergerController = new MergerController();
-            merged = mergerController.merge(sboms.get(0), sboms.get(1));
+            merged = mergerController.mergeAll(sboms);
         } catch (MergerException e) {
             String error = "Error merging SBOMs: " + e.getMessage();
-            throw new MergerException(urlMsg + " " + error);
+            LOGGER.error(urlMsg + " " + error);
+            return null; // internal server error
         }
 
-        Serializer s;
+        SerializerFactory.Schema schema = SerializerFactory.Schema.SPDX23;
+
+        // serialize merged SBOM
+        Serializer s = SerializerFactory.createSerializer(schema, SerializerFactory.Format.TAGVALUE, // todo default to SPDX JSON for now?
+                true);
+        s.setPrettyPrinting(true);
         String contents;
         try {
-            s = SerializerFactory.createSerializer(SerializerFactory.Schema.SVIP, SerializerFactory.Format.JSON, true);
-            SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
-            builder.setSpecVersion("1.0-a");
-            builder.setUID(String.valueOf(idSum)); // this may not always be a unique id which could cause problems
-            Conversion.buildSBOM(merged, SerializerFactory.Schema.SVIP, null);
-            contents = s.writeToString(builder.Build());
-        } catch (IllegalArgumentException | JsonProcessingException e) {
-            String error = "Error serializing merged SBOM: " + e.getMessage();
-            throw new MergerException(urlMsg + " " + error);
+            contents = s.writeToString((SVIPSBOM) merged);
+        } catch (JsonProcessingException | ClassCastException e) {
+            String error = "Error deserializing merged SBOM: " + e.getMessage();
+            LOGGER.error(urlMsg + " " + error);
+            return null; // internal server error
         }
 
-        // SBOMFile
-        UploadSBOMFileInput u = new UploadSBOMFileInput(merged.getName(), contents);
+        // save to db
+        Random rand = new Random();
+        String newName = ((merged.getName() == null || merged.getName().isEmpty()) ? Math.abs(rand.nextInt()) :
+                merged.getName()) + "." + schema.getName();
 
-        // Save according to overwrite boolean
-        SBOM result = u.toSBOMFile();
-
-        this.sbomRepository.save(result);
-        return result.getId();
-
+        UploadSBOMFileInput u = new UploadSBOMFileInput(newName, contents);
+        SBOM mergedSBOMFile;
+        try {
+            mergedSBOMFile = u.toSBOMFile();
+        } catch (JsonProcessingException e) {
+            String error = "Error: " + e.getMessage();
+            LOGGER.error(urlMsg + " " + error);
+            return null; // internal server error
+        }
+        this.sbomRepository.save(mergedSBOMFile);
+        return mergedSBOMFile.getId();
     }
 
 
@@ -222,42 +249,10 @@ public class SBOMFileService {
         // Retrieve SBOM File and check that it exists
 
         Optional<SBOM> sbomFile = this.sbomRepository.findById(id);
-
-        try {
-            SBOM try_ = sbomFile.get();
-        } catch (ClassCastException e) {
-
-            Object tmp = this.sbomRepository.findById(id).get(); // todo remove after new unit tests are written
-            SBOMFile oldSbomFile = (SBOMFile) tmp;
-            sbomFile = Optional.of(getSbom(oldSbomFile));
-            //sbomFile.get().id = oldSbomFile.getId(); // uncomment for (old) unit tests
-
-        }
-
         return sbomFile.orElse(null);
 
     }
 
-    /**
-     * // todo temporary fix until new tests are written
-     */
-    private static SBOM getSbom(SBOMFile oldSbomFile) {
-        SBOM sbom = new SBOM();
-
-        sbom.setName(oldSbomFile.getFileName());
-        sbom.setContent(oldSbomFile.getContents());
-
-        SBOM.Schema schema = sbom.getName().endsWith(".spdx") && sbom.getContent().toLowerCase().contains("spdx") ?
-                SBOM.Schema.SPDX_23 : SBOM.Schema.CYCLONEDX_14;
-
-        sbom.setSchema(schema);
-
-        SBOM.FileType fileType = schema == SBOM.Schema.CYCLONEDX_14 && !sbom.getContent().toLowerCase().contains("spdx") ?
-                SBOM.FileType.JSON : SBOM.FileType.TAG_VALUE;
-
-        sbom.setFileType(fileType);
-        return sbom;
-    }
 
     /**
      * Get all the IDs of the store SBOMs in the database
@@ -278,20 +273,16 @@ public class SBOMFileService {
     /**
      * Delete a target SBOM File from the database
      *
-     * @param id of the SBOM to delete
+     * @param sbomFile SBOM file to delete
      * @return id of deleted SBOM on success
      */
-    public Long deleteSBOMFile(Long id) {
-        // Retrieve SBOM File and check that it exists
-        SBOM sbomFile = getSBOMFile(id);
-        if (sbomFile == null)
-            return null;
+    public Long deleteSBOMFile(SBOM sbomFile) {
 
         // Delete from repository
         this.sbomRepository.delete(sbomFile);
 
         // return confirmation id
-        return id;
+        return sbomFile.getId();
     }
 
 
@@ -338,15 +329,5 @@ public class SBOMFileService {
         return sbomFile.getId();
     }
 
-
-    /**
-     * Generates new SBOMFile id
-     */
-    public static long generateSBOMFileId() {
-        Random rand = new Random();
-        long id = rand.nextLong();
-        id += (rand.nextLong()) % ((id < 0) ? id : Long.MAX_VALUE);
-        return Math.abs(id);
-    }
-
 }
+
