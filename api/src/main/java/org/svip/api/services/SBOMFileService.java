@@ -191,7 +191,7 @@ public class SBOMFileService {
         String contents;
         try {
             contents = s.writeToString((SVIPSBOM) merged);
-        } catch (JsonProcessingException e) {
+        } catch (JsonProcessingException | ClassCastException e) {
             String error = "Error deserializing merged SBOM: " + e.getMessage();
             LOGGER.error(urlMsg + " " + error);
             return null; // internal server error
