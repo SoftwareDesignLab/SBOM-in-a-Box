@@ -14,8 +14,14 @@ import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
 import org.svip.api.services.SBOMFileService;
 import org.svip.api.services.SBOMFileService;
+import org.svip.conversion.ConversionException;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
+import org.svip.api.services.VEXFileService;
+import org.svip.sbom.builder.SBOMBuilderException;
+import org.svip.serializers.SerializerFactory;
+import org.svip.serializers.exceptions.DeserializerException;
+import org.svip.serializers.exceptions.SerializerException;
 
 /**
  * REST API Controller for managing SBOM and SBOM operations
@@ -29,7 +35,7 @@ public class SBOMController {
     /**
      * Spring-configured logger
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(SBOMController.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(SBOMController.class);
 
     private final SBOMFileService sbomService;
     private final QualityReportFileService qualityReportFileService;
@@ -38,10 +44,10 @@ public class SBOMController {
     /**
      * Create new Controller with services
      *
-     * @param sbomService Service for handling SBOM queries
+     * @param sbomService              Service for handling SBOM queries
      * @param qualityReportFileService Service for handling QA queries
      */
-    public SBOMController(SBOMFileService sbomService, QualityReportFileService qualityReportFileService, VEXFileService vexFileService){
+    public SBOMController(SBOMFileService sbomService, QualityReportFileService qualityReportFileService, VEXFileService vexFileService) {
         this.sbomService = sbomService;
         this.qualityReportFileService = qualityReportFileService;
         this.vexFileService = vexFileService;
@@ -63,7 +69,6 @@ public class SBOMController {
     @PostMapping("/sboms")
     public ResponseEntity<Long> upload(@RequestBody UploadSBOMFileInput uploadSBOMInput) {
 
-
         try {
             // Attempt to upload input
             SBOM sbom = uploadSBOMInput.toSBOMFile();
@@ -82,11 +87,66 @@ public class SBOMController {
             // Problem with parsing
             LOGGER.error("POST /svip/sboms - " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (Exception e){
+        } catch (Exception e) {
             // Problem with uploading
             LOGGER.error("POST /svip/sboms - " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+
+    /**
+     * Merge two or more SBOMs
+     * todo remove old SBOMs from DB?
+     *
+     * @param ids list of IDs to merge
+     * @return ID of merged SBOM
+     */
+    @PostMapping("/sboms/merge")
+    public ResponseEntity<Long> merge(@RequestBody Long[] ids) {
+
+        Long mergeID = this.sbomService.merge(ids);
+        // todo convert should probably throw errors instead of returning null if error occurs
+        if (mergeID == null)
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        else if (mergeID == -1)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        else if (mergeID < 0)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        // Return final merged ID
+        return new ResponseEntity<>(mergeID, HttpStatus.OK);
+    }
+
+
+    ///
+    /// PUT
+    ///
+
+
+    /**
+     * USAGE. Send PUT request to /sboms an existing SBOM on the backend to a desired schema and format
+     *
+     * @param id        of the SBOM
+     * @param schema    to convert to
+     * @param format    to convert to
+     * @param overwrite whether to overwrite original
+     * @return ID of converted SBOM
+     */
+    @PutMapping("/sboms")
+    public ResponseEntity<?> convert(@RequestParam("id") Long id, @RequestParam("schema") SerializerFactory.Schema schema,
+                                     @RequestParam("format") SerializerFactory.Format format,
+                                     @RequestParam("overwrite") Boolean overwrite) {
+        Long convertID;
+        try {
+            convertID = this.sbomService.convert(id, schema, format, overwrite);
+        } catch (DeserializerException | SBOMBuilderException | SerializerException | JsonProcessingException |
+                 ConversionException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // Return converted ID
+        return new ResponseEntity<>(convertID, HttpStatus.OK);
     }
 
 
@@ -103,19 +163,19 @@ public class SBOMController {
      * @return A deserialized SBOM Object in JSON form
      */
     @GetMapping("/sbom")
-    public ResponseEntity<String> getSBOMObjectAsJSON(@RequestParam("id") Long id){
+    public ResponseEntity<String> getSBOMObjectAsJSON(@RequestParam("id") Long id) {
 
-        try{
+        try {
             SBOM sbomFile = this.sbomService.getSBOMFile(id);
 
             // No SBOM was found
-            if(sbomFile == null)
+            if (sbomFile == null)
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
             // Else return the object
             return new ResponseEntity<>(sbomFile.toSBOMObjectAsJSON(), HttpStatus.OK);
 
-        } catch (JsonProcessingException e ){
+        } catch (JsonProcessingException e) {
             // error with Deserialization
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -156,7 +216,7 @@ public class SBOMController {
      * @return A JSON array of IDs of all currently uploaded SBOM files.
      */
     @GetMapping("/sboms")
-    public ResponseEntity<Long[]> getAllIds(){
+    public ResponseEntity<Long[]> getAllIds() {
 
         // Get all ids
         Long[] ids = this.sbomService.getAllIDs();
@@ -165,7 +225,7 @@ public class SBOMController {
         LOGGER.info("GET /svip/sboms - Found " + ids.length + " sbom" + (ids.length == 0 ? "." : "s."));
 
         // report nothing if no SBOMs in the database
-        if(ids.length == 0)
+        if (ids.length == 0)
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
         // Else return the array of stored IDs
@@ -191,7 +251,7 @@ public class SBOMController {
 
         SBOM sbomFile = this.sbomService.getSBOMFile(id);
         // Attempt to delete id
-        if(sbomFile == null){
+        if (sbomFile == null) {
             LOGGER.warn("DELETE /svip/sboms?id=" + id + " - FILE NOT FOUND");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

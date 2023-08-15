@@ -1,4 +1,4 @@
-package org.svip.api.entities;
+package resources;
 
 import org.springframework.web.multipart.MultipartFile;
 
