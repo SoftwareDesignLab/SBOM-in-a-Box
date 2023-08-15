@@ -25,6 +25,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Quality reports are generated only once and stored in database. Subsequent request query the database
 - `/delete` deletes QA Report stored in database for a SBOM that is deleted
 
+## [v7.3.2-alpha] - (8/15/2023)
+
+### Added
+- `/sboms/merge` endpoint
+  - Functionality in `SBOMFileService.java`
+  - POST mapping in `SBOMController.java`
+
 ## [v7.3.1-alpha] - (8/15/2023)
 
 ### Added
