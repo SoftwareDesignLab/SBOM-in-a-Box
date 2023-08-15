@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
-import org.svip.api.utils.Converter;
 import org.svip.api.utils.Utils;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.SBOM;
@@ -179,7 +178,7 @@ public class SVIPApiController {
 
         SBOMFile result = new SBOMFile(projectName + ((format == SerializerFactory.Format.JSON)
                 ? ".json" : ".spdx"), contents);
-        result.setId(Utils.generateSBOMFileId());
+//        result.setId(Utils.generateSBOMFileId());
         sbomFileRepository.save(result);
 
         return Utils.encodeResponse(result.getId());
@@ -321,7 +320,7 @@ public class SVIPApiController {
                         HttpStatus.NOT_FOUND);
             }
         }
-        Converter.buildSBOM(builder, osiMerged, schema, oldSchema);
+//        Converter.buildSBOM(builder, osiMerged, schema, oldSchema); // todo fix
         builder.setName(projectName); // Set SBOM name to specified project name TODO should this be done in OSI class?
 
         // Serialize SVIPSBOM to given schema and format
