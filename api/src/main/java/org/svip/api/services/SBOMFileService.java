@@ -161,7 +161,7 @@ public class SBOMFileService {
             }
 
             if (sbomObj == null)
-                return -1L; // not found
+                return -1L; // not found // todo custom exception
 
             // convert to SVIPSBOM
             try {
