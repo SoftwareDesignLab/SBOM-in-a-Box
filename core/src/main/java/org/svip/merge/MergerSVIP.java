@@ -14,6 +14,7 @@ import static org.svip.serializers.SerializerFactory.Schema.SVIP;
  * <p>
  * Merges two SVIP SBOMs together.
  *
+ * @author Tyler Drake
  * @author Juan Francisco Patino
  */
 public class MergerSVIP extends Merger  {
