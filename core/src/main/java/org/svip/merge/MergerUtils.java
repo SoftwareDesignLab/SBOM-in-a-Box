@@ -29,12 +29,12 @@ public abstract class MergerUtils extends Merger {
         /** Assign all top level data for the new SBOM **/
 
         // Format
-        builder.setFormat(mainSBOM.getFormat());
+        builder.setFormat(String.valueOf(targetSchema));
 
         // Name
         if (targetSchema == SerializerFactory.Schema.SVIP)
             builder.setName(newName);
-        else if (mainSBOM.getName() == null || mainSBOM.getName().length() == 0)
+        else if (mainSBOM.getName() == null || mainSBOM.getName().isEmpty())
             builder.setName(B.getName());
         else
             builder.setName(mainSBOM.getName());
