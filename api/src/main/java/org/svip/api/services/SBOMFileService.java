@@ -18,7 +18,6 @@ import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.SerializerFactory;
-import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.exceptions.DeserializerException;
 import org.svip.serializers.exceptions.SerializerException;
 import org.svip.serializers.serializer.Serializer;
