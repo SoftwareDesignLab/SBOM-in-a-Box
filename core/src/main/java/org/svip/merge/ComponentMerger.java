@@ -1,6 +1,6 @@
 package org.svip.merge;
 
-import org.svip.compare.utils.Utils;
+import org.svip.merge.utils.Utils;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
@@ -31,33 +31,30 @@ public class ComponentMerger {
         // New builder for the merged component
         SVIPComponentBuilder compBuilder = new SVIPComponentBuilder();
 
-        Component componentA = A;
-        Component componentB = B;
-
         // Type : If A Type isn't empty or null, Merged Component uses A, otherwise use
-        if (componentA.getType() != null && !componentA.getType().isEmpty())
-            compBuilder.setType(componentA.getType());
-        else compBuilder.setType(componentB.getType());
+        if (A.getType() != null && !A.getType().isEmpty())
+            compBuilder.setType(A.getType());
+        else compBuilder.setType(B.getType());
 
         // UID : If A UID isn't empty or null, Merged Component uses A, otherwise use B
-        if (componentA.getUID() != null && !componentA.getUID().isEmpty())
-            compBuilder.setUID(componentA.getUID());
-        else compBuilder.setUID(componentB.getUID());
+        if (A.getUID() != null && !A.getUID().isEmpty())
+            compBuilder.setUID(A.getUID());
+        else compBuilder.setUID(B.getUID());
 
         // Author : If A 'Author' isn't empty or null, Merged Component uses A, otherwise use B
-        if (componentA.getAuthor() != null && !componentA.getAuthor().isEmpty())
-            compBuilder.setAuthor(componentA.getAuthor());
-        else compBuilder.setAuthor(componentB.getAuthor());
+        if (A.getAuthor() != null && !A.getAuthor().isEmpty())
+            compBuilder.setAuthor(A.getAuthor());
+        else compBuilder.setAuthor(B.getAuthor());
 
         // Name : If A 'Name' isn't empty or null, Merged Component uses A, otherwise use B
-        if (componentA.getName() != null && !componentA.getName().isEmpty())
-            compBuilder.setName(componentA.getName());
-        else compBuilder.setName(componentB.getName());
+        if (A.getName() != null && !A.getName().isEmpty())
+            compBuilder.setName(A.getName());
+        else compBuilder.setName(B.getName());
 
         // Licenses : Merge Licenses of A and B together
         LicenseCollection mergedLicenses = new LicenseCollection();
 
-        Set<String> concludedA = componentA.getLicenses().getConcluded();
+        Set<String> concludedA = A.getLicenses().getConcluded();
 
         if (!concludedA.isEmpty()) {
             concludedA.forEach(
@@ -65,9 +62,9 @@ public class ComponentMerger {
             );
         }
 
-        Utils.addLicenses(componentA, mergedLicenses);
+        Utils.addLicenses(A, mergedLicenses);
 
-        Set<String> concludedB = componentB.getLicenses().getConcluded();
+        Set<String> concludedB = B.getLicenses().getConcluded();
 
         if (!concludedB.isEmpty()) {
             concludedB.forEach(
@@ -75,7 +72,7 @@ public class ComponentMerger {
             );
         }
 
-        Utils.addLicenses(componentB, mergedLicenses);
+        Utils.addLicenses(B, mergedLicenses);
 
         compBuilder.setLicenses(mergedLicenses);
 
@@ -84,8 +81,8 @@ public class ComponentMerger {
          */
 
         // Hashes
-        Map<String, String> hashesA = componentA.getHashes();
-        Map<String, String> hashesB = componentB.getHashes();
+        Map<String, String> hashesA = A.getHashes();
+        Map<String, String> hashesB = B.getHashes();
 
         for (String keyB : hashesB.keySet()) {
             compBuilder.addHash(keyB, hashesB.get(keyB));
@@ -98,17 +95,17 @@ public class ComponentMerger {
             case SPDX23 -> {
                 // Copyright
                 String copyright = "";
-                if (componentA.getCopyright() != null && !componentA.getCopyright().isEmpty())
-                    copyright += "1) " + componentA.getCopyright();
-                if (componentB.getCopyright() != null && !componentB.getCopyright().isEmpty() && !copyright.isEmpty())
-                    copyright += "\n2) " + componentB.getCopyright();
-                else if (componentB.getCopyright() != null && !componentB.getCopyright().isEmpty() && copyright.isEmpty())
-                    copyright += "1) " + componentB.getCopyright();
+                if (A.getCopyright() != null && !A.getCopyright().isEmpty())
+                    copyright += "1) " + A.getCopyright();
+                if (B.getCopyright() != null && !B.getCopyright().isEmpty() && !copyright.isEmpty())
+                    copyright += "\n2) " + B.getCopyright();
+                else if (B.getCopyright() != null && !B.getCopyright().isEmpty() && copyright.isEmpty())
+                    copyright += "1) " + B.getCopyright();
 
                 compBuilder.setCopyright(copyright);
 
-                SPDX23PackageObject spdx23PackageObjectA = (SPDX23PackageObject) componentA;
-                SPDX23PackageObject spdx23PackageObjectB = (SPDX23PackageObject) componentB;
+                SPDX23PackageObject spdx23PackageObjectA = (SPDX23PackageObject) A;
+                SPDX23PackageObject spdx23PackageObjectB = (SPDX23PackageObject) B;
 
                 // Comment
                 String comment = "";
@@ -220,8 +217,8 @@ public class ComponentMerger {
             }
             case CDX14 -> {
 
-                CDX14ComponentObject componentA_CDX = (CDX14ComponentObject) componentA;
-                CDX14ComponentObject componentB_CDX = (CDX14ComponentObject) componentB;
+                CDX14ComponentObject componentA_CDX = (CDX14ComponentObject) A;
+                CDX14ComponentObject componentB_CDX = (CDX14ComponentObject) B;
 
                 compBuilder.setCopyright("1) " + componentA_CDX.getCopyright() + "\n2) " + componentB_CDX.getCopyright());
 
@@ -278,9 +275,9 @@ public class ComponentMerger {
             }
             default -> { // SVIP
 
-                if (componentA instanceof SVIPComponentObject componentA_SVIP && // both components are of type
+                if (A instanceof SVIPComponentObject componentA_SVIP && // both components are of type
                         // SVIPComponentObject
-                        componentB instanceof SVIPComponentObject componentB_SVIP) {
+                        B instanceof SVIPComponentObject componentB_SVIP) {
 
                     // Download Location
                     if (componentA_SVIP.getDownloadLocation() != null && !componentA_SVIP.getDownloadLocation().isEmpty())
@@ -427,12 +424,12 @@ public class ComponentMerger {
                     SPDX23FileObject spdx23FileObject = null;
 
                     try {
-                        spdx23PackageObjectA = (SPDX23PackageObject) componentA;
+                        spdx23PackageObjectA = (SPDX23PackageObject) A;
                     } catch (ClassCastException e) {
-                        spdx23FileObject = (SPDX23FileObject) componentA; // leaving this in case at some point SPDX
+                        spdx23FileObject = (SPDX23FileObject) A; // leaving this in case at some point SPDX
                         // file objects can merge with CDXComponentObjects
                     }
-                    CDX14ComponentObject componentB_CDX = (CDX14ComponentObject) componentB;
+                    CDX14ComponentObject componentB_CDX = (CDX14ComponentObject) B;
 
                 /*
                     SPDX component A

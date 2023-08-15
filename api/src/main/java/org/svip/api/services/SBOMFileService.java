@@ -3,21 +3,15 @@ package org.svip.api.services;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.svip.api.controller.SVIPApiController;
 import org.svip.api.entities.SBOM;
-import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.conversion.Conversion;
+import org.svip.conversion.ConversionException;
 import org.svip.merge.MergerController;
 import org.svip.merge.MergerException;
 import org.svip.sbom.builder.SBOMBuilderException;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.SerializerFactory;
@@ -78,7 +72,7 @@ public class SBOMFileService {
      * @return ID of converted SBOM
      */
     public Long convert(Long id, SerializerFactory.Schema schema, SerializerFactory.Format format, Boolean overwrite)
-            throws DeserializerException, JsonProcessingException, SerializerException, SBOMBuilderException {
+            throws DeserializerException, JsonProcessingException, SerializerException, SBOMBuilderException, ConversionException {
 
         // deserialize into SBOM object
         org.svip.sbom.model.interfaces.generics.SBOM deserialized;
@@ -168,7 +162,7 @@ public class SBOMFileService {
                 sbomObj = Conversion.convertSBOM(sbomObj, SerializerFactory.Schema.SVIP,
                         (sbomObj.getFormat().toLowerCase().contains("spdx")) ?
                                 SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14);
-            } catch (SBOMBuilderException e) {
+            } catch (ConversionException e) {
                 LOGGER.info(urlMsg + id + "DURING CONVERSION TO SVIP: " +
                         e.getMessage());
                 return null; // internal server error
@@ -257,25 +251,6 @@ public class SBOMFileService {
         Optional<SBOM> sbomFile = this.sbomRepository.findById(id);
         return sbomFile.orElse(null);
 
-        try{
-            SBOM try_ = sbomFile.get();
-        }
-        catch (ClassCastException e){ // TODO this is a temporary fix
-
-            Object tmp = this.sbomRepository.findById(id).get();
-            SBOMFile oldSbomFile = (SBOMFile) tmp;
-            sbomFile = Optional.of(getSbom(oldSbomFile));
-            //sbomFile.get().id = oldSbomFile.getId(); // uncomment for (old) unit tests
-
-        }
-
-        return sbomFile.orElse(null);
-
-    }
-
-    private static SBOM getSbom(SBOMFile oldSbomFile) {
-        SBOM sbom = new SBOM();
-
     }
 
 
@@ -354,15 +329,5 @@ public class SBOMFileService {
         return sbomFile.getId();
     }
 
-
-    /**
-     * Generates new SBOMFile id
-     */
-    public static long generateSBOMFileId() {
-        Random rand = new Random();
-        long id = rand.nextLong();
-        id += (rand.nextLong()) % ((id < 0) ? id : Long.MAX_VALUE);
-        return Math.abs(id);
-    }
-
 }
+

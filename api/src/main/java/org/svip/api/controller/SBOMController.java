@@ -14,6 +14,7 @@ import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
 import org.svip.api.services.SBOMFileService;
 import org.svip.api.services.SBOMFileService;
+import org.svip.conversion.ConversionException;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
 import org.svip.api.services.VEXFileService;
@@ -139,7 +140,8 @@ public class SBOMController {
         Long convertID;
         try {
             convertID = this.sbomService.convert(id, schema, format, overwrite);
-        } catch (DeserializerException | SBOMBuilderException | SerializerException | JsonProcessingException e) {
+        } catch (DeserializerException | SBOMBuilderException | SerializerException | JsonProcessingException |
+                 ConversionException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
