@@ -105,8 +105,8 @@ public class MergerController {
             case "spdx:spdx" -> {
                 return new MergerSPDX();
             }
-            // case "svip:svip" -> { return new MergerSVIP()} // todo in later sprint?
-
+            case "svip:svip" -> { return new MergerSVIP();
+            }
             default -> {
                 return new MergerCrossSchema();
             }
