@@ -61,25 +61,6 @@ public class QAController {
     @GetMapping("/sboms/qa")
     public ResponseEntity<String> qa(@RequestParam("id") Long id) {
         try{
-            SBOM sbom = this.sbomService.getSBOMObject(id);
-
-            // No SBOM was found
-            if(sbom == null)
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-            /*
-            qa.generateQAFile(SBOM) -> qaFile (has all data and parent sbom id)
-            qa.upload -> (SBOM, QA)?
-
-             */
-            return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-        } catch (JsonProcessingException e ){
-            // error with Deserialization
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-        try{
             SBOM sbomFile = this.sbomFileService.getSBOMFile(id);
 
             // No SBOM was found
