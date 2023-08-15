@@ -152,7 +152,6 @@ public class SBOMFileService {
         ) {
 
             org.svip.sbom.model.interfaces.generics.SBOM sbomObj;
-
             try {
                 sbomObj = getSBOMObject(id);
             } catch (JsonProcessingException e) {
@@ -164,11 +163,12 @@ public class SBOMFileService {
             if (sbomObj == null)
                 return -1L; // not found
 
-            try{
+            // convert to SVIPSBOM
+            try {
                 sbomObj = Conversion.convertSBOM(sbomObj, SerializerFactory.Schema.SVIP,
                         (sbomObj.getFormat().toLowerCase().contains("spdx")) ?
                                 SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14);
-            }catch (SBOMBuilderException e){
+            } catch (SBOMBuilderException e) {
                 LOGGER.info(urlMsg + id + "DURING CONVERSION TO SVIP: " +
                         e.getMessage());
                 return null; // internal server error
@@ -210,8 +210,8 @@ public class SBOMFileService {
 
         // save to db
         Random rand = new Random();
-        String newName = ((merged.getName() == null) ? Math.abs(rand.nextInt()) : merged.getName()) + "." +
-                schema.getName();
+        String newName = ((merged.getName() == null || merged.getName().isEmpty()) ? Math.abs(rand.nextInt()) :
+                merged.getName()) + "." + schema.getName();
 
         UploadSBOMFileInput u = new UploadSBOMFileInput(newName, contents);
         SBOM mergedSBOMFile;
