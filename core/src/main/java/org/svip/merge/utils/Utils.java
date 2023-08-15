@@ -1,4 +1,4 @@
-package org.svip.compare.utils;
+package org.svip.merge.utils;
 
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;

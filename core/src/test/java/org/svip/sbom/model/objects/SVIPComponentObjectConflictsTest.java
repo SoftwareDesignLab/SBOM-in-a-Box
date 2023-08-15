@@ -1,8 +1,6 @@
 package org.svip.sbom.model.objects;
 
 import org.junit.jupiter.api.Test;
-import org.svip.metrics.resultfactory.Text;
-import org.svip.metrics.resultfactory.enumerations.INFO;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.factory.objects.SVIPSBOMComponentFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -43,8 +41,8 @@ public class SVIPComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-        assertEquals("Type doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
+        assertEquals("Type doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -58,8 +56,8 @@ public class SVIPComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-        assertEquals("UID doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
+        assertEquals("UID doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -73,8 +71,8 @@ public class SVIPComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.NAME_MISMATCH, conflict.GetType());
-        assertEquals("Name doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.NAME_MISMATCH, conflict.getType());
+        assertEquals("Name doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -88,8 +86,8 @@ public class SVIPComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.AUTHOR_MISMATCH, conflict.GetType());
-        assertEquals("Author doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.AUTHOR_MISMATCH, conflict.getType());
+        assertEquals("Author doesn't match", conflict.getMessage());
     }
 
     // TODO This is still breaking due to casting
@@ -112,10 +110,10 @@ public class SVIPComponentObjectConflictsTest {
 
         for(Conflict c : conflictList)
         {
-            if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "License is missing")) {
-                if(Objects.equals(c.GetTarget(), "control license") && c.GetOther() == null)
+            if (c.getType() == MismatchType.MISSING && Objects.equals(c.getMessage(), "License is missing")) {
+                if(Objects.equals(c.getTarget(), "control license") && c.getOther() == null)
                     c1 = true;
-                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "license"))
+                else if(c.getTarget() == null && Objects.equals(c.getOther(), "license"))
                     c2 = true;
             }
         }
@@ -135,8 +133,8 @@ public class SVIPComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-        assertEquals("Copyright doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
+        assertEquals("Copyright doesn't match", conflict.getMessage());
     }
 
     // TODO Breaks because of licenses (but why?)
@@ -155,12 +153,10 @@ public class SVIPComponentObjectConflictsTest {
 
         for(Conflict c : conflictList)
         {
-            if(c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "Component Hash is missing"))
-                if(Objects.equals(c.GetTarget(), "SHA1") &&
-                        c.GetOther() == null)
+            if(c.getType() == MismatchType.MISSING && Objects.equals(c.getMessage(), "Component Hash is missing"))
+                if(Objects.equals(c.getTarget(),"Contains Component Hash Data") && c.getOther() == null)
                     c1 = true;
-                else if(c.GetTarget() == null &&
-                        Objects.equals(c.GetOther(), "SHA2"))
+                else if(c.getTarget() == null && Objects.equals(c.getOther(), "Contains Component Hash Data"))
                     c2 = true;
         }
 
@@ -185,9 +181,9 @@ public class SVIPComponentObjectConflictsTest {
 
         for(Conflict c : conflictList)
         {
-            if(c.GetType() == MismatchType.NAME_MISMATCH && Objects.equals(c.GetMessage(), "Organization: Name doesn't match"))
+            if(c.getType() == MismatchType.NAME_MISMATCH && Objects.equals(c.getMessage(), "Organization: Name doesn't match"))
                 c1 = true;
-            else if(c.GetType() == MismatchType.MISC_MISMATCH && Objects.equals(c.GetMessage(), "Organization: URL doesn't match"))
+            else if(c.getType() == MismatchType.MISC_MISMATCH && Objects.equals(c.getMessage(), "Organization: URL doesn't match"))
                 c2 = true;
         }
 
@@ -206,8 +202,8 @@ public class SVIPComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.VERSION_MISMATCH, conflict.GetType());
-        assertEquals("Version doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.VERSION_MISMATCH, conflict.getType());
+        assertEquals("Version doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -223,8 +219,8 @@ public class SVIPComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-        assertEquals("Summary doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
+        assertEquals("Summary doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -242,10 +238,10 @@ public class SVIPComponentObjectConflictsTest {
 
         for(Conflict c : conflictList)
         {
-            if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "PURL is missing")) {
-                if(Objects.equals(c.GetTarget(), "control") && c.GetOther() == null)
+            if (c.getType() == MismatchType.MISSING && Objects.equals(c.getMessage(), "PURL is missing")) {
+                if(Objects.equals(c.getTarget(), "control") && c.getOther() == null)
                     c1 = true;
-                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "purl"))
+                else if(c.getTarget() == null && Objects.equals(c.getOther(), "purl"))
                     c2 = true;
             }
         }
@@ -269,10 +265,10 @@ public class SVIPComponentObjectConflictsTest {
 
         for(Conflict c : conflictList)
         {
-            if (c.GetType() == MismatchType.MISSING && Objects.equals(c.GetMessage(), "CPE is missing")) {
-                if(Objects.equals(c.GetTarget(), "control") && c.GetOther() == null)
+            if (c.getType() == MismatchType.MISSING && Objects.equals(c.getMessage(), "CPE is missing")) {
+                if(Objects.equals(c.getTarget(), "control") && c.getOther() == null)
                     c1 = true;
-                else if(c.GetTarget() == null && Objects.equals(c.GetOther(), "cpe"))
+                else if(c.getTarget() == null && Objects.equals(c.getOther(), "cpe"))
                     c2 = true;
             }
         }
@@ -292,8 +288,8 @@ public class SVIPComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-        assertEquals("Mime Type doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
+        assertEquals("Mime Type doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -307,8 +303,8 @@ public class SVIPComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.PUBLISHER_MISMATCH, conflict.GetType());
-        assertEquals("Publisher doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.PUBLISHER_MISMATCH, conflict.getType());
+        assertEquals("Publisher doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -322,8 +318,8 @@ public class SVIPComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-        assertEquals("Scope doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
+        assertEquals("Scope doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -337,8 +333,8 @@ public class SVIPComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-        assertEquals("Group doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
+        assertEquals("Group doesn't match", conflict.getMessage());
     }
     @Test
     public void verificationCode_is_conflicting_between_testPackage_and_controlPackage_test(){
@@ -351,8 +347,8 @@ public class SVIPComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-        assertEquals("Verification Code doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
+        assertEquals("Verification Code doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -366,8 +362,8 @@ public class SVIPComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-        assertEquals("Download Location doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
+        assertEquals("Download Location doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -381,8 +377,8 @@ public class SVIPComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-        assertEquals("File Name doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
+        assertEquals("File Name doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -396,8 +392,8 @@ public class SVIPComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-        assertEquals("Files Analyzed doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
+        assertEquals("Files Analyzed doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -411,8 +407,8 @@ public class SVIPComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-        assertEquals("Home Page doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
+        assertEquals("Home Page doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -426,8 +422,8 @@ public class SVIPComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-        assertEquals("Source Info doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
+        assertEquals("Source Info doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -441,8 +437,8 @@ public class SVIPComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.TIMESTAMP_MISMATCH, conflict.GetType());
-        assertEquals("Release Date doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.TIMESTAMP_MISMATCH, conflict.getType());
+        assertEquals("Release Date doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -456,8 +452,8 @@ public class SVIPComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.TIMESTAMP_MISMATCH, conflict.GetType());
-        assertEquals("Built Date doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.TIMESTAMP_MISMATCH, conflict.getType());
+        assertEquals("Built Date doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -471,8 +467,8 @@ public class SVIPComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.TIMESTAMP_MISMATCH, conflict.GetType());
-        assertEquals("Valid Until Date doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.TIMESTAMP_MISMATCH, conflict.getType());
+        assertEquals("Valid Until Date doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -486,7 +482,7 @@ public class SVIPComponentObjectConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-        assertEquals("File Notice doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
+        assertEquals("File Notice doesn't match", conflict.getMessage());
     }
 }
