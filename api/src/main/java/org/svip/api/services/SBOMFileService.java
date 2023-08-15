@@ -164,6 +164,16 @@ public class SBOMFileService {
             if (sbomObj == null)
                 return -1L; // not found
 
+            try{
+                sbomObj = Conversion.convertSBOM(sbomObj, SerializerFactory.Schema.SVIP,
+                        (sbomObj.getFormat().toLowerCase().contains("spdx")) ?
+                                SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14);
+            }catch (SBOMBuilderException e){
+                LOGGER.info(urlMsg + id + "DURING CONVERSION TO SVIP: " +
+                        e.getMessage());
+                return null; // internal server error
+            }
+
             sboms.add(sbomObj);
 
         }
