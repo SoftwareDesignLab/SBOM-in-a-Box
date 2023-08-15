@@ -279,13 +279,13 @@ public class ComponentMerger {
             default -> { // SVIP
 
                 if (componentA instanceof SVIPComponentObject componentA_SVIP && // both components are of type
-                                                                                // SVIPComponentObject
+                        // SVIPComponentObject
                         componentB instanceof SVIPComponentObject componentB_SVIP) {
 
                     // Download Location
                     if (componentA_SVIP.getDownloadLocation() != null && !componentA_SVIP.getDownloadLocation().isEmpty())
                         compBuilder.setDownloadLocation(componentA_SVIP.getDownloadLocation());
-                    else if(componentB_SVIP.getDownloadLocation() != null && !componentB_SVIP.getDownloadLocation().isEmpty())
+                    else if (componentB_SVIP.getDownloadLocation() != null && !componentB_SVIP.getDownloadLocation().isEmpty())
                         compBuilder.setDownloadLocation(componentB_SVIP.getDownloadLocation());
 
                     // FileName
@@ -296,9 +296,9 @@ public class ComponentMerger {
 
                     // Files Analyzed
                     // TODO: determine if a FilesAnalzyed mistmatch should return true or false
-                    if(componentA_SVIP.getFilesAnalyzed() != null)
+                    if (componentA_SVIP.getFilesAnalyzed() != null)
                         compBuilder.setFilesAnalyzed(componentA_SVIP.getFilesAnalyzed());
-                    else if(componentB_SVIP.getFilesAnalyzed() != null)
+                    else if (componentB_SVIP.getFilesAnalyzed() != null)
                         compBuilder.setFilesAnalyzed(componentB_SVIP.getFilesAnalyzed());
 
                     // Verification Code
@@ -335,9 +335,9 @@ public class ComponentMerger {
                         compBuilder.setValidUntilDate(componentB_SVIP.getValidUntilDate());
 
                     // Supplier
-                    if(componentA_SVIP.getSupplier() != null)
+                    if (componentA_SVIP.getSupplier() != null)
                         compBuilder.setSupplier(componentA_SVIP.getSupplier());
-                    else if(componentB_SVIP.getSupplier() != null)
+                    else if (componentB_SVIP.getSupplier() != null)
                         compBuilder.setSupplier(componentB_SVIP.getSupplier());
 
                     // Version // default to comp A version
@@ -385,33 +385,33 @@ public class ComponentMerger {
                         compBuilder.setAttributionText(componentB_SVIP.getAttributionText());
 
                     // Description
-                    if(componentA_SVIP.getDescription() != null)
+                    if (componentA_SVIP.getDescription() != null)
                         compBuilder.setDescription(componentA_SVIP.getDescription());
-                    else if(componentB_SVIP.getDescription() != null)
+                    else if (componentB_SVIP.getDescription() != null)
                         compBuilder.setDescription(componentB_SVIP.getDescription());
 
                     // Mime Type
-                    if(componentA_SVIP.getMimeType() != null && !componentA_SVIP.getMimeType().isEmpty())
+                    if (componentA_SVIP.getMimeType() != null && !componentA_SVIP.getMimeType().isEmpty())
                         compBuilder.setMimeType(componentA_SVIP.getMimeType());
-                    else if(componentB_SVIP.getMimeType() != null && !componentB_SVIP.getMimeType().isEmpty())
+                    else if (componentB_SVIP.getMimeType() != null && !componentB_SVIP.getMimeType().isEmpty())
                         compBuilder.setMimeType(componentB_SVIP.getMimeType());
 
                     // Publisher
-                    if(componentA_SVIP.getPublisher() != null && !componentA_SVIP.getPublisher().isEmpty())
+                    if (componentA_SVIP.getPublisher() != null && !componentA_SVIP.getPublisher().isEmpty())
                         compBuilder.setPublisher(componentA_SVIP.getPublisher());
-                    else if(componentB_SVIP.getPublisher() != null && !componentB_SVIP.getPublisher().isEmpty())
+                    else if (componentB_SVIP.getPublisher() != null && !componentB_SVIP.getPublisher().isEmpty())
                         compBuilder.setPublisher(componentB_SVIP.getPublisher());
 
                     //
-                    if(componentA_SVIP.getScope() != null && !componentA_SVIP.getScope().isEmpty())
+                    if (componentA_SVIP.getScope() != null && !componentA_SVIP.getScope().isEmpty())
                         compBuilder.setScope(componentA_SVIP.getScope());
-                    else if(componentB_SVIP.getScope() != null && !componentB_SVIP.getScope().isEmpty())
+                    else if (componentB_SVIP.getScope() != null && !componentB_SVIP.getScope().isEmpty())
                         compBuilder.setScope(componentB_SVIP.getScope());
 
                     // Group
-                    if(componentA_SVIP.getGroup() != null && !componentA_SVIP.getGroup().isEmpty())
+                    if (componentA_SVIP.getGroup() != null && !componentA_SVIP.getGroup().isEmpty())
                         compBuilder.setGroup(componentA_SVIP.getGroup());
-                    else if(componentB_SVIP.getGroup() != null && !componentB_SVIP.getGroup().isEmpty())
+                    else if (componentB_SVIP.getGroup() != null && !componentB_SVIP.getGroup().isEmpty())
                         compBuilder.setGroup(componentB_SVIP.getGroup());
 
                     // Properties
@@ -422,8 +422,7 @@ public class ComponentMerger {
                             x -> componentB_SVIP.getProperties().get(x).forEach(y -> compBuilder.addProperty(x, y))
                     );
 
-                }
-                else{
+                } else {
                     SPDX23PackageObject spdx23PackageObjectA = null;
                     SPDX23FileObject spdx23FileObject = null;
 
