@@ -17,6 +17,7 @@ import org.svip.conversion.Conversion;
 import org.svip.merge.MergerController;
 import org.svip.merge.MergerException;
 import org.svip.sbom.builder.SBOMBuilderException;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.SerializerFactory;
@@ -182,7 +183,7 @@ public class SBOMFileService {
         SerializerFactory.Schema schema;
 //        if(merged instanceof SVIPSBOM) // todo serializers do not support SVIP yet
 //            schema = SerializerFactory.Schema.SVIP;
-        schema = (merged instanceof SPDX23SBOM) ? SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14;
+        schema = (merged instanceof CDX14SBOM) ? SerializerFactory.Schema.CDX14 : SerializerFactory.Schema.SPDX23;
 
         // serialize merged SBOM
         Serializer s = SerializerFactory.createSerializer(schema, SerializerFactory.Format.JSON, // todo default to JSON for now?
