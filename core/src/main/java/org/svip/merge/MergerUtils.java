@@ -201,9 +201,14 @@ public abstract class MergerUtils extends Merger {
                                 componentB instanceof SVIPComponentObject componentB_SVIP) {
                             // both components are generic SVIP type, and we want to merge to SVIP
 
+                            if (Objects.equals(componentA_SVIP.getName(), componentB_SVIP.getName())) // todo delete after debugging
+                                if(!(componentA_SVIP.getVersion() != null && componentB_SVIP.getVersion() != null))
+                                    System.out.println();
+
                             // If the components are the same by Name and Version, merge then add them to the SBOM
                             if (Objects.equals(componentA_SVIP.getName(), componentB_SVIP.getName()) &&
-                                    Objects.equals(componentA_SVIP.getVersion(), componentB_SVIP.getVersion())) {
+                                    (Objects.equals(componentA_SVIP.getVersion(), componentB_SVIP.getVersion()) ||
+                                            versionsCanBeMerged(componentA_SVIP.getVersion(), componentB_SVIP.getVersion()))) {
 
                                 mergedComponents.add(ComponentMerger.mergeComponentToSchema(componentA, componentB, targetSchema));
                                 removeB.add(componentB);
@@ -254,21 +259,39 @@ public abstract class MergerUtils extends Merger {
 
     }
 
-
     /**
      * Helper method to reduce code repetitiveness in merging two SVIP component objects
      * (used to configure verification code, home page, and source info)
+     *
      * @param aString string from SVIPComponent A
      * @param bString string from SVIPComponent B
      * @return String configured from between the two
      */
-    public static String configureComponentString(String aString, String bString) {
+    protected static String configureComponentString(String aString, String bString) {
         String string = "";
         if (aString != null && !aString.isEmpty())
             string += "1) " + aString;
         else if (bString != null && !bString.isEmpty())
             string += "1) " + bString;
         return string;
+    }
+
+    /**
+     * Helper function to avoid duplicate components in merging
+     *
+     * @param vA version of component A
+     * @param vB version of component B
+     * @return whether these components can be merged, given their names are the same and only one of their
+     * versions are corrupt
+     */
+    private static boolean versionsCanBeMerged(String vA, String vB) {
+
+        // vA is bad, return true if vB isn't null nor an empty string
+        if (vA == null || vA.isEmpty()) {
+            return vB != null && !vB.isEmpty();
+        }
+        // vA is good, return true if vB is null or empty
+        else return vB == null || vB.isEmpty();
     }
 
 }
