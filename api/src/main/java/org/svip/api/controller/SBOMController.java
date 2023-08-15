@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.svip.api.entities.SBOM;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
+import org.svip.merge.MergerException;
 import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.exceptions.DeserializerException;
@@ -86,10 +87,9 @@ public class SBOMController {
      * @return ID of merged SBOM
      */
     @PostMapping("/sboms/merge")
-    public ResponseEntity<Long> merge(@RequestBody Long[] ids) {
+    public ResponseEntity<Long> merge(@RequestBody Long[] ids) throws DeserializerException, MergerException, SBOMBuilderException, JsonProcessingException {
 
         Long mergeID = this.sbomService.merge(ids);
-        // todo convert should probably throw errors instead of returning null if error occurs
         if (mergeID == null)
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 

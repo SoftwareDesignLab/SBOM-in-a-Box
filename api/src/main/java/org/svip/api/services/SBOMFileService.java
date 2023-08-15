@@ -9,7 +9,10 @@ import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.conversion.Conversion;
+import org.svip.merge.MergerController;
+import org.svip.merge.MergerException;
 import org.svip.sbom.builder.SBOMBuilderException;
+import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
@@ -124,14 +127,66 @@ public class SBOMFileService {
      * @param ids list of IDs to merge
      * @return ID of merged SBOM
      */
-    public Long merge(Long[] ids) {
+    public Long merge(Long[] ids) throws DeserializerException, MergerException, SBOMBuilderException, JsonProcessingException {
 
-      /*
-        TODO MERGE LOGIC HERE
+        ArrayList<org.svip.sbom.model.interfaces.generics.SBOM> sboms = new ArrayList<>();
 
-        */
+        String urlMsg = "MERGE /svip/merge?id=";
 
-        return null;
+        long idSum = 0L;
+
+        // check for bad files
+        for (Long id : ids
+        ) {
+
+            // deserialize into SBOM object
+            org.svip.sbom.model.interfaces.generics.SBOM deserialized;
+            try {
+                deserialized = getSBOMObject(id);
+            } catch (Exception e) {
+                throw new DeserializerException("Deserialization Error: " + e.getMessage());
+            }
+            if (deserialized == null)
+                throw new DeserializerException("Cannot retrieve SBOM with id " + id + " to deserialize");
+
+
+            sboms.add(deserialized);
+            idSum += id;
+        }
+
+        // todo, merging more than two SBOMs is not supported right now
+        org.svip.sbom.model.interfaces.generics.SBOM merged;
+        try {
+            MergerController mergerController = new MergerController();
+            merged = mergerController.merge(sboms.get(0), sboms.get(1));
+        } catch (MergerException e) {
+            String error = "Error merging SBOMs: " + e.getMessage();
+            throw new MergerException(urlMsg + " " + error);
+        }
+
+        Serializer s;
+        String contents;
+        try {
+            s = SerializerFactory.createSerializer(SerializerFactory.Schema.SVIP, SerializerFactory.Format.JSON, true);
+            SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
+            builder.setSpecVersion("1.0-a");
+            builder.setUID(String.valueOf(idSum)); // this may not always be a unique id which could cause problems
+            Conversion.buildSBOM(merged, SerializerFactory.Schema.SVIP, null);
+            contents = s.writeToString(builder.Build());
+        } catch (IllegalArgumentException | JsonProcessingException e) {
+            String error = "Error serializing merged SBOM: " + e.getMessage();
+            throw new MergerException(urlMsg + " " + error);
+        }
+
+        // SBOMFile
+        UploadSBOMFileInput u = new UploadSBOMFileInput(merged.getName(), contents);
+
+        // Save according to overwrite boolean
+        SBOM result = u.toSBOMFile();
+
+        this.sbomRepository.save(result);
+        return result.getId();
+
     }
 
 
