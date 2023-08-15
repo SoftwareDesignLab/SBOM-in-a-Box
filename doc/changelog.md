@@ -37,6 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `MergerUtils.java`
   - String.equals() fixes
   - Allowed merging of components to `SVIPComponentObject`
+  - Duplicate component issue resolved
+    - If two components are of the same name, but one has a version that's null, and the other doesn't, then they can be merged
 
 ### Changed
 - Simplified table names by removing the `_file` suffix
