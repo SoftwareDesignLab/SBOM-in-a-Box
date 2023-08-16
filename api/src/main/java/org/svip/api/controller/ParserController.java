@@ -1,6 +1,8 @@
 package org.svip.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.svip.api.entities.SBOM;
 import org.svip.api.entities.SBOMFile;
-import org.svip.api.repository.SBOMRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
 import org.svip.generation.parsers.utils.VirtualPath;
@@ -18,11 +19,8 @@ import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.serializer.Serializer;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.zip.ZipException;
-
-import static org.svip.api.controller.SBOMController.LOGGER;
 
 /**
  * REST API Controller for generating SBOMs using Parsers
@@ -32,6 +30,10 @@ import static org.svip.api.controller.SBOMController.LOGGER;
 @RestController
 @RequestMapping("/svip/generators")
 public class ParserController {
+    /**
+     * Spring-configured logger
+     */
+    public static final Logger LOGGER = LoggerFactory.getLogger(SBOMController.class);
     private final SBOMFileService sbomService;
 
 
