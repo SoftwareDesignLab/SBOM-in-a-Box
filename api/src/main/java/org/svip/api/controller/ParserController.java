@@ -81,7 +81,7 @@ public class ParserController {
      * @param format      to convert to
      * @return generated SBOM
      */
-    public Long parseSBOM (MultipartFile zipFile, String projectName, SerializerFactory.Schema schema, SerializerFactory.Format format) throws Exception {
+    private Long parseSBOM (MultipartFile zipFile, String projectName, SerializerFactory.Schema schema, SerializerFactory.Format format) throws Exception {
         String urlMsg = "GENERATE /svip/generate?projectName=" + projectName;
 
         // Ensure schema has a valid serializer
@@ -94,7 +94,7 @@ public class ParserController {
         ArrayList<HashMap<SBOMFile, Integer>> unZipped;
         try {
             unZipped = (ArrayList<HashMap<SBOMFile, Integer>>)
-                    SBOMFileService.unZip(Objects.requireNonNull(SBOMFileService.convertMultipartToZip(zipFile)));
+                    sbomService.unZip(Objects.requireNonNull(sbomService.convertMultipartToZip(zipFile)));
         } catch (ZipException e) {
             LOGGER.error(urlMsg + ":" + e.getMessage());
             return null;
