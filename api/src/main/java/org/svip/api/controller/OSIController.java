@@ -69,6 +69,10 @@ public class OSIController {
         return container != null;
     }
 
+    ///
+    /// GET
+    ///
+
     /**
      * USAGE. Send GET request to /generators/osi/getTools to get a list of valid tool names that can be used to
      * generate an SBOM from source file(s).
@@ -90,6 +94,10 @@ public class OSIController {
 
         return new ResponseEntity<>(tools, HttpStatus.OK);
     }
+
+    ///
+    /// POST
+    ///
 
     /**
      * USAGE. Send POST request to /generators/osi to generate an SBOM from source file(s).
@@ -196,6 +204,8 @@ public class OSIController {
                  ConversionException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        // todo how to set file name using projectName
 
         // Save and return
         return new ResponseEntity<>(converted, HttpStatus.OK);
