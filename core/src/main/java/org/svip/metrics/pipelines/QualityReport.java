@@ -50,18 +50,6 @@ public class QualityReport {
         components.put(uid, testResults);
     }
 
-
-    ///
-    /// Getters
-    ///
-
-    /**
-     * @return QA UID
-     */
-    public String getUid() {
-        return this.uid;
-    }
-
     /**
      * returns the results of the quality report
      *

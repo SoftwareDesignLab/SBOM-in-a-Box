@@ -1,9 +1,7 @@
 package org.svip.repair.statements;
 
-import org.svip.repair.fix.Fix;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,6 +23,6 @@ public interface RepairStatement {
      * @param sbom  The SBOM Object.
      * @return      A nested map of potential fixes.
      */
-    Map<String, Map<String, List<Fix<?>>>> generateRepairStatement(String uid, SBOM sbom) throws Exception;
+    Map<String, Map<String, String>> generateRepairStatement(String uid, SBOM sbom);
 
 }
