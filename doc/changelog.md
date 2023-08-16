@@ -3,8 +3,14 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v7.4.5-alpha] - (8/16/2023)
+## [v7.4.6-alpha] - (8/15/2023)
+### Changed
+- `/generators/osi` endpoint
+    - POST mapping in `OSIController` utilizing `SBOMFileService`
+- `/generators/osi/tools` endpoint
+    - GET mapping in `OSIController`
 
+## [v7.4.5-alpha] - (8/16/2023)
 ### Changed
 - `/generators/parsers` endpoint
     - POST mapping in `ParserController` utilizing `SBOMFileService`
