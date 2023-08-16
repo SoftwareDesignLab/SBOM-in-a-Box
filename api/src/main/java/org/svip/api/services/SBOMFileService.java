@@ -238,7 +238,6 @@ public class SBOMFileService {
 
     }
 
-
     /**
      * Get all the IDs of the store SBOMs in the database
      *
