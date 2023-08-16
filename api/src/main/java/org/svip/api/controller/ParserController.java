@@ -135,14 +135,9 @@ public class ParserController {
             return null;
         }
 
-
-        SBOMFile result = new SBOMFile(projectName + ((format == SerializerFactory.Format.JSON)
-                ? ".json" : ".spdx"), contents);
-        Random rand = new Random();
-        result.setId(this.generateNewId(rand.nextLong(), rand));
-
         // convert result sbomfile to sbom
-        UploadSBOMFileInput u = new UploadSBOMFileInput(result.getFileName(), result.getContents());
+        UploadSBOMFileInput u = new UploadSBOMFileInput(projectName + ((format == SerializerFactory.Format.JSON)
+                ? ".json" : ".spdx"), contents);
 
         // Save according to overwrite boolean
         SBOM converted = u.toSBOMFile();
@@ -155,23 +150,5 @@ public class ParserController {
         }
 
         return converted.getId();
-    }
-
-    /**
-     * Generates new ID given old one
-     *
-     * @param id                 old ID
-     * @param rand               Random class
-     * @return new ID
-     */
-    public long generateNewId(long id, Random rand) {
-        // assign new id
-        try {
-            id += (Math.abs(rand.nextLong()) + id) % (id < 0 ? id : Long.MAX_VALUE);
-        } catch (NullPointerException e) {
-            return id;
-        }
-
-        return id;
     }
 }
