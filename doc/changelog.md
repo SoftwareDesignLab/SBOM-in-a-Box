@@ -3,6 +3,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v7.4.2-alpha] - (8/16/2023)
+
+### Added
+- `/generators/parsers` endpoint
+    - Functionality in `ParserService.java`
+    - POST mapping in `ParserController.java`
+
 ## [v7.4.2-alpha] - (8/15/2023)
 
 ### Added
