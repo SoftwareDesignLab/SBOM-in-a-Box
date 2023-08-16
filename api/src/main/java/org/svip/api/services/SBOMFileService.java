@@ -225,85 +225,7 @@ public class SBOMFileService {
     }
 
 
-    /**
-     * USAGE. Send GENERATE request to /generate an SBOM from source file(s)
-     *
-     * @param projectName of project to be converted to SBOM
-     * @param zipFile     path to zip file
-     * @param schema      to convert to
-     * @param format      to convert to
-     * @return generated SBOM
-     */
-    public Long parseSBOM (MultipartFile zipFile, String projectName, SerializerFactory.Schema schema, SerializerFactory.Format format) throws IOException {
-        String urlMsg = "GENERATE /svip/generate?projectName=" + projectName;
 
-        // Ensure schema has a valid serializer
-        try {
-            schema.getSerializer(format);
-        } catch (IllegalArgumentException e) {
-            LOGGER.error(urlMsg + ": " + e.getMessage());
-            return null;
-        }
-        ArrayList<HashMap<SBOMFile, Integer>> unZipped;
-        try {
-            unZipped = (ArrayList<HashMap<SBOMFile, Integer>>)
-                    SBOMFileService.unZip(Objects.requireNonNull(SBOMFileService.convertMultipartToZip(zipFile)));
-        } catch (ZipException e) {
-            LOGGER.error(urlMsg + ":" + e.getMessage());
-            return null;
-        }
-
-        HashMap<VirtualPath, String> virtualPathStringHashMap = new HashMap<>();
-
-        for (HashMap<SBOMFile, Integer> h : unZipped
-        ) {
-            SBOMFile f = (SBOMFile) h.keySet().toArray()[0];
-            if (!f.hasNullProperties()) // project files that are empty should just be ignored
-                virtualPathStringHashMap.put(new VirtualPath(f.getFileName()), f.getContents());
-        }
-
-        org.svip.generation.parsers.ParserController parserController = new org.svip.generation.parsers.ParserController(projectName, virtualPathStringHashMap);
-
-
-        SVIPSBOM parsed;
-        try {
-            parserController.parseAll();
-            parsed = parserController.buildSBOM(schema);
-        } catch (Exception e) {
-            String error = "Error parsing into SBOM: " + Arrays.toString(e.getStackTrace());
-            LOGGER.error(urlMsg + " " + error);
-            return null;
-        }
-
-
-        Serializer s;
-        String contents;
-
-        try {
-            s = SerializerFactory.createSerializer(schema, format, true);
-            contents = s.writeToString(parsed);
-        } catch (IllegalArgumentException | JsonProcessingException e) {
-            String error = "Error serializing parsed SBOM: " + Arrays.toString(e.getStackTrace());
-            LOGGER.error(urlMsg + " " + error);
-            return null;
-        }
-
-
-        SBOMFile result = new SBOMFile(projectName + ((format == SerializerFactory.Format.JSON)
-                ? ".json" : ".spdx"), contents);
-        Random rand = new Random();
-        result.setId(SBOMFileService.generateNewId(rand.nextLong(), rand, sbomRepository));
-
-        // convert result sbomfile to sbom
-        UploadSBOMFileInput u = new UploadSBOMFileInput(result.getFileName(), result.getContents());
-
-        // Save according to overwrite boolean
-        SBOM converted = u.toSBOMFile();
-
-        sbomRepository.save(converted);
-
-        return converted.getId();
-    }
 
 
     /**
@@ -463,29 +385,6 @@ public class SBOMFileService {
 
         return new ZipFile(zip);
 
-    }
-
-    /**
-     * Generates new ID given old one
-     *
-     * @param id                 old ID
-     * @param rand               Random class
-     * @param sbomFileRepository repository
-     * @return new ID
-     */
-    public static long generateNewId(long id, Random rand, SBOMRepository sbomFileRepository) {
-        // assign new id and name
-        int i = 0;
-        try {
-            while (sbomFileRepository.findById(id).isPresent()) {
-                id += (Math.abs(rand.nextLong()) + id) % ((i < 100 && id < 0) ? id : Long.MAX_VALUE);
-                i++;
-            }
-        } catch (NullPointerException e) {
-            return id;
-        }
-
-        return id;
     }
 }
 
