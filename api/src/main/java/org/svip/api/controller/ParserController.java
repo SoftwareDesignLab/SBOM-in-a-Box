@@ -42,7 +42,7 @@ public class ParserController {
      * @param format      to convert to
      * @return generated SBOM
      */
-    @PostMapping("/generators/parsers")
+    @PostMapping("/parsers")
     public ResponseEntity<?> generateParsers(@RequestParam("zipFile") MultipartFile zipFile,
                                              @RequestParam("projectName") String projectName,
                                              @RequestParam("schema") SerializerFactory.Schema schema,
