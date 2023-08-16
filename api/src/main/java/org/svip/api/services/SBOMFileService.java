@@ -222,29 +222,6 @@ public class SBOMFileService {
         return mergedSBOMFile.getId();
     }
 
-
-    /**
-     * Retrieve SBOM File from the database as an JSON String
-     *
-     * @param id of the SBOM to retrieve
-     * @return deserialized SBOM Object
-     * @throws JsonProcessingException SBOM failed to be deserialized
-     */
-    public String getSBOMObjectAsJSON(Long id) throws JsonProcessingException {
-        // Retrieve SBOM Object and check that it exists
-        org.svip.sbom.model.interfaces.generics.SBOM sbom = getSBOMFile(id).toSBOMObject();
-        if (sbom == null)
-            return null;
-
-        // Configure object mapper to remove null and empty arrays
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-
-        // Return JSON String
-        return mapper.writeValueAsString(sbom);
-    }
-
     /**
      * Get SBOM file from database
      *
@@ -258,7 +235,6 @@ public class SBOMFileService {
         return sbomFile.orElse(null);
 
     }
-
 
     /**
      * Get all the IDs of the store SBOMs in the database
