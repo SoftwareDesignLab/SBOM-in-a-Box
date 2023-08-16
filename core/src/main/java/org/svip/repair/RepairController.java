@@ -3,12 +3,11 @@ package org.svip.repair;
 import org.svip.repair.repair.Repair;
 import org.svip.repair.repair.RepairCDX14;
 import org.svip.repair.repair.RepairSPDX23;
-import org.svip.repair.fix.Fix;
 import org.svip.repair.statements.RepairStatement;
-import org.svip.repair.statements.RepairStatementSPDX23CDX14;
+import org.svip.repair.statements.RepairStatementCDX14;
+import org.svip.repair.statements.RepairStatementSPDX23;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,51 +18,25 @@ import java.util.Map;
  */
 public class RepairController {
 
-    public RepairController() {
-    }
-
-
-    /**
-     * Generate a repair statement
-     *
-     * @param sbom sbom to repair
-     * @param uid  UID of sbom
-     * @return repair statement
-     */
-    public Map<String, Map<String, List<Fix<?>>>> generateStatement(SBOM sbom, String uid) throws Exception {
+    public Map<String, Map<String, String>> generateStatement(SBOM sbom, String uid) {
         RepairStatement rs = getStatement(sbom);
         return rs.generateRepairStatement(uid, sbom);
     }
 
-    /**
-     * Repair this SBOM with chosen repairs
-     *
-     * @param sbom    sbom to repair
-     * @param uid     uid of sbom
-     * @param repairs chosen repairs from SBOM
-     * @return repaired SBOM
-     */
-    public SBOM repairSBOM(SBOM sbom, String uid, Map<String, Map<String, List<Fix<?>>>> repairs) {
+    public SBOM repairSBOM(SBOM sbom, String uid, Map<String, Map<String, String>> repairs) {
         Repair r = getRepair(sbom);
         return r.repairSBOM(uid, sbom, repairs);
     }
 
-    /**
-     * Get repair statement class for this SBOM
-     *
-     * @param sbom sbom to repair
-     * @return repair statement class
-     */
     public RepairStatement getStatement(SBOM sbom) {
 
-        // Get the correct RepairStatement model based on the SBOM's format
-        switch (sbom.getFormat()) {
-
-            // For SPDX 2.3 and CycloneDX 1.4
-            case "SPDX", "CycloneDX" -> {
-                return new RepairStatementSPDX23CDX14();
+        switch(sbom.getFormat()) {
+            case "SPDX" -> {
+                return new RepairStatementSPDX23();
             }
-            // For none found
+            case "CycloneDX" -> {
+                return new RepairStatementCDX14();
+            }
             default -> {
                 return null;
             }
@@ -71,25 +44,15 @@ public class RepairController {
 
     }
 
-    /**
-     * Get repair class for this SBOM
-     *
-     * @param sbom sbom to repair
-     * @return repair class
-     */
     public Repair getRepair(SBOM sbom) {
 
-        // Get the correct Repair class based on the format
-        switch (sbom.getFormat()) {
-            // For SPDX 2.3
+        switch(sbom.getFormat()) {
             case "SPDX" -> {
                 return new RepairSPDX23();
             }
-            // For CycloneDX 1.4
             case "CycloneDX" -> {
                 return new RepairCDX14();
             }
-            // For none found
             default -> {
                 return null;
             }
