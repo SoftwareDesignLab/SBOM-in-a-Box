@@ -12,6 +12,7 @@ import org.svip.api.repository.SBOMRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.conversion.Conversion;
 import org.svip.conversion.ConversionException;
+import org.svip.generation.parsers.utils.VirtualPath;
 import org.svip.merge.MergerController;
 import org.svip.merge.MergerException;
 import org.svip.sbom.builder.SBOMBuilderException;
@@ -26,6 +27,7 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import static org.svip.api.controller.SBOMController.LOGGER;
@@ -223,6 +225,9 @@ public class SBOMFileService {
     }
 
 
+
+
+
     /**
      * Retrieve SBOM File from the database as an JSON String
      *
@@ -326,7 +331,7 @@ public class SBOMFileService {
      * @param z the zipped file
      * @return List of file contents paired with an integer representing its depth in the project directory
      */
-    public static List<HashMap<SBOMFile, Integer>> unZip(ZipFile z) {
+    public List<HashMap<SBOMFile, Integer>> unZip(ZipFile z) {
 
         ArrayList<HashMap<SBOMFile, Integer>> vpArray = new ArrayList<>();
 
@@ -371,7 +376,7 @@ public class SBOMFileService {
      * @param file MultiPart file, a .zip file
      * @return Converted ZipFile object
      */
-    public static ZipFile convertMultipartToZip(MultipartFile file) throws IOException {
+    public ZipFile convertMultipartToZip(MultipartFile file) throws IOException {
 
         File zip = File.createTempFile(UUID.randomUUID().toString(), "temp");
         FileOutputStream o = new FileOutputStream(zip);
