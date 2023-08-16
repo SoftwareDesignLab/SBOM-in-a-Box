@@ -1,5 +1,6 @@
 package org.svip.api.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -7,7 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.svip.api.entities.SBOMFile;
+import org.svip.merge.MergerException;
+import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.serializers.SerializerFactory;
+import org.svip.serializers.exceptions.DeserializerException;
 
 import java.io.IOException;
 import java.util.*;
@@ -31,7 +35,7 @@ public class MergeFromAPITest extends APITest {
      */
     @Test
     @DisplayName("Comprehensive merge test")
-    public void mergeTest() {
+    public void mergeTest() throws MergerException, SBOMBuilderException, DeserializerException, JsonProcessingException {
 
         setupMockRepository();
         ArrayList<HashMap<Long, Long>> testedPairs = new ArrayList<>();
@@ -78,7 +82,7 @@ public class MergeFromAPITest extends APITest {
                         " and " + schema2 + " SBOM " + sbom2.getId() + "..." +
                         sbom2.getFileName().substring(sbom2.getFileName().length() * 2 / 3));
 
-                ResponseEntity<Long> response = (ResponseEntity<Long>) controller.merge(new long[]{id1, id2});
+                ResponseEntity<Long> response = (ResponseEntity<Long>) controller.merge(new Long[]{id1, id2});
                 Long responseBody = response.getBody();
 
                 assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -94,7 +98,7 @@ public class MergeFromAPITest extends APITest {
      * Reused code to set up mock repository for tests
      */
     private void setupMockRepository() {
-        when(repository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
+        when(oldRepository.findById(any(Long.class))).thenAnswer(i -> Optional.of(testMap.get(i.getArgument(0))));
     }
 
 }

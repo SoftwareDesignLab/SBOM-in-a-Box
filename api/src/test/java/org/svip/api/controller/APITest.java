@@ -6,6 +6,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
+import org.svip.api.repository.SBOMRepository;
+import org.svip.api.services.SBOMFileService;
 import org.svip.api.utils.Utils;
 import org.svip.serializers.SerializerFactory;
 
@@ -20,10 +22,24 @@ import java.util.Map;
 @ExtendWith(MockitoExtension.class)
 public class APITest {
 
-    SVIPApiController controller;
+    SVIPApiController oldController;
+    SBOMController controller;
+
+    DiffController diffController;
+
+    OSIController osiController;
+
+    ParserController parserController;
+
+    QAController qaController;
+    VEXController vexController;
+
+
 
     @Mock
-    SBOMFileRepository repository;
+    SBOMFileRepository oldRepository;
+    @Mock
+    SBOMRepository repository;
 
     private final static String alpineSBOM = System.getProperty("user.dir")
             + "/src/test/resources/sample_sboms/sbom.alpine-compare.2-3.spdx";
@@ -102,7 +118,8 @@ public class APITest {
     public void setup() throws IOException {
         // Init controller with mocked repository
         // Avoid starting with OSI to decrease test time
-        controller = new SVIPApiController(repository, false);
+        oldController = new SVIPApiController(oldRepository, false);
+        controller = new SBOMController(new SBOMFileService(repository));
     }
 
     public static Map<Long, SBOMFile> getTestFileMap() throws IOException {

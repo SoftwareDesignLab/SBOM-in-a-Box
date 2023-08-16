@@ -11,12 +11,6 @@ import org.svip.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
 import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
-import org.cyclonedx.CycloneDxSchema;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
-import org.svip.serializers.deserializer.CDX14JSONDeserializer;
-import org.svip.serializers.deserializer.Deserializer;
-import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
-import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
 
 import java.util.Set;
 
@@ -162,6 +156,17 @@ public class SBOM {
     }
 
     /**
+     * Simple set schema
+     * @param schema schema type
+     * @return SBOM
+     */
+    public SBOM setSchema(Schema schema){
+        this.schema = schema;
+        return this;
+    }
+
+
+    /**
      * Set SBOM File Type
      * @param d deserializer to infer file type from
      * @return SBOM
@@ -212,6 +217,16 @@ public class SBOM {
         return this;
     }
 
+    /**
+     * Simple set schema
+     * @param fileType file type
+     * @return SBOM
+     */
+    public SBOM setFileType(FileType fileType){
+        this.fileType = fileType;
+        return this;
+    }
+
     ///
     /// Getters
     ///
@@ -250,4 +265,20 @@ public class SBOM {
     public VEXFile getVEXFile(){
         return this.vexFile;
     }
+
+    /**
+     * @return SBOM Schema
+     */
+    public Schema getSchema(){
+        return this.schema;
+    }
+
+    /**
+     * @return SBOM FileType
+     */
+    public FileType getFileType() {
+        return this.fileType;
+    }
+
+
 }
