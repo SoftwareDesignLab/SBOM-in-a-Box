@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Derek Garcia
  **/
 @RestController
-@RequestMapping("/svip/generators")
+@RequestMapping("/svip/generators/parsers")
 public class ParserController {
 }
