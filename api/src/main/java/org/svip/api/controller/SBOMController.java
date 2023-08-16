@@ -32,19 +32,14 @@ public class SBOMController {
     public static final Logger LOGGER = LoggerFactory.getLogger(SBOMController.class);
 
     private final SBOMFileService sbomService;
-    private final QualityReportFileService qualityReportFileService;
-    private final VEXFileService vexFileService;
 
     /**
      * Create new Controller with services
      *
      * @param sbomService              Service for handling SBOM queries
-     * @param qualityReportFileService Service for handling QA queries
      */
-    public SBOMController(SBOMFileService sbomService, QualityReportFileService qualityReportFileService, VEXFileService vexFileService) {
+    public SBOMController(SBOMFileService sbomService) {
         this.sbomService = sbomService;
-        this.qualityReportFileService = qualityReportFileService;
-        this.vexFileService = vexFileService;
     }
 
 
