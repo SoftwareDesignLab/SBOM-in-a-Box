@@ -1,8 +1,6 @@
 package org.svip.api.services;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,7 +10,6 @@ import org.svip.api.repository.SBOMRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.conversion.Conversion;
 import org.svip.conversion.ConversionException;
-import org.svip.generation.parsers.utils.VirtualPath;
 import org.svip.merge.MergerController;
 import org.svip.merge.MergerException;
 import org.svip.sbom.builder.SBOMBuilderException;
@@ -27,7 +24,6 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import static org.svip.api.controller.SBOMController.LOGGER;
