@@ -3,8 +3,11 @@ package org.svip.api.services;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.conversion.Conversion;
@@ -19,7 +22,11 @@ import org.svip.serializers.exceptions.DeserializerException;
 import org.svip.serializers.exceptions.SerializerException;
 import org.svip.serializers.serializer.Serializer;
 
+import java.io.*;
 import java.util.*;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import static org.svip.api.controller.SBOMController.LOGGER;
 
@@ -309,5 +316,70 @@ public class SBOMFileService {
         return sbomFile.getId();
     }
 
+    //
+    // ZIP FILE UTILITIES
+    //
+
+    /**
+     * Unzip a ZipFile of SBOMFiles
+     *
+     * @param z the zipped file
+     * @return List of file contents paired with an integer representing its depth in the project directory
+     */
+    public static List<HashMap<SBOMFile, Integer>> unZip(ZipFile z) {
+
+        ArrayList<HashMap<SBOMFile, Integer>> vpArray = new ArrayList<>();
+
+        byte[] buffer = new byte[1024];
+        Stream<? extends ZipEntry> entryStream = z.stream();
+
+        entryStream.forEach(entry -> {
+            try {
+                // Get the input stream for the current zip entry
+                InputStream is = z.getInputStream(entry);
+                int depth = entry.getName().split("[\\/]").length - 1; // todo we may not actually need depth
+
+                if (!entry.isDirectory()) {
+                    StringBuilder contentsBuilder = new StringBuilder();
+                    int len;
+                    try {
+                        while ((len = is.read(buffer)) > 0) {
+                            contentsBuilder.append(new String(buffer));
+                        }
+                    } catch (EOFException e) {
+                        is.close();
+                        LOGGER.error(e.getMessage());
+                    }
+
+                    HashMap<SBOMFile, Integer> hashMap = new HashMap<>();
+                    hashMap.put(new SBOMFile(entry.getName(), contentsBuilder.toString()), depth);
+                    vpArray.add(hashMap);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        return vpArray;
+
+    }
+
+    /**
+     * Convert a MultiPart file to a ZipFile
+     *
+     * @param file MultiPart file, a .zip file
+     * @return Converted ZipFile object
+     */
+    public static ZipFile convertMultipartToZip(MultipartFile file) throws IOException {
+
+        File zip = File.createTempFile(UUID.randomUUID().toString(), "temp");
+        FileOutputStream o = new FileOutputStream(zip);
+        IOUtils.copy(file.getInputStream(), o);
+        o.close();
+
+        return new ZipFile(zip);
+
+    }
 }
 
