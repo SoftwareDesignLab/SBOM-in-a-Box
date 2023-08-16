@@ -11,25 +11,18 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
-import static org.svip.generation.osi.OSIClient.dockerCheck;
 
 public class GetToolsFromOSIAPITest extends APITest {
     @Override
     @BeforeEach
     public void setup() {
-        // Use OSI.dockerCheck() to check if docker is running
-        assumeTrue(dockerCheck() == 0);
-
-        // Init controller with mocked repository and enable OSI
-        controller = new SVIPApiController(repository, true);
-
         // Ensure controller was able to construct OSI
-        assumeTrue(controller.isOSIEnabled());
+        assumeTrue(osiController.isOSIEnabled());
     }
 
     @Test
     public void getToolsTest() {
-        ResponseEntity<?> tools = controller.getOSITools();
+        ResponseEntity<?> tools = osiController.getOSITools();
 
         assertEquals(HttpStatus.OK, tools.getStatusCode());
 
