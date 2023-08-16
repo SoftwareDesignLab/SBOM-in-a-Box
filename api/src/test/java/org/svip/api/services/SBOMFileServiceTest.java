@@ -16,10 +16,11 @@ import org.svip.serializers.SerializerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.*;
 
@@ -154,6 +155,7 @@ public class SBOMFileServiceTest {
         }
     }
 
+
     @Test
     @DisplayName("Convert SPDX23 JSON to CDX14 JSON with overwrite")
     void convert_SPDX23_JSON_to_CDX14_JSON_overwrite() {
@@ -174,7 +176,137 @@ public class SBOMFileServiceTest {
         }
     }
 
+    ///
+    /// Merge
+    ///
+    @Test
+    @DisplayName("Merge no sboms")
+    void merge_no_sboms() {
+        try {
+            // Given
+            Long[] ids = new Long[0];
 
+            // When
+            long id = this.sbomFileService.merge(ids);
+
+            // Then
+            assertEquals(-2L, id);  // todo throw execution
+
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Merge 2 sboms")
+    void merge_two_sboms(){
+        try {
+            // Given
+            SBOM spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
+            SBOM cdx14json = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+            Long[] ids = new Long[2];
+            ids[0] = 0L;
+            ids[1] = 1L;
+
+
+            // When
+            when(this.sbomRepository.findById(0L)).thenReturn(Optional.of(spdx23json));
+            when(this.sbomRepository.findById(1L)).thenReturn(Optional.of(cdx14json));
+            this.sbomFileService.merge(ids);
+
+            // Then
+            verify(this.sbomRepository).findById(0L);
+            verify(this.sbomRepository).findById(1L);
+
+        } catch (Exception e){
+            fail(e.getMessage());
+        }
+    }
+
+    ///
+    /// Get SBOM File
+    ///
+
+    @Test
+    @DisplayName("Get missing sbom file")
+    void get_missing_sbom_file(){
+        try {
+            // Given
+
+            // When
+            when(this.sbomRepository.findById(0L)).thenReturn(Optional.empty());
+            SBOM sbom = this.sbomFileService.getSBOMFile(0L);
+            // Then
+            assertNull(sbom);
+
+        } catch (Exception e){
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Get sbom file")
+    void get_sbom_file(){
+        try {
+            // Given
+            SBOM spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
+            // When
+            when(this.sbomRepository.findById(0L)).thenReturn(Optional.of(spdx23json));
+            SBOM sbom = this.sbomFileService.getSBOMFile(0L);
+            // Then
+            assertEquals(spdx23json.getId(), sbom.getId());
+            assertEquals(spdx23json.getName(), sbom.getName());
+            assertEquals(spdx23json.getContent(), sbom.getContent());
+            assertEquals(spdx23json.getSchema(), sbom.getSchema());
+            assertEquals(spdx23json.getFileType(), sbom.getFileType());
+
+        } catch (Exception e){
+            fail(e.getMessage());
+        }
+    }
+
+    ///
+    /// Get all ids
+    ///
+    @Test
+    @DisplayName("Get all ids")
+    void get_all_ids_from_database(){
+        try {
+            // Given
+            SBOM spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
+            List<SBOM> sboms = new ArrayList<>();
+            sboms.add(spdx23json);
+            // When
+            when(this.sbomRepository.findAll()).thenReturn(new ArrayList<>(sboms));
+            Long[] ids = this.sbomFileService.getAllIDs();
+            // Then
+            assertEquals(1, ids.length);
+            verify(this.sbomRepository.findAll());
+
+        } catch (Exception e){
+            fail(e.getMessage());
+        }
+    }
+
+    ///
+    /// Delete SBOM
+    ///
+
+    @Test
+    @DisplayName("Delete sbom file")
+    void delete_sbom_file(){
+        try {
+            // Given
+            SBOM spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
+            // When
+            this.sbomFileService.deleteSBOMFile(spdx23json);
+            // Then
+            verify(this.sbomRepository).delete(spdx23json);
+
+        } catch (Exception e){
+            fail(e.getMessage());
+        }
+    }
 
     ///
     /// Helper methods
