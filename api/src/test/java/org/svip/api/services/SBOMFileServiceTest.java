@@ -6,17 +6,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.svip.api.SVIPApplication;
 import org.svip.api.entities.SBOM;
 import org.svip.api.repository.SBOMRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.serializers.SerializerFactory;
-import org.svip.serializers.deserializer.Deserializer;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
@@ -115,6 +117,64 @@ public class SBOMFileServiceTest {
             // Then ok
         }
     }
+    @Test
+    @DisplayName("Attempt to convert SPDX23 JSON to CDX14 Tag Value")
+    void convert_SPDX23_JSON_to_CDX14_TAG_VALUE() {
+        try {
+            // Given
+            SBOM spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
+            // When
+            when(this.sbomRepository.findById(0L)).thenReturn(Optional.of(spdx23json));
+            this.sbomFileService.convert(0L, SerializerFactory.Schema.CDX14, SerializerFactory.Format.TAGVALUE, false);
+
+            fail("Cannot convert to CDX14 Tag Value"); // should fail
+
+        } catch (Exception e){
+            // Then ok
+        }
+    }
+
+    @Test
+    @DisplayName("Convert SPDX23 JSON to CDX14 JSON with no overwrite")
+    void convert_SPDX23_JSON_to_CDX14_JSON_no_overwrite() {
+        try {
+            // Given
+            SBOM spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
+
+            // When
+            when(this.sbomRepository.findById(0L)).thenReturn(Optional.of(spdx23json));
+            this.sbomFileService.convert(0L, SerializerFactory.Schema.CDX14, SerializerFactory.Format.JSON, false);
+
+            // Then
+            verify(this.sbomRepository, times(1)).findById(0L); // need multiple queries for overwriting
+
+        } catch (Exception e){
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Convert SPDX23 JSON to CDX14 JSON with overwrite")
+    void convert_SPDX23_JSON_to_CDX14_JSON_overwrite() {
+        try {
+            // Given
+            SBOM spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
+
+            // When
+            when(this.sbomRepository.findById(0L)).thenReturn(Optional.of(spdx23json));
+            long id = this.sbomFileService.convert(0L, SerializerFactory.Schema.CDX14, SerializerFactory.Format.JSON, true);
+
+            // Then
+            verify(this.sbomRepository, times(2)).findById(0L); // need multiple queries for overwriting
+            assertEquals(0L, id);
+
+        } catch (Exception e){
+            fail(e.getMessage());
+        }
+    }
+
+
+
     ///
     /// Helper methods
     ///
