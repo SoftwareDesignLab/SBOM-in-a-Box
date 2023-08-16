@@ -27,7 +27,7 @@ import java.util.*;
  * @author Derek Garcia
  **/
 @RestController
-@RequestMapping("/svip/generators")
+@RequestMapping("/svip/generators/osi")
 public class OSIController {
     /**
      * Spring-configured logger
@@ -75,7 +75,7 @@ public class OSIController {
      *
      * @return A list of string tool names.
      */
-    @GetMapping("/generators/osi/tools")
+    @GetMapping("/tools")
     public ResponseEntity<?> getOSITools() {
         if (!isOSIEnabled())
             return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
@@ -102,7 +102,7 @@ public class OSIController {
      *                  possible tools will be used.
      * @return The ID of the uploaded SBOM.
      */
-    @PostMapping("/generators/osi")
+    @PostMapping("/")
     public ResponseEntity<?> generateOSI(@RequestParam("zipFile") MultipartFile zipFile,
                                          @RequestParam("projectName") String projectName,
                                          @RequestParam("schema") SerializerFactory.Schema schema,
