@@ -122,7 +122,7 @@ public class OSIController {
         ArrayList<HashMap<SBOMFile, Integer>> unZipped;
         try {
             unZipped = (ArrayList<HashMap<SBOMFile, Integer>>)
-                    SBOMFileService.unZip(Objects.requireNonNull(SBOMFileService.convertMultipartToZip(zipFile)));
+                    sbomService.unZip(Objects.requireNonNull(sbomService.convertMultipartToZip(zipFile)));
         } catch (IOException e) {
             LOGGER.error("POST /svip/generators/osi - " + e.getMessage());
             return new ResponseEntity<>("Make sure attachment is a zip file (.zip): " + e.getMessage(), HttpStatus.BAD_REQUEST);
