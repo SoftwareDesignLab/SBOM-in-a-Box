@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - `/generators/parsers` endpoint
     - POST mapping in `ParserController` utilizing `SBOMFileService`
+- `/generators/osi` endpoint
+    - POST mapping in `OSIController` utilizing `SBOMFileService`
+- `/generators/osi/tools` endpoint
+    - GET mapping in `OSIController`
 
 ## [v7.4.2-alpha] - (8/15/2023)
 
