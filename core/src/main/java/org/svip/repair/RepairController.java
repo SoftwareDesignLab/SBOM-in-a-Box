@@ -18,6 +18,9 @@ import java.util.Map;
  */
 public class RepairController {
 
+    public RepairController(){}
+
+
     public Map<String, Map<String, String>> generateStatement(SBOM sbom, String uid) {
         RepairStatement rs = getStatement(sbom);
         return rs.generateRepairStatement(uid, sbom);
