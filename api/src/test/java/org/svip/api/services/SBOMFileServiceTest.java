@@ -15,10 +15,10 @@ import org.svip.serializers.deserializer.Deserializer;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * File: SBOMFileServiceTest.java
@@ -100,6 +100,21 @@ public class SBOMFileServiceTest {
     /// Convert
     ///
 
+    @Test
+    @DisplayName("Convert bad id")
+    void convert_with_bad_id() {
+        try {
+            // Given empty repo
+            // When
+            when(this.sbomRepository.findById(0L)).thenReturn(Optional.empty());    // id not in repo
+            this.sbomFileService.convert(0L, SerializerFactory.Schema.CDX14, SerializerFactory.Format.JSON, false);
+
+            fail("Convert has no sbom target"); // should fail
+
+        } catch (Exception e){
+            // Then ok
+        }
+    }
     ///
     /// Helper methods
     ///
