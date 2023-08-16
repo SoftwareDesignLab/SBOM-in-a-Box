@@ -49,4 +49,14 @@ public class QualityReport {
         // add the test results and the component
         components.put(uid, testResults);
     }
+
+    /**
+     * returns the results of the quality report
+     *
+     * @return A nested map which holds the results for each component
+     */
+    public Map<String, Map<String, List< Result>>> getResults() {
+        return components;
+    }
+
 }
