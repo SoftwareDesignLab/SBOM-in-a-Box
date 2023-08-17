@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
  * @author Thomas Roman
  */
 @ExtendWith(MockitoExtension.class)
-@DisplayName("SBOM Service Test")
+@DisplayName("Diff Service Test")
 public class DiffServiceTest {
 
     @Mock
