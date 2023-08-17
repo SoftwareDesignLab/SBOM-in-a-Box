@@ -13,6 +13,7 @@ import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
 import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -80,11 +81,11 @@ public class SBOM {
 
     // Collection of comparisons where this was the target
     @OneToMany(mappedBy = "targetSBOM", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<ComparisonFile> comparisonsAsTarget;
+    private Set<ComparisonFile> comparisonsAsTarget = new HashSet<>();
 
     // Collection of comparisons where this was the other
     @OneToMany(mappedBy = "otherSBOM", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<ComparisonFile> comparisonsAsOther;
+    private Set<ComparisonFile> comparisonsAsOther = new HashSet<>();
 
     /**
      * Convert SBOMFile to SBOM Object
