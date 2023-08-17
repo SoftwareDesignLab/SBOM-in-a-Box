@@ -7,20 +7,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.svip.api.entities.SBOM;
-import org.svip.api.entities.diff.ComparisonFile;
 import org.svip.api.repository.ComparisonFileRepository;
 import org.svip.api.repository.ConflictFileRepository;
 import org.svip.api.repository.SBOMRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
-import org.svip.api.requests.diff.UploadComparisonFileInput;
-import org.svip.compare.Comparison;
-import org.svip.serializers.SerializerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,8 +47,6 @@ public class DiffServiceTest {
     // Test SBOMs
     private static final String CDX_JSON_SBOM_FILE = "./src/test/resources/sample_sboms/cdx-gomod-1.4.0-bin.json";
     private static final String SPDX_JSON_SBOM_FILE = "./src/test/resources/sample_sboms/syft-0.80.0-source-spdx-json.json";
-    private static final String SPDX_TAG_VALUE_SBOM_FILE = "./src/test/resources/sample_sboms/sbom.alpine-compare.2-3.spdx";
-
 
     ///
     /// Compare
