@@ -7,15 +7,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.svip.api.entities.SBOM;
-import org.svip.api.repository.QualityReportFileRepository;
+import org.svip.api.repository.VEXFileRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.metrics.pipelines.QualityReport;
+import org.svip.vex.VEXResult;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * File: DiffServiceTest.java
@@ -25,13 +27,13 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Derek Garcia
  */
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Quality Report Service Test")
-public class QualityReportFileServiceTest {
+@DisplayName("SBOM Service Test")
+public class VexFileServiceTest {
     @Mock
-    private QualityReportFileRepository qualityReportFileRepository;      // Mock repo
+    private VEXFileRepository vexFileRepository;      // Mock repo
 
     @InjectMocks
-    private QualityReportFileService qualityReportFileService;
+    private VEXFileService vexFileService;
 
     // Test SBOMs
     private static final String CDX_JSON_SBOM_FILE = "./src/test/resources/sample_sboms/cdx-gomod-1.4.0-bin.json";
@@ -39,43 +41,54 @@ public class QualityReportFileServiceTest {
     private static final String SPDX_TAG_VALUE_SBOM_FILE = "./src/test/resources/sample_sboms/sbom.alpine-compare.2-3.spdx";
 
     // Generate
-
     @Test
-    @DisplayName("Generate cdx14 json quality report")
-    void generate_CDX14_JSON_quality_report() {
+    @DisplayName("Generate cyclonedx vex with osv")
+    void generate_CDX_VEX_with_OSV() {
         try {
             SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
-            QualityReport qualityReport = this.qualityReportFileService.generateQualityReport(sbom.toSBOMObject());
-            assertNotNull(qualityReport);
+            VEXResult vexResult = this.vexFileService.generateVEX(sbom.toSBOMObject(), "osv", "cyclonedx", null);
+            assertNotNull(vexResult);
         } catch (Exception e) {
             fail(e.getMessage());
         }
     }
 
     @Test
-    @DisplayName("Generate spdx23 json quality report")
-    void generate_SPDX23_JSON_quality_report() {
+    @DisplayName("Generate cyclonedx vex with nvd")
+    void generate_CDX_VEX_with_NVD() {
         try {
-            SBOM sbom = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
-            QualityReport qualityReport = this.qualityReportFileService.generateQualityReport(sbom.toSBOMObject());
-            assertNotNull(qualityReport);
+            SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+            VEXResult vexResult = this.vexFileService.generateVEX(sbom.toSBOMObject(), "nvd", "cyclonedx", null);
+            assertNotNull(vexResult);
         } catch (Exception e) {
             fail(e.getMessage());
         }
     }
 
     @Test
-    @DisplayName("Generate spdx23 tag value quality report")
-    void generate_SPDX23_tag_value_quality_report() {
+    @DisplayName("Generate csaf vex with osv")
+    void generate_CSAF_VEX_with_OSV() {
         try {
-            SBOM sbom = buildMockSBOMFile(SPDX_TAG_VALUE_SBOM_FILE);
-            QualityReport qualityReport = this.qualityReportFileService.generateQualityReport(sbom.toSBOMObject());
-            assertNotNull(qualityReport);
+            SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+            VEXResult vexResult = this.vexFileService.generateVEX(sbom.toSBOMObject(), "osv", "csaf", null);
+            assertNotNull(vexResult);
         } catch (Exception e) {
             fail(e.getMessage());
         }
     }
-    // todo upload quality report file
+
+    @Test
+    @DisplayName("Generate csaf vex with nvd")
+    void generate_CSAF_VEX_with_NVD() {
+        try {
+            SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+            VEXResult vexResult = this.vexFileService.generateVEX(sbom.toSBOMObject(), "nvd", "csaf", null);
+            assertNotNull(vexResult);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+    // todo upload vex file
 
     ///
     /// Helper methods
