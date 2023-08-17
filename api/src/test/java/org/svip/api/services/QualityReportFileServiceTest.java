@@ -6,28 +6,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.svip.api.entities.QualityReportFile;
 import org.svip.api.entities.SBOM;
-import org.svip.api.entities.diff.ComparisonFile;
-import org.svip.api.repository.ComparisonFileRepository;
-import org.svip.api.repository.ConflictFileRepository;
 import org.svip.api.repository.QualityReportFileRepository;
-import org.svip.api.repository.SBOMRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
-import org.svip.api.requests.diff.UploadComparisonFileInput;
-import org.svip.compare.Comparison;
 import org.svip.metrics.pipelines.QualityReport;
-import org.svip.serializers.SerializerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 /**
  * File: DiffServiceTest.java
@@ -37,7 +25,7 @@ import static org.mockito.Mockito.*;
  * @author Derek Garcia
  */
 @ExtendWith(MockitoExtension.class)
-@DisplayName("SBOM Service Test")
+@DisplayName("Quality Report Service Test")
 public class QualityReportFileServiceTest {
     @Mock
     private QualityReportFileRepository qualityReportFileRepository;      // Mock repo
@@ -87,6 +75,7 @@ public class QualityReportFileServiceTest {
             fail(e.getMessage());
         }
     }
+    // todo upload quality report file
 
     ///
     /// Helper methods
