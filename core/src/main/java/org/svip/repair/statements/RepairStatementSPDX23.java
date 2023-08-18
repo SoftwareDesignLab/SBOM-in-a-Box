@@ -35,14 +35,14 @@ public class RepairStatementSPDX23 implements RepairStatement {
 
                 ArrayList<Fix<?>> fixArrayList = new ArrayList<>();
 
-                for (Result result : results.get(repairType).get(repairSubType)
+                for (Result toFix : results.get(repairType).get(repairSubType)
                 ) {
 
-                    if (result.getStatus().equals(STATUS.FAIL)) {
+                    if (toFix.getStatus().equals(STATUS.FAIL)) {
 
                         // fix
-                        Fixes fixes = getFixes(result);
-                        fixArrayList.addAll(fixes.fix(result));
+                        Fixes fixes = getFixes(toFix);
+                        fixArrayList.addAll(fixes.fix(toFix));
 
                     }
 
