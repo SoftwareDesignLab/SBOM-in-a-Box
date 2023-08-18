@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.svip.api.services.SBOMFileService;
 import org.svip.serializers.SerializerFactory;
 
@@ -39,14 +38,9 @@ public class OSIControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private OSIController osiController;
-
     @BeforeEach
     void setup() {
         assumeTrue(OSIController.isOSIEnabled()); // Only run tests if container API is accessible
-
-        this.mockMvc = MockMvcBuilders.standaloneSetup(osiController).build();
     }
 
     @Test

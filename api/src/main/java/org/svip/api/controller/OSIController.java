@@ -97,7 +97,7 @@ public class OSIController {
             return new ResponseEntity<>("Error getting tool list from Docker container.", HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(tools, HttpStatus.OK);
+        return new ResponseEntity<>(tools.toArray(new String[0]), HttpStatus.OK);
     }
 
     ///
