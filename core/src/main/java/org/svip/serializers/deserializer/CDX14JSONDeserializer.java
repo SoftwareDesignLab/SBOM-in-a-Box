@@ -294,13 +294,15 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
     }
 
     private Contact resolveContact(JsonNode ct) {
-        try {
-            return new Contact(ct.get("name").asText(),
-                    ct.get("email").asText(),
-                    ct.get("phone").asText());
-        } catch (Exception e) {
-            return new Contact("", "", "");
-        }
+        String contactName = "";
+        String contactEmail = "";
+        String contactPhone = "";
+
+        if (ct.get("name") != null) contactName = ct.get("name").asText();
+        if (ct.get("email") != null) contactEmail = ct.get("email").asText();
+        if (ct.get("phone") != null) contactPhone = ct.get("phone").asText();
+
+        return new Contact(contactName, contactEmail, contactPhone);
     }
 
     private Organization resolveOrganization(JsonNode org) {
