@@ -4,7 +4,8 @@ package org.svip.repair.fix;
  * Record to hold fixes for Repairs
  *
  * @param <T> Type of object to fix
- * @param old fields
+ * @param old original state
+ * @param fixed change to make
  *
  * @author Juan Francisco Patino
  */
