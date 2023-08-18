@@ -3,6 +3,8 @@ package org.svip.api.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -39,33 +41,98 @@ public class OSIControllerTest {
     private MockMvc mockMvc;
 
     @BeforeEach
-    void setup() {
+    void setup() throws Exception {
         assumeTrue(OSIController.isOSIEnabled()); // Only run tests if container API is accessible
     }
 
     @Test
-    @DisplayName("/tools")
-    void should_return_tool_list() throws Exception {
+    @DisplayName("Get tool list")
+    void getToolListTest() throws Exception {
         mockMvc.perform(get("/svip/generators/osi/tools"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(11)));
     }
 
-    @Test
-    @DisplayName("Generate with /osi")
-    void should_generate_sbom() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = { "Rust_noEmptyFiles" })
+    @DisplayName("Generate with default tools")
+    void generateWithDefaultToolsTest(String projectName) throws Exception {
         mockMvc.perform(multipart("/svip/generators/osi/")
-                        .file(buildMockMultipartFile("Rust_noEmptyFiles.zip"))
-                        .param("projectName", "Rust")
+                        .file(buildMockMultipartFile(projectName))
+                        .param("projectName", projectName)
                         .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
                         .param("format", String.valueOf(SerializerFactory.Format.JSON)))
                 .andExpect(status().isOk());
     }
 
-    private static MockMultipartFile buildMockMultipartFile(String filename) throws IOException {
+    @ParameterizedTest
+    @ValueSource(strings = { "Conda_noEmptyFiles" })
+    @DisplayName("Generate with invalid tool")
+    void generateWithInvalidToolTest(String projectName) throws Exception {
+        mockMvc.perform(multipart("/svip/generators/osi/")
+                        .file(buildMockMultipartFile(projectName))
+                        .param("projectName", projectName)
+                        .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
+                        .param("format", String.valueOf(SerializerFactory.Format.JSON))
+                        .param("toolNames", "JBOM"))
+                .andExpect(status().isNoContent());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "Java" })
+    @DisplayName("Generate with valid tool")
+    void generateWithValidToolTest(String projectName) throws Exception {
+        mockMvc.perform(multipart("/svip/generators/osi/")
+                        .file(buildMockMultipartFile(projectName))
+                        .param("projectName", projectName)
+                        .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
+                        .param("format", String.valueOf(SerializerFactory.Format.JSON))
+                        .param("toolNames", "Syft SPDX"))
+                .andExpect(status().isOk());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "sampleProjectEmpty", "sampleProjectNullProperties" })
+    @DisplayName("Empty Projects")
+    void generateWithInvalidProjectTest(String projectName) throws Exception {
+        mockMvc.perform(multipart("/svip/generators/osi/")
+                        .file(buildMockMultipartFile(projectName))
+                        .param("projectName", projectName)
+                        .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
+                        .param("format", String.valueOf(SerializerFactory.Format.JSON)))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("Incorrect File Type")
+    void generateWithIncorrectFileTypeTest() throws Exception {
+        mockMvc.perform(multipart("/svip/generators/osi/")
+                        .file(new MockMultipartFile("zipFile",
+                                Files.readAllBytes(Path.of(
+                                System.getProperty("user.dir") + "/src/test/resources/sample_projects/Ruby/lib/bar.rb"
+                                ))))
+                        .param("projectName", "Ruby")
+                        .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
+                        .param("format", String.valueOf(SerializerFactory.Format.JSON)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "Go" })
+    @DisplayName("Convert to CDX tag value")
+    void generateWithCDXTagValueTest(String projectName) throws Exception {
+        mockMvc.perform(multipart("/svip/generators/osi/")
+                        .file(buildMockMultipartFile(projectName))
+                        .param("projectName", projectName)
+                        .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
+                        .param("format", String.valueOf(SerializerFactory.Format.TAGVALUE)))
+                .andExpect(status().isBadRequest());
+    }
+
+    private static MockMultipartFile buildMockMultipartFile(String projectName) throws IOException {
         String sampleProjectDirectory = System.getProperty("user.dir") + "/src/test/resources/sample_projects/";
 
-        return new MockMultipartFile("zipFile", filename, "multipart/form-data",
-                Files.readAllBytes(Path.of(sampleProjectDirectory + filename)));
+        return new MockMultipartFile("zipFile", projectName, "multipart/form-data",
+                Files.readAllBytes(Path.of(sampleProjectDirectory + projectName + ".zip")));
     }
 }
