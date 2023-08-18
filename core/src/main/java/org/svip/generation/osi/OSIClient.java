@@ -116,16 +116,17 @@ public class OSIClient {
 
             conn.connect();
 
-            String toolArray = toolNames.stream()
-                    .map(s -> "\"" + s + "\"") // Surround each string with quotes
-                    .collect(Collectors.joining(", "));
-            JSONObject body = new JSONObject();
-            body.put("tools", "[" + toolArray + "]");
-
             try (OutputStream os = conn.getOutputStream()) {
                 try (OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8)) {
                     // Ensure there is at least one valid tool, if not don't put anything in the request body
                     if (toolNames != null && toolNames.size() > 0) {
+                        // Build JSON array
+                        String toolArray = toolNames.stream()
+                                .map(s -> "\"" + s + "\"") // Surround each string with quotes
+                                .collect(Collectors.joining(", "));
+                        JSONObject body = new JSONObject();
+                        body.put("tools", "[" + toolArray + "]");
+
                         osw.write(body.toString());
                     }
                     osw.flush();

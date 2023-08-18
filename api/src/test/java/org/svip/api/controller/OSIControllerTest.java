@@ -64,9 +64,7 @@ public class OSIControllerTest {
                         .file(buildMockMultipartFile("Rust_noEmptyFiles.zip"))
                         .param("projectName", "Rust")
                         .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
-                        .param("format", String.valueOf(SerializerFactory.Format.JSON))
-                        .param("toolNames", "Syft CDX")
-                        )
+                        .param("format", String.valueOf(SerializerFactory.Format.JSON)))
                 .andExpect(status().isOk());
     }
 
