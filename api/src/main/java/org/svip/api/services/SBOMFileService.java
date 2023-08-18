@@ -300,7 +300,7 @@ public class SBOMFileService {
      * @param z the zipped file
      * @return List of file contents paired with an integer representing its depth in the project directory
      */
-    public List<HashMap<SBOMFile, Integer>> unZip(ZipFile z) {
+    public static ArrayList<HashMap<SBOMFile, Integer>> unZip(ZipFile z) {
 
         ArrayList<HashMap<SBOMFile, Integer>> vpArray = new ArrayList<>();
 
@@ -345,7 +345,7 @@ public class SBOMFileService {
      * @param file MultiPart file, a .zip file
      * @return Converted ZipFile object
      */
-    public ZipFile convertMultipartToZip(MultipartFile file) throws IOException {
+    public static ZipFile convertMultipartToZip(MultipartFile file) throws IOException {
 
         File zip = File.createTempFile(UUID.randomUUID().toString(), "temp");
         FileOutputStream o = new FileOutputStream(zip);

@@ -1,17 +1,25 @@
 package org.svip.api.controller;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.svip.api.services.SBOMFileService;
+import org.svip.serializers.SerializerFactory;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,9 +39,14 @@ public class OSIControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @BeforeAll
-    static void setup() {
+    @Autowired
+    private OSIController osiController;
+
+    @BeforeEach
+    void setup() {
         assumeTrue(OSIController.isOSIEnabled()); // Only run tests if container API is accessible
+
+        this.mockMvc = MockMvcBuilders.standaloneSetup(osiController).build();
     }
 
     @Test
@@ -42,5 +55,25 @@ public class OSIControllerTest {
         mockMvc.perform(get("/svip/generators/osi/tools"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(11)));
+    }
+
+    @Test
+    @DisplayName("Generate with /osi")
+    void should_generate_sbom() throws Exception {
+        mockMvc.perform(multipart("/svip/generators/osi/")
+                        .file(buildMockMultipartFile("Rust_noEmptyFiles.zip"))
+                        .param("projectName", "Rust")
+                        .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
+                        .param("format", String.valueOf(SerializerFactory.Format.JSON))
+//                        .param("toolNames", "[\"JBOM\"]")
+                        )
+                .andExpect(status().isOk());
+    }
+
+    private static MockMultipartFile buildMockMultipartFile(String filename) throws IOException {
+        String sampleProjectDirectory = System.getProperty("user.dir") + "/src/test/resources/sample_projects/";
+
+        return new MockMultipartFile("zipFile", filename, "multipart/form-data",
+                Files.readAllBytes(Path.of(sampleProjectDirectory + filename)));
     }
 }

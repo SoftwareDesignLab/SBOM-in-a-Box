@@ -1,9 +1,11 @@
 package org.svip.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -111,19 +113,24 @@ public class OSIController {
      *                  possible tools will be used.
      * @return The ID of the uploaded SBOM.
      */
-    @PostMapping("/")
-    public ResponseEntity<?> generateOSI(@RequestParam("zipFile") MultipartFile zipFile,
+    @PostMapping(value = "/", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<?> generateOSI(@RequestPart("zipFile") MultipartFile zipFile,
                                          @RequestParam("projectName") String projectName,
                                          @RequestParam("schema") SerializerFactory.Schema schema,
-                                         @RequestParam("format") SerializerFactory.Format format,
-                                         @RequestBody String[] toolNames) {
+                                         @RequestParam("format") SerializerFactory.Format format) {
         if (!isOSIEnabled())
             return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
 
         ArrayList<HashMap<SBOMFile, Integer>> unZipped;
+
+        if (zipFile == null || zipFile.isEmpty()) {
+            LOGGER.error("POST /svip/generators/osi - Required parameter zipFile does not exist or is empty.");
+            return new ResponseEntity<>("Required parameter zipFile does not exist or is empty.",
+                    HttpStatus.BAD_REQUEST);
+        }
+
         try {
-            unZipped = (ArrayList<HashMap<SBOMFile, Integer>>)
-                    sbomService.unZip(Objects.requireNonNull(sbomService.convertMultipartToZip(zipFile)));
+            unZipped = sbomService.unZip(sbomService.convertMultipartToZip(zipFile));
         } catch (IOException e) {
             LOGGER.error("POST /svip/generators/osi - " + e.getMessage());
             return new ResponseEntity<>("Make sure attachment is a zip file (.zip): " + e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -142,7 +149,7 @@ public class OSIController {
                     container.addSourceFile(fileName, srcFile.getContents());
                 } catch (IOException e) {
                     LOGGER.error("POST /svip/generators/osi - Error adding source file");
-                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                    return new ResponseEntity<>("Error adding source file", HttpStatus.NOT_FOUND);
                 }
         }
 
@@ -150,7 +157,13 @@ public class OSIController {
         Map<String, String> generatedSBOMFiles;
         try {
             List<String> tools = null;
-            if (toolNames != null && toolNames.length > 0) tools = List.of(toolNames);
+            String toolNames = null;
+
+            if (toolNames != null) {
+                ObjectMapper mapper = new ObjectMapper();
+                String[] toolNameArray = mapper.readValue(toolNames, String[].class);
+                if (toolNameArray != null && toolNameArray.length > 0) tools = List.of(toolNames);
+            }
 
             generatedSBOMFiles = container.generateSBOMs(tools);
         } catch (Exception e) {
@@ -174,6 +187,8 @@ public class OSIController {
                 // Problem with parsing
                 LOGGER.error("POST /svip/sboms - " + e.getMessage());
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } catch (IllegalArgumentException ignored) {
+                // TODO ignore any illegal files until XML deserialization exists
             } catch (Exception e) {
                 // Problem with uploading
                 LOGGER.error("POST /svip/sboms - " + e.getMessage());
