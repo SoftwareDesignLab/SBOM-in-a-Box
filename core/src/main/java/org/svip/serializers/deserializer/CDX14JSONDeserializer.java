@@ -157,13 +157,6 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
                 // TOOL HASHES
                 if (tool.get("hashes") != null) resolveHashes(tool.get("hashes")).forEach(creationTool::addHash);
 
-                // TOOL EXTERNAL REFERENCES
-                JsonNode externalRefs = tool.get("externalReferences");
-                if (tool.get("externalReferences") != null) {
-                    for (JsonNode ref : externalRefs)
-                        creationTool.addExternalReference(resolveExternalRef(ref));
-                }
-
                 // add the creation tool to the creation data
                 creationData.addCreationTool(creationTool);
             }
@@ -247,9 +240,7 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
         if (licenses != null) {
             LicenseCollection componentLicenses = new LicenseCollection();
             for (JsonNode license : licenses) {
-                if (license.get("license") == null) continue;
-
-                else if (license.get("license").get("id") != null) {
+                if (license.get("license").get("id") != null) {
                     componentLicenses.addLicenseInfoFromFile(license.get("license").get("id").asText());
                 }
                 else if (license.get("license").get("name") != null) {
@@ -294,15 +285,13 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
     }
 
     private Contact resolveContact(JsonNode ct) {
-        String contactName = "";
-        String contactEmail = "";
-        String contactPhone = "";
-
-        if (ct.get("name") != null) contactName = ct.get("name").asText();
-        if (ct.get("email") != null) contactEmail = ct.get("email").asText();
-        if (ct.get("phone") != null) contactPhone = ct.get("phone").asText();
-
-        return new Contact(contactName, contactEmail, contactPhone);
+        try {
+            return new Contact(ct.get("name").asText(),
+                    ct.get("email").asText(),
+                    ct.get("phone").asText());
+        } catch (Exception e) {
+            return new Contact("", "", "");
+        }
     }
 
     private Organization resolveOrganization(JsonNode org) {
