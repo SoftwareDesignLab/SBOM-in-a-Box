@@ -12,14 +12,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RepairStatementSPDX23 implements RepairStatement{
+public class RepairStatementSPDX23 implements RepairStatement {
+
+    private final Map<String, Map<String, List<Fix<?>>>> repairs = new HashMap<>();
+
     @Override
     public Map<String, Map<String, List<Fix<?>>>> generateRepairStatement(String uid, SBOM sbom) {
-        // First key would be either: Metadata or a Component UID
-        // Second key in the map would be the value to replace (Example: CPE, Version?)
-        // Second key points to the value to replace it with
-        // Ex: Map<"bom-ref:abc123", Map<"cpe", "cpe2.3:asdfghjkl">>
-        Map<String, Map<String, List<Fix<?>>>> repairs = new HashMap<>();
 
         SPDX23Pipeline pipeline = new SPDX23Pipeline();
 
@@ -27,23 +25,22 @@ public class RepairStatementSPDX23 implements RepairStatement{
 
         Map<String, Map<String, List<Result>>> results = report.getResults();
 
-        // TODO: You may want this - Map<String, List<Result>> metadataResults = results.get("metadata");
-
-        for (String repairType: results.keySet()
-             ) {
+        for (String repairType : results.keySet()
+        ) {
 
             Map<String, List<Fix<?>>> repairsForThisRepairType = new HashMap<>();
 
-            for (String repairSubType: results.get(repairType).keySet()
-                 ) {
+            for (String repairSubType : results.get(repairType).keySet()
+            ) {
 
                 ArrayList<Fix<?>> fixArrayList = new ArrayList<>();
 
-                for (Result result: results.get(repairType).get(repairSubType)
-                     ) {
+                for (Result result : results.get(repairType).get(repairSubType)
+                ) {
 
-                    if(result.getStatus().equals(STATUS.FAIL)) {
+                    if (result.getStatus().equals(STATUS.FAIL)) {
 
+                        // fix
                         Fixes fixes = getFixes(result);
                         fixArrayList.addAll(fixes.fix(result));
 
@@ -59,8 +56,6 @@ public class RepairStatementSPDX23 implements RepairStatement{
 
         }
 
-        int x = 0;
-
         // For each of the results
         // Check each component
         // Check the result
@@ -72,20 +67,20 @@ public class RepairStatementSPDX23 implements RepairStatement{
     private static Fixes getFixes(Result result) {
         Fixes fixes = null;
 
-        switch (result.getTest()){
-            case "CPETest" ->{
+        switch (result.getTest()) {
+            case "CPETest" -> {
                 fixes = new CPEFixes();
             }
-            case "EmptyOrNullTest" ->{
+            case "EmptyOrNullTest" -> {
                 fixes = new EmptyOrNullFixes();
             }
-            case "HashMap" ->{
+            case "HashMap" -> {
                 fixes = new HashFixes();
             }
-            case "License" ->{
+            case "License" -> {
                 fixes = new LicenseFixes();
             }
-            case "PURLTest" ->{
+            case "PURLTest" -> {
                 fixes = new PURLFixes();
             }
 
