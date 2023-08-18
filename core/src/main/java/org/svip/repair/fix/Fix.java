@@ -5,6 +5,7 @@ package org.svip.repair.fix;
  *
  * @param <T> Type of object to fix
  * @param old fields
+ *
  * @author Juan Francisco Patino
  */
 public record Fix<T>(T old, T fixed) {

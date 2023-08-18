@@ -6,7 +6,7 @@ import java.util.List;
 
 public class PURLFixes implements Fixes{
     @Override
-    public List<Fix<?>> fix(Result r) {
+    public List<Fix<?>> fix(Result result) {
         return null;
     }
 }
