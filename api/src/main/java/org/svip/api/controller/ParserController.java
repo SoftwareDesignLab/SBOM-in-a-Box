@@ -19,8 +19,10 @@ import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.serializer.Serializer;
 
-import java.util.*;
-import java.util.zip.ZipException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  * REST API Controller for generating SBOMs using Parsers
@@ -28,14 +30,13 @@ import java.util.zip.ZipException;
  * @author Derek Garcia
  **/
 @RestController
-@RequestMapping("/svip/generators")
+@RequestMapping("/svip/generators/parsers")
 public class ParserController {
     /**
      * Spring-configured logger
      */
     public static final Logger LOGGER = LoggerFactory.getLogger(SBOMController.class);
     private final SBOMFileService sbomService;
-
 
     /**
      * Create new Controller with services
@@ -46,8 +47,6 @@ public class ParserController {
         this.sbomService = sbomService;
     }
 
-
-
     /**
      * USAGE. Send GENERATE request to /generate an SBOM from source file(s)
      *
@@ -57,47 +56,24 @@ public class ParserController {
      * @param format      to convert to
      * @return generated SBOM
      */
-    @PostMapping("/parsers")
+    @PostMapping("/")
     public ResponseEntity<?> generateParsers(@RequestParam("zipFile") MultipartFile zipFile,
                                              @RequestParam("projectName") String projectName,
                                              @RequestParam("schema") SerializerFactory.Schema schema,
-                                             @RequestParam("format") SerializerFactory.Format format) throws Exception {
-
-        Long parseId = this.parseSBOM(zipFile, projectName, schema, format);
-        // todo convert should probably throw errors instead of returning null if error occurs
-        if (parseId == null)
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-
-        // Return final merged ID
-        return new ResponseEntity<>(parseId, HttpStatus.OK);
-    }
-
-    /**
-     * USAGE. Send GENERATE request to /generate an SBOM from source file(s)
-     *
-     * @param projectName of project to be converted to SBOM
-     * @param zipFile     path to zip file
-     * @param schema      to convert to
-     * @param format      to convert to
-     * @return generated SBOM
-     */
-    private Long parseSBOM (MultipartFile zipFile, String projectName, SerializerFactory.Schema schema, SerializerFactory.Format format) throws Exception {
-        String urlMsg = "GENERATE /svip/generate?projectName=" + projectName;
-
+                                             @RequestParam("format") SerializerFactory.Format format) {
         // Ensure schema has a valid serializer
         try {
             schema.getSerializer(format);
         } catch (IllegalArgumentException e) {
-            LOGGER.error(urlMsg + ": " + e.getMessage());
-            return null;
+            LOGGER.error("POST /svip/generators/parsers - " + e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         ArrayList<HashMap<SBOMFile, Integer>> unZipped;
         try {
-            unZipped = (ArrayList<HashMap<SBOMFile, Integer>>)
-                    sbomService.unZip(Objects.requireNonNull(sbomService.convertMultipartToZip(zipFile)));
-        } catch (ZipException e) {
-            LOGGER.error(urlMsg + ":" + e.getMessage());
-            return null;
+            unZipped = SBOMFileService.unZip(SBOMFileService.convertMultipartToZip(zipFile));
+        } catch (IOException e) {
+            LOGGER.error("POST /svip/generators/parsers - " + e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
         HashMap<VirtualPath, String> virtualPathStringHashMap = new HashMap<>();
@@ -118,8 +94,8 @@ public class ParserController {
             parsed = parserController.buildSBOM(schema);
         } catch (Exception e) {
             String error = "Error parsing into SBOM: " + Arrays.toString(e.getStackTrace());
-            LOGGER.error(urlMsg + " " + error);
-            return null;
+            LOGGER.error("POST /svip/generators/parsers - " + error);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
 
@@ -131,24 +107,27 @@ public class ParserController {
             contents = s.writeToString(parsed);
         } catch (IllegalArgumentException | JsonProcessingException e) {
             String error = "Error serializing parsed SBOM: " + Arrays.toString(e.getStackTrace());
-            LOGGER.error(urlMsg + " " + error);
+            LOGGER.error("POST /svip/generators/parsers - " + error);
             return null;
         }
 
-        // convert result sbomfile to sbom
-        UploadSBOMFileInput u = new UploadSBOMFileInput(projectName + ((format == SerializerFactory.Format.JSON)
-                ? ".json" : ".spdx"), contents);
-
         // Save according to overwrite boolean
-        SBOM converted = u.toSBOMFile();
-
+        SBOM converted;
         try {
+            // convert result sbomfile to sbom
+            UploadSBOMFileInput u = new UploadSBOMFileInput(projectName + ((format == SerializerFactory.Format.JSON)
+                    ? ".json" : ".spdx"), contents);
+            converted = u.toSBOMFile();
             sbomService.upload(converted);
+        } catch (JsonProcessingException e) {
+            LOGGER.error("POST /svip/generators/parsers - Error converting generated SBOM");
+            return new ResponseEntity<>("Error converting generated SBOM", HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception e) {
-            // todo custom exception instead of generic
-            throw new Exception("Failed to upload to Database: " + e.getMessage());
+            LOGGER.error("POST /svip/generators/parsers - Error uploading converted SBOM");
+            return new ResponseEntity<>("Error uploading converted SBOM", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return converted.getId();
+        // Return final merged ID
+        return new ResponseEntity<>(converted.getId(), HttpStatus.OK);
     }
 }
