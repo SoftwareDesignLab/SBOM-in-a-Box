@@ -3,11 +3,13 @@ package org.svip.repair;
 import org.svip.repair.repair.Repair;
 import org.svip.repair.repair.RepairCDX14;
 import org.svip.repair.repair.RepairSPDX23;
+import org.svip.repair.fix.Fix;
 import org.svip.repair.statements.RepairStatement;
 import org.svip.repair.statements.RepairStatementCDX14;
 import org.svip.repair.statements.RepairStatementSPDX23;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,7 +23,7 @@ public class RepairController {
     public RepairController(){}
 
 
-    public Map<String, Map<String, String>> generateStatement(SBOM sbom, String uid) {
+    public Map<String, Map<String, List<Fix<?>>>> generateStatement(SBOM sbom, String uid) {
         RepairStatement rs = getStatement(sbom);
         return rs.generateRepairStatement(uid, sbom);
     }

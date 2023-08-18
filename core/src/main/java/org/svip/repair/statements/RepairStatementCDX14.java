@@ -3,6 +3,7 @@ package org.svip.repair.statements;
 import org.svip.metrics.pipelines.QualityReport;
 import org.svip.metrics.pipelines.schemas.CycloneDX14.CDX14Pipeline;
 import org.svip.metrics.resultfactory.Result;
+import org.svip.repair.fix.Fix;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 
 import java.util.HashMap;
@@ -12,7 +13,7 @@ import java.util.Map;
 public class RepairStatementCDX14 implements RepairStatement {
 
     @Override
-    public Map<String, Map<String, String>> generateRepairStatement(String uid, SBOM sbom) {
+    public Map<String, Map<String, List<Fix<?>>>> generateRepairStatement(String uid, SBOM sbom) {
         // First key would be either: Metadata or a Component UID
         // Second key in the map would be the value to replace (Example: CPE, Version?)
         // Second key points to the value to replace it with

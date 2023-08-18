@@ -1,14 +1,14 @@
 package org.svip.repair;
 
 import org.junit.jupiter.api.Test;
-import org.svip.repair.statements.RepairStatement;
-import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.repair.fix.Fix;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 
 // something to run while developing the repair pipeline // todo delete comment
@@ -26,7 +26,7 @@ public class RepairTest {
 
         SPDX23JSONDeserializer spdx23JSONDeserializer = new SPDX23JSONDeserializer();
         SPDX23SBOM sbom = spdx23JSONDeserializer.readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
-        Map<String, Map<String, String>> statement = r.generateStatement(sbom, sbom.getUID());
+        Map<String, Map<String, List<Fix<?>>>> statement = r.generateStatement(sbom, sbom.getUID());
 
 
     }
