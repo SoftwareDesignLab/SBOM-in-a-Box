@@ -3,6 +3,12 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v8.0.4-alpha] - (8/18/2023)
+### Changed
+- `CDX14JSONDeserializer.java`
+    - Component licenses can now be created with an `id` or a `name`. Previously you could only use `name`
+    - Authors in the metadata now only need at least one of the following: name/email/phone, rather than all three
+    
 ## [v8.0.3-alpha] - (8/23/2023)
 ### Added
 - Implemented the missing creationTool externalReferences to the following files:
