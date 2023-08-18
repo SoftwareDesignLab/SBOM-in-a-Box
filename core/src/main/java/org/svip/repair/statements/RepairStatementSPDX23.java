@@ -58,11 +58,6 @@ public class RepairStatementSPDX23 implements RepairStatement {
 
         }
 
-        // For each of the results
-        // Check each component
-        // Check the result
-        // If result is failing, try to find a suggestion, add it to the fixes list
-
         return repairs;
     }
 
