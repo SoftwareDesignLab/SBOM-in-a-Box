@@ -1,5 +1,6 @@
 package org.svip.api.controller;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.svip.api.services.SBOMFileService;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,7 +31,13 @@ public class OSIControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @BeforeAll
+    static void setup() {
+        assumeTrue(OSIController.isOSIEnabled()); // Only run tests if container API is accessible
+    }
+
     @Test
+    @DisplayName("/tools")
     void should_return_tool_list() throws Exception {
         mockMvc.perform(get("/svip/generators/osi/tools"))
                 .andExpect(status().isOk())
