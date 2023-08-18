@@ -8,6 +8,7 @@ Container.
 """
 
 from flask import Flask, request
+import json
 
 import ToolUtils
 from OSTool import OSTool
@@ -48,8 +49,9 @@ def generate():
     app.logger.info("Detected manifest files: " + str(manifest_files))
 
     tools = []
-    if request.is_json and len(request.get_json()) > 0:
-        tools = parse_tools(request.get_json(), langs)
+
+    if request.is_json and request.get_json()["tools"] and len(request.get_json()["tools"]) > 0:
+        tools = parse_tools(json.loads(request.get_json()["tools"]), langs)
     else:
         app.logger.info("No tools provided. Defaulting to all tools.")
         tools = ToolUtils.get_tools(langs)
