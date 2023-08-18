@@ -124,16 +124,17 @@ public class OSIController {
         if (!isOSIEnabled())
             return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
 
-        ArrayList<HashMap<SBOMFile, Integer>> unZipped;
-
-        if (zipFile == null || zipFile.isEmpty()) {
-            LOGGER.error("POST /svip/generators/osi - Required parameter zipFile does not exist or is empty.");
-            return new ResponseEntity<>("Required parameter zipFile does not exist or is empty.",
-                    HttpStatus.BAD_REQUEST);
+        try {
+            schema.getSerializer(format);
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("POST /svip/generators/osi - " + e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
+        ArrayList<HashMap<SBOMFile, Integer>> unZipped;
+
         try {
-            unZipped = sbomService.unZip(sbomService.convertMultipartToZip(zipFile));
+            unZipped = SBOMFileService.unZip(SBOMFileService.convertMultipartToZip(zipFile));
         } catch (IOException e) {
             LOGGER.error("POST /svip/generators/osi - " + e.getMessage());
             return new ResponseEntity<>("Make sure attachment is a zip file (.zip): " + e.getMessage(), HttpStatus.BAD_REQUEST);
