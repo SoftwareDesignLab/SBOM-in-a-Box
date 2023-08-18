@@ -50,7 +50,7 @@ def generate():
 
     tools = []
 
-    if request.is_json and request.get_json()["tools"] and len(request.get_json()["tools"]) > 0:
+    if request.data and request.is_json and request.get_json()["tools"] and len(request.get_json()["tools"]) > 0:
         tools = parse_tools(json.loads(request.get_json()["tools"]), langs)
     else:
         app.logger.info("No tools provided. Defaulting to all tools.")
