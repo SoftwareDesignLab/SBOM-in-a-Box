@@ -65,7 +65,7 @@ public class OSIControllerTest {
                         .param("projectName", "Rust")
                         .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
                         .param("format", String.valueOf(SerializerFactory.Format.JSON))
-//                        .param("toolNames", "[\"JBOM\"]")
+                        .param("toolNames", "Syft CDX")
                         )
                 .andExpect(status().isOk());
     }

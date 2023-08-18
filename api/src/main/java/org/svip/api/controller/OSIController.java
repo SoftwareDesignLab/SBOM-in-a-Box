@@ -1,7 +1,6 @@
 package org.svip.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -22,7 +21,10 @@ import org.svip.serializers.exceptions.DeserializerException;
 import org.svip.serializers.exceptions.SerializerException;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * REST API Controller for generating SBOMs with OSI
@@ -117,7 +119,8 @@ public class OSIController {
     public ResponseEntity<?> generateOSI(@RequestPart("zipFile") MultipartFile zipFile,
                                          @RequestParam("projectName") String projectName,
                                          @RequestParam("schema") SerializerFactory.Schema schema,
-                                         @RequestParam("format") SerializerFactory.Format format) {
+                                         @RequestParam("format") SerializerFactory.Format format,
+                                         @RequestParam(value = "toolNames", required = false) String[] toolNames) {
         if (!isOSIEnabled())
             return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
 
@@ -157,13 +160,10 @@ public class OSIController {
         Map<String, String> generatedSBOMFiles;
         try {
             List<String> tools = null;
-            String toolNames = null;
-
-            if (toolNames != null) {
-                ObjectMapper mapper = new ObjectMapper();
-                String[] toolNameArray = mapper.readValue(toolNames, String[].class);
-                if (toolNameArray != null && toolNameArray.length > 0) tools = List.of(toolNames);
-            }
+            if (toolNames != null && toolNames.length > 0) {
+                tools = List.of(toolNames);
+                LOGGER.info("POST /svip/generators/osi - Running with tool names: " + tools);
+            } else LOGGER.info("POST /svip/generators/osi - Running with default tools");
 
             generatedSBOMFiles = container.generateSBOMs(tools);
         } catch (Exception e) {
