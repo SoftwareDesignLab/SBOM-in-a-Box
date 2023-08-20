@@ -5,6 +5,7 @@ import org.svip.metrics.tests.enumerations.ATTRIBUTE;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +19,8 @@ public class EmptyOrNullFixes implements Fixes{
             return bomVersionFix(result);
         else if(result.getDetails().contains("Creation Data"))
             return creationDataFix();
+        else if(result.getDetails().contains("SPDXID"))
+            return SPDXIDFix(result);
 
         return null;
 
@@ -51,10 +54,20 @@ public class EmptyOrNullFixes implements Fixes{
         DateTimeFormatter formatterLocalDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         dateAndTime = formatterLocalDate.format(localDate);
         LocalTime localTime = LocalTime.now();
-        DateTimeFormatter formatterLocalTime = DateTimeFormatter.ofPattern("HH:mm:ss.SSSZ");
-        dateAndTime+= "T" + formatterLocalTime.format(localTime);
+        DateTimeFormatter formatterLocalTime = DateTimeFormatter.ofPattern("HH:mm:ss");
+        dateAndTime+= "T" + formatterLocalTime.format(localTime) + localTime.atOffset(ZoneOffset.UTC);
 
         return Collections.singletonList(new Fix<>("", "\"created\" : .\"" + dateAndTime + "\"" ));
 
     }
+
+    /**
+     * Fixes SPDXID
+     * @param result failed test result
+     * @return fix for SPDXID
+     */
+    private List<Fix<?>> SPDXIDFix(Result result) {
+        return Collections.singletonList(new Fix<>(result.getMessage(), "SPDXRef-DOCUMENT"));
+    }
+
 }

@@ -65,21 +65,21 @@ public class RepairStatementSPDX23 implements RepairStatement {
         Fixes fixes = null;
 
         switch (result.getTest()) {
-            case "CPETest" -> {
+            case "CPETest" ->
                 fixes = new CPEFixes();
-            }
-            case "EmptyOrNullTest" -> {
+
+            case "EmptyOrNullTest", "Has Creation Info", "HasSPDXID" ->
                 fixes = new EmptyOrNullFixes();
-            }
-            case "HashMap" -> {
+
+            case "HashMap" ->
                 fixes = new HashFixes();
-            }
-            case "License" -> {
+
+            case "License" ->
                 fixes = new LicenseFixes();
-            }
-            case "PURLTest" -> {
+
+            case "PURLTest", "Matching PURL" ->
                 fixes = new PURLFixes();
-            }
+
 
         }
         return fixes;
