@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RepairStatementCDX14 implements RepairStatement {
+public class RepairStatementCDX14 implements RepairStatement { // todo depreciate class
 
     @Override
     public Map<String, Map<String, List<Fix<?>>>> generateRepairStatement(String uid, SBOM sbom) {

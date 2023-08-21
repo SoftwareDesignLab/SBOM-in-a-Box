@@ -29,6 +29,8 @@ public class EmptyOrNullFixes implements Fixes{
             return commentNullFix();
         else if(result.getDetails().contains("Attribution Text"))
             return attributionTextNullFix();
+//        else if(result.getDetails().contains("File Notice"))
+//            return fileNoticeNullFix();
 
         return null;
 
@@ -93,5 +95,9 @@ public class EmptyOrNullFixes implements Fixes{
     private List<Fix<?>> attributionTextNullFix() {
         return Collections.singletonList(new Fix<>("null", "")); // todo make sure this is okay
     }
+
+//    private List<Fix<?>> fileNoticeNullFix(){
+//
+//    }
 
 }

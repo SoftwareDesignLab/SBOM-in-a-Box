@@ -39,14 +39,16 @@ public class PURLFixes implements Fixes{
                     String version = null;
 
                     if(component instanceof SPDX23Package spdx23Package){
-                        type = spdx23Package.getType();
+                        if(spdx23Package.getType() != null)
+                            type = spdx23Package.getType();
                         if(spdx23Package.getSupplier() != null)
                             nameSpace = spdx23Package.getSupplier().getName();
                         if(spdx23Package.getVersion() != null)
                             version = spdx23Package.getVersion();
                     }
                     else if(component instanceof CDX14Package cdx14Package) {
-                        type = cdx14Package.getType();
+                        if(cdx14Package.getType() != null)
+                            type = cdx14Package.getType();
                         if(cdx14Package.getSupplier() != null)
                             nameSpace = cdx14Package.getSupplier().getName();
                         if(cdx14Package.getVersion() != null)
@@ -55,9 +57,11 @@ public class PURLFixes implements Fixes{
 
                     if(nameSpace == null)
                         nameSpace = component.getAuthor();
+                    if(nameSpace == null)
+                        nameSpace = "";
 
-                    newPurl = new PURL(type + ":" + nameSpace + "/" + name + ((version != null) ?
-                            ("@" + version) : "")); // todo qualifiers?
+                    newPurl = new PURL(type + ":" + ((!nameSpace.isEmpty()) ? (nameSpace + "/") : ("")) + name +
+                            ((version != null) ? ("@" + version) : "")); // todo qualifiers?
 
                     break;
 
