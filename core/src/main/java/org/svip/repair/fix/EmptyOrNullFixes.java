@@ -22,6 +22,8 @@ public class EmptyOrNullFixes implements Fixes{
             return creationDataFix();
         else if(result.getDetails().contains("SPDXID"))
             return SPDXIDFix(result);
+        else if(result.getDetails().contains("Comment"))
+            return commentNullFix();
 
         return null;
 
@@ -69,6 +71,15 @@ public class EmptyOrNullFixes implements Fixes{
      */
     private List<Fix<?>> SPDXIDFix(Result result) {
         return Collections.singletonList(new Fix<>(result.getMessage(), "SPDXRef-DOCUMENT"));
+    }
+
+    /**
+     * Fixes comment
+     * @param result failed test result
+     * @return empty string in place for null comment
+     */
+    private List<Fix<?>> commentNullFix() {
+        return Collections.singletonList(new Fix<>("null", ""));
     }
 
 }
