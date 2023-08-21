@@ -2,6 +2,7 @@ package org.svip.repair.fix;
 
 import org.svip.metrics.resultfactory.Result;
 import org.svip.metrics.tests.enumerations.ATTRIBUTE;
+import org.svip.sbom.model.interfaces.generics.SBOM;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public class EmptyOrNullFixes implements Fixes{
     @Override
-    public List<Fix<?>> fix(Result result) {
+    public List<Fix<?>> fix(Result result, SBOM sbom) {
 
         if(result.getDetails().contains("Bom Version was a null value"))
             return bomVersionFix(result);
