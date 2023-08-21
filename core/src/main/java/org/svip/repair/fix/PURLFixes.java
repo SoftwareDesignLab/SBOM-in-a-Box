@@ -4,10 +4,7 @@ import org.svip.metrics.resultfactory.Result;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.uids.PURL;
 
 import java.util.Collections;

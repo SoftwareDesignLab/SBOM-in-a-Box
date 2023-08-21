@@ -21,7 +21,7 @@ public class RepairStatementSPDX23 implements RepairStatement {
 
         SPDX23Pipeline pipeline = new SPDX23Pipeline();
 
-        QualityReport report = pipeline.process(uid, sbom);
+        QualityReport report = pipeline.process(uid, sbom); // get quality report
 
         Map<String, Map<String, List<Result>>> results = report.getResults();
 
@@ -38,7 +38,7 @@ public class RepairStatementSPDX23 implements RepairStatement {
                 for (Result toFix : results.get(repairType).get(repairSubType)
                 ) {
 
-                    if (toFix.getStatus().equals(STATUS.FAIL)) {
+                    if (toFix.getStatus().equals(STATUS.FAIL)) { // if a result fails, it needs to be fixed
 
                         // fix
                         Fixes fixes = getFixes(toFix);
@@ -65,7 +65,7 @@ public class RepairStatementSPDX23 implements RepairStatement {
         Fixes fixes = null;
 
         switch (result.getTest()) {
-            case "CPETest" ->
+            case "CPE" ->
                 fixes = new CPEFixes();
 
             case "EmptyOrNullTest", "Has Creation Info", "HasSPDXID" ->

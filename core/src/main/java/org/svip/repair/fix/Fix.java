@@ -12,6 +12,6 @@ package org.svip.repair.fix;
 public record Fix<T>(T old, T fixed) {
     @Override
     public String toString() {
-        return old + "->" + fixed;
+        return old + " -> " + fixed;
     }
 }
