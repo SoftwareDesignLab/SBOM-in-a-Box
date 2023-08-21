@@ -17,7 +17,7 @@ import java.util.List;
 
 public class EmptyOrNullFixes implements Fixes{
     @Override
-    public List<Fix<?>> fix(Result result, SBOM sbom) {
+    public List<Fix<?>> fix(Result result, SBOM sbom, String repairSubType) {
 
         if(result.getDetails().contains("Bom Version was a null value"))
             return bomVersionFix(sbom);
@@ -29,8 +29,10 @@ public class EmptyOrNullFixes implements Fixes{
             return commentNullFix();
         else if(result.getDetails().contains("Attribution Text"))
             return attributionTextNullFix();
-//        else if(result.getDetails().contains("File Notice"))
-//            return fileNoticeNullFix();
+        else if(result.getDetails().contains("File Notice"))
+            return fileNoticeNullFix();
+        else if(result.getDetails().contains("Author"))
+            return nullAuthorFix(sbom);
 
         return null;
 
@@ -96,8 +98,12 @@ public class EmptyOrNullFixes implements Fixes{
         return Collections.singletonList(new Fix<>("null", "")); // todo make sure this is okay
     }
 
-//    private List<Fix<?>> fileNoticeNullFix(){
-//
-//    }
+    private List<Fix<?>> fileNoticeNullFix(){
+        return Collections.singletonList(new Fix<>("null", "")); // todo make sure this is okay
+    }
+
+    private List<Fix<?>> nullAuthorFix(SBOM sbom){
+        return null; //todo
+    }
 
 }

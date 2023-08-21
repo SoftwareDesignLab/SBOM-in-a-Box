@@ -7,7 +7,7 @@ import java.util.List;
 
 public class LicenseFixes implements Fixes{
     @Override
-    public List<Fix<?>> fix(Result result, SBOM sbom) {
+    public List<Fix<?>> fix(Result result, SBOM sbom, String repairSubType) {
         return null;
     }
 }

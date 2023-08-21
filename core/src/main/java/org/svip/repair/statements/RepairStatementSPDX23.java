@@ -42,7 +42,7 @@ public class RepairStatementSPDX23 implements RepairStatement {
 
                         // fix
                         Fixes fixes = getFixes(toFix);
-                        List<Fix<?>> fixList = fixes.fix(toFix, sbom);
+                        List<Fix<?>> fixList = fixes.fix(toFix, sbom, repairSubType);
                         if (fixList != null)
                             fixArrayList.addAll(fixList);
 

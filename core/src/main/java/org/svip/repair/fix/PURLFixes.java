@@ -12,16 +12,16 @@ import java.util.List;
 
 public class PURLFixes implements Fixes{
     @Override
-    public List<Fix<?>> fix(Result result, SBOM sbom) {
+    public List<Fix<?>> fix(Result result, SBOM sbom, String repairSubType) {
 
         if(result.getMessage().contains("does not match"))
-            return purlMatchFix(result, sbom);
+            return purlMatchFix(result, sbom, repairSubType);
 
 
         return null;
     }
 
-    public List<Fix<?>> purlMatchFix(Result result, SBOM sbom){
+    public List<Fix<?>> purlMatchFix(Result result, SBOM sbom, String repairSubType){
 
         PURL newPurl = null;
 
@@ -33,8 +33,10 @@ public class PURLFixes implements Fixes{
             if(split[split.length - 1].contains(component.getName()))
                 try{
 
-                    String type = "pkg"; // todo is this true for all components
-                    String name = component.getName();
+                    String type = "pkg"; // todo is this true for all components?
+                    String name = repairSubType;
+                    if (component.getName() != null)
+                        name = component.getName();
                     String nameSpace = null;
                     String version = null;
 
@@ -58,9 +60,9 @@ public class PURLFixes implements Fixes{
                     if(nameSpace == null)
                         nameSpace = component.getAuthor();
                     if(nameSpace == null)
-                        nameSpace = "";
+                        nameSpace = repairSubType;
 
-                    newPurl = new PURL(type + ":" + ((!nameSpace.isEmpty()) ? (nameSpace + "/") : ("")) + name +
+                    newPurl = new PURL(type + ":" + nameSpace + "/" + name +
                             ((version != null) ? ("@" + version) : "")); // todo qualifiers?
 
                     break;
