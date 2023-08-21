@@ -1,12 +1,21 @@
 package org.svip.repair.fix;
 
+import org.svip.generation.parsers.utils.QueryWorker;
 import org.svip.metrics.resultfactory.Result;
-import org.svip.metrics.tests.enumerations.ATTRIBUTE;
+import org.svip.sbom.builder.objects.SVIPComponentBuilder;
+import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Package;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
+import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.sbom.model.shared.metadata.Contact;
+import org.svip.sbom.model.uids.PURL;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
@@ -14,8 +23,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class EmptyOrNullFixes implements Fixes{
+
+    protected final ArrayList<QueryWorker> queryWorkers;
+
+    public EmptyOrNullFixes(ArrayList<QueryWorker> queryWorkers) {
+        this.queryWorkers = queryWorkers;
+    }
+
     @Override
     public List<Fix<?>> fix(Result result, SBOM sbom, String repairSubType) {
 
@@ -32,7 +49,7 @@ public class EmptyOrNullFixes implements Fixes{
         else if(result.getDetails().contains("File Notice"))
             return fileNoticeNullFix();
         else if(result.getDetails().contains("Author"))
-            return nullAuthorFix(sbom);
+            return nullAuthorFix(sbom, repairSubType);
 
         return null;
 
@@ -98,12 +115,139 @@ public class EmptyOrNullFixes implements Fixes{
         return Collections.singletonList(new Fix<>("null", "")); // todo make sure this is okay
     }
 
+    /**
+     * @return empty string in place for null file notice
+     */
     private List<Fix<?>> fileNoticeNullFix(){
         return Collections.singletonList(new Fix<>("null", "")); // todo make sure this is okay
     }
 
-    private List<Fix<?>> nullAuthorFix(SBOM sbom){
-        return null; //todo
+    /**
+     * @param sbom sbom
+     * @param repairSubType the key most closely relating to the component
+     * @return a list of potential authors
+     */
+    private List<Fix<?>> nullAuthorFix(SBOM sbom, String repairSubType){
+
+        Component thisComponent = null;
+
+        for (Component component: sbom.getComponents()
+             ) {
+
+            if(component instanceof SPDX23Package spdx23Package){
+                if(spdx23Package.getName().toLowerCase().contains(repairSubType.toLowerCase())
+                || repairSubType.toLowerCase().contains(spdx23Package.getName().toLowerCase())){
+                    thisComponent = component;
+                    break;
+                }
+            }
+            // if this is a file object, the author is the same as the SBOM's author
+            else if(component instanceof SPDX23FileObject spdx23FileObject){
+                if(spdx23FileObject.getName().toLowerCase().contains(repairSubType.toLowerCase())
+                        || repairSubType.toLowerCase().contains(spdx23FileObject.getName().toLowerCase())){
+                    if(sbom.getCreationData().getAuthors() != null){
+                        Set<Contact> potentialAuthors = sbom.getCreationData().getAuthors();
+                        List<Fix<?>> fixes = new ArrayList<>();
+                        for (Contact author: potentialAuthors
+                        ) {
+                            fixes.add(new Fix<>("null", author));
+                        }
+                        return fixes;
+                    }
+
+                    return null;
+
+                }
+            }
+            else if(component instanceof CDX14Package cdx14Package){
+                if(cdx14Package.getName().toLowerCase().contains(repairSubType.toLowerCase())
+                    || repairSubType.toLowerCase().contains(cdx14Package.getName().toLowerCase())) {
+                    thisComponent = component;
+                    break;
+                }
+            }
+
+        }
+
+        Object[] purls = null;
+
+        if(thisComponent != null){
+            if(thisComponent instanceof SPDX23PackageObject spdx23PackageObject) {
+
+                purls = spdx23PackageObject.getPURLs().toArray();
+
+            }
+            else if(thisComponent instanceof CDX14Package cdx14Package){
+
+                purls = cdx14Package.getPURLs().toArray();
+
+            }
+
+        }
+
+        List<PURL> purlList = new ArrayList<>();
+        if(purls != null)
+            for (Object purl: purls
+                 ) purlList.add((PURL) purl);
+
+        if(purlList.isEmpty())
+            return googlePotentialAuthors(repairSubType, "");
+
+        List<Fix<?>> fixList = new ArrayList<>();
+
+        for (PURL purl: purlList
+             ) {
+
+            fixList.addAll(googlePotentialAuthors(repairSubType, purl.getName()));
+
+        }
+
+        if(!fixList.isEmpty())
+            return fixList;
+
+        return null; // we tried our best
+
+    }
+
+    /**
+     * Queries a google search, looks for potential authors in the first page of results
+     * @param repairSubType the name of the component, usually
+     * @param purlName the name of the purl (optional)
+     * @return a list of potential authors
+     */
+    private List<Fix<?>> googlePotentialAuthors(String repairSubType, String purlName){
+
+        List<Fix<?>> fixList = new ArrayList<>();
+
+        this.queryWorkers.add(new QueryWorker(new SVIPComponentBuilder(), "https://google.com/search?q="
+                + repairSubType + " author" + ((purlName.isEmpty()) ? "" : " " + purlName)) { // simply google for a potential author
+            @Override
+            public void run() {
+                // Get page contents
+                final String contents = getUrlContents(queryURL(this.url, false));
+
+                if (!contents.isEmpty()) {
+
+                    String[] split = contents.split(" ");
+
+                    for (String s: split
+                         ) {
+
+                        if(s.contains("mailto:")){
+                            String[] split1 = s.split("mailto:");
+                            String[] split2 = split1[1].split("\"");
+                            fixList.add(new Fix<>("null", split2[0]));
+                        }
+
+                    }
+
+                }
+
+            }
+        });
+
+        return fixList;
+
     }
 
 }

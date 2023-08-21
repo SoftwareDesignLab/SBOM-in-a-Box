@@ -69,7 +69,7 @@ public class RepairStatementSPDX23 implements RepairStatement {
                 fixes = new CPEFixes();
 
             case "EmptyOrNullTest", "Has Creation Info", "HasSPDXID" ->
-                fixes = new EmptyOrNullFixes();
+                fixes = new EmptyOrNullFixes(null);
 
             case "HashMap" ->
                 fixes = new HashFixes();
