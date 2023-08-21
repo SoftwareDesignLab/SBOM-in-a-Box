@@ -24,6 +24,8 @@ public class EmptyOrNullFixes implements Fixes{
             return SPDXIDFix(result);
         else if(result.getDetails().contains("Comment"))
             return commentNullFix();
+        else if(result.getDetails().contains("Attribution Text"))
+            return attributionTextNullFix();
 
         return null;
 
@@ -74,12 +76,17 @@ public class EmptyOrNullFixes implements Fixes{
     }
 
     /**
-     * Fixes comment
-     * @param result failed test result
      * @return empty string in place for null comment
      */
     private List<Fix<?>> commentNullFix() {
         return Collections.singletonList(new Fix<>("null", ""));
+    }
+
+    /**
+     * @return empty string in place for null attribution text
+     */
+    private List<Fix<?>> attributionTextNullFix() {
+        return Collections.singletonList(new Fix<>("null", "")); // todo make sure this is okay
     }
 
 }
