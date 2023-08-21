@@ -38,24 +38,31 @@ public class PURLFixes implements Fixes{
 
                     String type = "pkg"; // todo is this true for all components
                     String name = component.getName();
-                    String nameSpace;
+                    String nameSpace = null;
                     String version = null;
 
                     if(component instanceof SPDX23Package spdx23Package){
                         type = spdx23Package.getType();
-                        nameSpace = spdx23Package.getSupplier().getName();
-                        version = spdx23Package.getVersion();
+                        if(spdx23Package.getSupplier() != null)
+                            nameSpace = spdx23Package.getSupplier().getName();
+                        if(spdx23Package.getVersion() != null)
+                            version = spdx23Package.getVersion();
                     }
                     else if(component instanceof CDX14Package cdx14Package) {
                         type = cdx14Package.getType();
-                        nameSpace = cdx14Package.getSupplier().getName();
-                        version = cdx14Package.getVersion();
+                        if(cdx14Package.getSupplier() != null)
+                            nameSpace = cdx14Package.getSupplier().getName();
+                        if(cdx14Package.getVersion() != null)
+                            version = cdx14Package.getVersion();
                     }
-                    else
+
+                    if(nameSpace == null)
                         nameSpace = component.getAuthor();
 
                     newPurl = new PURL(type + ":" + nameSpace + "/" + name + ((version != null) ?
                             ("@" + version) : "")); // todo qualifiers?
+
+                    break;
 
                 }catch (Exception ignored){return null;}
 
