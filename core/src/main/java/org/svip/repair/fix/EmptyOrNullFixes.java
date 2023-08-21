@@ -3,6 +3,9 @@ package org.svip.repair.fix;
 import org.svip.metrics.resultfactory.Result;
 import org.svip.metrics.tests.enumerations.ATTRIBUTE;
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbom.model.objects.SVIPSBOM;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -17,7 +20,7 @@ public class EmptyOrNullFixes implements Fixes{
     public List<Fix<?>> fix(Result result, SBOM sbom) {
 
         if(result.getDetails().contains("Bom Version was a null value"))
-            return bomVersionFix(result);
+            return bomVersionFix(sbom);
         else if(result.getDetails().contains("Creation Data"))
             return creationDataFix();
         else if(result.getDetails().contains("SPDXID"))
@@ -32,15 +35,17 @@ public class EmptyOrNullFixes implements Fixes{
     }
 
     /**
-     * @param result failed test result
+     * @param sbom sbom
      * @return potential fixes for bom version
      */
-    private List<Fix<?>> bomVersionFix(Result result) {
+    private List<Fix<?>> bomVersionFix(SBOM sbom) {
 
-        if(result.getAttributes().contains(ATTRIBUTE.SPDX23))
+        if(sbom instanceof SPDX23SBOM)
             return Collections.singletonList(new Fix<>("", "2.3"));
-        else if(result.getAttributes().contains(ATTRIBUTE.CDX14))
+        else if(sbom instanceof CDX14SBOM)
             return Collections.singletonList(new Fix<>("", "1.4"));
+        else if(sbom instanceof SVIPSBOM)
+            return Collections.singletonList(new Fix<>("", "1.04a"));
         else
             return new ArrayList<>(List.of(new Fix<>("", "2.3"), new Fix<>("", "1.4"),
                     new Fix<>("", "1.04a"))); // todo check 1.04a is current SVIP bomVersion
