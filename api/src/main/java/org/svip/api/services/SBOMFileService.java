@@ -5,7 +5,6 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.svip.api.entities.SBOM;
-import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.conversion.Conversion;
@@ -286,23 +285,31 @@ public class SBOMFileService {
     //
 
     /**
-     * Unzip a ZipFile of SBOMFiles
+     * Unzip a MultipartFile of project files
      *
-     * @param z the zipped file
-     * @return List of file contents paired with an integer representing its depth in the project directory
+     * @param multipartFile the MultipartFile to unzip
+     * @return Map of a filename to its contents
      */
-    public static ArrayList<HashMap<SBOMFile, Integer>> unZip(ZipFile z) {
+    public static Map<String, String> unZip(MultipartFile multipartFile) throws IOException {
+        Map<String, String> fileMap = new HashMap<>(); // Map of name to contents to return
 
-        ArrayList<HashMap<SBOMFile, Integer>> vpArray = new ArrayList<>();
+        // Convert multipart file to zip file
+        File zip = File.createTempFile(UUID.randomUUID().toString(), "temp");
+        FileOutputStream o = new FileOutputStream(zip);
+        IOUtils.copy(multipartFile.getInputStream(), o);
+        o.close();
 
+        ZipFile zipFile = new ZipFile(zip);
+
+        // Create stream for each entry in the zip file
         byte[] buffer = new byte[1024];
-        Stream<? extends ZipEntry> entryStream = z.stream();
+        Stream<? extends ZipEntry> entryStream = zipFile.stream();
 
+        // Read each zip file entry
         entryStream.forEach(entry -> {
             try {
                 // Get the input stream for the current zip entry
-                InputStream is = z.getInputStream(entry);
-                int depth = entry.getName().split("[\\/]").length - 1; // todo we may not actually need depth
+                InputStream is = zipFile.getInputStream(entry);
 
                 if (!entry.isDirectory()) {
                     StringBuilder contentsBuilder = new StringBuilder();
@@ -316,9 +323,9 @@ public class SBOMFileService {
                         LOGGER.error(e.getMessage());
                     }
 
-                    HashMap<SBOMFile, Integer> hashMap = new HashMap<>();
-                    hashMap.put(new SBOMFile(entry.getName(), contentsBuilder.toString()), depth);
-                    vpArray.add(hashMap);
+                    // If valid name and contents then add to map
+                    if (!entry.getName().isEmpty() && !contentsBuilder.toString().isEmpty())
+                        fileMap.put(entry.getName(), contentsBuilder.toString());
                 }
 
             } catch (IOException e) {
@@ -326,25 +333,7 @@ public class SBOMFileService {
             }
         });
 
-        return vpArray;
-
-    }
-
-    /**
-     * Convert a MultiPart file to a ZipFile
-     *
-     * @param file MultiPart file, a .zip file
-     * @return Converted ZipFile object
-     */
-    public static ZipFile convertMultipartToZip(MultipartFile file) throws IOException {
-
-        File zip = File.createTempFile(UUID.randomUUID().toString(), "temp");
-        FileOutputStream o = new FileOutputStream(zip);
-        IOUtils.copy(file.getInputStream(), o);
-        o.close();
-
-        return new ZipFile(zip);
-
+        return fileMap;
     }
 }
 

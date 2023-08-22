@@ -23,7 +23,7 @@ import static org.svip.utils.Debug.LOG_TYPE;
 import static org.svip.utils.Debug.log;
 
 /**
- * <b>File</b>: ParserController.java<br>
+ * <b>File</b>: ParserManager.java<br>
  * <b>Description</b>: Central controller class that interfaces between
  * the main driver and the language specific parsers.
  *
@@ -31,7 +31,7 @@ import static org.svip.utils.Debug.log;
  * @author Derek Garcia
  * @author Ian Dunn
  */
-public class ParserController {
+public class ParserManager {
 
     //#region Attributes
     private final String projectName;
@@ -86,9 +86,9 @@ public class ParserController {
 
     /**
      * TODO
-     * Create a new ParserController.
+     * Create a new ParserManager.
      */
-    public ParserController(String projectName, Map<VirtualPath, String> files) {
+    public ParserManager(String projectName, Map<VirtualPath, String> files) {
         this.projectName = projectName;
         this.components = new HashMap<>();
         this.files = files;
@@ -141,7 +141,7 @@ public class ParserController {
     //#region Core Methods
 
     /**
-     * Parses all files passed into the ParserController via the VirtualTree and logs the amount of time taken.
+     * Parses all files passed into the ParserManager via the VirtualTree and logs the amount of time taken.
      */
     public void parseAll() {
         Set<VirtualPath> internalFiles = files.keySet();
