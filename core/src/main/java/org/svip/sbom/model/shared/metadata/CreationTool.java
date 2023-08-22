@@ -3,10 +3,13 @@ package org.svip.sbom.model.shared.metadata;
 import org.svip.compare.conflicts.Comparable;
 import org.svip.compare.conflicts.Conflict;
 import org.svip.compare.conflicts.ConflictFactory;
+import org.svip.sbom.model.shared.util.ExternalReference;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.svip.compare.conflicts.MismatchType.MISC_MISMATCH;
 
@@ -22,6 +25,7 @@ public class CreationTool implements Comparable {
     private String name;
     private String version;
     private final Map<String, String> hashes = new HashMap<>();
+    private final Set<ExternalReference> externalReferences = new HashSet<>();
 
     //
     // Setters
@@ -61,6 +65,14 @@ public class CreationTool implements Comparable {
         this.hashes.put(algorithm, hash);
     }
 
+    /**
+     * @param url Reference URL
+     * @param type Reference type
+     */
+    public void addExternalReference(String url, String type) {
+        this.externalReferences.add(new ExternalReference(url, type));
+    }
+
     ///
     /// Getters
     ///
@@ -91,6 +103,13 @@ public class CreationTool implements Comparable {
      */
     public Map<String, String> getHashes() {
         return hashes;
+    }
+
+    /**
+     * @return External References
+     */
+    public Set<ExternalReference> getExternalReferences() {
+        return externalReferences;
     }
 
 
