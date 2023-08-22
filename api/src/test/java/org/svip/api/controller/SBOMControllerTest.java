@@ -11,13 +11,15 @@ import org.springframework.http.ResponseEntity;
 import org.svip.api.entities.SBOM;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
+import org.svip.serializers.SerializerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -25,6 +27,7 @@ import static org.mockito.Mockito.when;
  * Description: Unit test for SBOM Controller
  *
  * @author Derek Garcia
+ * @author Thomas Roman
  */
 @ExtendWith(MockitoExtension.class)
 @DisplayName("SBOM Controller Test")
@@ -38,9 +41,7 @@ public class SBOMControllerTest {
 
     // Test SBOMs
     private static final String CDX_JSON_SBOM_FILE = "./src/test/resources/sample_sboms/cdx-gomod-1.4.0-bin.json";
-    private static final String SPDX_JSON_SBOM_FILE = "./src/test/resources/sample_sboms/syft-0.80.0-source-spdx-json.json";
-    private static final String SPDX_TAG_VALUE_SBOM_FILE = "./src/test/resources/sample_sboms/sbom.alpine-compare.2-3.spdx";
-
+    private static final String CDX_SMALL = "./src/test/resources/sample_sboms/CDX_Test.json";
 
     ///
     /// Upload
@@ -140,6 +141,157 @@ public class SBOMControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
+    @Test
+    @DisplayName("Convert sbom")
+    void convert_sbom() throws Exception {
+        // Given
+        Long id = 1L;
+        SerializerFactory.Schema schema = SerializerFactory.Schema.CDX14;
+        SerializerFactory.Format format = SerializerFactory.Format.JSON;
+        Boolean overwrite = true;
+        Long convertedID = 2L;
+
+        // When
+        when(sbomFileService.convert(id, schema, format, overwrite)).thenReturn(convertedID);
+        ResponseEntity<?> response = sbomController.convert(id, schema, format, overwrite);
+
+        // Then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(convertedID, response.getBody());
+        verify(sbomFileService).convert(id, schema, format, overwrite);
+    }
+
+    @Test
+    @DisplayName("Get SBOM Object as JSON")
+    void get_SBOM_object_as_JSON() throws Exception {
+        // Given
+        Long id = 1L;
+        String jsonContent = "{\"format\":\"SPDX\",\"uid\":\"Test\",\"creationData\":{},\"components\":[{\"uid\":\"uid1\",\"name\":\"COMPONENT 1\",\"licenses\":{},\"version\":\"1\"},{\"uid\":\"uid3\",\"name\":\"COMPONENT 3\",\"licenses\":{},\"version\":\"1\"},{\"uid\":\"uid2\",\"name\":\"COMPONENT 2\",\"licenses\":{},\"version\":\"1\"}]}";
+        SBOM sbom = buildMockSBOMFile(CDX_SMALL);
+
+        // When
+        when(sbomFileService.getSBOMFile(id)).thenReturn(sbom);
+        ResponseEntity<String> response = sbomController.getSBOMObjectAsJSON(id);
+
+        // Then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(jsonContent, response.getBody());
+        verify(sbomFileService).getSBOMFile(id);
+    }
+
+    @Test
+    @DisplayName("Get SBOM Object as JSON no content")
+    void get_SBOM_object_as_JSON_no_content() throws Exception {
+        // Given
+        Long id = 1L;
+
+        // When
+        when(sbomFileService.getSBOMFile(id)).thenReturn(null);
+        ResponseEntity<String> response = sbomController.getSBOMObjectAsJSON(id);
+
+        // Then
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    @DisplayName("Get SBOM content test")
+    void get_SBOM_content() throws Exception {
+        // Given
+        Long id = 1L;
+        SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+
+        // When
+        when(sbomFileService.getSBOMFile(id)).thenReturn(sbom);
+        ResponseEntity<SBOM> response = sbomController.getContent(id);
+
+        // Then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("./src/test/resources/sample_sboms/cdx-gomod-1.4.0-bin.json", response.getBody().getName());
+        verify(sbomFileService).getSBOMFile(id);
+    }
+
+    @Test
+    @DisplayName("Get SBOM no content test")
+    void get_SBOM_no_content() throws Exception {
+        // Given
+        Long id = 1L;
+
+        // When
+        when(sbomFileService.getSBOMFile(id)).thenReturn(null);
+        ResponseEntity<SBOM> response = sbomController.getContent(id);
+
+        // Then
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    @DisplayName("get all ids")
+    public void get_all_ids() {
+        // Given
+        Long[] ids = {1L, 2L, 3L}; // Set the expected array of IDs
+
+        // When
+        when(sbomFileService.getAllIDs()).thenReturn(ids);
+        ResponseEntity<Long[]> response = sbomController.getAllIds();
+
+        // Then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertArrayEquals(ids, response.getBody());
+        verify(sbomFileService).getAllIDs();
+    }
+
+    @Test
+    @DisplayName("get all ids no content")
+    public void get_all_ids_no_content() {
+        // Given
+        Long[] emptyIds = {};
+
+        // When
+        when(sbomFileService.getAllIDs()).thenReturn(emptyIds);
+        ResponseEntity<Long[]> response = sbomController.getAllIds();
+
+        // Then
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        assertNull(response.getBody());
+        verify(sbomFileService).getAllIDs();
+    }
+
+    @Test
+    @DisplayName("Delete SBOM")
+    public void delete_SBOM() throws Exception {
+        // Given
+        Long id = 1L;
+        SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+
+        // When
+        when(sbomFileService.getSBOMFile(id)).thenReturn(sbom);
+        ResponseEntity<Long> response = sbomController.delete(id);
+
+        // Then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(id, response.getBody());
+        verify(sbomFileService).getSBOMFile(id);
+        verify(sbomFileService).deleteSBOMFile(sbom);
+    }
+
+    @Test
+    @DisplayName("Delete SBOM no content")
+    public void delete_SBOM_no_content() throws Exception {
+        // Given
+        Long id = 1L;
+
+        // When
+        when(sbomFileService.getSBOMFile(id)).thenReturn(null);
+        ResponseEntity<Long> response = sbomController.delete(id);
+
+        // Then
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        assertNull(response.getBody());
+    }
 
     ///
     /// Helper Methods
@@ -148,7 +300,19 @@ public class SBOMControllerTest {
         return new String(Files.readAllBytes(Paths.get(filepath)));
     }
 
-
+    /**
+     * Generate SBOM File from a filepath
+     *
+     * @param filepath path of the sbom
+     * @return Valid Mock SBOM file
+     * @throws IOException failed to open file
+     */
+    private SBOM buildMockSBOMFile(String filepath) throws IOException {
+        // Get file contents
+        String content = new String(Files.readAllBytes(Paths.get(filepath)));
+        // Create SBOM
+        return new UploadSBOMFileInput(filepath, content).toSBOMFile();
+    }
 
 
 }
