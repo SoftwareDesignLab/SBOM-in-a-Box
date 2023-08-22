@@ -15,7 +15,6 @@ import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.uids.PURL;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
@@ -28,6 +27,7 @@ import java.util.Set;
 public class EmptyOrNullFixes implements Fixes{
 
     protected final ArrayList<QueryWorker> queryWorkers;
+    private final List<Fix<?>> emptyString = Collections.singletonList(new Fix<>("null", ""));
 
     public EmptyOrNullFixes(ArrayList<QueryWorker> queryWorkers) {
         this.queryWorkers = queryWorkers;
@@ -49,7 +49,9 @@ public class EmptyOrNullFixes implements Fixes{
         else if(result.getDetails().contains("File Notice"))
             return fileNoticeNullFix();
         else if(result.getDetails().contains("Author"))
-            return nullAuthorFix(sbom, repairSubType);
+            return authorNullFix(sbom, repairSubType);
+        else if(result.getDetails().contains("Copyright"))
+            return copyrightNullFix();
 
         return null;
 
@@ -112,14 +114,21 @@ public class EmptyOrNullFixes implements Fixes{
      * @return empty string in place for null attribution text
      */
     private List<Fix<?>> attributionTextNullFix() {
-        return Collections.singletonList(new Fix<>("null", "")); // todo make sure this is okay
+        return emptyString;
     }
 
     /**
      * @return empty string in place for null file notice
      */
     private List<Fix<?>> fileNoticeNullFix(){
-        return Collections.singletonList(new Fix<>("null", "")); // todo make sure this is okay
+        return emptyString;
+    }
+
+    /**
+     * @return empty string in place for null copyright
+     */
+    private List<Fix<?>> copyrightNullFix(){
+        return emptyString;
     }
 
     /**
@@ -127,7 +136,7 @@ public class EmptyOrNullFixes implements Fixes{
      * @param repairSubType the key most closely relating to the component
      * @return a list of potential authors
      */
-    private List<Fix<?>> nullAuthorFix(SBOM sbom, String repairSubType){
+    private List<Fix<?>> authorNullFix(SBOM sbom, String repairSubType){
 
         Component thisComponent = null;
 
@@ -210,7 +219,7 @@ public class EmptyOrNullFixes implements Fixes{
     }
 
     /**
-     * Queries a google search, looks for potential authors in the first page of results
+     * Queries a Google search, looks for potential authors in the first page of results
      * @param repairSubType the name of the component, usually
      * @param purlName the name of the purl (optional)
      * @return a list of potential authors
@@ -249,5 +258,6 @@ public class EmptyOrNullFixes implements Fixes{
         return fixList;
 
     }
+
 
 }

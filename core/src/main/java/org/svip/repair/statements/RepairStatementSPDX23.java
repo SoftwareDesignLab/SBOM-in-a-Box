@@ -65,7 +65,7 @@ public class RepairStatementSPDX23 implements RepairStatement {
         Fixes fixes = null;
 
         switch (result.getTest()) {
-            case "CPE" ->
+            case "Matching CPE" ->
                 fixes = new CPEFixes();
 
             case "EmptyOrNullTest", "Has Creation Info", "HasSPDXID" ->
