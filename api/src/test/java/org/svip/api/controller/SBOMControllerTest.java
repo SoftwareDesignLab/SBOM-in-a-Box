@@ -1,4 +1,4 @@
-package org.svip.api.controllers;
+package org.svip.api.controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

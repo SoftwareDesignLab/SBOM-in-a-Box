@@ -1,4 +1,4 @@
-package org.svip.api.controllers;
+package org.svip.api.controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,73 +11,71 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.svip.api.controller.QAController;
-import org.svip.api.entities.QualityReportFile;
+import org.svip.api.controller.VEXController;
 import org.svip.api.entities.SBOM;
+import org.svip.api.entities.VEXFile;
 import org.svip.api.requests.UploadSBOMFileInput;
-import org.svip.api.services.QualityReportFileService;
 import org.svip.api.services.SBOMFileService;
-import org.svip.metrics.pipelines.QualityReport;
+import org.svip.api.services.VEXFileService;
+import org.svip.vex.VEXResult;
+import org.svip.vex.model.VEX;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * File: QAControllerTest.java
- * Description: Unit test for QA Controller
+ * File: VEXControllerTest.java
+ * Description: Unit test for VEX Controller
  *
  * @author Thomas Roman
  */
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("QA Controller Test")
-public class QAControllerTest {
+@DisplayName("VEX Controller Test")
+public class VexControllerTest {
     @Mock
-    private QualityReportFileService qualityReportFileService;
-
+    private SBOMFileService sbomFileService;      // Mock service
     @Mock
-    private SBOMFileService sbomFileService;
-
+    private VEXFileService vexFileService;      // Mock service
     @InjectMocks
-    private QAController qaController;
+    VEXController vexController;    // Instance of controller for testing
 
     // Test SBOMs
     private static final String CDX_JSON_SBOM_FILE = "./src/test/resources/sample_sboms/cdx-gomod-1.4.0-bin.json";
-
-    ///
-    /// Generate
-    ///
     @Test
-    @DisplayName("Generate QA")
-    void generate_QA() throws Exception {
+    @DisplayName("Generate Vex")
+    void generate_vex() throws Exception {
         // Given
-        Long id = 1L;
+        Long id = 0L;
+        String apiKey = "your-api-key";
+        String format = "json";
+        String client = "osv";
         SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
-        QualityReport qualityReport = new QualityReport("mock");
-        QualityReportFile uploadedQAF = new QualityReportFile();
+        VEXResult vexResult = new VEXResult(new VEX(new VEX.Builder()), new HashMap<String,String>());
+        VEXFile uploadedVF = new VEXFile();
 
         // When
-        when(this.sbomFileService.getSBOMFile(id)).thenReturn(sbom);
-        when(this.qualityReportFileService.generateQualityReport(any())).thenReturn(qualityReport);
-        when(qualityReportFileService.upload(any())).thenReturn(uploadedQAF);
-
+        when(sbomFileService.getSBOMFile(id)).thenReturn(sbom);
+        when(vexFileService.generateVEX(any(), anyString(), anyString(), anyString())).thenReturn(vexResult);
+        when(vexFileService.upload(any())).thenReturn(uploadedVF);
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-        ResponseEntity<String> response = this.qaController.qa(id);
+        ResponseEntity<String> response = vexController.vex(apiKey, id, format, client);
 
         // Then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         verify(sbomFileService).getSBOMFile(id);
-        verify(qualityReportFileService).generateQualityReport(any());
-        verify(qualityReportFileService).upload(any());
+        verify(vexFileService).generateVEX(any(), anyString(), anyString(), anyString());
+        verify(vexFileService).upload(any());
     }
 
     ///
