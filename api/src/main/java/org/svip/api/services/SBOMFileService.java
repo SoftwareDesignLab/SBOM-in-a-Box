@@ -135,15 +135,16 @@ public class SBOMFileService {
      *
      * @param ids list of IDs to merge
      * @return ID of merged SBOM
+     * @throws Exception If there was a problem merging.
      */
-    public Long merge(Long[] ids) {
+    public Long merge(Long[] ids) throws Exception {
 
         // prefix to error messages
         String urlMsg = "MERGE /svip/merge?id=";
 
         // ensure there are at least two SBOMs to potentially merge
         if (ids.length < 2)
-            return -2L; // bad request
+            throw new Exception("Not enough SBOMs provided to merge (must be at least 2)");
 
         // collect and deserialize SBOMs
         ArrayList<org.svip.sbom.model.interfaces.generics.SBOM> sboms = new ArrayList<>();
@@ -155,13 +156,11 @@ public class SBOMFileService {
             try {
                 sbomObj = getSBOMFile(id).toSBOMObject();
             } catch (JsonProcessingException e) {
-                LOGGER.info(urlMsg + id + "DURING DESERIALIZATION: " +
-                        e.getMessage());
-                return null; // internal server error
+                throw new Exception("Error deserializing SBOM (id " + id + ": " + e.getMessage());
             }
 
             if (sbomObj == null)
-                return -1L; // not found // todo custom exception
+                throw new Exception("Converted SBOM not found.");
 
             // convert to SVIPSBOM
             try {
@@ -169,9 +168,7 @@ public class SBOMFileService {
                         (sbomObj.getFormat().toLowerCase().contains("spdx")) ?
                                 SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14);
             } catch (ConversionException e) {
-                LOGGER.info(urlMsg + id + "DURING CONVERSION TO SVIP: " +
-                        e.getMessage());
-                return null; // internal server error
+                throw new Exception("Error converting to SVIP SBOM (id " + id + ": " + e.getMessage());
             }
 
             sboms.add(sbomObj);
@@ -184,9 +181,7 @@ public class SBOMFileService {
             MergerController mergerController = new MergerController();
             merged = mergerController.mergeAll(sboms);
         } catch (MergerException e) {
-            String error = "Error merging SBOMs: " + e.getMessage();
-            LOGGER.error(urlMsg + " " + error);
-            return null; // internal server error
+            throw new Exception("Error merging SBOMs: " + e.getMessage());
         }
 
         SerializerFactory.Schema schema = SerializerFactory.Schema.SPDX23;
@@ -199,9 +194,7 @@ public class SBOMFileService {
         try {
             contents = s.writeToString((SVIPSBOM) merged);
         } catch (JsonProcessingException | ClassCastException e) {
-            String error = "Error deserializing merged SBOM: " + e.getMessage();
-            LOGGER.error(urlMsg + " " + error);
-            return null; // internal server error
+            throw new Exception("Error deserializing merged SBOM: " + e.getMessage());
         }
 
         // save to db
@@ -214,9 +207,7 @@ public class SBOMFileService {
         try {
             mergedSBOMFile = u.toSBOMFile();
         } catch (JsonProcessingException e) {
-            String error = "Error: " + e.getMessage();
-            LOGGER.error(urlMsg + " " + error);
-            return null; // internal server error
+            throw new Exception("Error: " + e.getMessage());
         }
         this.sbomRepository.save(mergedSBOMFile);
         return mergedSBOMFile.getId();
