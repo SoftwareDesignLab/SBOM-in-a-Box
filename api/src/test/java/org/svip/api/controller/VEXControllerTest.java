@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("VEX Controller Test")
-public class VexControllerTest {
+public class VEXControllerTest {
     @Mock
     private SBOMFileService sbomFileService;      // Mock service
     @Mock
