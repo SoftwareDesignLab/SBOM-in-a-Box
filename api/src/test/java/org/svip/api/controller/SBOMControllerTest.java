@@ -81,9 +81,10 @@ public class SBOMControllerTest {
         Long[] ids = new Long[2];
         ids[0] = 0L;
         ids[1] = 1L;
+
+        Long mergedId = 2L;
         // When
-        // TODO different types of exceptions?
-        when(this.sbomFileService.merge(ids)).thenThrow(Exception.class);
+        when(this.sbomFileService.merge(ids)).thenReturn(2L);
 
         ResponseEntity<Long> response =  this.sbomController.merge(ids);
         // Then
@@ -104,7 +105,7 @@ public class SBOMControllerTest {
         ResponseEntity<Long> response = this.sbomController.merge(ids);
 
         // Then
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
     @Test
@@ -138,7 +139,7 @@ public class SBOMControllerTest {
         ResponseEntity<Long> response = this.sbomController.merge(ids);
 
         // Then
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
     @Test

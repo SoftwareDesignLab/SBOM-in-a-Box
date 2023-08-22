@@ -195,8 +195,8 @@ public class OSIController {
         try {
             merged = this.sbomService.merge(uploaded.toArray(new Long[0]));
         } catch (Exception e) {
-            LOGGER.error("POST /svip/generators/osi - Error merging: " + e.getMessage());
-            return new ResponseEntity<>("Error merging: " + e.getMessage(), HttpStatus.NO_CONTENT);
+            LOGGER.error("POST /svip/generators/osi - Unable to merge, no content: " + e.getMessage());
+            return new ResponseEntity<>("Unable to merge, no content: " + e.getMessage(), HttpStatus.NO_CONTENT);
         }
 
         // Convert

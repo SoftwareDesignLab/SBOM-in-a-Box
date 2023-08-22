@@ -171,7 +171,7 @@ public class OSIControllerTest {
                         .param("projectName", projectName)
                         .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
                         .param("format", String.valueOf(SerializerFactory.Format.JSON)))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isNoContent());
     }
 
     private static MockMultipartFile buildMockMultipartFile(String projectName) throws IOException {

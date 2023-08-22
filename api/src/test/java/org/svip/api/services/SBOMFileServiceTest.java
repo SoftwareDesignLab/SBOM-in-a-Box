@@ -179,19 +179,11 @@ public class SBOMFileServiceTest {
     @Test
     @DisplayName("Merge no sboms")
     void merge_no_sboms() {
-        try {
-            // Given
-            Long[] ids = new Long[0];
+        // Given
+        Long[] ids = new Long[0];
 
-            // When
-            long id = this.sbomFileService.merge(ids);
-
-            // Then
-            assertEquals(-2L, id);  // todo throw execution
-
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+        // When
+        assertThrows(Exception.class, () -> this.sbomFileService.merge(ids));
     }
 
     @Test
@@ -278,7 +270,7 @@ public class SBOMFileServiceTest {
             Long[] ids = this.sbomFileService.getAllIDs();
             // Then
             assertEquals(1, ids.length);
-            verify(this.sbomRepository.findAll());
+            verify(sbomRepository).findAll();
 
         } catch (Exception e){
             fail(e.getMessage());
