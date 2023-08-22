@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.svip.api.entities.SBOM;
-import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
 import org.svip.conversion.ConversionException;
@@ -22,7 +21,6 @@ import org.svip.serializers.exceptions.SerializerException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -131,31 +129,25 @@ public class OSIController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        ArrayList<HashMap<SBOMFile, Integer>> unZipped;
-
+        Map<String, String> unZipped;
         try {
-            unZipped = SBOMFileService.unZip(SBOMFileService.convertMultipartToZip(zipFile));
+            unZipped = SBOMFileService.unZip(zipFile);
         } catch (IOException e) {
             LOGGER.error("POST /svip/generators/osi - " + e.getMessage());
             return new ResponseEntity<>("Make sure attachment is a zip file (.zip): " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
         // Validate & add files
-        for (HashMap<SBOMFile, Integer> h : unZipped) {
-
-            SBOMFile srcFile = (SBOMFile) h.keySet().toArray()[0];
-
-            if (!srcFile.hasNullProperties()) // project files that are empty should just be ignored
-                try {
-                    // Remove any directories, causes issues with OSI paths (unless we take in a root directory?)
-                    String fileName = srcFile.getFileName();
-                    fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
-                    container.addSourceFile(fileName, srcFile.getContents());
-                } catch (IOException e) {
-                    LOGGER.error("POST /svip/generators/osi - Error adding source file");
-                    return new ResponseEntity<>("Error adding source file", HttpStatus.NOT_FOUND);
-                }
-        }
+        for (Map.Entry<String, String> file : unZipped.entrySet())
+            try {
+                // Remove any directories, causes issues with OSI paths (unless we take in a root directory?)
+                String fileName = file.getKey();
+                fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
+                container.addSourceFile(fileName, file.getValue());
+            } catch (IOException e) {
+                LOGGER.error("POST /svip/generators/osi - Error adding source file");
+                return new ResponseEntity<>("Error adding source file", HttpStatus.NOT_FOUND);
+            }
 
         // Generate SBOMs
         Map<String, String> generatedSBOMFiles;

@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.svip.api.entities.SBOM;
-import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
+import org.svip.generation.parsers.ParserManager;
 import org.svip.generation.parsers.utils.VirtualPath;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.serializer.Serializer;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * REST API Controller for generating SBOMs using Parsers
@@ -68,42 +68,38 @@ public class ParserController {
             LOGGER.error("POST /svip/generators/parsers - " + e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        ArrayList<HashMap<SBOMFile, Integer>> unZipped;
+
+        // Unzip multipart file
+        Map<String, String> unZipped;
         try {
-            unZipped = SBOMFileService.unZip(SBOMFileService.convertMultipartToZip(zipFile));
+            unZipped = SBOMFileService.unZip(zipFile);
         } catch (IOException e) {
             LOGGER.error("POST /svip/generators/parsers - " + e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
+        // Add each file to a hashmap to then pass into parserManager
         HashMap<VirtualPath, String> virtualPathStringHashMap = new HashMap<>();
+        for (Map.Entry<String, String> file : unZipped.entrySet())
+            virtualPathStringHashMap.put(new VirtualPath(file.getKey()), file.getValue());
 
-        for (HashMap<SBOMFile, Integer> h : unZipped
-        ) {
-            SBOMFile f = (SBOMFile) h.keySet().toArray()[0];
-            if (!f.hasNullProperties()) // project files that are empty should just be ignored
-                virtualPathStringHashMap.put(new VirtualPath(f.getFileName()), f.getContents());
-        }
+        ParserManager parserManager = new ParserManager(projectName, virtualPathStringHashMap);
 
-        org.svip.generation.parsers.ParserController parserController = new org.svip.generation.parsers.ParserController(projectName, virtualPathStringHashMap);
-
-
+        // Parse all files using parserManager
         SVIPSBOM parsed;
         try {
-            parserController.parseAll();
-            parsed = parserController.buildSBOM(schema);
+            parserManager.parseAll();
+            parsed = parserManager.buildSBOM(schema);
         } catch (Exception e) {
             String error = "Error parsing into SBOM: " + Arrays.toString(e.getStackTrace());
             LOGGER.error("POST /svip/generators/parsers - " + error);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-
-        Serializer s;
+        // Serialize SVIPSBOM to string
         String contents;
-
         try {
-            s = SerializerFactory.createSerializer(schema, format, true);
+            Serializer s = SerializerFactory.createSerializer(schema, format, true);
             contents = s.writeToString(parsed);
         } catch (IllegalArgumentException | JsonProcessingException e) {
             String error = "Error serializing parsed SBOM: " + Arrays.toString(e.getStackTrace());
@@ -111,7 +107,7 @@ public class ParserController {
             return null;
         }
 
-        // Save according to overwrite boolean
+        // Convert & save according to overwrite boolean
         SBOM converted;
         try {
             // convert result sbomfile to sbom

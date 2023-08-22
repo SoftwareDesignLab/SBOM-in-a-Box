@@ -6,30 +6,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.svip.api.entities.QualityReportFile;
-import org.svip.api.entities.SBOMFile;
 import org.svip.api.entities.VEXFile;
-import org.svip.api.requests.UploadQRFileInput;
 import org.svip.api.requests.UploadVEXFileInput;
 import org.svip.api.services.SBOMFileService;
 import org.svip.api.services.VEXFileService;
-import org.svip.metrics.pipelines.QualityReport;
-import org.svip.sbom.model.interfaces.generics.Component;
-import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbom.model.interfaces.generics.SBOMPackage;
-import org.svip.serializers.SerializerFactory;
-import org.svip.serializers.deserializer.Deserializer;
 import org.svip.vex.VEXResult;
-import org.svip.vex.database.NVDClient;
-import org.svip.vex.database.OSVClient;
-import org.svip.vex.database.interfaces.VulnerabilityDBClient;
-import org.svip.vex.model.VEX;
-import org.svip.vex.model.VEXType;
-import org.svip.vex.vexstatement.VEXStatement;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * file: VEXController.java
