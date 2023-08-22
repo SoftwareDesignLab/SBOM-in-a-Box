@@ -84,7 +84,8 @@ public class SBOMControllerTest {
 
         Long mergedId = 2L;
         // When
-        when(this.sbomFileService.merge(ids)).thenReturn(2L);
+        // TODO different types of exceptions?
+        when(this.sbomFileService.merge(ids)).thenThrow(Exception.class);
 
         ResponseEntity<Long> response =  this.sbomController.merge(ids);
         // Then
