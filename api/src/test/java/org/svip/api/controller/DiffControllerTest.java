@@ -1,4 +1,4 @@
-package org.svip.api.controllers;
+package org.svip.api.controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.svip.api.controller.DiffController;
 import org.svip.api.services.DiffService;
 import org.svip.api.services.SBOMFileService;
 
