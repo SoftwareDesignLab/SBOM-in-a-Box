@@ -77,7 +77,7 @@ public class RepairStatementSPDX23 implements RepairStatement {
             case "License" ->
                 fixes = new LicenseFixes();
 
-            case "PURLTest", "Matching PURL" ->
+            case "PURLTest", "Matching PURL", "Accurate PURL" ->
                 fixes = new PURLFixes();
 
 

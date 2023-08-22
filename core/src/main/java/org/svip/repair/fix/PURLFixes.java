@@ -13,24 +13,36 @@ import java.util.List;
 public class PURLFixes implements Fixes{
     @Override
     public List<Fix<?>> fix(Result result, SBOM sbom, String repairSubType) {
-
-        if(result.getMessage().contains("does not match"))
-            return purlMatchFix(result, sbom, repairSubType);
-
-
-        return null;
-    }
-
-    public List<Fix<?>> purlMatchFix(Result result, SBOM sbom, String repairSubType){
-
         PURL newPurl = null;
 
         for (Component component: sbom.getComponents()
-             ) {
+        ) {
 
             String[] split = result.getDetails().split(" ");
 
-            if(split[split.length - 1].contains(component.getName()))
+            boolean fixThisPurl = false;
+
+            // determine if this is the component to build a PURL out of, based on the result message
+            if(result.getMessage().toLowerCase().contains("does not match"))
+                fixThisPurl = split[split.length - 1].contains(component.getName());
+            else if(result.getTest().contains("Accurate")){
+                if(component instanceof SPDX23Package spdx23Package)
+                    for (String purl : spdx23Package.getPURLs()
+                    ) {
+                        if(purl.equals(split[0])){
+                            fixThisPurl = true;
+                            break;}
+                    }
+                else if(component instanceof CDX14Package cdx14Package)
+                    for (String purl : cdx14Package.getPURLs()
+                    ) {
+                        if(purl.equals(split[0])){
+                            fixThisPurl = true;
+                            break;}
+                    }
+            }
+
+            if(fixThisPurl)
                 try{
 
                     String type = "pkg"; // todo is this true for all components?
@@ -81,5 +93,6 @@ public class PURLFixes implements Fixes{
             return null;
         }
     }
+
 
 }
