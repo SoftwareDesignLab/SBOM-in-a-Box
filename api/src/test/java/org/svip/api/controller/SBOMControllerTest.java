@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.svip.api.controller.SBOMController;
 import org.svip.api.entities.SBOM;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
@@ -76,13 +75,14 @@ public class SBOMControllerTest {
     ///
     @Test
     @DisplayName("Merge 2 SBOMs")
-    void merge_two_sboms(){
+    void merge_two_sboms() throws Exception {
         // Given
         Long[] ids = new Long[2];
         ids[0] = 0L;
         ids[1] = 1L;
         // When
-        when(this.sbomFileService.merge(ids)).thenReturn(2L);
+        // TODO different types of exceptions?
+        when(this.sbomFileService.merge(ids)).thenThrow(Exception.class);
 
         ResponseEntity<Long> response =  this.sbomController.merge(ids);
         // Then
@@ -92,13 +92,14 @@ public class SBOMControllerTest {
 
     @Test
     @DisplayName("Merge 1 SBOM")
-    void merge_one_sbom(){
+    void merge_one_sbom() throws Exception {
         // Given
         Long[] ids = new Long[1];
         ids[0] = 0L;
 
         // When
-        when(this.sbomFileService.merge(ids)).thenReturn(-2L);
+        // TODO different types of exceptions?
+        when(this.sbomFileService.merge(ids)).thenThrow(Exception.class);
         ResponseEntity<Long> response = this.sbomController.merge(ids);
 
         // Then
@@ -107,14 +108,15 @@ public class SBOMControllerTest {
 
     @Test
     @DisplayName("Fail to parse merge sbom")
-    void fail_to_parse_merge_sbom(){
+    void fail_to_parse_merge_sbom() throws Exception {
         // Given
         Long[] ids = new Long[2];
         ids[0] = 0L;
         ids[1] = 1L;
 
         // When
-        when(this.sbomFileService.merge(ids)).thenReturn(null);
+        // TODO different types of exceptions?
+        when(this.sbomFileService.merge(ids)).thenThrow(Exception.class);
         ResponseEntity<Long> response = this.sbomController.merge(ids);
 
         // Then
@@ -123,14 +125,15 @@ public class SBOMControllerTest {
 
     @Test
     @DisplayName("missing merge sbom")
-    void missing_merge_sbom(){
+    void missing_merge_sbom() throws Exception {
         // Given
         Long[] ids = new Long[2];
         ids[0] = 0L;
         ids[1] = 1L;
 
         // When
-        when(this.sbomFileService.merge(ids)).thenReturn(-1L);
+        // TODO different types of exceptions?
+        when(this.sbomFileService.merge(ids)).thenThrow(Exception.class);
         ResponseEntity<Long> response = this.sbomController.merge(ids);
 
         // Then
