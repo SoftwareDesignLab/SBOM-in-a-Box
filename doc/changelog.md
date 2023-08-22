@@ -2,6 +2,83 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [v8.0.0-alpha] - (8/22/2023)
+> API Refactor Update - Separated >700 line SVIPAPIController into multiple, more testable classes. See the
+> [API documentation](API.md) for all updated endpoints
+
+### Added
+- New `controller` classes to separate responsibility:
+    - `DiffController` Class - Manage `/sboms/compare`
+    - `OSIController` Class - Manage `/generators/osi` & `/generators/osi/tools`
+    - `ParserController` Class - Manage `/generators/parsers`
+    - `QAController` Class - Manage `/sboms/qa`
+    - `SBOMController` Class - Manage all SBOM & table CRUD endpoints.
+    - `VEXController` Class - Manage `/sboms/vex`
+- New `entities` package to manage database table schemas:
+    - `ComparisonFile` Class - `comparison` Table
+    - `ConflictFile` Class - `conflict` Table
+    - `QualityReportFile` Class - `quality_report` Table
+    - `SBOM` Class - `sbom` Table
+    - `VEXFile` Class - `vex` Table
+- New `repository` interfaces to manage access database tables:
+    - `ComparisonFileRepository` Class
+    - `ConflictFileRepository` Class
+    - `QualityReportFileRepository` Class
+    - `SBOMRepository` Class
+    - `VEXFileRepository` Class
+- New `requests` package to create and manage request bodies for database file uploads:
+    - `UploadComparisonFileInput` Class
+    - `UploadConflictFileInput` Class
+    - `UploadQRFileInput` Class
+    - `UploadSBOMFileInput` Class
+    - `UploadVEXFileInput` Class
+- New `services` package to provide utility wrappers for the `repository` interfaces:
+    - `DiffService` Class
+    - `QualityReportFileService` Class
+    - `SBOMFileService` Class
+    - `SBOMService` Class
+    - `VEXFileService` Class
+- New unit tests to more accurately test controllers, requests, and services with ~80% overall code coverage:
+    - `controller` package:
+        - `DiffControllerTest` Class
+        - `OSIControllerTest` Class
+        - `ParserControllerTest` Class
+        - `QAControllerTest` Class
+        - `SBOMControllerTest` Class
+        - `VEXControllerTest` Class
+    - `requests` package:
+        - `UploadSBOMFileInputTest` Class
+    - `services` package:
+        - `DiffServiceTest`
+        - `QualityReportFileServiceTest` Class
+        - `SBOMFileServiceTest` Class
+        - `VexFileServiceTest` Class
+        
+### Removed
+- Old `SVIPAPIController` class
+- Old `model` package:
+    - `MockMultipartFile`
+    - `SBOMFile`
+- Old `SBOMFile`-related classes:
+    - `SBOMFileIdentifierGenerator`
+    - `SBOMFileRepository`
+- Old `utils` classes:
+    - `Converter`
+    - `Utils`
+- Old Unit Tests:
+    - `APITest`
+    - `CompareAPITest`
+    - `ConvertFromAPITest`
+    - `DeleteFromAPITest`
+    - `GenerateFromOSIAPITest`
+    - `GenerateFromParserAPITest`
+    - `GenerateVEXAPITest`
+    - `GetSBOMAPITest`
+    - `GetToolsFromOSIAPITest`
+    - `MergeFromAPITest`
+    - `UploadToAPITest`
+    - `ViewAllFromAPITest`
+    - `ViewFromAPITest`
 
 ## [v7.4.6-alpha] - (8/15/2023)
 ### Changed
@@ -50,13 +127,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v7.4.1-alpha] - (8/15/2023)
 ### Added
-- `MergerSVIP.java`
-  - Merges two SVIPSBOMs into one
-- `ComponentMerger.java`
-  - Holds logic to merge two generic `Component` objects into one of a desired type
+- `MergerSVIP.java` Class - Merges two SVIPSBOMs into one
+- `ComponentMerger` Class - Holds logic to merge two generic `Component` objects into one of a desired type
 
 ### Changed
-- `MergerUtils.java`
+- `MergerUtils` Class
   - String.equals() fixes
   - Allowed merging of components to `SVIPComponentObject`
   - Duplicate component issue resolved
