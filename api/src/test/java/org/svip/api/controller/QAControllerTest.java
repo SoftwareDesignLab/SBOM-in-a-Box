@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.svip.api.controller.QAController;
 import org.svip.api.entities.QualityReportFile;
 import org.svip.api.entities.SBOM;
 import org.svip.api.requests.UploadSBOMFileInput;
@@ -78,6 +77,44 @@ public class QAControllerTest {
         verify(sbomFileService).getSBOMFile(id);
         verify(qualityReportFileService).generateQualityReport(any());
         verify(qualityReportFileService).upload(any());
+    }
+
+    @Test
+    @DisplayName("Generate Invalid File")
+    void generateInvalidFileTest() {
+        // Given
+        Long id = 1L;
+
+        // When
+        when(this.sbomFileService.getSBOMFile(id)).thenReturn(null);
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+        ResponseEntity<String> response = this.qaController.qa(id);
+
+        // Then
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Generate With QA Error")
+    void generateWithQAError() throws Exception {
+        // Given
+        Long id = 1L;
+        SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+        QualityReport qualityReport = new QualityReport("mock");
+
+        // When
+        when(this.sbomFileService.getSBOMFile(id)).thenReturn(sbom);
+        when(this.qualityReportFileService.generateQualityReport(any())).thenReturn(qualityReport);
+        when(qualityReportFileService.upload(any())).thenThrow(Exception.class);
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+        ResponseEntity<String> response = this.qaController.qa(id);
+
+        // Then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
     ///
