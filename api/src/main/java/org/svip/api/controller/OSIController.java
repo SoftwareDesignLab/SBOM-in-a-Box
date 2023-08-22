@@ -184,15 +184,11 @@ public class OSIController {
 
                 // Log
                 LOGGER.info("POST /svip/generators/osi - Generated SBOM with ID " + sbom.getId() + ": " + sbom.getName());
-            } catch (JsonProcessingException e) {
-                // Problem with parsing
-                LOGGER.error("POST /svip/sboms - " + e.getMessage());
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             } catch (IllegalArgumentException ignored) {
                 // TODO ignore any illegal files until XML deserialization exists
             } catch (Exception e) {
-                // Problem with uploading
-                LOGGER.error("POST /svip/sboms - " + e.getMessage());
+                // Problem with uploading/parsing
+                LOGGER.error("POST /svip/generators/osi - " + e.getMessage());
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
@@ -203,15 +199,13 @@ public class OSIController {
         }
 
         // Merge SBOMs into one SBOM
-        Long merged = this.sbomService.merge(uploaded.toArray(new Long[0]));
-
-        // todo should probably throw errors instead of returning null if error occurs
-        if (merged == null)
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        else if (merged == -1)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        else if (merged < 0)
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        Long merged;
+        try {
+            merged = this.sbomService.merge(uploaded.toArray(new Long[0]));
+        } catch (Exception e) {
+            LOGGER.error("POST /svip/generators/osi - Error merging: " + e.getMessage());
+            return new ResponseEntity<>("Error merging: " + e.getMessage(), HttpStatus.NO_CONTENT);
+        }
 
         // Convert
         Long converted;

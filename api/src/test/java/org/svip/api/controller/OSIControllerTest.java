@@ -1,5 +1,6 @@
 package org.svip.api.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,8 @@ import java.nio.file.Path;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -127,6 +130,48 @@ public class OSIControllerTest {
                         .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
                         .param("format", String.valueOf(SerializerFactory.Format.TAGVALUE)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "Rust_noEmptyFiles" })
+    @DisplayName("Invalid Conversion")
+    void generateWithInvalidConversionTest(String projectName) throws Exception {
+        when(sbomFileService.convert(any(), any(), any(), any())).thenThrow(JsonProcessingException.class);
+
+        mockMvc.perform(multipart("/svip/generators/osi/")
+                        .file(buildMockMultipartFile(projectName))
+                        .param("projectName", projectName)
+                        .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
+                        .param("format", String.valueOf(SerializerFactory.Format.JSON)))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "Rust_noEmptyFiles" })
+    @DisplayName("Invalid Upload")
+    void generateWithInvalidUploadTest(String projectName) throws Exception {
+        when(sbomFileService.upload(any())).thenThrow(JsonProcessingException.class);
+
+        mockMvc.perform(multipart("/svip/generators/osi/")
+                        .file(buildMockMultipartFile(projectName))
+                        .param("projectName", projectName)
+                        .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
+                        .param("format", String.valueOf(SerializerFactory.Format.JSON)))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "Rust_noEmptyFiles" })
+    @DisplayName("Invalid Merge")
+    void generateWithInvalidMergeTest(String projectName) throws Exception {
+        when(sbomFileService.merge(any())).thenThrow(Exception.class);
+
+        mockMvc.perform(multipart("/svip/generators/osi/")
+                        .file(buildMockMultipartFile(projectName))
+                        .param("projectName", projectName)
+                        .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
+                        .param("format", String.valueOf(SerializerFactory.Format.JSON)))
+                .andExpect(status().isInternalServerError());
     }
 
     private static MockMultipartFile buildMockMultipartFile(String projectName) throws IOException {
