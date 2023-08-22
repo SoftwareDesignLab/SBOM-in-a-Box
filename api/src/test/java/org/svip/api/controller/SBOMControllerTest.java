@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
  * Description: Unit test for SBOM Controller
  *
  * @author Derek Garcia
+ * @author Thomas Roman
  */
 @ExtendWith(MockitoExtension.class)
 @DisplayName("SBOM Controller Test")
