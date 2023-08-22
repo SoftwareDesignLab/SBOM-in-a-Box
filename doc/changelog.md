@@ -39,21 +39,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `SBOMService` Class
     - `VEXFileService` Class
 - New unit tests to more accurately test controllers, requests, and services with ~80% overall code coverage:
-    - `controller` package:
-        - `DiffControllerTest` Class
-        - `OSIControllerTest` Class
-        - `ParserControllerTest` Class
-        - `QAControllerTest` Class
-        - `SBOMControllerTest` Class
-        - `VEXControllerTest` Class
-    - `requests` package:
-        - `UploadSBOMFileInputTest` Class
-    - `services` package:
-        - `DiffServiceTest`
-        - `QualityReportFileServiceTest` Class
-        - `SBOMFileServiceTest` Class
-        - `VexFileServiceTest` Class
-        
+  - `controller` package:
+    - `DiffControllerTest` Class
+    - `OSIControllerTest` Class
+    - `ParserControllerTest` Class
+    - `QAControllerTest` Class
+    - `SBOMControllerTest` Class
+    - `VEXControllerTest` Class
+  - `requests` package:
+    - `UploadSBOMFileInputTest` Class
+  - `services` package:
+    - `DiffServiceTest`
+    - `QualityReportFileServiceTest` Class
+    - `SBOMFileServiceTest` Class
+    - `VexFileServiceTest` Class
+
+### Changed
+- Renamed `core` package `ParserController` to `ParserManager` to avoid confusion
+
 ### Removed
 - Old `SVIPAPIController` class
 - Old `model` package:
