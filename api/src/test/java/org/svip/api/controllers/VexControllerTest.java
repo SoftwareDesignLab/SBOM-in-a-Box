@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.svip.api.controller.VEXController;
 import org.svip.api.entities.SBOM;
 import org.svip.api.entities.VEXFile;
 import org.svip.api.requests.UploadSBOMFileInput;
@@ -25,7 +24,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -76,6 +76,53 @@ public class VexControllerTest {
         verify(sbomFileService).getSBOMFile(id);
         verify(vexFileService).generateVEX(any(), anyString(), anyString(), anyString());
         verify(vexFileService).upload(any());
+    }
+
+    @Test
+    @DisplayName("Generate With Invalid SBOM")
+    void generateVexWithInvalidSBOMTest() throws Exception {
+        // Given
+        Long id = 0L;
+        String apiKey = "your-api-key";
+        String format = "json";
+        String client = "osv";
+        SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+        VEXResult vexResult = new VEXResult(new VEX(new VEX.Builder()), new HashMap<String,String>());
+        VEXFile uploadedVF = new VEXFile();
+
+        // When
+        when(sbomFileService.getSBOMFile(id)).thenReturn(null);
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+        ResponseEntity<String> response = vexController.vex(apiKey, id, format, client);
+
+        // Then
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Generate With Vex Upload Error")
+    void generateWithVexError() throws Exception {
+        // Given
+        Long id = 0L;
+        String apiKey = "your-api-key";
+        String format = "json";
+        String client = "osv";
+        SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+        VEXResult vexResult = new VEXResult(new VEX(new VEX.Builder()), new HashMap<String,String>());
+        VEXFile uploadedVF = new VEXFile();
+
+        // When
+        when(sbomFileService.getSBOMFile(id)).thenReturn(sbom);
+        when(vexFileService.generateVEX(any(), anyString(), anyString(), anyString())).thenReturn(vexResult);
+        when(vexFileService.upload(any())).thenThrow(Exception.class);
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+        ResponseEntity<String> response = vexController.vex(apiKey, id, format, client);
+
+        // Then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
     ///
