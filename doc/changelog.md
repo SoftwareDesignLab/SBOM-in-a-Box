@@ -57,7 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `VexFileServiceTest` Class
 
 ### Changed
-
+- Renamed `core` package `ParserController` to `ParserManager` to avoid confusion
 
 ### Removed
 - Old `SVIPAPIController` class
