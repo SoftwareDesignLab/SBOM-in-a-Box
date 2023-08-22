@@ -18,6 +18,7 @@
       - [Merge SBOMs](#merge-sboms)
       - [Generate Quality Report](#generate-quality-report)
       - [Generate SBOM with SVIP](#generate-an-sbom-using-svip-parsers)
+      - [Get List of Open-Source Tools Supported By OSI](#get-list-of-open-source-tools-supported-by-osi)
       - [Generate SBOM with OSI](#generate-an-sbom-using-osi)
       - [Generate VEX](#generate-vex)
     - [MySQL Database](#mysql-database)
@@ -73,6 +74,7 @@ The API is located on `http://localhost:8080/svip`.
 - [Merge SBOMs](#merge-sboms)
 - [Generate Quality Report](#generate-quality-report)
 - [Generate SBOM with SVIP](#generate-an-sbom-using-svip-parsers)
+- [Get List of Open-Source Tools Supported By OSI](#get-list-of-open-source-tools-supported-by-osi)
 - [Generate SBOM with OSI](#generate-an-sbom-using-osi)
 - [Generate VEX](#generate-vex)
 
@@ -103,7 +105,7 @@ curl -X POST -d '{"fileName":"mySBOM","contents":"SBOM Data"}' http://localhost:
 ```
 
 ### Get SBOM File
-> Get an SBOM File from the Database
+> Get the contents of an SBOM object from the Database
 
 **Endpoint:** `http://localhost:8080/svip/sboms/content`
 
@@ -328,15 +330,12 @@ curl -X GET -G http://localhost:8080/svip/sboms/qa -d 'id=1'
 
 |  Parameter  |       Type        |       Description        | Is Required? |
 |:-----------:|:-----------------:|:------------------------:|:------------:|
+|   zipFile   |   MultipartFile   | Zipped folder of project |     YES      |
 | projectName |      String       | Name of SBOM to generate |     YES      |
 |   schema    | Serializer Schema |   Schema to convert to   |     YES      |
 |   format    | Serializer Format |   Format to convert to   |     YES      |
 
-**Request Body**
-
-| Body  |    Type    |            Description             | Is Required? |
-|:-----:|:----------:|:----------------------------------:|:------------:|
-| files | SBOMFile[] | fileName: string, contents: string |     YES      |
+> Note: Request must be sent using type multipart/form-data
 
 **Responses**
 
@@ -355,6 +354,27 @@ curl -X POST -G http://localhost:8080/svip/generators/parsers \
 -d '[{"fileName": "testfile1.java", "contents": "..."}, {"fileName": "testfile2.java", "contents": "..."}]'
 ```
 
+### Get List of Open-Source Tools Supported By OSI
+> Gets a list of all tool names currently supported by [Open Source Integration](README.md#open-source-integration) that
+> can then be passed into /generators/osi.
+
+**Endpoint:** `http://localhost:8080/svip/generators/osi/tools`
+
+**Request Method:** `GET`
+
+> Note: Request must be sent using type multipart/form-data
+
+**Responses**
+
+| Response Code |  Type  |                     Description                      |
+|:-------------:|:------:|:----------------------------------------------------:|
+|      200      |  Long  | A list of all tool names currently supported by OSI. |
+
+**Example**
+```bash
+curl -X GET -G http://localhost:8080/svip/generators/osi/tools
+```
+
 ### Generate an SBOM using OSI
 > Generates an SBOM with a given schema and format from project source files using 
 > [Open Source Integration](README.md#open-source-integration).
@@ -366,17 +386,15 @@ curl -X POST -G http://localhost:8080/svip/generators/parsers \
 
 **Parameters**
 
-|  Parameter  |       Type        |       Description        | Is Required? |
-|:-----------:|:-----------------:|:------------------------:|:------------:|
-| projectName |      String       | Name of SBOM to generate |     YES      |
-|   schema    | Serializer Schema |   Schema to convert to   |     YES      |
-|   format    | Serializer Format |   Format to convert to   |     YES      |
+|  Parameter  |       Type        |                                                            Description                                                            | Is Required? |
+|:-----------:|:-----------------:|:---------------------------------------------------------------------------------------------------------------------------------:|:------------:|
+|   zipFile   |   MultipartFile   |                                                     Zipped folder of project                                                      |     YES      |
+| projectName |      String       |                                                     Name of SBOM to generate                                                      |     YES      |
+|   schema    | Serializer Schema |                                                       Schema to convert to                                                        |     YES      |
+|   format    | Serializer Format |                                                       Format to convert to                                                        |     YES      |
+|  toolNames  |     String[]      |       JSON-formatted string array of open-source tool names to use when generating SBOMs. If not provided, defaults to all.       |      NO      |
 
-**Request Body**
-
-| Body  |    Type    |            Description             | Is Required? |
-|:-----:|:----------:|:----------------------------------:|:------------:|
-| files | SBOMFile[] | fileName: string, contents: string |     YES      |
+> Note: Request must be sent using type multipart/form-data
 
 **Responses**
 
