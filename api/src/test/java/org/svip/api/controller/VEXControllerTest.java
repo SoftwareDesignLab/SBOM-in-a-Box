@@ -59,7 +59,7 @@ public class VEXControllerTest {
         String format = "json";
         String client = "osv";
         SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
-        VEXResult vexResult = new VEXResult(new VEX(new VEX.Builder()), new HashMap<String,String>());
+        VEXResult vexResult = new VEXResult(new VEX(new VEX.Builder()), new HashMap<>());
         VEXFile uploadedVF = new VEXFile();
 
         // When
@@ -80,15 +80,12 @@ public class VEXControllerTest {
 
     @Test
     @DisplayName("Generate With Invalid SBOM")
-    void generateVexWithInvalidSBOMTest() throws Exception {
+    void generateVexWithInvalidSBOMTest() {
         // Given
         Long id = 0L;
         String apiKey = "your-api-key";
         String format = "json";
         String client = "osv";
-        SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
-        VEXResult vexResult = new VEXResult(new VEX(new VEX.Builder()), new HashMap<String,String>());
-        VEXFile uploadedVF = new VEXFile();
 
         // When
         when(sbomFileService.getSBOMFile(id)).thenReturn(null);
@@ -109,8 +106,7 @@ public class VEXControllerTest {
         String format = "json";
         String client = "osv";
         SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
-        VEXResult vexResult = new VEXResult(new VEX(new VEX.Builder()), new HashMap<String,String>());
-        VEXFile uploadedVF = new VEXFile();
+        VEXResult vexResult = new VEXResult(new VEX(new VEX.Builder()), new HashMap<>());
 
         // When
         when(sbomFileService.getSBOMFile(id)).thenReturn(sbom);

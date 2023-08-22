@@ -50,4 +50,18 @@ public class DiffControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Diff Report", response.getBody());
     }
+
+    @Test
+    @DisplayName("Generate diff report with exception")
+    void generate_diff_report_with_exception() throws Exception {
+        // Given
+        Long[] ids = new Long[2];
+        ids[0] = 0L;
+        ids[1] = 1L;
+        // When
+        when(this.diffService.generateDiffReportAsJSON(sbomFileService, 0L, ids)).thenThrow(Exception.class);
+        ResponseEntity<String> response = this.diffController.compare(0, ids);
+        // Then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
 }
