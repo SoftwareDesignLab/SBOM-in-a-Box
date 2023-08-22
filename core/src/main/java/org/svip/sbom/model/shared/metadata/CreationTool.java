@@ -66,10 +66,11 @@ public class CreationTool implements Comparable {
     }
 
     /**
-     * @param externalReference A CreationTool's external reference
+     * @param url Reference URL
+     * @param type Reference type
      */
-    public void addExternalReference(ExternalReference externalReference) {
-        this.externalReferences.add(externalReference);
+    public void addExternalReference(String url, String type) {
+        this.externalReferences.add(new ExternalReference(url, type));
     }
 
     ///
@@ -122,7 +123,6 @@ public class CreationTool implements Comparable {
         cf.addConflict("Tool Vendor", MISC_MISMATCH, this.vendor, other.getVendor());
         cf.addConflict("Tool Name", MISC_MISMATCH, this.name, other.getName());
         cf.addConflict("Tool Version", MISC_MISMATCH, this.version, other.getVersion());
-        cf.compareComparableSets("Tool External References", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
         cf.compareHashes("Tool Hash", this.hashes, other.getHashes());
 
         return cf.getConflicts();
@@ -157,10 +157,6 @@ public class CreationTool implements Comparable {
             if (!other.getHashes().get(alg).equals(this.hashes.get(alg)))
                 return false;
         }
-
-        // Check if external references are equivalent
-        if (this.externalReferences != null && !this.externalReferences.equals(other.getExternalReferences()))
-            return false;
 
         // All checks pass
         return true;
