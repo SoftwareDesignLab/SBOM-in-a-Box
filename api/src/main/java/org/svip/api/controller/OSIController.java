@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,13 +14,17 @@ import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
 import org.svip.conversion.ConversionException;
 import org.svip.generation.osi.OSI;
+import org.svip.generation.osi.OSIClient;
 import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.exceptions.DeserializerException;
 import org.svip.serializers.exceptions.SerializerException;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * REST API Controller for generating SBOMs with OSI
@@ -65,8 +70,8 @@ public class OSIController {
      *
      * @return True if OSI is enabled, false otherwise.
      */
-    public boolean isOSIEnabled() {
-        return container != null;
+    public static boolean isOSIEnabled() {
+        return OSIClient.dockerCheck() == 0;
     }
 
     ///
@@ -92,7 +97,7 @@ public class OSIController {
             return new ResponseEntity<>("Error getting tool list from Docker container.", HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(tools, HttpStatus.OK);
+        return new ResponseEntity<>(tools.toArray(new String[0]), HttpStatus.OK);
     }
 
     ///
@@ -110,19 +115,26 @@ public class OSIController {
      *                  possible tools will be used.
      * @return The ID of the uploaded SBOM.
      */
-    @PostMapping("/")
-    public ResponseEntity<?> generateOSI(@RequestParam("zipFile") MultipartFile zipFile,
+    @PostMapping(value = "/", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<?> generateOSI(@RequestPart("zipFile") MultipartFile zipFile,
                                          @RequestParam("projectName") String projectName,
                                          @RequestParam("schema") SerializerFactory.Schema schema,
                                          @RequestParam("format") SerializerFactory.Format format,
-                                         @RequestBody String[] toolNames) {
+                                         @RequestParam(value = "toolNames", required = false) String[] toolNames) {
         if (!isOSIEnabled())
             return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
 
-        ArrayList<HashMap<SBOMFile, Integer>> unZipped;
         try {
-            unZipped = (ArrayList<HashMap<SBOMFile, Integer>>)
-                    sbomService.unZip(Objects.requireNonNull(sbomService.convertMultipartToZip(zipFile)));
+            schema.getSerializer(format);
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("POST /svip/generators/osi - " + e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        ArrayList<HashMap<SBOMFile, Integer>> unZipped;
+
+        try {
+            unZipped = SBOMFileService.unZip(SBOMFileService.convertMultipartToZip(zipFile));
         } catch (IOException e) {
             LOGGER.error("POST /svip/generators/osi - " + e.getMessage());
             return new ResponseEntity<>("Make sure attachment is a zip file (.zip): " + e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -141,7 +153,7 @@ public class OSIController {
                     container.addSourceFile(fileName, srcFile.getContents());
                 } catch (IOException e) {
                     LOGGER.error("POST /svip/generators/osi - Error adding source file");
-                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                    return new ResponseEntity<>("Error adding source file", HttpStatus.NOT_FOUND);
                 }
         }
 
@@ -149,7 +161,10 @@ public class OSIController {
         Map<String, String> generatedSBOMFiles;
         try {
             List<String> tools = null;
-            if (toolNames != null && toolNames.length > 0) tools = List.of(toolNames);
+            if (toolNames != null && toolNames.length > 0) {
+                tools = List.of(toolNames);
+                LOGGER.info("POST /svip/generators/osi - Running with tool names: " + tools);
+            } else LOGGER.info("POST /svip/generators/osi - Running with default tools");
 
             generatedSBOMFiles = container.generateSBOMs(tools);
         } catch (Exception e) {
@@ -169,13 +184,11 @@ public class OSIController {
 
                 // Log
                 LOGGER.info("POST /svip/generators/osi - Generated SBOM with ID " + sbom.getId() + ": " + sbom.getName());
-            } catch (JsonProcessingException e) {
-                // Problem with parsing
-                LOGGER.error("POST /svip/sboms - " + e.getMessage());
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } catch (IllegalArgumentException ignored) {
+                // TODO ignore any illegal files until XML deserialization exists
             } catch (Exception e) {
-                // Problem with uploading
-                LOGGER.error("POST /svip/sboms - " + e.getMessage());
+                // Problem with uploading/parsing
+                LOGGER.error("POST /svip/generators/osi - " + e.getMessage());
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
@@ -186,15 +199,13 @@ public class OSIController {
         }
 
         // Merge SBOMs into one SBOM
-        Long merged = this.sbomService.merge(uploaded.toArray(new Long[0]));
-
-        // todo should probably throw errors instead of returning null if error occurs
-        if (merged == null)
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        else if (merged == -1)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        else if (merged < 0)
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        Long merged;
+        try {
+            merged = this.sbomService.merge(uploaded.toArray(new Long[0]));
+        } catch (Exception e) {
+            LOGGER.error("POST /svip/generators/osi - Error merging: " + e.getMessage());
+            return new ResponseEntity<>("Error merging: " + e.getMessage(), HttpStatus.NO_CONTENT);
+        }
 
         // Convert
         Long converted;
