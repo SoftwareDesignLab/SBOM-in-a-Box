@@ -103,10 +103,7 @@ public class OSI {
                 break;
             case 1:
                 // Docker is installed but not running
-                throw new DockerNotAvailableException("Docker is installed but not running");
-            case 2:
-                // Docker is not installed
-                throw new DockerNotAvailableException("Docker is not installed");
+                throw new DockerNotAvailableException("Unable to access OSI container API.");
         }
 
         this.client = new OSIClient(); // Create OSIClient instance

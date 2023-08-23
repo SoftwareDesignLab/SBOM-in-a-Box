@@ -151,15 +151,15 @@ public class CDX14ComponentObjectTest {
         for(Conflict c : conflicts)
         {
 
-            switch(c.GetMessage())
+            switch(c.getMessage())
             {
                 case "Type doesn't match", "UID doesn't match",
                         "Copyright doesn't match", "Mime Type doesn't match",
                         "Scope doesn't match", "Group doesn't match"
-                        -> assertEquals(MismatchType.MISC_MISMATCH, c.GetType());
-                case "Name doesn't match" -> assertEquals(MismatchType.NAME_MISMATCH, c.GetType());
-                case "Author doesn't match" -> assertEquals(MismatchType.AUTHOR_MISMATCH, c.GetType());
-                case "License doesn't match" -> assertEquals(MismatchType.LICENSE_MISMATCH, c.GetType());
+                        -> assertEquals(MismatchType.MISC_MISMATCH, c.getType());
+                case "Name doesn't match" -> assertEquals(MismatchType.NAME_MISMATCH, c.getType());
+                case "Author doesn't match" -> assertEquals(MismatchType.AUTHOR_MISMATCH, c.getType());
+                case "License doesn't match" -> assertEquals(MismatchType.LICENSE_MISMATCH, c.getType());
             }
         }
 
