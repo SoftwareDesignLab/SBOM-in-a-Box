@@ -224,6 +224,7 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
             writeLicenses(jsonGenerator, data.getLicenses());
         }
 
+
         /* Root Component */
         if (rootComponent != null) {
             jsonGenerator.writeFieldName("component");
@@ -241,7 +242,7 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
 
         writeHashes(jsonGenerator, tool.getHashes());
 
-        // TODO external references (we don't store this on a per tool basis)
+        writeExternalRefs(jsonGenerator, tool.getExternalReferences());
 
         jsonGenerator.writeEndObject(); // }
     }
