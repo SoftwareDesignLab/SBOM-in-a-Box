@@ -66,11 +66,10 @@ public class CreationTool implements Comparable {
     }
 
     /**
-     * @param url Reference URL
-     * @param type Reference type
+     * @param externalReference A CreationTool's external reference
      */
-    public void addExternalReference(String url, String type) {
-        this.externalReferences.add(new ExternalReference(url, type));
+    public void addExternalReference(ExternalReference externalReference) {
+        this.externalReferences.add(externalReference);
     }
 
     ///
