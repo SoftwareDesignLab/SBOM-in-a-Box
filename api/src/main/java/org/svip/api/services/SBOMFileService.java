@@ -11,6 +11,9 @@ import org.svip.conversion.Conversion;
 import org.svip.conversion.ConversionException;
 import org.svip.merge.MergerController;
 import org.svip.merge.MergerException;
+import org.svip.repair.RepairController;
+import org.svip.repair.fix.Fix;
+import org.svip.repair.statements.RepairStatement;
 import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
@@ -335,5 +338,28 @@ public class SBOMFileService {
 
         return fileMap;
     }
+
+    /**
+     * Returns a map of fixes
+     * @param id id of SBOM to repair
+     * @return map of potential fixes
+     * @throws JsonProcessingException error deserialization occured
+     */
+    public Map<String, Map<String, List<Fix<?>>>> getRepairStatement(Long id) throws JsonProcessingException {
+
+        org.svip.sbom.model.interfaces.generics.SBOM toRepair;
+        toRepair = getSBOMFile(id).toSBOMObject();
+
+        if(toRepair == null)
+            return null; // bad request
+
+        RepairController repairController = new RepairController();
+
+        RepairStatement repair = repairController.getStatement(toRepair);
+
+        return repair.generateRepairStatement(toRepair.getUID(), toRepair);
+
+    }
+
 }
 
