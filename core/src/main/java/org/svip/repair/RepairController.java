@@ -28,7 +28,7 @@ public class RepairController {
         return rs.generateRepairStatement(uid, sbom);
     }
 
-    public SBOM repairSBOM(SBOM sbom, String uid, Map<String, Map<String, String>> repairs) {
+    public SBOM repairSBOM(SBOM sbom, String uid, Map<String, Map<String, List<Fix<?>>>> repairs) {
         Repair r = getRepair(sbom);
         return r.repairSBOM(uid, sbom, repairs);
     }
