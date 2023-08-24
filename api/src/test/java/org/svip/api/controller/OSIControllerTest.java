@@ -60,7 +60,7 @@ public class OSIControllerTest {
     @ValueSource(strings = { "Rust_noEmptyFiles" })
     @DisplayName("Generate with default tools")
     void generateWithDefaultToolsTest(String projectName) throws Exception {
-        mockMvc.perform(multipart("/svip/generators/osi/")
+        mockMvc.perform(multipart("/svip/generators/osi")
                         .file(buildMockMultipartFile(projectName))
                         .param("projectName", projectName)
                         .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
@@ -72,7 +72,7 @@ public class OSIControllerTest {
     @ValueSource(strings = { "Conda_noEmptyFiles" })
     @DisplayName("Generate with invalid tool")
     void generateWithInvalidToolTest(String projectName) throws Exception {
-        mockMvc.perform(multipart("/svip/generators/osi/")
+        mockMvc.perform(multipart("/svip/generators/osi")
                         .file(buildMockMultipartFile(projectName))
                         .param("projectName", projectName)
                         .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
@@ -85,7 +85,7 @@ public class OSIControllerTest {
     @ValueSource(strings = { "Java" })
     @DisplayName("Generate with valid tool")
     void generateWithValidToolTest(String projectName) throws Exception {
-        mockMvc.perform(multipart("/svip/generators/osi/")
+        mockMvc.perform(multipart("/svip/generators/osi")
                         .file(buildMockMultipartFile(projectName))
                         .param("projectName", projectName)
                         .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
@@ -98,7 +98,7 @@ public class OSIControllerTest {
     @ValueSource(strings = { "sampleProjectEmpty", "sampleProjectNullProperties" })
     @DisplayName("Empty Projects")
     void generateWithInvalidProjectTest(String projectName) throws Exception {
-        mockMvc.perform(multipart("/svip/generators/osi/")
+        mockMvc.perform(multipart("/svip/generators/osi")
                         .file(buildMockMultipartFile(projectName))
                         .param("projectName", projectName)
                         .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
@@ -109,7 +109,7 @@ public class OSIControllerTest {
     @Test
     @DisplayName("Incorrect File Type")
     void generateWithIncorrectFileTypeTest() throws Exception {
-        mockMvc.perform(multipart("/svip/generators/osi/")
+        mockMvc.perform(multipart("/svip/generators/osi")
                         .file(new MockMultipartFile("zipFile",
                                 Files.readAllBytes(Path.of(
                                 System.getProperty("user.dir") + "/src/test/resources/sample_projects/Ruby/lib/bar.rb"
@@ -124,7 +124,7 @@ public class OSIControllerTest {
     @ValueSource(strings = { "Go" })
     @DisplayName("Convert to CDX tag value")
     void generateWithCDXTagValueTest(String projectName) throws Exception {
-        mockMvc.perform(multipart("/svip/generators/osi/")
+        mockMvc.perform(multipart("/svip/generators/osi")
                         .file(buildMockMultipartFile(projectName))
                         .param("projectName", projectName)
                         .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
@@ -138,7 +138,7 @@ public class OSIControllerTest {
     void generateWithInvalidConversionTest(String projectName) throws Exception {
         when(sbomFileService.convert(any(), any(), any(), any())).thenThrow(JsonProcessingException.class);
 
-        mockMvc.perform(multipart("/svip/generators/osi/")
+        mockMvc.perform(multipart("/svip/generators/osi")
                         .file(buildMockMultipartFile(projectName))
                         .param("projectName", projectName)
                         .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
@@ -152,7 +152,7 @@ public class OSIControllerTest {
     void generateWithInvalidUploadTest(String projectName) throws Exception {
         when(sbomFileService.upload(any())).thenThrow(JsonProcessingException.class);
 
-        mockMvc.perform(multipart("/svip/generators/osi/")
+        mockMvc.perform(multipart("/svip/generators/osi")
                         .file(buildMockMultipartFile(projectName))
                         .param("projectName", projectName)
                         .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
@@ -166,7 +166,7 @@ public class OSIControllerTest {
     void generateWithInvalidMergeTest(String projectName) throws Exception {
         when(sbomFileService.merge(any())).thenThrow(Exception.class);
 
-        mockMvc.perform(multipart("/svip/generators/osi/")
+        mockMvc.perform(multipart("/svip/generators/osi")
                         .file(buildMockMultipartFile(projectName))
                         .param("projectName", projectName)
                         .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
