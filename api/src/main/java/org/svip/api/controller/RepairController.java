@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.svip.api.services.SBOMFileService;
 import org.svip.repair.fix.Fix;
 import org.svip.sbom.model.interfaces.generics.SBOM;
@@ -48,7 +49,7 @@ public class RepairController {
      * @return map of repair fixes as a repair statement
      */
     @GetMapping("/sboms/repair/statement")
-    public ResponseEntity<?> repairStatement(Long id){ // todo just change to a list of fixes?
+    public ResponseEntity<?> repairStatement(@RequestParam("id") long id){ // todo just change to a list of fixes?
 
         Map<String, Map<String, List<Fix<?>>>> repairStatement;
         try{
@@ -74,8 +75,9 @@ public class RepairController {
      * @return id of repaired SBOM
      */
     @GetMapping("/sboms/repair")
-    public ResponseEntity<?> repairSBOM(Long id, Map<String, Map<String, List<Fix<?>>>> repairStatement,
-                                        boolean overwrite){ // todo just change to a list of fixes?
+    public ResponseEntity<?> repairSBOM(@RequestParam("id") long id,
+                                        @RequestParam("repairStatement") Map<String, Map<String, List<Fix<?>>>> repairStatement, // todo just change to a list of fixes?
+                                        @RequestParam("overwrite") boolean overwrite){
 
         long repair;
         try{
