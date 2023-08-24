@@ -60,7 +60,8 @@ public class RepairController {
         }
 
         if(repairStatement == null)
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("GET /svip/sboms/content?id=" + id + " Cannot find SBOM of id " + id,
+                    HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(repairStatement, HttpStatus.OK);
 

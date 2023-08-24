@@ -348,17 +348,18 @@ public class SBOMFileService {
      */
     public Map<String, Map<String, List<Fix<?>>>> getRepairStatement(Long id) throws JsonProcessingException {
 
-        org.svip.sbom.model.interfaces.generics.SBOM toRepair;
-        toRepair = getSBOMFile(id).toSBOMObject();
+        SBOM toRepair = getSBOMFile(id);
 
         if(toRepair == null)
             return null; // bad request
 
+        org.svip.sbom.model.interfaces.generics.SBOM SBOMToRepair = toRepair.toSBOMObject();
+
         RepairController repairController = new RepairController();
 
-        RepairStatement repair = repairController.getStatement(toRepair);
+        RepairStatement repair = repairController.getStatement(SBOMToRepair);
 
-        return repair.generateRepairStatement(toRepair.getUID(), toRepair);
+        return repair.generateRepairStatement(SBOMToRepair.getUID(), SBOMToRepair);
 
     }
 
