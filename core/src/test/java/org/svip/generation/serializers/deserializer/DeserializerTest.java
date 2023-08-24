@@ -8,6 +8,9 @@ public abstract class DeserializerTest {
     protected static final String CDX_14_JSON_SBOM = System.getProperty("user.dir") +
             TEST_DATA_PATH + "cdx_json/sbom.test.json";
 
+    protected static final String CDX_14_XML_SBOM = System.getProperty("user.dir") +
+            TEST_DATA_PATH + "cdx_xml/sbom.alpine.xml";
+
     protected static final String SPDX23_JSON_SBOM = System.getProperty("user.dir") +
             TEST_DATA_PATH + "spdx_json/sbom.test.json";
 
