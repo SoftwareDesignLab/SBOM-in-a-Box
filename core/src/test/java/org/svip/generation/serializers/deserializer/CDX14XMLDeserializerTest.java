@@ -27,6 +27,8 @@ public class CDX14XMLDeserializerTest extends DeserializerTest {
         cdx14xml = (CDX14SBOM) getDeserializer().readFromString(Files.readString(Path.of(CDX_14_XML_SBOM)));
     }
 
+    // TODO, make a new SBOM in the style of the other test SBOMs. Swap back the timestamp, metadata, and other tests I changed for use with the temp SBOM
+
     @Override
     public Deserializer getDeserializer() {
         return new CDX14XMLDeserializer();
