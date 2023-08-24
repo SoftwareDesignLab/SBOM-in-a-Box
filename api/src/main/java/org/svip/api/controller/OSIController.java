@@ -113,7 +113,7 @@ public class OSIController {
      *                  possible tools will be used.
      * @return The ID of the uploaded SBOM.
      */
-    @PostMapping(value = "/", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @PostMapping(value = "", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<?> generateOSI(@RequestPart("zipFile") MultipartFile zipFile,
                                          @RequestParam("projectName") String projectName,
                                          @RequestParam("schema") SerializerFactory.Schema schema,
