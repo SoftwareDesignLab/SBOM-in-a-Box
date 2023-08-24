@@ -100,6 +100,8 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
         // VERSION
         if (node.get("version") != null) sbomBuilder.setVersion(node.get("version").asText());
 
+        // TODO: Spec Version (regex?)
+
         if (node.get("metadata") != null) {
 
             // LICENSES
@@ -121,6 +123,11 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
         if (node.get("components") != null)
             for (JsonNode component : node.get("components"))
                 sbomBuilder.addCDX14Package(resolveComponent(componentBuilder, component));
+
+        // todo, it's strange, but it looks like node.get("components").get("component") is actually the list of components, could be wrong though.. same thing might go for licenses and refs
+//        if (node.get("components") != null && node.get("components").get("component") != null)
+//            for (JsonNode component : node.get("components").get("component"))
+//                sbomBuilder.addCDX14Package(resolveComponent(componentBuilder, component));
 
         // EXTERNAL REFERENCES
         if (node.get("externalReferences") != null)
