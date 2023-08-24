@@ -43,11 +43,11 @@ public class RepairController {
     ///
 
     /**
-     * USAGE. Send POST request to /sboms/repair/statements with a URL parameter id to get repair statement.
+     * USAGE. Send GET request to /sboms/repair/statements with a URL parameter id to get repair statement.
      * @param id id of SBOM to repair, if needed
      * @return map of repair fixes as a repair statement
      */
-    @PostMapping("/sboms/repair/statement")
+    @GetMapping("/sboms/repair/statement")
     public ResponseEntity<?> repairStatement(Long id){ // todo just change to a list of fixes?
 
         Map<String, Map<String, List<Fix<?>>>> repairStatement;
