@@ -3,6 +3,19 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v8.0.1-alpha] - (8/25/2023)
+
+### Added
+- `sboms/repair/statement` API endpoint
+  - `RepairController.java`
+  - `SBOMFileService.repair()`
+
+### Changed
+- Added docstrings to repair backend
+- Combined `RepairStatementSPDX23` and `RepairStatementCDX14` into `RepairStatementSPDX23CDX14`
+  - Both SBOM schemas can be repaired similarly
+
+
 ## [v8.0.0-alpha] - (8/22/2023)
 
 > API Refactor Update - Separated >700 line SVIPAPIController into multiple, more testable classes. See the 
