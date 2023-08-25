@@ -1,6 +1,6 @@
 package org.svip.generation;
 
-import org.svip.generation.parsers.ParserController;
+import org.svip.generation.parsers.ParserManager;
 import org.svip.generation.parsers.utils.VirtualPath;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.SerializerFactory;
@@ -355,7 +355,7 @@ public class SBOMGeneratorCLI {
 
         // Instantiate controller with the filepath
         VirtualPath sourcePath = new VirtualPath(reqArgs.get(0));
-        final ParserController controller = new ParserController(sourcePath.getFileName().toString(), buildFileMap(sourcePath));
+        final ParserManager controller = new ParserManager(sourcePath.getFileName().toString(), buildFileMap(sourcePath));
         controller.parseAll(); // Parse all files
 
         // Build outPath

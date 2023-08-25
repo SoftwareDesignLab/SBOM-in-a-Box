@@ -9,6 +9,7 @@ public enum MismatchType {
      */
     // Special case
     MISSING,
+    MISSING_COMPONENT,
     /**
      * Component found in both SBOMs, but has different versions
      */
