@@ -1,11 +1,13 @@
 package org.svip.repair.statements;
 
 import org.svip.metrics.pipelines.QualityReport;
+import org.svip.metrics.pipelines.schemas.CycloneDX14.CDX14Pipeline;
 import org.svip.metrics.pipelines.schemas.SPDX23.SPDX23Pipeline;
 import org.svip.metrics.resultfactory.Result;
 import org.svip.metrics.resultfactory.enumerations.STATUS;
 import org.svip.repair.fix.*;
 import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,9 +22,14 @@ public class RepairStatementSPDX23CDX14 implements RepairStatement {
     @Override
     public Map<String, Map<String, List<Fix<?>>>> generateRepairStatement(String uid, SBOM sbom) {
 
-        SPDX23Pipeline pipeline = new SPDX23Pipeline();
-
-        QualityReport report = pipeline.process(uid, sbom); // get quality report
+        QualityReport report; // get quality report
+        if (sbom instanceof SPDX23SBOM) {
+            SPDX23Pipeline pipeline = new SPDX23Pipeline();
+            report = pipeline.process(uid, sbom);
+        } else {
+            CDX14Pipeline pipeline = new CDX14Pipeline();
+            report = pipeline.process(uid, sbom);
+        }
 
         Map<String, Map<String, List<Result>>> results = report.getResults();
 
