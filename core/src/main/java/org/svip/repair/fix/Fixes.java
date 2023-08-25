@@ -13,8 +13,8 @@ import java.util.List;
 public interface Fixes {
 
     /**
-     * @param result object from quality report
-     * @param sbom   sbom from quality report
+     * @param result        object from quality report
+     * @param sbom          sbom from quality report
      * @param repairSubType key from quality report map most directly relating to the repair type
      * @return list of potential fixes
      */
