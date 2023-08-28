@@ -2,7 +2,9 @@ package org.svip.repair;
 
 import org.junit.jupiter.api.Test;
 import org.svip.repair.fix.Fix;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
 
 import java.io.IOException;
@@ -22,7 +24,7 @@ public class RepairTest {
     private final RepairController r = new RepairController();
 
     @Test
-    public void repairTest() throws IOException {
+    public void SPDXRepairTest() throws IOException {
 
         SPDX23JSONDeserializer spdx23JSONDeserializer = new SPDX23JSONDeserializer();
         SPDX23SBOM sbom = spdx23JSONDeserializer.readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
@@ -31,6 +33,14 @@ public class RepairTest {
         // todo CDX one
         // todo manually do the rest based off metric tests
 
+    }
+
+    @Test
+    public void CDXRepairTest() throws IOException {
+
+        CDX14JSONDeserializer cdx14JSONDeserializer = new CDX14JSONDeserializer();
+        CDX14SBOM sbom = cdx14JSONDeserializer.readFromString(Files.readString(Path.of(CDX_14_JSON_SBOM)));
+        Map<String, Map<String, List<Fix<?>>>> statement = r.generateStatement(sbom, sbom.getUID());
 
     }
 
