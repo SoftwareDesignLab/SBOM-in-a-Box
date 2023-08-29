@@ -95,16 +95,8 @@ public class OSI {
         BOUND_DIR.SBOMS.cleanPath();
 
         // Run Docker check and throw if we can't validate an install
-        int dockerStatus = dockerCheck();
-
-        switch (dockerStatus) {
-            case 0:
-                // Docker is installed and running
-                break;
-            case 1:
-                // Docker is installed but not running
-                throw new DockerNotAvailableException("Unable to access OSI container API.");
-        }
+        if (dockerCheck() == 1)
+            throw new DockerNotAvailableException("OSI container API returned non-200 response code.");
 
         this.client = new OSIClient(); // Create OSIClient instance
     }
