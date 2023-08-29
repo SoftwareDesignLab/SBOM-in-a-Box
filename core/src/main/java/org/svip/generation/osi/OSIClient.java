@@ -1,6 +1,7 @@
 package org.svip.generation.osi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
 import org.svip.generation.osi.exceptions.DockerNotAvailableException;
 import org.svip.utils.Debug;
 
@@ -10,6 +11,7 @@ import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * File: OSIClient.java
@@ -111,16 +113,26 @@ public class OSIClient {
     public boolean generateSBOMs(List<String> toolNames) {
         try {
             HttpURLConnection conn = connectToURL(URL.GENERATE);
+            conn.setRequestProperty("Content-Type", "application/json");
+
+            conn.connect();
 
             try (OutputStream os = conn.getOutputStream()) {
                 try (OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8)) {
                     // Ensure there is at least one valid tool, if not don't put anything in the request body
-                    if (toolNames != null && toolNames.size() > 0) osw.write(toolNames.toString());
+                    if (toolNames != null && toolNames.size() > 0) {
+                        // Build JSON array
+                        String toolArray = toolNames.stream()
+                                .map(s -> "\"" + s + "\"") // Surround each string with quotes
+                                .collect(Collectors.joining(", "));
+                        JSONObject body = new JSONObject();
+                        body.put("tools", "[" + toolArray + "]");
+
+                        osw.write(body.toString());
+                    }
                     osw.flush();
                 }
             }
-
-            conn.connect();
 
             // DO NOT REMOVE THIS LINE. This is needed for a connection to actually be made, regardless of
             // calling .connect()

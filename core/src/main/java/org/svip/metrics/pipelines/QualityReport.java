@@ -49,4 +49,16 @@ public class QualityReport {
         // add the test results and the component
         components.put(uid, testResults);
     }
+
+
+    ///
+    /// Getters
+    ///
+
+    /**
+     * @return QA UID
+     */
+    public String getUid() {
+        return this.uid;
+    }
 }

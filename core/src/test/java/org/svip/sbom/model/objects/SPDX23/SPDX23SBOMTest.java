@@ -190,16 +190,16 @@ public class SPDX23SBOMTest {
         for(Conflict c : conflicts)
         {
 
-            switch(c.GetMessage())
+            switch(c.getMessage())
             {
                 case "Document Comment doesn't match", "UID doesn't match"
-                        -> assertEquals(MismatchType.MISC_MISMATCH, c.GetType());
-                case "Format doesn't match" -> assertEquals(MismatchType.ORIGIN_FORMAT_MISMATCH, c.GetType());
-                case "Name doesn't match" -> assertEquals(MismatchType.NAME_MISMATCH, c.GetType());
-                case "Version doesn't match" -> assertEquals(MismatchType.VERSION_MISMATCH, c.GetType());
-                case "Spec Version doesn't match" -> assertEquals(MismatchType.SCHEMA_VERSION_MISMATCH, c.GetType());
-                case "License doesn't match", "License List Version doesn't match" -> assertEquals(MismatchType.LICENSE_MISMATCH, c.GetType());
-                case "Author doesn't match" -> assertEquals(MismatchType.AUTHOR_MISMATCH, c.GetType());
+                        -> assertEquals(MismatchType.MISC_MISMATCH, c.getType());
+                case "Format doesn't match" -> assertEquals(MismatchType.ORIGIN_FORMAT_MISMATCH, c.getType());
+                case "Name doesn't match" -> assertEquals(MismatchType.NAME_MISMATCH, c.getType());
+                case "Version doesn't match" -> assertEquals(MismatchType.VERSION_MISMATCH, c.getType());
+                case "Spec Version doesn't match" -> assertEquals(MismatchType.SCHEMA_VERSION_MISMATCH, c.getType());
+                case "License doesn't match", "License List Version doesn't match" -> assertEquals(MismatchType.LICENSE_MISMATCH, c.getType());
+                case "Author doesn't match" -> assertEquals(MismatchType.AUTHOR_MISMATCH, c.getType());
             }
         }
 
