@@ -54,17 +54,17 @@ public class CPEFixes implements Fixes {
                 case "Value" -> {
                     if (cpeObject.getProduct().contains(actual) || cpeObject.getProduct().contains(expected) || cpeObject.getProduct().isEmpty() && actual.contains("null"))
                         return List.of(new Fix<>(new CPE(cpe), new CPE(cpeObject.getVendor(), expected,
-                                cpeObject.getVersion())));
+                                cpeObject.getVersion()).toString()));
                 }
                 case "Version" -> {
                     if (cpeObject.getVersion().contains(actual) || cpeObject.getVersion().contains(expected) || cpeObject.getVersion().isEmpty() && actual.contains("null"))
                         return List.of(new Fix<>(new CPE(cpe), new CPE(cpeObject.getVendor(), cpeObject.getProduct(),
-                                expected)));
+                                expected).toString()));
                 }
                 case "Vendor" -> {
                     if (cpeObject.getVendor().contains(actual) || cpeObject.getVendor().contains(expected) || cpeObject.getVendor().isEmpty() && actual.contains("null"))
                         return List.of(new Fix<>(new CPE(cpe), new CPE(expected, cpeObject.getProduct(),
-                                cpeObject.getVersion())));
+                                cpeObject.getVersion()).toString()));
                 }
             }
         } catch (Exception e) {

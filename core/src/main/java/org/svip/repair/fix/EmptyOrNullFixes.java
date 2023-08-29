@@ -42,6 +42,8 @@ public class EmptyOrNullFixes implements Fixes {
 
         if (result.getDetails().contains("Bom Version was a null value"))
             return bomVersionFix(sbom);
+        else if (result.getDetails().contains("Bom-Ref")) // i.e., UID
+            return bomRefFix(repairSubType);
         else if (result.getDetails().contains("Creation Data"))
             return creationDataFix();
         else if (result.getDetails().contains("SPDXID"))
@@ -77,6 +79,18 @@ public class EmptyOrNullFixes implements Fixes {
             return new ArrayList<>(List.of(new Fix<>("", "2.3"), new Fix<>("", "1.4"),
                     new Fix<>("", "1.04a"))); // todo check 1.04a is current SVIP bomVersion
 
+    }
+
+    /**
+     * @return a list of potential fixes for a null bom-ref
+     */
+    private List<Fix<?>> bomRefFix(String subType) {
+        String subTypeHex = Integer.toHexString(subType.hashCode()).toLowerCase();
+        List<Fix<?>> result = new ArrayList<>();
+        result.add(emptyString.get(0));
+        result.add(new Fix<>(null, subTypeHex)); // hexadecimal hash of subtype of component
+        result.add(new Fix<>(null, "pkg:/" + subType + "-" + subTypeHex));
+        return result;
     }
 
     /**
@@ -263,6 +277,5 @@ public class EmptyOrNullFixes implements Fixes {
         return fixList;
 
     }
-
 
 }
