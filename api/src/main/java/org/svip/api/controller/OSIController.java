@@ -14,7 +14,6 @@ import org.svip.api.services.SBOMFileService;
 import org.svip.conversion.ConversionException;
 import org.svip.generation.osi.OSI;
 import org.svip.generation.osi.OSIClient;
-import org.svip.generation.osi.exceptions.DockerNotAvailableException;
 import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.exceptions.DeserializerException;
@@ -70,11 +69,7 @@ public class OSIController {
      * @return True if OSI is enabled, false otherwise.
      */
     public static boolean isOSIEnabled() {
-        try {
-            return OSIClient.isOSIContainerAvailable();
-        } catch(DockerNotAvailableException e) {
-            return false;
-        }
+        return OSIClient.isOSIContainerAvailable();
     }
 
     ///
@@ -195,21 +190,14 @@ public class OSIController {
             return new ResponseEntity<>("No SBOMs generated for these files.", HttpStatus.NO_CONTENT);
         }
 
-        // todo poor hotfix, need a better solution
+        // Merge SBOMs into one SBOM
         Long merged;
-        // Only merge if 2 or more
-        if(uploaded.size() >= 2){
-            // Merge SBOMs into one SBOM
-            try {
-                merged = this.sbomService.merge(uploaded.toArray(new Long[0]));
-            } catch (Exception e) {
-                LOGGER.error("POST /svip/generators/osi - Unable to merge, no content: " + e.getMessage());
-                return new ResponseEntity<>("Unable to merge, no content: " + e.getMessage(), HttpStatus.NO_CONTENT);
-            }
-        } else {
-            merged = uploaded.get(0);
+        try {
+            merged = this.sbomService.merge(uploaded.toArray(new Long[0]));
+        } catch (Exception e) {
+            LOGGER.error("POST /svip/generators/osi - Unable to merge, no content: " + e.getMessage());
+            return new ResponseEntity<>("Unable to merge, no content: " + e.getMessage(), HttpStatus.NO_CONTENT);
         }
-
 
         // Convert
         Long converted;
