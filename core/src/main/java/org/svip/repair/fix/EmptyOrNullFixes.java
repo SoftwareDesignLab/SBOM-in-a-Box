@@ -24,8 +24,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class EmptyOrNullFixes implements Fixes{
+/**
+ * Fixes class to generate suggested repairs for NULL attributes of a component
+ */
+public class EmptyOrNullFixes implements Fixes {
 
+    // threads to query potential purls from Googl
     protected final ArrayList<QueryWorker> queryWorkers;
     private final List<Fix<?>> emptyString = Collections.singletonList(new Fix<>("null", ""));
 
@@ -36,21 +40,21 @@ public class EmptyOrNullFixes implements Fixes{
     @Override
     public List<Fix<?>> fix(Result result, SBOM sbom, String repairSubType) {
 
-        if(result.getDetails().contains("Bom Version was a null value"))
+        if (result.getDetails().contains("Bom Version was a null value"))
             return bomVersionFix(sbom);
-        else if(result.getDetails().contains("Creation Data"))
+        else if (result.getDetails().contains("Creation Data"))
             return creationDataFix();
-        else if(result.getDetails().contains("SPDXID"))
+        else if (result.getDetails().contains("SPDXID"))
             return SPDXIDFix(result);
-        else if(result.getDetails().contains("Comment"))
+        else if (result.getDetails().contains("Comment"))
             return commentNullFix();
-        else if(result.getDetails().contains("Attribution Text"))
+        else if (result.getDetails().contains("Attribution Text"))
             return attributionTextNullFix();
-        else if(result.getDetails().contains("File Notice"))
+        else if (result.getDetails().contains("File Notice"))
             return fileNoticeNullFix();
-        else if(result.getDetails().contains("Author"))
+        else if (result.getDetails().contains("Author"))
             return authorNullFix(sbom, repairSubType);
-        else if(result.getDetails().contains("Copyright"))
+        else if (result.getDetails().contains("Copyright"))
             return copyrightNullFix();
 
         return null;
@@ -63,11 +67,11 @@ public class EmptyOrNullFixes implements Fixes{
      */
     private List<Fix<?>> bomVersionFix(SBOM sbom) {
 
-        if(sbom instanceof SPDX23SBOM)
+        if (sbom instanceof SPDX23SBOM)
             return Collections.singletonList(new Fix<>("", "2.3"));
-        else if(sbom instanceof CDX14SBOM)
+        else if (sbom instanceof CDX14SBOM)
             return Collections.singletonList(new Fix<>("", "1.4"));
-        else if(sbom instanceof SVIPSBOM)
+        else if (sbom instanceof SVIPSBOM)
             return Collections.singletonList(new Fix<>("", "1.04a"));
         else
             return new ArrayList<>(List.of(new Fix<>("", "2.3"), new Fix<>("", "1.4"),
@@ -80,7 +84,7 @@ public class EmptyOrNullFixes implements Fixes{
      *
      * @return potential fixes for creation data
      */
-    private List<Fix<?>> creationDataFix(){
+    private List<Fix<?>> creationDataFix() {
 
         String dateAndTime;
         LocalDate localDate = LocalDate.now();
@@ -88,14 +92,15 @@ public class EmptyOrNullFixes implements Fixes{
         dateAndTime = formatterLocalDate.format(localDate);
         LocalTime localTime = LocalTime.now();
         DateTimeFormatter formatterLocalTime = DateTimeFormatter.ofPattern("HH:mm:ss");
-        dateAndTime+= "T" + formatterLocalTime.format(localTime) + localTime.atOffset(ZoneOffset.UTC);
+        dateAndTime += "T" + formatterLocalTime.format(localTime) + localTime.atOffset(ZoneOffset.UTC);
 
-        return Collections.singletonList(new Fix<>("", "\"created\" : .\"" + dateAndTime + "\"" ));
+        return Collections.singletonList(new Fix<>("", "\"created\" : .\"" + dateAndTime + "\""));
 
     }
 
     /**
      * Fixes SPDXID
+     *
      * @param result failed test result
      * @return fix for SPDXID
      */
@@ -120,44 +125,44 @@ public class EmptyOrNullFixes implements Fixes{
     /**
      * @return empty string in place for null file notice
      */
-    private List<Fix<?>> fileNoticeNullFix(){
+    private List<Fix<?>> fileNoticeNullFix() {
         return emptyString;
     }
 
     /**
      * @return empty string in place for null copyright
      */
-    private List<Fix<?>> copyrightNullFix(){
+    private List<Fix<?>> copyrightNullFix() {
         return emptyString;
     }
 
     /**
-     * @param sbom sbom
+     * @param sbom          sbom
      * @param repairSubType the key most closely relating to the component
      * @return a list of potential authors
      */
-    private List<Fix<?>> authorNullFix(SBOM sbom, String repairSubType){
+    private List<Fix<?>> authorNullFix(SBOM sbom, String repairSubType) {
 
         Component thisComponent = null;
 
-        for (Component component: sbom.getComponents()
-             ) {
+        for (Component component : sbom.getComponents()
+        ) {
 
-            if(component instanceof SPDX23Package spdx23Package){
-                if(spdx23Package.getName().toLowerCase().contains(repairSubType.toLowerCase())
-                || repairSubType.toLowerCase().contains(spdx23Package.getName().toLowerCase())){
+            if (component instanceof SPDX23Package spdx23Package) {
+                if (spdx23Package.getName().toLowerCase().contains(repairSubType.toLowerCase())
+                        || repairSubType.toLowerCase().contains(spdx23Package.getName().toLowerCase())) {
                     thisComponent = component;
                     break;
                 }
             }
             // if this is a file object, the author is the same as the SBOM's author
-            else if(component instanceof SPDX23FileObject spdx23FileObject){
-                if(spdx23FileObject.getName().toLowerCase().contains(repairSubType.toLowerCase())
-                        || repairSubType.toLowerCase().contains(spdx23FileObject.getName().toLowerCase())){
-                    if(sbom.getCreationData().getAuthors() != null){
+            else if (component instanceof SPDX23FileObject spdx23FileObject) {
+                if (spdx23FileObject.getName().toLowerCase().contains(repairSubType.toLowerCase())
+                        || repairSubType.toLowerCase().contains(spdx23FileObject.getName().toLowerCase())) {
+                    if (sbom.getCreationData().getAuthors() != null) {
                         Set<Contact> potentialAuthors = sbom.getCreationData().getAuthors();
                         List<Fix<?>> fixes = new ArrayList<>();
-                        for (Contact author: potentialAuthors
+                        for (Contact author : potentialAuthors
                         ) {
                             fixes.add(new Fix<>("null", author));
                         }
@@ -167,10 +172,9 @@ public class EmptyOrNullFixes implements Fixes{
                     return null;
 
                 }
-            }
-            else if(component instanceof CDX14Package cdx14Package){
-                if(cdx14Package.getName().toLowerCase().contains(repairSubType.toLowerCase())
-                    || repairSubType.toLowerCase().contains(cdx14Package.getName().toLowerCase())) {
+            } else if (component instanceof CDX14Package cdx14Package) {
+                if (cdx14Package.getName().toLowerCase().contains(repairSubType.toLowerCase())
+                        || repairSubType.toLowerCase().contains(cdx14Package.getName().toLowerCase())) {
                     thisComponent = component;
                     break;
                 }
@@ -180,13 +184,12 @@ public class EmptyOrNullFixes implements Fixes{
 
         Object[] purls = null;
 
-        if(thisComponent != null){
-            if(thisComponent instanceof SPDX23PackageObject spdx23PackageObject) {
+        if (thisComponent != null) {
+            if (thisComponent instanceof SPDX23PackageObject spdx23PackageObject) {
 
                 purls = spdx23PackageObject.getPURLs().toArray();
 
-            }
-            else if(thisComponent instanceof CDX14Package cdx14Package){
+            } else if (thisComponent instanceof CDX14Package cdx14Package) {
 
                 purls = cdx14Package.getPURLs().toArray();
 
@@ -195,23 +198,24 @@ public class EmptyOrNullFixes implements Fixes{
         }
 
         List<PURL> purlList = new ArrayList<>();
-        if(purls != null)
-            for (Object purl: purls
-                 ) purlList.add((PURL) purl);
+        if (purls != null)
+            for (Object purl : purls
+            )
+                purlList.add((PURL) purl);
 
-        if(purlList.isEmpty())
+        if (purlList.isEmpty())
             return googlePotentialAuthors(repairSubType, "");
 
         List<Fix<?>> fixList = new ArrayList<>();
 
-        for (PURL purl: purlList
-             ) {
+        for (PURL purl : purlList
+        ) {
 
             fixList.addAll(googlePotentialAuthors(repairSubType, purl.getName()));
 
         }
 
-        if(!fixList.isEmpty())
+        if (!fixList.isEmpty())
             return fixList;
 
         return null; // we tried our best
@@ -220,11 +224,12 @@ public class EmptyOrNullFixes implements Fixes{
 
     /**
      * Queries a Google search, looks for potential authors in the first page of results
+     *
      * @param repairSubType the name of the component, usually
-     * @param purlName the name of the purl (optional)
+     * @param purlName      the name of the purl (optional)
      * @return a list of potential authors
      */
-    private List<Fix<?>> googlePotentialAuthors(String repairSubType, String purlName){
+    private List<Fix<?>> googlePotentialAuthors(String repairSubType, String purlName) {
 
         List<Fix<?>> fixList = new ArrayList<>();
 
@@ -239,10 +244,10 @@ public class EmptyOrNullFixes implements Fixes{
 
                     String[] split = contents.split(" ");
 
-                    for (String s: split
-                         ) {
+                    for (String s : split
+                    ) {
 
-                        if(s.contains("mailto:")){
+                        if (s.contains("mailto:")) {
                             String[] split1 = s.split("mailto:");
                             String[] split2 = split1[1].split("\"");
                             fixList.add(new Fix<>("null", split2[0]));

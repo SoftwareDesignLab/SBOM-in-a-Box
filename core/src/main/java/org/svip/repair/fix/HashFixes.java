@@ -5,7 +5,10 @@ import org.svip.sbom.model.interfaces.generics.SBOM;
 
 import java.util.List;
 
-public class HashFixes implements Fixes{
+/**
+ * Fixes class to generate suggested component hash repairs
+ */
+public class HashFixes implements Fixes {
     @Override
     public List<Fix<?>> fix(Result result, SBOM sbom, String repairSubType) {
         return null;

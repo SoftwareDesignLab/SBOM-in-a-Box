@@ -10,40 +10,45 @@ import org.svip.sbom.model.uids.PURL;
 import java.util.Collections;
 import java.util.List;
 
-public class PURLFixes implements Fixes{
+/**
+ * Fixes class to generate suggested component PURL repairs
+ */
+public class PURLFixes implements Fixes {
     @Override
     public List<Fix<?>> fix(Result result, SBOM sbom, String repairSubType) {
         PURL newPurl = null;
 
-        for (Component component: sbom.getComponents()
+        for (Component component : sbom.getComponents() // for each component in the SBOM
         ) {
 
-            String[] split = result.getDetails().split(" ");
+            String[] split = result.getDetails().split(" "); // split up result message
 
             boolean fixThisPurl = false;
 
-            // determine if this is the component to build a PURL out of, based on the result message
-            if(result.getMessage().toLowerCase().contains("does not match"))
+            // are we fixing this PURL, if so is it because something doesn't match, or is inaccurate?
+            if (result.getMessage().toLowerCase().contains("does not match"))
                 fixThisPurl = split[split.length - 1].contains(component.getName());
-            else if(result.getTest().contains("Accurate")){
-                if(component instanceof SPDX23Package spdx23Package)
+            else if (result.getTest().contains("Accurate")) {
+                if (component instanceof SPDX23Package spdx23Package)
                     for (String purl : spdx23Package.getPURLs()
                     ) {
-                        if(purl.equals(split[0])){
+                        if (purl.equals(split[0])) {
                             fixThisPurl = true;
-                            break;}
+                            break;
+                        }
                     }
-                else if(component instanceof CDX14Package cdx14Package)
+                else if (component instanceof CDX14Package cdx14Package)
                     for (String purl : cdx14Package.getPURLs()
                     ) {
-                        if(purl.equals(split[0])){
+                        if (purl.equals(split[0])) {
                             fixThisPurl = true;
-                            break;}
+                            break;
+                        }
                     }
             }
 
-            if(fixThisPurl)
-                try{
+            if (fixThisPurl)
+                try {
 
                     String type = "pkg"; // todo is this true for all components?
                     String name = repairSubType;
@@ -52,26 +57,25 @@ public class PURLFixes implements Fixes{
                     String nameSpace = null;
                     String version = null;
 
-                    if(component instanceof SPDX23Package spdx23Package){
-                        if(spdx23Package.getType() != null)
+                    if (component instanceof SPDX23Package spdx23Package) {
+                        if (spdx23Package.getType() != null)
                             type = spdx23Package.getType();
-                        if(spdx23Package.getSupplier() != null)
+                        if (spdx23Package.getSupplier() != null)
                             nameSpace = spdx23Package.getSupplier().getName();
-                        if(spdx23Package.getVersion() != null)
+                        if (spdx23Package.getVersion() != null)
                             version = spdx23Package.getVersion();
-                    }
-                    else if(component instanceof CDX14Package cdx14Package) {
-                        if(cdx14Package.getType() != null)
+                    } else if (component instanceof CDX14Package cdx14Package) {
+                        if (cdx14Package.getType() != null)
                             type = cdx14Package.getType();
-                        if(cdx14Package.getSupplier() != null)
+                        if (cdx14Package.getSupplier() != null)
                             nameSpace = cdx14Package.getSupplier().getName();
-                        if(cdx14Package.getVersion() != null)
+                        if (cdx14Package.getVersion() != null)
                             version = cdx14Package.getVersion();
                     }
 
-                    if(nameSpace == null)
+                    if (nameSpace == null)
                         nameSpace = component.getAuthor();
-                    if(nameSpace == null)
+                    if (nameSpace == null)
                         nameSpace = repairSubType;
 
                     newPurl = new PURL(type + ":" + nameSpace + "/" + name +
@@ -79,17 +83,18 @@ public class PURLFixes implements Fixes{
 
                     break;
 
-                }catch (Exception ignored){return null;}
+                } catch (Exception ignored) {
+                    return null;
+                }
 
         }
 
-        if(newPurl == null)
+        if (newPurl == null)
             return null;
 
-        try{
+        try {
             return Collections.singletonList(new Fix<>("", newPurl));
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

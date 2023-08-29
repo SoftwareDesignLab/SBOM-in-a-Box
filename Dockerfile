@@ -10,7 +10,7 @@ COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 # Append "-x test" argument to skip tests; this is useful for development builds.
 # Docker takes ~3-5m to build the initial image, it's faster than waiting
-RUN gradle build --no-daemon # -x test
+RUN gradle build --no-daemon  -x test
 
 FROM openjdk:17-jdk-slim
 
