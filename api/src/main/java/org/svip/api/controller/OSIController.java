@@ -69,7 +69,7 @@ public class OSIController {
      * @return True if OSI is enabled, false otherwise.
      */
     public static boolean isOSIEnabled() {
-        return OSIClient.dockerCheck() == 0;
+        return OSIClient.isOSIContainerAvailable();
     }
 
     ///
