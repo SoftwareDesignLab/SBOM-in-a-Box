@@ -35,7 +35,13 @@ public class OSIClient {
         /**
          * The root URL of the Flask API inside the Docker container.
          */
-        private static final String url = "http://osi:5000/"; // TODO Move port to config file
+        private static final String url; // TODO Move port to config file
+        static {
+            // If running in container, access OSI by container name due to Docker's default network
+            if (isRunningInsideContainer()) url = "http://osi:5000/";
+            // If running outside of container, access OSI by the container's port on localhost
+            else url = "http://localhost:5000/";
+        }
 
         /**
          * The endpoint of the enum.
@@ -68,7 +74,7 @@ public class OSIClient {
      */
     public OSIClient() throws DockerNotAvailableException {
         // Check if docker is installed and running
-        if (dockerCheck() != 0) {
+        if (!isOSIContainerAvailable()) {
             Debug.log(Debug.LOG_TYPE.ERROR, "Docker is not running or not installed");
             throw new DockerNotAvailableException("Docker is not running or not installed");
         }
@@ -149,22 +155,33 @@ public class OSIClient {
     /**
      * Function to check if the Docker API is running.
      *
-     * @return 0 - The Docker API is running and can accept connections.
-     *         1 - The Docker API returned an error when pinging.
-     * @throws DockerNotAvailableException If the container is not accessible at all.
+     * @return True if the Docker API is running and can accept connections.
+     *         False if the Docker API returned an error when pinging.
+     * @throws DockerNotAvailableException If the container is not accessible/running at all.
      */
-    public static int dockerCheck() throws DockerNotAvailableException {
+    public static boolean isOSIContainerAvailable() throws DockerNotAvailableException {
         try {
             HttpURLConnection conn = connectToURL(URL.GET_TOOLS);
 
             conn.connect();
-            if (conn.getResponseCode() != 200) return 1;
+            if (conn.getResponseCode() != 200) return false;
             conn.disconnect();
         } catch (IOException e) {
             throw new DockerNotAvailableException(Arrays.toString(e.getStackTrace()));
         }
 
-        return 0;
+        return true;
+    }
+
+    /**
+     * Tests to see if SVIP is running inside a Docker container.
+     *
+     * @return True if SVIP is running inside a Docker container, false otherwise.
+     */
+    public static boolean isRunningInsideContainer() {
+        // All docker containers have a .dockerenv file at the root, so just check for that.
+        File f = new File("/.dockerenv");
+        return f.exists();
     }
 
     /**
