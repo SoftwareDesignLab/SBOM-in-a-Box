@@ -3,16 +3,13 @@ package org.svip.generation.osi;
 import org.apache.commons.io.FileUtils;
 import org.svip.generation.osi.exceptions.DockerNotAvailableException;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.svip.generation.osi.OSIClient.isOSIContainerAvailable;
+import static org.svip.generation.osi.OSIClient.dockerCheck;
 
 /**
  * File: OSI.java
@@ -98,8 +95,8 @@ public class OSI {
         BOUND_DIR.SBOMS.cleanPath();
 
         // Run Docker check and throw if we can't validate an install
-        if (!isOSIContainerAvailable())
-            throw new DockerNotAvailableException("OSI container API not running or returned non-200 response code.");
+        if (dockerCheck() == 1)
+            throw new DockerNotAvailableException("OSI container API returned non-200 response code.");
 
         this.client = new OSIClient(); // Create OSIClient instance
     }
