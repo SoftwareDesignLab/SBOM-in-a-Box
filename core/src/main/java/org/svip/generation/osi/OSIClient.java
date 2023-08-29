@@ -1,6 +1,7 @@
 package org.svip.generation.osi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
 import org.svip.generation.osi.exceptions.DockerNotAvailableException;
 import org.svip.utils.Debug;
 
@@ -10,6 +11,7 @@ import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * File: OSIClient.java
@@ -33,13 +35,7 @@ public class OSIClient {
         /**
          * The root URL of the Flask API inside the Docker container.
          */
-        private static final String url; // TODO Move port to config file
-        static {
-            // If running in container, access OSI by container name due to Docker's default network
-            if (isRunningInsideContainer()) url = "http://osi:5000/";
-            // If running outside of container, access OSI by the container's port on localhost
-            else url = "http://localhost:5000/";
-        }
+        private static final String url = "http://osi:5000/"; // TODO Move port to config file
 
         /**
          * The endpoint of the enum.
@@ -72,7 +68,7 @@ public class OSIClient {
      */
     public OSIClient() throws DockerNotAvailableException {
         // Check if docker is installed and running
-        if (!isOSIContainerAvailable()) {
+        if (dockerCheck() != 0) {
             Debug.log(Debug.LOG_TYPE.ERROR, "Docker is not running or not installed");
             throw new DockerNotAvailableException("Docker is not running or not installed");
         }
@@ -117,16 +113,26 @@ public class OSIClient {
     public boolean generateSBOMs(List<String> toolNames) {
         try {
             HttpURLConnection conn = connectToURL(URL.GENERATE);
+            conn.setRequestProperty("Content-Type", "application/json");
+
+            conn.connect();
 
             try (OutputStream os = conn.getOutputStream()) {
                 try (OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8)) {
                     // Ensure there is at least one valid tool, if not don't put anything in the request body
-                    if (toolNames != null && toolNames.size() > 0) osw.write(toolNames.toString());
+                    if (toolNames != null && toolNames.size() > 0) {
+                        // Build JSON array
+                        String toolArray = toolNames.stream()
+                                .map(s -> "\"" + s + "\"") // Surround each string with quotes
+                                .collect(Collectors.joining(", "));
+                        JSONObject body = new JSONObject();
+                        body.put("tools", "[" + toolArray + "]");
+
+                        osw.write(body.toString());
+                    }
                     osw.flush();
                 }
             }
-
-            conn.connect();
 
             // DO NOT REMOVE THIS LINE. This is needed for a connection to actually be made, regardless of
             // calling .connect()
@@ -143,33 +149,22 @@ public class OSIClient {
     /**
      * Function to check if the Docker API is running.
      *
-     * @return True if the Docker API is running and can accept connections.
-     *         False if the Docker API returned an error when pinging.
-     * @throws DockerNotAvailableException If the container is not accessible/running at all.
+     * @return 0 - The Docker API is running and can accept connections.
+     *         1 - The Docker API returned an error when pinging.
+     * @throws DockerNotAvailableException If the container is not accessible at all.
      */
-    public static boolean isOSIContainerAvailable() throws DockerNotAvailableException {
+    public static int dockerCheck() throws DockerNotAvailableException {
         try {
             HttpURLConnection conn = connectToURL(URL.GET_TOOLS);
 
             conn.connect();
-            if (conn.getResponseCode() != 200) return false;
+            if (conn.getResponseCode() != 200) return 1;
             conn.disconnect();
         } catch (IOException e) {
             throw new DockerNotAvailableException(Arrays.toString(e.getStackTrace()));
         }
 
-        return true;
-    }
-
-    /**
-     * Tests to see if SVIP is running inside a Docker container.
-     *
-     * @return True if SVIP is running inside a Docker container, false otherwise.
-     */
-    public static boolean isRunningInsideContainer() {
-        // All docker containers have a .dockerenv file at the root, so just check for that.
-        File f = new File("/.dockerenv");
-        return f.exists();
+        return 0;
     }
 
     /**

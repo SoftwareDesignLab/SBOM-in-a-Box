@@ -3,17 +3,13 @@ package org.svip.generation.osi;
 import org.apache.commons.io.FileUtils;
 import org.svip.generation.osi.exceptions.DockerNotAvailableException;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-import static org.svip.generation.osi.OSIClient.isOSIContainerAvailable;
+import static org.svip.generation.osi.OSIClient.dockerCheck;
 
 /**
  * File: OSI.java
@@ -31,13 +27,13 @@ public class OSI {
      * Private enumeration to store, validate, and retrieve full file paths for subdirectories of /bound_dir
      */
     private enum BOUND_DIR {
-        CODE("code/"),
-        SBOMS("sboms/");
+        CODE("code"),
+        SBOMS("sboms");
 
         /**
          * The location of the bound directory relative to the build path (core).
          */
-        private static final String BOUND_DIR = "/core/src/main/java/org/svip/generation/osi/bound_dir/";
+        private static final String BOUND_DIR = "/src/main/java/org/svip/generation/osi/bound_dir";
 
         /**
          * The directory name of the /bound_dir subdirectory
@@ -51,19 +47,17 @@ public class OSI {
         /**
          * Gets the path to the OSI bound_dir folder from anywhere in the system.
          *
-         * @return Path to this target bound folder
+         * @return A File containing a reference to that folder, which is guaranteed to exist.
          */
-        private String getPath() {
-            return System.getProperty("user.dir") + BOUND_DIR + dirName;
-        }
+        public File getPath() {
+            String path = System.getProperty("user.dir") + BOUND_DIR + "/" + dirName;
+            // Replace api from core if running in api working directory
+            File file = new File(path.replaceFirst("api", "core"));
 
-        /**
-         * Append file name to the bound directory path
-         *
-         * @return Path to file inside bound directory
-         */
-        public String appendFileToPath(String fileName){
-            return getPath() + fileName;
+            // Make directories
+            if (!file.exists()) file.mkdirs();
+
+            return file;
         }
 
         /**
@@ -71,15 +65,14 @@ public class OSI {
          *
          * @throws IOException If a file cannot be removed from the directory or if the .gitignore could not be written.
          */
-        public void flush() throws IOException {
-            File dir = new File(this.getPath());
+        public void cleanPath() throws IOException {
+            File dir = this.getPath();
 
             FileUtils.cleanDirectory(dir);
 
             // Add gitignore
             try (PrintWriter w = new PrintWriter(dir + "/.gitignore")) {
-                w.println("*");
-                w.println("!.gitignore");
+                w.print("*\n" + "!.gitignore");
             }
         }
     }
@@ -98,12 +91,12 @@ public class OSI {
      */
     public OSI() throws DockerNotAvailableException, IOException {
         // Remove all SBOMs and source files in the bound_dir folder
-        BOUND_DIR.CODE.flush();
-        BOUND_DIR.SBOMS.flush();
+        BOUND_DIR.CODE.cleanPath();
+        BOUND_DIR.SBOMS.cleanPath();
 
         // Run Docker check and throw if we can't validate an install
-        if (!isOSIContainerAvailable())
-            throw new DockerNotAvailableException("OSI container API not running or returned non-200 response code.");
+        if (dockerCheck() == 1)
+            throw new DockerNotAvailableException("OSI container API returned non-200 response code.");
 
         this.client = new OSIClient(); // Create OSIClient instance
     }
@@ -116,12 +109,13 @@ public class OSI {
      * @throws IOException If the file could not be written to the code bind directory.
      */
     public void addSourceFile(String fileName, String fileContents) throws IOException {
+        File project = BOUND_DIR.CODE.getPath();
 
         // Constructing the printwriter with a file means that it takes care of all system-specific path problems
-        try (PrintWriter writer = new PrintWriter(BOUND_DIR.CODE.appendFileToPath(fileName))) {
+        try (PrintWriter writer = new PrintWriter(new File(project.getAbsolutePath() + "/" + fileName))) {
             writer.println(fileContents);
         } catch (FileNotFoundException e) {
-            throw new IOException("Could not write file to " + BOUND_DIR.CODE.appendFileToPath(fileName));
+            throw new IOException("Could not write file to " + project);
         }
     }
 
@@ -132,16 +126,11 @@ public class OSI {
      * @throws IOException If one of the files in the copied directory could not be written to the code bind directory.
      */
     public void addSourceDirectory(File dirPath) throws IOException {
-        File project = new File(BOUND_DIR.CODE.getPath());
+        File project = BOUND_DIR.CODE.getPath();
 
         FileUtils.copyDirectory(dirPath, project);
     }
 
-    /**
-     * Get the list of all OSI tools
-     *
-     * @return List of OIS tools
-     */
     public List<String> getAllTools() {
         return client.getAllTools();
     }
@@ -157,19 +146,19 @@ public class OSI {
     public Map<String, String> generateSBOMs(List<String> toolNames) throws IOException {
         boolean status = this.client.generateSBOMs(toolNames);
 
+        BOUND_DIR.CODE.cleanPath();
+
         Map<String, String> sboms = new HashMap<>();
 
-        File sbomDir = new File(BOUND_DIR.SBOMS.getPath());
+        File sbomDir = BOUND_DIR.SBOMS.getPath();
         // If container failed or files are null, return empty map.
         if (status || !sbomDir.exists() || sbomDir.listFiles() == null) return sboms;
 
-        for (File file : Objects.requireNonNull(sbomDir.listFiles()))
+        for (File file : sbomDir.listFiles())
             if (!file.getName().equalsIgnoreCase(".gitignore"))
                 sboms.put(file.getName(), Files.readString(file.toPath()));
 
-        // cleanup
-        BOUND_DIR.CODE.flush();
-        BOUND_DIR.SBOMS.flush();
+        BOUND_DIR.SBOMS.cleanPath();
 
         return sboms;
     }
