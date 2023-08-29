@@ -30,9 +30,6 @@ public class RepairTest {
         SPDX23SBOM sbom = spdx23JSONDeserializer.readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
         Map<String, Map<String, List<Fix<?>>>> statement = r.generateStatement(sbom, sbom.getUID());
 
-        // todo CDX one
-        // todo manually do the rest based off metric tests
-
     }
 
     @Test
