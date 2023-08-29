@@ -8,6 +8,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ public class OSIClient {
         /**
          * The root URL of the Flask API inside the Docker container.
          */
-        private static final String url = "http://localhost:5000/"; // TODO Move port to config file
+        private static final String url = "http://osi:5000/"; // TODO Move port to config file
 
         /**
          * The endpoint of the enum.
@@ -138,8 +139,9 @@ public class OSIClient {
      *
      * @return 0 - The Docker API is running and can accept connections.
      *         1 - The Docker API returned an error when pinging.
+     * @throws DockerNotAvailableException If the container is not accessible at all.
      */
-    public static int dockerCheck() {
+    public static int dockerCheck() throws DockerNotAvailableException {
         try {
             HttpURLConnection conn = connectToURL(URL.GET_TOOLS);
 
@@ -147,7 +149,7 @@ public class OSIClient {
             if (conn.getResponseCode() != 200) return 1;
             conn.disconnect();
         } catch (IOException e) {
-            return 1;
+            throw new DockerNotAvailableException(Arrays.toString(e.getStackTrace()));
         }
 
         return 0;
