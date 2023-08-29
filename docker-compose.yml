@@ -64,6 +64,7 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_LOCAL_PORT=${MYSQL_LOCAL_PORT}
       - SPRING_DOCKER_PORT=${SPRING_DOCKER_PORT}
+
 volumes:
   db: # Volume to store persistent data from MySQL server
   code: # Volume to link osi bound_dir/code with api bound_dir/code
