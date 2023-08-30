@@ -247,8 +247,14 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
         if (licenses != null) {
             LicenseCollection componentLicenses = new LicenseCollection();
             for (JsonNode license : licenses) {
-                if (license.get("name") == null) continue;
-                componentLicenses.addLicenseInfoFromFile(license.get("name").asText());
+                if (license.get("license") == null) continue;
+
+                else if (license.get("license").get("id") != null) {
+                    componentLicenses.addLicenseInfoFromFile(license.get("license").get("id").asText());
+                }
+                else if (license.get("license").get("name") != null) {
+                    componentLicenses.addLicenseInfoFromFile(license.get("license").get("name").asText());
+                }
             }
 
             builder.setLicenses(componentLicenses);
@@ -288,13 +294,15 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
     }
 
     private Contact resolveContact(JsonNode ct) {
-        try {
-            return new Contact(ct.get("name").asText(),
-                    ct.get("email").asText(),
-                    ct.get("phone").asText());
-        } catch (Exception e) {
-            return new Contact("", "", "");
-        }
+        String contactName = "";
+        String contactEmail = "";
+        String contactPhone = "";
+
+        if (ct.get("name") != null) contactName = ct.get("name").asText();
+        if (ct.get("email") != null) contactEmail = ct.get("email").asText();
+        if (ct.get("phone") != null) contactPhone = ct.get("phone").asText();
+
+        return new Contact(contactName, contactEmail, contactPhone);
     }
 
     private Organization resolveOrganization(JsonNode org) {
