@@ -77,13 +77,23 @@
         "alg" : "SHA256",
         "content" : "hash0"
       } ],
-      "licenses" : [ {
-        "name" : "licenseFileText0"
-      }, {
-        "name" : "declared0"
-      }, {
-        "name" : "concluded0"
-      } ],
+      "licenses": [
+        {
+          "license": {
+            "name": "concluded0"
+          }
+        },
+        {
+          "license": {
+            "name": "declared0"
+          }
+        },
+        {
+          "license": {
+            "name": "licenseFileText0"
+          }
+        }
+      ],
       "externalReferences" : [ {
         "url" : "0.svip.xyz",
         "comment" : "Category: testCategory",
@@ -127,13 +137,23 @@
       "alg" : "SHA256",
       "content" : "hash2"
     } ],
-    "licenses" : [ {
-      "name" : "concluded2"
-    }, {
-      "name" : "declared2"
-    }, {
-      "name" : "licenseFileText2"
-    } ],
+    "licenses": [
+      {
+        "license": {
+          "name": "concluded2"
+        }
+      },
+      {
+        "license": {
+          "name": "declared2"
+        }
+      },
+      {
+        "license": {
+          "name": "licenseFileText2"
+        }
+      }
+    ],
     "externalReferences" : [ {
       "url" : "2.svip.xyz",
       "comment" : "Category: testCategory",
@@ -175,13 +195,23 @@
       "alg" : "SHA256",
       "content" : "hash3"
     } ],
-    "licenses" : [ {
-      "name" : "concluded3"
-    }, {
-      "name" : "declared3"
-    }, {
-      "name" : "licenseFileText3"
-    } ],
+    "licenses": [
+      {
+        "license": {
+          "name": "concluded3"
+        }
+      },
+      {
+        "license": {
+          "name": "declared3"
+        }
+      },
+      {
+        "license": {
+          "name": "licenseFileText3"
+        }
+      }
+    ],
     "externalReferences" : [ {
       "url" : "3.svip.xyz",
       "comment" : "Category: testCategory",
@@ -223,13 +253,23 @@
       "alg" : "SHA256",
       "content" : "hash1"
     } ],
-    "licenses" : [ {
-      "name" : "concluded1"
-    }, {
-      "name" : "licenseFileText1"
-    }, {
-      "name" : "declared1"
-    } ],
+    "licenses": [
+      {
+        "license": {
+          "name": "concluded1"
+        }
+      },
+      {
+        "license": {
+          "name": "declared1"
+        }
+      },
+      {
+        "license": {
+          "name": "licenseFileText1"
+        }
+      }
+    ],
     "externalReferences" : [ {
       "url" : "1.svip.xyz",
       "comment" : "Category: testCategory",
@@ -271,13 +311,23 @@
       "alg" : "SHA256",
       "content" : "hash0"
     } ],
-    "licenses" : [ {
-      "name" : "licenseFileText0"
-    }, {
-      "name" : "declared0"
-    }, {
-      "name" : "concluded0"
-    } ],
+    "licenses": [
+      {
+        "license": {
+          "name": "concluded0"
+        }
+      },
+      {
+        "license": {
+          "name": "declared0"
+        }
+      },
+      {
+        "license": {
+          "name": "licenseFileText0"
+        }
+      }
+    ],
     "externalReferences" : [ {
       "url" : "0.svip.xyz",
       "comment" : "Category: testCategory",
