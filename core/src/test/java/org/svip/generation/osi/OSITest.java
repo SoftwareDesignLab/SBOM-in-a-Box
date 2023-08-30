@@ -10,6 +10,7 @@ package org.svip.generation.osi;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.svip.generation.osi.exceptions.DockerNotAvailableException;
 import org.svip.utils.Debug;
 
 import java.io.File;
@@ -20,7 +21,6 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
-import static org.svip.generation.osi.OSIClient.dockerCheck;
 
 /**
  * Tests for the OSI class
@@ -51,7 +51,7 @@ public class OSITest {
     @BeforeAll
     static void setup() {
         // Use OSI.dockerCheck() to check if docker is running
-        assumeTrue(dockerCheck() == 0);
+        assumeTrue(isOSIEnabled());
     }
 
     /**
@@ -93,5 +93,18 @@ public class OSITest {
         for (String fileName : resultMap.keySet())
             out += fileName + "\n";
         return out;
+    }
+
+    /**
+     * Helper method to check if OSI is enabled on this instance of the controller.
+     *
+     * @return True if OSI is enabled, false otherwise.
+     */
+    private static boolean isOSIEnabled() {
+        try {
+            return OSIClient.isOSIContainerAvailable();
+        } catch(DockerNotAvailableException e) {
+            return false;
+        }
     }
 }
