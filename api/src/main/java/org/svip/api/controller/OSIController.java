@@ -14,6 +14,7 @@ import org.svip.api.services.SBOMFileService;
 import org.svip.conversion.ConversionException;
 import org.svip.generation.osi.OSI;
 import org.svip.generation.osi.OSIClient;
+import org.svip.generation.osi.exceptions.DockerNotAvailableException;
 import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.exceptions.DeserializerException;
@@ -69,7 +70,11 @@ public class OSIController {
      * @return True if OSI is enabled, false otherwise.
      */
     public static boolean isOSIEnabled() {
-        return OSIClient.isOSIContainerAvailable();
+        try {
+            return OSIClient.isOSIContainerAvailable();
+        } catch(DockerNotAvailableException e) {
+            return false;
+        }
     }
 
     ///
