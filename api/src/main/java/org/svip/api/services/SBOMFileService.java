@@ -140,8 +140,8 @@ public class SBOMFileService {
         String urlMsg = "MERGE /svip/merge?id=";
 
         // ensure there are at least two SBOMs to potentially merge
-        if (ids.length < 2)
-            throw new Exception("Not enough SBOMs provided to merge (must be at least 2)");
+        if (ids.length < 1)
+            throw new Exception("Not enough SBOMs provided to merge (must be at least 1)");
 
         // collect and deserialize SBOMs
         ArrayList<org.svip.sbom.model.interfaces.generics.SBOM> sboms = new ArrayList<>();
