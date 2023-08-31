@@ -1,6 +1,8 @@
 package org.svip.sbom.model.objects;
 
 import org.junit.jupiter.api.Test;
+import org.svip.metrics.resultfactory.Text;
+import org.svip.metrics.resultfactory.enumerations.INFO;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.factory.objects.SVIPSBOMComponentFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -154,9 +156,11 @@ public class SVIPComponentObjectConflictsTest {
         for(Conflict c : conflictList)
         {
             if(c.getType() == MismatchType.MISSING && Objects.equals(c.getMessage(), "Component Hash is missing"))
-                if(Objects.equals(c.getTarget(),"Contains Component Hash Data") && c.getOther() == null)
+                if(Objects.equals(c.getTarget(), "SHA1") &&
+                        c.getOther() == null)
                     c1 = true;
-                else if(c.getTarget() == null && Objects.equals(c.getOther(), "Contains Component Hash Data"))
+                else if(c.getTarget() == null &&
+                        Objects.equals(c.getOther(), "SHA2"))
                     c2 = true;
         }
 
