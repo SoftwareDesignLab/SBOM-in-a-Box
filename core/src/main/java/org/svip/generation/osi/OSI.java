@@ -30,8 +30,8 @@ public class OSI {
      * Private enumeration to store, validate, and retrieve full file paths for subdirectories of /bound_dir
      */
     private enum BOUND_DIR {
-        CODE("code"),
-        SBOMS("sboms");
+        CODE("code/"),
+        SBOMS("sboms/");
 
         /**
          * The location of the bound directory relative to the build path (core).
@@ -52,8 +52,17 @@ public class OSI {
          *
          * @return Path to this target bound folder
          */
-        public String getPath() {
+        private String getPath() {
             return System.getProperty("user.dir") + BOUND_DIR + dirName;
+        }
+
+        /**
+         * Append file name to the bound directory path
+         *
+         * @return Path to file inside bound directory
+         */
+        public String appendFileToPath(String fileName){
+            return getPath() + fileName;
         }
 
         /**
@@ -106,13 +115,12 @@ public class OSI {
      * @throws IOException If the file could not be written to the code bind directory.
      */
     public void addSourceFile(String fileName, String fileContents) throws IOException {
-        File project = new File(BOUND_DIR.CODE.getPath());
 
         // Constructing the printwriter with a file means that it takes care of all system-specific path problems
-        try (PrintWriter writer = new PrintWriter(project.getAbsolutePath() + "/" + fileName)) {
+        try (PrintWriter writer = new PrintWriter(BOUND_DIR.CODE.appendFileToPath(fileName))) {
             writer.println(fileContents);
         } catch (FileNotFoundException e) {
-            throw new IOException("Could not write file to " + project);
+            throw new IOException("Could not write file to " + BOUND_DIR.CODE.appendFileToPath(fileName));
         }
     }
 
