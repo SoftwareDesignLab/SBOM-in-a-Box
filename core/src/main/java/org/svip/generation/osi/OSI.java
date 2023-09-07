@@ -36,7 +36,7 @@ public class OSI {
         /**
          * The location of the bound directory relative to the build path (core).
          */
-        private static final String BOUND_DIR = "/core/src/main/java/org/svip/generation/osi/bound_dir";
+        private static final String BOUND_DIR = "/core/src/main/java/org/svip/generation/osi/bound_dir/";
 
         /**
          * The directory name of the /bound_dir subdirectory
@@ -50,17 +50,10 @@ public class OSI {
         /**
          * Gets the path to the OSI bound_dir folder from anywhere in the system.
          *
-         * @return A File containing a reference to that folder, which is guaranteed to exist.
+         * @return Path to this target bound folder
          */
-        public File getPath() {
-            String path = System.getProperty("user.dir") + BOUND_DIR + "/" + dirName;
-            // Replace api from core if running in api working directory
-            File file = new File(path.replaceFirst("api", "core"));
-
-            // Make directories
-            if (!file.exists()) file.mkdirs();
-
-            return file;
+        public String getPath() {
+            return System.getProperty("user.dir") + BOUND_DIR + dirName;
         }
 
         /**
@@ -69,13 +62,14 @@ public class OSI {
          * @throws IOException If a file cannot be removed from the directory or if the .gitignore could not be written.
          */
         public void cleanPath() throws IOException {
-            File dir = this.getPath();
+            File dir = new File(this.getPath());
 
             FileUtils.cleanDirectory(dir);
 
             // Add gitignore
             try (PrintWriter w = new PrintWriter(dir + "/.gitignore")) {
-                w.print("*\n" + "!.gitignore");
+                w.println("*");
+                w.println("!.gitignore");
             }
         }
     }
@@ -112,7 +106,7 @@ public class OSI {
      * @throws IOException If the file could not be written to the code bind directory.
      */
     public void addSourceFile(String fileName, String fileContents) throws IOException {
-        File project = BOUND_DIR.CODE.getPath();
+        File project = new File(BOUND_DIR.CODE.getPath());
 
         // Constructing the printwriter with a file means that it takes care of all system-specific path problems
         try (PrintWriter writer = new PrintWriter(project.getAbsolutePath() + "/" + fileName)) {
@@ -129,7 +123,7 @@ public class OSI {
      * @throws IOException If one of the files in the copied directory could not be written to the code bind directory.
      */
     public void addSourceDirectory(File dirPath) throws IOException {
-        File project = BOUND_DIR.CODE.getPath();
+        File project = new File(BOUND_DIR.CODE.getPath());
 
         FileUtils.copyDirectory(dirPath, project);
     }
@@ -153,7 +147,7 @@ public class OSI {
 
         Map<String, String> sboms = new HashMap<>();
 
-        File sbomDir = BOUND_DIR.SBOMS.getPath();
+        File sbomDir = new File(BOUND_DIR.SBOMS.getPath());
         // If container failed or files are null, return empty map.
         if (status || !sbomDir.exists() || sbomDir.listFiles() == null) return sboms;
 
