@@ -36,7 +36,7 @@ public class OSI {
         /**
          * The location of the bound directory relative to the build path (core).
          */
-        private static final String BOUND_DIR = "/src/main/java/org/svip/generation/osi/bound_dir";
+        private static final String BOUND_DIR = "/core/src/main/java/org/svip/generation/osi/bound_dir";
 
         /**
          * The directory name of the /bound_dir subdirectory
@@ -115,7 +115,7 @@ public class OSI {
         File project = BOUND_DIR.CODE.getPath();
 
         // Constructing the printwriter with a file means that it takes care of all system-specific path problems
-        try (PrintWriter writer = new PrintWriter(new File(project.getAbsolutePath() + "/" + fileName))) {
+        try (PrintWriter writer = new PrintWriter(project.getAbsolutePath() + "/" + fileName)) {
             writer.println(fileContents);
         } catch (FileNotFoundException e) {
             throw new IOException("Could not write file to " + project);
