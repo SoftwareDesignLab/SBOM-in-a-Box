@@ -136,6 +136,11 @@ public class OSI {
         FileUtils.copyDirectory(dirPath, project);
     }
 
+    /**
+     * Get the list of all OSI tools
+     *
+     * @return List of OIS tools
+     */
     public List<String> getAllTools() {
         return client.getAllTools();
     }
