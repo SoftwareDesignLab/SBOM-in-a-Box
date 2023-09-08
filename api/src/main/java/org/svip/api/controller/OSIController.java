@@ -195,14 +195,21 @@ public class OSIController {
             return new ResponseEntity<>("No SBOMs generated for these files.", HttpStatus.NO_CONTENT);
         }
 
-        // Merge SBOMs into one SBOM
+        // todo poor hotfix, need a better solution
         Long merged;
-        try {
-            merged = this.sbomService.merge(uploaded.toArray(new Long[0]));
-        } catch (Exception e) {
-            LOGGER.error("POST /svip/generators/osi - Unable to merge, no content: " + e.getMessage());
-            return new ResponseEntity<>("Unable to merge, no content: " + e.getMessage(), HttpStatus.NO_CONTENT);
+        // Only merge if 2 or more
+        if(uploaded.size() >= 2){
+            // Merge SBOMs into one SBOM
+            try {
+                merged = this.sbomService.merge(uploaded.toArray(new Long[0]));
+            } catch (Exception e) {
+                LOGGER.error("POST /svip/generators/osi - Unable to merge, no content: " + e.getMessage());
+                return new ResponseEntity<>("Unable to merge, no content: " + e.getMessage(), HttpStatus.NO_CONTENT);
+            }
+        } else {
+            merged = uploaded.get(0);
         }
+
 
         // Convert
         Long converted;
