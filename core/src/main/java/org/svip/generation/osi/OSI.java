@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.svip.generation.osi.OSIClient.isOSIContainerAvailable;
 
@@ -70,7 +71,7 @@ public class OSI {
          *
          * @throws IOException If a file cannot be removed from the directory or if the .gitignore could not be written.
          */
-        public void cleanPath() throws IOException {
+        public void flush() throws IOException {
             File dir = new File(this.getPath());
 
             FileUtils.cleanDirectory(dir);
@@ -97,8 +98,8 @@ public class OSI {
      */
     public OSI() throws DockerNotAvailableException, IOException {
         // Remove all SBOMs and source files in the bound_dir folder
-        BOUND_DIR.CODE.cleanPath();
-        BOUND_DIR.SBOMS.cleanPath();
+        BOUND_DIR.CODE.flush();
+        BOUND_DIR.SBOMS.flush();
 
         // Run Docker check and throw if we can't validate an install
         if (!isOSIContainerAvailable())
@@ -156,19 +157,19 @@ public class OSI {
     public Map<String, String> generateSBOMs(List<String> toolNames) throws IOException {
         boolean status = this.client.generateSBOMs(toolNames);
 
-        BOUND_DIR.CODE.cleanPath();
-
         Map<String, String> sboms = new HashMap<>();
 
         File sbomDir = new File(BOUND_DIR.SBOMS.getPath());
         // If container failed or files are null, return empty map.
         if (status || !sbomDir.exists() || sbomDir.listFiles() == null) return sboms;
 
-        for (File file : sbomDir.listFiles())
+        for (File file : Objects.requireNonNull(sbomDir.listFiles()))
             if (!file.getName().equalsIgnoreCase(".gitignore"))
                 sboms.put(file.getName(), Files.readString(file.toPath()));
 
-        BOUND_DIR.SBOMS.cleanPath();
+        // cleanup
+        BOUND_DIR.CODE.flush();
+        BOUND_DIR.SBOMS.flush();
 
         return sboms;
     }
