@@ -3,10 +3,13 @@ package org.svip.sbom.model.shared.metadata;
 import org.svip.compare.conflicts.Comparable;
 import org.svip.compare.conflicts.Conflict;
 import org.svip.compare.conflicts.ConflictFactory;
+import org.svip.sbom.model.shared.util.ExternalReference;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.svip.compare.conflicts.MismatchType.MISC_MISMATCH;
 
@@ -22,6 +25,7 @@ public class CreationTool implements Comparable {
     private String name;
     private String version;
     private final Map<String, String> hashes = new HashMap<>();
+    private final Set<ExternalReference> externalReferences = new HashSet<>();
 
     //
     // Setters
@@ -61,6 +65,13 @@ public class CreationTool implements Comparable {
         this.hashes.put(algorithm, hash);
     }
 
+    /**
+     * @param externalReference A CreationTool's external reference
+     */
+    public void addExternalReference(ExternalReference externalReference) {
+        this.externalReferences.add(externalReference);
+    }
+
     ///
     /// Getters
     ///
@@ -93,6 +104,13 @@ public class CreationTool implements Comparable {
         return hashes;
     }
 
+    /**
+     * @return External References
+     */
+    public Set<ExternalReference> getExternalReferences() {
+        return externalReferences;
+    }
+
 
     @Override
     public List<Conflict> compare(Comparable o) {
@@ -104,6 +122,7 @@ public class CreationTool implements Comparable {
         cf.addConflict("Tool Vendor", MISC_MISMATCH, this.vendor, other.getVendor());
         cf.addConflict("Tool Name", MISC_MISMATCH, this.name, other.getName());
         cf.addConflict("Tool Version", MISC_MISMATCH, this.version, other.getVersion());
+        cf.compareComparableSets("Tool External References", new HashSet<>(this.externalReferences), new HashSet<>(other.getExternalReferences()));
         cf.compareHashes("Tool Hash", this.hashes, other.getHashes());
 
         return cf.getConflicts();
@@ -138,6 +157,10 @@ public class CreationTool implements Comparable {
             if (!other.getHashes().get(alg).equals(this.hashes.get(alg)))
                 return false;
         }
+
+        // Check if external references are equivalent
+        if (this.externalReferences != null && !this.externalReferences.equals(other.getExternalReferences()))
+            return false;
 
         // All checks pass
         return true;
