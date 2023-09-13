@@ -40,6 +40,7 @@ public class EmptyOrNullFixes implements Fixes {
     @Override
     public List<Fix<?>> fix(Result result, SBOM sbom, String repairSubType) {
 
+        // Depending on the type of fix, call the correct fix method
         if (result.getDetails().contains("Bom Version was a null value"))
             return bomVersionFix(sbom);
         else if (result.getDetails().contains("Bom-Ref")) // i.e., UID
@@ -85,12 +86,19 @@ public class EmptyOrNullFixes implements Fixes {
      * @return a list of potential fixes for a null bom-ref
      */
     private List<Fix<?>> bomRefFix(String subType) {
+
+        // Get the subtype hex
         String subTypeHex = Integer.toHexString(subType.hashCode()).toLowerCase();
+
+        // Create a new list of fixes and add a fix for the bom ref using the hex
         List<Fix<?>> result = new ArrayList<>();
         result.add(emptyString.get(0));
         result.add(new Fix<>(null, subTypeHex)); // hexadecimal hash of subtype of component
         result.add(new Fix<>(null, "pkg:/" + subType + "-" + subTypeHex));
+
+        // Return the fix
         return result;
+
     }
 
     /**
@@ -100,14 +108,20 @@ public class EmptyOrNullFixes implements Fixes {
      */
     private List<Fix<?>> creationDataFix() {
 
+        // Create a new date and time string
         String dateAndTime;
+
+        // Get the current date and format it
         LocalDate localDate = LocalDate.now();
         DateTimeFormatter formatterLocalDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         dateAndTime = formatterLocalDate.format(localDate);
+
+        // Get the current time and format it
         LocalTime localTime = LocalTime.now();
         DateTimeFormatter formatterLocalTime = DateTimeFormatter.ofPattern("HH:mm:ss");
         dateAndTime += "T" + formatterLocalTime.format(localTime) + localTime.atOffset(ZoneOffset.UTC);
 
+        // Add the new date and time as a fix
         return Collections.singletonList(new Fix<>("", "\"created\" : .\"" + dateAndTime + "\""));
 
     }
@@ -159,78 +173,121 @@ public class EmptyOrNullFixes implements Fixes {
 
         Component thisComponent = null;
 
+        // For each component
         for (Component component : sbom.getComponents()
         ) {
 
+            // If it is an SPDX 2.3 Package
             if (component instanceof SPDX23Package spdx23Package) {
+
+                // And if the name contains the repair SubType, or it contains the repair SubType contains the name
                 if (spdx23Package.getName().toLowerCase().contains(repairSubType.toLowerCase())
                         || repairSubType.toLowerCase().contains(spdx23Package.getName().toLowerCase())) {
+
+                    // Make the current component "this" component and break
                     thisComponent = component;
                     break;
+
                 }
+
             }
-            // if this is a file object, the author is the same as the SBOM's author
+
+            // if this is an SPDX 2.3 file object
             else if (component instanceof SPDX23FileObject spdx23FileObject) {
+
+                // And the repair subtype is the same as the file name
                 if (spdx23FileObject.getName().toLowerCase().contains(repairSubType.toLowerCase())
                         || repairSubType.toLowerCase().contains(spdx23FileObject.getName().toLowerCase())) {
+
+                    // If the authors are null
                     if (sbom.getCreationData().getAuthors() != null) {
+
+                        // Get a set of potential authors
                         Set<Contact> potentialAuthors = sbom.getCreationData().getAuthors();
+
+                        // Create a new list of fixes
                         List<Fix<?>> fixes = new ArrayList<>();
+
+                        // Then iterate through the potential authors and make a fix for each
                         for (Contact author : potentialAuthors
                         ) {
                             fixes.add(new Fix<>("null", author));
                         }
+
+                        // Reutnr the fixes
                         return fixes;
                     }
 
+                    // If no fixes were returned, return null
                     return null;
 
                 }
-            } else if (component instanceof CDX14Package cdx14Package) {
+
+            }
+            // Else, if the component is a CycloneDX 1.4 Package
+            else if (component instanceof CDX14Package cdx14Package) {
+
+                // And if the name is the same as the repair sub type
                 if (cdx14Package.getName().toLowerCase().contains(repairSubType.toLowerCase())
                         || repairSubType.toLowerCase().contains(cdx14Package.getName().toLowerCase())) {
+
+                    // Set the current component to "this" component and break
                     thisComponent = component;
                     break;
+
                 }
+
             }
 
         }
 
+        // Create a new set of purls
         Object[] purls = null;
 
+        // If this component isn't null
         if (thisComponent != null) {
+
+            // And if it's an SPDX 2.3 package
             if (thisComponent instanceof SPDX23PackageObject spdx23PackageObject) {
 
+                // Get the package's PURLs
                 purls = spdx23PackageObject.getPURLs().toArray();
 
-            } else if (thisComponent instanceof CDX14Package cdx14Package) {
+            }
+            // Or, if it is a CycloneDX 1.4 Package
+            else if (thisComponent instanceof CDX14Package cdx14Package) {
 
+                // Get the package's PURLs
                 purls = cdx14Package.getPURLs().toArray();
 
             }
 
         }
 
+        // Create a new list of PURLs
         List<PURL> purlList = new ArrayList<>();
-        if (purls != null)
-            for (Object purl : purls
-            )
-                purlList.add((PURL) purl);
 
-        if (purlList.isEmpty())
-            return googlePotentialAuthors(repairSubType, "");
+        // If the previously pulled pearls from the package is not null
+        if (purls != null)
+
+            // Iterate through them and add them to the new Purl list
+            for (Object purl : purls) purlList.add((PURL) purl);
+
+        // If the Purl list is empty, google the potential authors with an empty purl and return them
+        if (purlList.isEmpty()) return googlePotentialAuthors(repairSubType, "");
 
         List<Fix<?>> fixList = new ArrayList<>();
 
-        for (PURL purl : purlList
-        ) {
+        // For each PURL in the Purl list
+        for (PURL purl : purlList) {
 
+            // Add fixes by googling the potential authors for that PURL
             fixList.addAll(googlePotentialAuthors(repairSubType, purl.getName()));
 
         }
 
-        if (!fixList.isEmpty())
-            return fixList;
+        // If the fix list is not empty, return it
+        if (!fixList.isEmpty()) return fixList;
 
         return null; // we tried our best
 
@@ -245,26 +302,38 @@ public class EmptyOrNullFixes implements Fixes {
      */
     private List<Fix<?>> googlePotentialAuthors(String repairSubType, String purlName) {
 
+        // Create a new fix list
         List<Fix<?>> fixList = new ArrayList<>();
 
+        // Get the Query Workers List and establish a new Query Worker to search for the PURL's author
         this.queryWorkers.add(new QueryWorker(new SVIPComponentBuilder(), "https://google.com/search?q="
                 + repairSubType + " author" + ((purlName.isEmpty()) ? "" : " " + purlName)) { // simply google for a potential author
             @Override
             public void run() {
+
                 // Get page contents
                 final String contents = getUrlContents(queryURL(this.url, false));
 
+                // If there are contents
                 if (!contents.isEmpty()) {
 
+                    // Split the contents
                     String[] split = contents.split(" ");
 
+                    // For each element in the contents
                     for (String s : split
                     ) {
 
+                        // If an email is found
                         if (s.contains("mailto:")) {
+
+                            //Split it
                             String[] split1 = s.split("mailto:");
                             String[] split2 = split1[1].split("\"");
+
+                            // Then add that email as a potential fix
                             fixList.add(new Fix<>("null", split2[0]));
+
                         }
 
                     }
@@ -274,6 +343,7 @@ public class EmptyOrNullFixes implements Fixes {
             }
         });
 
+        // Return the fix list
         return fixList;
 
     }
