@@ -3,6 +3,11 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v8.0.4-alpha] - (9/14/2023)
+
+### Changed
+- Updated path so API can connect to the OSI container both inside of and outside the docker container
+
 ## [v8.0.3-alpha] - (9/13/2023)
 
 ### Added
@@ -14,9 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added docstrings to repair backend
 - Combined `RepairStatementSPDX23` and `RepairStatementCDX14` into `RepairStatementSPDX23CDX14`
   - Both SBOM schemas can be repaired similarly
-
-
-
+  
 ## [v8.0.2-alpha] - (8/18/2023)
 
 ### Changed
