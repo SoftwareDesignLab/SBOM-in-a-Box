@@ -38,7 +38,7 @@ public class EmptyOrNullFixes implements Fixes {
     }
 
     @Override
-    public List<Fix<?>> fix(Result result, SBOM sbom, String repairSubType) {
+    public List<Fix<?>> fix(Result result, SBOM sbom, String repairSubType) throws Exception {
 
         // Depending on the type of fix, call the correct fix method
         if (result.getDetails().contains("Bom Version was a null value"))
@@ -169,7 +169,7 @@ public class EmptyOrNullFixes implements Fixes {
      * @param repairSubType the key most closely relating to the component
      * @return a list of potential authors
      */
-    private List<Fix<?>> authorNullFix(SBOM sbom, String repairSubType) {
+    private List<Fix<?>> authorNullFix(SBOM sbom, String repairSubType) throws Exception {
 
         Component thisComponent = null;
 
@@ -242,7 +242,7 @@ public class EmptyOrNullFixes implements Fixes {
         }
 
         // Create a new set of purls
-        Object[] purls = null;
+        Set<String> purls = null;
 
         // If this component isn't null
         if (thisComponent != null) {
@@ -251,14 +251,14 @@ public class EmptyOrNullFixes implements Fixes {
             if (thisComponent instanceof SPDX23PackageObject spdx23PackageObject) {
 
                 // Get the package's PURLs
-                purls = spdx23PackageObject.getPURLs().toArray();
+                purls = spdx23PackageObject.getPURLs();
 
             }
             // Or, if it is a CycloneDX 1.4 Package
             else if (thisComponent instanceof CDX14Package cdx14Package) {
 
                 // Get the package's PURLs
-                purls = cdx14Package.getPURLs().toArray();
+                purls = cdx14Package.getPURLs();
 
             }
 
@@ -271,7 +271,7 @@ public class EmptyOrNullFixes implements Fixes {
         if (purls != null)
 
             // Iterate through them and add them to the new Purl list
-            for (Object purl : purls) purlList.add((PURL) purl);
+            for (String purl : purls) purlList.add(new PURL(purl));
 
         // If the Purl list is empty, google the potential authors with an empty purl and return them
         if (purlList.isEmpty()) return googlePotentialAuthors(repairSubType, "");
@@ -332,7 +332,7 @@ public class EmptyOrNullFixes implements Fixes {
                             String[] split2 = split1[1].split("\"");
 
                             // Then add that email as a potential fix
-                            fixList.add(new Fix<>("null", split2[0]));
+                            fixList.add(new Fix<>("null", split2[0] + " (POTENTIAL AUTHOR/UNCONFIRMED)"));
 
                         }
 

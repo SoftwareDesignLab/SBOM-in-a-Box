@@ -9,6 +9,7 @@ import java.util.List;
  * Fixes class to generate suggested component license repairs
  */
 public class LicenseFixes implements Fixes {
+    // TODO: Implementation
     @Override
     public List<Fix<?>> fix(Result result, SBOM sbom, String repairSubType) {
         return null;

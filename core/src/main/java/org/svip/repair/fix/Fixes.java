@@ -18,5 +18,5 @@ public interface Fixes {
      * @param repairSubType key from quality report map most directly relating to the repair type
      * @return list of potential fixes
      */
-    List<Fix<?>> fix(Result result, SBOM sbom, String repairSubType);
+    List<Fix<?>> fix(Result result, SBOM sbom, String repairSubType) throws Exception;
 }
