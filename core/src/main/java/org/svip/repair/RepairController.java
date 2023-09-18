@@ -30,7 +30,7 @@ public class RepairController {
      * @param uid  UID of sbom
      * @return repair statement
      */
-    public Map<String, Map<String, List<Fix<?>>>> generateStatement(SBOM sbom, String uid) {
+    public Map<String, Map<String, List<Fix<?>>>> generateStatement(SBOM sbom, String uid) throws Exception {
         RepairStatement rs = getStatement(sbom);
         return rs.generateRepairStatement(uid, sbom);
     }

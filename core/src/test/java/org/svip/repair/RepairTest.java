@@ -24,7 +24,7 @@ public class RepairTest {
     private final RepairController r = new RepairController();
 
     @Test
-    public void SPDXRepairTest() throws IOException {
+    public void SPDXRepairTest() throws Exception {
 
         SPDX23JSONDeserializer spdx23JSONDeserializer = new SPDX23JSONDeserializer();
         SPDX23SBOM sbom = spdx23JSONDeserializer.readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
@@ -33,7 +33,7 @@ public class RepairTest {
     }
 
     @Test
-    public void CDXRepairTest() throws IOException {
+    public void CDXRepairTest() throws Exception {
 
         CDX14JSONDeserializer cdx14JSONDeserializer = new CDX14JSONDeserializer();
         CDX14SBOM sbom = cdx14JSONDeserializer.readFromString(Files.readString(Path.of(CDX_14_JSON_SBOM)));
