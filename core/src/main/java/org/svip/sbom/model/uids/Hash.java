@@ -2,6 +2,9 @@ package org.svip.sbom.model.uids;
 
 import jregex.Pattern;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import static org.svip.sbom.model.uids.Hash.Algorithm.*;
@@ -57,6 +60,17 @@ public class Hash {
      */
     public Hash(String algorithm, String value) {
         this.algorithm = toAlgorithmEnum(algorithm);
+        this.value = value;
+    }
+
+    /**
+     * Create a new hash object
+     *
+     * @param algorithm hash algorithm used
+     * @param value     value of hash
+     */
+    public Hash(Algorithm algorithm, String value) {
+        this.algorithm = algorithm;
         this.value = value;
     }
 
@@ -152,6 +166,51 @@ public class Hash {
         // Test regex
         Pattern p = new Pattern(hashRegex, Pattern.MULTILINE);
         return p.matches(hash);
+    }
+
+    /**
+     *
+     * @param hash
+     * @param isSPDX
+     * @return
+     */
+    public static List<Algorithm> matchingAlgorithms(String hash, boolean isSPDX) {
+        List<Algorithm> algorithms;
+
+        switch(hash.length()) {
+            case 8:
+                algorithms = Arrays.asList(ADLER32);
+                break;
+            case 32:
+                algorithms = Arrays.asList(MD2, MD4, MD5, MD6);
+                break;
+            case 40:
+                algorithms = Arrays.asList(SHA1);
+                break;
+            case 56:
+                algorithms = Arrays.asList(SHA224);
+                break;
+            case 64:
+                algorithms = Arrays.asList(SHA256, SHA3256, BLAKE2b256, BLAKE3, MD6);
+                break;
+            case 96:
+                algorithms = Arrays.asList(SHA384, SHA3384, BLAKE2b512);
+                break;
+            case 128:
+                algorithms = Arrays.asList(SHA512, SHA3512, BLAKE2b512);
+                break;
+            default:
+                return Collections.emptyList();
+        }
+
+        if (!isSPDX) {
+            algorithms.removeIf(algorithm -> isSPDXExclusive(algorithm));
+        }
+
+        if (!algorithms.isEmpty() && validateHash(algorithms.get(0), hash)) {
+            return algorithms;
+        }
+        return Collections.emptyList();
     }
 
     ///
