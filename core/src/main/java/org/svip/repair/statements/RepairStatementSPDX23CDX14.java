@@ -22,7 +22,7 @@ public class RepairStatementSPDX23CDX14 implements RepairStatement {
     private final Map<String, Map<String, List<Fix<?>>>> repairs = new HashMap<>();
 
     @Override
-    public Map<String, Map<String, List<Fix<?>>>> generateRepairStatement(String uid, SBOM sbom) {
+    public Map<String, Map<String, List<Fix<?>>>> generateRepairStatement(String uid, SBOM sbom) throws Exception {
 
         QualityReport report; // get quality report
 

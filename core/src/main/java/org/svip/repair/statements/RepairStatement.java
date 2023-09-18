@@ -25,6 +25,6 @@ public interface RepairStatement {
      * @param sbom  The SBOM Object.
      * @return      A nested map of potential fixes.
      */
-    Map<String, Map<String, List<Fix<?>>>> generateRepairStatement(String uid, SBOM sbom);
+    Map<String, Map<String, List<Fix<?>>>> generateRepairStatement(String uid, SBOM sbom) throws Exception;
 
 }
