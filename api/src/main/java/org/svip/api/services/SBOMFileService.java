@@ -346,7 +346,7 @@ public class SBOMFileService {
      * @return map of potential fixes
      * @throws JsonProcessingException error deserialization occured
      */
-    public Map<String, Map<String, List<Fix<?>>>> getRepairStatement(Long id) throws JsonProcessingException {
+    public Map<String, Map<String, List<Fix<?>>>> getRepairStatement(Long id) throws Exception {
 
         SBOM toRepair = getSBOMFile(id);
 
