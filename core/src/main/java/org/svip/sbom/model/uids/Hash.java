@@ -2,7 +2,7 @@ package org.svip.sbom.model.uids;
 
 import jregex.Pattern;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -169,42 +169,42 @@ public class Hash {
     }
 
     /**
-     *
-     * @param hash
-     * @param isSPDX
-     * @return
+     * Get a list of matching algorithms given a hash value.
+     * @param hash   Hash string
+     * @param isSPDX is SPDX SBOM boolean
+     * @return list of algorithms
      */
-    public static List<Algorithm> matchingAlgorithms(String hash, boolean isSPDX) {
-        List<Algorithm> algorithms;
+    public static List<Algorithm> validAlgorithms(String hash, boolean isSPDX) {
+        List<Algorithm> algorithms = new ArrayList<>();
 
         switch(hash.length()) {
             case 8:
-                algorithms = Arrays.asList(ADLER32);
+                algorithms.add(ADLER32);
                 break;
             case 32:
-                algorithms = Arrays.asList(MD2, MD4, MD5, MD6);
+                algorithms.addAll(List.of(MD2, MD4, MD5, MD6));
                 break;
             case 40:
-                algorithms = Arrays.asList(SHA1);
+                algorithms.add(SHA1);
                 break;
             case 56:
-                algorithms = Arrays.asList(SHA224);
+                algorithms.add(SHA224);
                 break;
             case 64:
-                algorithms = Arrays.asList(SHA256, SHA3256, BLAKE2b256, BLAKE3, MD6);
+                algorithms.addAll(List.of(SHA256, SHA3256, BLAKE2b256, BLAKE3, MD6));
                 break;
             case 96:
-                algorithms = Arrays.asList(SHA384, SHA3384, BLAKE2b512);
+                algorithms.addAll(List.of(SHA384, SHA3384, BLAKE2b512));
                 break;
             case 128:
-                algorithms = Arrays.asList(SHA512, SHA3512, BLAKE2b512);
+                algorithms.addAll(List.of(SHA512, SHA3512, BLAKE2b512, MD6));
                 break;
             default:
                 return Collections.emptyList();
         }
 
         if (!isSPDX) {
-            algorithms.removeIf(algorithm -> isSPDXExclusive(algorithm));
+            algorithms.removeIf(Hash::isSPDXExclusive);
         }
 
         if (!algorithms.isEmpty() && validateHash(algorithms.get(0), hash)) {
@@ -234,7 +234,6 @@ public class Hash {
     ///
     /// Overrides
     ///
-
 
     /**
      * @return type:value

@@ -8,7 +8,8 @@ package org.svip.repair.fix;
  * @param fixed change to make
  * @author Juan Francisco Patino
  */
-public record Fix<T>(T old, T fixed) {
+public record Fix<T> (T old, T fixed) {
+
     public T getOld() {
         return old;
     }
@@ -21,4 +22,5 @@ public record Fix<T>(T old, T fixed) {
     public String toString() {
         return old + " -> " + fixed;
     }
+
 }
