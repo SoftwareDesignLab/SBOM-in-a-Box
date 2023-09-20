@@ -4,6 +4,7 @@ import org.svip.metrics.resultfactory.Result;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.uids.Hash;
+import org.svip.sbom.model.uids.Hash.Algorithm;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +26,7 @@ public class HashFixes implements Fixes<Hash> {
         Hash hash = new Hash(algorithm, value);
 
         // Get all possible algorithms that match the hash
-        List<Hash.Algorithm> matchingAlgorithms = Hash.matchingAlgorithms(value, sbom instanceof SPDX23SBOM);
+        List<Algorithm> matchingAlgorithms = Hash.validAlgorithms(value, sbom instanceof SPDX23SBOM);
         if (matchingAlgorithms.isEmpty()) {
             // Suggest deleting the hash as a fix if hash does not match any algorithm
             return Collections.singletonList(new Fix<>(hash, null));
@@ -33,7 +34,7 @@ public class HashFixes implements Fixes<Hash> {
 
         // Return the list of fixes of possible matching hash algorithms
         List<Fix<Hash>> fixes = new ArrayList<>();
-        for (Hash.Algorithm matchingAlgorithm : matchingAlgorithms) {
+        for (Algorithm matchingAlgorithm : matchingAlgorithms) {
             Hash fixedHash = new Hash(matchingAlgorithm, value);
             fixes.add(new Fix<>(hash, fixedHash));
         }

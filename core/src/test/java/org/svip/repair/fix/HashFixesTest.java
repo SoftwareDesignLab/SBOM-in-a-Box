@@ -9,6 +9,7 @@ import org.svip.metrics.tests.enumerations.ATTRIBUTE;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.uids.Hash;
 import org.svip.sbom.model.uids.Hash.Algorithm;
+import org.svip.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
 
 import java.nio.file.Files;
@@ -18,13 +19,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class HashFixesTest {
 
-    public static HashFixes hashFixes;
+    private static HashFixes hashFixes;
     private static ResultFactory resultFactory;
-    private static SBOM sbom;
+    private static SBOM cdxSbom;
+    private static SBOM spdxSbom;
 
     private static final String CDX_14_JSON_SBOM = System.getProperty("user.dir") +
             "/src/test/resources/serializers/cdx_json/sbom.alpine.json";
@@ -37,26 +41,16 @@ class HashFixesTest {
         hashFixes = new HashFixes();
         resultFactory = new ResultFactory("Hash_Test",
                 ATTRIBUTE.UNIQUENESS, ATTRIBUTE.MINIMUM_ELEMENTS);
+        CDX14JSONDeserializer cdx14JSONDeserializer = new CDX14JSONDeserializer();
         SPDX23JSONDeserializer spdx23JSONDeserializer = new SPDX23JSONDeserializer();
-        sbom = spdx23JSONDeserializer.readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
+        cdxSbom = cdx14JSONDeserializer.readFromString(Files.readString(Path.of(CDX_14_JSON_SBOM)));
+        spdxSbom = spdx23JSONDeserializer.readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
     }
 
     @Test
-    public void no_algorithm_or_hash_match_test() {
-        Result result = resultFactory.fail("SHA1", INFO.INVALID, "invalid", "component");
-        List<Fix<Hash>> fixes = hashFixes.fix(result, sbom, "repairSubType");
-
-        for (Fix<Hash> fix : fixes) {
-            assertEquals(new Hash(Algorithm.SHA1, "invalid"), fix.getOld());
-            assertNull(fix.getFixed());
-        }
-    }
-
-    // Need to test that SPDX exclusive algorithms were removed when a CDX SBOM is used
-    @Test
-    public void fix_unknown_hash_algorithm_test() {
+    public void fixUnknownAlgorithmTest() {
         Result result = resultFactory.fail("Unknown", INFO.INVALID, HASH_VALUE, "component");
-        List<Fix<Hash>> fixes = hashFixes.fix(result, sbom, "repairSubType");
+        List<Fix<Hash>> fixes = hashFixes.fix(result, spdxSbom, "repairSubType");
 
         Set<Algorithm> validAlgorithms =
                 new HashSet<>(Arrays.asList(Algorithm.MD2, Algorithm.MD4, Algorithm.MD5, Algorithm.MD6));
@@ -68,9 +62,9 @@ class HashFixesTest {
     }
 
     @Test
-    public void fix_invalid_hash_value_test() {
+    public void fixInvalidHashTest() {
         Result result = resultFactory.fail("SHA1", INFO.INVALID, HASH_VALUE, "component");
-        List<Fix<Hash>> fixes = hashFixes.fix(result, sbom, "repairSubType");
+        List<Fix<Hash>> fixes = hashFixes.fix(result, spdxSbom, "repairSubType");
 
         Set<Algorithm> validAlgorithms =
                 new HashSet<>(Arrays.asList(Algorithm.MD2, Algorithm.MD4, Algorithm.MD5, Algorithm.MD6));
@@ -79,6 +73,26 @@ class HashFixesTest {
             assertEquals(new Hash(Algorithm.SHA1, HASH_VALUE), fix.getOld());
             assertTrue(validAlgorithms.contains(fix.getFixed().getAlgorithm()));
         }
+    }
+
+    @Test
+    public void noAlgorithmOrHashMatchTest() {
+        Result result = resultFactory.fail("SHA1", INFO.INVALID, "invalid", "component");
+        List<Fix<Hash>> fixes = hashFixes.fix(result, spdxSbom, "repairSubType");
+
+        assertEquals(1, fixes.size());
+        assertEquals(new Hash(Algorithm.SHA1, "invalid"), fixes.get(0).getOld());
+        assertNull(fixes.get(0).getFixed());
+    }
+
+    @Test
+    public void cdxSbomTest() {
+        Result result = resultFactory.fail("SHA1", INFO.INVALID, HASH_VALUE, "component");
+        List<Fix<Hash>> fixes = hashFixes.fix(result, cdxSbom, "repairSubType");
+
+        assertEquals(1, fixes.size());
+        assertEquals(new Hash(Algorithm.SHA1, HASH_VALUE), fixes.get(0).getOld());
+        assertEquals(new Hash(Algorithm.MD5, HASH_VALUE), fixes.get(0).getFixed());
     }
 
 }
