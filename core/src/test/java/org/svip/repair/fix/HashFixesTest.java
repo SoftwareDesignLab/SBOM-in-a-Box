@@ -48,7 +48,7 @@ class HashFixesTest {
     }
 
     @Test
-    public void fixUnknownAlgorithmTest() {
+    public void fix_unknown_hash_algorithm_test() {
         Result result = resultFactory.fail("Unknown", INFO.INVALID, HASH_VALUE, "component");
         List<Fix<Hash>> fixes = hashFixes.fix(result, spdxSbom, "repairSubType");
 
@@ -62,7 +62,7 @@ class HashFixesTest {
     }
 
     @Test
-    public void fixInvalidHashTest() {
+    public void fix_invalid_hash_value_test() {
         Result result = resultFactory.fail("SHA1", INFO.INVALID, HASH_VALUE, "component");
         List<Fix<Hash>> fixes = hashFixes.fix(result, spdxSbom, "repairSubType");
 
@@ -76,7 +76,7 @@ class HashFixesTest {
     }
 
     @Test
-    public void noAlgorithmOrHashMatchTest() {
+    public void no_algorithm_or_hash_value_match_test() {
         Result result = resultFactory.fail("SHA1", INFO.INVALID, "invalid", "component");
         List<Fix<Hash>> fixes = hashFixes.fix(result, spdxSbom, "repairSubType");
 
@@ -86,7 +86,7 @@ class HashFixesTest {
     }
 
     @Test
-    public void cdxSbomTest() {
+    public void cdx_hash_fix_excludes_spdx_hash_algorithms_test() {
         Result result = resultFactory.fail("SHA1", INFO.INVALID, HASH_VALUE, "component");
         List<Fix<Hash>> fixes = hashFixes.fix(result, cdxSbom, "repairSubType");
 

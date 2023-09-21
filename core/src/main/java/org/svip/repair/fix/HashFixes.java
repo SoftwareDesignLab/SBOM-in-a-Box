@@ -15,6 +15,14 @@ import java.util.List;
  */
 public class HashFixes implements Fixes<Hash> {
 
+    /**
+     * Get a list of possible fixes for invalid hashes.
+     *
+     * @param result        object from quality report
+     * @param sbom          sbom from quality report
+     * @param repairSubType key from quality report map most directly relating to the repair type
+     * @return list of hash fixes
+     */
     @Override
     public List<Fix<Hash>> fix(Result result, SBOM sbom, String repairSubType) {
 

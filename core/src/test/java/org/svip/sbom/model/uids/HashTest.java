@@ -20,7 +20,7 @@ class HashTest {
     private static final String HASH_VALUE = "5eb63bbbe01eeed093cb22bb8f5acdc3";
 
     @Test
-    public void constructionTest() {
+    public void construction_test() {
         Hash invalidHash = new Hash("invalidAlgorithm", HASH_VALUE);
         assertNotNull(invalidHash);
         Hash hashFromString = new Hash("MD5", HASH_VALUE);
@@ -34,14 +34,14 @@ class HashTest {
     }
 
     @Test
-    public void gettersTest() {
+    public void getters_test() {
         Hash hash = new Hash(Algorithm.MD5, HASH_VALUE);
         assertEquals(Algorithm.MD5, hash.getAlgorithm());
         assertEquals(HASH_VALUE, hash.getValue());
     }
 
     @Test
-    public void isSPDXExclusiveTest() {
+    public void is_spdx_exclusive_test() {
         assertFalse(Hash.isSPDXExclusive(Algorithm.UNKNOWN));
         assertTrue(Hash.isSPDXExclusive(Algorithm.SHA224));
         assertTrue(Hash.isSPDXExclusive(Algorithm.BLAKE2b512));
@@ -52,7 +52,7 @@ class HashTest {
     }
 
     @Test
-    public void validateHashTest() {
+    public void validate_hash_test() {
         assertFalse(Hash.validateHash(Algorithm.UNKNOWN, HASH_VALUE));
         assertFalse(Hash.validateHash(Algorithm.ADLER32, HASH_VALUE));
         assertFalse(Hash.validateHash(Algorithm.MD6, HASH_VALUE + HASH_VALUE + HASH_VALUE));
@@ -64,7 +64,7 @@ class HashTest {
     }
 
     @Test
-    public void validAlgorithmsTest() {
+    public void valid_algorithms_test() {
         assertEquals(Collections.emptyList(), Hash.validAlgorithms("invalid", true));
         assertEquals(List.of(Algorithm.MD5), Hash.validAlgorithms(HASH_VALUE, false));
         assertEquals(List.of(Algorithm.MD2, Algorithm.MD4, Algorithm.MD5, Algorithm.MD6), Hash.validAlgorithms(HASH_VALUE, true));

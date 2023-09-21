@@ -15,13 +15,13 @@ class FixTest {
     }
 
     @Test
-    public void gettersTest() {
+    public void getters_test() {
         assertEquals("old", fix.getOld());
         assertEquals("fixed", fix.getFixed());
     }
 
     @Test
-    public void toStringTest() {
+    public void to_string_test() {
         assertEquals("old -> fixed", fix.toString());
     }
 
