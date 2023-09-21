@@ -23,94 +23,154 @@ import java.util.Set;
  */
 public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14PackageBuilder_I, SPDX23FileBuilder_I {
 
-    /**Component type*/
+    /**
+     * Component type
+     */
     private String type;
 
-    /**Component uid*/
+    /**
+     * Component uid
+     */
     private String uid;
 
-    /**Component author*/
+    /**
+     * Component author
+     */
     private String author;
 
-    /**Component name*/
+    /**
+     * Component name
+     */
     private String name;
 
-    /**Component licenses*/
+    /**
+     * Component licenses
+     */
     private LicenseCollection licenses = new LicenseCollection();
 
-    /**Component copyright*/
+    /**
+     * Component copyright
+     */
     private String copyright;
 
-    /**Component hashes*/
+    /**
+     * Component hashes
+     */
     private HashMap<String, String> hashes = new HashMap<>();
 
-    /**Component comment*/
+    /**
+     * Component comment
+     */
     private String comment;
 
-    /**Component attribution text*/
+    /**
+     * Component attribution text
+     */
     private String attributionText;
 
-    /**Component file notice*/
+    /**
+     * Component file notice
+     */
     private String fileNotice;
 
-    /**Component download location*/
+    /**
+     * Component download location
+     */
     private String downloadLocation;
 
-    /**Component file name*/
+    /**
+     * Component file name
+     */
     private String fileName;
 
-    /**If the component's files were analyzed*/
+    /**
+     * If the component's files were analyzed
+     */
     private Boolean filesAnalyzed;
 
-    /**Component verification code*/
+    /**
+     * Component verification code
+     */
     private String verificationCode;
 
-    /**Component home page*/
+    /**
+     * Component home page
+     */
     private String homePage;
 
-    /**Component source info*/
+    /**
+     * Component source info
+     */
     private String sourceInfo;
 
-    /**Component release date*/
+    /**
+     * Component release date
+     */
     private String releaseDate;
 
-    /**Component built date*/
+    /**
+     * Component built date
+     */
     private String builtDate;
 
-    /**Component valid until date*/
+    /**
+     * Component valid until date
+     */
     private String validUntilDate;
 
-    /**Component supplier*/
+    /**
+     * Component supplier
+     */
     private Organization supplier;
 
-    /**Component version*/
+    /**
+     * Component version
+     */
     private String version;
 
-    /**Component description*/
+    /**
+     * Component description
+     */
     private Description description;
 
-    /**Component CPEs*/
+    /**
+     * Component CPEs
+     */
     private Set<String> cpes = new HashSet<>();
 
-    /**Component PURLs*/
+    /**
+     * Component PURLs
+     */
     private Set<String> purls = new HashSet<>();
 
-    /**Component external references*/
+    /**
+     * Component external references
+     */
     private Set<ExternalReference> externalReferences = new HashSet<>();
 
-    /**Component mime type*/
+    /**
+     * Component mime type
+     */
     private String mimeType;
 
-    /**Component publisher*/
+    /**
+     * Component publisher
+     */
     private String publisher;
 
-    /**Component scope*/
+    /**
+     * Component scope
+     */
     private String scope;
 
-    /**Component group*/
+    /**
+     * Component group
+     */
     private String group;
 
-    /**Component properties*/
+    /**
+     * Component properties
+     */
     private HashMap<String, Set<String>> properties = new HashMap<>();
 
     public SVIPComponentBuilder() {
@@ -152,6 +212,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's mime type
+     *
      * @param mimeType the package's mime type
      * @return an SVIPComponentBuilder
      */
@@ -163,6 +224,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's publisher
+     *
      * @param publisher the package's publisher
      * @return an SVIPComponentBuilder
      */
@@ -174,6 +236,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's scope
+     *
      * @param scope the package's scope
      * @return an SVIPComponentBuilder
      */
@@ -185,6 +248,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's group
+     *
      * @param group the package's group
      * @return an SVIPComponentBuilder
      */
@@ -196,6 +260,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Add an external references to the component
+     *
      * @param externalReference a package's external reference
      * @return an SVIPComponentBuilder
      */
@@ -207,13 +272,14 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Add a property to the component
-     * @param name the name of the property
+     *
+     * @param name  the name of the property
      * @param value the value of the property
      * @return an SVIPComponentBuilder
      */
     @Override
     public SVIPComponentBuilder addProperty(String name, String value) {
-        if( !this.properties.containsKey(name))
+        if (!this.properties.containsKey(name))
             this.properties.put(name, new HashSet<>());
 
         this.properties.get(name).add(value);
@@ -223,6 +289,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's type
+     *
      * @param type the designated type of component
      * @return an SVIPComponentBuilder
      */
@@ -234,6 +301,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's uid
+     *
      * @param uid the uid of the component
      * @return an SVIPComponentBuilder
      */
@@ -245,6 +313,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's author
+     *
      * @param author the author of the component
      * @return an SVIPComponentBuilder
      */
@@ -256,6 +325,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's name
+     *
      * @param name the name of the component
      * @return an SVIPComponentBuilder
      */
@@ -267,6 +337,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's licenses
+     *
      * @param licenses a collection of licenses
      * @return an SVIPComponentBuilder
      */
@@ -278,6 +349,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's copyright info
+     *
      * @param copyright the copyright info of the component
      * @return an SVIPComponentBuilder
      */
@@ -289,8 +361,9 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Add a hash value to the component
+     *
      * @param algorithm the algorithm of the hash
-     * @param hash the value of the hash
+     * @param hash      the value of the hash
      * @return an SVIPComponentBuilder
      */
     @Override
@@ -301,6 +374,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's supplier
+     *
      * @param supplier the component's supplier
      * @return an SVIPComponentBuilder
      */
@@ -312,6 +386,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's version
+     *
      * @param version the component's version
      * @return an SVIPComponentBuilder
      */
@@ -323,6 +398,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's description
+     *
      * @param description the component's description
      * @return an SVIPComponentBuilder
      */
@@ -334,6 +410,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Add a cpe to the component
+     *
      * @param cpe the cpe string to add
      * @return an SVIPComponentBuilder
      */
@@ -345,6 +422,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Add a purl to the component
+     *
      * @param purl the purl string to add
      * @return an SVIPComponentBuilder
      */
@@ -356,6 +434,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Add an external reference to the component
+     *
      * @param externalReference the external component to add
      * @return an SVIPComponentBuilder
      */
@@ -367,6 +446,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's comment
+     *
      * @param comment the comment for the component
      * @return an SVIPComponentBuilder
      */
@@ -378,6 +458,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's attribution text
+     *
      * @param attributionText the attribution text of the component
      * @return an SVIPComponentBuilder
      */
@@ -389,6 +470,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's download location
+     *
      * @param downloadLocation the package's download location
      * @return an SVIPComponentBuilder
      */
@@ -400,6 +482,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's file name
+     *
      * @param fileName the package's file name
      * @return an SVIPComponentBuilder
      */
@@ -411,6 +494,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set if the component's files were analyzed
+     *
      * @param filesAnalyzed a boolean if the files were analyzed
      * @return an SVIPComponentBuilder
      */
@@ -422,9 +506,9 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's verification code
+     *
      * @param verificationCode the package's verification code
      * @return an SVIPComponentBuilder
-     *
      */
     @Override
     public SVIPComponentBuilder setVerificationCode(String verificationCode) {
@@ -434,6 +518,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's home page
+     *
      * @param homePage the package's home page
      * @return an SVIPComponentBuilder
      */
@@ -445,6 +530,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's source information
+     *
      * @param sourceInfo the package's source information
      * @return an SVIPComponentBuilder
      */
@@ -456,6 +542,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's release date
+     *
      * @param releaseDate the package's release date
      * @return an SVIPComponentBuilder
      */
@@ -467,6 +554,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's build date
+     *
      * @param buildDate the package's build date
      * @return an SVIPComponentBuilder
      */
@@ -478,6 +566,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the component's valid until date
+     *
      * @param validUntilDate the package's valid until date
      * @return an SVIPComponentBuilder
      */
@@ -489,6 +578,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Set the file's file notice
+     *
      * @param fileNotice the file notice
      * @return an SVIPComponentBuilder
      */
@@ -500,6 +590,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Build an SVIPComponent
+     *
      * @return an SVIPComponentObject
      */
     @Override
@@ -515,6 +606,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
 
     /**
      * Build and flush an SVIP component
+     *
      * @return an SVIPComponentObject
      */
     @Override

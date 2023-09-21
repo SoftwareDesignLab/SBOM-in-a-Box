@@ -21,62 +21,99 @@ import java.util.Set;
 public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
 
-    /**Component type*/
+    /**
+     * Component type
+     */
     private String type;
 
-    /**Component uid*/
+    /**
+     * Component uid
+     */
     private String uid;
 
-    /**Component author*/
+    /**
+     * Component author
+     */
     private String author;
 
-    /**Component name*/
+    /**
+     * Component name
+     */
     private String name;
 
-    /**Component licenses*/
+    /**
+     * Component licenses
+     */
     private LicenseCollection licenses = new LicenseCollection();
 
-    /**Component copyright*/
+    /**
+     * Component copyright
+     */
     private String copyright;
 
-    /**Component hashes*/
+    /**
+     * Component hashes
+     */
     private HashMap<String, String> hashes = new HashMap<>();
 
-    /**Component supplier*/
+    /**
+     * Component supplier
+     */
     private Organization supplier;
 
-    /**Component version*/
+    /**
+     * Component version
+     */
     private String version;
 
-    /**Component description*/
+    /**
+     * Component description
+     */
     private Description description;
 
-    /**Component CPEs*/
+    /**
+     * Component CPEs
+     */
     private Set<String> cpes = new HashSet<>();
 
-    /**Component PURLs*/
+    /**
+     * Component PURLs
+     */
     private Set<String> purls = new HashSet<>();
 
-    /**Component external references*/
+    /**
+     * Component external references
+     */
     private Set<ExternalReference> externalReferences = new HashSet<>();
 
-    /**Component mime type*/
+    /**
+     * Component mime type
+     */
     private String mimeType;
 
-    /**Component publisher*/
+    /**
+     * Component publisher
+     */
     private String publisher;
 
-    /**Component scope*/
+    /**
+     * Component scope
+     */
     private String scope;
 
-    /**Component group*/
+    /**
+     * Component group
+     */
     private String group;
 
-    /**Component properties*/
+    /**
+     * Component properties
+     */
     private HashMap<String, Set<String>> properties = new HashMap<>();
 
     /**
      * Set the component's mime type
+     *
      * @param mimeType the package's mime type
      * @return a CDX14PackageBuilder
      */
@@ -88,6 +125,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
     /**
      * Set the component's publisher
+     *
      * @param publisher the package's publisher
      * @return a CDX14PackageBuilder
      */
@@ -99,6 +137,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
     /**
      * Set the component's scope
+     *
      * @param scope the package's scope
      * @return a CDX14PackageBuilder
      */
@@ -110,6 +149,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
     /**
      * Set the component's group
+     *
      * @param group the package's group
      * @return a CDX14PackageBuilder
      */
@@ -121,6 +161,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
     /**
      * Add an external references to the component
+     *
      * @param externalReference a package's external reference
      * @return a CDX14PackageBuilder
      */
@@ -132,13 +173,14 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
     /**
      * Add a property to the component
-     * @param name the name of the property
+     *
+     * @param name  the name of the property
      * @param value the value of the property
      * @return a CDX14PackageBuilder
      */
     @Override
     public CDX14PackageBuilder addProperty(String name, String value) {
-        if( !this.properties.containsKey(name))
+        if (!this.properties.containsKey(name))
             this.properties.put(name, new HashSet<>());
 
         this.properties.get(name).add(value);
@@ -148,6 +190,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
     /**
      * Set the component's type
+     *
      * @param type the designated type of component
      * @return a CDX14PackageBuilder
      */
@@ -159,6 +202,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
     /**
      * Set the component's uid
+     *
      * @param uid the uid of the component
      * @return a CDX14PackageBuilder
      */
@@ -170,6 +214,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
     /**
      * Set the component's author
+     *
      * @param author the author of the component
      * @return a CDX14PackageBuilder
      */
@@ -181,6 +226,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
     /**
      * Set the component's name
+     *
      * @param name the name of the component
      * @return a CDX14PackageBuilder
      */
@@ -192,6 +238,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
     /**
      * Set the component's licenses
+     *
      * @param licenses a collection of licenses
      * @return a CDX14PackageBuilder
      */
@@ -203,6 +250,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
     /**
      * Set the component's copyright info
+     *
      * @param copyright the copyright info of the component
      * @return a CDX14PackageBuilder
      */
@@ -214,8 +262,9 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
     /**
      * Add a hash value to the component
+     *
      * @param algorithm the algorithm of the hash
-     * @param hash the value of the hash
+     * @param hash      the value of the hash
      * @return a CDX14PackageBuilder
      */
     @Override
@@ -226,6 +275,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
     /**
      * Set the component's supplier
+     *
      * @param supplier the component's supplier
      * @return a CDX14PackageBuilder
      */
@@ -237,6 +287,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
     /**
      * Set the component's version
+     *
      * @param version the component's version
      * @return a CDX14PackageBuilder
      */
@@ -248,6 +299,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
     /**
      * Set the component's description
+     *
      * @param description the component's description
      * @return a CDX14PackageBuilder
      */
@@ -259,6 +311,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
     /**
      * Add a cpe to the component
+     *
      * @param cpe the cpe string to add
      * @return a CDX14PackageBuilder
      */
@@ -270,6 +323,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
     /**
      * Add a purl to the component
+     *
      * @param purl the purl string to add
      * @return a CDX14PackageBuilder
      */
@@ -281,6 +335,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
     /**
      * Add an external reference to the component
+     *
      * @param externalReference the external component to add
      * @return a CDX14PackageBuilder
      */
@@ -292,6 +347,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
 
     /**
      * Build a CDX14ComponentObject
+     *
      * @return a Component
      */
     @Override
@@ -303,15 +359,17 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     }
 
     //TODO implement after SBOM refactor
+
     /**
      * Build and flush a CDX14ComponentObject
+     *
      * @return a Component
      */
     @Override
     public CDX14ComponentObject buildAndFlush() {
         // build the component
         CDX14ComponentObject component = build();
-        
+
         // clear all the data in the builder
         this.type = null;
         this.uid = null;

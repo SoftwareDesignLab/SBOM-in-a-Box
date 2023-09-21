@@ -15,6 +15,7 @@ import org.svip.sbom.model.shared.util.ExternalReference;
 public interface SBOMBuilder {
     /**
      * Set the SBOM's format
+     *
      * @param format
      * @return an SBOMBuilder
      */
@@ -22,6 +23,7 @@ public interface SBOMBuilder {
 
     /**
      * Set the SBOMBuilder's name
+     *
      * @param name
      * @return an SBOMBuilder
      */
@@ -29,6 +31,7 @@ public interface SBOMBuilder {
 
     /**
      * Set the unique identifier for the SBOMBuilder
+     *
      * @param uid
      * @return an SBOMBuilder
      */
@@ -36,42 +39,55 @@ public interface SBOMBuilder {
 
     /**
      * Set the SBOMBuilder's version
+     *
      * @param version
      * @return an SBOMBuilder
      */
     SBOMBuilder setVersion(String version);
+
     /**
      * Set the SBOMBuilder's specVersion
+     *
      * @param specVersion
      * @return an SBOMBuilder
      */
     SBOMBuilder setSpecVersion(String specVersion);
+
     /**
      * Add a license to the SBOMBuilder
+     *
      * @param license
      * @return an SBOMBuilder
      */
     SBOMBuilder addLicense(String license);
+
     /**
      * Set the SBOMBuilder's creation data
+     *
      * @param creationData
      * @return an SBOMBuilder
      */
     SBOMBuilder setCreationData(CreationData creationData);
+
     /**
      * Set a document comment for the SBOMBuilder
+     *
      * @param documentComment
      * @return an SBOMBuilder
      */
     SBOMBuilder setDocumentComment(String documentComment);
+
     /**
      * Set the root component of the SBOMBuilder
+     *
      * @param rootComponent
      * @return an SBOMBuilder
      */
     SBOMBuilder setRootComponent(Component rootComponent);
+
     /**
      * Add a component to the SBOMBuilder
+     *
      * @param component
      * @return an SBOMBuilder
      */
@@ -79,13 +95,16 @@ public interface SBOMBuilder {
 
     /**
      * Add relationships between SBOMBuilder components
+     *
      * @param componentName
      * @param relationship
      * @return an SBOMBuilder
      */
     SBOMBuilder addRelationship(String componentName, Relationship relationship);
+
     /**
      * Add external reference data to the SBOMBuilder
+     *
      * @param externalReference
      * @return an SBOMBuilder
      */
@@ -93,6 +112,7 @@ public interface SBOMBuilder {
 
     /**
      * Build an SBOM from the data in the SBOMBUILDER
+     *
      * @return SBOM
      */
     SBOM Build();

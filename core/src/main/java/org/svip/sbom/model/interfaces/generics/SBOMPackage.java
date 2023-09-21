@@ -1,9 +1,9 @@
 package org.svip.sbom.model.interfaces.generics;
 
+import org.svip.compare.conflicts.Conflict;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
-import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 
 import java.util.List;
 import java.util.Set;
@@ -14,7 +14,7 @@ import java.util.Set;
  *
  * @author Derek Garcia
  */
-public interface SBOMPackage extends Component{
+public interface SBOMPackage extends Component {
     /**
      * @return Supplier of the package
      */

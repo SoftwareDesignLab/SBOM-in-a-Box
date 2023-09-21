@@ -22,13 +22,13 @@ public class PURL {
     // Purl scheme: scheme:type/namespace/name@version?qualifiers#subpath
     private static final String PURL_REGEX =
             "(.*?):" +      // Get scheme
-            "(?:/*)" +    // Skip over any/all '/' characters
-            "([\\w\\d.+\\-]*)/" +                     // Get type
-            "(?(?=[\\w\\.\\+\\-\\%^@#?]*\\/)(.*?)\\/)" +    // Get namespaces if present
-            "([\\w.+\\-%]*)" +    //  Get name
-            "(?(?=.*@.*(?:\\?|#|$))@(.*?)(?=\\?|#|$))" +    // Get version, if present
-            "(?(?=.*\\?.*(?:#|$))\\?(.*?)(?=#|$))" +        // Get qualifiers if present
-            "(?(?=.*#.*$)#(.*?)$)";     // Get subpath, if present
+                    "(?:/*)" +    // Skip over any/all '/' characters
+                    "([\\w\\d.+\\-]*)/" +                     // Get type
+                    "(?(?=[\\w\\.\\+\\-\\%^@#?]*\\/)(.*?)\\/)" +    // Get namespaces if present
+                    "([\\w.+\\-%]*)" +    //  Get name
+                    "(?(?=.*@.*(?:\\?|#|$))@(.*?)(?=\\?|#|$))" +    // Get version, if present
+                    "(?(?=.*\\?.*(?:#|$))\\?(.*?)(?=#|$))" +        // Get qualifiers if present
+                    "(?(?=.*#.*$)#(.*?)$)";     // Get subpath, if present
 
     private final String scheme;  // required
     private final String type;    // required
@@ -50,31 +50,31 @@ public class PURL {
         Matcher matcher = purlPattern.matcher(purl);
 
         // Regex fails to match to string
-        if(!matcher.find())
+        if (!matcher.find())
             throw new Exception("Unable to parse purl \"" + purl + "\"");
 
         // Check for required fields
-        if(matcher.group(1) == null || matcher.group(2) == null || matcher.group(4) == null){
-            throw new Exception("Invalid purl, missing the following: "+
-                    ( matcher.group(1) == null ? "Schema " : "" ) +
-                    ( matcher.group(2) == null ? "Type " : "" ) +
-                    ( matcher.group(4) == null ? "Name " : "" )
+        if (matcher.group(1) == null || matcher.group(2) == null || matcher.group(4) == null) {
+            throw new Exception("Invalid purl, missing the following: " +
+                    (matcher.group(1) == null ? "Schema " : "") +
+                    (matcher.group(2) == null ? "Type " : "") +
+                    (matcher.group(4) == null ? "Name " : "")
             );
         }
 
         // Build purl object
         this.scheme = matcher.group(1);
         this.type = matcher.group(2);
-        if(matcher.group(3) != null)
+        if (matcher.group(3) != null)
             this.namespace = Arrays.stream(matcher.group(3).split("/")).toList();   // can be 0 - n namespaces
         this.name = matcher.group(4);
         this.version = matcher.group(5);
 
         // Build qualifiers if present
-        if(matcher.group(6) != null){
+        if (matcher.group(6) != null) {
             this.qualifiers = new LinkedHashMap<>();
             // Add all key=value pairs for the quantifier
-            for(String qualifier : matcher.group(6).split("&")){
+            for (String qualifier : matcher.group(6).split("&")) {
                 String[] keyVal = qualifier.split("=");
                 this.qualifiers.put(keyVal[0], keyVal[1]);
             }
@@ -91,7 +91,7 @@ public class PURL {
         return type;
     }
 
-    public List<String> getNamespace(){
+    public List<String> getNamespace() {
         return this.namespace;
     }
 
@@ -116,14 +116,14 @@ public class PURL {
         // scheme:type/namespace/name@version?qualifiers#subpath
         // Build namespaces
         StringBuilder namespace = new StringBuilder();
-        if(this.namespace != null)
-            for(String n : this.namespace)
+        if (this.namespace != null)
+            for (String n : this.namespace)
                 namespace.append("/").append(n);
 
         // Build qualifiers
         StringBuilder qualifiers = new StringBuilder();
-        if(this.qualifiers != null){
-            for(String key : this.qualifiers.keySet())
+        if (this.qualifiers != null) {
+            for (String key : this.qualifiers.keySet())
                 qualifiers.append(key).append("=").append(this.qualifiers.get(key)).append("&");
             qualifiers.deleteCharAt(qualifiers.length() - 1);   // truncate last '&'
         }

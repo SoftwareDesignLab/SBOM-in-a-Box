@@ -1,19 +1,15 @@
 package org.svip.sbom.model.objects.SPDX23;
 
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.factory.objects.SPDX23.SPDX23SBOMBuilderFactory;
 import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
-import org.svip.sbom.model.shared.util.Description;
-import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.sbomanalysis.comparison.conflicts.Conflict;
-import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.MismatchType;
 
 import java.util.List;
 import java.util.Objects;
@@ -45,8 +41,8 @@ public class SPDX23SBOMConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.ORIGIN_FORMAT_MISMATCH, conflict.GetType());
-        assertEquals("Format doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.ORIGIN_FORMAT_MISMATCH, conflict.getType());
+        assertEquals("Format doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -62,8 +58,8 @@ public class SPDX23SBOMConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.NAME_MISMATCH, conflict.GetType());
-        assertEquals("Name doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.NAME_MISMATCH, conflict.getType());
+        assertEquals("Name doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -79,8 +75,8 @@ public class SPDX23SBOMConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-        assertEquals("UID doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
+        assertEquals("UID doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -96,8 +92,8 @@ public class SPDX23SBOMConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.VERSION_MISMATCH, conflict.GetType());
-        assertEquals("Version doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.VERSION_MISMATCH, conflict.getType());
+        assertEquals("Version doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -113,8 +109,8 @@ public class SPDX23SBOMConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.SCHEMA_VERSION_MISMATCH, conflict.GetType());
-        assertEquals("Spec Version doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.SCHEMA_VERSION_MISMATCH, conflict.getType());
+        assertEquals("Spec Version doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -131,8 +127,8 @@ public class SPDX23SBOMConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(2, conflictList.size());
-        assertEquals(MismatchType.MISSING, conflict.GetType());
-        assertEquals("License is missing", conflict.GetMessage());
+        assertEquals(MismatchType.MISSING, conflict.getType());
+        assertEquals("License is missing", conflict.getMessage());
     }
 
     @Test
@@ -148,8 +144,8 @@ public class SPDX23SBOMConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-        assertEquals("Document Comment doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
+        assertEquals("Document Comment doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -165,8 +161,8 @@ public class SPDX23SBOMConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.LICENSE_MISMATCH, conflict.GetType());
-        assertEquals("SPDX License List Version doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.LICENSE_MISMATCH, conflict.getType());
+        assertEquals("SPDX License List Version doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -186,8 +182,8 @@ public class SPDX23SBOMConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.TIMESTAMP_MISMATCH, conflict.GetType());
-        assertEquals("Timestamp doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.TIMESTAMP_MISMATCH, conflict.getType());
+        assertEquals("Timestamp doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -207,8 +203,8 @@ public class SPDX23SBOMConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(1, conflictList.size());
-        assertEquals(MismatchType.MISC_MISMATCH, conflict.GetType());
-        assertEquals("Creator Comment doesn't match", conflict.GetMessage());
+        assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
+        assertEquals("Creator Comment doesn't match", conflict.getMessage());
     }
 
     @Test
@@ -235,9 +231,9 @@ public class SPDX23SBOMConflictsTest {
 
         for(Conflict c : conflictList)
         {
-            if(c.GetType() == MismatchType.NAME_MISMATCH && Objects.equals(c.GetMessage(), "Organization: Name doesn't match"))
+            if(c.getType() == MismatchType.NAME_MISMATCH && Objects.equals(c.getMessage(), "Organization: Name doesn't match"))
                 c1 = true;
-            else if(c.GetType() == MismatchType.MISC_MISMATCH && Objects.equals(c.GetMessage(), "Organization: URL doesn't match"))
+            else if(c.getType() == MismatchType.MISC_MISMATCH && Objects.equals(c.getMessage(), "Organization: URL doesn't match"))
                 c2 = true;
         }
 
@@ -269,9 +265,9 @@ public class SPDX23SBOMConflictsTest {
 
         for(Conflict c : conflictList)
         {
-            if(c.GetType() == MismatchType.NAME_MISMATCH && Objects.equals(c.GetMessage(), "Organization: Name doesn't match"))
+            if(c.getType() == MismatchType.NAME_MISMATCH && Objects.equals(c.getMessage(), "Organization: Name doesn't match"))
                 c1 = true;
-            else if(c.GetType() == MismatchType.MISC_MISMATCH && Objects.equals(c.GetMessage(), "Organization: URL doesn't match"))
+            else if(c.getType() == MismatchType.MISC_MISMATCH && Objects.equals(c.getMessage(), "Organization: URL doesn't match"))
                 c2 = true;
         }
 
@@ -298,8 +294,8 @@ public class SPDX23SBOMConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(2, conflictList.size());
-        assertEquals(MismatchType.MISSING, conflict.GetType());
-        assertEquals("Creation Data: Author is missing", conflict.GetMessage());
+        assertEquals(MismatchType.MISSING, conflict.getType());
+        assertEquals("Creation Data: Author is missing", conflict.getMessage());
     }
 
     @Test
@@ -329,7 +325,7 @@ public class SPDX23SBOMConflictsTest {
         Conflict conflict = conflictList.get(0);
 
         assertEquals(2, conflictList.size());
-        assertEquals(MismatchType.MISSING, conflict.GetType());
-        assertEquals("Creation Data: Tool is missing", conflict.GetMessage());
+        assertEquals(MismatchType.MISSING, conflict.getType());
+        assertEquals("Creation Data: Tool is missing", conflict.getMessage());
     }
 }

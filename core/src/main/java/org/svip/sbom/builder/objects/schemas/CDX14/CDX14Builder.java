@@ -12,7 +12,6 @@ import org.svip.sbom.model.shared.util.ExternalReference;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -23,43 +22,67 @@ import java.util.Set;
  * @author Matthew Morrison
  * @author Thomas Roman
  */
-public class CDX14Builder implements CDX14SBOMBuilder{
+public class CDX14Builder implements CDX14SBOMBuilder {
 
-    /**Holds the format of the SBOM*/
+    /**
+     * Holds the format of the SBOM
+     */
     private String format;
 
-    /**Holds the name of the SBOM*/
+    /**
+     * Holds the name of the SBOM
+     */
     private String name;
 
-    /**Holds the UID of the SBOM*/
+    /**
+     * Holds the UID of the SBOM
+     */
     private String uid;
 
-    /**Holds the version of the SBOM*/
+    /**
+     * Holds the version of the SBOM
+     */
     private String version;
 
-    /**Holds the spec version of the SBOM*/
+    /**
+     * Holds the spec version of the SBOM
+     */
     private String specVersion;
 
-    /**Holds the licenses of the SBOM*/
-    private Set<String> licenses = new HashSet<>();
+    /**
+     * Holds the licenses of the SBOM
+     */
+    private final Set<String> licenses = new HashSet<>();
 
-    /**Holds the creation data of the SBOM*/
+    /**
+     * Holds the creation data of the SBOM
+     */
     private CreationData creationData = new CreationData();
 
-    /**Holds the document comments of the SBOM*/
+    /**
+     * Holds the document comments of the SBOM
+     */
     private String documentComment;
 
-    /**Holds the root component of the SBOM*/
+    /**
+     * Holds the root component of the SBOM
+     */
     private Component rootComponent;
 
-    /**Holds the components of the SBOM*/
-    private Set<Component> components = new HashSet<>();
+    /**
+     * Holds the components of the SBOM
+     */
+    private final Set<Component> components = new HashSet<>();
 
-    /**Holds the relationships of components in the SBOM*/
-    private HashMap<String, Set<Relationship>> relationships = new HashMap<>();
+    /**
+     * Holds the relationships of components in the SBOM
+     */
+    private final HashMap<String, Set<Relationship>> relationships = new HashMap<>();
 
-    /**Holds the external references of the SBOM*/
-    private Set<ExternalReference> externalReferences = new HashSet<>();
+    /**
+     * Holds the external references of the SBOM
+     */
+    private final Set<ExternalReference> externalReferences = new HashSet<>();
 
     //TODO VEX needs implementation
     /**Holds the vulnerabilities expressed in the SBOM*/
@@ -79,6 +102,7 @@ public class CDX14Builder implements CDX14SBOMBuilder{
 
     /**
      * Set the SBOM's format
+     *
      * @param format the SBOM format
      * @return a CDX14Builder
      */
@@ -90,6 +114,7 @@ public class CDX14Builder implements CDX14SBOMBuilder{
 
     /**
      * Set the SBOM's name
+     *
      * @param name the name
      * @return a CDX14Builder
      */
@@ -101,6 +126,7 @@ public class CDX14Builder implements CDX14SBOMBuilder{
 
     /**
      * Set the SBOM's UID
+     *
      * @param uid the UID
      * @return a CDX14Builder
      */
@@ -112,6 +138,7 @@ public class CDX14Builder implements CDX14SBOMBuilder{
 
     /**
      * Set the SBOM's version
+     *
      * @param version the version
      * @return a CDX14Builder
      */
@@ -123,6 +150,7 @@ public class CDX14Builder implements CDX14SBOMBuilder{
 
     /**
      * Set the SBOM's spec version
+     *
      * @param specVersion the spec version
      * @return a CDX14Builder
      */
@@ -134,6 +162,7 @@ public class CDX14Builder implements CDX14SBOMBuilder{
 
     /**
      * Add a license to the SBOM
+     *
      * @param license the license to add
      * @return a CDX14Builder
      */
@@ -145,6 +174,7 @@ public class CDX14Builder implements CDX14SBOMBuilder{
 
     /**
      * Set the SBOM's creation data
+     *
      * @param creationData the creation data
      * @return a CDX14Builder
      */
@@ -156,6 +186,7 @@ public class CDX14Builder implements CDX14SBOMBuilder{
 
     /**
      * Set the SBOM's document comment
+     *
      * @param documentComment the document comment
      * @return a CDX14Builder
      */
@@ -167,6 +198,7 @@ public class CDX14Builder implements CDX14SBOMBuilder{
 
     /**
      * Set the root component of the SBOM
+     *
      * @param rootComponent the root component
      * @return a CDX14Builder
      */
@@ -178,6 +210,7 @@ public class CDX14Builder implements CDX14SBOMBuilder{
 
     /**
      * Add a component to an SBOM
+     *
      * @param component the component to add
      * @return a CDX14Builder
      */
@@ -195,14 +228,15 @@ public class CDX14Builder implements CDX14SBOMBuilder{
 
     /**
      * Add a relationship to the SBOM
+     *
      * @param componentName the component name
-     * @param relationship the relationship
+     * @param relationship  the relationship
      * @return a CDX14Builder
      */
     @Override
     public CDX14Builder addRelationship(String componentName, Relationship relationship) {
 
-        if( !relationships.containsKey(componentName))
+        if (!relationships.containsKey(componentName))
             this.relationships.put(componentName, new HashSet<>());
 
         this.relationships.get(componentName).add(relationship);
@@ -211,6 +245,7 @@ public class CDX14Builder implements CDX14SBOMBuilder{
 
     /**
      * Add an external reference to the SBOM
+     *
      * @param externalReference the external reference
      * @return a CDX14Builder
      */
@@ -224,6 +259,7 @@ public class CDX14Builder implements CDX14SBOMBuilder{
 
     /**
      * Build a new SBOM
+     *
      * @return an SBOM Object
      */
     @Override
@@ -238,6 +274,7 @@ public class CDX14Builder implements CDX14SBOMBuilder{
 
     /**
      * Build the CycloneDX 1.4 SBOM
+     *
      * @return a CDX14SBOM object
      */
     @Override

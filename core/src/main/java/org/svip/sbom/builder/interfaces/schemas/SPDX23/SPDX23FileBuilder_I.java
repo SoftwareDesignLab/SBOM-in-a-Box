@@ -11,6 +11,7 @@ public interface SPDX23FileBuilder_I extends SPDX23ComponentBuilder {
 
     /**
      * Set the file notice of the SPDX File
+     *
      * @param fileNotice the file notice
      * @return an SPDX23FileBuilder_I
      */
