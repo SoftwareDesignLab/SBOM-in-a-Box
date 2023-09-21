@@ -25,7 +25,7 @@ public class HashFixes implements Fixes<Hash> {
      */
     @Override
     public List<Fix<Hash>> fix(Result result, SBOM sbom, String repairSubType) {
-
+        System.out.println(sbom.getFormat());
         // Get algorithm and hash value from result message
         String[] details = result.getDetails().split(" ");
         String algorithm = details[details.length - 1];
@@ -34,7 +34,7 @@ public class HashFixes implements Fixes<Hash> {
         Hash hash = new Hash(algorithm, value);
 
         // Get all possible algorithms that match the hash
-        List<Algorithm> matchingAlgorithms = Hash.validAlgorithms(value, sbom instanceof SPDX23SBOM);
+        List<Algorithm> matchingAlgorithms = Hash.validAlgorithms(value, sbom.getFormat());
         if (matchingAlgorithms.isEmpty()) {
             // Suggest deleting the hash as a fix if hash does not match any algorithm
             return Collections.singletonList(new Fix<>(hash, null));

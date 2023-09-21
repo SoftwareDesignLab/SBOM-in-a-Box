@@ -171,10 +171,10 @@ public class Hash {
     /**
      * Get a list of matching algorithms given a hash value.
      * @param hash   Hash string
-     * @param isSPDX is SPDX SBOM boolean
+     * @param sbomFormat the format of the SBOM (i.e., CycloneDX, SPDX)
      * @return list of algorithms
      */
-    public static List<Algorithm> validAlgorithms(String hash, boolean isSPDX) {
+    public static List<Algorithm> validAlgorithms(String hash, String sbomFormat) {
         List<Algorithm> algorithms = new ArrayList<>();
 
         switch(hash.length()) {
@@ -203,7 +203,7 @@ public class Hash {
                 return Collections.emptyList();
         }
 
-        if (!isSPDX) {
+        if (sbomFormat.equals("CycloneDX")) {
             algorithms.removeIf(Hash::isSPDXExclusive);
         }
 
