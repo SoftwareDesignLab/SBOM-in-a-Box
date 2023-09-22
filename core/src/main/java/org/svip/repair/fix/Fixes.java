@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author Juan Francisco Patino
  */
-public interface Fixes {
+public interface Fixes<T> {
 
     /**
      * @param result        object from quality report
@@ -18,5 +18,5 @@ public interface Fixes {
      * @param repairSubType key from quality report map most directly relating to the repair type
      * @return list of potential fixes
      */
-    List<Fix<?>> fix(Result result, SBOM sbom, String repairSubType) throws Exception;
+    List<Fix<T>> fix(Result result, SBOM sbom, String repairSubType) throws Exception;
 }
