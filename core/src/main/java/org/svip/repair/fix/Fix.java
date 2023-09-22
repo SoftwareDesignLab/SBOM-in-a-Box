@@ -10,14 +10,6 @@ package org.svip.repair.fix;
  */
 public record Fix<T> (T old, T fixed) {
 
-    public T getOld() {
-        return old;
-    }
-
-    public T getFixed() {
-        return fixed;
-    }
-
     @Override
     public String toString() {
         return old + " -> " + fixed;

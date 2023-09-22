@@ -65,15 +65,15 @@ class HashTest {
 
     @Test
     public void valid_algorithms_test() {
-        assertEquals(Collections.emptyList(), Hash.validAlgorithms("invalid", true));
-        assertEquals(List.of(Algorithm.MD5), Hash.validAlgorithms(HASH_VALUE, false));
-        assertEquals(List.of(Algorithm.MD2, Algorithm.MD4, Algorithm.MD5, Algorithm.MD6), Hash.validAlgorithms(HASH_VALUE, true));
+        assertEquals(Collections.emptyList(), Hash.validAlgorithms("invalid", "SPDX"));
+        assertEquals(List.of(Algorithm.MD5), Hash.validAlgorithms(HASH_VALUE, "CycloneDX"));
+        assertEquals(List.of(Algorithm.MD2, Algorithm.MD4, Algorithm.MD5, Algorithm.MD6), Hash.validAlgorithms(HASH_VALUE, "SPDX"));
 
         Map<Algorithm, String> hashes = generateHashes();
-        assertEquals(Collections.emptyList(), Hash.validAlgorithms(hashes.get(Algorithm.ADLER32), false));
-        assertEquals(Collections.emptyList(), Hash.validAlgorithms(hashes.get(Algorithm.SHA224), false));
+        assertEquals(Collections.emptyList(), Hash.validAlgorithms(hashes.get(Algorithm.ADLER32), "CycloneDX"));
+        assertEquals(Collections.emptyList(), Hash.validAlgorithms(hashes.get(Algorithm.SHA224), "CycloneDX"));
         for (String hash : hashes.values()) {
-            assertNotNull(Hash.validAlgorithms(hash, true));
+            assertNotNull(Hash.validAlgorithms(hash, "SPDX"));
         }
 
     }

@@ -3,17 +3,14 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v8.1.0-alpha] - (9/20/2023)
+## [v8.1.0-alpha] - (9/22/2023)
 
 ### Added
-- `HashFixes.java` Class - Suggests a list of invalid hashes
-- `Hash.validAlgorithms()` Method - Returns a list of valid hashing algorithms given a hash
-- Missing unit tests
+- `HashFixes.java` Class - Suggests a list of fixes for invalid hashes and hashing algorithms
+- `Hash.validAlgorithms()` Method - Returns a list of valid hashing algorithms that match a hash
+- Unit tests
   - `FixTest.java`
   - `HashTest.java`
-
-### Changed
-- `Fixes.java` uses generic type `T` 
 
 ## [v8.0.4-alpha] - (9/14/2023)
 
