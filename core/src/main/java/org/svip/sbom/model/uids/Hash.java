@@ -2,6 +2,9 @@ package org.svip.sbom.model.uids;
 
 import jregex.Pattern;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import static org.svip.sbom.model.uids.Hash.Algorithm.*;
@@ -57,6 +60,17 @@ public class Hash {
      */
     public Hash(String algorithm, String value) {
         this.algorithm = toAlgorithmEnum(algorithm);
+        this.value = value;
+    }
+
+    /**
+     * Create a new hash object
+     *
+     * @param algorithm hash algorithm used
+     * @param value     value of hash
+     */
+    public Hash(Algorithm algorithm, String value) {
+        this.algorithm = algorithm;
         this.value = value;
     }
 
@@ -154,6 +168,51 @@ public class Hash {
         return p.matches(hash);
     }
 
+    /**
+     * Get a list of matching algorithms given a hash value.
+     * @param hash   Hash string
+     * @param sbomFormat the format of the SBOM (i.e., CycloneDX, SPDX)
+     * @return list of algorithms
+     */
+    public static List<Algorithm> validAlgorithms(String hash, String sbomFormat) {
+        List<Algorithm> algorithms = new ArrayList<>();
+
+        switch(hash.length()) {
+            case 8:
+                algorithms.add(ADLER32);
+                break;
+            case 32:
+                algorithms.addAll(List.of(MD2, MD4, MD5, MD6));
+                break;
+            case 40:
+                algorithms.add(SHA1);
+                break;
+            case 56:
+                algorithms.add(SHA224);
+                break;
+            case 64:
+                algorithms.addAll(List.of(SHA256, SHA3256, BLAKE2b256, BLAKE3, MD6));
+                break;
+            case 96:
+                algorithms.addAll(List.of(SHA384, SHA3384, BLAKE2b512));
+                break;
+            case 128:
+                algorithms.addAll(List.of(SHA512, SHA3512, BLAKE2b512, MD6));
+                break;
+            default:
+                return Collections.emptyList();
+        }
+
+        if (sbomFormat.equals("CycloneDX")) {
+            algorithms.removeIf(Hash::isSPDXExclusive);
+        }
+
+        if (!algorithms.isEmpty() && validateHash(algorithms.get(0), hash)) {
+            return algorithms;
+        }
+        return Collections.emptyList();
+    }
+
     ///
     /// getters
     ///
@@ -175,7 +234,6 @@ public class Hash {
     ///
     /// Overrides
     ///
-
 
     /**
      * @return type:value
