@@ -79,22 +79,22 @@ class LicenseTestTests {
     }
 
     @Test
-    public void testSPDXLicense_deprecated_license_id_pass_test(){
+    public void testSPDXLicense_deprecated_license_id_fail_test(){
         Set<Result> result = licenseTest.test("license", testDeprecatedLicenseID);
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
-
+        System.out.println(r.getDetails());
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
     @Test
-    public void testSPDXLicense_deprecated_license_name_pass_test(){
+    public void testSPDXLicense_deprecated_license_name_fail_test(){
         Set<Result> result = licenseTest.test("license", testDeprecatedLicenseName);
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
-
+        System.out.println(r.getDetails());
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
