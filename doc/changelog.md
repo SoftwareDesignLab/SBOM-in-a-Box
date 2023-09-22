@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `HashFixes.java` Class - Suggests a list of fixes for invalid hashes and hashing algorithms
 - `Hash.validAlgorithms()` Method - Returns a list of valid hashing algorithms that match a hash
-- Unit tests
+- Missing unit tests
   - `FixTest.java`
   - `HashTest.java`
 
