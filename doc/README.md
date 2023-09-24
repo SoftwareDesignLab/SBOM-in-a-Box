@@ -109,7 +109,7 @@ Then run the following command to build the image and send an API request to the
 # Deploy the container
 $ docker compose up osi
 # Send API request to container to generate SBOMs with ALL tools. To specify tools, add a request body of tool names.
-$ curl -X POST -G http://localhost:5000/generate
+$ curl -X POST -G http://localhost:50001/generate
 ```
 
 ### Result

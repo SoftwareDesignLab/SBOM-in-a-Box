@@ -36,9 +36,9 @@ public class OSIClient {
         private static final String url; // TODO Move port to config file
         static {
             // If running in container, access OSI by container name due to Docker's default network
-            if (isRunningInsideContainer()) url = "http://osi:5000/";
+            if (isRunningInsideContainer()) url = "http://osi:50001/";
             // If running outside of container, access OSI by the container's port on localhost
-            else url = "http://localhost:5000/";
+            else url = "http://localhost:50001/";
         }
 
         /**
