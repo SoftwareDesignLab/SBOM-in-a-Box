@@ -28,13 +28,15 @@ public class LicenseFixes implements Fixes<License> {
      *
      * @param result        object from quality report
      * @param sbom          sbom from quality report
-     * @param repairSubType key from quality report map most directly relating to the repair type
+     * @param repairSubType key from quality report map most directly relating to
+     *                      the repair type
      * @return
      */
     @Override
     public List<Fix<License>> fix(Result result, SBOM sbom, String repairSubType) {
 
-        // Suggest deleting license if license doesn't exist in https://spdx.org/licenses/.
+        // Suggest deleting license if license doesn't exist in
+        // https://spdx.org/licenses/.
 
         String details = result.getDetails();
         String licenseId = details.substring(0, details.indexOf("is"));
@@ -42,9 +44,9 @@ public class LicenseFixes implements Fixes<License> {
         License license = new License(licenseId);
 
         /*
-        if (license.length() > 1) {
-            return List.of(new Fix<License>(new License(license)));
-        }
+         * if (license.length() > 1) {
+         * return List.of(new Fix<License>(new License(license)));
+         * }
          */
         return null;
     }
@@ -65,12 +67,15 @@ public class LicenseFixes implements Fixes<License> {
     }
 
     public static String getValidId(String deprecatedId) {
-        /*
-        switch(deprecatedId) {
-            case
+        switch (deprecatedId) {
+            case "AGPL-1.0":
+                return Arrays.asList("AGPL-1.0-only", "AGPL-1.0-or-later");
+            case "AGPL-3.0":
+                return Arrays.asList("AGPL-3.0-only", "AGPL-3.0-or-later");
+            // ... Adding other deprecated Ids...
+            default:
+                return Collections.emptyList();
         }
-         */
-        return "";
     }
 
 }
