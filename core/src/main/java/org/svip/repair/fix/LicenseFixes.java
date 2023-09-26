@@ -66,71 +66,45 @@ public class LicenseFixes implements Fixes<License> {
         }
     }
 
-    public static String getValidId(String deprecatedId) {
+    public static List<String> getValidId(String deprecatedId) {
         switch (deprecatedId) {
             case "AGPL-1.0":
                 return Arrays.asList("AGPL-1.0-only", "AGPL-1.0-or-later");
             case "AGPL-3.0":
                 return Arrays.asList("AGPL-3.0-only", "AGPL-3.0-or-later");
             case "BSD-2-Clause-FreeBSD":
-                return null;
+                return Arrays.asList("BSD-2-Clause");
             case "BSD-2-Clause-NetBSD":
-                return null;
+                return Arrays.asList("BSD-2-Clause");
             case "bzip2-1.0.5":
-                return null;
+                return Arrays.asList("bzip2-1.0.6");
             case "eCos-2.0":
-                return null;
             case "GFDL-1.1":
-                return null;
             case "GFDL-1.2":
-                return null;
             case "GFDL-1.3":
-                return null;
             case "GPL-1.0":
-                return null;
             case "GPL-1.0+":
-                return null;
             case "GPL-2.0":
-                return null;
             case "GPL-2.0+":
-                return null;
             case "GPL-2.0-with-autoconf-exception":
-                return null;
             case "GPL-2.0-with-bison-exception":
-                return null;
             case "GPL-2.0-with-classpath-exception":
-                return null;
             case "GPL-2.0-with-font-exception":
-                return null;
             case "GPL-2.0-with-GCC-exception":
-                return null;
             case "GPL-3.0":
-                return null;
             case "GPL-3.0+":
-                return null;
             case "GPL-3.0-with-autoconf-exception":
-                return null;
             case "GPL-3.0-with-GCC-exception":
-                return null;
             case "LGPL-2.0":
-                return null;
             case "LGPL-2.0+":
-                return null;
             case "LGPL-2.1":
-                return null;
             case "LGPL-2.1+":
-                return null;
             case "LGPL-3.0":
-                return null;
             case "LGPL-3.0+":
-                return null;
             case "Nunit":
-                return null;
             case "StandardML-NJ":
-                return null;
             case "wxWindows":
-                return null;
-            // ... Adding other deprecated Ids...
+                // ... Adding other deprecated Ids...
             default:
                 return Collections.emptyList();
         }
