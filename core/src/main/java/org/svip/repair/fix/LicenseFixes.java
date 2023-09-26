@@ -72,8 +72,8 @@ public class LicenseFixes implements Fixes<License> {
                 return Arrays.asList("AGPL-1.0-only", "AGPL-1.0-or-later");
             case "AGPL-3.0":
                 return Arrays.asList("AGPL-3.0-only", "AGPL-3.0-or-later");
+            // Grouping cases to return the same list for multiple deprecated IDs
             case "BSD-2-Clause-FreeBSD":
-                return Arrays.asList("BSD-2-Clause");
             case "BSD-2-Clause-NetBSD":
                 return Arrays.asList("BSD-2-Clause");
             case "bzip2-1.0.5":
@@ -100,22 +100,19 @@ public class LicenseFixes implements Fixes<License> {
                 return Arrays.asList("GPL-2.0-only");
             case "GPL-2.0+":
                 return Arrays.asList("GPL-2.0-or-later");
+            // Grouping cases to return the same list for multiple deprecated IDs
             case "GPL-2.0-with-autoconf-exception":
-                return Arrays.asList("GPL-2.0-only", "GPL-2.0-or-later");
             case "GPL-2.0-with-bison-exception":
-                return Arrays.asList("GPL-2.0-only", "GPL-2.0-or-later");
             case "GPL-2.0-with-classpath-exception":
-                return Arrays.asList("GPL-2.0-only", "GPL-2.0-or-later");
             case "GPL-2.0-with-font-exception":
-                return Arrays.asList("GPL-2.0-only", "GPL-2.0-or-later");
             case "GPL-2.0-with-GCC-exception":
                 return Arrays.asList("GPL-2.0-only", "GPL-2.0-or-later");
             case "GPL-3.0":
                 return Arrays.asList("GPL-3.0-only");
             case "GPL-3.0+":
                 return Arrays.asList("GPL-3.0-or-later");
+            // Grouping cases to return the same list for multiple deprecated IDs
             case "GPL-3.0-with-autoconf-exception":
-                return Arrays.asList("GPL-3.0-only", "GPL-3.0-or-later");
             case "GPL-3.0-with-GCC-exception":
                 return Arrays.asList("GPL-3.0-only", "GPL-3.0-or-later");
             case "LGPL-2.0":
