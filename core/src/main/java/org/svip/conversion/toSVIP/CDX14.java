@@ -92,7 +92,7 @@ public class CDX14 {
      * Component will retain all the original values from the CycloneDX Component,
      * so only the internal Object will be converted, not the fields itself.
      *
-     * @param component CDX 1.4 Component Object
+     * @param originalComponent CDX 1.4 Component Object
      * @return An SVIP Component containing all original CDX 1.4 Values
      */
     public static SVIPComponentObject convertComponent(Component originalComponent) {
