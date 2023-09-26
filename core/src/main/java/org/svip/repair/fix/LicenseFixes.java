@@ -119,24 +119,25 @@ public class LicenseFixes implements Fixes<License> {
             case "GPL-3.0-with-GCC-exception":
                 return Arrays.asList("GPL-3.0-only", "GPL-3.0-or-later");
             case "LGPL-2.0":
-                return null;
+                return Arrrays.asList("LGPL-2.0-only", "LGPL-2.0-or-later");
             case "LGPL-2.0+":
-                return null;
+                return Arrrays.asList("LGPL-2.0-only", "LGPL-2.0-or-later");
             case "LGPL-2.1":
-                return null;
+                return Arrrays.asList("LGPL-2.1-only", "LGPL-2.1-or-later");
             case "LGPL-2.1+":
-                return null;
+                return Arrrays.asList("LGPL-2.1-only", "LGPL-2.1-or-later");
             case "LGPL-3.0":
-                return null;
+                return Arrrays.asList("LGPL-3.0-only", "LGPL-3.0-or-later");
             case "LGPL-3.0+":
-                return null;
+                return Arrrays.asList("LGPL-3.0-only", "LGPL-3.0-or-later");
+            // Licenses below could not be accurately mapped to a proper license
             case "Nunit":
-                return null;
+                return Collections.emptyList();
             case "StandardML-NJ":
-                return null;
+                return Collections.emptyList();
             case "wxWindows":
-                return null;
-            // ... Adding other deprecated Ids...
+                return Collections.emptyList();
+            // Return empty if no deprecated license could be mapped
             default:
                 return Collections.emptyList();
         }
