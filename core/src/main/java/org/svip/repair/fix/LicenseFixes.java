@@ -72,6 +72,12 @@ public class LicenseFixes implements Fixes<License> {
                 return Arrays.asList("AGPL-1.0-only", "AGPL-1.0-or-later");
             case "AGPL-3.0":
                 return Arrays.asList("AGPL-3.0-only", "AGPL-3.0-or-later");
+            case "BSD-2-Clause-FreeBSD":
+                return null;
+            case "BSD-2-Clause-NetBSD":
+                return null;
+            case "bzip2-1.0.5":
+                return null;
             // ... Adding other deprecated Ids...
             default:
                 return Collections.emptyList();
