@@ -78,6 +78,14 @@ public class LicenseFixes implements Fixes<License> {
                 return null;
             case "bzip2-1.0.5":
                 return null;
+            case "eCos-2.0":
+                return null;
+            case "GFDL-1.1":
+                return null;
+            case "GFDL-1.2":
+                return null;
+            case "GFDL-1.3":
+                return null;
             // ... Adding other deprecated Ids...
             default:
                 return Collections.emptyList();
