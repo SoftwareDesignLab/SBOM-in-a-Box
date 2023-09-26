@@ -79,32 +79,64 @@ public class LicenseFixes implements Fixes<License> {
             case "bzip2-1.0.5":
                 return Arrays.asList("bzip2-1.0.6");
             case "eCos-2.0":
+                return Arrays.asList("RHeCos-1.1");
             case "GFDL-1.1":
+                return Arrays.asList("GFDL-1.1-only", "GFDL-1.1-or-later", "GFDL-1.1-invariants-only",
+                        "GFDL-1.1-invariants-or-later", "GFDL-1.1-no-invariants-only",
+                        "GFDL-1.1-no-invariants-or-later");
             case "GFDL-1.2":
+                return Arrays.asList("GFDL-1.2-only", "GFDL-1.2-or-later", "GFDL-1.2-invariants-only",
+                        "GFDL-1.2-invariants-or-later", "GFDL-1.2-no-invariants-only",
+                        "GFDL-1.2-no-invariants-or-later");
             case "GFDL-1.3":
+                return Arrays.asList("GFDL-1.3-only", "GFDL-1.3-or-later", "GFDL-1.3-invariants-only",
+                        "GFDL-1.3-invariants-or-later", "GFDL-1.3-no-invariants-only",
+                        "GFDL-1.3-no-invariants-or-later");
             case "GPL-1.0":
+                return null;
             case "GPL-1.0+":
+                return null;
             case "GPL-2.0":
+                return null;
             case "GPL-2.0+":
+                return null;
             case "GPL-2.0-with-autoconf-exception":
+                return null;
             case "GPL-2.0-with-bison-exception":
+                return null;
             case "GPL-2.0-with-classpath-exception":
+                return null;
             case "GPL-2.0-with-font-exception":
+                return null;
             case "GPL-2.0-with-GCC-exception":
+                return null;
             case "GPL-3.0":
+                return null;
             case "GPL-3.0+":
+                return null;
             case "GPL-3.0-with-autoconf-exception":
+                return null;
             case "GPL-3.0-with-GCC-exception":
+                return null;
             case "LGPL-2.0":
+                return null;
             case "LGPL-2.0+":
+                return null;
             case "LGPL-2.1":
+                return null;
             case "LGPL-2.1+":
+                return null;
             case "LGPL-3.0":
+                return null;
             case "LGPL-3.0+":
+                return null;
             case "Nunit":
+                return null;
             case "StandardML-NJ":
+                return null;
             case "wxWindows":
-                // ... Adding other deprecated Ids...
+                return null;
+            // ... Adding other deprecated Ids...
             default:
                 return Collections.emptyList();
         }
