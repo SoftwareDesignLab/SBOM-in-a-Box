@@ -124,6 +124,12 @@ public class LicenseFixes implements Fixes<License> {
                 return null;
             case "LGPL-3.0+":
                 return null;
+            case "Nunit":
+                return null;
+            case "StandardML-NJ":
+                return null;
+            case "wxWindows":
+                return null;
             // ... Adding other deprecated Ids...
             default:
                 return Collections.emptyList();
