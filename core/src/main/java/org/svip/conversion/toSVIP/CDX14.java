@@ -13,7 +13,7 @@ import org.svip.sbom.model.objects.SVIPSBOM;
  * Name: CDX14.java
  * Description: Converts a CDX 1.4 Internal SBOM Object
  * into an SVIP SBOM Object while retaining all the original
- * information from the SPDX 2.3 SBOM. This will not "completely"
+ * information from the CycloneDX 2.3 . This will not "completely"
  * convert the SBOM to an SVIP SBOM, as the fields will still
  * represent CDX 1.4 values.
  *
