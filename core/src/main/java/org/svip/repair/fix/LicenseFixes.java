@@ -104,6 +104,14 @@ public class LicenseFixes implements Fixes<License> {
                 return null;
             case "GPL-2.0-with-GCC-exception":
                 return null;
+            case "GPL-3.0":
+                return null;
+            case "GPL-3.0+":
+                return null;
+            case "GPL-3.0-with-autoconf-exception":
+                return null;
+            case "GPL-3.0-with-GCC-exception":
+                return null;
             // ... Adding other deprecated Ids...
             default:
                 return Collections.emptyList();
