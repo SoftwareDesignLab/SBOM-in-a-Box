@@ -93,31 +93,31 @@ public class LicenseFixes implements Fixes<License> {
                         "GFDL-1.3-invariants-or-later", "GFDL-1.3-no-invariants-only",
                         "GFDL-1.3-no-invariants-or-later");
             case "GPL-1.0":
-                return null;
+                return Arrays.asList("GPL-1.0-only", "GPL-1.0-or-later");
             case "GPL-1.0+":
-                return null;
+                return Arrays.asList("GPL-1.0-only", "GPL-1.0-or-later");
             case "GPL-2.0":
-                return null;
+                return Arrays.asList("GPL-2.0-only", "GPL-2.0-or-later");
             case "GPL-2.0+":
-                return null;
+                return Arrays.asList("GPL-2.0-only", "GPL-2.0-or-later");
             case "GPL-2.0-with-autoconf-exception":
-                return null;
+                return Arrays.asList("GPL-2.0-only", "GPL-2.0-or-later");
             case "GPL-2.0-with-bison-exception":
-                return null;
+                return Arrays.asList("GPL-2.0-only", "GPL-2.0-or-later");
             case "GPL-2.0-with-classpath-exception":
-                return null;
+                return Arrays.asList("GPL-2.0-only", "GPL-2.0-or-later");
             case "GPL-2.0-with-font-exception":
-                return null;
+                return Arrays.asList("GPL-2.0-only", "GPL-2.0-or-later");
             case "GPL-2.0-with-GCC-exception":
-                return null;
+                return Arrays.asList("GPL-2.0-only", "GPL-2.0-or-later");
             case "GPL-3.0":
-                return null;
+                return Arrays.asList("GPL-3.0-only", "GPL-3.0-or-later");
             case "GPL-3.0+":
-                return null;
+                return Arrays.asList("GPL-3.0-only", "GPL-3.0-or-later");
             case "GPL-3.0-with-autoconf-exception":
-                return null;
+                return Arrays.asList("GPL-3.0-only", "GPL-3.0-or-later");
             case "GPL-3.0-with-GCC-exception":
-                return null;
+                return Arrays.asList("GPL-3.0-only", "GPL-3.0-or-later");
             case "LGPL-2.0":
                 return null;
             case "LGPL-2.0+":
