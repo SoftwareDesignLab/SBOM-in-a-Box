@@ -93,13 +93,13 @@ public class LicenseFixes implements Fixes<License> {
                         "GFDL-1.3-invariants-or-later", "GFDL-1.3-no-invariants-only",
                         "GFDL-1.3-no-invariants-or-later");
             case "GPL-1.0":
-                return Arrays.asList("GPL-1.0-only", "GPL-1.0-or-later");
+                return Arrays.asList("GPL-1.0-only");
             case "GPL-1.0+":
-                return Arrays.asList("GPL-1.0-only", "GPL-1.0-or-later");
+                return Arrays.asList("GPL-1.0-or-later");
             case "GPL-2.0":
-                return Arrays.asList("GPL-2.0-only", "GPL-2.0-or-later");
+                return Arrays.asList("GPL-2.0-only");
             case "GPL-2.0+":
-                return Arrays.asList("GPL-2.0-only", "GPL-2.0-or-later");
+                return Arrays.asList("GPL-2.0-or-later");
             case "GPL-2.0-with-autoconf-exception":
                 return Arrays.asList("GPL-2.0-only", "GPL-2.0-or-later");
             case "GPL-2.0-with-bison-exception":
@@ -111,25 +111,25 @@ public class LicenseFixes implements Fixes<License> {
             case "GPL-2.0-with-GCC-exception":
                 return Arrays.asList("GPL-2.0-only", "GPL-2.0-or-later");
             case "GPL-3.0":
-                return Arrays.asList("GPL-3.0-only", "GPL-3.0-or-later");
+                return Arrays.asList("GPL-3.0-only");
             case "GPL-3.0+":
-                return Arrays.asList("GPL-3.0-only", "GPL-3.0-or-later");
+                return Arrays.asList("GPL-3.0-or-later");
             case "GPL-3.0-with-autoconf-exception":
                 return Arrays.asList("GPL-3.0-only", "GPL-3.0-or-later");
             case "GPL-3.0-with-GCC-exception":
                 return Arrays.asList("GPL-3.0-only", "GPL-3.0-or-later");
             case "LGPL-2.0":
-                return Arrays.asList("LGPL-2.0-only", "LGPL-2.0-or-later");
+                return Arrays.asList("LGPL-2.0-only");
             case "LGPL-2.0+":
-                return Arrays.asList("LGPL-2.0-only", "LGPL-2.0-or-later");
+                return Arrays.asList("LGPL-2.0-or-later");
             case "LGPL-2.1":
-                return Arrays.asList("LGPL-2.1-only", "LGPL-2.1-or-later");
+                return Arrays.asList("LGPL-2.1-only");
             case "LGPL-2.1+":
-                return Arrays.asList("LGPL-2.1-only", "LGPL-2.1-or-later");
+                return Arrays.asList("LGPL-2.1-or-later");
             case "LGPL-3.0":
-                return Arrays.asList("LGPL-3.0-only", "LGPL-3.0-or-later");
+                return Arrays.asList("LGPL-3.0-only");
             case "LGPL-3.0+":
-                return Arrays.asList("LGPL-3.0-only", "LGPL-3.0-or-later");
+                return Arrays.asList("LGPL-3.0-or-later");
             // Licenses below could not be accurately mapped to a proper license
             case "Nunit":
             case "StandardML-NJ":
