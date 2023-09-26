@@ -2,6 +2,7 @@ package org.svip.conversion.toSVIP;
 
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
+import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
@@ -94,7 +95,9 @@ public class CDX14 {
      * @param component CDX 1.4 Component Object
      * @return An SVIP Component containing all original CDX 1.4 Values
      */
-    public static SVIPComponentObject convertComponent(CDX14ComponentObject component) {
+    public static SVIPComponentObject convertComponent(Component originalComponent) {
+
+        CDX14ComponentObject component = (CDX14ComponentObject) originalComponent;
 
         SVIPComponentBuilder builder = new SVIPComponentBuilder();
 
