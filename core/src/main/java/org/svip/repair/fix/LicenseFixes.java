@@ -19,26 +19,20 @@ import java.util.stream.Collectors;
  */
 public class LicenseFixes implements Fixes<License> {
 
-    private final Map<String, License> licenses;
-
-    public LicenseFixes() {
-        licenses = getAllLicenses();
-    }
-
     /**
+     * Get a list of possible license fixes for invalid licenses.
      *
      * @param result        object from quality report
      * @param sbom          sbom from quality report
-     * @param repairSubType key from quality report map most directly relating to
-     *                      the repair type
-     * @return
+     * @param repairSubType key from quality report map most directly relating to the repair type
+     * @return list of license fixes
      */
     @Override
     public List<Fix<License>> fix(Result result, SBOM sbom, String repairSubType) {
 
         // Get license identifier (name or id) from result message
         String details = result.getDetails();
-        String identifier = details.substring(0, details.indexOf("is"));
+        String identifier = details.substring(0, details.indexOf("is") - 1);
 
         License license = new License(identifier);
 
@@ -49,6 +43,9 @@ public class LicenseFixes implements Fixes<License> {
         if (validLicenseIds.isEmpty()) {
             return Collections.singletonList(new Fix<>(license, null));
         }
+
+        // Get a map of all licenses (valid and deprecated)
+        Map<String, License> licenses = getAllLicenses();
 
         // Return the list of fixes of possible valid licenses
         List<Fix<License>> fixes = new ArrayList<>();
@@ -61,10 +58,11 @@ public class LicenseFixes implements Fixes<License> {
     }
 
     /**
+     * Get a map of all licenses (valid and deprecated).
      *
-     * @return
+     * @return map of all licenses
      */
-    private Map<String, License> getAllLicenses() {
+    public Map<String, License> getAllLicenses() {
         try {
             URL url = new URL("https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json");
             ObjectMapper mapper = new ObjectMapper();
@@ -80,9 +78,10 @@ public class LicenseFixes implements Fixes<License> {
     }
 
     /**
+     * Get a list of valid license ids given a deprecated license id or name.
      *
-     * @param deprecatedIdentifier
-     * @return
+     * @param deprecatedIdentifier id or name of deprecated license
+     * @return list of valid license ids
      */
     private List<String> validLicenseIds(String deprecatedIdentifier) {
         switch (deprecatedIdentifier) {

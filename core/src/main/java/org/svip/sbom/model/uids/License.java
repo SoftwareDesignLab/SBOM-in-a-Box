@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * License Object to hold License values.
@@ -64,6 +65,18 @@ public class License {
         return "{ id: " + this.id
                 + ", name: " + this.name
                 + ", url: " + this.url + " }";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        License license = (License) o;
+
+        return Objects.equals(id, license.id)
+                && Objects.equals(name, license.name)
+                && Objects.equals(url, license.url);
     }
 
 }
