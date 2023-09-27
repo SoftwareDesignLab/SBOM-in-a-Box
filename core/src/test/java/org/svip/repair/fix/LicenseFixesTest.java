@@ -13,9 +13,4 @@ class LicenseFixesTest {
         System.out.println(license);
     }
 
-    @Test
-    public void test2() {
-        System.out.println(LicenseFixes.getAllLicenses());
-    }
-
 }

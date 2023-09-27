@@ -1,5 +1,6 @@
 package org.svip.sbom.model.uids;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -9,14 +10,17 @@ public class License {
     private String id;
     private String name;
     private String url;
-    private boolean isDeprecated;
 
     public License() {
-        // Empty constructor
+        // Empty constructor required for Jackson Databind ObjectMapper
     }
 
-    public License(String id) {
-        this.id = id;
+    public License(String identifier) {
+        if (identifier.split(" ").length > 1) {
+            this.name = identifier;
+        } else {
+            this.id = identifier;
+        }
     }
 
     public String getId() {
@@ -31,10 +35,6 @@ public class License {
         return this.url;
     }
 
-    public boolean isDeprecated() {
-        return this.isDeprecated;
-    }
-
     @JsonProperty("licenseId")
     public void setId(String id) {
         this.id = id;
@@ -44,22 +44,18 @@ public class License {
         this.name = name;
     }
 
-    @JsonProperty("detailsUrl")
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    @JsonProperty("isDeprecatedLicenseId")
-    public void setIsDeprecated(boolean isDeprecated) {
-        this.isDeprecated = isDeprecated;
+    @JsonProperty("seeAlso")
+    public void setUrl(String[] url) {
+        if (url.length > 0) {
+            this.url = url[0];
+        }
     }
 
     @Override
     public String toString() {
         return "{ id: " + this.id
                 + ", name: " + this.name
-                + ", url: " + this.url
-                + ", isDeprecated: " + this.isDeprecated + " }";
+                + ", url: " + this.url + " }";
     }
 
 }
