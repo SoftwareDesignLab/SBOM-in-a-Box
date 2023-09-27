@@ -35,15 +35,24 @@ public class LicenseFixes implements Fixes<License> {
      */
     @Override
     public List<Fix<License>> fix(Result result, SBOM sbom, String repairSubType) {
+
         // Get license identifier (name or id) from result message
         String details = result.getDetails();
         String identifier = details.substring(0, details.indexOf("is"));
 
         License license = new License(identifier);
 
+        // Get list of valid license ids for deprecated license id or name
+        List<String> validLicenseIds = validLicenseIds(identifier);
+
+        // Suggest deleting the license as a fix if no valid license exists for the deprecated license
+        if (validLicenseIds.isEmpty()) {
+            return Collections.singletonList(new Fix<>(license, null));
+        }
+
         // Return the list of fixes of possible valid licenses
         List<Fix<License>> fixes = new ArrayList<>();
-        for (String licenseId : validLicenseIds(identifier)) {
+        for (String licenseId : validLicenseIds) {
             License fixedLicense = licenses.get(licenseId);
             fixes.add(new Fix<>(license, fixedLicense));
         }

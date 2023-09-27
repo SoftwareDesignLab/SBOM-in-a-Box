@@ -1,9 +1,16 @@
 package org.svip.sbom.model.uids;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
+
+/**
+ * License Object to hold License values.
+ *
+ * Maps to license data using Jackson Databind from
+ * https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class License {
 
@@ -44,10 +51,11 @@ public class License {
         this.name = name;
     }
 
+
     @JsonProperty("seeAlso")
-    public void setUrl(String[] url) {
-        if (url.length > 0) {
-            this.url = url[0];
+    public void setUrl(List<String> url) {
+        if (url.size() > 0) {
+            this.url = url.get(0);
         }
     }
 
