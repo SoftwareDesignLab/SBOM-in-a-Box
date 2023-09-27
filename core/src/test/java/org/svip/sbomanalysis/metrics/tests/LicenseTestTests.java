@@ -84,7 +84,7 @@ class LicenseTestTests {
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
-        System.out.println(r.getDetails());
+
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
@@ -94,7 +94,7 @@ class LicenseTestTests {
 
         List<Result> resultList = new ArrayList<>(result);
         Result r = resultList.get(0);
-        System.out.println(r.getDetails());
+
         assertEquals(STATUS.FAIL, r.getStatus());
     }
 
