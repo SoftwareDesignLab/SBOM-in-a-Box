@@ -109,19 +109,19 @@ Then run the following command to build the image and send an API request to the
 # Deploy the container
 $ docker compose up osi
 # Send API request to container to generate SBOMs with ALL tools. To specify tools, add a request body of tool names.
-$ curl -X POST -G http://localhost:5000/generate
+$ curl -X POST -G http://localhost:50001/generate
 ```
 
 ### Result
 The `/sboms` directory (also in `/bound_dir` will now contain generated SBOMs from the source project in `/code`.
 
 ## API
-> After deploying the OSI container using `docker compose up osi`, an API will be started at `http://localhost:5000`.
+> After deploying the OSI container using `docker compose up osi`, an API will be started at `http://localhost:50001`.
 > Sending requests to the API will allow users to get a list of valid tool names to be used or generate SBOMs with 
 > specified tools.
 
 ### Generate SBOMs
-**Endpoint:** `http://localhost:5000/generate`
+**Endpoint:** `http://localhost:50001/generate`
 
 **Request Method:** `POST`
 
@@ -139,7 +139,7 @@ The `/sboms` directory (also in `/bound_dir` will now contain generated SBOMs fr
 |      204      | String |         No SBOMs were generated          |
 
 ### Get Tools
-**Endpoint:** `http://localhost:5000/tools`
+**Endpoint:** `http://localhost:50001/tools`
 
 **Request Method:** `GET`
 
