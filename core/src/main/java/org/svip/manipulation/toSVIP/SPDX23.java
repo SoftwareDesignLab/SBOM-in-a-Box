@@ -5,6 +5,7 @@ import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
+import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
@@ -69,10 +70,8 @@ public class SPDX23 {
         // Stream components from SVIP SBOM, convert them, then put into CDX SBOM
         sbom.getComponents().stream().forEach(
                 x -> {
-                    if(x instanceof SPDX23Package)
-                        builder.addComponent(convertPackage(x));
-                    else if(x instanceof SPDX23File)
-                        builder.addComponent(convertFile(x));
+                    if (x instanceof SPDX23Package) builder.addComponent(convertPackage(x));
+                    else if (x instanceof SPDX23File) builder.addComponent(convertFile(x));
                 }
         );
 
@@ -218,10 +217,104 @@ public class SPDX23 {
      */
     public static SVIPComponentObject convertFile(Component originalFile) {
 
-        SPDX23File file = (SPDX23File) originalFile;
+        // Cast the component to an SPDX 2.3 File
+        SPDX23FileObject file = (SPDX23FileObject) originalFile;
 
+        // Create new SVIP Component Builder
         SVIPComponentBuilder builder = new SVIPComponentBuilder();
 
+        // Type
+        builder.setType(file.getType());
+
+        // UID
+        builder.setUID(file.getUID());
+
+        // Author
+        builder.setAuthor(file.getAuthor());
+
+        // Name
+        builder.setName(file.getName());
+
+        // Licenses
+        builder.setLicenses(file.getLicenses());
+
+        // Copyright
+        builder.setCopyright(file.getCopyright());
+
+        // Hashes
+        Map<String, String> hashes = file.getHashes();
+        if (hashes != null) hashes.keySet().forEach(x -> builder.addHash(x, hashes.get(x)));
+
+        // Comment
+        builder.setComment(file.getComment());
+
+        // Attribution Text
+        builder.setAttributionText(file.getAttributionText());
+
+        // File Notice
+        builder.setFileNotice(file.getFileNotice());
+
+        // Download Location - NOT AVAILABLE IN SPDX 2.3 FILE
+        builder.setDownloadLocation(null);
+
+        // File Name - NOT AVAILABLE IN SPDX 2.3 FILE
+        builder.setFileName(null);
+
+        // Files Analyzed - NOT AVAILABLE IN SPDX 2.3 FILE
+        builder.setFilesAnalyzed(null);
+
+        // Verification Code - NOT AVAILABLE IN SPDX 2.3 FILE
+        builder.setVerificationCode(null);
+
+        // Home Page - NOT AVAILABLE IN SPDX 2.3 FILE
+        builder.setHomePage(null);
+
+        // Source Info - NOT AVAILABLE IN SPDX 2.3 FILE
+        builder.setSourceInfo(null);
+
+        // Release Date - NOT AVAILABLE IN SPDX 2.3 FILE
+        builder.setReleaseDate(null);
+
+        // Built Date - NOT AVAILABLE IN SPDX 2.3 FILE
+        builder.setBuildDate(null);
+
+        // Valid Until Date - NOT AVAILABLE IN SPDX 2.3 FILE
+        builder.setValidUntilDate(null);
+
+        // Supplier - NOT AVAILABLE IN SPDX 2.3 FILE
+        builder.setSupplier(null);
+
+        // Version - NOT AVAILABLE IN SPDX 2.3 FILE
+        builder.setVersion(null);
+
+        // Description - NOT AVAILABLE IN SPDX 2.3 FILE
+        builder.setDescription(null);
+
+        // CPEs - NOT AVAILABLE IN SPDX 2.3 FILE
+        // Do not add CPEs
+
+        // PURLs - NOT AVAILABLE IN SPDX 2.3 FILE
+        // Do not add PURLs
+
+        // External References - NOT AVAILABLE IN SPDX 2.3 FILE
+        // Do not add External References
+
+        // Mime Type - NOT AVAILABLE IN SPDX 2.3 FILE
+        builder.setMimeType(null);
+
+        // Publisher - NOT AVAILABLE IN SPDX 2.3 FILE
+        builder.setPublisher(null);
+
+        // Scope - NOT AVAILABLE IN SPDX 2.3 FILE
+        builder.setScope(null);
+
+        // Group - NOT AVAILABLE IN SPDX 2.3 FILE
+        builder.setGroup(null);
+
+        // Properties - NOT AVAILABLE IN SPDX 2.3 FILE
+        // Do not add any properties
+
+        // Build and Return Component
         return builder.buildAndFlush();
 
     }
