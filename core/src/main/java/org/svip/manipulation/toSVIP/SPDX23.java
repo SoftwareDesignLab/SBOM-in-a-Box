@@ -9,6 +9,8 @@ import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 
+import java.util.Map;
+
 /**
  * Name: SPDX2.3.java
  * Description: Converts an SPDX 2.3 Internal SBOM Object
@@ -103,10 +105,105 @@ public class SPDX23 {
      */
     public static SVIPComponentObject convertPackage(Component originalComponent) {
 
+        // Cast the component to an SPDX 2.3 Package
         SPDX23Package component = (SPDX23Package) originalComponent;
 
+        // Create new SVIP Component Builder
         SVIPComponentBuilder builder = new SVIPComponentBuilder();
 
+        // Type
+        builder.setType(component.getType());
+
+        // UID
+        builder.setUID(component.getUID());
+
+        // Author
+        builder.setAuthor(component.getAuthor());
+
+        // Name
+        builder.setName(component.getName());
+
+        // Licenses
+        builder.setLicenses(component.getLicenses());
+
+        // Copyright
+        builder.setCopyright(component.getCopyright());
+
+        // Hashes
+        Map<String, String> hashes = component.getHashes();
+        if (hashes != null) hashes.keySet().forEach(x -> builder.addHash(x, hashes.get(x)));
+
+        // Comment
+        builder.setComment(component.getComment());
+
+        // Attribution Text
+        builder.setAttributionText(component.getAttributionText());
+
+        // File Notice - NOT AVAILABLE IN SPDX 2.3 PACKAGE
+        builder.setFileNotice(null);
+
+        // Download Location
+        builder.setDownloadLocation(component.getDownloadLocation());
+
+        // File Name
+        builder.setFileName(component.getFileName());
+
+        // Files Analyzed
+        builder.setFilesAnalyzed(component.getFilesAnalyzed());
+
+        // Verification Code
+        builder.setVerificationCode(component.getVerificationCode());
+
+        // Home Page
+        builder.setHomePage(component.getHomePage());
+
+        // Source Info
+        builder.setSourceInfo(component.getSourceInfo());
+
+        // Release Date
+        builder.setReleaseDate(component.getReleaseDate());
+
+        // Built Date
+        builder.setBuildDate(component.getBuiltDate());
+
+        // Valid Until Date
+        builder.setValidUntilDate(component.getValidUntilDate());
+
+        // Supplier
+        builder.setSupplier(component.getSupplier());
+
+        // Version
+        builder.setVersion(component.getVersion());
+
+        // Description
+        builder.setDescription(component.getDescription());
+
+        // CPEs
+        if(component.getCPEs() != null) component.getCPEs().forEach(x -> builder.addCPE(x));
+
+        // PURLs
+        if(component.getPURLs() != null) component.getPURLs().forEach(x -> builder.addPURL(x));
+
+        // External References
+        if(component.getExternalReferences() != null)
+            component.getExternalReferences().forEach(x -> builder.addExternalReference(x));
+
+        // Mime Type - NOT AVAILABLE IN SPDX 2.3 PACKAGE
+        builder.setMimeType(null);
+
+        // Publisher - NOT AVAILABLE IN SPDX 2.3 PACKAGE
+        builder.setPublisher(null);
+
+        // Scope - NOT AVAILABLE IN SPDX 2.3 PACKAGE
+        builder.setScope(null);
+
+        // Group - NOT AVAILABLE IN SPDX 2.3 PACKAGE
+        builder.setGroup(null);
+
+        // Properties - NOT AVAILABLE IN SPDX 2.3 PACKAGE
+        // Do not add any properties
+
+        // Build and Return Component
         return builder.buildAndFlush();
 
     }
