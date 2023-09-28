@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.svip.api.entities.SBOM;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
-import org.svip.conversion.ConversionException;
+import org.svip.manipulation.ConversionException;
 import org.svip.generation.osi.OSI;
 import org.svip.generation.osi.OSIClient;
 import org.svip.generation.osi.exceptions.DockerNotAvailableException;

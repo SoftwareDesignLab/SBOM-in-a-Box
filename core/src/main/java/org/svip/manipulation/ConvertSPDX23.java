@@ -1,4 +1,4 @@
-package org.svip.conversion;
+package org.svip.manipulation;
 
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23PackageBuilder;

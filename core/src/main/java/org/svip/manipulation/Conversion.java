@@ -1,12 +1,9 @@
-package org.svip.conversion;
+package org.svip.manipulation;
 
-import org.checkerframework.checker.units.qual.C;
-import org.svip.merge.MergerException;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
