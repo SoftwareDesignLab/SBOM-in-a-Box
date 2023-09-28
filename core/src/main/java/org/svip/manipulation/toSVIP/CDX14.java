@@ -51,7 +51,8 @@ public class CDX14 {
         builder.setSpecVersion(sbom.getSpecVersion());
 
         // Stream licenses into new SBOM
-        sbom.getLicenses().stream().forEach(x -> builder.addLicense(x));
+        if(sbom.getLicenses() != null)
+            sbom.getLicenses().stream().forEach(x -> builder.addLicense(x));
 
         // Creation Data
         builder.setCreationData(sbom.getCreationData());
@@ -66,22 +67,27 @@ public class CDX14 {
         builder.setRootComponent(convertComponent(sbom.getRootComponent()));
 
         // Stream components from SVIP SBOM, convert them, then put into CDX SBOM
-        sbom.getComponents().stream().forEach(x -> builder.addComponent(convertComponent(x)));
+        if(sbom.getComponents() != null)
+            sbom.getComponents().stream().forEach(x -> builder.addComponent(convertComponent(x)));
 
         // Stream Relationship data into new SBOM
-        sbom.getRelationships().keySet().forEach(
-                x -> sbom.getRelationships().get(x).stream().forEach(
-                        y -> builder.addRelationship(x, y)
-                )
-        );
+        if(sbom.getRelationships() != null) {
+            sbom.getRelationships().keySet().forEach(
+                    x -> sbom.getRelationships().get(x).stream().forEach(
+                            y -> builder.addRelationship(x, y)
+                    )
+            );
+        }
 
         // Stream External References into new SBOM
-        sbom.getExternalReferences().stream().forEach(
-                x -> builder.addExternalReference(x)
-        );
+        if(sbom.getExternalReferences() != null) {
+            sbom.getExternalReferences().stream().forEach(
+                    x -> builder.addExternalReference(x)
+            );
+        }
 
         // Set SPDX License List Version
-        builder.setSPDXLicenseListVersion("");
+        builder.setSPDXLicenseListVersion(null);
 
 
         return builder.Build();
