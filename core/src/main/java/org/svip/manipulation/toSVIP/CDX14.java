@@ -104,8 +104,10 @@ public class CDX14 {
      */
     public static SVIPComponentObject convertComponent(Component originalComponent) {
 
+        // Cast the component to a CycloneDX 1.4 Component
         CDX14ComponentObject component = (CDX14ComponentObject) originalComponent;
 
+        // Create new SVIP Component Builder
         SVIPComponentBuilder builder = new SVIPComponentBuilder();
 
         // Type
