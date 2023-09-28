@@ -8,6 +8,8 @@ import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 
+import java.util.Map;
+
 /**
  * Name: CDX14.java
  * Description: Converts a CDX 1.4 Internal SBOM Object
@@ -100,6 +102,105 @@ public class CDX14 {
 
         SVIPComponentBuilder builder = new SVIPComponentBuilder();
 
+        // Type
+        builder.setType(component.getType());
+
+        // UID
+        builder.setUID(component.getUID());
+
+        // Author
+        builder.setAuthor(component.getAuthor());
+
+        // Name
+        builder.setName(component.getName());
+
+        // Licenses
+        builder.setLicenses(component.getLicenses());
+
+        // Copyright
+        builder.setCopyright(component.getCopyright());
+
+        // Hashes
+        Map<String, String> hashes = component.getHashes();
+        if (hashes != null) hashes.keySet().forEach(x -> builder.addHash(x, hashes.get(x)));
+
+        // Comment - NOT AVAILABLE IN CDX 1.4
+        builder.setComment(null);
+
+        // Attribution Text - NOT AVAILABLE IN CDX 1.4
+        builder.setAttributionText(null);
+
+        // File Notice - NOT AVAILABLE IN CDX 1.4
+        builder.setFileNotice(null);
+
+        // Download Location - NOT AVAILABLE IN CDX 1.4
+        builder.setDownloadLocation(null);
+
+        // File Name - NOT AVAILABLE IN CDX 1.4
+        builder.setFileName(null);
+
+        // Files Analyzed - NOT AVAILABLE IN CDX 1.4
+        builder.setFilesAnalyzed(null);
+
+        // Verification Code - NOT AVAILABLE IN CDX 1.4
+        builder.setVerificationCode(null);
+
+        // Home Page - NOT AVAILABLE IN CDX 1.4
+        builder.setHomePage(null);
+
+        // Source Info - NOT AVAILABLE IN CDX 1.4
+        builder.setSourceInfo(null);
+
+        // Release Date - NOT AVAILABLE IN CDX 1.4
+        builder.setReleaseDate(null);
+
+        // Built Date - NOT AVAILABLE IN CDX 1.4
+        builder.setBuildDate(null);
+
+        // Valid Until Date - NOT AVAILABLE IN CDX 1.4
+        builder.setValidUntilDate(null);
+
+        // Supplier
+        builder.setSupplier(component.getSupplier());
+
+        // Version
+        builder.setVersion(component.getVersion());
+
+        // Description
+        builder.setDescription(component.getDescription());
+
+        // CPEs
+        if(component.getCPEs() != null) component.getCPEs().forEach(x -> builder.addCPE(x));
+
+        // PURLs
+        if(component.getPURLs() != null) component.getPURLs().forEach(x -> builder.addPURL(x));
+
+        // External References
+        if(component.getExternalReferences() != null)
+            component.getExternalReferences().forEach(x -> builder.addExternalReference(x));
+
+        // Mime Type
+        builder.setMimeType(component.getMimeType());
+
+        // Publisher
+        builder.setPublisher(component.getPublisher());
+
+        // Scope
+        builder.setScope(component.getScope());
+
+        // Group
+        builder.setGroup(component.getGroup());
+
+        // Properties
+        if(component.getProperties() != null) {
+            component.getProperties().keySet().forEach(
+                    x -> component.getProperties().get(x).stream().forEach(
+                            y -> builder.addProperty(x, y)
+                    )
+            );
+        }
+
+        // Build the component and return it
         return builder.buildAndFlush();
 
     }
