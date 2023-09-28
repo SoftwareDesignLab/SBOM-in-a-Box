@@ -1,6 +1,6 @@
 package org.svip.merge;
 
-import org.svip.conversion.Conversion;
+import org.svip.manipulation.Conversion;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;

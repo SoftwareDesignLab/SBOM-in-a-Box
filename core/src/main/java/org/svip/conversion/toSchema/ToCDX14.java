@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:core/src/main/java/org/svip/conversion/toSchema/ToCDX14.java
 package org.svip.conversion.toSchema;
+========
+package org.svip.manipulation;
+>>>>>>>> 982bc6daa (Conversion package is now known as the Manipulation package):core/src/main/java/org/svip/manipulation/ConvertCDX14.java
 
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14PackageBuilder;
