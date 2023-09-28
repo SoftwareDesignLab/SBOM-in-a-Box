@@ -1,4 +1,4 @@
-package org.svip.conversion;
+package org.svip.manipulation;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

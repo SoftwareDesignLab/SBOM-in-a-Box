@@ -1,4 +1,4 @@
-package org.svip.conversion;
+package org.svip.manipulation;
 
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14PackageBuilder;
