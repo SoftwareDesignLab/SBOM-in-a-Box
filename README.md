@@ -51,14 +51,17 @@ Currently, SVIP Supports the following SBOM Types
 **Developer Team Leads**
 - [Schuyler Dillon](mailto:sdd4181@rit.edu)
 - [Tyler Drake](mailto:txd3634@rit.edu)
+- [Ian Dunn](mailto:itd3516@g.rit.edu)
 - [Kevin Laporte](mailto:kjl8898@rit.edu)
 - [Matt London](mailto:mrl2534@rit.edu)
 - [Dylan Mulligan](mailto:dtm5568@rit.edu)
+- [Amanda Nitta](mailtp:nittaak@hawaii.edu)
 
 **Developer Team**
-- [Ian Dunn](mailto:itd3516@g.rit.edu)
+- [Brian Baumann](mailto:bmb5957@rit.edu)
 - [Asa Horn](mailto:aoh9470@rit.edu)
 - [Henry Keena](mailto:htk4363@rit.edu)
+- [Hubert Liang](mailto:hubertl@hawaii.edu)
 - [Ping Liu](mailto:htk4363@rit.edu)
 - [Henry Lu](mailto:hyl2415@rit.edu)
 - [Matthew Morrison](mailto:msm8275@rit.edu)
@@ -67,3 +70,4 @@ Currently, SVIP Supports the following SBOM Types
 - [Juan Francisco Patino](mailto:jfp6815@rit.edu)
 - [Max Stein](mailto:mhs8558@rit.edu)
 - [Tom Roman](mailto:tfr8811@rit.edu)
+- [Jordan Wong](mailto:jordanw4@hawaii.edu)
