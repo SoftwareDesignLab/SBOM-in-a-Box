@@ -76,7 +76,7 @@ public class SBOMControllerTest {
     ///
     @Test
     @DisplayName("Merge 2 SBOMs")
-    void merge_two_sboms(){
+    void merge_two_sboms() throws Exception {
         // Given
         Long[] ids = new Long[2];
         ids[0] = 0L;
@@ -92,7 +92,7 @@ public class SBOMControllerTest {
 
     @Test
     @DisplayName("Merge 1 SBOM")
-    void merge_one_sbom(){
+    void merge_one_sbom() throws Exception {
         // Given
         Long[] ids = new Long[1];
         ids[0] = 0L;
@@ -107,7 +107,7 @@ public class SBOMControllerTest {
 
     @Test
     @DisplayName("Fail to parse merge sbom")
-    void fail_to_parse_merge_sbom(){
+    void fail_to_parse_merge_sbom() throws Exception {
         // Given
         Long[] ids = new Long[2];
         ids[0] = 0L;
@@ -123,7 +123,7 @@ public class SBOMControllerTest {
 
     @Test
     @DisplayName("missing merge sbom")
-    void missing_merge_sbom(){
+    void missing_merge_sbom() throws Exception {
         // Given
         Long[] ids = new Long[2];
         ids[0] = 0L;

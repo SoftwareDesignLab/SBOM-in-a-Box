@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.svip.api.controller.VEXController;
 import org.svip.api.entities.SBOM;
 import org.svip.api.entities.VEXFile;
 import org.svip.api.requests.UploadSBOMFileInput;
