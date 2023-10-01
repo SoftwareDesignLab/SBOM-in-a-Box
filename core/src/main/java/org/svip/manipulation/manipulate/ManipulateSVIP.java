@@ -23,7 +23,7 @@ public class ManipulateSVIP {
         SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
 
         // Format
-        builder.setFormat(sbom.getFormat());
+        builder.setFormat(manipulationMap.getSchema());
 
         // Name
         builder.setName(sbom.getName());

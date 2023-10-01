@@ -9,7 +9,7 @@ public enum SchemaManipulationMap {
     /**
      * Schema's name
      */
-    private final String name;
+    private final String schema;
 
     /**
      * The Version of the Schema
@@ -21,14 +21,14 @@ public enum SchemaManipulationMap {
      */
     private final String componentIDType;
 
-    SchemaManipulationMap(String name, String version, String componentIDType) {
-        this.name = name;
+    SchemaManipulationMap(String schema, String version, String componentIDType) {
+        this.schema = schema;
         this.version = version;
         this.componentIDType = componentIDType;
     }
 
-    public String getName() {
-        return name;
+    public String getSchema() {
+        return schema;
     }
 
     public String getVersion() {
