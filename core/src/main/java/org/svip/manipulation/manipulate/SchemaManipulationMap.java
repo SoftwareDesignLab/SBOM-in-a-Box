@@ -2,9 +2,9 @@ package org.svip.manipulation.manipulate;
 
 public enum SchemaManipulationMap {
 
-    CDX14("CycloneDX", "1.4", "bom-ref"),
-    SPDX23("SPDX", "2.3", "SPDXRef"),
-    SVIP10("SVIP", "1.0-a", "SVIPComponent");
+    CDX14("CycloneDX", "1.4", "bom-ref:uuid:"),
+    SPDX23("SPDX", "2.3", "SPDXRef-"),
+    SVIP10("SVIP", "1.0-a", "SVIPComponent- ");
 
     /**
      * Schema's name
@@ -25,6 +25,18 @@ public enum SchemaManipulationMap {
         this.name = name;
         this.version = version;
         this.componentIDType = componentIDType;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public String getComponentIDType() {
+        return componentIDType;
     }
 
 }

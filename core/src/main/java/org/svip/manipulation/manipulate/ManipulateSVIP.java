@@ -6,6 +6,8 @@ import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 
+import java.util.UUID;
+
 /**
  * Name: ManipulateSVIP.java
  * Description: Creates a new SVIP SBOM and 'manipulates'
@@ -33,7 +35,7 @@ public class ManipulateSVIP {
         builder.setVersion(sbom.getVersion());
 
         // Spec Version
-        builder.setSpecVersion(sbom.getSpecVersion());
+        builder.setSpecVersion(manipulationMap.getVersion());
 
         // Stream licenses into new SBOM
         if(sbom.getLicenses() != null)
@@ -86,6 +88,17 @@ public class ManipulateSVIP {
 
         return builder.buildAndFlush();
 
+    }
+
+    public static String generateID(String oldID, SVIPComponentObject component, SchemaManipulationMap manipulationMap) {
+        switch (manipulationMap) {
+            case SPDX23 -> {
+                return manipulationMap.getComponentIDType() + component.getName() + "-" + component.getVersion();
+            }
+            default -> {
+                return manipulationMap.getComponentIDType() + UUID.randomUUID();
+            }
+        }
     }
 
 }
