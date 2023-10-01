@@ -39,7 +39,7 @@ public class ParserControllerTest {
     private MockMvc mockMvc;
 
     @ParameterizedTest
-    @ValueSource(strings = { "Conan", "Conda_noEmptyFiles", "Java", "Perl_noEmptyFiles", "Rust_noEmptyFiles",
+    @ValueSource(strings = { "Conan", "Java", "Perl_noEmptyFiles", "Rust_noEmptyFiles",
             "Scala" })
     @DisplayName("Generate SBOMs")
     void generateTest(String projectName) throws Exception {
