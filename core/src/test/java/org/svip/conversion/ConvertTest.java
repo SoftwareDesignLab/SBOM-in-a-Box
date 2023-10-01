@@ -83,7 +83,7 @@ public class ConvertTest {
      **/
 
     @Test
-    public void convertCDXSVIP() throws SBOMBuilderException {
+    public void convertCDXSVIP() throws ConversionException {
 
         // Get the source SBOM
         SBOM original = sboms[0];
@@ -103,7 +103,7 @@ public class ConvertTest {
     }
 
     @Test
-    public void convertSPDXSVIP() throws SBOMBuilderException {
+    public void convertSPDXSVIP() throws ConversionException {
 
         // Get the source SBOM
         SBOM original = sboms[4];
@@ -122,7 +122,7 @@ public class ConvertTest {
     }
 
     @Test
-    public void convertCDXSPDX() throws SBOMBuilderException {
+    public void convertCDXSPDX() throws ConversionException {
 
         // Get the source SBOM
         SBOM original = sboms[0];
@@ -142,7 +142,7 @@ public class ConvertTest {
     }
 
     @Test
-    public void convertSPDXCDX() throws SBOMBuilderException {
+    public void convertSPDXCDX() throws ConversionException {
 
         // Set the source SBOM
         SBOM original = sboms[4];
@@ -162,7 +162,7 @@ public class ConvertTest {
     }
 
     @Test
-    public void convertAllTest() throws SBOMBuilderException {
+    public void convertAllTest() throws ConversionException {
 
         // For every SBOM in the SBOM list
         for (SBOM sbom : sboms

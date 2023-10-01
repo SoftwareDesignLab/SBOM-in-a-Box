@@ -157,6 +157,13 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
                 // TOOL HASHES
                 if (tool.get("hashes") != null) resolveHashes(tool.get("hashes")).forEach(creationTool::addHash);
 
+                // TOOL EXTERNAL REFERENCES
+                JsonNode externalRefs = tool.get("externalReferences");
+                if (tool.get("externalReferences") != null) {
+                    for (JsonNode ref : externalRefs)
+                        creationTool.addExternalReference(resolveExternalRef(ref));
+                }
+
                 // add the creation tool to the creation data
                 creationData.addCreationTool(creationTool);
             }

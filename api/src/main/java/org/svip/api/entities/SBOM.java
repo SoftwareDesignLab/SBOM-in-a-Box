@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
-import org.svip.api.entities.diff.ComparisonFile;
 import org.svip.serializers.SerializerFactory;
 import org.svip.api.entities.diff.ComparisonFile;
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
@@ -167,6 +166,7 @@ public class SBOM {
         return this;
     }
 
+
     /**
      * Set SBOM File Type
      * @param d deserializer to infer file type from
@@ -184,15 +184,6 @@ public class SBOM {
         return this;
     }
 
-    /**
-     * Simple set schema
-     * @param fileType file type
-     * @return SBOM
-     */
-    public SBOM setFileType(FileType fileType){
-        this.fileType = fileType;
-        return this;
-    }
 
     /**
      * Set Quality Report File
@@ -224,6 +215,16 @@ public class SBOM {
 
     public SBOM addComparisonFileAsOther(ComparisonFile cf){
         this.comparisonsAsOther.add(cf);
+        return this;
+    }
+
+    /**
+     * Simple set schema
+     * @param fileType file type
+     * @return SBOM
+     */
+    public SBOM setFileType(FileType fileType){
+        this.fileType = fileType;
         return this;
     }
 
@@ -279,4 +280,6 @@ public class SBOM {
     public FileType getFileType() {
         return this.fileType;
     }
+
+
 }
