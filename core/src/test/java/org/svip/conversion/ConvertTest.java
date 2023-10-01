@@ -3,6 +3,7 @@ package org.svip.conversion;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 
@@ -82,7 +83,7 @@ public class ConvertTest {
      **/
 
     @Test
-    public void convertCDXSVIP() throws ConversionException {
+    public void convertCDXSVIP() throws SBOMBuilderException {
 
         // Get the source SBOM
         SBOM original = sboms[0];
@@ -102,7 +103,7 @@ public class ConvertTest {
     }
 
     @Test
-    public void convertSPDXSVIP() throws ConversionException {
+    public void convertSPDXSVIP() throws SBOMBuilderException {
 
         // Get the source SBOM
         SBOM original = sboms[4];
@@ -121,7 +122,7 @@ public class ConvertTest {
     }
 
     @Test
-    public void convertCDXSPDX() throws ConversionException {
+    public void convertCDXSPDX() throws SBOMBuilderException {
 
         // Get the source SBOM
         SBOM original = sboms[0];
@@ -141,7 +142,7 @@ public class ConvertTest {
     }
 
     @Test
-    public void convertSPDXCDX() throws ConversionException {
+    public void convertSPDXCDX() throws SBOMBuilderException {
 
         // Set the source SBOM
         SBOM original = sboms[4];
@@ -161,7 +162,7 @@ public class ConvertTest {
     }
 
     @Test
-    public void convertAllTest() throws ConversionException {
+    public void convertAllTest() throws SBOMBuilderException {
 
         // For every SBOM in the SBOM list
         for (SBOM sbom : sboms
