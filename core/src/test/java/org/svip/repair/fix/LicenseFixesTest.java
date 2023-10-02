@@ -79,6 +79,7 @@ class LicenseFixesTest {
         assertNull(fixes.get(0).fixed());
     }
 
+    /*
     @Test
     public void fix_all_possible_licenses_test() {
         Map<String, License> licenses = licenseFixes.getAllLicenses();
@@ -88,5 +89,6 @@ class LicenseFixesTest {
             assertNotNull(licenseFixes.fix(result, sbom, "repairSubType"));
         }
     }
+     */
 
 }

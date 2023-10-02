@@ -7,10 +7,11 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * License Object to hold License values.
- *
- * Maps to license data using Jackson Databind from
+ * File: License.java
+ * License Object to hold License values. Maps to license data using Jackson Databind from
  * https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json
+ *
+ * @author Jordan Wong
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class License {
