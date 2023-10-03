@@ -42,19 +42,39 @@ public class ConversionController {
 
     }
 
-    public static SBOM convertToSVIPManipulate() {
+    public static SBOM convert(SBOM sbom, SerializerFactory.Schema original, SerializerFactory.Schema desired) {
 
-        SVIPSBOM sbom = null;
+        if (!(sbom instanceof SVIPSBOM)) {
+            ToSVIP toSVIP = ToSVIPController.getToSVIP(original);
 
-        return sbom;
+            sbom = toSVIP.convertToSVIP(sbom);
+        }
+
+        SchemaManipulationMap manipulationMap = ManipulateController.getManipulationMap(desired);
+
+        SVIPSBOM standardizedSBOM = ManipulateController.manipulateSBOM((SVIPSBOM) sbom, manipulationMap);
+
+        return standardizedSBOM;
 
     }
 
-    public static SBOM convertFull() {
+    public static SBOM convertFull(SBOM sbom, SerializerFactory.Schema original, SerializerFactory.Schema desired) {
 
-        SBOM sbom = null;
+        if (!(sbom instanceof SVIPSBOM)) {
+            ToSVIP toSVIP = ToSVIPController.getToSVIP(original);
 
-        return sbom;
+            sbom = toSVIP.convertToSVIP(sbom);
+        }
+
+        SchemaManipulationMap manipulationMap = ManipulateController.getManipulationMap(desired);
+
+        SVIPSBOM standardizedSBOM = ManipulateController.manipulateSBOM((SVIPSBOM) sbom, manipulationMap);
+
+        ToSchema toSchema = ToSchemaController.getToSchema(desired);
+
+        SBOM fullConvertSBOM = toSchema.convert(standardizedSBOM);
+
+        return fullConvertSBOM;
 
     }
 
