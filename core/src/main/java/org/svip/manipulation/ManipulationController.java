@@ -1,15 +1,22 @@
 package org.svip.manipulation;
 
+import org.svip.manipulation.manipulate.ManipulateSVIP;
+import org.svip.manipulation.manipulate.SchemaManipulationMap;
+import org.svip.manipulation.toSVIP.ToSVIP;
+import org.svip.manipulation.toSVIP.ToSVIPController;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.serializers.SerializerFactory;
 
 public class ManipulationController {
 
-    public static SVIPSBOM toSVIP() {
+    public static SVIPSBOM toSVIP(SVIPSBOM sbom, SerializerFactory.Schema originalSchema) {
 
-        SVIPSBOM sbom = null;
+        ToSVIP toSVIP = ToSVIPController.getToSVIP(originalSchema);
 
-        return sbom;
+        SVIPSBOM manipulatedSBOM = toSVIP.convertToSVIP(sbom);
+
+        return manipulatedSBOM;
 
     }
 

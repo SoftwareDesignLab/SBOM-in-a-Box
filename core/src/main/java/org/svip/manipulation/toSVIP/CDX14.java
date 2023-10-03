@@ -3,6 +3,7 @@ package org.svip.manipulation.toSVIP;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SVIPComponentObject;
@@ -20,17 +21,21 @@ import java.util.Map;
  *
  * @author Tyler Drake
  */
-public class CDX14 {
+public class CDX14 implements ToSVIP {
 
     /**
      * Builds an SVIP SBOM referencing a CycloneDX 1.4 SBOM. This SVIP
      * SBOM will retain all the original values from the CycloneDX sbom,
      * so only the internal Object will be converted, not the fields itself.
      *
-     * @param sbom CDX 1.4 SBOM Object
+     * @param cdx_sbom CDX 1.4 SBOM Object
      * @return An SVIP SBOM containing all original CDX 1.4 Values
      */
-    public static SVIPSBOM convertToSVIP(CDX14SBOM sbom) {
+    @Override
+    public SVIPSBOM convertToSVIP(SBOM cdx_sbom) {
+
+        // Cast SBOM
+        CDX14SBOM sbom = (CDX14SBOM) cdx_sbom;
 
         // Create new builder
         SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
