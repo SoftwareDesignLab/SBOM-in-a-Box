@@ -3,8 +3,10 @@ package org.svip.manipulation.toSVIP;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPComponentObject;
@@ -22,17 +24,22 @@ import java.util.Map;
  *
  * @author Tyler Drake
  */
-public class SPDX23 {
+public class SPDX23 implements ToSVIP {
 
     /**
      * Builds an SVIP SBOM referencing an SPDX 2.3 SBOM. This SVIP
      * SBOM will retain all the original values from the SPDX 2.3 sbom,
      * so only the internal Object will be converted, not the fields itself.
      *
-     * @param sbom SPDX 2.3 SBOM Object
+     * @param spdx_sbom SPDX 2.3 SBOM Object
      * @return An SVIP SBOM containing all original SPDX 2.3 Values
      */
-    public static SVIPSBOM convertToSVIP(SPDX23SBOM sbom) {
+    @Override
+    public SVIPSBOM convertToSVIP(SBOM spdx_sbom) {
+
+        //
+        SPDX23SBOM sbom = (SPDX23SBOM) spdx_sbom;
+
 
         // Create new builder
         SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
