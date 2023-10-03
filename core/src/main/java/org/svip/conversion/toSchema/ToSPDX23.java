@@ -1,4 +1,4 @@
-package org.svip.manipulation;
+package org.svip.conversion.toSchema;
 
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23PackageBuilder;
@@ -11,13 +11,13 @@ import org.svip.sbom.model.objects.SVIPSBOM;
 import java.util.Map;
 
 /**
- * Name: CovertSPDX23.java
+ * Name: ToSPDX23.java
  * Description: Builds a SPDX 2.3 SBOM using
  * the information from an SVIPSBOM.
  *
  * @author Tyler Drake
  */
-public class ConvertSPDX23 implements Convert {
+public class ToSPDX23 implements ToSchema {
 
     @Override
     public SPDX23SBOM convert(SVIPSBOM sbom) {

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
-import org.svip.manipulation.ConversionException;
+import org.svip.conversion.ConversionException;
 import org.svip.serializers.SerializerFactory;
 import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.serializers.exceptions.DeserializerException;

@@ -1,4 +1,4 @@
-package org.svip.manipulation.toSVIP;
+package org.svip.conversion.toSVIP;
 
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;

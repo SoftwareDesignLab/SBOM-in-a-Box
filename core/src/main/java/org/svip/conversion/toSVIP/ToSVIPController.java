@@ -1,4 +1,4 @@
-package org.svip.manipulation.toSVIP;
+package org.svip.conversion.toSVIP;
 
 import org.svip.serializers.SerializerFactory;
 
