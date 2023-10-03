@@ -1,6 +1,6 @@
 package org.svip.manipulation;
 
-import org.svip.manipulation.manipulate.ManipulateSVIP;
+import org.svip.manipulation.manipulate.ManipulateController;
 import org.svip.manipulation.manipulate.SchemaManipulationMap;
 import org.svip.manipulation.toSVIP.ToSVIP;
 import org.svip.manipulation.toSVIP.ToSVIPController;
@@ -8,23 +8,25 @@ import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.SerializerFactory;
 
-public class ManipulationController {
+public class ConversionController {
 
     public static SVIPSBOM toSVIP(SVIPSBOM sbom, SerializerFactory.Schema originalSchema) {
 
         ToSVIP toSVIP = ToSVIPController.getToSVIP(originalSchema);
 
-        SVIPSBOM manipulatedSBOM = toSVIP.convertToSVIP(sbom);
+        SVIPSBOM svipsbom = toSVIP.convertToSVIP(sbom);
 
-        return manipulatedSBOM;
+        return svipsbom;
 
     }
 
-    public static SVIPSBOM manipulate() {
+    public static SVIPSBOM manipulate(SVIPSBOM sbom, SerializerFactory.Schema desiredSchema) {
 
-        SVIPSBOM sbom = null;
+        SchemaManipulationMap manipulationMap = ManipulateController.getManipulationMap(desiredSchema);
 
-        return sbom;
+        SVIPSBOM manipulatedSBOM = ManipulateController.manipulateSBOM(sbom, manipulationMap);
+
+        return manipulatedSBOM;
 
     }
 
@@ -36,7 +38,7 @@ public class ManipulationController {
 
     }
 
-    public static SBOM convertStandard() {
+    public static SBOM convertToStandard() {
 
         SVIPSBOM sbom = null;
 
@@ -44,7 +46,7 @@ public class ManipulationController {
 
     }
 
-    public static SBOM fullConvert() {
+    public static SBOM convertFull() {
 
         SBOM sbom = null;
 
