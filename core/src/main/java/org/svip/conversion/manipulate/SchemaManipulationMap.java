@@ -1,4 +1,4 @@
-package org.svip.manipulation.manipulate;
+package org.svip.conversion.manipulate;
 
 public enum SchemaManipulationMap {
 

@@ -1,9 +1,9 @@
-package org.svip.manipulation;
+package org.svip.conversion;
 
-import org.svip.manipulation.manipulate.ManipulateController;
-import org.svip.manipulation.manipulate.SchemaManipulationMap;
-import org.svip.manipulation.toSVIP.ToSVIP;
-import org.svip.manipulation.toSVIP.ToSVIPController;
+import org.svip.conversion.manipulate.ManipulateController;
+import org.svip.conversion.manipulate.SchemaManipulationMap;
+import org.svip.conversion.toSVIP.ToSVIP;
+import org.svip.conversion.toSVIP.ToSVIPController;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.SerializerFactory;

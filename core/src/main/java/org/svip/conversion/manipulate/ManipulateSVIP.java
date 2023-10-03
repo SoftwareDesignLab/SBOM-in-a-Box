@@ -1,4 +1,4 @@
-package org.svip.manipulation.manipulate;
+package org.svip.conversion.manipulate;
 
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;

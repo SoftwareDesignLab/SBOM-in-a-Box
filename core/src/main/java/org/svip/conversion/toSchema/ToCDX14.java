@@ -1,4 +1,4 @@
-package org.svip.manipulation;
+package org.svip.conversion.toSchema;
 
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14PackageBuilder;
@@ -11,13 +11,13 @@ import org.svip.sbom.model.objects.SVIPSBOM;
 import java.util.Map;
 
 /**
- * Name: CovertCDX14.java
+ * Name: ToCDX14.java
  * Description: Builds a CycloneDX 1.4 SBOM using
  * the information from an SVIPSBOM.
  *
  * @author Tyler Drake
  */
-public class ConvertCDX14 implements Convert {
+public class ToCDX14 implements ToSchema {
 
     @Override
     public CDX14SBOM convert(SVIPSBOM sbom) {

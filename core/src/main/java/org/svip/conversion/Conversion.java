@@ -1,5 +1,8 @@
-package org.svip.manipulation;
+package org.svip.conversion;
 
+import org.svip.conversion.toSchema.ToCDX14;
+import org.svip.conversion.toSchema.ToSPDX23;
+import org.svip.conversion.toSchema.ToSchema;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -41,16 +44,16 @@ public class Conversion {
      * @param desiredSchema
      * @return (A Convert object)
      */
-    private static Convert getConvert(SerializerFactory.Schema desiredSchema) {
+    private static ToSchema getConvert(SerializerFactory.Schema desiredSchema) {
 
         // Return appropriate Converter depending on the desired schema
         // If it is SVIPSBOM or not found, return null
         switch (desiredSchema) {
             case SPDX23 -> {
-                return new ConvertSPDX23();
+                return new ToSPDX23();
             }
             case CDX14 -> {
-                return new ConvertCDX14();
+                return new ToCDX14();
             }
             default -> {
                 return null;
@@ -95,7 +98,7 @@ public class Conversion {
         // TODO: deserialization happens in controller
 
         // Get the converter
-        Convert converter = getConvert(desiredSchema);
+        ToSchema converter = getConvert(desiredSchema);
 
         // Standardize SBOM to an SVIPSBOM
         SVIPSBOM svipsbom = toSVIP(sbom, originalSchema);
