@@ -164,13 +164,9 @@ public class SBOMFileService {
                 throw new Exception("Converted SBOM not found.");
 
             // convert to SVIPSBOM
-            try {
-                sbomObj = Conversion.convertSBOM(sbomObj, SerializerFactory.Schema.SVIP,
-                        (sbomObj.getFormat().toLowerCase().contains("spdx")) ?
-                                SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14);
-            } catch (ConversionException e) {
-                throw new Exception("Error converting to SVIP SBOM (id " + id + ": " + e.getMessage());
-            }
+            sbomObj = Conversion.convertSBOM(sbomObj, SerializerFactory.Schema.SVIP,
+                    (sbomObj.getFormat().toLowerCase().contains("spdx")) ?
+                            SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14);
 
             sboms.add(sbomObj);
 

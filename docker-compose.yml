@@ -17,8 +17,8 @@ services:
     ports:
       - ${FLASK_LOCAL_PORT}:${FLASK_DOCKER_PORT}
     volumes:
-      - code:/bound_dir/code
-      - sboms:/bound_dir/sboms
+      - ./core/src/main/java/org/svip/generation/osi/bound_dir/code:/bound_dir/code
+      - ./core/src/main/java/org/svip/generation/osi/bound_dir/sboms:/bound_dir/sboms
 
   # MySQL server
   mysql:
@@ -53,8 +53,8 @@ services:
     volumes:
       - .m2:/root/.m2
       - /var/run/docker.sock:/var/run/docker.sock
-      - code:/core/src/main/java/org/svip/generation/osi/bound_dir/code
-      - sboms:/core/src/main/java/org/svip/generation/osi/bound_dir/sboms
+      - ./core/src/main/java/org/svip/generation/osi/bound_dir/code:/core/src/main/java/org/svip/generation/osi/bound_dir/code
+      - ./core/src/main/java/org/svip/generation/osi/bound_dir/sboms:/core/src/main/java/org/svip/generation/osi/bound_dir/sboms
     stdin_open: true
     tty: true
     environment: # Define environment variables for spring-boot application.properties

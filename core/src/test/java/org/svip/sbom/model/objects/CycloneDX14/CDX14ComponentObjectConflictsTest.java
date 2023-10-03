@@ -160,6 +160,7 @@ public class CDX14ComponentObjectConflictsTest {
         for(Conflict c : conflictList)
         {
             if(c.getType() == MismatchType.MISSING && Objects.equals(c.getMessage(), "Component Hash is missing"))
+
                 if(Objects.equals(c.getTarget(),"SHA1") && c.getOther() == null)
                     c1 = true;
                 else if(c.getTarget() == null && Objects.equals(c.getOther(), "SHA2"))

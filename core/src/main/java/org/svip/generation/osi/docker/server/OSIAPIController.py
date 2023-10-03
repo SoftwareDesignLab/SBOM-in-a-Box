@@ -22,7 +22,7 @@ app = Flask(__name__)
 @app.route('/tools', methods=['GET'])
 def get_tools():
     """
-    Endpoint: GET http://localhost:5000/tools
+    Endpoint: GET http://localhost:50001/tools
 
     Returns: A list of names of valid open-source tools.
     """
@@ -33,7 +33,7 @@ def get_tools():
 @app.route('/generate', methods=['POST'])
 def generate():
     """
-    Endpoint: GET http://localhost:5000/generate
+    Endpoint: GET http://localhost:50001/generate
 
     Request Body: A JSON list of tool names to use in generation. If null, defaults to all tools.
     Returns:      Generated SBOMs in osi/bound_dir/sboms.
