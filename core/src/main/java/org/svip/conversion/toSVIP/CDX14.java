@@ -69,11 +69,14 @@ public class CDX14 implements ToSVIP {
         builder.setDocumentComment(sbom.getDocumentComment());
 
         // Root Component
-        builder.setRootComponent(convertComponent(sbom.getRootComponent()));
+        if(sbom.getRootComponent() != null)
+            builder.setRootComponent(convertComponent(sbom.getRootComponent()));
+        else
+            builder.setRootComponent(null);
 
         // Stream components from SVIP SBOM, convert them, then put into CDX SBOM
         if(sbom.getComponents() != null)
-            sbom.getComponents().stream().forEach(x -> builder.addComponent(convertComponent(x)));
+            sbom.getComponents().stream().filter(x-> x != null).forEach(x -> builder.addComponent(convertComponent(x)));
 
         // Stream Relationship data into new SBOM
         if(sbom.getRelationships() != null) {

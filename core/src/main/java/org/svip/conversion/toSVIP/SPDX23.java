@@ -14,7 +14,7 @@ import org.svip.sbom.model.objects.SVIPSBOM;
 import java.util.Map;
 
 /**
- * Name: SPDX2.3.java
+ * Name: SPDX23.java
  * Description: Converts an SPDX 2.3 Internal SBOM Object
  * into an SVIP SBOM Object while retaining all the original
  * information from the SPDX 2.3 SBOM. This will not "completely"
@@ -71,13 +71,16 @@ public class SPDX23 implements ToSVIP {
         builder.setDocumentComment(sbom.getDocumentComment());
 
         // Root Component
-        builder.setRootComponent(convertPackage(sbom.getRootComponent()));
+        if(sbom.getRootComponent() != null)
+            builder.setRootComponent(convertPackage(sbom.getRootComponent()));
+        else
+            builder.setRootComponent(null);
 
         // Stream components from SVIP SBOM, convert them, then put into CDX SBOM
-        sbom.getComponents().stream().forEach(
+        sbom.getComponents().stream().filter(x -> x != null).forEach(
                 x -> {
-                    if (x instanceof SPDX23Package) builder.addComponent(convertPackage(x));
-                    else if (x instanceof SPDX23File) builder.addComponent(convertFile(x));
+                        if (x instanceof SPDX23Package) builder.addComponent(convertPackage(x));
+                        else if (x instanceof SPDX23File) builder.addComponent(convertFile(x));
                 }
         );
 
