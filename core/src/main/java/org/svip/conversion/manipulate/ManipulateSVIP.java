@@ -63,11 +63,16 @@ public class ManipulateSVIP {
         builder.setDocumentComment(sbom.getDocumentComment());
 
         // Root Component
-        builder.setRootComponent(modifyComponent(sbom.getRootComponent(), manipulationMap, relationshipMap));
+        if(sbom.getRootComponent() != null)
+            builder.setRootComponent(modifyComponent(sbom.getRootComponent(), manipulationMap, relationshipMap));
+        else
+            builder.setRootComponent(null);
 
         // Stream components from SVIP SBOM, convert them, then put into CDX SBOM
         if(sbom.getComponents() != null)
-            sbom.getComponents().stream().forEach(x -> builder.addComponent(modifyComponent(x, manipulationMap, relationshipMap)));
+            sbom.getComponents().stream().filter(x -> x != null).forEach(
+                    x -> builder.addComponent(modifyComponent(x, manipulationMap, relationshipMap))
+            );
 
         // Stream Relationship data into new SBOM
         if(sbom.getRelationships() != null) {
