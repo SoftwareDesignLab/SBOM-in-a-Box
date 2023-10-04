@@ -24,12 +24,12 @@ public class LicenseFixes implements Fixes<License> {
     private static String LICENSES_URL = "https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json";
 
     /**
-     * Get a list of possible license fixes for invalid licenses.
+     * Get license fix for an invalid license.
      *
      * @param result        object from quality report
      * @param sbom          sbom from quality report
      * @param repairSubType key from quality report map most directly relating to the repair type
-     * @return list of license fixes
+     * @return singleton list of a license fix
      */
     @Override
     public List<Fix<License>> fix(Result result, SBOM sbom, String repairSubType) {
@@ -45,7 +45,7 @@ public class LicenseFixes implements Fixes<License> {
     /**
      * Get a map of all licenses (valid and deprecated).
      *
-     * @return map of all licenses
+     * @return map of licenses
      */
     private Map<String, License> getAllLicenses() {
         try {
@@ -69,10 +69,10 @@ public class LicenseFixes implements Fixes<License> {
     }
 
     /**
-     * Get a list of valid license ids given a deprecated license id or name.
+     * Get the valid license from the deprecated license
      *
-     * @param deprecated the deprecated License
-     * @return list of valid license ids
+     * @param deprecated deprecated License
+     * @return valid license
      */
     private License getValidLicense(License deprecated) {
         Map<String,License> licenseMap = getAllLicenses();

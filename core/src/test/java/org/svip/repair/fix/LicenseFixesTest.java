@@ -15,11 +15,9 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -48,12 +46,9 @@ class LicenseFixesTest {
         Result result = resultFactory.fail("license", INFO.INVALID, LICENSE_ID, "component");
         List<Fix<License>> fixes = licenseFixes.fix(result, sbom, "repairSubType");
 
-        Set<String> validLicenseIds = new HashSet<>(Arrays.asList("AGPL-1.0-only", "AGPL-1.0-or-later"));
-
-        for (Fix<License> fix : fixes) {
-            assertEquals(new License(LICENSE_ID), fix.old());
-            assertTrue(validLicenseIds.contains(fix.fixed().getId()));
-        }
+        Fix<License> fix = fixes.get(0);
+        assertEquals(new License(LICENSE_ID), fix.old());
+        assertEquals("AGPL-1.0-only", fix.fixed().getId());
     }
 
     @Test
@@ -61,22 +56,29 @@ class LicenseFixesTest {
         Result result = resultFactory.fail("license", INFO.INVALID, LICENSE_NAME, "component");
         List<Fix<License>> fixes = licenseFixes.fix(result, sbom, "repairSubType");
 
-        Set<String> validLicenseIds = new HashSet<>(Arrays.asList("AGPL-1.0-only", "AGPL-1.0-or-later"));
-
-        for (Fix<License> fix : fixes) {
-            assertEquals(new License(LICENSE_NAME), fix.old());
-            assertTrue(validLicenseIds.contains(fix.fixed().getId()));
-        }
+        Fix<License> fix = fixes.get(0);
+        assertEquals(new License(LICENSE_NAME), fix.old());
+        assertEquals("Affero General Public License v1.0 only", fix.fixed().getName());
     }
 
     @Test
-    public void no_valid_license_fix_test() {
+    public void nonexistent_license_identifier_test() {
         Result result = resultFactory.fail("license", INFO.INVALID, "Unknown", "component");
         List<Fix<License>> fixes = licenseFixes.fix(result, sbom, "repairSubType");
 
-        assertEquals(1, fixes.size());
-        assertEquals(new License("Unknown"), fixes.get(0).old());
-        assertNull(fixes.get(0).fixed());
+        Fix<License> fix = fixes.get(0);
+        assertEquals(new License("Unknown"), fix.old());
+        assertNull(fix.fixed());
+    }
+
+    @Test
+    public void no_mapping_for_deprecated_license_test() {
+        Result result = resultFactory.fail("license", INFO.INVALID, "Nunit", "component");
+        List<Fix<License>> fixes = licenseFixes.fix(result, sbom, "repairSubType");
+
+        Fix<License> fix = fixes.get(0);
+        assertEquals(new License("Nunit"), fix.old());
+        assertNull(fix.fixed());
     }
 
 }
