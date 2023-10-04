@@ -11,7 +11,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * file: HashFixes.java
  * Fixes class to generate suggested component hash repairs
+ *
+ * @author Jordan Wong
  */
 public class HashFixes implements Fixes<Hash> {
 
