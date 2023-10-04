@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LicenseTest {
 
@@ -17,12 +19,14 @@ class LicenseTest {
     public void construction_test() {
         License license = new License();
         assertNotNull(license);
+
         license = new License(LICENSE_ID);
         assertNotNull(license);
+        assertEquals(LICENSE_ID, license.getIdentifier());
+
         license = new License(LICENSE_NAME);
         assertNotNull(license);
-
-        assertNotNull(license.toString());
+        assertEquals(LICENSE_NAME, license.getIdentifier());
     }
 
     @Test
@@ -36,4 +40,19 @@ class LicenseTest {
         assertEquals(LICENSE_NAME, license.getName());
         assertEquals(LICENSE_URL, license.getUrl());
     }
+
+    @Test
+    public void overrides_test() {
+        License license0 = new License(LICENSE_ID);
+        License license1 = new License(LICENSE_NAME);
+        assertFalse(license0.equals(license1));
+
+        license0.setName(LICENSE_NAME);
+        license1.setId(LICENSE_ID);
+        assertTrue(license0.equals(license1));
+
+        assertNotNull(license0.toString());
+        assertNotNull(license1.toString());
+    }
+
 }

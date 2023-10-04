@@ -9,6 +9,7 @@ import java.util.Objects;
 /**
  * File: License.java
  * License Object to hold License values. Maps to license data using Jackson Databind from
+ * the official SPDX GitHub repository:
  * https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json
  *
  * @author Jordan Wong
@@ -20,10 +21,18 @@ public class License {
     private String name;
     private String url;
 
+    /**
+     * Create a new License object
+     */
     public License() {
         // Empty constructor required for Jackson Databind ObjectMapper
     }
 
+    /**
+     * Create a new License object
+     *
+     * @param identifier license id or name
+     */
     public License(String identifier) {
         if (identifier.split(" ").length > 1) {
             this.name = identifier;
@@ -31,6 +40,10 @@ public class License {
             this.id = identifier;
         }
     }
+
+    //
+    // Getters
+    //
 
     public String getId() {
         return this.id;
@@ -43,6 +56,14 @@ public class License {
     public String getUrl() {
         return this.url;
     }
+
+    public String getIdentifier() {
+        return this.id != null ? this.id : this.name;
+    }
+
+    //
+    // Setters
+    //
 
     @JsonProperty("licenseId")
     public void setId(String id) {
@@ -60,6 +81,10 @@ public class License {
             this.url = url.get(0);
         }
     }
+
+    //
+    // Overrides
+    //
 
     @Override
     public String toString() {
