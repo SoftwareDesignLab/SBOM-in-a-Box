@@ -119,7 +119,7 @@ class LicenseFixesTest {
                         "GPL-2.0-only", "GPL-2.0-or-later", "GPL-3.0-only", "GPL-3.0-or-later");
 
         for (String validLicenseId : validLicenseIds) {
-            Result result = resultFactory.fail("license", INFO.INVALID, validLicenseId, "component");
+            Result result = resultFactory.pass("license", INFO.VALID, validLicenseId, "component");
             Fix<License> fix = licenseFixes.fix(result, sbom, "repairSubType").get(0);
             assertEquals(validLicenseId, fix.old().getId());
             assertNull(fix.fixed());
