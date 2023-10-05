@@ -2,6 +2,8 @@ package org.svip.repair.fix;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.svip.metrics.resultfactory.Result;
 import org.svip.metrics.resultfactory.ResultFactory;
 import org.svip.metrics.resultfactory.enumerations.INFO;
@@ -17,6 +19,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@ExtendWith(MockitoExtension.class)
 class LicenseFixesTest {
 
     private static LicenseFixes licenseFixes;
@@ -58,6 +61,37 @@ class LicenseFixesTest {
     }
 
     @Test
+    public void fix_invalid_licenses_for_specific_cases_test() {
+        List<String> deprecatedLicenseIds =
+                List.of("BSD-2-Clause-FreeBSD", "bzip2-1.0.5", "eCos-2.0", "GPL-2.0-with-autoconf-exception");
+        List<String> validLicenseIds =
+                List.of("BSD-2-Clause", "bzip2-1.0.6", "RHeCos-1.1", "GPL-2.0-only");
+
+        for (int i = 0; i < deprecatedLicenseIds.size(); i++) {
+            Result result = resultFactory.fail("license", INFO.INVALID, deprecatedLicenseIds.get(i), "component");
+            Fix<License> fix = licenseFixes.fix(result, sbom, "repairSubType").get(0);
+            assertEquals(deprecatedLicenseIds.get(i), fix.old().getId());
+            assertEquals(validLicenseIds.get(i), fix.fixed().getId());
+        }
+    }
+
+    @Test
+    public void fix_invalid_licenses_for_general_cases_test() {
+        List<String> deprecatedLicenseIds =
+                List.of("LGPL-2.0", "LGPL-2.0+", "LGPL-3.0", "LGPL-3.0+", "GPL-2.0", "GPL-2.0+", "GPL-3.0", "GPL-3.0+");
+        List<String> validLicenseIds =
+                List.of("LGPL-2.0-only", "LGPL-2.0-or-later", "LGPL-3.0-only", "LGPL-3.0-or-later",
+                        "GPL-2.0-only", "GPL-2.0-or-later", "GPL-3.0-only", "GPL-3.0-or-later");
+
+        for (int i = 0; i < deprecatedLicenseIds.size(); i++) {
+            Result result = resultFactory.fail("license", INFO.INVALID, deprecatedLicenseIds.get(i), "component");
+            Fix<License> fix = licenseFixes.fix(result, sbom, "repairSubType").get(0);
+            assertEquals(deprecatedLicenseIds.get(i), fix.old().getId());
+            assertEquals(validLicenseIds.get(i), fix.fixed().getId());
+        }
+    }
+
+    @Test
     public void nonexistent_license_identifier_test() {
         Result result = resultFactory.fail("license", INFO.INVALID, "Unknown", "component");
         List<Fix<License>> fixes = licenseFixes.fix(result, sbom, "repairSubType");
@@ -75,6 +109,21 @@ class LicenseFixesTest {
         Fix<License> fix = fixes.get(0);
         assertEquals(new License("Nunit"), fix.old());
         assertNull(fix.fixed());
+    }
+
+    @Test
+    public void fix_valid_license_test() {
+        List<String> validLicenseIds =
+                List.of("BSD-2-Clause", "bzip2-1.0.6", "RHeCos-1.1", "GPL-2.0-only",
+                        "LGPL-2.0-only", "LGPL-2.0-or-later", "LGPL-3.0-only", "LGPL-3.0-or-later",
+                        "GPL-2.0-only", "GPL-2.0-or-later", "GPL-3.0-only", "GPL-3.0-or-later");
+
+        for (String validLicenseId : validLicenseIds) {
+            Result result = resultFactory.fail("license", INFO.INVALID, validLicenseId, "component");
+            Fix<License> fix = licenseFixes.fix(result, sbom, "repairSubType").get(0);
+            assertEquals(validLicenseId, fix.old().getId());
+            assertNull(fix.fixed());
+        }
     }
 
 }

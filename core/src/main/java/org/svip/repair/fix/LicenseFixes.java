@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.metrics.resultfactory.Result;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.uids.License;
+import org.svip.utils.Debug;
 
 import java.net.URL;
 import java.util.Collections;
@@ -64,7 +65,8 @@ public class LicenseFixes implements Fixes<License> {
 
             return licenseMap;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Debug.log(Debug.LOG_TYPE.ERROR, e);
+            return Collections.emptyMap();
         }
     }
 
@@ -84,17 +86,17 @@ public class LicenseFixes implements Fixes<License> {
         String deprecatedId = licenseMap.get(deprecated.getIdentifier()).getId();
 
         // Specific deprecated license cases
-        if (deprecatedId.startsWith("BSD-2")) {
+        if (deprecatedId.startsWith("BSD-2-Clause-")) {
             return licenseMap.get("BSD-2-Clause");
         }
-        if (deprecatedId.startsWith("bzip2")) {
+        if (deprecatedId.equals("bzip2-1.0.5")) {
             return licenseMap.get("bzip2-1.0.6");
         }
-        if (deprecatedId.startsWith("eCos")) {
+        if (deprecatedId.equals("eCos-2.0")) {
             return licenseMap.get("RHeCos-1.1");
         }
         if (deprecatedId.startsWith("GPL-2.0-with") || deprecatedId.startsWith("GPL-3.0-with")) {
-            return licenseMap.get(deprecatedId + "-only");
+            return licenseMap.get("GPL-2.0-only");
         }
 
         // General deprecated license cases
@@ -102,7 +104,7 @@ public class LicenseFixes implements Fixes<License> {
             return licenseMap.get(deprecatedId + "-only");
         }
         if (deprecatedId.endsWith("+")) {
-            return licenseMap.get(deprecatedId + "-or-later");
+            return licenseMap.get(deprecatedId.substring(0, deprecatedId.length() - 1) + "-or-later");
         }
 
         // Nunit, StandardML-NJ, wxWindows could not be accurately mapped to a valid license
