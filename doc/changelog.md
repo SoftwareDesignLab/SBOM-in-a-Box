@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v8.1.0-alpha] - (9/22/2023)
 
 ### Added
+- `LicenseFixes.java` Class - Suggests a list of fixes for deprecated licenses
+- `License.java` Class - Stores the id, name, and url of a license
+
+### Added
 - `HashFixes.java` Class - Suggests a list of fixes for invalid hashes and hashing algorithms
 - `Hash.validAlgorithms()` Method - Returns a list of valid hashing algorithms that match a hash
 - Missing unit tests
