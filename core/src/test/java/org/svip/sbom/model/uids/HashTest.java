@@ -15,6 +15,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import static org.svip.sbom.model.uids.Hash.Algorithm;
 
+/**
+ * file: HashTest.java
+ * Test class to test Hash and its methods and usage
+ *
+ * @author Jordan Wong
+ */
 class HashTest {
 
     private static final String HASH_VALUE = "5eb63bbbe01eeed093cb22bb8f5acdc3";
