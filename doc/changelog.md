@@ -3,11 +3,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v8.1.0-alpha] - (9/22/2023)
+## [v8.1.1-alpha] - (10/06/2023)
 
 ### Added
 - `LicenseFixes.java` Class - Suggests a list of fixes for deprecated licenses
 - `License.java` Class - Stores the id, name, and url of a license
+
+## [v8.1.0-alpha] - (9/22/2023)
 
 ### Added
 - `HashFixes.java` Class - Suggests a list of fixes for invalid hashes and hashing algorithms
