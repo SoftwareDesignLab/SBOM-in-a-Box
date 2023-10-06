@@ -2,7 +2,6 @@ package org.svip.repair.fix;
 
 import org.svip.metrics.resultfactory.Result;
 import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.uids.Hash;
 import org.svip.sbom.model.uids.Hash.Algorithm;
 

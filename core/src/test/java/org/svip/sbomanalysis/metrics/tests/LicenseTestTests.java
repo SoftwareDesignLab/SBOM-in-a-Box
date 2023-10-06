@@ -79,7 +79,7 @@ class LicenseTestTests {
     }
 
     @Test
-    public void testSPDXLicense_deprecated_license_id_pass_test(){
+    public void testSPDXLicense_deprecated_license_id_fail_test(){
         Set<Result> result = licenseTest.test("license", testDeprecatedLicenseID);
 
         List<Result> resultList = new ArrayList<>(result);
@@ -89,7 +89,7 @@ class LicenseTestTests {
     }
 
     @Test
-    public void testSPDXLicense_deprecated_license_name_pass_test(){
+    public void testSPDXLicense_deprecated_license_name_fail_test(){
         Set<Result> result = licenseTest.test("license", testDeprecatedLicenseName);
 
         List<Result> resultList = new ArrayList<>(result);
