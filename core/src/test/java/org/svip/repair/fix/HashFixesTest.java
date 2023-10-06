@@ -95,4 +95,18 @@ class HashFixesTest {
         assertEquals(new Hash(Algorithm.MD5, HASH_VALUE), fixes.get(0).fixed());
     }
 
+    @Test
+    public void valid_hash_test() {
+        Result result = resultFactory.pass("MD5", INFO.VALID, HASH_VALUE, "component");
+        List<Fix<Hash>> fixes = hashFixes.fix(result, spdxSbom, "repairSubType");
+
+        Set<Algorithm> validAlgorithms =
+                new HashSet<>(Arrays.asList(Algorithm.MD2, Algorithm.MD4, Algorithm.MD5, Algorithm.MD6));
+
+        for (Fix<Hash> fix : fixes) {
+            assertEquals(new Hash(Algorithm.MD5, HASH_VALUE), fix.old());
+            assertTrue(validAlgorithms.contains(fix.fixed().getAlgorithm()));
+        }
+    }
+
 }
