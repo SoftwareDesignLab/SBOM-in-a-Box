@@ -288,7 +288,10 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
         Map<String, String> hashMap = new HashMap<>(); // Literally a hash map lol
 
         for (JsonNode hash : hashes)
-            hashMap.put(hash.get("alg").asText(), hash.get("content").asText());
+            hashMap.put(
+                    hash.get("alg") == null ? "" : hash.get("alg").asText(),
+                    hash.get("content") == null ? "" : hash.get("content").asText()
+            );
 
         return hashMap;
     }
