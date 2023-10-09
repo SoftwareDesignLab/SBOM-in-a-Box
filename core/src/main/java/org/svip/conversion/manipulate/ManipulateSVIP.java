@@ -76,7 +76,7 @@ public class ManipulateSVIP {
 
         // Stream Relationship data into new SBOM
         if(sbom.getRelationships() != null) {
-            sbom.getRelationships().keySet().forEach(
+            sbom.getRelationships().keySet().stream().filter(x -> x!=null).forEach(
                     x -> sbom.getRelationships().get(x).stream().forEach(
                             y -> builder.addRelationship(
                                     relationshipMap.get(x),
