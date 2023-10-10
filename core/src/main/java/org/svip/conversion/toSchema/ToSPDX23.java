@@ -9,6 +9,7 @@ import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Name: ToSPDX23.java
@@ -50,10 +51,10 @@ public class ToSPDX23 implements ToSchema {
         builder.setDocumentComment(sbom.getDocumentComment());
 
         // Root Component
-        builder.setRootComponent(convertComponent(sbom.getRootComponent()));
+        Optional.ofNullable(sbom.getRootComponent()).map(b -> builder.setRootComponent(convertComponent(b))).orElse(null);
 
         // Stream components from SVIP SBOM, convert them, then put into SPDX SBOM
-        sbom.getComponents().stream().forEach(x -> builder.addComponent(convertComponent(x)));
+        sbom.getComponents().stream().filter(x -> x != null).forEach(x -> builder.addComponent(convertComponent(x)));
 
         // Stream Relationship data into new SBOM
         if (sbom.getRelationships() != null) sbom.getRelationships().keySet().forEach(
