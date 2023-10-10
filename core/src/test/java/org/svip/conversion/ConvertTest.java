@@ -3,7 +3,6 @@ package org.svip.conversion;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 
@@ -26,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @author Juan Francisco Patino
  * @author Tyler Drake
  */
-public class ToSchemaTest {
+public class ConvertTest {
 
     /**
      * Test Constants
