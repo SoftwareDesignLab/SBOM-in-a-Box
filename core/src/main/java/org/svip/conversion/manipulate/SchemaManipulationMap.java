@@ -1,5 +1,13 @@
 package org.svip.conversion.manipulate;
 
+/**
+ * Name: SchemaManipulationMap.java
+ * Description: Holds default values for fields by format. These maps are typically
+ * used by convert to determine the values of several fields during the conversion
+ * process.
+ *
+ * @author Tyler Drake
+ */
 public enum SchemaManipulationMap {
 
     CDX14("CycloneDX", "1.4", "bom-ref:uuid:"),

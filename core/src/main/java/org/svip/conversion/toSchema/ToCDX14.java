@@ -20,6 +20,12 @@ import java.util.Optional;
  */
 public class ToCDX14 implements ToSchema {
 
+    /**
+     * Converts an SVIPSBOM into a CDX14SBOM Object.
+     *
+     * @param sbom The SVIPSBOM with the data that needs to be mapped.
+     * @return A CDX14SBOM Object with the relevant data from the SVIPSBOM.
+     */
     @Override
     public CDX14SBOM convert(SVIPSBOM sbom) {
 

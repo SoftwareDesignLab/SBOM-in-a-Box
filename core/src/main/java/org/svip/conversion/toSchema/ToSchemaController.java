@@ -2,6 +2,12 @@ package org.svip.conversion.toSchema;
 
 import org.svip.serializers.SerializerFactory;
 
+/**
+ * File: ToSchemaController.java
+ * Description: Main Controller/Driver class for ToSchema conversion functionality.
+ *
+ * @author Tyler Drake
+ */
 public class ToSchemaController {
 
     /**
