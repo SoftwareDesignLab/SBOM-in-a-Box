@@ -4,6 +4,12 @@ package org.svip.conversion.manipulate;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.SerializerFactory;
 
+/**
+ * File: ManipulateController.java
+ * Description: Main Controller/Driver class for Manipulation functionality.
+ *
+ * @author Tyler Drake
+ */
 public class ManipulateController {
 
     /**
