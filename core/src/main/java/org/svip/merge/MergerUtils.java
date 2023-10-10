@@ -1,8 +1,12 @@
 package org.svip.merge;
 
+import org.svip.conversion.toSVIP.CDX14;
 import org.svip.merge.utils.Utils;
 import org.svip.sbom.builder.interfaces.generics.SBOMBuilder;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
+import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
+import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
+import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
@@ -44,7 +48,10 @@ public abstract class MergerUtils extends Merger {
         /** Assign all top level data for the new SBOM **/
 
         // Format
-        builder.setFormat(String.valueOf(targetSchema));
+        if (builder instanceof CDX14Builder) builder.setFormat("CycloneDX");
+        else if (builder instanceof SPDX23Builder) builder.setFormat("SPDX");
+        else if (builder instanceof SVIPSBOMBuilder) builder.setFormat("SVIP");
+        else builder.setFormat(null);
 
         // Name
         if (targetSchema == SerializerFactory.Schema.SVIP)
