@@ -92,12 +92,13 @@ public class ToSchemaTest {
         Conversion conversion = new Conversion();
 
         // Convert the SPDX SBOM to an SVIP SBOM using Conversion
-        SBOM result = conversion.convertSBOM(original, SerializerFactory.Schema.SVIP, SerializerFactory.Schema.CDX14);
+        SBOM result = conversion.convertFull(original, SerializerFactory.Schema.CDX14, SerializerFactory.Schema.SVIP);
 
         // Check if result shows proper data
         assertNotNull(result);
         assertEquals("SVIP", result.getFormat());
         assertEquals(original.getName(), result.getName());
+        assertEquals("1.0-a", result.getSpecVersion());
         assertEquals(original.getComponents().size(), result.getComponents().size());
 
     }
@@ -112,11 +113,12 @@ public class ToSchemaTest {
         Conversion conversion = new Conversion();
 
         // Convert the SPDX SBOM to an SVIP SBOM using Conversion
-        SBOM result = conversion.convertSBOM(original, SerializerFactory.Schema.SVIP, SerializerFactory.Schema.SPDX23);
+        SBOM result = conversion.convertFull(original, SerializerFactory.Schema.SPDX23, SerializerFactory.Schema.SVIP);
 
         // Check it result shows proper data
         assertEquals("SVIP", result.getFormat());
         assertEquals(original.getName(), result.getName());
+        assertEquals("1.0-a", result.getSpecVersion());
         assertEquals(original.getComponents().size(), result.getComponents().size());
 
     }
@@ -131,12 +133,13 @@ public class ToSchemaTest {
         Conversion conversion = new Conversion();
 
         // Convert the CDX SBOM to an SPDX SBOM using Conversion
-        SBOM result = conversion.convertSBOM(original, SerializerFactory.Schema.SPDX23, SerializerFactory.Schema.CDX14);
+        SBOM result = conversion.convertFull(original, SerializerFactory.Schema.CDX14, SerializerFactory.Schema.SPDX23);
 
         // Check if result shows proper data
         assertNotNull(result);
         assertEquals("SPDX", result.getFormat());
         assertEquals(original.getName(), result.getName());
+        assertEquals("2.3", result.getSpecVersion());
         assertEquals(original.getComponents().size(), result.getComponents().size());
 
     }
@@ -151,7 +154,7 @@ public class ToSchemaTest {
         Conversion conversion = new Conversion();
 
         // Convert the SPDX SBOM to a CycloneDX SBOM using Conversion
-        SBOM result = conversion.convertSBOM(original, SerializerFactory.Schema.CDX14, SerializerFactory.Schema.SPDX23);
+        SBOM result = conversion.convertFull(original, SerializerFactory.Schema.SPDX23, SerializerFactory.Schema.CDX14);
 
         // Check if result shows proper data
         assertNotNull(result);
@@ -181,7 +184,7 @@ public class ToSchemaTest {
                 Conversion conversion = new Conversion();
 
                 // Convert the SBOM to a different SBOM schema using Conversion
-                SBOM result = conversion.convertSBOM(sbom, schema, originalSchema);
+                SBOM result = conversion.convertFull(sbom, originalSchema, schema);
 
                 assertNotNull(result);
 
