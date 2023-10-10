@@ -98,7 +98,7 @@ public class SBOMFileService {
 
         // use core Conversion functionality
         org.svip.sbom.model.interfaces.generics.SBOM Converted =
-                Conversion.convert(deserialized, originalSchema, SerializerFactory.Schema.SVIP);
+                Conversion.convert(deserialized, originalSchema, schema);
 
         // serialize into desired format
         Serializer s = SerializerFactory.createSerializer(schema, format, true); // todo serializers don't adjust the format nor specversion
