@@ -98,7 +98,7 @@ public class SBOMFileService {
 
         // use core Conversion functionality
         org.svip.sbom.model.interfaces.generics.SBOM Converted =
-                Conversion.convertSBOM(deserialized, SerializerFactory.Schema.SVIP, originalSchema);
+                Conversion.convert(deserialized, SerializerFactory.Schema.SVIP, originalSchema);
 
         // serialize into desired format
         Serializer s = SerializerFactory.createSerializer(schema, format, true); // todo serializers don't adjust the format nor specversion
@@ -164,7 +164,7 @@ public class SBOMFileService {
                 throw new Exception("Converted SBOM not found.");
 
             // convert to SVIPSBOM
-            sbomObj = Conversion.convertSBOM(sbomObj, SerializerFactory.Schema.SVIP,
+            sbomObj = Conversion.convert(sbomObj, SerializerFactory.Schema.SVIP,
                     (sbomObj.getFormat().toLowerCase().contains("spdx")) ?
                             SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14);
 
