@@ -30,6 +30,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static org.svip.api.controller.SBOMController.LOGGER;
+import static org.svip.serializers.SerializerFactory.resolveSchemaByObject;
 
 
 /**
@@ -91,14 +92,13 @@ public class SBOMFileService {
         if (deserialized == null)
             throw new DeserializerException("Cannot retrieve SBOM with id " + id + " to deserialize");
 
-        SBOM.Schema ogSchema = (deserialized instanceof SPDX23SBOM) ? SBOM.Schema.SPDX_23 : SBOM.Schema.CYCLONEDX_14;
+        SerializerFactory.Schema originalSchema;
 
-        SerializerFactory.Schema originalSchema = (ogSchema == SBOM.Schema.SPDX_23) ? // original schema of SBOM
-                SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14;
+        originalSchema = resolveSchemaByObject(deserialized);
 
         // use core Conversion functionality
         org.svip.sbom.model.interfaces.generics.SBOM Converted =
-                Conversion.convert(deserialized, SerializerFactory.Schema.SVIP, originalSchema);
+                Conversion.convert(deserialized, originalSchema, SerializerFactory.Schema.SVIP);
 
         // serialize into desired format
         Serializer s = SerializerFactory.createSerializer(schema, format, true); // todo serializers don't adjust the format nor specversion
@@ -163,10 +163,10 @@ public class SBOMFileService {
             if (sbomObj == null)
                 throw new Exception("Converted SBOM not found.");
 
+            SerializerFactory.Schema originalSchema = resolveSchemaByObject(sbomObj);
+
             // convert to SVIPSBOM
-            sbomObj = Conversion.convert(sbomObj, SerializerFactory.Schema.SVIP,
-                    (sbomObj.getFormat().toLowerCase().contains("spdx")) ?
-                            SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14);
+            sbomObj = Conversion.convert(sbomObj, originalSchema, SerializerFactory.Schema.SVIP);
 
             sboms.add(sbomObj);
 
