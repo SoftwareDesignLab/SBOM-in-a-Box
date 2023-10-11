@@ -16,7 +16,7 @@ import java.util.HashMap;
 public abstract class Extraction {
 
     protected final ArrayList<QueryWorker> queryWorkers;
-    private HashMap<String, String> purl;
+    protected HashMap<String, String> purl;
 
     protected Extraction(HashMap<String, String> purl) {
         this.purl = purl;
