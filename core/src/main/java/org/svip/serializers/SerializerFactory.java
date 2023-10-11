@@ -12,6 +12,7 @@ import java.util.Map;
 
 import static org.svip.serializers.SerializerFactory.Format.JSON;
 import static org.svip.serializers.SerializerFactory.Format.TAGVALUE;
+import static org.svip.serializers.SerializerFactory.Format.XML;
 import static org.svip.serializers.SerializerFactory.Schema.*;
 
 /**
@@ -123,7 +124,8 @@ public class SerializerFactory {
      */
     public enum Format {
         JSON,
-        TAGVALUE
+        TAGVALUE,
+        XML
     }
 
     /**
@@ -135,9 +137,16 @@ public class SerializerFactory {
      */
     public static Schema resolveSchema(String fileContents) {
         // TODO this takes a long time to search large files
-        if (fileContents.toLowerCase().contains("bom-ref")) return CDX14;
-        else if (fileContents.toLowerCase().contains("spdxversion")) return SPDX23;
+        if (fileContents.contains("CycloneDX")) return CDX14;
+        else if (fileContents.contains("SPDX")) return SPDX23;
         else if (fileContents.contains("rootComponent")) return SVIP; // Field unique to SVIP SBOM
+        else return null;
+    }
+
+    public static Schema resolveSchemaByFileExt(String fileName) {
+        if (fileName.contains(".svip")) return SVIP;
+        if (fileName.contains(".spdx")) return SPDX23;
+        else if (fileName.endsWith(".json") || fileName.endsWith(".xml")) return CDX14;
         else return null;
     }
 
@@ -153,6 +162,13 @@ public class SerializerFactory {
             return TAGVALUE;
         else if (fileContents.contains("{") && fileContents.contains("}"))
             return JSON;
+        else return null;
+    }
+
+    public static Format resolveFormatByFileExt(String fileName) {
+        if (fileName.endsWith(".json")) return JSON;
+        if (fileName.endsWith(".xml")) return XML;
+        else if (fileName.contains(".spdx")) return TAGVALUE;
         else return null;
     }
 
