@@ -2,8 +2,14 @@ package org.svip.repair.extraction;
 
 import org.svip.generation.parsers.utils.QueryWorker;
 import org.svip.utils.Debug;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
-import java.io.IOException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.StringReader;
 import java.util.HashMap;
 
 import static org.svip.utils.Debug.log;
@@ -16,29 +22,64 @@ import static org.svip.utils.Debug.log;
  */
 public class NugetExtraction extends Extraction {
 
-    private final String URL = "api.nuget.org/v3-flatcontainer/id/version/id.nuspec";
+    private String URL = "https://api.nuget.org/v3-flatcontainer/%s/%s/%s.nuspec";
 
     protected NugetExtraction(HashMap<String, String> purl) {
         super(purl);
     }
 
     @Override
-    public String extractCopyright() {
+    public void extract() {
 
-        String url = this.URL.replaceAll("id", purl.get("name").toLowerCase());
-        url = URL.replaceAll("version", purl.get("version").toLowerCase());
+        if(!purl.containsKey("name") || !purl.containsKey("version")) {
+            Debug.log(Debug.LOG_TYPE.WARN, "Can't extract due to name or version missing ");
+            return;
+        }
 
-        this.queryWorkers.add(new QueryWorker(null, url) {
+        String formattedURL = String.format(this.URL,
+            purl.get("name").toLowerCase(),
+            purl.get("version").toLowerCase(),
+            purl.get("name").toLowerCase()
+        );
+
+        QueryWorker qw = new QueryWorker(null, formattedURL) {
             @Override
             public void run() {
+                final String response = getUrlContents(queryURL(url, false));
+
                 try {
-                    Object repsonse = queryURL(url, false).getContent();
-                } catch (IOException e) {
-                    log(Debug.LOG_TYPE.WARN, String.format("Failed to get contents of URL: '%s'", url));
+                    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder builder = factory.newDocumentBuilder();
+                    Document document = builder.parse(new InputSource(new StringReader(response)));
+
+                    // Get the root element of the XML document
+                    Element root = document.getDocumentElement();
+
+                    // Find the 'copyright' element
+                    NodeList copyrightElements = root.getElementsByTagName("copyright");
+
+                    if(copyrightElements.getLength() > 0)
+                        results.put("copyright", copyrightElements.item(0).getTextContent());
+
+                    // Find the 'license' element
+                    NodeList licenseElements = root.getElementsByTagName("license");
+
+                    if(licenseElements.getLength() > 0)
+                        results.put("license", licenseElements.item(0).getTextContent());
+
+                } catch(Exception ex) {
+                    Debug.log(Debug.LOG_TYPE.WARN, "Failed parsing nuget api response to XML for extraction");
                 }
             }
-        });
+        };
 
-        return null;
+        Thread t = new Thread(qw);
+        t.start();
+
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            log(Debug.LOG_TYPE.ERROR, "Thread interrupted while waiting for queryWorker.");
+        }
     }
 }
