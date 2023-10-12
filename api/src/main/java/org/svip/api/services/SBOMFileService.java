@@ -92,9 +92,7 @@ public class SBOMFileService {
         if (deserialized == null)
             throw new DeserializerException("Cannot retrieve SBOM with id " + id + " to deserialize");
 
-        SerializerFactory.Schema originalSchema;
-
-        originalSchema = resolveSchemaByObject(deserialized);
+        SerializerFactory.Schema originalSchema = resolveSchemaByObject(deserialized);
 
         // use core Conversion functionality
         org.svip.sbom.model.interfaces.generics.SBOM Converted =
