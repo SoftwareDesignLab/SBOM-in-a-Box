@@ -17,6 +17,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CDX14Pipeline.java` Class - Implemented copyright fixes to process
 - `SPDX23Pipeline.java` Class - Implemented copyright fixes to TestSPDX23Package 
 
+## [v8.1.5-alpha] - (10/12/2023)
+- Reworked Convert into several new features.
+### Added
+- New `manipulate` package to alter SVIPSBOM data:
+  - `ManipulateController` Class
+  - `ManipulateSVIP` Class
+  - `SchemaManipulationMap` Class
+- New `toSVIP` package to convert SBOMs to SVIPSBOMs:
+  - `CDX14` Class
+  - `SPDX23` Class
+  - `ToSVIP` Interface
+  - `ToSVIPController` Class
+
+### Changed
+- New `toSchema` package to convert SVIPSBOMs into SBOMs:
+  - `ToCDX14` Class
+  - `ToSPDX23` Class
+  - `ToSchema` Interface
+  - `ToSchemaController` Class
+
 ## [v8.1.1-alpha] - (10/06/2023)
 
 ### Added
