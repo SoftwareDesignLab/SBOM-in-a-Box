@@ -1,6 +1,7 @@
 package org.svip.serializers;
 
 
+import org.json.JSONObject;
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
@@ -9,10 +10,10 @@ import org.svip.serializers.serializer.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static org.svip.serializers.SerializerFactory.Format.JSON;
 import static org.svip.serializers.SerializerFactory.Format.TAGVALUE;
-import static org.svip.serializers.SerializerFactory.Format.XML;
 import static org.svip.serializers.SerializerFactory.Schema.*;
 
 /**
@@ -124,8 +125,36 @@ public class SerializerFactory {
      */
     public enum Format {
         JSON,
-        TAGVALUE,
-        XML
+        TAGVALUE;
+
+        /**
+         * Checks if the given string is a valid JSON.
+         *
+         * @param fileContents The file contents to check if it's a valid JSON.
+         * @return true if valid JSON.
+         */
+        public static boolean isValidJSON(String fileContents) {
+            try {
+                new JSONObject(fileContents);
+            } catch (Exception e) {
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         * Checks if the given string is a valid tag-value.
+         *
+         * @param fileContents The file contents to check if it's a valid tag-value.
+         * @return true if valid tag-value.
+         */
+        public static boolean isValidTagValue(String fileContents) {
+            Pattern p = Pattern.compile("^[A-Z][a-z0-9]*(?:[A-Z][a-z0-9]*)*(?:[A-Z]?)$");
+            return fileContents.lines()
+                    .filter(line -> !(line.contains("#") || line.equals("")))
+                    .map(line -> line.split(": ")[0])
+                    .allMatch(line -> p.matcher(line).matches());
+        }
     }
 
     /**
@@ -137,38 +166,24 @@ public class SerializerFactory {
      */
     public static Schema resolveSchema(String fileContents) {
         // TODO this takes a long time to search large files
-        if (fileContents.contains("CycloneDX")) return CDX14;
-        else if (fileContents.contains("SPDX")) return SPDX23;
+        if (fileContents.contains("bom-ref")) return CDX14;
+        else if (fileContents.contains("SPDXID")) return SPDX23;
         else if (fileContents.contains("rootComponent")) return SVIP; // Field unique to SVIP SBOM
         else return null;
     }
 
-    public static Schema resolveSchemaByFileExt(String fileName) {
-        if (fileName.contains(".svip")) return SVIP;
-        if (fileName.contains(".spdx")) return SPDX23;
-        else if (fileName.endsWith(".json") || fileName.endsWith(".xml")) return CDX14;
-        else return null;
-    }
-
     /**
-     * TODO find an accurate way to determine format
+     * TODO add support for XML
      * Resolves the file format of the contents of a file.
      *
      * @param fileContents The file contents to resolve the format of.
      * @return The format, or null if no format could be resolved.
      */
     public static Format resolveFormat(String fileContents) {
-        if (fileContents.contains("DocumentName:") || fileContents.contains("DocumentNamespace:"))
+        if (Format.isValidTagValue(fileContents))
             return TAGVALUE;
-        else if (fileContents.contains("{") && fileContents.contains("}"))
+        else if (Format.isValidJSON(fileContents))
             return JSON;
-        else return null;
-    }
-
-    public static Format resolveFormatByFileExt(String fileName) {
-        if (fileName.endsWith(".json")) return JSON;
-        if (fileName.endsWith(".xml")) return XML;
-        else if (fileName.contains(".spdx")) return TAGVALUE;
         else return null;
     }
 
