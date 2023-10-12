@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `ToSPDX23` Class
   - `ToSchema` Interface
   - `ToSchemaController` Class
+- 'Conversion' Class controller has been reworked.
 
 ## [v8.1.1-alpha] - (10/06/2023)
 
