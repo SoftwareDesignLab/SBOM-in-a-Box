@@ -1,5 +1,7 @@
 package org.svip.repair.extraction;
 
+import org.svip.sbom.model.uids.PURL;
+
 import java.util.HashMap;
 
 
@@ -12,14 +14,14 @@ import java.util.HashMap;
  */
 public abstract class Extraction {
 
-    protected HashMap<String, String> purl;
+    protected PURL purl;
     protected HashMap<String, String> results;
 
     /**
      * Creates a new object with the purl to use for extraction
      * @param purl the purl to be used
      */
-    protected Extraction(HashMap<String, String> purl) {
+    protected Extraction(PURL purl) {
         this.purl = purl;
         this.results = new HashMap<String, String>();
     }
