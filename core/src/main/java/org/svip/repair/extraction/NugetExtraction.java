@@ -23,7 +23,7 @@ import static org.svip.utils.Debug.log;
  */
 public class NugetExtraction extends Extraction {
 
-    private String URL = "https://api.nuget.org/v3-flatcontainer/%s/%s/%s.nuspec";
+    private static final String URL = "https://api.nuget.org/v3-flatcontainer/%s/%s/%s.nuspec";
 
     protected NugetExtraction(PURL purl) {
         super(purl);
