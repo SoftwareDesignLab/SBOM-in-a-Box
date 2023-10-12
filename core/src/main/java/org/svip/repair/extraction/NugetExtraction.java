@@ -1,6 +1,7 @@
 package org.svip.repair.extraction;
 
 import org.svip.generation.parsers.utils.QueryWorker;
+import org.svip.sbom.model.uids.PURL;
 import org.svip.utils.Debug;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -24,22 +25,22 @@ public class NugetExtraction extends Extraction {
 
     private String URL = "https://api.nuget.org/v3-flatcontainer/%s/%s/%s.nuspec";
 
-    protected NugetExtraction(HashMap<String, String> purl) {
+    protected NugetExtraction(PURL purl) {
         super(purl);
     }
 
     @Override
     public void extract() {
 
-        if(!purl.containsKey("name") || !purl.containsKey("version")) {
+        if(purl.getName() == "" || purl.getVersion() == "") {
             Debug.log(Debug.LOG_TYPE.WARN, "Can't extract due to name or version missing ");
             return;
         }
 
         String formattedURL = String.format(this.URL,
-            purl.get("name").toLowerCase(),
-            purl.get("version").toLowerCase(),
-            purl.get("name").toLowerCase()
+            purl.getName().toLowerCase(),
+            purl.getVersion().toLowerCase(),
+            purl.getName().toLowerCase()
         );
 
         QueryWorker qw = new QueryWorker(null, formattedURL) {
