@@ -3,6 +3,26 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v8.0.5-alpha] - (10/12/2023) 
+- Reworked Convert into several new features.
+### Added
+- New `manipulate` package to alter SVIPSBOM data:
+  - `ManipulateController` Class
+  - `ManipulateSVIP` Class
+  - `SchemaManipulationMap` Class
+- New `toSVIP` package to convert SBOMs to SVIPSBOMs:
+  - `CDX14` Class
+  - `SPDX23` Class
+  - `ToSVIP` Interface
+  - `ToSVIPController` Class
+
+### Changed
+- New `toSchema` package to convert SVIPSBOMs into SBOMs:
+  - `ToCDX14` Class
+  - `ToSPDX23` Class
+  - `ToSchema` Interface
+  - `ToSchemaController` Class
+
 ## [v8.0.4-alpha] - (9/22/2023)
 ### Changed
 - Changed the port from 5000 to 50001 due to Airplay being on port 5000 for Macs
