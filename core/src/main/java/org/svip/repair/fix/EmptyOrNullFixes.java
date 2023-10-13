@@ -2,6 +2,8 @@ package org.svip.repair.fix;
 
 import org.svip.generation.parsers.utils.QueryWorker;
 import org.svip.metrics.resultfactory.Result;
+import org.svip.repair.extraction.Extraction;
+import org.svip.repair.extraction.NugetExtraction;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
@@ -19,10 +21,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Fixes class to generate suggested repairs for NULL attributes of a component
@@ -58,7 +58,7 @@ public class EmptyOrNullFixes implements Fixes {
         else if (result.getDetails().contains("Author"))
             return authorNullFix(sbom, repairSubType);
         else if (result.getDetails().contains("Copyright"))
-            return copyrightNullFix();
+            return copyrightNullFix(sbom, repairSubType);
 
         return null;
 
@@ -158,10 +158,68 @@ public class EmptyOrNullFixes implements Fixes {
     }
 
     /**
-     * @return empty string in place for null copyright
+     * Fixes empty copyright
+     * @param sbom The SBOM to fix
+     * @param componentName The component that is missing copyright
+     * @return a list of potential fixes or null
      */
-    private List<Fix<?>> copyrightNullFix() {
-        return emptyString;
+    private List<Fix<?>> copyrightNullFix(SBOM sbom, String componentName) throws Exception {
+        Stream<Component> filtered = sbom.getComponents().stream().filter(
+                comp -> comp.getName().toLowerCase().equals(componentName.toLowerCase())
+        );
+
+        if(filtered.count() == 0)
+            return null;
+
+        Component comp = filtered.toList().get(0);
+        Set<String> purls = null;
+
+        if(comp instanceof SPDX23Package spdx23Package) {
+            purls = spdx23Package.getPURLs();
+        }
+
+        else if(comp instanceof CDX14Package cdx14Package) {
+            purls = cdx14Package.getPURLs();
+        }
+
+        if(purls.isEmpty())
+            return null;
+
+        List<Fix<?>> fixes = new ArrayList<>();
+
+        for(String purlString : purls) {
+
+            PURL p = new PURL(purlString);
+
+            List<String> namespaces = p.getNamespace();
+
+            if(namespaces.size() > 0) {
+
+                for(String namespace : namespaces) {
+                    Extraction ex = null;
+
+                    switch(namespace) {
+                        case "nuget":
+                            ex = new NugetExtraction(p);
+                            break;
+                    }
+
+                    if(ex != null) {
+                        ex.extract();
+
+                        if(ex.getCopyright() != null) {
+                            fixes.add(new Fix<>("null", ex.getCopyright()));
+                        }
+                    }
+                }
+            }
+        }
+
+        if(fixes.size() > 0)
+            return fixes;
+
+        return null;
+
     }
 
     /**
@@ -194,7 +252,6 @@ public class EmptyOrNullFixes implements Fixes {
 
             // if this is an SPDX 2.3 file object
             else if (component instanceof SPDX23FileObject spdx23FileObject) {
-
                 // And the repair subtype is the same as the file name
                 if (spdx23FileObject.getName().toLowerCase().contains(repairSubType.toLowerCase())
                         || repairSubType.toLowerCase().contains(spdx23FileObject.getName().toLowerCase())) {
@@ -226,7 +283,6 @@ public class EmptyOrNullFixes implements Fixes {
             }
             // Else, if the component is a CycloneDX 1.4 Package
             else if (component instanceof CDX14Package cdx14Package) {
-
                 // And if the name is the same as the repair sub type
                 if (cdx14Package.getName().toLowerCase().contains(repairSubType.toLowerCase())
                         || repairSubType.toLowerCase().contains(cdx14Package.getName().toLowerCase())) {
