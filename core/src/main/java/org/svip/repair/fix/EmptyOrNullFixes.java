@@ -164,14 +164,14 @@ public class EmptyOrNullFixes implements Fixes {
      * @return a list of potential fixes or null
      */
     private List<Fix<?>> copyrightNullFix(SBOM sbom, String componentName) throws Exception {
-        List<Component> filtered = sbom.getComponents().stream().filter(
+        Stream<Component> filtered = sbom.getComponents().stream().filter(
                 comp -> comp.getName().toLowerCase().equals(componentName.toLowerCase())
-        ).toList();
+        );
 
-        if(filtered.size() == 0)
+        if(filtered.count() == 0)
             return null;
 
-        Component comp = filtered.get(0);
+        Component comp = filtered.toList().get(0);
         Set<String> purls = null;
 
         if(comp instanceof SPDX23Package spdx23Package) {
@@ -191,24 +191,26 @@ public class EmptyOrNullFixes implements Fixes {
 
             PURL p = new PURL(purlString);
 
-            String type = p.getType();
+            List<String> namespaces = p.getNamespace();
 
-            if(type != null) {
-                Extraction ex = null;
+            if(namespaces.size() > 0) {
 
-                switch(type) {
-                    case "nuget":
-                        ex = new NugetExtraction(p);
-                        break;
-                }
+                for(String namespace : namespaces) {
+                    Extraction ex = null;
 
-                if(ex == null)
-                    continue;
+                    switch(namespace) {
+                        case "nuget":
+                            ex = new NugetExtraction(p);
+                            break;
+                    }
 
-                ex.extract();
+                    if(ex != null) {
+                        ex.extract();
 
-                if(ex.getCopyright() != null) {
-                    fixes.add(new Fix<>("null", ex.getCopyright()));
+                        if(ex.getCopyright() != null) {
+                            fixes.add(new Fix<>("null", ex.getCopyright()));
+                        }
+                    }
                 }
             }
         }
