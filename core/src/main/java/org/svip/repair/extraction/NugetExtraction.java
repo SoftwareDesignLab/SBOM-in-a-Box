@@ -25,7 +25,7 @@ public class NugetExtraction extends Extraction {
 
     private static final String URL = "https://api.nuget.org/v3-flatcontainer/%s/%s/%s.nuspec";
 
-    protected NugetExtraction(PURL purl) {
+    public NugetExtraction(PURL purl) {
         super(purl);
     }
 
