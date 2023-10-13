@@ -25,6 +25,7 @@ services:
     container_name: svip-mysql
     platform: linux/amd64
     image: mysql:5
+    command: --max_allowed_packet=32505856 # Set max_allowed_packet to 256M
     restart: unless-stopped
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
