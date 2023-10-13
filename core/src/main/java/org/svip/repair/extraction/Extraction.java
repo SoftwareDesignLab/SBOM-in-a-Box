@@ -21,7 +21,7 @@ public abstract class Extraction {
      * Creates a new object with the purl to use for extraction
      * @param purl the purl to be used
      */
-    protected Extraction(PURL purl) {
+    public Extraction(PURL purl) {
         this.purl = purl;
         this.results = new HashMap<String, String>();
     }
