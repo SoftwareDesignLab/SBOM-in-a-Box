@@ -166,7 +166,7 @@ public class SPDX23Pipeline implements SPDX23Tests {
         //test component copyright
         String copyright = component.getCopyright();
 
-        if(copyright != null && copyright.equals(NOASSERTION_STRING))
+        if(copyright.equals(NOASSERTION_STRING))
             copyright = "";
 
         componentResults.add(hasDownloadLocation("Copyright",
