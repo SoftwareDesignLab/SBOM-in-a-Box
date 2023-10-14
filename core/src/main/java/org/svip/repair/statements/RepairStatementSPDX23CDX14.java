@@ -10,6 +10,7 @@ import org.svip.repair.fix.*;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.utils.Debug;
 
 import java.util.ArrayList;
 import java.util.HashMap;

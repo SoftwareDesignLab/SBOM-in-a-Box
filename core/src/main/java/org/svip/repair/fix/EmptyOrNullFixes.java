@@ -164,14 +164,14 @@ public class EmptyOrNullFixes implements Fixes {
      * @return a list of potential fixes or null
      */
     private List<Fix<?>> copyrightNullFix(SBOM sbom, String componentName) throws Exception {
-        Stream<Component> filtered = sbom.getComponents().stream().filter(
+        List<Component> filtered = sbom.getComponents().stream().filter(
                 comp -> comp.getName().toLowerCase().equals(componentName.toLowerCase())
-        );
+        ).toList();
 
-        if(filtered.count() == 0)
+        if(filtered.size() == 0)
             return null;
 
-        Component comp = filtered.toList().get(0);
+        Component comp = filtered.get(0);
         Set<String> purls = null;
 
         if(comp instanceof SPDX23Package spdx23Package) {
@@ -191,26 +191,24 @@ public class EmptyOrNullFixes implements Fixes {
 
             PURL p = new PURL(purlString);
 
-            List<String> namespaces = p.getNamespace();
+            String type = p.getType();
 
-            if(namespaces.size() > 0) {
+            if(type != null) {
+                Extraction ex = null;
 
-                for(String namespace : namespaces) {
-                    Extraction ex = null;
+                switch(type) {
+                    case "nuget":
+                        ex = new NugetExtraction(p);
+                        break;
+                }
 
-                    switch(namespace) {
-                        case "nuget":
-                            ex = new NugetExtraction(p);
-                            break;
-                    }
+                if(ex == null)
+                    continue;
 
-                    if(ex != null) {
-                        ex.extract();
+                ex.extract();
 
-                        if(ex.getCopyright() != null) {
-                            fixes.add(new Fix<>("null", ex.getCopyright()));
-                        }
-                    }
+                if(ex.getCopyright() != null) {
+                    fixes.add(new Fix<>("null", ex.getCopyright()));
                 }
             }
         }
