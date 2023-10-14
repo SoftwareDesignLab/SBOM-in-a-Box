@@ -1,0 +1,22 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4",
+  "serialNumber": "urn:uuid:6d9c917c-582b-4e66-8595-493f1d3ca399",
+  "version": "1",
+  "components": [
+    {
+      "type": "library",
+      "name": "System.Text.Json",
+      "version": "8.0.0-rc.2.23479.6",
+      "purl": "pkg:nuget/System.Text.Json@8.0.0-rc.2.23479.6",
+      "scope": "required",
+      "licenses": [
+        {
+          "id": "MIT",
+          "name": "MIT License",
+          "url": "https://opensource.org/licenses/MIT"
+        }
+      ]
+    }
+  ]
+}
