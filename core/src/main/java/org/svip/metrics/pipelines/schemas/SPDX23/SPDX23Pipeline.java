@@ -27,6 +27,8 @@ import java.util.*;
  */
 public class SPDX23Pipeline implements SPDX23Tests {
 
+    private static final String NOASSERTION_STRING = "NOASSERTION";
+
     /**
      * Process the tests for the SBOM
      *
@@ -160,6 +162,15 @@ public class SPDX23Pipeline implements SPDX23Tests {
                 componentResults.addAll(hashTest.test(hashAlgo, hashValue));
             }
         }
+
+        //test component copyright
+        String copyright = component.getCopyright();
+
+        if(copyright.equals(NOASSERTION_STRING))
+            copyright = "";
+
+        componentResults.add(hasDownloadLocation("Copyright",
+            copyright, component.getName()));
 
         return componentResults;
     }
