@@ -149,7 +149,9 @@ public class SerializerFactory {
          * @return true if valid tag-value.
          */
         public static boolean isValidTagValue(String fileContents) {
+            // Matches PascalCase and all capital letters
             Pattern p = Pattern.compile("^[A-Z][a-z0-9]*(?:[A-Z][a-z0-9]*)*(?:[A-Z]?)$");
+
             return fileContents.lines()
                     .filter(line -> !(line.contains("#") || line.equals("")))
                     .map(line -> line.split(": ")[0])
@@ -165,7 +167,6 @@ public class SerializerFactory {
      * @return The schema, or null if no schema could be resolved.
      */
     public static Schema resolveSchema(String fileContents) {
-        // TODO this takes a long time to search large files
         if (fileContents.contains("bom-ref")) return CDX14;
         else if (fileContents.contains("SPDXID")) return SPDX23;
         else if (fileContents.contains("rootComponent")) return SVIP; // Field unique to SVIP SBOM
