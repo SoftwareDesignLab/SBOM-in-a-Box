@@ -153,7 +153,7 @@ public class SerializerFactory {
             Pattern p = Pattern.compile("^[A-Z][a-z0-9]*(?:[A-Z][a-z0-9]*)*(?:[A-Z]?)$");
 
             return fileContents.lines()
-                    .filter(line -> !(line.contains("#") || line.equals("")))
+                    .filter(line -> !(line.contains("#") || line.contains("</text>") || line.equals("")))
                     .map(line -> line.split(": ")[0])
                     .allMatch(line -> p.matcher(line).matches());
         }
@@ -181,11 +181,18 @@ public class SerializerFactory {
      * @return The format, or null if no format could be resolved.
      */
     public static Format resolveFormat(String fileContents) {
+
         if (Format.isValidTagValue(fileContents))
             return TAGVALUE;
         else if (Format.isValidJSON(fileContents))
             return JSON;
         else return null;
+        /*
+        if (fileContents.contains("DocumentName:") || fileContents.contains("DocumentNamespace:"))
+            return TAGVALUE;
+        else if (Format.isValidJSON(fileContents))
+            return JSON;
+        else return null;*/
     }
 
     /**

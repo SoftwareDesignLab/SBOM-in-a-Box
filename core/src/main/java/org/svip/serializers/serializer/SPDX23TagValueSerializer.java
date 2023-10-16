@@ -38,6 +38,7 @@ public class SPDX23TagValueSerializer implements Serializer {
 
     private String buildTagValue(String tag, String value) {
         if (tag == null || value == null) return "";
+        value = value.replace("\n", " ");
         return tag + ": " + value + "\n";
     }
 
