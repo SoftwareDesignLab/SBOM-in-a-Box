@@ -40,14 +40,14 @@ public class HashFixes implements Fixes<Hash> {
 
         // Suggest deleting the hash as a fix if hash does not match any algorithm
         if (validAlgorithms.isEmpty()) {
-            return Collections.singletonList(new Fix<>(hash, null));
+            return Collections.singletonList(new Fix<>(FixType.METADATA_HASH, hash, null));
         }
 
         // Return the list of fixes of possible matching hash algorithms
         List<Fix<Hash>> fixes = new ArrayList<>();
         for (Algorithm validAlgorithm : validAlgorithms) {
             Hash fixedHash = new Hash(validAlgorithm, value);
-            fixes.add(new Fix<>(hash, fixedHash));
+            fixes.add(new Fix<>(FixType.METADATA_HASH, hash, fixedHash));
         }
         return fixes;
 
