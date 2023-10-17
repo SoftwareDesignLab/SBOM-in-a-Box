@@ -3,6 +3,9 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v8.0.5-alpha] - (10/17/2023)
+- Changed the max packet size for MySQL to 256M
+
 ## [v8.0.4-alpha] - (9/22/2023)
 ### Changed
 - Changed the port from 5000 to 50001 due to Airplay being on port 5000 for Macs
