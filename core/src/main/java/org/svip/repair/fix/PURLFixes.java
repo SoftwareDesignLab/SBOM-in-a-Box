@@ -139,7 +139,7 @@ public class PURLFixes implements Fixes {
         try {
 
             // Then, try to return the fixes
-            return Collections.singletonList(new Fix<>("", newPurl));
+            return Collections.singletonList(new Fix<>(FixType.COMPONENT_PURL, "", newPurl));
 
         } catch (Exception e) {
 
