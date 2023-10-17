@@ -78,6 +78,7 @@ public class CPEFixes implements Fixes {
         try {
             // Create a new CPE Object
             CPE cpeObject = new CPE(cpe);
+            CPE newCPE = null;
 
             // Find which information is invalid
             switch (result.getMessage().split(" ")[1]) {
@@ -85,24 +86,25 @@ public class CPEFixes implements Fixes {
                 // If value is invalid, add a CPE fix
                 case "Value" -> {
                     if (cpeObject.getProduct().contains(actual) || cpeObject.getProduct().contains(expected) || cpeObject.getProduct().isEmpty() && actual.contains("null"))
-                        return List.of(new Fix<>(new CPE(cpe), new CPE(cpeObject.getVendor(), expected,
-                                cpeObject.getVersion()).toString()));
+                        newCPE = new CPE(cpeObject.getVendor(), expected, cpeObject.getVersion());
                 }
 
                 // If version is invalid, add a CPE fix
                 case "Version" -> {
                     if (cpeObject.getVersion().contains(actual) || cpeObject.getVersion().contains(expected) || cpeObject.getVersion().isEmpty() && actual.contains("null"))
-                        return List.of(new Fix<>(new CPE(cpe), new CPE(cpeObject.getVendor(), cpeObject.getProduct(),
-                                expected).toString()));
+                        newCPE = new CPE(cpeObject.getVendor(), cpeObject.getProduct(), expected);
                 }
 
                 // If vendor is invalid, add a CPE fix
                 case "Vendor" -> {
                     if (cpeObject.getVendor().contains(actual) || cpeObject.getVendor().contains(expected) || cpeObject.getVendor().isEmpty() && actual.contains("null"))
-                        return List.of(new Fix<>(new CPE(cpe), new CPE(expected, cpeObject.getProduct(),
-                                cpeObject.getVersion()).toString()));
+                        newCPE = new CPE(expected, cpeObject.getProduct(), cpeObject.getVersion());
                 }
             }
+
+            if(newCPE != null && !cpeObject.toString().equals(newCPE.toString()))
+                return List.of(new Fix<>(FixType.COMPONENT_CPE, cpeObject, newCPE));
+
         } catch (Exception e) {
             // If all goes wrong, return null
             return null;

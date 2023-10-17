@@ -55,6 +55,9 @@ public class RepairStatementSPDX23CDX14 implements RepairStatement {
         // get the Quality Report's results
         Map<String, Map<String, List<Result>>> results = report.getResults();
 
+        //remove duplicate entry under serial number
+        results.remove(sbom.getUID());
+
         // For each result
         for (String repairType : results.keySet()) {
 
@@ -90,12 +93,15 @@ public class RepairStatementSPDX23CDX14 implements RepairStatement {
                 }
 
                 // Add the repairs for this specific repair type
-                repairsForThisRepairType.put(repairSubType, fixArrayList);
+                if(!fixArrayList.isEmpty())
+                    repairsForThisRepairType.put(repairSubType, fixArrayList);
 
             }
 
+
             // Add the repairs to the main repair list
-            repairs.put(repairType, repairsForThisRepairType);
+            if(!repairsForThisRepairType.isEmpty())
+                repairs.put(repairType, repairsForThisRepairType);
 
         }
 
