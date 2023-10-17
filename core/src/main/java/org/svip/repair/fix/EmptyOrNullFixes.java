@@ -31,7 +31,6 @@ public class EmptyOrNullFixes implements Fixes {
 
     // threads to query potential purls from Googl
     protected final ArrayList<QueryWorker> queryWorkers;
-    private final List<Fix<?>> emptyString = Collections.singletonList(new Fix<>("null", ""));
 
     public EmptyOrNullFixes(ArrayList<QueryWorker> queryWorkers) {
         this.queryWorkers = queryWorkers;
@@ -71,14 +70,14 @@ public class EmptyOrNullFixes implements Fixes {
     private List<Fix<?>> bomVersionFix(SBOM sbom) {
 
         if (sbom instanceof SPDX23SBOM)
-            return Collections.singletonList(new Fix<>("", "2.3"));
+            return Collections.singletonList(new Fix<>(FixType.METADATA_BOM_VERSION, "", "2.3"));
         else if (sbom instanceof CDX14SBOM)
-            return Collections.singletonList(new Fix<>("", "1.4"));
+            return Collections.singletonList(new Fix<>(FixType.METADATA_BOM_VERSION, "", "1.4"));
         else if (sbom instanceof SVIPSBOM)
-            return Collections.singletonList(new Fix<>("", "1.04a"));
+            return Collections.singletonList(new Fix<>(FixType.METADATA_BOM_VERSION, "", "1.04a"));
         else
-            return new ArrayList<>(List.of(new Fix<>("", "2.3"), new Fix<>("", "1.4"),
-                    new Fix<>("", "1.04a"))); // todo check 1.04a is current SVIP bomVersion
+            return new ArrayList<>(List.of(new Fix<>(FixType.METADATA_BOM_VERSION, "", "2.3"), new Fix<>(FixType.METADATA_BOM_VERSION, "", "1.4"),
+                    new Fix<>(FixType.METADATA_BOM_VERSION, "", "1.04a"))); // todo check 1.04a is current SVIP bomVersion
 
     }
 
@@ -92,9 +91,9 @@ public class EmptyOrNullFixes implements Fixes {
 
         // Create a new list of fixes and add a fix for the bom ref using the hex
         List<Fix<?>> result = new ArrayList<>();
-        result.add(emptyString.get(0));
-        result.add(new Fix<>(null, subTypeHex)); // hexadecimal hash of subtype of component
-        result.add(new Fix<>(null, "pkg:/" + subType + "-" + subTypeHex));
+        result.add(new Fix<>(FixType.METADATA_BOM_REF, null, ""));
+        result.add(new Fix<>(FixType.METADATA_BOM_REF, null, subTypeHex)); // hexadecimal hash of subtype of component
+        result.add(new Fix<>(FixType.METADATA_BOM_REF, null, "pkg:/" + subType + "-" + subTypeHex));
 
         // Return the fix
         return result;
@@ -122,7 +121,7 @@ public class EmptyOrNullFixes implements Fixes {
         dateAndTime += "T" + formatterLocalTime.format(localTime) + localTime.atOffset(ZoneOffset.UTC);
 
         // Add the new date and time as a fix
-        return Collections.singletonList(new Fix<>("", "\"created\" : .\"" + dateAndTime + "\""));
+        return Collections.singletonList(new Fix<>(FixType.METADATA_CREATION_DATA, "", "\"created\" : .\"" + dateAndTime + "\""));
 
     }
 
@@ -133,28 +132,28 @@ public class EmptyOrNullFixes implements Fixes {
      * @return fix for SPDXID
      */
     private List<Fix<?>> SPDXIDFix(Result result) {
-        return Collections.singletonList(new Fix<>(result.getMessage(), "SPDXRef-DOCUMENT"));
+        return Collections.singletonList(new Fix<>(FixType.METADATA_SPDXID, result.getMessage(), "SPDXRef-DOCUMENT"));
     }
 
     /**
      * @return empty string in place for null comment
      */
     private List<Fix<?>> commentNullFix() {
-        return Collections.singletonList(new Fix<>("null", ""));
+        return Collections.singletonList(new Fix<>(FixType.METADATA_COMMENT, "null", ""));
     }
 
     /**
      * @return empty string in place for null attribution text
      */
     private List<Fix<?>> attributionTextNullFix() {
-        return emptyString;
+        return Collections.singletonList(new Fix<>(FixType.COMPONENT_ATTRIBUTION_TEXT, null, ""));
     }
 
     /**
      * @return empty string in place for null file notice
      */
     private List<Fix<?>> fileNoticeNullFix() {
-        return emptyString;
+        return Collections.singletonList(new Fix<>(FixType.COMPONENT_FILE_NOTICE, null, ""));
     }
 
     /**
@@ -182,7 +181,7 @@ public class EmptyOrNullFixes implements Fixes {
             purls = cdx14Package.getPURLs();
         }
 
-        if(purls.isEmpty())
+        if(purls == null || purls.isEmpty())
             return null;
 
         List<Fix<?>> fixes = new ArrayList<>();
@@ -208,7 +207,7 @@ public class EmptyOrNullFixes implements Fixes {
                 ex.extract();
 
                 if(ex.getCopyright() != null) {
-                    fixes.add(new Fix<>("null", ex.getCopyright()));
+                    fixes.add(new Fix<>(FixType.COMPONENT_COPYRIGHT, "null", ex.getCopyright()));
                 }
             }
         }
@@ -266,7 +265,7 @@ public class EmptyOrNullFixes implements Fixes {
                         // Then iterate through the potential authors and make a fix for each
                         for (Contact author : potentialAuthors
                         ) {
-                            fixes.add(new Fix<>("null", author));
+                            fixes.add(new Fix<>(FixType.COMPONENT_AUTHOR, "null", author));
                         }
 
                         // Reutnr the fixes
@@ -386,7 +385,7 @@ public class EmptyOrNullFixes implements Fixes {
                             String[] split2 = split1[1].split("\"");
 
                             // Then add that email as a potential fix
-                            fixList.add(new Fix<>("null", split2[0] + " (POTENTIAL AUTHOR/UNCONFIRMED)"));
+                            fixList.add(new Fix<>(FixType.COMPONENT_AUTHOR, "null", split2[0] + " (POTENTIAL AUTHOR/UNCONFIRMED)"));
 
                         }
 
