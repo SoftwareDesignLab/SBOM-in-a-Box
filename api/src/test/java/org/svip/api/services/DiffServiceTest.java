@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.svip.api.entities.SBOM;
 import org.svip.api.repository.ComparisonFileRepository;
 import org.svip.api.repository.ConflictFileRepository;
-import org.svip.api.repository.SBOMRepository;
+import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
 
 import java.io.IOException;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.*;
 public class DiffServiceTest {
 
     @Mock
-    private SBOMRepository sbomRepository;      // Mock repo
+    private SBOMFileRepository sbomFileRepository;      // Mock repo
     @Mock
     private ComparisonFileRepository comparisonFileRepository;
 
@@ -62,7 +62,7 @@ public class DiffServiceTest {
 
             // When
             SBOM spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
-            when(this.sbomRepository.findById(0L)).thenReturn(Optional.of(spdx23json));
+            when(this.sbomFileRepository.findById(0L)).thenReturn(Optional.of(spdx23json));
             String diffJSON = this.diffService.generateDiffReportAsJSON(sbomFileService, 0L, ids);
 
             // Then
@@ -85,8 +85,8 @@ public class DiffServiceTest {
             ids[1] = 1L;
 
             // When
-            when(this.sbomRepository.findById(0L)).thenReturn(Optional.of(spdx23json));
-            when(this.sbomRepository.findById(1L)).thenReturn(Optional.of(cdx14json));
+            when(this.sbomFileRepository.findById(0L)).thenReturn(Optional.of(spdx23json));
+            when(this.sbomFileRepository.findById(1L)).thenReturn(Optional.of(cdx14json));
             String diffJSON = this.diffService.generateDiffReportAsJSON(sbomFileService, 0L, ids);
             assertNotNull(diffJSON);
         } catch (Exception e){

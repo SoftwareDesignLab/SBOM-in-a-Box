@@ -5,7 +5,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.svip.api.entities.SBOM;
-import org.svip.api.repository.SBOMRepository;
+import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.conversion.Conversion;
 import org.svip.conversion.ConversionException;
@@ -40,15 +40,15 @@ import static org.svip.api.controller.SBOMController.LOGGER;
  **/
 @Service
 public class SBOMFileService {
-    private final SBOMRepository sbomRepository;
+    private final SBOMFileRepository sbomFileRepository;
 
     /**
      * Create new Service for a target repository
      *
-     * @param sbomRepository SBOM repository to access
+     * @param sbomFileRepository SBOM repository to access
      */
-    public SBOMFileService(SBOMRepository sbomRepository) {
-        this.sbomRepository = sbomRepository;
+    public SBOMFileService(SBOMFileRepository sbomFileRepository) {
+        this.sbomFileRepository = sbomFileRepository;
     }
 
 
@@ -61,7 +61,7 @@ public class SBOMFileService {
      */
     public SBOM upload(SBOM sbom) throws Exception {
         try {
-            return this.sbomRepository.save(sbom);
+            return this.sbomFileRepository.save(sbom);
         } catch (Exception e) {
             // todo custom exception instead of generic
             throw new Exception("Failed to upload to Database: " + e.getMessage());
@@ -125,7 +125,7 @@ public class SBOMFileService {
             return id;
         }
 
-        this.sbomRepository.save(converted);
+        this.sbomFileRepository.save(converted);
         return converted.getId();
 
     }
@@ -206,7 +206,7 @@ public class SBOMFileService {
         } catch (JsonProcessingException e) {
             throw new Exception("Error: " + e.getMessage());
         }
-        this.sbomRepository.save(mergedSBOMFile);
+        this.sbomFileRepository.save(mergedSBOMFile);
         return mergedSBOMFile.getId();
     }
 
@@ -219,7 +219,7 @@ public class SBOMFileService {
     public SBOM getSBOMFile(Long id) {
         // Retrieve SBOM File and check that it exists
 
-        Optional<SBOM> sbomFile = this.sbomRepository.findById(id);
+        Optional<SBOM> sbomFile = this.sbomFileRepository.findById(id);
         return sbomFile.orElse(null);
 
     }
@@ -233,7 +233,7 @@ public class SBOMFileService {
         List<Long> sbomIDs = new ArrayList<>();
 
         // Get all sboms and add their ID to the ID list
-        this.sbomRepository.findAll().forEach(sbom -> sbomIDs.add(sbom.getId()));
+        this.sbomFileRepository.findAll().forEach(sbom -> sbomIDs.add(sbom.getId()));
 
         // convert to long array
         return sbomIDs.toArray(new Long[0]);
@@ -249,7 +249,7 @@ public class SBOMFileService {
     public Long deleteSBOMFile(SBOM sbomFile) {
 
         // Delete from repository
-        this.sbomRepository.delete(sbomFile);
+        this.sbomFileRepository.delete(sbomFile);
 
         // return confirmation id
         return sbomFile.getId();
@@ -275,7 +275,7 @@ public class SBOMFileService {
                 .setSchema(patch.getSchema())
                 .setFileType(patch.getFileType());
 
-        this.sbomRepository.save(sbomFile);
+        this.sbomFileRepository.save(sbomFile);
 
         return sbomFile.getId();
     }
@@ -402,7 +402,7 @@ public class SBOMFileService {
             return id;
         }
 
-        this.sbomRepository.save(sbomFile);
+        this.sbomFileRepository.save(sbomFile);
         return sbomFile.getId();
 
     }
