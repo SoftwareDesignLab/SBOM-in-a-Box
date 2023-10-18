@@ -46,6 +46,11 @@ public interface Component {
     String getCopyright();
 
     /**
+     * @return Version of the component
+     */
+    String getVersion();
+
+    /**
      * @return Get hashes
      */
     Map<String, String> getHashes();
@@ -57,5 +62,4 @@ public interface Component {
      * @return List of conflicts
      */
     List<Conflict> compare(Component other);
-
 }
