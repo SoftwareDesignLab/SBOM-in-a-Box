@@ -3,6 +3,7 @@ package org.svip.sbom.model.objects.SPDX23;
 import org.svip.compare.conflicts.Conflict;
 import org.svip.compare.conflicts.ConflictFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.shared.util.LicenseCollection;
@@ -10,6 +11,7 @@ import org.svip.sbom.model.shared.util.LicenseCollection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.svip.compare.conflicts.MismatchType.*;
 
@@ -282,8 +284,13 @@ public class SPDX23FileObject implements SPDX23File {
     }
 
     @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof SPDX23File spdx23File)) return false;
+        return Objects.equals(this.name, spdx23File.getName());
+    }
+
+    @Override
     public int hashCode() {
-        if (name == null) return super.hashCode();
         return this.name.hashCode();
     }
 }

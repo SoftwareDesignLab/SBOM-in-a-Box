@@ -451,9 +451,15 @@ public class CDX14ComponentObject implements CDX14Package {
     }
 
     @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof SBOMPackage sbomPackage)) return false;
+        return Objects.equals(this.name, sbomPackage.getName())
+                && Objects.equals(this.version, sbomPackage.getVersion());
+    }
+
+    @Override
     public int hashCode() {
-        if (name == null || version == null) return super.hashCode();
-        return this.name.hashCode() + this.version.hashCode();
+        return this.name.hashCode() + (this.version != null ? this.version.hashCode() : 0);
     }
 }
 
