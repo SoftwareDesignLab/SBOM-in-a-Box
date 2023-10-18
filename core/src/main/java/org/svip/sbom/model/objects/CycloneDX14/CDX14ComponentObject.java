@@ -459,6 +459,7 @@ public class CDX14ComponentObject implements CDX14Package {
 
     @Override
     public int hashCode() {
+        if (name == null) return super.hashCode();
         return this.name.hashCode() + (this.version != null ? this.version.hashCode() : 0);
     }
 }

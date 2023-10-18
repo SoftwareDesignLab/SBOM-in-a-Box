@@ -291,6 +291,7 @@ public class SPDX23FileObject implements SPDX23File {
 
     @Override
     public int hashCode() {
+        if (name == null) return super.hashCode();
         return this.name.hashCode();
     }
 }
