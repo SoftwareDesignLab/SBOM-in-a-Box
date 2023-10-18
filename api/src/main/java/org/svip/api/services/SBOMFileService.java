@@ -45,7 +45,7 @@ public class SBOMFileService {
     /**
      * Create new Service for a target repository
      *
-     * @param sbomFileRepository SBOM repository to access
+     * @param sbomFileRepository SBOM file repository to access
      */
     public SBOMFileService(SBOMFileRepository sbomFileRepository) {
         this.sbomFileRepository = sbomFileRepository;
