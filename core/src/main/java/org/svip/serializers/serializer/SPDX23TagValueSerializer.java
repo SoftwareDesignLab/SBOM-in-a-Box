@@ -32,13 +32,11 @@ public class SPDX23TagValueSerializer implements Serializer {
      */
     @Override
     public String writeToString(SVIPSBOM sbom) {
-
         return getDocumentInfo(sbom);
     }
 
     private String buildTagValue(String tag, String value) {
         if (tag == null || value == null) return "";
-        value = value.replace("\n", " ");
         return tag + ": " + value + "\n";
     }
 
@@ -80,9 +78,9 @@ public class SPDX23TagValueSerializer implements Serializer {
 
         String creatorComment = sbom.getCreationData().getCreatorComment();
         String documentComment = sbom.getDocumentComment();
-        if (creatorComment == null || creatorComment.isEmpty())
+        if (creatorComment == null || creatorComment.contains("null") || creatorComment.isEmpty())
             creatorComment = Metadata.SERIALIZED_COMMENT;
-        else if (documentComment == null || documentComment.isEmpty())
+        else if (documentComment == null || documentComment.contains("null") || documentComment.isEmpty())
             documentComment = Metadata.SERIALIZED_COMMENT;
 
         out.append(buildTagValue("CreatorComment", creatorComment));

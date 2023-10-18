@@ -187,12 +187,6 @@ public class SerializerFactory {
         else if (Format.isValidJSON(fileContents))
             return JSON;
         else return null;
-        /*
-        if (fileContents.contains("DocumentName:") || fileContents.contains("DocumentNamespace:"))
-            return TAGVALUE;
-        else if (Format.isValidJSON(fileContents))
-            return JSON;
-        else return null;*/
     }
 
     /**
