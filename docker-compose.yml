@@ -12,16 +12,20 @@ services:
   osi:
     container_name: svip-osi
     image: ubuntu:latest
-    build: core/src/main/java/org/svip/sbomgeneration/osi/scripts
+    build: core/src/main/java/org/svip/generation/osi/docker
+    restart: unless-stopped
+    ports:
+      - ${FLASK_LOCAL_PORT}:${FLASK_DOCKER_PORT}
     volumes:
-      - code:/bound_dir/code
-      - sboms:/bound_dir/sboms
+      - ./core/src/main/java/org/svip/generation/osi/bound_dir/code:/bound_dir/code
+      - ./core/src/main/java/org/svip/generation/osi/bound_dir/sboms:/bound_dir/sboms
 
   # MySQL server
   mysql:
     container_name: svip-mysql
     platform: linux/amd64
     image: mysql:5
+    command: --max_allowed_packet=32505856 # Set max_allowed_packet to 256M
     restart: unless-stopped
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
@@ -50,8 +54,8 @@ services:
     volumes:
       - .m2:/root/.m2
       - /var/run/docker.sock:/var/run/docker.sock
-      - code:/src/main/java/org/svip/sbomgeneration/osi/bound_dir/code
-      - sboms:/src/main/java/org/svip/sbomgeneration/osi/bound_dir/sboms
+      - ./core/src/main/java/org/svip/generation/osi/bound_dir/code:/core/src/main/java/org/svip/generation/osi/bound_dir/code
+      - ./core/src/main/java/org/svip/generation/osi/bound_dir/sboms:/core/src/main/java/org/svip/generation/osi/bound_dir/sboms
     stdin_open: true
     tty: true
     environment: # Define environment variables for spring-boot application.properties
@@ -61,17 +65,18 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_LOCAL_PORT=${MYSQL_LOCAL_PORT}
       - SPRING_DOCKER_PORT=${SPRING_DOCKER_PORT}
+
 volumes:
   db: # Volume to store persistent data from MySQL server
   code: # Volume to link osi bound_dir/code with api bound_dir/code
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/core/src/main/java/org/svip/sbomgeneration/osi/bound_dir/code
+      device: ./core/src/main/java/org/svip/generation/osi/bound_dir/code
       o: bind
   sboms: # Volume to link osi bound_dir/sboms with api bound_dir/sboms
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/core/src/main/java/org/svip/sbomgeneration/osi/bound_dir/sboms
+      device: ./core/src/main/java/org/svip/generation/osi/bound_dir/sboms
       o: bind

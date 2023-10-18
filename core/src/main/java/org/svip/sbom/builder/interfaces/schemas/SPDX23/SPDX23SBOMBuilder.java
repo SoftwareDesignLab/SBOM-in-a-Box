@@ -15,6 +15,7 @@ public interface SPDX23SBOMBuilder extends SBOMBuilder {
 
     /**
      * add a component to the SPDX 2.3 SBOM builder
+     *
      * @param component the SPDX 2.3 component
      * @return a SPDX 2.3 SBOM builder
      */
@@ -22,6 +23,7 @@ public interface SPDX23SBOMBuilder extends SBOMBuilder {
 
     /**
      * add a license list version to the SPDX 2.3 SBOM builder
+     *
      * @param licenseListVersion the SPDX 2.3 license list version
      * @return a SPDX 2.3 SBOM builder
      */

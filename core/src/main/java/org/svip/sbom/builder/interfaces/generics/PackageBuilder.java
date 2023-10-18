@@ -15,6 +15,7 @@ public interface PackageBuilder extends ComponentBuilder {
 
     /**
      * Set the supplier of the component
+     *
      * @param supplier the component's supplier
      * @return an SBOMComponentBuilder
      */
@@ -22,6 +23,7 @@ public interface PackageBuilder extends ComponentBuilder {
 
     /**
      * Set the version of the component
+     *
      * @param version the component's version
      * @return an SBOMComponentBuilder
      */
@@ -29,6 +31,7 @@ public interface PackageBuilder extends ComponentBuilder {
 
     /**
      * Set teh description of the component
+     *
      * @param description the component's description
      * @return an SBOMComponentBuilder
      */
@@ -36,6 +39,7 @@ public interface PackageBuilder extends ComponentBuilder {
 
     /**
      * Add a CPE to the component
+     *
      * @param cpe the cpe string to add
      * @return an SBOMComponentBuilder
      */
@@ -43,6 +47,7 @@ public interface PackageBuilder extends ComponentBuilder {
 
     /**
      * Add a PURL to the component
+     *
      * @param purl the purl string to add
      * @return an SBOMComponentBuilder
      */
@@ -50,6 +55,7 @@ public interface PackageBuilder extends ComponentBuilder {
 
     /**
      * Ann an external reference to the component
+     *
      * @param externalReference the external component to add
      * @return an SBOMComponentBuilder
      */

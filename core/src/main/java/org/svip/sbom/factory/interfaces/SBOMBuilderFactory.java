@@ -12,6 +12,7 @@ import org.svip.sbom.builder.interfaces.generics.SBOMBuilder;
 public interface SBOMBuilderFactory {
     /**
      * Creates an SBOMBuilder from the data in the SBOMBuilderFactory
+     *
      * @return an SBOMBuilder
      */
     SBOMBuilder createBuilder();

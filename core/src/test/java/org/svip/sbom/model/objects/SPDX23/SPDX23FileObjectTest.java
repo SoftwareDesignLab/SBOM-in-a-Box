@@ -10,8 +10,8 @@ import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.sbomanalysis.comparison.conflicts.Conflict;
-import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.MismatchType;
 
 import java.util.List;
 
@@ -107,14 +107,14 @@ public class SPDX23FileObjectTest {
         for(Conflict c : conflicts)
         {
 
-            switch(c.GetMessage())
+            switch(c.getMessage())
             {
                 case "Type doesn't match", "UID doesn't match",
                         "Copyright doesn't match", "File Notice doesn't match"
-                        -> assertEquals(MismatchType.MISC_MISMATCH, c.GetType());
-                case "Name doesn't match" -> assertEquals(MismatchType.NAME_MISMATCH, c.GetType());
-                case "Author doesn't match" -> assertEquals(MismatchType.AUTHOR_MISMATCH, c.GetType());
-                case "License doesn't match" -> assertEquals(MismatchType.LICENSE_MISMATCH, c.GetType());
+                        -> assertEquals(MismatchType.MISC_MISMATCH, c.getType());
+                case "Name doesn't match" -> assertEquals(MismatchType.NAME_MISMATCH, c.getType());
+                case "Author doesn't match" -> assertEquals(MismatchType.AUTHOR_MISMATCH, c.getType());
+                case "License doesn't match" -> assertEquals(MismatchType.LICENSE_MISMATCH, c.getType());
             }
         }
 

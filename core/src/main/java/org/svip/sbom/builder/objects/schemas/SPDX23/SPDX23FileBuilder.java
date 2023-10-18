@@ -16,38 +16,59 @@ import java.util.HashMap;
  */
 public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
 
-    /**File type*/
+    /**
+     * File type
+     */
     private String type;
 
-    /**File uid*/
+    /**
+     * File uid
+     */
     private String uid;
 
-    /**File author*/
+    /**
+     * File author
+     */
     private String author;
 
-    /**File name*/
+    /**
+     * File name
+     */
     private String name;
 
-    /**File licenses*/
+    /**
+     * File licenses
+     */
     private LicenseCollection licenses = new LicenseCollection();
 
-    /**File copyright*/
+    /**
+     * File copyright
+     */
     private String copyright;
 
-    /**File hashes*/
+    /**
+     * File hashes
+     */
     private HashMap<String, String> hashes = new HashMap<>();
 
-    /**File comment*/
+    /**
+     * File comment
+     */
     private String comment;
 
-    /**File attribution text*/
+    /**
+     * File attribution text
+     */
     private String attributionText;
 
-    /**File's file notice*/
+    /**
+     * File's file notice
+     */
     private String fileNotice;
 
     /**
      * Set the component's type
+     *
      * @param type the designated type of component
      * @return an SPDX23FileBuilder
      */
@@ -59,6 +80,7 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
 
     /**
      * Set the component's uid
+     *
      * @param uid the uid of the component
      * @return an SPDX23FileBuilder
      */
@@ -70,6 +92,7 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
 
     /**
      * Set the component's author
+     *
      * @param author the author of the component
      * @return an SPDX23FileBuilder
      */
@@ -81,6 +104,7 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
 
     /**
      * Set the component's name
+     *
      * @param name the name of the component
      * @return an SPDX23FileBuilder
      */
@@ -92,6 +116,7 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
 
     /**
      * Set the component's licenses
+     *
      * @param licenses a collection of licenses
      * @return an SPDX23FileBuilder
      */
@@ -103,6 +128,7 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
 
     /**
      * Set the component's copyright info
+     *
      * @param copyright the copyright info of the component
      * @return an SPDX23FileBuilder
      */
@@ -114,8 +140,9 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
 
     /**
      * Add a hash value to the component
+     *
      * @param algorithm the algorithm of the hash
-     * @param hash the value of the hash
+     * @param hash      the value of the hash
      * @return an SPDX23FileBuilder
      */
     @Override
@@ -126,6 +153,7 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
 
     /**
      * Set the component's comment
+     *
      * @param comment the comment for the component
      * @return an SPDX23FileBuilder
      */
@@ -137,6 +165,7 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
 
     /**
      * Set the component's attribution text
+     *
      * @param attributionText the attribution text of the component
      * @return an SPDX23FileBuilder
      */
@@ -148,6 +177,7 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
 
     /**
      * Set the file's file notice
+     *
      * @param fileNotice the file notice
      * @return an SPDX23FileBuilder
      */
@@ -159,6 +189,7 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
 
     /**
      * Build an SPDX23FileObject
+     *
      * @return an SPDX23FileObject
      */
     @Override
@@ -169,6 +200,7 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
 
     /**
      * Build and flush an SPDX23FileObject
+     *
      * @return a Component
      */
     @Override

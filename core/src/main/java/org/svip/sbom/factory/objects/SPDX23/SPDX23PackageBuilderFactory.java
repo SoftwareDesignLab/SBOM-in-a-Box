@@ -13,6 +13,7 @@ public class SPDX23PackageBuilderFactory implements ComponentBuilderFactory {
 
     /**
      * Create a new Builder
+     *
      * @return a new SPDX23PackageBuilder
      */
     @Override

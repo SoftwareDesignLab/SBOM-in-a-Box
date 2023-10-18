@@ -11,8 +11,8 @@ import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
-import org.svip.sbomanalysis.comparison.conflicts.Conflict;
-import org.svip.sbomanalysis.comparison.conflicts.MismatchType;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.MismatchType;
 
 import java.util.List;
 
@@ -174,16 +174,16 @@ public class SVIPSBOMTest {
         for(Conflict c : conflicts)
         {
 
-            switch(c.GetMessage())
+            switch(c.getMessage())
             {
                 case "Document Comment doesn't match", "UID doesn't match"
-                        -> assertEquals(MismatchType.MISC_MISMATCH, c.GetType());
-                case "Format doesn't match" -> assertEquals(MismatchType.ORIGIN_FORMAT_MISMATCH, c.GetType());
-                case "Name doesn't match" -> assertEquals(MismatchType.NAME_MISMATCH, c.GetType());
-                case "Version doesn't match" -> assertEquals(MismatchType.VERSION_MISMATCH, c.GetType());
-                case "Spec Version doesn't match" -> assertEquals(MismatchType.SCHEMA_VERSION_MISMATCH, c.GetType());
-                case "License doesn't match", "License List Version doesn't match" -> assertEquals(MismatchType.LICENSE_MISMATCH, c.GetType());
-                case "Author doesn't match" -> assertEquals(MismatchType.AUTHOR_MISMATCH, c.GetType());
+                        -> assertEquals(MismatchType.MISC_MISMATCH, c.getType());
+                case "Format doesn't match" -> assertEquals(MismatchType.ORIGIN_FORMAT_MISMATCH, c.getType());
+                case "Name doesn't match" -> assertEquals(MismatchType.NAME_MISMATCH, c.getType());
+                case "Version doesn't match" -> assertEquals(MismatchType.VERSION_MISMATCH, c.getType());
+                case "Spec Version doesn't match" -> assertEquals(MismatchType.SCHEMA_VERSION_MISMATCH, c.getType());
+                case "License doesn't match", "License List Version doesn't match" -> assertEquals(MismatchType.LICENSE_MISMATCH, c.getType());
+                case "Author doesn't match" -> assertEquals(MismatchType.AUTHOR_MISMATCH, c.getType());
             }
         }
 

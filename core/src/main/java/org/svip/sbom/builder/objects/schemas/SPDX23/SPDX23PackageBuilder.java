@@ -20,80 +20,129 @@ import java.util.Set;
  * @author Thomas Roman
  */
 public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
-    /**File type*/
+    /**
+     * File type
+     */
     private String type;
 
-    /**File uid*/
+    /**
+     * File uid
+     */
     private String uid;
 
-    /**File author*/
+    /**
+     * File author
+     */
     private String author;
 
-    /**File name*/
+    /**
+     * File name
+     */
     private String name;
 
-    /**File licenses*/
+    /**
+     * File licenses
+     */
     private LicenseCollection licenses = new LicenseCollection();
 
-    /**File copyright*/
+    /**
+     * File copyright
+     */
     private String copyright;
 
-    /**File hashes*/
+    /**
+     * File hashes
+     */
     private HashMap<String, String> hashes = new HashMap<>();
 
-    /**File comment*/
+    /**
+     * File comment
+     */
     private String comment;
 
-    /**File attribution text*/
+    /**
+     * File attribution text
+     */
     private String attributionText;
 
-    /**Component download location*/
+    /**
+     * Component download location
+     */
     private String downloadLocation;
 
-    /**Component file name*/
+    /**
+     * Component file name
+     */
     private String fileName;
 
-    /**If the component's files were analyzed*/
+    /**
+     * If the component's files were analyzed
+     */
     private Boolean filesAnalyzed;
 
-    /**Component verification code*/
+    /**
+     * Component verification code
+     */
     private String verificationCode;
 
-    /**Component home page*/
+    /**
+     * Component home page
+     */
     private String homePage;
 
-    /**Component source info*/
+    /**
+     * Component source info
+     */
     private String sourceInfo;
 
-    /**Component release date*/
+    /**
+     * Component release date
+     */
     private String releaseDate;
 
-    /**Component built date*/
+    /**
+     * Component built date
+     */
     private String builtDate;
 
-    /**Component valid until date*/
+    /**
+     * Component valid until date
+     */
     private String validUntilDate;
 
-    /**Component supplier*/
+    /**
+     * Component supplier
+     */
     private Organization supplier;
 
-    /**Component version*/
+    /**
+     * Component version
+     */
     private String version;
 
-    /**Component description*/
+    /**
+     * Component description
+     */
     private Description description;
 
-    /**Component CPEs*/
+    /**
+     * Component CPEs
+     */
     private Set<String> cpes = new HashSet<>();
 
-    /**Component PURLs*/
+    /**
+     * Component PURLs
+     */
     private Set<String> purls = new HashSet<>();
 
-    /**Component external references*/
+    /**
+     * Component external references
+     */
     private Set<ExternalReference> externalReferences = new HashSet<>();
 
     /**
      * Set the component's type
+     *
      * @param type the designated type of component
      * @return an SPDX23PackageBuilder
      */
@@ -105,6 +154,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Set the component's uid
+     *
      * @param uid the uid of the component
      * @return an SPDX23PackageBuilder
      */
@@ -116,6 +166,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Set the component's author
+     *
      * @param author the author of the component
      * @return an SPDX23PackageBuilder
      */
@@ -127,6 +178,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Set the component's name
+     *
      * @param name the name of the component
      * @return an SPDX23PackageBuilder
      */
@@ -138,6 +190,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Set the component's licenses
+     *
      * @param licenses a collection of licenses
      * @return an SPDX23PackageBuilder
      */
@@ -149,6 +202,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Set the component's copyright info
+     *
      * @param copyright the copyright info of the component
      * @return an SPDX23PackageBuilder
      */
@@ -160,8 +214,9 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Add a hash value to the component
+     *
      * @param algorithm the algorithm of the hash
-     * @param hash the value of the hash
+     * @param hash      the value of the hash
      * @return an SPDX23PackageBuilder
      */
     @Override
@@ -172,6 +227,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Set the component's comment
+     *
      * @param comment the comment for the component
      * @return an SPDX23PackageBuilder
      */
@@ -183,6 +239,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Set the component's attribution text
+     *
      * @param attributionText the attribution text of the component
      * @return an SPDX23PackageBuilder
      */
@@ -194,6 +251,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Set the component's download location
+     *
      * @param downloadLocation the package's download location
      * @return an SPDX23PackageBuilder
      */
@@ -205,6 +263,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Set the component's file name
+     *
      * @param fileName the package's file name
      * @return an SPDX23PackageBuilder
      */
@@ -216,6 +275,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Set if the component's files were analyzed
+     *
      * @param filesAnalyzed a boolean if the files were analyzed
      * @return an SPDX23PackageBuilder
      */
@@ -227,9 +287,9 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Set the component's verification code
+     *
      * @param verificationCode the package's verification code
      * @return an SPDX23PackageBuilder
-     *
      */
     @Override
     public SPDX23PackageBuilder setVerificationCode(String verificationCode) {
@@ -239,6 +299,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Set the component's home page
+     *
      * @param homePage the package's home page
      * @return an SPDX23PackageBuilder
      */
@@ -250,6 +311,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Set the component's source information
+     *
      * @param sourceInfo the package's source information
      * @return an SPDX23PackageBuilder
      */
@@ -261,6 +323,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Set the component's release date
+     *
      * @param releaseDate the package's release date
      * @return an SPDX23PackageBuilder
      */
@@ -272,6 +335,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Set the component's build date
+     *
      * @param buildDate the package's build date
      * @return an SPDX23PackageBuilder
      */
@@ -283,6 +347,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Set the component's valid until date
+     *
      * @param validUntilDate the package's valid until date
      * @return an SPDX23PackageBuilder
      */
@@ -294,6 +359,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Set the component's supplier
+     *
      * @param supplier the component's supplier
      * @return an SPDX23PackageBuilder
      */
@@ -305,6 +371,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Set the component's version
+     *
      * @param version the component's version
      * @return an SPDX23PackageBuilder
      */
@@ -316,6 +383,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Set the component's description
+     *
      * @param description the component's description
      * @return an SPDX23PackageBuilder
      */
@@ -327,6 +395,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Add a cpe to the component
+     *
      * @param cpe the cpe string to add
      * @return an SPDX23PackageBuilder
      */
@@ -338,6 +407,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Add a purl to the component
+     *
      * @param purl the purl string to add
      * @return an SPDX23PackageBuilder
      */
@@ -349,6 +419,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Add an external reference to the component
+     *
      * @param externalReference the external component to add
      * @return an SPDX23PackageBuilder
      */
@@ -360,6 +431,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
 
     /**
      * Build an SPDX23PackageObject
+     *
      * @return an SPDX23PackageObject
      */
     @Override
@@ -369,11 +441,12 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
                 purls, externalReferences, downloadLocation, fileName,
                 filesAnalyzed, verificationCode, homePage, sourceInfo,
                 releaseDate, builtDate, validUntilDate,
-                 comment, attributionText);
+                comment, attributionText);
     }
 
     /**
      * Build and flush the SPDX23PackageObject
+     *
      * @return an SPDX23PackageObject
      */
     @Override

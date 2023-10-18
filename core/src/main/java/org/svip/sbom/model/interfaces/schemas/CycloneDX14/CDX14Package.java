@@ -1,8 +1,8 @@
 package org.svip.sbom.model.interfaces.schemas.CycloneDX14;
 
+import org.svip.compare.conflicts.Conflict;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOMPackage;
-import org.svip.sbomanalysis.comparison.conflicts.Conflict;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.Set;
 
 /**
  * File: CDX14Package.java
- *  <p>
+ * <p>
  * CycloneDX 1.4 specific fields
  * <p>
  * Source: <a href="https://cyclonedx.org/docs/1.4/json/#components">https://cyclonedx.org/docs/1.4/json/#components</a>
