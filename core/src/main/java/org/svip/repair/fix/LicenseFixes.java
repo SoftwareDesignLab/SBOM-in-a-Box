@@ -40,7 +40,7 @@ public class LicenseFixes implements Fixes<License> {
 
         License license = new License(identifier);
 
-        return Collections.singletonList(new Fix<>(license, getValidLicense(license)));
+        return Collections.singletonList(new Fix<>(FixType.COMPONENT_LICENSE, license, getValidLicense(license)));
     }
 
     /**
