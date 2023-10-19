@@ -23,7 +23,7 @@ import java.util.Set;
  * @author Derek Garcia
  **/
 @Entity
-@Table(name = "sbom")
+@Table(name = "sbom_file")
 public class SBOMFile {
 
     // Schema of SBOM
