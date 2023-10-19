@@ -19,7 +19,7 @@ import java.util.Set;
  * file: SBOMFile.java
  *
  * SBOM Table for the database
- * 
+ *
  * @author Derek Garcia
  **/
 @Entity
@@ -79,11 +79,11 @@ public class SBOMFile {
     private VEXFile vexFile;
 
     // Collection of comparisons where this was the target
-    @OneToMany(mappedBy = "targetSBOM", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "targetSBOMFile", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<ComparisonFile> comparisonsAsTarget = new HashSet<>();
 
     // Collection of comparisons where this was the other
-    @OneToMany(mappedBy = "otherSBOM", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "otherSBOMFile", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<ComparisonFile> comparisonsAsOther = new HashSet<>();
 
     /**

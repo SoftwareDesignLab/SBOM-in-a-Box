@@ -19,19 +19,19 @@ public record UploadSBOMFileInput(String fileName, String contents) {
      * @throws JsonProcessingException Failed to parse SBOM and is invalid
      */
     public SBOMFile toSBOMFile() throws JsonProcessingException {
-        SBOMFile sbom = new SBOMFile();
+        SBOMFile sbomFile = new SBOMFile();
 
-        sbom.setName(fileName)
+        sbomFile.setName(fileName)
             .setContent(contents);
 
         // Attempt to deserialize
-        Deserializer d = SerializerFactory.createDeserializer(sbom.getContent());
-        d.readFromString(sbom.getContent());
+        Deserializer d = SerializerFactory.createDeserializer(sbomFile.getContent());
+        d.readFromString(sbomFile.getContent());
 
         // If reach here, SBOM is valid, set additional fields
-        sbom.setSchema(d)
+        sbomFile.setSchema(d)
             .setFileType(d);
 
-        return sbom;
+        return sbomFile;
     }
 }

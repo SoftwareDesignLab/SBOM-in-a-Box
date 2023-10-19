@@ -32,12 +32,12 @@ public class UploadSBOMFileInputTest {
             // Given
             String contents = fileToContents(CDX_JSON_SBOM_FILE);
             // When
-            SBOMFile sbom = new UploadSBOMFileInput("CDX14_JSON", contents).toSBOMFile();
+            SBOMFile sbomFile = new UploadSBOMFileInput("CDX14_JSON", contents).toSBOMFile();
             // Then
-            assertEquals("CDX14_JSON", sbom.getName());
-            assertEquals(contents, sbom.getContent());
-            assertEquals(SBOMFile.Schema.CYCLONEDX_14, sbom.getSchema());
-            assertEquals(SBOMFile.FileType.JSON, sbom.getFileType());
+            assertEquals("CDX14_JSON", sbomFile.getName());
+            assertEquals(contents, sbomFile.getContent());
+            assertEquals(SBOMFile.Schema.CYCLONEDX_14, sbomFile.getSchema());
+            assertEquals(SBOMFile.FileType.JSON, sbomFile.getFileType());
         } catch (IOException e){
             fail("Failed to parse file: " + CDX_JSON_SBOM_FILE);
         } catch (Exception e){
@@ -52,12 +52,12 @@ public class UploadSBOMFileInputTest {
             // Given
             String contents = fileToContents(SPDX_JSON_SBOM_FILE);
             // When
-            SBOMFile sbom = new UploadSBOMFileInput("SPDX23_JSON", contents).toSBOMFile();
+            SBOMFile sbomFile = new UploadSBOMFileInput("SPDX23_JSON", contents).toSBOMFile();
             // Then
-            assertEquals("SPDX23_JSON", sbom.getName());
-            assertEquals(contents, sbom.getContent());
-            assertEquals(SBOMFile.Schema.SPDX_23, sbom.getSchema());
-            assertEquals(SBOMFile.FileType.JSON, sbom.getFileType());
+            assertEquals("SPDX23_JSON", sbomFile.getName());
+            assertEquals(contents, sbomFile.getContent());
+            assertEquals(SBOMFile.Schema.SPDX_23, sbomFile.getSchema());
+            assertEquals(SBOMFile.FileType.JSON, sbomFile.getFileType());
         } catch (IOException e){
             fail("Failed to parse file: " + SPDX_JSON_SBOM_FILE);
         } catch (Exception e){
@@ -72,12 +72,12 @@ public class UploadSBOMFileInputTest {
             // Given
             String contents = fileToContents(SPDX_TAG_VALUE_SBOM_FILE);
             // When
-            SBOMFile sbom = new UploadSBOMFileInput("SPDX23_TAG_VALUE", contents).toSBOMFile();
+            SBOMFile sbomFile = new UploadSBOMFileInput("SPDX23_TAG_VALUE", contents).toSBOMFile();
             // Then
-            assertEquals("SPDX23_TAG_VALUE", sbom.getName());
-            assertEquals(contents, sbom.getContent());
-            assertEquals(SBOMFile.Schema.SPDX_23, sbom.getSchema());
-            assertEquals(SBOMFile.FileType.TAG_VALUE, sbom.getFileType());
+            assertEquals("SPDX23_TAG_VALUE", sbomFile.getName());
+            assertEquals(contents, sbomFile.getContent());
+            assertEquals(SBOMFile.Schema.SPDX_23, sbomFile.getSchema());
+            assertEquals(SBOMFile.FileType.TAG_VALUE, sbomFile.getFileType());
         } catch (IOException e){
             fail("Failed to parse file: " + SPDX_TAG_VALUE_SBOM_FILE);
         } catch (Exception e){

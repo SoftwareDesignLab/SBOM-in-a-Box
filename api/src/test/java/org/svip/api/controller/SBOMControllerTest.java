@@ -51,13 +51,13 @@ public class SBOMControllerTest {
     void upload_valid_sbom() throws Exception {
         // Given
         UploadSBOMFileInput input = new UploadSBOMFileInput("CDX14_JSON", fileToContents(CDX_JSON_SBOM_FILE));
-        SBOMFile sbom = input.toSBOMFile();
+        SBOMFile sbomFile = input.toSBOMFile();
         // When
         when(this.sbomFileService.upload(any(SBOMFile.class))).thenAnswer(i -> i.getArgument(0));   // echo
         ResponseEntity<Long> response =  this.sbomController.upload(input);
         // Then
         assertEquals(HttpStatus.OK, response.getStatusCode() );
-        assertEquals(sbom.getId(), response.getBody());
+        assertEquals(sbomFile.getId(), response.getBody());
     }
 
     @Test
@@ -168,10 +168,10 @@ public class SBOMControllerTest {
         // Given
         Long id = 1L;
         String jsonContent = "{\"format\":\"SPDX\",\"uid\":\"Test\",\"creationData\":{},\"components\":[{\"uid\":\"uid1\",\"name\":\"COMPONENT 1\",\"licenses\":{},\"version\":\"1\"},{\"uid\":\"uid3\",\"name\":\"COMPONENT 3\",\"licenses\":{},\"version\":\"1\"},{\"uid\":\"uid2\",\"name\":\"COMPONENT 2\",\"licenses\":{},\"version\":\"1\"}]}";
-        SBOMFile sbom = buildMockSBOMFile(CDX_SMALL);
+        SBOMFile sbomFile = buildMockSBOMFile(CDX_SMALL);
 
         // When
-        when(sbomFileService.getSBOMFile(id)).thenReturn(sbom);
+        when(sbomFileService.getSBOMFile(id)).thenReturn(sbomFile);
         ResponseEntity<String> response = sbomController.getSBOMObjectAsJSON(id);
 
         // Then
@@ -200,10 +200,10 @@ public class SBOMControllerTest {
     void get_SBOM_content() throws Exception {
         // Given
         Long id = 1L;
-        SBOMFile sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+        SBOMFile sbomFile = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
 
         // When
-        when(sbomFileService.getSBOMFile(id)).thenReturn(sbom);
+        when(sbomFileService.getSBOMFile(id)).thenReturn(sbomFile);
         ResponseEntity<SBOMFile> response = sbomController.getContent(id);
 
         // Then
@@ -266,22 +266,22 @@ public class SBOMControllerTest {
     public void delete_SBOM() throws Exception {
         // Given
         Long id = 1L;
-        SBOMFile sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+        SBOMFile sbomFile = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
 
         // When
-        when(sbomFileService.getSBOMFile(id)).thenReturn(sbom);
+        when(sbomFileService.getSBOMFile(id)).thenReturn(sbomFile);
         ResponseEntity<Long> response = sbomController.delete(id);
 
         // Then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(id, response.getBody());
         verify(sbomFileService).getSBOMFile(id);
-        verify(sbomFileService).deleteSBOMFile(sbom);
+        verify(sbomFileService).deleteSBOMFile(sbomFile);
     }
 
     @Test
     @DisplayName("Delete SBOM no content")
-    public void delete_SBOM_no_content() throws Exception {
+    public void delete_SBOM_no_content() {
         // Given
         Long id = 1L;
 

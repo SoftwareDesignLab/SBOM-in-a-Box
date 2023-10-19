@@ -16,9 +16,9 @@ public interface ComparisonFileRepository extends CrudRepository<ComparisonFile,
     /**
      * Select Conflict files for a target and other sbom
      *
-     * SQL: SELECT * FROM comparison WHERE target = targetSBOM AND other = otherSBOM;
+     * SQL: SELECT * FROM comparison WHERE target = targetSBOMFile AND other = otherSBOMFile;
      *
      * @return ComparisonFile for the target and other sbom
      */
-    ComparisonFile findByTargetSBOMAndOtherSBOM(SBOMFile targetSBOM, SBOMFile otherSBOM);
+    ComparisonFile findByTargetSBOMAndOtherSBOM(SBOMFile targetSBOMFile, SBOMFile otherSBOMFile);
 }

@@ -58,12 +58,12 @@ public class VEXControllerTest {
         String apiKey = "your-api-key";
         String format = "json";
         String client = "osv";
-        SBOMFile sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+        SBOMFile sbomFile = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
         VEXResult vexResult = new VEXResult(new VEX(new VEX.Builder()), new HashMap<>());
         VEXFile uploadedVF = new VEXFile();
 
         // When
-        when(sbomFileService.getSBOMFile(id)).thenReturn(sbom);
+        when(sbomFileService.getSBOMFile(id)).thenReturn(sbomFile);
         when(vexFileService.generateVEX(any(), anyString(), anyString(), anyString())).thenReturn(vexResult);
         when(vexFileService.upload(any())).thenReturn(uploadedVF);
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -105,11 +105,11 @@ public class VEXControllerTest {
         String apiKey = "your-api-key";
         String format = "json";
         String client = "osv";
-        SBOMFile sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+        SBOMFile sbomFile = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
         VEXResult vexResult = new VEXResult(new VEX(new VEX.Builder()), new HashMap<>());
 
         // When
-        when(sbomFileService.getSBOMFile(id)).thenReturn(sbom);
+        when(sbomFileService.getSBOMFile(id)).thenReturn(sbomFile);
         when(vexFileService.generateVEX(any(), anyString(), anyString(), anyString())).thenReturn(vexResult);
         when(vexFileService.upload(any())).thenThrow(Exception.class);
 

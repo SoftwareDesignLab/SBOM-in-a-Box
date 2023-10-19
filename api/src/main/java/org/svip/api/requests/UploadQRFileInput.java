@@ -18,11 +18,11 @@ public record UploadQRFileInput(QualityReport qa) {
     /**
      * Create a new Quality Report File Object
      *
-     * @param sbom SBOM of the qa was run on
+     * @param sbomFile SBOMFile of the qa was run on
      * @return QualityReportFile
      * @throws JsonProcessingException Failed to parse qa and is invalid
      */
-    public QualityReportFile toQualityReportFile(SBOMFile sbom) throws JsonProcessingException {
+    public QualityReportFile toQualityReportFile(SBOMFile sbomFile) throws JsonProcessingException {
         QualityReportFile qaf = new QualityReportFile();
 
         // Configure object mapper to remove null and empty arrays
@@ -33,10 +33,10 @@ public record UploadQRFileInput(QualityReport qa) {
         // Set attributes
         qaf.setName(qa.getUid())
            .setContent(mapper.writeValueAsString(qa))
-           .setSBOM(sbom);      // adds relationship
+           .setSBOMFile(sbomFile);      // adds relationship
 
         // add to sbom
-        sbom.setQualityReport(qaf);
+        sbomFile.setQualityReport(qaf);
 
         return qaf;
     }

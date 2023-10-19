@@ -18,11 +18,11 @@ public record  UploadVEXFileInput(VEXResult vexResult) {
     /**
      * Create a new VEX File Object
      *
-     * @param sbom SBOM of the vex generation was run on
+     * @param sbomFile SBOMFile of the vex generation was run on
      * @return VEXFile
      * @throws JsonProcessingException Failed to parse VEX and is invalid
      */
-    public VEXFile toVEXFile(SBOMFile sbom, VEXFile.Database database) throws JsonProcessingException {
+    public VEXFile toVEXFile(SBOMFile sbomFile, VEXFile.Database database) throws JsonProcessingException {
         VEXFile vf = new VEXFile();
 
         // Configure object mapper to remove null and empty arrays
@@ -35,10 +35,10 @@ public record  UploadVEXFileInput(VEXResult vexResult) {
           .setContent(mapper.writeValueAsString(vexResult))
           .setSchema(vexResult.vex().getOriginType())
           .setDatasource(database)
-          .setSBOM(sbom);      // adds relationship
+          .setSBOMFile(sbomFile);      // adds relationship
 
         // add to sbom
-        sbom.setVEXFile(vf);
+        sbomFile.setVEXFile(vf);
 
         return vf;
     }

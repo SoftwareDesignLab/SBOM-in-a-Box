@@ -50,11 +50,11 @@ public class SBOMFileServiceTest {
     void upload_cdx14_json_sbom() {
         try{
             // Given
-            SBOMFile sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+            SBOMFile sbomFile = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
             // When
-            this.sbomFileService.upload(sbom);
+            this.sbomFileService.upload(sbomFile);
             // Then
-            verify(this.sbomFileRepository).save(sbom);
+            verify(this.sbomFileRepository).save(sbomFile);
         } catch (IOException e){
             fail("Failed to parse file: " + CDX_JSON_SBOM_FILE);
         } catch (Exception e){
@@ -67,11 +67,11 @@ public class SBOMFileServiceTest {
     void upload_spdx23_json_sbom() {
         try{
             // Given
-            SBOMFile sbom = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
+            SBOMFile sbomFile = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
             // When
-            this.sbomFileService.upload(sbom);
+            this.sbomFileService.upload(sbomFile);
             // Then
-            verify(this.sbomFileRepository).save(sbom);
+            verify(this.sbomFileRepository).save(sbomFile);
         } catch (IOException e){
             fail("Failed to parse file: " + SPDX_JSON_SBOM_FILE);
         } catch (Exception e){
@@ -85,11 +85,11 @@ public class SBOMFileServiceTest {
     void upload_spdx23_tag_value_sbom() {
         try {
             // Given
-            SBOMFile sbom = buildMockSBOMFile(SPDX_TAG_VALUE_SBOM_FILE);
+            SBOMFile sbomFile = buildMockSBOMFile(SPDX_TAG_VALUE_SBOM_FILE);
             // When
-            this.sbomFileService.upload(sbom);
+            this.sbomFileService.upload(sbomFile);
             // Then
-            verify(this.sbomFileRepository).save(sbom);
+            verify(this.sbomFileRepository).save(sbomFile);
         } catch (IOException e){
             fail("Failed to parse file: " + SPDX_TAG_VALUE_SBOM_FILE);
         } catch (Exception e){
@@ -224,9 +224,9 @@ public class SBOMFileServiceTest {
 
             // When
             when(this.sbomFileRepository.findById(0L)).thenReturn(Optional.empty());
-            SBOMFile sbom = this.sbomFileService.getSBOMFile(0L);
+            SBOMFile sbomFile = this.sbomFileService.getSBOMFile(0L);
             // Then
-            assertNull(sbom);
+            assertNull(sbomFile);
 
         } catch (Exception e){
             fail(e.getMessage());
@@ -241,13 +241,13 @@ public class SBOMFileServiceTest {
             SBOMFile spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
             // When
             when(this.sbomFileRepository.findById(0L)).thenReturn(Optional.of(spdx23json));
-            SBOMFile sbom = this.sbomFileService.getSBOMFile(0L);
+            SBOMFile sbomFile = this.sbomFileService.getSBOMFile(0L);
             // Then
-            assertEquals(spdx23json.getId(), sbom.getId());
-            assertEquals(spdx23json.getName(), sbom.getName());
-            assertEquals(spdx23json.getContent(), sbom.getContent());
-            assertEquals(spdx23json.getSchema(), sbom.getSchema());
-            assertEquals(spdx23json.getFileType(), sbom.getFileType());
+            assertEquals(spdx23json.getId(), sbomFile.getId());
+            assertEquals(spdx23json.getName(), sbomFile.getName());
+            assertEquals(spdx23json.getContent(), sbomFile.getContent());
+            assertEquals(spdx23json.getSchema(), sbomFile.getSchema());
+            assertEquals(spdx23json.getFileType(), sbomFile.getFileType());
 
         } catch (Exception e){
             fail(e.getMessage());
@@ -263,10 +263,10 @@ public class SBOMFileServiceTest {
         try {
             // Given
             SBOMFile spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
-            List<SBOMFile> sboms = new ArrayList<>();
-            sboms.add(spdx23json);
+            List<SBOMFile> sbomFiles = new ArrayList<>();
+            sbomFiles.add(spdx23json);
             // When
-            when(this.sbomFileRepository.findAll()).thenReturn(new ArrayList<>(sboms));
+            when(this.sbomFileRepository.findAll()).thenReturn(new ArrayList<>(sbomFiles));
             Long[] ids = this.sbomFileService.getAllIDs();
             // Then
             assertEquals(1, ids.length);

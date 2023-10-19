@@ -58,17 +58,17 @@ public class SBOMController {
 
         try {
             // Attempt to upload input
-            SBOMFile sbom = uploadSBOMInput.toSBOMFile();
+            SBOMFile sbomFile = uploadSBOMInput.toSBOMFile();
             // Attempt to deserialize
-            sbom.toSBOMObject();
+            sbomFile.toSBOMObject();
 
-            this.sbomService.upload(sbom);
+            this.sbomService.upload(sbomFile);
 
             // Log
-            LOGGER.info("POST /svip/sboms - Uploaded SBOM with ID " + sbom.getId() + ": " + sbom.getName());
+            LOGGER.info("POST /svip/sboms - Uploaded SBOM with ID " + sbomFile.getId() + ": " + sbomFile.getName());
 
             // Return ID
-            return new ResponseEntity<>(sbom.getId(), HttpStatus.OK);
+            return new ResponseEntity<>(sbomFile.getId(), HttpStatus.OK);
 
         } catch (IllegalArgumentException | JsonProcessingException e) {
             // Problem with parsing

@@ -55,13 +55,13 @@ public class SBOMFileService {
     /**
      * Create a new sbom entry in the database
      *
-     * @param sbom sbom to upload
+     * @param sbomFile sbom file to upload
      * @return uploaded sbom entry
      * @throws Exception Error uploading to the Database
      */
-    public SBOMFile upload(SBOMFile sbom) throws Exception {
+    public SBOMFile upload(SBOMFile sbomFile) throws Exception {
         try {
-            return this.sbomFileRepository.save(sbom);
+            return this.sbomFileRepository.save(sbomFile);
         } catch (Exception e) {
             // todo custom exception instead of generic
             throw new Exception("Failed to upload to Database: " + e.getMessage());

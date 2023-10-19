@@ -41,7 +41,7 @@ public class VEXFile {
     /// Relationships
     ///
     @OneToOne(mappedBy = "vexFile")   // name of field in SBOMFile NOT DB
-    private SBOMFile sbom;
+    private SBOMFile sbomFile;
 
 
     ///
@@ -89,12 +89,12 @@ public class VEXFile {
     }
 
     /**
-     * Set the parent SBOM
-     * @param sbom sbom vex was generated for
+     * Set the parent SBOM file
+     * @param sbomFile sbom file vex was generated for
      * @return VEXFile
      */
-    public VEXFile setSBOM(SBOMFile sbom){
-        this.sbom = sbom;
+    public VEXFile setSBOMFile(SBOMFile sbomFile){
+        this.sbomFile = sbomFile;
         return this;
     }
 
@@ -117,9 +117,9 @@ public class VEXFile {
     }
 
     /**
-     * @return SBOM of VEX
+     * @return SBOMFile of VEX
      */
-    public SBOMFile getSBOM(){
-        return this.sbom;
+    public SBOMFile getSBOMFile(){
+        return this.sbomFile;
     }
 }

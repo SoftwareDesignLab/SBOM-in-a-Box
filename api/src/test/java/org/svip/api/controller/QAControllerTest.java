@@ -58,12 +58,12 @@ public class QAControllerTest {
     void generate_QA() throws Exception {
         // Given
         Long id = 1L;
-        SBOMFile sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+        SBOMFile sbomFile = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
         QualityReport qualityReport = new QualityReport("mock");
         QualityReportFile uploadedQAF = new QualityReportFile();
 
         // When
-        when(this.sbomFileService.getSBOMFile(id)).thenReturn(sbom);
+        when(this.sbomFileService.getSBOMFile(id)).thenReturn(sbomFile);
         when(this.qualityReportFileService.generateQualityReport(any())).thenReturn(qualityReport);
         when(qualityReportFileService.upload(any())).thenReturn(uploadedQAF);
 
@@ -101,11 +101,11 @@ public class QAControllerTest {
     void generateWithQAError() throws Exception {
         // Given
         Long id = 1L;
-        SBOMFile sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+        SBOMFile sbomFile = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
         QualityReport qualityReport = new QualityReport("mock");
 
         // When
-        when(this.sbomFileService.getSBOMFile(id)).thenReturn(sbom);
+        when(this.sbomFileService.getSBOMFile(id)).thenReturn(sbomFile);
         when(this.qualityReportFileService.generateQualityReport(any())).thenReturn(qualityReport);
         when(qualityReportFileService.upload(any())).thenThrow(Exception.class);
 

@@ -16,11 +16,11 @@ public record UploadComparisonFileInput(Comparison comparison) {
     /**
      * Create a new Comparison File Object
      *
-     * @param targetSBOM Target SBOM for comparison
-     * @param otherSBOM otherSBOM for comparison
+     * @param targetSBOMFile Target SBOM file for comparison
+     * @param otherSBOMFile Other SBOM file for comparison
      * @return ComparisonFile
      */
-    public ComparisonFile toComparisonFile(SBOMFile targetSBOM, SBOMFile otherSBOM) {
+    public ComparisonFile toComparisonFile(SBOMFile targetSBOMFile, SBOMFile otherSBOMFile) {
         ComparisonFile cf = new ComparisonFile();
 
         // add all conflicts
@@ -59,12 +59,12 @@ public record UploadComparisonFileInput(Comparison comparison) {
 
 
         // set parent relationships
-        cf.setTargetSBOM(targetSBOM)
-           .setOtherSBOM(otherSBOM);
+        cf.setTargetSBOMFile(targetSBOMFile)
+           .setOtherSBOMFile(otherSBOMFile);
 
         // Add SBOM Relationships
-        targetSBOM.addComparisonFileAsTarget(cf);
-        otherSBOM.addComparisonFileAsOther(cf);
+        targetSBOMFile.addComparisonFileAsTarget(cf);
+        otherSBOMFile.addComparisonFileAsOther(cf);
 
         return cf;
     }

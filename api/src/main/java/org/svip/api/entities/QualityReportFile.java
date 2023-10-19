@@ -23,7 +23,7 @@ public class QualityReportFile {
     private String content;
 
     @OneToOne(mappedBy = "qualityReportFile")   // name of field in SBOMFile NOT DB
-    private SBOMFile sbom;
+    private SBOMFile sbomFile;
 
 
     ///
@@ -50,8 +50,8 @@ public class QualityReportFile {
         return this;
     }
 
-    public QualityReportFile setSBOM(SBOMFile sbom){
-        this.sbom = sbom;
+    public QualityReportFile setSBOMFile(SBOMFile sbomFile){
+        this.sbomFile = sbomFile;
         return this;
     }
 
@@ -76,7 +76,7 @@ public class QualityReportFile {
     /**
      * @return SBOM of QA
      */
-    public SBOMFile getSBOM(){
-        return this.sbom;
+    public SBOMFile getSBOMFile(){
+        return this.sbomFile;
     }
 }
