@@ -149,13 +149,14 @@ public class SerializerFactory {
          * @return true if valid tag-value.
          */
         public static boolean isValidTagValue(String fileContents) {
-            // Matches PascalCase and all capital letters
+            // Matches PascalCase and begin with capital letters (e.g. SPDXID, SPDXVersion)
             Pattern p = Pattern.compile("^[A-Z][a-z0-9]*(?:[A-Z][a-z0-9]*)*(?:[A-Z]?)$");
 
+            // Check all tags are PascalCase (value is ignored; it can sometimes be empty)
             return fileContents.lines()
-                    .filter(line -> !(line.contains("#") || line.contains("</text>") || line.equals("")))
-                    .map(line -> line.split(": ")[0])
-                    .allMatch(line -> p.matcher(line).matches());
+                    .filter(line -> !(line.contains("#") || line.contains("</text>") || line.equals(""))) // Exclude
+                    .map(line -> line.split(": ")[0]) // Get the tag
+                    .allMatch(line -> p.matcher(line).matches()); // Match tag to regex
         }
     }
 
