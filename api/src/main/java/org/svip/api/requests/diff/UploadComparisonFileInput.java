@@ -1,6 +1,6 @@
 package org.svip.api.requests.diff;
 
-import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.entities.diff.ComparisonFile;
 import org.svip.compare.Comparison;
 import org.svip.compare.conflicts.Conflict;
@@ -20,7 +20,7 @@ public record UploadComparisonFileInput(Comparison comparison) {
      * @param otherSBOM otherSBOM for comparison
      * @return ComparisonFile
      */
-    public ComparisonFile toComparisonFile(SBOM targetSBOM, SBOM otherSBOM) {
+    public ComparisonFile toComparisonFile(SBOMFile targetSBOM, SBOMFile otherSBOM) {
         ComparisonFile cf = new ComparisonFile();
 
         // add all conflicts

@@ -1,6 +1,5 @@
 package org.svip.api.entities;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.svip.vex.model.VEXType;
 
@@ -42,7 +41,7 @@ public class VEXFile {
     /// Relationships
     ///
     @OneToOne(mappedBy = "vexFile")   // name of field in SBOMFile NOT DB
-    private SBOM sbom;
+    private SBOMFile sbom;
 
 
     ///
@@ -94,7 +93,7 @@ public class VEXFile {
      * @param sbom sbom vex was generated for
      * @return VEXFile
      */
-    public VEXFile setSBOM(SBOM sbom){
+    public VEXFile setSBOM(SBOMFile sbom){
         this.sbom = sbom;
         return this;
     }
@@ -120,7 +119,7 @@ public class VEXFile {
     /**
      * @return SBOM of VEX
      */
-    public SBOM getSBOM(){
+    public SBOMFile getSBOM(){
         return this.sbom;
     }
 }

@@ -12,7 +12,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.svip.api.entities.QualityReportFile;
-import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.QualityReportFileService;
 import org.svip.api.services.SBOMFileService;
@@ -58,7 +58,7 @@ public class QAControllerTest {
     void generate_QA() throws Exception {
         // Given
         Long id = 1L;
-        SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+        SBOMFile sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
         QualityReport qualityReport = new QualityReport("mock");
         QualityReportFile uploadedQAF = new QualityReportFile();
 
@@ -101,7 +101,7 @@ public class QAControllerTest {
     void generateWithQAError() throws Exception {
         // Given
         Long id = 1L;
-        SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+        SBOMFile sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
         QualityReport qualityReport = new QualityReport("mock");
 
         // When
@@ -128,7 +128,7 @@ public class QAControllerTest {
      * @return Valid Mock SBOM file
      * @throws IOException failed to open file
      */
-    private SBOM buildMockSBOMFile(String filepath) throws IOException {
+    private SBOMFile buildMockSBOMFile(String filepath) throws IOException {
         // Get file contents
         String content = new String(Files.readAllBytes(Paths.get(filepath)));
         // Create SBOM

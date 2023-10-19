@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
 import org.svip.conversion.ConversionException;
@@ -174,7 +174,7 @@ public class OSIController {
         for (Map.Entry<String, String> sbomFile : generatedSBOMFiles.entrySet()) {
             UploadSBOMFileInput input = new UploadSBOMFileInput(sbomFile.getKey(), sbomFile.getValue());
             try {
-                SBOM sbom = input.toSBOMFile();
+                SBOMFile sbom = input.toSBOMFile();
                 sbom.toSBOMObject();
                 this.sbomService.upload(sbom);
                 uploaded.add(sbom.getId());

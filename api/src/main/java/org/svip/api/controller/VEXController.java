@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.entities.VEXFile;
 import org.svip.api.requests.UploadVEXFileInput;
 import org.svip.api.services.SBOMFileService;
@@ -62,7 +64,7 @@ public class VEXController {
 
 
 try{
-            org.svip.api.entities.SBOM sbomFile = this.sbomFileService.getSBOMFile(id);
+            SBOMFile sbomFile = this.sbomFileService.getSBOMFile(id);
 
             // No SBOM was found
             if(sbomFile == null){

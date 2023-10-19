@@ -8,7 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
 import org.svip.serializers.SerializerFactory;
@@ -51,9 +51,9 @@ public class SBOMControllerTest {
     void upload_valid_sbom() throws Exception {
         // Given
         UploadSBOMFileInput input = new UploadSBOMFileInput("CDX14_JSON", fileToContents(CDX_JSON_SBOM_FILE));
-        SBOM sbom = input.toSBOMFile();
+        SBOMFile sbom = input.toSBOMFile();
         // When
-        when(this.sbomFileService.upload(any(SBOM.class))).thenAnswer(i -> i.getArgument(0));   // echo
+        when(this.sbomFileService.upload(any(SBOMFile.class))).thenAnswer(i -> i.getArgument(0));   // echo
         ResponseEntity<Long> response =  this.sbomController.upload(input);
         // Then
         assertEquals(HttpStatus.OK, response.getStatusCode() );
@@ -168,7 +168,7 @@ public class SBOMControllerTest {
         // Given
         Long id = 1L;
         String jsonContent = "{\"format\":\"SPDX\",\"uid\":\"Test\",\"creationData\":{},\"components\":[{\"uid\":\"uid1\",\"name\":\"COMPONENT 1\",\"licenses\":{},\"version\":\"1\"},{\"uid\":\"uid3\",\"name\":\"COMPONENT 3\",\"licenses\":{},\"version\":\"1\"},{\"uid\":\"uid2\",\"name\":\"COMPONENT 2\",\"licenses\":{},\"version\":\"1\"}]}";
-        SBOM sbom = buildMockSBOMFile(CDX_SMALL);
+        SBOMFile sbom = buildMockSBOMFile(CDX_SMALL);
 
         // When
         when(sbomFileService.getSBOMFile(id)).thenReturn(sbom);
@@ -200,11 +200,11 @@ public class SBOMControllerTest {
     void get_SBOM_content() throws Exception {
         // Given
         Long id = 1L;
-        SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+        SBOMFile sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
 
         // When
         when(sbomFileService.getSBOMFile(id)).thenReturn(sbom);
-        ResponseEntity<SBOM> response = sbomController.getContent(id);
+        ResponseEntity<SBOMFile> response = sbomController.getContent(id);
 
         // Then
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -221,7 +221,7 @@ public class SBOMControllerTest {
 
         // When
         when(sbomFileService.getSBOMFile(id)).thenReturn(null);
-        ResponseEntity<SBOM> response = sbomController.getContent(id);
+        ResponseEntity<SBOMFile> response = sbomController.getContent(id);
 
         // Then
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
@@ -266,7 +266,7 @@ public class SBOMControllerTest {
     public void delete_SBOM() throws Exception {
         // Given
         Long id = 1L;
-        SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+        SBOMFile sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
 
         // When
         when(sbomFileService.getSBOMFile(id)).thenReturn(sbom);
@@ -308,7 +308,7 @@ public class SBOMControllerTest {
      * @return Valid Mock SBOM file
      * @throws IOException failed to open file
      */
-    private SBOM buildMockSBOMFile(String filepath) throws IOException {
+    private SBOMFile buildMockSBOMFile(String filepath) throws IOException {
         // Get file contents
         String content = new String(Files.readAllBytes(Paths.get(filepath)));
         // Create SBOM

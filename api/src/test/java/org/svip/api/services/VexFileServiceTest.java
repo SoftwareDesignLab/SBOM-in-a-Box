@@ -6,10 +6,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.VEXFileRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
-import org.svip.metrics.pipelines.QualityReport;
 import org.svip.vex.VEXResult;
 
 import java.io.IOException;
@@ -45,7 +44,7 @@ public class VexFileServiceTest {
     @DisplayName("Generate cyclonedx vex with osv")
     void generate_CDX_VEX_with_OSV() {
         try {
-            SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+            SBOMFile sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
             VEXResult vexResult = this.vexFileService.generateVEX(sbom.toSBOMObject(), "osv", "cyclonedx", null);
             assertNotNull(vexResult);
         } catch (Exception e) {
@@ -57,7 +56,7 @@ public class VexFileServiceTest {
     @DisplayName("Generate cyclonedx vex with nvd")
     void generate_CDX_VEX_with_NVD() {
         try {
-            SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+            SBOMFile sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
             VEXResult vexResult = this.vexFileService.generateVEX(sbom.toSBOMObject(), "nvd", "cyclonedx", null);
             assertNotNull(vexResult);
         } catch (Exception e) {
@@ -69,7 +68,7 @@ public class VexFileServiceTest {
     @DisplayName("Generate csaf vex with osv")
     void generate_CSAF_VEX_with_OSV() {
         try {
-            SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+            SBOMFile sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
             VEXResult vexResult = this.vexFileService.generateVEX(sbom.toSBOMObject(), "osv", "csaf", null);
             assertNotNull(vexResult);
         } catch (Exception e) {
@@ -81,7 +80,7 @@ public class VexFileServiceTest {
     @DisplayName("Generate csaf vex with nvd")
     void generate_CSAF_VEX_with_NVD() {
         try {
-            SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+            SBOMFile sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
             VEXResult vexResult = this.vexFileService.generateVEX(sbom.toSBOMObject(), "nvd", "csaf", null);
             assertNotNull(vexResult);
         } catch (Exception e) {
@@ -101,7 +100,7 @@ public class VexFileServiceTest {
      * @return Valid Mock SBOM file
      * @throws IOException failed to open file
      */
-    private SBOM buildMockSBOMFile(String filepath) throws IOException {
+    private SBOMFile buildMockSBOMFile(String filepath) throws IOException {
         // Get file contents
         String content = new String(Files.readAllBytes(Paths.get(filepath)));
         // Create SBOM

@@ -19,12 +19,12 @@ import java.util.Set;
  * file: SBOMFile.java
  *
  * SBOM Table for the database
- * TODO rename SBOMFile
+ * 
  * @author Derek Garcia
  **/
 @Entity
 @Table(name = "sbom")
-public class SBOM {
+public class SBOMFile {
 
     // Schema of SBOM
     public enum Schema{
@@ -124,7 +124,7 @@ public class SBOM {
      * @param name filename of SBOM
      * @return SBOM
      */
-    public SBOM setName(String name){
+    public SBOMFile setName(String name){
         this.name = name;
         return this;
     }
@@ -134,7 +134,7 @@ public class SBOM {
      * @param content SBOM string contents
      * @return SBOM
      */
-    public SBOM setContent(String content){
+    public SBOMFile setContent(String content){
         this.content = content;
         return this;
     }
@@ -144,7 +144,7 @@ public class SBOM {
      * @param d deserializer to infer schema from
      * @return SBOM
      */
-    public SBOM setSchema(Deserializer d){
+    public SBOMFile setSchema(Deserializer d){
         // todo better method to determine schema
 
         if(d instanceof CDX14JSONDeserializer)
@@ -161,7 +161,7 @@ public class SBOM {
      * @param schema schema type
      * @return SBOM
      */
-    public SBOM setSchema(Schema schema){
+    public SBOMFile setSchema(Schema schema){
         this.schema = schema;
         return this;
     }
@@ -172,7 +172,7 @@ public class SBOM {
      * @param d deserializer to infer file type from
      * @return SBOM
      */
-    public SBOM setFileType(Deserializer d){
+    public SBOMFile setFileType(Deserializer d){
         // todo better method to determine schema
 
         if(d instanceof CDX14JSONDeserializer || d instanceof SPDX23JSONDeserializer)
@@ -191,7 +191,7 @@ public class SBOM {
      * @param qaf Quality Report File
      * @return SBOM
      */
-    public SBOM setQualityReport(QualityReportFile qaf){
+    public SBOMFile setQualityReport(QualityReportFile qaf){
         this.qualityReportFile = qaf;
         return this;
     }
@@ -203,17 +203,17 @@ public class SBOM {
      * @param vf VEX File
      * @return SBOM
      */
-    public SBOM setVEXFile(VEXFile vf){
+    public SBOMFile setVEXFile(VEXFile vf){
         this.vexFile = vf;
         return this;
     }
 
-    public SBOM addComparisonFileAsTarget(ComparisonFile cf){
+    public SBOMFile addComparisonFileAsTarget(ComparisonFile cf){
         this.comparisonsAsTarget.add(cf);
         return this;
     }
 
-    public SBOM addComparisonFileAsOther(ComparisonFile cf){
+    public SBOMFile addComparisonFileAsOther(ComparisonFile cf){
         this.comparisonsAsOther.add(cf);
         return this;
     }
@@ -223,7 +223,7 @@ public class SBOM {
      * @param fileType file type
      * @return SBOM
      */
-    public SBOM setFileType(FileType fileType){
+    public SBOMFile setFileType(FileType fileType){
         this.fileType = fileType;
         return this;
     }

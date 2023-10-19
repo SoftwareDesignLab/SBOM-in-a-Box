@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.ComparisonFileRepository;
 import org.svip.api.repository.ConflictFileRepository;
 import org.svip.api.repository.SBOMFileRepository;
@@ -61,7 +61,7 @@ public class DiffServiceTest {
             ids[0] = 0L;
 
             // When
-            SBOM spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
+            SBOMFile spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
             when(this.sbomFileRepository.findById(0L)).thenReturn(Optional.of(spdx23json));
             String diffJSON = this.diffService.generateDiffReportAsJSON(sbomFileService, 0L, ids);
 
@@ -78,8 +78,8 @@ public class DiffServiceTest {
     void compare_two_sboms() {
         try {
             // Given
-            SBOM spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
-            SBOM cdx14json = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+            SBOMFile spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
+            SBOMFile cdx14json = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
             Long[] ids = new Long[2];
             ids[0] = 0L;
             ids[1] = 1L;
@@ -105,7 +105,7 @@ public class DiffServiceTest {
      * @return Valid Mock SBOM file
      * @throws IOException failed to open file
      */
-    private SBOM buildMockSBOMFile(String filepath) throws IOException {
+    private SBOMFile buildMockSBOMFile(String filepath) throws IOException {
         // Get file contents
         String content = new String(Files.readAllBytes(Paths.get(filepath)));
         // Create SBOM

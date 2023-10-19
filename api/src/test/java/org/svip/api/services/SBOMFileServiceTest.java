@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.serializers.SerializerFactory;
@@ -50,7 +50,7 @@ public class SBOMFileServiceTest {
     void upload_cdx14_json_sbom() {
         try{
             // Given
-            SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+            SBOMFile sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
             // When
             this.sbomFileService.upload(sbom);
             // Then
@@ -67,7 +67,7 @@ public class SBOMFileServiceTest {
     void upload_spdx23_json_sbom() {
         try{
             // Given
-            SBOM sbom = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
+            SBOMFile sbom = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
             // When
             this.sbomFileService.upload(sbom);
             // Then
@@ -85,7 +85,7 @@ public class SBOMFileServiceTest {
     void upload_spdx23_tag_value_sbom() {
         try {
             // Given
-            SBOM sbom = buildMockSBOMFile(SPDX_TAG_VALUE_SBOM_FILE);
+            SBOMFile sbom = buildMockSBOMFile(SPDX_TAG_VALUE_SBOM_FILE);
             // When
             this.sbomFileService.upload(sbom);
             // Then
@@ -121,7 +121,7 @@ public class SBOMFileServiceTest {
     void convert_SPDX23_JSON_to_CDX14_TAG_VALUE() {
         try {
             // Given
-            SBOM spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
+            SBOMFile spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
             // When
             when(this.sbomFileRepository.findById(0L)).thenReturn(Optional.of(spdx23json));
             this.sbomFileService.convert(0L, SerializerFactory.Schema.CDX14, SerializerFactory.Format.TAGVALUE, false);
@@ -138,7 +138,7 @@ public class SBOMFileServiceTest {
     void convert_SPDX23_JSON_to_CDX14_JSON_no_overwrite() {
         try {
             // Given
-            SBOM spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
+            SBOMFile spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
 
             // When
             when(this.sbomFileRepository.findById(0L)).thenReturn(Optional.of(spdx23json));
@@ -158,7 +158,7 @@ public class SBOMFileServiceTest {
     void convert_SPDX23_JSON_to_CDX14_JSON_overwrite() {
         try {
             // Given
-            SBOM spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
+            SBOMFile spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
 
             // When
             when(this.sbomFileRepository.findById(0L)).thenReturn(Optional.of(spdx23json));
@@ -191,8 +191,8 @@ public class SBOMFileServiceTest {
     void merge_two_sboms(){
         try {
             // Given
-            SBOM spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
-            SBOM cdx14json = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+            SBOMFile spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
+            SBOMFile cdx14json = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
             Long[] ids = new Long[2];
             ids[0] = 0L;
             ids[1] = 1L;
@@ -224,7 +224,7 @@ public class SBOMFileServiceTest {
 
             // When
             when(this.sbomFileRepository.findById(0L)).thenReturn(Optional.empty());
-            SBOM sbom = this.sbomFileService.getSBOMFile(0L);
+            SBOMFile sbom = this.sbomFileService.getSBOMFile(0L);
             // Then
             assertNull(sbom);
 
@@ -238,10 +238,10 @@ public class SBOMFileServiceTest {
     void get_sbom_file(){
         try {
             // Given
-            SBOM spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
+            SBOMFile spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
             // When
             when(this.sbomFileRepository.findById(0L)).thenReturn(Optional.of(spdx23json));
-            SBOM sbom = this.sbomFileService.getSBOMFile(0L);
+            SBOMFile sbom = this.sbomFileService.getSBOMFile(0L);
             // Then
             assertEquals(spdx23json.getId(), sbom.getId());
             assertEquals(spdx23json.getName(), sbom.getName());
@@ -262,8 +262,8 @@ public class SBOMFileServiceTest {
     void get_all_ids_from_database(){
         try {
             // Given
-            SBOM spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
-            List<SBOM> sboms = new ArrayList<>();
+            SBOMFile spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
+            List<SBOMFile> sboms = new ArrayList<>();
             sboms.add(spdx23json);
             // When
             when(this.sbomFileRepository.findAll()).thenReturn(new ArrayList<>(sboms));
@@ -286,7 +286,7 @@ public class SBOMFileServiceTest {
     void delete_sbom_file(){
         try {
             // Given
-            SBOM spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
+            SBOMFile spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
             // When
             this.sbomFileService.deleteSBOMFile(spdx23json);
             // Then
@@ -308,7 +308,7 @@ public class SBOMFileServiceTest {
      * @return Valid Mock SBOM file
      * @throws IOException failed to open file
      */
-    private SBOM buildMockSBOMFile(String filepath) throws IOException {
+    private SBOMFile buildMockSBOMFile(String filepath) throws IOException {
         // Get file contents
         String content = new String(Files.readAllBytes(Paths.get(filepath)));
         // Create SBOM
