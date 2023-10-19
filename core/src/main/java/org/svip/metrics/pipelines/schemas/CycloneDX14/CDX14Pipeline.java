@@ -34,6 +34,8 @@ public class CDX14Pipeline implements CDX14Tests {
      */
     private static final String CDX14_UID_REGEX = "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$";
 
+    private static final String NOASSERTION_STRING = "NOASSERTION";
+
     /**
      * Process the tests for the SBOM
      *
@@ -123,6 +125,15 @@ public class CDX14Pipeline implements CDX14Tests {
                                 hash, component.getName()));
                     }
                 }
+
+                //test component copyright
+                String copyright = component.getCopyright();
+
+                if(copyright != null && copyright.equals(NOASSERTION_STRING))
+                    copyright = "";
+
+                componentResults.add(hasBomVersion("Copyright",
+                        copyright, component.getName()));
 
                 // add the component and all its tests to the quality report
                 qualityReport.addComponent(component.getName(), componentResults);

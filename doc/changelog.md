@@ -3,6 +3,20 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [v8.2.0-alpha] - (10/17/2023)
+
+### Added
+- `Extraction.java` Class - Abstract class to obtain information from package managers
+- `NugetExtraction.java` Class - Obtains information from the Nuget package manager
+- `RepairNullOrEmptyTest.java` Class - Unit tests for null or empty fixes in repair statements
+- `NugetExtractionTest.java` Class - Unit tests for extracting information from nuget
+- `null-copyright-cdx.json` File - CycloneDX SBOM for testing a component with null copyright
+- `null-copyright.spdx` File - SPDX SBOM for testing a component with null copyright
+
+### Changed
+- `CDX14Pipeline.java` Class - Implemented copyright fixes to process
+- `SPDX23Pipeline.java` Class - Implemented copyright fixes to TestSPDX23Package 
+
 ## [v8.1.1-alpha] - (10/06/2023)
 
 ### Added
