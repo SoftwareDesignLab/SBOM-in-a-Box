@@ -122,7 +122,7 @@ public class SBOMFile {
     /**
      * Set File Name
      * @param name filename of SBOM
-     * @return SBOM
+     * @return SBOMFile
      */
     public SBOMFile setName(String name){
         this.name = name;
@@ -132,7 +132,7 @@ public class SBOMFile {
     /**
      * Set File Content
      * @param content SBOM string contents
-     * @return SBOM
+     * @return SBOMFile
      */
     public SBOMFile setContent(String content){
         this.content = content;
@@ -142,7 +142,7 @@ public class SBOMFile {
     /**
      * Set SBOM Schema
      * @param d deserializer to infer schema from
-     * @return SBOM
+     * @return SBOMFile
      */
     public SBOMFile setSchema(Deserializer d){
         // todo better method to determine schema
@@ -159,7 +159,7 @@ public class SBOMFile {
     /**
      * Simple set schema
      * @param schema schema type
-     * @return SBOM
+     * @return SBOMFile
      */
     public SBOMFile setSchema(Schema schema){
         this.schema = schema;
@@ -170,7 +170,7 @@ public class SBOMFile {
     /**
      * Set SBOM File Type
      * @param d deserializer to infer file type from
-     * @return SBOM
+     * @return SBOMFile
      */
     public SBOMFile setFileType(Deserializer d){
         // todo better method to determine schema
@@ -189,7 +189,7 @@ public class SBOMFile {
      * Set Quality Report File
      *
      * @param qaf Quality Report File
-     * @return SBOM
+     * @return SBOMFile
      */
     public SBOMFile setQualityReport(QualityReportFile qaf){
         this.qualityReportFile = qaf;
@@ -201,7 +201,7 @@ public class SBOMFile {
      * Set VEX File
      *
      * @param vf VEX File
-     * @return SBOM
+     * @return SBOMFile
      */
     public SBOMFile setVEXFile(VEXFile vf){
         this.vexFile = vf;
@@ -221,7 +221,7 @@ public class SBOMFile {
     /**
      * Simple set schema
      * @param fileType file type
-     * @return SBOM
+     * @return SBOMFile
      */
     public SBOMFile setFileType(FileType fileType){
         this.fileType = fileType;

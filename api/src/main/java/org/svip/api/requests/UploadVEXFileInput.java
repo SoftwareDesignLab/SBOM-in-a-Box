@@ -18,7 +18,7 @@ public record  UploadVEXFileInput(VEXResult vexResult) {
     /**
      * Create a new VEX File Object
      *
-     * @param sbomFile SBOMFile of the vex generation was run on
+     * @param sbomFile SBOM file of the vex generation was run on
      * @return VEXFile
      * @throws JsonProcessingException Failed to parse VEX and is invalid
      */

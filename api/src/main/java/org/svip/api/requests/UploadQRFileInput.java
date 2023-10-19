@@ -18,7 +18,7 @@ public record UploadQRFileInput(QualityReport qa) {
     /**
      * Create a new Quality Report File Object
      *
-     * @param sbomFile SBOMFile of the qa was run on
+     * @param sbomFile SBOM file of the qa was run on
      * @return QualityReportFile
      * @throws JsonProcessingException Failed to parse qa and is invalid
      */
