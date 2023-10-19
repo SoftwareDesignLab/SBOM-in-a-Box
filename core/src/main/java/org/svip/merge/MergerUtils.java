@@ -74,7 +74,6 @@ public abstract class MergerUtils extends Merger {
             for (String license : mainSBOM.getLicenses()) {
                 builder.addLicense(license);
             }
-
         // Creation Data
         if (A.getCreationData() != null && B.getCreationData() != null) {
             builder.setCreationData(mergeCreationData(A.getCreationData(), B.getCreationData()));

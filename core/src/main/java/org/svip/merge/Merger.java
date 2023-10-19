@@ -9,7 +9,10 @@ import org.svip.sbom.model.shared.util.ExternalReference;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -70,13 +73,28 @@ public abstract class Merger {
             mergedCreationData.addCreationTool(mergedTool);
         }
 
-        // Document Comment
-        mergedCreationData.setCreatorComment("1) " + A.getCreatorComment() + "\n2) " + B.getCreatorComment());
+        // Creator Comments
+        mergedCreationData.setCreatorComment(mergeCreatorComments(A.getCreatorComment(), B.getCreatorComment()));
 
         // Return Creation Data
         return mergedCreationData;
     }
 
+
+    // Assumes we could merge 1) comment1 \n 2) comment2 with comment3
+    protected static String mergeCreatorComments(String commentA, String commentB) {
+        List<String> creatorComments = new ArrayList<>();
+        if (commentA != null)
+            creatorComments.addAll(Arrays.asList(commentA.split("\n")));
+        if (commentB != null)
+            creatorComments.add(commentB);
+
+        if (creatorComments.size() >= 2)
+            for (int i = 0; i < creatorComments.size(); i++)
+                creatorComments.set(i, (i + 1) + ") " + creatorComments.get(i));
+
+        return String.join("\n", creatorComments);
+    }
 
     protected static Set<CreationTool> mergeCreationTools(Set<CreationTool> toolsA, Set<CreationTool> toolsB) {
 
