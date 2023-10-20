@@ -9,7 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
-import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.services.SBOMFileService;
 import org.svip.serializers.SerializerFactory;
 
@@ -55,7 +55,7 @@ public class ParserControllerTest {
     @ValueSource(strings = { "Conan" })
     @DisplayName("Invalid Upload Test")
     void generateWithInvalidUploadTest(String projectName) throws Exception {
-        when(sbomFileService.upload(any(SBOM.class))).thenThrow(Exception.class);
+        when(sbomFileService.upload(any(SBOMFile.class))).thenThrow(Exception.class);
 
         mockMvc.perform(multipart("/svip/generators/parsers")
                         .file(buildMockMultipartFile(projectName))

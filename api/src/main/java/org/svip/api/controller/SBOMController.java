@@ -6,13 +6,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
-import org.svip.api.services.*;
 import org.svip.api.services.SBOMFileService;
 import org.svip.conversion.ConversionException;
 import org.svip.serializers.SerializerFactory;
-import org.svip.api.services.VEXFileService;
 import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.serializers.exceptions.DeserializerException;
 import org.svip.serializers.exceptions.SerializerException;
@@ -60,17 +58,17 @@ public class SBOMController {
 
         try {
             // Attempt to upload input
-            SBOM sbom = uploadSBOMInput.toSBOMFile();
+            SBOMFile sbomFile = uploadSBOMInput.toSBOMFile();
             // Attempt to deserialize
-            sbom.toSBOMObject();
+            sbomFile.toSBOMObject();
 
-            this.sbomService.upload(sbom);
+            this.sbomService.upload(sbomFile);
 
             // Log
-            LOGGER.info("POST /svip/sboms - Uploaded SBOM with ID " + sbom.getId() + ": " + sbom.getName());
+            LOGGER.info("POST /svip/sboms - Uploaded SBOM with ID " + sbomFile.getId() + ": " + sbomFile.getName());
 
             // Return ID
-            return new ResponseEntity<>(sbom.getId(), HttpStatus.OK);
+            return new ResponseEntity<>(sbomFile.getId(), HttpStatus.OK);
 
         } catch (IllegalArgumentException | JsonProcessingException e) {
             // Problem with parsing
@@ -155,7 +153,7 @@ public class SBOMController {
     public ResponseEntity<String> getSBOMObjectAsJSON(@RequestParam("id") Long id) {
 
         try {
-            SBOM sbomFile = this.sbomService.getSBOMFile(id);
+            SBOMFile sbomFile = this.sbomService.getSBOMFile(id);
 
             // No SBOM was found
             if (sbomFile == null)
@@ -180,10 +178,10 @@ public class SBOMController {
      * @return The contents of the SBOM file.
      */
     @GetMapping("/sboms/content")
-    public ResponseEntity<SBOM> getContent(@RequestParam("id") Long id) {
+    public ResponseEntity<SBOMFile> getContent(@RequestParam("id") Long id) {
         // todo rename endpoint? Returns more than just content
         // Get SBOM
-        SBOM sbomFile = this.sbomService.getSBOMFile(id);
+        SBOMFile sbomFile = this.sbomService.getSBOMFile(id);
 
         // Return SBOM or invalid ID
         if (sbomFile == null) {
@@ -238,7 +236,7 @@ public class SBOMController {
     @DeleteMapping("/sboms")
     public ResponseEntity<Long> delete(@RequestParam("id") Long id) {
 
-        SBOM sbomFile = this.sbomService.getSBOMFile(id);
+        SBOMFile sbomFile = this.sbomService.getSBOMFile(id);
         // Attempt to delete id
         if (sbomFile == null) {
             LOGGER.warn("DELETE /svip/sboms?id=" + id + " - FILE NOT FOUND");

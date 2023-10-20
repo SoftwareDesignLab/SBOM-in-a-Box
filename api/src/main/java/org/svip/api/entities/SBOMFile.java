@@ -19,12 +19,12 @@ import java.util.Set;
  * file: SBOMFile.java
  *
  * SBOM Table for the database
- * TODO rename SBOMFile
+ *
  * @author Derek Garcia
  **/
 @Entity
-@Table(name = "sbom")
-public class SBOM {
+@Table(name = "sbom_file")
+public class SBOMFile {
 
     // Schema of SBOM
     public enum Schema{
@@ -79,11 +79,11 @@ public class SBOM {
     private VEXFile vexFile;
 
     // Collection of comparisons where this was the target
-    @OneToMany(mappedBy = "targetSBOM", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "targetSBOMFile", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<ComparisonFile> comparisonsAsTarget = new HashSet<>();
 
     // Collection of comparisons where this was the other
-    @OneToMany(mappedBy = "otherSBOM", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "otherSBOMFile", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<ComparisonFile> comparisonsAsOther = new HashSet<>();
 
     /**
@@ -122,9 +122,9 @@ public class SBOM {
     /**
      * Set File Name
      * @param name filename of SBOM
-     * @return SBOM
+     * @return SBOMFile
      */
-    public SBOM setName(String name){
+    public SBOMFile setName(String name){
         this.name = name;
         return this;
     }
@@ -132,9 +132,9 @@ public class SBOM {
     /**
      * Set File Content
      * @param content SBOM string contents
-     * @return SBOM
+     * @return SBOMFile
      */
-    public SBOM setContent(String content){
+    public SBOMFile setContent(String content){
         this.content = content;
         return this;
     }
@@ -142,9 +142,9 @@ public class SBOM {
     /**
      * Set SBOM Schema
      * @param d deserializer to infer schema from
-     * @return SBOM
+     * @return SBOMFile
      */
-    public SBOM setSchema(Deserializer d){
+    public SBOMFile setSchema(Deserializer d){
         // todo better method to determine schema
 
         if(d instanceof CDX14JSONDeserializer)
@@ -159,9 +159,9 @@ public class SBOM {
     /**
      * Simple set schema
      * @param schema schema type
-     * @return SBOM
+     * @return SBOMFile
      */
-    public SBOM setSchema(Schema schema){
+    public SBOMFile setSchema(Schema schema){
         this.schema = schema;
         return this;
     }
@@ -170,9 +170,9 @@ public class SBOM {
     /**
      * Set SBOM File Type
      * @param d deserializer to infer file type from
-     * @return SBOM
+     * @return SBOMFile
      */
-    public SBOM setFileType(Deserializer d){
+    public SBOMFile setFileType(Deserializer d){
         // todo better method to determine schema
 
         if(d instanceof CDX14JSONDeserializer || d instanceof SPDX23JSONDeserializer)
@@ -189,9 +189,9 @@ public class SBOM {
      * Set Quality Report File
      *
      * @param qaf Quality Report File
-     * @return SBOM
+     * @return SBOMFile
      */
-    public SBOM setQualityReport(QualityReportFile qaf){
+    public SBOMFile setQualityReport(QualityReportFile qaf){
         this.qualityReportFile = qaf;
         return this;
     }
@@ -201,19 +201,19 @@ public class SBOM {
      * Set VEX File
      *
      * @param vf VEX File
-     * @return SBOM
+     * @return SBOMFile
      */
-    public SBOM setVEXFile(VEXFile vf){
+    public SBOMFile setVEXFile(VEXFile vf){
         this.vexFile = vf;
         return this;
     }
 
-    public SBOM addComparisonFileAsTarget(ComparisonFile cf){
+    public SBOMFile addComparisonFileAsTarget(ComparisonFile cf){
         this.comparisonsAsTarget.add(cf);
         return this;
     }
 
-    public SBOM addComparisonFileAsOther(ComparisonFile cf){
+    public SBOMFile addComparisonFileAsOther(ComparisonFile cf){
         this.comparisonsAsOther.add(cf);
         return this;
     }
@@ -221,9 +221,9 @@ public class SBOM {
     /**
      * Simple set schema
      * @param fileType file type
-     * @return SBOM
+     * @return SBOMFile
      */
-    public SBOM setFileType(FileType fileType){
+    public SBOMFile setFileType(FileType fileType){
         this.fileType = fileType;
         return this;
     }

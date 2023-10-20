@@ -3,8 +3,7 @@ package org.svip.api.entities.diff;
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.svip.api.entities.SBOM;
-import org.svip.compare.Comparison;
+import org.svip.api.entities.SBOMFile;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,13 +31,13 @@ public class ComparisonFile {
     @ManyToOne
     @JoinColumn(name = "target_sbom_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private SBOM targetSBOM;
+    private SBOMFile targetSBOMFile;
 
     // Other SBOM
     @ManyToOne
     @JoinColumn(name = "other_sbom_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private SBOM otherSBOM;
+    private SBOMFile otherSBOMFile;
 
     // Conflict collection
 //    @OneToMany(mappedBy = "comparison", cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -51,22 +50,22 @@ public class ComparisonFile {
     ///
 
     /**
-     * Set Target SBOM
-     * @param targetSBOM target sbom
+     * Set Target SBOMFile
+     * @param targetSBOMFile target sbom file
      * @return Comparison file
      */
-    public ComparisonFile setTargetSBOM(SBOM targetSBOM){
-        this.targetSBOM = targetSBOM;
+    public ComparisonFile setTargetSBOMFile(SBOMFile targetSBOMFile){
+        this.targetSBOMFile = targetSBOMFile;
         return this;
     }
 
     /**
-     * Set other SBOM
-     * @param otherSBOM target sbom
+     * Set other SBOMFile
+     * @param otherSBOMFile target sbom file
      * @return Comparison file
      */
-    public ComparisonFile setOtherSBOM(SBOM otherSBOM){
-        this.otherSBOM = otherSBOM;
+    public ComparisonFile setOtherSBOMFile(SBOMFile otherSBOMFile){
+        this.otherSBOMFile = otherSBOMFile;
         return this;
     }
 
