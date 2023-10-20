@@ -182,7 +182,6 @@ public class SerializerFactory {
      * @return The format, or null if no format could be resolved.
      */
     public static Format resolveFormat(String fileContents) {
-
         if (Format.isValidTagValue(fileContents))
             return TAGVALUE;
         else if (Format.isValidJSON(fileContents))
