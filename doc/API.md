@@ -463,9 +463,10 @@ curl -X GET -G http://localhost:8080/svip/sboms/vex \
 ## MySQL Database
 Located at `localhost:3306` while the `svip-mysql` Docker container is running.
 
-Use the following command to interact with the MySQL server instance:
+For interacting with the MySQL server instance, use the command below. 
+Ensure you have the appropriate environment variables set, preferably in a .env file:
 ```shell
-$ docker exec -it svip-mysql mysql -uroot -psvipMySQL -D svip -e "<YOUR SQL STATEMENT HERE>"
+$ docker exec -it svip-mysql mysql -uroot -p$MYSQL_ROOT_PASSWORD -D $MYSQL_DATABASE -e "<YOUR SQL STATEMENT HERE>"
 ```
 #### Table `files` Schema:
 |   Field   |    Type    | Null | Key | Default | Extra |
