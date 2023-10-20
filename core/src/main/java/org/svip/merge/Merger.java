@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public abstract class Merger {
 
@@ -80,20 +81,15 @@ public abstract class Merger {
         return mergedCreationData;
     }
 
-
-    // Assumes we could merge 1) comment1 \n 2) comment2 with comment3
     protected static String mergeCreatorComments(String commentA, String commentB) {
         List<String> creatorComments = new ArrayList<>();
-        if (commentA != null)
-            creatorComments.addAll(Arrays.asList(commentA.split("\n")));
-        if (commentB != null)
+
+        if (!(commentA == null || commentA.isEmpty()))
+            creatorComments.add(commentA);
+        if (!(commentB == null || commentB.isEmpty()))
             creatorComments.add(commentB);
 
-        if (creatorComments.size() >= 2)
-            for (int i = 0; i < creatorComments.size(); i++)
-                creatorComments.set(i, (i + 1) + ") " + creatorComments.get(i));
-
-        return String.join("\n", creatorComments);
+        return !creatorComments.isEmpty() ? String.join(". ", creatorComments) + "." : "";
     }
 
     protected static Set<CreationTool> mergeCreationTools(Set<CreationTool> toolsA, Set<CreationTool> toolsB) {

@@ -197,7 +197,7 @@ public class SBOMFileService {
         } catch (JsonProcessingException | ClassCastException e) {
             throw new Exception("Error deserializing merged SBOM: " + e.getMessage());
         }
-
+        System.out.println(contents);
         // save to db
         Random rand = new Random();
         String newName = ((merged.getName() == null || merged.getName().isEmpty()) ? Math.abs(rand.nextInt()) :
