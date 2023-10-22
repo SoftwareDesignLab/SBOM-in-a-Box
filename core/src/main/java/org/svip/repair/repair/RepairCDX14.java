@@ -99,7 +99,7 @@ public class RepairCDX14 implements Repair { // todo depreciate class
                     }
 
                     case COMPONENT_PURL -> {
-                        compUID = fix.toString();
+                        purls.add(fix.toString());
                     }
 
                     case COMPONENT_COPYRIGHT -> {
@@ -127,8 +127,8 @@ public class RepairCDX14 implements Repair { // todo depreciate class
                         cpes.add(fix.toString());
                     }
 
-                    case METADATA_BOM_REF -> {
-                        uid = fix.toString();
+                    case COMPONENT_BOM_REF -> {
+                        compUID = fix.toString();
                     }
                 }
             }
