@@ -58,11 +58,11 @@ public class RepairTest {
     }
 
     @Test
-    public void CDXCopyrightRepair() throws Exception {
+    public void CDXCopyrightPurlRepairTest() throws Exception {
         CDX14SBOM sbom = cdx14JSONDeserializer.readFromString(Files.readString(Path.of(NULL_COPYRIGHT_SBOM_CDX)));
         Map<String, Map<String, List<Fix<?>>>>  fixes = r.generateStatement(sbom, sbom.getUID());
         CDX14SBOM repairedSBOM = (CDX14SBOM) r.repairSBOM(sbom, fixes);
-        assertEquals(0, sbom.compare(repairedSBOM).size());
+        assertEquals(0, r.generateStatement(repairedSBOM, repairedSBOM.getUID()).size());
     }
 
 }
