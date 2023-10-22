@@ -9,7 +9,7 @@ import java.util.Map;
 public class RepairSPDX23 implements Repair {
 
     @Override
-    public SBOM repairSBOM(String uid, SBOM sbom, Map<String, Map<String, List<Fix<?>>>> repairs) {
+    public SBOM repairSBOM(SBOM sbom, Map<String, Map<String, List<Fix<?>>>> repairs) {
         return null;
     }
 

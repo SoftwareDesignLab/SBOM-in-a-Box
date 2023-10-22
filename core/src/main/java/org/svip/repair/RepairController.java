@@ -39,13 +39,12 @@ public class RepairController {
      * Repair this SBOM with chosen repairs
      *
      * @param sbom    sbom to repair
-     * @param uid     uid of sbom
      * @param repairs chosen repairs from SBOM
      * @return repaired SBOM
      */
-    public SBOM repairSBOM(SBOM sbom, String uid, Map<String, Map<String, List<Fix<?>>>> repairs) {
+    public SBOM repairSBOM(SBOM sbom, Map<String, Map<String, List<Fix<?>>>> repairs) {
         Repair r = getRepair(sbom);
-        return r.repairSBOM(uid, sbom, repairs);
+        return r.repairSBOM(sbom, repairs);
     }
 
     /**

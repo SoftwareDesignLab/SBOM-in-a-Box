@@ -379,7 +379,7 @@ public class SBOMFileService {
 
         Repair repair = repairController.getRepair(toRepair);
 
-        org.svip.sbom.model.interfaces.generics.SBOM repaired = repair.repairSBOM(toRepair.getUID(), toRepair, repairStatement);
+        org.svip.sbom.model.interfaces.generics.SBOM repaired = repair.repairSBOM(toRepair, repairStatement);
 
         // serialize into desired format
         Serializer s = SerializerFactory.createSerializer(SerializerFactory.Schema.SPDX23, SerializerFactory.Format.TAGVALUE,
