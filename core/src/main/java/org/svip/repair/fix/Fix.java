@@ -22,4 +22,12 @@ public record Fix<T> (FixType type, T old, T fixed) {
     public T getNew() {
         return fixed;
     }
+
+    /*
+     * Used to determine if a new value is an addition
+     * or a replacement of a previous value
+     */
+    public boolean fromNull() {
+        return old == null;
+    }
 }
