@@ -91,35 +91,35 @@ public class RepairCDX14 implements Repair { // todo depreciate class
                 switch(fix.getType()) {
 
                     case METADATA_SPDXID -> {
-                        uid = fix.toString();
+                        uid = fix.getNew().toString();
                     }
 
                     case METADATA_CREATION_DATA -> {
-                        creationData.setCreationTime(fix.toString());
+                        creationData.setCreationTime(fix.getNew().toString());
                     }
 
                     case COMPONENT_AUTHOR -> {
-                        author = fix.toString();
+                        author = fix.getNew().toString();
                     }
 
                     case COMPONENT_PURL -> {
-                        purls.add(fix.toString());
+                        purls.add(fix.getNew().toString());
                     }
 
                     case COMPONENT_COPYRIGHT -> {
-                        copyright = fix.toString();
+                        copyright = fix.getNew().toString();
                     }
 
                     case METADATA_COMMENT -> {
-                        documentComment = fix.toString();
+                        documentComment = fix.getNew().toString();
                     }
 
                     case METADATA_BOM_VERSION -> {
-                        version = fix.toString();
+                        version = fix.getNew().toString();
                     }
 
                     case COMPONENT_LICENSE -> {
-                        licenses.add(fix.toString());
+                        licenses.add(fix.getNew().toString());
                     }
 
                     case COMPONENT_HASH -> {
@@ -128,11 +128,11 @@ public class RepairCDX14 implements Repair { // todo depreciate class
                     }
 
                     case COMPONENT_CPE -> {
-                        cpes.add(fix.toString());
+                        cpes.add(fix.getNew().toString());
                     }
 
                     case COMPONENT_BOM_REF -> {
-                        compUID = fix.toString();
+                        compUID = fix.getNew().toString();
                     }
                 }
             }
