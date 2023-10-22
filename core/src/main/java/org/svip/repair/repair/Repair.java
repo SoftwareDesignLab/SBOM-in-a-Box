@@ -20,10 +20,9 @@ public interface Repair {
      * that have been requested for the SBOM. These fixes will then
      * be applied to that SBOM and returned.
      *
-     * @param uid   UID of the SBOM.
      * @param sbom  The SBOM Object.
      * @return      The repaired SBOM Object.
      */
-    SBOM repairSBOM(String uid, SBOM sbom, Map<String, Map<String, List<Fix<?>>>> repairs);
+    SBOM repairSBOM(SBOM sbom, Map<String, Map<String, List<Fix<?>>>> repairs);
 
 }
