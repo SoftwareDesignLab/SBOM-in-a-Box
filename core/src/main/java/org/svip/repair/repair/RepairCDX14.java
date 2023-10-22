@@ -90,6 +90,10 @@ public class RepairCDX14 implements Repair { // todo depreciate class
             for(Fix<?> fix : fixes) {
                 switch(fix.getType()) {
 
+                    case METADATA_SPDXID -> {
+                        uid = fix.toString();
+                    }
+
                     case METADATA_CREATION_DATA -> {
                         creationData.setCreationTime(fix.toString());
                     }
