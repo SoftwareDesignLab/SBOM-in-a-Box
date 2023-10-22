@@ -91,9 +91,9 @@ public class EmptyOrNullFixes implements Fixes {
 
         // Create a new list of fixes and add a fix for the bom ref using the hex
         List<Fix<?>> result = new ArrayList<>();
-        result.add(new Fix<>(FixType.METADATA_BOM_REF, null, ""));
-        result.add(new Fix<>(FixType.METADATA_BOM_REF, null, subTypeHex)); // hexadecimal hash of subtype of component
-        result.add(new Fix<>(FixType.METADATA_BOM_REF, null, "pkg:/" + subType + "-" + subTypeHex));
+        result.add(new Fix<>(FixType.COMPONENT_BOM_REF, null, ""));
+        result.add(new Fix<>(FixType.COMPONENT_BOM_REF, null, subTypeHex)); // hexadecimal hash of subtype of component
+        result.add(new Fix<>(FixType.COMPONENT_BOM_REF, null, "pkg:/" + subType + "-" + subTypeHex));
 
         // Return the fix
         return result;
