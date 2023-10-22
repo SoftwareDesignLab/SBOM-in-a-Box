@@ -19,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 // something to run while developing the repair pipeline // todo delete comment
 public class RepairTest {
 
+    private final String NULL_COPYRIGHT_SBOM_CDX = System.getProperty("user.dir") +
+            "/src/test/resources/repair/null-copyright-cdx.json";
     private final String CDX_14_JSON_SBOM = System.getProperty("user.dir") +
             "/src/test/resources/serializers/cdx_json/sbom.alpine.json";
 
@@ -54,4 +56,13 @@ public class RepairTest {
         CDX14SBOM repairedSBOM = (CDX14SBOM) r.repairSBOM(sbom, fixes);
         assertEquals(0, sbom.compare(repairedSBOM).size());
     }
+
+    @Test
+    public void CDXCopyrightRepair() throws Exception {
+        CDX14SBOM sbom = cdx14JSONDeserializer.readFromString(Files.readString(Path.of(NULL_COPYRIGHT_SBOM_CDX)));
+        Map<String, Map<String, List<Fix<?>>>>  fixes = r.generateStatement(sbom, sbom.getUID());
+        CDX14SBOM repairedSBOM = (CDX14SBOM) r.repairSBOM(sbom, fixes);
+        assertEquals(0, sbom.compare(repairedSBOM).size());
+    }
+
 }
