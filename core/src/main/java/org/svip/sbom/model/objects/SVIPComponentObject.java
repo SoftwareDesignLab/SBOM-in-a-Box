@@ -769,7 +769,6 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     @Override
     public int hashCode() {
-        if (name == null) return super.hashCode();
         return this.name.hashCode() + (this.version != null ? this.version.hashCode() : 0);
     }
 }
