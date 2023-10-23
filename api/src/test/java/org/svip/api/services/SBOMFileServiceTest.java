@@ -191,22 +191,27 @@ public class SBOMFileServiceTest {
     @Test
     @DisplayName("Merge 2 sboms")
     void merge_two_sboms() throws Exception{
-        // Given
-        SBOMFile spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
-        SBOMFile cdx14json = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
-        Long[] ids = new Long[2];
-        ids[0] = 0L;
-        ids[1] = 1L;
+        try {
+            // Given
+            SBOMFile spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
+            SBOMFile cdx14json = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+            Long[] ids = new Long[2];
+            ids[0] = 0L;
+            ids[1] = 1L;
 
 
-        // When
-        when(this.sbomFileRepository.findById(0L)).thenReturn(Optional.of(spdx23json));
-        when(this.sbomFileRepository.findById(1L)).thenReturn(Optional.of(cdx14json));
-        this.sbomFileService.merge(ids);
+            // When
+            when(this.sbomFileRepository.findById(0L)).thenReturn(Optional.of(spdx23json));
+            when(this.sbomFileRepository.findById(1L)).thenReturn(Optional.of(cdx14json));
+            this.sbomFileService.merge(ids);
 
-        // Then
-        verify(this.sbomFileRepository).findById(0L);
-        verify(this.sbomFileRepository).findById(1L);
+            // Then
+            verify(this.sbomFileRepository).findById(0L);
+            verify(this.sbomFileRepository).findById(1L);
+
+        } catch (Exception e){
+            fail(e.getMessage());
+        }
     }
 
     ///
