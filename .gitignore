@@ -77,3 +77,6 @@ gradle-app.setting
 
 # dev enviroment files
 /.dev-env/
+
+# environment variables
+.env
