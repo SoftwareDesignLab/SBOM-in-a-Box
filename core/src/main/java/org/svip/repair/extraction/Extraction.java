@@ -4,7 +4,7 @@ import org.svip.sbom.model.uids.Hash.Algorithm;
 import org.svip.sbom.model.uids.PURL;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 /**
  * <b>File</b>: Extraction.java<br>
@@ -15,8 +15,8 @@ import java.util.List;
 public abstract class Extraction {
 
     protected PURL purl;
-    protected HashMap<Algorithm, String> hashes;
-    protected HashMap<String, String> results;
+    protected Map<Algorithm, String> hashes;
+    protected Map<String, String> results;
 
     /**
      * Creates a new object with the purl to use for extraction
@@ -24,8 +24,8 @@ public abstract class Extraction {
      */
     public Extraction(PURL purl) {
         this.purl = purl;
-        this.hashes = new HashMap<Algorithm, String>();
-        this.results = new HashMap<String, String>();
+        this.hashes = new HashMap<>();
+        this.results = new HashMap<>();
     }
 
     /**
@@ -67,7 +67,7 @@ public abstract class Extraction {
      * Gets the hashes from maven repository if exists
      * @return hashes {algorithm : hash}
      */
-    public HashMap<Algorithm, String> getHashes() {
+    public Map<Algorithm, String> getHashes() {
         return hashes;
     }
 }

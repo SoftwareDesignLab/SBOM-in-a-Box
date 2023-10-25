@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static org.svip.sbom.model.uids.Hash.Algorithm.*;
@@ -117,11 +118,30 @@ public class Hash {
     /**
      * Validates a hash function to make sure the length and content are correct
      *
-     * @param a    Hash algorithm
-     * @param hash Hash string
+     * @param component SBOMFile component
+     * @param hash Hash
      * @return True if hash passes, false otherwise
      */
     public static boolean validateHash(Component component, Hash hash) throws Exception {
+        if (component instanceof SBOMPackage sbomPackage
+                && (hash.getAlgorithm().equals(SHA1) || hash.getAlgorithm().equals(MD5))) {
+            String purl = sbomPackage.getPURLs().iterator().next();
+
+            Extraction extraction = new MavenExtraction(new PURL(purl));
+            extraction.extract();
+            Map<Algorithm, String> hashes = extraction.getHashes();
+
+            Map<String, String> componentHashes = sbomPackage.getHashes();
+            for (Map.Entry<Algorithm, String> entry : hashes.entrySet()) {
+                String algorithm = entry.getKey().toString();
+                String value = entry.getValue();
+                if (componentHashes.containsKey(algorithm) && !componentHashes.get(algorithm).equals(value)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         String hashRegex;
         // Test against supported hashes
         switch (hash.algorithm) {
@@ -170,19 +190,6 @@ public class Hash {
 
         // Test regex
         Pattern p = new Pattern(hashRegex, Pattern.MULTILINE);
-        if (component instanceof SBOMPackage sbomPackage) {
-            if (!p.matches(hash.getValue())) {
-                return false;
-            }
-            // Don't know why there are multiple PURLs for a single component
-            Extraction ex;
-            for (String purl : sbomPackage.getPURLs()) {
-                ex = new MavenExtraction(new PURL(purl));
-                ex.extract();
-                HashMap<Algorithm, String> hashes = ex.getHashes();
-                // enumerate through all hashes
-            }
-        }
         return p.matches(hash.getValue());
     }
 
