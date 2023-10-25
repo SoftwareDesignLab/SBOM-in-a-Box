@@ -1,8 +1,14 @@
 package org.svip.repair.extraction;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.svip.generation.parsers.utils.QueryWorker;
+import org.svip.sbom.model.uids.Hash.Algorithm;
 import org.svip.sbom.model.uids.PURL;
 import org.svip.utils.Debug;
+
+import java.util.List;
+
+import static org.svip.utils.Debug.log;
 
 /**
  * file: MavenExtraction.java
@@ -12,7 +18,8 @@ import org.svip.utils.Debug;
  */
 public class MavenExtraction extends Extraction {
 
-    private static final String URL = "https://repo1.maven.org/maven2/%s/%s/%s/%s";
+    private static final String URL = "https://repo1.maven.org/maven2/%s/%s/%s/%s.%s";
+    private static final List<Algorithm> HASH_ALGORITHMS = List.of(Algorithm.MD5, Algorithm.SHA1);
 
     public MavenExtraction(PURL purl) {
         super(purl);
@@ -20,26 +27,39 @@ public class MavenExtraction extends Extraction {
 
     @Override
     public void extract() {
-
-        if(!purl.getType().equals("maven") || purl.getName().equals("") || purl.getVersion().equals("")) {
+        if (!purl.getType().equals("maven") || purl.getName().equals("") || purl.getVersion().equals("")) {
             Debug.log(Debug.LOG_TYPE.WARN, "Can't extract due to incorrect type or missing name or version");
             return;
         }
 
         String formattedURL = String.format(this.URL,
-            String.join("/", purl.getNamespace()).toLowerCase(),
-            purl.getName().toLowerCase(),
-            purl.getVersion().toLowerCase(),
-            String.join("-", purl.getName().toLowerCase(), purl.getVersion().toLowerCase(), purl.getType().toLowerCase())
-        );
+            purl.getNamespace().get(0).replaceAll("\\.", "/"),
+            purl.getName(),
+            purl.getVersion(),
+            String.join("-", purl.getName(), purl.getVersion()),
+            purl.getQualifiers().get("type")
+        ).toLowerCase();
+
+        QueryWorker qw = new QueryWorker(null, formattedURL) {
+            @Override
+            public void run() {
+                for (Algorithm algorithm : HASH_ALGORITHMS) {
+                    String response = getUrlContents(
+                            queryURL(url + "." + algorithm.toString().toLowerCase(), false));
+                    results.put(algorithm.toString().toLowerCase(), response.trim());
+                }
+            }
+        };
+
+        Thread t = new Thread(qw);
+        t.start();
 
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            results.put("md5", mapper.readValue(this.URL + ".md5", String.class));
-            results.put("sha1", mapper.readValue(this.URL + ".sha1", String.class));
-        } catch (Exception ex) {
-            Debug.log(Debug.LOG_TYPE.WARN, "Failed making request to retrieve md5 or sha1 hashes");
+            t.join();
+        } catch (InterruptedException e) {
+            log(Debug.LOG_TYPE.ERROR, "Thread interrupted while waiting for queryWorker.");
         }
 
     }
+
 }

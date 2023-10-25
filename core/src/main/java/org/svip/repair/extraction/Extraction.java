@@ -3,8 +3,7 @@ package org.svip.repair.extraction;
 import org.svip.sbom.model.uids.PURL;
 
 import java.util.HashMap;
-
-
+import java.util.List;
 
 /**
  * <b>File</b>: Extraction.java<br>
@@ -59,5 +58,15 @@ public abstract class Extraction {
      */
     public String getLicense() {
         return getValue("license");
+    }
+
+    /**
+     * Gets the hashes from maven repository if exists
+     * @return hashes {algorithm : hash}
+     */
+    public HashMap<String, String> getHashes() {
+        HashMap<String, String> hashes = new HashMap<>(results);
+        hashes.keySet().retainAll(List.of("md5", "sha1"));
+        return hashes;
     }
 }
