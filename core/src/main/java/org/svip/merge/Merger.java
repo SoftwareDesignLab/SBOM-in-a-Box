@@ -82,10 +82,19 @@ public abstract class Merger {
     protected static String mergeCreatorComments(String commentA, String commentB) {
         List<String> creatorComments = new ArrayList<>();
 
-        if (!(commentA == null || commentA.isEmpty()))
+        if (!(commentA == null || commentA.isEmpty())) {
+            if (commentA.endsWith(".")) {
+                commentA = commentA.replace("\\.$", "");
+            }
             creatorComments.add(commentA);
-        if (!(commentB == null || commentB.isEmpty()))
+        }
+
+        if (!(commentB == null || commentB.isEmpty())) {
+            if (commentB.endsWith(".")) {
+                commentB = commentB.replace("\\.$", "");
+            }
             creatorComments.add(commentB);
+        }
 
         return !creatorComments.isEmpty() ? String.join(". ", creatorComments) + "." : "";
     }
