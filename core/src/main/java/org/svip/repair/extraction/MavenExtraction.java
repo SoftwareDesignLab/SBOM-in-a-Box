@@ -46,7 +46,7 @@ public class MavenExtraction extends Extraction {
                 for (Algorithm algorithm : HASH_ALGORITHMS) {
                     String response = getUrlContents(
                             queryURL(url + "." + algorithm.toString().toLowerCase(), false));
-                    results.put(algorithm.toString().toLowerCase(), response.trim());
+                    hashes.put(algorithm, response.trim());
                 }
             }
         };

@@ -4,6 +4,7 @@ import org.svip.metrics.resultfactory.Result;
 import org.svip.metrics.resultfactory.ResultFactory;
 import org.svip.metrics.resultfactory.enumerations.INFO;
 import org.svip.metrics.tests.enumerations.ATTRIBUTE;
+import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.uids.Hash;
 
 import java.util.HashSet;
@@ -17,7 +18,7 @@ import java.util.Set;
  */
 public class HashTest extends MetricTest {
     private final ResultFactory resultFactory;
-    private final String componentName;
+    private final Component component;
 
 
     /**
@@ -25,11 +26,11 @@ public class HashTest extends MetricTest {
      *
      * @param attributes the list of attributes used
      */
-    public HashTest(String componentName, ATTRIBUTE... attributes) {
+    public HashTest(Component component, ATTRIBUTE... attributes) {
         super(attributes);
         String TEST_NAME = "HashTest";
         resultFactory = new ResultFactory(TEST_NAME, attributes);
-        this.componentName = componentName;
+        this.component = component;
     }
 
     /**
@@ -51,7 +52,7 @@ public class HashTest extends MetricTest {
         // return missing Result
         else {
             Result r = resultFactory.error(field, INFO.NULL,
-                    value, componentName);
+                    value, component.getName());
             results.add(r);
         }
         return results;
@@ -74,23 +75,23 @@ public class HashTest extends MetricTest {
             // Check if hash algorithm is unknown
             if (hash.getAlgorithm() == Hash.Algorithm.UNKNOWN) {
                 return rf.fail(field, INFO.INVALID,
-                        value, componentName);
+                        value, component.getName());
             }
 
             // Check if hash is valid
-            if (!Hash.validateHash(hash.getAlgorithm(), hash.getValue())) {
+            if (!Hash.validateHash(component, hash)) {
                 return rf.fail(field, INFO.INVALID,
-                        value, componentName);
+                        value, component.getName());
             } else {
                 return rf.pass(field, INFO.VALID,
-                        value, componentName);
+                        value, component.getName());
             }
 
         }
         // failed to create a new Hash object, test automatically fails
         catch (Exception e) {
             return rf.fail(field, INFO.INVALID,
-                    value, componentName);
+                    value, component.getName());
         }
     }
 }

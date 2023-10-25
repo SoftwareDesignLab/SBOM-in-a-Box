@@ -2,6 +2,7 @@ package org.svip.repair.extraction;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.model.uids.Hash.Algorithm;
 import org.svip.sbom.model.uids.PURL;
 
 import java.util.HashMap;
@@ -25,9 +26,9 @@ class MavenExtractionTest {
 
     @Test
     public void getHashes() {
-        HashMap<String, String> hashes = ext.getHashes();
-        assertEquals(MD5_HASH, hashes.get("md5"));
-        assertEquals(SHA1_HASH, hashes.get("sha1"));
+        HashMap<Algorithm, String> hashes = ext.getHashes();
+        assertEquals(MD5_HASH, hashes.get(Algorithm.MD5));
+        assertEquals(SHA1_HASH, hashes.get(Algorithm.SHA1));
     }
 
 }

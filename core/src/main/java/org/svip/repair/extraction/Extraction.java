@@ -1,5 +1,6 @@
 package org.svip.repair.extraction;
 
+import org.svip.sbom.model.uids.Hash.Algorithm;
 import org.svip.sbom.model.uids.PURL;
 
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import java.util.List;
 public abstract class Extraction {
 
     protected PURL purl;
+    protected HashMap<Algorithm, String> hashes;
     protected HashMap<String, String> results;
 
     /**
@@ -22,6 +24,7 @@ public abstract class Extraction {
      */
     public Extraction(PURL purl) {
         this.purl = purl;
+        this.hashes = new HashMap<Algorithm, String>();
         this.results = new HashMap<String, String>();
     }
 
@@ -64,9 +67,7 @@ public abstract class Extraction {
      * Gets the hashes from maven repository if exists
      * @return hashes {algorithm : hash}
      */
-    public HashMap<String, String> getHashes() {
-        HashMap<String, String> hashes = new HashMap<>(results);
-        hashes.keySet().retainAll(List.of("md5", "sha1"));
+    public HashMap<Algorithm, String> getHashes() {
         return hashes;
     }
 }
