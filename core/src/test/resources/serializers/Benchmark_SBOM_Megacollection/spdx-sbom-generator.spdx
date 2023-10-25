@@ -28,7 +28,7 @@ Relationship: SPDXRef-Package-Case1 DEPENDS_ON SPDXRef-Package-maven-assembly-pl
 Relationship: SPDXRef-Package-Case1 DEPENDS_ON SPDXRef-Package-jackson-databind-2.15.2
 Relationship: SPDXRef-Package-Case1 DEPENDS_ON SPDXRef-Package-guava-32.0.1-jre
 Relationship: SPDXRef-Package-Case1 DEPENDS_ON SPDXRef-Package-commons-codec-1.15
-Relationship: SPDXRef-Package-Case1 DEPENDS_ON SPDXRef-Package-commons-io-2.13.0
+Relationship: SPDXRef-Package-Case1 DEPENDS_ON SPDXRef-Package-commons-io-2.13.0 
 
 ##### Package representing the jackson-databind
 

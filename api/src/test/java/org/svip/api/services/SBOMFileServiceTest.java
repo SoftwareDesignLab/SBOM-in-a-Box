@@ -190,7 +190,7 @@ public class SBOMFileServiceTest {
     @Disabled("Fails during deserialization due to \n\n being generated in SPDX TagValue file")
     @Test
     @DisplayName("Merge 2 sboms")
-    void merge_two_sboms() throws Exception{
+    void merge_two_sboms() {
         try {
             // Given
             SBOMFile spdx23json = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
