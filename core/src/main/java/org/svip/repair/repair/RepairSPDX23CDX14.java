@@ -2,16 +2,29 @@ package org.svip.repair.repair;
 
 import org.svip.repair.fix.Fix;
 import org.svip.sbom.builder.interfaces.generics.ComponentBuilder;
+import org.svip.sbom.builder.interfaces.generics.SBOMBuilder;
+import org.svip.sbom.builder.interfaces.schemas.SPDX23.SPDX23ComponentBuilder;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14PackageBuilder;
+import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
+import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23FileBuilder;
+import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23PackageBuilder;
 import org.svip.sbom.factory.interfaces.ComponentBuilderFactory;
+import org.svip.sbom.factory.interfaces.SBOMBuilderFactory;
 import org.svip.sbom.factory.objects.CycloneDX14.CDX14PackageBuilderFactory;
 import org.svip.sbom.factory.objects.CycloneDX14.CDX14SBOMBuilderFactory;
+import org.svip.sbom.factory.objects.SPDX23.SPDX23FileBuilderFactory;
 import org.svip.sbom.factory.objects.SPDX23.SPDX23PackageBuilderFactory;
+import org.svip.sbom.factory.objects.SPDX23.SPDX23SBOMBuilderFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
+import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
+import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.Organization;
@@ -21,6 +34,7 @@ import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbom.model.uids.Hash;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class RepairSPDX23CDX14 implements Repair {
 
@@ -46,6 +60,8 @@ public class RepairSPDX23CDX14 implements Repair {
         for(String key : repairs.keySet()) {
             List<Fix<?>> fixes = repairs.get(key).get(key);
 
+            long amount = components.stream().filter(x -> x.getName().equals(key)).count();
+
             Optional<Component> potentialComp = components.stream().filter(x -> x.getName().equals(key)).findFirst();
             Component comp = null;
 
@@ -69,44 +85,82 @@ public class RepairSPDX23CDX14 implements Repair {
             HashMap<String, Set<String>> properties = null;
             String comment = null;
             String attributionText = null;
+            String fileNotice = null;
+            String builtDate = null;
+            String fileName = null;
+            Boolean filesAnalyzed = false;
+            String validUntil = null;
+            String verificationCode = null;
+            String downloadLocation = null;
+            String homePage = null;
+            String releaseDate = null;
+            String sourceInfo = null;
 
-            if(potentialComp.isPresent()) {
-                comp = (Component) potentialComp.get();
+            if(!potentialComp.isPresent())
+                continue;
 
-                author = comp.getAuthor();
-                copyright = comp.getCopyright();
-                hashes = comp.getHashes();
-                licenseCollection = comp.getLicenses();
-                compName = comp.getName();
-                type = comp.getType();
-                compUID = comp.getUID();
+            comp = potentialComp.get();
 
-                if(comp instanceof CDX14ComponentObject) {
+            author = comp.getAuthor();
+            copyright = comp.getCopyright();
+            hashes = comp.getHashes();
+            licenseCollection = comp.getLicenses();
+            compName = comp.getName();
+            type = comp.getType();
+            compUID = comp.getUID();
 
-                    CDX14ComponentObject cdxComp = (CDX14ComponentObject) comp;
+            if(comp instanceof CDX14ComponentObject) {
 
-                    desc = cdxComp.getDescription();
-                    compExtRef = cdxComp.getExternalReferences();
-                    cpes = cdxComp.getCPEs();
-                    group = cdxComp.getGroup();
-                    mime = cdxComp.getMimeType();
-                    compVersion = cdxComp.getVersion();
-                    supplier = cdxComp.getSupplier();
-                    scope = cdxComp.getScope();
-                    purls = cdxComp.getPURLs();
-                    publisher = cdxComp.getPublisher();
-                    properties = cdxComp.getProperties();
-                }
+                CDX14ComponentObject cdxComp = (CDX14ComponentObject) comp;
 
-                else if(comp instanceof SPDX23Component) {
-                    SPDX23Component spdx23Component = (SPDX23Component) comp;
-                    attributionText = spdx23Component.getAttributionText();
-                    comment = spdx23Component.getComment();
-                }
+                desc = cdxComp.getDescription();
+                compExtRef = cdxComp.getExternalReferences();
+                cpes = cdxComp.getCPEs();
+                group = cdxComp.getGroup();
+                mime = cdxComp.getMimeType();
+                compVersion = cdxComp.getVersion();
+                supplier = cdxComp.getSupplier();
+                scope = cdxComp.getScope();
+                purls = cdxComp.getPURLs();
+                publisher = cdxComp.getPublisher();
+                properties = cdxComp.getProperties();
             }
+
+            else if(comp instanceof SPDX23PackageObject) {
+                SPDX23PackageObject spdx23Component = (SPDX23PackageObject) comp;
+                attributionText = spdx23Component.getAttributionText();
+                comment = spdx23Component.getComment();
+                desc = spdx23Component.getDescription();
+                compExtRef = spdx23Component.getExternalReferences();
+                cpes = spdx23Component.getCPEs();
+                compVersion = spdx23Component.getVersion();
+                supplier = spdx23Component.getSupplier();
+                purls = spdx23Component.getPURLs();
+                builtDate = spdx23Component.getBuiltDate();
+                validUntil = spdx23Component.getValidUntilDate();
+                verificationCode = spdx23Component.getVerificationCode();
+                downloadLocation = spdx23Component.getDownloadLocation();
+                fileName = spdx23Component.getFileName();
+                filesAnalyzed = spdx23Component.getFilesAnalyzed();
+                homePage = spdx23Component.getHomePage();
+                releaseDate = spdx23Component.getReleaseDate();
+                sourceInfo = spdx23Component.getSourceInfo();
+            }
+
+            else if(comp instanceof SPDX23FileObject) {
+                SPDX23FileObject spdx23File = (SPDX23FileObject) comp;
+                attributionText = spdx23File.getAttributionText();
+                comment = spdx23File.getComment();
+                fileNotice = spdx23File.getFileNotice();
+            }
+
 
             for(Fix<?> fix : fixes) {
                 switch(fix.getType()) {
+
+                    case COMPONENT_FILE_NOTICE -> {
+                        fileNotice = fix.getNew().toString();
+                    }
 
                     case METADATA_SPDXID -> {
                         uid = fix.getNew().toString();
@@ -146,6 +200,7 @@ public class RepairSPDX23CDX14 implements Repair {
                     }
 
                     case COMPONENT_CPE -> {
+                        cpes.clear(); //Assuming if it is a fix that the previous were invalid
                         cpes.add(fix.getNew().toString());
                     }
 
@@ -159,64 +214,114 @@ public class RepairSPDX23CDX14 implements Repair {
                 }
             }
 
-            if(comp != null) {
+            ComponentBuilderFactory packageBuilderFactory = null;
+            ComponentBuilder compBuilder = null;
 
-                ComponentBuilderFactory packageBuilderFactory = null;
-                ComponentBuilder compBuilder = null;
+            if(comp instanceof CDX14ComponentObject)
+                packageBuilderFactory = new CDX14PackageBuilderFactory();
 
-                if(comp instanceof CDX14ComponentObject)
-                    packageBuilderFactory = new CDX14PackageBuilderFactory();
+            else if(comp instanceof SPDX23PackageObject)
+                packageBuilderFactory = new SPDX23PackageBuilderFactory();
 
-                else if(comp instanceof SPDX23Component)
-                    packageBuilderFactory = new SPDX23PackageBuilderFactory();
+            else if(comp instanceof SPDX23FileBuilder)
+                packageBuilderFactory = new SPDX23FileBuilderFactory();
 
-                compBuilder = packageBuilderFactory.createBuilder();
+            compBuilder = packageBuilderFactory.createBuilder();
 
-                compBuilder.setAuthor(author);
-                compBuilder.setCopyright(copyright);
-                compBuilder.setLicenses(licenseCollection);
-                compBuilder.setName(compName);
-                compBuilder.setType(type);
-                compBuilder.setCopyright(copyright);
-                compBuilder.setUID(compUID);
+            compBuilder.setAuthor(author);
+            compBuilder.setCopyright(copyright);
+            compBuilder.setLicenses(licenseCollection);
+            compBuilder.setName(compName);
+            compBuilder.setType(type);
+            compBuilder.setCopyright(copyright);
+            compBuilder.setUID(compUID);
 
-                compBuilder.setDescription(desc);
-                compBuilder.setSupplier(supplier);
-                compBuilder.setGroup(group);
-                compBuilder.setMimeType(mime);
-                compBuilder.setPublisher(publisher);
-                compBuilder.setVersion(compVersion);
-                compBuilder.setScope(scope);
+            for(String hash : hashes.keySet()) {
+                compBuilder.addHash(hash, hashes.get(hash));
+            }
 
-                for(String hash : hashes.keySet()) {
-                    compBuilder.addHash(hash, hashes.get(hash));
-                }
+
+            if(compBuilder instanceof CDX14PackageBuilder) {
+
+                CDX14PackageBuilder cdxBuilder = (CDX14PackageBuilder) compBuilder;
+
+                cdxBuilder.setDescription(desc);
+                cdxBuilder.setSupplier(supplier);
+                cdxBuilder.setGroup(group);
+                cdxBuilder.setMimeType(mime);
+                cdxBuilder.setPublisher(publisher);
+                cdxBuilder.setVersion(compVersion);
+                cdxBuilder.setScope(scope);
 
                 for(ExternalReference ref : compExtRef) {
-                    compBuilder.addExternalReference(ref);
+                    cdxBuilder.addExternalReference(ref);
                 }
 
                 for(String cpe : cpes) {
-                    compBuilder.addCPE(cpe);
+                    cdxBuilder.addCPE(cpe);
                 }
 
                 for(String purl : purls) {
-                    compBuilder.addPURL(purl);
+                    cdxBuilder.addPURL(purl);
                 }
 
                 for(String property : properties.keySet()) {
                     for(String value : properties.get(property)) {
-                        compBuilder.addProperty(property, value);
+                        cdxBuilder.addProperty(property, value);
                     }
                 }
+            } else if(compBuilder instanceof SPDX23PackageBuilder) {
+                SPDX23PackageBuilder spdxBuilder = (SPDX23PackageBuilder) compBuilder;
 
-                components.remove(comp);
-                components.add(compBuilder.build());
+                for(ExternalReference ref : compExtRef) {
+                    spdxBuilder.addExternalReference(ref);
+                }
+
+                for(String cpe : cpes) {
+                    spdxBuilder.addCPE(cpe);
+                }
+
+                for(String purl : purls) {
+                    spdxBuilder.addPURL(purl);
+                }
+
+                spdxBuilder.setAttributionText(attributionText);
+                spdxBuilder.setComment(comment);
+                spdxBuilder.setDescription(desc);
+                spdxBuilder.setSupplier(supplier);
+                spdxBuilder.setVersion(compVersion);
+                spdxBuilder.setBuildDate(builtDate);
+                spdxBuilder.setDownloadLocation(downloadLocation);
+                spdxBuilder.setFileName(fileName);
+                spdxBuilder.setFilesAnalyzed(filesAnalyzed);
+                spdxBuilder.setReleaseDate(releaseDate);
+                spdxBuilder.setValidUntilDate(validUntil);
+                spdxBuilder.setVerificationCode(verificationCode);
+                spdxBuilder.setHomePage(homePage);
+                spdxBuilder.setSourceInfo(sourceInfo);
+            } else if(compBuilder instanceof SPDX23FileBuilder) {
+                SPDX23FileBuilder spdx23FileBuilder = (SPDX23FileBuilder) compBuilder;
+
+                spdx23FileBuilder.setFileNotice(fileNotice);
+                spdx23FileBuilder.setComment(comment);
+                spdx23FileBuilder.setAttributionText(attributionText);
             }
+
+            components.remove(comp);
+            components.add(compBuilder.build());
+
         }
 
-        CDX14SBOMBuilderFactory builderFactory = new CDX14SBOMBuilderFactory();
-        CDX14Builder builder = builderFactory.createBuilder();
+        SBOMBuilderFactory builderFactory = null;
+
+        if (sbom instanceof CDX14SBOM)
+            builderFactory = new CDX14SBOMBuilderFactory();
+
+        else if(sbom instanceof SPDX23SBOM)
+            builderFactory = new SPDX23SBOMBuilderFactory();
+
+        SBOMBuilder builder = builderFactory.createBuilder();
+
         builder.setDocumentComment(documentComment);
         builder.setFormat(format);
         builder.setName(name);
@@ -242,7 +347,14 @@ public class RepairSPDX23CDX14 implements Repair {
             builder.addExternalReference(ref);
         }
 
-        return builder.buildCDX14SBOM();
+        if(builder instanceof SPDX23Builder) {
+            SPDX23SBOM spdx23SBOM = (SPDX23SBOM) sbom;
+            SPDX23Builder spdx23Builder = (SPDX23Builder) builder;
+
+            spdx23Builder.setSPDXLicenseListVersion(spdx23SBOM.getSPDXLicenseListVersion());
+        }
+
+        return builder.Build();
     }
 
 }
