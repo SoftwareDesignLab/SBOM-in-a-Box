@@ -156,7 +156,7 @@ public class SPDX23Pipeline implements SPDX23Tests {
         }
 
         // test component Hashes
-        var hashTest = new HashTest(component.getName(), ATTRIBUTE.UNIQUENESS,
+        var hashTest = new HashTest(component, ATTRIBUTE.UNIQUENESS,
                 ATTRIBUTE.MINIMUM_ELEMENTS);
         Map<String, String> hashes = component.getHashes();
         if (hashes != null) {
@@ -236,7 +236,7 @@ public class SPDX23Pipeline implements SPDX23Tests {
                 copyright, component.getName()));
 
         // test component Hashes
-        var hashTest = new HashTest(component.getName(), ATTRIBUTE.UNIQUENESS,
+        var hashTest = new HashTest(component, ATTRIBUTE.UNIQUENESS,
                 ATTRIBUTE.MINIMUM_ELEMENTS);
         Map<String, String> hashes = component.getHashes();
         if (hashes != null) {

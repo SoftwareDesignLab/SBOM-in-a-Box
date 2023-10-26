@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.uids.Hash.Algorithm;
 import org.svip.sbom.model.uids.PURL;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +26,7 @@ class MavenExtractionTest {
 
     @Test
     public void getHashes() {
-        HashMap<Algorithm, String> hashes = ext.getHashes();
+        Map<Algorithm, String> hashes = ext.getHashes();
         assertEquals(MD5_HASH, hashes.get(Algorithm.MD5));
         assertEquals(SHA1_HASH, hashes.get(Algorithm.SHA1));
     }

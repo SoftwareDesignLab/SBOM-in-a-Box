@@ -114,7 +114,7 @@ public class CDX14Pipeline implements CDX14Tests {
                 }
 
                 // test component Hashes
-                var hashTest = new HashTest(component.getName(),
+                var hashTest = new HashTest(component,
                         ATTRIBUTE.UNIQUENESS, ATTRIBUTE.MINIMUM_ELEMENTS);
                 Map<String, String> hashes = component.getHashes();
                 if (hashes != null) {

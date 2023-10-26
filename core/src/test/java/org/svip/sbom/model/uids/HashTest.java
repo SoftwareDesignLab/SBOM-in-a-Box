@@ -1,6 +1,7 @@
 package org.svip.sbom.model.uids;
 
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.model.interfaces.generics.Component;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -59,43 +60,24 @@ class HashTest {
 
     @Test
     public void validate_hash_test() {
-        assertFalse(Hash.validateHash(Algorithm.UNKNOWN, HASH_VALUE));
-        assertFalse(Hash.validateHash(Algorithm.ADLER32, HASH_VALUE));
-        assertFalse(Hash.validateHash(Algorithm.MD6, HASH_VALUE + HASH_VALUE + HASH_VALUE));
+        assertFalse(Hash.validateHash(null, new Hash(Algorithm.UNKNOWN, HASH_VALUE)));
+        assertFalse(Hash.validateHash(null, new Hash(Algorithm.ADLER32, HASH_VALUE)));
+        assertFalse(Hash.validateHash(null, new Hash(Algorithm.MD6, HASH_VALUE + HASH_VALUE + HASH_VALUE)));
 
-        assertTrue(Hash.validateHash(Algorithm.MD5, HASH_VALUE));
-        assertTrue(Hash.validateHash(Algorithm.MD6, HASH_VALUE));
-        assertTrue(Hash.validateHash(Algorithm.MD6, HASH_VALUE + HASH_VALUE));
-        assertTrue(Arrays.stream(Algorithm.values()).anyMatch(algorithm -> Hash.validateHash(algorithm, HASH_VALUE)));
+        assertTrue(Hash.validateHash(null, new Hash(Algorithm.MD5, HASH_VALUE)));
+        assertTrue(Hash.validateHash(null, new Hash(Algorithm.MD6, HASH_VALUE)));
+        assertTrue(Hash.validateHash(null, new Hash(Algorithm.MD6, HASH_VALUE + HASH_VALUE)));
+        assertTrue(Arrays.stream(Algorithm.values()).anyMatch(algorithm -> Hash.validateHash(null, new Hash(algorithm, HASH_VALUE))));
     }
 
     @Test
-    public void valid_algorithms_test() {
-        assertEquals(Collections.emptyList(), Hash.validAlgorithms("invalid", "SPDX"));
-        assertEquals(List.of(Algorithm.MD5), Hash.validAlgorithms(HASH_VALUE, "CycloneDX"));
-        assertEquals(List.of(Algorithm.MD2, Algorithm.MD4, Algorithm.MD5, Algorithm.MD6), Hash.validAlgorithms(HASH_VALUE, "SPDX"));
-
-        Map<Algorithm, String> hashes = generateHashes();
-        assertEquals(Collections.emptyList(), Hash.validAlgorithms(hashes.get(Algorithm.ADLER32), "CycloneDX"));
-        assertEquals(Collections.emptyList(), Hash.validAlgorithms(hashes.get(Algorithm.SHA224), "CycloneDX"));
-        for (String hash : hashes.values()) {
-            assertNotNull(Hash.validAlgorithms(hash, "SPDX"));
-        }
+    public void validate_md5_hash_test() {
 
     }
 
-    private Map<Algorithm, String> generateHashes() {
-        Map<Algorithm, String> hashes = new HashMap<>();
+    @Test
+    public void validate_sha1_hash_test() {
 
-        hashes.put(Algorithm.ADLER32, HASH_VALUE.substring(0, 8));
-        hashes.put(Algorithm.MD2, HASH_VALUE);
-        hashes.put(Algorithm.SHA1, (HASH_VALUE + HASH_VALUE).substring(0, 40));
-        hashes.put(Algorithm.SHA224, (HASH_VALUE + HASH_VALUE).substring(0, 56));
-        hashes.put(Algorithm.SHA256, HASH_VALUE + HASH_VALUE);
-        hashes.put(Algorithm.SHA384, HASH_VALUE + HASH_VALUE + HASH_VALUE);
-        hashes.put(Algorithm.SHA512, HASH_VALUE + HASH_VALUE + HASH_VALUE + HASH_VALUE);
-
-        return hashes;
     }
 
 }
