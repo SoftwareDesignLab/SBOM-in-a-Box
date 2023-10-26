@@ -1,9 +1,8 @@
 package org.svip.repair;
 
 import org.svip.repair.repair.Repair;
-import org.svip.repair.repair.RepairCDX14;
-import org.svip.repair.repair.RepairSPDX23;
 import org.svip.repair.fix.Fix;
+import org.svip.repair.repair.RepairSPDX23CDX14;
 import org.svip.repair.statements.RepairStatement;
 import org.svip.repair.statements.RepairStatementSPDX23CDX14;
 import org.svip.sbom.model.interfaces.generics.SBOM;
@@ -80,13 +79,9 @@ public class RepairController {
 
         // Get the correct Repair class based on the format
         switch (sbom.getFormat()) {
-            // For SPDX 2.3
-            case "SPDX" -> {
-                return new RepairSPDX23();
-            }
-            // For CycloneDX 1.4
-            case "CycloneDX" -> {
-                return new RepairCDX14();
+            // For SPDX 2.3 and CycloneDX 1.4
+            case "SPDX", "CycloneDX" -> {
+                return new RepairSPDX23CDX14();
             }
             // For none found
             default -> {

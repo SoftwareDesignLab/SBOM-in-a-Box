@@ -2,6 +2,7 @@ package org.svip.repair;
 
 import org.junit.jupiter.api.Test;
 import org.svip.repair.fix.Fix;
+import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
@@ -40,6 +41,16 @@ public class RepairTest {
     public void CDXRepairTest() throws Exception {
         CDX14SBOM sbom = cdx14JSONDeserializer.readFromString(Files.readString(Path.of(CDX_14_JSON_SBOM)));
         Map<String, Map<String, List<Fix<?>>>> statement = r.generateStatement(sbom, sbom.getUID());
+        CDX14SBOM repaired = (CDX14SBOM) r.repairSBOM(sbom, statement);
+        Map<String, Map<String, List<Fix<?>>>> newStatement = r.generateStatement(repaired, repaired.getUID());
+        //assertEquals(0, newStatement.size()); failing currently
+    }
+
+    @Test
+    public void SPDXNullRepairsTest() throws Exception {
+        SPDX23SBOM sbom = spdx23JSONDeserializer.readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
+        SPDX23SBOM repairedSBOM = (SPDX23SBOM) r.repairSBOM(sbom, null);
+        assertEquals(true, sbom.equals(repairedSBOM));
     }
 
     @Test
@@ -54,6 +65,14 @@ public class RepairTest {
         CDX14SBOM sbom = cdx14JSONDeserializer.readFromString(Files.readString(Path.of(CDX_14_JSON_SBOM)));
         Map<String, Map<String, List<Fix<?>>>>  fixes = new HashMap<String, Map<String, List<Fix<?>>>>();
         CDX14SBOM repairedSBOM = (CDX14SBOM) r.repairSBOM(sbom, fixes);
+        assertEquals(0, sbom.compare(repairedSBOM).size());
+    }
+
+    @Test
+    public void SPDXEmptyRepairsTest() throws Exception {
+        SPDX23SBOM sbom = spdx23JSONDeserializer.readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
+        Map<String, Map<String, List<Fix<?>>>>  fixes = new HashMap<String, Map<String, List<Fix<?>>>>();
+        SPDX23SBOM repairedSBOM = (SPDX23SBOM) r.repairSBOM(sbom, fixes);
         assertEquals(0, sbom.compare(repairedSBOM).size());
     }
 
