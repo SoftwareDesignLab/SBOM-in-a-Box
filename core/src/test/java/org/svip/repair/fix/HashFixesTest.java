@@ -15,11 +15,14 @@ import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -109,4 +112,33 @@ class HashFixesTest {
         }
     }
 
+    /*
+    @Test
+    public void valid_algorithms_test() {
+        assertEquals(Collections.emptyList(), Hash.validAlgorithms("invalid", "SPDX"));
+        assertEquals(List.of(Algorithm.MD5), Hash.validAlgorithms(HASH_VALUE, "CycloneDX"));
+        assertEquals(List.of(Algorithm.MD2, Algorithm.MD4, Algorithm.MD5, Algorithm.MD6), Hash.validAlgorithms(HASH_VALUE, "SPDX"));
+
+        Map<Algorithm, String> hashes = generateHashes();
+        assertEquals(Collections.emptyList(), Hash.validAlgorithms(hashes.get(Algorithm.ADLER32), "CycloneDX"));
+        assertEquals(Collections.emptyList(), Hash.validAlgorithms(hashes.get(Algorithm.SHA224), "CycloneDX"));
+        for (String hash : hashes.values()) {
+            assertNotNull(Hash.validAlgorithms(hash, "SPDX"));
+        }
+    }
+
+    private Map<Algorithm, String> generateHashes() {
+        Map<Algorithm, String> hashes = new HashMap<>();
+
+        hashes.put(Algorithm.ADLER32, HASH_VALUE.substring(0, 8));
+        hashes.put(Algorithm.MD2, HASH_VALUE);
+        hashes.put(Algorithm.SHA1, (HASH_VALUE + HASH_VALUE).substring(0, 40));
+        hashes.put(Algorithm.SHA224, (HASH_VALUE + HASH_VALUE).substring(0, 56));
+        hashes.put(Algorithm.SHA256, HASH_VALUE + HASH_VALUE);
+        hashes.put(Algorithm.SHA384, HASH_VALUE + HASH_VALUE + HASH_VALUE);
+        hashes.put(Algorithm.SHA512, HASH_VALUE + HASH_VALUE + HASH_VALUE + HASH_VALUE);
+
+        return hashes;
+    }
+     */
 }
