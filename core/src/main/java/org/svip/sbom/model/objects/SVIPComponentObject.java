@@ -762,9 +762,9 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof SBOMPackage sbomPackage)) return false;
-        return Objects.equals(this.name, sbomPackage.getName())
-                && Objects.equals(this.version, sbomPackage.getVersion());
+        if (!(object instanceof SVIPComponentObject svipComponentObject)) return false;
+        return Objects.equals(this.name, svipComponentObject.getName())
+                && Objects.equals(this.version, svipComponentObject.getVersion());
     }
 
     @Override

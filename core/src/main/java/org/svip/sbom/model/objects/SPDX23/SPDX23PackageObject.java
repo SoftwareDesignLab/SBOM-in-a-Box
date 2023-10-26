@@ -603,9 +603,9 @@ public class SPDX23PackageObject implements SPDX23Package {
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof SBOMPackage sbomPackage)) return false;
-        return Objects.equals(this.name, sbomPackage.getName())
-                && Objects.equals(this.version, sbomPackage.getVersion());
+        if (!(object instanceof SPDX23Package spdx23Package)) return false;
+        return Objects.equals(this.name, spdx23Package.getName())
+                && Objects.equals(this.version, spdx23Package.getVersion());
     }
 
     @Override

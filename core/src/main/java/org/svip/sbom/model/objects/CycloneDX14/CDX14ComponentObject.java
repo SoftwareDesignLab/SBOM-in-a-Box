@@ -452,9 +452,9 @@ public class CDX14ComponentObject implements CDX14Package {
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof SBOMPackage sbomPackage)) return false;
-        return Objects.equals(this.name, sbomPackage.getName())
-                && Objects.equals(this.version, sbomPackage.getVersion());
+        if (!(object instanceof CDX14Package cdx14Package)) return false;
+        return Objects.equals(this.name, cdx14Package.getName())
+                && Objects.equals(this.version, cdx14Package.getVersion());
     }
 
     @Override
