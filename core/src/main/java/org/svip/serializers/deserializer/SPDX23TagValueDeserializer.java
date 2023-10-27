@@ -202,7 +202,8 @@ public class SPDX23TagValueDeserializer implements Deserializer {
 
         // PACKAGES
         String packageContents = getTagContents(fileContents, PACKAGE_TAG);
-        List<String> packageList = Stream.of(packageContents.split("\n\n")).filter(pkg -> !pkg.contains(TAG)).toList();
+        List<String> packageList = Stream.of(packageContents.split("\n\n"))
+                .filter(pkg -> !(pkg.contains(TAG) || pkg.contains(RELATIONSHIP_KEY))).toList();
 
         for (String packageBlock : packageList) {
             if (packageBlock.strip().equals("")) continue;
