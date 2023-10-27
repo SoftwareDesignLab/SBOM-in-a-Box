@@ -69,27 +69,4 @@ class HashTest {
         assertTrue(Hash.isSPDXExclusive(Algorithm.MD6));
         assertTrue(Hash.isSPDXExclusive(Algorithm.ADLER32));
     }
-
-    @Test
-    public void validate_hash_test() {
-        assertFalse(Hash.validateHash(null, new Hash(Algorithm.UNKNOWN, HASH_VALUE)));
-        assertFalse(Hash.validateHash(null, new Hash(Algorithm.ADLER32, HASH_VALUE)));
-        assertFalse(Hash.validateHash(null, new Hash(Algorithm.MD6, HASH_VALUE + HASH_VALUE + HASH_VALUE)));
-
-        assertTrue(Hash.validateHash(null, new Hash(Algorithm.MD5, HASH_VALUE)));
-        assertTrue(Hash.validateHash(null, new Hash(Algorithm.MD6, HASH_VALUE)));
-        assertTrue(Hash.validateHash(null, new Hash(Algorithm.MD6, HASH_VALUE + HASH_VALUE)));
-        assertTrue(Arrays.stream(Algorithm.values()).anyMatch(algorithm -> Hash.validateHash(null, new Hash(algorithm, HASH_VALUE))));
-    }
-
-    @Test
-    public void validate_md5_hash_test() {
-
-    }
-
-    @Test
-    public void validate_sha1_hash_test() {
-
-    }
-
 }

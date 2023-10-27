@@ -109,7 +109,7 @@ public class HashFixes implements Fixes<Hash> {
             case 64 -> Arrays.asList(SHA256, SHA3256, BLAKE2b256, BLAKE3, MD6);
             case 96 -> Arrays.asList(SHA384, SHA3384, BLAKE2b512);
             case 128 -> Arrays.asList(SHA512, SHA3512, BLAKE2b512, MD6);
-            default -> Collections.emptyList();
+            default -> Arrays.asList();
         };
 
         if (sbomFormat.equals("CycloneDX")) {

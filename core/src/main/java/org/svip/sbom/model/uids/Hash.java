@@ -116,58 +116,6 @@ public class Hash {
                 a == ADLER32;
     }
 
-    /**
-     * Validates a hash function to make sure the length and content are correct
-     *
-     * @param component SBOMFile component
-     * @param hash Hash
-     * @return True if hash passes, false otherwise
-     */
-    public static boolean validateHash(Component component, Hash hash) {
-        // Validate MD5 and SHA1 hashes against Maven Repository
-        String purlString;
-        if (component instanceof SBOMPackage sbomPackage
-                && (hash.getAlgorithm().equals(MD5) || hash.getAlgorithm().equals(SHA1))
-                && (purlString = sbomPackage.getPURLs().stream().findFirst().get()).startsWith("maven")) {
-
-            // Create PURL object
-            PURL purl;
-            try {
-                purl = new PURL(purlString);
-            } catch (Exception e) {
-                Debug.log(Debug.LOG_TYPE.WARN, e.getMessage());
-                return false;
-            }
-
-            // Perform extraction of MD5 and SHA1 hashes from Maven Repository
-            Extraction extraction = new MavenExtraction(purl);
-            extraction.extract();
-
-            // Get hashes
-            Map<Algorithm, String> validHashes = extraction.getHashes();
-            Map<String, String> componentHashes = sbomPackage.getHashes();
-
-            // Compare hash
-            return validHashes.get(hash.getAlgorithm()).equals(componentHashes.get(hash.getAlgorithm().toString()));
-
-        } else {
-            // If component is not from Maven Repository, then test against supported hashes using regex
-            Pattern p = new Pattern(
-                    switch (hash.getAlgorithm()) {
-                        case ADLER32 -> "^[a-fA-F0-9]{8}$";
-                        case SHA1 -> "^[a-fA-F0-9]{40}$";
-                        case SHA224 -> "^[a-fA-F0-9]{56}$";
-                        case SHA256, SHA3256, BLAKE2b256, BLAKE3 -> "^[a-fA-F0-9]{64}$";
-                        case SHA384, SHA3384, BLAKE2b384 -> "^[a-fA-F0-9]{96}$";
-                        case SHA512, SHA3512, BLAKE2b512 -> "^[a-fA-F0-9]{128}$";
-                        case MD2, MD4, MD5 -> "^[a-fA-F0-9]{32}$";
-                        case MD6 -> "^([a-fA-F0-9]{32}|[a-fA-F0-9]{64}|[a-fA-F0-9]{128})$";
-                        default -> "(?!)"; // Regex will always fail
-                    }, Pattern.MULTILINE);
-            return p.matches(hash.getValue());
-        }
-    }
-
     ///
     /// getters
     ///
