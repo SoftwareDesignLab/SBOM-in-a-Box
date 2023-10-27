@@ -3,10 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v8.0.6-alpha] - (10/24/2023)
+## [v8.0.6-alpha] - (10/27/2023)
 
 ### Changed
-- SBOM components are now compared by name and version
+- SBOM components objects are now compared by name and version
 
 ## [v8.0.5-alpha] - (10/17/2023)
 
