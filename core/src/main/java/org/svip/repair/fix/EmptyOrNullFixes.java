@@ -45,7 +45,7 @@ public class EmptyOrNullFixes implements Fixes {
         else if (result.getDetails().contains("Bom-Ref")) // i.e., UID
             return bomRefFix(componentName);
         else if (result.getDetails().contains("Creation Data"))
-            return creationDataFix();
+            return creationDataFix(result.getDetails());
         else if (result.getDetails().contains("SPDXID"))
             return SPDXIDFix(result);
         else if (result.getDetails().contains("Comment"))
@@ -105,7 +105,13 @@ public class EmptyOrNullFixes implements Fixes {
      *
      * @return potential fixes for creation data
      */
-    private List<Fix<?>> creationDataFix() {
+    private List<Fix<?>> creationDataFix(String details) {
+
+        String[] split = details.split(" ");
+
+        //We only fix creation data at the current time
+        if(!split[split.length].equals("Manufacture"))
+            return new ArrayList<Fix<?>>();
 
         // Create a new date and time string
         String dateAndTime;
