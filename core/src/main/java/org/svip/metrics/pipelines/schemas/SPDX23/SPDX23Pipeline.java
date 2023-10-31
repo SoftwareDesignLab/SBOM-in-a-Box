@@ -361,8 +361,7 @@ public class SPDX23Pipeline implements SPDX23Tests {
      * @return the result of if the sbom has creation info
      */
     @Override
-    public Set<Result> hasCreationInfo(String field, CreationData creationData,
-                                       String sbomName) {
+    public Set<Result> hasCreationInfo(String field, CreationData creationData, String sbomName) {
         Set<Result> results = new HashSet<>();
 
         // create a new EmptyOrNullTest and ResultFactory
@@ -380,16 +379,12 @@ public class SPDX23Pipeline implements SPDX23Tests {
 
         //first check for creator info and if it is null
         Organization creator = creationData.getManufacture();
-        if (creator == null) {
 
-            results.add(resultFactory.fail(field, INFO.MISSING,
-                    "Creator Name", sbomName));
-            return results;
-        }
+        if (creator == null)
+            results.add(resultFactory.fail("Manufacture", INFO.MISSING,"Manufacture", sbomName));
+        else
+            results.add(emptyNullTest.test(field, creator.getName(), sbomName));
 
-        // check for the creator's name
-        String creatorName = creator.getName();
-        results.add(emptyNullTest.test(field, creatorName, sbomName));
         // then check for creation time info
         String creationTime = creationData.getCreationTime();
         results.add(emptyNullTest.test(field, creationTime, sbomName));
