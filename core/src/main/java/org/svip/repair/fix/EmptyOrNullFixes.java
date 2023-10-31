@@ -37,13 +37,13 @@ public class EmptyOrNullFixes implements Fixes {
     }
 
     @Override
-    public List<Fix<?>> fix(Result result, SBOM sbom, String repairSubType) throws Exception {
+    public List<Fix<?>> fix(Result result, SBOM sbom, String componentName) throws Exception {
 
         // Depending on the type of fix, call the correct fix method
         if (result.getDetails().contains("Bom Version was a null value"))
             return bomVersionFix(sbom);
         else if (result.getDetails().contains("Bom-Ref")) // i.e., UID
-            return bomRefFix(repairSubType);
+            return bomRefFix(componentName);
         else if (result.getDetails().contains("Creation Data"))
             return creationDataFix();
         else if (result.getDetails().contains("SPDXID"))
@@ -55,9 +55,9 @@ public class EmptyOrNullFixes implements Fixes {
         else if (result.getDetails().contains("File Notice"))
             return fileNoticeNullFix();
         else if (result.getDetails().contains("Author"))
-            return authorNullFix(sbom, repairSubType);
+            return authorNullFix(sbom, componentName);
         else if (result.getDetails().contains("Copyright"))
-            return copyrightNullFix(sbom, repairSubType);
+            return copyrightNullFix(sbom, componentName);
 
         return null;
 

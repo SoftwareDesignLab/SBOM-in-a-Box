@@ -10,7 +10,8 @@ import java.util.Map;
  * Name: Repair.java
  * Description: Interface for Repair.
  *
- * @authors Tyler Drake
+ * @author Tyler Drake
+ * @author Justin Jantzi
  */
 public interface Repair {
 
@@ -20,9 +21,10 @@ public interface Repair {
      * that have been requested for the SBOM. These fixes will then
      * be applied to that SBOM and returned.
      *
-     * @param sbom  The SBOM Object.
-     * @return      The repaired SBOM Object.
+     * @param sbom      The SBOM Object.
+     * @param repairs   The fixes to make
+     * @return          The repaired SBOM Object.
      */
-    SBOM repairSBOM(SBOM sbom, Map<String, Map<String, List<Fix<?>>>> repairs);
+    SBOM repairSBOM(SBOM sbom, Map<Integer, List<Fix<?>>> repairs);
 
 }

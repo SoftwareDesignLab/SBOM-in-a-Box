@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class PURLFixes implements Fixes {
     @Override
-    public List<Fix<?>> fix(Result result, SBOM sbom, String repairSubType) {
+    public List<Fix<?>> fix(Result result, SBOM sbom, String componentName) {
 
         // Create a new purl
         PURL newPurl = null;
@@ -73,7 +73,7 @@ public class PURLFixes implements Fixes {
 
                     // Set the standard identifiers/fields
                     String type = "pkg"; // todo is this true for all components?
-                    String name = repairSubType;
+                        String name = componentName;
                     if (component.getName() != null)
                         name = component.getName();
                     String nameSpace = null;
@@ -116,7 +116,7 @@ public class PURLFixes implements Fixes {
                         nameSpace = component.getAuthor();
                     // And if that doesn't work, try setting the namespace to the repairSubType
                     if (nameSpace == null)
-                        nameSpace = repairSubType;
+                        nameSpace = componentName;
 
                     // Create the new PURL
                     newPurl = new PURL(type + ":" + nameSpace + "/" + name +

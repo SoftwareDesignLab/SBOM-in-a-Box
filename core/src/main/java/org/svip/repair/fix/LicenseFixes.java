@@ -29,11 +29,11 @@ public class LicenseFixes implements Fixes<License> {
      *
      * @param result        object from quality report
      * @param sbom          sbom from quality report
-     * @param repairSubType key from quality report map most directly relating to the repair type
+     * @param componentName key from quality report map most directly relating to the repair type
      * @return singleton list of a license fix
      */
     @Override
-    public List<Fix<License>> fix(Result result, SBOM sbom, String repairSubType) {
+    public List<Fix<License>> fix(Result result, SBOM sbom, String componentName) {
         // Get license identifier (name or id) from result message
         String details = result.getDetails();
         String identifier = details.substring(0, details.indexOf("is") - 1);

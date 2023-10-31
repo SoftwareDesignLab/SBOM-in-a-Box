@@ -11,6 +11,7 @@ import org.svip.conversion.Conversion;
 import org.svip.conversion.ConversionException;
 import org.svip.merge.MergerController;
 import org.svip.merge.MergerException;
+import org.svip.metrics.pipelines.QualityReport;
 import org.svip.repair.RepairController;
 import org.svip.repair.fix.Fix;
 import org.svip.repair.repair.Repair;
@@ -339,10 +340,10 @@ public class SBOMFileService {
     /**
      * Returns a map of fixes
      * @param id id of SBOM to repair
-     * @return map of potential fixes
+     * @return quality report with potential fixes
      * @throws JsonProcessingException error deserialization occured
      */
-    public Map<String, Map<String, List<Fix<?>>>> getRepairStatement(Long id) throws Exception {
+    public QualityReport getRepairStatement(Long id) throws Exception {
 
         SBOMFile toRepair = getSBOMFile(id);
 
@@ -355,7 +356,7 @@ public class SBOMFileService {
 
         RepairStatement repair = repairController.getStatement(SBOMToRepair);
 
-        return repair.generateRepairStatement(SBOMToRepair.getUID(), SBOMToRepair);
+        return repair.generateRepairStatement(SBOMToRepair);
 
     }
 
@@ -368,8 +369,7 @@ public class SBOMFileService {
      * @return ID of repaired SBOM
      * @throws JsonProcessingException error deserialization occured
      */
-    public long repair(Long id, Map<String, Map<String, List<Fix<?>>>>
-            repairStatement, boolean overwrite) throws JsonProcessingException {
+    public long repair(Long id, Map<Integer, List<Fix<?>>> repairStatement, boolean overwrite) throws JsonProcessingException {
 
         org.svip.sbom.model.interfaces.generics.SBOM toRepair;
         toRepair = getSBOMFile(id).toSBOMObject();
