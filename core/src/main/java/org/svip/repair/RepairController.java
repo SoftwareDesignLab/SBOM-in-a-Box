@@ -1,5 +1,6 @@
 package org.svip.repair;
 
+import org.svip.metrics.pipelines.QualityReport;
 import org.svip.repair.repair.Repair;
 import org.svip.repair.fix.Fix;
 import org.svip.repair.repair.RepairSPDX23CDX14;
@@ -15,6 +16,7 @@ import java.util.Map;
  * Description: Main driver class for SBOM repair
  *
  * @author Tyler Drake
+ * @author Justin Jantzi
  */
 public class RepairController {
 
@@ -26,12 +28,11 @@ public class RepairController {
      * Generate a repair statement
      *
      * @param sbom sbom to repair
-     * @param uid  UID of sbom
      * @return repair statement
      */
-    public Map<String, Map<String, List<Fix<?>>>> generateStatement(SBOM sbom, String uid) throws Exception {
+    public QualityReport generateStatement(SBOM sbom) throws Exception {
         RepairStatement rs = getStatement(sbom);
-        return rs.generateRepairStatement(uid, sbom);
+        return rs.generateRepairStatement(sbom);
     }
 
     /**
@@ -41,7 +42,7 @@ public class RepairController {
      * @param repairs chosen repairs from SBOM
      * @return repaired SBOM
      */
-    public SBOM repairSBOM(SBOM sbom, Map<String, Map<String, List<Fix<?>>>> repairs) {
+    public SBOM repairSBOM(SBOM sbom, Map<Integer, List<Fix<?>>> repairs) {
         Repair r = getRepair(sbom);
         return r.repairSBOM(sbom, repairs);
     }

@@ -2,7 +2,9 @@ package org.svip.metrics.resultfactory;
 
 import org.svip.metrics.resultfactory.enumerations.STATUS;
 import org.svip.metrics.tests.enumerations.ATTRIBUTE;
+import org.svip.repair.fix.Fix;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +26,8 @@ public class Result {
 
     private final STATUS status;
 
+    private List<Fix<?>> fixes;
+
     /**
      * Create a new Result
      *
@@ -40,6 +44,16 @@ public class Result {
         this.message = message;
         this.details = details;
         this.status = status;
+        this.fixes = new ArrayList<Fix<?>>();
+    }
+
+    /**
+     * Adds a fix
+     * @param fixes a list of potential fixes
+     */
+    public void addFixes(List<Fix<?>> fixes) {
+        if(fixes != null)
+            this.fixes.addAll(fixes);
     }
 
     /**
@@ -65,4 +79,6 @@ public class Result {
     public STATUS getStatus() {
         return this.status;
     }
+
+    public List<Fix<?>> getFixes() { return  this.fixes; }
 }

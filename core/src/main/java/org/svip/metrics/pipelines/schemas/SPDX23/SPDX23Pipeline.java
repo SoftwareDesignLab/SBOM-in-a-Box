@@ -7,6 +7,7 @@ import org.svip.metrics.resultfactory.ResultFactory;
 import org.svip.metrics.resultfactory.enumerations.INFO;
 import org.svip.metrics.tests.*;
 import org.svip.metrics.tests.enumerations.ATTRIBUTE;
+import org.svip.repair.RepairController;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
@@ -32,16 +33,18 @@ public class SPDX23Pipeline implements SPDX23Tests {
     /**
      * Process the tests for the SBOM
      *
-     * @param uid  Unique filename used to ID the SBOM
      * @param sbom the SBOM to run tests against
      * @return a Quality report for the sbom, its components and every test
      */
     @Override
-    public QualityReport process(String uid, SBOM sbom) {
+    public QualityReport process(SBOM sbom) {
         // cast sbom to SPDX23SBOM
         SPDX23SBOM spdx23SBOM = (SPDX23SBOM) sbom;
+        String uid = sbom.getUID();
+
         // build a new quality report
         QualityReport qualityReport = new QualityReport(uid);
+        RepairController repairController = new RepairController();
 
         // Set to hold all the results
         List<Result> sbomResults = new ArrayList<>();
@@ -75,16 +78,16 @@ public class SPDX23Pipeline implements SPDX23Tests {
         //TODO add hasDocumentNamespace when implemented
 
         // add metadata results to the quality report
-        qualityReport.addComponent("metadata", sbomResults);
+        qualityReport.addComponent("metadata", 0, sbomResults);
 
         // test each component's info and add its results to the quality report
         if (spdx23SBOM.getComponents() != null) {
             for (Component c : spdx23SBOM.getComponents()) {
                 // Check what type of SPDX component it is
                 if (c instanceof SPDX23PackageObject) {
-                    qualityReport.addComponent(c.getName(), TestSPDX23Package(c));
+                    qualityReport.addComponent(c.getName(), c.hashCode(), TestSPDX23Package(c));
                 } else if (c instanceof SPDX23FileObject) {
-                    qualityReport.addComponent(c.getName(), TestSPDX23File(c));
+                    qualityReport.addComponent(c.getName(), c.hashCode(), TestSPDX23File(c));
                 }
             }
         }
@@ -378,6 +381,7 @@ public class SPDX23Pipeline implements SPDX23Tests {
         //first check for creator info and if it is null
         Organization creator = creationData.getManufacture();
         if (creator == null) {
+
             results.add(resultFactory.fail(field, INFO.MISSING,
                     "Creator Name", sbomName));
             return results;

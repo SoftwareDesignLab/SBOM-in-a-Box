@@ -39,14 +39,15 @@ public class CDX14Pipeline implements CDX14Tests {
     /**
      * Process the tests for the SBOM
      *
-     * @param uid  Unique filename used to ID the SBOM
      * @param sbom the SBOM to run tests against
      * @return a Quality report for the sbom, its components and every test
      */
     @Override
-    public QualityReport process(String uid, SBOM sbom) {
+    public QualityReport process(SBOM sbom) {
         // cast sbom to CDX14SBOM
         CDX14SBOM cdx14SBOM = (CDX14SBOM) sbom;
+        String uid = sbom.getUID();
+
         // build a new quality report
         QualityReport qualityReport = new QualityReport(uid);
 
@@ -70,7 +71,7 @@ public class CDX14Pipeline implements CDX14Tests {
         sbomResults.add(validSerialNumber("Bom Serial Number", serialNumber, cdx14SBOM.getName()));
 
         // add metadata results to the quality report
-        qualityReport.addComponent("metadata", sbomResults);
+        qualityReport.addComponent("metadata", 0, sbomResults);
         if (cdx14SBOM.getComponents() != null) {
             // test component info
             for (Component c : cdx14SBOM.getComponents()) {
@@ -136,7 +137,7 @@ public class CDX14Pipeline implements CDX14Tests {
                         copyright, component.getName()));
 
                 // add the component and all its tests to the quality report
-                qualityReport.addComponent(component.getName(), componentResults);
+                qualityReport.addComponent(component.getName(), component.hashCode(), componentResults);
             }
         }
 
