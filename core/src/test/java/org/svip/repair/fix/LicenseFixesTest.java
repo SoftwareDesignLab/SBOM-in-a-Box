@@ -43,7 +43,7 @@ class LicenseFixesTest {
     @Test
     public void fix_invalid_license_id_test() {
         Result result = resultFactory.fail("license", INFO.INVALID, LICENSE_ID, "component");
-        List<Fix<License>> fixes = licenseFixes.fix(result, sbom, "repairSubType");
+        List<Fix<License>> fixes = licenseFixes.fix(result, sbom, "repairSubType", 0);
 
         Fix<License> fix = fixes.get(0);
         assertEquals(new License(LICENSE_ID), fix.old());
@@ -53,7 +53,7 @@ class LicenseFixesTest {
     @Test
     public void fix_invalid_license_name_test() {
         Result result = resultFactory.fail("license", INFO.INVALID, LICENSE_NAME, "component");
-        List<Fix<License>> fixes = licenseFixes.fix(result, sbom, "repairSubType");
+        List<Fix<License>> fixes = licenseFixes.fix(result, sbom, "repairSubType", 0);
 
         Fix<License> fix = fixes.get(0);
         assertEquals(new License(LICENSE_NAME), fix.old());
@@ -69,7 +69,7 @@ class LicenseFixesTest {
 
         for (int i = 0; i < deprecatedLicenseIds.size(); i++) {
             Result result = resultFactory.fail("license", INFO.INVALID, deprecatedLicenseIds.get(i), "component");
-            Fix<License> fix = licenseFixes.fix(result, sbom, "repairSubType").get(0);
+            Fix<License> fix = licenseFixes.fix(result, sbom, "repairSubType", 0).get(0);
             assertEquals(deprecatedLicenseIds.get(i), fix.old().getId());
             assertEquals(validLicenseIds.get(i), fix.fixed().getId());
         }
@@ -85,7 +85,7 @@ class LicenseFixesTest {
 
         for (int i = 0; i < deprecatedLicenseIds.size(); i++) {
             Result result = resultFactory.fail("license", INFO.INVALID, deprecatedLicenseIds.get(i), "component");
-            Fix<License> fix = licenseFixes.fix(result, sbom, "repairSubType").get(0);
+            Fix<License> fix = licenseFixes.fix(result, sbom, "repairSubType", 0).get(0);
             assertEquals(deprecatedLicenseIds.get(i), fix.old().getId());
             assertEquals(validLicenseIds.get(i), fix.fixed().getId());
         }
@@ -94,7 +94,7 @@ class LicenseFixesTest {
     @Test
     public void nonexistent_license_identifier_test() {
         Result result = resultFactory.fail("license", INFO.INVALID, "Unknown", "component");
-        List<Fix<License>> fixes = licenseFixes.fix(result, sbom, "repairSubType");
+        List<Fix<License>> fixes = licenseFixes.fix(result, sbom, "repairSubType", 0);
 
         Fix<License> fix = fixes.get(0);
         assertEquals(new License("Unknown"), fix.old());
@@ -104,7 +104,7 @@ class LicenseFixesTest {
     @Test
     public void no_mapping_for_deprecated_license_test() {
         Result result = resultFactory.fail("license", INFO.INVALID, "Nunit", "component");
-        List<Fix<License>> fixes = licenseFixes.fix(result, sbom, "repairSubType");
+        List<Fix<License>> fixes = licenseFixes.fix(result, sbom, "repairSubType", 0);
 
         Fix<License> fix = fixes.get(0);
         assertEquals(new License("Nunit"), fix.old());
@@ -120,7 +120,7 @@ class LicenseFixesTest {
 
         for (String validLicenseId : validLicenseIds) {
             Result result = resultFactory.pass("license", INFO.VALID, validLicenseId, "component");
-            Fix<License> fix = licenseFixes.fix(result, sbom, "repairSubType").get(0);
+            Fix<License> fix = licenseFixes.fix(result, sbom, "repairSubType", 0).get(0);
             assertEquals(validLicenseId, fix.old().getId());
             assertNull(fix.fixed());
         }

@@ -33,7 +33,7 @@ public class LicenseFixes implements Fixes<License> {
      * @return singleton list of a license fix
      */
     @Override
-    public List<Fix<License>> fix(Result result, SBOM sbom, String componentName) {
+    public List<Fix<License>> fix(Result result, SBOM sbom, String componentName, Integer componentHashCode) {
         // Get license identifier (name or id) from result message
         String details = result.getDetails();
         String identifier = details.substring(0, details.indexOf("is") - 1);

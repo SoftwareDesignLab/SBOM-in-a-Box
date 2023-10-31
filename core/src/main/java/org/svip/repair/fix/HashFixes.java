@@ -26,7 +26,7 @@ public class HashFixes implements Fixes<Hash> {
      * @return list of hash fixes
      */
     @Override
-    public List<Fix<Hash>> fix(Result result, SBOM sbom, String componentName) {
+    public List<Fix<Hash>> fix(Result result, SBOM sbom, String componentName, Integer componentHashCode) {
 
         // Get algorithm and hash value from result message
         String[] details = result.getDetails().split(" ");
