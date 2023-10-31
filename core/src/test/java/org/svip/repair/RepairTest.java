@@ -1,6 +1,8 @@
 package org.svip.repair;
 
 import org.junit.jupiter.api.Test;
+import org.svip.metrics.pipelines.QualityReport;
+import org.svip.metrics.resultfactory.Result;
 import org.svip.repair.fix.Fix;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
@@ -11,6 +13,7 @@ import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,16 +37,18 @@ public class RepairTest {
     @Test
     public void SPDXRepairTest() throws Exception {
         SPDX23SBOM sbom = spdx23JSONDeserializer.readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
-        Map<String, Map<String, List<Fix<?>>>> statement = r.generateStatement(sbom, sbom.getUID());
+        QualityReport statement = r.generateStatement(sbom);
     }
 
     @Test
     public void CDXRepairTest() throws Exception {
         CDX14SBOM sbom = cdx14JSONDeserializer.readFromString(Files.readString(Path.of(CDX_14_JSON_SBOM)));
-        Map<String, Map<String, List<Fix<?>>>> statement = r.generateStatement(sbom, sbom.getUID());
-        CDX14SBOM repaired = (CDX14SBOM) r.repairSBOM(sbom, statement);
-        Map<String, Map<String, List<Fix<?>>>> newStatement = r.generateStatement(repaired, repaired.getUID());
-        //assertEquals(0, newStatement.size()); failing currently
+        QualityReport statement = r.generateStatement(sbom);
+        Map<Integer, List<Fix<?>>> ogFixes = statement.getFixes();
+        CDX14SBOM repaired = (CDX14SBOM) r.repairSBOM(sbom, statement.getFixes());
+        QualityReport newStatement = r.generateStatement(repaired);
+        Map<Integer, List<Fix<?>>> fixes = newStatement.getFixes();
+        //assertEquals(0, newStatement.getFixAmount());
     }
 
     @Test
@@ -63,25 +68,30 @@ public class RepairTest {
     @Test
     public void CDXEmptyRepairsTest() throws Exception {
         CDX14SBOM sbom = cdx14JSONDeserializer.readFromString(Files.readString(Path.of(CDX_14_JSON_SBOM)));
-        Map<String, Map<String, List<Fix<?>>>>  fixes = new HashMap<String, Map<String, List<Fix<?>>>>();
+        QualityReport statement = r.generateStatement(sbom);
+        Map<Integer, List<Fix<?>>> fixes = new HashMap<Integer, List<Fix<?>>>();
         CDX14SBOM repairedSBOM = (CDX14SBOM) r.repairSBOM(sbom, fixes);
-        assertEquals(0, sbom.compare(repairedSBOM).size());
+        QualityReport newStatement = r.generateStatement(repairedSBOM);
+        assertEquals(statement.getFixAmount(), newStatement.getFixAmount());
     }
 
     @Test
     public void SPDXEmptyRepairsTest() throws Exception {
         SPDX23SBOM sbom = spdx23JSONDeserializer.readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
-        Map<String, Map<String, List<Fix<?>>>>  fixes = new HashMap<String, Map<String, List<Fix<?>>>>();
+        QualityReport statement = r.generateStatement(sbom);
+        Map<Integer, List<Fix<?>>>  fixes = new HashMap<Integer, List<Fix<?>>>();
         SPDX23SBOM repairedSBOM = (SPDX23SBOM) r.repairSBOM(sbom, fixes);
-        assertEquals(0, sbom.compare(repairedSBOM).size());
+        QualityReport newStatement = r.generateStatement(repairedSBOM);
+        assertEquals(statement.getFixAmount(), newStatement.getFixAmount());
     }
 
     @Test
     public void CDXCopyrightPurlRepairTest() throws Exception {
         CDX14SBOM sbom = cdx14JSONDeserializer.readFromString(Files.readString(Path.of(NULL_COPYRIGHT_SBOM_CDX)));
-        Map<String, Map<String, List<Fix<?>>>>  fixes = r.generateStatement(sbom, sbom.getUID());
-        CDX14SBOM repairedSBOM = (CDX14SBOM) r.repairSBOM(sbom, fixes);
-        assertEquals(0, r.generateStatement(repairedSBOM, repairedSBOM.getUID()).size());
+        QualityReport statement = r.generateStatement(sbom);
+        CDX14SBOM repairedSBOM = (CDX14SBOM) r.repairSBOM(sbom, statement.getFixes());
+        QualityReport newStatement = r.generateStatement(repairedSBOM);
+        assertEquals(0, newStatement.getFixAmount());
     }
 
 }

@@ -22,11 +22,11 @@ public class HashFixes implements Fixes<Hash> {
      *
      * @param result        object from quality report
      * @param sbom          sbom from quality report
-     * @param repairSubType key from quality report map most directly relating to the repair type
+     * @param componentName key from quality report map most directly relating to the repair type
      * @return list of hash fixes
      */
     @Override
-    public List<Fix<Hash>> fix(Result result, SBOM sbom, String repairSubType) {
+    public List<Fix<Hash>> fix(Result result, SBOM sbom, String componentName) {
 
         // Get algorithm and hash value from result message
         String[] details = result.getDetails().split(" ");

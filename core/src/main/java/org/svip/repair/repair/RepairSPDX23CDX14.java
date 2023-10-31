@@ -39,7 +39,7 @@ import java.util.stream.Stream;
 public class RepairSPDX23CDX14 implements Repair {
 
     @Override
-    public SBOM repairSBOM(SBOM sbom, Map<String, Map<String, List<Fix<?>>>> repairs) {
+    public SBOM repairSBOM(SBOM sbom, Map<Integer, List<Fix<?>>> repairs) {
 
         if(repairs == null)
             return sbom;
@@ -57,21 +57,30 @@ public class RepairSPDX23CDX14 implements Repair {
         HashMap<String, Set<Relationship>> relationships = (HashMap<String, Set<Relationship>>) sbom.getRelationships();
         Set<ExternalReference> externalReferences = sbom.getExternalReferences();
 
-        for(String key : repairs.keySet()) {
-            List<Fix<?>> fixes = repairs.get(key).get(key);
+        for(Integer key : repairs.keySet()) {
+            List<Fix<?>> fixes = repairs.get(key);
 
-            long amount = components.stream().filter(x -> x.getName().equals(key)).count();
+            Optional<Component> potentialComp;
 
-            Optional<Component> potentialComp = components.stream().filter(x -> x.getName().equals(key)).findFirst();
-            Component comp = null;
+            if(key == 0)
+                potentialComp = components.stream().filter(x -> x.getName() == "metadata").findFirst();
+            else
+                potentialComp = components.stream().filter(x -> x.hashCode() == key).findFirst();
 
-            String author = null;
-            String copyright = null;
-            Map<String, String> hashes = null;
-            LicenseCollection licenseCollection = null;
-            String compName = null;
-            String type = null;
-            String compUID = null;
+            if(!potentialComp.isPresent())
+                continue;
+
+
+
+            Component comp = potentialComp.get();
+
+            String author = comp.getAuthor();
+            String copyright = comp.getCopyright();
+            Map<String, String> hashes = comp.getHashes();
+            LicenseCollection licenseCollection = comp.getLicenses();
+            String compName = comp.getName();
+            String type = comp.getType();
+            String compUID = comp.getUID();
             Description desc = null;
             Set<ExternalReference> compExtRef = null;
             Set<String> cpes = null;
@@ -95,19 +104,6 @@ public class RepairSPDX23CDX14 implements Repair {
             String homePage = null;
             String releaseDate = null;
             String sourceInfo = null;
-
-            if(!potentialComp.isPresent())
-                continue;
-
-            comp = potentialComp.get();
-
-            author = comp.getAuthor();
-            copyright = comp.getCopyright();
-            hashes = comp.getHashes();
-            licenseCollection = comp.getLicenses();
-            compName = comp.getName();
-            type = comp.getType();
-            compUID = comp.getUID();
 
             if(comp instanceof CDX14ComponentObject) {
 
