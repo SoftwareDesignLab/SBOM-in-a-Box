@@ -73,6 +73,6 @@ public class QualityReportFileService {
         }
 
         // QA test SBOM and return result
-        return qaPipeline.process(sbom.getUID(), sbom);
+        return qaPipeline.process(sbom);
     }
 }
