@@ -33,10 +33,14 @@ import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbom.model.uids.Hash;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class RepairSPDX23CDX14 implements Repair {
+
+    private final static long METADATA_HASH = 0;
 
     @Override
     public SBOM repairSBOM(SBOM sbom, Map<Integer, List<Fix<?>>> repairs) {
@@ -60,27 +64,33 @@ public class RepairSPDX23CDX14 implements Repair {
         for(Integer key : repairs.keySet()) {
             List<Fix<?>> fixes = repairs.get(key);
 
-            Optional<Component> potentialComp;
+            Optional<Component> potentialComp = null;
 
-            if(key == 0)
-                potentialComp = components.stream().filter(x -> x.getName() == "metadata").findFirst();
-            else
+           if(key != METADATA_HASH)
                 potentialComp = components.stream().filter(x -> x.hashCode() == key).findFirst();
 
-            if(!potentialComp.isPresent())
-                continue;
+            Component comp = null;
 
+            String author = null;
+            String copyright = null;
+            Map<String, String> hashes = null;
+            LicenseCollection licenseCollection = null;
+            String compName = null;
+            String type = null;
+            String compUID = null;
 
+            if(potentialComp != null && potentialComp.isPresent()) {
+                comp = potentialComp.get();
 
-            Component comp = potentialComp.get();
+                author = comp.getAuthor();
+                copyright = comp.getCopyright();
+                hashes = comp.getHashes();
+                licenseCollection = comp.getLicenses();
+                compName = comp.getName();
+                type = comp.getType();
+                compUID = comp.getUID();
+            }
 
-            String author = comp.getAuthor();
-            String copyright = comp.getCopyright();
-            Map<String, String> hashes = comp.getHashes();
-            LicenseCollection licenseCollection = comp.getLicenses();
-            String compName = comp.getName();
-            String type = comp.getType();
-            String compUID = comp.getUID();
             Description desc = null;
             Set<ExternalReference> compExtRef = null;
             Set<String> cpes = null;
@@ -210,6 +220,9 @@ public class RepairSPDX23CDX14 implements Repair {
                 }
             }
 
+            if(comp == null)
+                continue;
+
             ComponentBuilderFactory packageBuilderFactory = null;
             ComponentBuilder compBuilder = null;
 
@@ -219,7 +232,7 @@ public class RepairSPDX23CDX14 implements Repair {
             else if(comp instanceof SPDX23PackageObject)
                 packageBuilderFactory = new SPDX23PackageBuilderFactory();
 
-            else if(comp instanceof SPDX23FileBuilder)
+            else if(comp instanceof SPDX23FileObject)
                 packageBuilderFactory = new SPDX23FileBuilderFactory();
 
             compBuilder = packageBuilderFactory.createBuilder();

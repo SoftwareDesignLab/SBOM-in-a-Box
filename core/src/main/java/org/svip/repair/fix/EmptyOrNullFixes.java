@@ -37,7 +37,7 @@ public class EmptyOrNullFixes implements Fixes {
     }
 
     @Override
-    public List<Fix<?>> fix(Result result, SBOM sbom, String componentName) throws Exception {
+    public List<Fix<?>> fix(Result result, SBOM sbom, String componentName, Integer componentHashCode) throws Exception {
 
         // Depending on the type of fix, call the correct fix method
         if (result.getDetails().contains("Bom Version was a null value"))
@@ -57,7 +57,7 @@ public class EmptyOrNullFixes implements Fixes {
         else if (result.getDetails().contains("Author"))
             return authorNullFix(sbom, componentName);
         else if (result.getDetails().contains("Copyright"))
-            return copyrightNullFix(sbom, componentName);
+            return copyrightNullFix(sbom, componentHashCode);
 
         return null;
 
@@ -159,13 +159,12 @@ public class EmptyOrNullFixes implements Fixes {
     /**
      * Fixes empty copyright
      * @param sbom The SBOM to fix
-     * @param componentName The component that is missing copyright
+     * @param componentHash The component that is missing copyright
      * @return a list of potential fixes or null
      */
-    private List<Fix<?>> copyrightNullFix(SBOM sbom, String componentName) throws Exception {
+    private List<Fix<?>> copyrightNullFix(SBOM sbom, Integer componentHash) throws Exception {
         List<Component> filtered = sbom.getComponents().stream().filter(
-                comp -> comp.getName().toLowerCase().equals(componentName.toLowerCase())
-        ).toList();
+                comp -> comp.hashCode() == componentHash).toList();
 
         if(filtered.size() == 0)
             return null;

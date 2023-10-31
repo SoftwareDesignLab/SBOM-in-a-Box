@@ -20,7 +20,11 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-// something to run while developing the repair pipeline // todo delete comment
+/**
+ * Tests for repairing CDX and SPDX SBOMs
+ *
+ * @author  Justin Jantzi
+ */
 public class RepairTest {
 
     private final String NULL_COPYRIGHT_SBOM_CDX = System.getProperty("user.dir") +
@@ -38,17 +42,20 @@ public class RepairTest {
     public void SPDXRepairTest() throws Exception {
         SPDX23SBOM sbom = spdx23JSONDeserializer.readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
         QualityReport statement = r.generateStatement(sbom);
+        Map<Integer, List<Fix<?>>> fixes = statement.getFixes();
+        SPDX23SBOM repaired = (SPDX23SBOM) r.repairSBOM(sbom, statement.getFixes());
+        QualityReport newStatement = r.generateStatement(repaired);
+        Map<Integer, List<Fix<?>>> newStatementFixes = newStatement.getFixes();
+        assertEquals(0, newStatement.getFixAmount());
     }
 
     @Test
     public void CDXRepairTest() throws Exception {
         CDX14SBOM sbom = cdx14JSONDeserializer.readFromString(Files.readString(Path.of(CDX_14_JSON_SBOM)));
         QualityReport statement = r.generateStatement(sbom);
-        Map<Integer, List<Fix<?>>> ogFixes = statement.getFixes();
         CDX14SBOM repaired = (CDX14SBOM) r.repairSBOM(sbom, statement.getFixes());
         QualityReport newStatement = r.generateStatement(repaired);
-        Map<Integer, List<Fix<?>>> fixes = newStatement.getFixes();
-        //assertEquals(0, newStatement.getFixAmount());
+        assertEquals(0, newStatement.getFixAmount());
     }
 
     @Test
