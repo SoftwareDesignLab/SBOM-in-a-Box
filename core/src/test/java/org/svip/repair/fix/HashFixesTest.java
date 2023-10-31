@@ -50,7 +50,7 @@ class HashFixesTest {
     @Test
     public void fix_unknown_hash_algorithm_test() {
         Result result = resultFactory.fail("Unknown", INFO.INVALID, HASH_VALUE, "component");
-        List<Fix<Hash>> fixes = hashFixes.fix(result, spdxSbom, "repairSubType");
+        List<Fix<Hash>> fixes = hashFixes.fix(result, spdxSbom, "repairSubType", 0);
 
         Set<Algorithm> validAlgorithms =
                 new HashSet<>(Arrays.asList(Algorithm.MD2, Algorithm.MD4, Algorithm.MD5, Algorithm.MD6));
@@ -64,7 +64,7 @@ class HashFixesTest {
     @Test
     public void fix_invalid_hash_value_test() {
         Result result = resultFactory.fail("SHA1", INFO.INVALID, HASH_VALUE, "component");
-        List<Fix<Hash>> fixes = hashFixes.fix(result, spdxSbom, "repairSubType");
+        List<Fix<Hash>> fixes = hashFixes.fix(result, spdxSbom, "repairSubType", 0);
 
         Set<Algorithm> validAlgorithms =
                 new HashSet<>(Arrays.asList(Algorithm.MD2, Algorithm.MD4, Algorithm.MD5, Algorithm.MD6));
@@ -78,7 +78,7 @@ class HashFixesTest {
     @Test
     public void no_algorithm_or_hash_value_match_test() {
         Result result = resultFactory.fail("SHA1", INFO.INVALID, "invalid", "component");
-        List<Fix<Hash>> fixes = hashFixes.fix(result, spdxSbom, "repairSubType");
+        List<Fix<Hash>> fixes = hashFixes.fix(result, spdxSbom, "repairSubType", 0);
 
         assertEquals(1, fixes.size());
         assertEquals(new Hash(Algorithm.SHA1, "invalid"), fixes.get(0).old());
@@ -88,7 +88,7 @@ class HashFixesTest {
     @Test
     public void cdx_hash_fix_excludes_spdx_hash_algorithms_test() {
         Result result = resultFactory.fail("SHA1", INFO.INVALID, HASH_VALUE, "component");
-        List<Fix<Hash>> fixes = hashFixes.fix(result, cdxSbom, "repairSubType");
+        List<Fix<Hash>> fixes = hashFixes.fix(result, cdxSbom, "repairSubType", 0);
 
         assertEquals(1, fixes.size());
         assertEquals(new Hash(Algorithm.SHA1, HASH_VALUE), fixes.get(0).old());
@@ -98,7 +98,7 @@ class HashFixesTest {
     @Test
     public void valid_hash_test() {
         Result result = resultFactory.pass("MD5", INFO.VALID, HASH_VALUE, "component");
-        List<Fix<Hash>> fixes = hashFixes.fix(result, spdxSbom, "repairSubType");
+        List<Fix<Hash>> fixes = hashFixes.fix(result, spdxSbom, "repairSubType", 0);
 
         Set<Algorithm> validAlgorithms =
                 new HashSet<>(Arrays.asList(Algorithm.MD2, Algorithm.MD4, Algorithm.MD5, Algorithm.MD6));

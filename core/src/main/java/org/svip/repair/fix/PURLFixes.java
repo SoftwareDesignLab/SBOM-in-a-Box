@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class PURLFixes implements Fixes {
     @Override
-    public List<Fix<?>> fix(Result result, SBOM sbom, String componentName) {
+    public List<Fix<?>> fix(Result result, SBOM sbom, String componentName, Integer componentHashCode) {
 
         // Create a new purl
         PURL newPurl = null;

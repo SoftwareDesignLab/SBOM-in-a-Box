@@ -68,7 +68,7 @@ public class RepairStatementSPDX23CDX14 implements RepairStatement {
                     // If the fixes is not null
                     if (fixes != null)
                         // Set the fix list
-                        toFix.addFixes(fixes.fix(toFix, sbom, hashCodeMapping.get(component)));
+                        toFix.addFixes(fixes.fix(toFix, sbom, hashCodeMapping.get(component), component));
                 }
             }
 
