@@ -11,6 +11,7 @@ import org.svip.serializers.serializer.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -19,7 +20,9 @@ public class SerializerFactoryTest {
 
     public final String CDX14_JSON;
     public final String SPDX23_JSON;
-    public final String SPDX23_TAGVALUE;
+    public final String SPDX23_TAGVALUE_ALPINE;
+    public final String SPDX23_TAGVALUE_DOCKER;
+    public final String SPDX23_TAGVALUE_PYTHON;
 
     public SerializerFactoryTest() throws IOException {
         String source = System.getProperty("user.dir") + "/src/test/resources/serializers";
@@ -27,8 +30,12 @@ public class SerializerFactoryTest {
         SPDX23_JSON = new String(Files.readAllBytes(Paths.get(source + "/spdx_json/syft-0.80" +
                 ".0-source-spdx-json" +
                 ".json")));
-        SPDX23_TAGVALUE =
+        SPDX23_TAGVALUE_ALPINE =
                 new String(Files.readAllBytes(Paths.get(source + "/spdx_tagvalue/sbom.alpine.2-3.spdx")));
+        SPDX23_TAGVALUE_DOCKER =
+                new String(Files.readAllBytes(Paths.get(source + "/spdx_tagvalue/sbom.docker.2-2.spdx")));
+        SPDX23_TAGVALUE_PYTHON =
+                new String(Files.readAllBytes(Paths.get(source + "/spdx_tagvalue/sbom.python.2-3.spdx")));
     }
 
     @Test
@@ -87,8 +94,13 @@ public class SerializerFactoryTest {
 
     @Test
     public void SPDX23TagValueDeserializerTest() {
-        Deserializer deserializer = SerializerFactory.createDeserializer(SPDX23_TAGVALUE);
+        Deserializer deserializer = SerializerFactory.createDeserializer(SPDX23_TAGVALUE_ALPINE);
+        assertTrue(deserializer instanceof SPDX23TagValueDeserializer);
 
+        deserializer = SerializerFactory.createDeserializer(SPDX23_TAGVALUE_DOCKER);
+        assertTrue(deserializer instanceof SPDX23TagValueDeserializer);
+
+        deserializer = SerializerFactory.createDeserializer(SPDX23_TAGVALUE_PYTHON);
         assertTrue(deserializer instanceof SPDX23TagValueDeserializer);
     }
 
