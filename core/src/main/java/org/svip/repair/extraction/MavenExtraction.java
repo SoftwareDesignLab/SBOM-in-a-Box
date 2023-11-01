@@ -1,6 +1,5 @@
 package org.svip.repair.extraction;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.generation.parsers.utils.QueryWorker;
 import org.svip.sbom.model.uids.Hash.Algorithm;
 import org.svip.sbom.model.uids.PURL;

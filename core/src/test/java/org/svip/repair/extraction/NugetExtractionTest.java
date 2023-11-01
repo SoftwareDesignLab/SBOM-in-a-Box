@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.uids.PURL;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Tests for the NugetExtraction class

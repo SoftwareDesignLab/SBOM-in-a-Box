@@ -133,10 +133,11 @@ public class HashTest extends MetricTest {
             extraction.extract();
 
             // Get hashes
-            Map<Hash.Algorithm, String> validHashes = extraction.getHashes();
-            Map<String, String> componentHashes = sbomPackage.getHashes();
+            String extractedHash = extraction.getHashes().get(hash.getAlgorithm());
+            String componentHash = sbomPackage.getHashes().get(hash.getAlgorithm().toString());
+
             // Compare hash
-            return validHashes.get(hash.getAlgorithm()).equals(componentHashes.get(hash.getAlgorithm().toString()));
+            return extractedHash.equals(componentHash);
 
         } else {
             // If component is not from Maven Repository, then test against supported hashes using regex

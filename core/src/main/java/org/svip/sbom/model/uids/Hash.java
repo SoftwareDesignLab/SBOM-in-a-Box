@@ -1,18 +1,6 @@
 package org.svip.sbom.model.uids;
 
-import jregex.Pattern;
-import org.svip.repair.extraction.Extraction;
-import org.svip.repair.extraction.MavenExtraction;
-import org.svip.sbom.model.interfaces.generics.Component;
-import org.svip.sbom.model.interfaces.generics.SBOMPackage;
-import org.svip.utils.Debug;
-
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
