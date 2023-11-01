@@ -60,13 +60,13 @@ public class NugetExtraction extends Extraction {
                     NodeList copyrightElements = root.getElementsByTagName("copyright");
 
                     if(copyrightElements.getLength() > 0)
-                        results.put("copyright", copyrightElements.item(0).getTextContent());
+                        copyright = copyrightElements.item(0).getTextContent();
 
                     // Find the 'license' element
                     NodeList licenseElements = root.getElementsByTagName("license");
 
                     if(licenseElements.getLength() > 0)
-                        results.put("license", licenseElements.item(0).getTextContent());
+                        license = licenseElements.item(0).getTextContent();
 
                 } catch(Exception ex) {
                     Debug.log(Debug.LOG_TYPE.WARN, "Failed parsing nuget api response to XML for extraction");

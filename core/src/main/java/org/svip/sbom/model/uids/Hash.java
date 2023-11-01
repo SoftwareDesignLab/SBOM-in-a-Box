@@ -9,10 +9,12 @@ import org.svip.utils.Debug;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import static org.svip.sbom.model.uids.Hash.Algorithm.*;
 
@@ -46,14 +48,15 @@ public class Hash {
     }
 
     // SPDX only Hashes
-    public enum SPDXAlgorithm {
+    public static final Set<Algorithm> SPDXAlgorithms = EnumSet.of(
         SHA224,
         BLAKE2b512,
         MD2,
         MD4,
         MD6,
         ADLER32
-    }
+    );
+
 
     private final Algorithm algorithm;
     private final String value;
@@ -104,16 +107,11 @@ public class Hash {
     /**
      * Check if algorithm is exclusive to SPDX
      *
-     * @param a Algorithm to check
+     * @param algorithm Algorithm to check
      * @return true if exclusive, false otherwise
      */
-    public static boolean isSPDXExclusive(Algorithm a) {
-        return a == SHA224 ||
-                a == BLAKE2b512 ||
-                a == MD2 ||
-                a == MD4 ||
-                a == MD6 ||
-                a == ADLER32;
+    public static boolean isSPDXExclusive(Algorithm algorithm) {
+        return SPDXAlgorithms.contains(algorithm);
     }
 
     ///

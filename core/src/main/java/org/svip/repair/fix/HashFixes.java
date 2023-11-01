@@ -6,6 +6,7 @@ import org.svip.repair.extraction.MavenExtraction;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.generics.SBOMPackage;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.uids.Hash;
 import org.svip.sbom.model.uids.Hash.Algorithm;
 import org.svip.sbom.model.uids.PURL;
@@ -14,6 +15,7 @@ import org.svip.utils.Debug;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -78,7 +80,7 @@ public class HashFixes implements Fixes<Hash> {
         }
 
         // Get all possible algorithms that match the hash
-        List<Algorithm> validAlgorithms = validAlgorithms(value, sbom.getFormat());
+        List<Algorithm> validAlgorithms = validAlgorithms(value, sbom instanceof CDX14SBOM);
 
         // Suggest deleting the hash as a fix if hash does not match any algorithm
         if (validAlgorithms.isEmpty()) {
@@ -96,12 +98,12 @@ public class HashFixes implements Fixes<Hash> {
 
     /**
      * Get a list of matching algorithms using the length of hashValue.
-     * @param hashValue  the hash value
-     * @param sbomFormat the format of the SBOM (i.e., CycloneDX, SPDX)
+     * @param hashValue   the hash value
+     * @param isCycloneDX boolean for CycloneDX
      * @return list of algorithms
      */
-    private List<Algorithm> validAlgorithms(String hashValue, String sbomFormat) {
-        List<Algorithm> algorithms = switch(hashValue.length()) {
+    private List<Algorithm> validAlgorithms(String hashValue, boolean isCycloneDX) {
+        List<Algorithm> algorithms = new LinkedList<Algorithm>(switch(hashValue.length()) {
             case 8 -> Arrays.asList(ADLER32);
             case 32 -> Arrays.asList(MD2, MD4, MD5, MD6);
             case 40 -> Arrays.asList(SHA1);
@@ -109,10 +111,10 @@ public class HashFixes implements Fixes<Hash> {
             case 64 -> Arrays.asList(SHA256, SHA3256, BLAKE2b256, BLAKE3, MD6);
             case 96 -> Arrays.asList(SHA384, SHA3384, BLAKE2b512);
             case 128 -> Arrays.asList(SHA512, SHA3512, BLAKE2b512, MD6);
-            default -> Arrays.asList();
-        };
+            default -> Collections.emptyList();
+        });
 
-        if (sbomFormat.equals("CycloneDX")) {
+        if (isCycloneDX) {
             algorithms.removeIf(Hash::isSPDXExclusive);
         }
 

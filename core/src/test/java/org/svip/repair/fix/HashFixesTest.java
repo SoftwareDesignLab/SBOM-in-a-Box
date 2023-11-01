@@ -6,6 +6,10 @@ import org.svip.metrics.resultfactory.Result;
 import org.svip.metrics.resultfactory.ResultFactory;
 import org.svip.metrics.resultfactory.enumerations.INFO;
 import org.svip.metrics.tests.enumerations.ATTRIBUTE;
+import org.svip.sbom.builder.objects.SVIPComponentBuilder;
+import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
+import org.svip.sbom.factory.objects.SVIPSBOMComponentFactory;
+import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.uids.Hash;
 import org.svip.sbom.model.uids.Hash.Algorithm;
@@ -72,7 +76,7 @@ class HashFixesTest {
     }
 
     @Test
-    public void fix_invalid_hash_value_test() {
+    public void fix_invalid_hash_test() {
         Result result = resultFactory.fail("SHA1", INFO.INVALID, HASH_VALUE, "component");
         List<Fix<Hash>> fixes = hashFixes.fix(result, spdxSbom, "repairSubType", 0);
 
@@ -107,42 +111,53 @@ class HashFixesTest {
 
     @Test
     public void cdx_hash_fix_excludes_spdx_hash_algorithms_test() {
-        Result result = resultFactory.fail("SHA1", INFO.INVALID, HASH_VALUE, "component");
-        List<Fix<Hash>> fixes = hashFixes.fix(result, cdxSbom, "repairSubType", 0);
+        String hashValueOfLength96 = HASH_VALUE + HASH_VALUE + HASH_VALUE;
+        Result result = resultFactory.fail("SHA384", INFO.INVALID, hashValueOfLength96, "component");
+        List<Fix<Hash>> fixes = hashFixes.fix(result, cdxSbom, CDX14_SBOM_COMPONENT_NAME, 0);
 
         Set<Algorithm> validAlgorithms =
                 new HashSet<>(Arrays.asList(Algorithm.SHA384, Algorithm.SHA3384));
 
         for (Fix<Hash> fix : fixes) {
-            assertEquals(new Hash(Algorithm.SHA384, HASH_VALUE), fix.old());
+            assertEquals(new Hash(Algorithm.SHA384, hashValueOfLength96), fix.old());
             assertTrue(validAlgorithms.contains(fix.fixed().getAlgorithm()));
         }
     }
 
     @Test
-    public void valid_hash_test() {
-        Result result = resultFactory.pass("MD5", INFO.VALID, HASH_VALUE, "component");
-        List<Fix<Hash>> fixes = hashFixes.fix(result, spdxSbom, "repairSubType", 0);
+    public void invalid_purl_test() {
+        SVIPSBOMComponentFactory packageBuilderFactory = new SVIPSBOMComponentFactory();
+        SVIPComponentBuilder packageBuilder = packageBuilderFactory.createBuilder();
+        packageBuilder.setName(CDX14_SBOM_COMPONENT_NAME);
+        packageBuilder.addPURL("invalid");
+        Component component = packageBuilder.buildAndFlush();
+
+        SVIPSBOMBuilder svipSbomBuilder = new SVIPSBOMBuilder();
+        svipSbomBuilder.addComponent(component);
+        SBOM sbom = svipSbomBuilder.Build();
+
+        Result result = resultFactory.fail("SHA1", INFO.INVALID, HASH_VALUE, "component");
+        List<Fix<Hash>> fixes = hashFixes.fix(result, sbom, CDX14_SBOM_COMPONENT_NAME, 0);
 
         Set<Algorithm> validAlgorithms =
                 new HashSet<>(Arrays.asList(Algorithm.MD2, Algorithm.MD4, Algorithm.MD5, Algorithm.MD6));
 
         for (Fix<Hash> fix : fixes) {
-            assertEquals(new Hash(Algorithm.MD5, HASH_VALUE), fix.old());
+            assertEquals(new Hash(Algorithm.SHA1, HASH_VALUE), fix.old());
             assertTrue(validAlgorithms.contains(fix.fixed().getAlgorithm()));
         }
     }
 
     @Test
-    public void validAlgorithms_test() {
-        generateHashes().forEach((key, value) -> {
+    public void valid_algorithms_test() {
+        mockHashes().forEach((key, value) -> {
             Result result = resultFactory.fail(key.name(), INFO.INVALID, value, "component");
             List<Fix<Hash>> fixes = hashFixes.fix(result, spdxSbom, SPDX23_SBOM_COMPONENT_NAME, 0);
             assertTrue(fixes.stream().allMatch(fix -> fix.old().equals(new Hash(key, value))));
         });
     }
 
-    private Map<Algorithm, String> generateHashes() {
+    private Map<Algorithm, String> mockHashes() {
         Map<Algorithm, String> hashes = new HashMap<>();
 
         hashes.put(Algorithm.ADLER32, HASH_VALUE.substring(0, 8));

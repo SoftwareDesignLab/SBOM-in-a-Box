@@ -42,6 +42,6 @@ public class NugetExtractionTest {
     @Test
     public void getInvalidPURL() {
         NugetExtraction ne = new NugetExtraction(null);
-        assertNull(ne.getCopyright());
+        assertEquals("", ne.getCopyright());
     }
 }

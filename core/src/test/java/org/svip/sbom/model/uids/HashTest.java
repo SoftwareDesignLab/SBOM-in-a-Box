@@ -1,16 +1,6 @@
 package org.svip.sbom.model.uids;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.builder.objects.SVIPComponentBuilder;
-import org.svip.sbom.factory.objects.SVIPSBOMComponentFactory;
-import org.svip.sbom.model.interfaces.generics.Component;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -27,16 +17,7 @@ import static org.svip.sbom.model.uids.Hash.Algorithm;
  */
 class HashTest {
 
-    private static SVIPSBOMComponentFactory packageBuilderFactory;
-    private static SVIPComponentBuilder packageBuilder;
     private static final String HASH_VALUE = "5eb63bbbe01eeed093cb22bb8f5acdc3";
-
-    @BeforeAll
-    static void setup() {
-        packageBuilderFactory = new SVIPSBOMComponentFactory();
-        packageBuilder = packageBuilderFactory.createBuilder();
-        packageBuilder.addPURL("pkg:maven/org.junit.platform/junit-platform-engine@1.9.2?type=jar");
-    }
 
     @Test
     public void construction_test() {

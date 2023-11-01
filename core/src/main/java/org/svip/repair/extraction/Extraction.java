@@ -15,8 +15,9 @@ import java.util.Map;
 public abstract class Extraction {
 
     protected PURL purl;
+    protected String copyright;
+    protected String license;
     protected Map<Algorithm, String> hashes;
-    protected Map<String, String> results;
 
     /**
      * Creates a new object with the purl to use for extraction
@@ -24,8 +25,9 @@ public abstract class Extraction {
      */
     public Extraction(PURL purl) {
         this.purl = purl;
+        this.copyright = "";
+        this.license = "";
         this.hashes = new HashMap<>();
-        this.results = new HashMap<>();
     }
 
     /**
@@ -35,24 +37,11 @@ public abstract class Extraction {
     public abstract void extract();
 
     /**
-     * Checks to see if the results from extracted text contains the key
-     * and if so return the value
-     * @param key what to check (ie: copyright)
-     * @return value or null
-     */
-    private String getValue(String key) {
-        if(!results.containsKey(key))
-            return null;
-
-        return results.get(key);
-    }
-
-    /**
      * Gets the copyright from extracted text if exists
      * @return copyright
      */
     public String getCopyright() {
-        return getValue("copyright");
+        return copyright;
     }
 
     /**
@@ -60,7 +49,7 @@ public abstract class Extraction {
      * @return license
      */
     public String getLicense() {
-        return getValue("license");
+        return license;
     }
 
     /**
