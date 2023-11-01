@@ -121,6 +121,9 @@ public class SBOMFileService {
         SBOMFile converted = u.toSBOMFile();
 
         if (overwrite) {
+            sbomFileRepository.delete(SBOMFile.get());
+        }
+        else {
             update(id, converted);
             return id;
         }
