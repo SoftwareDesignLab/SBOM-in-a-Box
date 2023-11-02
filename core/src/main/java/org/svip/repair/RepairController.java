@@ -10,6 +10,7 @@ import org.svip.sbom.model.interfaces.generics.SBOM;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Name: RepairController.java
@@ -42,7 +43,7 @@ public class RepairController {
      * @param repairs chosen repairs from SBOM
      * @return repaired SBOM
      */
-    public SBOM repairSBOM(SBOM sbom, Map<Integer, List<Fix<?>>> repairs) {
+    public SBOM repairSBOM(SBOM sbom, Map<Integer, Set<Fix<?>>> repairs) {
         Repair r = getRepair(sbom);
         return r.repairSBOM(sbom, repairs);
     }
