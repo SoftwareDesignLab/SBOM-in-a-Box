@@ -75,9 +75,13 @@ TOOL_LIST = [
     OSTool("CycloneDX Rust Cargo", BOMFormat.CYCLONE_DX, [Language.RUST],
         ["cd {code}", "cargo cyclonedx -f json -a -o {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
     OSTool("sbom4python CDX", BOMFormat.CYCLONE_DX, [Language.PYTHON],
-        ["cd {code}", "sbom4python --sbom cyclonedx -output-file={output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
+        ["cd {code}", "sbom4python --sbom cyclonedx --output-file={output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
     OSTool("sbom4python SPDX", BOMFormat.SPDX, [Language.PYTHON],
-        ["cd {code}", "sbom4python --sbom spdx -output-file={output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
+        ["cd {code}", "sbom4python --sbom spdx --output-file={output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
+    OSTool("sbom4rust CDX", BOMFormat.CYCLONE_DX, [Language.RUST],
+        ["cd {code}", "sbom4rust --sbom cyclonedx --output-file={output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
+    OSTool("sbom4rust SPDX", BOMFormat.SPDX, [Language.RUST],
+        ["cd {code}", "sbom4rust --sbom spdx --output-file={output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
 ]
 
 # Add tools into a list dictionary keyed by language
