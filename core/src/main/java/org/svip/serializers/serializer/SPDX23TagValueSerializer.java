@@ -101,10 +101,13 @@ public class SPDX23TagValueSerializer implements Serializer {
         for (SVIPComponentObject pkg : packages)
             out.append(getPackageInfo(pkg));
 
-        out.append("\n### Unpackaged Files\n\n");
+        if (!files.isEmpty())
+            out.append("### Unpackaged Files\n\n");
+
         for (SVIPComponentObject file : files)
             out.append(getFileInfo(file));
 
+        out.append("### Relationships\n\n");
         out.append(getRelationships(sbom.getRelationships()));
 
         return out.toString();
