@@ -51,6 +51,13 @@ function installWithNPM() {
     npm install -g @cyclonedx/cdxgen
 }
 
+function installWithGo() {
+    # Install CycloneDX-Go
+    go install github.com/ozonru/cyclonedx-go/cmd/cyclonedx-go@latest
+    # Install GoBom
+    go install github.com/mattermost/gobom/cmd/gobom@latest
+}
+
 
 #
 # TOOLS : Manual Installation
@@ -73,9 +80,6 @@ function installSyft() {
     curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
 }
 
-function installGoBom() {
-    go install github.com/mattermost/gobom/cmd/gobom@latest
-}
 
 #
 # Setup OSI environment and install all tools
@@ -106,6 +110,7 @@ main() {
   installWithPIP &
 #  # Install Retire.js cdxgen
   installWithNPM &
+  installWithGo &
   wait
   echo "Package manager tools installed"
 
@@ -114,7 +119,6 @@ main() {
   installJBOM &
   installCycloneDXCLI &
   installSyft &
-  installGoBom &
   wait
 
   echo "Manual tools installed"
