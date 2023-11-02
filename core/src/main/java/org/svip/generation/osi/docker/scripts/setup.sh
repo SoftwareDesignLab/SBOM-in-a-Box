@@ -47,6 +47,10 @@ function installWithPIP(){
 function installWithNPM() {
     # Install Retire.js
     npm install -g retire
+    # Install Bower
+    npm install -g bower
+    # Install CycloneDX Bower Bom
+    npm install -g cdx-bower-bom
     # Install cdxgen
     npm install -g @cyclonedx/cdxgen
 }
@@ -81,7 +85,7 @@ function installSyft() {
 }
 
 function installSBOMTool() {
-  curl -Lo sbom-tool https://github.com/microsoft/sbom-tool/releases/latest/download/sbom-tool-linux-x64 && chmod -x /usr/local/bin/sbom-tool
+    curl -Lo sbom-tool https://github.com/microsoft/sbom-tool/releases/latest/download/sbom-tool-linux-x64 && chmod -x /usr/local/bin/sbom-tool
 }
 
 
