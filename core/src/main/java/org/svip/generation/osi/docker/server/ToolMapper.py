@@ -66,12 +66,13 @@ TOOL_LIST = [
         Language.JAVASCRIPT, Language.PHP, Language.PYTHON, Language.RUBY, Language.RUST, Language.SWIFT
     ], ["cd {code}", "syft . -vv -o spdx-tag-value > {output}/" + SBOM_TEMP_NAME + ".spdx"]),
     OSTool("GoBom", BOMFormat.CYCLONE_DX, [Language.GO], ["cd {code}", "gobom generate . -o {output}"]),
-    OSTool("CycloneDX Go", BOMFormat.CYCLONE_DX, [Language.GO], ["cd {code}", "cyclonedx-go -o {output}"])
+    OSTool("CycloneDX Go", BOMFormat.CYCLONE_DX, [Language.GO], ["cd {code}", "cyclonedx-go -o {output}"]),
     OSTool("sbom-tool", BOMFormat.SPDX, [
         Language.GO, Language.PYTHON, Language.RUBY, Language.RUST
     ], ["cd {code}", "sbom-tool generate -ps . -b . -m {output} -pn . -pv ."]),
     OSTool("CycloneDX Bower Bom", BOMFormat.CYCLONE_DX, [Language.JSON], [
         "cd {code}", "bower install", "cdx-bower-bom -o {output}"]),
+    OSTool("CycloneDX Rust Cargo", BOMFormat.CYCLONE_DX, [Language.RUST], ["cd {code}", "cargo cyclonedx -f json -a -o {output}])
 ]
 
 # Add tools into a list dictionary keyed by language

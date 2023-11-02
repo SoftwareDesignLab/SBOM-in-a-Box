@@ -88,6 +88,9 @@ function installSBOMTool() {
     curl -Lo sbom-tool https://github.com/microsoft/sbom-tool/releases/latest/download/sbom-tool-linux-x64 && chmod -x /usr/local/bin/sbom-tool
 }
 
+function installCycloneDXCargo() {
+    cargo install cargo-cyclonedx
+}
 
 #
 # Setup OSI environment and install all tools
@@ -127,7 +130,8 @@ main() {
   installJBOM &
   installCycloneDXCLI &
   installSyft &
-  installSBOMTool
+  installSBOMTool &
+  installCycloneDXCargo
   wait
 
   echo "Manual tools installed"
