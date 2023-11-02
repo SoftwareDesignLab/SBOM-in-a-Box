@@ -133,7 +133,7 @@ public class DiffService {
                 continue;
 
             // Attempt to get comparison, generate and upload if one doesn't exist.
-            ComparisonFile cf = this.comparisonFileRepository.findByTargetSBOMAndOtherSBOM(targetSBOMFile, otherSBOMFile);
+            ComparisonFile cf = this.comparisonFileRepository.findByTargetSBOMFileAndOtherSBOMFile(targetSBOMFile, otherSBOMFile);
             if(cf == null){
                 Comparison comparison = new Comparison(targetSBOM, otherSBOMFile.toSBOMObject());
                 cf = upload(new UploadComparisonFileInput(comparison).toComparisonFile(targetSBOMFile, otherSBOMFile));
