@@ -13,10 +13,7 @@ import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -42,10 +39,8 @@ public class RepairTest {
     public void SPDXRepairTest() throws Exception {
         SPDX23SBOM sbom = spdx23JSONDeserializer.readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
         QualityReport statement = r.generateStatement(sbom);
-        Map<Integer, List<Fix<?>>> fixes = statement.getFixes();
         SPDX23SBOM repaired = (SPDX23SBOM) r.repairSBOM(sbom, statement.getFixes());
         QualityReport newStatement = r.generateStatement(repaired);
-        Map<Integer, List<Fix<?>>> newStatementFixes = newStatement.getFixes();
         assertEquals(0, newStatement.getFixAmount());
     }
 
@@ -76,7 +71,7 @@ public class RepairTest {
     public void CDXEmptyRepairsTest() throws Exception {
         CDX14SBOM sbom = cdx14JSONDeserializer.readFromString(Files.readString(Path.of(CDX_14_JSON_SBOM)));
         QualityReport statement = r.generateStatement(sbom);
-        Map<Integer, List<Fix<?>>> fixes = new HashMap<Integer, List<Fix<?>>>();
+        Map<Integer, Set<Fix<?>>> fixes = new HashMap<Integer, Set<Fix<?>>>();
         CDX14SBOM repairedSBOM = (CDX14SBOM) r.repairSBOM(sbom, fixes);
         QualityReport newStatement = r.generateStatement(repairedSBOM);
         assertEquals(statement.getFixAmount(), newStatement.getFixAmount());
@@ -86,7 +81,7 @@ public class RepairTest {
     public void SPDXEmptyRepairsTest() throws Exception {
         SPDX23SBOM sbom = spdx23JSONDeserializer.readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
         QualityReport statement = r.generateStatement(sbom);
-        Map<Integer, List<Fix<?>>>  fixes = new HashMap<Integer, List<Fix<?>>>();
+        Map<Integer, Set<Fix<?>>>  fixes = new HashMap<Integer, Set<Fix<?>>>();
         SPDX23SBOM repairedSBOM = (SPDX23SBOM) r.repairSBOM(sbom, fixes);
         QualityReport newStatement = r.generateStatement(repairedSBOM);
         assertEquals(statement.getFixAmount(), newStatement.getFixAmount());

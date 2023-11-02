@@ -367,7 +367,7 @@ public class SBOMFileService {
      * @return ID of repaired SBOM
      * @throws JsonProcessingException error deserialization occured
      */
-    public long repair(Long id, Map<Integer, List<Fix<?>>> repairStatement, boolean overwrite) throws JsonProcessingException {
+    public long repair(Long id, Map<Integer, Set<Fix<?>>> repairStatement, boolean overwrite) throws JsonProcessingException {
 
         org.svip.sbom.model.interfaces.generics.SBOM toRepair;
         toRepair = getSBOMFile(id).toSBOMObject();

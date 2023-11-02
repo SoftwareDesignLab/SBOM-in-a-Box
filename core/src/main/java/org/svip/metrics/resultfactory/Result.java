@@ -81,4 +81,9 @@ public class Result {
     }
 
     public List<Fix<?>> getFixes() { return  this.fixes; }
+
+    @Override
+    public int hashCode() {
+        return (test + ":" + message + ":" + details + ":" + status.toString() + ":" + getFixes().toString() + ":" + getAttributes().toString()).hashCode();
+    }
 }
