@@ -67,6 +67,10 @@ TOOL_LIST = [
     ], ["cd {code}", "syft . -vv -o spdx-tag-value > {output}/" + SBOM_TEMP_NAME + ".spdx"]),
     OSTool("GoBom", BOMFormat.CYCLONE_DX, [Language.GO], ["cd {code}", "gobom generate . -o {output}"]),
     OSTool("CycloneDX Go", BOMFormat.CYCLONE_DX, [Language.GO], ["cd {code}", "cyclonedx-go -o {output}"])
+    OSTool("sbom-tool", BOMFormat.SPDX, [
+        Language.GO, Language.PYTHON, Language.RUBY, Language.RUST
+    ], ["cd {code}", "sbom-tool generate -ps . -b . -m {output} -pn . -pv ."]),
+
 ]
 
 # Add tools into a list dictionary keyed by language
