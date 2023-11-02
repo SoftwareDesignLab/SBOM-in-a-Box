@@ -72,7 +72,12 @@ TOOL_LIST = [
     ], ["cd {code}", "sbom-tool generate -ps . -b . -m {output} -pn . -pv ."]),
     OSTool("CycloneDX Bower Bom", BOMFormat.CYCLONE_DX, [Language.JSON], [
         "cd {code}", "bower install", "cdx-bower-bom -o {output}"]),
-    OSTool("CycloneDX Rust Cargo", BOMFormat.CYCLONE_DX, [Language.RUST], ["cd {code}", "cargo cyclonedx -f json -a -o {output}])
+    OSTool("CycloneDX Rust Cargo", BOMFormat.CYCLONE_DX, [Language.RUST],
+        ["cd {code}", "cargo cyclonedx -f json -a -o {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
+    OSTool("sbom4python CDX", BOMFormat.CYCLONE_DX, [Language.PYTHON],
+        ["cd {code}", "sbom4python --sbom cyclonedx -output-file={output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
+    OSTool("sbom4python SPDX", BOMFormat.SPDX, [Language.PYTHON],
+        ["cd {code}", "sbom4python --sbom spdx -output-file={output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
 ]
 
 # Add tools into a list dictionary keyed by language
