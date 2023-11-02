@@ -50,12 +50,12 @@ TOOL_LIST = [
     OSTool("Syft CDX", BOMFormat.CYCLONE_DX, [
         Language.C_CPLUSPLUS, Language.DART, Language.ERLANG, Language.GO, Language.HASKELL, Language.JAVA,
         Language.JAVASCRIPT, Language.PHP, Language.PYTHON, Language.RUBY, Language.RUST, Language.SWIFT
-    ], ["syft {code} -vv -o cyclonedx-xml > {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
+    ], ["cd {code}", "syft . -vv -o cyclonedx-xml > {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
     OSTool("JBOM Jar", BOMFormat.CYCLONE_DX, [Language.JAVA_JAR], [
-        "java -jar /usr/local/bin/jbom.jar -f {code} -o {output}"
+        "cd {code}", "java -jar /usr/local/bin/jbom.jar -f . -o {output}"
     ]),
     OSTool("JBOM", BOMFormat.CYCLONE_DX, [Language.JAVA], [
-        "java -jar /usr/local/bin/jbom.jar -d {code} -o {output}"
+        "cd {code}", "java -jar /usr/local/bin/jbom.jar -d . -o {output}"
     ]),
     # todo can add '--no-wfp-output' to skip fingerprinting. Removed because only generates JSON SBOMs
     # OSTool("Scanoss Python", BOMFormat.CYCLONE_DX, [Language.PYTHON], [
@@ -64,7 +64,7 @@ TOOL_LIST = [
     OSTool("Syft SPDX", BOMFormat.SPDX, [
         Language.C_CPLUSPLUS, Language.DART, Language.ERLANG, Language.GO, Language.HASKELL, Language.JAVA,
         Language.JAVASCRIPT, Language.PHP, Language.PYTHON, Language.RUBY, Language.RUST, Language.SWIFT
-    ], ["syft {code} -vv -o spdx-tag-value > {output}/" + SBOM_TEMP_NAME + ".spdx"]),
+    ], ["cd {code}", "syft . -vv -o spdx-tag-value > {output}/" + SBOM_TEMP_NAME + ".spdx"]),
 ]
 
 # Add tools into a list dictionary keyed by language
