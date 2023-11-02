@@ -49,11 +49,11 @@ public class EmptyOrNullFixes implements Fixes {
         else if (result.getDetails().contains("SPDXID"))
             return SPDXIDFix(result);
         else if (result.getDetails().contains("Comment"))
-            return commentNullFix();
+            return commentNullFix(result.getMessage());
         else if (result.getDetails().contains("Attribution Text"))
-            return attributionTextNullFix();
+            return attributionTextNullFix(result.getMessage());
         else if (result.getDetails().contains("File Notice"))
-            return fileNoticeNullFix();
+            return fileNoticeNullFix(result.getMessage());
         else if (result.getDetails().contains("Author"))
             return authorNullFix(sbom, componentName);
         else if (result.getDetails().contains("Copyright"))
@@ -144,22 +144,39 @@ public class EmptyOrNullFixes implements Fixes {
     /**
      * @return empty string in place for null comment
      */
-    private List<Fix<?>> commentNullFix() {
-        return Collections.singletonList(new Fix<>(FixType.METADATA_COMMENT, "null", ""));
+    private List<Fix<?>> commentNullFix(String message) {
+
+        String[] split = message.split(" ");
+
+        if(split[3].equals("null"))
+            return Collections.singletonList(new Fix<>(FixType.COMPONENT_COMMENT, "null", ""));
+
+        return null;
     }
 
     /**
      * @return empty string in place for null attribution text
      */
-    private List<Fix<?>> attributionTextNullFix() {
-        return Collections.singletonList(new Fix<>(FixType.COMPONENT_ATTRIBUTION_TEXT, null, ""));
+    private List<Fix<?>> attributionTextNullFix(String message) {
+
+        String[] split = message.split(" ");
+
+        if(split[4].equals("null"))
+            return Collections.singletonList(new Fix<>(FixType.COMPONENT_ATTRIBUTION_TEXT, null, ""));
+
+        return null;
     }
 
     /**
      * @return empty string in place for null file notice
      */
-    private List<Fix<?>> fileNoticeNullFix() {
-        return Collections.singletonList(new Fix<>(FixType.COMPONENT_FILE_NOTICE, null, ""));
+    private List<Fix<?>> fileNoticeNullFix(String message) {
+        String[] split = message.split(" ");
+
+        if(split[4].equals("null"))
+            return Collections.singletonList(new Fix<>(FixType.COMPONENT_FILE_NOTICE, null, ""));
+
+        return null;
     }
 
     /**

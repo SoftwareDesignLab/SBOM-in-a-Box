@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.svip.metrics.resultfactory.Result;
 import org.svip.repair.fix.Fix;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * file: QualityReport.java
@@ -89,13 +86,13 @@ public class QualityReport {
      * Gets all fixes appended
      * @return fixes
      */
-    public Map<Integer, List<Fix<?>>> getFixes() {
-        Map<Integer, List<Fix<?>>> fixes = new HashMap<>();
+    public Map<Integer, Set<Fix<?>>> getFixes() {
+        Map<Integer, Set<Fix<?>>> fixes = new HashMap<>();
         Map<Integer, List<Result>> results = getResults();
 
         for(Integer component : results.keySet()) {
             List<Result> compResults = results.get(component);
-            List<Fix<?>> compFixes = new ArrayList<>();
+            Set<Fix<?>> compFixes = new HashSet<>();
 
             for(Result result : compResults) {
                 compFixes.addAll(result.getFixes());

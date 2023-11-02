@@ -43,7 +43,7 @@ public class RepairSPDX23CDX14 implements Repair {
     private final static long METADATA_HASH = 0;
 
     @Override
-    public SBOM repairSBOM(SBOM sbom, Map<Integer, List<Fix<?>>> repairs) {
+    public SBOM repairSBOM(SBOM sbom, Map<Integer, Set<Fix<?>>> repairs) {
 
         if(repairs == null)
             return sbom;
@@ -62,7 +62,7 @@ public class RepairSPDX23CDX14 implements Repair {
         Set<ExternalReference> externalReferences = sbom.getExternalReferences();
 
         for(Integer key : repairs.keySet()) {
-            List<Fix<?>> fixes = repairs.get(key);
+            Set<Fix<?>> fixes = repairs.get(key);
 
             Optional<Component> potentialComp = null;
 
@@ -181,6 +181,7 @@ public class RepairSPDX23CDX14 implements Repair {
                     }
 
                     case COMPONENT_PURL -> {
+                        purls.clear(); //Assuming if it is a fix that the previous were invalid
                         purls.add(fix.getNew().toString());
                     }
 
@@ -188,8 +189,8 @@ public class RepairSPDX23CDX14 implements Repair {
                         copyright = fix.getNew().toString();
                     }
 
-                    case METADATA_COMMENT -> {
-                        documentComment = fix.getNew().toString();
+                    case COMPONENT_COMMENT -> {
+                        comment = fix.getNew().toString();
                     }
 
                     case METADATA_BOM_VERSION -> {

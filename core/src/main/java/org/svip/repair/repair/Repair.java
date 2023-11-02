@@ -5,6 +5,7 @@ import org.svip.sbom.model.interfaces.generics.SBOM;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Name: Repair.java
@@ -25,6 +26,6 @@ public interface Repair {
      * @param repairs   The fixes to make
      * @return          The repaired SBOM Object.
      */
-    SBOM repairSBOM(SBOM sbom, Map<Integer, List<Fix<?>>> repairs);
+    SBOM repairSBOM(SBOM sbom, Map<Integer, Set<Fix<?>>> repairs);
 
 }
