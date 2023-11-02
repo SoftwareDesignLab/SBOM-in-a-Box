@@ -12,6 +12,7 @@ import org.svip.repair.fix.Fix;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * REST API Controller for managing SBOM repair operations
@@ -81,7 +82,7 @@ public class RepairController {
      */
     @GetMapping("/sboms/repair")
     public ResponseEntity<?> repairSBOM(@RequestParam("id") long id,
-                                        @RequestParam("repairStatement") Map<Integer, List<Fix<?>>> repairStatement, // todo just change to a list of fixes?
+                                        @RequestParam("repairStatement") Map<Integer, Set<Fix<?>>> repairStatement, // todo just change to a list of fixes?
                                         @RequestParam("overwrite") boolean overwrite) {
 
         long repair;
