@@ -80,6 +80,10 @@ function installSyft() {
     curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
 }
 
+function installSBOMTool() {
+  curl -Lo sbom-tool https://github.com/microsoft/sbom-tool/releases/latest/download/sbom-tool-linux-x64 && chmod -x /usr/local/bin/sbom-tool
+}
+
 
 #
 # Setup OSI environment and install all tools
@@ -119,6 +123,7 @@ main() {
   installJBOM &
   installCycloneDXCLI &
   installSyft &
+  installSBOMTool
   wait
 
   echo "Manual tools installed"
