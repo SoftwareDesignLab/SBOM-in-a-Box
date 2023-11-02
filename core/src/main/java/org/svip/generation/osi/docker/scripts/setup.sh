@@ -73,6 +73,10 @@ function installSyft() {
     curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
 }
 
+function installGoBom() {
+    go install github.com/mattermost/gobom/cmd/gobom@latest
+}
+
 #
 # Setup OSI environment and install all tools
 #
@@ -110,6 +114,7 @@ main() {
   installJBOM &
   installCycloneDXCLI &
   installSyft &
+  installGoBom &
   wait
 
   echo "Manual tools installed"
