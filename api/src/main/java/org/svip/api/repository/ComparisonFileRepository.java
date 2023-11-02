@@ -20,5 +20,5 @@ public interface ComparisonFileRepository extends CrudRepository<ComparisonFile,
      *
      * @return ComparisonFile for the target and other sbom
      */
-    ComparisonFile findByTargetSBOMAndOtherSBOM(SBOMFile targetSBOMFile, SBOMFile otherSBOMFile);
+    ComparisonFile findByTargetSBOMFileAndOtherSBOMFile(SBOMFile targetSBOMFile, SBOMFile otherSBOMFile);
 }
