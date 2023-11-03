@@ -4,6 +4,7 @@
 # Setup OSI environment with required Languages, Package Managers, and Tools
 #
 # @author Derek Garcia
+# @author Tyler Drake
 
 # Distro and Constants
 GO_DISTRO=https://go.dev/dl/go1.20.linux-amd64.tar.gz

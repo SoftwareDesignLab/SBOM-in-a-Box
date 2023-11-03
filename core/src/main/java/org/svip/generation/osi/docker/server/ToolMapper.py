@@ -11,6 +11,7 @@ A map of all supported Open Source SBOM Tools and their corresponding languages,
 
 @author Matt London
 @author Ian Dunn
+@author Tyler Drake
 """
 
 """
