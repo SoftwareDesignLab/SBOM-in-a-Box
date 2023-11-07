@@ -63,6 +63,24 @@ function installWithGo() {
     go install github.com/mattermost/gobom/cmd/gobom@latest
 }
 
+function installDotNet() {
+
+  # Get package
+  wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
+  dpkg -i packages-microsoft-prod.deb
+
+  # Install .NET SDK
+  apt install apt-transport-https
+  apt update
+  apt install dotnet-sdk-6.0
+
+  # Install .NET Core Runtime
+  apt install apt-transport-https
+  apt update
+  apt install dotnet-runtime-6.0
+
+}
+
 
 #
 # TOOLS : Manual Installation
@@ -93,6 +111,10 @@ function installCycloneDXCargo() {
     cargo install cargo-cyclonedx
 }
 
+function installCovenant() {
+    dotnet tool install --global covenant
+}
+
 #
 # Setup OSI environment and install all tools
 #
@@ -117,6 +139,11 @@ main() {
   installCargo
   echo "Package managers installed"
 
+  # Install dotnet
+  installDotNet &
+  wait
+  echo "Dot net installed"
+
   # Install tools using package managers
   # jake, cyclonedx-conan, cyclonedx-python, ochrona, scanoss
   installWithPIP &
@@ -132,7 +159,8 @@ main() {
   installCycloneDXCLI &
   installSyft &
   installSBOMTool &
-  installCycloneDXCargo
+  installCycloneDXCargo &
+  installConvenant
   wait
 
   echo "Manual tools installed"
