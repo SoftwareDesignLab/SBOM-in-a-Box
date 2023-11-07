@@ -83,11 +83,11 @@ TOOL_LIST = [
         ["cd {code}", "sbom4rust --sbom cyclonedx --output-file={output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
     OSTool("sbom4rust SPDX", BOMFormat.SPDX, [Language.RUST],
         ["cd {code}", "sbom4rust --sbom spdx --output-file={output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
-    OSTool("sbom4python CDX", BOMFormat.CYCLONE_DX, [
+    OSTool("sbom4files CDX", BOMFormat.CYCLONE_DX, [
         Language.C_CPLUSPLUS, Language.GO, Language.JAVA, Language.JAVASCRIPT,
         Language.PHP, Language.PYTHON, Language.RUST, Language.PERL],
         ["sbom4files -d {code} -r --sbom cyclonedx -o {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
-    OSTool("sbom4python SPDX", BOMFormat.SPDX, [
+    OSTool("sbom4files SPDX", BOMFormat.SPDX, [
         Language.C_CPLUSPLUS, Language.GO, Language.JAVA, Language.JAVASCRIPT,
         Language.PHP, Language.PYTHON, Language.RUST, Language.PERL],
         ["sbom4files -d {code} -r --sbom spdx --format tag -o {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
