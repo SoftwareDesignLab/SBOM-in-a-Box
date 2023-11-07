@@ -92,7 +92,7 @@ TOOL_LIST = [
         Language.PHP, Language.PYTHON, Language.RUST, Language.PERL],
         ["sbom4files -d {code} -r --sbom spdx --format tag -o {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
     OSTool("Covenant", BOMFormat.CYCLONE_DX, [
-            Language.C_CPLUSPLUS, Language.C_SHARP, Language.DART, Language.ERLANG, Language.GO, Language.HASKELL, Language.JAVA,
+            Language.C_CPLUSPLUS, Language.CSHARP, Language.DART, Language.ERLANG, Language.GO, Language.HASKELL, Language.JAVA,
             Language.JAVASCRIPT, Language.PHP, Language.PYTHON, Language.RUBY, Language.RUST, Language.SWIFT],
             ["dotnet covenant install --global {code} -o {output}"]),
 ]
