@@ -381,16 +381,26 @@ public class SBOMFileService {
 
         org.svip.sbom.model.interfaces.generics.SBOM repaired = repair.repairSBOM(toRepair, repairStatement);
 
+        SBOM.Schema ogSchema = (toRepair instanceof SPDX23SBOM) ? SBOM.Schema.SPDX_23 : SBOM.Schema.CYCLONEDX_14;
+
+        SerializerFactory.Schema originalSchema = (ogSchema == SBOM.Schema.SPDX_23) ? // original schema of SBOM
+                SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14;
+
+        SerializerFactory.Format originalFormat = toRepair.getFormat().equals("JSON") ?
+                SerializerFactory.Format.JSON : SerializerFactory.Format.TAGVALUE;
+
         // serialize into desired format
-        Serializer s = SerializerFactory.createSerializer(SerializerFactory.Schema.SPDX23, SerializerFactory.Format.TAGVALUE,
-                true); // todo serializers don't adjust the format nor specversion
+        Serializer s = SerializerFactory.createSerializer(originalSchema, originalFormat, true);
         s.setPrettyPrinting(true);
-        String contents = s.writeToString((SVIPSBOM) repaired);
+        org.svip.sbom.model.interfaces.generics.SBOM converted = null;
+        try {
+             converted = Conversion.convertSBOM(repaired, SerializerFactory.Schema.SVIP, originalSchema);
+        } catch (ConversionException e) {
+            throw new RuntimeException(e);
+        }
+        String contents = s.writeToString((SVIPSBOM) converted);
 
-        Random rand = new Random();
-        String newName = ((repaired.getName() == null) ? Math.abs(rand.nextInt()) : repaired.getName()) + ".SPDX23";
-
-        UploadSBOMFileInput u = new UploadSBOMFileInput(newName, contents); // todo duplicate code
+        UploadSBOMFileInput u = new UploadSBOMFileInput(repaired.getName(), contents); // todo duplicate code
 
         // Save according to overwrite boolean
         SBOMFile sbomFile = u.toSBOMFile();

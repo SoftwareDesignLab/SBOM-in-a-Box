@@ -23,10 +23,8 @@ public class QualityReport {
     @JsonProperty
     private final String uid;
 
-    @JsonProperty
     private final Map<Integer, List<Result>> components = new HashMap<>();
 
-    @JsonProperty
     private final Map<Integer, String> componentHashCodeMapping = new HashMap<>();
 
     /**

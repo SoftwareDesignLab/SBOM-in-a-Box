@@ -1,6 +1,8 @@
 package org.svip.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -82,11 +84,14 @@ public class RepairController {
      */
     @GetMapping("/sboms/repair")
     public ResponseEntity<?> repairSBOM(@RequestParam("id") long id,
-                                        @RequestParam("repairStatement") Map<Integer, Set<Fix<?>>> repairStatement, // todo just change to a list of fixes?
+                                        @RequestParam("repairStatement") String repairStatementJson,
                                         @RequestParam("overwrite") boolean overwrite) {
 
         long repair;
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            TypeReference<Map<Integer, Set<Fix<?>>>> mapType = new TypeReference<>() {};
+            Map<Integer, Set<Fix<?>>> repairStatement = objectMapper.readValue(repairStatementJson, mapType);
             repair = sbomService.repair(id, repairStatement, overwrite);
         } catch (JsonProcessingException e) {
             LOGGER.error(e.getMessage());
