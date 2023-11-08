@@ -66,30 +66,58 @@ class HashTest {
         Hash invalidHash = new Hash(Algorithm.SHA1.name(), HASH_VALUE);
         Hash validHash = new Hash(Algorithm.MD5.name(), HASH_VALUE);
 
-        Component component = buildComponent();
+        Component component = buildComponent(PURL);
         assertTrue(validHash.isValid(component));
         assertFalse(invalidHash.isValid(component));
 
         assertTrue(Arrays.stream(Algorithm.values())
                 .anyMatch(algorithm -> new Hash(algorithm.name(), HASH_VALUE).isValid(null)));
+
+        invalidHash = new Hash(Algorithm.UNKNOWN.name(), HASH_VALUE);
+        assertFalse(invalidHash.isValid(component));
     }
 
     @Test
     public void getValidAlgorithms_test() {
+        for (Hash hash : mockHashes()) {
+            assertNotNull(hash.getValidAlgorithms(true));
+            assertNotNull(hash.getValidAlgorithms(false));
+        }
 
+        // Test that isSPDXExclusive is doing its job
     }
 
-    private Component buildComponent() {
+    @Test
+    public void getValidValue_test() {
+        Component component = buildComponent(PURL);
+        Hash hash = new Hash(Algorithm.MD5.name(), HASH_VALUE);
+        assertEquals(HASH_VALUE, hash.getValidValue(component));
+
+        component = buildComponent("pkg:maven:invalidPURL");
+        assertEquals("", hash.getValidValue(component));
+        assertEquals("", hash.getValidValue(null));
+    }
+
+    private Component buildComponent(String purl) {
         SVIPSBOMComponentFactory packageBuilderFactory = new SVIPSBOMComponentFactory();
         SVIPComponentBuilder packageBuilder = packageBuilderFactory.createBuilder();
         packageBuilder.addHash(Algorithm.MD5.name(), HASH_VALUE);
-        packageBuilder.addPURL(PURL);
+        packageBuilder.addPURL(purl);
         return packageBuilder.buildAndFlush();
     }
 
     private List<Hash> mockHashes() {
         List<Hash> hashes = new ArrayList<>();
 
+        hashes.add(new Hash(Algorithm.UNKNOWN, ""));
         hashes.add(new Hash(Algorithm.ADLER32, HASH_VALUE.substring(0, 8)));
+        hashes.add(new Hash(Algorithm.MD2, HASH_VALUE));
+        hashes.add(new Hash(Algorithm.SHA1, (HASH_VALUE + HASH_VALUE).substring(0, 40)));
+        hashes.add(new Hash(Algorithm.SHA224, (HASH_VALUE + HASH_VALUE).substring(0, 56)));
+        hashes.add(new Hash(Algorithm.SHA256, HASH_VALUE + HASH_VALUE));
+        hashes.add(new Hash(Algorithm.SHA384, HASH_VALUE + HASH_VALUE + HASH_VALUE));
+        hashes.add(new Hash(Algorithm.SHA512, HASH_VALUE + HASH_VALUE + HASH_VALUE + HASH_VALUE));
+
+        return hashes;
     }
 }

@@ -120,12 +120,13 @@ public class Hash {
      * @return True if hash passes, false otherwise
      */
     public boolean isValid(Component component) {
-        // Validate MD5 and SHA1 hashes against Maven Repository
-        String validHashValue = getValidValue(component);
-        if (!validHashValue.isEmpty()) {
+        if (MavenExtraction.isExtractable(algorithm, component)) {
+            // Cast component to SBOMPackage
             SBOMPackage sbomPackage = (SBOMPackage) component;
+
+            // Validate MD5 and SHA1 hashes against Maven Repository
             String componentHash = sbomPackage.getHashes().getOrDefault(algorithm.name(), "");
-            return componentHash.equals(validHashValue);
+            return componentHash.equals(getValidValue(component));
         } else {
             // If component is not from Maven Repository, then test against supported hashes using regex
             Pattern p = new Pattern(
@@ -169,11 +170,12 @@ public class Hash {
     }
 
     public String getValidValue(Component component) {
-        if (!(component instanceof SBOMPackage sbomPackage
-                && (algorithm.equals(MD5) || algorithm.equals(SHA1))
-                && (sbomPackage.getPURLs().stream().findFirst().get()).startsWith("pkg:maven"))) {
+        if (!MavenExtraction.isExtractable(algorithm, component)) {
             return "";
         }
+
+        // Cast component to SBOMPackage
+        SBOMPackage sbomPackage = (SBOMPackage) component;
 
         // Create PURL object
         PURL purl;

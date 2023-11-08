@@ -56,10 +56,8 @@ public class HashFixes implements Fixes<Hash> {
                 .toList()
                 .get(0);
 
-        // Retrieve valid MD5 and SHA1 hashes from Maven Repository
-        String validHashValue = hash.getValidValue(component);
-
-        if (!validHashValue.isEmpty()) {
+        if (MavenExtraction.isExtractable(hash.getAlgorithm(), component)) {
+            // Retrieve valid hash from Maven Repository
             Hash validHash = new Hash(hash.getAlgorithm(), hash.getValidValue(component));
             return List.of(new Fix<>(FixType.COMPONENT_HASH, hash, validHash));
         } else {

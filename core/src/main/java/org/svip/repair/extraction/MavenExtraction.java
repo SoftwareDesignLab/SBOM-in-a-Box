@@ -1,12 +1,16 @@
 package org.svip.repair.extraction;
 
 import org.svip.generation.parsers.utils.QueryWorker;
+import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 import org.svip.sbom.model.uids.Hash.Algorithm;
 import org.svip.sbom.model.uids.PURL;
 import org.svip.utils.Debug;
 
-import java.util.List;
+import java.util.Set;
 
+import static org.svip.sbom.model.uids.Hash.Algorithm.MD5;
+import static org.svip.sbom.model.uids.Hash.Algorithm.SHA1;
 import static org.svip.utils.Debug.log;
 
 /**
@@ -18,7 +22,7 @@ import static org.svip.utils.Debug.log;
 public class MavenExtraction extends Extraction {
 
     private static final String URL = "https://repo1.maven.org/maven2/%s/%s/%s/%s.%s";
-    private static final List<Algorithm> HASH_ALGORITHMS = List.of(Algorithm.MD5, Algorithm.SHA1);
+    private static final Set<Algorithm> HASH_ALGORITHMS = Set.of(Algorithm.MD5, Algorithm.SHA1);
 
     public MavenExtraction(PURL purl) {
         super(purl);
@@ -61,4 +65,10 @@ public class MavenExtraction extends Extraction {
 
     }
 
+    public static boolean isExtractable(Algorithm algorithm, Component component) {
+        return (component instanceof SBOMPackage sbomPackage
+                && (HASH_ALGORITHMS.contains(algorithm))
+                && (sbomPackage.getPURLs().stream().findFirst().isPresent())
+                && (sbomPackage.getPURLs().stream().findFirst().get()).startsWith("pkg:maven"));
+    }
 }
