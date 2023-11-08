@@ -85,9 +85,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
     private static final Pattern TAG_VALUE_PATTERN = Pattern.compile("(\\S+)" + SEPARATOR + "(.+)");
     private static final Pattern EXTERNAL_REF_PATTERN = Pattern.compile(EXTERNAL_REFERENCE_TAG + SEPARATOR +
             "(\\S*) (\\S*) (\\S*)");
-    private static final Pattern RELATIONSHIP_PATTERN = Pattern.compile(RELATIONSHIP_KEY + SEPARATOR +
-            "(\\S*) (\\S*) (\\S*)");
-    // https://regex101.com/r/0jMwAU/1
+    private static final Pattern RELATIONSHIP_PATTERN = Pattern.compile("^Relationship: (.*?) (.*?) (.*)\n(?:RelationshipComment: (.*)|)", Pattern.MULTILINE);
     private static final Pattern CREATOR_PATTERN = Pattern.compile(
             "^(?:(Person|Organization): )(.+?)(?:$| (?:\\((.*)\\))?$)");
     private static final Pattern TOOL_PATTERN = Pattern.compile("^Tool: (?:(.*)-)(.*)$", Pattern.CASE_INSENSITIVE);
@@ -168,6 +166,11 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         Matcher fileMatcher = UNPACKAGED_PATTERN.matcher(fileContents);
         while(fileMatcher.find())
             sbomBuilder.addSPDX23Component(buildFile(fileBuilder, fileMatcher.group(1)));
+
+        // Parse and Add relationships
+        Matcher relationshipMatcher = RELATIONSHIP_PATTERN.matcher(fileContents);
+        while(relationshipMatcher.find())
+            sbomBuilder.addRelationship(relationshipMatcher.group(1), buildRelationship(relationshipMatcher));
 
         return sbomBuilder.buildSPDX23SBOM();
     }
@@ -352,6 +355,15 @@ public class SPDX23TagValueDeserializer implements Deserializer {
 
         // add component
         return builder.buildAndFlush();
+    }
+
+    private Relationship buildRelationship(Matcher match){
+        Relationship r = new Relationship(match.group(3), match.group(2));
+
+        if(match.group(4) != null)
+            r.setComment(match.group(4));
+
+        return r;
     }
 
     /**
