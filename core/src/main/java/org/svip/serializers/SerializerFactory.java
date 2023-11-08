@@ -1,6 +1,10 @@
 package org.svip.serializers;
 
 
+import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
@@ -138,6 +142,19 @@ public class SerializerFactory {
         if (fileContents.toLowerCase().contains("bom-ref")) return CDX14;
         else if (fileContents.toLowerCase().contains("spdxversion")) return SPDX23;
         else if (fileContents.contains("rootComponent")) return SVIP; // Field unique to SVIP SBOM
+        else return null;
+    }
+
+    /**
+     * Resolves the SBOM schema by determining the instance of an SBOM object.
+     *
+     * @param sbom The SBOM Object to resolve the schema of.
+     * @return The schema, or null if no schema could be resolved.
+     */
+    public static Schema resolveSchemaByObject(SBOM sbom) {
+        if (sbom instanceof CDX14SBOM) return CDX14;
+        else if (sbom instanceof SPDX23SBOM) return SPDX23;
+        else if (sbom instanceof SVIPSBOM) return SVIP;
         else return null;
     }
 

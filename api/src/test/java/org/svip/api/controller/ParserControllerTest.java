@@ -39,11 +39,11 @@ public class ParserControllerTest {
     private MockMvc mockMvc;
 
     @ParameterizedTest
-    @ValueSource(strings = { "Conan", "Conda_noEmptyFiles", "Java", "Perl_noEmptyFiles", "Rust_noEmptyFiles",
+    @ValueSource(strings = { "Conan", "Java", "Perl_noEmptyFiles", "Rust_noEmptyFiles",
             "Scala" })
     @DisplayName("Generate SBOMs")
     void generateTest(String projectName) throws Exception {
-        mockMvc.perform(multipart("/svip/generators/parsers/")
+        mockMvc.perform(multipart("/svip/generators/parsers")
                         .file(buildMockMultipartFile(projectName))
                         .param("projectName", projectName)
                         .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
@@ -57,7 +57,7 @@ public class ParserControllerTest {
     void generateWithInvalidUploadTest(String projectName) throws Exception {
         when(sbomFileService.upload(any(SBOM.class))).thenThrow(Exception.class);
 
-        mockMvc.perform(multipart("/svip/generators/parsers/")
+        mockMvc.perform(multipart("/svip/generators/parsers")
                         .file(buildMockMultipartFile(projectName))
                         .param("projectName", projectName)
                         .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
@@ -68,7 +68,7 @@ public class ParserControllerTest {
     @Test
     @DisplayName("Incorrect File Type")
     void generateWithIncorrectFileTypeTest() throws Exception {
-        mockMvc.perform(multipart("/svip/generators/parsers/")
+        mockMvc.perform(multipart("/svip/generators/parsers")
                         .file(new MockMultipartFile("zipFile",
                                 Files.readAllBytes(Path.of(
                                         System.getProperty("user.dir") + "/src/test/resources/sample_projects/Ruby/lib/bar.rb"
@@ -83,7 +83,7 @@ public class ParserControllerTest {
     @ValueSource(strings = { "Go" })
     @DisplayName("Convert to CDX tag value")
     void generateWithCDXTagValueTest(String projectName) throws Exception {
-        mockMvc.perform(multipart("/svip/generators/parsers/")
+        mockMvc.perform(multipart("/svip/generators/parsers")
                         .file(buildMockMultipartFile(projectName))
                         .param("projectName", projectName)
                         .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))

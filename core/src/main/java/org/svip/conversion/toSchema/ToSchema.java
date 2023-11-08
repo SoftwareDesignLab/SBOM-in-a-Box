@@ -1,9 +1,9 @@
-package org.svip.conversion;
+package org.svip.conversion.toSchema;
 
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 
-public interface Convert {
+public interface ToSchema {
 
     /**
      * Builds a new SBOM of a specific schema using data from

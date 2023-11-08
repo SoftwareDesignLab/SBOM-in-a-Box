@@ -63,15 +63,29 @@ public class MergerCrossSchema extends Merger {
      * @throws Exception
      */
     public SBOM standardizeSBOM(SBOM sbom) throws Exception {
+
         if(sbom instanceof CDX14SBOM) {
-            return Conversion.convertSBOM(sbom, SVIP, CDX14);
+
+            // Convert the CDX 1.4 SBOM to an SVIPSBOM and return it
+            return Conversion.convert(sbom, CDX14, SVIP);
+
         } else if(sbom instanceof SPDX23SBOM) {
-            return Conversion.convertSBOM(sbom, SVIP, SPDX23);
+
+            // Convert the SPDX 2.3 SBOM to an SVIPSBOM and return it
+            return Conversion.convert(sbom, SPDX23, SVIP);
+
         } else if(sbom instanceof SVIPSBOM) {
+
+            // If it's already and SVIPSBOM, return it
             return sbom;
+
         } else {
+
+            // Default - return null
             return null;
+
         }
+
     }
 
 }

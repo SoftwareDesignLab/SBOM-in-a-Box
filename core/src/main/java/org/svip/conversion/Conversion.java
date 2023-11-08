@@ -1,438 +1,134 @@
 package org.svip.conversion;
 
-import org.checkerframework.checker.units.qual.C;
-import org.svip.merge.MergerException;
-import org.svip.sbom.builder.objects.SVIPComponentBuilder;
-import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
-import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.conversion.manipulate.ManipulateController;
+import org.svip.conversion.manipulate.SchemaManipulationMap;
+import org.svip.conversion.toSVIP.ToSVIP;
+import org.svip.conversion.toSVIP.ToSVIPController;
+import org.svip.conversion.toSchema.ToSchema;
+import org.svip.conversion.toSchema.ToSchemaController;
 import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
-import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
-import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
-import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
-import org.svip.sbom.model.shared.Relationship;
-import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.serializers.SerializerFactory;
-
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Name: Conversion.java
- * Description: Converts an SBOM from one schema to another.
+ * Description: Main controller for conversion functionality. Encompasses several
+ * pieces of the conversion functionality including ToSVIP SBOM conversion, ToSchema
+ * SBOM conversion, and SVIPSBOM data manipulation.
  *
  * @author Tyler Drake
- * @author Juan Francisco Patino
  */
 public class Conversion {
 
     /**
-     * New SVIP SBOM Builder
-     */
-    private static SVIPSBOMBuilder builder;
-
-    /**
-     * New SVIP Component Builder
-     */
-    private static final SVIPComponentBuilder compBuilder = new SVIPComponentBuilder();
-
-    /**
-     * Gets the appropriate converter based on the desired schema requested
+     * Converts an internal SBOM object that is not an SVIPSBOM to an SVIPSBOM
      *
-     * @param desiredSchema
-     * @return (A Convert object)
+     * @param sbom The original SBOM object.
+     * @param originalSchema The original schema of that SBOM object.
+     * @return An SVIPSBOM Object containing all values of the original SBOM object.
      */
-    private static Convert getConvert(SerializerFactory.Schema desiredSchema) {
+    public static SVIPSBOM toSVIP(SVIPSBOM sbom, SerializerFactory.Schema originalSchema) {
 
-        // Return appropriate Converter depending on the desired schema
-        // If it is SVIPSBOM or not found, return null
-        switch (desiredSchema) {
-            case SPDX23 -> {
-                return new ConvertSPDX23();
-            }
-            case CDX14 -> {
-                return new ConvertCDX14();
-            }
-            default -> {
-                return null;
-            }
-        }
+        ToSVIP toSVIP = ToSVIPController.getToSVIP(originalSchema);
+
+        SVIPSBOM svipsbom = toSVIP.convertToSVIP(sbom);
+
+        return svipsbom;
+
     }
 
     /**
-     * A simple function for standardizing the sent SBOM as a SVIPSBOM.
-     * Any other handling that may be needed shall be done here.
+     * Manipulates the data of an SVIPSBOM to match that of another schema. The SBOM will stay
+     * as an internal SVIP SBOM, just with different data.
      *
-     * @param sbom
-     * @return SVIPSBOM
+     * @param sbom The SVIPSBOM object
+     * @param desiredSchema The schema of the desired data to put into the SVIPSBOM
+     * @return The SVIPSBOM object with the manipulated data
      */
-    private static SVIPSBOM toSVIP(SBOM sbom, SerializerFactory.Schema originalSchema) throws ConversionException {
+    public static SVIPSBOM manipulate(SVIPSBOM sbom, SerializerFactory.Schema desiredSchema) {
 
-        try {
+        SchemaManipulationMap manipulationMap = ManipulateController.getManipulationMap(desiredSchema);
 
-            // Return the cast SBOM
-            return (SVIPSBOM) sbom;
+        SVIPSBOM manipulatedSBOM = ManipulateController.manipulateSBOM(sbom, manipulationMap);
 
-        } catch (ClassCastException c) {
+        return manipulatedSBOM;
 
-            // Create a new SVIP Builder and build a new SVIP from it
-            builder = new SVIPSBOMBuilder();
-            buildSBOM(sbom, SerializerFactory.Schema.SVIP, originalSchema);
-            return builder.Build();
-
-        }
     }
 
     /**
-     * Main driver for directing SBOM conversion.
+     * Converts an internal SVIPSBOM object to an internal SBOM of a desired schema.
      *
-     * @param sbom
-     * @param desiredSchema
-     * @return
+     * @param sbom The SVIPSBOM object.
+     * @param desiredSchema The desired SBOM object schema.
+     * @return The SBOM object now in the desired schema.
      */
-    public static SBOM convertSBOM(SBOM sbom, SerializerFactory.Schema desiredSchema,
-                                   SerializerFactory.Schema originalSchema) throws ConversionException {
+    public static SBOM toSchema(SVIPSBOM sbom, SerializerFactory.Schema desiredSchema) {
 
-        // TODO: deserialization happens in controller
+        ToSchema toSchema = ToSchemaController.getToSchema(desiredSchema);
 
-        // Get the converter
-        Convert converter = getConvert(desiredSchema);
+        SBOM convertedSBOM = toSchema.convert(sbom);
 
-        // Standardize SBOM to an SVIPSBOM
-        SVIPSBOM svipsbom = toSVIP(sbom, originalSchema);
-
-        // If no converter was found, return the SBOM as an SVIPSBOM
-        return converter == null ? svipsbom : converter.convert(svipsbom);
+        return convertedSBOM;
 
     }
 
-
     /**
-     * Helper function to build an SBOM object from an object of the SBOM interface
+     * Standardizes an internal SBOM object to an SVIPSBOM, then manipulates the data to match that
+     * of the desired schema.
      *
-     * @param deserialized   SBOM interface object
-     * @param schema         desired schema
-     * @param originalSchema original schema
+     * Non-SVIPSBOM object -> SVIPSBOM with same data -> SVIPSBOM with manipulated data
+     *
+     * @param sbom The original SBOM object
+     * @param original The original schema
+     * @param desired The desired schema
+     * @return An SVIPSBOM containing the data of the desired schema
      */
-    public static void buildSBOM(SBOM deserialized, SerializerFactory.Schema schema, SerializerFactory.Schema originalSchema) throws ConversionException {
+    public static SBOM convert(SBOM sbom, SerializerFactory.Schema original, SerializerFactory.Schema desired) {
 
-        // Set Format
-        builder.setFormat(String.valueOf(schema));
+        if (!(sbom instanceof SVIPSBOM)) {
+            ToSVIP toSVIP = ToSVIPController.getToSVIP(original);
 
-        // Set Name
-        builder.setName(deserialized.getName());
-
-        // Set UID
-        builder.setUID(deserialized.getUID());
-
-        // Set Version
-        builder.setVersion(deserialized.getVersion());
-
-        // If Licenses exist, store them into the new SVIP SBOM
-        if (deserialized.getLicenses() != null) {
-            for (String license : deserialized.getLicenses()) {
-                if (license != null) builder.addLicense(license);
-            }
+            sbom = toSVIP.convertToSVIP(sbom);
         }
 
-        // Set CreationData
-        builder.setCreationData(deserialized.getCreationData());
+        SchemaManipulationMap manipulationMap = ManipulateController.getManipulationMap(desired);
 
-        // Set DocumentComment
-        builder.setDocumentComment(deserialized.getDocumentComment());
+        SVIPSBOM standardizedSBOM = ManipulateController.manipulateSBOM((SVIPSBOM) sbom, manipulationMap);
 
-        // Configure RootComponent
-        buildSVIPComponentObject(deserialized.getRootComponent(), originalSchema);
-
-        // Set RootComponent
-        builder.setRootComponent(compBuilder.buildAndFlush());
-
-        // If Components Exist
-        if (deserialized.getComponents() != null)
-
-            // For Each Component
-            for (Component c : deserialized.getComponents()) {
-
-                // If the component exists
-                if (c != null) {
-
-                    // Try to cast the Component to an SVIPComponent and add it to SVIP SBOM
-                    // If it fails, Build a new SVIPComponent from the Component then add it
-                    try {
-
-                        SVIPComponentObject d = (SVIPComponentObject) c;
-                        builder.addComponent(d);
-
-                    } catch (ClassCastException e) {
-
-                        buildSVIPComponentObject(c, originalSchema);
-                        builder.addComponent(compBuilder.buildAndFlush());
-
-                    }
-
-                }
-
-            }
-
-        // If Relationships exist, store them into the new SVIP SBOM
-        if (deserialized.getRelationships() != null)
-            for (Map.Entry<String, Set<Relationship>> entry : deserialized.getRelationships().entrySet())
-                for (Relationship r : entry.getValue())
-                    builder.addRelationship(entry.getKey(), r);
-
-        // If ExternalReferences exist, store them into the new SVIP SBOM
-        if (deserialized.getExternalReferences() != null)
-            for (ExternalReference e : deserialized.getExternalReferences())
-                builder.addExternalReference(e);
+        return standardizedSBOM;
 
     }
 
     /**
-     * Build an SVIP Component object
+     * Standardizes an internal SBOM object to an SVIPSBOM, then manipulates the data to match that
+     * of the desired schema. Then, converts the internal SVIPSBOM object to an internal SBOM object
+     * of the desired schema.
      *
-     * @param component      original uncasted component
-     * @param originalSchema the original Schema we are converting from
+     * @param sbom The original SBOM object
+     * @param original The original schema
+     * @param desired The desired schema
+     * @return An internal SBOM object of the desired schema containing the converted data.
      */
-    public static void buildSVIPComponentObject(Component component, SerializerFactory.Schema originalSchema) throws ConversionException {
+    public static SBOM convertFull(SBOM sbom, SerializerFactory.Schema original, SerializerFactory.Schema desired) {
 
-        // If the component doesn't exist, return
-        if (component == null) return;
+        if (!(sbom instanceof SVIPSBOM)) {
+            ToSVIP toSVIP = ToSVIPController.getToSVIP(original);
 
-        // Set Type
-        compBuilder.setType(component.getType());
-
-        // Set UID
-        compBuilder.setUID(component.getUID());
-
-        // Set Author
-        compBuilder.setAuthor(component.getAuthor());
-
-        // Set Name
-        compBuilder.setName(component.getName());
-
-        // Set Licenses
-        compBuilder.setLicenses(component.getLicenses());
-
-        // Set Copyright
-        compBuilder.setCopyright(component.getCopyright());
-
-        // If Hashes exist, store them into new SVIP Component
-        if (component.getHashes() != null)
-            for (Map.Entry<String, String> entry : component.getHashes().entrySet())
-                compBuilder.addHash(entry.getKey(), entry.getValue());
-
-        // Check if the schema exists
-        if (originalSchema != null) {
-
-            // Find the appropriate configuration method for component based on schema
-            switch (originalSchema) {
-
-                // If Schema is CDX14, Configure from CDX14 Object
-                case CDX14 -> configureFromCDX14Object((CDX14ComponentObject) component);
-
-                // If Schema is SPDX23, Configure from SPDX23 Object
-                case SPDX23 -> configureFromSPDX23Object(component);
-
-            }
-
-        } else {
-
-            // if original schema is unspecified, try both
-            try {
-
-                // First, try SPDX23
-                configureFromSPDX23Object(component);
-
-            } catch (ClassCastException | NullPointerException e) {
-
-                // If SPDX23 does not work
-                try {
-
-                    // Try CDX14
-                    configureFromCDX14Object((CDX14ComponentObject) component);
-
-                } catch (ClassCastException | NullPointerException e1) {
-
-                    // Neither works, so throw ClassCastException
-                    throw new ClassCastException("Couldn't configure the Root Component during Conversion.");
-
-                }
-
-            }
-
+            sbom = toSVIP.convertToSVIP(sbom);
         }
 
-    }
+        SchemaManipulationMap manipulationMap = ManipulateController.getManipulationMap(desired);
 
-    /**
-     * Configure the SVIPComponentBuilder from an SPDX23 Component Object or File Object
-     *
-     * @param component SPDX23 object
-     */
-    private static void configureFromSPDX23Object(Component component) throws ConversionException {
+        SVIPSBOM standardizedSBOM = ManipulateController.manipulateSBOM((SVIPSBOM) sbom, manipulationMap);
 
-        // If Component is an SPDX 2.3 Package, configure the package
-        // If Component is an SPDX 2.3 File, configure the file
-        // Otherwise, throw a ClassCastException error
-        if (component instanceof SPDX23PackageObject spdx23PackageObject) {
+        ToSchema toSchema = ToSchemaController.getToSchema(desired);
 
-            configureFromSPDX23Package(spdx23PackageObject);
+        if(toSchema == null) return standardizedSBOM;
 
-        } else if (component instanceof SPDX23FileObject spdx23FileObject) {
+        SBOM fullConvertSBOM = toSchema.convert(standardizedSBOM);
 
-            configureFromSPDX23File(spdx23FileObject);
+        return fullConvertSBOM;
 
-        } else {
-
-            throw new ConversionException("Component cannot be configured to an SPDX Package or an SPFX File Object.");
-
-        }
-
-    }
-
-    /**
-     * Configure the SVIPComponentBuilder from an SPDX23 Package Object
-     */
-    private static void configureFromSPDX23Package(SPDX23PackageObject component) {
-
-        // Set Comment
-        compBuilder.setComment(component.getComment());
-
-        // Set AttributionText
-        compBuilder.setAttributionText(component.getAttributionText());
-
-        // Set DownloadLocation
-        compBuilder.setDownloadLocation(component.getDownloadLocation());
-
-        // Set FileName
-        compBuilder.setFileName(component.getFileName());
-
-        // Set FilesAnalyzed
-        compBuilder.setFilesAnalyzed(component.getFilesAnalyzed());
-
-        // Set VerificationCode
-        compBuilder.setVerificationCode(component.getVerificationCode());
-
-        // Set HomePage
-        compBuilder.setHomePage(component.getHomePage());
-
-        // Set SourceInfo
-        compBuilder.setSourceInfo(component.getSourceInfo());
-
-        // Set ReleaseDate
-        compBuilder.setReleaseDate(component.getReleaseDate());
-
-        // Set BuiltDate
-        compBuilder.setBuildDate(component.getBuiltDate());
-
-        // Set ValidUntilDate
-        compBuilder.setValidUntilDate(component.getValidUntilDate());
-
-        // Set Supplier
-        compBuilder.setSupplier(component.getSupplier());
-
-        // Set Version
-        compBuilder.setVersion(component.getVersion());
-
-        // Set Description
-        compBuilder.setDescription(component.getDescription());
-
-        // Stream CPEs into new SVIP Component
-        if(component.getCPEs() != null) component.getCPEs().forEach(compBuilder::addCPE);
-
-        // Stream PURLs into new SVIP Component
-        if(component.getPURLs() != null) component.getPURLs().forEach(compBuilder::addPURL);
-
-        // Stream ExternalReferences into new SVIP Component
-        if(component.getExternalReferences() != null)
-            component.getExternalReferences().forEach(compBuilder::addExternalReference);
-
-    }
-
-    /**
-     * Configure the SVIPComponentBuilder from an SPDX23 File Object
-     */
-    private static void configureFromSPDX23File(SPDX23FileObject component) {
-
-        // Set Type
-        compBuilder.setType(component.getType());
-
-        // Set UID
-        compBuilder.setUID(component.getUID());
-
-        // Set Author
-        compBuilder.setAuthor(component.getAuthor());
-
-        // Set Name
-        compBuilder.setName(component.getName());
-
-        // Set Licenses
-        compBuilder.setLicenses(component.getLicenses());
-
-        // Set Copyright
-        compBuilder.setCopyright(component.getCopyright());
-
-        // Set Comment
-        compBuilder.setComment(component.getComment());
-
-        // Set AttributionText
-        compBuilder.setAttributionText(component.getAttributionText());
-
-        // Set FileNotice
-        compBuilder.setFileNotice(component.getFileNotice());
-
-    }
-
-    /**
-     * Configure the SVIPComponentBuilder from an CDX14 Component Object
-     *
-     * @param component CDX14 component object
-     */
-    private static void configureFromCDX14Object(CDX14ComponentObject component) {
-
-        // Set Supplier
-        compBuilder.setSupplier(component.getSupplier());
-
-        // Set Version
-        compBuilder.setVersion(component.getVersion());
-
-        // Set Description
-        compBuilder.setDescription(component.getDescription());
-
-        // If CPEs exist, store them into new SVIP Component
-        if (component.getCPEs() != null)
-            for (String cpe : component.getCPEs())
-                compBuilder.addCPE(cpe);
-
-        // If PURLs exist, store them into new SVIP Component
-        if (component.getPURLs() != null)
-            for (String purl : component.getPURLs())
-                compBuilder.addPURL(purl);
-
-        // If ExternalReferences exist, store them into new SVIP Component
-        if (component.getExternalReferences() != null)
-            for (ExternalReference ext : component.getExternalReferences())
-                compBuilder.addExternalReference(ext);
-
-        // Set MimeType
-        compBuilder.setMimeType(component.getMimeType());
-
-        // Set Publisher
-        compBuilder.setPublisher(component.getPublisher());
-
-        // Set Scope
-        compBuilder.setScope(component.getScope());
-
-        // Set Group
-        compBuilder.setGroup(component.getGroup());
-
-        // If Properties exist, store them into new SVIP Component
-        if (component.getProperties() != null)
-            for (Map.Entry<String, Set<String>> prop : component.getProperties().entrySet())
-                for (String value : prop.getValue())
-                    compBuilder.addProperty(prop.getKey(), value);
     }
 
 }
