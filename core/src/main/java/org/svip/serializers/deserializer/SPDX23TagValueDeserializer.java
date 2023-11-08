@@ -44,9 +44,9 @@ public class SPDX23TagValueDeserializer implements Deserializer {
 
     public static final String SEPARATOR = ": ";
 
-    public static final Pattern UNPACKAGED_PATTERN = Pattern.compile("(FileName:[\\w\\W]*?)\\n{2}", Pattern.MULTILINE);
+    public static final Pattern UNPACKAGED_PATTERN = Pattern.compile("(^FileName:[\\w\\W]*?)\\n{2}", Pattern.MULTILINE);
 
-    public static final Pattern PACKAGE_PATTERN = Pattern.compile("#{5} Package: .*\n{2}([\\w\\W]*?)\n$", Pattern.MULTILINE);
+    public static final Pattern PACKAGE_PATTERN = Pattern.compile("^#{5} Package: .*\n{2}([\\w\\W]*?)\n$", Pattern.MULTILINE);
 
     public static final String RELATIONSHIP_TAG = "##### Relationships";
 
