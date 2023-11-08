@@ -44,7 +44,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
 
     public static final String SEPARATOR = ": ";
 
-    public static final String UNPACKAGED_TAG = "##### Unpackaged Files";
+    public static final Pattern UNPACKAGED_PATTERN = Pattern.compile("(FileName:[\\w\\W]*?)\\n{2}", Pattern.MULTILINE);
 
     public static final Pattern PACKAGE_PATTERN = Pattern.compile("#{5} Package: .*\n{2}([\\w\\W]*?)\n$", Pattern.MULTILINE);
 
@@ -163,6 +163,11 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         Matcher packageMatcher = PACKAGE_PATTERN.matcher(fileContents);
         while(packageMatcher.find())
             sbomBuilder.addSPDX23Component(buildPackage(packageBuilder, packageMatcher.group(1)));
+
+        // Parse and Add unpackaged files
+        Matcher fileMatcher = UNPACKAGED_PATTERN.matcher(fileContents);
+        while(fileMatcher.find())
+            sbomBuilder.addSPDX23Component(buildFile(fileBuilder, fileMatcher.group(1)));
 
         return sbomBuilder.buildSPDX23SBOM();
     }
