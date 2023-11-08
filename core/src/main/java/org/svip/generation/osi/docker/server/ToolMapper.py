@@ -39,9 +39,7 @@ TOOL_LIST = [
     OSTool("SPDX SBOM Generator", BOMFormat.SPDX, [
         Language.GO, Language.RUST, Language.PHP, Language.JAVA, Language.JAVASCRIPT, Language.PYTHON,
         Language.RUBY, Language.SWIFT
-    ], [
-               "cd {code}", "spdx-sbom-generator -p . -o {output}/"
-           ]),
+    ], ["cd {code}/*", "spdx-sbom-generator -p . -o {output}/"]),
     OSTool("CycloneDX PHP", BOMFormat.CYCLONE_DX, [Language.PHP], [
         "cd {code}",
         "composer make-bom --output-format=XML --output-file={output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT

@@ -6,6 +6,9 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN true
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
+# GO Setup
+ENV PATH "$PATH:/usr/local/go/bin"
+
 # Copy startup script
 COPY scripts/setup.sh /usr/local/bin/
 # Copy Flask webserver scripts
