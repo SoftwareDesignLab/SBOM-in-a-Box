@@ -23,6 +23,14 @@ public record Fix<T> (FixType type, T old, T fixed) {
         return fixed;
     }
 
+    /***
+     * Gets fixed toString for frontend use
+     * @return string
+     */
+    public String getNewString() {
+        return fixed.toString();
+    }
+
     /*
      * Used to determine if a new value is an addition
      * or a replacement of a previous value
