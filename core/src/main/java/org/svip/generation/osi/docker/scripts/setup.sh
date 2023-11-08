@@ -85,13 +85,12 @@ function installDotNet() {
 #
 # TOOLS : Manual Installation
 #
-function installSPDXSBOMGenerator(){
-  wget $SPDX_SBOM_GENERATOR /tmp/spdx-gen.tar.gz
-  # unzip and move to bin
-  tar xvf spdx-gen.tar.gz mv spdx-sbom-generator /usr/local/bin/spdx-sbom-generator
+function installSPDXSBOMGenerator() {
+  wget $SPDX_SBOM_GENERATOR
+  tar xzf spdx-sbom-generator-v0.0.15-linux-amd64.tar.gz -C /usr/local/bin
 }
 
-function installJBOM(){
+function installJBOM() {
   wget $JBOM -O /usr/local/bin/jbom.jar
 }
 
