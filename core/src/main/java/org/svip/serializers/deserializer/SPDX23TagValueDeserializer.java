@@ -44,13 +44,13 @@ public class SPDX23TagValueDeserializer implements Deserializer {
 
     public static final String SEPARATOR = ": ";
 
-    public static final String UNPACKAGED_TAG = "### Unpackaged Files";
+    public static final String UNPACKAGED_TAG = "##### Unpackaged Files";
 
-    public static final String PACKAGE_TAG = "### Package";
+    public static final String PACKAGE_TAG = "##### Package";
 
-    public static final String RELATIONSHIP_TAG = "### Relationships";
+    public static final String RELATIONSHIP_TAG = "##### Relationships";
 
-    public static final String EXTRACTED_LICENSE_TAG = "### Extracted"; // starts with
+    public static final String EXTRACTED_LICENSE_TAG = "##### Extracted"; // starts with
 
     public static final String EXTRACTED_LICENSE_ID = "LicenseID";
 
