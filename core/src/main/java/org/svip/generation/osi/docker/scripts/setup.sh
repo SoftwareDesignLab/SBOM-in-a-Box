@@ -19,8 +19,6 @@ CYCLONEDX_CLI=https://github.com/CycloneDX/cyclonedx-cli/releases/latest/downloa
 function installGo() {
     wget $GO_DISTRO
     rm -rf /usr/local/go && tar -C /usr/local -xzf go1.20.linux-amd64.tar.gz
-    export PATH=$PATH:/usr/local/go/bin
-    go version  # confirm success
 }
 
 function installDotNet() {
