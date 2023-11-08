@@ -38,8 +38,8 @@ function installWithPIP(){
   # Install flask for web server
   pip install flask
 
-  # Install jake, cyclonedx-conan, cyclonedx-python, ochrona, scanoss, sbom4python, sbom4files
-  pip install jake cyclonedx-conan cyclonedx-bom ochrona scanoss sbom4python sbom4rust sbom4files
+  # Install jake, cyclonedx-conan, cyclonedx-python, scanoss, sbom4python, sbom4files
+  pip install jake cyclonedx-conan cyclonedx-bom scanoss sbom4python sbom4rust sbom4files
 
   # Bug fix for cyclonedx-conan
   pip install markupsafe==2.0.1
