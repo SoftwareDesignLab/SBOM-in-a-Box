@@ -23,6 +23,22 @@ function installGo() {
     go version  # confirm success
 }
 
+function installDotNet() {
+
+  # Get package
+  wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
+  dpkg -i packages-microsoft-prod.deb
+
+  # Install .NET SDK
+  apt install apt-transport-https
+  apt install dotnet-sdk-6.0
+
+  # Install .NET Core Runtime
+  apt install apt-transport-https
+  apt install dotnet-runtime-6.0
+
+}
+
 #
 # PACKAGE MANAGERS
 #
@@ -57,30 +73,21 @@ function installWithNPM() {
 }
 
 function installWithGo() {
-    # Install CycloneDX-Go
-    go install github.com/ozonru/cyclonedx-go/cmd/cyclonedx-go@latest
-    # Install GoBom
-    go install github.com/mattermost/gobom/cmd/gobom@latest
+  # Install CycloneDX-Go
+  go install github.com/ozonru/cyclonedx-go/cmd/cyclonedx-go@latest
+  # Install GoBom
+  go install github.com/mattermost/gobom/cmd/gobom@latest
 }
 
-function installDotNet() {
-
-  # Get package
-  wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
-  dpkg -i packages-microsoft-prod.deb
-
-  # Install .NET SDK
-  apt install apt-transport-https
-  apt update
-  apt install dotnet-sdk-6.0
-
-  # Install .NET Core Runtime
-  apt install apt-transport-https
-  apt update
-  apt install dotnet-runtime-6.0
-
+function installWithDotNet(){
+  # Covenant
+  dotnet tool install --global covenant
 }
 
+function installWithCargo(){
+  # CDX for Cargo
+  cargo install cargo-cyclonedx
+}
 
 #
 # TOOLS : Manual Installation
@@ -95,23 +102,15 @@ function installJBOM() {
 }
 
 function installCycloneDXCLI() {
-    wget $CYCLONEDX_CLI -O /usr/local/bin/cyclonedx-cli && chmod +x /usr/local/bin/cyclonedx-cli
+  wget $CYCLONEDX_CLI -O /usr/local/bin/cyclonedx-cli && chmod +x /usr/local/bin/cyclonedx-cli
 }
 
 function installSyft() {
-    curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+  curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
 }
 
 function installSBOMTool() {
-    curl -Lo sbom-tool https://github.com/microsoft/sbom-tool/releases/latest/download/sbom-tool-linux-x64 && chmod -x /usr/local/bin/sbom-tool
-}
-
-function installCycloneDXCargo() {
-    cargo install cargo-cyclonedx
-}
-
-function installCovenant() {
-    dotnet tool install --global covenant
+  curl -Lo sbom-tool https://github.com/microsoft/sbom-tool/releases/latest/download/sbom-tool-linux-x64 && chmod -x /usr/local/bin/sbom-tool
 }
 
 #
@@ -139,16 +138,21 @@ main() {
   echo "Package managers installed"
 
   # Install dotnet
-  installDotNet &
+  installDotNet
   wait
-  echo "Dot net installed"
+  echo ".NET installed"
 
   # Install tools using package managers
-  # jake, cyclonedx-conan, cyclonedx-python, ochrona, scanoss
+  # jake, cyclonedx-conan, cyclonedx-python, scanoss
   installWithPIP &
-#  # Install Retire.js cdxgen
+  # Install Retire.js cdxgen
   installWithNPM &
+  # CycloneDX-Go, GoBom
   installWithGo &
+  # Covenant
+  installWithDotNet &
+  # CDX for Cargo
+  installWithCargo &
   wait
   echo "Package manager tools installed"
 
@@ -158,8 +162,6 @@ main() {
   installCycloneDXCLI &
   installSyft &
   installSBOMTool &
-  installCycloneDXCargo &
-  installConvenant
   wait
 
   echo "Manual tools installed"
