@@ -76,8 +76,8 @@ ValidUntilDate: validUntilDate3
 
 ##### Unpackaged Files
 
-SPDXID: uid2
 FileName: fileName2
+SPDXID: uid2
 FileType: type2
 FileComment: comment2
 PackageChecksum: SHA256: hash2
