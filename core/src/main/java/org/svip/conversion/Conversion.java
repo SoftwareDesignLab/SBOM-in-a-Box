@@ -27,7 +27,7 @@ public class Conversion {
      * @param originalSchema The original schema of that SBOM object.
      * @return An SVIPSBOM Object containing all values of the original SBOM object.
      */
-    public static SVIPSBOM toSVIP(SVIPSBOM sbom, SerializerFactory.Schema originalSchema) {
+    public static SVIPSBOM toSVIP(SBOM sbom, SerializerFactory.Schema originalSchema) {
 
         ToSVIP toSVIP = ToSVIPController.getToSVIP(originalSchema);
 
