@@ -46,7 +46,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
 
     public static final String UNPACKAGED_TAG = "##### Unpackaged Files";
 
-    public static final String PACKAGE_TAG = "##### Package";
+    public static final Pattern PACKAGE_PATTERN = Pattern.compile("#{5} Package: .*\n{2}([\\w\\W]*?)\n$", Pattern.MULTILINE);
 
     public static final String RELATIONSHIP_TAG = "##### Relationships";
 
@@ -155,9 +155,14 @@ public class SPDX23TagValueDeserializer implements Deserializer {
             }
         }
         parseSPDXCreatorInfo(creationData, creators);
+
         // CREATION DATA
         sbomBuilder.setCreationData(creationData);
 
+        // Parse and Add Packages
+        Matcher packageMatcher = PACKAGE_PATTERN.matcher(fileContents);
+        while(packageMatcher.find())
+            sbomBuilder.addSPDX23Component(buildPackage(packageBuilder, packageMatcher.group(1)));
 
         return sbomBuilder.buildSPDX23SBOM();
     }
