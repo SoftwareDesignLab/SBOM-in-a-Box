@@ -47,7 +47,6 @@ TOOL_LIST = [
         "composer make-bom --output-format=XML --output-file={output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT
         + " {manifest}"
     ], True),
-    OSTool("Ochrona CLI", BOMFormat.OTHER, [], []),
     OSTool("Syft CDX", BOMFormat.CYCLONE_DX, [
         Language.C_CPLUSPLUS, Language.DART, Language.ERLANG, Language.GO, Language.HASKELL, Language.JAVA,
         Language.JAVASCRIPT, Language.PHP, Language.PYTHON, Language.RUBY, Language.RUST, Language.SWIFT
