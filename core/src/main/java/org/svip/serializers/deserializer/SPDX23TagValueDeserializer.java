@@ -158,57 +158,6 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         // CREATION DATA
         sbomBuilder.setCreationData(creationData);
 
-        // RELATIONSHIPS
-        List<String> lines = new ArrayList<>(List.of(fileContents.split("\n")));
-        // Find all relationships in the file contents regardless of where they are
-        Matcher relationship = RELATIONSHIP_PATTERN.matcher(fileContents);
-        while (relationship.find()) {
-            Relationship r = new Relationship(relationship.group(3), relationship.group(2));
-
-            String nextLine;
-            try {
-                nextLine = lines.get(lines.indexOf(relationship.group()) + 1);
-            } catch (IndexOutOfBoundsException e) {
-                break;
-            }
-            if (nextLine.startsWith("RelationshipComment: ")) {
-                r.setComment(nextLine.substring(nextLine.indexOf(" ") + 1));
-                lines.remove(nextLine);
-            }
-
-            sbomBuilder.addRelationship(relationship.group(1), r);
-            lines.remove(relationship.group()); // Remove parsed relationship from contents
-        }
-        fileContents = String.join("\n", lines); // Remove all relationships from fileContents
-
-        // Licenses
-        String extractedLicenseContent = getTagContents(fileContents, EXTRACTED_LICENSE_TAG);
-        List<String> extractedLicenses = List.of(extractedLicenseContent.split("\n\n"));
-
-        for (String extractedLicenseBlock : extractedLicenses) {
-            if (extractedLicenseBlock.equals("")) continue;
-            this.parseExternalLicense(extractedLicenseBlock, externalLicenses);
-        }
-
-        // FILES
-        String unpackagedFilesContents = getTagContents(fileContents, UNPACKAGED_TAG);
-        List<String> files = new ArrayList<>(List.of(unpackagedFilesContents.split("\n\n"))); // Split over newline
-        files.remove(UNPACKAGED_TAG);
-
-        for (String fileBlock : files) {
-            if (fileBlock.strip().equals("")) continue;
-            sbomBuilder.addSPDX23Component(buildFile(fileBuilder, fileBlock));
-        }
-
-        // PACKAGES
-        String packageContents = getTagContents(fileContents, PACKAGE_TAG);
-        List<String> packageList = Stream.of(packageContents.split("\n\n"))
-                .filter(pkg -> !(pkg.contains(TAG) || pkg.contains(RELATIONSHIP_KEY))).toList();
-
-        for (String packageBlock : packageList) {
-            if (packageBlock.strip().equals("")) continue;
-            sbomBuilder.addSPDX23Component(buildPackage(packageBuilder, packageBlock));
-        }
 
         return sbomBuilder.buildSPDX23SBOM();
     }
