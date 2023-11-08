@@ -1,24 +1,14 @@
 package org.svip.metrics.tests;
 
-import jregex.Pattern;
 import org.svip.metrics.resultfactory.Result;
 import org.svip.metrics.resultfactory.ResultFactory;
 import org.svip.metrics.resultfactory.enumerations.INFO;
 import org.svip.metrics.tests.enumerations.ATTRIBUTE;
-import org.svip.repair.extraction.Extraction;
-import org.svip.repair.extraction.MavenExtraction;
 import org.svip.sbom.model.interfaces.generics.Component;
-import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 import org.svip.sbom.model.uids.Hash;
-import org.svip.sbom.model.uids.PURL;
-import org.svip.utils.Debug;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-
-import static org.svip.sbom.model.uids.Hash.Algorithm.MD5;
-import static org.svip.sbom.model.uids.Hash.Algorithm.SHA1;
 
 /**
  * file: HashTest.java
@@ -56,7 +46,6 @@ public class HashTest extends MetricTest {
         // hash  is not a null value and does exist, tests can run
         if (value != null && field != null) {
             results.add(validHashResult(field, value));
-
         }
         // Hash has a null algo or value, tests cannot be run
         // return missing Result
@@ -89,7 +78,7 @@ public class HashTest extends MetricTest {
             }
 
             // Check if hash is valid
-            if (!isValidHash(component, hash)) {
+            if (!hash.isValid(component)) {
                 return rf.fail(field, INFO.INVALID,
                         value, component.getName());
             } else {
@@ -102,58 +91,6 @@ public class HashTest extends MetricTest {
         catch (Exception e) {
             return rf.fail(field, INFO.INVALID,
                     value, component.getName());
-        }
-    }
-
-    /**
-     * Validates a hash function to make sure the length and content are correct
-     *
-     * @param component SBOMFile component
-     * @param hash Hash
-     * @return True if hash passes, false otherwise
-     */
-    private boolean isValidHash(Component component, Hash hash) {
-        // Validate MD5 and SHA1 hashes against Maven Repository
-        String purlString;
-        if (component instanceof SBOMPackage sbomPackage
-                && (hash.getAlgorithm().equals(MD5) || hash.getAlgorithm().equals(SHA1))
-                && (purlString = sbomPackage.getPURLs().stream().findFirst().get()).startsWith("pkg:maven")) {
-
-            // Create PURL object
-            PURL purl;
-            try {
-                purl = new PURL(purlString);
-            } catch (Exception e) {
-                Debug.log(Debug.LOG_TYPE.WARN, e.getMessage());
-                return false;
-            }
-
-            // Perform extraction of MD5 and SHA1 hashes from Maven Repository
-            Extraction extraction = new MavenExtraction(purl);
-            extraction.extract();
-
-            // Get hashes
-            String extractedHash = extraction.getHashes().get(hash.getAlgorithm());
-            String componentHash = sbomPackage.getHashes().get(hash.getAlgorithm().toString());
-
-            // Compare hash
-            return extractedHash.equals(componentHash);
-
-        } else {
-            // If component is not from Maven Repository, then test against supported hashes using regex
-            Pattern p = new Pattern(
-                    switch (hash.getAlgorithm()) {
-                        case ADLER32 -> "^[a-fA-F0-9]{8}$";
-                        case SHA1 -> "^[a-fA-F0-9]{40}$";
-                        case SHA224 -> "^[a-fA-F0-9]{56}$";
-                        case SHA256, SHA3256, BLAKE2b256, BLAKE3 -> "^[a-fA-F0-9]{64}$";
-                        case SHA384, SHA3384, BLAKE2b384 -> "^[a-fA-F0-9]{96}$";
-                        case SHA512, SHA3512, BLAKE2b512 -> "^[a-fA-F0-9]{128}$";
-                        case MD2, MD4, MD5 -> "^[a-fA-F0-9]{32}$";
-                        case MD6 -> "^([a-fA-F0-9]{32}|[a-fA-F0-9]{64}|[a-fA-F0-9]{128})$";
-                        default -> "(?!)"; // Regex will always fail
-                    }, Pattern.MULTILINE);
-            return p.matches(hash.getValue());
         }
     }
 }
