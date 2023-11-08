@@ -398,7 +398,7 @@ public class SBOMFileService {
         // serialize into desired format
         Serializer s = SerializerFactory.createSerializer(originalSchema, originalFormat, true);
 
-        org.svip.sbom.model.interfaces.generics.SBOM converted = Conversion.convert(repaired, SerializerFactory.Schema.SVIP, originalSchema);
+        org.svip.sbom.model.interfaces.generics.SBOM converted = Conversion.toSVIP(repaired, originalSchema);
 
         String contents = s.writeToString((SVIPSBOM) converted);
 
@@ -406,8 +406,6 @@ public class SBOMFileService {
 
         // Save according to overwrite boolean
         SBOM sbomFile = u.toSBOMFile();
-
-        var result = sbomFile.toSBOMObject();
 
         if (overwrite) {
             update(id, sbomFile);
