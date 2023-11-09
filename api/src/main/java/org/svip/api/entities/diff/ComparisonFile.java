@@ -31,13 +31,13 @@ public class ComparisonFile {
     @ManyToOne
     @JoinColumn(name = "target_sbom_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private SBOMFile targetSBOMFile;
+    private SBOMFile targetSBOM;
 
     // Other SBOM
     @ManyToOne
     @JoinColumn(name = "other_sbom_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private SBOMFile otherSBOMFile;
+    private SBOMFile otherSBOM;
 
     // Conflict collection
 //    @OneToMany(mappedBy = "comparison", cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -51,21 +51,21 @@ public class ComparisonFile {
 
     /**
      * Set Target SBOMFile
-     * @param targetSBOMFile target sbom file
+     * @param targetSBOM target sbom file
      * @return Comparison file
      */
-    public ComparisonFile setTargetSBOMFile(SBOMFile targetSBOMFile){
-        this.targetSBOMFile = targetSBOMFile;
+    public ComparisonFile setTargetSBOMFile(SBOMFile targetSBOM){
+        this.targetSBOM = targetSBOM;
         return this;
     }
 
     /**
      * Set other SBOMFile
-     * @param otherSBOMFile target sbom file
+     * @param otherSBOM target sbom file
      * @return Comparison file
      */
     public ComparisonFile setOtherSBOMFile(SBOMFile otherSBOMFile){
-        this.otherSBOMFile = otherSBOMFile;
+        this.otherSBOM = otherSBOMFile;
         return this;
     }
 

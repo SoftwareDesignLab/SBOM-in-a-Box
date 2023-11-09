@@ -17,6 +17,7 @@ import org.svip.repair.fix.Fix;
 import org.svip.repair.repair.Repair;
 import org.svip.repair.statements.RepairStatement;
 import org.svip.sbom.builder.SBOMBuilderException;
+import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.SerializerFactory;
@@ -369,7 +370,7 @@ public class SBOMFileService {
      */
     public long repair(Long id, Map<Integer, Set<Fix<?>>> repairStatement, boolean overwrite) throws JsonProcessingException {
 
-        SBOM toRepairSBOMFile = getSBOMFile(id);
+        SBOMFile toRepairSBOMFile = getSBOMFile(id);
         org.svip.sbom.model.interfaces.generics.SBOM toRepairSBOM;
         toRepairSBOM = toRepairSBOMFile.toSBOMObject();
 
@@ -385,33 +386,27 @@ public class SBOMFileService {
 
 
         // Determine original Schema
-        SerializerFactory.Schema originalSchema = ( toRepairSBOMFile.getSchema() == SBOM.Schema.SPDX_23 )
+        SerializerFactory.Schema originalSchema = ( toRepairSBOMFile.getSchema() == SBOMFile.Schema.SPDX_23 )
                 ? SerializerFactory.Schema.SPDX23
                 : SerializerFactory.Schema.CDX14;
 
 
         // Determine original Format
-        SerializerFactory.Format originalFormat = ( toRepairSBOMFile.getFileType() == SBOM.FileType.JSON )
+        SerializerFactory.Format originalFormat = ( toRepairSBOMFile.getFileType() == SBOMFile.FileType.JSON )
                 ? SerializerFactory.Format.JSON
                 : SerializerFactory.Format.TAGVALUE;
 
         // serialize into desired format
         Serializer s = SerializerFactory.createSerializer(originalSchema, originalFormat, true);
 
-        org.svip.sbom.model.interfaces.generics.SBOM converted = null;
-        try {
-             converted = Conversion.convertSBOM(repaired, SerializerFactory.Schema.SVIP, originalSchema);
-        } catch (ConversionException e) {
-            throw new RuntimeException(e);
-        }
+        org.svip.sbom.model.interfaces.generics.SBOM converted = Conversion.toSVIP(repaired, originalSchema);
         String contents = s.writeToString((SVIPSBOM) converted);
 
         UploadSBOMFileInput u = new UploadSBOMFileInput(repaired.getName(), contents); // todo duplicate code
 
         // Save according to overwrite boolean
         SBOMFile sbomFile = u.toSBOMFile();
-
-        var result = sbomFile.toSBOMObject();
+        sbomFile.setName(toRepairSBOMFile.getName());
 
         if (overwrite) {
             update(id, sbomFile);
