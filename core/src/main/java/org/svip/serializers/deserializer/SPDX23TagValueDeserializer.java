@@ -34,53 +34,30 @@ import java.util.regex.Pattern;
  * @author Matt London
  * @author Ethan Numan
  * @author Thomas Roman
+ * @author Derek Garcia
  */
 public class SPDX23TagValueDeserializer implements Deserializer {
 
     //#region Constants
 
-    public static final String TAG = "###";
-
+    public static final String TAG = "####";
     public static final String SEPARATOR = ": ";
-
-    public static final Pattern UNPACKAGED_PATTERN = Pattern.compile("(^FileName:[\\w\\W]*?)\\n{2}", Pattern.MULTILINE);
-
-    public static final Pattern PACKAGE_PATTERN = Pattern.compile("^#{5} Package: .*\n{2}([\\w\\W]*?)\n$", Pattern.MULTILINE);
-
-    public static final String RELATIONSHIP_TAG = "##### Relationships";
-
-    public static final Pattern EXTRACTED_LICENSE_PATTERN = Pattern.compile("(^LicenseID:[\\w\\W]*?)\n{2}", Pattern.MULTILINE);
-
-    public static final String EXTRACTED_LICENSE_ID = "LicenseID";
-
-    public static final String EXTRACTED_LICENSE_NAME = "LicenseName";
-
-    public static final String EXTRACTED_LICENSE_TEXT = "ExtractedText";
-
-    public static final String EXTRACTED_LICENSE_CROSSREF = "LicenseCrossReference";
-
-    public static final String RELATIONSHIP_KEY = "Relationship";
-
     public static final String SPEC_VERSION_TAG = "SPDXVersion";
-
-    public static final String ID_TAG = "SPDXID";
-
     public static final String TIMESTAMP_TAG = "Created";
-
     public static final String DOCUMENT_NAME_TAG = "DocumentName";
-
     public static final String DOCUMENT_NAMESPACE_TAG = "DocumentNamespace";
-
     public static final String DATA_LICENSE_TAG = "DataLicense";
-
     public static final String LICENSE_LIST_VERSION_TAG = "LicenseListVersion";
-
     public static final String CREATOR_TAG = "Creator";
-
-    // Used as an identifier for main SBOM information. Sometimes used as reference in relationships to show header contains main component.
-    public static final String DOCUMENT_REFERENCE_TAG = "SPDXRef-DOCUMENT";
     public static final String EXTERNAL_REFERENCE_TAG = "ExternalRef";
 
+    ///
+    /// Patterns
+    ///
+
+    public static final Pattern EXTRACTED_LICENSE_PATTERN = Pattern.compile("(^LicenseID:[\\w\\W]*?)\n{2}", Pattern.MULTILINE);
+    public static final Pattern UNPACKAGED_PATTERN = Pattern.compile("(^FileName:[\\w\\W]*?)\\n{2}", Pattern.MULTILINE);
+    public static final Pattern PACKAGE_PATTERN = Pattern.compile("^#{5} Package: .*\n{2}([\\w\\W]*?)\n$", Pattern.MULTILINE);
     private static final Pattern TAG_VALUE_PATTERN = Pattern.compile("(\\S+)" + SEPARATOR + "(.+)");
     private static final Pattern EXTERNAL_REF_PATTERN = Pattern.compile(EXTERNAL_REFERENCE_TAG + SEPARATOR +
             "(\\S*) (\\S*) (\\S*)");
@@ -190,6 +167,12 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         return new ObjectMapper();
     }
 
+    /**
+     * Parse SPDX style creator string into a Contact
+     *
+     * @param creator SPDX style creator string
+     * @return Contact
+     */
     protected static Contact parseSPDXCreator(String creator) {
         Matcher creatorMatcher = CREATOR_PATTERN.matcher(creator);
         if (!creatorMatcher.find()) return null;
@@ -197,6 +180,12 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         return new Contact(creatorMatcher.group(2), creatorMatcher.group(3), null);
     }
 
+    /**
+     * Update CreationData with info from SPDX
+     *
+     * @param data CreationData object
+     * @param creatorInfo Creation info from SPDX
+     */
     protected static void parseSPDXCreatorInfo(CreationData data, List<String> creatorInfo) {
         for (String creator : creatorInfo) {
             Matcher toolMatcher = SPDX23TagValueDeserializer.TOOL_PATTERN.matcher(creator);
@@ -224,6 +213,13 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         }
     }
 
+    /**
+     * Build a SPDX23 Package
+     *
+     * @param builder Package Builder
+     * @param contents String to extract details from
+     * @return SPDX23 Package Object
+     */
     private SPDX23PackageObject buildPackage(SPDX23PackageBuilder builder, String contents) {
         Map<String, String> componentMaterials = new HashMap<>();
         Matcher mPackages = TAG_VALUE_PATTERN.matcher(contents);
@@ -321,6 +317,13 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         return builder.buildAndFlush();
     }
 
+    /**
+     * Build a SPDX23 File
+     *
+     * @param builder File Builder
+     * @param contents String to extract details from
+     * @return SPDX23 File Object
+     */
     private SPDX23FileObject buildFile(SPDX23FileBuilder builder, String contents) {
         Matcher mFiles = TAG_VALUE_PATTERN.matcher(contents);
         HashMap<String, String> fileMaterials = new HashMap<>();
@@ -361,6 +364,14 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         return builder.buildAndFlush();
     }
 
+    /**
+     * Parse External License and build a license
+     * TODO currently only parses License ID, looses all other info. Keeping ID since this is what is used when
+     * referenced by other elements
+     *
+     * @param licenseBlock String of license details
+     * @return extracted license ID
+     */
     private String buildExternalLicense(String licenseBlock){
         Pattern licenseNamePattern = Pattern.compile("^LicenseID: (.*)");
         Matcher licenseIDMatcher = licenseNamePattern.matcher(licenseBlock);
@@ -372,9 +383,15 @@ public class SPDX23TagValueDeserializer implements Deserializer {
                 : "";
     }
 
+    /**
+     * Extract data from match to build a Relationship
+     *
+     * @param match Regex match of relationship details
+     * @return Relationships
+     */
     private Relationship buildRelationship(Matcher match){
         Relationship r = new Relationship(match.group(3), match.group(2));
-
+        // add comment if present
         if(match.group(4) != null)
             r.setComment(match.group(4));
 
