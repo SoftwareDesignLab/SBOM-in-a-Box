@@ -116,7 +116,9 @@ function installSyft() {
 }
 
 function installSBOMTool() {
-  curl -Lo sbom-tool https://github.com/microsoft/sbom-tool/releases/latest/download/sbom-tool-linux-x64 && chmod -x /usr/local/bin/sbom-tool
+  curl -Lo sbom-tool https://github.com/microsoft/sbom-tool/releases/latest/download/sbom-tool-linux-x64
+  mv sbom-tool-linux-x64 /usr/local/bin/
+  chmod -x /usr/local/bin/sbom-tool
 }
 
 #
