@@ -55,7 +55,7 @@ public class EmptyOrNullFixes implements Fixes {
         else if (result.getDetails().contains("File Notice"))
             return fileNoticeNullFix(result.getMessage());
         else if (result.getDetails().contains("Author"))
-            return authorNullFix(sbom, componentName);
+            return authorNullFix(sbom, componentHashCode, componentName);
         else if (result.getDetails().contains("Copyright"))
             return copyrightNullFix(sbom, componentHashCode);
 
@@ -246,97 +246,62 @@ public class EmptyOrNullFixes implements Fixes {
      * @param repairSubType the key most closely relating to the component
      * @return a list of potential authors
      */
-    private List<Fix<?>> authorNullFix(SBOM sbom, String repairSubType) throws Exception {
+    private List<Fix<?>> authorNullFix(SBOM sbom, Integer componentHash, String repairSubType) throws Exception {
 
-        Component thisComponent = null;
+        List<Component> filtered = sbom.getComponents().stream().filter(
+                comp -> comp.hashCode() == componentHash).toList();
 
-        // For each component
-        for (Component component : sbom.getComponents()
-        ) {
+        if(filtered.size() == 0 || repairSubType == null)
+            return null;
 
-            // If it is an SPDX 2.3 Package
-            if (component instanceof SPDX23Package spdx23Package) {
+        Component component = filtered.get(0);
 
-                // And if the name contains the repair SubType, or it contains the repair SubType contains the name
-                if (spdx23Package.getName().toLowerCase().contains(repairSubType.toLowerCase())
-                        || repairSubType.toLowerCase().contains(spdx23Package.getName().toLowerCase())) {
+        // if this is an SPDX 2.3 file object
+        if (component instanceof SPDX23FileObject spdx23FileObject) {
+            // And the repair subtype is the same as the file name
+            if (spdx23FileObject.getName().toLowerCase().contains(repairSubType.toLowerCase())
+                    || repairSubType.toLowerCase().contains(spdx23FileObject.getName().toLowerCase())) {
 
-                    // Make the current component "this" component and break
-                    thisComponent = component;
-                    break;
+                // If the authors are null
+                if (sbom.getCreationData().getAuthors() != null) {
 
-                }
+                    // Get a set of potential authors
+                    Set<Contact> potentialAuthors = sbom.getCreationData().getAuthors();
 
-            }
+                    // Create a new list of fixes
+                    List<Fix<?>> fixes = new ArrayList<>();
 
-            // if this is an SPDX 2.3 file object
-            else if (component instanceof SPDX23FileObject spdx23FileObject) {
-                // And the repair subtype is the same as the file name
-                if (spdx23FileObject.getName().toLowerCase().contains(repairSubType.toLowerCase())
-                        || repairSubType.toLowerCase().contains(spdx23FileObject.getName().toLowerCase())) {
-
-                    // If the authors are null
-                    if (sbom.getCreationData().getAuthors() != null) {
-
-                        // Get a set of potential authors
-                        Set<Contact> potentialAuthors = sbom.getCreationData().getAuthors();
-
-                        // Create a new list of fixes
-                        List<Fix<?>> fixes = new ArrayList<>();
-
-                        // Then iterate through the potential authors and make a fix for each
-                        for (Contact author : potentialAuthors
-                        ) {
-                            fixes.add(new Fix<>(FixType.COMPONENT_AUTHOR, "null", author));
-                        }
-
-                        // Reutnr the fixes
-                        return fixes;
+                    // Then iterate through the potential authors and make a fix for each
+                    for (Contact author : potentialAuthors
+                    ) {
+                        fixes.add(new Fix<>(FixType.COMPONENT_AUTHOR, "null", author));
                     }
 
-                    // If no fixes were returned, return null
-                    return null;
-
+                    // Reutnr the fixes
+                    return fixes;
                 }
 
-            }
-            // Else, if the component is a CycloneDX 1.4 Package
-            else if (component instanceof CDX14Package cdx14Package) {
-                // And if the name is the same as the repair sub type
-                if (cdx14Package.getName().toLowerCase().contains(repairSubType.toLowerCase())
-                        || repairSubType.toLowerCase().contains(cdx14Package.getName().toLowerCase())) {
-
-                    // Set the current component to "this" component and break
-                    thisComponent = component;
-                    break;
-
-                }
+                // If no fixes were returned, return null
+                return null;
 
             }
 
         }
 
+
+
         // Create a new set of purls
         Set<String> purls = null;
 
-        // If this component isn't null
-        if (thisComponent != null) {
-
-            // And if it's an SPDX 2.3 package
-            if (thisComponent instanceof SPDX23PackageObject spdx23PackageObject) {
-
-                // Get the package's PURLs
-                purls = spdx23PackageObject.getPURLs();
-
-            }
-            // Or, if it is a CycloneDX 1.4 Package
-            else if (thisComponent instanceof CDX14Package cdx14Package) {
-
-                // Get the package's PURLs
-                purls = cdx14Package.getPURLs();
-
-            }
-
+        // And if it's an SPDX 2.3 package
+        if (component instanceof SPDX23PackageObject spdx23PackageObject) {
+            // Get the package's PURLs
+            purls = spdx23PackageObject.getPURLs();
+        }
+        // Or, if it is a CycloneDX 1.4 Package
+        else if (component instanceof CDX14Package cdx14Package) {
+            // Get the package's PURLs
+            purls = cdx14Package.getPURLs();
         }
 
         // Create a new list of PURLs
