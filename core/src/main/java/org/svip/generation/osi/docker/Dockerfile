@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN true
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
-# GO Setup
+# Go Setup
 ENV PATH "$PATH:/usr/local/go/bin"
 
 # Copy startup script
