@@ -23,7 +23,6 @@ import org.svip.utils.Debug;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 /**
  * File: SPDX23TagValueDeserializer.java
@@ -50,7 +49,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
 
     public static final String RELATIONSHIP_TAG = "##### Relationships";
 
-    public static final String EXTRACTED_LICENSE_TAG = "##### Extracted"; // starts with
+    public static final Pattern EXTRACTED_LICENSE_PATTERN = Pattern.compile("(^LicenseID:[\\w\\W]*?)\n{2}", Pattern.MULTILINE);
 
     public static final String EXTRACTED_LICENSE_ID = "LicenseID";
 
@@ -166,6 +165,11 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         Matcher fileMatcher = UNPACKAGED_PATTERN.matcher(fileContents);
         while(fileMatcher.find())
             sbomBuilder.addSPDX23Component(buildFile(fileBuilder, fileMatcher.group(1)));
+
+        // Parse and Add external license
+        Matcher licenseMatcher = EXTRACTED_LICENSE_PATTERN.matcher(fileContents);
+        while(licenseMatcher.find())
+            sbomBuilder.addLicense(buildExternalLicense(licenseMatcher.group(1)));
 
         // Parse and Add relationships
         Matcher relationshipMatcher = RELATIONSHIP_PATTERN.matcher(fileContents);
@@ -357,6 +361,17 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         return builder.buildAndFlush();
     }
 
+    private String buildExternalLicense(String licenseBlock){
+        Pattern licenseNamePattern = Pattern.compile("^LicenseID: (.*)");
+        Matcher licenseIDMatcher = licenseNamePattern.matcher(licenseBlock);
+
+        // return just ID because this will be referenced by other
+        // TODO more complex license so we don't loose the extra details
+        return licenseIDMatcher.find()
+                ? licenseIDMatcher.group(1)
+                : "";
+    }
+
     private Relationship buildRelationship(Matcher match){
         Relationship r = new Relationship(match.group(3), match.group(2));
 
@@ -366,76 +381,5 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         return r;
     }
 
-    /**
-     * Private helper method to get all tag-value pairs categorized under the specified tag (ex. ##### Unpackaged
-     * Files). The tags will be located anywhere in the file; the order of tags does not impact translation of the SBOM.
-     *
-     * @param fileContents The file contents to get the tag from.
-     * @param tag          The tag to get all tag-value pairs of.
-     * @return An "excerpt" from the {@code fileContents} string containing all tag-value pairs categorized under {@code
-     * tag}.
-     */
-    private String getTagContents(String fileContents, String tag) {
-        String tagContents = "";
-        int firstIndex;
-        int lastIndex;
 
-        while (fileContents.contains(tag)) {
-            // Get boundaries of this tag
-            firstIndex = fileContents.indexOf(tag);
-            lastIndex = fileContents.indexOf(TAG, firstIndex + 1);
-
-            // If another tag is not found, last index goes to end of file
-            if (lastIndex == -1) lastIndex = fileContents.length();
-
-            // Use this data to update tagContents with the found tag
-            tagContents += fileContents.substring(firstIndex, lastIndex); // Remove newline
-            fileContents = fileContents.substring(0, firstIndex) + fileContents.substring(lastIndex);
-        }
-
-        return tagContents;
-    }
-
-    /**
-     * Private helper method to process an external license in an SPDX document and append all relevant data into
-     * the {@code externalLicenses} map with each entry having an ID (key) and name (value).
-     *
-     * @param extractedLicenseBlock An extracted licensing information "block" in the document.
-     * @param externalLicenses      The map of external licenses to append to.
-     */
-    private void parseExternalLicense(String extractedLicenseBlock, Map<String, Map<String, String>> externalLicenses) {
-        // Required fields
-        String id = null;
-        String name = null;
-
-        // Optional attributes
-        Map<String, String> attributes = new HashMap<>();
-
-        Matcher m = TAG_VALUE_PATTERN.matcher(extractedLicenseBlock);
-        while (m.find()) {
-            switch (m.group(1)) {
-                case EXTRACTED_LICENSE_ID -> id = m.group(2);
-                case EXTRACTED_LICENSE_NAME -> name = m.group(2);
-                case EXTRACTED_LICENSE_TEXT -> {
-                    // Find a multiline block. If one does not exist, just put the one line of text.
-                    Matcher extractedText = Pattern.compile("<text>(\\X*)</text>").matcher(extractedLicenseBlock);
-                    String text = m.group(2); // The first line of text.
-                    if (extractedText.find()) text = extractedText.group(1); // Multiline text, if any.
-                    attributes.put("text", text); // Add the attribute
-                }
-                case EXTRACTED_LICENSE_CROSSREF -> attributes.put("crossRef", m.group(2));
-                default -> {
-                } // TODO more fields?
-            }
-        }
-
-        if (id != null && name != null) {
-            attributes.put("name", name);
-            externalLicenses.put(id, attributes);
-            Debug.log(Debug.LOG_TYPE.DEBUG, "External license found with ID " + id + " and name " + name);
-        } else {
-            Debug.log(Debug.LOG_TYPE.WARN, String.format("External license skipped due to one or more of the " +
-                    "following fields not existing:\nID: %s\nName: %s", id, name));
-        }
-    }
 }
