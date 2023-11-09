@@ -102,7 +102,7 @@ public class SPDX23TagValueSerializer implements Serializer {
         for (SVIPComponentObject pkg : packages)
             out.append(getPackageInfo(pkg));
 
-        out.append("\n### Unpackaged Files\n\n");
+        out.append("\n##### Unpackaged Files\n\n");
         for (SVIPComponentObject file : files)
             out.append(getFileInfo(file));
 
@@ -150,9 +150,9 @@ public class SPDX23TagValueSerializer implements Serializer {
     private String getPackageInfo(SVIPComponentObject pkg) {
         StringBuilder out = new StringBuilder();
 
-        out.append("### Package: " + pkg.getName() + "\n\n");
-        out.append(buildTagValue("SPDXID", pkg.getUID()));
+        out.append("##### Package: " + pkg.getName() + "\n\n");
         out.append(buildTagValue("PackageName", pkg.getName()));
+        out.append(buildTagValue("SPDXID", pkg.getUID()));
         out.append(buildTagValue("PackageVersion", pkg.getVersion()));
         if (pkg.getDescription() != null) {
             out.append(buildTagValue("PackageSummary", pkg.getDescription().getSummary()));
@@ -211,8 +211,8 @@ public class SPDX23TagValueSerializer implements Serializer {
 
     private String getFileInfo(SVIPComponentObject file) {
 
-        String out = buildTagValue("SPDXID", file.getUID()) +
-                buildTagValue("FileName", file.getName()) +
+        String out = buildTagValue("FileName", file.getName()) +
+                buildTagValue("SPDXID", file.getUID()) +
                 buildTagValue("FileType", file.getType()) +
                 buildTagValue("FileComment", file.getComment()) +
                 getChecksum(file.getHashes()) +

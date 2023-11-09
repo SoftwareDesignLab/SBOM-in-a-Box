@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Fixed parsing issues with SPDX23TagValue Deserializer to use regex
+- Update correct number of "#" in the SPDX Tag Value Serializer
+- Correct order of keys in the SPDX Tag Value Serializer
 
 ## [v8.0.7-alpha] - (10/27/2023)
 
