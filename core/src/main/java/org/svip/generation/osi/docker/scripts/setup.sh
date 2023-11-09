@@ -17,8 +17,16 @@ CYCLONEDX_CLI=https://github.com/CycloneDX/cyclonedx-cli/releases/latest/downloa
 # LANGUAGES
 #
 function installGo() {
-    wget $GO_DISTRO
-    rm -rf /usr/local/go && tar -C /usr/local -xzf go1.20.linux-amd64.tar.gz
+  wget $GO_DISTRO
+  rm -rf /usr/local/go && tar -C /usr/local -xzf go1.20.linux-amd64.tar.gz
+}
+
+function installNode() {
+  # Install Node Version Manager
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash && source $NVM_DIR/nvm.sh
+
+  # Install LTS for Node
+  nvm install --lts
 }
 
 function installDotNet() {
@@ -41,7 +49,7 @@ function installDotNet() {
 # PACKAGE MANAGERS
 #
 function installCargo() {
-    curl https://sh.rustup.rs -sSf | sh -s -- -y
+  curl https://sh.rustup.rs -sSf | sh -s -- -y
 }
 
 
@@ -60,14 +68,14 @@ function installWithPIP(){
 }
 
 function installWithNPM() {
-    # Install Retire.js
-    npm install -g retire
-    # Install Bower
-    npm install -g bower
-    # Install CycloneDX Bower Bom
-    npm install -g cdx-bower-bom
-    # Install cdxgen
-    npm install -g @cyclonedx/cdxgen
+  # Install Retire.js
+  npm install -g retire
+  # Install Bower
+  npm install -g bower
+  # Install CycloneDX Bower Bom
+  npm install -g cdx-bower-bom
+  # Install cdxgen
+  npm install -g @cyclonedx/cdxgen
 }
 
 function installWithGo() {
@@ -122,18 +130,24 @@ main() {
   apt clean && apt update
 
   # Install Utils
-  apt install -y python3-pip wget curl libicu-dev npm
-  apt install -y wget curl
+  apt install -y python3-pip libicu-dev
 
   # Install Languages
-  apt install -y python3 nodejs default-jre php
+  apt install -y python3 default-jre php
   installGo
+  wait
   echo "Languages installed"
 
   # Install Package Managers
   apt install -y composer
   installCargo
+  wait
   echo "Package managers installed"
+
+  # Install Node.js
+  installNode
+  wait
+  echo "Node.js installed"
 
   # Install dotnet
   installDotNet
