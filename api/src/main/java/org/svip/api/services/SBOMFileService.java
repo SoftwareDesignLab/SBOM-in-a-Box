@@ -406,6 +406,7 @@ public class SBOMFileService {
 
         // Save according to overwrite boolean
         SBOM sbomFile = u.toSBOMFile();
+        sbomFile.setName(toRepairSBOMFile.getName()); //name is lost in toSBOMObject
 
         if (overwrite) {
             update(id, sbomFile);
