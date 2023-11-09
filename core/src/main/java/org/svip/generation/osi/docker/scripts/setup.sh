@@ -49,7 +49,7 @@ function installDotNet() {
 # PACKAGE MANAGERS
 #
 function installCargo() {
-  curl https://sh.rustup.rs -sSf | sh -s -- -y
+  curl https://sh.rustup.rs -sSf | sh
 }
 
 
