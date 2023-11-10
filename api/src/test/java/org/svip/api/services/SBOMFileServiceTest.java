@@ -186,8 +186,7 @@ public class SBOMFileServiceTest {
         // When
         assertThrows(Exception.class, () -> this.sbomFileService.merge(ids));
     }
-
-    @Disabled("Fails during deserialization due to \n\n being generated in SPDX TagValue file")
+    
     @Test
     @DisplayName("Merge 2 sboms")
     void merge_two_sboms() {
