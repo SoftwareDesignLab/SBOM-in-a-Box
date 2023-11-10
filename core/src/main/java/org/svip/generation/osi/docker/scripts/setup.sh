@@ -135,7 +135,7 @@ main() {
   apt install -y python3-pip libicu-dev
 
   # Install Languages
-  apt install -y python3 default-jre php
+  apt install -y python3 openjdk-19-jdk php
   installGo
   wait
   echo "Languages installed"
