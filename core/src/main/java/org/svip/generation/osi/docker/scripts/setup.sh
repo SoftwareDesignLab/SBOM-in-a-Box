@@ -141,7 +141,7 @@ main() {
   echo "Languages installed"
 
   # Install Package Managers
-  apt install -y composer
+  apt install -y composer npm maven gradle
   installCargo
   wait
   echo "Package managers installed"
