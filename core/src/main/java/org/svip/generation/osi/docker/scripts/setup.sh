@@ -103,6 +103,12 @@ function installWithCargo(){
   cargo install cargo-cyclonedx
 }
 
+function installWithComposer(){
+  # cyclonedx-php-composer
+  composer global config --no-plugins allow-plugins.cyclonedx/cyclonedx-php-composer true
+  yes | composer global require cyclonedx/cyclonedx-php-composer
+}
+
 #
 # TOOLS : Manual Installation
 #
@@ -144,21 +150,17 @@ main() {
 
   # Install Languages
   apt install -y python3 openjdk-19-jdk
-  installGo
+  installGo &
+  installNode &
   wait
   echo "Languages installed"
 
   # Install Package Managers
   apt install -y npm maven gradle
-  installCargo
-  installComposer
+  installCargo &
+  installComposer &
   wait
   echo "Package managers installed"
-
-  # Install Node.js
-  installNode
-  wait
-  echo "Node.js installed"
 
   # Install dotnet
   installDotNet
@@ -176,6 +178,8 @@ main() {
   installWithDotNet &
   # CDX for Cargo
   installWithCargo &
+  # cyclonedx-php-composer
+  installComposer &
   wait
   echo "Package manager tools installed"
 
