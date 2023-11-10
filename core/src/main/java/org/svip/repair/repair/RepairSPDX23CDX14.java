@@ -31,6 +31,7 @@ import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+import org.svip.sbom.model.uids.CPE;
 import org.svip.sbom.model.uids.Hash;
 
 import java.awt.*;
@@ -208,7 +209,9 @@ public class RepairSPDX23CDX14 implements Repair {
 
                     case COMPONENT_CPE -> {
                         cpes.clear(); //Assuming if it is a fix that the previous were invalid
-                        cpes.add(fix.getNew().toString());
+                        LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) fix.fixed();
+                        CPE cpe = new CPE(map.get("vendor"), map.get("product"), map.get("version"));
+                        cpes.add(cpe.toString());
                     }
 
                     case COMPONENT_BOM_REF -> {
