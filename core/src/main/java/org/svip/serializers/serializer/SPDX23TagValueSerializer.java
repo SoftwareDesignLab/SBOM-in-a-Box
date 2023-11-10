@@ -81,7 +81,7 @@ public class SPDX23TagValueSerializer implements Serializer {
         String documentComment = sbom.getDocumentComment();
         if (creatorComment == null || creatorComment.isEmpty())
             creatorComment = Metadata.SERIALIZED_COMMENT;
-        else if (documentComment == null || documentComment.isEmpty())
+        if (documentComment == null || documentComment.isEmpty())
             documentComment = Metadata.SERIALIZED_COMMENT;
 
         out.append(buildTagValue("CreatorComment", creatorComment));
