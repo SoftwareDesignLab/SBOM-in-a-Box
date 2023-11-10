@@ -7,7 +7,7 @@ ENV DEBCONF_NONINTERACTIVE_SEEN true
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
 # Go Setup
-ENV PATH $PATH:/usr/local/go/bin
+ENV PATH $PATH:/usr/local/go/bin:/root/go/bin
 
 # Node.js Setup
 ENV NVM_DIR /root/.nvm

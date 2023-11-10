@@ -7,7 +7,7 @@
 # @author Tyler Drake
 
 # Distro and Constants
-GO_DISTRO=https://go.dev/dl/go1.20.linux-amd64.tar.gz
+GO_DISTRO=go1.20.linux-amd64.tar.gz
 # Tools
 SPDX_SBOM_GENERATOR=https://github.com/opensbom-generator/spdx-sbom-generator/releases/download/v0.0.15/spdx-sbom-generator-v0.0.15-linux-amd64.tar.gz
 JBOM=https://github.com/eclipse/jbom/releases/download/v1.2.1/jbom-1.2.1.jar
@@ -17,8 +17,8 @@ CYCLONEDX_CLI=https://github.com/CycloneDX/cyclonedx-cli/releases/latest/downloa
 # LANGUAGES
 #
 function installGo() {
-  wget $GO_DISTRO
-  rm -rf /usr/local/go && tar -C /usr/local -xzf go1.20.linux-amd64.tar.gz
+  wget "https://go.dev/dl/$GO_DISTRO"
+  tar -C /usr/local -xzf $GO_DISTRO
 }
 
 function installNode() {
