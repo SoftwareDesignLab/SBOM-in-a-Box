@@ -75,7 +75,7 @@ function installWithNPM() {
   # Install CycloneDX Bower Bom
   npm install -g cdx-bower-bom
   # Install cdxgen
-  npm install -g @cyclonedx/cdxgen
+  npm install -g @cyclonedx/cdxgen@8.6.0
 }
 
 function installWithGo() {
