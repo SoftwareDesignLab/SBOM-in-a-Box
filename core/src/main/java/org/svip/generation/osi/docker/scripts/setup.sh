@@ -52,6 +52,14 @@ function installCargo() {
   curl https://sh.rustup.rs -sSf | sh
 }
 
+function installComposer(){
+    apt install -y curl php-cli unzip php-xml
+    curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
+    HASH=`curl -sS https://composer.github.io/installer.sig`
+    php -r "if (hash_file('SHA384', '/tmp/composer-setup.php') === '$HASH') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+    php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
+}
+
 
 #
 # TOOLS : Installed with Package Manager
@@ -135,14 +143,15 @@ main() {
   apt install -y python3-pip libicu-dev
 
   # Install Languages
-  apt install -y python3 openjdk-19-jdk php
+  apt install -y python3 openjdk-19-jdk
   installGo
   wait
   echo "Languages installed"
 
   # Install Package Managers
-  apt install -y composer npm maven gradle
+  apt install -y npm maven gradle
   installCargo
+  installComposer
   wait
   echo "Package managers installed"
 
