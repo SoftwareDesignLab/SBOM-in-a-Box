@@ -21,6 +21,7 @@ import static org.svip.sbom.model.uids.Hash.Algorithm.*;
  * Hash Object to hold Hash values
  *
  * @author Derek Garcia
+ * @author Jordan Wong
  */
 public class Hash {
 

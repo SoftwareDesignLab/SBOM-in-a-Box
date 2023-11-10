@@ -50,8 +50,7 @@ public class HashTest extends MetricTest {
         // Hash has a null algo or value, tests cannot be run
         // return missing Result
         else {
-            Result r = resultFactory.error(field, INFO.NULL,
-                    value, component.getName());
+            Result r = resultFactory.error(field, INFO.NULL, value, component.getName());
             results.add(r);
         }
         return results;
@@ -66,31 +65,19 @@ public class HashTest extends MetricTest {
      * @return a Result if the hash is valid or not
      */
     private Result validHashResult(String field, String value) {
-        var rf = new ResultFactory("Valid Hash", ATTRIBUTE.COMPLETENESS, ATTRIBUTE.UNIQUENESS, ATTRIBUTE.MINIMUM_ELEMENTS);
-        try {
-            // create new hash object
-            Hash hash = new Hash(field, value);
+        ResultFactory rf = new ResultFactory("Valid Hash", ATTRIBUTE.COMPLETENESS, ATTRIBUTE.UNIQUENESS,
+                ATTRIBUTE.MINIMUM_ELEMENTS);
+        // create new hash object
+        Hash hash = new Hash(field, value);
 
-            // Check if hash algorithm is unknown
-            if (hash.getAlgorithm() == Hash.Algorithm.UNKNOWN) {
-                return rf.fail(field, INFO.INVALID,
-                        value, component.getName());
-            }
+        // Check if hash algorithm is unknown
+        if (hash.getAlgorithm().equals(Hash.Algorithm.UNKNOWN))
+            return rf.fail(field, INFO.INVALID, value, component.getName());
 
-            // Check if hash is valid
-            if (!hash.isValid(component)) {
-                return rf.fail(field, INFO.INVALID,
-                        value, component.getName());
-            } else {
-                return rf.pass(field, INFO.VALID,
-                        value, component.getName());
-            }
-
-        }
-        // failed to create a new Hash object, test automatically fails
-        catch (Exception e) {
-            return rf.fail(field, INFO.INVALID,
-                    value, component.getName());
-        }
+        // Check if hash is valid
+        if (!hash.isValid(component))
+            return rf.fail(field, INFO.INVALID, value, component.getName());
+        else
+            return rf.pass(field, INFO.VALID, value, component.getName());
     }
 }

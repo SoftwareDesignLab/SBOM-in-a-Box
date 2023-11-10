@@ -10,8 +10,15 @@ import org.svip.sbom.model.uids.PURL;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Tests for the MavenExtraction class
+ *
+ * @author Jordan Wong
+ */
 class MavenExtractionTest {
 
     private static MavenExtraction ext;

@@ -7,10 +7,9 @@ import org.svip.sbom.model.uids.Hash.Algorithm;
 import org.svip.sbom.model.uids.PURL;
 import org.svip.utils.Debug;
 
+import java.util.Optional;
 import java.util.Set;
 
-import static org.svip.sbom.model.uids.Hash.Algorithm.MD5;
-import static org.svip.sbom.model.uids.Hash.Algorithm.SHA1;
 import static org.svip.utils.Debug.log;
 
 /**
@@ -66,9 +65,20 @@ public class MavenExtraction extends Extraction {
     }
 
     public static boolean isExtractable(Algorithm algorithm, Component component) {
-        return (component instanceof SBOMPackage sbomPackage
-                && (HASH_ALGORITHMS.contains(algorithm))
-                && (sbomPackage.getPURLs().stream().findFirst().isPresent())
-                && (sbomPackage.getPURLs().stream().findFirst().get()).startsWith("pkg:maven"));
+        if (!(component instanceof SBOMPackage sbomPackage && HASH_ALGORITHMS.contains(algorithm)))
+            return false;
+
+        Optional<String> purlString = sbomPackage.getPURLs().stream().findFirst();
+        if (purlString.isEmpty())
+            return false;
+
+        PURL purl;
+        try {
+            purl = new PURL(purlString.get());
+        } catch (Exception e) {
+            return false;
+        }
+
+        return purl.getType().equals("maven");
     }
 }

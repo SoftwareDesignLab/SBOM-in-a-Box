@@ -1,26 +1,15 @@
 package org.svip.repair.fix;
 
 import org.svip.metrics.resultfactory.Result;
-import org.svip.repair.extraction.Extraction;
 import org.svip.repair.extraction.MavenExtraction;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbom.model.interfaces.generics.SBOMPackage;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.uids.Hash;
 import org.svip.sbom.model.uids.Hash.Algorithm;
-import org.svip.sbom.model.uids.PURL;
-import org.svip.utils.Debug;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-
-import static org.svip.sbom.model.uids.Hash.Algorithm.*;
 
 /**
  * file: HashFixes.java
@@ -53,8 +42,8 @@ public class HashFixes implements Fixes<Hash> {
         // Retrieve component from SBOM by componentName
         Component component = sbom.getComponents().stream()
                 .filter(c -> c.getName().equalsIgnoreCase(componentName))
-                .toList()
-                .get(0);
+                .findFirst()
+                .get();
 
         if (MavenExtraction.isExtractable(hash.getAlgorithm(), component)) {
             // Retrieve valid hash from Maven Repository

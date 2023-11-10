@@ -7,9 +7,7 @@ import org.svip.sbom.model.interfaces.generics.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -83,8 +81,6 @@ class HashTest {
             assertNotNull(hash.getValidAlgorithms(true));
             assertNotNull(hash.getValidAlgorithms(false));
         }
-
-        // Test that isSPDXExclusive is doing its job
     }
 
     @Test
