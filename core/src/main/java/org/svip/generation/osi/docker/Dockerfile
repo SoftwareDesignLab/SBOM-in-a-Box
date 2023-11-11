@@ -15,12 +15,16 @@ ENV PATH $PATH:/root/.dotnet/tools
 # Node.js Setup
 ENV NVM_DIR /root/.nvm
 
-# Copy startup script
-COPY scripts/setup.sh /usr/local/bin/
+# Copy startup scripts
+COPY scripts/ /usr/local/bin/
 # Copy Flask webserver scripts
 COPY server/ /app/
 
 # Run setup script
-RUN /bin/bash -c /usr/local/bin/setup.sh
+RUN /bin/bash -c setup.sh
+RUN /bin/bash -c validate.sh
+
+# Cleanup
+RUN rm /usr/local/bin/setup.sh
 
 ENTRYPOINT ["python3", "/app/OSIAPIController.py"]
