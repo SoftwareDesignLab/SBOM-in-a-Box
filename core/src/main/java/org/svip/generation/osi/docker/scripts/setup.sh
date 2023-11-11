@@ -35,7 +35,7 @@ function installNode() {
 # Will also install cargo
 function installRust() {
   curl https://sh.rustup.rs -sSf | sh -s -- -y
-  source "$HOME"/.cargo/env
+  . "$HOME"/.cargo/env
   apt install -y libssl-dev pkg-config build-essential  # util libs for cargo
 }
 
