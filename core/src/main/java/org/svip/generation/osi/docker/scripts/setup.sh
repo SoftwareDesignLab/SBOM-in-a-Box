@@ -101,8 +101,8 @@ function installWithComposer(){
 # TOOLS : Manual Installation
 #
 function installSPDXSBOMGenerator() {
-  curl -L $SPDX_SBOM_GENERATOR -o /tmp/spdx-sbom-generator.tar.gz
-  tar -C $BIN -xzf /tmp/spdx-sbom-generator.tar.gz
+  curl -L $SPDX_SBOM_GENERATOR -o /tmp/spdx-sbom-generator.tar.gz \
+  && tar -C $BIN -xzf /tmp/spdx-sbom-generator.tar.gz
 }
 
 function installJBOM() {
@@ -111,7 +111,9 @@ function installJBOM() {
 }
 
 function installCycloneDXCLI() {
-  wget $CYCLONEDX_CLI -O $BIN/cyclonedx-cli && chmod +x $BIN/cyclonedx-cli
+  curl -L $CYCLONEDX_CLI -o $BIN/cyclonedx-cli \
+  && chmod +x $BIN/cyclonedx-cli
+  apt install -y libicu-dev
 }
 
 function installSyft() {
@@ -132,9 +134,6 @@ main() {
 
   # Setup the dev environment
   apt clean && apt update
-
-  # Install Utils
-  apt install -y libicu-dev
 
   # Install Languages
   apt install -y python3 openjdk-19-jdk dotnet6
