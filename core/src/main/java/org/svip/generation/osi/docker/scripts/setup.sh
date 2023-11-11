@@ -24,7 +24,9 @@ function installGo() {
 
 function installNode() {
   # Install Node Version Manager
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash && source $NVM_DIR/nvm.sh
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
   # Install LTS for Node
   nvm install --lts
