@@ -18,7 +18,7 @@ CYCLONEDX_CLI=https://github.com/CycloneDX/cyclonedx-cli/releases/latest/downloa
 # LANGUAGES
 #
 function installGo() {
-  wget "https://go.dev/dl/$GO_DISTRO"
+  curl -LO "https://go.dev/dl/$GO_DISTRO"
   tar -C /usr/local -xzf $GO_DISTRO
 }
 
