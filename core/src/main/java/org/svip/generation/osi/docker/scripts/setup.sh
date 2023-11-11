@@ -29,38 +29,22 @@ function installNode() {
   nvm install --lts
 }
 
-function installDotNet() {
-
-  # Get package
-  wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
-  dpkg -i packages-microsoft-prod.deb
-
-  # Install .NET SDK
-  apt install apt-transport-https
-  apt install dotnet-sdk-6.0
-
-  # Install .NET Core Runtime
-  apt install apt-transport-https
-  apt install dotnet-runtime-6.0
-
-}
-
 # Will also install cargo
 function installRust() {
   curl https://sh.rustup.rs -sSf | sh -s -- -y
   source "$HOME"/.cargo/env
-  apt install -y libssl-dev pkg-config build-essential
+  apt install -y libssl-dev pkg-config build-essential  # util libs for cargo
 }
 
 #
 # PACKAGE MANAGERS
 #
 function installComposer(){
-    apt install -y curl php-cli unzip php-xml
-    curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
-    HASH=`curl -sS https://composer.github.io/installer.sig`
-    php -r "if (hash_file('SHA384', '/tmp/composer-setup.php') === '$HASH') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-    php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
+  apt install -y curl php-cli unzip php-xml
+  curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
+  HASH=`curl -sS https://composer.github.io/installer.sig`
+  php -r "if (hash_file('SHA384', '/tmp/composer-setup.php') === '$HASH') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+  php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
 }
 
 
@@ -151,23 +135,18 @@ main() {
   apt install -y libicu-dev
 
   # Install Languages
-  apt install -y python3 openjdk-19-jdk
+  apt install -y python3 openjdk-19-jdk dotnet6
   installGo &
   installNode &
   wait
   echo "Languages installed"
 
   # Install Package Managers
-  apt install -y maven gradle python3-pip
+  apt install -y maven gradle python3-pip nuget
   installCargo &
   installComposer &
   wait
   echo "Package managers installed"
-
-  # Install dotnet
-  installDotNet
-  wait
-  echo ".NET installed"
 
   # Install tools using package managers
   # jake, cyclonedx-conan, cyclonedx-python, scanoss
