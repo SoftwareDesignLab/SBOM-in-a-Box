@@ -18,13 +18,13 @@ ENV NVM_DIR /root/.nvm
 # Copy startup scripts
 COPY scripts/ /usr/local/bin/
 # Copy Flask webserver scripts
-COPY server/ /app/
+COPY server/ /server
 
 # Run setup script
-RUN /bin/bash -c setup.sh
+RUN #/bin/bash -c setup.sh
 RUN /bin/bash -c validate.sh
 
 # Cleanup
 RUN rm /usr/local/bin/setup.sh
 
-ENTRYPOINT ["python3", "/app/OSIAPIController.py"]
+ENTRYPOINT ["runner.sh"]

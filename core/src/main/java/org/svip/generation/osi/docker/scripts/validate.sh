@@ -34,6 +34,10 @@ function verify_lang(){
 }
 
 main(){
+  # Setup
+  apt update
+  apt install -y bsdmainutils
+
   echo "-= OSI VALIDATION =-"
   verify_lang
 }
