@@ -105,7 +105,8 @@ function installSPDXSBOMGenerator() {
 }
 
 function installJBOM() {
-  wget $JBOM -O /usr/local/bin/jbom.jar
+  curl -L $JBOM -o /usr/local/bin/jbom.jar \
+  && chmod +x /usr/local/bin/jbom.jar
 }
 
 function installCycloneDXCLI() {
