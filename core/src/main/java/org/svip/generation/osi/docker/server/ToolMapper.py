@@ -63,7 +63,8 @@ TOOL_LIST = [
         Language.C_CPLUSPLUS, Language.DART, Language.ERLANG, Language.GO, Language.HASKELL, Language.JAVA,
         Language.JAVASCRIPT, Language.PHP, Language.PYTHON, Language.RUBY, Language.RUST, Language.SWIFT
     ], ["cd {code}", "syft . -vv -o spdx-tag-value > {output}/" + SBOM_TEMP_NAME + ".spdx"]),
-    OSTool("GoBom", BOMFormat.CYCLONE_DX, [Language.GO], ["cd {code}", "gobom generate . -o {output}"]),
+    OSTool("GoBom", BOMFormat.CYCLONE_DX, [Language.GO],
+        ["cd {code}", "gobom generate . -o {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
     OSTool("CycloneDX Go", BOMFormat.CYCLONE_DX, [Language.GO], ["cd {code}", "cyclonedx-go -o {output}"]),
     OSTool("sbom-tool", BOMFormat.SPDX, [
         Language.GO, Language.PYTHON, Language.RUBY, Language.RUST
