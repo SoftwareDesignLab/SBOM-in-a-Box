@@ -83,11 +83,11 @@ TOOL_LIST = [
     OSTool("sbom4files CDX", BOMFormat.CYCLONE_DX, [
         Language.C_CPLUSPLUS, Language.GO, Language.JAVA, Language.JAVASCRIPT,
         Language.PHP, Language.PYTHON, Language.RUST, Language.PERL],
-        ["sbom4files -d {code} -r --sbom cyclonedx -o {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
+        ["sbom4files -d {code} -p {code}/* -r --sbom cyclonedx -o {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
     OSTool("sbom4files SPDX", BOMFormat.SPDX, [
         Language.C_CPLUSPLUS, Language.GO, Language.JAVA, Language.JAVASCRIPT,
         Language.PHP, Language.PYTHON, Language.RUST, Language.PERL],
-        ["sbom4files -d {code} -r --sbom spdx --format tag -o {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT]),
+        ["sbom4files -d {code} -p {code}/* -r --sbom spdx --format tag -o {output}/" + SBOM_TEMP_NAME + "." + SBOM_FORMAT.]),
     OSTool("Covenant", BOMFormat.CYCLONE_DX, [
             Language.C_CPLUSPLUS, Language.CSHARP, Language.DART, Language.ERLANG, Language.GO, Language.HASKELL, Language.JAVA,
             Language.JAVASCRIPT, Language.PHP, Language.PYTHON, Language.RUBY, Language.RUST, Language.SWIFT],
