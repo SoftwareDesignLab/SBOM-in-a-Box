@@ -41,7 +41,7 @@ function installRust() {
 # PACKAGE MANAGERS
 #
 function installComposer(){
-  apt install -y curl php-cli unzip php-xml
+  apt install -y php-cli unzip php-xml
   curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
   HASH=`curl -sS https://composer.github.io/installer.sig`
   php -r "if (hash_file('SHA384', '/tmp/composer-setup.php') === '$HASH') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
@@ -132,49 +132,52 @@ main() {
   # Change into temp for any installations
   cd /tmp || exit 1
 
-  # Setup the dev environment
+  # Setup the dev environment and utils
   apt clean
   apt update
+  apt install -y curl
 
   # Install Languages
   apt install -y python3 openjdk-19-jdk dotnet6
-  installGo &
-  installNode &
-  wait
+  installGo
+  installNode
+  installRust
   echo "Languages installed"
 
   # Install Package Managers
-  apt install -y maven gradle python3-pip nuget conan
-  installCargo &
-  installComposer &
-  wait
+  apt install -y maven gradle python3-pip nuget
+  pip install conan
+  installComposer
   echo "Package managers installed"
 
   # Install tools using package managers
   # jake, cyclonedx-conan, cyclonedx-python, scanoss
-  installWithPIP &
+  installWithPIP
   # Install Retire.js cdxgen
-  installWithNPM &
+  installWithNPM
   # CycloneDX-Go, GoBom
-  installWithGo &
+  installWithGo
   # Covenant
-  installWithDotNet &
+  installWithDotNet
   # CDX for Cargo
-  installWithCargo &
+  installWithCargo
   # cyclonedx-php-composer
-  installComposer &
-  wait
+  installWithComposer
   echo "Package manager tools installed"
 
   # Install tools that need manual installation
-  installSPDXSBOMGenerator &
-  installJBOM &
-  installCycloneDXCLI &
-  installSyft &
-  installSBOMTool &
-  wait
+  installSPDXSBOMGenerator
+  installJBOM
+  installCycloneDXCLI
+  installSyft
+  installSBOMTool
 
   echo "Manual tools installed"
+
+  apt clean
+  rm -rf /tmp/*
+
+  echo "Cleanup"
 }
 
 main
