@@ -8,6 +8,7 @@
 
 # Distro and Constants
 GO_DISTRO=go1.20.linux-amd64.tar.gz
+BIN=/usr/local/bin
 # Tools
 SPDX_SBOM_GENERATOR=https://github.com/opensbom-generator/spdx-sbom-generator/releases/download/v0.0.15/spdx-sbom-generator-v0.0.15-linux-amd64.tar.gz
 JBOM=https://github.com/eclipse/jbom/releases/download/v1.2.1/jbom-1.2.1.jar
@@ -44,7 +45,7 @@ function installComposer(){
   curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
   HASH=`curl -sS https://composer.github.io/installer.sig`
   php -r "if (hash_file('SHA384', '/tmp/composer-setup.php') === '$HASH') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-  php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
+  php /tmp/composer-setup.php --install-dir=$BIN --filename=composer
 }
 
 
@@ -101,25 +102,25 @@ function installWithComposer(){
 #
 function installSPDXSBOMGenerator() {
   curl -L $SPDX_SBOM_GENERATOR -o /tmp/spdx-sbom-generator.tar.gz
-  tar -C /usr/local/bin -xzf /tmp/spdx-sbom-generator.tar.gz
+  tar -C $BIN -xzf /tmp/spdx-sbom-generator.tar.gz
 }
 
 function installJBOM() {
-  curl -L $JBOM -o /usr/local/bin/jbom.jar \
-  && chmod +x /usr/local/bin/jbom.jar
+  curl -L $JBOM -o $BIN/jbom.jar \
+  && chmod +x $BIN/jbom.jar
 }
 
 function installCycloneDXCLI() {
-  wget $CYCLONEDX_CLI -O /usr/local/bin/cyclonedx-cli && chmod +x /usr/local/bin/cyclonedx-cli
+  wget $CYCLONEDX_CLI -O $BIN/cyclonedx-cli && chmod +x $BIN/cyclonedx-cli
 }
 
 function installSyft() {
-  curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+  curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b $BIN
 }
 
 function installSBOMTool() {
-  curl -L https://github.com/microsoft/sbom-tool/releases/latest/download/sbom-tool-linux-x64 -o /usr/local/bin/sbom-tool
-  chmod +x /usr/local/bin/sbom-tool
+  curl -L https://github.com/microsoft/sbom-tool/releases/latest/download/sbom-tool-linux-x64 -o $BIN/sbom-tool
+  chmod +x $BIN/sbom-tool
 }
 
 #
