@@ -64,14 +64,8 @@ function installWithPIP(){
 }
 
 function installWithNPM() {
-  # Install Retire.js
-  npm install -g retire
-  # Install Bower
-  npm install -g bower
-  # Install CycloneDX Bower Bom
-  npm install -g cdx-bower-bom
-  # Install cdxgen
-  npm install -g @cyclonedx/cdxgen@8.6.0
+  # Install Retire.js, Bower, CycloneDX, Bower Bom, cdxgen
+  npm install -g retire bower cdx-bower-bom @cyclonedx/cdxgen@8.6.0
 }
 
 function installWithGo() {
@@ -135,7 +129,7 @@ main() {
   # Setup the dev environment and utils
   apt clean
   apt update
-  apt install -y curl
+  apt install -y curl bsdmainutils
 
   # Install Languages
   apt install -y python3 openjdk-19-jdk dotnet6
