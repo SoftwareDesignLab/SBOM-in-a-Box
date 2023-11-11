@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   8. [SBOM4Rust](https://github.com/anthonyharrison/sbom4rust)
   9. [SBOM Tool](https://github.com/microsoft/sbom-tool)
 
+### Changed
+  - fixed installation bugs inside OSI container
+
+
 ### Removed
 - Outdated Docker Binaries from OSI documentation
 
