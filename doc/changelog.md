@@ -3,6 +3,22 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v9.1.0-alpha] - (11/28/2023)
+### Added
+- 9 new tools to OSI
+    1. [Covenant](https://github.com/patriksvensson/covenant)
+    2. [CycloneDX Bower](https://github.com/hanstdam/cdx-bower-bom)
+    3. [CycloneDX Go](https://github.com/ozonru/cyclonedx-go)
+    4. [CycloneDX Rust](https://github.com/CycloneDX/cyclonedx-rust-cargo)
+    5. [GoBom](https://github.com/mattermost/gobom)
+    6. [SBOM4Files](https://github.com/anthonyharrison/sbom4files)
+    7. [SBOM4Python](https://github.com/anthonyharrison/sbom4python)
+    8. [SBOM4Rust](https://github.com/anthonyharrison/sbom4rust)
+    9. [SBOM Tool](https://github.com/microsoft/sbom-tool)
+
+### Removed
+- Outdated Docker Binaries from OSI documentation
+
 
 # [v9.0.2-alpha] - (11/28/2023)
 - Added Serialization support for CycloneDX 1.4 XML SBOMs.
@@ -44,6 +60,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `RepairCDX14.java` Class - Consolidated to RepairSPDX24CDX14
 - `RepairSPDX23.java` Class - Consolidated to RepairSPDX24CDX14
 
+## [v8.2.5-alpha] - (11/12/2023)
+
+### Changed / Added
+- Conversion now split up into three different components
+    - manipulate
+        - manipulates data fields within an SBOM object; typically to modify their values from one standard to another.
+    - toSchema
+        - converts an SVIP Internal SBOM to an Internal SBOM of a different standard.
+    - toSVIP
+        - converts an Internal SBOM of any standard into an SVIP Internal SBOM.
+    - Conversion
+        - Conversion controller reworked to handle different conversion/manipulation scenarios.
+
+## [v8.2.4-alpha] - (11/9/2023)
+
+### Changed
+- Fixed SPDX23TagValue Serializer to display `##### Relationships` over relationships
+
+## [v8.2.3-alpha] - (11/8/2023)
+
+### Changed
+- Fixed parsing issues with SPDX23TagValue Deserializer to use regex
+- Update correct number of "#" in the SPDX Tag Value Serializer
+- Correct order of keys in the SPDX Tag Value Serializer
+
+## [v8.2.2-alpha] - (10/27/2023)
+
+### Changed
+- SBOM components objects are now compared by name and version
+
+## [v8.2.1-alpha] - (10/20/2023)
+
+### Changed
+- Improved accuracy when determining the schema and format of an SBOM in `SerializerFactory.java`
+    - `resolveSchema()`
+    - `resolveFormat()`
+
 # [v8.2.0-alpha] - (10/17/2023)
 
 ### Added
@@ -80,6 +133,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Conversion` Class controller has been reworked.
 
 ## [v8.1.1-alpha] - (10/06/2023)
+### Changed
+- Changed the max packet size for MySQL to 256M
 
 ### Added
 - `LicenseFixes.java` Class - Suggests a list of fixes for deprecated licenses
