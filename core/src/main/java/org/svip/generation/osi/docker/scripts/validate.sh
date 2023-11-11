@@ -83,7 +83,7 @@ main(){
   echo "-= OSI VALIDATION =-"
   verify_lang
   verify_pm
-  varify_lang
+  verify_tools
 }
 
 main
