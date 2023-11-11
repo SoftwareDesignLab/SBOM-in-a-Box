@@ -3,6 +3,24 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v8.1.0-alpha] - (11/10/2023)
+> Known Issues with the ToolMapper.py - some commands are improperly configured
+### Added
+- 9 new tools to OSI
+  1. [Covenant](https://github.com/patriksvensson/covenant)
+  2. [CycloneDX Bower](https://github.com/hanstdam/cdx-bower-bom)
+  3. [CycloneDX Go](https://github.com/ozonru/cyclonedx-go)
+  4. [CycloneDX Rust](https://github.com/CycloneDX/cyclonedx-rust-cargo)
+  5. [GoBom](https://github.com/mattermost/gobom)
+  6. [SBOM4Files](https://github.com/anthonyharrison/sbom4files)
+  7. [SBOM4Python](https://github.com/anthonyharrison/sbom4python)
+  8. [SBOM4Rust](https://github.com/anthonyharrison/sbom4rust)
+  9. [SBOM Tool](https://github.com/microsoft/sbom-tool)
+
+### Removed
+- Outdated Docker Binaries from OSI documentation
+
+
 ## [v8.0.11-alpha] - (11/12/2023)
 
 ### Changed / Added
