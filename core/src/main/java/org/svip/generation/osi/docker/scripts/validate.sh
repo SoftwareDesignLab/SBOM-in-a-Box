@@ -24,7 +24,7 @@ function verify_lang(){
   result+="\n$(python3 --version &> /dev/null && pass "Python" || fail "Python")"
   result+="\n$(java --version &> /dev/null && pass "Java" || fail "Java")"
   result+="\n$(dotnet --info &> /dev/null && pass ".NET" || fail ".NET")"
-  result+="\n$(go --version &> /dev/null && pass "Go" || fail "Go")"
+  result+="\n$(go version &> /dev/null && pass "Go" || fail "Go")"
   result+="\n$(node -v &> /dev/null && pass "Node.js" || fail "Node.js")"
   result+="\n$(rustc --version &> /dev/null && pass "Rust" || fail "Rust")"
   result+="\n$(php --version &> /dev/null && pass "PHP" || fail "PHP")"

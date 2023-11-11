@@ -136,38 +136,38 @@ main() {
   installRust
   echo "Languages installed"
 
-#  # Install Package Managers
-#  apt install -y maven gradle python3-pip nuget
-#  pip install conan
-#  installComposer
-#  echo "Package managers installed"
-#
-#  # Install tools using package managers
-#  # jake, cyclonedx-conan, cyclonedx-python, scanoss
-#  installWithPIP
-#  # Install Retire.js cdxgen
-#  installWithNPM
-#  # CycloneDX-Go, GoBom
-#  installWithGo
-#  # Covenant
-#  installWithDotNet
-#  # CDX for Cargo
-#  installWithCargo
-#  # cyclonedx-php-composer
-#  installWithComposer
-#  echo "Package manager tools installed"
-#
-#  # Install tools that need manual installation
-#  installSPDXSBOMGenerator
-#  installJBOM
-#  installCycloneDXCLI
-#  installSyft
-#  installSBOMTool
-#
-#  echo "Manual tools installed"
-#
-#  apt clean
-#  rm -rf /tmp/*
+  # Install Package Managers
+  apt install -y maven gradle python3-pip nuget
+  pip install conan
+  installComposer
+  echo "Package managers installed"
+
+  # Install tools using package managers
+  # jake, cyclonedx-conan, cyclonedx-python, scanoss
+  installWithPIP
+  # Install Retire.js cdxgen
+  installWithNPM
+  # CycloneDX-Go, GoBom
+  installWithGo
+  # Covenant
+  installWithDotNet
+  # CDX for Cargo
+  installWithCargo
+  # cyclonedx-php-composer
+  installWithComposer
+  echo "Package manager tools installed"
+
+  # Install tools that need manual installation
+  installSPDXSBOMGenerator
+  installJBOM
+  installCycloneDXCLI
+  installSyft
+  installSBOMTool
+
+  echo "Manual tools installed"
+
+  apt clean
+  rm -rf /tmp/*
 
   echo "Cleanup"
 }
