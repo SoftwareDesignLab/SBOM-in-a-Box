@@ -1,9 +1,9 @@
 # Additional Resources
-> Additional Details about all "features", or sub-systems that SVIP contains.
+> Additional Details about all "features", or sub-systems that SBOM-in-a-Box contains.
 
 ## Index
 
-- [**SVIP API**](API.md)
+- [**SBOM-in-a-Box API**](API.md)
 - [**SBOM Generator CLI**](#sbom-generator-cli)
   - [Quick Start](#quick-start)
   - [Usage](#usage)
@@ -67,7 +67,7 @@ SPDX:
 ```
 
 ## Supported Source Files
-> Unlike many SBOM tools, SVIP does **NOT** require package managers or manifest files to generate SBOMs, rather as
+> Unlike many SBOM tools, SBOM-in-a-Box does **NOT** require package managers or manifest files to generate SBOMs, rather as
 > a basis for additional SBOM enhancement
 
 |   Language   |  Package Manager  |          Manifest File          |
