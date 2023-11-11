@@ -9,6 +9,9 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 # Go Setup
 ENV PATH $PATH:/usr/local/go/bin:/root/go/bin
 
+# Dotnet tools
+ENV PATH $PATH:/root/.dotnet/tools
+
 # Node.js Setup
 ENV NVM_DIR /root/.nvm
 

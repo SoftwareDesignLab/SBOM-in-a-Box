@@ -133,7 +133,8 @@ main() {
   cd /tmp || exit 1
 
   # Setup the dev environment
-  apt clean && apt update
+  apt clean
+  apt update
 
   # Install Languages
   apt install -y python3 openjdk-19-jdk dotnet6
