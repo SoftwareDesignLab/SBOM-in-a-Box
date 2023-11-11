@@ -13,7 +13,7 @@ main(){
 
   # Activate env
   . "$HOME"/.cargo/env
-  . $NVM_DIR/nvm.sh
+  . "$NVM_DIR"/nvm.sh
 
   # Check before running
   validate.sh
