@@ -183,27 +183,3 @@ $ docker compose up osi --build
 ```
 The first build will take up to 6 minutes to complete, but subsequent builds will be significantly faster. If using 
 a saved image, the first build time should be much faster.
-
-### Saved Images
-> **CURRENTLY NOT WORKING**
-
-A saved image can be loaded to drastically decrease the time cost of the first build. This uses 
-[Git Large File Storage (LFS)](https://git-lfs.com/) to store the compressed archive.
-
-To save the image for subsequent uses, ensure the image is built and then execute the following from the root 
-directory of the repository:
-```shell
-$ docker save -o core/src/main/java/org/svip/generation/osi/images/osi.tar ubuntu:latest | gzip > core/src/main/java/org/svip/generation/osi/images/osi.tar.gz
-```
-
-To load a saved image into Docker, run the following command:
-```shell
-$ docker load --input core/src/main/java/org/svip/generation/osi/images/osi.tar.gz
-```
-
-> **NOTE:** If any modifications are made to:
-> 1. The inline Dockerfile in `docker-compose.yml`,
-> 2. The setup shell script in `core/src/main/java/org/svip/generation/osi/scripts/setup.sh`, or
-> 3. The OSI tool controller in `core/src/main/java/org/svip/generation/osi/scripts/ContainerController.py`,
-> 
-> Then the image will need to be rebuilt.
