@@ -21,7 +21,7 @@ COPY scripts/ /usr/local/bin/
 COPY server/ /server
 
 # Run setup script
-RUN #/bin/bash -c setup.sh
+RUN /bin/bash -c setup.sh
 RUN /bin/bash -c validate.sh
 
 # Cleanup
