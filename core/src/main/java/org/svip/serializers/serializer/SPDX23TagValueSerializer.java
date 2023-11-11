@@ -81,7 +81,7 @@ public class SPDX23TagValueSerializer implements Serializer {
         String documentComment = sbom.getDocumentComment();
         if (creatorComment == null || creatorComment.isEmpty())
             creatorComment = Metadata.SERIALIZED_COMMENT;
-        else if (documentComment == null || documentComment.isEmpty())
+        if (documentComment == null || documentComment.isEmpty())
             documentComment = Metadata.SERIALIZED_COMMENT;
 
         out.append(buildTagValue("CreatorComment", creatorComment));
@@ -102,10 +102,13 @@ public class SPDX23TagValueSerializer implements Serializer {
         for (SVIPComponentObject pkg : packages)
             out.append(getPackageInfo(pkg));
 
-        out.append("\n##### Unpackaged Files\n\n");
+        if (!files.isEmpty())
+            out.append("##### Unpackaged Files\n\n");
+
         for (SVIPComponentObject file : files)
             out.append(getFileInfo(file));
 
+        out.append("##### Relationships\n\n");
         out.append(getRelationships(sbom.getRelationships()));
 
         return out.toString();

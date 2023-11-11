@@ -3,18 +3,30 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v8.0.8-alpha] - (11/8/2023)
+## [v8.0.10-alpha] - (11/9/2023)
+
+### Changed
+- Fixed SPDX23TagValue Serializer to display `##### Relationships` over relationships
+
+## [v8.0.9-alpha] - (11/8/2023)
 
 ### Changed
 - Fixed parsing issues with SPDX23TagValue Deserializer to use regex
 - Update correct number of "#" in the SPDX Tag Value Serializer
 - Correct order of keys in the SPDX Tag Value Serializer
 
-## [v8.0.7-alpha] - (10/27/2023)
+## [v8.0.8-alpha] - (10/27/2023)
 
 ### Changed
 - SBOM components objects are now compared by name and version
 
+## [v8.0.7-alpha] - (10/20/2023)
+
+### Changed
+- Improved accuracy when determining the schema and format of an SBOM in `SerializerFactory.java`
+  - `resolveSchema()`
+  - `resolveFormat()`
+  
 ## [v8.0.6-alpha] - (10/17/2023)
 
 ### Changed

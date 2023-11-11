@@ -1,6 +1,7 @@
 package org.svip.serializers;
 
 
+import org.json.JSONObject;
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
@@ -9,6 +10,7 @@ import org.svip.serializers.serializer.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static org.svip.serializers.SerializerFactory.Format.JSON;
 import static org.svip.serializers.SerializerFactory.Format.TAGVALUE;
@@ -123,7 +125,39 @@ public class SerializerFactory {
      */
     public enum Format {
         JSON,
-        TAGVALUE
+        TAGVALUE;
+
+        /**
+         * Checks if the given string is a valid JSON.
+         *
+         * @param fileContents The file contents to check if it's a valid JSON.
+         * @return true if valid JSON.
+         */
+        public static boolean isValidJSON(String fileContents) {
+            try {
+                new JSONObject(fileContents);
+            } catch (Exception e) {
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         * Checks if the given string is a valid tag-value.
+         *
+         * @param fileContents The file contents to check if it's a valid tag-value.
+         * @return true if valid tag-value.
+         */
+        public static boolean isValidTagValue(String fileContents) {
+            // Matches PascalCase and begin with capital letters (e.g. SPDXID, SPDXVersion)
+            Pattern p = Pattern.compile("^[A-Z][a-z0-9]*(?:[A-Z][a-z0-9]*)*(?:[A-Z]?)$");
+
+            // Check all tags are PascalCase (value is ignored; it can sometimes be empty)
+            return fileContents.lines()
+                    .filter(line -> !(line.contains("#") || line.contains("</text>") || line.equals(""))) // Exclude
+                    .map(line -> line.split(": ")[0]) // Get the tag
+                    .allMatch(line -> p.matcher(line).matches()); // Match tag to regex
+        }
     }
 
     /**
@@ -134,24 +168,23 @@ public class SerializerFactory {
      * @return The schema, or null if no schema could be resolved.
      */
     public static Schema resolveSchema(String fileContents) {
-        // TODO this takes a long time to search large files
-        if (fileContents.toLowerCase().contains("bom-ref")) return CDX14;
-        else if (fileContents.toLowerCase().contains("spdxversion")) return SPDX23;
+        if (fileContents.contains("bom-ref")) return CDX14;
+        else if (fileContents.contains("SPDXID")) return SPDX23;
         else if (fileContents.contains("rootComponent")) return SVIP; // Field unique to SVIP SBOM
         else return null;
     }
 
     /**
-     * TODO find an accurate way to determine format
+     * TODO add support for XML
      * Resolves the file format of the contents of a file.
      *
      * @param fileContents The file contents to resolve the format of.
      * @return The format, or null if no format could be resolved.
      */
     public static Format resolveFormat(String fileContents) {
-        if (fileContents.contains("DocumentName:") || fileContents.contains("DocumentNamespace:"))
+        if (Format.isValidTagValue(fileContents))
             return TAGVALUE;
-        else if (fileContents.contains("{") && fileContents.contains("}"))
+        else if (Format.isValidJSON(fileContents))
             return JSON;
         else return null;
     }
