@@ -59,8 +59,6 @@ function installWithPIP(){
   # Install jake, cyclonedx-conan, cyclonedx-python, scanoss, sbom4python, sbom4files
   pip install jake cyclonedx-conan cyclonedx-bom scanoss sbom4python sbom4rust sbom4files
 
-  # Bug fix for cyclonedx-conan
-  pip install markupsafe==2.0.1
 }
 
 function installWithNPM() {
@@ -129,7 +127,7 @@ main() {
   # Setup the dev environment and utils
   apt clean
   apt update
-  apt install -y curl bsdmainutils
+  apt install -y curl
 
   # Install Languages
   apt install -y python3 openjdk-19-jdk dotnet6
