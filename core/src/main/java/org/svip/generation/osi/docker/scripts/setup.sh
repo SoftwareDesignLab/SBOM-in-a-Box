@@ -24,9 +24,7 @@ function installGo() {
 
 function installNode() {
   # Install Node Version Manager
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash && . $NVM_DIR/nvm.sh
 
   # Install LTS for Node
   nvm install --lts
@@ -138,38 +136,38 @@ main() {
   installRust
   echo "Languages installed"
 
-  # Install Package Managers
-  apt install -y maven gradle python3-pip nuget
-  pip install conan
-  installComposer
-  echo "Package managers installed"
-
-  # Install tools using package managers
-  # jake, cyclonedx-conan, cyclonedx-python, scanoss
-  installWithPIP
-  # Install Retire.js cdxgen
-  installWithNPM
-  # CycloneDX-Go, GoBom
-  installWithGo
-  # Covenant
-  installWithDotNet
-  # CDX for Cargo
-  installWithCargo
-  # cyclonedx-php-composer
-  installWithComposer
-  echo "Package manager tools installed"
-
-  # Install tools that need manual installation
-  installSPDXSBOMGenerator
-  installJBOM
-  installCycloneDXCLI
-  installSyft
-  installSBOMTool
-
-  echo "Manual tools installed"
-
-  apt clean
-  rm -rf /tmp/*
+#  # Install Package Managers
+#  apt install -y maven gradle python3-pip nuget
+#  pip install conan
+#  installComposer
+#  echo "Package managers installed"
+#
+#  # Install tools using package managers
+#  # jake, cyclonedx-conan, cyclonedx-python, scanoss
+#  installWithPIP
+#  # Install Retire.js cdxgen
+#  installWithNPM
+#  # CycloneDX-Go, GoBom
+#  installWithGo
+#  # Covenant
+#  installWithDotNet
+#  # CDX for Cargo
+#  installWithCargo
+#  # cyclonedx-php-composer
+#  installWithComposer
+#  echo "Package manager tools installed"
+#
+#  # Install tools that need manual installation
+#  installSPDXSBOMGenerator
+#  installJBOM
+#  installCycloneDXCLI
+#  installSyft
+#  installSBOMTool
+#
+#  echo "Manual tools installed"
+#
+#  apt clean
+#  rm -rf /tmp/*
 
   echo "Cleanup"
 }

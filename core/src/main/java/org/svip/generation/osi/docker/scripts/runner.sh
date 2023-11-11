@@ -11,6 +11,10 @@ main(){
   apt install -y python3 python3-pip
   pip install -r /server/requirements.txt
 
+  # Activate env
+  . "$HOME"/.cargo/env
+  . $NVM_DIR/nvm.sh
+
   # Check before running
   validate.sh
 
