@@ -45,13 +45,16 @@ function installDotNet() {
 
 }
 
+# Will also install cargo
+function installRust() {
+  curl https://sh.rustup.rs -sSf | sh -s -- -y
+  source "$HOME"/.cargo/env
+  apt install -y libssl-dev pkg-config build-essential
+}
+
 #
 # PACKAGE MANAGERS
 #
-function installCargo() {
-  curl https://sh.rustup.rs -sSf | sh
-}
-
 function installComposer(){
     apt install -y curl php-cli unzip php-xml
     curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
@@ -145,7 +148,7 @@ main() {
   apt clean && apt update
 
   # Install Utils
-  apt install -y python3-pip libicu-dev
+  apt install -y libicu-dev
 
   # Install Languages
   apt install -y python3 openjdk-19-jdk
@@ -155,7 +158,7 @@ main() {
   echo "Languages installed"
 
   # Install Package Managers
-  apt install -y maven gradle
+  apt install -y maven gradle python3-pip
   installCargo &
   installComposer &
   wait
