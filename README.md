@@ -15,6 +15,8 @@
 1. `docker ps`
 2. `docker compose up`
 
+> Note: Due to installation of multiple tools, building of the container may take a long time, however it is less time than learning all tools individually.
+
 **Launch the GUI**
 1. Clone the [GUI](https://github.com/SoftwareDesignLab/svip-ui) repo and follow the quickstart
 
