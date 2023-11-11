@@ -142,7 +142,7 @@ main() {
   echo "Languages installed"
 
   # Install Package Managers
-  apt install -y maven gradle python3-pip nuget
+  apt install -y maven gradle python3-pip nuget conan
   installCargo &
   installComposer &
   wait
