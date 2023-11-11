@@ -151,7 +151,7 @@ The `/sboms` directory (also in `/bound_dir` will now contain generated SBOMs fr
 
 
 ## Supported Tools
-> OSI uses 8 open source tools to support 17 different languages multiple times over. Please read the tool documentation 
+> OSI uses 17 open source tools to support 17 different languages multiple times over. Please read the tool documentation 
 > to see if it fits the need of your project.
 
 |          Tool           |                          Github                           | Supported Language(s)                                                                                                                                                        |
@@ -164,6 +164,15 @@ The `/sboms` directory (also in `/bound_dir` will now contain generated SBOMs fr
 |  **CycloneDX Python**   |       https://github.com/CycloneDX/cyclonedx-python       | `Python`                                                                                                                                                                     |
 |    **CycloneDX PHP**    |    https://github.com/CycloneDX/cyclonedx-php-composer    | `PHP`                                                                                                                                                                        |
 |        **JBOM**         |              https://github.com/eclipse/jbom              | `Java`                                                                                                                                                                       |
+|      **Covenant**       |        https://github.com/patriksvensson/covenant         | `.NET`                                                                                                                                                                       |
+|   **CycloneDX Bower**   |         https://github.com/hanstdam/cdx-bower-bom         | `Javascript`                                                                                                                                                                 |
+|    **CycloneDX Go**     |          https://github.com/ozonru/cyclonedx-go           | `Go`                                                                                                                                                                         |
+|   **CycloneDX Rust**    |     https://github.com/CycloneDX/cyclonedx-rust-cargo     | `Rust`                                                                                                                                                                       |
+|        **GoBom**        |            https://github.com/mattermost/gobom            | `Go`                                                                                                                                                                         |
+|     **SBOM4Files**      |       https://github.com/anthonyharrison/sbom4files       | `C`<br>`C++`<br>`Go`<br>`Java`<br>`Javascript`<br>`PHP`<br>`Python`                                                                                                          | 
+|     **SBOM4Python**     |      https://github.com/anthonyharrison/sbom4python       | `Python`                                                                                                                                                                     |
+|      **SBOM4Rust**      |       https://github.com/anthonyharrison/sbom4rust        | `Rust`                                                                                                                                                                       |
+|      **SBOM Tool**      |          https://github.com/microsoft/sbom-tool           | `.NET`                                                                                                                                                                       |                                                                                                                                                                        |
 
 ### Adding More Tools
 To add additional open source tools, there are 2 steps:
