@@ -103,7 +103,7 @@ function installWithDotNet(){
 
 function installWithCargo(){
   # CDX for Cargo
-  cargo install cargo-cyclonedx
+  cargo install -- cargo-cyclonedx
 }
 
 function installWithComposer(){
