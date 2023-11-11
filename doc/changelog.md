@@ -3,6 +3,15 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v8.2.0-alpha] - (11/11/2023)
+
+### Added
+- `validate.sh`: Validation script that runs before launching flask api server in OSI to confirm what languages, package managers, and tools are installed
+- `runner.sh`: Launch script that sets up flask and runs `validate.sh`
+
+### Changed
+- bug fixes for properly installing software in OSI
+
 ## [v8.1.0-alpha] - (11/10/2023)
 > Known Issues with the ToolMapper.py - some commands are improperly configured
 ### Added
