@@ -100,8 +100,8 @@ function installWithComposer(){
 # TOOLS : Manual Installation
 #
 function installSPDXSBOMGenerator() {
-  wget $SPDX_SBOM_GENERATOR
-  tar xzf spdx-sbom-generator-v0.0.15-linux-amd64.tar.gz -C /usr/local/bin
+  curl -L $SPDX_SBOM_GENERATOR -o /tmp/spdx-sbom-generator.tar.gz
+  tar -C /usr/local/bin -xzf /tmp/spdx-sbom-generator.tar.gz
 }
 
 function installJBOM() {
