@@ -1,5 +1,5 @@
-# SBOM Visualization and Integration Platform
-> The SBOM Visualization and Integration Platform (**SVIP**) is a unified platform to promote the 
+# SBOM-in-a-Box
+> The **SBOM-in-a-Box** is a unified platform to promote the 
 > production, consumption, and utilization of Software Bills of Materials.
 
 ### Latest Release: [[v8.0.5-alpha] - (10/17/2023)](doc/changelog.md)
@@ -20,10 +20,10 @@
 
 > If making changes to any source code, the Docker image(s) will need to be rebuilt. See 
 > [Building the Image](doc/README.md#building-the-image) for detailed instructions. See 
-> [SVIP API](doc/API.md#svip-api) for detailed API usage.
+> [SBOM-in-a-Box API](doc/API.md#svip-api) for detailed API usage.
 
 ## Features
-SVIP has a number of unique features to support:
+SBOM-in-a-Box has a number of unique features to support:
 
 - **Open Source Integrated SBOM Generation:** Makes use of open source SBOM Generator Tools to generate SBOMs
 - **SBOM Generation:** Custom SBOM generation via source file and package manager file analysis
@@ -32,7 +32,7 @@ SVIP has a number of unique features to support:
 - **SBOM Comparison:** Compare SBOMs to identify key differences between them
 - **SBOM Merging:** Merge SBOMs into a single unified document
 
-Currently, SVIP Supports the following SBOM Types
+Currently, SBOM-in-a-Box Supports the following SBOM Types
 
 |                        Schema                        | JSON |              Tag:Value               |
 |:----------------------------------------------------:|:----:|:------------------------------------:|
