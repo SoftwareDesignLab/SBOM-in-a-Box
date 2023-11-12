@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.svip.api.entities.QualityReportFile;
-import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.repository.QualityReportFileRepository;
 import org.svip.api.requests.UploadQRFileInput;
 import org.svip.api.requests.UploadSBOMFileInput;
@@ -48,24 +48,24 @@ public class QualityReportFileServiceTest {
     @Test
     @DisplayName("Generate cdx14 json quality report")
     void generate_CDX14_JSON_quality_report() throws Exception {
-        SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
-        QualityReport qualityReport = this.qualityReportFileService.generateQualityReport(sbom.toSBOMObject());
+        SBOMFile sbomFile = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+        QualityReport qualityReport = this.qualityReportFileService.generateQualityReport(sbomFile.toSBOMObject());
         assertNotNull(qualityReport);
     }
 
     @Test
     @DisplayName("Generate spdx23 json quality report")
     void generate_SPDX23_JSON_quality_report() throws Exception {
-        SBOM sbom = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
-        QualityReport qualityReport = this.qualityReportFileService.generateQualityReport(sbom.toSBOMObject());
+        SBOMFile sbomFile = buildMockSBOMFile(SPDX_JSON_SBOM_FILE);
+        QualityReport qualityReport = this.qualityReportFileService.generateQualityReport(sbomFile.toSBOMObject());
         assertNotNull(qualityReport);
     }
 
     @Test
     @DisplayName("Generate spdx23 tag value quality report")
     void generate_SPDX23_tag_value_quality_report() throws Exception {
-        SBOM sbom = buildMockSBOMFile(SPDX_TAG_VALUE_SBOM_FILE);
-        QualityReport qualityReport = this.qualityReportFileService.generateQualityReport(sbom.toSBOMObject());
+        SBOMFile sbomFile = buildMockSBOMFile(SPDX_TAG_VALUE_SBOM_FILE);
+        QualityReport qualityReport = this.qualityReportFileService.generateQualityReport(sbomFile.toSBOMObject());
         assertNotNull(qualityReport);
     }
 
@@ -74,11 +74,11 @@ public class QualityReportFileServiceTest {
     void upload_quality_report() throws Exception {
         when(qualityReportFileRepository.save(any())).thenReturn(new QualityReportFile());
 
-        SBOM sbom = buildMockSBOMFile(SPDX_TAG_VALUE_SBOM_FILE);
-        QualityReport qualityReport = this.qualityReportFileService.generateQualityReport(sbom.toSBOMObject());
+        SBOMFile sbomFile = buildMockSBOMFile(SPDX_TAG_VALUE_SBOM_FILE);
+        QualityReport qualityReport = this.qualityReportFileService.generateQualityReport(sbomFile.toSBOMObject());
 
         QualityReportFile qualityReportFile = this.qualityReportFileService.upload(
-                new UploadQRFileInput(qualityReport).toQualityReportFile(sbom));
+                new UploadQRFileInput(qualityReport).toQualityReportFile(sbomFile));
 
         assertNotNull(qualityReportFile);
     }
@@ -88,11 +88,11 @@ public class QualityReportFileServiceTest {
     void upload_quality_report_error() throws Exception {
         when(qualityReportFileRepository.save(any())).thenThrow(IllegalArgumentException.class);
 
-        SBOM sbom = buildMockSBOMFile(SPDX_TAG_VALUE_SBOM_FILE);
-        QualityReport qualityReport = this.qualityReportFileService.generateQualityReport(sbom.toSBOMObject());
+        SBOMFile sbomFile = buildMockSBOMFile(SPDX_TAG_VALUE_SBOM_FILE);
+        QualityReport qualityReport = this.qualityReportFileService.generateQualityReport(sbomFile.toSBOMObject());
 
         assertThrows(Exception.class, () ->
-                this.qualityReportFileService.upload(new UploadQRFileInput(qualityReport).toQualityReportFile(sbom)));
+                this.qualityReportFileService.upload(new UploadQRFileInput(qualityReport).toQualityReportFile(sbomFile)));
     }
 
     ///
@@ -106,7 +106,7 @@ public class QualityReportFileServiceTest {
      * @return Valid Mock SBOM file
      * @throws IOException failed to open file
      */
-    private SBOM buildMockSBOMFile(String filepath) throws IOException {
+    private SBOMFile buildMockSBOMFile(String filepath) throws IOException {
         // Get file contents
         String content = new String(Files.readAllBytes(Paths.get(filepath)));
         // Create SBOM

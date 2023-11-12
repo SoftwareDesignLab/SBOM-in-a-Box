@@ -11,7 +11,7 @@ Created: TEST TIMESTAMP
 CreatorComment: This SBOM was generated using the SVIP serializer tooling.
 DocumentComment: Test Document Comment
 
-### Package: COMPONENT 1
+##### Package: COMPONENT 1
 
 SPDXID: uid1
 PackageName: COMPONENT 1
@@ -42,7 +42,7 @@ ReleaseDate: releaseDate1
 BuiltDate: buildDate1
 ValidUntilDate: validUntilDate1
 
-### Package: COMPONENT 3
+##### Package: COMPONENT 3
 
 SPDXID: uid3
 PackageName: COMPONENT 3
@@ -74,10 +74,10 @@ BuiltDate: buildDate3
 ValidUntilDate: validUntilDate3
 
 
-### Unpackaged Files
+##### Unpackaged Files
 
-SPDXID: uid2
 FileName: fileName2
+SPDXID: uid2
 FileType: type2
 FileComment: comment2
 PackageChecksum: SHA256: hash2

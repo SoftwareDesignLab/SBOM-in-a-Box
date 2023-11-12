@@ -1,10 +1,8 @@
 package org.svip.api.repository;
 
 import org.springframework.data.repository.CrudRepository;
-import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.entities.diff.ComparisonFile;
-
-import java.util.List;
 
 /**
  * File: ComparisonFileRepository.java
@@ -18,9 +16,9 @@ public interface ComparisonFileRepository extends CrudRepository<ComparisonFile,
     /**
      * Select Conflict files for a target and other sbom
      *
-     * SQL: SELECT * FROM comparison WHERE target = targetSBOM AND other = otherSBOM;
+     * SQL: SELECT * FROM comparison WHERE target = targetSBOMFile AND other = otherSBOMFile;
      *
      * @return ComparisonFile for the target and other sbom
      */
-    ComparisonFile findByTargetSBOMAndOtherSBOM(SBOM targetSBOM, SBOM otherSBOM);
+    ComparisonFile findByTargetSBOMFileAndOtherSBOMFile(SBOMFile targetSBOMFile, SBOMFile otherSBOMFile);
 }

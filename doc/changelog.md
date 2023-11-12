@@ -3,28 +3,37 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v8.0.5-alpha] - (10/12/2023) 
-- Reworked Convert into several new features.
-### Added
-- New `manipulate` package to alter SVIPSBOM data:
-  - `ManipulateController` Class
-  - `ManipulateSVIP` Class
-  - `SchemaManipulationMap` Class
-- New `toSVIP` package to convert SBOMs to SVIPSBOMs:
-  - `CDX14` Class
-  - `SPDX23` Class
-  - `ToSVIP` Interface
-  - `ToSVIPController` Class
+## [v8.0.10-alpha] - (11/9/2023)
 
 ### Changed
-- New `toSchema` package to convert SVIPSBOMs into SBOMs:
-  - `ToCDX14` Class
-  - `ToSPDX23` Class
-  - `ToSchema` Interface
-  - `ToSchemaController` Class
-- `Conversion` Class controller has been reworked.
+- Fixed SPDX23TagValue Serializer to display `##### Relationships` over relationships
 
-## [v8.0.4-alpha] - (9/22/2023)
+## [v8.0.9-alpha] - (11/8/2023)
+
+### Changed
+- Fixed parsing issues with SPDX23TagValue Deserializer to use regex
+- Update correct number of "#" in the SPDX Tag Value Serializer
+- Correct order of keys in the SPDX Tag Value Serializer
+
+## [v8.0.8-alpha] - (10/27/2023)
+
+### Changed
+- SBOM components objects are now compared by name and version
+
+## [v8.0.7-alpha] - (10/20/2023)
+
+### Changed
+- Improved accuracy when determining the schema and format of an SBOM in `SerializerFactory.java`
+  - `resolveSchema()`
+  - `resolveFormat()`
+  
+## [v8.0.6-alpha] - (10/17/2023)
+
+### Changed
+- Changed the max packet size for MySQL to 256M
+
+## [v8.0.5-alpha] - (9/22/2023)
+
 ### Changed
 - Changed the port from 5000 to 50001 due to Airplay being on port 5000 for Macs
 

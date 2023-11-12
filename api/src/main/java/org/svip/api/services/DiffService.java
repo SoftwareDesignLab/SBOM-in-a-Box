@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.entities.diff.ComparisonFile;
 import org.svip.api.entities.diff.ConflictFile;
 import org.svip.api.repository.ComparisonFileRepository;
@@ -110,7 +110,7 @@ public class DiffService {
     public String generateDiffReportAsJSON(SBOMFileService sfs, long targetID, Long[] otherIDs) throws Exception {
 
         // Get target SBOM
-        SBOM targetSBOMFile = sfs.getSBOMFile(targetID);
+        SBOMFile targetSBOMFile = sfs.getSBOMFile(targetID);
         // todo throw error
         if(targetSBOMFile == null)
             return null;
@@ -127,13 +127,13 @@ public class DiffService {
             if (targetID == id)
                 continue;
 
-            org.svip.api.entities.SBOM otherSBOMFile = sfs.getSBOMFile(id);
+            SBOMFile otherSBOMFile = sfs.getSBOMFile(id);
             // skip if none failed
             if (otherSBOMFile == null)
                 continue;
 
             // Attempt to get comparison, generate and upload if one doesn't exist.
-            ComparisonFile cf = this.comparisonFileRepository.findByTargetSBOMAndOtherSBOM(targetSBOMFile, otherSBOMFile);
+            ComparisonFile cf = this.comparisonFileRepository.findByTargetSBOMFileAndOtherSBOMFile(targetSBOMFile, otherSBOMFile);
             if(cf == null){
                 Comparison comparison = new Comparison(targetSBOM, otherSBOMFile.toSBOMObject());
                 cf = upload(new UploadComparisonFileInput(comparison).toComparisonFile(targetSBOMFile, otherSBOMFile));

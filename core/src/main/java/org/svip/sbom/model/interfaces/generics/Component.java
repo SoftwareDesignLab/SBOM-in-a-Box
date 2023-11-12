@@ -57,5 +57,4 @@ public interface Component {
      * @return List of conflicts
      */
     List<Conflict> compare(Component other);
-
 }

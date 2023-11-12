@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.entities.VEXFile;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
@@ -58,12 +58,12 @@ public class VEXControllerTest {
         String apiKey = "your-api-key";
         String format = "json";
         String client = "osv";
-        SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+        SBOMFile sbomFile = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
         VEXResult vexResult = new VEXResult(new VEX(new VEX.Builder()), new HashMap<>());
         VEXFile uploadedVF = new VEXFile();
 
         // When
-        when(sbomFileService.getSBOMFile(id)).thenReturn(sbom);
+        when(sbomFileService.getSBOMFile(id)).thenReturn(sbomFile);
         when(vexFileService.generateVEX(any(), anyString(), anyString(), anyString())).thenReturn(vexResult);
         when(vexFileService.upload(any())).thenReturn(uploadedVF);
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -105,11 +105,11 @@ public class VEXControllerTest {
         String apiKey = "your-api-key";
         String format = "json";
         String client = "osv";
-        SBOM sbom = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
+        SBOMFile sbomFile = buildMockSBOMFile(CDX_JSON_SBOM_FILE);
         VEXResult vexResult = new VEXResult(new VEX(new VEX.Builder()), new HashMap<>());
 
         // When
-        when(sbomFileService.getSBOMFile(id)).thenReturn(sbom);
+        when(sbomFileService.getSBOMFile(id)).thenReturn(sbomFile);
         when(vexFileService.generateVEX(any(), anyString(), anyString(), anyString())).thenReturn(vexResult);
         when(vexFileService.upload(any())).thenThrow(Exception.class);
 
@@ -132,7 +132,7 @@ public class VEXControllerTest {
      * @return Valid Mock SBOM file
      * @throws IOException failed to open file
      */
-    private SBOM buildMockSBOMFile(String filepath) throws IOException {
+    private SBOMFile buildMockSBOMFile(String filepath) throws IOException {
         // Get file contents
         String content = new String(Files.readAllBytes(Paths.get(filepath)));
         // Create SBOM
