@@ -116,21 +116,32 @@ public class SBOMFileService {
         Random rand = new Random();
         String newName = ((deserialized.getName() == null) ? Math.abs(rand.nextInt()) : deserialized.getName()) + "."
                 + schema;
+
         UploadSBOMFileInput u = new UploadSBOMFileInput(newName, contents);
 
         // Save according to overwrite boolean
+        SBOMFile converted = u.toSBOMFile();
+
+        // Handling based on overwrite flag
         if (overwrite) {
+            // Retrieve and update the existing SBOM
             SBOMFile existingSBOM = getSBOMFile(id);
-            if (existingSBOM != null) {
-                sbomFileRepository.delete(existingSBOM);
-                // Set ID of converted SBOM to the ID of the deleted SBOM
-                converted.setId(id);
+            if (existingSBOM == null) {
+                throw new Exception("SBOM with id " + id + " not found for updating.");
             }
+            existingSBOM.setContent(contents)
+                    .setSchema(schema.toString())
+                    .setFileType(format.toString());
+            this.sbomFileRepository.save(existingSBOM);
+            return existingSBOM.getId(); // Return the same ID
         } else {
-            // Generate new ID for the converted SBOM
-            SBOMFile converted = u.toSBOMFile();
-            update(id, converted);
-            return id;
+            // Create a new SBOM file for the converted content
+            SBOMFile newSBOM = new SBOMFile();
+            newSBOM.setContent(contents)
+                    .setSchema(schema.toString())
+                    .setFileType(format.toString());
+            newSBOM = this.sbomFileRepository.save(newSBOM);
+            return newSBOM.getId(); // Return the new ID
         }
 
         this.sbomFileRepository.save(converted);
