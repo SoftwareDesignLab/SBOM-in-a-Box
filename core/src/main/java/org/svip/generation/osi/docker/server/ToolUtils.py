@@ -2,9 +2,11 @@ import glob
 import os
 from subprocess import DEVNULL, STDOUT, check_call, CalledProcessError
 
-from constants import Language, LANGUAGE_MAP, MANIFEST_MAP, SBOM_FORMAT, CONTAINER_BIND_SBOM
+from constants import Language
 import ToolMapper
 from OSTool import OSTool
+from constants.Language import LANGUAGE_MAP, MANIFEST_MAP
+from constants import CONTAINER_BIND_DIR, CONTAINER_BIND_CODE, CONTAINER_BIND_SBOM, SBOM_TEMP_NAME, SBOM_FORMAT
 
 """
 file: ToolUtils.py
