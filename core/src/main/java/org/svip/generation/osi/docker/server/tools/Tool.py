@@ -6,17 +6,17 @@ Collection of utilities to validate, run, and organize the output of Open Source
 @author Derek Garcia
 """
 import os
-import Format
-import Schema
+
+import yaml
+
+from constants import Schema, Format
 
 TOOL_CONFIGS = "../tool_configs"
 
 
 class Profile(object):
 
-    def __init__(self, profile_name: str, schema: Schema, spec_version: str, sbom_format: Format, args: dict,
-                 commands: list[str]):
-        self.profile_name = profile_name
+    def __init__(self, schema: Schema, spec_version: str, sbom_format: Format, args: dict, commands: list[str]):
         self.schema = schema
         self.spec_version = spec_version
         self.format = sbom_format
@@ -32,5 +32,25 @@ class Profile(object):
         for cmd in self.commands:
             os.system(cmd)
 
-    def __str__(self):
-        return f"{self.profile_name} | {self.schema} {self.spec_version} | {self.format}"
+
+class Tool(object):
+    def __int__(self, config_file: str):
+        self.profiles = []
+
+        try:
+            with open(config_file) as config:
+                data = yaml.safe_load(config)
+                self.name = data['tool']
+
+                # parse all profiles
+                for profile in data['profiles']:
+                    self.profiles.append( Profile(
+                        Schema.to_schema(profile['schema']),
+                        profile['spec_version'],
+                        Format.to_format(profile['format']),
+                        profile['args'],
+                        profile['commands']
+                    ))
+        except:
+            raise Exception(f"Error while parsing '{config_file}'")
+        
