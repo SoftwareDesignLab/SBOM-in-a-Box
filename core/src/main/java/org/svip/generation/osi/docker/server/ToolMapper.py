@@ -111,13 +111,6 @@ for l in Language:
     TOOL_MAPPING[l] = langList
 
 
-def get_tool_names() -> list[str]:
-    """
-    Gets a complete list of tool names.
-    """
-    return list(map(str, TOOL_LIST))
-
-
 def get_tool(name: str) -> Optional[OSTool]:
     """
     Gets an OSTool instance given a tool name. If no tool could be found, returns None.
