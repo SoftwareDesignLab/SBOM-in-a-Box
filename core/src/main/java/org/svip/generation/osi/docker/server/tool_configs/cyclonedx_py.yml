@@ -1,0 +1,14 @@
+tool: "cyclonedx-py"
+runtime_args:
+  - "output"
+  - "manifest"
+  - "code"
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.4"
+    format: "json"
+    language:
+      - "Python"
+    commands:
+      - "cd {code}"
+      - "cyclonedx-py --format xml -r -i {manifest} -o {output}/cdxpy-cdx14.json"

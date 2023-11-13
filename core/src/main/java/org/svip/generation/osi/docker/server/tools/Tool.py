@@ -16,31 +16,35 @@ TOOL_CONFIGS = "../tool_configs"
 
 class Profile(object):
 
-    def __init__(self, schema: Schema, spec_version: str, sbom_format: Format, args: dict, commands: list[str]):
+    def __init__(self, schema: Schema, spec_version: str, sbom_format: Format, commands: list[str]):
         self.schema = schema
         self.spec_version = spec_version
         self.format = sbom_format
+        self.commands = commands
 
-        # update commands with args
-        self.commands = []
-        for cmd in commands:
-            for arg in args.keys():
-                cmd = cmd.replace(f"{{{arg}}}", args.get(arg))
-            self.commands.append(cmd)
+    def execute(self, runtime_args: dict):
 
-    def execute(self):
+        runtime_cmd = []
+        # Pass 1: Update args
         for cmd in self.commands:
+            for arg in runtime_args.keys():
+                cmd = cmd.replace(f"{{{arg}}}", runtime_args.get(arg))
+            runtime_cmd.append(cmd)
+
+        # Pass 2: Execute
+        for cmd in runtime_cmd:
             os.system(cmd)
 
 
 class Tool(object):
-    def __int__(self, config_file: str):
+    def __init__(self, config_file: str):
         self.profiles = []
 
         try:
             with open(config_file) as config:
                 data = yaml.safe_load(config)
                 self.name = data['tool']
+                self.runtime_args = data['runtime_args']
 
                 # parse all profiles
                 for profile in data['profiles']:
@@ -48,15 +52,22 @@ class Tool(object):
                         Schema.to_schema(profile['schema']),
                         profile['spec_version'],
                         Format.to_format(profile['format']),
-                        profile['args'],
                         profile['commands']
                     ))
         except:
             raise Exception(f"Error while parsing '{config_file}'")
 
-    def execute(self):
+    def execute(self, runtime_args=None):
+        # pre-checks to make sure args are defined
+        if runtime_args is None:
+            runtime_args = {}
+        for arg in self.runtime_args:
+            if not bool(runtime_args.get(arg)):
+                raise Exception(f"{self.name} is missing runtime argument '{arg}': tool will not run")
+
+        # Ok, run profiles
         for profile in self.profiles:
-            profile.execute()
+            profile.execute(runtime_args)
 
     def __str__(self):
         return f"{self.name}"
