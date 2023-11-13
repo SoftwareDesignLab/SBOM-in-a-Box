@@ -53,8 +53,6 @@ function installComposer(){
 # TOOLS : Installed with Package Manager
 #
 function installWithPIP(){
-  # Install flask for web server
-  pip install flask
 
   # Install jake, cyclonedx-conan, cyclonedx-python, scanoss, sbom4python, sbom4files
   pip install jake cyclonedx-conan cyclonedx-bom scanoss sbom4python sbom4rust sbom4files
@@ -118,6 +116,13 @@ function installSBOMTool() {
 }
 
 #
+# Flask Server setup
+#
+function setupFlask() {
+  pip install -r /server/requirements.txt
+}
+
+#
 # Setup OSI environment and install all tools
 #
 main() {
@@ -165,6 +170,9 @@ main() {
   installSBOMTool
 
   echo "Manual tools installed"
+
+  # Install Flask API requirements
+  setupFlask
 
   apt clean
   rm -rf /tmp/*
