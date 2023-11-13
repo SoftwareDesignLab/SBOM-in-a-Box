@@ -6,6 +6,7 @@ Container.
 
 @author Ian Dunn
 """
+import os
 
 from flask import Flask, request
 import json
@@ -13,7 +14,7 @@ import json
 import ToolUtils
 from OSTool import OSTool
 from constants import CONTAINER_BIND_CODE, CONTAINER_BIND_SBOM, Language
-from ToolMapper import get_tool, get_tool_names
+from ToolMapper import get_tool
 
 # Create Flask app
 app = Flask(__name__)
@@ -27,7 +28,8 @@ def get_tools():
     Returns: A list of names of valid open-source tools.
     """
 
-    return get_tool_names()
+    # Get tools from env
+    return os.environ['OSI_TOOL'].split(":")
 
 
 @app.route('/generate', methods=['POST'])
