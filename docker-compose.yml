@@ -11,7 +11,6 @@ services:
   # OSI container
   osi:
     container_name: svip-osi
-    image: ubuntu:latest
     build: core/src/main/java/org/svip/generation/osi/docker
     restart: unless-stopped
     ports:
