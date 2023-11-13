@@ -121,13 +121,12 @@ public class SBOMFileService {
 
         // Save according to overwrite boolean
         if (overwrite) {
-            // Update existing SBOM
             SBOMFile existingSBOM = getSBOMFile(id);
             if (existingSBOM != null) {
                 existingSBOM.setName(newName)
                         .setContent(contents)
-                        .setSchema(u.getSchema())
-                        .setFileType(u.getFileType());
+                        .setSchema(converted.getSchema())
+                        .setFileType(converted.getFileType());
                 this.sbomFileRepository.save(existingSBOM);
             } else {
                 // Handle the case where SBOM is not found
@@ -136,9 +135,8 @@ public class SBOMFileService {
             return id;
         } else {
             // Create new SBOM
-            SBOMFile newSBOM = u.toSBOMFile();
-            this.sbomFileRepository.save(newSBOM);
-            return newSBOM.getId();
+            this.sbomFileRepository.save(converted);
+            return converted.getId();
         }
 
     }
