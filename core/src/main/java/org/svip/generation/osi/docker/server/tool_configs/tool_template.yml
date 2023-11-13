@@ -1,0 +1,13 @@
+profile_name: "toolName"
+tool: "tool-name"
+language:
+  - "python"
+schema: "cyclonedx"
+spec_version: "1.4"
+format: "json"
+args:
+  arg1: "foo"
+  arg2: "bar"
+commands:
+  - "echo {arg1}"
+  - "echo {arg2}"
