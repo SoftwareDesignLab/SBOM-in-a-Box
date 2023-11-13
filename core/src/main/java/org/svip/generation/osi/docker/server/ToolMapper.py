@@ -1,8 +1,11 @@
 import sys
 from typing import Optional
 
+from pip._internal.utils.misc import enum
+
 from constants import *
 from OSTool import OSTool
+from constants import Language
 
 """
 file: ToolMapper.py
@@ -17,6 +20,13 @@ A map of all supported Open Source SBOM Tools and their corresponding languages,
 """
 Map of all current open-source tools.
 """
+
+
+class BOMFormat(enum):
+    CYCLONE_DX = 1,
+    SPDX = 2
+
+
 TOOL_LIST = [
     OSTool("Jake", BOMFormat.CYCLONE_DX, [Language.PYTHON], [
         "cd {code}",
