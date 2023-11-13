@@ -1,0 +1,27 @@
+# Name of the tool
+tool: "covenant"
+# Optional runtime args that must be defined before usage
+runtime_args:
+  - "output"
+  - "manifest"
+# > 1 ways to use the tool to generate sboms
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.4"
+    format: "json"
+    language:
+      - "C++"
+      - "C#"
+      - "Dart"
+      - "Erlang"
+      - "Go"
+      - "Haskell"
+      - "Java"
+      - "Javascript"
+      - "PHP"
+      - "Python"
+      - "Ruby"
+      - "Rust"
+      - "Swift"
+    commands:
+      - "dotnet covenant install --global {code} -o {output}"

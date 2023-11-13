@@ -1,0 +1,21 @@
+tool: "cyclonedx-conan"
+runtime_args:
+  - "code"
+  - "output"
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.4"
+    format: "json"
+    language:
+      - "Java"
+      - "PHP"
+      - "Go"
+      - "Ruby"
+      - "Rust"
+      - "Dart"
+      - "Haskell"
+      - "C"
+      - "C++"
+    commands:
+      - "cd {code}"
+      - "cdxgen -r -o {output}/cdxgen-cdx14.json"

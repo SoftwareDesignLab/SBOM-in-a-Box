@@ -1,0 +1,13 @@
+tool: "cyclonedx-conan"
+runtime_args:
+  - "output"
+  - "manifest"
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.4"
+    format: "json"
+    language:
+      - "C"
+      - "C++"
+    commands:
+      - "cyclonedx-conan {manifest} > {output}/cdxconan-cdx14.json"
