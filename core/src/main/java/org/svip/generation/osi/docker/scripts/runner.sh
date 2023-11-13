@@ -12,7 +12,7 @@ main(){
   . "$NVM_DIR"/nvm.sh
 
   # Check before running
-  validate.sh
+  . validate.sh
 
   # Launch server
   echo "Launching Server"
