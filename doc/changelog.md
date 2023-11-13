@@ -3,6 +3,19 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v8.0.11-alpha] - (11/12/2023)
+
+### Changed / Added
+- Conversion now split up into three different components
+  - manipulate
+    - manipulates data fields within an SBOM object; typically to modify their values from one standard to another.
+  - toSchema
+    - converts an SVIP Internal SBOM to an Internal SBOM of a different standard.
+  - toSVIP
+    - converts an Internal SBOM of any standard into an SVIP Internal SBOM.
+  - Conversion
+    - Conversion controller reworked to handle different conversion/manipulation scenarios.
+
 ## [v8.0.10-alpha] - (11/9/2023)
 
 ### Changed

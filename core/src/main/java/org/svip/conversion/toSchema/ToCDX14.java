@@ -1,4 +1,4 @@
-package org.svip.conversion;
+package org.svip.conversion.toSchema;
 
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14PackageBuilder;
@@ -9,16 +9,23 @@ import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
- * Name: CovertCDX14.java
+ * Name: ToCDX14.java
  * Description: Builds a CycloneDX 1.4 SBOM using
  * the information from an SVIPSBOM.
  *
  * @author Tyler Drake
  */
-public class ConvertCDX14 implements Convert {
+public class ToCDX14 implements ToSchema {
 
+    /**
+     * Converts an SVIPSBOM into a CDX14SBOM Object.
+     *
+     * @param sbom The SVIPSBOM with the data that needs to be mapped.
+     * @return A CDX14SBOM Object with the relevant data from the SVIPSBOM.
+     */
     @Override
     public CDX14SBOM convert(SVIPSBOM sbom) {
 
@@ -50,10 +57,10 @@ public class ConvertCDX14 implements Convert {
         builder.setDocumentComment(sbom.getDocumentComment());
 
         // Root Component
-        builder.setRootComponent(convertComponent(sbom.getRootComponent()));
+        Optional.ofNullable(sbom.getRootComponent()).map(b -> builder.setRootComponent(convertComponent(b))).orElse(null);
 
         // Stream components from SVIP SBOM, convert them, then put into CDX SBOM
-        sbom.getComponents().stream().forEach(x -> builder.addComponent(convertComponent(x)));
+        sbom.getComponents().stream().filter(x -> x != null).forEach(x -> builder.addComponent(convertComponent(x)));
 
         // Stream Relationship data into new SBOM
         sbom.getRelationships().keySet().forEach(
