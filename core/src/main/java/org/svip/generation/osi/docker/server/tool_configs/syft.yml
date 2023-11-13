@@ -20,8 +20,7 @@ profiles:
       - "Rust"
       - "Swift"
     commands:
-      - "syft . -o cyclonedx-json={output_dir}/syft-cdx14.json"
-      - "syft . -o cyclonedx-json@1.4=syft-cdx14.json"
+      - "syft . -o cyclonedx-json@1.4={output_dir}/syft-cdx14.json"
   - schema: "spdx"
     spec_version: "2.3"
     format: "spdx"
