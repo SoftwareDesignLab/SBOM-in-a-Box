@@ -51,8 +51,8 @@ public class CPETest extends MetricTest {
         Set<Result> results = new HashSet<>();
         // cpe is not a null value and does exist, tests can run
         if (value != null) {
-            results.add(isValidCPE(field, value));
-            results.addAll(isAccurateCPE(field, value));
+            results.add(validCPEResult(field, value));
+            results.addAll(accurateCPEResults(field, value));
         }
         // cpe is a null value and does not exist, tests cannot be run
         // return missing Result
@@ -71,7 +71,7 @@ public class CPETest extends MetricTest {
      * @param value the cpe value to be tested
      * @return a result of if the cpe value is valid or not
      */
-    private Result isValidCPE(String field, String value) {
+    private Result validCPEResult(String field, String value) {
         var rf = new ResultFactory("Valid CPE", ATTRIBUTE.COMPLETENESS, ATTRIBUTE.UNIQUENESS, ATTRIBUTE.MINIMUM_ELEMENTS);
         try {
             new CPE(value);    // throws error if given cpe string is invalid
@@ -88,7 +88,7 @@ public class CPETest extends MetricTest {
      * @param value the cpe value to be tested
      * @return a list of Results of if the cpe matches that component's stored data
      */
-    private List<Result> isAccurateCPE(String field, String value) {
+    private List<Result> accurateCPEResults(String field, String value) {
         var rf = new ResultFactory("Accurate CPE", ATTRIBUTE.COMPLETENESS, ATTRIBUTE.UNIQUENESS, ATTRIBUTE.MINIMUM_ELEMENTS);
         try {
             // try to create a cpe object and then call match method

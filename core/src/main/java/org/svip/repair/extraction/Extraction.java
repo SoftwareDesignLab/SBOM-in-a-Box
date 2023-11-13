@@ -1,10 +1,10 @@
 package org.svip.repair.extraction;
 
+import org.svip.sbom.model.uids.Hash.Algorithm;
 import org.svip.sbom.model.uids.PURL;
 
 import java.util.HashMap;
-
-
+import java.util.Map;
 
 /**
  * <b>File</b>: Extraction.java<br>
@@ -15,7 +15,9 @@ import java.util.HashMap;
 public abstract class Extraction {
 
     protected PURL purl;
-    protected HashMap<String, String> results;
+    protected String copyright;
+    protected String license;
+    protected Map<Algorithm, String> hashes;
 
     /**
      * Creates a new object with the purl to use for extraction
@@ -23,7 +25,9 @@ public abstract class Extraction {
      */
     public Extraction(PURL purl) {
         this.purl = purl;
-        this.results = new HashMap<String, String>();
+        this.copyright = "";
+        this.license = "";
+        this.hashes = new HashMap<>();
     }
 
     /**
@@ -33,24 +37,11 @@ public abstract class Extraction {
     public abstract void extract();
 
     /**
-     * Checks to see if the results from extracted text contains the key
-     * and if so return the value
-     * @param key what to check (ie: copyright)
-     * @return value or null
-     */
-    private String getValue(String key) {
-        if(!results.containsKey(key))
-            return null;
-
-        return results.get(key);
-    }
-
-    /**
      * Gets the copyright from extracted text if exists
      * @return copyright
      */
     public String getCopyright() {
-        return getValue("copyright");
+        return copyright;
     }
 
     /**
@@ -58,6 +49,14 @@ public abstract class Extraction {
      * @return license
      */
     public String getLicense() {
-        return getValue("license");
+        return license;
+    }
+
+    /**
+     * Gets the hashes from maven repository if exists
+     * @return hashes {algorithm : hash}
+     */
+    public Map<Algorithm, String> getHashes() {
+        return hashes;
     }
 }

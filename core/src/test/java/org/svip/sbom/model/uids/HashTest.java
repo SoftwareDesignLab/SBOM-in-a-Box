@@ -1,12 +1,13 @@
 package org.svip.sbom.model.uids;
 
 import org.junit.jupiter.api.Test;
+import org.svip.sbom.builder.objects.SVIPComponentBuilder;
+import org.svip.sbom.factory.objects.SVIPSBOMComponentFactory;
+import org.svip.sbom.model.interfaces.generics.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -23,7 +24,8 @@ import static org.svip.sbom.model.uids.Hash.Algorithm;
  */
 class HashTest {
 
-    private static final String HASH_VALUE = "5eb63bbbe01eeed093cb22bb8f5acdc3";
+    private static final String HASH_VALUE = "743a64546ababa69c8af34e057722cd2";
+    private final String PURL = "pkg:maven/org.junit.platform/junit-platform-engine@1.9.2?type=jar";
 
     @Test
     public void construction_test() {
@@ -47,7 +49,7 @@ class HashTest {
     }
 
     @Test
-    public void is_spdx_exclusive_test() {
+    public void isSPDXExclusive_test() {
         assertFalse(Hash.isSPDXExclusive(Algorithm.UNKNOWN));
         assertTrue(Hash.isSPDXExclusive(Algorithm.SHA224));
         assertTrue(Hash.isSPDXExclusive(Algorithm.BLAKE2b512));
@@ -58,44 +60,60 @@ class HashTest {
     }
 
     @Test
-    public void validate_hash_test() {
-        assertFalse(Hash.validateHash(Algorithm.UNKNOWN, HASH_VALUE));
-        assertFalse(Hash.validateHash(Algorithm.ADLER32, HASH_VALUE));
-        assertFalse(Hash.validateHash(Algorithm.MD6, HASH_VALUE + HASH_VALUE + HASH_VALUE));
+    public void isValid_test() {
+        Hash invalidHash = new Hash(Algorithm.SHA1.name(), HASH_VALUE);
+        Hash validHash = new Hash(Algorithm.MD5.name(), HASH_VALUE);
 
-        assertTrue(Hash.validateHash(Algorithm.MD5, HASH_VALUE));
-        assertTrue(Hash.validateHash(Algorithm.MD6, HASH_VALUE));
-        assertTrue(Hash.validateHash(Algorithm.MD6, HASH_VALUE + HASH_VALUE));
-        assertTrue(Arrays.stream(Algorithm.values()).anyMatch(algorithm -> Hash.validateHash(algorithm, HASH_VALUE)));
+        Component component = buildComponent(PURL);
+        assertTrue(validHash.isValid(component));
+        assertFalse(invalidHash.isValid(component));
+
+        assertTrue(Arrays.stream(Algorithm.values())
+                .anyMatch(algorithm -> new Hash(algorithm.name(), HASH_VALUE).isValid(null)));
+
+        invalidHash = new Hash(Algorithm.UNKNOWN.name(), HASH_VALUE);
+        assertFalse(invalidHash.isValid(component));
     }
 
     @Test
-    public void valid_algorithms_test() {
-        assertEquals(Collections.emptyList(), Hash.validAlgorithms("invalid", "SPDX"));
-        assertEquals(List.of(Algorithm.MD5), Hash.validAlgorithms(HASH_VALUE, "CycloneDX"));
-        assertEquals(List.of(Algorithm.MD2, Algorithm.MD4, Algorithm.MD5, Algorithm.MD6), Hash.validAlgorithms(HASH_VALUE, "SPDX"));
-
-        Map<Algorithm, String> hashes = generateHashes();
-        assertEquals(Collections.emptyList(), Hash.validAlgorithms(hashes.get(Algorithm.ADLER32), "CycloneDX"));
-        assertEquals(Collections.emptyList(), Hash.validAlgorithms(hashes.get(Algorithm.SHA224), "CycloneDX"));
-        for (String hash : hashes.values()) {
-            assertNotNull(Hash.validAlgorithms(hash, "SPDX"));
+    public void getValidAlgorithms_test() {
+        for (Hash hash : mockHashes()) {
+            assertNotNull(hash.getValidAlgorithms(true));
+            assertNotNull(hash.getValidAlgorithms(false));
         }
-
     }
 
-    private Map<Algorithm, String> generateHashes() {
-        Map<Algorithm, String> hashes = new HashMap<>();
+    @Test
+    public void getValidValue_test() {
+        Component component = buildComponent(PURL);
+        Hash hash = new Hash(Algorithm.MD5.name(), HASH_VALUE);
+        assertEquals(HASH_VALUE, hash.getValidValue(component));
 
-        hashes.put(Algorithm.ADLER32, HASH_VALUE.substring(0, 8));
-        hashes.put(Algorithm.MD2, HASH_VALUE);
-        hashes.put(Algorithm.SHA1, (HASH_VALUE + HASH_VALUE).substring(0, 40));
-        hashes.put(Algorithm.SHA224, (HASH_VALUE + HASH_VALUE).substring(0, 56));
-        hashes.put(Algorithm.SHA256, HASH_VALUE + HASH_VALUE);
-        hashes.put(Algorithm.SHA384, HASH_VALUE + HASH_VALUE + HASH_VALUE);
-        hashes.put(Algorithm.SHA512, HASH_VALUE + HASH_VALUE + HASH_VALUE + HASH_VALUE);
+        component = buildComponent("pkg:maven:invalidPURL");
+        assertEquals("", hash.getValidValue(component));
+        assertEquals("", hash.getValidValue(null));
+    }
+
+    private Component buildComponent(String purl) {
+        SVIPSBOMComponentFactory packageBuilderFactory = new SVIPSBOMComponentFactory();
+        SVIPComponentBuilder packageBuilder = packageBuilderFactory.createBuilder();
+        packageBuilder.addHash(Algorithm.MD5.name(), HASH_VALUE);
+        packageBuilder.addPURL(purl);
+        return packageBuilder.buildAndFlush();
+    }
+
+    private List<Hash> mockHashes() {
+        List<Hash> hashes = new ArrayList<>();
+
+        hashes.add(new Hash(Algorithm.UNKNOWN, ""));
+        hashes.add(new Hash(Algorithm.ADLER32, HASH_VALUE.substring(0, 8)));
+        hashes.add(new Hash(Algorithm.MD2, HASH_VALUE));
+        hashes.add(new Hash(Algorithm.SHA1, (HASH_VALUE + HASH_VALUE).substring(0, 40)));
+        hashes.add(new Hash(Algorithm.SHA224, (HASH_VALUE + HASH_VALUE).substring(0, 56)));
+        hashes.add(new Hash(Algorithm.SHA256, HASH_VALUE + HASH_VALUE));
+        hashes.add(new Hash(Algorithm.SHA384, HASH_VALUE + HASH_VALUE + HASH_VALUE));
+        hashes.add(new Hash(Algorithm.SHA512, HASH_VALUE + HASH_VALUE + HASH_VALUE + HASH_VALUE));
 
         return hashes;
     }
-
 }

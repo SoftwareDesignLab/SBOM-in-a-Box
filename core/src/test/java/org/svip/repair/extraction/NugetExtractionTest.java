@@ -1,12 +1,10 @@
 package org.svip.repair.extraction;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.uids.PURL;
 
-import java.util.HashMap;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Tests for the NugetExtraction class
@@ -15,14 +13,14 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  */
 public class NugetExtractionTest {
 
-    private NugetExtraction ext;
-    private final String PURL_STRING = "pkg:nuget/System.Text.Json@8.0.0-rc.2.23479.6?packaging=jar";
-    private final String MICROSOFT_COPYRIGHT = "© Microsoft Corporation. All rights reserved.";
-    private final PURL PURL;
-    private final String MICROSOFT_LICENSE = "MIT";
+    private static NugetExtraction ext;
+    private static PURL PURL;
+    private static final String PURL_STRING = "pkg:nuget/System.Text.Json@8.0.0-rc.2.23479.6?packaging=jar";
+    private static final String MICROSOFT_COPYRIGHT = "© Microsoft Corporation. All rights reserved.";
+    private static final String MICROSOFT_LICENSE = "MIT";
 
-    public NugetExtractionTest() throws Exception {
-
+    @BeforeAll
+    static void setup() throws Exception {
         PURL = new PURL(PURL_STRING);
         ext = new NugetExtraction(PURL);
         ext.extract();
@@ -40,8 +38,9 @@ public class NugetExtractionTest {
         assertEquals(MICROSOFT_LICENSE, license);
     }
 
-    @Test public void getInvalidPURL() {
+    @Test
+    public void getInvalidPURL() {
         NugetExtraction ne = new NugetExtraction(null);
-        assertNull(ne.getCopyright());
+        assertEquals("", ne.getCopyright());
     }
 }

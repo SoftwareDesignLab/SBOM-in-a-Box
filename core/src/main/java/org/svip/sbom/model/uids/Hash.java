@@ -1,11 +1,19 @@
 package org.svip.sbom.model.uids;
 
 import jregex.Pattern;
+import org.svip.repair.extraction.Extraction;
+import org.svip.repair.extraction.MavenExtraction;
+import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.interfaces.generics.SBOMPackage;
+import org.svip.utils.Debug;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import static org.svip.sbom.model.uids.Hash.Algorithm.*;
 
@@ -13,6 +21,7 @@ import static org.svip.sbom.model.uids.Hash.Algorithm.*;
  * Hash Object to hold Hash values
  *
  * @author Derek Garcia
+ * @author Jordan Wong
  */
 public class Hash {
 
@@ -39,14 +48,15 @@ public class Hash {
     }
 
     // SPDX only Hashes
-    public enum SPDXAlgorithm {
+    public static final Set<Algorithm> SPDXAlgorithms = EnumSet.of(
         SHA224,
         BLAKE2b512,
         MD2,
         MD4,
         MD6,
         ADLER32
-    }
+    );
+
 
     private final Algorithm algorithm;
     private final String value;
@@ -97,120 +107,92 @@ public class Hash {
     /**
      * Check if algorithm is exclusive to SPDX
      *
-     * @param a Algorithm to check
+     * @param algorithm Algorithm to check
      * @return true if exclusive, false otherwise
      */
-    public static boolean isSPDXExclusive(Algorithm a) {
-        return a == SHA224 ||
-                a == BLAKE2b512 ||
-                a == MD2 ||
-                a == MD4 ||
-                a == MD6 ||
-                a == ADLER32;
+    public static boolean isSPDXExclusive(Algorithm algorithm) {
+        return SPDXAlgorithms.contains(algorithm);
     }
 
     /**
      * Validates a hash function to make sure the length and content are correct
      *
-     * @param a    Hash algorithm
-     * @param hash Hash string
+     * @param component SBOMFile component
      * @return True if hash passes, false otherwise
      */
-    public static boolean validateHash(Algorithm a, String hash) {
-        String hashRegex;
-        // Test against supported hashes
-        switch (a) {
-            case ADLER32:
-                hashRegex = "^[a-fA-F0-9]{8}$";
-                break;
-            case SHA1:
-                hashRegex = "^[a-fA-F0-9]{40}$";
-                break;
-            case SHA224:
-                hashRegex = "^[a-fA-F0-9]{56}$";
-                break;
-            case SHA256:
-            case SHA3256:
-            case BLAKE2b256:
-            case BLAKE3:
-                hashRegex = "^[a-fA-F0-9]{64}$";
-                break;
-            case SHA384:
-            case SHA3384:
-            case BLAKE2b384:
-                hashRegex = "^[a-fA-F0-9]{96}$";
-                break;
-            case SHA512:
-            case SHA3512:
-            case BLAKE2b512:
-                hashRegex = "^[a-fA-F0-9]{128}$";
-                break;
-            case MD2:
-            case MD4:
-            case MD5:
-                hashRegex = "^[a-fA-F0-9]{32}$";
-                break;
-            // MD6 can be 128, 256, or 512 bits
-            // todo better way to distinguish?
-            case MD6:
-                Pattern p = new Pattern("^[a-fA-F0-9]{32}$", Pattern.MULTILINE);
-                if (p.matches(hash)) return true;
-                p = new Pattern("^[a-fA-F0-9]{64}$", Pattern.MULTILINE);
-                if (p.matches(hash)) return true;
-                p = new Pattern("^[a-fA-F0-9]{128}$", Pattern.MULTILINE);
-                return p.matches(hash);
-            default:
-                return false;
-        }
+    public boolean isValid(Component component) {
+        if (MavenExtraction.isExtractable(algorithm, component)) {
+            // Cast component to SBOMPackage
+            SBOMPackage sbomPackage = (SBOMPackage) component;
 
-        // Test regex
-        Pattern p = new Pattern(hashRegex, Pattern.MULTILINE);
-        return p.matches(hash);
+            // Validate MD5 and SHA1 hashes against Maven Repository
+            String componentHash = sbomPackage.getHashes().getOrDefault(algorithm.name(), "");
+            return componentHash.equals(getValidValue(component));
+        } else {
+            // If component is not from Maven Repository, then test against supported hashes using regex
+            Pattern p = new Pattern(
+                    switch (algorithm) {
+                        case ADLER32 -> "^[a-fA-F0-9]{8}$";
+                        case SHA1 -> "^[a-fA-F0-9]{40}$";
+                        case SHA224 -> "^[a-fA-F0-9]{56}$";
+                        case SHA256, SHA3256, BLAKE2b256, BLAKE3 -> "^[a-fA-F0-9]{64}$";
+                        case SHA384, SHA3384, BLAKE2b384 -> "^[a-fA-F0-9]{96}$";
+                        case SHA512, SHA3512, BLAKE2b512 -> "^[a-fA-F0-9]{128}$";
+                        case MD2, MD4, MD5 -> "^[a-fA-F0-9]{32}$";
+                        case MD6 -> "^([a-fA-F0-9]{32}|[a-fA-F0-9]{64}|[a-fA-F0-9]{128})$";
+                        default -> "(?!)"; // Regex will always fail
+                    }, Pattern.MULTILINE);
+            return p.matches(value);
+        }
     }
 
     /**
-     * Get a list of matching algorithms given a hash value.
-     * @param hash   Hash string
-     * @param sbomFormat the format of the SBOM (i.e., CycloneDX, SPDX)
+     * Get a list of possible matching algorithms based on the length of the hash value.
+     * @param isSPDX true if getting valid algorithms for SPDX file
      * @return list of algorithms
      */
-    public static List<Algorithm> validAlgorithms(String hash, String sbomFormat) {
-        List<Algorithm> algorithms = new ArrayList<>();
+    public List<Algorithm> getValidAlgorithms(boolean isSPDX) {
+        List<Algorithm> algorithms = new LinkedList<Algorithm>(switch(value.length()) {
+            case 8 -> Arrays.asList(ADLER32);
+            case 32 -> Arrays.asList(MD2, MD4, MD5, MD6);
+            case 40 -> Arrays.asList(SHA1);
+            case 56 -> Arrays.asList(SHA224);
+            case 64 -> Arrays.asList(SHA256, SHA3256, BLAKE2b256, BLAKE3, MD6);
+            case 96 -> Arrays.asList(SHA384, SHA3384, BLAKE2b512);
+            case 128 -> Arrays.asList(SHA512, SHA3512, BLAKE2b512, MD6);
+            default -> Collections.emptyList();
+        });
 
-        switch(hash.length()) {
-            case 8:
-                algorithms.add(ADLER32);
-                break;
-            case 32:
-                algorithms.addAll(List.of(MD2, MD4, MD5, MD6));
-                break;
-            case 40:
-                algorithms.add(SHA1);
-                break;
-            case 56:
-                algorithms.add(SHA224);
-                break;
-            case 64:
-                algorithms.addAll(List.of(SHA256, SHA3256, BLAKE2b256, BLAKE3, MD6));
-                break;
-            case 96:
-                algorithms.addAll(List.of(SHA384, SHA3384, BLAKE2b512));
-                break;
-            case 128:
-                algorithms.addAll(List.of(SHA512, SHA3512, BLAKE2b512, MD6));
-                break;
-            default:
-                return Collections.emptyList();
-        }
-
-        if (sbomFormat.equals("CycloneDX")) {
+        if (!isSPDX) {
             algorithms.removeIf(Hash::isSPDXExclusive);
         }
 
-        if (!algorithms.isEmpty() && validateHash(algorithms.get(0), hash)) {
-            return algorithms;
+        return algorithms;
+    }
+
+    public String getValidValue(Component component) {
+        if (!MavenExtraction.isExtractable(algorithm, component)) {
+            return "";
         }
-        return Collections.emptyList();
+
+        // Cast component to SBOMPackage
+        SBOMPackage sbomPackage = (SBOMPackage) component;
+
+        // Create PURL object
+        PURL purl;
+        try {
+            String purlString = sbomPackage.getPURLs().stream().findFirst().get();
+            purl = new PURL(purlString);
+        } catch (Exception e) {
+            Debug.log(Debug.LOG_TYPE.WARN, e.getMessage());
+            return "";
+        }
+
+        // Perform extraction of MD5 and SHA1 hashes from Maven Repository
+        Extraction extraction = new MavenExtraction(purl);
+        extraction.extract();
+
+        return extraction.getHashes().get(algorithm);
     }
 
     ///

@@ -30,7 +30,7 @@ import java.util.Map;
 public class DiffService {
 
     // Utility to hold JSON Formatted Diff Report
-    @JsonPropertyOrder({"target", "diffreport"})
+    @JsonPropertyOrder({"target", "diffeport"})
     private record DiffReport(Long target, Map<Long, ComparisonJSON> diffReport){
     }
 
