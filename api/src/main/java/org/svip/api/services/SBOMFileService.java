@@ -116,13 +116,19 @@ public class SBOMFileService {
         Random rand = new Random();
         String newName = ((deserialized.getName() == null) ? Math.abs(rand.nextInt()) : deserialized.getName()) + "."
                 + schema;
-
         UploadSBOMFileInput u = new UploadSBOMFileInput(newName, contents);
 
         // Save according to overwrite boolean
-        SBOMFile converted = u.toSBOMFile();
-
         if (overwrite) {
+            SBOMFile existingSBOM = getSBOMFile(id);
+            if (existingSBOM != null) {
+                sbomFileRepository.delete(existingSBOM);
+                // Set ID of converted SBOM to the ID of the deleted SBOM
+                converted.setId(id);
+            }
+        } else {
+            // Generate new ID for the converted SBOM
+            SBOMFile converted = u.toSBOMFile();
             update(id, converted);
             return id;
         }
