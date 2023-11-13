@@ -9,7 +9,7 @@ import os
 
 import yaml
 
-from constants import Schema, Format, Language
+from constant import Schema, Format, Language
 
 
 class Profile(object):

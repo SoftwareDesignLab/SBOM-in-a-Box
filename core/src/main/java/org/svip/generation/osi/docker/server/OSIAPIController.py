@@ -13,8 +13,8 @@ import json
 
 import ToolUtils
 from OSTool import OSTool
-from constants import CONTAINER_BIND_CODE, CONTAINER_BIND_SBOM, Language
 from ToolMapper import get_tool
+from constants import CONTAINER_BIND_CODE, CONTAINER_BIND_SBOM, Language
 
 # Create Flask app
 app = Flask(__name__)
