@@ -44,7 +44,7 @@ class Tool(object):
 
                 # parse all profiles
                 for profile in data['profiles']:
-                    self.profiles.append( Profile(
+                    self.profiles.append(Profile(
                         Schema.to_schema(profile['schema']),
                         profile['spec_version'],
                         Format.to_format(profile['format']),
@@ -53,4 +53,10 @@ class Tool(object):
                     ))
         except:
             raise Exception(f"Error while parsing '{config_file}'")
-        
+
+    def execute(self):
+        for profile in self.profiles:
+            profile.execute()
+
+    def __str__(self):
+        return f"{self.name}"
