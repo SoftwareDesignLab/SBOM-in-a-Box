@@ -1,0 +1,34 @@
+tool: "sbom4files"
+runtime_args:
+  - "output_dir"
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.5"
+    format: "json"
+    language:
+      - "C"
+      - "C++"
+      - "Go"
+      - "Java"
+      - "Javascript"
+      - "PHP"
+      - "Python"
+      - "Rust"
+      - "Perl"
+    commands:
+      - "sbom4files -d . -p osi-sbom -r --sbom cyclonedx -o {output}/sbom4files-cdx15.json"
+  - schema: "spdx"
+    spec_version: "2.3"
+    format: "spdx"
+    language:
+      - "C"
+      - "C++"
+      - "Go"
+      - "Java"
+      - "Javascript"
+      - "PHP"
+      - "Python"
+      - "Rust"
+      - "Perl"
+    commands:
+      - "sbom4files -d . -p osi-sbom -r --sbom spdx --output-file={output_dir}/sbom4files-spdx23.spdx"

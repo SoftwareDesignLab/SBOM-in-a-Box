@@ -1,0 +1,18 @@
+tool: "sbom4rust"
+runtime_args:
+  - "output_dir"
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.5"
+    format: "json"
+    language:
+      - "Rust"
+    commands:
+      - "sbom4rust --sbom cyclonedx -a osi-sbom --output-file={output_dir}/sbom4rust-cdx15.json"
+  - schema: "spdx"
+    spec_version: "2.3"
+    format: "spdx"
+    language:
+      - "Rust"
+    commands:
+      - "sbom4python --sbom spdx -a osi-sbom --output-file={output_dir}/sbom4rust-spdx23.spdx"

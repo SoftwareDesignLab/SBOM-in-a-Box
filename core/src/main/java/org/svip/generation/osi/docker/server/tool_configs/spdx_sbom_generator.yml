@@ -1,11 +1,10 @@
 tool: "cyclonedx-py"
 runtime_args:
-  - "output"
-  - "code"
+  - "output_dir"
 profiles:
   - schema: "spdx"
     spec_version: "2.2"
-    format: "json"
+    format: "spdx"
     language:
       - "Go"
       - "Rust"
@@ -16,5 +15,4 @@ profiles:
       - "Ruby"
       - "Swift"
     commands:
-      - "cd {code}"
-      - "spdx-sbom-generator -p . -o {output}/spdxgen-spdx22.spdx"
+      - "spdx-sbom-generator -o {output_dir}"

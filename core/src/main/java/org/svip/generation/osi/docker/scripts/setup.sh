@@ -41,7 +41,7 @@ function installRust() {
 # PACKAGE MANAGERS
 #
 function installComposer(){
-  apt install -y php-cli unzip php-xml
+  apt install -y php-cli unzip php-xml php-curl
   curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
   HASH=`curl -sS https://composer.github.io/installer.sig`
   php -r "if (hash_file('SHA384', '/tmp/composer-setup.php') === '$HASH') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"

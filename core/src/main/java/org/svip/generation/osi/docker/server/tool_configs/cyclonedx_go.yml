@@ -1,0 +1,11 @@
+tool: "cyclonedx_go"
+runtime_args:
+  - "output_dir"
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.0"
+    format: "xml"
+    language:
+      - "Go"
+    commands:
+      - "cyclonedx-go -o {output_dir}/cdxgo-cdx10.xml"

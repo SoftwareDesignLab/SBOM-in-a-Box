@@ -1,0 +1,11 @@
+tool: "retire.js"
+runtime_args:
+  - "output_dir"
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.4"
+    format: "json"
+    language:
+      - "Javascript"
+    commands:
+      - "retire --outputformat cyclonedxJSON > {output_dir}/retirejs-cdx14.json"
