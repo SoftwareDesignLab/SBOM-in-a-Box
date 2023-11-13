@@ -1,0 +1,12 @@
+tool: "cyclonedx_bower"
+runtime_args:
+  - "output_dir"
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.0"
+    format: "xml"
+    language:
+      - "Javascript"
+    commands:
+      - "bower --allow-root install"
+      - "cdx-bower-bom -o {output_dir}/cdxbower-cdx10.xml"

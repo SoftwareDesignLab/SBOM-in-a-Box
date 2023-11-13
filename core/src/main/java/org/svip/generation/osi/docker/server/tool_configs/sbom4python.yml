@@ -1,0 +1,18 @@
+tool: "sbom4python"
+runtime_args:
+  - "output_dir"
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.5"
+    format: "json"
+    language:
+      - "Python"
+    commands:
+      - "sbom4python --sbom cyclonedx --output-file={output_dir}/sbom4python-cdx15.json"
+  - schema: "spdx"
+    spec_version: "2.3"
+    format: "spdx"
+    language:
+      - "Python"
+    commands:
+      - "sbom4python --sbom spdx --output-file={output_dir}/sbom4python-spdx23.spdx"

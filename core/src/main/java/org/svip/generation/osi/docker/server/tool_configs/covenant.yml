@@ -2,12 +2,34 @@
 tool: "covenant"
 # Optional runtime args that must be defined before usage
 runtime_args:
-  - "output"
+  - "output_"
   - "manifest"
 # > 1 ways to use the tool to generate sboms
 profiles:
   - schema: "cyclonedx"
-    spec_version: "1.4"
+    spec_version: "1.0"
+    format: "xml"
+    language:
+      - "C++"
+      - "C#"
+      - "Dart"
+      - "Erlang"
+      - "Go"
+      - "Haskell"
+      - "Java"
+      - "Javascript"
+      - "PHP"
+      - "Python"
+      - "Ruby"
+      - "Rust"
+      - "Swift"
+    commands:
+      - "dotnet build"
+      - "dotnet covenant generate . -o /tmp/covenant.out"
+      - "dotnet covenant convert cyclondedx /tmp/covenant.out -o {output_dir}/covenant-cdx10.xml"
+      - "rm /tmp/covenant.out"
+  - schema: "spdx"
+    spec_version: "2.3"
     format: "json"
     language:
       - "C++"
@@ -24,4 +46,7 @@ profiles:
       - "Rust"
       - "Swift"
     commands:
-      - "dotnet covenant install --global {code} -o {output}"
+      - "dotnet build"
+      - "dotnet covenant generate . -o /tmp/covenant.out"
+      - "dotnet covenant convert spdx /tmp/covenant.out -o {output_dir}/covenant-spdx23.json"
+      - "rm /tmp/covenant.out"

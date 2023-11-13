@@ -2,8 +2,7 @@
 tool: "jake"
 # Optional runtime args that must be defined before usage
 runtime_args:
-  - "output"
-  - "manifest"
+  - "output_dir"
 # > 1 ways to use the tool to generate sboms
 profiles:
   - schema: "cyclonedx"
@@ -12,4 +11,5 @@ profiles:
     language:
       - "python"
     commands:
-      - "jake sbom -t PIP -f {manifest} --output-format json -o {output}/jake-cdx14.json"
+      - "jake sbom -t PIP --output-format json -o {output_dir}/jake-pip-cdx14.json"
+      - "jake sbom -t POETRY --output-format json -o {output_dir}/jake-poetry-cdx14.json"

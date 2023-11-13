@@ -1,0 +1,12 @@
+tool: "cyclonedx-php"
+runtime_args:
+  - "output_dir"
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.4"
+    format: "json"
+    language:
+      - "php"
+    commands:
+      - "composer update --no-install"
+      - "composer CycloneDX:make-sbom --output-format=JSON --output-file={output_dir}/cdxphp-14.json"

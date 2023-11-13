@@ -1,0 +1,11 @@
+tool: "cyclonedx-rust"
+runtime_args:
+  - "output"
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.4"
+    format: "json"
+    language:
+      - "Rust"
+    commands:
+      - "cargo cyclonedx -f json -a -o {output}/cdxrust-cdx14.json"

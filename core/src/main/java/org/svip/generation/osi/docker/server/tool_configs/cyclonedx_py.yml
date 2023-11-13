@@ -1,8 +1,6 @@
 tool: "cyclonedx-py"
 runtime_args:
-  - "output"
-  - "manifest"
-  - "code"
+  - "output_dir"
 profiles:
   - schema: "cyclonedx"
     spec_version: "1.4"
@@ -10,5 +8,5 @@ profiles:
     language:
       - "Python"
     commands:
-      - "cd {code}"
-      - "cyclonedx-py --format xml -r -i {manifest} -o {output}/cdxpy-cdx14.json"
+      - "cyclonedx-py --format json -r -o {output_dir}/cdxpy-req-cdx14.json"
+      - "cyclonedx-py --format json -p -o {output_dir}/cdxpy-poetry-cdx14.json"
