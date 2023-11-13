@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:core/src/main/java/org/svip/conversion/toSchema/ToSchema.java
 package org.svip.conversion.toSchema;
-========
-package org.svip.manipulation;
->>>>>>>> 982bc6daa (Conversion package is now known as the Manipulation package):core/src/main/java/org/svip/manipulation/Convert.java
 
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;

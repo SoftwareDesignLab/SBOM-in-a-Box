@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:core/src/main/java/org/svip/conversion/toSchema/ToSPDX23.java
 package org.svip.conversion.toSchema;
-========
-package org.svip.manipulation;
->>>>>>>> 982bc6daa (Conversion package is now known as the Manipulation package):core/src/main/java/org/svip/manipulation/ConvertSPDX23.java
 
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23PackageBuilder;
