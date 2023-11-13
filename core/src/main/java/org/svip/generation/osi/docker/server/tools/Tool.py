@@ -9,17 +9,17 @@ import os
 
 import yaml
 
-from constants import Schema, Format
-
-TOOL_CONFIGS = "../tool_configs"
+from constants import Schema, Format, Language
 
 
 class Profile(object):
 
-    def __init__(self, schema: Schema, spec_version: str, sbom_format: Format, commands: list[str]):
+    def __init__(self, schema: Schema, spec_version: str, sbom_format: Format, languages: list[Language],
+                 commands: list[str]):
         self.schema = schema
         self.spec_version = spec_version
         self.format = sbom_format
+        self.languages = languages
         self.commands = commands
 
     def execute(self, runtime_args: dict):
@@ -39,6 +39,7 @@ class Profile(object):
 class Tool(object):
     def __init__(self, config_file: str):
         self.profiles = []
+        self.languages = []
 
         try:
             with open(config_file) as config:
@@ -48,9 +49,17 @@ class Tool(object):
 
                 # parse all profiles
                 for profile in data['profiles']:
+                    lang = []
+                    for lang_str in profile['language']:
+                        lang_enum = Language.to_language(lang_str)
+                        lang.append(lang_enum)
+                        if lang_enum not in self.languages:
+                            self.languages.append(lang_enum)
+
                     self.profiles.append(Profile(
                         Schema.to_schema(profile['schema']),
                         profile['spec_version'],
+                        lang,
                         Format.to_format(profile['format']),
                         profile['commands']
                     ))
