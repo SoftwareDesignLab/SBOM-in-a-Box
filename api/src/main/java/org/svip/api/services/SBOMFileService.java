@@ -120,32 +120,26 @@ public class SBOMFileService {
         UploadSBOMFileInput u = new UploadSBOMFileInput(newName, contents);
 
         // Save according to overwrite boolean
-        SBOMFile converted = u.toSBOMFile();
-
-        // Handling based on overwrite flag
         if (overwrite) {
-            // Retrieve and update the existing SBOM
+            // Update existing SBOM
             SBOMFile existingSBOM = getSBOMFile(id);
-            if (existingSBOM == null) {
-                throw new Exception("SBOM with id " + id + " not found for updating.");
+            if (existingSBOM != null) {
+                existingSBOM.setName(newName)
+                        .setContent(contents)
+                        .setSchema(u.getSchema())
+                        .setFileType(u.getFileType());
+                this.sbomFileRepository.save(existingSBOM);
+            } else {
+                // Handle the case where SBOM is not found
+                throw new Exception("SBOM with ID " + id + " not found for updating.");
             }
-            existingSBOM.setContent(contents)
-                    .setSchema(schema.toString())
-                    .setFileType(format.toString());
-            this.sbomFileRepository.save(existingSBOM);
-            return existingSBOM.getId(); // Return the same ID
+            return id;
         } else {
-            // Create a new SBOM file for the converted content
-            SBOMFile newSBOM = new SBOMFile();
-            newSBOM.setContent(contents)
-                    .setSchema(schema.toString())
-                    .setFileType(format.toString());
-            newSBOM = this.sbomFileRepository.save(newSBOM);
-            return newSBOM.getId(); // Return the new ID
+            // Create new SBOM
+            SBOMFile newSBOM = u.toSBOMFile();
+            this.sbomFileRepository.save(newSBOM);
+            return newSBOM.getId();
         }
-
-        this.sbomFileRepository.save(converted);
-        return converted.getId();
 
     }
 
