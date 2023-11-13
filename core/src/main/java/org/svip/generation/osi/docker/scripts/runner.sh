@@ -6,10 +6,6 @@
 # @author Derek Garcia
 
 main(){
-  # Flask setup
-  apt update
-  apt install -y python3 python3-pip
-  pip install -r /server/requirements.txt
 
   # Activate env
   . "$HOME"/.cargo/env
