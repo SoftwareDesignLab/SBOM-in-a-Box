@@ -202,9 +202,7 @@ public class RepairSPDX23CDX14 implements Repair {
 
                     case COMPONENT_CPE -> {
                         cpes.clear(); //Assuming if it is a fix that the previous were invalid
-                        LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) fix.fixed();
-                        CPE cpe = new CPE(map.get("vendor"), map.get("product"), map.get("version"));
-                        cpes.add(cpe.toString());
+                        cpes.add(fix.getNew().toString());
                     }
 
                     case COMPONENT_BOM_REF -> {
