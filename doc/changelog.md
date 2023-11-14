@@ -3,6 +3,33 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [v9.0.0-alpha] - (11/13/2023)
+- Reworked QualityReport and implemented repair
+
+### Added
+- `FixType.java` Enum - Type of fix for mapping purposes 
+- `RepairSPDX24CDX14.java` Class - Implements fixes and generates a new repaired SBOM for SPDX23 and CDX14
+
+### Changed
+- `RepairController.java` Class - Modified repairStatement and repairSBOM methods to new mapping
+- `QualityReport.java` Class - Components are mapped by hashcode instead of name
+- `SVIPPipeline.java` Class - Removed UID param for process
+- `QAPipeline.java` Class - removed UID param for process
+- `CDX14Pipeline.java` Class - Removed UID param for process, added copyright test
+- `SPDX23Pipeline.java` Class - Removed UID param for process, added copyright test
+- `Result.java` Class - Added fixes array for when result fails and solutions are available
+- `CPEFixes.java` Class - Finds component by hashcode instead of name, also corrected the CPE build order and implemented FixType
+- `EmptyOrNullFixes.java` Class - Fixed null cases, implemented FixType
+- `Fix.java` Class - Added helper functions and FixType param
+- `Fixes.java` Interface - Renamed repairSubType to componentName and added componentHashCode
+- `PURLFixes.java` Class - Corrected fix implementation
+- `Repair.java` Class - Removed uid param and changed mapping of components
+- `FixTest.java` Class - Added FixType param
+
+### Removed
+- `RepairCDX14.java` Class - Consolidated to RepairSPDX24CDX14
+- `RepairSPDX23.java` Class - Consolidated to RepairSPDX24CDX14
+
 # [v8.2.0-alpha] - (10/17/2023)
 
 ### Added
