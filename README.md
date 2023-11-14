@@ -60,6 +60,7 @@ Currently, SVIP Supports the following SBOM Types
 **Developer Team**
 - [Brian Baumann](mailto:bmb5957@rit.edu)
 - [Asa Horn](mailto:aoh9470@rit.edu)
+- [Justin Jantzi](mailto:jwj7297@rit.edu)
 - [Henry Keena](mailto:htk4363@rit.edu)
 - [Hubert Liang](mailto:hubertl@hawaii.edu)
 - [Ping Liu](mailto:htk4363@rit.edu)
