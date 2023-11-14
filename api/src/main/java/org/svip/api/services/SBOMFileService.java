@@ -80,7 +80,7 @@ public class SBOMFileService {
      */
     public Long convert(Long id, SerializerFactory.Schema schema, SerializerFactory.Format format, Boolean overwrite)
             throws DeserializerException, JsonProcessingException, SerializerException, SBOMBuilderException,
-            ConversionException, Exception {
+            ConversionException {
 
         // deserialize into SBOM object
         org.svip.sbom.model.interfaces.generics.SBOM deserialized;
@@ -117,19 +117,15 @@ public class SBOMFileService {
         String newName = ((deserialized.getName() == null) ? Math.abs(rand.nextInt()) : deserialized.getName()) + "."
                 + schema;
 
-        SBOMFile existingSBOM = getSBOMFile(id);
-        if (existingSBOM == null) {
-            throw new Exception("SBOM with ID " + id + " not found for updating.");
-        }
-
         UploadSBOMFileInput u = new UploadSBOMFileInput(newName, contents);
+
+        // Save according to overwrite boolean
         SBOMFile converted = u.toSBOMFile();
+
         if (overwrite) {
-            // Update the existing SBOM's properties with the converted data
-            this.sbomFileRepository.save(existingSBOM);
+            update(id, converted);
             return id;
         } else {
-            // Create a new SBOM entry
             this.sbomFileRepository.save(converted);
             return converted.getId();
         }
