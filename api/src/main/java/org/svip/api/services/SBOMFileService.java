@@ -119,17 +119,13 @@ public class SBOMFileService {
 
         UploadSBOMFileInput u = new UploadSBOMFileInput(newName, contents);
 
-        // Save according to overwrite boolean
+        SBOMFile converted = u.toSBOMFile();
+
         if (overwrite) {
             SBOMFile existingSBOM = getSBOMFile(id);
             if (existingSBOM != null) {
-                existingSBOM.setName(newName.getName())
-                        .setContent(contents.getContent())
-                        .setSchema(converted.getSchema())
-                        .setFileType(converted.getFileType());
                 this.sbomFileRepository.save(existingSBOM);
             } else {
-                // Handle the case where SBOM is not found
                 throw new Exception("SBOM with ID " + id + " not found for updating.");
             }
             return id;
