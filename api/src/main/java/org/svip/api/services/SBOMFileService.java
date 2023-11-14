@@ -123,8 +123,8 @@ public class SBOMFileService {
         if (overwrite) {
             SBOMFile existingSBOM = getSBOMFile(id);
             if (existingSBOM != null) {
-                existingSBOM.setName(newName)
-                        .setContent(contents)
+                existingSBOM.setName(newName.getName())
+                        .setContent(contents.getContent())
                         .setSchema(converted.getSchema())
                         .setFileType(converted.getFileType());
                 this.sbomFileRepository.save(existingSBOM);
