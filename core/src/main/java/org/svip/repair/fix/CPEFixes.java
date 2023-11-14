@@ -131,7 +131,7 @@ public class CPEFixes implements Fixes {
             }
 
             if(newCPE != null && !cpeObject.toString().equals(newCPE.toString()) && !oldCPEObject.toString().equals(newCPE.toString()))
-                return List.of(new Fix<>(FixType.COMPONENT_CPE, oldCPEObject, newCPE));
+                return List.of(new Fix<>(FixType.COMPONENT_CPE, oldCPEObject.toString(), newCPE.toString()));
 
         } catch (Exception e) {
             // If all goes wrong, return null
