@@ -122,14 +122,14 @@ public class SBOMFileService {
             throw new Exception("SBOM with ID " + id + " not found for updating.");
         }
 
+        UploadSBOMFileInput u = new UploadSBOMFileInput(newName, contents);
+        SBOMFile converted = u.toSBOMFile();
         if (overwrite) {
             // Update the existing SBOM's properties with the converted data
             this.sbomFileRepository.save(existingSBOM);
             return id;
         } else {
             // Create a new SBOM entry
-            UploadSBOMFileInput u = new UploadSBOMFileInput(newName, contents);
-            SBOMFile converted = u.toSBOMFile();
             this.sbomFileRepository.save(converted);
             return converted.getId();
         }
