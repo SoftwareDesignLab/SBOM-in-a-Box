@@ -80,7 +80,7 @@ public class SBOMFileService {
      */
     public Long convert(Long id, SerializerFactory.Schema schema, SerializerFactory.Format format, Boolean overwrite)
             throws DeserializerException, JsonProcessingException, SerializerException, SBOMBuilderException,
-            ConversionException {
+            ConversionException, Exception {
 
         // deserialize into SBOM object
         org.svip.sbom.model.interfaces.generics.SBOM deserialized;
