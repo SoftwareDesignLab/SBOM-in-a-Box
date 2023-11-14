@@ -10,6 +10,7 @@ import org.svip.repair.fix.*;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.utils.Debug;
 
 import java.util.List;
 import java.util.Map;
@@ -68,7 +69,14 @@ public class RepairStatementSPDX23CDX14 implements RepairStatement {
                     // If the fixes is not null
                     if (fixes != null)
                         // Set the fix list
-                        toFix.addFixes(fixes.fix(toFix, sbom, hashCodeMapping.get(component), component));
+                        try {
+                            toFix.addFixes(fixes.fix(toFix, sbom, hashCodeMapping.get(component), component));
+                        }
+
+                        catch(Exception ex) {
+                            Debug.log(Debug.LOG_TYPE.ERROR, "Error while generating fix for: " + toFix.getMessage());
+                        }
+
                 }
             }
 
