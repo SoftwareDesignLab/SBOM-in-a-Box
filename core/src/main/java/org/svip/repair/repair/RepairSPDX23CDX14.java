@@ -3,8 +3,6 @@ package org.svip.repair.repair;
 import org.svip.repair.fix.Fix;
 import org.svip.sbom.builder.interfaces.generics.ComponentBuilder;
 import org.svip.sbom.builder.interfaces.generics.SBOMBuilder;
-import org.svip.sbom.builder.interfaces.schemas.SPDX23.SPDX23ComponentBuilder;
-import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14PackageBuilder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23FileBuilder;
@@ -18,8 +16,6 @@ import org.svip.sbom.factory.objects.SPDX23.SPDX23PackageBuilderFactory;
 import org.svip.sbom.factory.objects.SPDX23.SPDX23SBOMBuilderFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
-import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Package;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
@@ -34,10 +30,7 @@ import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbom.model.uids.CPE;
 import org.svip.sbom.model.uids.Hash;
 
-import java.awt.*;
 import java.util.*;
-import java.util.List;
-import java.util.stream.Stream;
 
 public class RepairSPDX23CDX14 implements Repair {
 

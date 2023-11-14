@@ -104,7 +104,7 @@ public class PURLFixes implements Fixes {
         try {
 
             // Then, try to return the fixes
-            return Collections.singletonList(new Fix<>(FixType.COMPONENT_PURL, oldPurls, newPurl));
+            return Collections.singletonList(new Fix<>(FixType.COMPONENT_PURL, oldPurls, newPurl.toString()));
 
         } catch (Exception e) {
 
