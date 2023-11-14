@@ -117,20 +117,19 @@ public class SBOMFileService {
         String newName = ((deserialized.getName() == null) ? Math.abs(rand.nextInt()) : deserialized.getName()) + "."
                 + schema;
 
-        UploadSBOMFileInput u = new UploadSBOMFileInput(newName, contents);
-
-        SBOMFile converted = u.toSBOMFile();
+        SBOMFile existingSBOM = getSBOMFile(id);
+        if (existingSBOM == null) {
+            throw new Exception("SBOM with ID " + id + " not found for updating.");
+        }
 
         if (overwrite) {
-            SBOMFile existingSBOM = getSBOMFile(id);
-            if (existingSBOM != null) {
-                this.sbomFileRepository.save(existingSBOM);
-            } else {
-                throw new Exception("SBOM with ID " + id + " not found for updating.");
-            }
+            // Update the existing SBOM's properties with the converted data
+            this.sbomFileRepository.save(existingSBOM);
             return id;
         } else {
-            // Create new SBOM
+            // Create a new SBOM entry
+            UploadSBOMFileInput u = new UploadSBOMFileInput(newName, contents);
+            SBOMFile converted = u.toSBOMFile();
             this.sbomFileRepository.save(converted);
             return converted.getId();
         }
