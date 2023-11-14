@@ -52,8 +52,8 @@ public class PURLTest extends MetricTest {
         Set<Result> results = new HashSet<>();
         // check that purl string value is not null
         if (value != null) {
-            results.add(isValidPURL(field, value));
-            results.addAll(isAccuratePURL(field, value));
+            results.add(validPURLResult(field, value));
+            results.addAll(accuratePURLResults(field, value));
             // results.addAll(existsInRepo(field, value));
         }
         // purl string is null so no tests can be run
@@ -72,7 +72,7 @@ public class PURLTest extends MetricTest {
      * @param value the purl string
      * @return a result if the purl is valid or not
      */
-    private Result isValidPURL(String field, String value) {
+    private Result validPURLResult(String field, String value) {
         var rf = new ResultFactory("Valid PURL", ATTRIBUTE.COMPLETENESS, ATTRIBUTE.UNIQUENESS, ATTRIBUTE.MINIMUM_ELEMENTS);
         try {
             // create new purl object
@@ -95,7 +95,7 @@ public class PURLTest extends MetricTest {
      * @return the result of if the purl's fields matches the
      * component's fields
      */
-    private List<Result> isAccuratePURL(String field, String value) {
+    private List<Result> accuratePURLResults(String field, String value) {
         var rf = new ResultFactory("Accurate PURL", ATTRIBUTE.COMPLETENESS, ATTRIBUTE.UNIQUENESS, ATTRIBUTE.MINIMUM_ELEMENTS);
         try {
             PURL purl = new PURL(value);

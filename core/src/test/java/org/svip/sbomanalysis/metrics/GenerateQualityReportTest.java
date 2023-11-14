@@ -35,7 +35,7 @@ public class GenerateQualityReportTest {
         CDX14JSONDeserializer cdx14Deserializer = new CDX14JSONDeserializer();
         CDX14SBOM sbom = cdx14Deserializer.readFromString(Files.readString(Path.of(CDX_14_JSON_SBOM)));
 
-        QualityReport qualityReport = cdx14Pipeline.process(sbom.getUID(), sbom);
+        QualityReport qualityReport = cdx14Pipeline.process(sbom);
 
         ObjectMapper mapper = new ObjectMapper();
         // pretty print
@@ -50,7 +50,7 @@ public class GenerateQualityReportTest {
         SPDX23JSONDeserializer spdx23JSONDeserializer = new SPDX23JSONDeserializer();
         SPDX23SBOM sbom = spdx23JSONDeserializer.readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
 
-        QualityReport qualityReport = spdx23Pipeline.process(sbom.getUID(), sbom);
+        QualityReport qualityReport = spdx23Pipeline.process(sbom);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValueAsString(qualityReport);

@@ -3,50 +3,84 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v8.0.11-alpha] - (11/12/2023)
+# [v9.0.0-alpha] - (11/13/2023)
+- Reworked QualityReport and implemented repair
 
-### Changed / Added
-- Conversion now split up into three different components
-  - manipulate
-    - manipulates data fields within an SBOM object; typically to modify their values from one standard to another.
-  - toSchema
-    - converts an SVIP Internal SBOM to an Internal SBOM of a different standard.
-  - toSVIP
-    - converts an Internal SBOM of any standard into an SVIP Internal SBOM.
-  - Conversion
-    - Conversion controller reworked to handle different conversion/manipulation scenarios.
-
-## [v8.0.10-alpha] - (11/9/2023)
+### Added
+- `FixType.java` Enum - Type of fix for mapping purposes 
+- `RepairSPDX24CDX14.java` Class - Implements fixes and generates a new repaired SBOM for SPDX23 and CDX14
 
 ### Changed
-- Fixed SPDX23TagValue Serializer to display `##### Relationships` over relationships
+- `RepairController.java` Class - Modified repairStatement and repairSBOM methods to new mapping
+- `QualityReport.java` Class - Components are mapped by hashcode instead of name
+- `SVIPPipeline.java` Class - Removed UID param for process
+- `QAPipeline.java` Class - removed UID param for process
+- `CDX14Pipeline.java` Class - Removed UID param for process, added copyright test
+- `SPDX23Pipeline.java` Class - Removed UID param for process, added copyright test
+- `Result.java` Class - Added fixes array for when result fails and solutions are available
+- `CPEFixes.java` Class - Finds component by hashcode instead of name, also corrected the CPE build order and implemented FixType
+- `EmptyOrNullFixes.java` Class - Fixed null cases, implemented FixType
+- `Fix.java` Class - Added helper functions and FixType param
+- `Fixes.java` Interface - Renamed repairSubType to componentName and added componentHashCode
+- `PURLFixes.java` Class - Corrected fix implementation
+- `Repair.java` Class - Removed uid param and changed mapping of components
+- `FixTest.java` Class - Added FixType param
 
-## [v8.0.9-alpha] - (11/8/2023)
+### Removed
+- `RepairCDX14.java` Class - Consolidated to RepairSPDX24CDX14
+- `RepairSPDX23.java` Class - Consolidated to RepairSPDX24CDX14
+
+# [v8.2.0-alpha] - (10/17/2023)
+
+### Added
+- `Extraction.java` Class - Abstract class to obtain information from package managers
+- `NugetExtraction.java` Class - Obtains information from the Nuget package manager
+- `RepairNullOrEmptyTest.java` Class - Unit tests for null or empty fixes in repair statements
+- `NugetExtractionTest.java` Class - Unit tests for extracting information from nuget
+- `null-copyright-cdx.json` File - CycloneDX SBOM for testing a component with null copyright
+- `null-copyright.spdx` File - SPDX SBOM for testing a component with null copyright
 
 ### Changed
-- Fixed parsing issues with SPDX23TagValue Deserializer to use regex
-- Update correct number of "#" in the SPDX Tag Value Serializer
-- Correct order of keys in the SPDX Tag Value Serializer
+- `CDX14Pipeline.java` Class - Implemented copyright fixes to process
+- `SPDX23Pipeline.java` Class - Implemented copyright fixes to TestSPDX23Package 
 
-## [v8.0.8-alpha] - (10/27/2023)
-
-### Changed
-- SBOM components objects are now compared by name and version
-
-## [v8.0.7-alpha] - (10/20/2023)
-
-### Changed
-- Improved accuracy when determining the schema and format of an SBOM in `SerializerFactory.java`
-  - `resolveSchema()`
-  - `resolveFormat()`
-  
-## [v8.0.6-alpha] - (10/17/2023)
+## [v8.1.5-alpha] - (10/12/2023)
+- Reworked Convert into several new features.
+### Added
+- New `manipulate` package to alter SVIPSBOM data:
+  - `ManipulateController` Class
+  - `ManipulateSVIP` Class
+  - `SchemaManipulationMap` Class
+- New `toSVIP` package to convert SBOMs to SVIPSBOMs:
+  - `CDX14` Class
+  - `SPDX23` Class
+  - `ToSVIP` Interface
+  - `ToSVIPController` Class
 
 ### Changed
-- Changed the max packet size for MySQL to 256M
+- New `toSchema` package to convert SVIPSBOMs into SBOMs:
+  - `ToCDX14` Class
+  - `ToSPDX23` Class
+  - `ToSchema` Interface
+  - `ToSchemaController` Class
+- `Conversion` Class controller has been reworked.
+
+## [v8.1.1-alpha] - (10/06/2023)
+
+### Added
+- `LicenseFixes.java` Class - Suggests a list of fixes for deprecated licenses
+- `License.java` Class - Stores the id, name, and url of a license
+
+## [v8.1.0-alpha] - (9/22/2023)
+
+### Added
+- `HashFixes.java` Class - Suggests a list of fixes for invalid hashes and hashing algorithms
+- `Hash.validAlgorithms()` Method - Returns a list of valid hashing algorithms that match a hash
+- Missing unit tests
+  - `FixTest.java`
+  - `HashTest.java`
 
 ## [v8.0.5-alpha] - (9/22/2023)
-
 ### Changed
 - Changed the port from 5000 to 50001 due to Airplay being on port 5000 for Macs
 

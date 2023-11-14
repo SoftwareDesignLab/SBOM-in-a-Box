@@ -2,6 +2,8 @@ package org.svip.repair.fix;
 
 import org.svip.generation.parsers.utils.QueryWorker;
 import org.svip.metrics.resultfactory.Result;
+import org.svip.repair.extraction.Extraction;
+import org.svip.repair.extraction.NugetExtraction;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
@@ -19,10 +21,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Fixes class to generate suggested repairs for NULL attributes of a component
@@ -31,34 +31,33 @@ public class EmptyOrNullFixes implements Fixes {
 
     // threads to query potential purls from Googl
     protected final ArrayList<QueryWorker> queryWorkers;
-    private final List<Fix<?>> emptyString = Collections.singletonList(new Fix<>("null", ""));
 
     public EmptyOrNullFixes(ArrayList<QueryWorker> queryWorkers) {
         this.queryWorkers = queryWorkers;
     }
 
     @Override
-    public List<Fix<?>> fix(Result result, SBOM sbom, String repairSubType) throws Exception {
+    public List<Fix<?>> fix(Result result, SBOM sbom, String componentName, Integer componentHashCode) throws Exception {
 
         // Depending on the type of fix, call the correct fix method
         if (result.getDetails().contains("Bom Version was a null value"))
             return bomVersionFix(sbom);
         else if (result.getDetails().contains("Bom-Ref")) // i.e., UID
-            return bomRefFix(repairSubType);
+            return bomRefFix(componentName);
         else if (result.getDetails().contains("Creation Data"))
-            return creationDataFix();
+            return creationDataFix(result.getDetails());
         else if (result.getDetails().contains("SPDXID"))
             return SPDXIDFix(result);
         else if (result.getDetails().contains("Comment"))
-            return commentNullFix();
+            return commentNullFix(result.getMessage());
         else if (result.getDetails().contains("Attribution Text"))
-            return attributionTextNullFix();
+            return attributionTextNullFix(result.getMessage());
         else if (result.getDetails().contains("File Notice"))
-            return fileNoticeNullFix();
+            return fileNoticeNullFix(result.getMessage());
         else if (result.getDetails().contains("Author"))
-            return authorNullFix(sbom, repairSubType);
+            return authorNullFix(sbom, componentHashCode, componentName);
         else if (result.getDetails().contains("Copyright"))
-            return copyrightNullFix();
+            return copyrightNullFix(sbom, componentHashCode);
 
         return null;
 
@@ -71,14 +70,14 @@ public class EmptyOrNullFixes implements Fixes {
     private List<Fix<?>> bomVersionFix(SBOM sbom) {
 
         if (sbom instanceof SPDX23SBOM)
-            return Collections.singletonList(new Fix<>("", "2.3"));
+            return Collections.singletonList(new Fix<>(FixType.METADATA_BOM_VERSION, "", "2.3"));
         else if (sbom instanceof CDX14SBOM)
-            return Collections.singletonList(new Fix<>("", "1.4"));
+            return Collections.singletonList(new Fix<>(FixType.METADATA_BOM_VERSION, "", "1.4"));
         else if (sbom instanceof SVIPSBOM)
-            return Collections.singletonList(new Fix<>("", "1.04a"));
+            return Collections.singletonList(new Fix<>(FixType.METADATA_BOM_VERSION, "", "1.04a"));
         else
-            return new ArrayList<>(List.of(new Fix<>("", "2.3"), new Fix<>("", "1.4"),
-                    new Fix<>("", "1.04a"))); // todo check 1.04a is current SVIP bomVersion
+            return new ArrayList<>(List.of(new Fix<>(FixType.METADATA_BOM_VERSION, "", "2.3"), new Fix<>(FixType.METADATA_BOM_VERSION, "", "1.4"),
+                    new Fix<>(FixType.METADATA_BOM_VERSION, "", "1.04a"))); // todo check 1.04a is current SVIP bomVersion
 
     }
 
@@ -92,9 +91,9 @@ public class EmptyOrNullFixes implements Fixes {
 
         // Create a new list of fixes and add a fix for the bom ref using the hex
         List<Fix<?>> result = new ArrayList<>();
-        result.add(emptyString.get(0));
-        result.add(new Fix<>(null, subTypeHex)); // hexadecimal hash of subtype of component
-        result.add(new Fix<>(null, "pkg:/" + subType + "-" + subTypeHex));
+        result.add(new Fix<>(FixType.COMPONENT_BOM_REF, null, ""));
+        result.add(new Fix<>(FixType.COMPONENT_BOM_REF, null, subTypeHex)); // hexadecimal hash of subtype of component
+        result.add(new Fix<>(FixType.COMPONENT_BOM_REF, null, "pkg:/" + subType + "-" + subTypeHex));
 
         // Return the fix
         return result;
@@ -106,7 +105,13 @@ public class EmptyOrNullFixes implements Fixes {
      *
      * @return potential fixes for creation data
      */
-    private List<Fix<?>> creationDataFix() {
+    private List<Fix<?>> creationDataFix(String details) {
+
+        String[] split = details.split(" ");
+
+        //We only fix creation data at the current time
+        if(!split[split.length].equals("Manufacture"))
+            return new ArrayList<Fix<?>>();
 
         // Create a new date and time string
         String dateAndTime;
@@ -122,7 +127,7 @@ public class EmptyOrNullFixes implements Fixes {
         dateAndTime += "T" + formatterLocalTime.format(localTime) + localTime.atOffset(ZoneOffset.UTC);
 
         // Add the new date and time as a fix
-        return Collections.singletonList(new Fix<>("", "\"created\" : .\"" + dateAndTime + "\""));
+        return Collections.singletonList(new Fix<>(FixType.METADATA_CREATION_DATA, "", "\"created\" : .\"" + dateAndTime + "\""));
 
     }
 
@@ -133,35 +138,107 @@ public class EmptyOrNullFixes implements Fixes {
      * @return fix for SPDXID
      */
     private List<Fix<?>> SPDXIDFix(Result result) {
-        return Collections.singletonList(new Fix<>(result.getMessage(), "SPDXRef-DOCUMENT"));
+        return Collections.singletonList(new Fix<>(FixType.METADATA_SPDXID, result.getMessage(), "SPDXRef-DOCUMENT"));
     }
 
     /**
      * @return empty string in place for null comment
      */
-    private List<Fix<?>> commentNullFix() {
-        return Collections.singletonList(new Fix<>("null", ""));
+    private List<Fix<?>> commentNullFix(String message) {
+
+        String[] split = message.split(" ");
+
+        if(split[3].equals("null"))
+            return Collections.singletonList(new Fix<>(FixType.COMPONENT_COMMENT, "null", ""));
+
+        return null;
     }
 
     /**
      * @return empty string in place for null attribution text
      */
-    private List<Fix<?>> attributionTextNullFix() {
-        return emptyString;
+    private List<Fix<?>> attributionTextNullFix(String message) {
+
+        String[] split = message.split(" ");
+
+        if(split[4].equals("null"))
+            return Collections.singletonList(new Fix<>(FixType.COMPONENT_ATTRIBUTION_TEXT, null, ""));
+
+        return null;
     }
 
     /**
      * @return empty string in place for null file notice
      */
-    private List<Fix<?>> fileNoticeNullFix() {
-        return emptyString;
+    private List<Fix<?>> fileNoticeNullFix(String message) {
+        String[] split = message.split(" ");
+
+        if(split[4].equals("null"))
+            return Collections.singletonList(new Fix<>(FixType.COMPONENT_FILE_NOTICE, null, ""));
+
+        return null;
     }
 
     /**
-     * @return empty string in place for null copyright
+     * Fixes empty copyright
+     * @param sbom The SBOM to fix
+     * @param componentHash The component that is missing copyright
+     * @return a list of potential fixes or null
      */
-    private List<Fix<?>> copyrightNullFix() {
-        return emptyString;
+    private List<Fix<?>> copyrightNullFix(SBOM sbom, Integer componentHash) throws Exception {
+        List<Component> filtered = sbom.getComponents().stream().filter(
+                comp -> comp.hashCode() == componentHash).toList();
+
+        if(filtered.size() == 0)
+            return null;
+
+        Component comp = filtered.get(0);
+        Set<String> purls = null;
+
+        if(comp instanceof SPDX23Package spdx23Package) {
+            purls = spdx23Package.getPURLs();
+        }
+
+        else if(comp instanceof CDX14Package cdx14Package) {
+            purls = cdx14Package.getPURLs();
+        }
+
+        if(purls == null || purls.isEmpty())
+            return null;
+
+        List<Fix<?>> fixes = new ArrayList<>();
+
+        for(String purlString : purls) {
+
+            PURL p = new PURL(purlString);
+
+            String type = p.getType();
+
+            if(type != null) {
+                Extraction ex = null;
+
+                switch(type) {
+                    case "nuget":
+                        ex = new NugetExtraction(p);
+                        break;
+                }
+
+                if(ex == null)
+                    continue;
+
+                ex.extract();
+
+                if(ex.getCopyright() != null) {
+                    fixes.add(new Fix<>(FixType.COMPONENT_COPYRIGHT, "null", ex.getCopyright()));
+                }
+            }
+        }
+
+        if(fixes.size() > 0)
+            return fixes;
+
+        return null;
+
     }
 
     /**
@@ -169,99 +246,62 @@ public class EmptyOrNullFixes implements Fixes {
      * @param repairSubType the key most closely relating to the component
      * @return a list of potential authors
      */
-    private List<Fix<?>> authorNullFix(SBOM sbom, String repairSubType) throws Exception {
+    private List<Fix<?>> authorNullFix(SBOM sbom, Integer componentHash, String repairSubType) throws Exception {
 
-        Component thisComponent = null;
+        List<Component> filtered = sbom.getComponents().stream().filter(
+                comp -> comp.hashCode() == componentHash).toList();
 
-        // For each component
-        for (Component component : sbom.getComponents()
-        ) {
+        if(filtered.size() == 0 || repairSubType == null)
+            return null;
 
-            // If it is an SPDX 2.3 Package
-            if (component instanceof SPDX23Package spdx23Package) {
+        Component component = filtered.get(0);
 
-                // And if the name contains the repair SubType, or it contains the repair SubType contains the name
-                if (spdx23Package.getName().toLowerCase().contains(repairSubType.toLowerCase())
-                        || repairSubType.toLowerCase().contains(spdx23Package.getName().toLowerCase())) {
+        // if this is an SPDX 2.3 file object
+        if (component instanceof SPDX23FileObject spdx23FileObject) {
+            // And the repair subtype is the same as the file name
+            if (spdx23FileObject.getName().toLowerCase().contains(repairSubType.toLowerCase())
+                    || repairSubType.toLowerCase().contains(spdx23FileObject.getName().toLowerCase())) {
 
-                    // Make the current component "this" component and break
-                    thisComponent = component;
-                    break;
+                // If the authors are null
+                if (sbom.getCreationData().getAuthors() != null) {
 
-                }
+                    // Get a set of potential authors
+                    Set<Contact> potentialAuthors = sbom.getCreationData().getAuthors();
 
-            }
+                    // Create a new list of fixes
+                    List<Fix<?>> fixes = new ArrayList<>();
 
-            // if this is an SPDX 2.3 file object
-            else if (component instanceof SPDX23FileObject spdx23FileObject) {
-
-                // And the repair subtype is the same as the file name
-                if (spdx23FileObject.getName().toLowerCase().contains(repairSubType.toLowerCase())
-                        || repairSubType.toLowerCase().contains(spdx23FileObject.getName().toLowerCase())) {
-
-                    // If the authors are null
-                    if (sbom.getCreationData().getAuthors() != null) {
-
-                        // Get a set of potential authors
-                        Set<Contact> potentialAuthors = sbom.getCreationData().getAuthors();
-
-                        // Create a new list of fixes
-                        List<Fix<?>> fixes = new ArrayList<>();
-
-                        // Then iterate through the potential authors and make a fix for each
-                        for (Contact author : potentialAuthors
-                        ) {
-                            fixes.add(new Fix<>("null", author));
-                        }
-
-                        // Reutnr the fixes
-                        return fixes;
+                    // Then iterate through the potential authors and make a fix for each
+                    for (Contact author : potentialAuthors
+                    ) {
+                        fixes.add(new Fix<>(FixType.COMPONENT_AUTHOR, "null", author));
                     }
 
-                    // If no fixes were returned, return null
-                    return null;
-
+                    // Reutnr the fixes
+                    return fixes;
                 }
 
-            }
-            // Else, if the component is a CycloneDX 1.4 Package
-            else if (component instanceof CDX14Package cdx14Package) {
-
-                // And if the name is the same as the repair sub type
-                if (cdx14Package.getName().toLowerCase().contains(repairSubType.toLowerCase())
-                        || repairSubType.toLowerCase().contains(cdx14Package.getName().toLowerCase())) {
-
-                    // Set the current component to "this" component and break
-                    thisComponent = component;
-                    break;
-
-                }
+                // If no fixes were returned, return null
+                return null;
 
             }
 
         }
 
+
+
         // Create a new set of purls
         Set<String> purls = null;
 
-        // If this component isn't null
-        if (thisComponent != null) {
-
-            // And if it's an SPDX 2.3 package
-            if (thisComponent instanceof SPDX23PackageObject spdx23PackageObject) {
-
-                // Get the package's PURLs
-                purls = spdx23PackageObject.getPURLs();
-
-            }
-            // Or, if it is a CycloneDX 1.4 Package
-            else if (thisComponent instanceof CDX14Package cdx14Package) {
-
-                // Get the package's PURLs
-                purls = cdx14Package.getPURLs();
-
-            }
-
+        // And if it's an SPDX 2.3 package
+        if (component instanceof SPDX23PackageObject spdx23PackageObject) {
+            // Get the package's PURLs
+            purls = spdx23PackageObject.getPURLs();
+        }
+        // Or, if it is a CycloneDX 1.4 Package
+        else if (component instanceof CDX14Package cdx14Package) {
+            // Get the package's PURLs
+            purls = cdx14Package.getPURLs();
         }
 
         // Create a new list of PURLs
@@ -332,7 +372,7 @@ public class EmptyOrNullFixes implements Fixes {
                             String[] split2 = split1[1].split("\"");
 
                             // Then add that email as a potential fix
-                            fixList.add(new Fix<>("null", split2[0] + " (POTENTIAL AUTHOR/UNCONFIRMED)"));
+                            fixList.add(new Fix<>(FixType.COMPONENT_AUTHOR, "null", split2[0] + " (POTENTIAL AUTHOR/UNCONFIRMED)"));
 
                         }
 

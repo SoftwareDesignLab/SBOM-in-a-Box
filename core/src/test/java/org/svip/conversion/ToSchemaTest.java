@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @author Juan Francisco Patino
  * @author Tyler Drake
  */
-public class ConvertTest {
+public class ToSchemaTest {
 
     /**
      * Test Constants

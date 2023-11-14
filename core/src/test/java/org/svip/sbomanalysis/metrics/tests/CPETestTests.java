@@ -48,7 +48,7 @@ class CPETestTests {
     }
 
     @Test
-    public void isValidCPE_isAccurateCPE_pass_test(){
+    public void validCPEResult_accurateCPEResults_pass_test(){
         Set<Result> result =  cpeTest.test("cpe", testActualCPE);
 
         List<Result> resultList = new ArrayList<>(result);
@@ -58,7 +58,7 @@ class CPETestTests {
     }
 
     @Test
-    public void isValidCPE_isAccurateCPE_fail_test(){
+    public void validCPEResult_accurateCPEResults_fail_test(){
         Set<Result> result =  cpeTest.test("cpe", "cpe:cpefail");
 
         List<Result> resultList = new ArrayList<>(result);
@@ -68,7 +68,7 @@ class CPETestTests {
     }
 
     @Test
-    public void isAccurateCPE_match_name_fail_test(){
+    public void accurateCPEResults_match_name_fail_test(){
         Set<Result> result =  cpeTest.test("cpe", "cpe:2.3:a:python_software_foundation:nohtyp:3.11.2:*:*:*:*:*:*:*");
 
         List<Result> resultList = new ArrayList<>(result);
@@ -89,7 +89,7 @@ class CPETestTests {
     }
 
     @Test
-    public void isAccurateCPE_match_version_fail_test(){
+    public void accurateCPEResults_match_version_fail_test(){
         Set<Result> result =  cpeTest.test("cpe", "cpe:2.3:a:python_software_foundation:python:3.20.0:*:*:*:*:*:*:*");
 
         List<Result> resultList = new ArrayList<>(result);
@@ -110,7 +110,7 @@ class CPETestTests {
     }
 
     @Test
-    public void isAccurateCPE_match_vendor_fail_test(){
+    public void accurateCPEResults_match_vendor_fail_test(){
         Set<Result> result =  cpeTest.test("cpe", "cpe:2.3:a:not_correct_vendor:python:3.11.2:*:*:*:*:*:*:*");
 
         List<Result> resultList = new ArrayList<>(result);
@@ -131,7 +131,7 @@ class CPETestTests {
     }
 
     @Test
-    public void isAccurateCPE_all_pass_test(){
+    public void accurateCPEResults_all_pass_test(){
         Set<Result> result =  cpeTest.test("cpe", testActualCPE);
 
         List<Result> resultList = new ArrayList<>(result);

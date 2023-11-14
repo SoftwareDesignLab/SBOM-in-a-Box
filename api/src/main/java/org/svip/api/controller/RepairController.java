@@ -1,16 +1,20 @@
 package org.svip.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.svip.api.services.SBOMFileService;
+import org.svip.metrics.pipelines.QualityReport;
 import org.svip.repair.fix.Fix;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * REST API Controller for managing SBOM repair operations
@@ -49,9 +53,9 @@ public class RepairController {
      * @return map of repair fixes as a repair statement
      */
     @GetMapping("/sboms/repair/statement")
-    public ResponseEntity<?> repairStatement(@RequestParam("id") long id) { // todo just change to a list of fixes?
+    public ResponseEntity<?> repairStatement(@RequestParam("id") long id) {
 
-        Map<String, Map<String, List<Fix<?>>>> repairStatement;
+        QualityReport repairStatement;
         try {
             repairStatement = sbomService.getRepairStatement(id);
         } catch (JsonProcessingException e) {
@@ -80,11 +84,14 @@ public class RepairController {
      */
     @GetMapping("/sboms/repair")
     public ResponseEntity<?> repairSBOM(@RequestParam("id") long id,
-                                        @RequestParam("repairStatement") Map<String, Map<String, List<Fix<?>>>> repairStatement, // todo just change to a list of fixes?
+                                        @RequestParam("repairStatement") String repairStatementJson,
                                         @RequestParam("overwrite") boolean overwrite) {
 
         long repair;
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            TypeReference<Map<Integer, Set<Fix<?>>>> mapType = new TypeReference<>() {};
+            Map<Integer, Set<Fix<?>>> repairStatement = objectMapper.readValue(repairStatementJson, mapType);
             repair = sbomService.repair(id, repairStatement, overwrite);
         } catch (JsonProcessingException e) {
             LOGGER.error(e.getMessage());

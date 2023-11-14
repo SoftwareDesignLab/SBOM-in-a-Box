@@ -3,10 +3,9 @@ package org.svip.metrics.pipelines;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.svip.metrics.resultfactory.Result;
+import org.svip.repair.fix.Fix;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * file: QualityReport.java
@@ -17,14 +16,16 @@ import java.util.Map;
  * @author Ian Dunn
  * @author Derek Garcia
  * @author Matthew Morrison
+ * @author Justin Jantzi
  */
 @JsonPropertyOrder({"uid", "componentResults"})
 public class QualityReport {
     @JsonProperty
     private final String uid;
 
-    @JsonProperty
-    private final Map<String, Map<String, List<Result>>> components = new HashMap<>();
+    private final Map<Integer, List<Result>> components = new HashMap<>();
+
+    private final Map<Integer, String> componentHashCodeMapping = new HashMap<>();
 
     /**
      * Create a new QualityReport
@@ -41,13 +42,13 @@ public class QualityReport {
      * @param componentName the name of the component to add
      * @param results       list of test results
      */
-    public void addComponent(String componentName, List<Result> results) {
+    public void addComponent(String componentName, int hashCode, List<Result> results) {
         // init test results
-        Map<String, List<Result>> testResults =
-                this.components.computeIfAbsent(componentName, k -> new HashMap<>());
-        testResults.put(componentName, results);
+        List<Result> testResults = this.components.computeIfAbsent(hashCode, k -> new ArrayList<>());
+        testResults.addAll(results);
         // add the test results and the component
-        components.put(uid, testResults);
+        components.put(hashCode, testResults);
+        componentHashCodeMapping.put(hashCode, componentName);
     }
 
 
@@ -67,8 +68,40 @@ public class QualityReport {
      *
      * @return A nested map which holds the results for each component
      */
-    public Map<String, Map<String, List< Result>>> getResults() {
+    public Map<Integer, List<Result>> getResults() {
         return components;
     }
 
+    /**
+     * Gets how many fixes are appended to the quality report
+     * @return fix amount
+     */
+    public long getFixAmount() {
+        return getResults().values().stream().filter(x -> x.stream().filter(y -> y.getFixes().size() > 0).count() > 0).count();
+    }
+
+    /**
+     * Gets all fixes appended
+     * @return fixes
+     */
+    public Map<Integer, Set<Fix<?>>> getFixes() {
+        Map<Integer, Set<Fix<?>>> fixes = new HashMap<>();
+        Map<Integer, List<Result>> results = getResults();
+
+        for(Integer component : results.keySet()) {
+            List<Result> compResults = results.get(component);
+            Set<Fix<?>> compFixes = new HashSet<>();
+
+            for(Result result : compResults) {
+                compFixes.addAll(result.getFixes());
+            }
+
+            if(compFixes.size() > 0)
+                fixes.put(component, compFixes);
+        }
+
+        return fixes;
+    }
+
+    public Map<Integer, String> getHashCodeMapping() { return this.componentHashCodeMapping; }
 }
