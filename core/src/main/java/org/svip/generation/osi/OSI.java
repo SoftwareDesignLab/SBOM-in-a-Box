@@ -126,35 +126,6 @@ public class OSI {
     }
 
     /**
-     * Adds a source file to generate an SBOM from when the container is run.
-     *
-     * @param fileName     The file name of the source file.
-     * @param fileContents The contents of the source file.
-     * @throws IOException If the file could not be written to the code bind directory.
-     */
-    public void addSourceFile(String fileName, String fileContents) throws IOException {
-
-        // Constructing the printwriter with a file means that it takes care of all system-specific path problems
-        try (PrintWriter writer = new PrintWriter(BOUND_DIR.CODE.appendFileToPath(fileName))) {
-            writer.println(fileContents);
-        } catch (FileNotFoundException e) {
-            throw new IOException("Could not write file to " + BOUND_DIR.CODE.appendFileToPath(fileName));
-        }
-    }
-
-    /**
-     * Copies an entire directory of source files to generate an SBOM from when the container is run.
-     *
-     * @param dirPath The File object representing the directory to copy.
-     * @throws IOException If one of the files in the copied directory could not be written to the code bind directory.
-     */
-    public void addSourceDirectory(File dirPath) throws IOException {
-        File project = new File(BOUND_DIR.CODE.getPath());
-
-        FileUtils.copyDirectory(dirPath, project);
-    }
-
-    /**
      * Get the list of all OSI tools
      *
      * @return List of OIS tools

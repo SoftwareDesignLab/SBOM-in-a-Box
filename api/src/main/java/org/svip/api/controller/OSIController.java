@@ -140,35 +140,8 @@ public class OSIController {
                                          @RequestParam("schema") SerializerFactory.Schema schema,
                                          @RequestParam("format") SerializerFactory.Format format,
                                          @RequestParam(value = "toolNames", required = false) String[] toolNames) {
-        if (!isOSIEnabled())
-            return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
-
-        try {
-            schema.getSerializer(format);
-        } catch (IllegalArgumentException e) {
-            LOGGER.error("POST /svip/generators/osi - " + e.getMessage());
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-
-        Map<String, String> unZipped;
-        try {
-            unZipped = SBOMFileService.unZip(zipFile);
-        } catch (IOException e) {
-            LOGGER.error("POST /svip/generators/osi - " + e.getMessage());
-            return new ResponseEntity<>("Make sure attachment is a zip file (.zip): " + e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-
-        // Validate & add files
-        for (Map.Entry<String, String> file : unZipped.entrySet())
-            try {
-                // Remove any directories, causes issues with OSI paths (unless we take in a root directory?)
-                String fileName = file.getKey();
-                fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
-                container.addSourceFile(fileName, file.getValue());
-            } catch (IOException e) {
-                LOGGER.error("POST /svip/generators/osi - Error adding source file");
-                return new ResponseEntity<>("Error adding source file", HttpStatus.NOT_FOUND);
-            }
+        // TODO temp to keep behavior
+        uploadProject(zipFile);
 
         // Generate SBOMs
         Map<String, String> generatedSBOMFiles;
