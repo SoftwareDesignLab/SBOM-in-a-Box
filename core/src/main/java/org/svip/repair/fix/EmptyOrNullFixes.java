@@ -43,7 +43,7 @@ public class EmptyOrNullFixes implements Fixes {
         if (result.getDetails().contains("Bom Version was a null value"))
             return bomVersionFix(sbom);
         else if (result.getDetails().contains("Bom-Ref")) // i.e., UID
-            return bomRefFix(componentName);
+            return bomRefFix(sbom, componentHashCode);
         else if (result.getDetails().contains("Creation Data"))
             return creationDataFix(result.getDetails());
         else if (result.getDetails().contains("SPDXID"))
@@ -84,16 +84,23 @@ public class EmptyOrNullFixes implements Fixes {
     /**
      * @return a list of potential fixes for a null bom-ref
      */
-    private List<Fix<?>> bomRefFix(String subType) {
+    private List<Fix<?>> bomRefFix(SBOM sbom, Integer hashCode) {
+
+        List<Component> filtered = sbom.getComponents().stream().filter(
+                comp -> comp.hashCode() == hashCode).toList();
+
+        if(filtered.size() == 0)
+            return null;
+
+        Component comp = filtered.get(0);
 
         // Get the subtype hex
-        String subTypeHex = Integer.toHexString(subType.hashCode()).toLowerCase();
+        String subTypeHex = Integer.toHexString(hashCode).toLowerCase();
 
         // Create a new list of fixes and add a fix for the bom ref using the hex
         List<Fix<?>> result = new ArrayList<>();
-        result.add(new Fix<>(FixType.COMPONENT_BOM_REF, null, ""));
-        result.add(new Fix<>(FixType.COMPONENT_BOM_REF, null, subTypeHex)); // hexadecimal hash of subtype of component
-        result.add(new Fix<>(FixType.COMPONENT_BOM_REF, null, "pkg:/" + subType + "-" + subTypeHex));
+        result.add(new Fix<>(FixType.COMPONENT_BOM_REF, sbom.getUID(), subTypeHex)); // hexadecimal hash of subtype of component
+        result.add(new Fix<>(FixType.COMPONENT_BOM_REF, sbom.getUID(), "pkg:/" + comp.getName() + "-" + subTypeHex));
 
         // Return the fix
         return result;
