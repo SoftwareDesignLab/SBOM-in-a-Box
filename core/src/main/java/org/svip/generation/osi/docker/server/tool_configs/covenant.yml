@@ -1,9 +1,5 @@
 # Name of the tool
 tool: "covenant"
-# Optional runtime args that must be defined before usage
-runtime_args:
-  - "output_"
-  - "manifest"
 # > 1 ways to use the tool to generate sboms
 profiles:
   - schema: "cyclonedx"

@@ -1,6 +1,4 @@
 tool: "sbom4python"
-runtime_args:
-  - "output_dir"
 profiles:
   - schema: "cyclonedx"
     spec_version: "1.5"

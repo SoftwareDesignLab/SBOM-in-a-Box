@@ -1,6 +1,4 @@
 tool: "sbom_tool"
-runtime_args:
-  - "output_dir"
 profiles:
   - schema: "spdx"
     spec_version: "2.2"

@@ -1,6 +1,4 @@
 tool: "cyclonedx-rust"
-runtime_args:
-  - "output"
 profiles:
   - schema: "cyclonedx"
     spec_version: "1.4"

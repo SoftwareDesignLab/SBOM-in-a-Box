@@ -1,6 +1,4 @@
 tool: "retire.js"
-runtime_args:
-  - "output_dir"
 profiles:
   - schema: "cyclonedx"
     spec_version: "1.4"

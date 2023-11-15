@@ -1,7 +1,4 @@
 tool: "cyclonedx-conan"
-runtime_args:
-  - "output_dir"
-  - "manifest"
 profiles:
   - schema: "cyclonedx"
     spec_version: "1.3"

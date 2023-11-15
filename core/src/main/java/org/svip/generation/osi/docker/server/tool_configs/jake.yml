@@ -1,8 +1,5 @@
 # Name of the tool
 tool: "jake"
-# Optional runtime args that must be defined before usage
-runtime_args:
-  - "output_dir"
 # > 1 ways to use the tool to generate sboms
 profiles:
   - schema: "cyclonedx"
