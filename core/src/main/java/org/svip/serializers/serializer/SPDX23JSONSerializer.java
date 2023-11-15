@@ -80,12 +80,12 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
     public void serialize(SVIPSBOM sbom, JsonGenerator jsonGenerator, SerializerProvider provider) throws IOException {
         jsonGenerator.writeStartObject();
 
-        jsonGenerator.writeStringField("SPDXID", "SPDXRef-DOCUMENT");
-        jsonGenerator.writeStringField("spdxVersion", "SPDX-" + sbom.getSpecVersion());
-        jsonGenerator.writeStringField("name", sbom.getName());
-        jsonGenerator.writeStringField("documentNamespace", sbom.getUID());
-        jsonGenerator.writeStringField("comment", sbom.getDocumentComment());
-        jsonGenerator.writeStringField("dataLicense", "CC0-1.0");
+        writeStringField(jsonGenerator, "SPDXID", "SPDXRef-DOCUMENT");
+        writeStringField(jsonGenerator, "spdxVersion", "SPDX-" + sbom.getSpecVersion());
+        writeStringField(jsonGenerator, "name", sbom.getName());
+        writeStringField(jsonGenerator, "documentNamespace", sbom.getUID());
+        writeStringField(jsonGenerator, "comment", sbom.getDocumentComment());
+        writeStringField(jsonGenerator, "dataLicense", "CC0-1.0");
 
         jsonGenerator.writeFieldName("documentDescribes");
         jsonGenerator.writeObject(sbom.getComponents().stream().map(Component::getUID).toList());
@@ -131,9 +131,9 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
         jsonGenerator.writeFieldName("creationInfo");
         jsonGenerator.writeStartObject();
 
-        jsonGenerator.writeStringField("comment", data.getCreatorComment());
-        jsonGenerator.writeStringField("created", data.getCreationTime());
-        jsonGenerator.writeStringField("licenseListVersion", licenseListVersion);
+        writeStringField(jsonGenerator, "comment", data.getCreatorComment());
+        writeStringField(jsonGenerator, "created", data.getCreationTime());
+        writeStringField(jsonGenerator, "licenseListVersion", licenseListVersion);
 
         // Process creators
 
@@ -169,8 +169,8 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
         jsonGenerator.writeStartArray();
         for (Map.Entry<String, String> cs : checksums.entrySet()) {
             jsonGenerator.writeStartObject();
-            jsonGenerator.writeStringField("algorithm", cs.getKey());
-            jsonGenerator.writeStringField("checksumValue", cs.getValue());
+            writeStringField(jsonGenerator, "algorithm", cs.getKey());
+            writeStringField(jsonGenerator, "checksumValue", cs.getValue());
             jsonGenerator.writeEndObject();
         }
         jsonGenerator.writeEndArray();
@@ -182,45 +182,45 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
 
 
         // Identifiers
-        jsonGenerator.writeStringField("name", pkg.getName());
-        jsonGenerator.writeStringField("SPDXID", pkg.getUID());
-        jsonGenerator.writeStringField("primaryPackagePurpose", pkg.getType());
+        writeStringField(jsonGenerator, "name", pkg.getName());
+        writeStringField(jsonGenerator, "SPDXID", pkg.getUID());
+        writeStringField(jsonGenerator, "primaryPackagePurpose", pkg.getType());
 
-        jsonGenerator.writeStringField("comment", pkg.getComment()); // TODO may need to be an object
+        writeStringField(jsonGenerator, "comment", pkg.getComment()); // TODO may need to be an object
 
-        jsonGenerator.writeStringField("versionInfo", pkg.getVersion());
-        jsonGenerator.writeStringField("packageFileName", pkg.getFileName()); // TODO is this correct?
+        writeStringField(jsonGenerator, "versionInfo", pkg.getVersion());
+        writeStringField(jsonGenerator, "packageFileName", pkg.getFileName()); // TODO is this correct?
         if (pkg.getSupplier() != null) {
             Optional<Contact> supplierContact = pkg.getSupplier().getContacts().stream().findFirst();
             String supplierEmail = "";
             if (supplierContact.isPresent())
                 supplierEmail = supplierContact.get().getEmail();
 
-            jsonGenerator.writeStringField("supplier",
+            writeStringField(jsonGenerator, "supplier",
                     getCreatorString("Organization", pkg.getSupplier().getName(), supplierEmail));
         }
-        jsonGenerator.writeStringField("originator", pkg.getAuthor());
-        jsonGenerator.writeStringField("downloadLocation", pkg.getDownloadLocation());
+        writeStringField(jsonGenerator, "originator", pkg.getAuthor());
+        writeStringField(jsonGenerator, "downloadLocation", pkg.getDownloadLocation());
         if (pkg.getFilesAnalyzed() != null) jsonGenerator.writeBooleanField("filesAnalyzed", pkg.getFilesAnalyzed());
-        jsonGenerator.writeStringField("homepage", pkg.getHomePage());
-        jsonGenerator.writeStringField("sourceInfo", pkg.getSourceInfo());
+        writeStringField(jsonGenerator, "homepage", pkg.getHomePage());
+        writeStringField(jsonGenerator, "sourceInfo", pkg.getSourceInfo());
         if (pkg.getLicenses() != null) {
             jsonGenerator.writeObjectField("licenseConcluded", pkg.getLicenses().getConcluded());
             jsonGenerator.writeObjectField("licenseDeclared", pkg.getLicenses().getDeclared());
             jsonGenerator.writeObjectField("licenseInfoFromFiles", pkg.getLicenses().getInfoFromFiles());
-            jsonGenerator.writeStringField("licenseComments", pkg.getLicenses().getComment());
+            writeStringField(jsonGenerator, "licenseComments", pkg.getLicenses().getComment());
         }
-        jsonGenerator.writeStringField("copyright", pkg.getCopyright());
+        writeStringField(jsonGenerator, "copyright", pkg.getCopyright());
         if (pkg.getDescription() != null) {
-            jsonGenerator.writeStringField("summary", pkg.getDescription().getSummary());
-            jsonGenerator.writeStringField("description", pkg.getDescription().getDescription());
+            writeStringField(jsonGenerator, "summary", pkg.getDescription().getSummary());
+            writeStringField(jsonGenerator, "description", pkg.getDescription().getDescription());
         }
-        jsonGenerator.writeStringField("attributionText", pkg.getAttributionText()); // TODO may need to be a list
-        jsonGenerator.writeStringField("builtDate", pkg.getBuiltDate());
-        jsonGenerator.writeStringField("releaseDate", pkg.getReleaseDate());
-        jsonGenerator.writeStringField("validUntilDate", pkg.getValidUntilDate());
+        writeStringField(jsonGenerator, "attributionText", pkg.getAttributionText()); // TODO may need to be a list
+        writeStringField(jsonGenerator, "builtDate", pkg.getBuiltDate());
+        writeStringField(jsonGenerator, "releaseDate", pkg.getReleaseDate());
+        writeStringField(jsonGenerator, "validUntilDate", pkg.getValidUntilDate());
         // TODO may need to be an object
-        jsonGenerator.writeStringField("packageVerificationCode", pkg.getVerificationCode());
+        writeStringField(jsonGenerator, "packageVerificationCode", pkg.getVerificationCode());
 
         writeChecksums(jsonGenerator, pkg.getHashes());
 
@@ -241,9 +241,9 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
 
         for (ExternalReference ref : refs) {
             jsonGenerator.writeStartObject();
-            jsonGenerator.writeStringField("referenceCategory", ref.getCategory());
-            jsonGenerator.writeStringField("referenceLocator", ref.getUrl());
-            jsonGenerator.writeStringField("referenceType", ref.getType());
+            writeStringField(jsonGenerator, "referenceCategory", ref.getCategory());
+            writeStringField(jsonGenerator, "referenceLocator", ref.getUrl());
+            writeStringField(jsonGenerator, "referenceType", ref.getType());
             jsonGenerator.writeEndObject();
         }
 
@@ -255,21 +255,21 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
         if (file == null) return;
         jsonGenerator.writeStartObject();
 
-        jsonGenerator.writeStringField("SPDXID", file.getUID());
-        jsonGenerator.writeStringField("fileName", file.getFileName());
+        writeStringField(jsonGenerator, "SPDXID", file.getUID());
+        writeStringField(jsonGenerator, "fileName", file.getFileName());
         if (file.getType() != null)
             jsonGenerator.writeObjectField("fileTypes", List.of(file.getType()));
         if (file.getAuthor() != null)
             jsonGenerator.writeObjectField("fileContributors", List.of(file.getAuthor()));
         if (file.getLicenses() != null) {
-            jsonGenerator.writeStringField("licenseComments", file.getLicenses().getComment());
+            writeStringField(jsonGenerator, "licenseComments", file.getLicenses().getComment());
             jsonGenerator.writeObjectField("licenseConcluded", file.getLicenses().getConcluded());
             jsonGenerator.writeObjectField("licenseInfoInFiles", file.getLicenses().getInfoFromFiles());
         }
-        jsonGenerator.writeStringField("copyrightText", file.getCopyright());
-        jsonGenerator.writeStringField("comment", file.getComment());
-        jsonGenerator.writeStringField("noticeText", file.getFileNotice());
-        jsonGenerator.writeStringField("attributionText", file.getAttributionText());
+        writeStringField(jsonGenerator, "copyrightText", file.getCopyright());
+        writeStringField(jsonGenerator, "comment", file.getComment());
+        writeStringField(jsonGenerator, "noticeText", file.getFileNotice());
+        writeStringField(jsonGenerator, "attributionText", file.getAttributionText());
 
         writeChecksums(jsonGenerator, file.getHashes());
 
@@ -280,11 +280,16 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
         if (elementId == null || rel == null) return;
         jsonGenerator.writeStartObject();
 
-        jsonGenerator.writeStringField("spdxElementId", elementId);
-        jsonGenerator.writeStringField("relationshipType", rel.getRelationshipType());
-        jsonGenerator.writeStringField("relatedSpdxElement", rel.getOtherUID());
-        jsonGenerator.writeStringField("comment", rel.getComment());
+        writeStringField(jsonGenerator, "spdxElementId", elementId);
+        writeStringField(jsonGenerator, "relationshipType", rel.getRelationshipType());
+        writeStringField(jsonGenerator, "relatedSpdxElement", rel.getOtherUID());
+        writeStringField(jsonGenerator, "comment", rel.getComment());
 
         jsonGenerator.writeEndObject();
+    }
+
+    private void writeStringField(JsonGenerator jsonGenerator, String fieldName, String value) throws IOException {
+        if (fieldName == null || value == null) return;
+        jsonGenerator.writeStringField(fieldName, value);
     }
 }
