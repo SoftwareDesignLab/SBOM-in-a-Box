@@ -117,7 +117,8 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         // Services
 
         // External References
-        writeExternalRefs(jsonGenerator, sbom.getExternalReferences());
+        if (sbom.getExternalReferences() != null)
+            writeExternalRefs(jsonGenerator, sbom.getExternalReferences());
 
         // Dependencies
         jsonGenerator.writeFieldName("dependencies");
