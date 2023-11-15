@@ -22,6 +22,7 @@ import org.svip.serializers.Metadata;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -408,7 +409,7 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
     }
 
     private void writeStringField(JsonGenerator jsonGenerator, String fieldName, String value) throws IOException {
-        if (fieldName == null || value == null) return;
-        jsonGenerator.writeStringField(fieldName, value);
+        if (fieldName == null) return;
+        jsonGenerator.writeStringField(fieldName, value != null ? value : "");
     }
 }

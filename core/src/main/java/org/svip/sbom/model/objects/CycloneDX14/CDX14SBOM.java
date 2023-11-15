@@ -1,5 +1,6 @@
 package org.svip.sbom.model.objects.CycloneDX14;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.svip.compare.conflicts.Conflict;
 import org.svip.compare.conflicts.ConflictFactory;
 import org.svip.sbom.model.interfaces.generics.Component;

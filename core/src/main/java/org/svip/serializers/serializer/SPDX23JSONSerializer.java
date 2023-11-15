@@ -289,7 +289,7 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
     }
 
     private void writeStringField(JsonGenerator jsonGenerator, String fieldName, String value) throws IOException {
-        if (fieldName == null || value == null) return;
-        jsonGenerator.writeStringField(fieldName, value);
+        if (fieldName == null) return;
+        jsonGenerator.writeStringField(fieldName, value != null ? value : "");
     }
 }
