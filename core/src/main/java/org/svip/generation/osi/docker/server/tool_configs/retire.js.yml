@@ -4,5 +4,6 @@ profiles:
     format: "json"
     language:
       - "Javascript"
+    package_manager:
     commands:
       - "retire --outputformat cyclonedxJSON > $SBOM_OUT/retirejs-cdx14.json"

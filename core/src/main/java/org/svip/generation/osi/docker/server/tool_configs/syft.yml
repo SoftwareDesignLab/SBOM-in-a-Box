@@ -16,6 +16,7 @@ profiles:
       - "Ruby"
       - "Rust"
       - "Swift"
+    package_manager:
     commands:
       - "syft . -o cyclonedx-json@1.4=$SBOM_OUT/syft-cdx14.json"
   - schema: "spdx"
@@ -35,5 +36,6 @@ profiles:
       - "Ruby"
       - "Rust"
       - "Swift"
+    package_manager:
     commands:
       - "syft . -o spdx-tag-value=$SBOM_OUT/syft-spdx23.spdx"

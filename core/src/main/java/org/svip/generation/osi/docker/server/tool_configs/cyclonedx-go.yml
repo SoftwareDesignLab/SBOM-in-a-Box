@@ -4,5 +4,6 @@ profiles:
     format: "xml"
     language:
       - "Go"
+    package_manager:
     commands:
       - "cyclonedx-go -o $SBOM_OUT/cdxgo-cdx10.xml"

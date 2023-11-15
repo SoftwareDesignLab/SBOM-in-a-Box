@@ -4,6 +4,7 @@ profiles:
     format: "json"
     language:
       - "Python"
+    package_manager:
     commands:
       - "cyclonedx-py --format json -r -o $SBOM_OUT/cdxpy-req-cdx14.json"
       - "cyclonedx-py --format json -p -o $SBOM_OUT/cdxpy-poetry-cdx14.json"

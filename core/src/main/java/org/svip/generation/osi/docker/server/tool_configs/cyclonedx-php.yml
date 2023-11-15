@@ -4,6 +4,7 @@ profiles:
     format: "json"
     language:
       - "php"
+    package_manager:
     commands:
       - "composer update --no-install"
       - "composer CycloneDX:make-sbom --output-format=JSON --output-file=$SBOM_OUT/cdxphp-14.json"

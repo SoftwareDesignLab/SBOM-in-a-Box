@@ -4,6 +4,7 @@ profiles:
     format: "json"
     language:
       - "Rust"
+    package_manager:
     commands:
       - "sbom4rust --sbom cyclonedx -a osi-sbom --output-file=$SBOM_OUT/sbom4rust-cdx15.json"
   - schema: "spdx"
@@ -11,5 +12,6 @@ profiles:
     format: "spdx"
     language:
       - "Rust"
+    package_manager:
     commands:
       - "sbom4python --sbom spdx -a osi-sbom --output-file=$SBOM_OUT/sbom4rust-spdx23.spdx"

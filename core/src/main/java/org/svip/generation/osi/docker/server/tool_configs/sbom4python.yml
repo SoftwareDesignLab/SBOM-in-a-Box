@@ -4,6 +4,7 @@ profiles:
     format: "json"
     language:
       - "Python"
+    package_manager:
     commands:
       - "sbom4python --sbom cyclonedx --output-file=$SBOM_OUT/sbom4python-cdx15.json"
   - schema: "spdx"
@@ -11,5 +12,6 @@ profiles:
     format: "spdx"
     language:
       - "Python"
+    package_manager:
     commands:
       - "sbom4python --sbom spdx --output-file=$SBOM_OUT/sbom4python-spdx23.spdx"

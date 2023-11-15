@@ -4,6 +4,7 @@ profiles:
     format: "json"
     language:
       - "python"
+    package_manager:
     commands:
       - "jake sbom -t PIP --output-format json -o $SBOM_OUT/jake-pip-cdx14.json"
       - "jake sbom -t POETRY --output-format json -o $SBOM_OUT/jake-poetry-cdx14.json"

@@ -5,5 +5,6 @@ profiles:
     language:
       - "C"
       - "C++"
+    package_manager:
     commands:
       - "cyclonedx-conan {manifest} --output $SBOM_OUT/cdxconan-cdx14.json"

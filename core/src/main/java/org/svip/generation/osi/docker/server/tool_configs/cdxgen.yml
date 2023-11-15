@@ -4,5 +4,6 @@ profiles:
     format: "json"
     language:
       - "Python"
+    package_manager:
     commands:
       - "cdxgen -r -o $SBOM_OUT/cdxgen-cdx14.json"

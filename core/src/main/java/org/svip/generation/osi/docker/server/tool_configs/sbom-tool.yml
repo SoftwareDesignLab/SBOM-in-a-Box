@@ -7,6 +7,7 @@ profiles:
       - "Python"
       - "Ruby"
       - "Rust"
+    package_manager:
     commands:
       - "sbom-tool generate -ps . -b . -m . -pn . -pv ."
       - "mv _manifest/spdx_2.2/manifest.spdx.json $SBOM_OUT && rm -rf _manifest"

@@ -4,5 +4,6 @@ profiles:
     format: "json"
     language:
       - "Java_Jar"
+    package_manager:
     commands:
       - "java -jar /usr/local/bin/jbom.jar -d . -o $SBOM_OUT"

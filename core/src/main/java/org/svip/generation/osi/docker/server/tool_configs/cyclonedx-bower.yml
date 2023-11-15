@@ -4,6 +4,7 @@ profiles:
     format: "xml"
     language:
       - "Javascript"
+    package_manager:
     commands:
       - "bower --allow-root install"
       - "cdx-bower-bom -o $SBOM_OUT/cdxbower-cdx10.xml"

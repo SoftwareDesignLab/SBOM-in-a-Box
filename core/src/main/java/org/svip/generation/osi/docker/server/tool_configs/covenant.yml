@@ -16,6 +16,7 @@ profiles:
       - "Ruby"
       - "Rust"
       - "Swift"
+    package_manager:
     commands:
       - "dotnet build"
       - "dotnet covenant generate . -o /tmp/covenant.out"
@@ -38,6 +39,7 @@ profiles:
       - "Ruby"
       - "Rust"
       - "Swift"
+    package_manager:
     commands:
       - "dotnet build"
       - "dotnet covenant generate . -o /tmp/covenant.out"
