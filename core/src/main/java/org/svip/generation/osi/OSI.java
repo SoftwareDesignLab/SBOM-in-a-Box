@@ -38,14 +38,9 @@ public class OSI {
         CODE("code/"),
         SBOMS("sboms/");
 
-        /**
-         * The location of the bound directory relative to the build path (core).
-         */
+        // The location of the bound directory relative to the build path (core).
         private static final String BOUND_DIR = "/core/src/main/java/org/svip/generation/osi/bound_dir/";
-
-        /**
-         * The directory name of the /bound_dir subdirectory
-         */
+        // The directory name of the /bound_dir subdirectory
         private final String dirName;
 
         BOUND_DIR(String dirName) {
@@ -59,15 +54,6 @@ public class OSI {
          */
         private String getPath() {
             return System.getProperty("user.dir") + BOUND_DIR + dirName;
-        }
-
-        /**
-         * Append file name to the bound directory path
-         *
-         * @return Path to file inside bound directory
-         */
-        public String appendFileToPath(String fileName){
-            return getPath() + fileName;
         }
 
         /**
@@ -113,6 +99,9 @@ public class OSI {
     }
 
     public void addProject(ZipInputStream inputStream) throws IOException {
+        // Remove all SBOMs and source files in the bound_dir folder before uploading files
+        BOUND_DIR.CODE.flush();
+
         Path path = Paths.get(BOUND_DIR.CODE.getPath());
         for (ZipEntry entry; (entry = inputStream.getNextEntry()) != null; ) {
             Path resolvedPath = path.resolve(entry.getName());

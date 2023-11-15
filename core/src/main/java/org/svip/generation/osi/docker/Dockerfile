@@ -15,6 +15,10 @@ ENV PATH $PATH:/root/.dotnet/tools
 # Node.js Setup
 ENV NVM_DIR /root/.nvm
 
+# Bound Directories
+ENV CODE_IN /bound_dir/code
+ENV SBOM_OUT /bound_dir/sboms
+
 # Copy startup scripts
 COPY scripts/ /usr/local/bin/
 # Copy Flask webserver scripts
