@@ -6,4 +6,4 @@ profiles:
     language:
       - "Javascript"
     commands:
-      - "retire --outputformat cyclonedxJSON > {output_dir}/retirejs-cdx14.json"
+      - "retire --outputformat cyclonedxJSON > $SBOM_OUT/retirejs-cdx14.json"

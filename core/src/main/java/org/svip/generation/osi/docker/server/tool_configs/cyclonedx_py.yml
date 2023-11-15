@@ -6,5 +6,5 @@ profiles:
     language:
       - "Python"
     commands:
-      - "cyclonedx-py --format json -r -o {output_dir}/cdxpy-req-cdx14.json"
-      - "cyclonedx-py --format json -p -o {output_dir}/cdxpy-poetry-cdx14.json"
+      - "cyclonedx-py --format json -r -o $SBOM_OUT/cdxpy-req-cdx14.json"
+      - "cyclonedx-py --format json -p -o $SBOM_OUT/cdxpy-poetry-cdx14.json"

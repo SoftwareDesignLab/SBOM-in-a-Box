@@ -7,4 +7,4 @@ profiles:
       - "C"
       - "C++"
     commands:
-      - "cyclonedx-conan {manifest} --output {output_dir}/cdxconan-cdx14.json"
+      - "cyclonedx-conan {manifest} --output $SBOM_OUT/cdxconan-cdx14.json"

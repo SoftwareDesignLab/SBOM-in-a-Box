@@ -22,7 +22,7 @@ profiles:
     commands:
       - "dotnet build"
       - "dotnet covenant generate . -o /tmp/covenant.out"
-      - "dotnet covenant convert cyclondedx /tmp/covenant.out -o {output_dir}/covenant-cdx10.xml"
+      - "dotnet covenant convert cyclondedx /tmp/covenant.out -o $SBOM_OUT/covenant-cdx10.xml"
       - "rm /tmp/covenant.out"
   - schema: "spdx"
     spec_version: "2.3"
@@ -44,5 +44,5 @@ profiles:
     commands:
       - "dotnet build"
       - "dotnet covenant generate . -o /tmp/covenant.out"
-      - "dotnet covenant convert spdx /tmp/covenant.out -o {output_dir}/covenant-spdx23.json"
+      - "dotnet covenant convert spdx /tmp/covenant.out -o $SBOM_OUT/covenant-spdx23.json"
       - "rm /tmp/covenant.out"

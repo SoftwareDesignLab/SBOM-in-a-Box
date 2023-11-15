@@ -8,5 +8,5 @@ profiles:
     language:
       - "python"
     commands:
-      - "jake sbom -t PIP --output-format json -o {output_dir}/jake-pip-cdx14.json"
-      - "jake sbom -t POETRY --output-format json -o {output_dir}/jake-poetry-cdx14.json"
+      - "jake sbom -t PIP --output-format json -o $SBOM_OUT/jake-pip-cdx14.json"
+      - "jake sbom -t POETRY --output-format json -o $SBOM_OUT/jake-poetry-cdx14.json"

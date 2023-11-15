@@ -13,4 +13,4 @@ profiles:
       - "Ruby"
       - "Swift"
     commands:
-      - "spdx-sbom-generator -o {output_dir}"
+      - "spdx-sbom-generator -o $SBOM_OUT"

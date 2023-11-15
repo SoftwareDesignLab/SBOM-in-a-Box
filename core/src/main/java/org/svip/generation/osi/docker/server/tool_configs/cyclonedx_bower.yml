@@ -7,4 +7,4 @@ profiles:
       - "Javascript"
     commands:
       - "bower --allow-root install"
-      - "cdx-bower-bom -o {output_dir}/cdxbower-cdx10.xml"
+      - "cdx-bower-bom -o $SBOM_OUT/cdxbower-cdx10.xml"

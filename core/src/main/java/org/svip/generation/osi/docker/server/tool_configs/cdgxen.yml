@@ -6,4 +6,4 @@ profiles:
     language:
       - "Python"
     commands:
-      - "cdxgen -r -o {output_dir}/cdxgen-cdx14.json"
+      - "cdxgen -r -o $SBOM_OUT/cdxgen-cdx14.json"

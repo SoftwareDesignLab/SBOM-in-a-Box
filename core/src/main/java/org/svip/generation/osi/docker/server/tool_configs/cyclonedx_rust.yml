@@ -6,4 +6,4 @@ profiles:
     language:
       - "Rust"
     commands:
-      - "cargo cyclonedx -f json -a -o {output}/cdxrust-cdx14.json"
+      - "cargo cyclonedx -f json -a -o $SBOM_OUT/cdxrust-cdx14.json"

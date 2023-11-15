@@ -29,4 +29,4 @@ profiles:
       - "Rust"
       - "Perl"
     commands:
-      - "sbom4files -d . -p osi-sbom -r --sbom spdx --output-file={output_dir}/sbom4files-spdx23.spdx"
+      - "sbom4files -d . -p osi-sbom -r --sbom spdx --output-file=$SBOM_OUT/sbom4files-spdx23.spdx"
