@@ -1,4 +1,3 @@
-tool: "cdxgen"
 profiles:
   - schema: "cyclonedx"
     spec_version: "1.4"

@@ -1,6 +1,3 @@
-# Name of the tool
-tool: "covenant"
-# > 1 ways to use the tool to generate sboms
 profiles:
   - schema: "cyclonedx"
     spec_version: "1.0"

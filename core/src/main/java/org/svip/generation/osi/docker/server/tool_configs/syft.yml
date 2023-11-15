@@ -1,4 +1,3 @@
-tool: "syft"
 profiles:
   - schema: "cyclonedx"
     spec_version: "1.4"

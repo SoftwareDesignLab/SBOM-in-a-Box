@@ -1,4 +1,3 @@
-tool: "cyclonedx-py"
 profiles:
   - schema: "cyclonedx"
     spec_version: "1.4"

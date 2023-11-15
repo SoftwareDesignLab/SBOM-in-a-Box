@@ -1,4 +1,3 @@
-tool: "cyclonedx-conan"
 profiles:
   - schema: "cyclonedx"
     spec_version: "1.3"

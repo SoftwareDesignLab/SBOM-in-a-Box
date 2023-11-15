@@ -1,4 +1,3 @@
-tool: "retire.js"
 profiles:
   - schema: "cyclonedx"
     spec_version: "1.4"

@@ -1,4 +1,3 @@
-tool: "sbom4files"
 profiles:
   - schema: "cyclonedx"
     spec_version: "1.5"
