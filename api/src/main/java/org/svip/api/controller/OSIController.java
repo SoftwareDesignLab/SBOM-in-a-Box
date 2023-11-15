@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipInputStream;
 
 /**
  * REST API Controller for generating SBOMs with OSI
@@ -106,6 +107,21 @@ public class OSIController {
     ///
     /// POST
     ///
+
+    @PostMapping(value = "/project", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<?> uploadProject(@RequestPart("projectZip") MultipartFile projectZip){
+        if (!isOSIEnabled())
+            return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
+
+        try (ZipInputStream inputStream = new ZipInputStream(projectZip.getInputStream())) {
+            this.container.addProject(inputStream);
+        } catch (IOException e) {
+            LOGGER.error("POST /svip/generators/osi/project - " + e.getMessage());
+            return new ResponseEntity<>("Make sure attachment is a zip file (.zip): " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
     /**
      * USAGE. Send POST request to /generators/osi to generate an SBOM from source file(s).

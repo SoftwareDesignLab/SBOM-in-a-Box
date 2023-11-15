@@ -8,10 +8,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import static org.svip.generation.osi.OSIClient.isOSIContainerAvailable;
 
@@ -106,6 +110,19 @@ public class OSI {
             throw new DockerNotAvailableException("OSI container API not running or returned non-200 response code.");
 
         this.client = new OSIClient(); // Create OSIClient instance
+    }
+
+    public void addProject(ZipInputStream inputStream) throws IOException {
+        Path path = Paths.get(BOUND_DIR.CODE.getPath());
+        for (ZipEntry entry; (entry = inputStream.getNextEntry()) != null; ) {
+            Path resolvedPath = path.resolve(entry.getName());
+            if (!entry.isDirectory()) {
+                Files.createDirectories(resolvedPath.getParent());
+                Files.copy(inputStream, resolvedPath);
+            } else {
+                Files.createDirectories(resolvedPath);
+            }
+        }
     }
 
     /**
