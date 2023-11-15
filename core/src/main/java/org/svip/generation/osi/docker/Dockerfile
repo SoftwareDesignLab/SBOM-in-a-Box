@@ -26,7 +26,5 @@ RUN /bin/bash -c setup.sh
 # Cleanup
 RUN rm /usr/local/bin/setup.sh
 
-# give runner permission to run on Mac
-RUN ["chmod", "+x", "/usr/local/bin/runner.sh"]
 
 ENTRYPOINT ["runner.sh"]
