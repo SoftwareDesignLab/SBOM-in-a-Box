@@ -30,14 +30,22 @@ public class SerializerTest {
 
     private final SVIPSBOM testSBOM;
 
+    private final SVIPSBOM testEmptySBOM;
+
     public SerializerTest(Serializer serializer) {
         this.serializer = serializer;
         this.sbomFactory = new SVIPSBOMBuilderFactory();
         this.componentFactory = new SVIPSBOMComponentFactory();
 
         this.testSBOM = buildTestSBOM();
+        this.testEmptySBOM = buildTestEmptySBOM();
 
         Debug.enableDebug();
+    }
+
+    private SVIPSBOM buildTestEmptySBOM() {
+        SVIPSBOMBuilder sbomBuilder = sbomFactory.createBuilder();
+        return sbomBuilder.Build();
     }
 
     private SVIPSBOM buildTestSBOM() {
@@ -93,7 +101,7 @@ public class SerializerTest {
         relationship.setComment("Test Relationship Comment");
         sbomBuilder.addRelationship("uid1", relationship);
 
-        return (SVIPSBOM) sbomBuilder.Build();
+        return sbomBuilder.Build();
     }
 
     private SVIPComponentObject buildTestComponent(int id, boolean file) {
@@ -170,5 +178,9 @@ public class SerializerTest {
 
     public SVIPSBOM getTestSBOM() {
         return testSBOM;
+    }
+
+    public SVIPSBOM getTestEmptySBOM() {
+        return testEmptySBOM;
     }
 }

@@ -7,7 +7,10 @@ import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.serializer.SPDX23JSONSerializer;
 import org.svip.utils.Debug;
 
+import java.util.regex.Pattern;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class SPDX23JSONSerializerTest extends SerializerTest {
     public SPDX23JSONSerializerTest() {
@@ -27,5 +30,12 @@ public class SPDX23JSONSerializerTest extends SerializerTest {
 
         // TODO Compare getTestSBOM() and sbom with Comparison when it's finished
         assertEquals(3, sbom.getComponents().size());
+    }
+
+    @Test
+    public void writeToStringNullFieldsTest() throws JsonProcessingException {
+        String serialized = getSerializer().writeToString(getTestEmptySBOM());
+        Pattern pattern = Pattern.compile(" null");
+        assertFalse(pattern.matcher(serialized).find());
     }
 }
