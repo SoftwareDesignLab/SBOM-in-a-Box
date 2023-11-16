@@ -11,7 +11,7 @@ import sys
 
 import yaml
 
-SBOM_CONFIG = "constant/configs/sbom.cfg"
+SBOM_CONFIG = "configs/sbom.cfg"
 TOOL_CONFIGS_DIR = "tool_configs"
 
 

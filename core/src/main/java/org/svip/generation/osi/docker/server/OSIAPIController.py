@@ -11,16 +11,11 @@ import os
 import subprocess
 
 from flask import Flask, request
-import json
 
-import ToolUtils
-from OSTool import OSTool
-from ToolMapper import get_tool
-from constants import CONTAINER_BIND_CODE, CONTAINER_BIND_SBOM, Language
-from tools.ToolFactory import Tool, ToolFactory, RunConfig, Profile
+from tools.ToolFactory import ToolFactory, RunConfig, Profile
 
-LANGUAGE_EXT_CONFIG = "constant/configs/language_ext.cfg"
-MANIFEST_EXT_CONFIG = "constant/configs/manifest_ext.cfg"
+LANGUAGE_EXT_CONFIG = "configs/language_ext.cfg"
+MANIFEST_EXT_CONFIG = "configs/manifest_ext.cfg"
 
 FILE_NAME_SED_PATTERN = 's/.*\///'
 
@@ -63,33 +58,33 @@ def generate():
     """
 
     # Cleanup, detect languages
-    ToolUtils.cleanup(True)
-    langs, manifest_files = ToolUtils.detect_language(CONTAINER_BIND_CODE)
-    manifest_clean = ToolUtils.clean_manifest(manifest_files)
-
-    app.logger.info("Detected languages: " + str([l.name for l in langs]))
-    app.logger.info("Detected manifest files: " + str(manifest_files))
-
-    tools = []
-
-    if request.data and request.is_json and request.get_json()["tools"] and len(request.get_json()["tools"]) > 0:
-        tools = get_applicable_tools(json.loads(request.get_json()["tools"]), langs)
-    else:
-        app.logger.info("No tools provided. Defaulting to all tools.")
-        tools = ToolUtils.get_tools(langs)
-
-    # Run tools and cleanup
-    app.logger.info("Running with tools: " + str(tools))
-    gen_count = ToolUtils.run_tools(tools, manifest_clean, CONTAINER_BIND_CODE, CONTAINER_BIND_SBOM)
-    ToolUtils.cleanup()
-
-    # Return 200 (ok) if sboms were generated, otherwise return 204 (no content)
-    if gen_count > 0:
-        app.logger.info(str(gen_count) + " SBOMs generated.")
-        return "Successfully generated SBOMs.", 200
-    else:
-        app.logger.info("No SBOMs generated.")
-        return "No SBOMs generated.", 204
+    # ToolUtils.cleanup(True)
+    # langs, manifest_files = ToolUtils.detect_language(CONTAINER_BIND_CODE)
+    # manifest_clean = ToolUtils.clean_manifest(manifest_files)
+    #
+    # app.logger.info("Detected languages: " + str([l.name for l in langs]))
+    # app.logger.info("Detected manifest files: " + str(manifest_files))
+    #
+    # tools = []
+    #
+    # if request.data and request.is_json and request.get_json()["tools"] and len(request.get_json()["tools"]) > 0:
+    #     tools = get_applicable_tools(json.loads(request.get_json()["tools"]), langs)
+    # else:
+    #     app.logger.info("No tools provided. Defaulting to all tools.")
+    #     tools = ToolUtils.get_tools(langs)
+    #
+    # # Run tools and cleanup
+    # app.logger.info("Running with tools: " + str(tools))
+    # gen_count = ToolUtils.run_tools(tools, manifest_clean, CONTAINER_BIND_CODE, CONTAINER_BIND_SBOM)
+    # ToolUtils.cleanup()
+    #
+    # # Return 200 (ok) if sboms were generated, otherwise return 204 (no content)
+    # if gen_count > 0:
+    #     app.logger.info(str(gen_count) + " SBOMs generated.")
+    #     return "Successfully generated SBOMs.", 200
+    # else:
+    #     app.logger.info("No SBOMs generated.")
+    #     return "No SBOMs generated.", 204
 
 
 def get_applicable_tools() -> list[Profile]:
