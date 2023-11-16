@@ -132,6 +132,9 @@ public class OSI {
      * @return A map of each SBOM's filename to its contents.
      */
     public Map<String, String> generateSBOMs(List<String> toolNames) throws IOException {
+        // remove any old sboms
+        BOUND_DIR.SBOMS.flush();
+
         boolean status = this.client.generateSBOMs(toolNames);
 
         Map<String, String> sboms = new HashMap<>();

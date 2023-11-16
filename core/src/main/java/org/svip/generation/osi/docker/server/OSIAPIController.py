@@ -8,6 +8,7 @@ Container.
 """
 import configparser
 import os
+import subprocess
 
 from flask import Flask, request
 import json
@@ -16,17 +17,19 @@ import ToolUtils
 from OSTool import OSTool
 from ToolMapper import get_tool
 from constants import CONTAINER_BIND_CODE, CONTAINER_BIND_SBOM, Language
-from tools.ToolFactory import Tool, ToolFactory
+from tools.ToolFactory import Tool, ToolFactory, RunConfig, Profile
 
 LANGUAGE_EXT_CONFIG = "constant/configs/language_ext.cfg"
 MANIFEST_EXT_CONFIG = "constant/configs/manifest_ext.cfg"
 
+FILE_NAME_SED_PATTERN = 's/.*\///'
+
 # Create Flask app
 app = Flask(__name__)
 
-AVAILABLE_TOOLS = list[Tool]
-LANGUAGE_MAP=dict[str, str]
-MANIFEST_MAP=dict[str, str]
+AVAILABLE_TOOLS = []
+LANGUAGE_MAP = dict[str, str]
+MANIFEST_MAP = dict[str, str]
 
 
 @app.route('/tools', methods=['GET'])
@@ -42,10 +45,12 @@ def get_tools():
         case "all":
             return os.environ['OSI_TOOL'].split(":"), 200
         case "project":
-            # todo replace with rel
-            return "rel", 200
+            tools = get_applicable_tools()
+            tool_names = [tool.name for tool in tools]
+            return tool_names, 200
         case _:
             return f"'{request.args.get('list')}' is an unknown param", 400
+
 
 @app.route('/generate', methods=['POST'])
 def generate():
@@ -68,7 +73,7 @@ def generate():
     tools = []
 
     if request.data and request.is_json and request.get_json()["tools"] and len(request.get_json()["tools"]) > 0:
-        tools = parse_tools(json.loads(request.get_json()["tools"]), langs)
+        tools = get_applicable_tools(json.loads(request.get_json()["tools"]), langs)
     else:
         app.logger.info("No tools provided. Defaulting to all tools.")
         tools = ToolUtils.get_tools(langs)
@@ -87,35 +92,33 @@ def generate():
         return "No SBOMs generated.", 204
 
 
-def parse_tools(tool_names: str, langs: list[Language]) -> list[OSTool]:
-    """
-    Helper method to parse a list of tool names and project languages into a list of valid, applicable OSTool instances.
+def get_applicable_tools() -> list[Profile]:
+    languages = set()
+    package_managers = set()
 
-    Parameter: tool_names - A list of tool names.
-    Parameter: langs      - A list of project languages.
-    Returns: A list of valid, applicable OSTool instances that correspond to tool names. If a tool name is invalid or
-             not applicable, it will be skipped.
-    """
+    # find . -type f -name '*.*' | sed 's/.*\///' | sort -u
+    files = subprocess.run(
+        f"find . -type f -name '*.*' | sed '{FILE_NAME_SED_PATTERN}' | sort -u",
+        shell=True, capture_output=True, text=True).stdout.strip().split("\n")
+
+    for file_name in files:
+        if file_name.lower().split(".")[1] in LANGUAGE_MAP:
+            languages.add(LANGUAGE_MAP.get(file_name.split(".")[1]))
+        if file_name.lower() in MANIFEST_MAP:
+            package_managers.add(MANIFEST_MAP[file_name.lower()])
+
+    run_config = RunConfig(languages, package_managers)
 
     tools = []
-    valid_tools = ToolUtils.get_tools(langs)
-
-    app.logger.info("Tools selected:")
-    for name in tool_names:
-        # Make sure tool exists
-        tool = get_tool(name)
-        if tool is None:
-            app.logger.warning(name + " -- Invalid tool name. Skipping.")
-            continue
-
-        # Add tool if valid
-        if tool in valid_tools:
-            tools.append(tool)
-            app.logger.info(name)
-        else:
-            app.logger.warning(name + " -- Invalid tool for detected languages. Skipping.")
+    for tool in AVAILABLE_TOOLS:
+        tools += tool.get_matching_profiles(run_config)
 
     return tools
+
+
+def build_extension_regex(extension: str) -> str:
+    return f"find -name '*{extension}' | grep -qE '*{extension}'".replace(".", "\.")
+
 
 def load_ext_mapper(config_file: str) -> dict[str, str]:
     cfg = configparser.ConfigParser(allow_no_value=True)
@@ -130,10 +133,10 @@ def load_ext_mapper(config_file: str) -> dict[str, str]:
 
 if __name__ == '__main__':
     # Load tools available in this instance
-    # tf = ToolFactory()
-    # for tool_name in os.environ['OSI_TOOL'].split(":"):
-    #     tool = tf.build_tool(tool_name)
-    #     AVAILABLE_TOOLS.append(tool)
+    tf = ToolFactory()
+    for tool_name in os.environ['OSI_TOOL'].split(":"):
+        tool = tf.build_tool(tool_name)
+        AVAILABLE_TOOLS.append(tool)
     LANGUAGE_MAP = load_ext_mapper(LANGUAGE_EXT_CONFIG)
     MANIFEST_MAP = load_ext_mapper(MANIFEST_EXT_CONFIG)
 
