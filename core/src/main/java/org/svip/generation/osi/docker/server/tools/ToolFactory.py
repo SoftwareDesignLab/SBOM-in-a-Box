@@ -74,7 +74,7 @@ class ToolFactory(object):
     def __init__(self):
         self.sbom_config = self.load_config(SBOM_CONFIG)
 
-    def build_tool(self, name: str) -> Tool:
+    def build_tool(self, name: str) -> Tool | None:
         tool = Tool(name)
         try:
             with open(f"{TOOL_CONFIGS_DIR}/{name}.yml") as config:
@@ -88,10 +88,13 @@ class ToolFactory(object):
                     except Exception as e:
                         print(f"Failed to parse profile: {e}", file=sys.stderr)
         except FileNotFoundError as e:
-            print(f"'{name}.yml' was not found: {e}", file=sys.stderr)
+            raise FileNotFoundError(f"'{name}.yml' was not found: {e}")
+        except Exception as e:
+            raise Exception(f"Failed to parse '{name}.yml: {e}")
+
         return tool
 
-    def build_profile(self, tool:str, profile_data) -> Profile:
+    def build_profile(self, tool: str, profile_data) -> Profile:
 
         try:
             schema = profile_data['schema'].lower()

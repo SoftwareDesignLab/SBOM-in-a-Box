@@ -7,17 +7,18 @@ Container.
 @author Ian Dunn
 """
 import configparser
+import json
 import os
 import subprocess
 
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 from tools.ToolFactory import ToolFactory, RunConfig, Profile
 
 LANGUAGE_EXT_CONFIG = "configs/language_ext.cfg"
 MANIFEST_EXT_CONFIG = "configs/manifest_ext.cfg"
 
-FILE_NAME_SED_PATTERN = 's/.*\///'
+FILE_NAME_SED_PATTERN = r's|.*\/||'
 
 # Create Flask app
 app = Flask(__name__)
@@ -58,25 +59,38 @@ def generate():
     """
 
     # Cleanup, detect languages
-    # ToolUtils.cleanup(True)
-    # langs, manifest_files = ToolUtils.detect_language(CONTAINER_BIND_CODE)
-    # manifest_clean = ToolUtils.clean_manifest(manifest_files)
+    tools = []
+    if request.is_json:
+        try:
+            post_json = jsonify(request.json)
+            tool_names = post_json.get_json()['tools']
+            app.logger.info(f"Attempting to use provided tools: {tool_names}")
+        except Exception as e:
+            app.logger.error(f"Failed to parse json: {e}")
+            return "Failed to paser tools", 400
+
+        for tool_name in tool_names:
+            try:
+                tf = ToolFactory()
+                tool = tf.build_tool(tool_name)
+                if not any(a_tool.name == tool.name for a_tool in AVAILABLE_TOOLS):
+                    app.logger.warning(f"Attempting to use '{tool.name}' when not available, skipping . . .")
+                else:
+                    tools.append(tool)
+            except Exception as e:
+                app.logger.error(f"{e}")
+                continue
+    else:
+        app.logger.info("No tools provided; Defaulting to relevant tools.")
+        tools = get_applicable_tools()
+
+    if len(tools) == 0:
+        app.logger.error("No tools selected")
+        return "No tools available", 422
     #
-    # app.logger.info("Detected languages: " + str([l.name for l in langs]))
-    # app.logger.info("Detected manifest files: " + str(manifest_files))
-    #
-    # tools = []
-    #
-    # if request.data and request.is_json and request.get_json()["tools"] and len(request.get_json()["tools"]) > 0:
-    #     tools = get_applicable_tools(json.loads(request.get_json()["tools"]), langs)
-    # else:
-    #     app.logger.info("No tools provided. Defaulting to all tools.")
-    #     tools = ToolUtils.get_tools(langs)
-    #
-    # # Run tools and cleanup
-    # app.logger.info("Running with tools: " + str(tools))
-    # gen_count = ToolUtils.run_tools(tools, manifest_clean, CONTAINER_BIND_CODE, CONTAINER_BIND_SBOM)
-    # ToolUtils.cleanup()
+    # Run tools and cleanup
+    app.logger.info(f"Running with tools: {tools}")
+
     #
     # # Return 200 (ok) if sboms were generated, otherwise return 204 (no content)
     # if gen_count > 0:
@@ -102,6 +116,9 @@ def get_applicable_tools() -> list[Profile]:
         if file_name.lower() in MANIFEST_MAP:
             package_managers.add(MANIFEST_MAP[file_name.lower()])
 
+    app.logger.info(f"Detected languages: {languages}")
+    app.logger.info(f"Detected package managers: {package_managers}")
+
     run_config = RunConfig(languages, package_managers)
 
     tools = []
@@ -109,10 +126,6 @@ def get_applicable_tools() -> list[Profile]:
         tools += tool.get_matching_profiles(run_config)
 
     return tools
-
-
-def build_extension_regex(extension: str) -> str:
-    return f"find -name '*{extension}' | grep -qE '*{extension}'".replace(".", "\.")
 
 
 def load_ext_mapper(config_file: str) -> dict[str, str]:
@@ -128,11 +141,10 @@ def load_ext_mapper(config_file: str) -> dict[str, str]:
 
 if __name__ == '__main__':
     # Load tools available in this instance
-    tf = ToolFactory()
-    for tool_name in os.environ['OSI_TOOL'].split(":"):
-        tool = tf.build_tool(tool_name)
-        AVAILABLE_TOOLS.append(tool)
-    LANGUAGE_MAP = load_ext_mapper(LANGUAGE_EXT_CONFIG)
-    MANIFEST_MAP = load_ext_mapper(MANIFEST_EXT_CONFIG)
-
+    # tf = ToolFactory()
+    # for tool_name in os.environ['OSI_TOOL'].split(":"):
+    #     tool = tf.build_tool(tool_name)
+    #     AVAILABLE_TOOLS.append(tool)
+    # LANGUAGE_MAP = load_ext_mapper(LANGUAGE_EXT_CONFIG)
+    # MANIFEST_MAP = load_ext_mapper(MANIFEST_EXT_CONFIG)
     app.run(host='0.0.0.0', debug=True)  # TODO move to config
