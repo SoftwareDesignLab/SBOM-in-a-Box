@@ -53,7 +53,6 @@ class ToolFactory(object):
     def __init__(self):
         self.sbom_config = self.load_config(SBOM_CONFIG)
 
-
     def build_tool(self, name: str) -> Tool:
         tool = Tool(name)
         try:
@@ -68,7 +67,7 @@ class ToolFactory(object):
                     except Exception as e:
                         print(f"Failed to parse profile: {e}", file=sys.stderr)
         except FileNotFoundError as e:
-            raise FileNotFoundError(f"'{name}.yml' was not found: {e}")
+            print(f"'{name}.yml' was not found: {e}", file=sys.stderr)
         return tool
 
     def build_profile(self, profile_data) -> Profile:
@@ -78,7 +77,7 @@ class ToolFactory(object):
             spec_version = profile_data['spec_version'].lower()
             format = profile_data['format'].lower()
 
-            languages = set(map(lambda value: value.lower(), profile_data['languages']))\
+            languages = set(map(lambda value: value.lower(), profile_data['languages'])) \
                 if 'languages' in profile_data else set()
 
             package_managers = set(map(lambda value: value.lower(), profile_data['package_managers'])) \
@@ -102,14 +101,12 @@ class ToolFactory(object):
             raise Exception(
                 f"'{schema}.spec_version does not support '{format}'format; Has it been added to the config?")
 
-        return Profile(schema, spec_version, format, languages, package_managers,commands)
-
+        return Profile(schema, spec_version, format, languages, package_managers, commands)
 
     def load_config(self, config_path: str) -> configparser:
         cfg = configparser.ConfigParser(allow_no_value=True)
         cfg.read(config_path)
         return cfg
-
 
 
 def load_ext_mapper(config_file: str):

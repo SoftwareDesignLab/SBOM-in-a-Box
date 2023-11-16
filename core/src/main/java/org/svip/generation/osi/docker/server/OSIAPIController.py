@@ -15,9 +15,12 @@ import ToolUtils
 from OSTool import OSTool
 from ToolMapper import get_tool
 from constants import CONTAINER_BIND_CODE, CONTAINER_BIND_SBOM, Language
+from tools.ToolFactory import Tool, ToolFactory
 
 # Create Flask app
 app = Flask(__name__)
+
+AVAILABLE_TOOLS = list[Tool]
 
 
 @app.route('/tools', methods=['GET'])
@@ -104,5 +107,10 @@ def parse_tools(tool_names: str, langs: list[Language]) -> list[OSTool]:
 
 
 if __name__ == '__main__':
-    
+    # Load tools available in this instance
+    tf = ToolFactory()
+    for tool_name in get_tools():
+        tool = tf.build_tool(tool_name)
+        AVAILABLE_TOOLS.append(tool)
+
     app.run(host='0.0.0.0', debug=True)  # TODO move to config
