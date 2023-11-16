@@ -26,14 +26,20 @@ AVAILABLE_TOOLS = list[Tool]
 @app.route('/tools', methods=['GET'])
 def get_tools():
     """
-    Endpoint: GET http://localhost:50001/tools
-
+    Endpoint: GET http://localhost:50001/tools?list=
+    param arg
     Returns: A list of names of valid open-source tools.
     """
-
-    # Get tools from env
-    return os.environ['OSI_TOOL'].split(":")
-
+    match request.args.get('list'):
+        case None:
+            return os.environ['OSI_TOOL'].split(":"), 200
+        case "all":
+            return os.environ['OSI_TOOL'].split(":"), 200
+        case "project":
+            # todo replace with rel
+            return "rel", 200
+        case _:
+            return f"'{request.args.get('list')}' is an unknown param", 400
 
 @app.route('/generate', methods=['POST'])
 def generate():
@@ -109,7 +115,7 @@ def parse_tools(tool_names: str, langs: list[Language]) -> list[OSTool]:
 if __name__ == '__main__':
     # Load tools available in this instance
     tf = ToolFactory()
-    for tool_name in get_tools():
+    for tool_name in os.environ['OSI_TOOL'].split(":"):
         tool = tf.build_tool(tool_name)
         AVAILABLE_TOOLS.append(tool)
 
