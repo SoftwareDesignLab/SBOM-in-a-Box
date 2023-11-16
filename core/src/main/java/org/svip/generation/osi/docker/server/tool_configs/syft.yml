@@ -2,7 +2,7 @@ profiles:
   - schema: "cyclonedx"
     spec_version: "1.4"
     format: "json"
-    language:
+    languages:
       - "C"
       - "C++"
       - "Dart"
@@ -16,13 +16,13 @@ profiles:
       - "Ruby"
       - "Rust"
       - "Swift"
-    package_manager:
+    package_managers:
     commands:
       - "syft . -o cyclonedx-json@1.4=$SBOM_OUT/syft-cdx14.json"
   - schema: "spdx"
     spec_version: "2.3"
     format: "spdx"
-    language:
+    languages:
       - "C"
       - "C++"
       - "Dart"
@@ -36,6 +36,6 @@ profiles:
       - "Ruby"
       - "Rust"
       - "Swift"
-    package_manager:
+    package_managers:
     commands:
       - "syft . -o spdx-tag-value=$SBOM_OUT/syft-spdx23.spdx"

@@ -2,9 +2,9 @@ profiles:
   - schema: "cyclonedx"
     spec_version: "1.4"
     format: "json"
-    language:
+    languages:
       - "Python"
-    package_manager:
+    package_managers:
     commands:
       - "cyclonedx-py --format json -r -o $SBOM_OUT/cdxpy-req-cdx14.json"
       - "cyclonedx-py --format json -p -o $SBOM_OUT/cdxpy-poetry-cdx14.json"

@@ -2,9 +2,9 @@ profiles:
   - schema: "cyclonedx"
     spec_version: "1.0"
     format: "xml"
-    language:
+    languages:
       - "Javascript"
-    package_manager:
+    package_managers:
     commands:
       - "bower --allow-root install"
       - "cdx-bower-bom -o $SBOM_OUT/cdxbower-cdx10.xml"

@@ -2,8 +2,8 @@ profiles:
   - schema: "cyclonedx"
     spec_version: "1.4"
     format: "json"
-    language:
+    languages:
       - "Javascript"
-    package_manager:
+    package_managers:
     commands:
       - "retire --outputformat cyclonedxJSON > $SBOM_OUT/retirejs-cdx14.json"

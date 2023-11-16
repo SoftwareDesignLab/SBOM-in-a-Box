@@ -2,8 +2,8 @@ profiles:
   - schema: "cyclonedx"
     spec_version: "1.4"
     format: "json"
-    language:
+    languages:
       - "Python"
-    package_manager:
+    package_managers:
     commands:
       - "cdxgen -r -o $SBOM_OUT/cdxgen-cdx14.json"

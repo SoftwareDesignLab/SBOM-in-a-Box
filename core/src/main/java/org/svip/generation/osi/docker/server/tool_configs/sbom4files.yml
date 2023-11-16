@@ -2,7 +2,7 @@ profiles:
   - schema: "cyclonedx"
     spec_version: "1.5"
     format: "json"
-    language:
+    languages:
       - "C"
       - "C++"
       - "Go"
@@ -12,13 +12,13 @@ profiles:
       - "Python"
       - "Rust"
       - "Perl"
-    package_manager:
+    package_managers:
     commands:
       - "sbom4files -d . -p osi-sbom -r --sbom cyclonedx -o {output}/sbom4files-cdx15.json"
   - schema: "spdx"
     spec_version: "2.3"
     format: "spdx"
-    language:
+    languages:
       - "C"
       - "C++"
       - "Go"
@@ -28,6 +28,6 @@ profiles:
       - "Python"
       - "Rust"
       - "Perl"
-    package_manager:
+    package_managers:
     commands:
       - "sbom4files -d . -p osi-sbom -r --sbom spdx --output-file=$SBOM_OUT/sbom4files-spdx23.spdx"

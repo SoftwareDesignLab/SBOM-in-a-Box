@@ -19,7 +19,7 @@ TOOL_CONFIGS_DIR = "tool_configs"
 
 class Profile(object):
 
-    def __init__(self, schema: str, spec_version: str, sbom_format: str, manifests: list[str], languages: list[str],
+    def __init__(self, schema: str, spec_version: str, sbom_format: str, languages: set[str], manifests: set[str],
                  commands: list[str]):
         self.schema = schema
         self.spec_version = spec_version
@@ -53,10 +53,6 @@ class ToolFactory(object):
     def __init__(self):
         self.sbom_config = self.load_config(SBOM_CONFIG)
 
-    def load_config(self, config_path: str) -> configparser:
-        cfg = configparser.ConfigParser(allow_no_value=True)
-        cfg.read(config_path)
-        return cfg
 
     def build_tool(self, name: str) -> Tool:
         tool = Tool(name)
@@ -76,9 +72,21 @@ class ToolFactory(object):
         return tool
 
     def build_profile(self, profile_data) -> Profile:
-        schema = profile_data['schema'].lower()
-        spec_version = profile_data['spec_version'].lower()
-        format = profile_data['format'].lower()
+
+        try:
+            schema = profile_data['schema'].lower()
+            spec_version = profile_data['spec_version'].lower()
+            format = profile_data['format'].lower()
+
+            languages = set(map(lambda value: value.lower(), profile_data['languages']))\
+                if 'languages' in profile_data else set()
+
+            package_managers = set(map(lambda value: value.lower(), profile_data['package_managers'])) \
+                if 'package_managers' in profile_data else set()
+
+            commands = profile_data['commands']
+        except Exception as e:
+            raise Exception(f"Missing required field: {e}")
 
         if not self.sbom_config.has_section(f'{schema}.format'):
             raise Exception(f"SBOM config section missing '{schema}.format'; Has it been added to the config?")
@@ -94,8 +102,14 @@ class ToolFactory(object):
             raise Exception(
                 f"'{schema}.spec_version does not support '{format}'format; Has it been added to the config?")
 
-        return Profile(schema, spec_version, format, profile_data['package_manager'], profile_data['language'],
-                       profile_data['commands'])
+        return Profile(schema, spec_version, format, languages, package_managers,commands)
+
+
+    def load_config(self, config_path: str) -> configparser:
+        cfg = configparser.ConfigParser(allow_no_value=True)
+        cfg.read(config_path)
+        return cfg
+
 
 
 def load_ext_mapper(config_file: str):

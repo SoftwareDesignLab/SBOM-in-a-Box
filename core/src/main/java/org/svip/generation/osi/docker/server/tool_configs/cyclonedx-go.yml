@@ -2,8 +2,8 @@ profiles:
   - schema: "cyclonedx"
     spec_version: "1.0"
     format: "xml"
-    language:
+    languages:
       - "Go"
-    package_manager:
+    package_managers:
     commands:
       - "cyclonedx-go -o $SBOM_OUT/cdxgo-cdx10.xml"

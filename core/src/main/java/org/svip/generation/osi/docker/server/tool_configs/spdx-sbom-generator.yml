@@ -2,7 +2,7 @@ profiles:
   - schema: "spdx"
     spec_version: "2.2"
     format: "spdx"
-    language:
+    languages:
       - "Go"
       - "Rust"
       - "PHP"
@@ -11,6 +11,6 @@ profiles:
       - "Python"
       - "Ruby"
       - "Swift"
-    package_manager:
+    package_managers:
     commands:
       - "spdx-sbom-generator -o $SBOM_OUT"

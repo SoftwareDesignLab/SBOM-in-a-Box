@@ -104,5 +104,5 @@ def parse_tools(tool_names: str, langs: list[Language]) -> list[OSTool]:
 
 
 if __name__ == '__main__':
-
+    
     app.run(host='0.0.0.0', debug=True)  # TODO move to config

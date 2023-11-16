@@ -2,9 +2,9 @@ profiles:
   - schema: "cyclonedx"
     spec_version: "1.4"
     format: "json"
-    language:
+    languages:
       - "php"
-    package_manager:
+    package_managers:
     commands:
       - "composer update --no-install"
       - "composer CycloneDX:make-sbom --output-format=JSON --output-file=$SBOM_OUT/cdxphp-14.json"

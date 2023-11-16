@@ -2,7 +2,7 @@ profiles:
   - schema: "cyclonedx"
     spec_version: "1.0"
     format: "xml"
-    language:
+    languages:
       - "C++"
       - "C#"
       - "Dart"
@@ -16,7 +16,7 @@ profiles:
       - "Ruby"
       - "Rust"
       - "Swift"
-    package_manager:
+    package_managers:
     commands:
       - "dotnet build"
       - "dotnet covenant generate . -o /tmp/covenant.out"
@@ -25,7 +25,7 @@ profiles:
   - schema: "spdx"
     spec_version: "2.3"
     format: "json"
-    language:
+    languages:
       - "C++"
       - "C#"
       - "Dart"
@@ -39,7 +39,7 @@ profiles:
       - "Ruby"
       - "Rust"
       - "Swift"
-    package_manager:
+    package_managers:
     commands:
       - "dotnet build"
       - "dotnet covenant generate . -o /tmp/covenant.out"

@@ -2,8 +2,8 @@ profiles:
   - schema: "cyclonedx"
     spec_version: "1.4"
     format: "json"
-    language:
+    languages:
       - "Rust"
-    package_manager:
+    package_managers:
     commands:
       - "cargo cyclonedx -f json -a -o $SBOM_OUT/cdxrust-cdx14.json"
