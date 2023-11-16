@@ -6,6 +6,7 @@ Container.
 
 @author Ian Dunn
 """
+import configparser
 import os
 
 from flask import Flask, request
@@ -17,10 +18,15 @@ from ToolMapper import get_tool
 from constants import CONTAINER_BIND_CODE, CONTAINER_BIND_SBOM, Language
 from tools.ToolFactory import Tool, ToolFactory
 
+LANGUAGE_EXT_CONFIG = "constant/configs/language_ext.cfg"
+MANIFEST_EXT_CONFIG = "constant/configs/manifest_ext.cfg"
+
 # Create Flask app
 app = Flask(__name__)
 
 AVAILABLE_TOOLS = list[Tool]
+LANGUAGE_MAP=dict[str, str]
+MANIFEST_MAP=dict[str, str]
 
 
 @app.route('/tools', methods=['GET'])
@@ -111,12 +117,24 @@ def parse_tools(tool_names: str, langs: list[Language]) -> list[OSTool]:
 
     return tools
 
+def load_ext_mapper(config_file: str) -> dict[str, str]:
+    cfg = configparser.ConfigParser(allow_no_value=True)
+    cfg.read(config_file)
+    ext_map = {}
+    for sec in cfg.sections():
+        ext_map.update(
+            dict((key, sec.lower()) for key, y in cfg.items(sec))  # ignore y since empty
+        )
+    return ext_map
+
 
 if __name__ == '__main__':
     # Load tools available in this instance
-    tf = ToolFactory()
-    for tool_name in os.environ['OSI_TOOL'].split(":"):
-        tool = tf.build_tool(tool_name)
-        AVAILABLE_TOOLS.append(tool)
+    # tf = ToolFactory()
+    # for tool_name in os.environ['OSI_TOOL'].split(":"):
+    #     tool = tf.build_tool(tool_name)
+    #     AVAILABLE_TOOLS.append(tool)
+    LANGUAGE_MAP = load_ext_mapper(LANGUAGE_EXT_CONFIG)
+    MANIFEST_MAP = load_ext_mapper(MANIFEST_EXT_CONFIG)
 
     app.run(host='0.0.0.0', debug=True)  # TODO move to config

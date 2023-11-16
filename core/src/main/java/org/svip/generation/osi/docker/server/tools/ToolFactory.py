@@ -11,8 +11,6 @@ import sys
 
 import yaml
 
-LANGUAGE_EXT_CONFIG = "../constant/configs/language_ext.cfg"
-MANIFEST_EXT_CONFIG = "../constant/configs/manifest_ext.cfg"
 SBOM_CONFIG = "constant/configs/sbom.cfg"
 TOOL_CONFIGS_DIR = "tool_configs"
 
@@ -109,12 +107,4 @@ class ToolFactory(object):
         return cfg
 
 
-def load_ext_mapper(config_file: str):
-    cfg = configparser.ConfigParser(allow_no_value=True)
-    cfg.read(config_file)
-    ext_map = {}
-    for sec in cfg.sections():
-        ext_map.update(
-            dict((key, sec.lower()) for key, y in cfg.items(sec))  # ignore y since empty
-        )
-    return ext_map
+
