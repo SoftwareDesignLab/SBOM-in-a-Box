@@ -128,7 +128,7 @@ def generate():
 
     # Return 200 (ok) if sboms were generated, otherwise return 204 (no content)
     app.logger.info(f"Generate | {generated_sboms} SBOMs generated")
-    return generated_sboms, 200 if generated_sboms > 0 else 0, 204
+    return generated_sboms, 200 if generated_sboms > 0 else 204
 
 
 #
