@@ -60,7 +60,8 @@ class Profile(object):
         return self.__str__()
 
 class Tool(object):
-    def __init__(self, name: str):
+    def __init__(self, name: str, source_url: str):
+        self.source_url = source_url
         self.name = name
         self.profiles = []
 
@@ -88,11 +89,11 @@ class ToolFactory(object):
         self.sbom_config = self.load_config(SBOM_CONFIG)
 
     def build_tool(self, name: str) -> Tool | None:
-        tool = Tool(name)
+
         try:
             with open(f"{TOOL_CONFIGS_DIR}/{name}.yml") as config:
                 data = yaml.safe_load(config)
-
+                tool = Tool(name, data['source'])
                 # parse all profiles
                 for profile_data in data['profiles']:
                     try:

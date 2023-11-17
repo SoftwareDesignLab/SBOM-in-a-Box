@@ -1,9 +1,16 @@
+source: "https://github.com/sonatype-nexus-community/jake"
 profiles:
   - schema: "cyclonedx"
     spec_version: "1.4"
     format: "json"
-    languages:
-      - "python"
+    package_managers:
+      - "Pip"
     commands:
       - "jake sbom -t PIP --output-format json -o $SBOM_OUT/jake-pip-cdx14.json"
+  - schema: "cyclonedx"
+    spec_version: "1.4"
+    format: "json"
+    package_managers:
+      - "Poetry"
+    commands:
       - "jake sbom -t POETRY --output-format json -o $SBOM_OUT/jake-poetry-cdx14.json"

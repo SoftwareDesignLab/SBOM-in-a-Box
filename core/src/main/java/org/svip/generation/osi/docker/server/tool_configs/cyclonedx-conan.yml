@@ -1,3 +1,4 @@
+source: "https://github.com/CycloneDX/cyclonedx-conan"
 profiles:
   - schema: "cyclonedx"
     spec_version: "1.3"
@@ -6,5 +7,6 @@ profiles:
       - "C"
       - "C++"
     package_managers:
+      - "Conan"
     commands:
       - "cyclonedx-conan {manifest} --output $SBOM_OUT/cdxconan-cdx14.json"

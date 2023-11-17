@@ -1,3 +1,4 @@
+source: "https://github.com/ozonru/cyclonedx-go"
 profiles:
   - schema: "cyclonedx"
     spec_version: "1.0"
@@ -5,5 +6,6 @@ profiles:
     languages:
       - "Go"
     package_managers:
+      - "Go"
     commands:
       - "cyclonedx-go -o $SBOM_OUT/cdxgo-cdx10.xml"

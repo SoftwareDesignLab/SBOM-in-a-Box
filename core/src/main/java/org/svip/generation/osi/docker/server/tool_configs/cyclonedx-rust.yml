@@ -1,3 +1,4 @@
+source: "https://github.com/CycloneDX/cyclonedx-rust-cargo"
 profiles:
   - schema: "cyclonedx"
     spec_version: "1.4"
@@ -5,5 +6,6 @@ profiles:
     languages:
       - "Rust"
     package_managers:
+      - "Cargo"
     commands:
       - "cargo cyclonedx -f json -a -o $SBOM_OUT/cdxrust-cdx14.json"

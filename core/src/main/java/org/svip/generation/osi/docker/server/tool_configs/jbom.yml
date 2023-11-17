@@ -1,9 +1,9 @@
+source: "https://github.com/eclipse/jbom"
 profiles:
   - schema: "cyclonedx"
     spec_version: "1.3"
     format: "json"
     languages:
-      - "Java_Jar"
-    package_managers:
+      - "Java Binary"
     commands:
       - "java -jar /usr/local/bin/jbom.jar -d . -o $SBOM_OUT"

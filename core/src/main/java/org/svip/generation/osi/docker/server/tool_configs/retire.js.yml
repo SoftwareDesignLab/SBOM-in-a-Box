@@ -1,3 +1,4 @@
+source: "https://github.com/RetireJS/retire.js"
 profiles:
   - schema: "cyclonedx"
     spec_version: "1.4"
@@ -5,5 +6,6 @@ profiles:
     languages:
       - "Javascript"
     package_managers:
+      - "NPM"
     commands:
       - "retire --outputformat cyclonedxJSON > $SBOM_OUT/retirejs-cdx14.json"

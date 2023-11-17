@@ -1,3 +1,4 @@
+source: "https://github.com/CycloneDX/cyclonedx-php-composer"
 profiles:
   - schema: "cyclonedx"
     spec_version: "1.4"
@@ -5,6 +6,7 @@ profiles:
     languages:
       - "php"
     package_managers:
+      - "Composer"
     commands:
       - "composer update --no-install"
       - "composer CycloneDX:make-sbom --output-format=JSON --output-file=$SBOM_OUT/cdxphp-14.json"
