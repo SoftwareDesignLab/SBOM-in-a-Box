@@ -1,10 +1,14 @@
 package org.svip.api.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
+import org.svip.generation.osi.OSIClient;
 import org.svip.generation.osi.exceptions.DockerNotAvailableException;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.*;
 import java.util.zip.ZipInputStream;
@@ -109,8 +113,33 @@ public class OSIService {
     }
 
 
-    public List<String> getTools(String listTypeArg) {
-        return new ArrayList<>();
+    public List<String> getTools(String listType) {
+        try {
+
+            OSIURLBuilder osiurlBuilder =
+                    new OSIURLBuilder(OSIURLBuilder.RequestEndpoint.TOOLS, OSIURLBuilder.RequestMethod.GET);
+            osiurlBuilder.addParam("list", listType);
+
+            HttpURLConnection conn = osiurlBuilder.buildConnection();
+
+            BufferedReader bufferedReader =
+                    new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            StringBuilder builder = new StringBuilder();
+
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                builder.append(line).append('\n');
+            }
+
+            conn.disconnect();
+
+            String jsonString = builder.toString();
+            ObjectMapper mapper = new ObjectMapper();
+
+            return (List<String>) mapper.readValue(jsonString, List.class);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
 
