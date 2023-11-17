@@ -1,16 +1,21 @@
 package org.svip.api.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.svip.generation.osi.OSI;
 import org.svip.generation.osi.OSIClient;
 import org.svip.generation.osi.exceptions.DockerNotAvailableException;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 @Service
@@ -99,6 +104,46 @@ public class OSIService {
 
     }
 
+    private enum BOUND_DIR {
+        CODE("code/"),
+        SBOMS("sboms/");
+
+        // The location of the bound directory relative to the build path (core).
+        private static final String BOUND_DIR = "/core/src/main/java/org/svip/generation/osi/bound_dir/";
+        // The directory name of the /bound_dir subdirectory
+        private final String dirName;
+
+        BOUND_DIR(String dirName) {
+            this.dirName = dirName;
+        }
+
+        /**
+         * Gets the path to the OSI bound_dir folder from anywhere in the system.
+         *
+         * @return Path to this target bound folder
+         */
+        private String getPath() {
+            return System.getProperty("user.dir") + BOUND_DIR + dirName;
+        }
+
+        /**
+         * Cleans the subdirectory in /bound_dir to remove all files and re-replace the .gitignore.
+         *
+         * @throws IOException If a file cannot be removed from the directory or if the .gitignore could not be written.
+         */
+        public void flush() throws IOException {
+            File dir = new File(this.getPath());
+
+            FileUtils.cleanDirectory(dir);
+
+            // Add gitignore
+            try (PrintWriter w = new PrintWriter(dir + "/.gitignore")) {
+                w.println("*");
+                w.println("!.gitignore");
+            }
+        }
+    }
+
     private boolean enabled = false;
 
 
@@ -143,12 +188,55 @@ public class OSIService {
     }
 
 
-    public void addProject(ZipInputStream inputStream){
 
+
+    public List<String> generateSBOMs(List<String> toolNames) throws Exception {
+        BOUND_DIR.SBOMS.flush();
+
+        HttpURLConnection conn =
+                new OSIURLBuilder(OSIURLBuilder.RequestEndpoint.GENERATE, OSIURLBuilder.RequestMethod.POST).buildConnection();;
+
+        try (OutputStream os = conn.getOutputStream()) {
+            try (OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8)) {
+                // Ensure there is at least one valid tool, if not don't put anything in the request body
+                if (toolNames != null && !toolNames.isEmpty())
+                    osw.write(toolNames.toString());
+                osw.flush();
+            }
+        }
+
+        conn.connect();
+
+        if (conn.getResponseCode() != 200 && conn.getResponseCode() != 204)
+            throw new Exception("OSI responded with code: " + conn.getResponseCode());
+
+        conn.disconnect();
+        List<String> sbomPaths = new ArrayList<>();
+        File[] files = new File(BOUND_DIR.SBOMS.getPath()).listFiles();
+        assert files != null;
+        for (File file : files) {
+            if (file.isFile() && !file.getName().equals(".gitignore")) {
+                sbomPaths.add(file.getPath());
+            }
+        }
+
+        return sbomPaths;
     }
 
-    public Map<String, String> generateSBOMs(List<String> toolNames){
-        return new HashMap<>();
+    public void addProject(ZipInputStream inputStream) throws IOException {
+        // Remove all SBOMs and source files in the bound_dir folder before uploading files
+        BOUND_DIR.CODE.flush();
+
+        Path path = Paths.get(BOUND_DIR.CODE.getPath());
+        for (ZipEntry entry; (entry = inputStream.getNextEntry()) != null; ) {
+            Path resolvedPath = path.resolve(entry.getName());
+            if (!entry.isDirectory()) {
+                Files.createDirectories(resolvedPath.getParent());
+                Files.copy(inputStream, resolvedPath);
+            } else {
+                Files.createDirectories(resolvedPath);
+            }
+        }
     }
 
     public boolean isEnabled(){
