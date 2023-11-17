@@ -67,8 +67,8 @@ function installWithNPM() {
 function installWithGo() {
   # Install CycloneDX-Go
   go install github.com/ozonru/cyclonedx-go/cmd/cyclonedx-go@latest
-  # Install GoBom
-  go install github.com/mattermost/gobom/cmd/gobom@latest
+  # Install GoBom TODO replace with go tool that can write to file
+  # go install github.com/mattermost/gobom/cmd/gobom@latest
 }
 
 function installWithDotNet(){
