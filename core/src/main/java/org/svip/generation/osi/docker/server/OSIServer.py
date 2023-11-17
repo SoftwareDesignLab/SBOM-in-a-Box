@@ -112,7 +112,7 @@ def generate():
 
     app.logger.info(f"Generate | Running with tools: {set([p.name for p in tool_profiles])}")
     osi_start = time.time()
-    success, fail = [], []
+    success, fail = set(), set()
     # Execute each run profile
     for tool_profile in tool_profiles:
         try:
@@ -121,12 +121,12 @@ def generate():
             start_time = time.time()
             tool_profile.execute('$CODE_IN')  # execute run commands set in the tool config
             app.logger.info(f"Generate | Completed in {time.time() - start_time:.2f} seconds")
-            success.append(tool_profile.name)
+            success.add(tool_profile.name)
 
         except Exception as e:
             # Problem when running tool
             app.logger.error(f"Generate | Failed to generate with {tool_profile.name}: {e}")
-            fail.append(tool_profile.name)
+            fail.add(tool_profile.name)
 
     osi_end = time.time()
     generated_sboms = len(success)
