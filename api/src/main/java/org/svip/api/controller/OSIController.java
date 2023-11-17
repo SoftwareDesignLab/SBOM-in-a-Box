@@ -48,13 +48,12 @@ public class OSIController {
      */
     public OSIController(SBOMFileService sbomService){
         this.sbomService = sbomService;
-        try {
-            this.osiService = new OSIService();
+        this.osiService = new OSIService();
+
+        if(this.osiService.isEnabled()){
             LOGGER.info("OSI ENDPOINT ENABLED");
-        } catch (Exception e) {
-            // If we can't construct the OSI container for any reason, log and disable OSI.
-            LOGGER.warn("OSI ENDPOINT DISABLED -- Unable to setup OSI container.");
-            LOGGER.error("OSI Docker API response: " + e.getMessage());
+        } else {
+            LOGGER.warn("OSI ENDPOINT DISABLED -- Unable to communicate with OSI container; Is the container running?");
         }
     }
 
