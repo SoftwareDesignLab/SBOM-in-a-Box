@@ -117,10 +117,13 @@ public class OSI {
     /**
      * Get the list of all OSI tools
      *
+     * @param listType Either "all" (default) or "project",
+     *             all gets all tools installed in OSI
+     *             project gets all applicable tools installed for the project in the bound directory
      * @return List of OIS tools
      */
-    public List<String> getAllTools() {
-        return client.getAllTools();
+    public List<String> getTools(String listType) {
+        return client.getTools(listType);
     }
 
     /**

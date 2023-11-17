@@ -9,6 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -23,46 +24,87 @@ import java.util.List;
  **/
 public class OSIClient {
 
-    /**
-     * Private enumeration to store all possible calls to the Docker API container.
-     */
-    private enum URL {
-        GET_TOOLS("tools", "GET"),
-        GENERATE("generate", "POST");
+    private static class OSIURLBuilder{
 
-        /**
-         * The root URL of the Flask API inside the Docker container.
-         */
-        private static final String url; // TODO Move port to config file
-        static {
-            // If running in container, access OSI by container name due to Docker's default network
-            if (isRunningInsideContainer()) url = "http://osi:5000/";
-            // If running outside of container, access OSI by the container's port on localhost
-            else url = "http://localhost:50001/";
+        public enum RequestMethod {
+
+            GET("GET"),
+            POST("POST");
+
+            private final String value;
+            RequestMethod(String requestMethodStr) {
+                this.value = requestMethodStr;
+            }
+
+            @Override
+            public String toString() {
+                return this.value;
+            }
         }
 
-        /**
-         * The endpoint of the enum.
-         */
-        private final String endpoint;
+        public enum RequestEndpoint {
 
-        /**
-         * The intended request method of the enum.
-         */
-        private final String requestMethod;
+            TOOLS("tools"),
+            GENERATE("generate");
 
-        URL(String endpoint, String requestMethod) {
-            this.endpoint = endpoint;
+            private final String value;
+            RequestEndpoint(String requestEndpoint) {
+                this.value = requestEndpoint;
+            }
+
+            @Override
+            public String toString() {
+                return this.value;
+            }
+
+        }
+
+        private final String rootEndpoint = isRunningInsideContainer()
+                // If running in container, access OSI by container name due to Docker's default network
+                ? "http://osi:5000/"
+                // If running outside of container, access OSI by the container's port on localhost
+                : "http://localhost:50001/"; // TODO Move port to config file
+
+        private final RequestEndpoint requestEndpoint;
+        private final RequestMethod requestMethod;
+
+        private final HashMap<String, String> requestParams = new HashMap<>();
+
+
+        public OSIURLBuilder(RequestEndpoint requestEndpoint, RequestMethod requestMethod){
+            this.requestEndpoint = requestEndpoint;
             this.requestMethod = requestMethod;
         }
 
-        public java.net.URL getURL() throws MalformedURLException {
-            return new java.net.URL(url + endpoint);
+        public OSIURLBuilder addParam(String param, String value){
+            this.requestParams.put(param, value);
+            return this;
         }
 
-        public String getRequestMethod() {
-            return requestMethod;
+        public HttpURLConnection buildConnection() throws IOException {
+            StringBuilder url = new StringBuilder(this.rootEndpoint + this.requestEndpoint);
+
+            int paramCount = 0;
+            for(String param : this.requestParams.keySet()) {
+                url.append(paramCount++ == 0 ? "?" : "&")
+                        .append(param)
+                        .append("=")
+                        .append(this.requestParams.get(param));
+            }
+
+
+            HttpURLConnection conn = (HttpURLConnection) new java.net.URL(url.toString()).openConnection();
+            conn.setRequestMethod(this.requestMethod.value);
+
+            if(this.requestMethod == RequestMethod.POST)
+                conn.setDoOutput(true);
+
+            return conn;
+
+
         }
+
+
     }
 
     /**
@@ -83,9 +125,14 @@ public class OSIClient {
      *
      * @return A list of all available tool names.
      */
-    public List<String> getAllTools() {
+    public List<String> getTools(String listType) {
         try {
-            HttpURLConnection conn = connectToURL(URL.GET_TOOLS);
+
+            OSIURLBuilder osiurlBuilder =
+                    new OSIURLBuilder(OSIURLBuilder.RequestEndpoint.TOOLS, OSIURLBuilder.RequestMethod.GET);
+            osiurlBuilder.addParam("list", listType);
+
+            HttpURLConnection conn = osiurlBuilder.buildConnection();
 
             BufferedReader bufferedReader =
                     new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -116,7 +163,8 @@ public class OSIClient {
      */
     public boolean generateSBOMs(List<String> toolNames) {
         try {
-            HttpURLConnection conn = connectToURL(URL.GENERATE);
+            HttpURLConnection conn =
+                    new OSIURLBuilder(OSIURLBuilder.RequestEndpoint.GENERATE, OSIURLBuilder.RequestMethod.POST).buildConnection();;
 
             try (OutputStream os = conn.getOutputStream()) {
                 try (OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8)) {
@@ -149,7 +197,9 @@ public class OSIClient {
      */
     public static boolean isOSIContainerAvailable() throws DockerNotAvailableException {
         try {
-            HttpURLConnection conn = connectToURL(URL.GET_TOOLS);
+
+            HttpURLConnection conn =
+                    new OSIURLBuilder(OSIURLBuilder.RequestEndpoint.TOOLS, OSIURLBuilder.RequestMethod.GET).buildConnection();
 
             conn.connect();
             if (conn.getResponseCode() != 200) return false;
@@ -170,21 +220,5 @@ public class OSIClient {
         // All docker containers have a .dockerenv file at the root, so just check for that.
         File f = new File("/.dockerenv");
         return f.exists();
-    }
-
-    /**
-     * Private helper method to connect to a URL and return the configured HttpURLConnection.
-     *
-     * @param url The URL enum to connect to.
-     * @return The configured HttpURLConnection of that URL.
-     * @throws IOException If a connection could not be made or there was a configuration error.
-     */
-    private static HttpURLConnection connectToURL(URL url) throws IOException {
-        HttpURLConnection conn = (HttpURLConnection) url.getURL().openConnection();
-        conn.setRequestMethod(url.getRequestMethod());
-
-        if (url.getRequestMethod().equals("POST")) conn.setDoOutput(true);
-
-        return conn;
     }
 }

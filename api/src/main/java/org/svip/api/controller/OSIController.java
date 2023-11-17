@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.zip.ZipInputStream;
 
 /**
@@ -83,19 +84,25 @@ public class OSIController {
     ///
 
     /**
-     * USAGE. Send GET request to /generators/osi/getTools to get a list of valid tool names that can be used to
+     * USAGE. Send GET request to /generators/osi/tools to get a list of valid tool names that can be used to
      * generate an SBOM from source file(s).
      *
+     * @param list Optional argument, either "all" (default) or "project",
+     *             all gets all tools installed in OSI
+     *             project gets all applicable tools installed for the project in the bound directory
      * @return A list of string tool names.
      */
     @GetMapping("/tools")
-    public ResponseEntity<?> getOSITools() {
+    public ResponseEntity<?> getOSITools(@RequestParam("list") Optional<String> list) {
         if (!isOSIEnabled())
             return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
 
-        String urlMsg = "POST /svip/generators/osi";
+        // No param default to all tools
+        String listTypeArg = list.orElse("all");
 
-        List<String> tools = container.getAllTools();
+        String urlMsg = "POST /svip/generators/osi?list=" + listTypeArg;
+
+        List<String> tools = container.getTools(listTypeArg);
         if (tools == null) {
             LOGGER.error(urlMsg + ": " + "Error getting tool list from Docker container.");
             return new ResponseEntity<>("Error getting tool list from Docker container.", HttpStatus.NOT_FOUND);
