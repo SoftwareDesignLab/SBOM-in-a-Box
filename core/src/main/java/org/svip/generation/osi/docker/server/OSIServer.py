@@ -26,7 +26,7 @@ FILE_NAME_SED_PATTERN = r's|.*\/||'
 
 # Globals
 AVAILABLE_TOOLS = []
-AVAILABLE_TOOLS_STR = os.environ['OSI_TOOL'].split(":")  # set with validate.sh
+AVAILABLE_TOOLS_STR = sorted(os.environ['OSI_TOOL'].split(":"))  # set with validate.sh
 LANGUAGE_MAP = dict[str, str]
 MANIFEST_MAP = dict[str, str]
 
@@ -56,7 +56,7 @@ def get_tools():
         case "project":
             tools = get_applicable_tools()
             tool_names = set(map(lambda tool: tool.name, tools))  # remove duplicate tool names
-            return list(tool_names), 200
+            return sorted(tool_names), 200
         case _:
             return f"'{request.args.get('list')}' is an unknown param", 400
 
@@ -111,7 +111,8 @@ def generate():
         return "No tools selected", 422
 
     app.logger.info(f"Generate | Running with tools: {set([p.name for p in tool_profiles])}")
-    generated_sboms = 0
+    osi_start = time.time()
+    success, fail = [], []
     # Execute each run profile
     for tool_profile in tool_profiles:
         try:
@@ -120,14 +121,22 @@ def generate():
             start_time = time.time()
             tool_profile.execute('$CODE_IN')  # execute run commands set in the tool config
             app.logger.info(f"Generate | Completed in {time.time() - start_time:.2f} seconds")
-            generated_sboms += 1
+            success.append(tool_profile.name)
 
         except Exception as e:
             # Problem when running tool
             app.logger.error(f"Generate | Failed to generate with {tool_profile.name}: {e}")
+            fail.append(tool_profile.name)
+
+    osi_end = time.time()
+    generated_sboms = len(success)
+    # Report summary
+    app.logger.info(f"Generate | COMPLETED")
+    app.logger.info(f"Generate | {generated_sboms} SBOMs generated in {osi_end - osi_start:.2f} seconds")
+    app.logger.info(f"Generate | Success Tools: {len(success)} | {success}")
+    app.logger.info(f"Generate | Failed Tools: {len(fail)} | {fail}")
 
     # Return 200 (ok) if sboms were generated, otherwise return 204 (no content)
-    app.logger.info(f"Generate | {generated_sboms} SBOMs generated")
     return str(generated_sboms), 200 if generated_sboms > 0 else 204
 
 
@@ -157,7 +166,7 @@ def get_applicable_tools() -> list[Profile]:
         if ext in LANGUAGE_MAP:
             languages.add(LANGUAGE_MAP.get(ext))
 
-        # Use filename to detemine package manager
+        # Use filename to determine package manager
         if file_name.lower() in MANIFEST_MAP:
             package_managers.add(MANIFEST_MAP[file_name.lower()])
 

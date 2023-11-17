@@ -13,7 +13,6 @@ services:
     container_name: svip-osi
     platform: linux/amd64
     build: core/src/main/java/org/svip/generation/osi/docker
-    restart: unless-stopped
     ports:
       - ${FLASK_LOCAL_PORT}:${FLASK_DOCKER_PORT}
     volumes:
