@@ -100,9 +100,9 @@ def generate():
     for tool_profile in tool_profiles:
         try:
             app.logger.info(f"Generate | Executing {tool_profile} with command string: "
-                            f"'{tool_profile.build_exe_string("$CODE_IN")}'")
+                            f"{tool_profile.build_exe_string('$CODE_IN')}")
             start_time = time.time()
-            tool_profile.execute("$CODE_IN")
+            tool_profile.execute('$CODE_IN')
             app.logger.info(f"Generate | Completed in {time.time() - start_time:.2f} seconds")
             generated_sboms += 1
 
