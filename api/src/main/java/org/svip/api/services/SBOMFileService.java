@@ -124,6 +124,8 @@ public class SBOMFileService {
 
         if (overwrite) {
             // update(id, converted);
+            // If overwrite, delete current SBOM
+            deleteSBOMFile(getSBOMFile(id));
             // Save converted SBOM as the next available ID
             this.sbomFileRepository.save(converted);
             return id;
