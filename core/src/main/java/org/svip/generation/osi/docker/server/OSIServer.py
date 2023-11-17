@@ -26,6 +26,7 @@ FILE_NAME_SED_PATTERN = r's|.*\/||'
 app = Flask(__name__)
 
 AVAILABLE_TOOLS = []
+AVAILABLE_TOOLS_STR = os.environ['OSI_TOOL'].split(":")
 LANGUAGE_MAP = dict[str, str]
 MANIFEST_MAP = dict[str, str]
 
@@ -39,9 +40,9 @@ def get_tools():
     """
     match request.args.get('list'):
         case None:
-            return os.environ['OSI_TOOL'].split(":"), 200
+            return AVAILABLE_TOOLS_STR, 200
         case "all":
-            return os.environ['OSI_TOOL'].split(":"), 200
+            return AVAILABLE_TOOLS_STR, 200
         case "project":
             tools = get_applicable_tools()
             tool_names = set(map(lambda tool: tool.name, tools))
@@ -65,49 +66,52 @@ def generate():
     if request.is_json:
         try:
             post_json = jsonify(request.json)
-            tool_names = post_json.get_json()['tools']
-            app.logger.info(f"Attempting to use provided tools: {tool_names}")
-        except Exception as e:
-            app.logger.error(f"Failed to parse json: {e}")
-            return "Failed to paser tools", 400
+            tool_names = list(map(lambda tool_name: tool_name.lower(), post_json.get_json()['tools']))
 
+            app.logger.info(f"Attempting to use provided tools: {tool_names}")
+            tool_diff = list(set(tool_names) - set(AVAILABLE_TOOLS_STR))
+
+            if len(tool_diff) > 0:
+                app.logger.error(f"Generate | Attempting to use unknown or unavailable tools: {tool_diff}")
+                return f"Attempting to use unknown or unavailable tools: {tool_diff}", 400
+
+        except Exception as e:
+            app.logger.error(f"Generate | Failed to parse json: {e}")
+            return "Failed to pase tools", 400
+
+        tf = ToolFactory()
         for tool_name in tool_names:
             try:
-                tf = ToolFactory()
                 tool = tf.build_tool(tool_name)
-                if not any(a_tool.name == tool.name for a_tool in iter(AVAILABLE_TOOLS)):
-                    app.logger.warning(f"Attempting to use '{tool.name}' when not available, skipping . . .")
-                else:
-                    tool_profiles += tool.profiles
+                tool_profiles += tool.profiles
             except Exception as e:
                 app.logger.error(f"{e}")
-                continue
     else:
-        app.logger.info("No tools provided; Defaulting to relevant tools.")
+        app.logger.info("Generate | No tools provided; Defaulting to relevant tools.")
         tool_profiles = get_applicable_tools()
 
     if len(tool_profiles) == 0:
-        app.logger.error("No tools selected")
+        app.logger.error("Generate | No tools selected")
         return "No tools selected", 422
 
     # Run tools
-    app.logger.info(f"Running with tools: {tool_profiles}")
+    app.logger.info(f"Generate | Running with tools: {set([p.name for p in tool_profiles])}")
     generated_sboms = 0
     for tool_profile in tool_profiles:
         try:
-            app.logger.info(f"Executing {tool_profile.name} with command string: "
-                            f"'{tool_profile.build_exe_string(os.environ['CODE_IN'])}'")
+            app.logger.info(f"Generate | Executing {tool_profile} with command string: "
+                            f"'{tool_profile.build_exe_string("$CODE_IN")}'")
             start_time = time.time()
-            tool_profile.execute(os.environ['CODE_IN'])
-            app.logger.info(f"Completed in {time.time() - start_time:.2f} seconds")
+            tool_profile.execute("$CODE_IN")
+            app.logger.info(f"Generate | Completed in {time.time() - start_time:.2f} seconds")
             generated_sboms += 1
 
         except Exception as e:
-            app.logger.error(f"Failed to generate with {tool_profile.name}: {e}")
+            app.logger.error(f"Generate | Failed to generate with {tool_profile.name}: {e}")
 
     # Return 200 (ok) if sboms were generated, otherwise return 204 (no content)
-    app.logger.info(f"{generated_sboms} SBOMs generated")
-    return generated_sboms, 200 if generated_sboms > 0 else 204
+    app.logger.info(f"Generate | {generated_sboms} SBOMs generated")
+    return generated_sboms, 200 if generated_sboms > 0 else 0, 204
 
 
 def get_applicable_tools() -> list[Profile]:
@@ -116,7 +120,7 @@ def get_applicable_tools() -> list[Profile]:
 
     # find /bound_dir/code -type f -name '*.*' | sed 's/.*\///' | sort -u
     files = subprocess.run(
-        f"find . -type f -name '*.*' | sed '{FILE_NAME_SED_PATTERN}' | sort -u",
+        f"find $CODE_IN -type f -name '*.*' | sed '{FILE_NAME_SED_PATTERN}' | sort -u",
         shell=True, capture_output=True, text=True).stdout.strip().split("\n")
 
     for file_name in files:
@@ -127,8 +131,8 @@ def get_applicable_tools() -> list[Profile]:
         if file_name.lower() in MANIFEST_MAP:
             package_managers.add(MANIFEST_MAP[file_name.lower()])
 
-    app.logger.info(f"Detected languages: {languages}")
-    app.logger.info(f"Detected package managers: {package_managers}")
+    app.logger.info(f"Applicable Tools | Detected languages: {list(languages)}")
+    app.logger.info(f"Applicable Tools | Detected package managers: {list(package_managers)}")
 
     run_config = RunConfig(languages, package_managers)
 
@@ -153,7 +157,7 @@ def load_ext_mapper(config_file: str) -> dict[str, str]:
 if __name__ == '__main__':
     # Load tools available in this instance
     tf = ToolFactory()
-    for tool_name in os.environ['OSI_TOOL'].split(":"):
+    for tool_name in AVAILABLE_TOOLS_STR:
         tool = tf.build_tool(tool_name)
         AVAILABLE_TOOLS.append(tool)
 

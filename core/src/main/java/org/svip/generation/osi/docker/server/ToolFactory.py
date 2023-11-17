@@ -55,8 +55,9 @@ class Profile(object):
         cmds += " && ".join(self.commands)
         return cmds
     def __str__(self):
-        return f"{self.name} : {self.schema} : {self.spec_version} : {self.format}"
-
+        return f"[{self.name} : {self.schema} : {self.spec_version} : {self.format}]"
+    def __repr__(self):
+        return self.__str__()
 
 class Tool(object):
     def __init__(self, name: str):
@@ -76,6 +77,9 @@ class Tool(object):
 
     def __str__(self):
         return f"{self.name}"
+
+    def __repr__(self):
+        return self.__str__()
 
 
 class ToolFactory(object):
