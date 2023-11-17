@@ -10,11 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
+import org.svip.api.services.OSIService;
 import org.svip.api.services.SBOMFileService;
 import org.svip.conversion.ConversionException;
-import org.svip.generation.osi.OSI;
-import org.svip.generation.osi.OSIClient;
-import org.svip.generation.osi.exceptions.DockerNotAvailableException;
 import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.exceptions.DeserializerException;
@@ -41,7 +39,7 @@ public class OSIController {
     private static final Logger LOGGER = LoggerFactory.getLogger(OSIController.class);
 
     private final SBOMFileService sbomService;
-    private final OSI container;
+    private OSIService osiService = null;
 
     /**
      * Create new Controller with services
@@ -50,32 +48,13 @@ public class OSIController {
      */
     public OSIController(SBOMFileService sbomService){
         this.sbomService = sbomService;
-
-        OSI container = null; // Disabled state
-        String error = "OSI ENDPOINT DISABLED -- ";
-
         try {
-            container = new OSI();
+            this.osiService = new OSIService();
             LOGGER.info("OSI ENDPOINT ENABLED");
         } catch (Exception e) {
             // If we can't construct the OSI container for any reason, log and disable OSI.
-            LOGGER.warn(error + "Unable to setup OSI container.");
+            LOGGER.warn("OSI ENDPOINT DISABLED -- Unable to setup OSI container.");
             LOGGER.error("OSI Docker API response: " + e.getMessage());
-        }
-
-        this.container = container;
-    }
-
-    /**
-     * Public method to check if OSI is enabled on this instance of the controller.
-     *
-     * @return True if OSI is enabled, false otherwise.
-     */
-    public static boolean isOSIEnabled() {
-        try {
-            return OSIClient.isOSIContainerAvailable();
-        } catch(DockerNotAvailableException e) {
-            return false;
         }
     }
 
@@ -94,7 +73,7 @@ public class OSIController {
      */
     @GetMapping("/tools")
     public ResponseEntity<?> getOSITools(@RequestParam("list") Optional<String> list) {
-        if (!isOSIEnabled())
+        if (!this.osiService.isEnabled())
             return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
 
         // No param default to all tools
@@ -102,7 +81,7 @@ public class OSIController {
 
         String urlMsg = "POST /svip/generators/osi?list=" + listTypeArg;
 
-        List<String> tools = container.getTools(listTypeArg);
+        List<String> tools = this.osiService.getTools(listTypeArg);
         if (tools == null) {
             LOGGER.error(urlMsg + ": " + "Error getting tool list from Docker container.");
             return new ResponseEntity<>("Error getting tool list from Docker container.", HttpStatus.NOT_FOUND);
@@ -117,11 +96,11 @@ public class OSIController {
 
     @PostMapping(value = "/project", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<?> uploadProject(@RequestPart("projectZip") MultipartFile projectZip){
-        if (!isOSIEnabled())
+        if (!this.osiService.isEnabled())
             return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
 
         try (ZipInputStream inputStream = new ZipInputStream(projectZip.getInputStream())) {
-            this.container.addProject(inputStream);
+            this.osiService.addProject(inputStream);
         } catch (IOException e) {
             LOGGER.error("POST /svip/generators/osi/project - " + e.getMessage());
             return new ResponseEntity<>("Make sure attachment is a zip file (.zip): " + e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -159,7 +138,7 @@ public class OSIController {
                 LOGGER.info("POST /svip/generators/osi - Running with tool names: " + tools);
             } else LOGGER.info("POST /svip/generators/osi - Running with default tools");
 
-            generatedSBOMFiles = container.generateSBOMs(tools);
+            generatedSBOMFiles = this.osiService.generateSBOMs(tools);
         } catch (Exception e) {
             LOGGER.warn("POST /svip/generators/osi - Exception occurred while running OSI container: " + e.getMessage());
             return new ResponseEntity<>("Exception occurred while running OSI container.", HttpStatus.NOT_FOUND);
