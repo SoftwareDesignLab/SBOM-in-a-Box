@@ -124,8 +124,11 @@ public class SBOMFileService {
 
         if (overwrite) {
             update(id, converted);
+            // Save converted SBOM as the next available ID
+            this.sbomFileRepository.save(converted);
             return id;
         } else {
+            // Save converted SBOM as the next available ID
             this.sbomFileRepository.save(converted);
             return converted.getId();
         }
