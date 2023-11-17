@@ -44,8 +44,8 @@ def get_tools():
             return os.environ['OSI_TOOL'].split(":"), 200
         case "project":
             tools = get_applicable_tools()
-            tool_names = [tool.name for tool in tools]
-            return tool_names, 200
+            tool_names = set(map(lambda tool: tool.name, tools))
+            return list(tool_names), 200
         case _:
             return f"'{request.args.get('list')}' is an unknown param", 400
 
