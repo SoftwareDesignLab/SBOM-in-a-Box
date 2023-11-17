@@ -1,5 +1,5 @@
 """
-file: OSIAPIController.py
+file: OSIServer.py
 
 API that exposes endpoints to manage the generations of SBOMs using Open Source Tools inside the svip-osi Docker
 Container.
@@ -7,14 +7,15 @@ Container.
 @author Ian Dunn
 """
 import configparser
-import json
 import os
 import subprocess
 import time
 
 from flask import Flask, request, jsonify
 
-from tools.ToolFactory import ToolFactory, RunConfig, Profile
+from ToolFactory import ToolFactory, RunConfig, Profile
+
+VERSION = "4.0"
 
 LANGUAGE_EXT_CONFIG = "configs/language_ext.cfg"
 MANIFEST_EXT_CONFIG = "configs/manifest_ext.cfg"
@@ -24,7 +25,7 @@ FILE_NAME_SED_PATTERN = r's|.*\/||'
 # Create Flask app
 app = Flask(__name__)
 
-AVAILABLE_TOOLS = list[Profile]
+AVAILABLE_TOOLS = []
 LANGUAGE_MAP = dict[str, str]
 MANIFEST_MAP = dict[str, str]
 
@@ -104,10 +105,10 @@ def generate():
         except Exception as e:
             app.logger.error(f"Failed to generate with {tool_profile.name}: {e}")
 
-
     # Return 200 (ok) if sboms were generated, otherwise return 204 (no content)
     app.logger.info(f"{generated_sboms} SBOMs generated")
     return generated_sboms, 200 if generated_sboms > 0 else 204
+
 
 def get_applicable_tools() -> list[Profile]:
     languages = set()
@@ -149,10 +150,13 @@ def load_ext_mapper(config_file: str) -> dict[str, str]:
 
 if __name__ == '__main__':
     # Load tools available in this instance
-    # tf = ToolFactory()
-    # for tool_name in os.environ['OSI_TOOL'].split(":"):
-    #     tool = tf.build_tool(tool_name)
-    #     AVAILABLE_TOOLS.append(tool)
-    # LANGUAGE_MAP = load_ext_mapper(LANGUAGE_EXT_CONFIG)
-    # MANIFEST_MAP = load_ext_mapper(MANIFEST_EXT_CONFIG)
+    tf = ToolFactory()
+    for tool_name in os.environ['OSI_TOOL'].split(":"):
+        tool = tf.build_tool(tool_name)
+        AVAILABLE_TOOLS.append(tool)
+
+    LANGUAGE_MAP = load_ext_mapper(LANGUAGE_EXT_CONFIG)
+    MANIFEST_MAP = load_ext_mapper(MANIFEST_EXT_CONFIG)
+
+    print(f"Running OSIv{VERSION} with {AVAILABLE_TOOLS}")
     app.run(host='0.0.0.0', debug=True)  # TODO move to config

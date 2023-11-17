@@ -6,7 +6,6 @@ Collection of utilities to validate, run, and organize the output of Open Source
 @author Derek Garcia
 """
 import configparser
-import os
 import subprocess
 import sys
 

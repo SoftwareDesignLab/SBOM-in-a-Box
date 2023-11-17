@@ -16,7 +16,8 @@ main(){
 
   # Launch server
   echo "Launching Server"
-  python3 /server/OSIAPIController.py
+  cd /server || exit 1
+  python3 OSIServer.py
 }
 
 main
