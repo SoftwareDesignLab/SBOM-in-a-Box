@@ -42,8 +42,8 @@ function verify_lang(){
 
   echo -e "\nLANGUAGES"
 
-  python3 --version &> /dev/null && pass "python" 1 || fail "Python"
-  java --version &> /dev/null && pass "java" 1 || fail "Java"
+  python3 --version &> /dev/null && pass "python" 1 || fail "python"
+  java --version &> /dev/null && pass "java" 1 || fail "java"
   dotnet --info &> /dev/null && pass ".net" 1 || fail ".net"
   go version &> /dev/null && pass "go" 1 || fail "go"
   node -v &> /dev/null && pass "node.js" 1 || fail "node.js"
