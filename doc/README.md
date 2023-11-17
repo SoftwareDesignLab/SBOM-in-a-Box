@@ -13,9 +13,8 @@
   - [Quick Start](#quick-start-1)
   - [API](#api)
   - [Supported Tools](#supported-tools)
+    - [Adding More Tools](#adding-more-tools)
   - [Building the Image](#building-the-image)
-    - [Saved Images](#saved-images)
-  
 ---
 
 # SBOM Generator CLI
@@ -228,6 +227,7 @@ profiles:
 |    `profile.languages`**     |    No     |    Languages that this profile can generate SBOMs for     |
 | `profile.package_managers`** |    No     | Package Managers that this profile can generate SBOMs for |
 |      `profile.commands`      |    Yes    |           List of cli commands to run the tool            |
+
 *: Must be defined in [`sbom.cfg`](../core/src/main/java/org/svip/generation/osi/docker/server/configs/sbom.cfg)
 
 **: Optional to help with restrictions. Example if tool needs Maven to generate SBOM, can exclude the languages field 
