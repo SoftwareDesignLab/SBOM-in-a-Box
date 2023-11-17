@@ -7,6 +7,7 @@ Collection of utilities to validate, run, and organize the output of Open Source
 """
 import configparser
 import os
+import subprocess
 import sys
 
 import yaml
@@ -41,12 +42,21 @@ class Profile(object):
             return True
         return False
 
-    def execute(self):
-        for cmd in self.commands:
-            os.system(cmd)
+    def execute(self, location: str):
+        cmd = self.build_exe_string(location)
+        try:
+            subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True, timeout=120, universal_newlines=True)
+        except subprocess.CalledProcessError as exc:
+            raise Exception(f"Error during execution: {exc.output}")
+        except subprocess.TimeoutExpired:
+            raise Exception("Exceeded allowed runtime")
 
+    def build_exe_string(self, location: str):
+        cmds = f"cd {location} && "
+        cmds += " && ".join(self.commands)
+        return cmds
     def __str__(self):
-        return f"{self.schema} : {self.spec_version} : {self.format}"
+        return f"{self.name} : {self.schema} : {self.spec_version} : {self.format}"
 
 
 class Tool(object):

@@ -10,6 +10,7 @@ import configparser
 import json
 import os
 import subprocess
+import time
 
 from flask import Flask, request, jsonify
 
@@ -23,7 +24,7 @@ FILE_NAME_SED_PATTERN = r's|.*\/||'
 # Create Flask app
 app = Flask(__name__)
 
-AVAILABLE_TOOLS = []
+AVAILABLE_TOOLS = list[Profile]
 LANGUAGE_MAP = dict[str, str]
 MANIFEST_MAP = dict[str, str]
 
@@ -59,7 +60,7 @@ def generate():
     """
 
     # Cleanup, detect languages
-    tools = []
+    tool_profiles = []
     if request.is_json:
         try:
             post_json = jsonify(request.json)
@@ -73,33 +74,40 @@ def generate():
             try:
                 tf = ToolFactory()
                 tool = tf.build_tool(tool_name)
-                if not any(a_tool.name == tool.name for a_tool in AVAILABLE_TOOLS):
+                if not any(a_tool.name == tool.name for a_tool in iter(AVAILABLE_TOOLS)):
                     app.logger.warning(f"Attempting to use '{tool.name}' when not available, skipping . . .")
                 else:
-                    tools.append(tool)
+                    tool_profiles += tool.profiles
             except Exception as e:
                 app.logger.error(f"{e}")
                 continue
     else:
         app.logger.info("No tools provided; Defaulting to relevant tools.")
-        tools = get_applicable_tools()
+        tool_profiles = get_applicable_tools()
 
-    if len(tools) == 0:
+    if len(tool_profiles) == 0:
         app.logger.error("No tools selected")
-        return "No tools available", 422
-    #
-    # Run tools and cleanup
-    app.logger.info(f"Running with tools: {tools}")
+        return "No tools selected", 422
 
-    #
-    # # Return 200 (ok) if sboms were generated, otherwise return 204 (no content)
-    # if gen_count > 0:
-    #     app.logger.info(str(gen_count) + " SBOMs generated.")
-    #     return "Successfully generated SBOMs.", 200
-    # else:
-    #     app.logger.info("No SBOMs generated.")
-    #     return "No SBOMs generated.", 204
+    # Run tools
+    app.logger.info(f"Running with tools: {tool_profiles}")
+    generated_sboms = 0
+    for tool_profile in tool_profiles:
+        try:
+            app.logger.info(f"Executing {tool_profile.name} with command string: "
+                            f"'{tool_profile.build_exe_string(os.environ['CODE_IN'])}'")
+            start_time = time.time()
+            tool_profile.execute(os.environ['CODE_IN'])
+            app.logger.info(f"Completed in {time.time() - start_time:.2f} seconds")
+            generated_sboms += 1
 
+        except Exception as e:
+            app.logger.error(f"Failed to generate with {tool_profile.name}: {e}")
+
+
+    # Return 200 (ok) if sboms were generated, otherwise return 204 (no content)
+    app.logger.info(f"{generated_sboms} SBOMs generated")
+    return generated_sboms, 200 if generated_sboms > 0 else 204
 
 def get_applicable_tools() -> list[Profile]:
     languages = set()
