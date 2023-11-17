@@ -114,14 +114,16 @@ def get_applicable_tools() -> list[Profile]:
     languages = set()
     package_managers = set()
 
-    # find . -type f -name '*.*' | sed 's/.*\///' | sort -u
+    # find /bound_dir/code -type f -name '*.*' | sed 's/.*\///' | sort -u
     files = subprocess.run(
         f"find . -type f -name '*.*' | sed '{FILE_NAME_SED_PATTERN}' | sort -u",
         shell=True, capture_output=True, text=True).stdout.strip().split("\n")
 
     for file_name in files:
-        if file_name.lower().split(".")[1] in LANGUAGE_MAP:
-            languages.add(LANGUAGE_MAP.get(file_name.split(".")[1]))
+        parts = file_name.lower().split(".")
+        ext = f".{parts[len(parts) - 1]}"
+        if ext in LANGUAGE_MAP:
+            languages.add(LANGUAGE_MAP.get(ext))
         if file_name.lower() in MANIFEST_MAP:
             package_managers.add(MANIFEST_MAP[file_name.lower()])
 
