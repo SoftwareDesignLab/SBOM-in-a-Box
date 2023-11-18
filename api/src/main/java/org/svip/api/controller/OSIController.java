@@ -88,7 +88,7 @@ public class OSIController {
         List<String> tools = this.osiService.getTools(listTypeArg);
         if (tools == null) {
             LOGGER.error("POST /svip/generators/osi?list=" + listTypeArg + ": " + "Error getting tool list from Docker container.");
-            return new ResponseEntity<>("Error getting tool list from Docker container.", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Error getting tool list from Docker container.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return new ResponseEntity<>(tools.toArray(new String[0]), HttpStatus.OK);
