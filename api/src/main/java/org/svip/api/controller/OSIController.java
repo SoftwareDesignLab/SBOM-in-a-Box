@@ -130,7 +130,8 @@ public class OSIController {
                                          @RequestParam("format") SerializerFactory.Format format,
                                          @RequestParam(value = "toolNames", required = false) String[] toolNames) throws IOException {
         // TODO temp to keep behavior
-//        uploadProject(zipFile);
+
+        uploadProject(zipFile);
 
         // Generate SBOMs
         List<String> generatedSBOMFilePaths;

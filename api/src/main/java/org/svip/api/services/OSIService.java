@@ -3,9 +3,6 @@ package org.svip.api.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.svip.generation.osi.OSI;
-import org.svip.generation.osi.OSIClient;
 import org.svip.generation.osi.exceptions.DockerNotAvailableException;
 
 import java.io.*;
@@ -14,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -232,7 +230,7 @@ public class OSIService {
             Path resolvedPath = path.resolve(entry.getName());
             if (!entry.isDirectory()) {
                 Files.createDirectories(resolvedPath.getParent());
-                Files.copy(inputStream, resolvedPath);
+                Files.copy(inputStream, resolvedPath, StandardCopyOption.REPLACE_EXISTING);
             } else {
                 Files.createDirectories(resolvedPath);
             }
