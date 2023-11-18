@@ -173,10 +173,11 @@ public class OSIController {
             return new ResponseEntity<>("No SBOMs generated for these files.", HttpStatus.NO_CONTENT);
         }
 
-
+        LOGGER.info("POST /svip/generators/osi - Parsed " + uploaded.size() + " SBOMs successfully" );
         Long mergedID;
         // Only merge if 2 or more
         if(uploaded.size() >= 2){
+            LOGGER.info("POST /svip/generators/osi - Beginning Merging");
             // Merge SBOMs into one SBOM
             try {
 
@@ -191,15 +192,19 @@ public class OSIController {
                 for(SBOMFile sbomFile : uploaded)
                     this.sbomService.deleteSBOMFile(sbomFile);
             }
+            LOGGER.info("POST /svip/generators/osi - Successfully merged SBOMs to SBOM with id " + mergedID);
         } else {
+            LOGGER.info("POST /svip/generators/osi - Only 1 SBOM uploaded, skipping merging");
             mergedID = uploaded.get(0).getId();
         }
 
 
         // Convert
-        Long converted;
+        Long convertedID;
         try {
-            converted = this.sbomService.convert(mergedID, schema, format, true);
+            LOGGER.info("POST /svip/generators/osi - Converting SBOM to " + schema + " " + format);
+            convertedID = this.sbomService.convert(mergedID, schema, format, true);
+            LOGGER.info("POST /svip/generators/osi - Successfully merged SBOMs to SBOM with id " + convertedID);
         } catch (DeserializerException | JsonProcessingException | SerializerException | SBOMBuilderException |
                  ConversionException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -208,7 +213,7 @@ public class OSIController {
         // todo how to set file name using projectName
 
         // Save and return
-        return new ResponseEntity<>(converted, HttpStatus.OK);
+        return new ResponseEntity<>(convertedID, HttpStatus.OK);
     }
 
 }
