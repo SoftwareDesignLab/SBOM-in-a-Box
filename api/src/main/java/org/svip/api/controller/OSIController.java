@@ -24,15 +24,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.zip.ZipInputStream;
 
 /**
  * REST API Controller for generating SBOMs with OSI
  *
  * @author Derek Garcia
+ * @author Ian Dunn
  **/
 @RestController
 @RequestMapping("/svip/generators/osi")
@@ -43,7 +42,7 @@ public class OSIController {
     private static final Logger LOGGER = LoggerFactory.getLogger(OSIController.class);
 
     private final SBOMFileService sbomService;
-    private OSIService osiService = null;
+    private OSIService osiService;
 
     /**
      * Create new Controller with services
@@ -97,25 +96,27 @@ public class OSIController {
     /// POST
     ///
 
+
     @PostMapping(value = "/project", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<?> uploadProject(@RequestPart("projectZip") MultipartFile projectZip){
+    public ResponseEntity<?> uploadProject(@RequestPart("project") MultipartFile project){
         if (!this.osiService.isEnabled())
             return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
 
-        try (ZipInputStream inputStream = new ZipInputStream(projectZip.getInputStream())) {
+        try (ZipInputStream inputStream = new ZipInputStream(project.getInputStream())) {
             this.osiService.addProject(inputStream);
+            List<String> tools = this.osiService.getTools("project");
+
+            return new ResponseEntity<>(tools, HttpStatus.OK);
         } catch (IOException e) {
             LOGGER.error("POST /svip/generators/osi/project - " + e.getMessage());
             return new ResponseEntity<>("Make sure attachment is a zip file (.zip): " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
     /**
      * USAGE. Send POST request to /generators/osi to generate an SBOM from source file(s).
      *
-     * @param zipFile The zip file of source files to generate an SBOM from.
      * @param projectName The name of the project.
      * @param schema The schema of the desired SBOM.
      * @param format The file format of the desired SBOM.
@@ -123,15 +124,11 @@ public class OSIController {
      *                  possible tools will be used.
      * @return The ID of the uploaded SBOM.
      */
-    @PostMapping(value = "", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<?> generateOSI(@RequestPart("zipFile") MultipartFile zipFile,
-                                         @RequestParam("projectName") String projectName,
-                                         @RequestParam("schema") SerializerFactory.Schema schema,
-                                         @RequestParam("format") SerializerFactory.Format format,
-                                         @RequestParam(value = "toolNames", required = false) String[] toolNames) throws IOException {
-        // TODO temp to keep behavior
-
-        uploadProject(zipFile);
+    @PostMapping(value = "")
+    public ResponseEntity<?> generateWithOSI(@RequestParam("projectName") String projectName,
+                                             @RequestParam("schema") SerializerFactory.Schema schema,
+                                             @RequestParam("format") SerializerFactory.Format format,
+                                             @RequestParam(value = "toolNames", required = false) String[] toolNames) throws IOException {
 
         // Generate SBOMs
         List<String> generatedSBOMFilePaths;
@@ -145,8 +142,11 @@ public class OSIController {
             generatedSBOMFilePaths = this.osiService.generateSBOMs(null);
         } catch (Exception e) {
             LOGGER.warn("POST /svip/generators/osi - Exception occurred while running OSI container: " + e.getMessage());
-            return new ResponseEntity<>("Exception occurred while running OSI container.", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Exception occurred while running OSI container.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        if(generatedSBOMFilePaths.isEmpty())
+            return new ResponseEntity<>("No SBOMs were generated", HttpStatus.NO_CONTENT);
 
         // Upload SBOMs
         List<SBOMFile> uploaded = new ArrayList<>();

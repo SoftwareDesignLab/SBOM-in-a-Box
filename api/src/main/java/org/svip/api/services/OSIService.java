@@ -19,7 +19,7 @@ import java.util.zip.ZipInputStream;
 @Service
 public class OSIService {
 
-    private static class OSIURLBuilder{
+    private class OSIURLBuilder{
 
         public enum RequestMethod {
 
@@ -205,8 +205,9 @@ public class OSIService {
 
         conn.connect();
 
+        // SBOMs weren't generate
         if (conn.getResponseCode() != 200 && conn.getResponseCode() != 204)
-            throw new Exception("OSI responded with code: " + conn.getResponseCode());
+            return new ArrayList<>();
 
         conn.disconnect();
         List<String> sbomPaths = new ArrayList<>();
