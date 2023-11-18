@@ -4,7 +4,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [v9.1.0-alpha] - (11/28/2023)
+> OSI v4, add extra tool support and major overhaul of OSI to support future expansion
+
 ### Added
+#### OSI
+- `validate.sh`: Validation script that runs before launching flask api server in OSI to confirm what languages, package managers, and tools are installed
+- `runner.sh`: Launch script that sets up flask and runs validate.sh
+- New Tool config files to use YAML files instead of old Tool mapper
+- Dynamic tool checking to find what tools apply to the project
 - 9 new tools to OSI
     1. [Covenant](https://github.com/patriksvensson/covenant)
     2. [CycloneDX Bower](https://github.com/hanstdam/cdx-bower-bom)
@@ -16,10 +23,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     8. [SBOM4Rust](https://github.com/anthonyharrison/sbom4rust)
     9. [SBOM Tool](https://github.com/microsoft/sbom-tool)
 
+#### SVIP
+- New SVIP endpoint `.../svip/generators/osi/project` to upload code to bound directories
+
 ### Changed
-  - fixed installation bugs inside OSI container
+#### OSI
+  - Fixed installation bugs inside OSI container
+  - Fixed bad port mappings inside container
+  - Fixed missing permissions in dockerfile for mac
+  - Updated [Adding Additional OSI Tools](README.md#adding-more-tools) to user new configs/scripts
+  - Overhaul debug messages inside OSI to provide more inside on tool generation
 
-
+#### SVIP
+  - Consolidated OSIv3 java files into Controller / Services for API
+  - SVIP endpoint `.../svip/generators/osi/tools` takes optional `list` param to get all tools or just the ones that can be used against the uploaded project
+  - SVIP endpoint `.../svip/generators/osi/` no longer takes project zip file (moved to `.../svip/generators/osi/project`)
 ### Removed
 - Outdated Docker Binaries from OSI documentation
 
