@@ -38,6 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Consolidated OSIv3 java files into Controller / Services for API
   - SVIP endpoint `.../svip/generators/osi/tools` takes optional `list` param to get all tools or just the ones that can be used against the uploaded project
   - SVIP endpoint `.../svip/generators/osi/` no longer takes project zip file (moved to `.../svip/generators/osi/project`)
+  - SBOMs generated with OSI are removed from database after they have been merged
+
 ### Removed
 - Outdated Docker Binaries from OSI documentation
 
