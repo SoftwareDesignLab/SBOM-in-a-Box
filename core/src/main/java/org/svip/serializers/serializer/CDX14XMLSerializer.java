@@ -3,13 +3,19 @@ package org.svip.serializers.serializer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import org.svip.sbom.model.objects.SVIPSBOM;
 
 public class CDX14XMLSerializer implements Serializer {
 
     private boolean prettyPrint = false;
+
+    public void serialize(SVIPSBOM sbom, ToXmlGenerator xmlGenerator, SerializerProvider provider) {
+
+    }
 
     @Override
     public String writeToString(SVIPSBOM sbom) throws JsonProcessingException {
