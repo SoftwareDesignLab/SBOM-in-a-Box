@@ -2,21 +2,30 @@ package org.svip.serializers.serializer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.svip.sbom.model.objects.SVIPSBOM;
 
-public class CDX14XMLSerializer implements Serializer{
+public class CDX14XMLSerializer implements Serializer {
+
+    private boolean prettyPrint = false;
+
     @Override
-    public String writeToString(SVIPSBOM sbom) {
-        return null;
+    public String writeToString(SVIPSBOM sbom) throws JsonProcessingException {
+        if(prettyPrint)
+            return getObjectMapper().writer().with(SerializationFeature.INDENT_OUTPUT).writeValueAsString(sbom);
+        else return getObjectMapper().writer().writeValueAsString(sbom);
     }
 
     @Override
     public ObjectMapper getObjectMapper() {
-        return null;
+        XmlMapper mapper = new XmlMapper();
+        return mapper;
     }
 
     @Override
     public void setPrettyPrinting(boolean prettyPrint) {
-
+        this.prettyPrint = prettyPrint;
     }
 }
