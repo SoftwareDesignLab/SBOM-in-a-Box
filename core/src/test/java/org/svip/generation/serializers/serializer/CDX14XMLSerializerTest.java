@@ -30,18 +30,20 @@ public class CDX14XMLSerializerTest extends SerializerTest {
         Debug.logBlock();
         Debug.log(Debug.LOG_TYPE.SUMMARY, "Successfully serialized SBOM.");
 
-        Debug.log(Debug.LOG_TYPE.SUMMARY, "Deserializing SBOM back to object.");
-
+        // Check if the SBOM was serialized to XML. If we can parse it using SAXParserFactory, it worked.
         try {
             SAXParserFactory.newInstance().newSAXParser().getXMLReader().parse(new InputSource(new StringReader(serialized)));
         } catch (Exception e) {
+            // Fail the test if the SaxParserFactory could not parse the XML
             fail("SBOM was not serialized to XML.");
         }
 
         // TODO: execute rest of test once deserializer for CDX XML is implemented
-
-        // CDX14SBOM sbom = (CDX14SBOM) SerializerFactory.createDeserializer(serialized).readFromString(serialized);
-        // assertEquals(3, sbom.getComponents().size());
+        /**
+            Debug.log(Debug.LOG_TYPE.SUMMARY, "Deserializing SBOM back to object.");
+            CDX14SBOM sbom = (CDX14SBOM) SerializerFactory.createDeserializer(serialized).readFromString(serialized);
+            assertEquals(3, sbom.getComponents().size());
+         **/
     }
 
 }
