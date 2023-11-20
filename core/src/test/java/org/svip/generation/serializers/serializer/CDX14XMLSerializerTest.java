@@ -8,8 +8,13 @@ import org.svip.serializers.serializer.CDX14JSONSerializer;
 import org.svip.serializers.serializer.CDX14XMLSerializer;
 import org.svip.serializers.serializer.Serializer;
 import org.svip.utils.Debug;
+import org.xml.sax.InputSource;
+
+import javax.xml.parsers.SAXParserFactory;
+import java.io.StringReader;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class CDX14XMLSerializerTest extends SerializerTest {
 
@@ -18,7 +23,7 @@ public class CDX14XMLSerializerTest extends SerializerTest {
     }
 
     @Test
-    public void writeToStringTest() throws JsonProcessingException {
+    public void writeToStringTest() throws JsonProcessingException{
         Debug.logBlockTitle("CDX 1.4 XML");
         String serialized = getSerializer().writeToString(getTestSBOM());
         Debug.log(Debug.LOG_TYPE.DEBUG, "\n" + serialized);
@@ -26,10 +31,17 @@ public class CDX14XMLSerializerTest extends SerializerTest {
         Debug.log(Debug.LOG_TYPE.SUMMARY, "Successfully serialized SBOM.");
 
         Debug.log(Debug.LOG_TYPE.SUMMARY, "Deserializing SBOM back to object.");
-        CDX14SBOM sbom = (CDX14SBOM) SerializerFactory.createDeserializer(serialized).readFromString(serialized);
 
-        // TODO Compare getTestSBOM() and sbom with Comparison when it's finished
-        assertEquals(3, sbom.getComponents().size());
+        try {
+            SAXParserFactory.newInstance().newSAXParser().getXMLReader().parse(new InputSource(new StringReader(serialized)));
+        } catch (Exception e) {
+            fail("SBOM was not serialized to XML.");
+        }
+
+        // TODO: execute rest of test once deserializer for CDX XML is implemented
+
+        // CDX14SBOM sbom = (CDX14SBOM) SerializerFactory.createDeserializer(serialized).readFromString(serialized);
+        // assertEquals(3, sbom.getComponents().size());
     }
 
 }
