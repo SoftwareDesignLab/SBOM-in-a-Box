@@ -226,6 +226,8 @@ public class SerializerFactory {
             return TAGVALUE;
         else if (Format.isValidJSON(fileContents))
             return JSON;
+        else if(Format.isValidXML(fileContents))
+            return Format.XML;
         else return null;
     }
 
