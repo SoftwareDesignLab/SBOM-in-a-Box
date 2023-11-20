@@ -9,12 +9,26 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import org.svip.sbom.model.objects.SVIPSBOM;
 
+import java.io.IOException;
+
 public class CDX14XMLSerializer implements Serializer {
 
     private boolean prettyPrint = false;
 
-    public void serialize(SVIPSBOM sbom, ToXmlGenerator xmlGenerator, SerializerProvider provider) {
+    public void serialize(SVIPSBOM sbom, ToXmlGenerator xmlGenerator, SerializerProvider provider) throws IOException {
 
+        xmlGenerator.writeStartObject();
+
+        //
+        // Top-level info
+        //
+
+        xmlGenerator.writeStringField("bomFormat", sbom.getFormat());
+        xmlGenerator.writeStringField("specVersion", sbom.getSpecVersion());
+        xmlGenerator.writeStringField("version", sbom.getVersion());
+        xmlGenerator.writeStringField("serialNumber", sbom.getUID());
+
+        xmlGenerator.writeEndArray();
     }
 
     @Override
