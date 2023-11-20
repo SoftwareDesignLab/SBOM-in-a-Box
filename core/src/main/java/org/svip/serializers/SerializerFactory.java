@@ -45,6 +45,7 @@ public class SerializerFactory {
          */
         CDX14("CycloneDX", "1.4", new HashMap<>() {{
             this.put(JSON, new CDX14JSONSerializer());
+            this.put(Format.XML, new CDX14XMLSerializer());
         }}, new HashMap<>() {{
             this.put(JSON, new CDX14JSONDeserializer());
         }}),
@@ -135,6 +136,7 @@ public class SerializerFactory {
      */
     public enum Format {
         JSON,
+        XML,
         TAGVALUE;
 
         /**
