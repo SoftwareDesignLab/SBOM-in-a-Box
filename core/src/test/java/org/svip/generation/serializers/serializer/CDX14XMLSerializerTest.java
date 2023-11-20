@@ -11,6 +11,7 @@ import org.svip.utils.Debug;
 import org.xml.sax.InputSource;
 
 import javax.xml.parsers.SAXParserFactory;
+import java.io.IOException;
 import java.io.StringReader;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,7 +24,7 @@ public class CDX14XMLSerializerTest extends SerializerTest {
     }
 
     @Test
-    public void writeToStringTest() throws JsonProcessingException{
+    public void writeToStringTest() throws JsonProcessingException {
         Debug.logBlockTitle("CDX 1.4 XML");
         String serialized = getSerializer().writeToString(getTestSBOM());
         Debug.log(Debug.LOG_TYPE.DEBUG, "\n" + serialized);
