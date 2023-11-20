@@ -83,7 +83,7 @@ public class SBOMFileService {
             ConversionException {
 
         // deserialize into SBOM object
-        org.svip.sbom.model.interfaces.generics.SBOM deserialized;
+        SBOM deserialized;
         try {
             deserialized = getSBOMFile(id).toSBOMObject();
         } catch (Exception e) {
@@ -95,7 +95,7 @@ public class SBOMFileService {
         SerializerFactory.Schema originalSchema = resolveSchemaByObject(deserialized);
 
         // use core Conversion functionality
-        org.svip.sbom.model.interfaces.generics.SBOM Converted = Conversion.convert(deserialized,
+        SBOM Converted = Conversion.convert(deserialized,
                  originalSchema, schema);
 
         // serialize into desired format

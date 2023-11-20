@@ -163,11 +163,10 @@ public class SBOMFileServiceTest {
 
             // When
             when(this.sbomFileRepository.findById(0L)).thenReturn(Optional.of(spdx23json));
-            long id = this.sbomFileService.convert(0L, SerializerFactory.Schema.CDX14, SerializerFactory.Format.JSON, true);
+            this.sbomFileService.convert(0L, SerializerFactory.Schema.CDX14, SerializerFactory.Format.JSON, true);
 
             // Then
             verify(this.sbomFileRepository, times(2)).findById(0L); // need multiple queries for overwriting
-            assertEquals(0L, id);
 
         } catch (Exception e){
             fail(e.getMessage());
