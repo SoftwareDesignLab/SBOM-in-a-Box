@@ -122,17 +122,12 @@ public class SBOMFileService {
         // Save according to overwrite boolean
         SBOMFile converted = u.toSBOMFile();
 
-        if (overwrite) {
-            // If overwrite, delete current SBOM
+        // If overwrite, delete current SBOM
+        if (overwrite)
             deleteSBOMFile(getSBOMFile(id));
-            // Save converted SBOM as the next available ID
-            this.sbomFileRepository.save(converted);
-            return converted.getId();
-        } else {
-            // Save converted SBOM as the next available ID
-            this.sbomFileRepository.save(converted);
-            return converted.getId();
-        }
+
+        this.sbomFileRepository.save(converted);
+        return converted.getId();
 
     }
 
