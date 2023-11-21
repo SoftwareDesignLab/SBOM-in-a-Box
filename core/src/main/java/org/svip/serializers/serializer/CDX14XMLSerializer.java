@@ -13,8 +13,10 @@ import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.sbom.model.shared.util.LicenseCollection;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -131,6 +133,16 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         // Write the component's hashes
         if(svipComponentObject.getHashes() != null) writeHashes(xmlGenerator, svipComponentObject.getHashes());
 
+        // Write the component's licenses
+        if (svipComponentObject.getLicenses() != null) {
+            LicenseCollection licenses = svipComponentObject.getLicenses();
+            Set<String> allLicenses = new HashSet<>();
+            allLicenses.addAll(licenses.getConcluded());
+            allLicenses.addAll(licenses.getDeclared());
+            allLicenses.addAll(licenses.getInfoFromFiles());
+            writeLicenses(xmlGenerator, allLicenses);
+        }
+
         // End component xml object
         xmlGenerator.writeEndObject();
 
@@ -173,6 +185,12 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
     }
 
     public void writeLicenses(ToXmlGenerator xmlGenerator, Set<String> licenses) throws IOException {
+
+        // Start the new licenses xml object
+        xmlGenerator.writeFieldName("licenses");
+        xmlGenerator.writeStartObject();
+
+        xmlGenerator.writeEndObject();
 
     }
 
