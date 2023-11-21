@@ -132,8 +132,34 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
      * sub-field write helpers
      */
 
-    public void writeHashes(JsonGenerator jsonGenerator, Map<String, String> hashes) throws IOException {
+    public void writeHashes(ToXmlGenerator xmlGenerator, Map<String, String> hashes) throws IOException {
 
+        // Start the new hashes xml object
+        xmlGenerator.writeFieldName("hashes");
+        xmlGenerator.writeStartObject();
+
+        // Loop through hashes and print the algorithm and content
+        for (Map.Entry<String, String> hash : hashes.entrySet()) {
+
+            // Create the new hash xml object
+            xmlGenerator.writeFieldName("hash");
+            xmlGenerator.writeStartObject();
+
+            // Add the algorithm to the header as an attribute
+            xmlGenerator.setNextIsAttribute(true);
+            xmlGenerator.writeFieldName("alg");
+            xmlGenerator.writeString(hash.getKey());
+            xmlGenerator.setNextIsAttribute(false);
+
+            // Add the hash value as the body
+            xmlGenerator.writeString(hash.getValue());
+
+            // End the hash xml object
+            xmlGenerator.writeEndObject();
+
+        }
+
+        xmlGenerator.writeEndObject();
     }
 
 }
