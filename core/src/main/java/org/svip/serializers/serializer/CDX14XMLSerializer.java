@@ -10,9 +10,12 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
+import org.svip.sbom.model.interfaces.generics.Component;
+import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 
 import java.io.IOException;
+import java.util.UUID;
 
 public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Serializer {
 
@@ -52,17 +55,36 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
         ToXmlGenerator xmlGenerator = (ToXmlGenerator) gen;
 
+
         xmlGenerator.writeStartObject();
+        xmlGenerator.writeObjectFieldStart(
+                "bom xmlns=\"http://cyclonedx.org/schema/bom/1.4\" " +
+                        "serialNumber=\"urn:uuid:" + UUID.randomUUID().toString() +
+                        "\" version=\"" + sbom.getVersion() + "\""
+        );
 
         //
-        // Top-level info
+        // Metadata
         //
 
-        xmlGenerator.writeStringField("bomFormat", sbom.getFormat());
-        xmlGenerator.writeStringField("specVersion", sbom.getSpecVersion());
-        xmlGenerator.writeStringField("version", sbom.getVersion());
-        xmlGenerator.writeStringField("serialNumber", sbom.getUID());
+        //
+        // Components
+        //
+        xmlGenerator.writeFieldName("components");
+        xmlGenerator.writeStartArray();
+        for (Component component : sbom.getComponents()) {
+            if (component == null) continue;
+            SVIPComponentObject svipComponent = (SVIPComponentObject) component;
+            writeComponent(xmlGenerator, svipComponent);
+        }
 
         xmlGenerator.writeEndArray();
+
     }
+
+    public void writeComponent(ToXmlGenerator xmlGenerator, SVIPComponentObject svipComponentObject) throws IOException {
+
+    }
+
+
 }
