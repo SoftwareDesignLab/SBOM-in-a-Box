@@ -61,21 +61,21 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         //
         // Set top level attributes
         //
+        xmlGenerator.setNextIsAttribute(true);
 
         // Schema and SpecVersion
         xmlGenerator.writeFieldName("xmlns");
-        xmlGenerator.setNextIsAttribute(true);
         xmlGenerator.writeString("http://cyclonedx.org/schema/bom/1.4");
 
         // Serial Number
         xmlGenerator.writeFieldName("serialNumber");
-        xmlGenerator.setNextIsAttribute(true);
         xmlGenerator.writeString("urn:uuid:" + UUID.randomUUID());
 
         // Version
         xmlGenerator.writeFieldName("version");
-        xmlGenerator.setNextIsAttribute(true);
         xmlGenerator.writeString(sbom.getVersion());
+
+        xmlGenerator.setNextIsAttribute(false);
 
         //
         // Metadata
@@ -84,8 +84,13 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         //
         // Components
         //
+
         xmlGenerator.writeFieldName("components");
-        xmlGenerator.writeStartArray();
+        xmlGenerator.writeStartObject();
+
+        //xmlGenerator.writeFieldName("component");
+        //xmlGenerator.writeStartArray("component");
+
 
         for (Component component : sbom.getComponents()) {
             if (component == null) continue;
@@ -93,7 +98,9 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
             writeComponent(xmlGenerator, svipComponent);
         }
 
-        xmlGenerator.writeEndArray();
+
+        // End components object
+        xmlGenerator.writeEndObject();
 
         // End the bom object
         xmlGenerator.writeEndObject();
@@ -101,6 +108,23 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
     }
 
     public void writeComponent(ToXmlGenerator xmlGenerator, SVIPComponentObject svipComponentObject) throws IOException {
+
+        xmlGenerator.writeFieldName("component");
+        xmlGenerator.writeStartObject();
+
+        // Set the top level info for the component: bom-ref ID and type
+        xmlGenerator.setNextIsAttribute(true);
+        xmlGenerator.writeFieldName("bom-ref");
+        xmlGenerator.writeString(svipComponentObject.getUID());
+        xmlGenerator.writeFieldName("type");
+        xmlGenerator.writeString(svipComponentObject.getType());
+        xmlGenerator.setNextIsAttribute(false);
+
+        xmlGenerator.writeStringField("name", svipComponentObject.getName());
+        xmlGenerator.writeStringField("version", svipComponentObject.getVersion());
+        xmlGenerator.writeStringField("scope", svipComponentObject.getScope());
+
+        xmlGenerator.writeEndObject();
     }
 
 
