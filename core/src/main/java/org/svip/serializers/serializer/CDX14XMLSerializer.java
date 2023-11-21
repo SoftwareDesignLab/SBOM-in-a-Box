@@ -13,6 +13,7 @@ import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
@@ -136,7 +137,6 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
         // Write component supplier
         if (svipComponentObject.getSupplier() != null) {
-            xmlGenerator.writeFieldName("supplier");
             writeOrganization(xmlGenerator, svipComponentObject.getSupplier());
         }
 
@@ -182,7 +182,44 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
      * sub-field write helpers
      */
 
-    public void writeOrganization(ToXmlGenerator xmlGenerator, Organization organization) {
+    public void writeOrganization(ToXmlGenerator xmlGenerator, Organization organization) throws IOException {
+
+        // Start the new organization xml object
+        xmlGenerator.writeFieldName("supplier");
+        xmlGenerator.writeStartObject();
+
+        // Write the name for the organization
+        xmlGenerator.writeStringField("name", organization.getName());
+
+        // Write the url for the organization
+        if (organization.getUrl() != null) xmlGenerator.writeStringField("url", organization.getUrl());
+
+        // Write the contacts for the organization
+        xmlGenerator.writeFieldName("contact");
+        xmlGenerator.writeStartArray();
+
+        // Add each contact
+        if(organization.getContacts() != null) {
+
+            // Add each contact
+            for (Contact contact : organization.getContacts()) {
+
+                // If a contact exists write the contact
+                if(contact != null) writeContact(xmlGenerator, contact);
+
+            }
+
+        }
+
+        // End xml array
+        xmlGenerator.writeEndArray();
+
+        // End xml Object
+        xmlGenerator.writeEndObject();
+
+    }
+
+    public void writeContact(ToXmlGenerator xmlGenerator, Contact contact) throws IOException {
 
     }
 
