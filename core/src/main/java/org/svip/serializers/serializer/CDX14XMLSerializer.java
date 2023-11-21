@@ -199,11 +199,19 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         xmlGenerator.writeStartObject();
 
         // Start a new xml array to denote each license
-        xmlGenerator.writeFieldName("name");
+        xmlGenerator.writeFieldName("license");
         xmlGenerator.writeStartArray();
 
+        // Start a new xml array to denote each license
+
+
         // Add each license
-        for(String license : licenses) xmlGenerator.writeString(license);
+        for(String license : licenses) {
+            xmlGenerator.writeStartObject();
+            xmlGenerator.writeStringField("name", license);
+            xmlGenerator.writeEndObject();
+        }
+
 
         // End the xml Array
         xmlGenerator.writeEndArray();
