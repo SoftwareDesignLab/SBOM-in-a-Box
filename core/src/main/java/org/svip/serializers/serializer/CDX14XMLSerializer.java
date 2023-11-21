@@ -55,13 +55,27 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
         ToXmlGenerator xmlGenerator = (ToXmlGenerator) gen;
 
-
+        // Start XML bom object
         xmlGenerator.writeStartObject();
-        xmlGenerator.writeObjectFieldStart(
-                "bom xmlns=\"http://cyclonedx.org/schema/bom/1.4\" " +
-                        "serialNumber=\"urn:uuid:" + UUID.randomUUID().toString() +
-                        "\" version=\"" + sbom.getVersion() + "\""
-        );
+
+        //
+        // Set top level attributes
+        //
+
+        // Schema and SpecVersion
+        xmlGenerator.writeFieldName("xmlns");
+        xmlGenerator.setNextIsAttribute(true);
+        xmlGenerator.writeString("http://cyclonedx.org/schema/bom/1.4");
+
+        // Serial Number
+        xmlGenerator.writeFieldName("serialNumber");
+        xmlGenerator.setNextIsAttribute(true);
+        xmlGenerator.writeString("urn:uuid:" + UUID.randomUUID());
+
+        // Version
+        xmlGenerator.writeFieldName("version");
+        xmlGenerator.setNextIsAttribute(true);
+        xmlGenerator.writeString(sbom.getVersion());
 
         //
         // Metadata
@@ -72,6 +86,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         //
         xmlGenerator.writeFieldName("components");
         xmlGenerator.writeStartArray();
+
         for (Component component : sbom.getComponents()) {
             if (component == null) continue;
             SVIPComponentObject svipComponent = (SVIPComponentObject) component;
@@ -80,10 +95,12 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
         xmlGenerator.writeEndArray();
 
+        // End the bom object
+        xmlGenerator.writeEndObject();
+
     }
 
     public void writeComponent(ToXmlGenerator xmlGenerator, SVIPComponentObject svipComponentObject) throws IOException {
-
     }
 
 
