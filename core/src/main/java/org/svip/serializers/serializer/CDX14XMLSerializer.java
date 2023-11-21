@@ -125,6 +125,8 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         xmlGenerator.writeStringField("version", svipComponentObject.getVersion());
         xmlGenerator.writeStringField("scope", svipComponentObject.getScope());
 
+        writeHashes(xmlGenerator, svipComponentObject.getHashes());
+
         xmlGenerator.writeEndObject();
     }
 
@@ -152,7 +154,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
             xmlGenerator.setNextIsAttribute(false);
 
             // Add the hash value as the body
-            xmlGenerator.writeString(hash.getValue());
+            xmlGenerator.writeRaw(hash.getValue());
 
             // End the hash xml object
             xmlGenerator.writeEndObject();
