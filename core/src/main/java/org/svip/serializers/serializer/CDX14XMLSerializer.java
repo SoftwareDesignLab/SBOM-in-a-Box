@@ -15,6 +15,7 @@ import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.UUID;
 
 public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Serializer {
@@ -127,5 +128,12 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         xmlGenerator.writeEndObject();
     }
 
+    /**
+     * sub-field write helpers
+     */
+
+    public void writeHashes(JsonGenerator jsonGenerator, Map<String, String> hashes) throws IOException {
+
+    }
 
 }
