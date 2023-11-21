@@ -307,28 +307,27 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         xmlGenerator.writeFieldName("externalReferences");
         xmlGenerator.writeStartObject();
 
-        // Start a new xml array of references
-        xmlGenerator.writeFieldName("reference");
-        xmlGenerator.writeStartArray();
-
         // Add each external reference
         for(ExternalReference ref : externalReferences) {
 
-            // Create new xml object for the external reference
+            // Start a new xml array of references
+            xmlGenerator.writeFieldName("reference");
             xmlGenerator.writeStartObject();
 
-            // Write the url, comment, type
+            // Add the algorithm to the header as an attribute
+            xmlGenerator.setNextIsAttribute(true);
+            xmlGenerator.writeFieldName("type");
+            xmlGenerator.writeString(ref.getType());
+            xmlGenerator.setNextIsAttribute(false);
+
+            // Write the url and comment
             xmlGenerator.writeStringField("url", ref.getUrl());
             xmlGenerator.writeStringField("comment", "Category: " + ref.getCategory());
-            xmlGenerator.writeStringField("type", ref.getType());
 
             // End xml object
             xmlGenerator.writeEndObject();
 
         }
-
-        // End xml array
-        xmlGenerator.writeEndArray();
 
         // End xml Object
         xmlGenerator.writeEndObject();
