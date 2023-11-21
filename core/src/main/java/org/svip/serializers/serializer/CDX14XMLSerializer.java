@@ -110,6 +110,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
     public void writeComponent(ToXmlGenerator xmlGenerator, SVIPComponentObject svipComponentObject) throws IOException {
 
+        // Create new component xml object
         xmlGenerator.writeFieldName("component");
         xmlGenerator.writeStartObject();
 
@@ -121,13 +122,17 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         xmlGenerator.writeString(svipComponentObject.getType());
         xmlGenerator.setNextIsAttribute(false);
 
+        // Write basic component information
         xmlGenerator.writeStringField("name", svipComponentObject.getName());
         xmlGenerator.writeStringField("version", svipComponentObject.getVersion());
         xmlGenerator.writeStringField("scope", svipComponentObject.getScope());
 
-        writeHashes(xmlGenerator, svipComponentObject.getHashes());
+        // Write the component's hashes
+        if(svipComponentObject.getHashes() != null) writeHashes(xmlGenerator, svipComponentObject.getHashes());
 
+        // End component xml object
         xmlGenerator.writeEndObject();
+        
     }
 
     /**
@@ -161,7 +166,9 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
         }
 
+        // End hashes xml object
         xmlGenerator.writeEndObject();
+
     }
 
 }
