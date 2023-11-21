@@ -143,6 +143,14 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
             writeLicenses(xmlGenerator, allLicenses);
         }
 
+        // Write the component's CPEs
+        if (svipComponentObject.getCPEs() != null)
+            xmlGenerator.writeStringField("cpe", String.join(", ", svipComponentObject.getCPEs()));
+
+        // Write the component's PURLs
+        if (svipComponentObject.getPURLs() != null)
+            xmlGenerator.writeStringField("purl", String.join(", ", svipComponentObject.getPURLs()));
+
         // End component xml object
         xmlGenerator.writeEndObject();
 
