@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormatVisitor;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -15,6 +16,7 @@ import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.Organization;
+import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
 import java.io.IOException;
@@ -59,6 +61,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
     @Override
     public void serialize(SVIPSBOM sbom, JsonGenerator gen, SerializerProvider serializers) throws IOException {
 
+        // Cast the JsonGenerator to an ToXmlGenerator
         ToXmlGenerator xmlGenerator = (ToXmlGenerator) gen;
 
         // Start XML bom object
@@ -172,6 +175,9 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         // Write the component's PURLs
         if (svipComponentObject.getPURLs() != null)
             xmlGenerator.writeStringField("purl", String.join(", ", svipComponentObject.getPURLs()));
+
+        if(svipComponentObject.getExternalReferences() != null)
+            writeExternalReferences(xmlGenerator, svipComponentObject.getExternalReferences());
 
         // End component xml object
         xmlGenerator.writeEndObject();
@@ -291,6 +297,40 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         xmlGenerator.writeEndArray();
 
         // End the xml Object
+        xmlGenerator.writeEndObject();
+
+    }
+
+    public void writeExternalReferences(ToXmlGenerator xmlGenerator, Set<ExternalReference> externalReferences) throws IOException {
+
+        // Start a new xml object for external references
+        xmlGenerator.writeFieldName("externalReferences");
+        xmlGenerator.writeStartObject();
+
+        // Start a new xml array of references
+        xmlGenerator.writeFieldName("reference");
+        xmlGenerator.writeStartArray();
+
+        // Add each external reference
+        for(ExternalReference ref : externalReferences) {
+
+            // Create new xml object for the external reference
+            xmlGenerator.writeStartObject();
+
+            // Write the url, comment, type
+            xmlGenerator.writeStringField("url", ref.getUrl());
+            xmlGenerator.writeStringField("comment", "Category: " + ref.getCategory());
+            xmlGenerator.writeStringField("type", ref.getType());
+
+            // End xml object
+            xmlGenerator.writeEndObject();
+
+        }
+
+        // End xml array
+        xmlGenerator.writeEndArray();
+
+        // End xml Object
         xmlGenerator.writeEndObject();
 
     }
