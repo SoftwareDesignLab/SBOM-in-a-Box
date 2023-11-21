@@ -221,6 +221,21 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
     public void writeContact(ToXmlGenerator xmlGenerator, Contact contact) throws IOException {
 
+        // Create new xml Object
+        xmlGenerator.writeStartObject();
+
+        // Write the name of the contact
+        xmlGenerator.writeStringField("name", contact.getName());
+
+        // Write the contact email
+        if (contact.getEmail() != null) xmlGenerator.writeStringField("email", contact.getEmail());
+
+        // Write the contact phone
+        if (contact.getPhone() != null) xmlGenerator.writeStringField("phone", contact.getPhone());
+
+        // End xml Object
+        xmlGenerator.writeEndObject();
+
     }
 
     public void writeHashes(ToXmlGenerator xmlGenerator, Map<String, String> hashes) throws IOException {
