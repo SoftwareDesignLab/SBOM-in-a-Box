@@ -144,6 +144,14 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         xmlGenerator.writeStringField("author", svipComponentObject.getAuthor());
         xmlGenerator.writeStringField("publisher", svipComponentObject.getPublisher());
 
+        // Write component description
+        if (svipComponentObject.getDescription() != null)
+            xmlGenerator.writeStringField(
+                    "description",
+                    "Summary: " + svipComponentObject.getDescription().getSummary() +
+                            " | Details: " + svipComponentObject.getDescription().getDescription()
+            );
+
         // Write the component's hashes
         if(svipComponentObject.getHashes() != null) writeHashes(xmlGenerator, svipComponentObject.getHashes());
 
