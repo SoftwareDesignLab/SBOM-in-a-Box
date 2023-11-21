@@ -13,6 +13,7 @@ import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
 import java.io.IOException;
@@ -133,6 +134,16 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         xmlGenerator.writeStringField("group", svipComponentObject.getGroup());
         xmlGenerator.writeStringField("copyright", svipComponentObject.getCopyright());
 
+        // Write component supplier
+        if (svipComponentObject.getSupplier() != null) {
+            xmlGenerator.writeFieldName("supplier");
+            writeOrganization(xmlGenerator, svipComponentObject.getSupplier());
+        }
+
+        // Write component author and publisher
+        xmlGenerator.writeStringField("author", svipComponentObject.getAuthor());
+        xmlGenerator.writeStringField("publisher", svipComponentObject.getPublisher());
+
         // Write the component's hashes
         if(svipComponentObject.getHashes() != null) writeHashes(xmlGenerator, svipComponentObject.getHashes());
 
@@ -162,6 +173,10 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
     /**
      * sub-field write helpers
      */
+
+    public void writeOrganization(ToXmlGenerator xmlGenerator, Organization organization) {
+
+    }
 
     public void writeHashes(ToXmlGenerator xmlGenerator, Map<String, String> hashes) throws IOException {
 
