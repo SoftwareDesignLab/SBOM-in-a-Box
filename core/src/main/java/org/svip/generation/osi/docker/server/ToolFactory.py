@@ -83,7 +83,7 @@ class Profile(object):
         # Build and run the command
         cmd = self.build_exe_string(run_location)
         try:
-            subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True, timeout=120, universal_newlines=True)
+            subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True, timeout=900, universal_newlines=True)
         except subprocess.CalledProcessError as exc:
             raise Exception(f"Error during execution: {exc.output}")
         except subprocess.TimeoutExpired:
