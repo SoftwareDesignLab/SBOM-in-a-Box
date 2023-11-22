@@ -342,6 +342,29 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         xmlGenerator.writeFieldName("properties");
         xmlGenerator.writeStartObject();
 
+        for(Map.Entry<String, Set<String>> property : properties.entrySet()) {
+
+            for(String value : property.getValue()) {
+
+                // Start new xml object property
+                xmlGenerator.writeFieldName("property");
+                xmlGenerator.writeStartObject();
+
+                // Add the name of the property as an attribute
+                xmlGenerator.setNextIsAttribute(true);
+                xmlGenerator.writeFieldName("name");
+                xmlGenerator.writeString(property.getKey());
+                xmlGenerator.setNextIsAttribute(false);
+
+                // Write the value of the property
+                xmlGenerator.writeRaw(value);
+
+                // End xml object property
+                xmlGenerator.writeEndObject();
+
+            }
+
+        }
 
     }
 
