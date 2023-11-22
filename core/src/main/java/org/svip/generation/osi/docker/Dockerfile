@@ -30,5 +30,6 @@ RUN /bin/bash -c setup.sh
 # Cleanup
 RUN rm /usr/local/bin/setup.sh
 
+RUN ["chmod", "+x", "/usr/local/bin/runner.sh"]
 
-ENTRYPOINT ["runner.sh"]
+ENTRYPOINT ["usr/local/bin/runner.sh"]
