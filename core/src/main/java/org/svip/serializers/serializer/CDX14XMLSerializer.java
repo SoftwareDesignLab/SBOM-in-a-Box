@@ -20,10 +20,7 @@ import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Serializer {
 
@@ -176,8 +173,13 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         if (svipComponentObject.getPURLs() != null)
             xmlGenerator.writeStringField("purl", String.join(", ", svipComponentObject.getPURLs()));
 
+        // Write External References
         if(svipComponentObject.getExternalReferences() != null)
             writeExternalReferences(xmlGenerator, svipComponentObject.getExternalReferences());
+
+        // Write Properties
+        if(svipComponentObject.getProperties() != null)
+            writeProperties(xmlGenerator, svipComponentObject.getProperties());
 
         // End component xml object
         xmlGenerator.writeEndObject();
@@ -331,6 +333,15 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
         // End xml Object
         xmlGenerator.writeEndObject();
+
+    }
+
+    public void writeProperties(ToXmlGenerator xmlGenerator, HashMap<String, Set<String>> properties) throws IOException {
+
+        // Start a new xml object for properties
+        xmlGenerator.writeFieldName("properties");
+        xmlGenerator.writeStartObject();
+
 
     }
 
