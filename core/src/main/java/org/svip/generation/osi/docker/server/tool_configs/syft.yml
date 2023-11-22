@@ -4,7 +4,7 @@ profiles:
     spec_version: "1.4"
     format: "json"
     languages:
-      - "Java Binary"
+      - "Java"
       - "Python"
     package_managers:
       - "Conan"
@@ -28,7 +28,7 @@ profiles:
     spec_version: "2.3"
     format: "spdx"
     languages:
-      - "Java Binary"
+      - "Java"
       - "Python"
     package_managers:
       - "Conan"

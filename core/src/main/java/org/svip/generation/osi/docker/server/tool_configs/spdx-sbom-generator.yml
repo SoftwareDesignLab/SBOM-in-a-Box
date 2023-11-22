@@ -15,4 +15,4 @@ profiles:
       - "Gems"
       - "Swift"
     commands:
-      - "spdx-sbom-generator -o $SBOM_OUT"
+      - "spdx-sbom-generator -p ./* -o $SBOM_OUT"
