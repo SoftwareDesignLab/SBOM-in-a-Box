@@ -2,19 +2,12 @@ package org.svip.generation.serializers.serializer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
-import org.svip.serializers.SerializerFactory;
-import org.svip.serializers.serializer.CDX14JSONSerializer;
 import org.svip.serializers.serializer.CDX14XMLSerializer;
-import org.svip.serializers.serializer.Serializer;
 import org.svip.utils.Debug;
 import org.xml.sax.InputSource;
-
 import javax.xml.parsers.SAXParserFactory;
-import java.io.IOException;
 import java.io.StringReader;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class CDX14XMLSerializerTest extends SerializerTest {
@@ -39,12 +32,6 @@ public class CDX14XMLSerializerTest extends SerializerTest {
             fail("SBOM was not serialized to XML.");
         }
 
-        // TODO: execute rest of test once deserializer for CDX XML is implemented
-        /**
-            Debug.log(Debug.LOG_TYPE.SUMMARY, "Deserializing SBOM back to object.");
-            CDX14SBOM sbom = (CDX14SBOM) SerializerFactory.createDeserializer(serialized).readFromString(serialized);
-            assertEquals(3, sbom.getComponents().size());
-         **/
     }
 
 }
