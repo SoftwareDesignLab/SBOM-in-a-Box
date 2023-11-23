@@ -85,6 +85,8 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         //
         // Metadata
         //
+        xmlGenerator.writeFieldName("metadata");
+        writeMetadata(xmlGenerator, sbom);
 
         //
         // Components
@@ -126,6 +128,10 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
         // End the xml bom object
         xmlGenerator.writeEndObject();
+
+    }
+
+    public void writeMetadata(ToXmlGenerator xmlGenerator, SVIPSBOM sbom) throws IOException {
 
     }
 
