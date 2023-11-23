@@ -2,11 +2,9 @@ package org.svip.serializers.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonValueFormatVisitor;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -14,6 +12,7 @@ import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.ExternalReference;
@@ -91,26 +90,42 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         // Components
         //
 
+        // Write the components
         xmlGenerator.writeFieldName("components");
         xmlGenerator.writeStartObject();
 
+        // Cycle through each component
         for (Component component : sbom.getComponents()) {
+
+            // If the component isn't null
             if(component != null) {
+
+                // Cast the component to an SVIPComponent and write the component
                 SVIPComponentObject svipComponent = (SVIPComponentObject) component;
                 writeComponent(xmlGenerator, svipComponent);
+
             }
+
         }
 
-
         // End components object
-        xmlGenerator.writeEndObject();
-
-        // End the bom object
         xmlGenerator.writeEndObject();
 
         //
         // Dependencies
         //
+
+        xmlGenerator.writeFieldName("dependencies");
+        xmlGenerator.writeStartObject();
+
+        // Write the dependencies
+        writeDependencies(xmlGenerator, sbom.getRelationships());
+
+        // End the dependencies xml object
+        xmlGenerator.writeEndObject();
+
+        // End the xml bom object
+        xmlGenerator.writeEndObject();
 
     }
 
@@ -190,12 +205,48 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
     }
 
-    public void writeDependencies(ToXmlGenerator xmlGenerator, HashMap<String, Set<String>>) throws IOException {
+    public void writeDependencies(ToXmlGenerator xmlGenerator,Map<String, Set<Relationship>> relationships) throws IOException {
+
+        // Cycle through each dependency set
+        for(Map.Entry<String, Set<Relationship>> parent : relationships.entrySet()) {
+
+            // Start new dependency xml object
+            xmlGenerator.writeFieldName("dependency");
+            xmlGenerator.writeStartObject();
+
+            // Add the parent key as an attribute
+            xmlGenerator.setNextIsAttribute(true);
+            xmlGenerator.writeFieldName("ref");
+            xmlGenerator.writeString(parent.getKey());
+            xmlGenerator.setNextIsAttribute(false);
+
+            // Cycle through each dependency of the parent
+            for(Relationship dependency : parent.getValue()) {
+
+                // Start a new dependency xml object
+                xmlGenerator.writeFieldName("dependency");
+                xmlGenerator.writeStartObject();
+
+                // Add the dependency key as an attribute
+                xmlGenerator.setNextIsAttribute(true);
+                xmlGenerator.writeFieldName("ref");
+                xmlGenerator.writeString(dependency.getOtherUID());
+                xmlGenerator.setNextIsAttribute(false);
+
+                // End the dependency xml object
+                xmlGenerator.writeEndObject();
+
+            }
+
+            // End the dependency xml object
+            xmlGenerator.writeEndObject();
+
+        }
 
     }
 
     /**
-     * sub-field write helpers
+     * Sub-Field Writers
      */
 
     public void writeOrganization(ToXmlGenerator xmlGenerator, Organization organization) throws IOException {
@@ -373,6 +424,8 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
             }
 
         }
+
+        xmlGenerator.writeEndObject();
 
     }
 
