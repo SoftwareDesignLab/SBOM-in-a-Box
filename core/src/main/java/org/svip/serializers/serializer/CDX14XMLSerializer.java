@@ -19,14 +19,23 @@ import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.sbom.model.uids.Hash;
+
 import org.svip.serializers.Metadata;
 
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Name: CDX14XMLSerializer.java
+ * Description: A Serializer for CycloneDX 1.4 XML SBOMs. This class is extended
+ * off of the Jackson StdSerializer and uses the Jackson XmlMapper and ToXmlGenerator
+ * class to write in XML instead of JSON.
+ *
+ * @author Tyler Drake
+ */
 public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Serializer {
 
+    // Pretty Print state
     private boolean prettyPrint = false;
 
     public CDX14XMLSerializer() {
@@ -37,6 +46,13 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         super(t);
     }
 
+    /**
+     * Writes XML to the SBOM
+     *
+     * @param sbom The SBOM to serialize.
+     * @return Object mapper writing an XML string
+     * @throws JsonProcessingException
+     */
     @Override
     public String writeToString(SVIPSBOM sbom) throws JsonProcessingException {
         if(prettyPrint)
@@ -44,6 +60,11 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         else return getObjectMapper().writer().writeValueAsString(sbom);
     }
 
+    /**
+     * Initializes the XmlMapper and Serializer
+     *
+     * @return XmlMapper
+     */
     @Override
     public ObjectMapper getObjectMapper() {
         XmlMapper mapper = new XmlMapper();
@@ -53,11 +74,24 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         return mapper;
     }
 
+    /**
+     * Changes the state of Pretty Print.
+     *
+     * @param prettyPrint True to pretty-print, false otherwise.
+     */
     @Override
     public void setPrettyPrinting(boolean prettyPrint) {
         this.prettyPrint = prettyPrint;
     }
 
+    /**
+     * Serializes the SBOM to XML.
+     *
+     * @param sbom The SBOM to serialize.
+     * @param gen The JSON Generator (Will be cast to an ToXmlGenerator).
+     * @param serializers Serializer Provider
+     * @throws IOException
+     */
     @Override
     public void serialize(SVIPSBOM sbom, JsonGenerator gen, SerializerProvider serializers) throws IOException {
 
@@ -146,6 +180,13 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
     }
 
+    /**
+     * Writes the metadata as XML.
+     *
+     * @param xmlGenerator The XML Generator to write the metadata.
+     * @param data The metadata to be written.
+     * @throws IOException
+     */
     public void writeMetadata(ToXmlGenerator xmlGenerator, CreationData data) throws IOException {
 
         // Create a new timestamp xml object
@@ -306,6 +347,13 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
     }
 
+    /**
+     * Writes the component as XML.
+     *
+     * @param xmlGenerator The XML Generator to write the component.
+     * @param svipComponentObject The component to be written.
+     * @throws IOException
+     */
     public void writeComponent(ToXmlGenerator xmlGenerator, SVIPComponentObject svipComponentObject) throws IOException {
 
         // Create new component xml object
@@ -385,6 +433,13 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
     }
 
+    /**
+     * Writes the dependencies as XML.
+     *
+     * @param xmlGenerator The XML Generator to write the dependencies.
+     * @param relationships The dependencies to be written.
+     * @throws IOException
+     */
     public void writeDependencies(ToXmlGenerator xmlGenerator,Map<String, Set<Relationship>> relationships) throws IOException {
 
         // Cycle through each dependency set
@@ -429,6 +484,13 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
      * Sub-Field Writers
      */
 
+    /**
+     * Writes the organization as XML.
+     *
+     * @param xmlGenerator The XML Generator to write the organization.
+     * @param organization The organization to be written.
+     * @throws IOException
+     */
     public void writeOrganization(ToXmlGenerator xmlGenerator, Organization organization) throws IOException {
 
         // Write the name for the organization
@@ -459,6 +521,13 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
     }
 
+    /**
+     * Writes the contact as XML.
+     *
+     * @param xmlGenerator The XML Generator to write the contact.
+     * @param contact The contact to be written.
+     * @throws IOException
+     */
     public void writeContact(ToXmlGenerator xmlGenerator, Contact contact) throws IOException {
 
         // Create new xml Object
@@ -478,6 +547,13 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
     }
 
+    /**
+     * Writes the hashes as XML.
+     *
+     * @param xmlGenerator The XML Generator to write the hashes.
+     * @param hashes The hashes to be written.
+     * @throws IOException
+     */
     public void writeHashes(ToXmlGenerator xmlGenerator, Map<String, String> hashes) throws IOException {
 
         // Start the new hashes xml object
@@ -510,6 +586,13 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
     }
 
+    /**
+     * Writes the licenses as XML.
+     *
+     * @param xmlGenerator The XML Generator to write the licenses.
+     * @param licenses The metadata to be written.
+     * @throws IOException
+     */
     public void writeLicenses(ToXmlGenerator xmlGenerator, Set<String> licenses) throws IOException {
 
         // Start the new licenses xml object
@@ -535,6 +618,13 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
     }
 
+    /**
+     * Writes the external references as XML.
+     *
+     * @param xmlGenerator The XML Generator to write the external references.
+     * @param externalReferences The metadata to be written.
+     * @throws IOException
+     */
     public void writeExternalReferences(ToXmlGenerator xmlGenerator, Set<ExternalReference> externalReferences) throws IOException {
 
         // Start a new xml object for external references
@@ -568,6 +658,13 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
     }
 
+    /**
+     * Writes the properties as XML.
+     *
+     * @param xmlGenerator The XML Generator to write the properties.
+     * @param properties The metadata to be written.
+     * @throws IOException
+     */
     public void writeProperties(ToXmlGenerator xmlGenerator, Map<String, Set<String>> properties) throws IOException {
 
         // Start a new xml object for properties
