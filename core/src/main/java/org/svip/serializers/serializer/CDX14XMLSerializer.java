@@ -74,7 +74,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
         // Serial Number
         xmlGenerator.writeFieldName("serialNumber");
-        xmlGenerator.writeString("urn:uuid:" + UUID.randomUUID());
+        xmlGenerator.writeString("urn:uuid:" + (sbom.getUID() == null ? UUID.randomUUID() : sbom.getUID()));
 
         // Version
         xmlGenerator.writeFieldName("version");
@@ -86,7 +86,11 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         // Metadata
         //
         xmlGenerator.writeFieldName("metadata");
+        xmlGenerator.writeStartObject();
+
         writeMetadata(xmlGenerator, sbom);
+
+        xmlGenerator.writeEndObject();
 
         //
         // Components
@@ -132,6 +136,8 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
     }
 
     public void writeMetadata(ToXmlGenerator xmlGenerator, SVIPSBOM sbom) throws IOException {
+
+
 
     }
 
