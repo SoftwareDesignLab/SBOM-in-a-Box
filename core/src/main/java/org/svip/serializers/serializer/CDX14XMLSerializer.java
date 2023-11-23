@@ -2,6 +2,7 @@ package org.svip.serializers.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.SerializableString;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -63,11 +64,12 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
     /**
      * Initializes the XmlMapper and Serializer
      *
-     * @return XmlMapper
+     * @return mapper XmlMapper
      */
     @Override
     public ObjectMapper getObjectMapper() {
         XmlMapper mapper = new XmlMapper();
+        mapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
         SimpleModule module = new SimpleModule();
         module.addSerializer(SVIPSBOM.class, this);
         mapper.registerModule(module);
