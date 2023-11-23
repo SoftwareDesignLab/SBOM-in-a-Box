@@ -190,6 +190,10 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
     }
 
+    public void writeDependencies(ToXmlGenerator xmlGenerator, HashMap<String, Set<String>>) throws IOException {
+
+    }
+
     /**
      * sub-field write helpers
      */
