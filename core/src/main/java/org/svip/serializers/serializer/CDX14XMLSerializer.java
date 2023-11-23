@@ -269,6 +269,13 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
             xmlGenerator.writeEndObject();
         }
 
+        // Write Licenses
+        Set<String> licenses = data.getLicenses();
+        if (licenses != null) {
+            writeLicenses(xmlGenerator, data.getLicenses());
+        }
+
+
     }
 
     public void writeComponent(ToXmlGenerator xmlGenerator, SVIPComponentObject svipComponentObject) throws IOException {
