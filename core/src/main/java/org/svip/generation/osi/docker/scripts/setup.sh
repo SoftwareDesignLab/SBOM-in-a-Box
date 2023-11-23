@@ -7,7 +7,7 @@
 # @author Tyler Drake
 
 # Distro and Constants
-GO_DISTRO=go1.20.linux-amd64.tar.gz
+GO_DISTRO=go1.21.4.linux-amd64.tar.gz
 BIN=/usr/local/bin
 # Tools
 SPDX_SBOM_GENERATOR=https://github.com/opensbom-generator/spdx-sbom-generator/releases/download/v0.0.15/spdx-sbom-generator-v0.0.15-linux-amd64.tar.gz
@@ -18,6 +18,7 @@ CYCLONEDX_CLI=https://github.com/CycloneDX/cyclonedx-cli/releases/latest/downloa
 # LANGUAGES
 #
 function installGo() {
+  rm -rf /usr/local/go
   curl -LO "https://go.dev/dl/$GO_DISTRO"
   tar -C /usr/local -xzf $GO_DISTRO
 }
@@ -67,8 +68,8 @@ function installWithNPM() {
 function installWithGo() {
   # Install CycloneDX-Go
   go install github.com/ozonru/cyclonedx-go/cmd/cyclonedx-go@latest
-  # Install GoBom TODO replace with go tool that can write to file
-  # go install github.com/mattermost/gobom/cmd/gobom@latest
+  # Install GoBom
+  go install github.com/mattermost/gobom/cmd/gobom@latest
 }
 
 function installWithDotNet(){

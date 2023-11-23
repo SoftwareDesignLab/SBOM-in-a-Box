@@ -1,0 +1,11 @@
+source: https://github.com/mattermost/gobom
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.2"
+    format: "xml"
+    languages:
+      - "Go"
+    package_managers:
+      - "Go"
+    commands:
+      - "gobom generate -g gomod ./* > $SBOM_OUT/gobom-cdx12.xml"
