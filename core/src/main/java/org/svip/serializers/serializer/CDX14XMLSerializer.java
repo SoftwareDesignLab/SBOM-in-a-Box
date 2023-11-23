@@ -20,6 +20,7 @@ import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.sbom.model.uids.Hash;
+import org.svip.serializers.Metadata;
 
 import java.io.IOException;
 import java.util.*;
@@ -280,6 +281,27 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         Set<String> licenses = data.getLicenses();
         if (licenses != null) {
             writeLicenses(xmlGenerator, data.getLicenses());
+        }
+
+        // Write properties
+        if (data.getProperties() != null) {
+
+            // If no creator comment exists or if it doesn't contain SVIP comment
+            if (data.getProperties().get("creatorComment") == null ||
+                    !data.getProperties().get("creatorComment").contains(Metadata.SERIALIZED_COMMENT)) {
+                // Add the SVIP serialized comment
+                data.addProperty("creatorComment", Metadata.SERIALIZED_COMMENT);
+            }
+
+            // If the creator comment isn't empty and isn't null
+            if (data.getCreatorComment() != null && !data.getCreatorComment().isEmpty()) {
+                // Add the creator comment
+                data.addProperty("creatorComment", data.getCreatorComment());
+            }
+
+            // Write the properties
+            writeProperties(xmlGenerator, data.getProperties());
+
         }
 
     }
@@ -546,7 +568,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
     }
 
-    public void writeProperties(ToXmlGenerator xmlGenerator, HashMap<String, Set<String>> properties) throws IOException {
+    public void writeProperties(ToXmlGenerator xmlGenerator, Map<String, Set<String>> properties) throws IOException {
 
         // Start a new xml object for properties
         xmlGenerator.writeFieldName("properties");
