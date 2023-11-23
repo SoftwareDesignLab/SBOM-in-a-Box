@@ -216,9 +216,39 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
                 }
 
+                // End tool xml object
+                xmlGenerator.writeEndObject();
+
             }
 
             // End tools xml object
+            xmlGenerator.writeEndObject();
+
+        }
+
+        // If Authors exist for creation data
+        if(data.getAuthors() != null && data.getAuthors().size() > 0) {
+
+            // Start new contacts xml object
+            xmlGenerator.writeFieldName("contacts");
+            xmlGenerator.writeStartObject();
+
+            // Start new contact xml array
+            xmlGenerator.writeFieldName("contact");
+            xmlGenerator.writeStartArray();
+
+            // Go through each contact
+            for(Contact author : data.getAuthors()) {
+
+                // Write the contact
+                writeContact(xmlGenerator, author);
+
+            }
+
+            // End the contact xml array
+            xmlGenerator.writeEndArray();
+
+            // End the contacts xml object
             xmlGenerator.writeEndObject();
 
         }
