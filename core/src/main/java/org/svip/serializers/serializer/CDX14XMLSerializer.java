@@ -94,14 +94,11 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         xmlGenerator.writeFieldName("components");
         xmlGenerator.writeStartObject();
 
-        //xmlGenerator.writeFieldName("component");
-        //xmlGenerator.writeStartArray("component");
-
-
         for (Component component : sbom.getComponents()) {
-            if (component == null) continue;
-            SVIPComponentObject svipComponent = (SVIPComponentObject) component;
-            writeComponent(xmlGenerator, svipComponent);
+            if(component != null) {
+                SVIPComponentObject svipComponent = (SVIPComponentObject) component;
+                writeComponent(xmlGenerator, svipComponent);
+            }
         }
 
 
@@ -110,6 +107,10 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
         // End the bom object
         xmlGenerator.writeEndObject();
+
+        //
+        // Dependencies
+        //
 
     }
 
@@ -180,6 +181,9 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         // Write Properties
         if(svipComponentObject.getProperties() != null)
             writeProperties(xmlGenerator, svipComponentObject.getProperties());
+
+        // Write release notes
+        xmlGenerator.writeStringField("releaseNotes", "Release Date: " + svipComponentObject.getReleaseDate());
 
         // End component xml object
         xmlGenerator.writeEndObject();
