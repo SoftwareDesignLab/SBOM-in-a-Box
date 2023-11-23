@@ -253,6 +253,11 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
         }
 
+        // Write manufacturer
+        if(data.getManufacture() != null) writeOrganization(xmlGenerator, data.getManufacture());
+
+        //
+
     }
 
     public void writeComponent(ToXmlGenerator xmlGenerator, SVIPComponentObject svipComponentObject) throws IOException {
