@@ -254,9 +254,20 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         }
 
         // Write manufacturer
-        if(data.getManufacture() != null) writeOrganization(xmlGenerator, data.getManufacture());
+        if(data.getManufacture() != null) {
+            xmlGenerator.writeFieldName("manufacturer");
+            xmlGenerator.writeStartObject();
+            writeOrganization(xmlGenerator, data.getManufacture());
+            xmlGenerator.writeEndObject();
+        }
 
-        //
+        // Write Supplier
+        if(data.getSupplier() != null) {
+            xmlGenerator.writeFieldName("supplier");
+            xmlGenerator.writeStartObject();
+            writeOrganization(xmlGenerator, data.getManufacture());
+            xmlGenerator.writeEndObject();
+        }
 
     }
 
@@ -284,7 +295,10 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
         // Write component supplier
         if (svipComponentObject.getSupplier() != null) {
+            xmlGenerator.writeFieldName("supplier");
+            xmlGenerator.writeStartObject();
             writeOrganization(xmlGenerator, svipComponentObject.getSupplier());
+            xmlGenerator.writeEndObject();
         }
 
         // Write component author and publisher
@@ -382,10 +396,6 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
     public void writeOrganization(ToXmlGenerator xmlGenerator, Organization organization) throws IOException {
 
-        // Start the new organization xml object
-        xmlGenerator.writeFieldName("supplier");
-        xmlGenerator.writeStartObject();
-
         // Write the name for the organization
         xmlGenerator.writeStringField("name", organization.getName());
 
@@ -411,9 +421,6 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
         // End xml array
         xmlGenerator.writeEndArray();
-
-        // End xml Object
-        xmlGenerator.writeEndObject();
 
     }
 
