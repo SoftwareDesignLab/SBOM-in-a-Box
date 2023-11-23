@@ -10,6 +10,12 @@ import java.io.StringReader;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
+/**
+ * Name: CDX14XMLSerializerTest
+ * Description: Test class for CDX14XMLSerializer.java
+ *
+ * @author Tyler Drake
+ */
 public class CDX14XMLSerializerTest extends SerializerTest {
 
     public CDX14XMLSerializerTest() {
