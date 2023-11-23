@@ -14,9 +14,12 @@ import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.Contact;
+import org.svip.sbom.model.shared.metadata.CreationData;
+import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+import org.svip.sbom.model.uids.Hash;
 
 import java.io.IOException;
 import java.util.*;
@@ -88,7 +91,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         xmlGenerator.writeFieldName("metadata");
         xmlGenerator.writeStartObject();
 
-        writeMetadata(xmlGenerator, sbom);
+        writeMetadata(xmlGenerator, sbom.getCreationData());
 
         xmlGenerator.writeEndObject();
 
@@ -135,9 +138,90 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
 
     }
 
-    public void writeMetadata(ToXmlGenerator xmlGenerator, SVIPSBOM sbom) throws IOException {
+    public void writeMetadata(ToXmlGenerator xmlGenerator, CreationData data) throws IOException {
+
+        // Create a new timestamp xml object
+        xmlGenerator.writeFieldName("timestamp");
+        xmlGenerator.writeStartObject();
+
+        // Add the timestamp
+        xmlGenerator.writeRaw(data.getCreationTime());
+
+        // End timestamp xml object
+        xmlGenerator.writeEndObject();
+
+        // If creation tools exists
+        if(data.getCreationTools() != null) {
+
+            // Start tools xml object
+            xmlGenerator.writeFieldName("tools");
+            xmlGenerator.writeStartObject();
+
+            // Go through each tools
+            for(CreationTool tool : data.getCreationTools()) {
+
+                // Start new tool xml object
+                xmlGenerator.writeFieldName("tool");
+                xmlGenerator.writeStartObject();
+
+                // Add vendor xml object
+                xmlGenerator.writeFieldName("vendor");
+                xmlGenerator.writeStartObject();
+                xmlGenerator.writeRaw(tool.getVendor());
+                xmlGenerator.writeEndObject();
+
+                // Add name xml object
+                xmlGenerator.writeFieldName("name");
+                xmlGenerator.writeStartObject();
+                xmlGenerator.writeRaw(tool.getName());
+                xmlGenerator.writeEndObject();
+
+                // Add version xml object
+                xmlGenerator.writeFieldName("version");
+                xmlGenerator.writeStartObject();
+                xmlGenerator.writeRaw(tool.getVersion());
+                xmlGenerator.writeEndObject();
+
+                // If the tool has hashes
+                if(tool.getHashes() != null) {
+
+                    // Start new hashes xml object
+                    xmlGenerator.writeFieldName("hashes");
+                    xmlGenerator.writeStartObject();
+
+                    // Iterate through each hash in the tool
+                    for(Map.Entry<String, String> hash : tool.getHashes().entrySet()) {
+
+                        // Start a new hash xml object
+                        xmlGenerator.writeFieldName("hash");
+                        xmlGenerator.writeStartObject();
+
+                        // Add the algorithm to the hash xml object as an attribute
+                        xmlGenerator.setNextIsAttribute(true);
+                        xmlGenerator.writeFieldName("alg");
+                        xmlGenerator.writeString(hash.getKey());
+                        xmlGenerator.setNextIsAttribute(false);
+
+                        // Write the hash value in between the xml hash object
+                        xmlGenerator.writeRaw(hash.getValue());
+
+                        // End hash xml object
+                        xmlGenerator.writeEndObject();
+
+                    }
+
+                    // End hashes xml object
+                    xmlGenerator.writeEndObject();
 
 
+                }
+
+            }
+
+            // End tools xml object
+            xmlGenerator.writeEndObject();
+
+        }
 
     }
 
