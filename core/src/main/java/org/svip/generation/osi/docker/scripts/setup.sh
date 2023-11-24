@@ -7,7 +7,7 @@
 # @author Tyler Drake
 
 # Distro and Constants
-GO_DISTRO=go1.21.4.linux-amd64.tar.gz
+GO_DISTRO=go1.21.linux-amd64.tar.gz
 BIN=/usr/local/bin
 # Tools
 SPDX_SBOM_GENERATOR=https://github.com/opensbom-generator/spdx-sbom-generator/releases/download/v0.0.15/spdx-sbom-generator-v0.0.15-linux-amd64.tar.gz
