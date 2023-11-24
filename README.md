@@ -1,6 +1,7 @@
 # SBOM-in-a-Box
 > The **SBOM-in-a-Box** is a unified platform to promote the 
-> production, consumption, and utilization of Software Bills of Materials.
+> production, consumption, and utilization of Software Bills of Materials. 
+> This includes converting between schemas, generation, comparision and evaluation of quality.
 
 ### Latest Release: [[v8.0.5-alpha] - (10/17/2023)](doc/changelog.md)
 
