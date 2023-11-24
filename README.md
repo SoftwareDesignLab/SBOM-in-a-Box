@@ -1,7 +1,10 @@
 # SBOM-in-a-Box
 > The **SBOM-in-a-Box** is a unified platform to promote the 
-> production, consumption, and utilization of Software Bills of Materials. 
-> This includes converting between schemas, generation, comparision and evaluation of quality.
+> production, consumption, and utilization of Software Bills of Materials (SBOMs). 
+> This includes conversion between schemas, generation, comparision and evaluation of quality.
+
+# Purpose of SBOM-in-a-Box
+> SBOM-in-a-box in particualr has unique features including generation of SBOMs using multiple tools that allow for a more a complete SBOM to be created. There is also a feature within metrics, where the tool provides suggestions if there is a potential better way to showcase the attributes. There is also the ability to convert between SPDX and CycloneDX SBOM schemas, and to gain insight into vulnerabilities of software through SBOMs. These features allow for developers to create an SBOM that is the most relevant and suits their needs.
 
 ### Latest Release: [[v8.0.5-alpha] - (10/17/2023)](doc/changelog.md)
 
@@ -13,8 +16,9 @@
 ## Quick Start
 
 **Launch the API**
-1. `docker ps`
-2. `docker compose up`
+1. `docker compose up`
+
+Note: To launch the backend it will take at least 10 minutes, due to there being over 10 open source tools included.
 
 **Launch the GUI**
 1. Clone the [GUI](https://github.com/SoftwareDesignLab/svip-ui) repo and follow the quickstart
