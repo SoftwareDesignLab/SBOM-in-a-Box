@@ -14,7 +14,7 @@ profiles:
       - "Rust"
       - "Perl"
     commands:
-      - "sbom4files -d . -p osi-sbom -r --sbom cyclonedx -o {output}/sbom4files-cdx15.json"
+      - "sbom4files -d . -p osi-sbom -r --sbom cyclonedx --output-file=$SBOM_OUT/sbom4files-cdx15.json"
   - schema: "spdx"
     spec_version: "2.3"
     format: "spdx"
