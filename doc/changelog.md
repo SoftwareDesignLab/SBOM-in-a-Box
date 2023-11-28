@@ -71,6 +71,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `LicenseFixes.java` Class - Suggests a list of fixes for deprecated licenses
 - `License.java` Class - Stores the id, name, and url of a license
 
+## [v8.0.7-alpha] - (11/09/2023)
+- Change tool name from SBOM Visualization Integration Platform (SVIP) to SBOM-in-a-Box, to better represent the platform
+
+## [v8.0.6-alpha] - (10/27/2023)
+
+### Changed
+- SBOM components objects are now compared by name and version
+
+## [v8.0.5-alpha] - (10/17/2023)
+- Changed the max packet size for MySQL to 256M
+
 ## [v8.1.0-alpha] - (9/22/2023)
 
 ### Added
