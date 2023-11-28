@@ -144,19 +144,19 @@ public class OSIController {
         //TODO: Maybe change toolNames to string and parse to array
 
         //Remove "[ and "] from first and last index due to array manipulation on request
-        toolNames[0] = toolNames[0].substring(2);
-        toolNames[toolNames.length - 1] = toolNames[toolNames.length - 1].substring(0, toolNames[toolNames.length - 1].length() - 2);
+        toolNames[0] = toolNames[0].substring(1);
+        toolNames[toolNames.length - 1] = toolNames[toolNames.length - 1].substring(0, toolNames[toolNames.length - 1].length() - 1);
 
         //remove " from request maniuplation
-        for(int i = 0; i < toolNames.length; i++) {
-            toolNames[i] = toolNames[i].replaceAll("\"", "");
-        }
+//        for(int i = 0; i < toolNames.length; i++) {
+//            toolNames[i] = toolNames[i].replaceAll("\"", "");
+//        }
 
         List<String> generatedSBOMFilePaths;
         try {
             // Run with requested tools, default to relevant ones
             List<String> tools;
-            if (toolNames != null && toolNames.length > 0) {
+            if (toolNames != null) {
                 tools = List.of(toolNames);
             } else {
                 tools = this.osiService.getTools("project");

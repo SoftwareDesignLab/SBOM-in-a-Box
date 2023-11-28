@@ -270,13 +270,14 @@ public class OSIService {
         HttpURLConnection conn =
                 new OSIURLBuilder(OSIURLBuilder.RequestEndpoint.GENERATE, OSIURLBuilder.RequestMethod.POST).buildConnection();
 
-        // append requested tools to the connection
-        try (OutputStream os = conn.getOutputStream()) {
-            try (OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8)) {
-                // Ensure there is at least one valid tool, if not don't put anything in the request body
-                if (toolNames != null && !toolNames.isEmpty())
-                    osw.write(toolNames.toString());
-                osw.flush();
+        if(!toolNames.isEmpty()){
+            conn.setRequestProperty("Content-Type", "application/json");
+            String jsonInputString = "{\"tools\": " + Arrays.toString(toolNames.toArray()) + "}";
+
+            // append requested tools to the connection
+            try(OutputStream os = conn.getOutputStream()) {
+                byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
+                os.write(input, 0, input.length);
             }
         }
 
