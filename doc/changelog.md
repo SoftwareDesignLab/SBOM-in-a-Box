@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added repair for "Valid PURL" failing test
 
+### Changed
+- Skips duplicate components for SPDX23Pipeline
+
 # [v9.0.0-alpha] - (11/13/2023)
 - Reworked QualityReport and implemented repair
 
