@@ -61,7 +61,7 @@ public class RepairStatementSPDX23CDX14 implements RepairStatement {
             for (Result toFix : results.get(component)) {
 
                 // if a result fails, it needs to be fixed
-                if (toFix.getStatus().equals(STATUS.FAIL)) {
+                if (toFix.getStatus().equals(STATUS.FAIL) || toFix.getStatus().equals(STATUS.ERROR)) {
 
                     // fix
                     Fixes fixes = getFixes(toFix);
@@ -109,7 +109,7 @@ public class RepairStatementSPDX23CDX14 implements RepairStatement {
 
             case "License" -> fixes = new LicenseFixes();
 
-            case "PURLTest", "Matching PURL", "Accurate PURL" -> fixes = new PURLFixes();
+            case "PURLTest", "Matching PURL", "Accurate PURL", "Valid PURL" -> fixes = new PURLFixes();
 
 
         }
