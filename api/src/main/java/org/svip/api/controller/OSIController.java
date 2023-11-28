@@ -141,6 +141,16 @@ public class OSIController {
                                              @RequestParam("format") SerializerFactory.Format format,
                                              @RequestParam(value = "toolNames", required = false) String[] toolNames) throws IOException {
 
+        //TODO: Maybe change toolNames to string and parse to array
+
+        //Remove "[ and "] from first and last index due to array manipulation on request
+        toolNames[0] = toolNames[0].substring(2);
+        toolNames[toolNames.length - 1] = toolNames[toolNames.length - 1].substring(0, toolNames[toolNames.length - 1].length() - 2);
+
+        //remove " from request maniuplation
+        for(int i = 0; i < toolNames.length; i++) {
+            toolNames[i] = toolNames[i].replaceAll("\"", "");
+        }
 
         List<String> generatedSBOMFilePaths;
         try {
