@@ -4,7 +4,7 @@
 ## Index
 
 - [**System Requirements**](#system-requirements)
-- [**SVIP API**](#svip-api)
+- [**SBOM-in-a-Box API**](#svip-api)
     - [Deployment](#deployment)
     - [Development](#development)
     - [Endpoints](#endpoints)
@@ -17,7 +17,7 @@
       - [Compare SBOMs](#compare-sboms)
       - [Merge SBOMs](#merge-sboms)
       - [Generate Quality Report](#generate-quality-report)
-      - [Generate SBOM with SVIP](#generate-an-sbom-using-svip-parsers)
+      - [Generate SBOM with SBOM-in-a-Box](#generate-an-sbom-using-svip-parsers)
       - [Get List of Open-Source Tools Supported By OSI](#get-list-of-open-source-tools-supported-by-osi)
       - [Generate SBOM with OSI](#generate-an-sbom-using-osi)
       - [Generate VEX](#generate-vex)
@@ -31,7 +31,7 @@
 ---
 
 # SVIP API
-> The SVIP back-end API. See [Endpoints](#endpoints) for detailed endpoint documentation.
+> The SBOM-in-a-Box back-end API. See [Endpoints](#endpoints) for detailed endpoint documentation.
 
 ## Deployment
 First ensure Docker is installed and running and then deploy using the docker-compose script.
@@ -73,7 +73,7 @@ The API is located on `http://localhost:8080/svip`.
 - [Compare SBOMs](#compare-sboms)
 - [Merge SBOMs](#merge-sboms)
 - [Generate Quality Report](#generate-quality-report)
-- [Generate SBOM with SVIP](#generate-an-sbom-using-svip-parsers)
+- [Generate SBOM with SBOM-in-a-Box](#generate-an-sbom-using-svip-parsers)
 - [Get List of Open-Source Tools Supported By OSI](#get-list-of-open-source-tools-supported-by-osi)
 - [Generate SBOM with OSI](#generate-an-sbom-using-osi)
 - [Generate VEX](#generate-vex)
@@ -318,8 +318,8 @@ curl -X POST -d '{"ids":[1,2]}' http://localhost:8080/svip/sboms/merge
 curl -X GET -G http://localhost:8080/svip/sboms/qa -d 'id=1'
 ```
 
-### Generate an SBOM using SVIP Parsers
-> Generates an SBOM with a given schema and format from project source files using SVIP parsers. 
+### Generate an SBOM using SBOM-in-a-Box Parsers
+> Generates an SBOM with a given schema and format from project source files using SBOM-in-a-Box parsers. 
 > Request body contains an array of multiple objects with properties fileName and contents (one for each source file)
 
 **Endpoint:** `http://localhost:8080/svip/generators/parsers`
