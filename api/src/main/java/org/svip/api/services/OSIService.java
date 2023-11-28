@@ -297,6 +297,9 @@ public class OSIService {
                 sbomPaths.add(file.getPath());
         }
 
+        // Delete code
+        BOUND_DIR.CODE.flush();
+
         return sbomPaths;
     }
 
