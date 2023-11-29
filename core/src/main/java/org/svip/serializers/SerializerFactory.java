@@ -2,6 +2,7 @@ package org.svip.serializers;
 
 
 import org.json.JSONObject;
+import org.json.XML;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
@@ -11,7 +12,12 @@ import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
 import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
 import org.svip.serializers.serializer.*;
+import org.xml.sax.InputSource;
 
+import javax.xml.crypto.dsig.XMLObject;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -39,6 +45,7 @@ public class SerializerFactory {
          */
         CDX14("CycloneDX", "1.4", new HashMap<>() {{
             this.put(JSON, new CDX14JSONSerializer());
+            this.put(Format.XML, new CDX14XMLSerializer());
         }}, new HashMap<>() {{
             this.put(JSON, new CDX14JSONDeserializer());
         }}),
@@ -129,6 +136,7 @@ public class SerializerFactory {
      */
     public enum Format {
         JSON,
+        XML,
         TAGVALUE;
 
         /**
@@ -140,6 +148,21 @@ public class SerializerFactory {
         public static boolean isValidJSON(String fileContents) {
             try {
                 new JSONObject(fileContents);
+            } catch (Exception e) {
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         * Checks if the given string is a valid XML.
+         *
+         * @param fileContents The file contents to check if it's a valid XML.
+         * @return true if valid XML.
+         */
+        public static boolean isValidXML(String fileContents) {
+            try {
+                SAXParserFactory.newInstance().newSAXParser().getXMLReader().parse(new InputSource(new StringReader(fileContents)));
             } catch (Exception e) {
                 return false;
             }
@@ -203,6 +226,8 @@ public class SerializerFactory {
             return TAGVALUE;
         else if (Format.isValidJSON(fileContents))
             return JSON;
+        else if(Format.isValidXML(fileContents))
+            return Format.XML;
         else return null;
     }
 
