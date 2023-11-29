@@ -1,0 +1,16 @@
+source: "https://github.com/anthonyharrison/sbom4rust"
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.5"
+    format: "json"
+    languages:
+      - "Rust"
+    commands:
+      - "sbom4rust --sbom cyclonedx -a osi-sbom -d ./* --output-file=$SBOM_OUT/sbom4rust-cdx15.json"
+  - schema: "spdx"
+    spec_version: "2.3"
+    format: "spdx"
+    languages:
+      - "Rust"
+    commands:
+      - "sbom4rust --sbom spdx -a osi-sbom -d ./* --output-file=$SBOM_OUT/sbom4rust-spdx23.spdx"

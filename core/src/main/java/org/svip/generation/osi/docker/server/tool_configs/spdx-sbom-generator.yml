@@ -1,0 +1,18 @@
+source: "https://github.com/opensbom-generator/spdx-sbom-generator"
+profiles:
+  - schema: "spdx"
+    spec_version: "2.2"
+    format: "spdx"
+    package_managers:
+      - "Go"
+      - "Cargo"
+      - "Composer"
+      - ".NET"
+      - "Maven"
+      - "NPM"
+      - "Yarn"
+      - "Pip"
+      - "Gems"
+      - "Swift"
+    commands:
+      - "spdx-sbom-generator -p ./* -o $SBOM_OUT"

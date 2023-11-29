@@ -11,15 +11,17 @@ services:
   # OSI container
   osi:
     container_name: svip-osi
-    image: ubuntu:latest
+    platform: linux/amd64
     build: core/src/main/java/org/svip/generation/osi/docker
-    restart: unless-stopped
     ports:
       - ${FLASK_LOCAL_PORT}:${FLASK_DOCKER_PORT}
     volumes:
       - ./core/src/main/java/org/svip/generation/osi/bound_dir/code:/bound_dir/code
       - ./core/src/main/java/org/svip/generation/osi/bound_dir/sboms:/bound_dir/sboms
-
+    healthcheck:
+      test: curl --fail http://localhost:${FLASK_LOCAL_PORT}/tools || exit 1
+      start_period: 20s  # Wait in case of the first build, server restarts once mid-way through to init
+      timeout: 5s
   # MySQL server
   mysql:
     container_name: svip-mysql

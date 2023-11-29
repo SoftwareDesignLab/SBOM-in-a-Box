@@ -13,9 +13,8 @@
   - [Quick Start](#quick-start-1)
   - [API](#api)
   - [Supported Tools](#supported-tools)
+    - [Adding More Tools](#adding-more-tools)
   - [Building the Image](#building-the-image)
-    - [Saved Images](#saved-images)
-  
 ---
 
 # SBOM Generator CLI
@@ -127,31 +126,40 @@ The `/sboms` directory (also in `/bound_dir` will now contain generated SBOMs fr
 
 **Request Body**
 
-| Body  |   Type   |                                                                                                               Description                                                                                                               | Is Required? |
-|:-----:|:--------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:------------:|
-| tools | String[] | A JSON string array of tool names. If no tools are provided, the container will generate SBOMs <br/>using all possible tools. If a tool name is invalid or doesn't support the project languages or manifest files, it will be ignored. |      NO      |
+| Body  |   Type   |                                                                                                   Description                                                                                                    | Is Required? |
+|:-----:|:--------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:------------:|
+| tools | String[] | A JSON string array of tool names. If no tools are provided, the container will generate SBOMs using all tools that are applicable to project in the bound `/code` directory. Invalid tools will return an error |      NO      |
 
 **Responses**
 
-| Response Code |  Type  |               Description                |
-|:-------------:|:------:|:----------------------------------------:|
-|      200      | String | Successfully generated one or more SBOMs |
-|      204      | String |         No SBOMs were generated          |
+| Response Code |  Type  |                            Description                            |
+|:-------------:|:------:|:-----------------------------------------------------------------:|
+|      200      | String |                     Number of SBOMs generated                     |
+|      204      | String |                No SBOMs were generated, returns 0                 |
+ |      400      | String |                 Error message about invalid tools                 |
+|      422      | String | "No tools selected" - No tools are applicable or queded to be run |
 
 ### Get Tools
 **Endpoint:** `http://localhost:50001/tools`
 
 **Request Method:** `GET`
 
+**Parameters**
+
+| Parameter |           Type           |                                                                Description                                                                 | Is Required? |
+|:---------:|:------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------:|:------------:|
+|   list    | String (`all`,`project`) | `all`: (Default) Get all tools availble in the OSI instance</br>`project`: Get all tools appicable to the project in the `/code` directory |      NO      |
+
 **Responses**
 
-| Response Code |   Type   |                            Description                            |
-|:-------------:|:--------:|:-----------------------------------------------------------------:|
-|      200      | String[] | A JSON string array of all currently supported open-source tools. |
+| Response Code |   Type   |            Description            |
+|:-------------:|:--------:|:---------------------------------:|
+|      200      | String[] | A JSON string array of tool names |
+|      400      |  String  |      Unknown list parameter       |
 
 
 ## Supported Tools
-> OSI uses 8 open source tools to support 17 different languages multiple times over. Please read the tool documentation 
+> OSI uses 18 open source tools to support 17 different languages multiple times over. Please read the tool documentation 
 > to see if it fits the need of your project.
 
 |          Tool           |                          Github                           | Supported Language(s)                                                                                                                                                        |
@@ -164,16 +172,73 @@ The `/sboms` directory (also in `/bound_dir` will now contain generated SBOMs fr
 |  **CycloneDX Python**   |       https://github.com/CycloneDX/cyclonedx-python       | `Python`                                                                                                                                                                     |
 |    **CycloneDX PHP**    |    https://github.com/CycloneDX/cyclonedx-php-composer    | `PHP`                                                                                                                                                                        |
 |        **JBOM**         |              https://github.com/eclipse/jbom              | `Java`                                                                                                                                                                       |
+|      **Covenant**       |        https://github.com/patriksvensson/covenant         | `.NET`                                                                                                                                                                       |
+|   **CycloneDX Bower**   |         https://github.com/hanstdam/cdx-bower-bom         | `Javascript`                                                                                                                                                                 |
+|    **CycloneDX Go**     |          https://github.com/ozonru/cyclonedx-go           | `Go`                                                                                                                                                                         |
+|   **CycloneDX Rust**    |     https://github.com/CycloneDX/cyclonedx-rust-cargo     | `Rust`                                                                                                                                                                       |
+|        **GoBom**        |            https://github.com/mattermost/gobom            | `Go`                                                                                                                                                                         |
+|     **SBOM4Files**      |       https://github.com/anthonyharrison/sbom4files       | `C`<br>`C++`<br>`Go`<br>`Java`<br>`Javascript`<br>`PHP`<br>`Python`                                                                                                          | 
+|     **SBOM4Python**     |      https://github.com/anthonyharrison/sbom4python       | `Python`                                                                                                                                                                     |
+|      **SBOM4Rust**      |       https://github.com/anthonyharrison/sbom4rust        | `Rust`                                                                                                                                                                       |
+|      **SBOM Tool**      |          https://github.com/microsoft/sbom-tool           | `.NET`                                                                                                                                                                       |                                                                                                                                                                        |
+|      **Retire.js**      |           https://github.com/RetireJS/retire.js           | `Javascript`                                                                                                                                                                 |
 
 ### Adding More Tools
-To add additional open source tools, there are 2 steps:
-1. Add any additional dependencies as well as the tool installation command to [`setup.sh`](../core/src/main/java/org/svip/generation/osi/docker/scripts/setup.sh)
-2. Register the tool in [`ToolMapper.py`](../core/src/main/java/org/svip/generation/osi/docker/server/ToolMapper.py) 
-   by adding an entry to `TOOL_LIST` describing the generated BOM format, languages used, and commands required. See 
-   the current entries for examples.
-
 > After completing these steps, the Docker Flask API and SVIP API will automatically recognize and use the tool.
+1. Add the installation commands ( and any additional required software ) to [`setup.sh`](../core/src/main/java/org/svip/generation/osi/docker/scripts/setup.sh)
+   * There are a number of package mangers available to use, see the file as reference
+2. Add validation commands for newly added languages, package managers, or tools to [`validate.sh`](../core/src/main/java/org/svip/generation/osi/docker/scripts/validate.sh)
+   * See file for examples, but main structure is `<COMMAND> &> /dev/null && pass <NAME> <1|2|3> || fail <NAME> ` 
+     * `1`: add `name` to `OSI_LANG` environment variable
+     * `2`: add `name` to `OSI_PM` environment variable
+     * `3`: add `name` to `OSI_TOOL` environment variable
+   * If this is not done, the tool **will not** appear in OSI
+3. Create a new tool configuration file in the [`tool_config`](../core/src/main/java/org/svip/generation/osi/docker/server/tool_configs)
+   * See [Tool Configuration Files](#tool-configuration-files) for structure details
+   * The file **MUST** be named using the same name in step 2. Example: name = `foo`, config file = `foo.yml`
+4. DONE! Rebuild the image ( see [Building the Image](#building-the-image) ) to recompile the image with the new tool changes
 
+### Tool Configuration Files
+Tool configuration files allow for tools to easily be added and removed from OSI. They contain one or more "run profiles", 
+a set of pre-configured commands to run using the same tool. This is useful for generating different SBOMs for different
+project types while using the same tool
+```yaml
+# Example tool config file
+source: "URL source of the tool"
+profiles:
+  - schema: "SBOM 1 SCHEMA"
+    spec_version: "SBOM 1 SPEC VERSION"
+    format: "SBOM 1 FORMAT"
+    languages:
+      - "LANGUAGE"
+    package_managers:
+      - "PACKAGE MANAGER"
+    commands:
+      - "COMMAND 1"
+      - "COMMAND 2" 
+```
+|            Field             | Required? |                        Description                        |
+|:----------------------------:|:---------:|:---------------------------------------------------------:|
+|           `source`           |    Yes    |                  URL source of the tool                   |
+|          `profiles`          |    Yes    |             List of run profiles for the tool             |
+|      `profile.schema`*       |    Yes    |          SBOM schema that this profile generates          |
+|   `profile.spec_version`*    |    Yes    |       SBOM spec version that this profile generates       |
+|      `profile.format`*       |    Yes    |       SBOM file format that this profile generates        |
+|    `profile.languages`**     |    No     |    Languages that this profile can generate SBOMs for     |
+| `profile.package_managers`** |    No     | Package Managers that this profile can generate SBOMs for |
+|      `profile.commands`      |    Yes    |           List of cli commands to run the tool            |
+
+*: Must be defined in [`sbom.cfg`](../core/src/main/java/org/svip/generation/osi/docker/server/configs/sbom.cfg)
+
+**: Optional to help with restrictions. Example if tool needs Maven to generate SBOM, can exclude the languages field 
+and just have the package managers field
+
+The list of languages and package managers can be found at 
+[`language_ext.cfg`](../core/src/main/java/org/svip/generation/osi/docker/server/configs/language_ext.cfg) and
+[`manifest_ext.cfg`](../core/src/main/java/org/svip/generation/osi/docker/server/configs/manifest_ext.cfg) respectively.
+File extensions ware used to determine the language of the project while the manifest files defined in `manifest_ext.cfg`
+are explicitly searched for to determine their package manager. Each file can be updated accordingly for new languages 
+and package managers.
 
 ## Building the Image
 To manually build/rebuild the image, execute the following from the root directory of the repository:
@@ -181,29 +246,5 @@ To manually build/rebuild the image, execute the following from the root directo
 ```shell
 $ docker compose up osi --build
 ```
-The first build will take up to 6 minutes to complete, but subsequent builds will be significantly faster. If using 
+The first build will take up to 15 minutes to complete, but subsequent builds will be significantly faster. If using 
 a saved image, the first build time should be much faster.
-
-### Saved Images
-> **CURRENTLY NOT WORKING**
-
-A saved image can be loaded to drastically decrease the time cost of the first build. This uses 
-[Git Large File Storage (LFS)](https://git-lfs.com/) to store the compressed archive.
-
-To save the image for subsequent uses, ensure the image is built and then execute the following from the root 
-directory of the repository:
-```shell
-$ docker save -o core/src/main/java/org/svip/generation/osi/images/osi.tar ubuntu:latest | gzip > core/src/main/java/org/svip/generation/osi/images/osi.tar.gz
-```
-
-To load a saved image into Docker, run the following command:
-```shell
-$ docker load --input core/src/main/java/org/svip/generation/osi/images/osi.tar.gz
-```
-
-> **NOTE:** If any modifications are made to:
-> 1. The inline Dockerfile in `docker-compose.yml`,
-> 2. The setup shell script in `core/src/main/java/org/svip/generation/osi/scripts/setup.sh`, or
-> 3. The OSI tool controller in `core/src/main/java/org/svip/generation/osi/scripts/ContainerController.py`,
-> 
-> Then the image will need to be rebuilt.

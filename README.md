@@ -20,6 +20,8 @@
 
 Note: To launch the backend it will take at least 10 minutes, due to there being over 10 open source tools included.
 
+> Note: Due to installation of multiple tools, building of the container may take a long time, however it is less time than learning all tools individually.
+
 **Launch the GUI**
 1. Clone the [GUI](https://github.com/SoftwareDesignLab/svip-ui) repo and follow the quickstart
 

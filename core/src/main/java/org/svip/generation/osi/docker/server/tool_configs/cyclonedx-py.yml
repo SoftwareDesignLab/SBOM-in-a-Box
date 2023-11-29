@@ -1,0 +1,18 @@
+source: "https://github.com/CycloneDX/cyclonedx-python"
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.4"
+    format: "json"
+    package_managers:
+      - "Pip"
+    commands:
+      - "cyclonedx-py --format json -r -i ./*/requirements.txt -o $SBOM_OUT/cdxpy-req-cdx14.json"
+  - schema: "cyclonedx"
+    spec_version: "1.4"
+    format: "json"
+    package_managers:
+      - "Poetry"
+    commands:
+      - "cyclonedx-py --format json -p -i ./*/poetry.lock -o $SBOM_OUT/cdxpy-poetry-cdx14.json"
+
+
