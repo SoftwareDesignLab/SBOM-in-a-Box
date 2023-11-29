@@ -7,10 +7,7 @@ import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
-import org.svip.serializers.deserializer.CDX14JSONDeserializer;
-import org.svip.serializers.deserializer.Deserializer;
-import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
-import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
+import org.svip.serializers.deserializer.*;
 import org.svip.serializers.serializer.*;
 import org.xml.sax.InputSource;
 
@@ -24,6 +21,7 @@ import java.util.regex.Pattern;
 
 import static org.svip.serializers.SerializerFactory.Format.JSON;
 import static org.svip.serializers.SerializerFactory.Format.TAGVALUE;
+import static org.svip.serializers.SerializerFactory.Format.XML;
 import static org.svip.serializers.SerializerFactory.Schema.*;
 
 /**
@@ -45,9 +43,10 @@ public class SerializerFactory {
          */
         CDX14("CycloneDX", "1.4", new HashMap<>() {{
             this.put(JSON, new CDX14JSONSerializer());
-            this.put(Format.XML, new CDX14XMLSerializer());
+            this.put(XML, new CDX14XMLSerializer());
         }}, new HashMap<>() {{
             this.put(JSON, new CDX14JSONDeserializer());
+            this.put(XML, new CDX14XMLDeserializer());
         }}),
 
         /**
