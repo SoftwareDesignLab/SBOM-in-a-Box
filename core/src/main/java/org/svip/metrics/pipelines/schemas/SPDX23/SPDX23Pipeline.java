@@ -83,6 +83,10 @@ public class SPDX23Pipeline implements SPDX23Tests {
         // test each component's info and add its results to the quality report
         if (spdx23SBOM.getComponents() != null) {
             for (Component c : spdx23SBOM.getComponents()) {
+
+                if(qualityReport.getHashCodeMapping().containsKey(c.hashCode()))
+                    continue;
+
                 // Check what type of SPDX component it is
                 if (c instanceof SPDX23PackageObject) {
                     qualityReport.addComponent(c.getName(), c.hashCode(), TestSPDX23Package(c));
