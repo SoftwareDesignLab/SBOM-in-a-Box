@@ -215,23 +215,29 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
                 xmlGenerator.writeFieldName("tool");
                 xmlGenerator.writeStartObject();
 
-                // Add vendor xml object
-                xmlGenerator.writeFieldName("vendor");
-                xmlGenerator.writeStartObject();
-                xmlGenerator.writeRaw(tool.getVendor());
-                xmlGenerator.writeEndObject();
+                if(tool.getVendor() != null) {
+                    // Add vendor xml object
+                    xmlGenerator.writeFieldName("vendor");
+                    xmlGenerator.writeStartObject();
+                    xmlGenerator.writeRaw(tool.getVendor());
+                    xmlGenerator.writeEndObject();
+                }
 
-                // Add name xml object
-                xmlGenerator.writeFieldName("name");
-                xmlGenerator.writeStartObject();
-                xmlGenerator.writeRaw(tool.getName());
-                xmlGenerator.writeEndObject();
+                if(tool.getName() != null) {
+                    // Add name xml object
+                    xmlGenerator.writeFieldName("name");
+                    xmlGenerator.writeStartObject();
+                    xmlGenerator.writeRaw(tool.getName());
+                    xmlGenerator.writeEndObject();
+                }
 
-                // Add version xml object
-                xmlGenerator.writeFieldName("version");
-                xmlGenerator.writeStartObject();
-                xmlGenerator.writeRaw(tool.getVersion());
-                xmlGenerator.writeEndObject();
+                if(tool.getVersion() != null) {
+                    // Add version xml object
+                    xmlGenerator.writeFieldName("version");
+                    xmlGenerator.writeStartObject();
+                    xmlGenerator.writeRaw(tool.getVersion());
+                    xmlGenerator.writeEndObject();
+                }
 
                 // If the tool has hashes
                 if(tool.getHashes() != null) {
