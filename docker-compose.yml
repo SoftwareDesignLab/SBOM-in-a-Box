@@ -19,7 +19,7 @@ services:
       - ./core/src/main/java/org/svip/generation/osi/bound_dir/code:/bound_dir/code
       - ./core/src/main/java/org/svip/generation/osi/bound_dir/sboms:/bound_dir/sboms
     healthcheck:
-      test: curl http://127.0.0.1:5000 || exit 1
+      test: curl http://localhost:5000 || exit 1
       start_period: 70s  # Wait in case of the first build, server restarts once mid-way through to init
       timeout: 5s
   # MySQL server
