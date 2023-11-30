@@ -14,12 +14,18 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Static class to hold the logic for merging two components
+ * Name: ComponentMerger.java
+ * Description: Functions to merge data from two components together.
+ *
+ * @author Tyler Drake
+ * @author Juan Patino
  */
 public class ComponentMerger {
 
 
     /**
+     * Merges two components together based on their schemas and the target schema
+     *
      * @param A            component from SBOM A
      * @param B            component from SBOM B
      * @param targetSchema schema to merge components to type of
@@ -54,26 +60,33 @@ public class ComponentMerger {
         // Licenses : Merge Licenses of A and B together
         LicenseCollection mergedLicenses = new LicenseCollection();
 
+        // Get all licenses from component A
         Set<String> concludedA = A.getLicenses().getConcluded();
 
-        if (!concludedA.isEmpty()) {
+        // If licenses exist, add them to merged Licenses
+        if (concludedA != null && !concludedA.isEmpty()) {
             concludedA.forEach(
                     mergedLicenses::addConcludedLicenseString
             );
         }
 
+        // Add the licenses
         Utils.addLicenses(A, mergedLicenses);
 
+        // Get all licenses from component B
         Set<String> concludedB = B.getLicenses().getConcluded();
 
-        if (!concludedB.isEmpty()) {
+        // If licences exist, add them to merged licenses
+        if (concludedB != null && !concludedB.isEmpty()) {
             concludedB.forEach(
                     mergedLicenses::addConcludedLicenseString
             );
         }
 
+        // Add the licenses
         Utils.addLicenses(B, mergedLicenses);
 
+        // Set licenses to the merged licenses
         compBuilder.setLicenses(mergedLicenses);
 
         /*
@@ -84,16 +97,38 @@ public class ComponentMerger {
         Map<String, String> hashesA = A.getHashes();
         Map<String, String> hashesB = B.getHashes();
 
-        for (String keyB : hashesB.keySet()) {
-            compBuilder.addHash(keyB, hashesB.get(keyB));
-        }
-        for (String keyA : hashesA.keySet()) {
-            compBuilder.addHash(keyA, hashesA.get(keyA));
+        // If hashes A exists
+        if(hashesA != null && !hashesA.isEmpty()) {
+
+            // If hashes B exists
+            if(hashesB != null && !hashesB.isEmpty()) {
+
+                // Loop through each and add the hashes
+                for (String keyB : hashesB.keySet()) {
+                    compBuilder.addHash(keyB, hashesB.get(keyB));
+                }
+
+            }
+
         }
 
+        // If hashes A exists
+        if(hashesA != null && !hashesA.isEmpty()) {
+
+            // Add the hashes from A
+            for (String keyA : hashesA.keySet()) {
+                compBuilder.addHash(keyA, hashesA.get(keyA));
+            }
+
+        }
+
+        // Determine the component properties
         switch (targetSchema) {
+
+            // SPDX 2.3
             case SPDX23 -> {
-                // Copyright
+
+                // Merge the component copyrights
                 String copyright = "";
                 if (A.getCopyright() != null && !A.getCopyright().isEmpty())
                     copyright += "1) " + A.getCopyright();
@@ -102,12 +137,14 @@ public class ComponentMerger {
                 else if (B.getCopyright() != null && !B.getCopyright().isEmpty() && copyright.isEmpty())
                     copyright += "1) " + B.getCopyright();
 
+                // Set copyright string
                 compBuilder.setCopyright(copyright);
 
+                // Cast the components to SPDX 2.3 Package Objects
                 SPDX23PackageObject spdx23PackageObjectA = (SPDX23PackageObject) A;
                 SPDX23PackageObject spdx23PackageObjectB = (SPDX23PackageObject) B;
 
-                // Comment
+                // Merge the component comments
                 String comment = "";
                 if (spdx23PackageObjectA.getComment() != null && !spdx23PackageObjectA.getComment().isEmpty())
                     comment += "1) " + spdx23PackageObjectA.getComment();
@@ -116,6 +153,7 @@ public class ComponentMerger {
                 else if (spdx23PackageObjectB.getComment() != null && !spdx23PackageObjectB.getComment().isEmpty() && comment.isEmpty())
                     comment += "1) " + spdx23PackageObjectB.getComment();
 
+                // Set comment string
                 compBuilder.setComment(comment);
 
                 // Attribution Text
@@ -137,7 +175,7 @@ public class ComponentMerger {
                 // TODO: determine if a FilesAnalzyed mistmatch should return true or false
                 compBuilder.setFilesAnalyzed(spdx23PackageObjectA.getFilesAnalyzed() && spdx23PackageObjectA.getFilesAnalyzed());
 
-                // Verification Code
+                // Merge Verification Code Strings
                 String verificationCode = "";
                 if (spdx23PackageObjectA.getVerificationCode() != null && !spdx23PackageObjectA.getVerificationCode().isEmpty())
                     verificationCode += "1) " + spdx23PackageObjectA.getVerificationCode();
@@ -146,9 +184,10 @@ public class ComponentMerger {
                 else if (spdx23PackageObjectB.getVerificationCode() != null && !spdx23PackageObjectB.getVerificationCode().isEmpty() && verificationCode.isEmpty())
                     verificationCode += "1) " + spdx23PackageObjectB.getVerificationCode();
 
+                // Set verification code
                 compBuilder.setVerificationCode(verificationCode);
 
-                // Homepage
+                // Merge Homepage Strings
                 String homepage = "";
                 if (spdx23PackageObjectA.getHomePage() != null && !spdx23PackageObjectA.getHomePage().isEmpty())
                     homepage += "1) " + spdx23PackageObjectA.getHomePage();
@@ -157,9 +196,10 @@ public class ComponentMerger {
                 else if (spdx23PackageObjectB.getHomePage() != null && !spdx23PackageObjectB.getHomePage().isEmpty() && homepage.isEmpty())
                     homepage += "1) " + spdx23PackageObjectB.getVerificationCode();
 
+                // Set Homepage
                 compBuilder.setHomePage(homepage);
 
-                // Source Info
+                // Merge Source Info Strings
                 String sourceInfo = "";
                 if (spdx23PackageObjectA.getSourceInfo() != null && !spdx23PackageObjectA.getSourceInfo().isEmpty())
                     sourceInfo += "1) " + spdx23PackageObjectA.getSourceInfo();
@@ -168,6 +208,7 @@ public class ComponentMerger {
                 else if (spdx23PackageObjectB.getSourceInfo() != null && !spdx23PackageObjectB.getSourceInfo().isEmpty() && sourceInfo.isEmpty())
                     sourceInfo += "1) " + spdx23PackageObjectB.getSourceInfo();
 
+                // Set Source Info
                 compBuilder.setSourceInfo(sourceInfo);
 
                 // Release Date
@@ -193,18 +234,22 @@ public class ComponentMerger {
                     compBuilder.setVersion(spdx23PackageObjectA.getVersion());
                 else compBuilder.setVersion(spdx23PackageObjectB.getVersion());
 
-                // CPEs
+                // Add CPEs from Component A to the merged component
                 for (String cpeA : spdx23PackageObjectA.getCPEs()) {
                     compBuilder.addCPE(cpeA);
                 }
+
+                // Add CPEs from Component B to the merged component
                 for (String cpeB : spdx23PackageObjectB.getCPEs()) {
                     compBuilder.addCPE(cpeB);
                 }
 
-                // PURLs
+                // Add PURLs from Component A to the merged component
                 for (String purlA : spdx23PackageObjectA.getPURLs()) {
                     compBuilder.addPURL(purlA);
                 }
+
+                // Add PURLs from Component B to the merged component
                 for (String purlB : spdx23PackageObjectB.getPURLs()) {
                     compBuilder.addPURL(purlB);
                 }
@@ -215,11 +260,15 @@ public class ComponentMerger {
                 ).forEach(compBuilder::addExternalReference);
 
             }
+
+            // CycloneDX 1.4
             case CDX14 -> {
 
+                // Cast the components to CycloneDX 1.4 Component Objects
                 CDX14ComponentObject componentA_CDX = (CDX14ComponentObject) A;
                 CDX14ComponentObject componentB_CDX = (CDX14ComponentObject) B;
 
+                // Copyright
                 compBuilder.setCopyright("1) " + componentA_CDX.getCopyright() + "\n2) " + componentB_CDX.getCopyright());
 
                 // Supplier
@@ -229,20 +278,26 @@ public class ComponentMerger {
                 compBuilder.setVersion(componentA_CDX.getVersion());
 
                 // Description
-                compBuilder.setDescription(componentA_CDX.getDescription());
+                if(componentA_CDX.getDescription() != null && !componentA_CDX.getDescription().toString().isEmpty())
+                    compBuilder.setDescription(componentA_CDX.getDescription());
+                else compBuilder.setDescription(componentB_CDX.getDescription());
 
-                // CPEs
+                // Add CPEs from Component A to the merged component
                 for (String cpeA : componentA_CDX.getCPEs()) {
                     compBuilder.addCPE(cpeA);
                 }
+
+                // Add CPEs from Component B to the merged component
                 for (String cpeB : componentB_CDX.getCPEs()) {
                     compBuilder.addCPE(cpeB);
                 }
 
-                // PURLs
+                // Add PURLs from Component A to the merged component
                 for (String purlA : componentA_CDX.getPURLs()) {
                     compBuilder.addPURL(purlA);
                 }
+
+                // Add PURLs from Component B to the merged component
                 for (String purlB : componentB_CDX.getPURLs()) {
                     compBuilder.addPURL(purlB);
                 }
@@ -253,21 +308,31 @@ public class ComponentMerger {
                 ).forEach(compBuilder::addExternalReference);
 
                 // Mime Type
-                compBuilder.setMimeType(componentA_CDX.getMimeType());
+                if(componentA_CDX.getMimeType() != null && !componentA_CDX.getMimeType().isEmpty())
+                    compBuilder.setMimeType(componentA_CDX.getMimeType());
+                else compBuilder.setMimeType(componentB_CDX.getMimeType());
 
                 // Publisher
-                compBuilder.setPublisher(componentA_CDX.getPublisher());
+                if(componentA_CDX.getPublisher() != null && ! componentA_CDX.getPublisher().isEmpty())
+                    compBuilder.setPublisher(componentA_CDX.getPublisher());
+                else compBuilder.setPublisher(componentB_CDX.getPublisher());
 
                 // Scope
-                compBuilder.setScope(componentA_CDX.getScope());
+                if(componentA_CDX.getScope() != null && !componentA_CDX.getScope().isEmpty())
+                    compBuilder.setScope(componentA_CDX.getScope());
+                else compBuilder.setScope(componentB_CDX.getScope());
 
                 // Group
-                compBuilder.setGroup(componentA_CDX.getGroup());
+                if(componentA_CDX.getGroup() != null && !componentA_CDX.getGroup().isEmpty())
+                    compBuilder.setGroup(componentA_CDX.getGroup());
+                else compBuilder.setGroup(componentB_CDX.getGroup());
 
-                // Properties
+                // Merge properties from Component B into the merged component
                 if (componentB_CDX.getProperties() != null) componentB_CDX.getProperties().keySet().forEach(
                         x -> componentB_CDX.getProperties().get(x).forEach(y -> compBuilder.addProperty(x, y))
                 );
+
+                // Merge properties from Component A into the merged component
                 if (componentA_CDX.getProperties() != null) componentA_CDX.getProperties().keySet().forEach(
                         x -> componentA_CDX.getProperties().get(x).forEach(y -> compBuilder.addProperty(x, y))
                 );
