@@ -41,10 +41,10 @@ SBOM-in-a-Box has a number of unique features to support:
 
 Currently, SBOM-in-a-Box Supports the following SBOM Types
 
-|                        Schema                        | JSON |              Tag:Value               |
-|:----------------------------------------------------:|:----:|:------------------------------------:|
-|  [SPDX 2.3](https://spdx.github.io/spdx-spec/v2.3/)  |  ✅   |                  ✅                   |
-| [CyloneDX 1.4](https://cyclonedx.org/docs/1.4/json/) |  ✅   | CycloneDX does not support Tag:Value |
+|                        Schema                        | JSON | XML |              Tag:Value               |
+|:----------------------------------------------------:|:----:|:---:|:------------------------------------:|
+|  [SPDX 2.3](https://spdx.github.io/spdx-spec/v2.3/)  |  ✅   |  ❌  |                  ✅                   |
+| [CyloneDX 1.4](https://cyclonedx.org/docs/1.4/json/) |  ✅   |  ✅  | CycloneDX does not support Tag:Value |
 
 
 
