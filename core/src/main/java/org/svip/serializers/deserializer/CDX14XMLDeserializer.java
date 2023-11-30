@@ -96,7 +96,7 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
 
         // TODO: Spec Version (regex?)
 
-        if (node.get("metadata") != null && node.get("metadata").asText() != "") {
+        if (node.get("metadata") != null && !node.get("metadata").isEmpty()) {
 
             // LICENSES
             if (node.get("metadata").get("licenses") != null) {
