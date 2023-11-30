@@ -24,7 +24,8 @@ import java.util.Set;
 import static org.svip.merge.ComponentMerger.mergeComponentToSchema;
 
 /**
- * Utility class to prevent creating large modules
+ * Name: MergerUtils.java
+ * Description: Utility class for merging SBOMs.
  *
  * @author Juan Francisco Patino
  * @author Tyler Drake
@@ -43,7 +44,7 @@ public abstract class MergerUtils extends Merger {
      * @return merged SBOM
      */
     protected static SBOM mergeToSchema(SBOM A, SBOM B, Set<Component> componentsA, Set<Component> componentsB, SBOM mainSBOM,
-                                        SBOMBuilder builder, SerializerFactory.Schema targetSchema, String newName) throws MergerException {
+                                        SBOMBuilder builder, SerializerFactory.Schema targetSchema, String newName) {
 
         /** Assign all top level data for the new SBOM **/
 
@@ -164,7 +165,7 @@ public abstract class MergerUtils extends Merger {
             // For every component in the second SBOM
             for (Component componentB : B) {
 
-                switch (targetSchema) { // todo make this neater
+                switch (targetSchema) {
                     case SPDX23 -> {
 
                         // Cast the generic component from SBOM A back to a SPDX component
@@ -246,6 +247,7 @@ public abstract class MergerUtils extends Merger {
 
 
             }
+
             B.removeAll(removeB);
             // If component A was not merged with anything, add it to the new components
             if (!merged) mergedComponents.add(componentA);
