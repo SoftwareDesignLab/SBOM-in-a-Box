@@ -234,6 +234,7 @@ public class OSIController {
         } catch (DeserializerException | JsonProcessingException | SerializerException | SBOMBuilderException |
                  ConversionException e) {
             // Failed to convert
+            LOGGER.error("POST /svip/generators/osi - Failed to convert - " + e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

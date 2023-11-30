@@ -128,7 +128,8 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         xmlGenerator.writeStartObject();
 
         // Write the metadata
-        writeMetadata(xmlGenerator, sbom.getCreationData());
+        if(sbom.getCreationData() != null)
+            writeMetadata(xmlGenerator, sbom.getCreationData());
 
         // Write the root component into the metadata
         if(sbom.getRootComponent() != null) {
@@ -142,26 +143,30 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         // Components
         //
 
-        // Write the components
-        xmlGenerator.writeFieldName("components");
-        xmlGenerator.writeStartObject();
 
-        // Cycle through each component
-        for (Component component : sbom.getComponents()) {
 
-            // If the component isn't null
-            if(component != null) {
+        if(sbom.getComponents() != null) {
+            // Write the components
+            xmlGenerator.writeFieldName("components");
+            xmlGenerator.writeStartObject();
 
-                // Cast the component to an SVIPComponent and write the component
-                SVIPComponentObject svipComponent = (SVIPComponentObject) component;
-                writeComponent(xmlGenerator, svipComponent);
+            // Cycle through each component
+            for (Component component : sbom.getComponents()) {
+
+                // If the component isn't null
+                if(component != null) {
+
+                    // Cast the component to an SVIPComponent and write the component
+                    SVIPComponentObject svipComponent = (SVIPComponentObject) component;
+                    writeComponent(xmlGenerator, svipComponent);
+
+                }
 
             }
 
+            // End components object
+            xmlGenerator.writeEndObject();
         }
-
-        // End components object
-        xmlGenerator.writeEndObject();
 
         //
         // Dependencies
@@ -214,23 +219,30 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
                 xmlGenerator.writeFieldName("tool");
                 xmlGenerator.writeStartObject();
 
-                // Add vendor xml object
-                xmlGenerator.writeFieldName("vendor");
-                xmlGenerator.writeStartObject();
-                xmlGenerator.writeRaw(tool.getVendor());
-                xmlGenerator.writeEndObject();
+                if(tool.getVendor() != null){
+                    // Add vendor xml object
+                    xmlGenerator.writeFieldName("vendor");
+                    xmlGenerator.writeStartObject();
+                    xmlGenerator.writeRaw(tool.getVendor());
+                    xmlGenerator.writeEndObject();
+                }
 
-                // Add name xml object
-                xmlGenerator.writeFieldName("name");
-                xmlGenerator.writeStartObject();
-                xmlGenerator.writeRaw(tool.getName());
-                xmlGenerator.writeEndObject();
+                if(tool.getName() != null){
+                    // Add name xml object
+                    xmlGenerator.writeFieldName("name");
+                    xmlGenerator.writeStartObject();
+                    xmlGenerator.writeRaw(tool.getName());
+                    xmlGenerator.writeEndObject();
+                }
 
-                // Add version xml object
-                xmlGenerator.writeFieldName("version");
-                xmlGenerator.writeStartObject();
-                xmlGenerator.writeRaw(tool.getVersion());
-                xmlGenerator.writeEndObject();
+
+                if(tool.getVersion() != null){
+                    // Add version xml object
+                    xmlGenerator.writeFieldName("version");
+                    xmlGenerator.writeStartObject();
+                    xmlGenerator.writeRaw(tool.getVersion());
+                    xmlGenerator.writeEndObject();
+                }
 
                 // If the tool has hashes
                 if(tool.getHashes() != null) {
@@ -315,7 +327,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         if(data.getSupplier() != null) {
             xmlGenerator.writeFieldName("supplier");
             xmlGenerator.writeStartObject();
-            writeOrganization(xmlGenerator, data.getManufacture());
+            writeOrganization(xmlGenerator, data.getSupplier());
             xmlGenerator.writeEndObject();
         }
 
@@ -443,6 +455,9 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
      */
     public void writeDependencies(ToXmlGenerator xmlGenerator,Map<String, Set<Relationship>> relationships) throws IOException {
 
+        if(relationships.containsKey(null) && relationships.size() == 1)
+            return;
+
         // Cycle through each dependency set
         for(Map.Entry<String, Set<Relationship>> parent : relationships.entrySet()) {
 
@@ -495,10 +510,12 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
     public void writeOrganization(ToXmlGenerator xmlGenerator, Organization organization) throws IOException {
 
         // Write the name for the organization
-        xmlGenerator.writeStringField("name", organization.getName());
+        if(organization.getUrl() != null)
+            xmlGenerator.writeStringField("name", organization.getName());
 
         // Write the url for the organization
-        if (organization.getUrl() != null) xmlGenerator.writeStringField("url", organization.getUrl());
+        if (organization.getUrl() != null)
+            xmlGenerator.writeStringField("url", organization.getUrl());
 
         // Write the contacts for the organization
         xmlGenerator.writeFieldName("contact");

@@ -7,10 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import org.svip.serializers.SerializerFactory;
 import org.svip.api.entities.diff.ComparisonFile;
-import org.svip.serializers.deserializer.CDX14JSONDeserializer;
-import org.svip.serializers.deserializer.Deserializer;
-import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
-import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
+import org.svip.serializers.deserializer.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,6 +32,7 @@ public class SBOMFile {
     // File Type of SBOM
     public enum FileType{
         JSON,
+        XML,
         TAG_VALUE
     }
 
@@ -147,7 +145,7 @@ public class SBOMFile {
     public SBOMFile setSchema(Deserializer d){
         // todo better method to determine schema
 
-        if(d instanceof CDX14JSONDeserializer)
+        if(d instanceof CDX14JSONDeserializer || d instanceof CDX14XMLDeserializer)
             this.schema = Schema.CYCLONEDX_14;
 
         if(d instanceof SPDX23JSONDeserializer || d instanceof SPDX23TagValueDeserializer)
@@ -180,6 +178,9 @@ public class SBOMFile {
 
         if(d instanceof SPDX23TagValueDeserializer)
             this.fileType = FileType.TAG_VALUE;
+
+        if(d instanceof CDX14XMLDeserializer)
+            this.fileType = FileType.XML;
 
         return this;
     }

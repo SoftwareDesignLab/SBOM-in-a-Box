@@ -7,10 +7,7 @@ import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
-import org.svip.serializers.deserializer.CDX14JSONDeserializer;
-import org.svip.serializers.deserializer.Deserializer;
-import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
-import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
+import org.svip.serializers.deserializer.*;
 import org.svip.serializers.serializer.*;
 import org.xml.sax.InputSource;
 
@@ -24,6 +21,7 @@ import java.util.regex.Pattern;
 
 import static org.svip.serializers.SerializerFactory.Format.JSON;
 import static org.svip.serializers.SerializerFactory.Format.TAGVALUE;
+import static org.svip.serializers.SerializerFactory.Format.XML;
 import static org.svip.serializers.SerializerFactory.Schema.*;
 
 /**
@@ -45,9 +43,10 @@ public class SerializerFactory {
          */
         CDX14("CycloneDX", "1.4", new HashMap<>() {{
             this.put(JSON, new CDX14JSONSerializer());
-            this.put(Format.XML, new CDX14XMLSerializer());
+            this.put(XML, new CDX14XMLSerializer());
         }}, new HashMap<>() {{
             this.put(JSON, new CDX14JSONDeserializer());
+            this.put(XML, new CDX14XMLDeserializer());
         }}),
 
         /**
@@ -195,7 +194,7 @@ public class SerializerFactory {
      * @return The schema, or null if no schema could be resolved.
      */
     public static Schema resolveSchema(String fileContents) {
-        if (fileContents.contains("bom-ref")) return CDX14;
+        if (fileContents.contains("bom-ref") || fileContents.contains("xmlns=\"http://cyclonedx.org/schema/bom/1.4\"")) return CDX14;
         else if (fileContents.contains("SPDXID")) return SPDX23;
         else if (fileContents.contains("rootComponent")) return SVIP; // Field unique to SVIP SBOM
         else return null;
