@@ -7,6 +7,7 @@ import org.svip.metrics.resultfactory.ResultFactory;
 import org.svip.metrics.resultfactory.enumerations.INFO;
 import org.svip.metrics.tests.*;
 import org.svip.metrics.tests.enumerations.ATTRIBUTE;
+import org.svip.repair.RepairController;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
@@ -27,19 +28,23 @@ import java.util.*;
  */
 public class SPDX23Pipeline implements SPDX23Tests {
 
+    private static final String NOASSERTION_STRING = "NOASSERTION";
+
     /**
      * Process the tests for the SBOM
      *
-     * @param uid  Unique filename used to ID the SBOM
      * @param sbom the SBOM to run tests against
      * @return a Quality report for the sbom, its components and every test
      */
     @Override
-    public QualityReport process(String uid, SBOM sbom) {
+    public QualityReport process(SBOM sbom) {
         // cast sbom to SPDX23SBOM
         SPDX23SBOM spdx23SBOM = (SPDX23SBOM) sbom;
+        String uid = sbom.getUID();
+
         // build a new quality report
         QualityReport qualityReport = new QualityReport(uid);
+        RepairController repairController = new RepairController();
 
         // Set to hold all the results
         List<Result> sbomResults = new ArrayList<>();
@@ -73,16 +78,20 @@ public class SPDX23Pipeline implements SPDX23Tests {
         //TODO add hasDocumentNamespace when implemented
 
         // add metadata results to the quality report
-        qualityReport.addComponent("metadata", sbomResults);
+        qualityReport.addComponent("metadata", 0, sbomResults);
 
         // test each component's info and add its results to the quality report
         if (spdx23SBOM.getComponents() != null) {
             for (Component c : spdx23SBOM.getComponents()) {
+
+                if(qualityReport.getHashCodeMapping().containsKey(c.hashCode()))
+                    continue;
+
                 // Check what type of SPDX component it is
                 if (c instanceof SPDX23PackageObject) {
-                    qualityReport.addComponent(c.getName(), TestSPDX23Package(c));
+                    qualityReport.addComponent(c.getName(), c.hashCode(), TestSPDX23Package(c));
                 } else if (c instanceof SPDX23FileObject) {
-                    qualityReport.addComponent(c.getName(), TestSPDX23File(c));
+                    qualityReport.addComponent(c.getName(), c.hashCode(), TestSPDX23File(c));
                 }
             }
         }
@@ -151,7 +160,7 @@ public class SPDX23Pipeline implements SPDX23Tests {
         }
 
         // test component Hashes
-        var hashTest = new HashTest(component.getName(), ATTRIBUTE.UNIQUENESS,
+        var hashTest = new HashTest(component, ATTRIBUTE.UNIQUENESS,
                 ATTRIBUTE.MINIMUM_ELEMENTS);
         Map<String, String> hashes = component.getHashes();
         if (hashes != null) {
@@ -160,6 +169,15 @@ public class SPDX23Pipeline implements SPDX23Tests {
                 componentResults.addAll(hashTest.test(hashAlgo, hashValue));
             }
         }
+
+        //test component copyright
+        String copyright = component.getCopyright();
+
+        if(copyright != null && copyright.equals(NOASSERTION_STRING))
+            copyright = "";
+
+        componentResults.add(hasDownloadLocation("Copyright",
+            copyright, component.getName()));
 
         return componentResults;
     }
@@ -222,7 +240,7 @@ public class SPDX23Pipeline implements SPDX23Tests {
                 copyright, component.getName()));
 
         // test component Hashes
-        var hashTest = new HashTest(component.getName(), ATTRIBUTE.UNIQUENESS,
+        var hashTest = new HashTest(component, ATTRIBUTE.UNIQUENESS,
                 ATTRIBUTE.MINIMUM_ELEMENTS);
         Map<String, String> hashes = component.getHashes();
         if (hashes != null) {
@@ -347,8 +365,7 @@ public class SPDX23Pipeline implements SPDX23Tests {
      * @return the result of if the sbom has creation info
      */
     @Override
-    public Set<Result> hasCreationInfo(String field, CreationData creationData,
-                                       String sbomName) {
+    public Set<Result> hasCreationInfo(String field, CreationData creationData, String sbomName) {
         Set<Result> results = new HashSet<>();
 
         // create a new EmptyOrNullTest and ResultFactory
@@ -366,15 +383,12 @@ public class SPDX23Pipeline implements SPDX23Tests {
 
         //first check for creator info and if it is null
         Organization creator = creationData.getManufacture();
-        if (creator == null) {
-            results.add(resultFactory.fail(field, INFO.MISSING,
-                    "Creator Name", sbomName));
-            return results;
-        }
 
-        // check for the creator's name
-        String creatorName = creator.getName();
-        results.add(emptyNullTest.test(field, creatorName, sbomName));
+        if (creator == null)
+            results.add(resultFactory.fail("Manufacture", INFO.MISSING,"Manufacture", sbomName));
+        else
+            results.add(emptyNullTest.test(field, creator.getName(), sbomName));
+
         // then check for creation time info
         String creationTime = creationData.getCreationTime();
         results.add(emptyNullTest.test(field, creationTime, sbomName));

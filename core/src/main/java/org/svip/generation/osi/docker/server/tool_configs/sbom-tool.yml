@@ -1,0 +1,13 @@
+source: "https://github.com/microsoft/sbom-tool"
+profiles:
+  - schema: "spdx"
+    spec_version: "2.2"
+    format: "json"
+    languages:
+      - "C#"
+    package_managers:
+      - ".NET"
+      - "NuGet"
+    commands:
+      - "sbom-tool generate -ps . -b . -m . -pn . -pv ."
+      - "mv _manifest/spdx_2.2/manifest.spdx.json $SBOM_OUT && rm -rf _manifest"

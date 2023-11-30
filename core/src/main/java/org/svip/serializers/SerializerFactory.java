@@ -1,17 +1,27 @@
 package org.svip.serializers;
 
 
-import org.svip.serializers.deserializer.CDX14JSONDeserializer;
-import org.svip.serializers.deserializer.Deserializer;
-import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
-import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
+import org.json.JSONObject;
+import org.json.XML;
+import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.sbom.model.objects.SVIPSBOM;
+import org.svip.serializers.deserializer.*;
 import org.svip.serializers.serializer.*;
+import org.xml.sax.InputSource;
 
+import javax.xml.crypto.dsig.XMLObject;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static org.svip.serializers.SerializerFactory.Format.JSON;
 import static org.svip.serializers.SerializerFactory.Format.TAGVALUE;
+import static org.svip.serializers.SerializerFactory.Format.XML;
 import static org.svip.serializers.SerializerFactory.Schema.*;
 
 /**
@@ -33,8 +43,10 @@ public class SerializerFactory {
          */
         CDX14("CycloneDX", "1.4", new HashMap<>() {{
             this.put(JSON, new CDX14JSONSerializer());
+            this.put(XML, new CDX14XMLSerializer());
         }}, new HashMap<>() {{
             this.put(JSON, new CDX14JSONDeserializer());
+            this.put(XML, new CDX14XMLDeserializer());
         }}),
 
         /**
@@ -123,7 +135,55 @@ public class SerializerFactory {
      */
     public enum Format {
         JSON,
-        TAGVALUE
+        XML,
+        TAGVALUE;
+
+        /**
+         * Checks if the given string is a valid JSON.
+         *
+         * @param fileContents The file contents to check if it's a valid JSON.
+         * @return true if valid JSON.
+         */
+        public static boolean isValidJSON(String fileContents) {
+            try {
+                new JSONObject(fileContents);
+            } catch (Exception e) {
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         * Checks if the given string is a valid XML.
+         *
+         * @param fileContents The file contents to check if it's a valid XML.
+         * @return true if valid XML.
+         */
+        public static boolean isValidXML(String fileContents) {
+            try {
+                SAXParserFactory.newInstance().newSAXParser().getXMLReader().parse(new InputSource(new StringReader(fileContents)));
+            } catch (Exception e) {
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         * Checks if the given string is a valid tag-value.
+         *
+         * @param fileContents The file contents to check if it's a valid tag-value.
+         * @return true if valid tag-value.
+         */
+        public static boolean isValidTagValue(String fileContents) {
+            // Matches PascalCase and begin with capital letters (e.g. SPDXID, SPDXVersion)
+            Pattern p = Pattern.compile("^[A-Z][a-z0-9]*(?:[A-Z][a-z0-9]*)*(?:[A-Z]?)$");
+
+            // Check all tags are PascalCase (value is ignored; it can sometimes be empty)
+            return fileContents.lines()
+                    .filter(line -> !(line.contains("#") || line.contains("</text>") || line.equals(""))) // Exclude
+                    .map(line -> line.split(": ")[0]) // Get the tag
+                    .allMatch(line -> p.matcher(line).matches()); // Match tag to regex
+        }
     }
 
     /**
@@ -134,25 +194,39 @@ public class SerializerFactory {
      * @return The schema, or null if no schema could be resolved.
      */
     public static Schema resolveSchema(String fileContents) {
-        // TODO this takes a long time to search large files
-        if (fileContents.toLowerCase().contains("bom-ref")) return CDX14;
-        else if (fileContents.toLowerCase().contains("spdxversion")) return SPDX23;
+        if (fileContents.contains("bom-ref") || fileContents.contains("xmlns=\"http://cyclonedx.org/schema/bom/1.4\"")) return CDX14;
+        else if (fileContents.contains("SPDXID")) return SPDX23;
         else if (fileContents.contains("rootComponent")) return SVIP; // Field unique to SVIP SBOM
         else return null;
     }
 
     /**
-     * TODO find an accurate way to determine format
+     * Resolves the SBOM schema by determining the instance of an SBOM object.
+     *
+     * @param sbom The SBOM Object to resolve the schema of.
+     * @return The schema, or null if no schema could be resolved.
+     */
+    public static Schema resolveSchemaByObject(SBOM sbom) {
+        if (sbom instanceof CDX14SBOM) return CDX14;
+        else if (sbom instanceof SPDX23SBOM) return SPDX23;
+        else if (sbom instanceof SVIPSBOM) return SVIP;
+        else return null;
+    }
+
+    /**
+     * TODO add support for XML
      * Resolves the file format of the contents of a file.
      *
      * @param fileContents The file contents to resolve the format of.
      * @return The format, or null if no format could be resolved.
      */
     public static Format resolveFormat(String fileContents) {
-        if (fileContents.contains("DocumentName:") || fileContents.contains("DocumentNamespace:"))
+        if (Format.isValidTagValue(fileContents))
             return TAGVALUE;
-        else if (fileContents.contains("{") && fileContents.contains("}"))
+        else if (Format.isValidJSON(fileContents))
             return JSON;
+        else if(Format.isValidXML(fileContents))
+            return Format.XML;
         else return null;
     }
 

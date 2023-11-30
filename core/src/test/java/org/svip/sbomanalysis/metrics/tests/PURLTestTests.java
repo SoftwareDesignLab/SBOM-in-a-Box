@@ -53,7 +53,7 @@ class PURLTestTests {
     // TODO test with coverage fails, debug passes? results are being added to the set differently in each case
     // TODO refactor lots of repeat code
     @Test
-    public void isValidPURL_pass_test(){
+    public void validPURLResult_pass_test(){
         Set<Result> result =  purlTest.test("purl", testActualPURL);
 
         List<Result> resultList = new ArrayList<>(result);
@@ -63,7 +63,7 @@ class PURLTestTests {
     }
 
     @Test
-    public void isValidPURL_fail_test(){
+    public void validPURLResult_fail_test(){
         Set<Result> result =  purlTest.test("purl", "purl");
 
         List<Result> resultList = new ArrayList<>(result);
@@ -73,7 +73,7 @@ class PURLTestTests {
     }
 
     @Test
-    public void isValidPURL_isAccuratePURL_pass_test(){
+    public void validPURLResult_isAccuratePURL_pass_test(){
         Set<Result> result =  purlTest.test("purl", testActualPURL);
 
         List<Result> resultList = new ArrayList<>(result);
@@ -83,7 +83,7 @@ class PURLTestTests {
     }
 
     @Test
-    public void isAccuratePURL_match_getName_fail_test(){
+    public void accuratePURLResults_match_getName_fail_test(){
         Set<Result> result =  purlTest.test("purl", "pkg:golang/rsc.io/incorrectName@v1.3.0");
 
         List<Result> resultList = new ArrayList<>(result);
@@ -104,7 +104,7 @@ class PURLTestTests {
     }
 
     @Test
-    public void isAccuratePURL_match_getVersion_fail_test(){
+    public void accuratePURLResults_match_getVersion_fail_test(){
         Set<Result> result =  purlTest.test("purl", "pkg:golang/rsc.io/sampler@v0.0.0");
 
         List<Result> resultList = new ArrayList<>(result);

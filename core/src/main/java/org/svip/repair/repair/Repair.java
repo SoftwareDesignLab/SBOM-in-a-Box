@@ -5,12 +5,14 @@ import org.svip.sbom.model.interfaces.generics.SBOM;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Name: Repair.java
  * Description: Interface for Repair.
  *
- * @authors Tyler Drake
+ * @author Tyler Drake
+ * @author Justin Jantzi
  */
 public interface Repair {
 
@@ -20,10 +22,10 @@ public interface Repair {
      * that have been requested for the SBOM. These fixes will then
      * be applied to that SBOM and returned.
      *
-     * @param uid   UID of the SBOM.
-     * @param sbom  The SBOM Object.
-     * @return      The repaired SBOM Object.
+     * @param sbom      The SBOM Object.
+     * @param repairs   The fixes to make
+     * @return          The repaired SBOM Object.
      */
-    SBOM repairSBOM(String uid, SBOM sbom, Map<String, Map<String, List<Fix<?>>>> repairs);
+    SBOM repairSBOM(SBOM sbom, Map<Integer, Set<Fix<?>>> repairs);
 
 }

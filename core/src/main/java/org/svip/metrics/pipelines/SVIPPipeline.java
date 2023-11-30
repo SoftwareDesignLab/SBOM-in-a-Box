@@ -36,14 +36,15 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
     /**
      * Process the tests for the SBOM
      *
-     * @param uid  Unique filename used to ID the SBOM
      * @param sbom the SBOM to run tests against
      * @return a Quality report for the sbom, its components and every test
      */
     @Override
-    public QualityReport process(String uid, SBOM sbom) {
+    public QualityReport process(SBOM sbom) {
         // cast sbom to SVIPSBOM
         SVIPSBOM svipsbom = (SVIPSBOM) sbom;
+        String uid = sbom.getUID();
+
         // build a new quality report
         QualityReport qualityReport = new QualityReport(uid);
 
@@ -82,7 +83,7 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
         //TODO add hasDocumentNamespace when implemented
 
         // add metadata results to the quality report
-        qualityReport.addComponent("metadata", sbomResults);
+        qualityReport.addComponent("metadata", 0, sbomResults);
 
         if (svipsbom.getComponents() != null) {
             // test component info
@@ -137,7 +138,7 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
                 }
 
                 // test component Hashes
-                var hashTest = new HashTest(component.getName(), ATTRIBUTE.UNIQUENESS,
+                var hashTest = new HashTest(component, ATTRIBUTE.UNIQUENESS,
                         ATTRIBUTE.MINIMUM_ELEMENTS);
                 Map<String, String> hashes = component.getHashes();
                 if (hashes != null) {
@@ -151,7 +152,7 @@ public class SVIPPipeline implements CDX14Tests, SPDX23Tests {
                 }
 
                 // add the component and all its tests to the quality report
-                qualityReport.addComponent(component.getName(), componentResults);
+                qualityReport.addComponent(component.getName(), c.hashCode(), componentResults);
             }
         }
 

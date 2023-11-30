@@ -69,7 +69,7 @@ public class LicenseTest extends MetricTest {
         Set<Result> results = new HashSet<>();
         // license is not a null value and does exist, tests can run
         if (value != null && !value.equals("")) {
-            results.addAll(isValidSPDXLicense(field, value));
+            results.addAll(validSPDXLicenseResults(field, value));
         }
         // license is a null value and does not exist, tests cannot be run
         // return missing Result
@@ -100,7 +100,7 @@ public class LicenseTest extends MetricTest {
      * @param value the license string
      * @return a set of results
      */
-    private Set<Result> isValidSPDXLicense(String field, String value) {
+    private Set<Result> validSPDXLicenseResults(String field, String value) {
         var rf = new ResultFactory("Valid SPDX License", ATTRIBUTE.COMPLETENESS, ATTRIBUTE.UNIQUENESS, ATTRIBUTE.MINIMUM_ELEMENTS);
         Set<Result> results = new HashSet<>();
         Result r;

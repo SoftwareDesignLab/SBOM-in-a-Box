@@ -11,20 +11,31 @@ import static org.svip.serializers.SerializerFactory.Schema.CDX14;
 
 /**
  * File: MergerCDX.java
- * <p>
- * Merges two CDX SBOMs together.
+ * Description: Main class for merging two CycloneDX 1.4 SBOMs together.
  *
- * @author tyler_drake
+ * @author Tyler Drake
  */
 public class MergerCDX extends Merger {
 
+    /**
+     * CycloneDX Merger Constructor
+     */
     public MergerCDX() {
         super();
     }
 
+    /**
+     * Merges two CycloneDX 1.4 SBOMs together
+     *
+     * @param A First SBOM
+     * @param B Second SBOM
+     * @return Merged CycloneDX SBOM
+     * @throws MergerException
+     */
     @Override
     public SBOM mergeSBOM(SBOM A, SBOM B) throws MergerException {
 
+        // Get all components from both SBOMs
         Set<Component> componentsA = A.getComponents();
         Set<Component> componentsB = B.getComponents();
 
@@ -34,6 +45,7 @@ public class MergerCDX extends Merger {
         // Create a new builder for the new SBOM
         CDX14Builder builder = new CDX14Builder();
 
+        // Merge the SBOMs and return the merged SBOM
         return MergerUtils.mergeToSchema(A, B, componentsA, componentsB, mainSBOM, builder, CDX14, "");
 
     }

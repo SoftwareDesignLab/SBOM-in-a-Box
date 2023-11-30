@@ -1,0 +1,16 @@
+source: "https://github.com/anthonyharrison/sbom4python"
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.5"
+    format: "json"
+    languages:
+      - "Python"
+    commands:
+      - "sbom4python --sbom cyclonedx --output-file=$SBOM_OUT/sbom4python-cdx15.json"
+  - schema: "spdx"
+    spec_version: "2.3"
+    format: "spdx"
+    languages:
+      - "Python"
+    commands:
+      - "sbom4python --sbom spdx --output-file=$SBOM_OUT/sbom4python-spdx23.spdx"

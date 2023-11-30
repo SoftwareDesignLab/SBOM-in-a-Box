@@ -1,7 +1,5 @@
 package org.svip.compare;
 
-
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.svip.compare.conflicts.Conflict;
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -46,7 +44,7 @@ public class Comparison {
         for (Component targetComponent : target.getComponents()) {
 
             // If other doesn't have component which shares name with target component, skip
-            if (other.getComponents().stream().noneMatch(o -> o.getName() != null && o.getName().equals(targetComponent.getName()))) {
+            if (other.getComponents().stream().noneMatch(o -> o.getName() != null && o.equals(targetComponent))) {
                 this.missingFromOther.add(targetComponent.getName());
                 continue;
             }
@@ -63,7 +61,7 @@ public class Comparison {
         // Round 2: Check for components present in other but not in target
         for (Component otherComponent : other.getComponents()) {
             // If target doesn't have component which shares name with other component, skip
-            if (target.getComponents().stream().noneMatch(o -> o.getName() != null && o.getName().equals(otherComponent.getName())))
+            if (target.getComponents().stream().noneMatch(o -> o.getName() != null && o.equals(otherComponent)))
                 this.missingFromTarget.add(otherComponent.getName());
         }
 

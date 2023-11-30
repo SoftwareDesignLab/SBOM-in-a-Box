@@ -4,18 +4,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.svip.api.entities.SBOM;
-import org.svip.api.repository.SBOMRepository;
+import org.svip.api.entities.SBOMFile;
+import org.svip.api.repository.SBOMFileRepository;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.conversion.Conversion;
 import org.svip.conversion.ConversionException;
 import org.svip.merge.MergerController;
 import org.svip.merge.MergerException;
+import org.svip.metrics.pipelines.QualityReport;
 import org.svip.repair.RepairController;
 import org.svip.repair.fix.Fix;
 import org.svip.repair.repair.Repair;
 import org.svip.repair.statements.RepairStatement;
 import org.svip.sbom.builder.SBOMBuilderException;
+import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.SerializerFactory;
@@ -30,7 +32,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static org.svip.api.controller.SBOMController.LOGGER;
-
+import static org.svip.serializers.SerializerFactory.resolveSchemaByObject;
 
 /**
  * file: SBOMFileService.java
@@ -40,34 +42,32 @@ import static org.svip.api.controller.SBOMController.LOGGER;
  **/
 @Service
 public class SBOMFileService {
-    private final SBOMRepository sbomRepository;
+    private final SBOMFileRepository sbomFileRepository;
 
     /**
      * Create new Service for a target repository
      *
-     * @param sbomRepository SBOM repository to access
+     * @param sbomFileRepository SBOM file repository to access
      */
-    public SBOMFileService(SBOMRepository sbomRepository) {
-        this.sbomRepository = sbomRepository;
+    public SBOMFileService(SBOMFileRepository sbomFileRepository) {
+        this.sbomFileRepository = sbomFileRepository;
     }
-
 
     /**
      * Create a new sbom entry in the database
      *
-     * @param sbom sbom to upload
+     * @param sbomFile sbom file to upload
      * @return uploaded sbom entry
      * @throws Exception Error uploading to the Database
      */
-    public SBOM upload(SBOM sbom) throws Exception {
+    public SBOMFile upload(SBOMFile sbomFile) throws Exception {
         try {
-            return this.sbomRepository.save(sbom);
+            return this.sbomFileRepository.save(sbomFile);
         } catch (Exception e) {
             // todo custom exception instead of generic
             throw new Exception("Failed to upload to Database: " + e.getMessage());
         }
     }
-
 
     /**
      * Convert an SBOM to different Schema and/or FileType
@@ -79,10 +79,11 @@ public class SBOMFileService {
      * @return ID of converted SBOM
      */
     public Long convert(Long id, SerializerFactory.Schema schema, SerializerFactory.Format format, Boolean overwrite)
-            throws DeserializerException, JsonProcessingException, SerializerException, SBOMBuilderException, ConversionException {
+            throws DeserializerException, JsonProcessingException, SerializerException, SBOMBuilderException,
+            ConversionException {
 
         // deserialize into SBOM object
-        org.svip.sbom.model.interfaces.generics.SBOM deserialized;
+        SBOM deserialized;
         try {
             deserialized = getSBOMFile(id).toSBOMObject();
         } catch (Exception e) {
@@ -91,41 +92,41 @@ public class SBOMFileService {
         if (deserialized == null)
             throw new DeserializerException("Cannot retrieve SBOM with id " + id + " to deserialize");
 
-        SBOM.Schema ogSchema = (deserialized instanceof SPDX23SBOM) ? SBOM.Schema.SPDX_23 : SBOM.Schema.CYCLONEDX_14;
-
-        SerializerFactory.Schema originalSchema = (ogSchema == SBOM.Schema.SPDX_23) ? // original schema of SBOM
-                SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14;
+        SerializerFactory.Schema originalSchema = resolveSchemaByObject(deserialized);
 
         // use core Conversion functionality
-        org.svip.sbom.model.interfaces.generics.SBOM Converted =
-                Conversion.convertSBOM(deserialized, SerializerFactory.Schema.SVIP, originalSchema);
+        SBOM Converted = Conversion.convert(deserialized,
+                 originalSchema, schema);
 
         // serialize into desired format
-        Serializer s = SerializerFactory.createSerializer(schema, format, true); // todo serializers don't adjust the format nor specversion
+        Serializer s = SerializerFactory.createSerializer(schema, format, true); // todo serializers don't adjust the
+                                                                                 // format nor specversion
         s.setPrettyPrinting(true);
         String contents = s.writeToString((SVIPSBOM) Converted);
         SerializerFactory.Schema resolvedSchema = SerializerFactory.resolveSchema(contents);
         SerializerFactory.Format resolvedFormat = SerializerFactory.resolveFormat(contents);
         if (resolvedSchema != schema)
-            throw new SerializerException("Serialized SBOM does not match schema=" + schema + " (" + resolvedSchema + ")");
+            throw new SerializerException(
+                    "Serialized SBOM does not match schema=" + schema + " (" + resolvedSchema + ")");
         else if (resolvedFormat != format) {
-            throw new SerializerException("Serialized SBOM does not match format=" + format + " (" + resolvedFormat + ")");
+            throw new SerializerException(
+                    "Serialized SBOM does not match format=" + format + " (" + resolvedFormat + ")");
         }
 
         Random rand = new Random();
-        String newName = ((deserialized.getName() == null) ? Math.abs(rand.nextInt()) : deserialized.getName()) + "." + schema;
+        String newName = ((deserialized.getName() == null) ? Math.abs(rand.nextInt()) : deserialized.getName()) + "."
+                + schema;
 
         UploadSBOMFileInput u = new UploadSBOMFileInput(newName, contents);
 
         // Save according to overwrite boolean
-        SBOM converted = u.toSBOMFile();
+        SBOMFile converted = u.toSBOMFile();
 
-        if (overwrite) {
-            update(id, converted);
-            return id;
-        }
+        // If overwrite, delete current SBOM
+        if (overwrite)
+            deleteSBOMFile(getSBOMFile(id));
 
-        this.sbomRepository.save(converted);
+        this.sbomFileRepository.save(converted);
         return converted.getId();
 
     }
@@ -150,8 +151,7 @@ public class SBOMFileService {
         // collect and deserialize SBOMs
         ArrayList<org.svip.sbom.model.interfaces.generics.SBOM> sboms = new ArrayList<>();
 
-        for (Long id : ids
-        ) {
+        for (Long id : ids) {
 
             org.svip.sbom.model.interfaces.generics.SBOM sbomObj;
             try {
@@ -163,10 +163,10 @@ public class SBOMFileService {
             if (sbomObj == null)
                 throw new Exception("Converted SBOM not found.");
 
+            SerializerFactory.Schema originalSchema = resolveSchemaByObject(sbomObj);
+
             // convert to SVIPSBOM
-            sbomObj = Conversion.convertSBOM(sbomObj, SerializerFactory.Schema.SVIP,
-                    (sbomObj.getFormat().toLowerCase().contains("spdx")) ?
-                            SerializerFactory.Schema.SPDX23 : SerializerFactory.Schema.CDX14);
+            sbomObj = Conversion.convert(sbomObj, originalSchema, SerializerFactory.Schema.SVIP);
 
             sboms.add(sbomObj);
 
@@ -184,7 +184,9 @@ public class SBOMFileService {
         SerializerFactory.Schema schema = SerializerFactory.Schema.SPDX23;
 
         // serialize merged SBOM
-        Serializer s = SerializerFactory.createSerializer(schema, SerializerFactory.Format.TAGVALUE, // todo default to SPDX JSON for now?
+        Serializer s = SerializerFactory.createSerializer(schema, SerializerFactory.Format.TAGVALUE, // todo default to
+                                                                                                     // SPDX JSON for
+                                                                                                     // now?
                 true);
         s.setPrettyPrinting(true);
         String contents;
@@ -196,17 +198,17 @@ public class SBOMFileService {
 
         // save to db
         Random rand = new Random();
-        String newName = ((merged.getName() == null || merged.getName().isEmpty()) ? Math.abs(rand.nextInt()) :
-                merged.getName()) + "." + schema.getName();
+        String newName = ((merged.getName() == null || merged.getName().isEmpty()) ? Math.abs(rand.nextInt())
+                : merged.getName()) + "." + schema.getName();
 
         UploadSBOMFileInput u = new UploadSBOMFileInput(newName, contents);
-        SBOM mergedSBOMFile;
+        SBOMFile mergedSBOMFile;
         try {
             mergedSBOMFile = u.toSBOMFile();
         } catch (JsonProcessingException e) {
             throw new Exception("Error: " + e.getMessage());
         }
-        this.sbomRepository.save(mergedSBOMFile);
+        this.sbomFileRepository.save(mergedSBOMFile);
         return mergedSBOMFile.getId();
     }
 
@@ -216,10 +218,10 @@ public class SBOMFileService {
      * @param id of the SBOM to retrieve
      * @return SBOMFile if it exists
      */
-    public SBOM getSBOMFile(Long id) {
+    public SBOMFile getSBOMFile(Long id) {
         // Retrieve SBOM File and check that it exists
 
-        Optional<SBOM> sbomFile = this.sbomRepository.findById(id);
+        Optional<SBOMFile> sbomFile = this.sbomFileRepository.findById(id);
         return sbomFile.orElse(null);
 
     }
@@ -233,12 +235,11 @@ public class SBOMFileService {
         List<Long> sbomIDs = new ArrayList<>();
 
         // Get all sboms and add their ID to the ID list
-        this.sbomRepository.findAll().forEach(sbom -> sbomIDs.add(sbom.getId()));
+        this.sbomFileRepository.findAll().forEach(sbom -> sbomIDs.add(sbom.getId()));
 
         // convert to long array
         return sbomIDs.toArray(new Long[0]);
     }
-
 
     /**
      * Delete a target SBOM File from the database
@@ -246,16 +247,14 @@ public class SBOMFileService {
      * @param sbomFile SBOM file to delete
      * @return id of deleted SBOM on success
      */
-    public Long deleteSBOMFile(SBOM sbomFile) {
+    public Long deleteSBOMFile(SBOMFile sbomFile) {
 
         // Delete from repository
-        this.sbomRepository.delete(sbomFile);
+        this.sbomFileRepository.delete(sbomFile);
 
         // return confirmation id
         return sbomFile.getId();
     }
-
-
 
     /**
      * Update an entry in the database
@@ -264,9 +263,9 @@ public class SBOMFileService {
      * @param patch Patch SBOM File with updated information
      * @return id of the updated SBOM
      */
-    private Long update(Long id, SBOM patch) {
+    private Long update(Long id, SBOMFile patch) {
         // Retrieve SBOMFile and check that it exists
-        SBOM sbomFile = getSBOMFile(id);
+        SBOMFile sbomFile = getSBOMFile(id);
         if (sbomFile == null)
             return null;
 
@@ -275,7 +274,7 @@ public class SBOMFileService {
                 .setSchema(patch.getSchema())
                 .setFileType(patch.getFileType());
 
-        this.sbomRepository.save(sbomFile);
+        this.sbomFileRepository.save(sbomFile);
 
         return sbomFile.getId();
     }
@@ -338,15 +337,16 @@ public class SBOMFileService {
 
     /**
      * Returns a map of fixes
+     *
      * @param id id of SBOM to repair
-     * @return map of potential fixes
+     * @return quality report with potential fixes
      * @throws JsonProcessingException error deserialization occured
      */
-    public Map<String, Map<String, List<Fix<?>>>> getRepairStatement(Long id) throws Exception {
+    public QualityReport getRepairStatement(Long id) throws Exception {
 
-        SBOM toRepair = getSBOMFile(id);
+        SBOMFile toRepair = getSBOMFile(id);
 
-        if(toRepair == null)
+        if (toRepair == null)
             return null; // bad request
 
         org.svip.sbom.model.interfaces.generics.SBOM SBOMToRepair = toRepair.toSBOMObject();
@@ -355,57 +355,68 @@ public class SBOMFileService {
 
         RepairStatement repair = repairController.getStatement(SBOMToRepair);
 
-        return repair.generateRepairStatement(SBOMToRepair.getUID(), SBOMToRepair);
+        return repair.generateRepairStatement(SBOMToRepair);
 
     }
 
-
     /**
      * Returns a map of fixes
-     * @param id id of SBOM to repair
+     *
+     * @param id              id of SBOM to repair
      * @param repairStatement fixes to make
-     * @param overwrite whether to overwrite in database
+     * @param overwrite       whether to overwrite in database
      * @return ID of repaired SBOM
      * @throws JsonProcessingException error deserialization occured
      */
-    public long repair(Long id, Map<String, Map<String, List<Fix<?>>>>
-            repairStatement, boolean overwrite) throws JsonProcessingException {
+    public long repair(Long id, Map<Integer, Set<Fix<?>>> repairStatement, boolean overwrite)
+            throws JsonProcessingException {
 
-        org.svip.sbom.model.interfaces.generics.SBOM toRepair;
-        toRepair = getSBOMFile(id).toSBOMObject();
+        SBOMFile toRepairSBOMFile = getSBOMFile(id);
+        org.svip.sbom.model.interfaces.generics.SBOM toRepairSBOM;
+        toRepairSBOM = toRepairSBOMFile.toSBOMObject();
 
-        if(toRepair == null)
+        // Checkif SBOM valid
+        if(toRepairSBOM == null)
             return 0; // bad request
 
         RepairController repairController = new RepairController();
 
-        Repair repair = repairController.getRepair(toRepair);
+        Repair repair = repairController.getRepair(toRepairSBOM);
 
-        org.svip.sbom.model.interfaces.generics.SBOM repaired = repair.repairSBOM(toRepair.getUID(), toRepair, repairStatement);
+        org.svip.sbom.model.interfaces.generics.SBOM repaired = repair.repairSBOM(toRepairSBOM, repairStatement);
+
+
+        // Determine original Schema
+        SerializerFactory.Schema originalSchema = ( toRepairSBOMFile.getSchema() == SBOMFile.Schema.SPDX_23 )
+                ? SerializerFactory.Schema.SPDX23
+                : SerializerFactory.Schema.CDX14;
+
+
+        // Determine original Format
+        SerializerFactory.Format originalFormat = ( toRepairSBOMFile.getFileType() == SBOMFile.FileType.JSON )
+                ? SerializerFactory.Format.JSON
+                : SerializerFactory.Format.TAGVALUE;
 
         // serialize into desired format
-        Serializer s = SerializerFactory.createSerializer(SerializerFactory.Schema.SPDX23, SerializerFactory.Format.TAGVALUE,
-                true); // todo serializers don't adjust the format nor specversion
-        s.setPrettyPrinting(true);
-        String contents = s.writeToString((SVIPSBOM) repaired);
+        Serializer s = SerializerFactory.createSerializer(originalSchema, originalFormat, true);
 
-        Random rand = new Random();
-        String newName = ((repaired.getName() == null) ? Math.abs(rand.nextInt()) : repaired.getName()) + ".SPDX23";
+        org.svip.sbom.model.interfaces.generics.SBOM converted = Conversion.toSVIP(repaired, originalSchema);
+        String contents = s.writeToString((SVIPSBOM) converted);
 
-        UploadSBOMFileInput u = new UploadSBOMFileInput(newName, contents); // todo duplicate code
+        UploadSBOMFileInput u = new UploadSBOMFileInput(repaired.getName(), contents); // todo duplicate code
 
         // Save according to overwrite boolean
-        SBOM sbomFile = u.toSBOMFile();
+        SBOMFile sbomFile = u.toSBOMFile();
+        sbomFile.setName(toRepairSBOMFile.getName());
 
         if (overwrite) {
             update(id, sbomFile);
             return id;
         }
 
-        this.sbomRepository.save(sbomFile);
+        this.sbomFileRepository.save(sbomFile);
         return sbomFile.getId();
 
     }
 
 }
-

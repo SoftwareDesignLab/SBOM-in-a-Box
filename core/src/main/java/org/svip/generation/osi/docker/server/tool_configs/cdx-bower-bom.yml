@@ -1,0 +1,12 @@
+source: "https://github.com/hanstdam/cdx-bower-bom"
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.0"
+    format: "xml"
+    languages:
+      - "Javascript"
+    package_managers:
+      - "Bower"
+    commands:
+      - "bower --allow-root install"
+      - "cdx-bower-bom -o $SBOM_OUT/cdxbower-cdx10.xml"

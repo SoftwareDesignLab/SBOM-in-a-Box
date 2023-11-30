@@ -23,7 +23,6 @@ import org.svip.utils.Debug;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 /**
  * File: SPDX23TagValueDeserializer.java
@@ -35,59 +34,34 @@ import java.util.stream.Stream;
  * @author Matt London
  * @author Ethan Numan
  * @author Thomas Roman
+ * @author Derek Garcia
  */
 public class SPDX23TagValueDeserializer implements Deserializer {
 
     //#region Constants
 
-    public static final String TAG = "###";
-
+    public static final String TAG = "####";
     public static final String SEPARATOR = ": ";
-
-    public static final String UNPACKAGED_TAG = "### Unpackaged Files";
-
-    public static final String PACKAGE_TAG = "### Package";
-
-    public static final String RELATIONSHIP_TAG = "### Relationships";
-
-    public static final String EXTRACTED_LICENSE_TAG = "### Extracted"; // starts with
-
-    public static final String EXTRACTED_LICENSE_ID = "LicenseID";
-
-    public static final String EXTRACTED_LICENSE_NAME = "LicenseName";
-
-    public static final String EXTRACTED_LICENSE_TEXT = "ExtractedText";
-
-    public static final String EXTRACTED_LICENSE_CROSSREF = "LicenseCrossReference";
-
-    public static final String RELATIONSHIP_KEY = "Relationship";
-
     public static final String SPEC_VERSION_TAG = "SPDXVersion";
-
-    public static final String ID_TAG = "SPDXID";
-
     public static final String TIMESTAMP_TAG = "Created";
-
     public static final String DOCUMENT_NAME_TAG = "DocumentName";
-
     public static final String DOCUMENT_NAMESPACE_TAG = "DocumentNamespace";
-
     public static final String DATA_LICENSE_TAG = "DataLicense";
-
     public static final String LICENSE_LIST_VERSION_TAG = "LicenseListVersion";
-
     public static final String CREATOR_TAG = "Creator";
-
-    // Used as an identifier for main SBOM information. Sometimes used as reference in relationships to show header contains main component.
-    public static final String DOCUMENT_REFERENCE_TAG = "SPDXRef-DOCUMENT";
     public static final String EXTERNAL_REFERENCE_TAG = "ExternalRef";
 
+    ///
+    /// Patterns
+    ///
+
+    public static final Pattern EXTRACTED_LICENSE_PATTERN = Pattern.compile("(^LicenseID:[\\w\\W]*?)\n{2}", Pattern.MULTILINE);
+    public static final Pattern UNPACKAGED_PATTERN = Pattern.compile("(^FileName:[\\w\\W]*?)\\n{2}", Pattern.MULTILINE);
+    public static final Pattern PACKAGE_PATTERN = Pattern.compile("^#{5} Package: .*\n{2}([\\w\\W]*?)\n$", Pattern.MULTILINE);
     private static final Pattern TAG_VALUE_PATTERN = Pattern.compile("(\\S+)" + SEPARATOR + "(.+)");
     private static final Pattern EXTERNAL_REF_PATTERN = Pattern.compile(EXTERNAL_REFERENCE_TAG + SEPARATOR +
             "(\\S*) (\\S*) (\\S*)");
-    private static final Pattern RELATIONSHIP_PATTERN = Pattern.compile(RELATIONSHIP_KEY + SEPARATOR +
-            "(\\S*) (\\S*) (\\S*)");
-    // https://regex101.com/r/0jMwAU/1
+    private static final Pattern RELATIONSHIP_PATTERN = Pattern.compile("^Relationship: (.*?) (.*?) (.*)\n(?:RelationshipComment: (.*)|)", Pattern.MULTILINE);
     private static final Pattern CREATOR_PATTERN = Pattern.compile(
             "^(?:(Person|Organization): )(.+?)(?:$| (?:\\((.*)\\))?$)");
     private static final Pattern TOOL_PATTERN = Pattern.compile("^Tool: (?:(.*)-)(.*)$", Pattern.CASE_INSENSITIVE);
@@ -155,59 +129,29 @@ public class SPDX23TagValueDeserializer implements Deserializer {
             }
         }
         parseSPDXCreatorInfo(creationData, creators);
+
         // CREATION DATA
         sbomBuilder.setCreationData(creationData);
 
-        // RELATIONSHIPS
-        List<String> lines = new ArrayList<>(List.of(fileContents.split("\n")));
-        // Find all relationships in the file contents regardless of where they are
-        Matcher relationship = RELATIONSHIP_PATTERN.matcher(fileContents);
-        while (relationship.find()) {
-            Relationship r = new Relationship(relationship.group(3), relationship.group(2));
+        // Parse and Add Packages
+        Matcher packageMatcher = PACKAGE_PATTERN.matcher(fileContents);
+        while(packageMatcher.find())
+            sbomBuilder.addSPDX23Component(buildPackage(packageBuilder, packageMatcher.group(1)));
 
-            String nextLine;
-            try {
-                nextLine = lines.get(lines.indexOf(relationship.group()) + 1);
-            } catch (IndexOutOfBoundsException e) {
-                break;
-            }
-            if (nextLine.startsWith("RelationshipComment: ")) {
-                r.setComment(nextLine.substring(nextLine.indexOf(" ") + 1));
-                lines.remove(nextLine);
-            }
+        // Parse and Add unpackaged files
+        Matcher fileMatcher = UNPACKAGED_PATTERN.matcher(fileContents);
+        while(fileMatcher.find())
+            sbomBuilder.addSPDX23Component(buildFile(fileBuilder, fileMatcher.group(1)));
 
-            sbomBuilder.addRelationship(relationship.group(1), r);
-            lines.remove(relationship.group()); // Remove parsed relationship from contents
-        }
-        fileContents = String.join("\n", lines); // Remove all relationships from fileContents
+        // Parse and Add external license
+        Matcher licenseMatcher = EXTRACTED_LICENSE_PATTERN.matcher(fileContents);
+        while(licenseMatcher.find())
+            sbomBuilder.addLicense(buildExternalLicense(licenseMatcher.group(1)));
 
-        // Licenses
-        String extractedLicenseContent = getTagContents(fileContents, EXTRACTED_LICENSE_TAG);
-        List<String> extractedLicenses = List.of(extractedLicenseContent.split("\n\n"));
-
-        for (String extractedLicenseBlock : extractedLicenses) {
-            if (extractedLicenseBlock.equals("")) continue;
-            this.parseExternalLicense(extractedLicenseBlock, externalLicenses);
-        }
-
-        // FILES
-        String unpackagedFilesContents = getTagContents(fileContents, UNPACKAGED_TAG);
-        List<String> files = new ArrayList<>(List.of(unpackagedFilesContents.split("\n\n"))); // Split over newline
-        files.remove(UNPACKAGED_TAG);
-
-        for (String fileBlock : files) {
-            if (fileBlock.strip().equals("")) continue;
-            sbomBuilder.addSPDX23Component(buildFile(fileBuilder, fileBlock));
-        }
-
-        // PACKAGES
-        String packageContents = getTagContents(fileContents, PACKAGE_TAG);
-        List<String> packageList = Stream.of(packageContents.split("\n\n")).filter(pkg -> !pkg.contains(TAG)).toList();
-
-        for (String packageBlock : packageList) {
-            if (packageBlock.strip().equals("")) continue;
-            sbomBuilder.addSPDX23Component(buildPackage(packageBuilder, packageBlock));
-        }
+        // Parse and Add relationships
+        Matcher relationshipMatcher = RELATIONSHIP_PATTERN.matcher(fileContents);
+        while(relationshipMatcher.find())
+            sbomBuilder.addRelationship(relationshipMatcher.group(1), buildRelationship(relationshipMatcher));
 
         return sbomBuilder.buildSPDX23SBOM();
     }
@@ -223,6 +167,12 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         return new ObjectMapper();
     }
 
+    /**
+     * Parse SPDX style creator string into a Contact
+     *
+     * @param creator SPDX style creator string
+     * @return Contact
+     */
     protected static Contact parseSPDXCreator(String creator) {
         Matcher creatorMatcher = CREATOR_PATTERN.matcher(creator);
         if (!creatorMatcher.find()) return null;
@@ -230,6 +180,12 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         return new Contact(creatorMatcher.group(2), creatorMatcher.group(3), null);
     }
 
+    /**
+     * Update CreationData with info from SPDX
+     *
+     * @param data CreationData object
+     * @param creatorInfo Creation info from SPDX
+     */
     protected static void parseSPDXCreatorInfo(CreationData data, List<String> creatorInfo) {
         for (String creator : creatorInfo) {
             Matcher toolMatcher = SPDX23TagValueDeserializer.TOOL_PATTERN.matcher(creator);
@@ -257,6 +213,13 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         }
     }
 
+    /**
+     * Build a SPDX23 Package
+     *
+     * @param builder Package Builder
+     * @param contents String to extract details from
+     * @return SPDX23 Package Object
+     */
     private SPDX23PackageObject buildPackage(SPDX23PackageBuilder builder, String contents) {
         Map<String, String> componentMaterials = new HashMap<>();
         Matcher mPackages = TAG_VALUE_PATTERN.matcher(contents);
@@ -354,6 +317,13 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         return builder.buildAndFlush();
     }
 
+    /**
+     * Build a SPDX23 File
+     *
+     * @param builder File Builder
+     * @param contents String to extract details from
+     * @return SPDX23 File Object
+     */
     private SPDX23FileObject buildFile(SPDX23FileBuilder builder, String contents) {
         Matcher mFiles = TAG_VALUE_PATTERN.matcher(contents);
         HashMap<String, String> fileMaterials = new HashMap<>();
@@ -395,75 +365,38 @@ public class SPDX23TagValueDeserializer implements Deserializer {
     }
 
     /**
-     * Private helper method to get all tag-value pairs categorized under the specified tag (ex. ##### Unpackaged
-     * Files). The tags will be located anywhere in the file; the order of tags does not impact translation of the SBOM.
+     * Parse External License and build a license
+     * TODO currently only parses License ID, looses all other info. Keeping ID since this is what is used when
+     * referenced by other elements
      *
-     * @param fileContents The file contents to get the tag from.
-     * @param tag          The tag to get all tag-value pairs of.
-     * @return An "excerpt" from the {@code fileContents} string containing all tag-value pairs categorized under {@code
-     * tag}.
+     * @param licenseBlock String of license details
+     * @return extracted license ID
      */
-    private String getTagContents(String fileContents, String tag) {
-        String tagContents = "";
-        int firstIndex;
-        int lastIndex;
+    private String buildExternalLicense(String licenseBlock){
+        Pattern licenseNamePattern = Pattern.compile("^LicenseID: (.*)");
+        Matcher licenseIDMatcher = licenseNamePattern.matcher(licenseBlock);
 
-        while (fileContents.contains(tag)) {
-            // Get boundaries of this tag
-            firstIndex = fileContents.indexOf(tag);
-            lastIndex = fileContents.indexOf(TAG, firstIndex + 1);
-
-            // If another tag is not found, last index goes to end of file
-            if (lastIndex == -1) lastIndex = fileContents.length();
-
-            // Use this data to update tagContents with the found tag
-            tagContents += fileContents.substring(firstIndex, lastIndex); // Remove newline
-            fileContents = fileContents.substring(0, firstIndex) + fileContents.substring(lastIndex);
-        }
-
-        return tagContents;
+        // return just ID because this will be referenced by other
+        // TODO more complex license so we don't loose the extra details
+        return licenseIDMatcher.find()
+                ? licenseIDMatcher.group(1)
+                : "";
     }
 
     /**
-     * Private helper method to process an external license in an SPDX document and append all relevant data into
-     * the {@code externalLicenses} map with each entry having an ID (key) and name (value).
+     * Extract data from match to build a Relationship
      *
-     * @param extractedLicenseBlock An extracted licensing information "block" in the document.
-     * @param externalLicenses      The map of external licenses to append to.
+     * @param match Regex match of relationship details
+     * @return Relationships
      */
-    private void parseExternalLicense(String extractedLicenseBlock, Map<String, Map<String, String>> externalLicenses) {
-        // Required fields
-        String id = null;
-        String name = null;
+    private Relationship buildRelationship(Matcher match){
+        Relationship r = new Relationship(match.group(3), match.group(2));
+        // add comment if present
+        if(match.group(4) != null)
+            r.setComment(match.group(4));
 
-        // Optional attributes
-        Map<String, String> attributes = new HashMap<>();
-
-        Matcher m = TAG_VALUE_PATTERN.matcher(extractedLicenseBlock);
-        while (m.find()) {
-            switch (m.group(1)) {
-                case EXTRACTED_LICENSE_ID -> id = m.group(2);
-                case EXTRACTED_LICENSE_NAME -> name = m.group(2);
-                case EXTRACTED_LICENSE_TEXT -> {
-                    // Find a multiline block. If one does not exist, just put the one line of text.
-                    Matcher extractedText = Pattern.compile("<text>(\\X*)</text>").matcher(extractedLicenseBlock);
-                    String text = m.group(2); // The first line of text.
-                    if (extractedText.find()) text = extractedText.group(1); // Multiline text, if any.
-                    attributes.put("text", text); // Add the attribute
-                }
-                case EXTRACTED_LICENSE_CROSSREF -> attributes.put("crossRef", m.group(2));
-                default -> {
-                } // TODO more fields?
-            }
-        }
-
-        if (id != null && name != null) {
-            attributes.put("name", name);
-            externalLicenses.put(id, attributes);
-            Debug.log(Debug.LOG_TYPE.DEBUG, "External license found with ID " + id + " and name " + name);
-        } else {
-            Debug.log(Debug.LOG_TYPE.WARN, String.format("External license skipped due to one or more of the " +
-                    "following fields not existing:\nID: %s\nName: %s", id, name));
-        }
+        return r;
     }
+
+
 }

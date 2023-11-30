@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.svip.api.entities.QualityReportFile;
-import org.svip.api.entities.SBOM;
+import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadQRFileInput;
 import org.svip.api.services.QualityReportFileService;
 import org.svip.api.services.SBOMFileService;
@@ -61,7 +61,7 @@ public class QAController {
     @GetMapping("/sboms/qa")
     public ResponseEntity<String> qa(@RequestParam("id") Long id) {
         try{
-            SBOM sbomFile = this.sbomFileService.getSBOMFile(id);
+            SBOMFile sbomFile = this.sbomFileService.getSBOMFile(id);
 
             // No SBOM was found
             if(sbomFile == null){

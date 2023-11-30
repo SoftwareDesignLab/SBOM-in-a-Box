@@ -10,19 +10,15 @@ import org.svip.repair.fix.*;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
+import org.svip.utils.Debug;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class RepairStatementSPDX23CDX14 implements RepairStatement {
 
-    // This RepairStatement for a SPDX23 or CDX14 SBOM
-    private final Map<String, Map<String, List<Fix<?>>>> repairs = new HashMap<>();
-
     @Override
-    public Map<String, Map<String, List<Fix<?>>>> generateRepairStatement(String uid, SBOM sbom) throws Exception {
+    public QualityReport generateRepairStatement(SBOM sbom) throws Exception {
 
         QualityReport report; // get quality report
 
@@ -31,7 +27,7 @@ public class RepairStatementSPDX23CDX14 implements RepairStatement {
 
             // Generate the quality report
             SPDX23Pipeline pipeline = new SPDX23Pipeline();
-            report = pipeline.process(uid, sbom);
+            report = pipeline.process(sbom);
 
         }
         // If the SBOM is a CycloneDX 1.4 SBOM
@@ -39,7 +35,7 @@ public class RepairStatementSPDX23CDX14 implements RepairStatement {
 
             // Generate the quality report
             CDX14Pipeline pipeline = new CDX14Pipeline();
-            report = pipeline.process(uid, sbom);
+            report = pipeline.process(sbom);
 
         }
         // Otherwise, try to generate an SVIP Quality Report
@@ -47,59 +43,47 @@ public class RepairStatementSPDX23CDX14 implements RepairStatement {
 
             // Generate the quality report
             SVIPPipeline pipeline = new SVIPPipeline();
-            report = pipeline.process(uid, sbom);
+            report = pipeline.process(sbom);
 
         }
 
         // get the Quality Report's results
-        Map<String, Map<String, List<Result>>> results = report.getResults();
+        Map<Integer, List<Result>> results = report.getResults();
+        Map<Integer, String> hashCodeMapping = report.getHashCodeMapping();
+
+        //remove duplicate entry under serial number
+        results.remove(sbom.getUID());
 
         // For each result
-        for (String repairType : results.keySet()) {
-
-            // Make a new repair type list
-            Map<String, List<Fix<?>>> repairsForThisRepairType = new HashMap<>();
+        for (Integer component : results.keySet()) {
 
             // Iterate through those sub results as repair subtypes
-            for (String repairSubType : results.get(repairType).keySet()) {
+            for (Result toFix : results.get(component)) {
 
-                ArrayList<Fix<?>> fixArrayList = new ArrayList<>();
+                // if a result fails, it needs to be fixed
+                if (toFix.getStatus().equals(STATUS.FAIL) || toFix.getStatus().equals(STATUS.ERROR)) {
 
-                for (Result toFix : results.get(repairType).get(repairSubType)) {
+                    // fix
+                    Fixes fixes = getFixes(toFix);
 
-                    // if a result fails, it needs to be fixed
-                    if (toFix.getStatus().equals(STATUS.FAIL)) {
+                    // If the fixes is not null
+                    if (fixes != null)
+                        // Set the fix list
+                        try {
+                            toFix.addFixes(fixes.fix(toFix, sbom, hashCodeMapping.get(component), component));
+                        }
 
-                        // fix
-                        Fixes fixes = getFixes(toFix);
-                        List<Fix<?>> fixList = null;
-
-                        // If the fixes is not null
-                        if (fixes != null)
-                            // Set the fix list
-                            fixList = fixes.fix(toFix, sbom, repairSubType);
-
-                        // If the fix list is not null
-                        if (fixList != null)
-                            // Add all the fixes to the fix array list
-                            fixArrayList.addAll(fixList);
-
-                    }
+                        catch(Exception ex) {
+                            Debug.log(Debug.LOG_TYPE.ERROR, "Error while generating fix for: " + toFix.getMessage());
+                        }
 
                 }
-
-                // Add the repairs for this specific repair type
-                repairsForThisRepairType.put(repairSubType, fixArrayList);
-
             }
-
-            // Add the repairs to the main repair list
-            repairs.put(repairType, repairsForThisRepairType);
 
         }
 
         // Return the repairs
-        return repairs;
+        return report;
 
     }
 
@@ -109,7 +93,7 @@ public class RepairStatementSPDX23CDX14 implements RepairStatement {
      * @param result failed result to base fix off
      * @return appropriate fixes class
      */
-    private static Fixes getFixes(Result result) {
+    public static Fixes getFixes(Result result) {
 
         // Fixes
         Fixes fixes = null;
@@ -125,7 +109,7 @@ public class RepairStatementSPDX23CDX14 implements RepairStatement {
 
             case "License" -> fixes = new LicenseFixes();
 
-            case "PURLTest", "Matching PURL", "Accurate PURL" -> fixes = new PURLFixes();
+            case "PURLTest", "Matching PURL", "Accurate PURL", "Valid PURL" -> fixes = new PURLFixes();
 
 
         }

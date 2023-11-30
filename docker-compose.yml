@@ -11,15 +11,17 @@ services:
   # OSI container
   osi:
     container_name: svip-osi
-    image: ubuntu:latest
+    platform: linux/amd64
     build: core/src/main/java/org/svip/generation/osi/docker
-    restart: unless-stopped
     ports:
       - ${FLASK_LOCAL_PORT}:${FLASK_DOCKER_PORT}
     volumes:
       - ./core/src/main/java/org/svip/generation/osi/bound_dir/code:/bound_dir/code
       - ./core/src/main/java/org/svip/generation/osi/bound_dir/sboms:/bound_dir/sboms
-
+    healthcheck:
+      test: curl http://localhost:5000 || exit 1
+      start_period: 70s  # Wait in case of the first build, server restarts once mid-way through to init
+      timeout: 5s
   # MySQL server
   mysql:
     container_name: svip-mysql
@@ -46,7 +48,7 @@ services:
       mysql:
         condition: service_healthy # Only start once the health check has passed
       osi:
-        condition: service_started # Only start once the OSI container has been started
+        condition: service_healthy # Only start once the OSI container has been started
     build: .    # Build from Dockerfile located in root directory
     restart: on-failure
     ports:

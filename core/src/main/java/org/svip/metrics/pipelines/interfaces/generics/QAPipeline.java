@@ -16,11 +16,10 @@ public interface QAPipeline {
     /**
      * Run a given sbom against all processor tests within the pipeline
      *
-     * @param uid  Unique filename used to ID the SBOM
      * @param sbom the SBOM to run tests against
      * @return QualityReport containing all results of the tests run
      */
-    QualityReport process(String uid, SBOM sbom);
+    QualityReport process(SBOM sbom);
 
     /**
      * Check if the SBOM contains a version number

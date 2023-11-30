@@ -4,7 +4,7 @@
 ## Index
 
 - [**System Requirements**](#system-requirements)
-- [**SVIP API**](#svip-api)
+- [**SBOM-in-a-Box API**](#svip-api)
     - [Deployment](#deployment)
     - [Development](#development)
     - [Endpoints](#endpoints)
@@ -17,7 +17,8 @@
       - [Compare SBOMs](#compare-sboms)
       - [Merge SBOMs](#merge-sboms)
       - [Generate Quality Report](#generate-quality-report)
-      - [Generate SBOM with SVIP](#generate-an-sbom-using-svip-parsers)
+      - [Generate SBOM with SBOM-in-a-Box](#generate-an-sbom-using-svip-parsers)
+      - [Upload a project for OSI](#upload-a-project-for-osi)
       - [Get List of Open-Source Tools Supported By OSI](#get-list-of-open-source-tools-supported-by-osi)
       - [Generate SBOM with OSI](#generate-an-sbom-using-osi)
       - [Generate VEX](#generate-vex)
@@ -31,7 +32,7 @@
 ---
 
 # SVIP API
-> The SVIP back-end API. See [Endpoints](#endpoints) for detailed endpoint documentation.
+> The SBOM-in-a-Box back-end API. See [Endpoints](#endpoints) for detailed endpoint documentation.
 
 ## Deployment
 First ensure Docker is installed and running and then deploy using the docker-compose script.
@@ -73,7 +74,8 @@ The API is located on `http://localhost:8080/svip`.
 - [Compare SBOMs](#compare-sboms)
 - [Merge SBOMs](#merge-sboms)
 - [Generate Quality Report](#generate-quality-report)
-- [Generate SBOM with SVIP](#generate-an-sbom-using-svip-parsers)
+- [Generate SBOM with SBOM-in-a-Box](#generate-an-sbom-using-svip-parsers)
+- [Upload a project for OSI]()
 - [Get List of Open-Source Tools Supported By OSI](#get-list-of-open-source-tools-supported-by-osi)
 - [Generate SBOM with OSI](#generate-an-sbom-using-osi)
 - [Generate VEX](#generate-vex)
@@ -318,8 +320,8 @@ curl -X POST -d '{"ids":[1,2]}' http://localhost:8080/svip/sboms/merge
 curl -X GET -G http://localhost:8080/svip/sboms/qa -d 'id=1'
 ```
 
-### Generate an SBOM using SVIP Parsers
-> Generates an SBOM with a given schema and format from project source files using SVIP parsers. 
+### Generate an SBOM using SBOM-in-a-Box Parsers
+> Generates an SBOM with a given schema and format from project source files using SBOM-in-a-Box parsers. 
 > Request body contains an array of multiple objects with properties fileName and contents (one for each source file)
 
 **Endpoint:** `http://localhost:8080/svip/generators/parsers`
@@ -354,6 +356,36 @@ curl -X POST -G http://localhost:8080/svip/generators/parsers \
 -d '[{"fileName": "testfile1.java", "contents": "..."}, {"fileName": "testfile2.java", "contents": "..."}]'
 ```
 
+### Upload a project for OSI
+> Upload a code project to generate SBOMs for using OSI
+
+**Endpoint:** `http://localhost:8080/svip/generators/osi/project`
+
+**Request Method:** `POST`
+
+**Request Body**
+
+| Parameter |     Type      |       Description        | Is Required? |
+|:---------:|:-------------:|:------------------------:|:------------:|
+|  project  | MultipartFile | Zipped folder of project |     YES      |
+
+
+**Responses**
+
+| Response Code |   Type   |                   Description                    |
+|:-------------:|:--------:|:------------------------------------------------:|
+|      200      | String[] | A list of tools relevant to the uploaded project |
+|      400      |  String  |        Error message, project file is bad        |
+|      404      |  String  |          Error message, OSI is disabled          |
+**Example**
+```bash
+curl --request POST \
+  --url http://localhost:8080/svip/generators/osi/project \
+  --header 'Content-Type: multipart/form-data' \
+  --form 'project=path\to\project.zip'
+```
+
+
 ### Get List of Open-Source Tools Supported By OSI
 > Gets a list of all tool names currently supported by [Open Source Integration](README.md#open-source-integration) that
 > can then be passed into /generators/osi.
@@ -362,23 +394,35 @@ curl -X POST -G http://localhost:8080/svip/generators/parsers \
 
 **Request Method:** `GET`
 
-> Note: Request must be sent using type multipart/form-data
+**Parameters**
+
+| Parameter |  Type  |             Description             | Is Required? |
+|:---------:|:------:|:-----------------------------------:|:------------:|
+|   list    | String | Either `all` (default) or `project` |      NO      |
+
+* `all`: Get all tools installed on OSI
+* `project`: Get all tools relevant to the project uploaded to OSI
+
 
 **Responses**
 
-| Response Code |  Type  |                     Description                      |
-|:-------------:|:------:|:----------------------------------------------------:|
-|      200      |  Long  | A list of all tool names currently supported by OSI. |
+| Response Code |   Type   |                   Description                   |
+|:-------------:|:--------:|:-----------------------------------------------:|
+|      200      | String[] |            A list of all tool names             |
+|      404      |  String  |         Error message, OSI is disabled          |
+|      500      |  String  | Error message, failed to get tool list from OSI |
 
 **Example**
 ```bash
 curl -X GET -G http://localhost:8080/svip/generators/osi/tools
+curl -X GET -G http://localhost:8080/svip/generators/osi/tools?list=project
 ```
 
 ### Generate an SBOM using OSI
 > Generates an SBOM with a given schema and format from project source files using 
 > [Open Source Integration](README.md#open-source-integration).
 > Request body contains an array of multiple objects with properties fileName and contents (one for each source file)
+> Use the http://localhost:8080/svip/generators/osi/project endpoint to upload a project before generation
 
 **Endpoint:** `http://localhost:8080/svip/generators/osi`
 
@@ -386,32 +430,28 @@ curl -X GET -G http://localhost:8080/svip/generators/osi/tools
 
 **Parameters**
 
-|  Parameter  |       Type        |                                                            Description                                                            | Is Required? |
-|:-----------:|:-----------------:|:---------------------------------------------------------------------------------------------------------------------------------:|:------------:|
-|   zipFile   |   MultipartFile   |                                                     Zipped folder of project                                                      |     YES      |
-| projectName |      String       |                                                     Name of SBOM to generate                                                      |     YES      |
-|   schema    | Serializer Schema |                                                       Schema to convert to                                                        |     YES      |
-|   format    | Serializer Format |                                                       Format to convert to                                                        |     YES      |
-|  toolNames  |     String[]      |       JSON-formatted string array of open-source tool names to use when generating SBOMs. If not provided, defaults to all.       |      NO      |
+|  Parameter  |       Type        |                                                      Description                                                      | Is Required? |
+|:-----------:|:-----------------:|:---------------------------------------------------------------------------------------------------------------------:|:------------:|
+| projectName |      String       |                                               Name of SBOM to generate                                                |     YES      |
+|   schema    | Serializer Schema |                                                  Schema to generate                                                   |     YES      |
+|   format    | Serializer Format |                                                  Format to generate                                                   |     YES      |
+|  toolNames  |     String[]      | JSON-formatted string array of open-source tool names to use when generating SBOMs. If not provided, defaults to all. |      NO      |
 
-> Note: Request must be sent using type multipart/form-data
 
 **Responses**
 
-| Response Code |  Type  |                  Description                  |
-|:-------------:|:------:|:---------------------------------------------:|
-|      200      |  Long  | ID from Generated SBOM from supported project |
-|      404      | String |    Description of error during generation     |
-|      400      | String |    Schema, format or body contents invalid    |
-|      204      |        | No SBOMs were generated by the OSI container  |
+| Response Code |  Type  |                            Description                            |
+|:-------------:|:------:|:-----------------------------------------------------------------:|
+|      200      |  Long  |           ID from Generated SBOM from supported project           |
+|      204      |        | No SBOMs were generated by the OSI container or able to be parsed |
+|      400      | String |              Schema, format or body contents invalid              |
+|      404      | String |              Description of error during generation               |
+|      500      | String |                           Error message                           |
 
 **Example**
 ```bash
-curl -X POST -G http://localhost:8080/svip/generators/osi \
--d 'projectName=Python_Project_1' \
--d 'schema=CDX14' \
--d 'format=JSON' \
--d '[{"fileName": "testfile1.py", "contents": "..."}, {"fileName": "testfile2.py", "contents": "..."}]'
+curl --request POST \
+  --url 'http://localhost:8080/svip/generators/osi?projectName=foo&schema=SPDX23&format=TAGVALUE'
 ```
 
 ### Generate VEX

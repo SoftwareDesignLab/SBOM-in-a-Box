@@ -7,14 +7,18 @@ import java.util.Iterator;
 import java.util.function.Function;
 
 /**
- * Merges two SBOMs either in CDX or SPDX format together. Does not currently support cross-format merging.
+ * Name: MergerController.java
+ * Description: Main controller for merging SBOMs.
  *
- * @author tyler_drake
+ * @author Tyler Drake
  * @author Matt London
  */
 
 public class MergerController {
 
+    /**
+     * Invalid Format Message
+     */
     private final static Function<String, String> INVALID_FORMAT_TYPE = (formats) ->
             "Cross format merging not supported for " + formats + ".";
 
@@ -25,6 +29,7 @@ public class MergerController {
      * @return Resulting merged bom
      */
     public SBOM mergeAll(Collection<SBOM> SBOMs) throws MergerException {
+
         // Loop through and merge into a master SBOM
         if (SBOMs.size() == 0) {
             return null;
@@ -111,7 +116,8 @@ public class MergerController {
             case "spdx:spdx" -> {
                 return new MergerSPDX();
             }
-            case "svip:svip" -> { return new MergerSVIP();
+            case "svip:svip" -> {
+                return new MergerSVIP();
             }
             default -> {
                 return new MergerCrossSchema();
