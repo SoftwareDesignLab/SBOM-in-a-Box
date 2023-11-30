@@ -184,13 +184,23 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
         JsonNode supplier = metadata.get("supplier");
         if (supplier != null) creationData.setSupplier(resolveOrganization(supplier));
 
-        if (metadata.get("properties") != null)
-            for (JsonNode prop : metadata.get("properties")) {
-                String name = prop.get("name").asText();
-                String value = prop.get("value").asText();
+        if (metadata.get("properties") != null) {
+            JsonNode properties = metadata.get("properties").get("property");
+            if(properties instanceof ArrayNode) {
+                for (JsonNode prop : properties) {
+                    String name = prop.get("name").asText();
+                    String value = prop.get("").asText();
+                    if (name.equals("creatorComment")) creationData.setCreatorComment(value);
+                    else creationData.addProperty(name, value);
+                }
+            } else {
+                String name = properties.get("name").asText();
+                String value = properties.get("").asText();
                 if (name.equals("creatorComment")) creationData.setCreatorComment(value);
                 else creationData.addProperty(name, value);
             }
+
+        }
 
         if (metadata.get("licenses") != null)
             for (JsonNode license : metadata.get("licenses")) {
@@ -269,7 +279,7 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
 
         // COMPONENT EXTERNAL REFERENCES
         JsonNode externalRefs = component.get("externalReferences");
-        if (externalRefs != null) {
+        if (externalRefs != null && externalRefs.asText() != "") {
             // If more than 1 external reference, iterate through all
             if (externalRefs.get("reference") instanceof ArrayNode){
                 for (JsonNode ref : externalRefs.get("reference"))
@@ -281,9 +291,15 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
         }
 
         // COMPONENT PROPERTIES
-        if (component.get("properties") != null){
-            for (JsonNode prop : component.get("properties").get("property"))
-                builder.addProperty(prop.get("name").asText(), prop.get("").asText());
+        if (component.get("properties") != null && component.get("properties").asText() != "") {
+            JsonNode properties = component.get("properties").get("property");
+            if(properties instanceof ArrayNode) {
+                for (JsonNode prop : properties) {
+                    builder.addProperty(prop.get("name").asText(), prop.get("").asText());
+                }
+            } else {
+                builder.addProperty(properties.get("name").asText(), properties.get("").asText());
+            }
         }
 
         // add the component to the sbom builder
