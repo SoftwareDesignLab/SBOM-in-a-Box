@@ -322,7 +322,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         if(data.getSupplier() != null) {
             xmlGenerator.writeFieldName("supplier");
             xmlGenerator.writeStartObject();
-            writeOrganization(xmlGenerator, data.getManufacture());
+            writeOrganization(xmlGenerator, data.getSupplier());
             xmlGenerator.writeEndObject();
         }
 
