@@ -1,6 +1,5 @@
 package org.svip.merge;
 
-import org.svip.conversion.toSVIP.CDX14;
 import org.svip.merge.utils.Utils;
 import org.svip.sbom.builder.interfaces.generics.SBOMBuilder;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
