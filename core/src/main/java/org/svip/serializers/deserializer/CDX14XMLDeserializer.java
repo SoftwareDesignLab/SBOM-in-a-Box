@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
@@ -268,9 +269,15 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
 
         // COMPONENT EXTERNAL REFERENCES
         JsonNode externalRefs = component.get("externalReferences");
-        if (component.get("externalReferences") != null) {
-            for (JsonNode ref : externalRefs)
-                builder.addExternalReference(resolveExternalRef(ref));
+        if (externalRefs != null) {
+            // If more than 1 external reference, iterate through all
+            if (externalRefs.get("reference") instanceof ArrayNode){
+                for (JsonNode ref : externalRefs.get("reference"))
+                    builder.addExternalReference(resolveExternalRef(ref));
+            // Else add single JsonObject external reference
+            } else {
+                builder.addExternalReference(resolveExternalRef(externalRefs.get("reference")));
+            }
         }
 
         // COMPONENT PROPERTIES
