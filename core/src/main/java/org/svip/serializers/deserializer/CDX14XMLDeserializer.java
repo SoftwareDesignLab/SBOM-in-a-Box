@@ -132,8 +132,8 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
             for (JsonNode ref : node.get("externalReferences"))
                 sbomBuilder.addExternalReference(resolveExternalRef(ref));
 
-        if (node.get("dependencies") != null)
-            for (JsonNode depNode : node.get("dependencies")) {
+        if (node.get("dependencies") != null && node.get("dependencies").asText() != "")
+            for (JsonNode depNode : node.get("dependencies").get("dependency")) {
                 String ref = depNode.get("ref").asText();
                 resolveDependency(depNode).forEach(d -> sbomBuilder.addRelationship(ref, d));
             }
@@ -166,7 +166,7 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
                 if (tool.get("version") != null) creationTool.setVersion(tool.get("version").asText());
 
                 // TOOL HASHES
-                if (tool.get("hashes") != null) resolveHashes(tool.get("hashes")).forEach(creationTool::addHash);
+                if (tool.get("hashes") != null && tool.get("hashes").asText() != "") resolveHashes(tool.get("hashes").get("hash")).forEach(creationTool::addHash);
 
                 // add the creation tool to the creation data
                 creationData.addCreationTool(creationTool);
@@ -202,7 +202,7 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
 
         }
 
-        if (metadata.get("licenses") != null)
+        if (metadata.get("licenses") != null && metadata.get("licenses").asText() != "")
             for (JsonNode license : metadata.get("licenses")) {
                 // TODO will it cause problems duplicating these?
                 sbomBuilder.addLicense(license.get("id").asText());
@@ -254,7 +254,7 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
 
         // COMPONENT HASHES
 
-        if (component.get("hashes") != null) resolveHashes(component.get("hashes")).forEach(builder::addHash);
+        if (component.get("hashes") != null && component.get("hashes").asText() != "") resolveHashes(component.get("hashes").get("hash")).forEach(builder::addHash);
 
         // COMPONENT Licenses
         JsonNode licenses = component.get("licenses");
@@ -346,7 +346,7 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
         // TODO do we want to store comments?
 
         JsonNode hashes = ref.get("hashes");
-        if (hashes != null)
+        if (hashes != null && hashes.asText() != "")
             resolveHashes(hashes).forEach(externalReference::addHash);
 
         return externalReference;
