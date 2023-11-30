@@ -27,10 +27,7 @@ import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * File: CDX14XMLDeserializer.java
@@ -275,10 +272,12 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
             for (JsonNode ref : externalRefs)
                 builder.addExternalReference(resolveExternalRef(ref));
         }
+
         // COMPONENT PROPERTIES
-        if (component.get("properties") != null)
-            for (JsonNode prop : component.get("properties"))
-                builder.addProperty(prop.get("name").asText(), prop.get("value").asText());
+        if (component.get("properties") != null){
+            for (JsonNode prop : component.get("properties").get("property"))
+                builder.addProperty(prop.get("name").asText(), prop.get("").asText());
+        }
 
         // add the component to the sbom builder
         return builder.buildAndFlush();
