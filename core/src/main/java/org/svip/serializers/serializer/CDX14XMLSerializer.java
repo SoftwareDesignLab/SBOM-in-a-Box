@@ -143,26 +143,30 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         // Components
         //
 
-        // Write the components
-        xmlGenerator.writeFieldName("components");
-        xmlGenerator.writeStartObject();
 
-        // Cycle through each component
-        for (Component component : sbom.getComponents()) {
 
-            // If the component isn't null
-            if(component != null) {
+        if(sbom.getComponents() != null) {
+            // Write the components
+            xmlGenerator.writeFieldName("components");
+            xmlGenerator.writeStartObject();
 
-                // Cast the component to an SVIPComponent and write the component
-                SVIPComponentObject svipComponent = (SVIPComponentObject) component;
-                writeComponent(xmlGenerator, svipComponent);
+            // Cycle through each component
+            for (Component component : sbom.getComponents()) {
+
+                // If the component isn't null
+                if(component != null) {
+
+                    // Cast the component to an SVIPComponent and write the component
+                    SVIPComponentObject svipComponent = (SVIPComponentObject) component;
+                    writeComponent(xmlGenerator, svipComponent);
+
+                }
 
             }
 
+            // End components object
+            xmlGenerator.writeEndObject();
         }
-
-        // End components object
-        xmlGenerator.writeEndObject();
 
         //
         // Dependencies
@@ -450,6 +454,9 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
      * @throws IOException
      */
     public void writeDependencies(ToXmlGenerator xmlGenerator,Map<String, Set<Relationship>> relationships) throws IOException {
+
+        if(relationships.containsKey(null) && relationships.size() == 1)
+            return;
 
         // Cycle through each dependency set
         for(Map.Entry<String, Set<Relationship>> parent : relationships.entrySet()) {
