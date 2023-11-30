@@ -6,7 +6,7 @@
 # Purpose of SBOM-in-a-Box
 > SBOM-in-a-box has unique features including generation of SBOMs using multiple tools that allow for a more a complete SBOM to be created. There is also a feature within metrics, where the tool provides suggestions if there is a potential better way to showcase the attributes. There is also the ability to convert between SPDX and CycloneDX SBOM schemas, and to gain insight into vulnerabilities of software through SBOMs. These features allow for developers to create an SBOM that is the most relevant and suits their needs.
 
-### Latest Release: [[v8.0.5-alpha] - (10/17/2023)](doc/changelog.md)
+### Latest Release: [[v9.2.0-alpha] - (11/30/2023)](doc/changelog.md)
 
 ## System Requirements
 - Java 17.X.X
