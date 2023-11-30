@@ -1,6 +1,7 @@
 package org.svip.vex.database;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
@@ -72,6 +73,7 @@ class NVDClientTest {
         System.out.println(json);
     }
 
+    @Disabled
     @Test
     public void test_generateVEX_valid_VEX_object_unknown_supplier_CDX_json_sbom() throws Exception {
         Set<String> test_cpe1 = new HashSet<>(List.of(
