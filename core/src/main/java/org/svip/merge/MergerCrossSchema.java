@@ -20,6 +20,9 @@ import static org.svip.serializers.SerializerFactory.Schema.*;
  */
 public class MergerCrossSchema extends Merger {
 
+    /**
+     * Cross-Schema Merger Constructor
+     */
     public MergerCrossSchema() {
     }
 
@@ -33,15 +36,18 @@ public class MergerCrossSchema extends Merger {
     @Override
     public SBOM mergeSBOM(SBOM A, SBOM B) throws Exception {
 
-        // for simplicity
+        // Initialize both SVIP SBOMs
         SVIPSBOM SBOMA;
         SVIPSBOM SBOMB;
 
+        // Set the name
         String name = (A.getName() == null || A.getName().length() == 0) ? B.getName() : A.getName();
 
+        // Cast both SBOMs to the SVIP SBOMs
         SBOMA = (SVIPSBOM) standardizeSBOM(A);
         SBOMB = (SVIPSBOM) standardizeSBOM(B);
 
+        // Get components from both the SBOMs
         Set<Component> componentsA = SBOMA.getComponents();
         Set<Component> componentsB = SBOMB.getComponents();
 
@@ -51,6 +57,7 @@ public class MergerCrossSchema extends Merger {
         // Create a new builder for the new SBOM
         SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
 
+        // Merge the SBOMs together and return
         return MergerUtils.mergeToSchema(SBOMA, SBOMB, componentsA, componentsB, mainSBOM, builder, SVIP, name);
 
     }
@@ -62,7 +69,7 @@ public class MergerCrossSchema extends Merger {
      * @return SVIP SBOM
      * @throws Exception
      */
-    public SBOM standardizeSBOM(SBOM sbom) throws Exception {
+    public SBOM standardizeSBOM(SBOM sbom) {
 
         if(sbom instanceof CDX14SBOM) {
 
