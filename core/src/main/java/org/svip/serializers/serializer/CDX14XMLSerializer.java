@@ -215,7 +215,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
                 xmlGenerator.writeFieldName("tool");
                 xmlGenerator.writeStartObject();
 
-                if(tool.getVendor() != null) {
+                if(tool.getVendor() != null){
                     // Add vendor xml object
                     xmlGenerator.writeFieldName("vendor");
                     xmlGenerator.writeStartObject();
@@ -223,7 +223,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
                     xmlGenerator.writeEndObject();
                 }
 
-                if(tool.getName() != null) {
+                if(tool.getName() != null){
                     // Add name xml object
                     xmlGenerator.writeFieldName("name");
                     xmlGenerator.writeStartObject();
@@ -231,7 +231,8 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
                     xmlGenerator.writeEndObject();
                 }
 
-                if(tool.getVersion() != null) {
+
+                if(tool.getVersion() != null){
                     // Add version xml object
                     xmlGenerator.writeFieldName("version");
                     xmlGenerator.writeStartObject();
@@ -502,10 +503,12 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
     public void writeOrganization(ToXmlGenerator xmlGenerator, Organization organization) throws IOException {
 
         // Write the name for the organization
-        xmlGenerator.writeStringField("name", organization.getName());
+        if(organization.getUrl() != null)
+            xmlGenerator.writeStringField("name", organization.getName());
 
         // Write the url for the organization
-        if (organization.getUrl() != null) xmlGenerator.writeStringField("url", organization.getUrl());
+        if (organization.getUrl() != null)
+            xmlGenerator.writeStringField("url", organization.getUrl());
 
         // Write the contacts for the organization
         xmlGenerator.writeFieldName("contact");
