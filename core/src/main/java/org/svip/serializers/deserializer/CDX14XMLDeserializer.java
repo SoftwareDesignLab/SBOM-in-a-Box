@@ -96,7 +96,7 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
 
         // TODO: Spec Version (regex?)
 
-        if (node.get("metadata") != null) {
+        if (node.get("metadata") != null && node.get("metadata").asText() != "") {
 
             // LICENSES
             if (node.get("metadata").get("licenses") != null) {
@@ -114,7 +114,7 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
         sbomBuilder.setCreationData(resolveMetadata(node.get("metadata"), sbomBuilder));
 
         // COMPONENTS
-        if (node.get("components") != null) {
+        if (node.get("components") != null && node.get("components").asText() != "") {
             for (JsonNode component : node.get("components").get("component")) {
                 CDX14ComponentObject comp = resolveComponent(componentBuilder, component);
                 sbomBuilder.addCDX14Package(comp);
@@ -128,7 +128,7 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
 //                sbomBuilder.addCDX14Package(resolveComponent(componentBuilder, component));
 
         // EXTERNAL REFERENCES
-        if (node.get("externalReferences") != null)
+        if (node.get("externalReferences") != null && node.get("externalReferences").asText() != "")
             for (JsonNode ref : node.get("externalReferences"))
                 sbomBuilder.addExternalReference(resolveExternalRef(ref));
 
