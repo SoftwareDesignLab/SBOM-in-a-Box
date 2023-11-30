@@ -114,7 +114,7 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
         sbomBuilder.setCreationData(resolveMetadata(node.get("metadata"), sbomBuilder));
 
         // COMPONENTS
-        if (node.get("components") != null && node.get("components").asText() != "") {
+        if (node.get("components") != null && !node.get("components").isEmpty()) {
             for (JsonNode component : node.get("components").get("component")) {
                 CDX14ComponentObject comp = resolveComponent(componentBuilder, component);
                 sbomBuilder.addCDX14Package(comp);
