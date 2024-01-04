@@ -194,7 +194,9 @@ public class SerializerFactory {
      * @return The schema, or null if no schema could be resolved.
      */
     public static Schema resolveSchema(String fileContents) {
-        if (fileContents.contains("bom-ref") || fileContents.contains("xmlns=\"http://cyclonedx.org/schema/bom/1.4\"")) return CDX14;
+        if (fileContents.contains("bom-ref")
+                || fileContents.contains("xmlns=\"http://cyclonedx.org/schema/bom/1.4\"")
+                || fileContents.contains("CycloneDX") && fileContents.contains("1.4")) return CDX14;
         else if (fileContents.contains("SPDXID")) return SPDX23;
         else if (fileContents.contains("rootComponent")) return SVIP; // Field unique to SVIP SBOM
         else return null;
