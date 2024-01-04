@@ -129,10 +129,13 @@ public class SBOMFileService {
         String contents = s.writeToString((SVIPSBOM) Converted);
         SerializerFactory.Schema resolvedSchema = SerializerFactory.resolveSchema(contents);
         SerializerFactory.Format resolvedFormat = SerializerFactory.resolveFormat(contents);
-        if (resolvedSchema != schema)
+
+        // todo find another way to deal with converted SBOMs not being able to be read
+        if (resolvedSchema != schema) {
             throw new SerializerException(
-                    "Serialized SBOM does not match schema=" + schema + " (" + resolvedSchema + ")");
-        else if (resolvedFormat != format) {
+                     "Serialized SBOM does not match schema=" + schema + " (" + resolvedSchema + ")");
+        }
+        if (resolvedFormat != format) {
             throw new SerializerException(
                     "Serialized SBOM does not match format=" + format + " (" + resolvedFormat + ")");
         }
