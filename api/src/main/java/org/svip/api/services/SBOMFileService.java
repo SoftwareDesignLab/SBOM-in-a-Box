@@ -130,7 +130,7 @@ public class SBOMFileService {
         SerializerFactory.Schema resolvedSchema = SerializerFactory.resolveSchema(contents);
         SerializerFactory.Format resolvedFormat = SerializerFactory.resolveFormat(contents);
 
-        // todo find another way to deal with converted SBOMs not being able to be read
+        // TODO: Find another way to detect proper schema and format
         if (resolvedSchema != schema) {
             throw new SerializerException(
                      "Serialized SBOM does not match schema=" + schema + " (" + resolvedSchema + ")");
