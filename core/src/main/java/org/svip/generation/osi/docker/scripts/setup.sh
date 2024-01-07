@@ -56,7 +56,7 @@ function installComposer(){
 function installWithPIP(){
 
   # Install jake, cyclonedx-conan, cyclonedx-python, scanoss, sbom4python, sbom4files
-  pip install jake cyclonedx-conan cyclonedx-bom scanoss sbom4python sbom4rust sbom4files
+  pip install flask jake cyclonedx-conan cyclonedx-bom scanoss sbom4python sbom4rust sbom4files
 
 }
 

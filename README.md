@@ -1,10 +1,10 @@
 # SBOM-in-a-Box
-> The **SBOM-in-a-Box** is a unified platform to promote the 
+> The **SBOM-in-a-Box** is a unified platform to generate the high fidelity SBOM data. It automated the
 > production, consumption, and utilization of Software Bills of Materials (SBOMs). 
-> This includes conversion between schemas, generation, comparision and evaluation of quality.
+> This includes conversion between schemas, generation, comparision and evaluation of SBOM quality.
 
 # Purpose of SBOM-in-a-Box
-> SBOM-in-a-box has unique features including generation of SBOMs using multiple tools that allow for a more a complete SBOM to be created. There is also a feature within metrics, where the tool provides suggestions if there is a potential better way to showcase the attributes. There is also the ability to convert between SPDX and CycloneDX SBOM schemas, and to gain insight into vulnerabilities of software through SBOMs. These features allow for developers to create an SBOM that is the most relevant and suits their needs.
+> SBOM-in-a-box is a plug-and-play environments that supports adding any form of SBOM tools into the box. This would allow generation of SBOMs using multiple tools that allow for a more a complete SBOM to be created. There is also a feature within metrics, where the tool provides suggestions if there is potentially a better way to showcase the attributes. There is also the ability to convert between SPDX and CycloneDX SBOM schemas, and to gain insight into vulnerabilities of software through SBOMs. These features allow for developers to create an SBOM that is the most relevant and suits their needs.
 
 ### Latest Release: [[v9.2.0-alpha] - (11/30/2023)](doc/changelog.md)
 
@@ -20,7 +20,6 @@
 
 Note: To launch the backend it will take at least 10 minutes, due to there being over 10 open source tools included.
 
-> Note: Due to installation of multiple tools, building of the container may take a long time, however it is less time than learning all tools individually.
 
 **Launch the GUI**
 1. Clone the [GUI](https://github.com/SoftwareDesignLab/svip-ui) repo and follow the quickstart
@@ -49,34 +48,31 @@ Currently, SBOM-in-a-Box Supports the following SBOM Types
 
 
 ## Contributors
-**Principal Investigator:** [Mehdi Mirakhorli](mailto:mxmvse@rit.edu)
+**Principal Investigator, and Project Lead:** Mehdi Mirakhorli
 
-**Senior Project Manager:** [Chris Enoch](mailto:ctevse@rit.edu)
+**Project Manager:** Chris Enoch
 
-**Senior Developer Team Lead:** [Derek Garcia](mailto:dlg1206@rit.edu)
-
-**Developer Team Leads**
-- [Schuyler Dillon](mailto:sdd4181@rit.edu)
-- [Tyler Drake](mailto:txd3634@rit.edu)
-- [Ian Dunn](mailto:itd3516@g.rit.edu)
-- [Kevin Laporte](mailto:kjl8898@rit.edu)
-- [Matt London](mailto:mrl2534@rit.edu)
-- [Dylan Mulligan](mailto:dtm5568@rit.edu)
-- [Amanda Nitta](mailto:nittaak@hawaii.edu)
+**Developer Team Lead:** Derek Garcia
 
 **Developer Team**
-- [Brian Baumann](mailto:bmb5957@rit.edu)
-- [Asa Horn](mailto:aoh9470@rit.edu)
-- [Justin Jantzi](mailto:jwj7297@rit.edu)
-- [Henry Keena](mailto:htk4363@rit.edu)
-- [Hubert Liang](mailto:hubertl@hawaii.edu)
-- [Ping Liu](mailto:htk4363@rit.edu)
-- [Henry Lu](mailto:hyl2415@rit.edu)
-- [Matthew Morrison](mailto:msm8275@rit.edu)
-- [Ethan Numan](mailto:ehn4602@rit.edu)
-- [Henry Orsagh](mailto:hco4630@rit.edu)
-- [Juan Francisco Patino](mailto:jfp6815@rit.edu)
-- [Max Stein](mailto:mhs8558@rit.edu)
-- [Tom Roman](mailto:tfr8811@rit.edu)
-- [Liam Wilkins](mailto:ljw1484@rit.edu)
-- [Jordan Wong](mailto:jordanw4@hawaii.edu)
+- Schuyler Dillon
+- Tyler Drake
+- Ian Dunn
+- Kevin Laporte
+- Matt London
+- Dylan Mulligan
+- Amanda Nitta
+- Brian Baumann 
+- Asa Horn
+- Justin Jantzi
+- Henry Keena
+- Hubert Liang
+- Henry Lu
+- Matthew Morrison
+- Ethan Numan
+- Henry Orsagh
+- Juan Francisco Patino
+- Max Stein
+- Tom Roman
+- Liam Wilkins
+- Jordan Wong

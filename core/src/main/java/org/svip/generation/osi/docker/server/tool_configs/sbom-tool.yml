@@ -10,4 +10,4 @@ profiles:
       - "NuGet"
     commands:
       - "sbom-tool generate -ps . -b . -m . -pn . -pv ."
-      - "mv _manifest/spdx_2.2/manifest.spdx.json $SBOM_OUT && rm -rf _manifest"
+      - "mv _manifest/spdx_2.2/manifest.spdx.json $SBOM_OUT/sbomtool-spdx22.json && rm -rf _manifest"
