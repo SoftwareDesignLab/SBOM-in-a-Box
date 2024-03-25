@@ -4,6 +4,7 @@ profiles:
     spec_version: "1.4"
     format: "json"
     languages:
+      - "Erlang"
       - "Java"
       - "Python"
     package_managers:
@@ -28,6 +29,7 @@ profiles:
     spec_version: "2.3"
     format: "spdx"
     languages:
+      - "Erlang"
       - "Java"
       - "Python"
     package_managers:

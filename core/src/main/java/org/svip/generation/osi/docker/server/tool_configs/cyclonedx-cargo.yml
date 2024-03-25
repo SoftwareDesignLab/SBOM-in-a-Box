@@ -8,4 +8,6 @@ profiles:
     package_managers:
       - "Cargo"
     commands:
-      - "cargo cyclonedx -f json -a --output $SBOM_OUT/cdxrust-cdx14.json"
+      - "cd *"
+      - "cargo cyclonedx -f json"
+      - "for dirname in ./crates/*; do mv $dirname/bom.json $SBOM_OUT/${dirname##*/}-cdxcargo-cdx14.json; done"
