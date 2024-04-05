@@ -48,7 +48,7 @@ Currently, SBOM-in-a-Box Supports the following SBOM Types
 
 
 ## Contributors
-**Principal Investigator, and Project Lead:** Mehdi Mirakhorli
+**Project Lead:** [Mehdi Tarrit Mirakhorli](https://mehdimirakhorli.github.io/) 
 
 **Project Manager:** Chris Enoch
 
