@@ -2,22 +2,22 @@
 FROM ubuntu:latest
 
 # PHP Setup
-ENV DEBIAN_FRONTEND noninteractive
-ENV DEBCONF_NONINTERACTIVE_SEEN true
-ENV COMPOSER_ALLOW_SUPERUSER 1
+ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBCONF_NONINTERACTIVE_SEEN=true
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
 # Go Setup
-ENV PATH $PATH:/usr/local/go/bin:/root/go/bin
+ENV PATH=$PATH:/usr/local/go/bin:/root/go/bin
 
 # Dotnet tools
-ENV PATH $PATH:/root/.dotnet/tools
+ENV PATH=$PATH:/root/.dotnet/tools
 
 # Node.js Setup
-ENV NVM_DIR /root/.nvm
+ENV NVM_DIR=/root/.nvm
 
 # Bound Directories
-ENV CODE_IN /bound_dir/code
-ENV SBOM_OUT /bound_dir/sboms
+ENV CODE_IN=/bound_dir/code
+ENV SBOM_OUT=/bound_dir/sboms
 
 # Copy startup scripts
 COPY scripts/ /usr/local/bin/
