@@ -21,7 +21,7 @@ FROM alpine/curl AS syft
 RUN curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /tmp
 
 FROM alpine/curl AS sbomtool
-RUN curl -L https://github.com/microsoft/sbom-tool/releases/latest/download/sbom-tool-linux-x64 -o tmp/sbom-tool
+RUN curl -L https://github.com/microsoft/sbom-tool/releases/latest/download/sbom-tool-linux-x64 -o /tmp/sbom-tool
 
 FROM alpine/curl AS osi
 
@@ -86,7 +86,8 @@ RUN composer \
     global require cyclonedx/cyclonedx-php-composer
 
 # Copy binaries
-COPY --from=spdx_sbom_generator --chmod=755 /tmp/spdx-sbom-generator /usr/local/bin/
+# Unavailable in alpine
+#COPY --from=spdx_sbom_generator --chmod=755 /tmp/spdx-sbom-generator /usr/local/bin/
 COPY --from=jbom --chmod=755 tmp/jbom.jar /usr/local/bin/
 COPY --from=cyclone_dx_cli --chmod=755 tmp/cyclonedx-cli /usr/local/bin/
 COPY --from=syft --chmod=755 tmp/syft /usr/local/bin/
