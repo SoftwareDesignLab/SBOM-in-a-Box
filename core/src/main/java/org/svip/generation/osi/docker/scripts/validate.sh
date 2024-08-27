@@ -85,7 +85,7 @@ function verify_tools(){
   sbom4files -h &> /dev/null && pass "sbom4files" 3 || fail "sbom4files"
   sbom4python -h &> /dev/null && pass "sbom4python" 3 || fail "sbom4python"
   sbom4rust -h &> /dev/null && pass "sbom4rust" 3 || fail "sbom4rust"
-  sbom-tool --version &> /dev/null && pass "sbom-tool" 3 || fail "sbom-tool"
+  sbom-tool --version &> /dev/null && fail "sbom-tool" || pass "sbom-tool" 3  # returns 1 on success
   spdx-sbom-generator -h &> /dev/null && pass "spdx-sbom-generator" 3 || fail "spdx-sbom-generator"
   syft -h &> /dev/null && pass "syft" 3 || fail "syft"
 

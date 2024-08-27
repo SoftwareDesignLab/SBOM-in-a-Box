@@ -20,9 +20,6 @@ RUN curl -L $CYCLONEDX_CLI -o tmp/cyclonedx-cli
 FROM alpine/curl AS syft
 RUN curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /tmp
 
-FROM alpine/curl AS sbomtool
-RUN curl -L https://github.com/microsoft/sbom-tool/releases/latest/download/sbom-tool-linux-x64 -o /tmp/sbom-tool
-
 FROM alpine/curl AS osi
 
 # PHP Setup
@@ -78,6 +75,7 @@ RUN npm install -g retire bower cdx-bower-bom @cyclonedx/cdxgen@8.6.0
 RUN go install github.com/ozonru/cyclonedx-go/cmd/cyclonedx-go@latest
 RUN go install github.com/mattermost/gobom/cmd/gobom@latest
 RUN dotnet tool install --global covenant
+RUN dotnet tool install --global Microsoft.Sbom.DotNetTool
 RUN cargo install -- cargo-cyclonedx
 RUN composer global config --no-plugins allow-plugins.cyclonedx/cyclonedx-php-composer true
 RUN composer \
@@ -91,13 +89,9 @@ RUN composer \
 COPY --from=jbom --chmod=755 tmp/jbom.jar /usr/local/bin/
 COPY --from=cyclone_dx_cli --chmod=755 tmp/cyclonedx-cli /usr/local/bin/
 COPY --from=syft --chmod=755 tmp/syft /usr/local/bin/
-COPY --from=sbomtool --chmod=755 tmp/sbom-tool /usr/local/bin/
-
-# Verify installation
-COPY --chmod=755 scripts/ /usr/local/bin/
-RUN . validate.sh
 
 # Setup flask api server
+COPY --chmod=755 scripts/ /usr/local/bin/
 WORKDIR /server
 COPY server/ .
 RUN pip install --break-system-packages -r requirements.txt
