@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/ash
 
 # File: validate.sh
 # Validate OSI environment by checking for Languages, Package Managers, and Tools
@@ -12,20 +12,20 @@ CLR="\e[0m"
 
 # Update env vars with what's installed on the box
 function update_env(){
-  # Update lang if not present
-  if [[ "$2" -eq 1 && ! $(echo "$OSI_LANG" | grep -qE "(?:^|:)$1(?:$|:)") ]];then
-    [[ -z $OSI_LANG ]] && export OSI_LANG="$1" || export OSI_LANG="$OSI_LANG:$1"
-  fi
-
-  # Update package manager if not present
-  if [[ "$2" -eq 2 && ! $(echo "$OSI_PM" | grep -qE "(?:^|:)$1(?:$|:)") ]];then
-    [[ -z $OSI_PM ]] && export OSI_PM="$1" || export OSI_PM="$OSI_PM:$1"
-  fi
-
-  # Update tool if not present
-  if [[ "$2" -eq 3 && ! $(echo "$OSI_TOOL" | grep -qE "(?:^|:)$1(?:$|:)") ]];then
-    [[ -z $OSI_TOOL ]] && export OSI_TOOL="$1" || export OSI_TOOL="$OSI_TOOL:$1"
-  fi
+  case "$2" in
+    # Update lang if not present
+    1)
+      [ "$(echo "$OSI_LANG" | grep -qE "$1"; echo $?)" -eq 1 ] && export OSI_LANG="${OSI_LANG:+$OSI_LANG:}$1"
+      ;;
+    # Update package manager if not present
+    2)
+      [ "$(echo "$OSI_PM" | grep -qE "$1"; echo $?)" -eq 1 ] && export OSI_PM="${OSI_PM:+$OSI_PM:}$1"
+      ;;
+    # Update tool if not present
+    3)
+      [ "$(echo "$OSI_TOOL" | grep -qE "$1"; echo $?)" -eq 1 ] && export OSI_TOOL="${OSI_TOOL:+$OSI_TOOL:}$1"
+      ;;
+  esac
 }
 
 function pass() {
@@ -39,7 +39,6 @@ function fail() {
 
 # Verify Languages are installed
 function verify_lang(){
-
   echo -e "\nLANGUAGES"
 
   python3 --version &> /dev/null && pass "python" 1 || fail "python"
@@ -52,8 +51,8 @@ function verify_lang(){
 
 }
 
+# Verify Package managers are installed
 function verify_pm(){
-
   echo -e "\nPACKAGE MANAGERS"
 
   mvn --version &> /dev/null && pass "maven" 2 || fail "maven"
@@ -69,7 +68,6 @@ function verify_pm(){
 
 # Verify Tools are installed
 function verify_tools(){
-
   echo -e "\nTOOLS"
 
   cdxgen -h &> /dev/null && pass "cdxgen" 3 || fail "cdxgen"
@@ -87,17 +85,13 @@ function verify_tools(){
   sbom4files -h &> /dev/null && pass "sbom4files" 3 || fail "sbom4files"
   sbom4python -h &> /dev/null && pass "sbom4python" 3 || fail "sbom4python"
   sbom4rust -h &> /dev/null && pass "sbom4rust" 3 || fail "sbom4rust"
-  sbom-tool --version &> /dev/null && pass "sbom-tool" 3 || fail "sbom-tool"
+  sbom-tool --version &> /dev/null && fail "sbom-tool" || pass "sbom-tool" 3  # returns 1 on success
   spdx-sbom-generator -h &> /dev/null && pass "spdx-sbom-generator" 3 || fail "spdx-sbom-generator"
   syft -h &> /dev/null && pass "syft" 3 || fail "syft"
 
 }
 
 main(){
-  # Setup
-  apt update
-  apt install -y bsdmainutils
-
   echo "-= OSI VALIDATION =-"
   verify_lang
   verify_pm

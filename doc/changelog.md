@@ -3,7 +3,15 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v9.2.0-alpha] - (1/8/2024)
+## [v9.2.2-alpha] - (8/27/2024)
+### Fixed
+- OSI image build succeeds
+
+### Changed
+- OSI image is now alpine based
+- Refactor OSI setup script into dockerfile
+
+## [v9.2.1-alpha] - (1/8/2024)
 ### Fixed 
 - OSI Mac Compatibility
 
