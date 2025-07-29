@@ -9,8 +9,8 @@
 ### Latest Release: [[v9.2.1-alpha] - (1/07/2024)](doc/changelog.md)
 
 ## System Requirements
-- Java 17.X.X
-- Gradle 7.5.X
+- Java 21.X.X
+- Gradle 8.X.X
 - Docker 24.X.X
 
 ## Quick Start
