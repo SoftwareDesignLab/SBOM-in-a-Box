@@ -3,13 +3,13 @@ plugins {
     id 'application'
 }
 
-group 'org.svip'
-version '1.0.0-alpha'
+group='org.svip'
+version='1.0.0-alpha'
 
 jar {
     manifest {
         attributes(
-            'Main-Class': 'org.svip.SBOMGeneratorCLI'
+                'Main-Class': 'org.svip.SBOMGeneratorCLI'
         )
     }
 }
@@ -67,6 +67,11 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs << "-Xlint:deprecation"
+    options.compilerArgs << "-Xlint:unchecked"
 }
 
 tasks.named('javadoc') {

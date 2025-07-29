@@ -4,12 +4,11 @@ plugins {
     id 'org.springframework.boot' version '3.0.6'
 }
 
-group 'org.svip'
-version '1.0.0-alpha'
+group = 'org.svip'
+version = '1.0.0-alpha'
 
 application {
-    mainClassName = 'org.svip.api.SVIPApplication'
-    mainClass = 'org.svip.api.SVIPApplication'
+    mainClass.set('org.svip.api.Application')
 }
 
 repositories {
@@ -51,7 +50,12 @@ sourceSets {
 }
 
 bootJar {
-    mainClassName = 'org.svip.api.SVIPApplication'
+    mainClass.set('org.svip.api.Application')
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs << "-Xlint:deprecation"
+    options.compilerArgs << "-Xlint:unchecked"
 }
 
 tasks.named('javadoc') {
