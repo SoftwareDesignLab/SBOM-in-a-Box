@@ -44,7 +44,6 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
     /**
      * Constructor initializes a given parser and assigns both the
      * regex to test it against and the source directory to test on.
-     *
      */
     public CSharpParserRegexTest() {
         super(new CSharpParser(),
@@ -166,9 +165,7 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// Modifiers
-    ///
 
     @Test
     @DisplayName("using static foo;")
@@ -236,9 +233,7 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// Using statements
-    ///
 
     @Test
     @DisplayName("using (var reader = new StringReader(manyLines))")
@@ -264,9 +259,7 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         assertFalse(m.find());   // Should not be a match
     }
 
-    ///
     /// Language
-    ///
 
     @Test
     @DisplayName("using System.Net;")
@@ -378,9 +371,7 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// Internal
-    ///
 
     @Test
     @DisplayName("using CSharp.Bar;")
@@ -470,9 +461,7 @@ class CSharpParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// Comments
-    ///
 
     @Test
     @DisplayName("// using foo;")

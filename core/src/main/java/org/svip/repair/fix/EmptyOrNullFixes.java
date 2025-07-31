@@ -211,7 +211,8 @@ public class EmptyOrNullFixes implements Fixes {
 
     /**
      * Fixes empty copyright
-     * @param sbom The SBOM to fix
+     *
+     * @param sbom          The SBOM to fix
      * @param componentHash The component that is missing copyright
      * @return a list of potential fixes or null
      */

@@ -93,6 +93,7 @@ public class RepairStatementSPDX23CDX14 implements RepairStatement {
                     if (fixes != null)
                         // Set the fix list
                         try {
+                            // todo handle unchecked cast
                             toFix.addFixes(fixes.fix(toFix, sbom, hashCodeMapping.get(component), component));
                         }
 

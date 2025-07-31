@@ -30,6 +30,7 @@ import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Set;
@@ -131,7 +132,7 @@ public abstract class Parser {
             final long t1 = System.nanoTime();
 
             // Create and open connection object
-            final URL url = new URL(urlString);
+            final URL url = URI.create(urlString).toURL();
             final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
             // Init request details

@@ -30,6 +30,7 @@ import org.svip.generation.osi.exceptions.DockerNotAvailableException;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -144,7 +145,7 @@ public class OSIService {
             }
 
             // Build connection
-            HttpURLConnection conn = (HttpURLConnection) new java.net.URL(url.toString()).openConnection();
+            HttpURLConnection conn = (HttpURLConnection) URI.create(url.toString()).toURL().openConnection();
             conn.setRequestMethod(this.requestMethod.value);
 
             // Get POST return value
@@ -246,6 +247,7 @@ public class OSIService {
             // Convert json string to list
             String jsonString = builder.toString();
             ObjectMapper mapper = new ObjectMapper();
+            // todo handle unchecked cast
             return (List<String>) mapper.readValue(jsonString, List.class);
         } catch (IOException e) {
             // error with getting tools

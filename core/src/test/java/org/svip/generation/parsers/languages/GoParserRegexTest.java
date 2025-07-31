@@ -51,9 +51,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
                 "Go");
     }
 
-    ///
     /// External
-    ///
 
     @Test
     @DisplayName("import \"fee\"")
@@ -368,9 +366,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// INTERNAL
-    ///
 
     @Test
     @DisplayName("import \"Go/lib/int2\"")
@@ -393,9 +389,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// LANGUAGE
-    ///
 
     @Test
     @DisplayName("import \"fmt\"")
@@ -460,9 +454,7 @@ public class GoParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// Comments
-    ///
 
     @Test
     @DisplayName("// import \"bar/foo\"")

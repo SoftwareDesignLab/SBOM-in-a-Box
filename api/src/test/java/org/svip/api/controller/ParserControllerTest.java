@@ -27,9 +27,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.svip.api.entities.SBOMFile;
@@ -51,15 +54,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Ian Dunn
  */
+
 @WebMvcTest(ParserController.class)
+@Import(ParserControllerTest.TestConfig.class)
 @DisplayName("Parser Controller Test")
 public class ParserControllerTest {
 
-    @MockBean
-    private SBOMFileService sbomFileService;
-
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private SBOMFileService sbomFileService;
+
+    @TestConfiguration
+    static class TestConfig {
+        @Bean
+        public SBOMFileService sbomFileService() {
+            return Mockito.mock(SBOMFileService.class);
+        }
+    }
 
     @ParameterizedTest
     @ValueSource(strings = { "Conan", "Java", "Perl_noEmptyFiles", "Rust_noEmptyFiles",

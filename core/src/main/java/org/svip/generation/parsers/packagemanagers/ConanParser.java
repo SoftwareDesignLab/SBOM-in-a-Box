@@ -69,6 +69,7 @@ public class ConanParser extends PackageManagerParser {
     protected void parseData(List<SVIPComponentBuilder> components, HashMap<String, Object> data) {
 
         // Iterate over dependencies
+        // todo handle unchecked cast
         for (final LinkedHashMap<String, String> d : (ArrayList<LinkedHashMap<String, String>>) data.get("dependencies")) {
             // Create ParserComponent from dep info
             SVIPComponentBuilder builder = new SVIPComponentBuilder();

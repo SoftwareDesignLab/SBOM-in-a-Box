@@ -349,6 +349,7 @@ public class SBOMGeneratorCLI {
         final Map<String, Object> formattedArgs = formatArgs(args);
 
         // Initialize required and optional args lists
+        // todo handle unchecked cast
         final ArrayList<String> reqArgs = (ArrayList<String>) formattedArgs.get("reqArgs");
         final HashMap<String, String> optArgs = (HashMap<String, String>) formattedArgs.get("optArgs");
 

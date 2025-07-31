@@ -45,9 +45,9 @@ public abstract class ParseDepFileTestCore extends ParserTestCore<PackageManager
      * Constructor calls super with parser and src, and parses the given
      * fileContents to test against.
      *
-     * @param parser Parser object to be tested
+     * @param parser       Parser object to be tested
      * @param fileContents fileContents to test against
-     * @param src Relative path to dummy directory
+     * @param src          Relative path to dummy directory
      */
     protected ParseDepFileTestCore(PackageManagerParser parser, String fileContents, String src) {
         // Call super
@@ -62,6 +62,7 @@ public abstract class ParseDepFileTestCore extends ParserTestCore<PackageManager
 
     /**
      * Method to find an individual component from {@link this.components }, null is returned if not found
+     *
      * @param name Name used to find the component
      * @return The found component object or null
      */

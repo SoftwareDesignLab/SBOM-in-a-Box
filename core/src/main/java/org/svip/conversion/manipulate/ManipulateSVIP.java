@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.conversion.manipulate;
@@ -46,9 +47,9 @@ public class ManipulateSVIP {
     /**
      * Modifies an SVIPSBOM to match the fields of a requested schema.
      *
-     * @param sbom  The SBOM to be modified
-     * @param manipulationMap   Enumeration containing the values for the requested Schema
-     * @return  An SBOM containing the modified data
+     * @param sbom            The SBOM to be modified
+     * @param manipulationMap Enumeration containing the values for the requested Schema
+     * @return An SBOM containing the modified data
      */
     public static SVIPSBOM modify(SVIPSBOM sbom, SchemaManipulationMap manipulationMap) {
 
@@ -73,7 +74,7 @@ public class ManipulateSVIP {
         builder.setSpecVersion(manipulationMap.getVersion());
 
         // Stream licenses into new SBOM
-        if(sbom.getLicenses() != null)
+        if (sbom.getLicenses() != null)
             sbom.getLicenses().stream().forEach(x -> builder.addLicense(x));
 
         // Creation Data
@@ -86,20 +87,20 @@ public class ManipulateSVIP {
         builder.setDocumentComment(sbom.getDocumentComment());
 
         // Root Component
-        if(sbom.getRootComponent() != null)
+        if (sbom.getRootComponent() != null)
             builder.setRootComponent(modifyComponent(sbom.getRootComponent(), manipulationMap, relationshipMap));
         else
             builder.setRootComponent(null);
 
         // Stream components from SVIP SBOM, convert them, then put into CDX SBOM
-        if(sbom.getComponents() != null)
+        if (sbom.getComponents() != null)
             sbom.getComponents().stream().filter(x -> x != null).forEach(
                     x -> builder.addComponent(modifyComponent(x, manipulationMap, relationshipMap))
             );
 
         // Stream Relationship data into new SBOM
-        if(sbom.getRelationships() != null) {
-            sbom.getRelationships().keySet().stream().filter(x -> x!=null).forEach(
+        if (sbom.getRelationships() != null) {
+            sbom.getRelationships().keySet().stream().filter(x -> x != null).forEach(
                     x -> sbom.getRelationships().get(x).stream().forEach(
                             y -> builder.addRelationship(
                                     relationshipMap.get(x),
@@ -113,7 +114,7 @@ public class ManipulateSVIP {
         }
 
         // Stream External References into new SBOM
-        if(sbom.getExternalReferences() != null) {
+        if (sbom.getExternalReferences() != null) {
             sbom.getExternalReferences().stream().forEach(
                     x -> builder.addExternalReference(x)
             );
@@ -134,10 +135,10 @@ public class ManipulateSVIP {
      * @param originalComponent The Original SVIP Component
      * @param manipulationMap   Enumeration containing the values for the requested Schema
      * @param relationshipMap   A map containing the old ID for each component along with the new one
-     * @return  An SVIPComponentObject with the new values
+     * @return An SVIPComponentObject with the new values
      */
     public static SVIPComponentObject modifyComponent(
-            Component originalComponent, SchemaManipulationMap manipulationMap, HashMap relationshipMap
+            Component originalComponent, SchemaManipulationMap manipulationMap, HashMap<String, String> relationshipMap
     ) {
 
         // Cast component
@@ -217,13 +218,13 @@ public class ManipulateSVIP {
         builder.setDescription(component.getDescription());
 
         // CPEs
-        if(component.getCPEs() != null) component.getCPEs().forEach(x -> builder.addCPE(x));
+        if (component.getCPEs() != null) component.getCPEs().forEach(x -> builder.addCPE(x));
 
         // PURLs
-        if(component.getPURLs() != null) component.getPURLs().forEach(x -> builder.addPURL(x));
+        if (component.getPURLs() != null) component.getPURLs().forEach(x -> builder.addPURL(x));
 
         // External References
-        if(component.getExternalReferences() != null)
+        if (component.getExternalReferences() != null)
             component.getExternalReferences().forEach(x -> builder.addExternalReference(x));
 
         // Mime Type
@@ -239,7 +240,7 @@ public class ManipulateSVIP {
         builder.setGroup(component.getGroup());
 
         // Properties
-        if(component.getProperties() != null) {
+        if (component.getProperties() != null) {
             component.getProperties().keySet().forEach(
                     x -> component.getProperties().get(x).stream().forEach(
                             y -> builder.addProperty(x, y)

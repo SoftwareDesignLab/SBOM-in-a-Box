@@ -69,15 +69,18 @@ public class CSProjParser extends PackageManagerParser {
         if (data.get("ItemGroup") == null) return;
 
         // List of all Item Groups
+        // todo handle unchecked cast
         final ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>> itemgroups = (ArrayList<HashMap<String, ArrayList<HashMap<String, String>>>>) data.get("ItemGroup");
 
         // Iterate over itemgroups
         for (HashMap<String, ArrayList<HashMap<String, String>>> itemgroup : itemgroups) {
 
             // Get all types in this itemgroup
+            // todo handle unchecked cast
             final Iterator types = itemgroup.entrySet().iterator();
 
             // Iterate over types
+            // todo handle unchecked cast
             while (types.hasNext()) {
                 // Get type (as Map.Entry)
                 final Map.Entry<String, Object> type = (Map.Entry<String, Object>) types.next();

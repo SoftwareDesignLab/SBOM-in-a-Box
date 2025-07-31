@@ -237,24 +237,27 @@ public abstract class PackageManagerParser extends Parser {
         }
     }
 
-    private HashMap<String, String> resolveMap(HashMap map, HashMap<String, String> props) {
+    private HashMap<String, String> resolveMap(HashMap<String, ?> map, HashMap<String, String> props) {
         // Init resolved map
         final HashMap<String, String> resolvedMap = new HashMap<>(map.size());
 
         // Iterate over unresolved map and store resolved values
-        map.forEach(
-                (k, v) -> {
-                    final String keyString = (String) k;
-                    if (v instanceof final String valueString) {
-                        resolvedMap.put(keyString, this.resolveString(valueString, props));
-                    } else if (v instanceof final HashMap valueMap) {
-                        this.resolveMap(valueMap, props);
-                    } else if (v instanceof List) {
-                        ((List<HashMap>) v).forEach(m -> resolveMap(m, props));
-                    } else {
-                        log(LOG_TYPE.WARN, String.format("Could not resolve illegal value of type: %s (Expected type: String)", v.getClass().getSimpleName()));
+        // todo - handle Unchecked cast
+        map.forEach((k, v) -> {
+            if (v instanceof String valueString) {
+                resolvedMap.put(k, this.resolveString(valueString, props));
+            } else if (v instanceof HashMap<?, ?> valueMap) {
+                this.resolveMap((HashMap<String, ?>) valueMap, props);
+            } else if (v instanceof List<?> list) {
+                list.forEach(item -> {
+                    if (item instanceof HashMap<?, ?> nestedMap) {
+                        this.resolveMap((HashMap<String, ?>) nestedMap, props);
                     }
                 });
+            } else {
+                log(LOG_TYPE.WARN, String.format("Could not resolve illegal value of type: %s (Expected type: String)", v.getClass().getSimpleName()));
+            }
+        });
 
         // Return resolved map
         return resolvedMap;
@@ -303,7 +306,8 @@ public abstract class PackageManagerParser extends Parser {
     @Override
     public void parse(List<SVIPComponentBuilder> components, String fileContents) {
         try {
-            final HashMap<String, Object> data = this.OM.readValue(fileContents, HashMap.class);
+            // todo handle unchecked cast
+            final HashMap data = this.OM.readValue(fileContents, HashMap.class);
             this.parseData(components, data);
         } catch (IOException e) {
             log(LOG_TYPE.EXCEPTION, e);

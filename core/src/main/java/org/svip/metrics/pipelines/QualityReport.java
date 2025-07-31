@@ -97,6 +97,7 @@ public class QualityReport {
 
     /**
      * Gets how many fixes are appended to the quality report
+     *
      * @return fix amount
      */
     public long getFixAmount() {
@@ -105,6 +106,7 @@ public class QualityReport {
 
     /**
      * Gets all fixes appended
+     *
      * @return fixes
      */
     public Map<Integer, Set<Fix<?>>> getFixes() {

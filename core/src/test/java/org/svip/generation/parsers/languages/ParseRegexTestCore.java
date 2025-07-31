@@ -44,8 +44,8 @@ public abstract class ParseRegexTestCore extends ParserTestCore<LanguageParser> 
      * given regex String into a Pattern object for testing.
      *
      * @param parser Parser object to be tested
-     * @param regex Regex to test against
-     * @param src Relative path to dummy directory
+     * @param regex  Regex to test against
+     * @param src    Relative path to dummy directory
      */
     public ParseRegexTestCore(LanguageParser parser, String regex, String src) {
         // Call super

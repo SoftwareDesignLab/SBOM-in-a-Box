@@ -130,9 +130,7 @@ public class Conflict {
         return null;
     }
 
-    ///
     /// Getters
-    ///
 
     public MismatchType getType() {
         return this.type;
