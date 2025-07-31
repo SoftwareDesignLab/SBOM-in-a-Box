@@ -6,7 +6,7 @@ on:
 
 jobs:
   get-sbom-type:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       sbom-type: ${{ steps.sbom-type.outputs.type }}
     steps:
@@ -20,23 +20,25 @@ jobs:
           esac
   
   gen-sboms:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: get-sbom-type
+    permissions:
+      actions: read
+      contents: write
     env:
       SBOM_TYPE: ${{ needs.get-sbom-type.outputs.sbom-type }}
     steps:
-    
       - name: checkout
-        uses: actions/checkout@v3.5.2
+        uses: actions/checkout@v4
 
       - name: spdx-sbom
-        uses: anchore/sbom-action@v0.14.2
+        uses: anchore/sbom-action@v0.18.0
         with:
           format: spdx
           artifact-name: svip-sbom-${{ env.SBOM_TYPE }}.spdx
       
       - name: cyclonedx-sbom
-        uses: anchore/sbom-action@v0.14.2
+        uses: anchore/sbom-action@v0.18.0
         with:
           format: cyclonedx-json
           artifact-name: svip-sbom-cdx-${{ env.SBOM_TYPE }}.json
