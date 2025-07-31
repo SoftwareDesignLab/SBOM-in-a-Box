@@ -1,6 +1,4 @@
 rootProject.name = 'SVIP'
+
 include 'core'
 include 'api'
-include 'api:src:main:resources'
-findProject(':api:src:main:resources')?.name = 'resources'
-
