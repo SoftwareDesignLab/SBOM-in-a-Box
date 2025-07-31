@@ -64,6 +64,7 @@ public class POMParser extends PackageManagerParser {
         this.properties = new HashMap<>();
 
         // Resolve nested properties (e.x. "<maven.compiler.source>${java.version}</maven.compiler.source>")
+        // todo handle unchecked cast
         this.resolveProperties(
                 this.properties,
                 (HashMap<String, String>) data.get("properties")
@@ -73,6 +74,7 @@ public class POMParser extends PackageManagerParser {
         this.dependencies = new HashMap<>();
 
         // Get dependencies from data
+        // todo handle unchecked cast
         this.resolveProperties(
                 this.dependencies,
                 new HashMap(((LinkedHashMap<String, ArrayList<HashMap<String, String>>>) data.get("dependencies"))

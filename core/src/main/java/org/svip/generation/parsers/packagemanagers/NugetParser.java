@@ -89,6 +89,7 @@ public class NugetParser extends PackageManagerParser {
          */
 
         this.dependencies = new HashMap<>();
+        // todo handle unchecked cast
         HashMap<String, String> metadata = new HashMap((LinkedHashMap<String, ArrayList<HashMap<String, String>>>) data.get("metadata"));
         String type;
         for (Object o : metadata.values()
@@ -102,7 +103,7 @@ public class NugetParser extends PackageManagerParser {
                     this.resolveProperties(
                             this.dependencies,
 
-
+                            // todo handle unchecked cast
                             new HashMap(((ArrayList<LinkedHashMap<String, String>>) (((LinkedHashMap<?, ?>) o).get(type)))
                                     .stream().collect(
                                             Collectors.toMap(
@@ -130,7 +131,7 @@ public class NugetParser extends PackageManagerParser {
 
                 try {
                     this.resolveProperties(this.dependencies,
-
+                            // todo handle unchecked cast
                             new HashMap(((ArrayList<LinkedHashMap<String, String>>) (((LinkedHashMap<?, ?>) o).get(type)))
                                     .stream().collect(
                                             Collectors.toMap(

@@ -44,7 +44,6 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
     /**
      * Constructor initializes a given parser and assigns both the
      * regex to test it against and the source directory to test on.
-     *
      */
     public PythonParserRegexBlockCommentTest() {
         super(new PythonParser(),
@@ -171,9 +170,7 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
         assertEquals(0, results.size());    // should be no components   // Should be a match
     }
 
-    ///
     /// Internal Tests
-    ///
     @Test
     @DisplayName(openBlockComment + "import ifoo" + closeBlockComment)
     void importAbsInternalBasic() {

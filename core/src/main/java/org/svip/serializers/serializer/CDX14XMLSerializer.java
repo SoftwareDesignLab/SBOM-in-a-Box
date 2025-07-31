@@ -114,8 +114,8 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
     /**
      * Serializes the SBOM to XML.
      *
-     * @param sbom The SBOM to serialize.
-     * @param gen The JSON Generator (Will be cast to an ToXmlGenerator).
+     * @param sbom        The SBOM to serialize.
+     * @param gen         The JSON Generator (Will be cast to an ToXmlGenerator).
      * @param serializers Serializer Provider
      * @throws IOException
      */
@@ -215,7 +215,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
      * Writes the metadata as XML.
      *
      * @param xmlGenerator The XML Generator to write the metadata.
-     * @param data The metadata to be written.
+     * @param data         The metadata to be written.
      * @throws IOException
      */
     public void writeMetadata(ToXmlGenerator xmlGenerator, CreationData data) throws IOException {
@@ -388,7 +388,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
     /**
      * Writes the component as XML.
      *
-     * @param xmlGenerator The XML Generator to write the component.
+     * @param xmlGenerator        The XML Generator to write the component.
      * @param svipComponentObject The component to be written.
      * @throws IOException
      */
@@ -474,7 +474,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
     /**
      * Writes the dependencies as XML.
      *
-     * @param xmlGenerator The XML Generator to write the dependencies.
+     * @param xmlGenerator  The XML Generator to write the dependencies.
      * @param relationships The dependencies to be written.
      * @throws IOException
      */
@@ -568,7 +568,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
      * Writes the contact as XML.
      *
      * @param xmlGenerator The XML Generator to write the contact.
-     * @param contact The contact to be written.
+     * @param contact      The contact to be written.
      * @throws IOException
      */
     public void writeContact(ToXmlGenerator xmlGenerator, Contact contact) throws IOException {
@@ -594,7 +594,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
      * Writes the hashes as XML.
      *
      * @param xmlGenerator The XML Generator to write the hashes.
-     * @param hashes The hashes to be written.
+     * @param hashes       The hashes to be written.
      * @throws IOException
      */
     public void writeHashes(ToXmlGenerator xmlGenerator, Map<String, String> hashes) throws IOException {
@@ -633,7 +633,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
      * Writes the licenses as XML.
      *
      * @param xmlGenerator The XML Generator to write the licenses.
-     * @param licenses The metadata to be written.
+     * @param licenses     The metadata to be written.
      * @throws IOException
      */
     public void writeLicenses(ToXmlGenerator xmlGenerator, Set<String> licenses) throws IOException {
@@ -664,7 +664,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
     /**
      * Writes the external references as XML.
      *
-     * @param xmlGenerator The XML Generator to write the external references.
+     * @param xmlGenerator       The XML Generator to write the external references.
      * @param externalReferences The metadata to be written.
      * @throws IOException
      */
@@ -705,7 +705,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
      * Writes the properties as XML.
      *
      * @param xmlGenerator The XML Generator to write the properties.
-     * @param properties The metadata to be written.
+     * @param properties   The metadata to be written.
      * @throws IOException
      */
     public void writeProperties(ToXmlGenerator xmlGenerator, Map<String, Set<String>> properties) throws IOException {

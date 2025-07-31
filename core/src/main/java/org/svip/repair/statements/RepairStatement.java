@@ -43,7 +43,7 @@ public interface RepairStatement {
      * an SBOM are 'damaged'. Potential repair options will be appended and
      * then sent to the front end.
      *
-     * @param sbom  The SBOM Object.
+     * @param sbom The SBOM Object.
      * @return Quality Report with fixes appended
      */
     QualityReport generateRepairStatement(SBOM sbom) throws Exception;

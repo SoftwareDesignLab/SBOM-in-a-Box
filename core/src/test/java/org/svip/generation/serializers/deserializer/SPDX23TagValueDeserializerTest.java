@@ -31,7 +31,7 @@ import java.io.IOException;
 
 /**
  * File: SPDX23TagValueDeserializerTest.java
- *
+ * <p>
  * This class extends SPDX23JSONDeserializerTest because the data stored in the SPDX file formats should match up
  * exactly. Use this class as a template for expanding other test formats.
  *

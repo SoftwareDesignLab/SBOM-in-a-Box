@@ -149,7 +149,9 @@ public class MergerTest {
      * Test Components
      */
 
-    /** CDX Test Components **/
+    /**
+     * CDX Test Components
+     **/
 
     // Blue
     private static final HashMap<String, String> blue_cdx_hashes = new HashMap<>() {{
@@ -239,7 +241,9 @@ public class MergerTest {
             green_externalReference, green_cdx_properties
     );
 
-    /** SPDX Test Components **/
+    /**
+     * SPDX Test Components
+     **/
 
     // Blue SPDX
 
@@ -325,7 +329,9 @@ public class MergerTest {
             "green_spdx_attribution_test"
     );
 
-    /** SVIP Test Components **/
+    /**
+     * SVIP Test Components
+     **/
 
     Component comp_svip_blue = new SVIPComponentObject(
             "blue_package", "1234567890-blue-id", "blue_author",

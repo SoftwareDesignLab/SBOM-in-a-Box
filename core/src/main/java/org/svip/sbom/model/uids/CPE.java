@@ -216,9 +216,7 @@ public class CPE {
         return pattern.matches(other);
     }
 
-    ///
     /// Getters
-    ///
 
     public String getCpeVersion() {
         return cpeVersion;

@@ -73,6 +73,7 @@ public class Result {
 
     /**
      * Adds a fix
+     *
      * @param fixes a list of potential fixes
      */
     public void addFixes(List<Fix<?>> fixes) {

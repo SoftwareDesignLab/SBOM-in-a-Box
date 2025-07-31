@@ -184,9 +184,7 @@ public class CreationData implements Comparable {
         return creatorComment;
     }
 
-    ///
     /// Util
-    ///
     @Override
     public List<Conflict> compare(Comparable o) {
         // Don't compare if not instance of same object

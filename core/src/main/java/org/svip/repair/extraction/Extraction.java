@@ -34,6 +34,7 @@ import java.util.Map;
  * <b>File</b>: Extraction.java<br>
  * <b>Description</b>: Abstract core Class for extracting information
  * from package manager metadata
+ *
  * @author Justin Jantzi
  */
 public abstract class Extraction {
@@ -45,6 +46,7 @@ public abstract class Extraction {
 
     /**
      * Creates a new object with the purl to use for extraction
+     *
      * @param purl the purl to be used
      */
     public Extraction(PURL purl) {
@@ -62,6 +64,7 @@ public abstract class Extraction {
 
     /**
      * Gets the copyright from extracted text if exists
+     *
      * @return copyright
      */
     public String getCopyright() {
@@ -70,6 +73,7 @@ public abstract class Extraction {
 
     /**
      * Gets the license from extracted text if exists
+     *
      * @return license
      */
     public String getLicense() {
@@ -78,6 +82,7 @@ public abstract class Extraction {
 
     /**
      * Gets the hashes from maven repository if exists
+     *
      * @return hashes {algorithm : hash}
      */
     public Map<Algorithm, String> getHashes() {

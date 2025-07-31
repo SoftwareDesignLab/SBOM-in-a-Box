@@ -45,7 +45,6 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
     /**
      * Constructor initializes a given parser and assigns both the
      * regex to test it against and the source directory to test on.
-     *
      */
     public JSTSParserRegexTest() {
         super(new JSTSParser(),
@@ -53,9 +52,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
                 "JS");
     }
 
-    ///
     /// External
-    ///
 
     @Test
     @DisplayName("import bar")
@@ -395,9 +392,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// INTERNAL
-    ///
 
     @Test
     @DisplayName("import './lib/bar.js'")
@@ -447,9 +442,7 @@ public class JSTSParserRegexTest extends ParseRegexTestCore {
 
     // No language tests, as JS has no language components
 
-    ///
     /// Comments
-    ///
 
     @Test
     @DisplayName("// import bar")

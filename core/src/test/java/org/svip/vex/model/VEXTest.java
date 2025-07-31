@@ -44,7 +44,9 @@ class VEXTest {
     private final VEXType testType = VEXType.CYCLONE_DX;
 
 
-    /**Sample VEX Statement 1*/
+    /**
+     * Sample VEX Statement 1
+     */
     private final String testStatementID1 = "GHSA-5mg8-w23w-74h3";
 
     private final String testStateVersion = "3.1";
@@ -67,7 +69,9 @@ class VEXTest {
     private final String testVulnDesc = "Information Disclosure in Guava";
     private final String testVulnID1 = "CVE-2020-8908";
 
-    /**Sample VEX Statement 2*/
+    /**
+     * Sample VEX Statement 2
+     */
     private final String testStatementID2 = "GHSA-462w-v97r-4m45";
 
     private final String testStateVersion2 = "2.0";
@@ -84,7 +88,9 @@ class VEXTest {
             "str.format_map allows a sandbox escape.";
     private final String testVulnID2 = "CVE-2019-10906";
 
-    /**Sample VEX Statement 3*/
+    /**
+     * Sample VEX Statement 3
+     */
     private final String testStatementID3 = "CVE-2021-44228";
     private final String testStateVersion3 = "2.0";
     private final VulnStatus testStatus2 = VulnStatus.NOT_AFFECTED;

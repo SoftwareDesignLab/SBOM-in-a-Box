@@ -40,7 +40,6 @@ class PythonParserRegexLineCommentTest extends ParseRegexTestCore {
     /**
      * Constructor initializes a given parser and assigns both the
      * regex to test it against and the source directory to test on.
-     *
      */
     public PythonParserRegexLineCommentTest() {
         super(new PythonParser(),
@@ -108,9 +107,7 @@ class PythonParserRegexLineCommentTest extends ParseRegexTestCore {
         assertFalse(m.find());   // Should be no matches
     }
 
-    ///
     /// Internal Tests
-    ///
     @Test
     @DisplayName("# import ifoo")
     void importAbsInternalBasic() {

@@ -71,7 +71,7 @@ public class ManipulateController {
      * Manipulates an SVIPSBOM's values to match a desired schema while retaining
      * the SVIPSBOM object.
      *
-     * @param sbom  SVIPSBOM
+     * @param sbom            SVIPSBOM
      * @param manipulationMap Desired schema enum containing standard values
      * @return Modified SVIPSBOM
      */

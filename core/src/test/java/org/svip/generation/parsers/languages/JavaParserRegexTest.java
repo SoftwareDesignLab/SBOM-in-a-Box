@@ -45,7 +45,6 @@ public class JavaParserRegexTest extends ParseRegexTestCore {
     /**
      * Constructor initializes a given parser and assigns both the
      * regex to test it against and the source directory to test on.
-     *
      */
     public JavaParserRegexTest() {
         super(new JavaParser(),
@@ -54,9 +53,7 @@ public class JavaParserRegexTest extends ParseRegexTestCore {
         // Cast generic instance to its correct type, such that protected fields can be accessed
     }
 
-    ///
     /// External
-    ///
 
     @Test
     @DisplayName("import bar;")
@@ -226,9 +223,7 @@ public class JavaParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// INTERNAL
-    ///
 
     @Test
     @DisplayName("import Java.lib.Foo;")
@@ -251,9 +246,7 @@ public class JavaParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// LANGUAGE
-    ///
 
     @Test
     @DisplayName("import java.awt.color;")
@@ -297,9 +290,7 @@ public class JavaParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// Comments
-    ///
 
     @Test
     @DisplayName("// import bar;")

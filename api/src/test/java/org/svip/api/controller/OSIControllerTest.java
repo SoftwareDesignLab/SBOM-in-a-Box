@@ -30,9 +30,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.svip.api.services.OSIService;
@@ -49,6 +52,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -58,17 +62,33 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Ian Dunn
  */
 @WebMvcTest(OSIController.class)
+@Import(OSIControllerTest.TestConfig.class)
 @DisplayName("OSI Controller Test")
 public class OSIControllerTest {
 
-    @MockBean
-    private SBOMFileService sbomFileService;
-
-    @MockBean
-    private OSIService osiService;
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private SBOMFileService sbomFileService;
+
+    @Autowired
+    private OSIService osiService;
+
+    @TestConfiguration
+    static class TestConfig {
+
+        @Bean
+        public SBOMFileService sbomFileService() {
+            return Mockito.mock(SBOMFileService.class);
+        }
+
+        @Bean
+        public OSIService osiService() {
+            return Mockito.mock(OSIService.class);
+        }
+    }
 
     @BeforeEach
     void setup() {

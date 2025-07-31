@@ -107,9 +107,7 @@ public class PURL {
         this.subpath = matcher.group(7);
     }
 
-    ///
     /// Getters
-    ///
 
     public String getType() {
         return type;
@@ -131,9 +129,7 @@ public class PURL {
         return qualifiers;
     }
 
-    ///
     /// Overrides
-    ///
 
     @Override
     public String toString() {

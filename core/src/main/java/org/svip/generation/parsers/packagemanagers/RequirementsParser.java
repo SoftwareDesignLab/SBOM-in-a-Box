@@ -53,6 +53,7 @@ public class RequirementsParser extends PackageManagerParser {
 
     @Override
     protected void parseData(List<SVIPComponentBuilder> components, HashMap<String, Object> data) {
+        // todo handle unchecked cast
         final ArrayList<LinkedHashMap<String, String>> requirements =
                 (ArrayList<LinkedHashMap<String, String>>) data.get("requirements");
 

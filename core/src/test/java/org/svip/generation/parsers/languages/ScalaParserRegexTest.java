@@ -45,7 +45,6 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
     /**
      * Constructor initializes a given parser and assigns both the
      * regex to test it against and the source directory to test on.
-     *
      */
     public ScalaParserRegexTest() {
         super(new ScalaParser(),
@@ -53,9 +52,7 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
                 "Scala");
     }
 
-    ///
     /// External
-    ///
 
     @Test
     @DisplayName("import bar.foo")
@@ -245,9 +242,7 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// INTERNAL
-    ///
 
     @Test
     @DisplayName("import Scala.lib.Bar")
@@ -291,9 +286,7 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// LANGUAGE
-    ///
 
     @Test
     @DisplayName("import scala.collection.parallel.immutable")
@@ -379,9 +372,7 @@ public class ScalaParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// Comments
-    ///
 
     @Test
     @DisplayName("// import bar.foo")

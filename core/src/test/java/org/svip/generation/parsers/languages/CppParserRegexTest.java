@@ -44,7 +44,6 @@ class CppParserRegexTest extends ParseRegexTestCore {
     /**
      * Constructor initializes a given parser and assigns both the
      * regex to test it against and the source directory to test on.
-     *
      */
     public CppParserRegexTest() {
         super(new CppParser(),
@@ -99,9 +98,7 @@ class CppParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// Language
-    ///
 
     @Test
     @DisplayName("#include <ios>")
@@ -147,9 +144,7 @@ class CppParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// Internal
-    ///
 
     @Test
     @DisplayName("#include \"foo.h\"")
@@ -239,9 +234,7 @@ class CppParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// False Cases
-    ///
 
     @Test
     @DisplayName("<foo>")
@@ -259,9 +252,7 @@ class CppParserRegexTest extends ParseRegexTestCore {
         assertFalse(m.find());   // Should be a match
     }
 
-    ///
     /// Comments
-    ///
 
     @Test
     @DisplayName("// #include <foo>")

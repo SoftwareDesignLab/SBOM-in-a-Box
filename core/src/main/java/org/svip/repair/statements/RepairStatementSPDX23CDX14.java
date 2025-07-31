@@ -94,6 +94,7 @@ public class RepairStatementSPDX23CDX14 implements RepairStatement {
                     if (fixes != null)
                         // Set the fix list
                         try {
+                            // todo handle unchecked cast
                             toFix.addFixes(fixes.fix(toFix, sbom, hashCodeMapping.get(component), component));
                         } catch (Exception ex) {
                             Debug.log(Debug.LOG_TYPE.ERROR, "Error while generating fix for: " + toFix.getMessage());

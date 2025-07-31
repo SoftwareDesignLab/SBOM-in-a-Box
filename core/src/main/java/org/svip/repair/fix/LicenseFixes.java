@@ -31,6 +31,7 @@ import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.uids.License;
 import org.svip.utils.Debug;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
@@ -74,7 +75,7 @@ public class LicenseFixes implements Fixes<License> {
      */
     private Map<String, License> getAllLicenses() {
         try {
-            URL url = new URL(LICENSES_URL);
+            URL url = URI.create(LICENSES_URL).toURL();
             ObjectMapper mapper = new ObjectMapper();
 
             JsonNode licensesJson = mapper.readTree(url).get("licenses");

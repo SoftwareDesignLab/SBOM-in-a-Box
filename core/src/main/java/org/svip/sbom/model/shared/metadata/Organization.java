@@ -93,9 +93,7 @@ public class Organization implements Comparable {
         return contacts;
     }
 
-    ///
     /// Utils
-    ///
 
 
     @Override

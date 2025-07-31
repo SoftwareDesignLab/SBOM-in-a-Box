@@ -81,14 +81,14 @@ public class RepairTest {
     public void SPDXNullRepairsTest() throws Exception {
         SPDX23SBOM sbom = spdx23JSONDeserializer.readFromString(Files.readString(Path.of(SPDX23_JSON_SBOM)));
         SPDX23SBOM repairedSBOM = (SPDX23SBOM) r.repairSBOM(sbom, null);
-        assertTrue(sbom.equals(repairedSBOM));
+        assertEquals(sbom, repairedSBOM);
     }
 
     @Test
     public void CDXNullRepairsTest() throws Exception {
         CDX14SBOM sbom = cdx14JSONDeserializer.readFromString(Files.readString(Path.of(CDX_14_JSON_SBOM)));
         CDX14SBOM repairedSBOM = (CDX14SBOM) r.repairSBOM(sbom, null);
-        assertTrue(sbom.equals(repairedSBOM));
+        assertEquals(sbom, repairedSBOM);
     }
 
     @Test

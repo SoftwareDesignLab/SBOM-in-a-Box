@@ -45,8 +45,8 @@ public interface Repair {
      * that have been requested for the SBOM. These fixes will then
      * be applied to that SBOM and returned.
      *
-     * @param sbom      The SBOM Object.
-     * @param repairs   The fixes to make
+     * @param sbom    The SBOM Object.
+     * @param repairs The fixes to make
      * @return The repaired SBOM Object.
      */
     SBOM repairSBOM(SBOM sbom, Map<Integer, Set<Fix<?>>> repairs);

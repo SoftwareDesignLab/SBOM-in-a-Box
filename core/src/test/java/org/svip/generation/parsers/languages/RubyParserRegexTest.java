@@ -45,7 +45,6 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
     /**
      * Constructor initializes a given parser and assigns both the
      * regex to test it against and the source directory to test on.
-     *
      */
     public RubyParserRegexTest() {
         super(new RubyParser(),
@@ -53,9 +52,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
                 "Ruby");
     }
 
-    ///
     /// External
-    ///
 
     @Test
     @DisplayName("require fee")
@@ -204,9 +201,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// INTERNAL
-    ///
 
     @Test
     @DisplayName("require lib/bar")
@@ -271,9 +266,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// LANGUAGE
-    ///
 
     @Test
     @DisplayName("require cgi/session")
@@ -296,9 +289,7 @@ public class RubyParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// Comments
-    ///
 
     @Test
     @DisplayName("# require bar/foo")

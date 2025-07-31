@@ -74,9 +74,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
     public static final String CREATOR_TAG = "Creator";
     public static final String EXTERNAL_REFERENCE_TAG = "ExternalRef";
 
-    ///
     /// Patterns
-    ///
 
     public static final Pattern EXTRACTED_LICENSE_PATTERN = Pattern.compile("(^LicenseID:[\\w\\W]*?)\n{2}", Pattern.MULTILINE);
     public static final Pattern UNPACKAGED_PATTERN = Pattern.compile("(^FileName:[\\w\\W]*?)\\n{2}", Pattern.MULTILINE);
@@ -206,7 +204,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
     /**
      * Update CreationData with info from SPDX
      *
-     * @param data CreationData object
+     * @param data        CreationData object
      * @param creatorInfo Creation info from SPDX
      */
     protected static void parseSPDXCreatorInfo(CreationData data, List<String> creatorInfo) {
@@ -239,7 +237,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
     /**
      * Build a SPDX23 Package
      *
-     * @param builder Package Builder
+     * @param builder  Package Builder
      * @param contents String to extract details from
      * @return SPDX23 Package Object
      */
@@ -343,7 +341,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
     /**
      * Build a SPDX23 File
      *
-     * @param builder File Builder
+     * @param builder  File Builder
      * @param contents String to extract details from
      * @return SPDX23 File Object
      */

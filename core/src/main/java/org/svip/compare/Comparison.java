@@ -58,7 +58,7 @@ public class Comparison {
      * Compare 2 SBOM objects
      *
      * @param target Target SBOM
-     * @param other Other SBOM
+     * @param other  Other SBOM
      */
     public Comparison(SBOM target, SBOM other) {
         // Compare metadata

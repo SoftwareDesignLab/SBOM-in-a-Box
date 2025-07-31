@@ -45,7 +45,6 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
     /**
      * Constructor initializes a given parser and assigns both the
      * regex to test it against and the source directory to test on.
-     *
      */
     public PerlParserRegexTest() {
         super(new PerlParser(),
@@ -53,9 +52,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
                 "Perl");
     }
 
-    ///
     /// External
-    ///
 
     @Test
     @DisplayName("use foo;")
@@ -352,9 +349,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         assertFalse(m.find());   // Should not be a match
     }
 
-    ///
     /// DEFAULT (Should not create any components)
-    ///
 
     @Test
     @DisplayName("use strict;")
@@ -416,9 +411,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         assertEquals(0, results.size());    // should not find any matches
     }
 
-    ///
     /// INTERNAL
-    ///
 
     @Test
     @DisplayName("use lib::bar;")
@@ -483,9 +476,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// LANGUAGE
-    ///
 
     @Test
     @DisplayName("use autodie::exception::system;")
@@ -508,9 +499,7 @@ public class PerlParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// Comments
-    ///
 
     @Test
     @DisplayName("# use foo;")

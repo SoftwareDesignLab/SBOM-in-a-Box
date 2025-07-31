@@ -70,12 +70,14 @@ public class GradleParser extends PackageManagerParser {
         this.dependencies = new LinkedHashMap<>();
 
         // Insert data
+        // todo handle unchecked cast
         this.resolveProperties(
                 this.dependencies,
                 (HashMap<String, String>) data.get("dependencies")
         );
 
         // Get properties
+        // todo handle unchecked cast
         final ArrayList<String> ext = (ArrayList<String>) data.get("ext");
 
         if (ext != null) {

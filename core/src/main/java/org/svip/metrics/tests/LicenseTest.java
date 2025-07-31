@@ -36,6 +36,7 @@ import org.svip.utils.Debug;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
@@ -159,7 +160,7 @@ public class LicenseTest extends MetricTest {
     private boolean loadSPDXLicenseData() {
         try {
             // Open connection
-            URL url = new URL(SPDX_LICENSE_LIST_URL);
+            URL url = URI.create(SPDX_LICENSE_LIST_URL).toURL();
             HttpURLConnection huc = (HttpURLConnection) url.openConnection();
             huc.setRequestMethod("GET");
 

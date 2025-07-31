@@ -47,8 +47,8 @@ public class ManipulateSVIP {
     /**
      * Modifies an SVIPSBOM to match the fields of a requested schema.
      *
-     * @param sbom  The SBOM to be modified
-     * @param manipulationMap   Enumeration containing the values for the requested Schema
+     * @param sbom            The SBOM to be modified
+     * @param manipulationMap Enumeration containing the values for the requested Schema
      * @return An SBOM containing the modified data
      */
     public static SVIPSBOM modify(SVIPSBOM sbom, SchemaManipulationMap manipulationMap) {
@@ -138,7 +138,7 @@ public class ManipulateSVIP {
      * @return An SVIPComponentObject with the new values
      */
     public static SVIPComponentObject modifyComponent(
-            Component originalComponent, SchemaManipulationMap manipulationMap, HashMap relationshipMap
+            Component originalComponent, SchemaManipulationMap manipulationMap, HashMap<String, String> relationshipMap
     ) {
 
         // Cast component
