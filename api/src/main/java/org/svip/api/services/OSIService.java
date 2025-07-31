@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.api.services;
@@ -36,7 +37,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -57,16 +61,18 @@ public class OSIService {
     /**
      * URL Builder for requests to OSI
      */
-    private static class OSIURLBuilder{
+    private static class OSIURLBuilder {
 
         // Request Method
         private enum RequestMethod {
             GET("GET"),
             POST("POST");
             private final String value;
+
             RequestMethod(String requestMethodStr) {
                 this.value = requestMethodStr;
             }
+
             @Override
             public String toString() {
                 return this.value;
@@ -78,9 +84,11 @@ public class OSIService {
             TOOLS("tools"),
             GENERATE("generate");
             private final String value;
+
             RequestEndpoint(String requestEndpoint) {
                 this.value = requestEndpoint;
             }
+
             @Override
             public String toString() {
                 return this.value;
@@ -106,9 +114,9 @@ public class OSIService {
          * Create builder with required arguments
          *
          * @param requestEndpoint Target OSI endpoint
-         * @param requestMethod http request method
+         * @param requestMethod   http request method
          */
-        public OSIURLBuilder(RequestEndpoint requestEndpoint, RequestMethod requestMethod){
+        public OSIURLBuilder(RequestEndpoint requestEndpoint, RequestMethod requestMethod) {
             this.requestEndpoint = requestEndpoint;
             this.requestMethod = requestMethod;
         }
@@ -120,7 +128,7 @@ public class OSIService {
          * @param value value of param
          * @return OSIURLBuilder
          */
-        public OSIURLBuilder addParam(String param, String value){
+        public OSIURLBuilder addParam(String param, String value) {
             this.requestParams.put(param, value);
             return this;
         }
@@ -137,7 +145,7 @@ public class OSIService {
 
             // Append parameters
             int paramCount = 0;
-            for(String param : this.requestParams.keySet()) {
+            for (String param : this.requestParams.keySet()) {
                 url.append(paramCount++ == 0 ? "?" : "&")
                         .append(param)
                         .append("=")
@@ -149,7 +157,7 @@ public class OSIService {
             conn.setRequestMethod(this.requestMethod.value);
 
             // Get POST return value
-            if(this.requestMethod == OSIURLBuilder.RequestMethod.POST)
+            if (this.requestMethod == OSIURLBuilder.RequestMethod.POST)
                 conn.setDoOutput(true);
 
             return conn;
@@ -168,6 +176,7 @@ public class OSIService {
         // The location of the bound directory relative to the build path (core).
         private static final String BOUND_DIR = "/core/src/main/java/org/svip/generation/osi/bound_dir/";
         private final String dirName;
+
         BOUND_DIR(String dirName) {
             this.dirName = dirName;
         }
@@ -209,10 +218,10 @@ public class OSIService {
     /**
      * Attempt to create a new service if OSI is available
      */
-    public OSIService(){
-        try{
+    public OSIService() {
+        try {
             this.enabled = isOSIContainerAvailable();
-        } catch (Exception ignored){
+        } catch (Exception ignored) {
         }
     }
 
@@ -295,12 +304,12 @@ public class OSIService {
         HttpURLConnection conn =
                 new OSIURLBuilder(OSIURLBuilder.RequestEndpoint.GENERATE, OSIURLBuilder.RequestMethod.POST).buildConnection();
 
-        if(!toolNames.isEmpty()){
+        if (!toolNames.isEmpty()) {
             conn.setRequestProperty("Content-Type", "application/json");
             String jsonInputString = "{\"tools\": " + Arrays.toString(toolNames.toArray()) + "}";
 
             // append requested tools to the connection
-            try(OutputStream os = conn.getOutputStream()) {
+            try (OutputStream os = conn.getOutputStream()) {
                 byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
             }
@@ -335,7 +344,7 @@ public class OSIService {
     /**
      * @return If the service is enabled or not
      */
-    public boolean isEnabled(){
+    public boolean isEnabled() {
         return this.enabled;
     }
 
@@ -344,7 +353,7 @@ public class OSIService {
      * Function to check if the Docker API is running.
      *
      * @return True if the Docker API is running and can accept connections.
-     *         False if the Docker API returned an error when pinging.
+     * False if the Docker API returned an error when pinging.
      * @throws DockerNotAvailableException If the container is not accessible/running at all.
      */
     private boolean isOSIContainerAvailable() throws DockerNotAvailableException {

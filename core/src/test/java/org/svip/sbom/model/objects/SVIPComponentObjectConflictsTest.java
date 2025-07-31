@@ -1,38 +1,37 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 package org.svip.sbom.model.objects;
 
 import org.junit.jupiter.api.Test;
-import org.svip.metrics.resultfactory.Text;
-import org.svip.metrics.resultfactory.enumerations.INFO;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.MismatchType;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.sbom.factory.objects.SVIPSBOMComponentFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.compare.conflicts.Conflict;
-import org.svip.compare.conflicts.MismatchType;
 
 import java.util.List;
 import java.util.Objects;
@@ -54,8 +53,7 @@ public class SVIPComponentObjectConflictsTest {
     static Component conflictPackage;
 
     @Test
-    public void Type_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Type_is_Conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setType("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setType("Type");
@@ -70,7 +68,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void UID_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void UID_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setUID("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setUID("123");
@@ -85,7 +83,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void name_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void name_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setName("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setName("name");
@@ -100,7 +98,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void author_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void author_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setAuthor("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setAuthor("author");
@@ -116,7 +114,7 @@ public class SVIPComponentObjectConflictsTest {
 
     // TODO This is still breaking due to casting
     @Test
-    public void license_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void license_is_conflicting_between_testPackage_and_controlPackage_test() {
         LicenseCollection licenseCollection = new LicenseCollection();
         licenseCollection.addDeclaredLicense("control license");
         packageBuilder.setLicenses(licenseCollection);
@@ -132,12 +130,11 @@ public class SVIPComponentObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
-        for(Conflict c : conflictList)
-        {
+        for (Conflict c : conflictList) {
             if (c.getType() == MismatchType.MISSING && Objects.equals(c.getMessage(), "License is missing")) {
-                if(Objects.equals(c.getTarget(), "control license") && c.getOther() == null)
+                if (Objects.equals(c.getTarget(), "control license") && c.getOther() == null)
                     c1 = true;
-                else if(c.getTarget() == null && Objects.equals(c.getOther(), "license"))
+                else if (c.getTarget() == null && Objects.equals(c.getOther(), "license"))
                     c2 = true;
             }
         }
@@ -147,7 +144,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void copyright_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void copyright_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setCopyright("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setCopyright("copyright");
@@ -163,7 +160,7 @@ public class SVIPComponentObjectConflictsTest {
 
     // TODO Breaks because of licenses (but why?)
     @Test
-    public void componentHash_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void componentHash_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.addHash("SHA1", "control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.addHash("SHA2", "hash");
@@ -175,13 +172,12 @@ public class SVIPComponentObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
-        for(Conflict c : conflictList)
-        {
-            if(c.getType() == MismatchType.MISSING && Objects.equals(c.getMessage(), "Component Hash is missing"))
-                if(Objects.equals(c.getTarget(), "SHA1") &&
+        for (Conflict c : conflictList) {
+            if (c.getType() == MismatchType.MISSING && Objects.equals(c.getMessage(), "Component Hash is missing"))
+                if (Objects.equals(c.getTarget(), "SHA1") &&
                         c.getOther() == null)
                     c1 = true;
-                else if(c.getTarget() == null &&
+                else if (c.getTarget() == null &&
                         Objects.equals(c.getOther(), "SHA2"))
                     c2 = true;
         }
@@ -191,8 +187,8 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void supplier_is_conflicting_between_testPackage_and_controlPackage_test(){
-        Organization controlOrg = new Organization("Control Org.","www.control.com");
+    public void supplier_is_conflicting_between_testPackage_and_controlPackage_test() {
+        Organization controlOrg = new Organization("Control Org.", "www.control.com");
         Organization testOrg = new Organization("Test Org.", "www.test.com");
         packageBuilder.setSupplier(controlOrg);
         controlPackage = packageBuilder.buildAndFlush();
@@ -205,11 +201,10 @@ public class SVIPComponentObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
-        for(Conflict c : conflictList)
-        {
-            if(c.getType() == MismatchType.NAME_MISMATCH && Objects.equals(c.getMessage(), "Organization: Name doesn't match"))
+        for (Conflict c : conflictList) {
+            if (c.getType() == MismatchType.NAME_MISMATCH && Objects.equals(c.getMessage(), "Organization: Name doesn't match"))
                 c1 = true;
-            else if(c.getType() == MismatchType.MISC_MISMATCH && Objects.equals(c.getMessage(), "Organization: URL doesn't match"))
+            else if (c.getType() == MismatchType.MISC_MISMATCH && Objects.equals(c.getMessage(), "Organization: URL doesn't match"))
                 c2 = true;
         }
 
@@ -218,7 +213,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void version_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void version_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setVersion("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setVersion("version");
@@ -233,7 +228,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void description_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void description_is_conflicting_between_testPackage_and_controlPackage_test() {
         Description controlDesc = new Description("control");
         Description testDesc = new Description("description");
         packageBuilder.setDescription(controlDesc);
@@ -250,7 +245,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void PURL_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void PURL_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.addPURL("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.addPURL("purl");
@@ -262,12 +257,11 @@ public class SVIPComponentObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
-        for(Conflict c : conflictList)
-        {
+        for (Conflict c : conflictList) {
             if (c.getType() == MismatchType.MISSING && Objects.equals(c.getMessage(), "PURL is missing")) {
-                if(Objects.equals(c.getTarget(), "control") && c.getOther() == null)
+                if (Objects.equals(c.getTarget(), "control") && c.getOther() == null)
                     c1 = true;
-                else if(c.getTarget() == null && Objects.equals(c.getOther(), "purl"))
+                else if (c.getTarget() == null && Objects.equals(c.getOther(), "purl"))
                     c2 = true;
             }
         }
@@ -277,7 +271,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void CPE_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void CPE_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.addCPE("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.addCPE("cpe");
@@ -289,12 +283,11 @@ public class SVIPComponentObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
-        for(Conflict c : conflictList)
-        {
+        for (Conflict c : conflictList) {
             if (c.getType() == MismatchType.MISSING && Objects.equals(c.getMessage(), "CPE is missing")) {
-                if(Objects.equals(c.getTarget(), "control") && c.getOther() == null)
+                if (Objects.equals(c.getTarget(), "control") && c.getOther() == null)
                     c1 = true;
-                else if(c.getTarget() == null && Objects.equals(c.getOther(), "cpe"))
+                else if (c.getTarget() == null && Objects.equals(c.getOther(), "cpe"))
                     c2 = true;
             }
         }
@@ -304,7 +297,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void mimeType_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void mimeType_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setMimeType("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setMimeType("mime type");
@@ -319,7 +312,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void publisher_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void publisher_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setPublisher("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setPublisher("publisher");
@@ -334,7 +327,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void scope_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void scope_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setScope("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setScope("scope");
@@ -349,7 +342,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void group_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void group_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setGroup("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setGroup("group");
@@ -362,8 +355,9 @@ public class SVIPComponentObjectConflictsTest {
         assertEquals(MismatchType.MISC_MISMATCH, conflict.getType());
         assertEquals("Group doesn't match", conflict.getMessage());
     }
+
     @Test
-    public void verificationCode_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void verificationCode_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setVerificationCode("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setVerificationCode("verification code");
@@ -378,7 +372,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void downloadLocation_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void downloadLocation_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setDownloadLocation("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setDownloadLocation("download location");
@@ -393,7 +387,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void fileName_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void fileName_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setFileName("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setFileName("file name");
@@ -408,7 +402,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void filesAnalyzed_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void filesAnalyzed_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setFilesAnalyzed(false);
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setFilesAnalyzed(true);
@@ -423,7 +417,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void homePage_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void homePage_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setHomePage("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setHomePage("homepage");
@@ -438,7 +432,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void sourceInfo_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void sourceInfo_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setSourceInfo("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setSourceInfo("source info");
@@ -453,7 +447,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void releaseDate_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void releaseDate_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setReleaseDate("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setReleaseDate("release date");
@@ -468,7 +462,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void buildDate_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void buildDate_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setBuildDate("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setBuildDate("build date");
@@ -483,7 +477,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void validUntilDate_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void validUntilDate_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setValidUntilDate("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setValidUntilDate("valid until date");
@@ -498,7 +492,7 @@ public class SVIPComponentObjectConflictsTest {
     }
 
     @Test
-    public void fileNotice_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void fileNotice_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setFileNotice("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setFileNotice("notice");

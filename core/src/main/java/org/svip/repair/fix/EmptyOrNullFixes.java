@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.repair.fix;
@@ -44,8 +45,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Fixes class to generate suggested repairs for NULL attributes of a component
@@ -112,7 +115,7 @@ public class EmptyOrNullFixes implements Fixes {
         List<Component> filtered = sbom.getComponents().stream().filter(
                 comp -> comp.hashCode() == hashCode).toList();
 
-        if(filtered.size() == 0)
+        if (filtered.size() == 0)
             return null;
 
         Component comp = filtered.get(0);
@@ -140,7 +143,7 @@ public class EmptyOrNullFixes implements Fixes {
         String[] split = details.split(" ");
 
         //We only fix creation data at the current time
-        if(!split[split.length].equals("Manufacture"))
+        if (!split[split.length].equals("Manufacture"))
             return new ArrayList<Fix<?>>();
 
         // Create a new date and time string
@@ -178,7 +181,7 @@ public class EmptyOrNullFixes implements Fixes {
 
         String[] split = message.split(" ");
 
-        if(split[3].equals("null"))
+        if (split[3].equals("null"))
             return Collections.singletonList(new Fix<>(FixType.COMPONENT_COMMENT, "null", ""));
 
         return null;
@@ -191,7 +194,7 @@ public class EmptyOrNullFixes implements Fixes {
 
         String[] split = message.split(" ");
 
-        if(split[4].equals("null"))
+        if (split[4].equals("null"))
             return Collections.singletonList(new Fix<>(FixType.COMPONENT_ATTRIBUTION_TEXT, null, ""));
 
         return null;
@@ -203,7 +206,7 @@ public class EmptyOrNullFixes implements Fixes {
     private List<Fix<?>> fileNoticeNullFix(String message) {
         String[] split = message.split(" ");
 
-        if(split[4].equals("null"))
+        if (split[4].equals("null"))
             return Collections.singletonList(new Fix<>(FixType.COMPONENT_FILE_NOTICE, null, ""));
 
         return null;
@@ -220,52 +223,50 @@ public class EmptyOrNullFixes implements Fixes {
         List<Component> filtered = sbom.getComponents().stream().filter(
                 comp -> comp.hashCode() == componentHash).toList();
 
-        if(filtered.size() == 0)
+        if (filtered.size() == 0)
             return null;
 
         Component comp = filtered.get(0);
         Set<String> purls = null;
 
-        if(comp instanceof SPDX23Package spdx23Package) {
+        if (comp instanceof SPDX23Package spdx23Package) {
             purls = spdx23Package.getPURLs();
-        }
-
-        else if(comp instanceof CDX14Package cdx14Package) {
+        } else if (comp instanceof CDX14Package cdx14Package) {
             purls = cdx14Package.getPURLs();
         }
 
-        if(purls == null || purls.isEmpty())
+        if (purls == null || purls.isEmpty())
             return null;
 
         List<Fix<?>> fixes = new ArrayList<>();
 
-        for(String purlString : purls) {
+        for (String purlString : purls) {
 
             PURL p = new PURL(purlString);
 
             String type = p.getType();
 
-            if(type != null) {
+            if (type != null) {
                 Extraction ex = null;
 
-                switch(type) {
+                switch (type) {
                     case "nuget":
                         ex = new NugetExtraction(p);
                         break;
                 }
 
-                if(ex == null)
+                if (ex == null)
                     continue;
 
                 ex.extract();
 
-                if(ex.getCopyright() != null) {
+                if (ex.getCopyright() != null) {
                     fixes.add(new Fix<>(FixType.COMPONENT_COPYRIGHT, "null", ex.getCopyright()));
                 }
             }
         }
 
-        if(fixes.size() > 0)
+        if (fixes.size() > 0)
             return fixes;
 
         return null;
@@ -282,7 +283,7 @@ public class EmptyOrNullFixes implements Fixes {
         List<Component> filtered = sbom.getComponents().stream().filter(
                 comp -> comp.hashCode() == componentHash).toList();
 
-        if(filtered.size() == 0 || repairSubType == null)
+        if (filtered.size() == 0 || repairSubType == null)
             return null;
 
         Component component = filtered.get(0);
@@ -318,7 +319,6 @@ public class EmptyOrNullFixes implements Fixes {
             }
 
         }
-
 
 
         // Create a new set of purls

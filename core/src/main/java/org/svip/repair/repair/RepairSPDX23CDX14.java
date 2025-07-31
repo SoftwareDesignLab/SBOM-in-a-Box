@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.repair.repair;
@@ -50,10 +51,12 @@ import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.sbom.model.uids.CPE;
 import org.svip.sbom.model.uids.Hash;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public class RepairSPDX23CDX14 implements Repair {
 
@@ -62,7 +65,7 @@ public class RepairSPDX23CDX14 implements Repair {
     @Override
     public SBOM repairSBOM(SBOM sbom, Map<Integer, Set<Fix<?>>> repairs) {
 
-        if(repairs == null)
+        if (repairs == null)
             return sbom;
 
         String format = sbom.getFormat();
@@ -78,12 +81,12 @@ public class RepairSPDX23CDX14 implements Repair {
         HashMap<String, Set<Relationship>> relationships = (HashMap<String, Set<Relationship>>) sbom.getRelationships();
         Set<ExternalReference> externalReferences = sbom.getExternalReferences();
 
-        for(Integer key : repairs.keySet()) {
+        for (Integer key : repairs.keySet()) {
             Set<Fix<?>> fixes = repairs.get(key);
 
             Optional<Component> potentialComp = null;
 
-           if(key != METADATA_HASH)
+            if (key != METADATA_HASH)
                 potentialComp = components.stream().filter(x -> x.hashCode() == key).findFirst();
 
             Component comp = null;
@@ -96,7 +99,7 @@ public class RepairSPDX23CDX14 implements Repair {
             String type = null;
             String compUID = null;
 
-            if(potentialComp != null && potentialComp.isPresent()) {
+            if (potentialComp != null && potentialComp.isPresent()) {
                 comp = potentialComp.get();
 
                 author = comp.getAuthor();
@@ -132,9 +135,7 @@ public class RepairSPDX23CDX14 implements Repair {
             String releaseDate = null;
             String sourceInfo = null;
 
-            if(comp instanceof CDX14ComponentObject) {
-
-                CDX14ComponentObject cdxComp = (CDX14ComponentObject) comp;
+            if (comp instanceof CDX14ComponentObject cdxComp) {
 
                 desc = cdxComp.getDescription();
                 compExtRef = cdxComp.getExternalReferences();
@@ -147,10 +148,7 @@ public class RepairSPDX23CDX14 implements Repair {
                 purls = cdxComp.getPURLs();
                 publisher = cdxComp.getPublisher();
                 properties = cdxComp.getProperties();
-            }
-
-            else if(comp instanceof SPDX23PackageObject) {
-                SPDX23PackageObject spdx23Component = (SPDX23PackageObject) comp;
+            } else if (comp instanceof SPDX23PackageObject spdx23Component) {
                 attributionText = spdx23Component.getAttributionText();
                 comment = spdx23Component.getComment();
                 desc = spdx23Component.getDescription();
@@ -168,18 +166,15 @@ public class RepairSPDX23CDX14 implements Repair {
                 homePage = spdx23Component.getHomePage();
                 releaseDate = spdx23Component.getReleaseDate();
                 sourceInfo = spdx23Component.getSourceInfo();
-            }
-
-            else if(comp instanceof SPDX23FileObject) {
-                SPDX23FileObject spdx23File = (SPDX23FileObject) comp;
+            } else if (comp instanceof SPDX23FileObject spdx23File) {
                 attributionText = spdx23File.getAttributionText();
                 comment = spdx23File.getComment();
                 fileNotice = spdx23File.getFileNotice();
             }
 
 
-            for(Fix<?> fix : fixes) {
-                switch(fix.getType()) {
+            for (Fix<?> fix : fixes) {
+                switch (fix.getType()) {
 
                     case COMPONENT_FILE_NOTICE -> {
                         fileNotice = fix.getNew().toString();
@@ -238,19 +233,19 @@ public class RepairSPDX23CDX14 implements Repair {
                 }
             }
 
-            if(comp == null)
+            if (comp == null)
                 continue;
 
             ComponentBuilderFactory packageBuilderFactory = null;
             ComponentBuilder compBuilder = null;
 
-            if(comp instanceof CDX14ComponentObject)
+            if (comp instanceof CDX14ComponentObject)
                 packageBuilderFactory = new CDX14PackageBuilderFactory();
 
-            else if(comp instanceof SPDX23PackageObject)
+            else if (comp instanceof SPDX23PackageObject)
                 packageBuilderFactory = new SPDX23PackageBuilderFactory();
 
-            else if(comp instanceof SPDX23FileObject)
+            else if (comp instanceof SPDX23FileObject)
                 packageBuilderFactory = new SPDX23FileBuilderFactory();
 
             compBuilder = packageBuilderFactory.createBuilder();
@@ -263,14 +258,12 @@ public class RepairSPDX23CDX14 implements Repair {
             compBuilder.setCopyright(copyright);
             compBuilder.setUID(compUID);
 
-            for(String hash : hashes.keySet()) {
+            for (String hash : hashes.keySet()) {
                 compBuilder.addHash(hash, hashes.get(hash));
             }
 
 
-            if(compBuilder instanceof CDX14PackageBuilder) {
-
-                CDX14PackageBuilder cdxBuilder = (CDX14PackageBuilder) compBuilder;
+            if (compBuilder instanceof CDX14PackageBuilder cdxBuilder) {
 
                 cdxBuilder.setDescription(desc);
                 cdxBuilder.setSupplier(supplier);
@@ -280,35 +273,34 @@ public class RepairSPDX23CDX14 implements Repair {
                 cdxBuilder.setVersion(compVersion);
                 cdxBuilder.setScope(scope);
 
-                for(ExternalReference ref : compExtRef) {
+                for (ExternalReference ref : compExtRef) {
                     cdxBuilder.addExternalReference(ref);
                 }
 
-                for(String cpe : cpes) {
+                for (String cpe : cpes) {
                     cdxBuilder.addCPE(cpe);
                 }
 
-                for(String purl : purls) {
+                for (String purl : purls) {
                     cdxBuilder.addPURL(purl);
                 }
 
-                for(String property : properties.keySet()) {
-                    for(String value : properties.get(property)) {
+                for (String property : properties.keySet()) {
+                    for (String value : properties.get(property)) {
                         cdxBuilder.addProperty(property, value);
                     }
                 }
-            } else if(compBuilder instanceof SPDX23PackageBuilder) {
-                SPDX23PackageBuilder spdxBuilder = (SPDX23PackageBuilder) compBuilder;
+            } else if (compBuilder instanceof SPDX23PackageBuilder spdxBuilder) {
 
-                for(ExternalReference ref : compExtRef) {
+                for (ExternalReference ref : compExtRef) {
                     spdxBuilder.addExternalReference(ref);
                 }
 
-                for(String cpe : cpes) {
+                for (String cpe : cpes) {
                     spdxBuilder.addCPE(cpe);
                 }
 
-                for(String purl : purls) {
+                for (String purl : purls) {
                     spdxBuilder.addPURL(purl);
                 }
 
@@ -326,8 +318,7 @@ public class RepairSPDX23CDX14 implements Repair {
                 spdxBuilder.setVerificationCode(verificationCode);
                 spdxBuilder.setHomePage(homePage);
                 spdxBuilder.setSourceInfo(sourceInfo);
-            } else if(compBuilder instanceof SPDX23FileBuilder) {
-                SPDX23FileBuilder spdx23FileBuilder = (SPDX23FileBuilder) compBuilder;
+            } else if (compBuilder instanceof SPDX23FileBuilder spdx23FileBuilder) {
 
                 spdx23FileBuilder.setFileNotice(fileNotice);
                 spdx23FileBuilder.setComment(comment);
@@ -344,7 +335,7 @@ public class RepairSPDX23CDX14 implements Repair {
         if (sbom instanceof CDX14SBOM)
             builderFactory = new CDX14SBOMBuilderFactory();
 
-        else if(sbom instanceof SPDX23SBOM)
+        else if (sbom instanceof SPDX23SBOM)
             builderFactory = new SPDX23SBOMBuilderFactory();
 
         SBOMBuilder builder = builderFactory.createBuilder();
@@ -358,25 +349,24 @@ public class RepairSPDX23CDX14 implements Repair {
         builder.setRootComponent(rootComponent);
         builder.setCreationData(creationData);
 
-        for(Component c : components) {
+        for (Component c : components) {
             builder.addComponent(c);
         }
 
-        for(String s : relationships.keySet()) {
+        for (String s : relationships.keySet()) {
             Set<Relationship> relations = relationships.get(s);
 
-            for(Relationship r : relations) {
+            for (Relationship r : relations) {
                 builder.addRelationship(s, r);
             }
         }
 
-        for(ExternalReference ref : externalReferences) {
+        for (ExternalReference ref : externalReferences) {
             builder.addExternalReference(ref);
         }
 
-        if(builder instanceof SPDX23Builder) {
+        if (builder instanceof SPDX23Builder spdx23Builder) {
             SPDX23SBOM spdx23SBOM = (SPDX23SBOM) sbom;
-            SPDX23Builder spdx23Builder = (SPDX23Builder) builder;
 
             spdx23Builder.setSPDXLicenseListVersion(spdx23SBOM.getSPDXLicenseListVersion());
         }
