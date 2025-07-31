@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.api.entities;
@@ -28,8 +29,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
-import org.svip.serializers.SerializerFactory;
 import org.svip.api.entities.diff.ComparisonFile;
+import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.*;
 
 import java.util.HashSet;
@@ -37,7 +38,7 @@ import java.util.Set;
 
 /**
  * file: SBOMFile.java
- *
+ * <p>
  * SBOM Table for the database
  *
  * @author Derek Garcia
@@ -47,21 +48,19 @@ import java.util.Set;
 public class SBOMFile {
 
     // Schema of SBOM
-    public enum Schema{
+    public enum Schema {
         CYCLONEDX_14,
         SPDX_23
     }
 
     // File Type of SBOM
-    public enum FileType{
+    public enum FileType {
         JSON,
         XML,
         TAG_VALUE
     }
 
-    ///
     /// Metadata
-    ///
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -73,7 +72,7 @@ public class SBOMFile {
     @JsonProperty("fileName")
     private String name;
 
-    @Column(nullable = false, columnDefinition="LONGTEXT")
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     @JsonProperty("contents")
     private String content;
 
@@ -87,9 +86,7 @@ public class SBOMFile {
     @JsonProperty
     private FileType fileType;
 
-    ///
     /// Relationships
-    ///
 
     @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)   // delete all qa on sbom deletion
     @JoinColumn(name = "qa_id", referencedColumnName = "id")
@@ -142,36 +139,39 @@ public class SBOMFile {
 
     /**
      * Set File Name
+     *
      * @param name filename of SBOM
      * @return SBOMFile
      */
-    public SBOMFile setName(String name){
+    public SBOMFile setName(String name) {
         this.name = name;
         return this;
     }
 
     /**
      * Set File Content
+     *
      * @param content SBOM string contents
      * @return SBOMFile
      */
-    public SBOMFile setContent(String content){
+    public SBOMFile setContent(String content) {
         this.content = content;
         return this;
     }
 
     /**
      * Set SBOM Schema
+     *
      * @param d deserializer to infer schema from
      * @return SBOMFile
      */
-    public SBOMFile setSchema(Deserializer d){
+    public SBOMFile setSchema(Deserializer d) {
         // todo better method to determine schema
 
-        if(d instanceof CDX14JSONDeserializer || d instanceof CDX14XMLDeserializer)
+        if (d instanceof CDX14JSONDeserializer || d instanceof CDX14XMLDeserializer)
             this.schema = Schema.CYCLONEDX_14;
 
-        if(d instanceof SPDX23JSONDeserializer || d instanceof SPDX23TagValueDeserializer)
+        if (d instanceof SPDX23JSONDeserializer || d instanceof SPDX23TagValueDeserializer)
             this.schema = Schema.SPDX_23;
 
         return this;
@@ -179,10 +179,11 @@ public class SBOMFile {
 
     /**
      * Simple set schema
+     *
      * @param schema schema type
      * @return SBOMFile
      */
-    public SBOMFile setSchema(Schema schema){
+    public SBOMFile setSchema(Schema schema) {
         this.schema = schema;
         return this;
     }
@@ -190,19 +191,20 @@ public class SBOMFile {
 
     /**
      * Set SBOM File Type
+     *
      * @param d deserializer to infer file type from
      * @return SBOMFile
      */
-    public SBOMFile setFileType(Deserializer d){
+    public SBOMFile setFileType(Deserializer d) {
         // todo better method to determine schema
 
-        if(d instanceof CDX14JSONDeserializer || d instanceof SPDX23JSONDeserializer)
+        if (d instanceof CDX14JSONDeserializer || d instanceof SPDX23JSONDeserializer)
             this.fileType = FileType.JSON;
 
-        if(d instanceof SPDX23TagValueDeserializer)
+        if (d instanceof SPDX23TagValueDeserializer)
             this.fileType = FileType.TAG_VALUE;
 
-        if(d instanceof CDX14XMLDeserializer)
+        if (d instanceof CDX14XMLDeserializer)
             this.fileType = FileType.XML;
 
         return this;
@@ -215,7 +217,7 @@ public class SBOMFile {
      * @param qaf Quality Report File
      * @return SBOMFile
      */
-    public SBOMFile setQualityReport(QualityReportFile qaf){
+    public SBOMFile setQualityReport(QualityReportFile qaf) {
         this.qualityReportFile = qaf;
         return this;
     }
@@ -227,27 +229,28 @@ public class SBOMFile {
      * @param vf VEX File
      * @return SBOMFile
      */
-    public SBOMFile setVEXFile(VEXFile vf){
+    public SBOMFile setVEXFile(VEXFile vf) {
         this.vexFile = vf;
         return this;
     }
 
-    public SBOMFile addComparisonFileAsTarget(ComparisonFile cf){
+    public SBOMFile addComparisonFileAsTarget(ComparisonFile cf) {
         this.comparisonsAsTarget.add(cf);
         return this;
     }
 
-    public SBOMFile addComparisonFileAsOther(ComparisonFile cf){
+    public SBOMFile addComparisonFileAsOther(ComparisonFile cf) {
         this.comparisonsAsOther.add(cf);
         return this;
     }
 
     /**
      * Simple set schema
+     *
      * @param fileType file type
      * @return SBOMFile
      */
-    public SBOMFile setFileType(FileType fileType){
+    public SBOMFile setFileType(FileType fileType) {
         this.fileType = fileType;
         return this;
     }
@@ -266,35 +269,35 @@ public class SBOMFile {
     /**
      * @return SBOM name
      */
-    public String getName(){
+    public String getName() {
         return this.name;
     }
 
     /**
      * @return SBOM Content
      */
-    public String getContent(){
+    public String getContent() {
         return this.content;
     }
 
     /**
      * @return QualityReportFile
      */
-    public QualityReportFile getQualityReportFile(){
+    public QualityReportFile getQualityReportFile() {
         return this.qualityReportFile;
     }
 
     /**
      * @return vexFile
      */
-    public VEXFile getVEXFile(){
+    public VEXFile getVEXFile() {
         return this.vexFile;
     }
 
     /**
      * @return SBOM Schema
      */
-    public Schema getSchema(){
+    public Schema getSchema() {
         return this.schema;
     }
 

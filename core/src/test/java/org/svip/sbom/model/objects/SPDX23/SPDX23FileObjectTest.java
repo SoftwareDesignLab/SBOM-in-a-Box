@@ -1,30 +1,33 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.sbom.model.objects.SPDX23;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.MismatchType;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23FileBuilder;
 import org.svip.sbom.factory.objects.SPDX23.SPDX23FileBuilderFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -33,8 +36,6 @@ import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.compare.conflicts.Conflict;
-import org.svip.compare.conflicts.MismatchType;
 
 import java.util.List;
 
@@ -54,14 +55,14 @@ public class SPDX23FileObjectTest {
     static SPDX23File equalFile;
 
     @BeforeAll
-    public static void createTargetPackage(){
+    public static void createTargetPackage() {
         // Build Control Component
         LicenseCollection licenseCollection = new LicenseCollection();
         licenseCollection.addDeclaredLicense("Control License One");
         //licenseCollection.addDeclaredLicense("Control License 2");
         Organization organization = new Organization("Control Inc.", "www.control.io");
         Description description = new Description("This is the control component.");
-        ExternalReference externalReferenceOne = new ExternalReference("url","www.refOne.com", "controlRef");
+        ExternalReference externalReferenceOne = new ExternalReference("url", "www.refOne.com", "controlRef");
         //ExternalReference externalReferenceTwo = new ExternalReference("url","www.ref2.com", "controlRef");
 
         fileBuilder.setType("SPDX");
@@ -70,7 +71,7 @@ public class SPDX23FileObjectTest {
         fileBuilder.setName("Control Component");
         fileBuilder.setLicenses(licenseCollection);
         fileBuilder.setCopyright("Control Copyright");
-        fileBuilder.addHash("SHA1","TestHash");
+        fileBuilder.addHash("SHA1", "TestHash");
         fileBuilder.setFileNotice("Control File Notice");
         controlFile = fileBuilder.buildAndFlush();
     }
@@ -83,7 +84,7 @@ public class SPDX23FileObjectTest {
         //licenseCollection.addDeclaredLicense("Control License 2");
         Organization organization = new Organization("Control Inc.", "www.control.io");
         Description description = new Description("This is the control component.");
-        ExternalReference externalReferenceOne = new ExternalReference("url","www.refOne.com", "controlRef");
+        ExternalReference externalReferenceOne = new ExternalReference("url", "www.refOne.com", "controlRef");
         //ExternalReference externalReferenceTwo = new ExternalReference("url","www.ref2.com", "controlRef");
 
         fileBuilder.setType("SPDX");
@@ -92,7 +93,7 @@ public class SPDX23FileObjectTest {
         fileBuilder.setName("Control Component");
         fileBuilder.setLicenses(licenseCollection);
         fileBuilder.setCopyright("Control Copyright");
-        fileBuilder.addHash("SHA1","TestHash");
+        fileBuilder.addHash("SHA1", "TestHash");
         fileBuilder.setFileNotice("Control File Notice");
         equalFile = fileBuilder.buildAndFlush();
 
@@ -110,7 +111,7 @@ public class SPDX23FileObjectTest {
         //licenseCollection.addDeclaredLicense("License 2");
         Organization organization = new Organization("Inc.", "www.c.io");
         Description description = new Description("This is the component.");
-        ExternalReference externalReferenceOne = new ExternalReference("url","www.One.com", "controlRef");
+        ExternalReference externalReferenceOne = new ExternalReference("url", "www.One.com", "controlRef");
         //ExternalReference externalReferenceTwo = new ExternalReference("url","www.2.com", "controlRef");
 
         fileBuilder.setType("CDX");
@@ -119,7 +120,7 @@ public class SPDX23FileObjectTest {
         fileBuilder.setName("Component");
         fileBuilder.setLicenses(licenseCollection);
         fileBuilder.setCopyright("Copyright");
-        fileBuilder.addHash("1","Hash");
+        fileBuilder.addHash("1", "Hash");
         fileBuilder.setFileNotice("File Notice");
         Component unequalPackage = fileBuilder.buildAndFlush();
 
@@ -127,14 +128,12 @@ public class SPDX23FileObjectTest {
 
         // TODO This is terribly inefficient
 
-        for(Conflict c : conflicts)
-        {
+        for (Conflict c : conflicts) {
 
-            switch(c.getMessage())
-            {
+            switch (c.getMessage()) {
                 case "Type doesn't match", "UID doesn't match",
-                        "Copyright doesn't match", "File Notice doesn't match"
-                        -> assertEquals(MismatchType.MISC_MISMATCH, c.getType());
+                     "Copyright doesn't match", "File Notice doesn't match" ->
+                        assertEquals(MismatchType.MISC_MISMATCH, c.getType());
                 case "Name doesn't match" -> assertEquals(MismatchType.NAME_MISMATCH, c.getType());
                 case "Author doesn't match" -> assertEquals(MismatchType.AUTHOR_MISMATCH, c.getType());
                 case "License doesn't match" -> assertEquals(MismatchType.LICENSE_MISMATCH, c.getType());

@@ -1,30 +1,33 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.sbom.model.objects.CycloneDX14;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.MismatchType;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14PackageBuilder;
 import org.svip.sbom.factory.objects.CycloneDX14.CDX14PackageBuilderFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -33,8 +36,6 @@ import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.compare.conflicts.Conflict;
-import org.svip.compare.conflicts.MismatchType;
 
 import java.util.List;
 
@@ -54,15 +55,15 @@ public class CDX14ComponentObjectTest {
     static CDX14Package equalPackage;
 
     @BeforeAll
-    public static void createTargetPackage(){
+    public static void createTargetPackage() {
         // Build Control Component
         LicenseCollection licenseCollection = new LicenseCollection();
         licenseCollection.addDeclaredLicense("Control License One");
         //licenseCollection.addDeclaredLicense("Control License 2");
         Organization organization = new Organization("Control Inc.", "www.control.io");
         Description description = new Description("This is the control component.");
-        ExternalReference externalReferenceOne = new ExternalReference("url","www.refOne.com", "controlRef");
-        ExternalReference externalReferenceTwo = new ExternalReference("url","www.ref2.com", "controlRef");
+        ExternalReference externalReferenceOne = new ExternalReference("url", "www.refOne.com", "controlRef");
+        ExternalReference externalReferenceTwo = new ExternalReference("url", "www.ref2.com", "controlRef");
 
         packageBuilder.setType("CDX");
         packageBuilder.setUID("123456789");
@@ -70,7 +71,7 @@ public class CDX14ComponentObjectTest {
         packageBuilder.setName("Control Component");
         packageBuilder.setLicenses(licenseCollection);
         packageBuilder.setCopyright("Control Copyright");
-        packageBuilder.addHash("SHA1","TestHash");
+        packageBuilder.addHash("SHA1", "TestHash");
         packageBuilder.setSupplier(organization);
         packageBuilder.setVersion("1.0");
         packageBuilder.setDescription(description);
@@ -84,7 +85,7 @@ public class CDX14ComponentObjectTest {
         packageBuilder.setGroup("Control Group");
         packageBuilder.addExternalReference(externalReferenceOne);
         packageBuilder.addExternalReference(externalReferenceTwo);
-        packageBuilder.addProperty("Control Property One","1");
+        packageBuilder.addProperty("Control Property One", "1");
         //packageBuilder.addProperty("Control Property 2", "2");
         controlPackage = packageBuilder.buildAndFlush();
     }
@@ -97,8 +98,8 @@ public class CDX14ComponentObjectTest {
         //licenseCollection.addDeclaredLicense("Control License 2");
         Organization organization = new Organization("Control Inc.", "www.control.io");
         Description description = new Description("This is the control component.");
-        ExternalReference externalReferenceOne = new ExternalReference("url","www.refOne.com", "controlRef");
-        ExternalReference externalReferenceTwo = new ExternalReference("url","www.ref2.com", "controlRef");
+        ExternalReference externalReferenceOne = new ExternalReference("url", "www.refOne.com", "controlRef");
+        ExternalReference externalReferenceTwo = new ExternalReference("url", "www.ref2.com", "controlRef");
 
         packageBuilder.setType("CDX");
         packageBuilder.setUID("123456789");
@@ -106,7 +107,7 @@ public class CDX14ComponentObjectTest {
         packageBuilder.setName("Control Component");
         packageBuilder.setLicenses(licenseCollection);
         packageBuilder.setCopyright("Control Copyright");
-        packageBuilder.addHash("SHA1","TestHash");
+        packageBuilder.addHash("SHA1", "TestHash");
         packageBuilder.setSupplier(organization);
         packageBuilder.setVersion("1.0");
         packageBuilder.setDescription(description);
@@ -120,7 +121,7 @@ public class CDX14ComponentObjectTest {
         packageBuilder.setGroup("Control Group");
         packageBuilder.addExternalReference(externalReferenceOne);
         packageBuilder.addExternalReference(externalReferenceTwo); //TODO ConflictFactory doesn't seem to be properly checking sets
-        packageBuilder.addProperty("Control Property One","1");
+        packageBuilder.addProperty("Control Property One", "1");
         //packageBuilder.addProperty("Control Property 2", "2");
         equalPackage = packageBuilder.buildAndFlush();
 
@@ -140,7 +141,7 @@ public class CDX14ComponentObjectTest {
         //licenseCollection.addDeclaredLicense("License 2");
         Organization organization = new Organization("Inc.", "www.c.io");
         Description description = new Description("This is the component.");
-        ExternalReference externalReferenceOne = new ExternalReference("url","www.One.com", "controlRef");
+        ExternalReference externalReferenceOne = new ExternalReference("url", "www.One.com", "controlRef");
         //ExternalReference externalReferenceTwo = new ExternalReference("url","www.2.com", "controlRef");
 
         packageBuilder.setType("SPDX");
@@ -149,7 +150,7 @@ public class CDX14ComponentObjectTest {
         packageBuilder.setName("Component");
         packageBuilder.setLicenses(licenseCollection);
         packageBuilder.setCopyright("Copyright");
-        packageBuilder.addHash("1","Hash");
+        packageBuilder.addHash("1", "Hash");
         packageBuilder.setSupplier(organization);
         packageBuilder.setVersion("10");
         packageBuilder.setDescription(description);
@@ -163,7 +164,7 @@ public class CDX14ComponentObjectTest {
         packageBuilder.setGroup("Group");
         packageBuilder.addExternalReference(externalReferenceOne);
         //packageBuilder.addExternalReference(externalReferenceTwo);
-        packageBuilder.addProperty("Property One","1");
+        packageBuilder.addProperty("Property One", "1");
         //packageBuilder.addProperty("Property 2", "2");
         Component unequalPackage = packageBuilder.buildAndFlush();
 
@@ -171,15 +172,13 @@ public class CDX14ComponentObjectTest {
 
         // TODO This is terribly inefficient
 
-        for(Conflict c : conflicts)
-        {
+        for (Conflict c : conflicts) {
 
-            switch(c.getMessage())
-            {
+            switch (c.getMessage()) {
                 case "Type doesn't match", "UID doesn't match",
-                        "Copyright doesn't match", "Mime Type doesn't match",
-                        "Scope doesn't match", "Group doesn't match"
-                        -> assertEquals(MismatchType.MISC_MISMATCH, c.getType());
+                     "Copyright doesn't match", "Mime Type doesn't match",
+                     "Scope doesn't match", "Group doesn't match" ->
+                        assertEquals(MismatchType.MISC_MISMATCH, c.getType());
                 case "Name doesn't match" -> assertEquals(MismatchType.NAME_MISMATCH, c.getType());
                 case "Author doesn't match" -> assertEquals(MismatchType.AUTHOR_MISMATCH, c.getType());
                 case "License doesn't match" -> assertEquals(MismatchType.LICENSE_MISMATCH, c.getType());
@@ -187,6 +186,6 @@ public class CDX14ComponentObjectTest {
         }
 
         // Unexpected number of results means something isn't working right
-        assertEquals( 28, conflicts.size());
-        }
+        assertEquals(28, conflicts.size());
+    }
 }

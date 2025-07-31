@@ -1,29 +1,32 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.sbom.model.objects.SPDX23;
 
 import org.junit.jupiter.api.Test;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.MismatchType;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.factory.objects.SPDX23.SPDX23SBOMBuilderFactory;
 import org.svip.sbom.model.interfaces.generics.SBOM;
@@ -31,8 +34,6 @@ import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
-import org.svip.compare.conflicts.Conflict;
-import org.svip.compare.conflicts.MismatchType;
 
 import java.util.List;
 import java.util.Objects;
@@ -52,8 +53,7 @@ public class SPDX23SBOMConflictsTest {
     static SBOM conflictSBOM;
 
     @Test
-    public void Format_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Format_is_Conflicting_between_testPackage_and_controlPackage_test() {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setFormat("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
@@ -69,8 +69,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void Name_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Name_is_Conflicting_between_testPackage_and_controlPackage_test() {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setName("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
@@ -86,8 +85,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void UID_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void UID_is_Conflicting_between_testPackage_and_controlPackage_test() {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setUID("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
@@ -103,8 +101,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void Version_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Version_is_Conflicting_between_testPackage_and_controlPackage_test() {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setVersion("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
@@ -120,8 +117,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void SpecVersion_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void SpecVersion_is_Conflicting_between_testPackage_and_controlPackage_test() {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setSpecVersion("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
@@ -137,8 +133,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void License_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void License_is_Conflicting_between_testPackage_and_controlPackage_test() {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.addLicense("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
@@ -155,8 +150,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void DocumentComment_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void DocumentComment_is_Conflicting_between_testPackage_and_controlPackage_test() {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setDocumentComment("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
@@ -172,8 +166,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void SPDXLicenseListVersion_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void SPDXLicenseListVersion_is_Conflicting_between_testPackage_and_controlPackage_test() {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         sbomBuilder.setSPDXLicenseListVersion("control");
         controlSBOM = sbomBuilder.buildSPDX23SBOM();
@@ -189,8 +182,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void CreationTime_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void CreationTime_is_Conflicting_between_testPackage_and_controlPackage_test() {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         CreationData creationData = new CreationData();
         creationData.setCreationTime("control");
@@ -210,8 +202,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void CreatorComment_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void CreatorComment_is_Conflicting_between_testPackage_and_controlPackage_test() {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         CreationData creationData = new CreationData();
         creationData.setCreatorComment("control");
@@ -231,8 +222,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void Supplier_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Supplier_is_Conflicting_between_testPackage_and_controlPackage_test() {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         CreationData creationData = new CreationData();
         Organization supplier = new Organization("control", "control");
@@ -252,11 +242,10 @@ public class SPDX23SBOMConflictsTest {
 
         assertEquals(2, conflictList.size());
 
-        for(Conflict c : conflictList)
-        {
-            if(c.getType() == MismatchType.NAME_MISMATCH && Objects.equals(c.getMessage(), "Organization: Name doesn't match"))
+        for (Conflict c : conflictList) {
+            if (c.getType() == MismatchType.NAME_MISMATCH && Objects.equals(c.getMessage(), "Organization: Name doesn't match"))
                 c1 = true;
-            else if(c.getType() == MismatchType.MISC_MISMATCH && Objects.equals(c.getMessage(), "Organization: URL doesn't match"))
+            else if (c.getType() == MismatchType.MISC_MISMATCH && Objects.equals(c.getMessage(), "Organization: URL doesn't match"))
                 c2 = true;
         }
 
@@ -265,8 +254,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void Manufacture_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Manufacture_is_Conflicting_between_testPackage_and_controlPackage_test() {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         CreationData creationData = new CreationData();
         Organization manufacture = new Organization("control", "control");
@@ -286,11 +274,10 @@ public class SPDX23SBOMConflictsTest {
 
         assertEquals(2, conflictList.size());
 
-        for(Conflict c : conflictList)
-        {
-            if(c.getType() == MismatchType.NAME_MISMATCH && Objects.equals(c.getMessage(), "Organization: Name doesn't match"))
+        for (Conflict c : conflictList) {
+            if (c.getType() == MismatchType.NAME_MISMATCH && Objects.equals(c.getMessage(), "Organization: Name doesn't match"))
                 c1 = true;
-            else if(c.getType() == MismatchType.MISC_MISMATCH && Objects.equals(c.getMessage(), "Organization: URL doesn't match"))
+            else if (c.getType() == MismatchType.MISC_MISMATCH && Objects.equals(c.getMessage(), "Organization: URL doesn't match"))
                 c2 = true;
         }
 
@@ -299,8 +286,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void Author_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Author_is_Conflicting_between_testPackage_and_controlPackage_test() {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         CreationData creationData = new CreationData();
         Contact author = new Contact("control", "control", "control");
@@ -322,8 +308,7 @@ public class SPDX23SBOMConflictsTest {
     }
 
     @Test
-    public void CreationTool_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void CreationTool_is_Conflicting_between_testPackage_and_controlPackage_test() {
         SPDX23Builder sbomBuilder = sbomBuilderFactory.createBuilder();
         CreationData creationData = new CreationData();
         CreationTool creationTool = new CreationTool();

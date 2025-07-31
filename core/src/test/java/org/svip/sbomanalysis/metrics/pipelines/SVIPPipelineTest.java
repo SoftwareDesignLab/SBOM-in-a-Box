@@ -1,35 +1,36 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.sbomanalysis.metrics.pipelines;
 
 import org.junit.jupiter.api.Test;
 import org.svip.metrics.pipelines.SVIPPipeline;
+import org.svip.metrics.resultfactory.Result;
+import org.svip.metrics.resultfactory.enumerations.STATUS;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.uids.Hash;
-import org.svip.metrics.resultfactory.Result;
-import org.svip.metrics.resultfactory.enumerations.STATUS;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -199,7 +200,6 @@ class SVIPPipelineTest {
     }
 
 
-
     @Test
     void hasCreationInfo_empty_string_manufacture_fail_time_pass_test() {
         Organization manufacture = new Organization("", "");
@@ -211,11 +211,10 @@ class SVIPPipelineTest {
         int pass = 0;
         int fail = 0;
 
-        for(Result r : resultList){
-            if(r.getStatus().equals(STATUS.PASS)){
+        for (Result r : resultList) {
+            if (r.getStatus().equals(STATUS.PASS)) {
                 pass++;
-            }
-            else{
+            } else {
                 fail++;
             }
         }
@@ -235,11 +234,10 @@ class SVIPPipelineTest {
         int pass = 0;
         int fail = 0;
 
-        for(Result r : resultList){
-            if(r.getStatus().equals(STATUS.PASS)){
+        for (Result r : resultList) {
+            if (r.getStatus().equals(STATUS.PASS)) {
                 pass++;
-            }
-            else{
+            } else {
                 fail++;
             }
         }
@@ -259,11 +257,10 @@ class SVIPPipelineTest {
         int pass = 0;
         int fail = 0;
 
-        for(Result r : resultList){
-            if(r.getStatus().equals(STATUS.PASS)){
+        for (Result r : resultList) {
+            if (r.getStatus().equals(STATUS.PASS)) {
                 pass++;
-            }
-            else{
+            } else {
                 fail++;
             }
         }
@@ -283,11 +280,10 @@ class SVIPPipelineTest {
         int pass = 0;
         int fail = 0;
 
-        for(Result r : resultList){
-            if(r.getStatus().equals(STATUS.PASS)){
+        for (Result r : resultList) {
+            if (r.getStatus().equals(STATUS.PASS)) {
                 pass++;
-            }
-            else{
+            } else {
                 fail++;
             }
         }

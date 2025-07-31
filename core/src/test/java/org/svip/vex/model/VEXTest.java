@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.vex.model;
@@ -43,7 +44,9 @@ class VEXTest {
     private final VEXType testType = VEXType.CYCLONE_DX;
 
 
-    /**Sample VEX Statement 1*/
+    /**
+     * Sample VEX Statement 1
+     */
     private final String testStatementID1 = "GHSA-5mg8-w23w-74h3";
 
     private final String testStateVersion = "3.1";
@@ -63,10 +66,12 @@ class VEXTest {
     private final String testProduct1 = "Guava 10.0-rc1";
     private final String testProduct2 = "Guava 19.0";
     private final String testSupplier1 = "Google";
-    private final String testVulnDesc = "Information Disclosure in Guava" ;
+    private final String testVulnDesc = "Information Disclosure in Guava";
     private final String testVulnID1 = "CVE-2020-8908";
 
-    /**Sample VEX Statement 2*/
+    /**
+     * Sample VEX Statement 2
+     */
     private final String testStatementID2 = "GHSA-462w-v97r-4m45";
 
     private final String testStateVersion2 = "2.0";
@@ -83,7 +88,9 @@ class VEXTest {
             "str.format_map allows a sandbox escape.";
     private final String testVulnID2 = "CVE-2019-10906";
 
-    /**Sample VEX Statement 3*/
+    /**
+     * Sample VEX Statement 3
+     */
     private final String testStatementID3 = "CVE-2021-44228";
     private final String testStateVersion3 = "2.0";
     private final VulnStatus testStatus2 = VulnStatus.NOT_AFFECTED;

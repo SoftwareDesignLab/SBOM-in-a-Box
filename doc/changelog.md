@@ -3,29 +3,51 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v9.2.2-alpha] - (8/27/2024)
+## [v9.2.3-alpha] - (7/30/2025)
+
 ### Fixed
+- Fix Gradle project structure (5c932211)
+- Fix deprecated Gradle 7 usages and add deprecation and unchecked linting to compiling (40367de4)
+
+## Changed
+- Bump to Java 21 and Gradle 8 (66e828b5)
+- Bump dependency versions (b47feaeb)
+- Bump GitHub actions to latest (de674109)
+
+## [v9.2.2-alpha] - (8/27/2024)
+
+### Fixed
+
 - OSI image build succeeds
 
 ### Changed
+
 - OSI image is now alpine based
 - Refactor OSI setup script into dockerfile
 
 ## [v9.2.1-alpha] - (1/8/2024)
-### Fixed 
+
+### Fixed
+
 - OSI Mac Compatibility
 
 ## [v9.2.0-alpha] - (11/29/2023)
+
 ### Added
+
 - New `CDX14XMLDeserializer` to deserialize CycloneDX 1.4 sboms
-  - Now support upload and manipulate with SVIP resources
+    - Now support upload and manipulate with SVIP resources
 
 ## [v9.1.0-alpha] - (11/28/2023)
+
 > OSI v4, add extra tool support and major overhaul of OSI to support future expansion
 
 ### Added
+
 #### OSI
-- `validate.sh`: Validation script that runs before launching flask api server in OSI to confirm what languages, package managers, and tools are installed
+
+- `validate.sh`: Validation script that runs before launching flask api server in OSI to confirm what languages, package
+  managers, and tools are installed
 - `runner.sh`: Launch script that sets up flask and runs validate.sh
 - New Tool config files to use YAML files instead of old Tool mapper
 - Dynamic tool checking to find what tools apply to the project
@@ -41,47 +63,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     9. [SBOM Tool](https://github.com/microsoft/sbom-tool)
 
 #### SVIP
+
 - New SVIP endpoint `.../svip/generators/osi/project` to upload code to bound directories
 
 ### Changed
+
 #### OSI
-  - Fixed installation bugs inside OSI container
-  - Fixed bad port mappings inside container
-  - Fixed missing permissions in dockerfile for mac
-  - Updated [Adding Additional OSI Tools](README.md#adding-more-tools) to user new configs/scripts
-  - Overhaul debug messages inside OSI to provide more inside on tool generation
+
+- Fixed installation bugs inside OSI container
+- Fixed bad port mappings inside container
+- Fixed missing permissions in dockerfile for mac
+- Updated [Adding Additional OSI Tools](README.md#adding-more-tools) to user new configs/scripts
+- Overhaul debug messages inside OSI to provide more inside on tool generation
 
 #### SVIP
-  - Consolidated OSIv3 java files into Controller / Services for API
-  - SVIP endpoint `.../svip/generators/osi/tools` takes optional `list` param to get all tools or just the ones that can be used against the uploaded project
-  - SVIP endpoint `.../svip/generators/osi/` no longer takes project zip file (moved to `.../svip/generators/osi/project`)
-  - SBOMs generated with OSI are removed from database after they have been merged
+
+- Consolidated OSIv3 java files into Controller / Services for API
+- SVIP endpoint `.../svip/generators/osi/tools` takes optional `list` param to get all tools or just the ones that can
+  be used against the uploaded project
+- SVIP endpoint `.../svip/generators/osi/` no longer takes project zip file (moved to `.../svip/generators/osi/project`)
+- SBOMs generated with OSI are removed from database after they have been merged
 
 ### Removed
+
 - Outdated Docker Binaries from OSI documentation
 
-
 # [v9.0.2-alpha] - (11/28/2023)
+
 - Added Serialization support for CycloneDX 1.4 XML SBOMs.
 
 ### Added
+
 - `CDX14XMLSerializer.java` Class - Serializes CycloneDX 1.4 XML SBOMs
 
 # [v9.0.1-alpha] - (11/28/2023)
+
 ### Added
+
 - Added repair for "Valid PURL" failing test
 
 ### Changed
+
 - Skips duplicate components for SPDX23Pipel
 
 # [v9.0.0-alpha] - (11/13/2023)
+
 - Reworked QualityReport and implemented repair
 
 ### Added
-- `FixType.java` Enum - Type of fix for mapping purposes 
+
+- `FixType.java` Enum - Type of fix for mapping purposes
 - `RepairSPDX24CDX14.java` Class - Implements fixes and generates a new repaired SBOM for SPDX23 and CDX14
 
 ### Changed
+
 - `RepairController.java` Class - Modified repairStatement and repairSBOM methods to new mapping
 - `QualityReport.java` Class - Components are mapped by hashcode instead of name
 - `SVIPPipeline.java` Class - Removed UID param for process
@@ -89,7 +124,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CDX14Pipeline.java` Class - Removed UID param for process, added copyright test
 - `SPDX23Pipeline.java` Class - Removed UID param for process, added copyright test
 - `Result.java` Class - Added fixes array for when result fails and solutions are available
-- `CPEFixes.java` Class - Finds component by hashcode instead of name, also corrected the CPE build order and implemented FixType
+- `CPEFixes.java` Class - Finds component by hashcode instead of name, also corrected the CPE build order and
+  implemented FixType
 - `EmptyOrNullFixes.java` Class - Fixed null cases, implemented FixType
 - `Fix.java` Class - Added helper functions and FixType param
 - `Fixes.java` Interface - Renamed repairSubType to componentName and added componentHashCode
@@ -98,12 +134,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `FixTest.java` Class - Added FixType param
 
 ### Removed
+
 - `RepairCDX14.java` Class - Consolidated to RepairSPDX24CDX14
 - `RepairSPDX23.java` Class - Consolidated to RepairSPDX24CDX14
 
 ## [v8.2.5-alpha] - (11/12/2023)
 
 ### Changed / Added
+
 - Conversion now split up into three different components
     - manipulate
         - manipulates data fields within an SBOM object; typically to modify their values from one standard to another.
@@ -117,11 +155,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v8.2.4-alpha] - (11/9/2023)
 
 ### Changed
+
 - Fixed SPDX23TagValue Serializer to display `##### Relationships` over relationships
 
 ## [v8.2.3-alpha] - (11/8/2023)
 
 ### Changed
+
 - Fixed parsing issues with SPDX23TagValue Deserializer to use regex
 - Update correct number of "#" in the SPDX Tag Value Serializer
 - Correct order of keys in the SPDX Tag Value Serializer
@@ -129,11 +169,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v8.2.2-alpha] - (10/27/2023)
 
 ### Changed
+
 - SBOM components objects are now compared by name and version
 
 ## [v8.2.1-alpha] - (10/20/2023)
 
 ### Changed
+
 - Improved accuracy when determining the schema and format of an SBOM in `SerializerFactory.java`
     - `resolveSchema()`
     - `resolveFormat()`
@@ -141,6 +183,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 # [v8.2.0-alpha] - (10/17/2023)
 
 ### Added
+
 - `Extraction.java` Class - Abstract class to obtain information from package managers
 - `NugetExtraction.java` Class - Obtains information from the Nuget package manager
 - `RepairNullOrEmptyTest.java` Class - Unit tests for null or empty fixes in repair statements
@@ -149,89 +192,109 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `null-copyright.spdx` File - SPDX SBOM for testing a component with null copyright
 
 ### Changed
+
 - `CDX14Pipeline.java` Class - Implemented copyright fixes to process
-- `SPDX23Pipeline.java` Class - Implemented copyright fixes to TestSPDX23Package 
+- `SPDX23Pipeline.java` Class - Implemented copyright fixes to TestSPDX23Package
 
 ## [v8.1.5-alpha] - (10/12/2023)
+
 - Reworked Convert into several new features.
+
 ### Added
+
 - New `manipulate` package to alter SVIPSBOM data:
-  - `ManipulateController` Class
-  - `ManipulateSVIP` Class
-  - `SchemaManipulationMap` Class
+    - `ManipulateController` Class
+    - `ManipulateSVIP` Class
+    - `SchemaManipulationMap` Class
 - New `toSVIP` package to convert SBOMs to SVIPSBOMs:
-  - `CDX14` Class
-  - `SPDX23` Class
-  - `ToSVIP` Interface
-  - `ToSVIPController` Class
+    - `CDX14` Class
+    - `SPDX23` Class
+    - `ToSVIP` Interface
+    - `ToSVIPController` Class
 
 ### Changed
+
 - New `toSchema` package to convert SVIPSBOMs into SBOMs:
-  - `ToCDX14` Class
-  - `ToSPDX23` Class
-  - `ToSchema` Interface
-  - `ToSchemaController` Class
+    - `ToCDX14` Class
+    - `ToSPDX23` Class
+    - `ToSchema` Interface
+    - `ToSchemaController` Class
 - `Conversion` Class controller has been reworked.
 
 ## [v8.1.1-alpha] - (10/06/2023)
+
 ### Changed
+
 - Changed the max packet size for MySQL to 256M
 
 ### Added
+
 - `LicenseFixes.java` Class - Suggests a list of fixes for deprecated licenses
 - `License.java` Class - Stores the id, name, and url of a license
 
 ## [v8.0.7-alpha] - (11/09/2023)
-- Change tool name from SBOM Visualization Integration Platform (SVIP) to SBOM-in-a-Box, to better represent the platform
+
+- Change tool name from SBOM Visualization Integration Platform (SVIP) to SBOM-in-a-Box, to better represent the
+  platform
 
 ## [v8.0.6-alpha] - (10/27/2023)
 
 ### Changed
+
 - SBOM components objects are now compared by name and version
 
 ## [v8.0.5-alpha] - (10/17/2023)
+
 - Changed the max packet size for MySQL to 256M
 
 ## [v8.1.0-alpha] - (9/22/2023)
 
 ### Added
+
 - `HashFixes.java` Class - Suggests a list of fixes for invalid hashes and hashing algorithms
 - `Hash.validAlgorithms()` Method - Returns a list of valid hashing algorithms that match a hash
 - Missing unit tests
-  - `FixTest.java`
-  - `HashTest.java`
+    - `FixTest.java`
+    - `HashTest.java`
 
 ## [v8.0.5-alpha] - (9/22/2023)
+
 ### Changed
+
 - Changed the port from 5000 to 50001 due to Airplay being on port 5000 for Macs
 
 ## [v8.0.4-alpha] - (9/14/2023)
 
 ### Changed
+
 - Updated path so API can connect to the OSI container both inside of and outside the docker container
 
 ## [v8.0.3-alpha] - (9/13/2023)
 
 ### Added
+
 - `sboms/repair/statement` API endpoint
-  - `RepairController.java`
-  - `SBOMFileService.repair()`
+    - `RepairController.java`
+    - `SBOMFileService.repair()`
 
 ### Changed
+
 - Added docstrings to repair backend
 - Combined `RepairStatementSPDX23` and `RepairStatementCDX14` into `RepairStatementSPDX23CDX14`
-  - Both SBOM schemas can be repaired similarly
-  
+    - Both SBOM schemas can be repaired similarly
+
 ## [v8.0.2-alpha] - (8/18/2023)
 
 ### Changed
+
 - `CDX14JSONDeserializer.java`
     - Component licenses can now be created with an `id` or a `name`. Previously you could only use `name`
     - Authors in the metadata now only need at least one of the following: name/email/phone, rather than all three
-    
+
 ## [v8.0.1-alpha] - (8/23/2023)
 
 ### Added
+
 - Implemented the missing creationTool externalReferences to the following files:
     - `CreationTool.java`
         - Added missing externalReferences field for creationTools
@@ -240,99 +303,104 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v8.0.0-alpha] - (8/22/2023)
 
-> API Refactor Update - Separated >700 line SVIPAPIController into multiple, more testable classes. See the 
+> API Refactor Update - Separated >700 line SVIPAPIController into multiple, more testable classes. See the
 > [API documentation](API.md) for all updated endpoints
 
 ### Added
+
 - New `controller` classes to separate responsibility:
-  - `DiffController` Class - Manage `/sboms/compare`
-  - `OSIController` Class - Manage `/generators/osi` & `/generators/osi/tools`
-  - `ParserController` Class - Manage `/generators/parsers`
-  - `QAController` Class - Manage `/sboms/qa`
-  - `SBOMController` Class - Manage all SBOM & table CRUD endpoints.
-  - `VEXController` Class - Manage `/sboms/vex`
+    - `DiffController` Class - Manage `/sboms/compare`
+    - `OSIController` Class - Manage `/generators/osi` & `/generators/osi/tools`
+    - `ParserController` Class - Manage `/generators/parsers`
+    - `QAController` Class - Manage `/sboms/qa`
+    - `SBOMController` Class - Manage all SBOM & table CRUD endpoints.
+    - `VEXController` Class - Manage `/sboms/vex`
 - New `entities` package to manage database table schemas:
-  - `ComparisonFile` Class - `comparison` Table
-  - `ConflictFile` Class - `conflict` Table
-  - `QualityReportFile` Class - `quality_report` Table
-  - `SBOM` Class - `sbom` Table
-  - `VEXFile` Class - `vex` Table
+    - `ComparisonFile` Class - `comparison` Table
+    - `ConflictFile` Class - `conflict` Table
+    - `QualityReportFile` Class - `quality_report` Table
+    - `SBOM` Class - `sbom` Table
+    - `VEXFile` Class - `vex` Table
 - New `repository` interfaces to manage access database tables:
-  - `ComparisonFileRepository` Class
-  - `ConflictFileRepository` Class
-  - `QualityReportFileRepository` Class
-  - `SBOMRepository` Class
-  - `VEXFileRepository` Class
+    - `ComparisonFileRepository` Class
+    - `ConflictFileRepository` Class
+    - `QualityReportFileRepository` Class
+    - `SBOMRepository` Class
+    - `VEXFileRepository` Class
 - New `requests` package to create and manage request bodies for database file uploads:
-  - `UploadComparisonFileInput` Class
-  - `UploadConflictFileInput` Class
-  - `UploadQRFileInput` Class
-  - `UploadSBOMFileInput` Class
-  - `UploadVEXFileInput` Class
+    - `UploadComparisonFileInput` Class
+    - `UploadConflictFileInput` Class
+    - `UploadQRFileInput` Class
+    - `UploadSBOMFileInput` Class
+    - `UploadVEXFileInput` Class
 - New `services` package to provide utility wrappers for the `repository` interfaces:
-  - `DiffService` Class
-  - `QualityReportFileService` Class
-  - `SBOMFileService` Class
-  - `SBOMService` Class
-  - `VEXFileService` Class
+    - `DiffService` Class
+    - `QualityReportFileService` Class
+    - `SBOMFileService` Class
+    - `SBOMService` Class
+    - `VEXFileService` Class
 - New unit tests to more accurately test controllers, requests, and services with ~80% overall code coverage:
-  - `controller` package:
-    - `DiffControllerTest` Class
-    - `OSIControllerTest` Class
-    - `ParserControllerTest` Class
-    - `QAControllerTest` Class
-    - `SBOMControllerTest` Class
-    - `VEXControllerTest` Class
-  - `requests` package:
-    - `UploadSBOMFileInputTest` Class
-  - `services` package:
-    - `DiffServiceTest`
-    - `QualityReportFileServiceTest` Class
-    - `SBOMFileServiceTest` Class
-    - `VexFileServiceTest` Class
+    - `controller` package:
+        - `DiffControllerTest` Class
+        - `OSIControllerTest` Class
+        - `ParserControllerTest` Class
+        - `QAControllerTest` Class
+        - `SBOMControllerTest` Class
+        - `VEXControllerTest` Class
+    - `requests` package:
+        - `UploadSBOMFileInputTest` Class
+    - `services` package:
+        - `DiffServiceTest`
+        - `QualityReportFileServiceTest` Class
+        - `SBOMFileServiceTest` Class
+        - `VexFileServiceTest` Class
 
 ### Changed
+
 - Renamed `core` package `ParserController` to `ParserManager` to avoid confusion
 
 ### Removed
+
 - Old `SVIPAPIController` class
 - Old `model` package:
-  - `MockMultipartFile`
-  - `SBOMFile`
+    - `MockMultipartFile`
+    - `SBOMFile`
 - Old `SBOMFile`-related classes:
     - `SBOMFileIdentifierGenerator`
     - `SBOMFileRepository`
 - Old `utils` classes:
-  - `Converter`
-  - `Utils`
+    - `Converter`
+    - `Utils`
 - Old Unit Tests:
-  - `APITest`
-  - `CompareAPITest`
-  - `ConvertFromAPITest`
-  - `DeleteFromAPITest`
-  - `GenerateFromOSIAPITest`
-  - `GenerateFromParserAPITest`
-  - `GenerateVEXAPITest`
-  - `GetSBOMAPITest`
-  - `GetToolsFromOSIAPITest`
-  - `MergeFromAPITest`
-  - `UploadToAPITest`
-  - `ViewAllFromAPITest`
-  - `ViewFromAPITest`
+    - `APITest`
+    - `CompareAPITest`
+    - `ConvertFromAPITest`
+    - `DeleteFromAPITest`
+    - `GenerateFromOSIAPITest`
+    - `GenerateFromParserAPITest`
+    - `GenerateVEXAPITest`
+    - `GetSBOMAPITest`
+    - `GetToolsFromOSIAPITest`
+    - `MergeFromAPITest`
+    - `UploadToAPITest`
+    - `ViewAllFromAPITest`
+    - `ViewFromAPITest`
 
 ## [v7.4.1-alpha] - (8/15/2023)
 
 ### Added
+
 - `MergerSVIP.java` Class - Merges two SVIPSBOMs into one
 - `ComponentMerger` Class - Holds logic to merge two generic `Component` objects into one of a desired type
 
 ### Changed
+
 - `MergerUtils` Class
     - String.equals() fixes
     - Allowed merging of components to `SVIPComponentObject`
     - Duplicate component issue resolved
-        - If two components are of the same name, but one has a version that's null, and the other doesn't, then they can be merged
-
+        - If two components are of the same name, but one has a version that's null, and the other doesn't, then they
+          can be merged
 
 ## [v7.4.0-alpha] - (8/11/2023)
 
@@ -340,11 +408,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > container with consistent uptime to send requests to and get/select certain tools to run.
 
 ### Added
+
 #### API
+
 - `/generators/osi/tools` Endpoint - Returns a list of supported open source tool names that can be passed to
   `/generators/osi` to select what tools to run.
 
 #### Core
+
 - `OSI` Class methods to get tools and generate with specific tools.
 - `OSIClient` Class - Moved it out of `OSI` & removed all reliance on `docker-java` external dependency.
 - `server` package to hold all Flask API utility files.
@@ -356,21 +427,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       validate tools.
 
 ### Changed
+
 - `/generators/osi` Endpoint - Now takes in an optional `tools` request body to determine what tools to run.
 
 ### Removed
+
 - `ContainerController.py` - Separated functionality into multiple files & API.
 
 ## [v7.3.2-alpha] - (8/14/2023)
 
 ### Changed
+
 - Added null checks to the deserializers to avoid null metadata or files keys.
 
 ## [v7.3.1-alpha] - (8/10/2023)
 
 > Know [Issue](https://github.com/SoftwareDesignLab/SVIP/issues/219): Deleting SBOMs with comparison references in fast
 > succession will cause errors in the database
+
 ### Added
+
 - `DiffService` for handling database operations for Comparisons and Conflicts
 - `UploadComaprisonFileInput` to handle new Comparisons and ensure relationships are added correctly
 - `UploadConflictFileInput` to handle new Conflicts and ensure relationships are added correctly
@@ -378,6 +454,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ConflictFile` holds conflict details
 
 ### Changed
+
 - Moved `/svip/sboms/compare` endpoint to `DiffController`
 - Diff Report logic has changed
     - 1:1 comparisons between sboms are arrogated into a diffreport at request time.
@@ -386,56 +463,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Single delete sbom will delete any associated comparisons
 
 ### Removed
+
 - Deprecated DiffReport.java file
 
 ## [v7.2.3-alpha] - (8/7/2023)
 
 ### Added
-- `Conversion.java`
-  - Core functionality of SBOM conversion
-- `Convert.java` interface
-  - `ConvertCDX14.java`
-  - `ConvertSPDX23.java`
-- `ConvertTest.java` Class containing comprehensive unit tests for both schema converters
 
-## [v7.3.0-alpha] - (8/9/2023)
-
-### Changed
-- Simplified table names by removing the `_file` suffix
-- Move `toSBOMObject` / `toSBOMObjectAsJSON` to the SBOMFile rather than object
-- Refactored services to reference other services instead of depending on contollers
-  - `saveQualityReport` and `saveVEX` moved to their respective services
-- Services take objects instead of ids
-
-## [v7.2.5-alpha] - (8/7/2023)
-
-### Added
-- Relevant exceptions for conversion endpoint
-  - `DeserializerException`
-  - `SerializerException`
-  - `SBOMBuilderException`
-- Convert endpoint in `SBOMController.java`
-
-### Changed
-- `ConvertFromApiTest.java`
-- Deleted old `Converter.java`
-
-## [v7.2.5-alpha] - (8/7/2023)
-
-### Added
-- Relevant exceptions for conversion endpoint
-  - `DeserializerException`
-  - `SerializerException`
-  - `SBOMBuilderException`
-- Convert endpoint in `SBOMController.java`
-
-### Changed
-- `ConvertFromApiTest.java`
-- Deleted old `Converter.java`
-
-## [v7.2.4-alpha] - (8/7/2023)
-
-### Added
 - `Conversion.java`
     - Core functionality of SBOM conversion
 - `Convert.java` interface
@@ -443,31 +477,86 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `ConvertSPDX23.java`
 - `ConvertTest.java` Class containing comprehensive unit tests for both schema converters
 
+## [v7.3.0-alpha] - (8/9/2023)
+
+### Changed
+
+- Simplified table names by removing the `_file` suffix
+- Move `toSBOMObject` / `toSBOMObjectAsJSON` to the SBOMFile rather than object
+- Refactored services to reference other services instead of depending on contollers
+    - `saveQualityReport` and `saveVEX` moved to their respective services
+- Services take objects instead of ids
+
+## [v7.2.5-alpha] - (8/7/2023)
+
+### Added
+
+- Relevant exceptions for conversion endpoint
+    - `DeserializerException`
+    - `SerializerException`
+    - `SBOMBuilderException`
+- Convert endpoint in `SBOMController.java`
+
+### Changed
+
+- `ConvertFromApiTest.java`
+- Deleted old `Converter.java`
+
+## [v7.2.5-alpha] - (8/7/2023)
+
+### Added
+
+- Relevant exceptions for conversion endpoint
+    - `DeserializerException`
+    - `SerializerException`
+    - `SBOMBuilderException`
+- Convert endpoint in `SBOMController.java`
+
+### Changed
+
+- `ConvertFromApiTest.java`
+- Deleted old `Converter.java`
+
+## [v7.2.4-alpha] - (8/7/2023)
+
+### Added
+
+- `Conversion.java`
+    - Core functionality of SBOM conversion
+- `Convert.java` interface
+    - `ConvertCDX14.java`
+    - `ConvertSPDX23.java`
+- `ConvertTest.java` Class containing comprehensive unit tests for both schema converters
 
 ## [v7.2.3-alpha] - (8/3/2023)
+
 ### Added
+
 - `SBOMService` for handling database operations
 - `UploadSBOMFileInput` to handle new SBOM entries uploaded via API
 - `SBOMController` to handle SBOM API operations
 
 ### Changed
+
 - Moved the following endpoints to `SBOMController` from `SVIPApiController`
-  - POST `/sboms`
-    > No longer takes `SBOMFile` as body, usage has not changed. Uses `UploadSBOMFileInput` instead
-  - GET `/sbom`
-    > Note: Now returns a JSON String
-  - GET `/sboms/content`
-  - GET `/sboms`
-  - DELETE `/sboms`
+    - POST `/sboms`
+      > No longer takes `SBOMFile` as body, usage has not changed. Uses `UploadSBOMFileInput` instead
+    - GET `/sbom`
+      > Note: Now returns a JSON String
+    - GET `/sboms/content`
+    - GET `/sboms`
+    - DELETE `/sboms`
 
 ## [v7.2.2-alpha] - (8/3/2023)
 
 ### Added
+
 - `MockMultipartFile` for testing uploading binaries
 - `ParserController` null check
 - `SBOMFileIdentifierGenerator` ID generator class implementing JPA's IdentifierGenerator for `SBOMFile.id`
 
 ### Changed
+
 - `/generators/parsers` successfully takes in binary zip files of projects and generates an SBOM
     - passes Postman tests and `GenerateFromParserAPITest`
 - `/generators/osi` should take in binary zip files of projects and generates an SBOM
@@ -477,24 +566,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v7.2.1-alpha] - (8/1/2023)
 
 ### Changed
+
 - Fix incorrect OSI filepaths not allowing API to build.
 
 ## [v7.2.0-alpha] - (8/1/2023)
 
 ### Changed
+
 - Overhaul directory structure to be feature focused
 
 ## [v7.1.2-alpha] - (7/28/2023)
 
 ### Added
+
 - SBOM Objects have built in comparison methods
 - Added `hashcode` methods to components to use `name` and `version` as UIDs
 
 ## [v7.1.1-alpha] - (7/26/2023)
 
 ### Changed
+
 - `PURLTest.java` and `CPETest.java` updated:
-  - Provides results for each field tested in accuracy test instead of a single result
+    - Provides results for each field tested in accuracy test instead of a single result
 - Added two new types of `INFO.java`: `MATCHING` and `NOT_MATCHING`
 - Updated QA Results to provide better and more useful information
 - `ResultFactory` is built for each method-test
@@ -505,54 +598,62 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v7.1.0-alpha] - (7/25/2023)
 
 ### Added
+
 - VEX API Endpoint
 - VEX API test `GenerateVEXAPITest`
 - `VEXResult.java`
-  - Class that holds both the VEX Object and any errors that occurred for the API endpoint
+    - Class that holds both the VEX Object and any errors that occurred for the API endpoint
 - Test SBOMs that contain vulnerable components
 - `/svip/generators/osi` endpoint to the `SVIPAPIController` class
 - `GenerateFromOSIAPITest` class that contains unit tests for the OSI endpoint
 
 ### Changed
+
 - Updated `API.md` documentation with the VEX endpoint
 - Updated `GenerateFromParserAPITest` class to be consistent with `GenerateFromOSIAPITest` class
 - Cleaned up utilities in `api.utils` and moved some methods into their respective core classes as there was some
   duplicate code.
 - Fixed a bug where running OSI in the API would create bind directories in the API package instead of the core package.
 
-
 ## [v7.0.1-alpha] - (7/24/2023)
 
 ### Changed
+
 - `/sboms` to `/sbom` when getting SBOM object
 
 ## [v7.0.0-alpha] - (7/21/2023)
+
 > OSI Refactor Update (Docker build steps updated)
 
 ### Added
+
 - `osi.scripts` package
-  - `setup.sh` called from the inline Dockerfile to install all SBOM utilities to the image.
-  - `ContainerController.py` - moved from `osi` package.
+    - `setup.sh` called from the inline Dockerfile to install all SBOM utilities to the image.
+    - `ContainerController.py` - moved from `osi` package.
 - `DockerNotAvailableExceptionTest` unit tests to increase code coverage to >80%.
 - Methods to `OSI` class resulting in a higher abstraction level above Docker and the filesystem:
-  - `addSourceFile()` - Add a single source file to be processed
-  - `addSourceDirectory()` - Copy the contents of an entire directory to be processed (for unit tests)
-  - `generateSBOMs()` - Runs the container, clears directories, and returns a Map of all SBOM files
+    - `addSourceFile()` - Add a single source file to be processed
+    - `addSourceDirectory()` - Copy the contents of an entire directory to be processed (for unit tests)
+    - `generateSBOMs()` - Runs the container, clears directories, and returns a Map of all SBOM files
 
 ### Changed
+
 - Updated `docker-compose.yml` to contain all setup and service details for OSI
 - `OSITest` unit tests
-- `SVIPAPIController` now attempts to construct an `OSI` instance on startup if a constructor flag is enabled, 
+- `SVIPAPIController` now attempts to construct an `OSI` instance on startup if a constructor flag is enabled,
   Docker is running, and an image/container exists.
-  - The constructor flag allows us to disable OSI construction for unit tests as well as the OSI endpoint itself.
+    - The constructor flag allows us to disable OSI construction for unit tests as well as the OSI endpoint itself.
 
 ### Removed
+
 - `osi/Dockerfile` as all setup behavior is taken care of in the docker-compose file and the OSI class.
 
 ## [v6.0.0-alpha] - (7/20/2023)
+
 > **Endpoint Standardization**
 
 ### Changed
+
 - Updated endpoints to a REST-ful standard
     - **Upload SBOM**
         - prev: [get] http://localhost:8080/svip/upload
@@ -598,131 +699,149 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v5.4.0-alpha] - (7/19/2023)
 
 ### Added
+
 - Merge API Endpoint
 - Merge API test `MergeFromAPITest.java`
 - `MergerCrossSchema.java`
-  - Allows merging two SBOMs regardless of origin format
+    - Allows merging two SBOMs regardless of origin format
 - Utility classes for Merger
-  - `MergerUtils.java`
-  - `comparison/utils/Utils.java`
+    - `MergerUtils.java`
+    - `comparison/utils/Utils.java`
 - New NVD API Client implementation:
     - `NVDClient` - Class that, when given an SBOM, will create a new VEX Document object with the NVD API database
 
 ### Changed
+
 - `Merger.java`abstract class and overall architecture
 
 ## [v5.3.0-alpha] - (7/19/2023)
 
 ### Added
+
 - QA API Endpoint
 
 ### Changed
+
 - `SBOMBuilders` instantiated with empty sets and hashmaps instead of null values
 - `.buildAndFlush()` methods now clear sets/hashmaps instead of setting to null
 
 ## [v5.2.0-alpha] - (7/19/2023)
 
 ### Added
+
 - `/generators/parsers` endpoint in `SVIPApiController`.
 - Relevant unit tests in `GenerateFromParserAPITest`:
-  - `sbomFilesNullPropertiesTest`
-    - Asserts a 'bad request' is returned.
-  - `CDXTagValueTest`
-    - Asserts a 'bad request' is returned.
-  - `generateTest`
-    - Comprehensive test to ensure generation from parsers works in the API.
+    - `sbomFilesNullPropertiesTest`
+        - Asserts a 'bad request' is returned.
+    - `CDXTagValueTest`
+        - Asserts a 'bad request' is returned.
+    - `generateTest`
+        - Comprehensive test to ensure generation from parsers works in the API.
 
 ### Changed
+
 - `APITest.java`:
-  - Is scalable for adding sample projects for future generator tests.
+    - Is scalable for adding sample projects for future generator tests.
 
 ## [v5.1.2-alpha] - (7/18/2023)
 
 ### Added
+
 - Utility classes to merge SBOMs together:
-  - `Merger` - Core merger class.
-  - `MergerCDX` - Merger for CDX14 SBOMs.
-  - `MergerController` - Controller to handle all SBOM merging.
-  - `MergerException` - Exception thrown for merge errors.
-  - `MergerSPDX` - Merger for SPDX23 SBOMs.
-  - `MergerSVIP` - Merger for SVIP SBOMs.
+    - `Merger` - Core merger class.
+    - `MergerCDX` - Merger for CDX14 SBOMs.
+    - `MergerController` - Controller to handle all SBOM merging.
+    - `MergerException` - Exception thrown for merge errors.
+    - `MergerSPDX` - Merger for SPDX23 SBOMs.
+    - `MergerSVIP` - Merger for SVIP SBOMs.
 - `MergerTest` class for unit testing.
 
 ### Removed
+
 - Old `Merger` Class & Test
 
 ## [v5.1.1-alpha] - (7/18/2023)
 
 ### Changed
+
 - Organized all builder interfaces and objects into `sbom.builder` package.
 - Organized all factory interfaces and objects into `sbom.model` package.
 
 ### Removed
+
 - `translators` package as the translators have been deprecated by the deserializers
 - Legacy endpoint API unit tests
 
 ## [v5.1.0-alpha] - (7/18/2023)
 
 ### Added
+
 - /convert endpoint
 - Relevant unit tests in `ConvertFromAPITest`
     - `invalidSchemaAndFormatTest()`
     - `CDXTagValueTest()`
     - `convertTest()`
 - Serializer + deserializer fixes
+
 ### Changed
+
 - Moved conversion functionality from `Utils.java` to `Converter.java`
 
 ## [v5.0.5-alpha] - (7/18/2023)
 
 ### Added
+
 > NOTE: Serializers may serialize null fields; this should be fixed in a later version.
+
 - Refactored `parsers` package to use the new `SVIPSBOM` & `SVIPComponentObject`.
-  - Refactored all parser unit tests to reflect this (100% passing, code coverage TBD).
+    - Refactored all parser unit tests to reflect this (100% passing, code coverage TBD).
 - Refactored `SBOMGeneratorCLI` class to use `serializers` & `parsers` packages.
 - New OSV API Client implementation:
-  - `OSVClient` - Class that, when given an SBOM, will create a new VEX Document object with the OSV API database
+    - `OSVClient` - Class that, when given an SBOM, will create a new VEX Document object with the OSV API database
 
 ### Changed
+
 - Moved `Debug`, `QueryWorker`, & `VirtualPath` classes to the base `utils` package.
 
 ### Removed
+
 - `Resolver.java` as the new API endpoints don't take string file arguments anymore.
 - `generators` package as it has now been fully replaced by the `serializers` & `parsers` packages.
-- `translators` unit tests as the translators have been deprecated by the deserializers and will be removed once the 
+- `translators` unit tests as the translators have been deprecated by the deserializers and will be removed once the
   API endpoints have been refactored.
-
 
 ## [v5.0.4-alpha] - (7/13/2023)
 
 ### Added
+
 - All unit tests for the `serializers` package at ~91% method code coverage.
 - New Metrics refactor to test SBOM and component fields:
-    - `ATTRIBUTE` - Enumeration  of all possible test attributes
+    - `ATTRIBUTE` - Enumeration of all possible test attributes
     - `MetricTest` - Abstract class that templates all tests (Except EmptyOrNull)
-      - `CPETest` - Class that holds all tests for CPEs
-      - `HashTest` - Class that holds all tests for Hashes
-      - `LicenseTest` - Class that holds all tests for licenses
-      - `PURLTest` - Class that holds all tests for PURLs
+        - `CPETest` - Class that holds all tests for CPEs
+        - `HashTest` - Class that holds all tests for Hashes
+        - `LicenseTest` - Class that holds all tests for licenses
+        - `PURLTest` - Class that holds all tests for PURLs
     - `EmptyOrNullTest`
     - `QualityReport` - Class to report all results through the pipelines
     - `QAPipeline` - Generic interface for all pipelines
     - `CDX14Tests` - Interface that hold CycloneDX 1.4 specific tests
-    - `SPDX23Tests` - Interface that holds SPDX 2.3 specific tests 
+    - `SPDX23Tests` - Interface that holds SPDX 2.3 specific tests
     - `CDX14Pipeline` - Class that runs through all tests for a CycloneDX 1.4 sbom and components
     - `SPDX23Pipeline` - Class that runs through all tests for a SPDX 2.3 sbom and components
     - `SVIPPipeline` - Class that runs through all tests for an SVIP sbom and components
 - New Result class to output tests results:
-  - `ResultFactory` - Class that helps create new Results
-  - `Result` - Class that holds the basic information of a result
-  - `Text` - Class that helps provide messages and details for Results
-  - `INFO` - Enumeration that holds all possible info for a test
-  - `STATUS` - Enumeration that holds all statuses of a result
+    - `ResultFactory` - Class that helps create new Results
+    - `Result` - Class that holds the basic information of a result
+    - `Text` - Class that helps provide messages and details for Results
+    - `INFO` - Enumeration that holds all possible info for a test
+    - `STATUS` - Enumeration that holds all statuses of a result
 - Unit tests to be completed for each test, pipeline, and ResultFactory
 
 ## [v5.0.3-alpha] - (7/12/2023)
 
 ### Added
+
 - New Serializer refactor and implementation of the old generator serializers to use the SBOM object:
     - `SerializerFactory` Class - Responsible for recieving parameters and constructing/configuring
       serializers/deserializers
@@ -739,6 +858,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v5.0.2-alpha] - (7/12/2023)
 
 ### Added
+
 - New VEX and VEXStatement Implementation. This covers the following files:
     - `VEX` - Class that build a VEX Document object
     - `VEXType` - An enumeration of the possible VEX file types
@@ -746,7 +866,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `Product` - Class that defines a product inside a VEX Statement
     - `Vulnerability` - Class that defines the vulnerability for a VEX Statement
     - `Status` - Class that defines the status of a VEX Statement
-    - `VulnStatus` -  An enumeration for all the possible statuses of a VEX Statement
+    - `VulnStatus` - An enumeration for all the possible statuses of a VEX Statement
     - `Justification` - An enumeration of all possible justifications for a NOT_AFFECTED VEX Statement
 
 ### Changed
@@ -756,29 +876,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v5.0.2-alpha] - (7/12/2023)
 
 ### Added
+
 - Unit tests for SBOM and Component Builders.
 
 ### Changed
+
 - `BuildAndFlush()` methods now call their base `build()` method rather than using duplicate code.
 - Fixed a bug where `SVIPSBOM.Build()` was returning an `SBOM` rather than an `SVIPSBOM`.
 - Patched various methods that did not check if a list was null before trying to access it.
-        
 
 ## [v5.0.2-alpha] - (7/12/2023)
 
 ### Added
+
 - Unit tests for SBOM and Component Builders.
 
 ### Changed
+
 - `BuildAndFlush()` methods now call their base `build()` method rather than using duplicate code.
 - Fixed a bug where `SVIPSBOM.Build()` was returning an `SBOM` rather than an `SVIPSBOM`.
 - Patched various methods that did not check if a list was null before trying to access it.
-        
 
 ## [v5.0.1-alpha] - (7/3/2023)
 
 ### Added
-- New SBOM Refactor and Implementation. This covers the following files: 
+
+- New SBOM Refactor and Implementation. This covers the following files:
     - `SBOM` - An interface that covers SBOM information that is similar to both CycloneDX and SPDX formats
     - `CDX14Schema` - An interface that covers SBOM information specific to CycloneDX 1.4 SBOMs
     - `SPDX23Schema` - An interface that covers SBOM information specific to SPDX 2.3 SBOMs
@@ -787,40 +910,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `SPDX23SBOM` - A class that is used to file for SPDX 2.3 SBOM information
     - `Relationship` - A class that holds relationship information between SBOM components
     - `ExternalReferences` - A class that holds external reference information for an SBOM
-  - New Component Refactor and Implementation. This covers the following files:
-    - `Component` - An interface that holds shared component data regardless of SBOM format
-    - `LicenseCollection` - A class that holds the licenses of the component
-    - `SPDX23Component` - An interface that covers SPDX 2.3 specific package/file information
-    - `SPDX23File` - An interface that covers SPDX 2.3 file specific information
-    - `SPDX23Package` - An interface that covers SPDX 2.3 package specific information
-    - `SBOMPackage` - An interface that covers SPDX 2.3 and CycloneDX 1.4 package information
-    - `Description` - A class that holds a package's description
-    - `SPDX23FileObject` - A class that is used to file an SPDX 2.3 File
-    - `SPDX23PackageObject` - A class that is used to file for an SPDX 2.3 package
-    - `SVIPComponentObject` - A class that is used to file for an SVIP component
-    - `CDX14ComponentObject` - A class that is used to file for a CycloneDX 1.4 component
+    - New Component Refactor and Implementation. This covers the following files:
+        - `Component` - An interface that holds shared component data regardless of SBOM format
+        - `LicenseCollection` - A class that holds the licenses of the component
+        - `SPDX23Component` - An interface that covers SPDX 2.3 specific package/file information
+        - `SPDX23File` - An interface that covers SPDX 2.3 file specific information
+        - `SPDX23Package` - An interface that covers SPDX 2.3 package specific information
+        - `SBOMPackage` - An interface that covers SPDX 2.3 and CycloneDX 1.4 package information
+        - `Description` - A class that holds a package's description
+        - `SPDX23FileObject` - A class that is used to file an SPDX 2.3 File
+        - `SPDX23PackageObject` - A class that is used to file for an SPDX 2.3 package
+        - `SVIPComponentObject` - A class that is used to file for an SVIP component
+        - `CDX14ComponentObject` - A class that is used to file for a CycloneDX 1.4 component
 
 ### Changed
 
 ### Removed
-
 
 ## [v5.0.0-alpha] - (6/29/2023)
 
 ### Added
-- `Dockerfile` & `docker-compose.yml` to build the API and run a MySQL server with persistent storage in separate 
+
+- `Dockerfile` & `docker-compose.yml` to build the API and run a MySQL server with persistent storage in separate
   Docker containers.
-  - `application.properties` & `.env` files created to setup Spring and Docker configuration.
+    - `application.properties` & `.env` files created to setup Spring and Docker configuration.
 - `repository.SBOMFileRepository` Class to interact with the MySQL database.
 - New API endpoints (`upload`, `view`, `viewAll`, `delete`) to run CRUD operations on the `files` table.
-  - Added unit tests that mock the `repository.SBOMFileRepository` to avoid any local storage during testing.
+    - Added unit tests that mock the `repository.SBOMFileRepository` to avoid any local storage during testing.
 
 ### Changed
+
 - Refactored `NVIPApiController`, `PlugFestApiController`, & `NVIPApiController` Classes into `controller` package.
 - Refactored `utils.Utils.SBOMFile` into its own class `model.SBOMFile`
-  - Uses Hibernate decorators to automatically create a custom `files` table on the MySQL server.
+    - Uses Hibernate decorators to automatically create a custom `files` table on the MySQL server.
 
 ### Removed
+
 - Old API endpoints & tests (`compare`, `generateSBOM`, `merge`, `parse`, & `qa`)
 
 ## [v4.5.0-alpha] - (5/24/2023)
@@ -831,9 +956,12 @@ enable fixing all unit tests.
 **ALL UNIT TESTS ARE NOW PASSING**
 
 ### Added
+
 - `VirtualTree` implementation. This covers the following classes:
-    - `VirtualNode` - Represents a node in a `VirtualTree`. This is either a file or directory. If a VirtualNode is a file,
-      it contains the contents of the file internally. It uses `VirtualPaths` to store the name of each file/directory, and
+    - `VirtualNode` - Represents a node in a `VirtualTree`. This is either a file or directory. If a VirtualNode is a
+      file,
+      it contains the contents of the file internally. It uses `VirtualPaths` to store the name of each file/directory,
+      and
       can then be concatenated recursively by `VirtualTree` to retrieve the whole filepath.
     - `VirtualTree` - A complete, internal, in-memory representation of any file tree. A VirtualTree is constructed by
       adding a several file paths, and an internal structure of VirtualNodes is created to represent each directory and
@@ -846,14 +974,17 @@ enable fixing all unit tests.
     - This is derived from the `VirtualTree.getAllFiles()` method.
 
 ### Changed
+
 - `ParserController` now holds a `VirtualTree` representation of an arbitrary filesystem on construction.
     - Now, each file can be parsed by looping through all files in the `VirtualTree` and parsing their contents,
       completely in-memory.
-    - `parse()` now accepts an additional parameter `internalFiles` to pass into each parser, regenerated once per call to
+    - `parse()` now accepts an additional parameter `internalFiles` to pass into each parser, regenerated once per call
+      to
       `parseAll()` from the `VirtualTree` representation.
 - `LanguageParser.isInternalComponent()` refactored to use the `internalFiles` field instead of using `Files.walk()`.
 - Moved all utilities in `sbomfactory.generators` to a single `utils` package with organized sub-packages.
-- Renamed `GeneratorsTestMain` to `SBOMGeneratorCLI` and moved it to the `svip` package along with the other main classes.
+- Renamed `GeneratorsTestMain` to `SBOMGeneratorCLI` and moved it to the `svip` package along with the other main
+  classes.
 - Changed `SBOMGeneratorCLI` to use the `VirtualTree.buildTree()` static method to read all files and file contents from
   a source directory into a `VirtualTree`, which can then be passed into a `ParserController` instance.
 - Updated `OSITest` to check if Docker is running, and if not simply ignore the tests.
@@ -864,36 +995,46 @@ This update focuses mainly on adding several test cases for most generator class
 serializers, and translators.
 
 ### Added
+
 - Added tests for `SBOMGenerator.writeFileToString()` in `SBOMGeneratorTest`.
     - These test for cases where pretty-printing is enabled and disabled.
-- Added a mostly complete suite of test cases for all non-dataclasses in the `sbomfactory.generators.generators` package.
-    - `BOMStoreTestCore` - An abstract test class to setup an SBOM and test component behavior for all classes that extend `BOMStore`.
+- Added a mostly complete suite of test cases for all non-dataclasses in the `sbomfactory.generators.generators`
+  package.
+    - `BOMStoreTestCore` - An abstract test class to setup an SBOM and test component behavior for all classes that
+      extend `BOMStore`.
     - `CycloneDXStoreTest` - Tests all CycloneDX BOM manipulation methods
     - `SPDXStoreTest` - Tests all SPDX Document manipulation methods
 - Added test cases for all custom serializer classes in the `sbomfactory.generators.generators` package.
-    - For each class, a generator serializes a test SBOM object to a file. Then, the SVIP translators are used to translate
-      the SBOM file back into an SBOM object. The two are then checked to ensure equality, and if so the test passes. This
+    - For each class, a generator serializes a test SBOM object to a file. Then, the SVIP translators are used to
+      translate
+      the SBOM file back into an SBOM object. The two are then checked to ensure equality, and if so the test passes.
+      This
       allows us to ensure that an SBOM can go both ways, via the generators and translators.
         - `CycloneDXSerializerTest`
         - `CycloneDXXMLSerializerTest`
         - `SPDXTagValueWriterTest`
-    - Note that because there are no translators for SPDX JSON and XML formats (yet), we cannot test the outputs of those
+    - Note that because there are no translators for SPDX JSON and XML formats (yet), we cannot test the outputs of
+      those
       corresponding serializers.
 - Added **INTERNAL** SBOM comparison methods:
     - `SBOM.equals()` - This tests for equality of all relevant fields, including the SBOM `DependencyTree`.
     - `DependencyTree.equals()` - This is a quick-and-dirty fix to compare two instances of a `DependencyTree` WITHOUT
-      regard to UUIDs. This allows us to have two separate SBOMs with the same components (with randomly generated UUIDs)
+      regard to UUIDs. This allows us to have two separate SBOMs with the same components (with randomly generated
+      UUIDs)
       and still be equal.
     - `DependencyTree.toString()` & `DependencyTree.dependencyMapToString()`, which were both added to support
-      `DependencyTree.equals()`. The `equals()` method simply compares the `toString()` methods of each `DependencyTree`,
+      `DependencyTree.equals()`. The `equals()` method simply compares the `toString()` methods of each
+      `DependencyTree`,
       which are generated by the `dependencyMapToString()` method.
         - This is a simple recursive method that uses indentations
           to represent how an individual component is nested, thus removing a reliance on UUIDs.
-        - Each component can then be compared by checking its string representation (which is currently just the component name)
+        - Each component can then be compared by checking its string representation (which is currently just the
+          component name)
 - Added "copy" constructor to `ParserComponent` Class to construct an instance from a `Component` instance.
     - Updated `SBOMGenerator` to allow processing SBOMs that contain `Component` instances.
 
 ### Changed
+
 - All tests in `SBOMGeneratorTest` now use `Debug.log()` instead of default system I/O.
 - Both output methods in `SBOMGenerator` (`writeFile()` & `writeFileToString`) now throw a `GeneratorException` for
   ease of testing.
@@ -907,6 +1048,7 @@ serializers, and translators.
 - Fixed `SPDXStore` not containing the default `SPDXRef-DOCUMENT DESCRIBES SPDXRef-DOCUMENT` relationship.
 
 ### Removed
+
 - Removed file parsing in `SBOMGeneratorTest`. Instead, a sample SBOM is created from scratch.
 - Removed default root wrapping property of `ObjectMapper`-based serializers, as it was causing the class name to be the
   top-level object of the generated SBOM.
@@ -923,22 +1065,27 @@ serializers, and translators.
   `ParserController.parse()` Method.
 
 ### Changed
+
 - Updated `LicenseManager.parseLicense()` Method to more accurately and efficiently match an arbitrary license string to
   =======
+
 ## [v4.4.1-alpha] - (05/XX/2023)
 
 ### Added
 
-- `NugetParser` which parses the main configuration file of Nuget projects, and queries the Nuget package-manager for any existing licenses.
+- `NugetParser` which parses the main configuration file of Nuget projects, and queries the Nuget package-manager for
+  any existing licenses.
 
 ### Changed
+
 - Updated `LicenseManager.parseLicense()` method to more accurately and efficiently match an arbitrary license string to
     - This is done by quantifying the number of token matches per license string and then choosing the string with the
       most matches.
     - It also contains checks for common license keywords and short identifiers to increase speed.
 - Updated `ParserComponent.resolveLicenses()` Method to support finding multiple licenses in a single, comma-separated .
     - This increases the license parsing accuracy, as one string can now be separated into multiple licenses.
-    - However, any invalid license after the first one is found will be discarded to avoid "garbage" licenses occuring in
+    - However, any invalid license after the first one is found will be discarded to avoid "garbage" licenses occuring
+      in
       the SBOM.
 - Updated `LanguageParser` Class to check for and handle import wildcards.
     - If any import wildcards are found while parsing a file, the component name will be replaced with the
@@ -959,6 +1106,7 @@ serializers, and translators.
 - Add new SPDX `GeneratorFormat` Enum Value in `GeneratorSchema` Class to support file output for this value.
 
 ### Changed
+
 - Changed `SBOMGenerator` Class to use an `SPDXTagValueWriter` instead of an `ObjectMapper` when dealing with the SPDX
   tag-value format.
 
@@ -982,7 +1130,8 @@ serializers, and translators.
 
 - Add `CycloneDXXMLSerializer` Class.
     - Similar to `CycloneDXSerializer`, this class overrides the Jackson `StdSerializer` Class to allow serialization of
-      a `CycloneDXStore` instance to an XML file according to the [CycloneDX v1.4 XML specification](https://cyclonedx.org/docs/1.4/xml/).
+      a `CycloneDXStore` instance to an XML file according to
+      the [CycloneDX v1.4 XML specification](https://cyclonedx.org/docs/1.4/xml/).
     - A separate serializer is required due to the inherent difference between JSON and XML.
 - Add abstract `TranslatorCore` Class that all other translators extend to increase modularity.
     - This will eventually replace the current implementation of `Translator`, which used to act as a controller for the
@@ -995,9 +1144,11 @@ serializers, and translators.
 
 - Update `GeneratorSchema.getObjectMapper()` to take a schema argument to register all serializers with their respective
   `ObjectMapper`
-    - Previously, registering the custom serializers was done using Jackson decorators on all `BOMStore` classes. However,
+    - Previously, registering the custom serializers was done using Jackson decorators on all `BOMStore` classes.
+      However,
       this made it difficult to have multiple different types of serializers.
-    - Now, all `ObjectMapper` configuration and serialization setup is done in `getObjectMapper()`. This allows for simply
+    - Now, all `ObjectMapper` configuration and serialization setup is done in `getObjectMapper()`. This allows for
+      simply
       calling the method on a specific format and passing in the schema to get a completely set up `ObjectMapper` whose
       serializer is dependent on the file format back.
 - Update `ObjectMapper` pretty-printing to stop indenting each line of an array to enhance SBOM readability.
@@ -1009,7 +1160,6 @@ serializers, and translators.
 - Update `CommentParser`, `DeadImportParser`, & `SubprocessParser` to add parsed contexts to SBOM components.
     - `CommentParser` could use a look in terms of the value of the data collected, as many comments provide no real,
       valuable information to our SBOM.
-
 
 ## [v4.3.0-alpha] - (05/08/2023)
 
@@ -1034,7 +1184,8 @@ serializers, and translators.
       and better delegate the responsibilities of each class
 - Update `PackageMangerParser` to handle property resolution
     - Generified code to resolve properties and fixed deep recursive edge cases
-        - This allows better access to the properties list that `PackageManagerParser` implementations store, and reduces
+        - This allows better access to the properties list that `PackageManagerParser` implementations store, and
+          reduces
           all token replacement code to two methods
         - Any value read in from a `PackageManagerParser` has the potential to be or contain property reference tokens,
           this change makes the process of "resolving" any given value extremely easy and generic.
@@ -1057,9 +1208,9 @@ serializers, and translators.
     - NOTE: These may end up being broken into more granular tests
 
 ### Removed
+
 - Remove `CPEQueryWorker` Class as no API requests need to be made.
 - Remove `UNKNOWN` Type from `ParserComponent` as it doesn't make sense to default to.
-
 
 ## [v4.2.0-alpha] - (05/01/2023)
 
@@ -1093,6 +1244,7 @@ serializers, and translators.
 - `ParserComponent` Class now contains a `generateHash()` method to obtain the checksum of a component.
 
 ### Removed
+
 - `Java_SPDX_old.json` as we now implement more fields than the previous implementation that used `spdx-java-library`.
 - `SPDXGenerator` & `CycloneDXGenerator` Class
     - All functionality has been moved into `SBOMGenerator`
@@ -1111,11 +1263,13 @@ serializers, and translators.
     - Holds the data of a single SPDX relationship between packages.
     - Defines allowed relationships between packages.
 - Added `SPDXLicenseManager` & `SPDXLicenseQueryWorker` Classes
-    - These two classes work together to first query the page of the SPDX website that describes what licenses are allowed
+    - These two classes work together to first query the page of the SPDX website that describes what licenses are
+      allowed
       and what format they need to be in.
     - Then, the license manager holds that data and allows us to test to see if a
       parsed license of a package is a valid string and if it can be inserted into the package information.
-        - The license manager can also assume the license based on a tokenized string and a version if the license is not
+        - The license manager can also assume the license based on a tokenized string and a version if the license is
+          not
           recognized.
 
 ### Changed
@@ -1130,6 +1284,7 @@ serializers, and translators.
       an `ObjectMapper` for each unique file format.
 
 ### Removed
+
 - `DependencyTreeSerializer` as it has been deprecated by the `SPDXStoreSerializer` class.
 
 ## [v4.1.0-alpha] - (04/21/2023)
@@ -1168,13 +1323,16 @@ serializers, and translators.
 - `Parser` Class is now responsible for **only** general parsing logic, while abstract children will hold greater
   categorical logic, to be further implemented in the form of the individual parsers
     - What this means is that a `LanguageParser` can be treated very similarly to a `PackageManagerParser`, and any new
-      types of parsers that are added. The plan is to expand this system to include an abstract `ContextParser` (name pending).
+      types of parsers that are added. The plan is to expand this system to include an abstract `ContextParser` (name
+      pending).
     - This abstraction will allow for easy combination of data (in any way we want) within `ParserController`.
 - `ParseRegexTestCore` Class modified to **only** be responsible for logic relating to testing the regex of the language
   parsers.
 - `POMParser` Class collects package license info and pom.xml properties (local variables)
-    - This allows us to replace values like this: `${java_version}` with values like this: `1.8` when storing the information
-        - Work still needs to be done to handle recursive variable referencing, i.e. a property references another property,
+    - This allows us to replace values like this: `${java_version}` with values like this: `1.8` when storing the
+      information
+        - Work still needs to be done to handle recursive variable referencing, i.e. a property references another
+          property,
           to the n-th level. This code is mostly written, but it is not functional currently
 
 ## [v4.0.0-alpha] - (04/14/2023)
@@ -1187,11 +1345,14 @@ serializers, and translators.
         - Holds valid filetypes, eventually this will also validate that any given filetype is valid for the specified
           schema (e.x. we do not want an instance of `CDXGenerator` writing to `.spdx`)
 - Added `CDXGenerator extends SBOMGenerator` Class
-    - This file implements our base generator class, and serves solely to perform CycloneDX-specific data manipulation and
-      write to file. We make use of CycloneDX's open-source, officially supported library `cyclonedx-core-java` to convert our internal
+    - This file implements our base generator class, and serves solely to perform CycloneDX-specific data manipulation
+      and
+      write to file. We make use of CycloneDX's open-source, officially supported library `cyclonedx-core-java` to
+      convert our internal
       objects to theirs, then are able to
       use their `BomGeneratorFactory` to format the data into stringified xml/json
-        - We plan to write custom serializers to replace the usage of these OS libraries, however, this was a very simple
+        - We plan to write custom serializers to replace the usage of these OS libraries, however, this was a very
+          simple
           solution that allowed us to output SBOMs quickly, and refine our generators right away.
 - Added work-in-progress `SPDXGenerator extends SBOMGenerator` Class
     - This file will also implement the base generator class and perform SPDX-specific data manipulation and file
@@ -1199,7 +1360,8 @@ serializers, and translators.
       able to use their internal representation of documents and packages to convert our objects to theirs and then
       write the resulting SBOM to a file.
 - Added `PackageManagerParser extends Parser` Class
-    - This new type of parser aims to build on existing functionality around dependency parsing, while also expanding the
+    - This new type of parser aims to build on existing functionality around dependency parsing, while also expanding
+      the
       range of data we can parse from only language files to also include managed dependency files.
 - Added `POMParser extends PackageManagerParser` Class
     - This implementation of PackageManagerParser was a spike into the value of including information gathered from
@@ -1213,7 +1375,8 @@ serializers, and translators.
 
 - System now uses `SBOM` Objects from `SVIP` when collecting information
 - `Component` Class -> `ParserComponent extends SVIP.Component` Class
-    - This allows for seamless use of existing functionality regarding SBOM/DependencyTree/Component/etc. within our system
+    - This allows for seamless use of existing functionality regarding SBOM/DependencyTree/Component/etc. within our
+      system
 - System now writes to `CycloneDX SBOM` format instead of "depFile" format, with a modular design meant to support
   more SBOM formats and schemas
     - Both `JSON` and `XML` formats are currently supported
@@ -1225,8 +1388,6 @@ serializers, and translators.
     - Old tests
     - Old data classes
 - Filter feature removed
-
-
 
 ## [v3.0.1-alpha] - (04/05/2023)
 
@@ -1301,7 +1462,8 @@ serializers, and translators.
 ### Removed
 
 - `ParserCore` Class, and its implementations, are now deprecated. Its responsibilities have
-  been delegated  accordingly and its implementations can and will be updated with relative ease.
+  been delegated accordingly and its implementations can and will be updated with relative ease.
+
 ## [v2.0.1] - (03/2/2023)
 
 ### Fixed
@@ -1310,7 +1472,9 @@ serializers, and translators.
 - Backend no longer uses static constant file paths for OSI.
 
 ### Known Issues
-- VEXFactory has an incompatibility with NVIP API. This breaks vulnerability discovery and all features which rely on VEX data.
+
+- VEXFactory has an incompatibility with NVIP API. This breaks vulnerability discovery and all features which rely on
+  VEX data.
 
 ## [v2.0.0] - (03/24/2023)
 
@@ -1333,7 +1497,9 @@ serializers, and translators.
 - `OSI`: Docker image builds upon app start up and remains open.
 
 ### Known Issues
-- VEXFactory has an incompatibility with NVIP API. This breaks vulnerability discovery and all features which rely on VEX data.
+
+- VEXFactory has an incompatibility with NVIP API. This breaks vulnerability discovery and all features which rely on
+  VEX data.
 
 ## [v1.0.0] - (02/27/2023)
 
@@ -1361,7 +1527,10 @@ serializers, and translators.
 
 ### Removed
 
-- `Tree.html`, `testSBOMS`, `Converter`: all were removed after the introduction of Apache Maven Springboot & Angular/Electron.
+- `Tree.html`, `testSBOMS`, `Converter`: all were removed after the introduction of Apache Maven Springboot &
+  Angular/Electron.
 
 ### Known Issues
-- VEXFactory has an incompatibility with NVIP API. This breaks vulnerability discovery and all features which rely on VEX data.
+
+- VEXFactory has an incompatibility with NVIP API. This breaks vulnerability discovery and all features which rely on
+  VEX data.

@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.conversion.toSVIP;
@@ -94,7 +95,7 @@ public class SPDX23 implements ToSVIP {
         builder.setDocumentComment(sbom.getDocumentComment());
 
         // Root Component
-        if(sbom.getRootComponent() != null)
+        if (sbom.getRootComponent() != null)
             builder.setRootComponent(convertPackage(sbom.getRootComponent()));
         else
             builder.setRootComponent(null);
@@ -102,8 +103,8 @@ public class SPDX23 implements ToSVIP {
         // Stream components from SVIP SBOM, convert them, then put into CDX SBOM
         sbom.getComponents().stream().filter(x -> x != null).forEach(
                 x -> {
-                        if (x instanceof SPDX23Package) builder.addComponent(convertPackage(x));
-                        else if (x instanceof SPDX23File) builder.addComponent(convertFile(x));
+                    if (x instanceof SPDX23Package) builder.addComponent(convertPackage(x));
+                    else if (x instanceof SPDX23File) builder.addComponent(convertFile(x));
                 }
         );
 
@@ -210,13 +211,13 @@ public class SPDX23 implements ToSVIP {
         builder.setDescription(component.getDescription());
 
         // CPEs
-        if(component.getCPEs() != null) component.getCPEs().forEach(x -> builder.addCPE(x));
+        if (component.getCPEs() != null) component.getCPEs().forEach(x -> builder.addCPE(x));
 
         // PURLs
-        if(component.getPURLs() != null) component.getPURLs().forEach(x -> builder.addPURL(x));
+        if (component.getPURLs() != null) component.getPURLs().forEach(x -> builder.addPURL(x));
 
         // External References
-        if(component.getExternalReferences() != null)
+        if (component.getExternalReferences() != null)
             component.getExternalReferences().forEach(x -> builder.addExternalReference(x));
 
         // Mime Type - NOT AVAILABLE IN SPDX 2.3 PACKAGE
