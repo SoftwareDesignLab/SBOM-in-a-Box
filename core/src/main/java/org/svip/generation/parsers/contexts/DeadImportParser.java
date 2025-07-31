@@ -25,7 +25,6 @@ package org.svip.generation.parsers.contexts;
 
 // Declares Imports
 
-import org.apache.commons.lang3.StringUtils;
 import org.svip.sbom.builder.objects.SVIPComponentBuilder;
 import org.svip.utils.Debug;
 
@@ -60,7 +59,7 @@ public class DeadImportParser extends ContextParser {
             // Iterates through each line of the file
             for (String line : lines) {
                 // Checks if component/import appears in the line
-                if (StringUtils.contains(line, getName(component))) {
+                if (line.contains(getName(component))) {
                     // If the component does appear in the line, increments import counter
                     importCount++;
                 }

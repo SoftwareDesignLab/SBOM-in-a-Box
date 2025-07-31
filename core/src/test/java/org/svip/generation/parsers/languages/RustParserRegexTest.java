@@ -44,7 +44,6 @@ public class RustParserRegexTest extends ParseRegexTestCore {
     /**
      * Constructor initializes a given parser and assigns both the
      * regex to test it against and the source directory to test on.
-     *
      */
     public RustParserRegexTest() {
         super(new RustParser(),
@@ -52,9 +51,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
                 "Rust");
     }
 
-    ///
     /// External
-    ///
 
     // Use
 
@@ -430,9 +427,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// INTERNAL
-    ///
 
     @Test
     @DisplayName("use lib::bar;")
@@ -497,9 +492,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// LANGUAGE
-    ///
 
     @Test
     @DisplayName("use std::fmt::{Result, Debug, Arguments, Alignment, Display, format};")
@@ -572,9 +565,7 @@ public class RustParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// Comments
-    ///
 
     // Single-line
 

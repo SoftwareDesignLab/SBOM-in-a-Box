@@ -171,6 +171,7 @@ public class Hash {
 
     /**
      * Get a list of possible matching algorithms based on the length of the hash value.
+     *
      * @param isSPDX true if getting valid algorithms for SPDX file
      * @return list of algorithms
      */

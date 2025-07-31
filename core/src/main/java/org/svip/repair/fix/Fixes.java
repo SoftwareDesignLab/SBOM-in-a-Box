@@ -37,9 +37,9 @@ import java.util.List;
 public interface Fixes<T> {
 
     /**
-     * @param result        object from quality report
-     * @param sbom          sbom from quality report
-     * @param componentName key from quality report map most directly relating to the component or metadata
+     * @param result            object from quality report
+     * @param sbom              sbom from quality report
+     * @param componentName     key from quality report map most directly relating to the component or metadata
      * @param componentHashCode hash code of the component
      * @return list of potential fixes
      */

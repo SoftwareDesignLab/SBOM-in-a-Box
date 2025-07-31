@@ -75,10 +75,11 @@ public class SubprocessParser extends ContextParser {
         // Iterate over file lines
         for (final String line : lines) {
             // If line starts with any comment prefix, continue
-            if (StringUtils.startsWithAny(line, commentPrefix)) continue;
+            if (Arrays.stream(commentPrefix).anyMatch(line::startsWith)) continue;
 
             // If line contains any keywords, continue
-            if (!StringUtils.containsAny(line, keywords) && !StringUtils.containsAny(line, capKeywords)) continue;
+            if (Arrays.stream(keywords).noneMatch(line::contains) &&
+                    Arrays.stream(capKeywords).noneMatch(line::contains)) continue;
 
             // If line is import, continue
             if (line.contains("import ") || line.contains("from ")) continue;

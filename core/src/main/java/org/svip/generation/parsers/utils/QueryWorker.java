@@ -30,6 +30,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 
 import static org.svip.utils.Debug.log;
@@ -82,7 +83,7 @@ public abstract class QueryWorker implements Runnable {
             final long t1 = System.nanoTime();
 
             // Create and open connection object
-            final URL url = new URL(urlString);
+            final URL url = URI.create(urlString).toURL();
             connection = (HttpURLConnection) url.openConnection();
 
             // Init request details

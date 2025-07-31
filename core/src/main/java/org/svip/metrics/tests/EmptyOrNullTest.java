@@ -82,6 +82,7 @@ public class EmptyOrNullTest {
         // Check for empty collection is value is instance of a collection
         else {
             // if value is an empty collection, test fails
+            // todo handle unchecked cast
             if (((Collection<?>) value).isEmpty()) {
                 return resultFactory.fail(field, INFO.MISSING,
                         (Collection<String>) value, context);

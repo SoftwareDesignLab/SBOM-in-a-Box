@@ -57,6 +57,7 @@ public class CondaParser extends PackageManagerParser {
         if (data.containsKey("channels")) {
             ArrayList<String> rawChannels;
             try {
+                // todo handle unchecked cast
                 rawChannels = (ArrayList<String>) data.get("channels");
             } catch (Exception e) {
                 System.err.println("Error: Could not cast channels to ArrayList<String>");
@@ -72,6 +73,7 @@ public class CondaParser extends PackageManagerParser {
         ArrayList<HashMap<String, String>> rawVariables;
         if (data.containsKey("variables")) {
             try {
+                // todo handle unchecked cast
                 rawVariables = (ArrayList<HashMap<String, String>>) data.get("variables");
             } catch (Exception e) {
                 System.err.println("Error: Could not cast channels to ArrayList<String>");
@@ -90,6 +92,7 @@ public class CondaParser extends PackageManagerParser {
         //attempt the dangerous cast
         ArrayList<String> rawDependencies;
         try {
+            // todo handle unchecked cast
             rawDependencies = (ArrayList<String>) data.get("dependencies");
         } catch (Exception e) {
             System.err.println("Error: Could not cast dependencies to ArrayList<String>");
@@ -138,6 +141,7 @@ public class CondaParser extends PackageManagerParser {
             //     - numpy==1.13.1 #this
             //     - scipy==0.19.1 #this
             try {
+                // todo handle unchecked cast
                 LinkedHashMap<String, ArrayList<String>> section = (LinkedHashMap<String, ArrayList<String>>) unknown;
                 String sectionName = section.keySet().iterator().next();
                 dependencyFoundFlag = true;

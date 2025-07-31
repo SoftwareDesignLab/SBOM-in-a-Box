@@ -44,7 +44,6 @@ class PythonParserRegexTest extends ParseRegexTestCore {
     /**
      * Constructor initializes a given parser and assigns both the
      * regex to test it against and the source directory to test on.
-     *
      */
     public PythonParserRegexTest() {
         super(new PythonParser(),
@@ -352,9 +351,7 @@ class PythonParserRegexTest extends ParseRegexTestCore {
         // assertNull(c.getChildren());
     }
 
-    ///
     /// Internal Tests
-    ///
     @Test
     @DisplayName("import ifoo")
     void importAbsInternalBasic() {

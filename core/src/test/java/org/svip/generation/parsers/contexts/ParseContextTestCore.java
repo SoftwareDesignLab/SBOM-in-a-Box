@@ -43,9 +43,9 @@ public abstract class ParseContextTestCore extends ParserTestCore {
      * Constructor calls super with parser and src, and parses the given
      * fileContents to test against.
      *
-     * @param parser Parser object to be tested
+     * @param parser       Parser object to be tested
      * @param fileContents fileContents to test against
-     * @param src Relative path to dummy directory
+     * @param src          Relative path to dummy directory
      */
     protected ParseContextTestCore(Parser parser, String fileContents, String src) {
         // Call super
