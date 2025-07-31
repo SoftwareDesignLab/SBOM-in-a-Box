@@ -1,31 +1,31 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.sbom.builder.objects.schemas.CDX14;
 
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.builder.interfaces.schemas.CycloneDX14.CDX14SBOMBuilder;
-import org.svip.sbom.builder.objects.schemas.CDX14.CDX14PackageBuilder;
 import org.svip.sbom.factory.objects.CycloneDX14.CDX14SBOMBuilderFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
@@ -90,7 +90,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void getName_is_test_name_when_setName_is_used_test(){
+    void getName_is_test_name_when_setName_is_used_test() {
         test_CDX14SBOMBuilder.setName(test_name);
         test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
@@ -98,7 +98,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void getUID_is_test_uid_when_setUID_is_used_test(){
+    void getUID_is_test_uid_when_setUID_is_used_test() {
         test_CDX14SBOMBuilder.setUID(test_uid);
         test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
@@ -106,7 +106,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void getVersion_is_test_version_when_setVersion_is_used_test(){
+    void getVersion_is_test_version_when_setVersion_is_used_test() {
         test_CDX14SBOMBuilder.setVersion(test_version);
         test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
@@ -114,7 +114,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void getSpecVersion_is_test_specVersion_when_setSpecVersion_is_used_test(){
+    void getSpecVersion_is_test_specVersion_when_setSpecVersion_is_used_test() {
         test_CDX14SBOMBuilder.setSpecVersion(test_specVersion);
         test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
@@ -122,7 +122,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void getLicenses_is_test_set_when_addLicense_is_used_test(){
+    void getLicenses_is_test_set_when_addLicense_is_used_test() {
         test_CDX14SBOMBuilder.addLicense(test_license1);
         test_CDX14SBOMBuilder.addLicense(test_license2);
         test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
@@ -135,7 +135,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void getCreationData_is_test_creationData_when_setCreationData_is_used_test(){
+    void getCreationData_is_test_creationData_when_setCreationData_is_used_test() {
         test_creationData.setCreationTime("17:32");
         test_creationData.setCreatorComment("This was created as a test.");
 
@@ -146,7 +146,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void getDocumentComment_is_test_documentComment_when_setDocumentComment_is_used_test(){
+    void getDocumentComment_is_test_documentComment_when_setDocumentComment_is_used_test() {
         test_CDX14SBOMBuilder.setDocumentComment(test_documentComment);
         test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
@@ -154,8 +154,8 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void getRootComponent_is_test_rootComponent_when_setRootCDXComponentObject_is_used_test(){
-        test_rootComponent = new CDX14ComponentObject("CycloneDX", null, "Tester", "Test Component",null,null,null,null,null,null,null,null,null, null, null, null,null,null);
+    void getRootComponent_is_test_rootComponent_when_setRootCDXComponentObject_is_used_test() {
+        test_rootComponent = new CDX14ComponentObject("CycloneDX", null, "Tester", "Test Component", null, null, null, null, null, null, null, null, null, null, null, null, null, null);
         test_CDX14SBOMBuilder.setRootComponent(test_rootComponent);
         test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
@@ -163,9 +163,9 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void getComponents_is_test_components_when_addCDXComponentObject_is_used_test(){
-        CDX14ComponentObject test_componentA = new CDX14ComponentObject("CycloneDX", null, "Tester One", "Test Component A",null,null,null,null,null,null,null,null,null, null, null, null,null,null);
-        CDX14ComponentObject test_componentB = new CDX14ComponentObject("CycloneDX", null, "Tester 2", "Test Component B",null,null,null,null,null,null,null,null,null, null, null, null,null,null);
+    void getComponents_is_test_components_when_addCDXComponentObject_is_used_test() {
+        CDX14ComponentObject test_componentA = new CDX14ComponentObject("CycloneDX", null, "Tester One", "Test Component A", null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        CDX14ComponentObject test_componentB = new CDX14ComponentObject("CycloneDX", null, "Tester 2", "Test Component B", null, null, null, null, null, null, null, null, null, null, null, null, null, null);
         test_CDX14SBOMBuilder.addComponent(test_componentA);
         test_CDX14SBOMBuilder.addComponent(test_componentB);
         test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
@@ -180,7 +180,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void getComponents_contains_test_package_when_addCDX14Package_is_used_test(){
+    void getComponents_contains_test_package_when_addCDX14Package_is_used_test() {
         test_packageBuilder.setName("test name");
         CDX14Package test_package = test_packageBuilder.buildAndFlush();
 
@@ -191,7 +191,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void getRelationships_contains_test_relationships_when_addRelationship_is_used_test(){
+    void getRelationships_contains_test_relationships_when_addRelationship_is_used_test() {
         HashMap<String, Relationship> test_relationships = new HashMap<String, Relationship>();
         Relationship test_relationship = new Relationship("001", "dependant");
         test_CDX14SBOMBuilder.addRelationship("test_component", test_relationship);
@@ -202,7 +202,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void getExternalReferences_is_test_externalRefs_when_addExternalReference_is_used_test(){
+    void getExternalReferences_is_test_externalRefs_when_addExternalReference_is_used_test() {
         HashSet<ExternalReference> test_externalRefs = new HashSet<ExternalReference>();
         ExternalReference test_externalRef = new ExternalReference("really cool url", "CPE");
 
@@ -215,7 +215,7 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void getName_is_test_name_when_SBOM_is_built_with_Build_method_test(){
+    void getName_is_test_name_when_SBOM_is_built_with_Build_method_test() {
         test_CDX14SBOMBuilder.setName(test_name);
         SBOM test_SBOM = test_CDX14SBOMBuilder.Build();
 

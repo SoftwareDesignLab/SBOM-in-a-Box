@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.generation.serializers;
@@ -35,8 +36,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SerializerFactoryTest {
 
@@ -67,7 +67,7 @@ public class SerializerFactoryTest {
                 SerializerFactory.Format.JSON,
                 true);
 
-        assertTrue(serializer instanceof CDX14JSONSerializer);
+        assertInstanceOf(CDX14JSONSerializer.class, serializer);
     }
 
     @Test
@@ -77,7 +77,7 @@ public class SerializerFactoryTest {
                 SerializerFactory.Format.JSON,
                 true);
 
-        assertTrue(serializer instanceof SPDX23JSONSerializer);
+        assertInstanceOf(SPDX23JSONSerializer.class, serializer);
     }
 
     @Test
@@ -87,7 +87,7 @@ public class SerializerFactoryTest {
                 SerializerFactory.Format.TAGVALUE,
                 true);
 
-        assertTrue(serializer instanceof SPDX23TagValueSerializer);
+        assertInstanceOf(SPDX23TagValueSerializer.class, serializer);
     }
 
     @Test
@@ -97,34 +97,34 @@ public class SerializerFactoryTest {
                 SerializerFactory.Format.JSON,
                 true);
 
-        assertTrue(serializer instanceof SVIPSBOMJSONSerializer);
+        assertInstanceOf(SVIPSBOMJSONSerializer.class, serializer);
     }
 
     @Test
     public void CDX14JSONDeserializerTest() {
         Deserializer deserializer = SerializerFactory.createDeserializer(CDX14_JSON);
 
-        assertTrue(deserializer instanceof CDX14JSONDeserializer);
+        assertInstanceOf(CDX14JSONDeserializer.class, deserializer);
     }
 
     @Test
     public void SPDX23JSONDeserializerTest() {
         Deserializer deserializer = SerializerFactory.createDeserializer(SPDX23_JSON);
 
-        assertTrue(deserializer instanceof SPDX23JSONDeserializer);
+        assertInstanceOf(SPDX23JSONDeserializer.class, deserializer);
     }
 
     @Test
     public void SPDX23TagValueDeserializerTest() {
         Deserializer deserializer = SerializerFactory.createDeserializer(SPDX23_TAGVALUE_ALPINE);
-        assertTrue(deserializer instanceof SPDX23TagValueDeserializer);
+        assertInstanceOf(SPDX23TagValueDeserializer.class, deserializer);
 
         deserializer = SerializerFactory.createDeserializer(SPDX23_TAGVALUE_DOCKER);
-        assertTrue(deserializer instanceof SPDX23TagValueDeserializer);
+        assertInstanceOf(SPDX23TagValueDeserializer.class, deserializer);
 
         deserializer = SerializerFactory.createDeserializer(SPDX23_TAGVALUE_PYTHON);
 
-        assertTrue(deserializer instanceof SPDX23TagValueDeserializer);
+        assertInstanceOf(SPDX23TagValueDeserializer.class, deserializer);
     }
 
     @Test

@@ -110,6 +110,7 @@ class Tool(object):
     """
     A tool represents an SBOM generation tool that has one or more profiles with run instructions
     """
+
     def __init__(self, name: str, source_url: str):
         """
         Tool constructor
@@ -152,11 +153,12 @@ class ToolFactory(object):
     """
     Factory to parse tool config files into Tool objects
     """
+
     def __init__(self):
         """
         ToolFactory Constructor
         """
-        self.sbom_config = self.load_config(SBOM_CONFIG)    # load sbom details config file
+        self.sbom_config = self.load_config(SBOM_CONFIG)  # load sbom details config file
 
     def build_tool(self, name: str) -> Tool | None:
         """

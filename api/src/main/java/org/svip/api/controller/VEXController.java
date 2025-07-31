@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.api.controller;
@@ -29,7 +30,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.entities.VEXFile;
 import org.svip.api.requests.UploadVEXFileInput;
@@ -61,9 +61,9 @@ public class VEXController {
      * Create new Controller with services
      *
      * @param sbomFileService Service for handling SBOM queries
-     * @param vexFileService Service for handling VEX queries
+     * @param vexFileService  Service for handling VEX queries
      */
-    public VEXController(SBOMFileService sbomFileService,VEXFileService vexFileService){
+    public VEXController(SBOMFileService sbomFileService, VEXFileService vexFileService) {
         this.sbomFileService = sbomFileService;
         this.vexFileService = vexFileService;
     }
@@ -80,17 +80,16 @@ public class VEXController {
      */
     @GetMapping("/sboms/vex")
     public ResponseEntity<String> vex(@RequestHeader(value = "apiKey", required = false) String apiKey,
-                                         @RequestParam("id") Long id,
-                                         @RequestParam("format") String format,
-                                         @RequestParam("client") String client) {
+                                      @RequestParam("id") Long id,
+                                      @RequestParam("format") String format,
+                                      @RequestParam("client") String client) {
 
 
-
-try{
+        try {
             SBOMFile sbomFile = this.sbomFileService.getSBOMFile(id);
 
             // No SBOM was found
-            if(sbomFile == null){
+            if (sbomFile == null) {
                 LOGGER.info("VEX /svip/sboms/vex?id=" + id + " - FILE NOT FOUND");
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
@@ -98,7 +97,7 @@ try{
             // Get stored content
             // todo more than 1 vex stored? Ie 1 from nvd, could run for osv
             // todo POST / arg to force rerun vex??
-            if(sbomFile.getVEXFile() != null)
+            if (sbomFile.getVEXFile() != null)
                 return new ResponseEntity<>(sbomFile.getVEXFile().getContent(), HttpStatus.OK);
 
             // No VEX stored, generate one
@@ -117,7 +116,7 @@ try{
             // Return JSON result
             return new ResponseEntity<>(vf.getContent(), HttpStatus.OK);
 
-        } catch (JsonProcessingException e ){
+        } catch (JsonProcessingException e) {
             // error with Deserialization
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception e) {

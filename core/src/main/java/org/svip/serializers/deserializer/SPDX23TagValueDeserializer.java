@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.serializers.deserializer;
@@ -41,7 +42,6 @@ import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.utils.Debug;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -158,22 +158,22 @@ public class SPDX23TagValueDeserializer implements Deserializer {
 
         // Parse and Add Packages
         Matcher packageMatcher = PACKAGE_PATTERN.matcher(fileContents);
-        while(packageMatcher.find())
+        while (packageMatcher.find())
             sbomBuilder.addSPDX23Component(buildPackage(packageBuilder, packageMatcher.group(1)));
 
         // Parse and Add unpackaged files
         Matcher fileMatcher = UNPACKAGED_PATTERN.matcher(fileContents);
-        while(fileMatcher.find())
+        while (fileMatcher.find())
             sbomBuilder.addSPDX23Component(buildFile(fileBuilder, fileMatcher.group(1)));
 
         // Parse and Add external license
         Matcher licenseMatcher = EXTRACTED_LICENSE_PATTERN.matcher(fileContents);
-        while(licenseMatcher.find())
+        while (licenseMatcher.find())
             sbomBuilder.addLicense(buildExternalLicense(licenseMatcher.group(1)));
 
         // Parse and Add relationships
         Matcher relationshipMatcher = RELATIONSHIP_PATTERN.matcher(fileContents);
-        while(relationshipMatcher.find())
+        while (relationshipMatcher.find())
             sbomBuilder.addRelationship(relationshipMatcher.group(1), buildRelationship(relationshipMatcher));
 
         return sbomBuilder.buildSPDX23SBOM();
@@ -395,7 +395,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
      * @param licenseBlock String of license details
      * @return extracted license ID
      */
-    private String buildExternalLicense(String licenseBlock){
+    private String buildExternalLicense(String licenseBlock) {
         Pattern licenseNamePattern = Pattern.compile("^LicenseID: (.*)");
         Matcher licenseIDMatcher = licenseNamePattern.matcher(licenseBlock);
 
@@ -412,10 +412,10 @@ public class SPDX23TagValueDeserializer implements Deserializer {
      * @param match Regex match of relationship details
      * @return Relationships
      */
-    private Relationship buildRelationship(Matcher match){
+    private Relationship buildRelationship(Matcher match) {
         Relationship r = new Relationship(match.group(3), match.group(2));
         // add comment if present
-        if(match.group(4) != null)
+        if (match.group(4) != null)
             r.setComment(match.group(4));
 
         return r;

@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.sbomanalysis.metrics.resultfactory;
@@ -94,7 +95,7 @@ class ResultFactoryTest {
 
 
     @Test
-    public void result_has_pass_match_single_value_test(){
+    public void result_has_pass_match_single_value_test() {
 
         Result r = resultFactory.pass("purl", INFO.HAS,
                 "pkg:golang/rsc.io/sampler@v1.3.0", "Component");
@@ -111,7 +112,7 @@ class ResultFactoryTest {
     }
 
     @Test
-    public void result_valid_pass_match_single_value_test(){
+    public void result_valid_pass_match_single_value_test() {
 
         Result r = resultFactory.pass("purl", INFO.VALID,
                 "pkg:golang/rsc.io/sampler@v1.3.0", "Component");
@@ -160,7 +161,7 @@ class ResultFactoryTest {
     }
 
     @Test
-    public void result_has_pass_match_multiple_values_test(){
+    public void result_has_pass_match_multiple_values_test() {
 
         Result r = resultFactory.pass("String", INFO.HAS,
                 testValueCol, "Component");
@@ -178,7 +179,7 @@ class ResultFactoryTest {
     }
 
     @Test
-    public void result_missing_fail_match_multiple_values_test(){
+    public void result_missing_fail_match_multiple_values_test() {
 
         Result r = resultFactory.fail("String", INFO.MISSING,
                 testEmptyCol, "Component");
@@ -196,7 +197,7 @@ class ResultFactoryTest {
     }
 
     @Test
-    public void result_null_error_match_multiple_values_test(){
+    public void result_null_error_match_multiple_values_test() {
 
         Result r = resultFactory.error("String", INFO.NULL,
                 (Collection<String>) null, "Component");
@@ -213,10 +214,10 @@ class ResultFactoryTest {
     }
 
     @Test
-    public void result_matching_pass_single_value_test(){
+    public void result_matching_pass_single_value_test() {
 
         Result r = resultFactory.pass("Name", INFO.MATCHING,
-               "Component Name", "Component Name");
+                "Component Name", "Component Name");
 
         Result test_result = new Result(testAttributeList, testTestName,
                 "Name matches Component value",

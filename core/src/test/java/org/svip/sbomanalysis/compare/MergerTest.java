@@ -1,30 +1,30 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.sbomanalysis.compare;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.svip.merge.*;
@@ -116,11 +116,11 @@ public class MergerTest {
      * Test Component Information
      */
 
-    private LicenseCollection comp_svip_a_li = new LicenseCollection();
+    private final LicenseCollection comp_svip_a_li = new LicenseCollection();
 
-    private static HashMap<String, String> comp_svip_a_hash = new HashMap();
+    private static final HashMap<String, String> comp_svip_a_hash = new HashMap();
 
-    private static Set<String> comp_svip_a_cpe = new HashSet<>(
+    private static final Set<String> comp_svip_a_cpe = new HashSet<>(
             Arrays.asList(
                     "cpe:2.3:a:package-M:1.3.0:*:*:*:*:*:*:*",
                     "cpe:2.3:a:package-M:package-M:1.3.0:*:*:*:*:*:*:*"
@@ -128,19 +128,19 @@ public class MergerTest {
     );
 
 
-    private static Set<String> comp_svip_a_purl = new HashSet<>(
-            Arrays.asList(
+    private static final Set<String> comp_svip_a_purl = new HashSet<>(
+            List.of(
                     "pkg:test/package-M@1.3.0?arch=x86_64&upstream=package-M&distro=test-1.3.0"
             )
     );
 
-    private static Set<ExternalReference> comp_svip_a_ext = new HashSet<>(
-            Arrays.asList(
+    private static final Set<ExternalReference> comp_svip_a_ext = new HashSet<>(
+            List.of(
                     new ExternalReference("www.test.test", "property")
             )
     );
 
-    private static HashMap<String, Set<String>> comp_svip_a_properties = new HashMap<>(
+    private static final HashMap<String, Set<String>> comp_svip_a_properties = new HashMap<>(
             Collections.singletonMap("test_values", Set.of("blue_property", "another_blue_property"))
     );
 
@@ -152,24 +152,24 @@ public class MergerTest {
     /** CDX Test Components **/
 
     // Blue
-    private static HashMap<String, String> blue_cdx_hashes= new HashMap<>() {{
-        put("SHA256","somerandomtestbluecdxhash");
+    private static final HashMap<String, String> blue_cdx_hashes = new HashMap<>() {{
+        put("SHA256", "somerandomtestbluecdxhash");
     }};
 
-    private static Organization blue_cdx_org = new Organization("blue_cdx_test_org", "www.blue_cdx.test");
+    private static final Organization blue_cdx_org = new Organization("blue_cdx_test_org", "www.blue_cdx.test");
 
-    private static Description blue_cdx_description = new Description("a_summary_about_the_blue_cdx_component");
+    private static final Description blue_cdx_description = new Description("a_summary_about_the_blue_cdx_component");
 
-    private static LicenseCollection blue_cdx_licenses = new LicenseCollection();
+    private static final LicenseCollection blue_cdx_licenses = new LicenseCollection();
 
-    private static Set<ExternalReference> blue_externalReference = new HashSet<>(
-            Arrays.asList(
+    private static final Set<ExternalReference> blue_externalReference = new HashSet<>(
+            List.of(
                     new ExternalReference("www.bluecdxref.test", "blue_cdx")
             )
     );
 
-    private static HashMap<String, Set<String>> blue_cdx_properties = new HashMap<>() {{
-       put("blue_properties", Set.of("this_is_blue", "it's also cool", "but kind of outdated"));
+    private static final HashMap<String, Set<String>> blue_cdx_properties = new HashMap<>() {{
+        put("blue_properties", Set.of("this_is_blue", "it's also cool", "but kind of outdated"));
     }};
 
     CDX14ComponentObject comp_cdx_blue = new CDX14ComponentObject(
@@ -181,23 +181,23 @@ public class MergerTest {
     );
 
     // Yellow
-    private static HashMap<String, String> yellow_cdx_hashes= new HashMap<>() {{
-        put("SHA256","somerandomtestyellowcdxhash");
+    private static final HashMap<String, String> yellow_cdx_hashes = new HashMap<>() {{
+        put("SHA256", "somerandomtestyellowcdxhash");
     }};
 
-    private static Organization yellow_cdx_org = new Organization("yellow_cdx_test_org", "www.yellow_cdx.test");
+    private static final Organization yellow_cdx_org = new Organization("yellow_cdx_test_org", "www.yellow_cdx.test");
 
-    private static Description yellow_cdx_description = new Description("a_summary_about_the_yellow_cdx_component");
+    private static final Description yellow_cdx_description = new Description("a_summary_about_the_yellow_cdx_component");
 
-    private static LicenseCollection yellow_cdx_licenses = new LicenseCollection();
+    private static final LicenseCollection yellow_cdx_licenses = new LicenseCollection();
 
-    private static Set<ExternalReference> yellow_externalReference = new HashSet<>(
-            Arrays.asList(
+    private static final Set<ExternalReference> yellow_externalReference = new HashSet<>(
+            List.of(
                     new ExternalReference("www.yellowcdxref.test", "yellow_cdx")
             )
     );
 
-    private static HashMap<String, Set<String>> yellow_cdx_properties = new HashMap<>() {{
+    private static final HashMap<String, Set<String>> yellow_cdx_properties = new HashMap<>() {{
         put("yellow_properties", Set.of("this_is_yellow", "it's also really cool", "but has a large size"));
     }};
 
@@ -210,24 +210,24 @@ public class MergerTest {
     );
 
 
-    private static HashMap<String, String> green_cdx_hashes= new HashMap<>() {{
-        put("SHA256","somerandomtestbluecdxhash");
+    private static final HashMap<String, String> green_cdx_hashes = new HashMap<>() {{
+        put("SHA256", "somerandomtestbluecdxhash");
     }};
 
     // Green
-    private static Organization green_cdx_org = new Organization("green_cdx_test_org", "www.green_cdx.test");
+    private static final Organization green_cdx_org = new Organization("green_cdx_test_org", "www.green_cdx.test");
 
-    private static Description green_cdx_description = new Description("a_summary_about_the_green_cdx_component");
+    private static final Description green_cdx_description = new Description("a_summary_about_the_green_cdx_component");
 
-    private static LicenseCollection green_cdx_licenses = new LicenseCollection();
+    private static final LicenseCollection green_cdx_licenses = new LicenseCollection();
 
-    private static Set<ExternalReference> green_externalReference = new HashSet<>(
-            Arrays.asList(
+    private static final Set<ExternalReference> green_externalReference = new HashSet<>(
+            List.of(
                     new ExternalReference("www.greencdxref.test", "green_cdx")
             )
     );
 
-    private static HashMap<String, Set<String>> green_cdx_properties = new HashMap<>() {{
+    private static final HashMap<String, Set<String>> green_cdx_properties = new HashMap<>() {{
         put("green_properties", Set.of("this_is_green", "it's also cool", "but kind of slow"));
     }};
 
@@ -243,18 +243,18 @@ public class MergerTest {
 
     // Blue SPDX
 
-    private static LicenseCollection blue_spdx_licenses = new LicenseCollection();
+    private static final LicenseCollection blue_spdx_licenses = new LicenseCollection();
 
-    private static HashMap<String, String> blue_spdx_hashes = new HashMap<>() {{
-        put("SHA256","somerandomtestbluespdxhash");
+    private static final HashMap<String, String> blue_spdx_hashes = new HashMap<>() {{
+        put("SHA256", "somerandomtestbluespdxhash");
     }};
 
-    private static Organization blue_spdx_supplier = new Organization("blue_spdx_supplier","www.testbluespdx.com");
+    private static final Organization blue_spdx_supplier = new Organization("blue_spdx_supplier", "www.testbluespdx.com");
 
-    private static Description blue_spdx_description = new Description("a_summary_about_the_blue_spdx_component");
+    private static final Description blue_spdx_description = new Description("a_summary_about_the_blue_spdx_component");
 
-    private static Set<ExternalReference> blue_spdx_externalReference = new HashSet<>(
-            Arrays.asList(
+    private static final Set<ExternalReference> blue_spdx_externalReference = new HashSet<>(
+            List.of(
                     new ExternalReference("www.bluespdxref.test", "blue_spdx")
             )
     );
@@ -271,18 +271,18 @@ public class MergerTest {
 
     // Yellow SPDX
 
-    private static LicenseCollection yellow_spdx_licenses = new LicenseCollection();
+    private static final LicenseCollection yellow_spdx_licenses = new LicenseCollection();
 
-    private static HashMap<String, String> yellow_spdx_hashes = new HashMap<>() {{
-        put("SHA256","somerandomtestyellowspdxhash");
+    private static final HashMap<String, String> yellow_spdx_hashes = new HashMap<>() {{
+        put("SHA256", "somerandomtestyellowspdxhash");
     }};
 
-    private static Organization yellow_spdx_supplier = new Organization("yellow_spdx_supplier","www.testyellowspdx.com");
+    private static final Organization yellow_spdx_supplier = new Organization("yellow_spdx_supplier", "www.testyellowspdx.com");
 
-    private static Description yellow_spdx_description = new Description("a_summary_about_the_yellow_spdx_component");
+    private static final Description yellow_spdx_description = new Description("a_summary_about_the_yellow_spdx_component");
 
-    private static Set<ExternalReference> yellow_spdx_externalReference = new HashSet<>(
-            Arrays.asList(
+    private static final Set<ExternalReference> yellow_spdx_externalReference = new HashSet<>(
+            List.of(
                     new ExternalReference("www.yellowspdxref.test", "yellow_spdx")
             )
     );
@@ -299,18 +299,18 @@ public class MergerTest {
 
     // Green SPDX
 
-    private static LicenseCollection green_spdx_licenses = new LicenseCollection();
+    private static final LicenseCollection green_spdx_licenses = new LicenseCollection();
 
-    private static HashMap<String, String> green_spdx_hashes = new HashMap<>() {{
-        put("SHA256","somerandomtestgreenspdxhash");
+    private static final HashMap<String, String> green_spdx_hashes = new HashMap<>() {{
+        put("SHA256", "somerandomtestgreenspdxhash");
     }};
 
-    private static Organization green_spdx_supplier = new Organization("green_spdx_supplier","www.testgreenspdx.com");
+    private static final Organization green_spdx_supplier = new Organization("green_spdx_supplier", "www.testgreenspdx.com");
 
-    private static Description green_spdx_description = new Description("a_summary_about_the_green_spdx_component");
+    private static final Description green_spdx_description = new Description("a_summary_about_the_green_spdx_component");
 
-    private static Set<ExternalReference> green_spdx_externalReference = new HashSet<>(
-            Arrays.asList(
+    private static final Set<ExternalReference> green_spdx_externalReference = new HashSet<>(
+            List.of(
                     new ExternalReference("www.greenspdxref.test", "green_spdx")
             )
     );
@@ -333,7 +333,7 @@ public class MergerTest {
             "blue_copyright_string", comp_svip_a_hash, new Organization("blue_supplier", "www.blue.test"),
             "2.3", new Description("some_description"), comp_svip_a_cpe, comp_svip_a_purl, comp_svip_a_ext,
             "www.downloaded.at.this.address.blue", "blue.txt", false,
-            "BLUE123",  "www.downloaded.at.this.page.blue", "source_blue_info",
+            "BLUE123", "www.downloaded.at.this.page.blue", "source_blue_info",
             "01/01/2023", "01/01/2023", "01/01/2033", "test_mime_blue",
             "test_publisher_blue", "test_scope_blue", "blue_group", comp_svip_a_properties,
             "this_is_a_file_notice_for_blue_test_component", "and_a_comment_for_blue_component",
@@ -346,7 +346,7 @@ public class MergerTest {
             "yellow_copyright_string", comp_svip_a_hash, new Organization("yellow_supplier", "www.yellow.test"),
             "2.3", new Description("yellow_description"), comp_svip_a_cpe, comp_svip_a_purl, comp_svip_a_ext,
             "www.downloaded.at.this.address.yellow", "yellow.txt", false,
-            "YELLOW123",  "www.downloaded.at.this.page.yellow", "source_yellow_info",
+            "YELLOW123", "www.downloaded.at.this.page.yellow", "source_yellow_info",
             "01/01/2023", "01/01/2023", "01/01/2033", "test_mime_yellow",
             "test_publisher_yellow", "test_scope_yellow", "yellow_group", comp_svip_a_properties,
             "this_is_a_file_notice_for_yellow_test_component", "and_a_comment_for_yellow_component",
@@ -359,7 +359,7 @@ public class MergerTest {
             "green_copyright_string", comp_svip_a_hash, new Organization("green_supplier", "www.green.test"),
             "3.1", new Description("green_description"), comp_svip_a_cpe, comp_svip_a_purl, comp_svip_a_ext,
             "www.downloaded.at.this.address.green", "green.txt", false,
-            "GREEN123",  "www.downloaded.at.this.page.green", "source_green_info",
+            "GREEN123", "www.downloaded.at.this.page.green", "source_green_info",
             "01/01/2023", "01/01/2023", "01/01/2033", "test_mime_green",
             "test_publisher_green", "test_scope_green", "green_group", comp_svip_a_properties,
             "this_is_a_file_notice_for_green_test_component", "and_a_comment_for_green_component",
@@ -815,10 +815,10 @@ public class MergerTest {
 
         SBOM result;
         try {
-                result = mergerController.mergeAll(SBOMs);
+            result = mergerController.mergeAll(SBOMs);
         } catch (MergerException e) {
-                result = null;
-                e.printStackTrace();
+            result = null;
+            e.printStackTrace();
         }
 
         // Assertions
@@ -958,10 +958,10 @@ public class MergerTest {
 
         SBOM result;
         try {
-                result = mergerController.mergeAll(SBOMs);
+            result = mergerController.mergeAll(SBOMs);
         } catch (MergerException e) {
-                result = null;
-                e.printStackTrace();
+            result = null;
+            e.printStackTrace();
         }
 
         // Assertions
@@ -1183,10 +1183,10 @@ public class MergerTest {
 
         SBOM result;
         try {
-                result = mergerController.mergeAll(SBOMs);
+            result = mergerController.mergeAll(SBOMs);
         } catch (MergerException e) {
-                result = null;
-                e.printStackTrace();
+            result = null;
+            e.printStackTrace();
         }
 
         // Assertions
@@ -1226,11 +1226,11 @@ public class MergerTest {
 
         Assertions.assertThrows(NullPointerException.class, new Executable() {
 
-                @Override
-                public void execute() throws Throwable {
-                        SBOM result = merger.mergeSBOM(SBOM_one, SBOM_two);
-                }
-                
+            @Override
+            public void execute() throws Throwable {
+                SBOM result = merger.mergeSBOM(SBOM_one, SBOM_two);
+            }
+
         });
 
     }

@@ -11,7 +11,7 @@ COPY --chown=gradle:gradle core core
 COPY --chown=gradle:gradle settings.gradle .
 # Append "-x test" argument to skip tests; this is useful for development builds.
 # Docker takes ~3-5m to build the initial image, it's faster than waiting
-RUN gradle build --no-daemon -x test
+RUN gradle build --no-daemon # -x test
 
 
 FROM eclipse-temurin:21-jre-alpine-3.21 AS runtime
