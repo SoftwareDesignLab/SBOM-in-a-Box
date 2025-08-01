@@ -1,5 +1,5 @@
 #
-# File: docker-compose.yml
+# File: compose.yaml
 # Builds and deploys two Docker containers: a MySQL server and the SVIP API from ./Dockerfile.
 # Uses ./.env for MySQL/networking configuration.
 #
