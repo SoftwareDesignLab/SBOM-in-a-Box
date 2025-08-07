@@ -1,0 +1,32 @@
+source: "https://github.com/anthonyharrison/sbom4files"
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.5"
+    format: "json"
+    languages:
+      - "C"
+      - "C++"
+      - "Go"
+      - "Java"
+      - "Javascript"
+      - "PHP"
+      - "Python"
+      - "Rust"
+      - "Perl"
+    commands:
+      - "sbom4files -d . -p osi-sbom -r --sbom cyclonedx --output-file=$SBOM_OUT/sbom4files-cdx15.json"
+  - schema: "spdx"
+    spec_version: "2.3"
+    format: "spdx"
+    languages:
+      - "C"
+      - "C++"
+      - "Go"
+      - "Java"
+      - "Javascript"
+      - "PHP"
+      - "Python"
+      - "Rust"
+      - "Perl"
+    commands:
+      - "sbom4files -d . -p osi-sbom -r --sbom spdx --output-file=$SBOM_OUT/sbom4files-spdx23.spdx"
