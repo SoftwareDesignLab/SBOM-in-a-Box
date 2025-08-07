@@ -1,5 +1,5 @@
 """
-file: ToolFactory.py
+file: tool_factory.py
 
 Parse tool configuration files into usable objects
 

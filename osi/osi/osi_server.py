@@ -1,5 +1,5 @@
 """
-file: OSIServer.py
+file: osi_server.py
 
 API that exposes endpoints to manage the generations of SBOMs using Open Source Tools inside the svip-osi Docker Container.
 
@@ -12,7 +12,7 @@ import subprocess
 import time
 from flask import Flask, request, jsonify
 
-from ToolFactory import ToolFactory, RunConfig, Profile
+from tool_factory import ToolFactory, RunConfig, Profile
 
 VERSION = "4.0"
 
