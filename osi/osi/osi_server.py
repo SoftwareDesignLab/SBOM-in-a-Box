@@ -17,8 +17,8 @@ from tool_factory import ToolFactory, RunConfig, Profile
 VERSION = "4.0"
 
 # Extension Configuration files
-LANGUAGE_EXT_CONFIG = "configs/language_ext.cfg"
-MANIFEST_EXT_CONFIG = "configs/manifest_ext.cfg"
+LANGUAGE_EXT_CONFIG = os.path.join(os.path.dirname(os.path.abspath(__file__)), "configs", "language_ext.cfg")
+MANIFEST_EXT_CONFIG = os.path.join(os.path.dirname(os.path.abspath(__file__)), "configs", "manifest_ext.cfg")
 
 # SED pattern to get file name from path
 FILE_NAME_SED_PATTERN = r's|.*\/||'

@@ -7,14 +7,15 @@ Parse tool configuration files into usable objects
 """
 import configparser
 import logging
+import os
 import subprocess
 from typing import Dict, Any, Set, List
 
 import yaml
 
 # Constants
-SBOM_CONFIG_FILE = "configs/sbom.cfg"
-TOOL_CONFIGS_DIR = "configs/tools"
+SBOM_CONFIG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "configs", "sbom.cfg")
+TOOL_CONFIGS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "configs", "tools")
 
 
 class RunConfig:

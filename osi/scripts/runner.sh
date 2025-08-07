@@ -8,14 +8,14 @@
 main(){
 
   # Activate env
-  . "$HOME"/.cargo/env
+  . "$HOME/.cargo/env"
 
   # Check before running
   . validate.sh
 
   # Launch server
   echo "Launching Server"
-  python3 /server/OSIServer.py
+  python3 osi/osi_server.py
 }
 
 main

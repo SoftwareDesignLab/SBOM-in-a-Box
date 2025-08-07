@@ -36,9 +36,11 @@ ENV PATH=$PATH:/root/.cargo/bin
 # Dotnet tools
 ENV PATH=$PATH:/root/.dotnet/tools
 
-# Bound Directories
-ENV CODE_IN=/bound_dir/code
-ENV SBOM_OUT=/bound_dir/sboms
+# Working directories
+ENV CODE_IN=/tmp/code
+ENV SBOM_OUT=/tmp/out
+# create non-root user
+RUN adduser -D osi
 
 #
 # Setup the OSI enviroment
@@ -58,8 +60,11 @@ RUN apk add \
     build-base \
     libffi-dev \
     openssl-dev
+USER osi
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+RUN . "$HOME/.cargo/env" && cargo install -- cargo-cyclonedx
 
+USER root
 # Install Package managers
 RUN apk add \
     py3-pip \
@@ -77,7 +82,6 @@ RUN go install github.com/ozonru/cyclonedx-go/cmd/cyclonedx-go@latest
 RUN go install github.com/mattermost/gobom/cmd/gobom@latest
 RUN dotnet tool install --global covenant
 RUN dotnet tool install --global Microsoft.Sbom.DotNetTool
-RUN cargo install -- cargo-cyclonedx
 RUN composer global config --no-plugins allow-plugins.cyclonedx/cyclonedx-php-composer true
 RUN composer \
     --ignore-platform-req=ext-xmlwriter  \
@@ -87,17 +91,20 @@ RUN composer \
 # Copy binaries
 # Unavailable in alpine
 #COPY --from=spdx_sbom_generator --chmod=755 /tmp/spdx-sbom-generator /usr/local/bin/
-COPY --from=jbom --chmod=755 tmp/jbom.jar /usr/local/bin/
-COPY --from=cyclone_dx_cli --chmod=755 tmp/cyclonedx-cli /usr/local/bin/
-COPY --from=syft --chmod=755 tmp/syft /usr/local/bin/
+COPY --from=jbom tmp/jbom.jar /usr/local/bin/
+COPY --from=cyclone_dx_cli tmp/cyclonedx-cli /usr/local/bin/
+COPY --from=syft tmp/syft /usr/local/bin/
 
 # Setup flask api server
 COPY --chmod=755 scripts/ /usr/local/bin/
-WORKDIR /server
-COPY server/ .
-RUN pip install --break-system-packages -r requirements.txt
+WORKDIR /app
+COPY requirements.txt requirements.txt
+RUN pip install --break-system-packages --no-cache-dir -r requirements.txt
+COPY osi osi
 
 # Cleanup
 RUN rm -rf /var/cache/apk/* /tmp/*
 
-CMD ["runner.sh"]
+
+USER osi
+ENTRYPOINT ["runner.sh"]
