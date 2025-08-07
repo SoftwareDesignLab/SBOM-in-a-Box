@@ -13,7 +13,7 @@ import yaml
 
 # Constants
 SBOM_CONFIG = "configs/sbom.cfg"
-TOOL_CONFIGS_DIR = "tool_configs"
+TOOL_CONFIGS_DIR = "configs/tools"
 
 
 class RunConfig(object):
@@ -61,7 +61,7 @@ class Profile(object):
 
     def match(self, run_config: RunConfig) -> bool:
         """
-        Check to see if this profile matches the run config
+        Check to see if this profile matches the run configs
         :param run_config: Run Config to check
         :return: True if matches, false otherwise
         """
@@ -131,7 +131,7 @@ class Tool(object):
 
     def get_matching_profiles(self, run_config: RunConfig) -> list[Profile]:
         """
-        Search profiles for any that match to given run config
+        Search profiles for any that match to given run configs
         :param run_config: Run Config to check
         :return: list of matching run profiles
         """
@@ -151,26 +151,26 @@ class Tool(object):
 
 class ToolFactory(object):
     """
-    Factory to parse tool config files into Tool objects
+    Factory to parse tool configs files into Tool objects
     """
 
     def __init__(self):
         """
         ToolFactory Constructor
         """
-        self.sbom_config = self.load_config(SBOM_CONFIG)  # load sbom details config file
+        self.sbom_config = self.load_config(SBOM_CONFIG)  # load sbom details configs file
 
     def build_tool(self, name: str) -> Tool | None:
         """
         Attempt to build a tool with the given name.
-        The name param MUST match the config file name in the 'tool_configs' directory or parsing will fail
-        Ex name=foo, config file=foo.yml
-        :param name: Name of tool config file to search for
-        :return: Tool if successfully parse config file, error and NONE otherwise
+        The name param MUST match the configs file name in the 'tool_configs' directory or parsing will fail
+        Ex name=foo, configs file=foo.yml
+        :param name: Name of tool configs file to search for
+        :return: Tool if successfully parse configs file, error and NONE otherwise
         """
 
         try:
-            # Attempt to parse tool config file
+            # Attempt to parse tool configs file
             with open(f"{TOOL_CONFIGS_DIR}/{name}.yml") as config:
                 data = yaml.safe_load(config)
                 tool = Tool(name, data['source'])
@@ -184,19 +184,19 @@ class ToolFactory(object):
                         # Fail to parse profile but move onto next
                         print(f"Failed to parse profile: {e}", file=sys.stderr)
         except FileNotFoundError as e:
-            # Missing / Invalid tool config file
+            # Missing / Invalid tool configs file
             raise FileNotFoundError(f"'{name}.yml' was not found: {e}")
         except Exception as e:
-            # Error parsingl too config file
+            # Error parsingl too configs file
             raise Exception(f"Failed to parse '{name}.yml: {e}")
 
         return tool
 
     def build_profile(self, name: str, profile_data) -> Profile:
         """
-        Build a tool run profile using data from the tool config file
+        Build a tool run profile using data from the tool configs file
         :param name: name of tool
-        :param profile_data: profil data from the tool config file
+        :param profile_data: profil data from the tool configs file
         :return: new run profile, error otherwise
         """
         try:
@@ -220,20 +220,20 @@ class ToolFactory(object):
 
         # Check schema has been added to sbom.cfg
         if not self.sbom_config.has_section(f'{schema}.format'):
-            raise Exception(f"SBOM config section missing '{schema}.format'; Has it been added to the config?")
+            raise Exception(f"SBOM configs section missing '{schema}.format'; Has it been added to the configs?")
         # Check schema has been added to sbom.cfg
         if not self.sbom_config.has_section(f'{schema}.spec_version'):
-            raise Exception(f"SBOM config section missing '{schema}.spec_version'; Has it been added to the config?")
+            raise Exception(f"SBOM configs section missing '{schema}.spec_version'; Has it been added to the configs?")
 
         # Check if the spec version is valid for the schema
         if spec_version not in dict(self.sbom_config[f'{schema}.spec_version']):
             raise Exception(
-                f"'{schema}.spec_version does not support version '{spec_version}'; Has it been added to the config?")
+                f"'{schema}.spec_version does not support version '{spec_version}'; Has it been added to the configs?")
 
         # Check if the format is valid for the schema
         if format not in dict(self.sbom_config[f'{schema}.format']):
             raise Exception(
-                f"'{schema}.spec_version does not support '{format}'format; Has it been added to the config?")
+                f"'{schema}.spec_version does not support '{format}'format; Has it been added to the configs?")
 
         # All checks pass
         return Profile(name, schema, spec_version, format, languages, package_managers, commands)
@@ -241,8 +241,8 @@ class ToolFactory(object):
     def load_config(self, config_path: str) -> configparser:
         """
         Util for loading configparser
-        :param config_path: Path to config file
-        :return: new config parser
+        :param config_path: Path to configs file
+        :return: new configs parser
         """
         cfg = configparser.ConfigParser(allow_no_value=True)
         cfg.read(config_path)
