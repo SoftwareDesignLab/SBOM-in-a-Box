@@ -1,84 +1,64 @@
-#
 # File: compose.yaml
-# Builds and deploys two Docker containers: a MySQL server and the SVIP API from ./Dockerfile.
-# Uses ./.env for MySQL/networking configuration.
+# Description: create backend docker network for sbom-in-a-box application
 #
 # Author: Ian Dunn
-#
+# Author: Derek Garcia
 
+name: sbom-in-a-box
 services:
-
   # OSI container
   osi:
-    container_name: svip-osi
+    container_name: osi
     platform: linux/amd64
-    build: core/src/main/java/org/svip/generation/osi/docker
-    ports:
-      - ${FLASK_LOCAL_PORT}:${FLASK_DOCKER_PORT}
-    volumes:
-      - ./core/src/main/java/org/svip/generation/osi/bound_dir/code:/bound_dir/code
-      - ./core/src/main/java/org/svip/generation/osi/bound_dir/sboms:/bound_dir/sboms
+    build: osi
     healthcheck:
       test: curl http://localhost:5000 || exit 1
       start_period: 70s  # Wait in case of the first build, server restarts once mid-way through to init
       timeout: 5s
+
   # MySQL server
-  mysql:
-    container_name: svip-mysql
+  sbox_db:
+    container_name: sbox_db
     platform: linux/amd64
     image: mysql:8.4.6
-    command: --max_allowed_packet=32505856 # Set max_allowed_packet to 256M
-    restart: unless-stopped
+    command: --max_allowed_packet=32505856  # Set max_allowed_packet to 256M
+    env_file:
+      - path: .env
+        required: true
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-    ports:
-      - ${MYSQL_LOCAL_PORT}:${MYSQL_DOCKER_PORT}
-    volumes: # Stores mysql data in a persistent volume to persist across container restarts
-      - db:/var/lib/mysql
-    healthcheck: # How to determine it's safe to start the api container. Pings the MySQL server until it has a response
-      test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p$MYSQL_ROOT_PASSWORD' ]
-      interval: 10s # Wait in case of the first build, server restarts once mid-way through to init
-      timeout: 2s
-
-  # SVIP API spring-boot application
-  api:
-    container_name: svip-api
-    depends_on: # Start mysql server before starting API
-      mysql:
-        condition: service_healthy # Only start once the health check has passed
-      osi:
-        condition: service_healthy # Only start once the OSI container has been started
-    build: .    # Build from Dockerfile located in root directory
-    restart: on-failure
-    ports:
-      - ${SPRING_LOCAL_PORT}:${SPRING_DOCKER_PORT}
+      MYSQL_DATABASE: sbox
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?'MYSQL_ROOT_PASSWORD' must be set in the .env file}
+      # create mysql user to use
+      MYSQL_USER: ${MYSQL_USER:?'MYSQL_USER' must be set in the .env file}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?'MYSQL_PASSWORD' must be set in the .env file}
     volumes:
-      - .m2:/root/.m2
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./core/src/main/java/org/svip/generation/osi/bound_dir/code:/core/src/main/java/org/svip/generation/osi/bound_dir/code
-      - ./core/src/main/java/org/svip/generation/osi/bound_dir/sboms:/core/src/main/java/org/svip/generation/osi/bound_dir/sboms
-    stdin_open: true
-    tty: true
-    environment: # Define environment variables for spring-boot application.properties
-      - MYSQL_HOST=${MYSQL_HOST}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_LOCAL_PORT=${MYSQL_LOCAL_PORT}
-      - SPRING_DOCKER_PORT=${SPRING_DOCKER_PORT}
+      - sbox_db:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # SBOM-in-a-box API spring-boot application
+  sbox_api:
+    container_name: sbox_api
+    build: .
+    ports:
+      - "8080:8080"
+    env_file:
+      - path: .env
+        required: true
+    environment:
+      MYSQL_HOST: sbox_db
+      MYSQL_DATABASE: sbox
+      # create mysql user defined in the db
+      MYSQL_USER: ${MYSQL_USER:?'MYSQL_USER' must be set in the .env file}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?'MYSQL_PASSWORD' must be set in the .env file}
+    depends_on:
+      sbox_db:
+        condition: service_healthy
+      osi:
+        condition: service_healthy
 
 volumes:
-  db: # Volume to store persistent data from MySQL server
-  code: # Volume to link osi bound_dir/code with api bound_dir/code
-    driver: local
-    driver_opts:
-      type: none
-      device: ./core/src/main/java/org/svip/generation/osi/bound_dir/code
-      o: bind
-  sboms: # Volume to link osi bound_dir/sboms with api bound_dir/sboms
-    driver: local
-    driver_opts:
-      type: none
-      device: ./core/src/main/java/org/svip/generation/osi/bound_dir/sboms
-      o: bind
+  sbox_db:
