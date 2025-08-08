@@ -24,14 +24,18 @@
 
 package org.svip.api.services;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -68,7 +72,6 @@ public class OSIService {
     private String osiRootEndpoint;
     private boolean enabled = false;    // default to no access to OSI
 
-
     /**
      * Create new OSI service
      *
@@ -81,36 +84,28 @@ public class OSIService {
     /**
      * Get a list of tools from OSI based on parameter
      *
-     * @param list Optional argument, either "all" (default) or "project",
+     * @param listArg Optional argument, either "all" (default) or "project",
      *             all gets all tools installed in OSI
      *             project gets all applicable tools installed for the project in the bound directory
-     * @return A list of string tool names.
+     * @return A listArg of string tool names.
      */
-    public List<String> getTools(String list) {
+    public List<String> getTools(String listArg) {
         try {
-            // Build new connection
-            OSIURLBuilder osiurlBuilder =
-                    new OSIURLBuilder(this.osiRootEndpoint, OSIURLBuilder.RequestEndpoint.TOOLS, OSIURLBuilder.RequestMethod.GET);
-            osiurlBuilder.addParam("list", list);
-            HttpURLConnection conn = osiurlBuilder.buildConnection();
+            // build url
+            URI uri = this.osi.initRequest("/tools")
+                    .addParameter("list", listArg)
+                    .build();
 
-            // Create new br to read response
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            StringBuilder builder = new StringBuilder();
+            // make request
+            var u = new HttpGet(uri);
+            try (CloseableHttpResponse response = this.osi.request(u)) {
+                String responseBody = EntityUtils.toString(response.getEntity());
+                // convert and return as list
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(responseBody, new TypeReference<>() {});
+            }
 
-            // Parse output
-            String line;
-            while ((line = bufferedReader.readLine()) != null)
-                builder.append(line).append('\n');
-
-            conn.disconnect();
-
-            // Convert json string to list
-            String jsonString = builder.toString();
-            ObjectMapper mapper = new ObjectMapper();
-            // todo handle unchecked cast
-            return (List<String>) mapper.readValue(jsonString, List.class);
-        } catch (IOException e) {
+        } catch (URISyntaxException | IOException e) {
             // error with getting tools
             return null;
         }
@@ -250,6 +245,7 @@ public class OSIService {
 
         @Value("${osi.api.url}")
         private String rootEndpoint;
+        private final CloseableHttpClient httpClient = HttpClients.createDefault();
 
         /**
          * Make a healthcheck request to OSI to check if online
@@ -258,38 +254,45 @@ public class OSIService {
          */
         public boolean healthcheck() {
             try {
-                URI uri = new URIBuilder(this.rootEndpoint + "/healthcheck").build();
-
-                // Create HttpClient
-                try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-                    HttpGet request = new HttpGet(uri);
-
-                    // Execute request
-                    try (CloseableHttpResponse response = httpClient.execute(request)) {
-                        return response.getStatusLine().getStatusCode() == 200;
-                    } catch (IOException e) {
-                        return false;
-                    }
+                // build the endpoint
+                URI uri = this.initRequest("/healthcheck").build();
+                // check status code
+                try (CloseableHttpResponse response = this.request(new HttpGet(uri))) {
+                    return response.getStatusLine().getStatusCode() == 200;
                 }
             } catch (URISyntaxException | IOException e) {
                 return false;
             }
         }
 
-        public void getTools() {
-            // todo
+        /**
+         * Create a URI builder with the OSI root endpoint as the base
+         * Additional query params then can be added
+         *
+         * @param path Path from root endpoint
+         * @return URI builder
+         * @throws URISyntaxException Bad url
+         */
+        public URIBuilder initRequest(String path) throws URISyntaxException {
+            return new URIBuilder(this.rootEndpoint + (path.startsWith("/") ? "" : '/') + path);
         }
 
-        public void uploadProject() {
-            // todo
-        }
-
-        public void generateSBOMs() {
-            // todo
-        }
-
-        public void getSBOMs() {
-            // todo
+        /**
+         * Submit a request to OSI. Will raise for status
+         *
+         * @param request HTTP request make, ie GET, POST, etc
+         * @return OSI response object
+         * @throws IOException Failed to complete the request
+         */
+        public CloseableHttpResponse request(HttpRequestBase request) throws IOException {
+            CloseableHttpResponse response = this.httpClient.execute(request);
+            StatusLine statusLine = response.getStatusLine();
+            int statusCode = statusLine.getStatusCode();
+            // raise for status
+            if (!(statusCode >= 200 && statusCode < 300))
+                throw new IOException("HTTP error: " + statusCode + " " + statusLine.getReasonPhrase());
+            // request was successful
+            return response;
         }
     }
 
