@@ -44,13 +44,7 @@ import org.svip.serializers.exceptions.SerializerException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.zip.ZipInputStream;
+import java.util.*;
 
 /**
  * File: OSIController.java
@@ -167,17 +161,14 @@ public class OSIController {
                                              @RequestParam(value = "toolNames", required = false) String[] toolNames) throws IOException {
 
         //TODO: Maybe change toolNames to string and parse to array
-
-        //Remove [ and ] from first and last index due to array manipulation on request
-        toolNames[0] = toolNames[0].substring(1);
-        toolNames[toolNames.length - 1] = toolNames[toolNames.length - 1].substring(0, toolNames[toolNames.length - 1].length() - 1);
-
-
-        List<String> generatedSBOMFilePaths;
+        HashMap<String, String> generatedSBOMs;
         try {
             // Run with requested tools, default to relevant ones
             List<String> tools;
             if (toolNames != null) {
+                //Remove [ and ] from first and last index due to array manipulation on request
+                toolNames[0] = toolNames[0].substring(1);
+                toolNames[toolNames.length - 1] = toolNames[toolNames.length - 1].substring(0, toolNames[toolNames.length - 1].length() - 1);
                 tools = List.of(toolNames);
             } else {
                 tools = this.osiService.getTools("project");
@@ -185,36 +176,38 @@ public class OSIController {
 
             // Generate SBOMs in the bound SBOM Directory
             LOGGER.info("POST /svip/generators/osi - Running with tool names: " + tools);
-            generatedSBOMFilePaths = this.osiService.generateSBOMs(tools);
+            generatedSBOMs = this.osiService.generateSBOMs(tools);
         } catch (Exception e) {
             LOGGER.warn("POST /svip/generators/osi - Exception occurred while running OSI container: " + e.getMessage());
             return new ResponseEntity<>("Exception occurred while running OSI container.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         // No SBOMs generated
-        if (generatedSBOMFilePaths.isEmpty())
+        if (generatedSBOMs.isEmpty())
             return new ResponseEntity<>("No SBOMs were generated", HttpStatus.NO_CONTENT);
 
         // Upload SBOMs to SB
         List<SBOMFile> uploaded = new ArrayList<>();
-        for (String path : generatedSBOMFilePaths) {
+        generatedSBOMs.forEach((fileName, base64Content) -> {
             // Try to upload new SBOM to DB
             try {
-                UploadSBOMFileInput input =
-                        new UploadSBOMFileInput(path, Files.readString(Path.of(path), StandardCharsets.UTF_8));
+                UploadSBOMFileInput input = new UploadSBOMFileInput(
+                        fileName,
+                        new String(Base64.getDecoder().decode(base64Content)));
                 SBOMFile sbomFile = input.toSBOMFile();
-                this.sbomService.upload(sbomFile);
+                sbomService.upload(sbomFile);
                 uploaded.add(sbomFile);
 
-                LOGGER.info("POST /svip/generators/osi - Generated SBOM with ID " + sbomFile.getId() + ": " + sbomFile.getName());
+                LOGGER.info("POST /svip/generators/osi - Generated SBOM with ID {}: {}", sbomFile.getId(), sbomFile.getName());
             } catch (IllegalArgumentException e) {
                 // Parsing error / unsupported format
-                LOGGER.error("POST /svip/generators/osi - Failed to parse " + path + " : " + e.getMessage());
+                LOGGER.error("POST /svip/generators/osi - Failed to parse {} : {}", fileName, e.getMessage());
             } catch (Exception e) {
                 // Problem with uploading/parsing
                 LOGGER.error("POST /svip/generators/osi - " + e.getMessage());
             }
-        }
+        });
+
 
         // All SBOMs failed to parse
         if (uploaded.isEmpty()) {
@@ -222,7 +215,7 @@ public class OSIController {
             return new ResponseEntity<>("No SBOMs generated for these files.", HttpStatus.NO_CONTENT);
         }
 
-        LOGGER.info("POST /svip/generators/osi - Parsed " + uploaded.size() + " SBOMs successfully");
+        LOGGER.info("POST /svip/generators/osi - Parsed {} SBOMs successfully", uploaded.size());
 
         // Merge SBOMs
         Long mergedID;
@@ -240,22 +233,21 @@ public class OSIController {
             } finally {
                 // todo param to delete or not?
                 // Delete any temp SBOM from database
-                for (SBOMFile sbomFile : uploaded)
-                    this.sbomService.deleteSBOMFile(sbomFile);
+                uploaded.forEach(sbomService::deleteSBOMFile);
             }
-            LOGGER.info("POST /svip/generators/osi - Successfully merged SBOMs to SBOM with id " + mergedID);
+            LOGGER.info("POST /svip/generators/osi - Successfully merged SBOMs to SBOM with id {}", mergedID);
         } else {
             // Only 1 SBOM generated, no need to merge
             LOGGER.info("POST /svip/generators/osi - Only 1 SBOM uploaded, skipping merging");
-            mergedID = uploaded.get(0).getId();
+            mergedID = uploaded.getFirst().getId();
         }
 
         // Convert
         Long convertedID;
         try {
-            LOGGER.info("POST /svip/generators/osi - Converting SBOM to " + schema + " " + format);
-            convertedID = this.sbomService.convert(mergedID, schema, format, true);
-            LOGGER.info("POST /svip/generators/osi - Successfully merged SBOMs to SBOM with id " + convertedID);
+            LOGGER.info("POST /svip/generators/osi - Converting SBOM to {} {}", schema, format);
+            convertedID = sbomService.convert(mergedID, schema, format, true);
+            LOGGER.info("POST /svip/generators/osi - Successfully merged SBOMs to SBOM with id {}", convertedID);
         } catch (DeserializerException | JsonProcessingException | SerializerException | SBOMBuilderException |
                  ConversionException e) {
             // Failed to convert
