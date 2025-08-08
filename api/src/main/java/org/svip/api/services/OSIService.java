@@ -27,12 +27,19 @@ package org.svip.api.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -55,16 +62,21 @@ import java.util.zip.ZipInputStream;
 @Service
 public class OSIService {
 
-    ///
-    /// UTILITY CLASSES
-    ///
-
-    //
-    // OSI SERVICE METHODS
-    //
+    private final OSI osi;
+    // todo - remove
     @Value("${osi.api.url}")
     private String osiRootEndpoint;
     private boolean enabled = false;    // default to no access to OSI
+
+
+    /**
+     * Create new OSI service
+     *
+     * @param osi internal interface to make actual requests to osi
+     */
+    public OSIService(OSI osi) {
+        this.osi = osi;
+    }
 
     /**
      * Get a list of tools from OSI based on parameter
@@ -180,21 +192,8 @@ public class OSIService {
      * After construction, check if OSI available
      */
     @PostConstruct
-    private void checkOSIStatus() {
-        try {
-            var t = new OSIURLBuilder(this.osiRootEndpoint, OSIURLBuilder.RequestEndpoint.TOOLS, OSIURLBuilder.RequestMethod.GET);
-            // build connection
-            HttpURLConnection conn = t.buildConnection();
-
-            // test connection
-            conn.connect();
-            if (conn.getResponseCode() == 200)
-                this.enabled = true;
-
-            conn.disconnect();
-        } catch (IOException ignored) {
-            // OSI not available
-        }
+    private void setStatus() {
+        this.enabled = this.osi.healthcheck();
     }
 
     /**
@@ -246,6 +245,54 @@ public class OSIService {
         }
     }
 
+    @Component
+    public static class OSI {
+
+        @Value("${osi.api.url}")
+        private String rootEndpoint;
+
+        /**
+         * Make a healthcheck request to OSI to check if online
+         *
+         * @return True if alive, false otherwise
+         */
+        public boolean healthcheck() {
+            try {
+                URI uri = new URIBuilder(this.rootEndpoint + "/healthcheck").build();
+
+                // Create HttpClient
+                try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+                    HttpGet request = new HttpGet(uri);
+
+                    // Execute request
+                    try (CloseableHttpResponse response = httpClient.execute(request)) {
+                        return response.getStatusLine().getStatusCode() == 200;
+                    } catch (IOException e) {
+                        return false;
+                    }
+                }
+            } catch (URISyntaxException | IOException e) {
+                return false;
+            }
+        }
+
+        public void getTools() {
+            // todo
+        }
+
+        public void uploadProject() {
+            // todo
+        }
+
+        public void generateSBOMs() {
+            // todo
+        }
+
+        public void getSBOMs() {
+            // todo
+        }
+    }
+
     /**
      * URL Builder for requests to OSI
      */
@@ -255,6 +302,7 @@ public class OSIService {
         private final OSIURLBuilder.RequestEndpoint requestEndpoint;
         private final OSIURLBuilder.RequestMethod requestMethod;
         private final HashMap<String, String> requestParams = new HashMap<>();
+
         /**
          * Create builder with required arguments
          *
