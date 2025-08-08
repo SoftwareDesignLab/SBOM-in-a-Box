@@ -8,8 +8,11 @@ API that exposes endpoints to manage the generations of SBOMs using Open Source 
 """
 import configparser
 import os
+import shutil
 import subprocess
 import time
+import zipfile
+from io import BytesIO
 from typing import List, Dict
 
 from flask import Flask, request, jsonify
@@ -32,7 +35,7 @@ class OSIAPIServer:
     def __init__(self,
                  host: str = DEFAULT_FLASK_HOST,
                  port: int = DEFAULT_FLASK_PORT,
-                 debug: bool = False):
+                 debug: bool = True):
         """
         Create a new Flask API Server for OSI
 
@@ -92,7 +95,7 @@ class OSIAPIServer:
 
     def _setup_routes(self):
         @self._app.route('/healthcheck', methods=['GET'])
-        def health_check():
+        def healthcheck():
             """
             Simple healthcheck to determine if server is up
             """
@@ -119,6 +122,33 @@ class OSIAPIServer:
                 case _:
                     return f"'{request.args.get('list')}' is an unknown param", 400
 
+        @self._app.route('/upload', methods=['POST'])
+        def upload_project():
+            """
+            Endpoint: POST /upload
+
+            Upload a project to generate SBOMs for
+
+            Request Body:
+                - archive: zip file containing a project
+
+            Returns: A list of names of valid open-source tools.
+            """
+
+            # purge previous project
+            _purge_directory(os.environ['CODE_IN'])
+
+            # Extract zip contents
+            zip_data = request.get_data()
+            try:
+                with zipfile.ZipFile(BytesIO(zip_data)) as zip_ref:
+                    zip_ref.extractall(os.environ['CODE_IN'])
+                self._app.logger.info("Extracted project successfully")
+                return 'Zip extracted successfully', 201
+            except Exception as e:
+                self._app.logger.error(f"Failed to extract project: {e}")
+                return 'Invalid ZIP file', 400
+
         @self._app.route('/generate', methods=['POST'])
         def generate():
             """
@@ -128,8 +158,6 @@ class OSIAPIServer:
             Returns:      Number of SBOMs generated
             Returns:      200 if SBOMs were generated, 204 otherwise.
             """
-
-            tool_profiles = []
             # Parse request body if one is provided
             if request.is_json:
                 try:
@@ -236,3 +264,17 @@ def _load_available_tools() -> Dict[str, Tool]:
     tf = ToolFactory()
     # 'OSI_TOOL' set with validate.sh
     return {tool_name: tf.build_tool(tool_name) for tool_name in os.environ['OSI_TOOL'].split(":")}
+
+
+def _purge_directory(target_dir: str) -> None:
+    """
+    Purge a directory's contents
+
+    :param target_dir: Target directory to purge
+    """
+    for filename in os.listdir(target_dir):
+        file_path = os.path.join(target_dir, filename)
+        if os.path.isfile(file_path) or os.path.islink(file_path):
+            os.unlink(file_path)  # remove file or symlink
+        elif os.path.isdir(file_path):
+            shutil.rmtree(file_path)  # remove directory
