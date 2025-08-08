@@ -25,6 +25,7 @@
 package org.svip.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -158,18 +159,20 @@ public class OSIController {
     public ResponseEntity<?> generateWithOSI(@RequestParam("projectName") String projectName,
                                              @RequestParam("schema") SerializerFactory.Schema schema,
                                              @RequestParam("format") SerializerFactory.Format format,
-                                             @RequestParam(value = "toolNames", required = false) String[] toolNames) throws IOException {
+                                             @RequestParam(value = "toolNames", required = false) String toolNames) {
 
-        //TODO: Maybe change toolNames to string and parse to array
         HashMap<String, String> generatedSBOMs;
         try {
             // Run with requested tools, default to relevant ones
             List<String> tools;
             if (toolNames != null) {
-                //Remove [ and ] from first and last index due to array manipulation on request
-                toolNames[0] = toolNames[0].substring(1);
-                toolNames[toolNames.length - 1] = toolNames[toolNames.length - 1].substring(0, toolNames[toolNames.length - 1].length() - 1);
-                tools = List.of(toolNames);
+                /*
+                todo - this is a hotfix
+                tldr when gui sends multipart form "toolNames" is sent as string ( "["foo","bar"]" )
+                and not an actual String[]. This hotfix just converts the string to an array
+                 */
+                ObjectMapper mapper = new ObjectMapper();
+                tools = List.of(mapper.readValue(toolNames, String[].class));
             } else {
                 tools = this.osiService.getTools("project");
             }

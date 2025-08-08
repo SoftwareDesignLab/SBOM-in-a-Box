@@ -15,8 +15,8 @@ services:
       - "5000:5000"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/healthcheck"]
-      start_period: 10s   # small delay to let startup scripts finish
-      interval: 60s
+      start_period: 15s   # small delay to let startup scripts finish
+      interval: 20s
       timeout: 5s
       retries: 3
 
