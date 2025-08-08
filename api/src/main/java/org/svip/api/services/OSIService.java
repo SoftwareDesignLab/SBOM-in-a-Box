@@ -31,8 +31,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -97,8 +100,7 @@ public class OSIService {
                     .build();
 
             // make request
-            var u = new HttpGet(uri);
-            try (CloseableHttpResponse response = this.osi.request(u)) {
+            try (CloseableHttpResponse response = this.osi.request(new HttpGet(uri))) {
                 String responseBody = EntityUtils.toString(response.getEntity());
                 // convert and return as list
                 ObjectMapper mapper = new ObjectMapper();
@@ -114,24 +116,15 @@ public class OSIService {
     /**
      * Upload project to be run OSI against
      *
-     * @param inputStream Zip input stream of the project
+     * @param zipBytes zip bytes of the project to upload
      */
-    public void addProject(ZipInputStream inputStream) throws IOException {
-        // Remove all source files in the bound_dir folder before uploading files
-        BOUND_DIR.CODE.flush();
-        // Get bound code directory
-        Path path = Paths.get(BOUND_DIR.CODE.getPath());
-        // Write each file to bound directory
-        for (ZipEntry entry; (entry = inputStream.getNextEntry()) != null; ) {
-            Path resolvedPath = path.resolve(entry.getName());
-            if (!entry.isDirectory()) {
-                // write file and create any needed paths
-                Files.createDirectories(resolvedPath.getParent());
-                Files.copy(inputStream, resolvedPath, StandardCopyOption.REPLACE_EXISTING);
-            } else {
-                // write directory
-                Files.createDirectories(resolvedPath);
-            }
+    public void uploadProject(byte[] zipBytes) throws IOException, URISyntaxException {
+        // build post
+        HttpPost post = new HttpPost(this.osi.initRequest("/upload").build());
+        post.setEntity(new ByteArrayEntity(zipBytes, ContentType.APPLICATION_OCTET_STREAM));
+        // make request
+        try (CloseableHttpResponse response = this.osi.request(post)) {
+            response.close();
         }
     }
 

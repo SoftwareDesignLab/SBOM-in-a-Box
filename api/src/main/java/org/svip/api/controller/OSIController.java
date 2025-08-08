@@ -43,6 +43,7 @@ import org.svip.serializers.exceptions.DeserializerException;
 import org.svip.serializers.exceptions.SerializerException;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -138,12 +139,12 @@ public class OSIController {
             return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
 
         // Open zip
-        try (ZipInputStream inputStream = new ZipInputStream(project.getInputStream())) {
-            this.osiService.addProject(inputStream);        // Upload Project
+        try {
+            this.osiService.uploadProject(project.getBytes());        // Upload Project
             List<String> tools = this.osiService.getTools("project");   // get applicable tools
             return new ResponseEntity<>(tools, HttpStatus.OK);
-        } catch (IOException e) {
-            LOGGER.error("POST /svip/generators/osi/project - " + e.getMessage());
+        } catch (IOException | URISyntaxException e) {
+            LOGGER.error("POST /svip/generators/osi/project - {}", e.getMessage());
             return new ResponseEntity<>("Make sure attachment is a zip file (.zip): " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
