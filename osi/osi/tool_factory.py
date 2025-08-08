@@ -104,9 +104,11 @@ class Profile:
         :raises TimeoutExpired: if timeout is reached
         """
         subprocess.run(
-            self._commands,
+            # todo list of all setup commands & the tool exec, ie ['cd foo', 'syft .'] NOT ['syft','.']
+            ' && '.join(self._commands),
             cwd=cwd,
             check=True,
+            shell=True,
             timeout=timeout
         )
 
@@ -151,7 +153,7 @@ class Tool:
         return [p for p in self._profiles if p.match(run_config)]
 
     @property
-    def profile(self):
+    def profiles(self):
         return self._profiles
 
     def __str__(self):
@@ -242,7 +244,7 @@ class ToolFactory:
                 for profile_data in data['profiles']:
                     try:
                         profile = self._build_profile(name, profile_data)
-                        tool.profile.append(profile)
+                        tool.profiles.append(profile)
                     except Exception as e:
                         # Fail to parse profile but move onto next
                         logging.error(f"Failed to parse profile: {e}")

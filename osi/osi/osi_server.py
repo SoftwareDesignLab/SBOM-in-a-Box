@@ -6,6 +6,7 @@ API that exposes endpoints to manage the generations of SBOMs using Open Source 
 @author Ian Dunn
 @auther Derek Garcia
 """
+import base64
 import configparser
 import os
 import shutil
@@ -155,7 +156,7 @@ class OSIAPIServer:
             Endpoint: POST /generate
 
             Request Body: A JSON list of tool names to use in generation. If null, defaults to all tools.
-            Returns:      Number of SBOMs generated
+            Returns:      list of JSON of file name and base64 encoding
             Returns:      200 if SBOMs were generated, 204 otherwise.
             """
             # Parse request body if one is provided
@@ -176,7 +177,9 @@ class OSIAPIServer:
                     self._app.logger.error(f"Generate | Failed to parse json: {e}")
                     return "Failed to parse tools", 400
                 # fetch profiles
-                tool_profiles = [self._available_tools[tool_name].profile for tool_name in tool_names]
+                tool_profiles = []
+                for tool_name in tool_names:
+                    tool_profiles.extend(self._available_tools[tool_name].profiles)
 
             else:
                 # No tools provided, default to all relevant tools to the project
@@ -188,6 +191,7 @@ class OSIAPIServer:
                 self._app.logger.error("Generate | No tools selected")
                 return "No tools selected", 422
 
+            _purge_directory(os.environ['SBOM_OUT'])
             self._app.logger.info(f"Generate | Running with tools: { {p.name for p in tool_profiles} }")
             osi_start = time.time()
             success, fail = set(), set()
@@ -196,9 +200,9 @@ class OSIAPIServer:
                 try:
                     self._app.logger.info(
                         f"Generate | Executing {tool_profile} with command string: "
-                        f"{' '.join(tool_profile.commands('$CODE_IN'))}")
+                        f"{' && '.join(tool_profile.commands)}")
                     start_time = time.time()
-                    tool_profile.execute('$CODE_IN')  # execute run commands set in the tool config
+                    tool_profile.execute(os.environ['CODE_IN'])  # execute run commands set in the tool config
                     self._app.logger.info(f"Generate | Completed in {time.time() - start_time:.2f} seconds")
                     success.add(tool_profile.name)
 
@@ -215,8 +219,17 @@ class OSIAPIServer:
             self._app.logger.info(f"Generate | Success Tools: {len(success)} | {success}")
             self._app.logger.info(f"Generate | Failed Tools: {len(fail)} | {fail}")
 
+            # encode results
+            sbom_data = {}
+            for filename in os.listdir(os.environ['SBOM_OUT']):
+                file_path = os.path.join(os.environ['SBOM_OUT'], filename)
+                if os.path.isfile(file_path):
+                    with open(file_path, "rb") as f:
+                        encoded_content = base64.b64encode(f.read()).decode('utf-8')
+                        sbom_data[filename] = encoded_content
+
             # Return 200 (ok) if sboms were generated, otherwise return 204 (no content)
-            return str(generated_sboms), 200 if generated_sboms > 0 else 204
+            return jsonify(sbom_data), 200 if generated_sboms > 0 else 204
 
     def run(self):
         """
