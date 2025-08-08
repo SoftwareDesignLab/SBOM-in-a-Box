@@ -15,7 +15,7 @@ main(){
 
   # Launch server
   echo "Launching Server"
-  python3 osi/osi_server.py
+  python3 osi server -H 0.0.0.0
 }
 
 main

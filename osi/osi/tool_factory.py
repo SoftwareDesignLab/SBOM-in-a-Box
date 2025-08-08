@@ -110,6 +110,14 @@ class Profile:
             timeout=timeout
         )
 
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def commands(self):
+        return self._commands
+
     def __str__(self):
         return f"[{self._name} : {self._schema} : {self._spec_version} : {self._format}]"
 

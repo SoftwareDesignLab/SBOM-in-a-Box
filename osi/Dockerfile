@@ -105,6 +105,6 @@ COPY osi osi
 # Cleanup
 RUN rm -rf /var/cache/apk/* /tmp/*
 
-
 USER osi
+RUN mkdir $CODE_IN && mkdir $SBOM_OUT
 ENTRYPOINT ["runner.sh"]

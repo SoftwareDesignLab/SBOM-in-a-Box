@@ -10,11 +10,11 @@ import configparser
 import os
 import subprocess
 import time
-from flask import Flask, request, jsonify
+from typing import List, Dict
 
-from tool_factory import ToolFactory, RunConfig, Profile
+from flask import Flask, request
 
-VERSION = "4.0"
+from tool_factory import ToolFactory, RunConfig, Profile, Tool
 
 # Extension Configuration files
 LANGUAGE_EXT_CONFIG = os.path.join(os.path.dirname(os.path.abspath(__file__)), "configs", "language_ext.cfg")
@@ -23,169 +23,184 @@ MANIFEST_EXT_CONFIG = os.path.join(os.path.dirname(os.path.abspath(__file__)), "
 # SED pattern to get file name from path
 FILE_NAME_SED_PATTERN = r's|.*\/||'
 
-# Globals
-AVAILABLE_TOOLS = []
-AVAILABLE_TOOLS_STR = sorted(os.environ['OSI_TOOL'].split(":"))  # set with validate.sh
-LANGUAGE_MAP = dict[str, str]
-MANIFEST_MAP = dict[str, str]
 
-# Create Flask app
-app = Flask(__name__)
+class OSIAPIServer:
+    VERSION = "4.0"
+    DEFAULT_FLASK_HOST = "localhost"
+    DEFAULT_FLASK_PORT = 5000
 
+    def __init__(self,
+                 host: str = DEFAULT_FLASK_HOST,
+                 port: int = DEFAULT_FLASK_PORT,
+                 debug: bool = False):
+        """
+        Create a new Flask API Server for OSI
 
-#
-# ENDPOINTS
-#
+        :param host: Host of flask server (Default: localhost)
+        :param port: Port of flask server (Default: 5000)
+        :param debug: Enable debug mode (Default: False)
+        """
+        # flask setup
+        self._app = Flask(__name__)
+        # flask config
+        self._host = host
+        self._port = port
+        self._debug = debug
+        # extensions maps
+        self._language_map = _load_ext_mapper(LANGUAGE_EXT_CONFIG)
+        self._manifest_map = _load_ext_mapper(MANIFEST_EXT_CONFIG)
+        # available tools
+        self._available_tools = _load_available_tools()
+        # create endpoints
+        self._setup_routes()
 
-@app.route('/tools', methods=['GET'])
-def get_tools():
-    """
-    Endpoint: GET http://localhost:50001/tools Default returns all tools installed in the OSI instance Has one
-    optional request param: list
-    - http://localhost:50001/tools?list=all : get all tools installed in the OSI instance
-    - http://localhost:50001/tools?list=project : get all tools installed that can be used with the project in the bound directory
+    def _get_applicable_tools(self) -> List[Profile]:
+        """
+        Looks at the files stored in the code bound directory
+        and determines which tool run profiles apply
 
-    Returns: A list of names of valid open-source tools.
-    """
-    match request.args.get('list'):
-        case None:
-            return AVAILABLE_TOOLS_STR, 200
-        case "all":
-            return AVAILABLE_TOOLS_STR, 200
-        case "project":
-            tools = get_applicable_tools()
-            tool_names = set(map(lambda tool: tool.name, tools))  # remove duplicate tool names
-            return sorted(tool_names), 200
-        case _:
-            return f"'{request.args.get('list')}' is an unknown param", 400
+        :return: List of relevant tool run profiles
+        """
+        languages = set()
+        package_managers = set()
 
+        # List all files in the bound code directory
+        files = subprocess.run(
+            f"find $CODE_IN -type f -name '*.*' | sed '{FILE_NAME_SED_PATTERN}' | sort -u",
+            shell=True, capture_output=True, text=True).stdout.strip().split("\n")
 
-@app.route('/generate', methods=['POST'])
-def generate():
-    """
-    Endpoint: POST http://localhost:50001/generate
+        # Parse each file
+        for file_name in files:
+            # Use extension to determine language
+            ext = f".{file_name.lower().split('.')[-1]}"
+            if ext in self._language_map:
+                languages.add(self._language_map.get(ext))
 
-    Request Body: A JSON list of tool names to use in generation. If null, defaults to all tools.
-    Returns:      Number of SBOMs generated
-    Returns:      200 if SBOMs were generated, 204 otherwise.
-    """
+            # Use filename to determine package manager
+            if file_name.lower() in self._manifest_map:
+                package_managers.add(self._manifest_map.get(file_name.lower()))
 
-    tool_profiles = []
-    # Parse request body if one is provided
-    if request.is_json:
-        try:
-            # Get tools and create a list to lowercase strings
-            post_json = jsonify(request.json)
-            tool_names = list(map(lambda tool_name: tool_name.lower(), post_json.get_json()['tools']))
-            app.logger.info(f"Attempting to use provided tools: {tool_names}")
+        self._app.logger.info(f"Applicable Tools | Detected languages: {languages}")
+        self._app.logger.info(f"Applicable Tools | Detected package managers: {package_managers}")
 
-            # Check to see if attempting to use any unknown tools
-            tool_diff = list(set(tool_names) - set(AVAILABLE_TOOLS_STR))
-            if len(tool_diff) > 0:
-                app.logger.error(f"Generate | Attempting to use unknown or unavailable tools: {tool_diff}")
-                return f"Attempting to use unknown or unavailable tools: {tool_diff}", 400
+        # Make a run config with the info found and get all matching run profiles
+        run_config = RunConfig(languages, package_managers)
+        tools = []
+        for tool in self._available_tools.values():
+            tools += tool.get_matching_profiles(run_config)
+        return tools
 
-        except Exception as e:
-            app.logger.error(f"Generate | Failed to parse json: {e}")
-            return "Failed to pase tools", 400
+    def _setup_routes(self):
+        @self._app.route('/tools', methods=['GET'])
+        def get_tools():
+            """
+            Endpoint: GET /tools
+            Default returns all tools installed in the OSI instance Has one
 
-        # Build the tools from the list of names provided
-        # TODO just use ones created?
-        tf = ToolFactory()
-        for tool_name in tool_names:
-            try:
-                tool = tf.build_tool(tool_name)
-                tool_profiles += tool.profiles
-            except Exception as e:
-                app.logger.error(f"{e}")
+            optional request param: list
+            - /tools?list=all : get all tools installed in the OSI instance
+            - /tools?list=project : get all tools installed that can be used with the project in the bound directory
 
-    else:
-        # No tools provided, default to all relevant tools to the project
-        app.logger.info("Generate | No tools provided; Defaulting to relevant tools.")
-        tool_profiles = get_applicable_tools()
+            Returns: A list of names of valid open-source tools.
+            """
+            match request.args.get('list', 'all'):
+                case 'all':
+                    return self._available_tools, 200
+                case 'project':
+                    tool_names = list({t.name for t in self._get_applicable_tools()})  # remove duplicate tool names
+                    return sorted(tool_names), 200
+                case _:
+                    return f"'{request.args.get('list')}' is an unknown param", 400
 
-    # Check to make sure there are tools that can be used
-    if len(tool_profiles) == 0:
-        app.logger.error("Generate | No tools selected")
-        return "No tools selected", 422
+        @self._app.route('/generate', methods=['POST'])
+        def generate():
+            """
+            Endpoint: POST /generate
 
-    app.logger.info(f"Generate | Running with tools: {set([p.name for p in tool_profiles])}")
-    osi_start = time.time()
-    success, fail = set(), set()
-    # Execute each run profile
-    for tool_profile in tool_profiles:
-        try:
-            app.logger.info(f"Generate | Executing {tool_profile} with command string: "
-                            f"{tool_profile.build_exe_string('$CODE_IN')}")
-            start_time = time.time()
-            tool_profile.execute('$CODE_IN')  # execute run commands set in the tool config
-            app.logger.info(f"Generate | Completed in {time.time() - start_time:.2f} seconds")
-            success.add(tool_profile.name)
+            Request Body: A JSON list of tool names to use in generation. If null, defaults to all tools.
+            Returns:      Number of SBOMs generated
+            Returns:      200 if SBOMs were generated, 204 otherwise.
+            """
 
-        except Exception as e:
-            # Problem when running tool
-            app.logger.error(f"Generate | Failed to generate with {tool_profile.name}: {e}")
-            fail.add(tool_profile.name)
+            tool_profiles = []
+            # Parse request body if one is provided
+            if request.is_json:
+                try:
+                    # Get tools and create a list to lowercase strings
+                    tool_names = {t.lower() for t in request.get_json()['tools']}
+                    self._app.logger.info(f"Attempting to use provided tools: {', '.join(tool_names)}")
 
-    osi_end = time.time()
-    generated_sboms = len(success)
-    # Report summary
-    app.logger.info(f"Generate | COMPLETED")
-    app.logger.info(f"Generate | {generated_sboms} SBOMs generated in {osi_end - osi_start:.2f} seconds")
-    app.logger.info(f"Generate | Success Tools: {len(success)} | {success}")
-    app.logger.info(f"Generate | Failed Tools: {len(fail)} | {fail}")
+                    # Check to see if attempting to use any unknown tools
+                    tool_diff = tool_names - self._available_tools.keys()
+                    if tool_diff:
+                        self._app.logger.error(
+                            f"Generate | Attempting to use unknown or unavailable tools: {tool_diff}")
+                        return f"Attempting to use unknown or unavailable tools: {tool_diff}", 400
 
-    # Return 200 (ok) if sboms were generated, otherwise return 204 (no content)
-    return str(generated_sboms), 200 if generated_sboms > 0 else 204
+                except Exception as e:
+                    self._app.logger.error(f"Generate | Failed to parse json: {e}")
+                    return "Failed to parse tools", 400
+                # fetch profiles
+                tool_profiles = [self._available_tools[tool_name].profile for tool_name in tool_names]
+
+            else:
+                # No tools provided, default to all relevant tools to the project
+                self._app.logger.info("Generate | No tools provided; Defaulting to relevant tools.")
+                tool_profiles = self._get_applicable_tools()
+
+            # Check to make sure there are tools that can be used
+            if not tool_profiles:
+                self._app.logger.error("Generate | No tools selected")
+                return "No tools selected", 422
+
+            self._app.logger.info(f"Generate | Running with tools: { {p.name for p in tool_profiles} }")
+            osi_start = time.time()
+            success, fail = set(), set()
+            # Execute each run profile
+            for tool_profile in tool_profiles:
+                try:
+                    self._app.logger.info(
+                        f"Generate | Executing {tool_profile} with command string: "
+                        f"{' '.join(tool_profile.commands('$CODE_IN'))}")
+                    start_time = time.time()
+                    tool_profile.execute('$CODE_IN')  # execute run commands set in the tool config
+                    self._app.logger.info(f"Generate | Completed in {time.time() - start_time:.2f} seconds")
+                    success.add(tool_profile.name)
+
+                except Exception as e:
+                    # Problem when running tool
+                    self._app.logger.error(f"Generate | Failed to generate with {tool_profile.name}: {e}")
+                    fail.add(tool_profile.name)
+
+            osi_end = time.time()
+            generated_sboms = len(success)
+            # Report summary
+            self._app.logger.info(f"Generate | COMPLETED")
+            self._app.logger.info(f"Generate | {generated_sboms} SBOMs generated in {osi_end - osi_start:.2f} seconds")
+            self._app.logger.info(f"Generate | Success Tools: {len(success)} | {success}")
+            self._app.logger.info(f"Generate | Failed Tools: {len(fail)} | {fail}")
+
+            # Return 200 (ok) if sboms were generated, otherwise return 204 (no content)
+            return str(generated_sboms), 200 if generated_sboms > 0 else 204
+
+    def run(self):
+        """
+        Launch the server
+        """
+        print(f"Running OSIv{self.VERSION} with {list(self._available_tools.keys())}")
+        self._app.run(host=self._host, port=self._port, debug=self._debug, use_reloader=False)
 
 
 #
 # HELPER METHODS
 #
-def get_applicable_tools() -> list[Profile]:
-    """
-    Looks at the files stored in the code bound directory and determines which tool run profiles apply
-    :return: List of relevant tool run profiles
-    """
-    languages = set()
-    package_managers = set()
 
-    # List all files in the bound code directory
-    files = subprocess.run(
-        f"find $CODE_IN -type f -name '*.*' | sed '{FILE_NAME_SED_PATTERN}' | sort -u",
-        shell=True, capture_output=True, text=True).stdout.strip().split("\n")
-
-    # Parse each file
-    for file_name in files:
-        # get extension
-        parts = file_name.lower().split(".")
-        ext = f".{parts[len(parts) - 1]}"
-
-        # Use extension to determine language
-        if ext in LANGUAGE_MAP:
-            languages.add(LANGUAGE_MAP.get(ext))
-
-        # Use filename to determine package manager
-        if file_name.lower() in MANIFEST_MAP:
-            package_managers.add(MANIFEST_MAP[file_name.lower()])
-
-    app.logger.info(f"Applicable Tools | Detected languages: {list(languages)}")
-    app.logger.info(f"Applicable Tools | Detected package managers: {list(package_managers)}")
-
-    # Make a run config with the info found and get all matching run profiles
-    run_config = RunConfig(languages, package_managers)
-    tools = []
-    for tool in AVAILABLE_TOOLS:
-        tools += tool.get_matching_profiles(run_config)
-
-    return tools
-
-
-def load_ext_mapper(config_file: str) -> dict[str, str]:
+def _load_ext_mapper(config_file: str) -> Dict[str, str]:
     """
     Load the extension / file config files into memory
+
     :param config_file: Path to config file
-    :return:
+    :return: Dict of extension and value
     """
     cfg = configparser.ConfigParser(allow_no_value=True)
     cfg.read(config_file)
@@ -199,27 +214,18 @@ def load_ext_mapper(config_file: str) -> dict[str, str]:
     {".java": "java"}
     """
     for sec in cfg.sections():
-        ext_map.update(
-            dict((key, sec.lower()) for key, y in cfg.items(sec))  # ignore y since empty
-        )
+        ext_map.update({key: sec.lower() for key, _ in cfg.items(sec)})
+
     return ext_map
 
 
-if __name__ == '__main__':
+def _load_available_tools() -> Dict[str, Tool]:
     """
-    Launch the server
+    Parse the 'OSI_TOOL' env variable to init the
+    tools available to use
+
+    :return: Dict of tool name and tool object
     """
-    # Load tools available in this instance
     tf = ToolFactory()
-    for tool_name in AVAILABLE_TOOLS_STR:
-        tool = tf.build_tool(tool_name)
-        AVAILABLE_TOOLS.append(tool)
-
-    # Load extension maps
-    LANGUAGE_MAP = load_ext_mapper(LANGUAGE_EXT_CONFIG)
-    MANIFEST_MAP = load_ext_mapper(MANIFEST_EXT_CONFIG)
-
-    print(f"Running OSIv{VERSION} with {AVAILABLE_TOOLS}")
-
-    # Launch the server
-    app.run(host='0.0.0.0', debug=True)  # TODO move to config
+    # 'OSI_TOOL' set with validate.sh
+    return {tool_name: tf.build_tool(tool_name) for tool_name in os.environ['OSI_TOOL'].split(":")}
