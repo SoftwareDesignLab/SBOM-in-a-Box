@@ -12,7 +12,7 @@ import subprocess
 import time
 from typing import List, Dict
 
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 from tool_factory import ToolFactory, RunConfig, Profile, Tool
 
@@ -91,6 +91,13 @@ class OSIAPIServer:
         return tools
 
     def _setup_routes(self):
+        @self._app.route('/healthcheck', methods=['GET'])
+        def health_check():
+            """
+            Simple healthcheck to determine if server is up
+            """
+            return jsonify(status="ok"), 200
+
         @self._app.route('/tools', methods=['GET'])
         def get_tools():
             """

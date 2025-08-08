@@ -14,9 +14,11 @@ services:
     ports:
       - "5000:5000"
     healthcheck:
-      test: curl http://localhost:5000 || exit 1
-      start_period: 70s  # Wait in case of the first build, server restarts once mid-way through to init
+      test: ["CMD", "curl", "-f", "http://localhost:5000/healthcheck"]
+      start_period: 10s   # small delay to let startup scripts finish
+      interval: 60s
       timeout: 5s
+      retries: 3
 
   # MySQL server
   sbox_db:
@@ -39,7 +41,7 @@ services:
       - sbox_db:/var/lib/mysql
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-      interval: 10s
+      interval: 60s
       timeout: 5s
       retries: 3
 
