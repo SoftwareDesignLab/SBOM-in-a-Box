@@ -105,7 +105,7 @@ class OSIAPIServer:
             """
             match request.args.get('list', 'all'):
                 case 'all':
-                    return self._available_tools, 200
+                    return sorted(list(self._available_tools.keys())), 200
                 case 'project':
                     tool_names = list({t.name for t in self._get_applicable_tools()})  # remove duplicate tool names
                     return sorted(tool_names), 200

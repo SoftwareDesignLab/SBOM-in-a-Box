@@ -49,6 +49,7 @@ services:
       - path: .env
         required: true
     environment:
+      OSI_HOST: osi
       MYSQL_HOST: sbox_db
       MYSQL_DATABASE: sbox
       # create mysql user defined in the db

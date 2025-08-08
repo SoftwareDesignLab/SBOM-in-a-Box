@@ -25,9 +25,10 @@
 package org.svip.api.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.svip.generation.osi.exceptions.DockerNotAvailableException;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -58,173 +59,12 @@ public class OSIService {
     /// UTILITY CLASSES
     ///
 
-    /**
-     * URL Builder for requests to OSI
-     */
-    private static class OSIURLBuilder {
-
-        // Request Method
-        private enum RequestMethod {
-            GET("GET"),
-            POST("POST");
-            private final String value;
-
-            RequestMethod(String requestMethodStr) {
-                this.value = requestMethodStr;
-            }
-
-            @Override
-            public String toString() {
-                return this.value;
-            }
-        }
-
-        // OSI Endpoints
-        private enum RequestEndpoint {
-            TOOLS("tools"),
-            GENERATE("generate");
-            private final String value;
-
-            RequestEndpoint(String requestEndpoint) {
-                this.value = requestEndpoint;
-            }
-
-            @Override
-            public String toString() {
-                return this.value;
-            }
-
-        }
-
-        /*
-        Build root based on run location. NOTE if running OSI outside the container (not recommended)
-        the endpoint will be at `http://localhost:5000/`, these services will most likely fail
-         */
-        private final String rootEndpoint = new File("/.dockerenv").exists()
-                // If running in container, access OSI by container name due to Docker's default network
-                ? "http://osi:5000/"
-                // If running outside of container, access OSI by the container's port on localhost
-                : "http://localhost:50001/"; // TODO Move port to config file
-
-        private final OSIURLBuilder.RequestEndpoint requestEndpoint;
-        private final OSIURLBuilder.RequestMethod requestMethod;
-        private final HashMap<String, String> requestParams = new HashMap<>();
-
-        /**
-         * Create builder with required arguments
-         *
-         * @param requestEndpoint Target OSI endpoint
-         * @param requestMethod   http request method
-         */
-        public OSIURLBuilder(RequestEndpoint requestEndpoint, RequestMethod requestMethod) {
-            this.requestEndpoint = requestEndpoint;
-            this.requestMethod = requestMethod;
-        }
-
-        /**
-         * Add a request param to the url string
-         *
-         * @param param param / key
-         * @param value value of param
-         * @return OSIURLBuilder
-         */
-        public OSIURLBuilder addParam(String param, String value) {
-            this.requestParams.put(param, value);
-            return this;
-        }
-
-        /**
-         * Create a new HTTP connection to OSI
-         *
-         * @return HTTP connection to OSI
-         * @throws IOException Failed to build connection
-         */
-        public HttpURLConnection buildConnection() throws IOException {
-            // Initial URL
-            StringBuilder url = new StringBuilder(this.rootEndpoint + this.requestEndpoint);
-
-            // Append parameters
-            int paramCount = 0;
-            for (String param : this.requestParams.keySet()) {
-                url.append(paramCount++ == 0 ? "?" : "&")
-                        .append(param)
-                        .append("=")
-                        .append(this.requestParams.get(param));
-            }
-
-            // Build connection
-            HttpURLConnection conn = (HttpURLConnection) URI.create(url.toString()).toURL().openConnection();
-            conn.setRequestMethod(this.requestMethod.value);
-
-            // Get POST return value
-            if (this.requestMethod == OSIURLBuilder.RequestMethod.POST)
-                conn.setDoOutput(true);
-
-            return conn;
-        }
-
-
-    }
-
-    /**
-     * Bound Directory for code and sboms
-     */
-    private enum BOUND_DIR {
-        CODE("code/"),
-        SBOMS("sboms/");
-
-        // The location of the bound directory relative to the build path (core).
-        private static final String BOUND_DIR = "/core/src/main/java/org/svip/generation/osi/bound_dir/";
-        private final String dirName;
-
-        BOUND_DIR(String dirName) {
-            this.dirName = dirName;
-        }
-
-        /**
-         * Gets the path to the OSI bound_dir folder from anywhere in the system.
-         *
-         * @return Path to this target bound folder
-         */
-        private String getPath() {
-            return System.getProperty("user.dir") + BOUND_DIR + dirName;
-        }
-
-        /**
-         * Cleans the subdirectory in /bound_dir to remove all files and re-replace the .gitignore.
-         *
-         * @throws IOException If a file cannot be removed from the directory or if the .gitignore could not be written.
-         */
-        public void flush() throws IOException {
-            File dir = new File(this.getPath());
-
-            FileUtils.cleanDirectory(dir);
-
-            // Add gitignore
-            try (PrintWriter w = new PrintWriter(dir + "/.gitignore")) {
-                w.println("*");
-                w.println("!.gitignore");
-            }
-        }
-    }
-
-
     //
     // OSI SERVICE METHODS
     //
-
+    @Value("${osi.api.url}")
+    private String osiRootEndpoint;
     private boolean enabled = false;    // default to no access to OSI
-
-    /**
-     * Attempt to create a new service if OSI is available
-     */
-    public OSIService() {
-        try {
-            this.enabled = isOSIContainerAvailable();
-        } catch (Exception ignored) {
-        }
-    }
-
 
     /**
      * Get a list of tools from OSI based on parameter
@@ -238,7 +78,7 @@ public class OSIService {
         try {
             // Build new connection
             OSIURLBuilder osiurlBuilder =
-                    new OSIURLBuilder(OSIURLBuilder.RequestEndpoint.TOOLS, OSIURLBuilder.RequestMethod.GET);
+                    new OSIURLBuilder(this.osiRootEndpoint, OSIURLBuilder.RequestEndpoint.TOOLS, OSIURLBuilder.RequestMethod.GET);
             osiurlBuilder.addParam("list", list);
             HttpURLConnection conn = osiurlBuilder.buildConnection();
 
@@ -288,7 +128,6 @@ public class OSIService {
         }
     }
 
-
     /**
      * Use OSI to generate SBOMs
      *
@@ -302,7 +141,7 @@ public class OSIService {
 
         // build connection
         HttpURLConnection conn =
-                new OSIURLBuilder(OSIURLBuilder.RequestEndpoint.GENERATE, OSIURLBuilder.RequestMethod.POST).buildConnection();
+                new OSIURLBuilder(this.osiRootEndpoint, OSIURLBuilder.RequestEndpoint.GENERATE, OSIURLBuilder.RequestMethod.POST).buildConnection();
 
         if (!toolNames.isEmpty()) {
             conn.setRequestProperty("Content-Type", "application/json");
@@ -337,9 +176,26 @@ public class OSIService {
         return sbomPaths;
     }
 
-    ///
-    /// OSI SERVICE UTILITY METHODS
-    ///
+    /**
+     * After construction, check if OSI available
+     */
+    @PostConstruct
+    private void checkOSIStatus() {
+        try {
+            var t = new OSIURLBuilder(this.osiRootEndpoint, OSIURLBuilder.RequestEndpoint.TOOLS, OSIURLBuilder.RequestMethod.GET);
+            // build connection
+            HttpURLConnection conn = t.buildConnection();
+
+            // test connection
+            conn.connect();
+            if (conn.getResponseCode() == 200)
+                this.enabled = true;
+
+            conn.disconnect();
+        } catch (IOException ignored) {
+            // OSI not available
+        }
+    }
 
     /**
      * @return If the service is enabled or not
@@ -348,33 +204,144 @@ public class OSIService {
         return this.enabled;
     }
 
-
     /**
-     * Function to check if the Docker API is running.
-     *
-     * @return True if the Docker API is running and can accept connections.
-     * False if the Docker API returned an error when pinging.
-     * @throws DockerNotAvailableException If the container is not accessible/running at all.
+     * Bound Directory for code and sboms
      */
-    private boolean isOSIContainerAvailable() throws DockerNotAvailableException {
-        try {
-            // build connection
-            HttpURLConnection conn =
-                    new OSIURLBuilder(OSIURLBuilder.RequestEndpoint.TOOLS, OSIURLBuilder.RequestMethod.GET).buildConnection();
+    private enum BOUND_DIR {
+        CODE("code/"),
+        SBOMS("sboms/");
 
-            // test connection
-            conn.connect();
-            if (conn.getResponseCode() != 200)
-                return false;
+        // The location of the bound directory relative to the build path (core).
+        private static final String BOUND_DIR = "/core/src/main/java/org/svip/generation/osi/bound_dir/";
+        private final String dirName;
 
-            conn.disconnect();
-        } catch (IOException e) {
-            // OSI not available
-            throw new DockerNotAvailableException(Arrays.toString(e.getStackTrace()));
+        BOUND_DIR(String dirName) {
+            this.dirName = dirName;
         }
-        // OSI available
-        return true;
+
+        /**
+         * Gets the path to the OSI bound_dir folder from anywhere in the system.
+         *
+         * @return Path to this target bound folder
+         */
+        private String getPath() {
+            return System.getProperty("user.dir") + BOUND_DIR + dirName;
+        }
+
+        /**
+         * Cleans the subdirectory in /bound_dir to remove all files and re-replace the .gitignore.
+         *
+         * @throws IOException If a file cannot be removed from the directory or if the .gitignore could not be written.
+         */
+        public void flush() throws IOException {
+            File dir = new File(this.getPath());
+
+            FileUtils.cleanDirectory(dir);
+
+            // Add gitignore
+            try (PrintWriter w = new PrintWriter(dir + "/.gitignore")) {
+                w.println("*");
+                w.println("!.gitignore");
+            }
+        }
     }
 
+    /**
+     * URL Builder for requests to OSI
+     */
+    private static class OSIURLBuilder {
 
+        private final String rootEndpoint;
+        private final OSIURLBuilder.RequestEndpoint requestEndpoint;
+        private final OSIURLBuilder.RequestMethod requestMethod;
+        private final HashMap<String, String> requestParams = new HashMap<>();
+        /**
+         * Create builder with required arguments
+         *
+         * @param requestEndpoint Target OSI endpoint
+         * @param requestMethod   http request method
+         */
+        public OSIURLBuilder(String rootEndpoint, RequestEndpoint requestEndpoint, RequestMethod requestMethod) {
+            this.rootEndpoint = rootEndpoint;
+            this.requestEndpoint = requestEndpoint;
+            this.requestMethod = requestMethod;
+        }
+
+        /**
+         * Add a request param to the url string
+         *
+         * @param param param / key
+         * @param value value of param
+         * @return OSIURLBuilder
+         */
+        public OSIURLBuilder addParam(String param, String value) {
+            this.requestParams.put(param, value);
+            return this;
+        }
+
+        /**
+         * Create a new HTTP connection to OSI
+         *
+         * @return HTTP connection to OSI
+         * @throws IOException Failed to build connection
+         */
+        public HttpURLConnection buildConnection() throws IOException {
+            // Initial URL
+            StringBuilder url = new StringBuilder(this.rootEndpoint + this.requestEndpoint);
+
+            // Append parameters
+            int paramCount = 0;
+            for (String param : this.requestParams.keySet()) {
+                url.append(paramCount++ == 0 ? "?" : "&")
+                        .append(param)
+                        .append("=")
+                        .append(this.requestParams.get(param));
+            }
+
+            // Build connection
+            HttpURLConnection conn = (HttpURLConnection) URI.create(url.toString()).toURL().openConnection();
+            conn.setRequestMethod(this.requestMethod.value);
+
+            // Get POST return value
+            if (this.requestMethod == OSIURLBuilder.RequestMethod.POST)
+                conn.setDoOutput(true);
+
+            return conn;
+        }
+
+        // Request Method
+        private enum RequestMethod {
+            GET("GET"),
+            POST("POST");
+            private final String value;
+
+            RequestMethod(String requestMethodStr) {
+                this.value = requestMethodStr;
+            }
+
+            @Override
+            public String toString() {
+                return this.value;
+            }
+        }
+
+        // OSI Endpoints
+        private enum RequestEndpoint {
+            TOOLS("tools"),
+            GENERATE("generate");
+            private final String value;
+
+            RequestEndpoint(String requestEndpoint) {
+                this.value = requestEndpoint;
+            }
+
+            @Override
+            public String toString() {
+                return this.value;
+            }
+
+        }
+
+
+    }
 }

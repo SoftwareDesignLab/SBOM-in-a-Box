@@ -75,9 +75,9 @@ public class OSIController {
      *
      * @param sbomService Service for handling SBOM queries
      */
-    public OSIController(SBOMFileService sbomService) {
+    public OSIController(SBOMFileService sbomService, OSIService osiService) {
         this.sbomService = sbomService;
-        this.osiService = new OSIService();
+        this.osiService = osiService;
 
         if (this.osiService.isEnabled()) {
             LOGGER.info("OSI ENDPOINT ENABLED");
