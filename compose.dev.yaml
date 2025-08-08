@@ -1,0 +1,69 @@
+# File: compose.dev.yaml
+# Description: Dev sbom-in-a-box deployment with open ports for interfacing with locally running applications
+#
+# Author: Ian Dunn
+# Author: Derek Garcia
+
+name: sbom-in-a-box
+services:
+  # OSI container
+  osi:
+    container_name: osi
+    platform: linux/amd64
+    build: osi
+    ports:
+      - "5000:5000"
+    healthcheck:
+      test: curl http://localhost:5000 || exit 1
+      start_period: 70s  # Wait in case of the first build, server restarts once mid-way through to init
+      timeout: 5s
+
+  # MySQL server
+  sbox_db:
+    container_name: sbox_db
+    platform: linux/amd64
+    image: mysql:8.4.6
+    command: --max_allowed_packet=32505856  # Set max_allowed_packet to 256M
+    env_file:
+      - path: .env
+        required: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: sbox
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?'MYSQL_ROOT_PASSWORD' must be set in the .env file}
+      # create mysql user to use
+      MYSQL_USER: ${MYSQL_USER:?'MYSQL_USER' must be set in the .env file}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?'MYSQL_PASSWORD' must be set in the .env file}
+    volumes:
+      - sbox_db:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # SBOM-in-a-box API spring-boot application
+  sbox_api:
+    container_name: sbox_api
+    build: .
+    ports:
+      - "8080:8080"
+    env_file:
+      - path: .env
+        required: true
+    environment:
+      OSI_HOST: osi
+      MYSQL_HOST: sbox_db
+      MYSQL_DATABASE: sbox
+      # create mysql user defined in the db
+      MYSQL_USER: ${MYSQL_USER:?'MYSQL_USER' must be set in the .env file}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?'MYSQL_PASSWORD' must be set in the .env file}
+    depends_on:
+      sbox_db:
+        condition: service_healthy
+      osi:
+        condition: service_healthy
+
+volumes:
+  sbox_db:
