@@ -45,18 +45,18 @@ import java.util.Set;
  * @author Thomas Roman
  */
 public class SPDX23Builder implements SPDX23SBOMBuilder {
+    private final Set<String> licenses = new HashSet<>();
+    private final Set<Component> components = new HashSet<>();
+    private final HashMap<String, Set<Relationship>> relationships = new HashMap<>();
+    private final Set<ExternalReference> externalReferences = new HashSet<>();
     private String format;
     private String name;
     private String uid;
     private String version;
     private String specVersion;
-    private final Set<String> licenses = new HashSet<>();
     private CreationData creationData;
     private String documentComment;
     private Component rootComponent;
-    private final Set<Component> components = new HashSet<>();
-    private final HashMap<String, Set<Relationship>> relationships = new HashMap<>();
-    private final Set<ExternalReference> externalReferences = new HashSet<>();
     /**
      * Set<VEX> vulnerabilities;
      * Set<Snippet> snippets;

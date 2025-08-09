@@ -51,16 +51,6 @@ public abstract class Merger {
     }
 
     /**
-     * Merges two SBOMs together.
-     *
-     * @param A First SBOM
-     * @param B Second SBOM
-     * @return A single merged SBOM.
-     * @throws Exception general exception
-     */
-    public abstract SBOM mergeSBOM(SBOM A, SBOM B) throws Exception;
-
-    /**
      * Merges two Creation Data objects.
      *
      * @param A First CreationData object
@@ -464,5 +454,15 @@ public abstract class Merger {
         return mergedExternalReferences;
 
     }
+
+    /**
+     * Merges two SBOMs together.
+     *
+     * @param A First SBOM
+     * @param B Second SBOM
+     * @return A single merged SBOM.
+     * @throws Exception general exception
+     */
+    public abstract SBOM mergeSBOM(SBOM A, SBOM B) throws Exception;
 
 }

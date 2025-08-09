@@ -64,26 +64,6 @@ public class QualityReportFile {
     }
 
     /**
-     * todo store properly rather than massive string
-     *
-     * @param content content of qa
-     * @return QualityReportFile
-     */
-    public QualityReportFile setContent(String content) {
-        this.content = content;
-        return this;
-    }
-
-    public QualityReportFile setSBOMFile(SBOMFile sbomFile) {
-        this.sbomFile = sbomFile;
-        return this;
-    }
-
-    ///
-    /// Getters
-    ///
-
-    /**
      * @return id of qa
      */
     public Long getID() {
@@ -97,10 +77,30 @@ public class QualityReportFile {
         return this.content;
     }
 
+    ///
+    /// Getters
+    ///
+
+    /**
+     * todo store properly rather than massive string
+     *
+     * @param content content of qa
+     * @return QualityReportFile
+     */
+    public QualityReportFile setContent(String content) {
+        this.content = content;
+        return this;
+    }
+
     /**
      * @return SBOM of QA
      */
     public SBOMFile getSBOMFile() {
         return this.sbomFile;
+    }
+
+    public QualityReportFile setSBOMFile(SBOMFile sbomFile) {
+        this.sbomFile = sbomFile;
+        return this;
     }
 }

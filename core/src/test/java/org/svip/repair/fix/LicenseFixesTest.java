@@ -44,14 +44,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 class LicenseFixesTest {
 
-    private static LicenseFixes licenseFixes;
-    private static ResultFactory resultFactory;
-    private static SBOM sbom;
-
     private static final String CDX_14_JSON_SBOM = System.getProperty("user.dir") +
             "/src/test/resources/serializers/cdx_json/sbom.alpine.json";
     private static final String LICENSE_ID = "AGPL-1.0";
     private static final String LICENSE_NAME = "Affero General Public License v1.0";
+    private static LicenseFixes licenseFixes;
+    private static ResultFactory resultFactory;
+    private static SBOM sbom;
 
     @BeforeAll
     static void setup() throws Exception {

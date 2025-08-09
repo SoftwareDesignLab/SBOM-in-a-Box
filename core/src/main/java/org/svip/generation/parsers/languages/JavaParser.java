@@ -48,13 +48,13 @@ import static org.svip.utils.Debug.log;
  * @author Ian Dunn
  */
 public class JavaParser extends LanguageParser {
+    private final HashSet<String> JAVA8_STD_PACKAGES = fetchJava8Packages();
+
     // Oracle API Reference: This reference currently supports Java8 only for LTS. Other versions of
     //Java will need additional code to fetch relevant package lists
     public JavaParser() {
         super("https://docs.oracle.com/javase/8/docs/api/overview-frame.html");
     }
-
-    private final HashSet<String> JAVA8_STD_PACKAGES = fetchJava8Packages();
 
     /**
      * Performs a GET request on ORACLE_URL and scrapes

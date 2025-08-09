@@ -57,15 +57,13 @@ import static org.mockito.Mockito.when;
 @DisplayName("SBOM Controller Test")
 public class SBOMControllerTest {
 
-    @Mock
-    private SBOMFileService sbomFileService;      // Mock service
-
-    @InjectMocks
-    private SBOMController sbomController;    // Instance of controller for testing
-
     // Test SBOMs
     private static final String CDX_JSON_SBOM_FILE = "./src/test/resources/sample_sboms/cdx-gomod-1.4.0-bin.json";
     private static final String CDX_SMALL = "./src/test/resources/sample_sboms/CDX_Test.json";
+    @Mock
+    private SBOMFileService sbomFileService;      // Mock service
+    @InjectMocks
+    private SBOMController sbomController;    // Instance of controller for testing
 
     /// Upload
     @Test

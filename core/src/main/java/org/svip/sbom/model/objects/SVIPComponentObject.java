@@ -201,6 +201,82 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
     private final String attributionText;
 
     /**
+     * Constructor to build the SVIP Component Object
+     *
+     * @param type               component type
+     * @param uid                component uid
+     * @param author             component author
+     * @param name               component name
+     * @param licenses           component licenses
+     * @param copyright          component copyright
+     * @param hashes             component hashes
+     * @param supplier           component supplier
+     * @param version            component version
+     * @param description        component description
+     * @param cpes               component CPEs
+     * @param purls              component PURLs
+     * @param externalReferences component external references
+     * @param downloadLocation   component download location
+     * @param fileName           component file name
+     * @param filesAnalyzed      if component's files were analyzed
+     * @param verificationCode   component verification code
+     * @param homePage           component home page
+     * @param sourceInfo         component source info
+     * @param releaseDate        component release date
+     * @param builtDate          component build date
+     * @param validUntilDate     component valid until date
+     * @param mimeType           component mime type
+     * @param publisher          component publisher
+     * @param scope              component scope
+     * @param group              component group
+     * @param properties         component properties
+     * @param fileNotice         component file notice
+     */
+    public SVIPComponentObject(String type, String uid, String author, String name,
+                               LicenseCollection licenses, String copyright,
+                               HashMap<String, String> hashes, Organization supplier,
+                               String version, Description description, Set<String> cpes,
+                               Set<String> purls, Set<ExternalReference> externalReferences,
+                               String downloadLocation, String fileName, Boolean filesAnalyzed,
+                               String verificationCode, String homePage, String sourceInfo,
+                               String releaseDate, String builtDate, String validUntilDate,
+                               String mimeType, String publisher, String scope, String group,
+                               HashMap<String, Set<String>> properties, String fileNotice,
+                               String comment, String attributionText) {
+        this.type = type;
+        this.uid = uid;
+        this.author = author;
+        this.name = name;
+        this.licenses = licenses;
+        this.copyright = copyright;
+        if (hashes == null) this.hashes = new HashMap<>();
+        else this.hashes = hashes;
+        this.supplier = supplier;
+        this.version = version;
+        this.description = description;
+        this.cpes = cpes;
+        this.purls = purls;
+        this.externalReferences = externalReferences;
+        this.downloadLocation = downloadLocation;
+        this.fileName = fileName;
+        this.filesAnalyzed = filesAnalyzed;
+        this.verificationCode = verificationCode;
+        this.homePage = homePage;
+        this.sourceInfo = sourceInfo;
+        this.releaseDate = releaseDate;
+        this.builtDate = builtDate;
+        this.validUntilDate = validUntilDate;
+        this.mimeType = mimeType;
+        this.publisher = publisher;
+        this.scope = scope;
+        this.group = group;
+        this.properties = properties;
+        this.fileNotice = fileNotice;
+        this.comment = comment;
+        this.attributionText = attributionText;
+    }
+
+    /**
      * Get the component's type
      *
      * @return the component's type
@@ -498,82 +574,6 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
     @Override
     public String getValidUntilDate() {
         return this.validUntilDate;
-    }
-
-    /**
-     * Constructor to build the SVIP Component Object
-     *
-     * @param type               component type
-     * @param uid                component uid
-     * @param author             component author
-     * @param name               component name
-     * @param licenses           component licenses
-     * @param copyright          component copyright
-     * @param hashes             component hashes
-     * @param supplier           component supplier
-     * @param version            component version
-     * @param description        component description
-     * @param cpes               component CPEs
-     * @param purls              component PURLs
-     * @param externalReferences component external references
-     * @param downloadLocation   component download location
-     * @param fileName           component file name
-     * @param filesAnalyzed      if component's files were analyzed
-     * @param verificationCode   component verification code
-     * @param homePage           component home page
-     * @param sourceInfo         component source info
-     * @param releaseDate        component release date
-     * @param builtDate          component build date
-     * @param validUntilDate     component valid until date
-     * @param mimeType           component mime type
-     * @param publisher          component publisher
-     * @param scope              component scope
-     * @param group              component group
-     * @param properties         component properties
-     * @param fileNotice         component file notice
-     */
-    public SVIPComponentObject(String type, String uid, String author, String name,
-                               LicenseCollection licenses, String copyright,
-                               HashMap<String, String> hashes, Organization supplier,
-                               String version, Description description, Set<String> cpes,
-                               Set<String> purls, Set<ExternalReference> externalReferences,
-                               String downloadLocation, String fileName, Boolean filesAnalyzed,
-                               String verificationCode, String homePage, String sourceInfo,
-                               String releaseDate, String builtDate, String validUntilDate,
-                               String mimeType, String publisher, String scope, String group,
-                               HashMap<String, Set<String>> properties, String fileNotice,
-                               String comment, String attributionText) {
-        this.type = type;
-        this.uid = uid;
-        this.author = author;
-        this.name = name;
-        this.licenses = licenses;
-        this.copyright = copyright;
-        if (hashes == null) this.hashes = new HashMap<>();
-        else this.hashes = hashes;
-        this.supplier = supplier;
-        this.version = version;
-        this.description = description;
-        this.cpes = cpes;
-        this.purls = purls;
-        this.externalReferences = externalReferences;
-        this.downloadLocation = downloadLocation;
-        this.fileName = fileName;
-        this.filesAnalyzed = filesAnalyzed;
-        this.verificationCode = verificationCode;
-        this.homePage = homePage;
-        this.sourceInfo = sourceInfo;
-        this.releaseDate = releaseDate;
-        this.builtDate = builtDate;
-        this.validUntilDate = validUntilDate;
-        this.mimeType = mimeType;
-        this.publisher = publisher;
-        this.scope = scope;
-        this.group = group;
-        this.properties = properties;
-        this.fileNotice = fileNotice;
-        this.comment = comment;
-        this.attributionText = attributionText;
     }
 
     /**

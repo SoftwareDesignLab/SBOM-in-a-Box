@@ -69,22 +69,15 @@ public class LicenseCollection implements Comparable {
     }
 
     /**
-     * @param comment Comment
-     */
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    ///
-    /// getters
-    ///
-
-    /**
      * @return declared licenses
      */
     public Set<String> getDeclared() {
         return declared;
     }
+
+    ///
+    /// getters
+    ///
 
     /**
      * @return info from files licenses
@@ -105,6 +98,13 @@ public class LicenseCollection implements Comparable {
      */
     public String getComment() {
         return comment;
+    }
+
+    /**
+     * @param comment Comment
+     */
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     /**

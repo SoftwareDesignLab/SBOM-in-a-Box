@@ -40,58 +40,22 @@ import static org.svip.compare.conflicts.MismatchType.*;
  */
 public class CreationData implements Comparable {
 
-    // Time SBOM was created
-    private String creationTime;
-
     // authors of SBOM data
     private final Set<Contact> authors = new HashSet<>();
-
-    // Manufacture of the component the SBOM describes
-    private Organization manufacture;
-
-    // Supplier of the component the SBOM describes
-    private Organization supplier;
     private final Set<String> licenses = new HashSet<>();
     private final Map<String, Set<String>> properties = new HashMap<>();
-
     // Tools used to generate the SBOM
     private final Set<CreationTool> creationTools = new HashSet<>();
+    // Time SBOM was created
+    private String creationTime;
+    // Manufacture of the component the SBOM describes
+    private Organization manufacture;
+    // Supplier of the component the SBOM describes
+    private Organization supplier;
     private String creatorComment;
 
     ///
     /// Setters
-    ///
-
-    /**
-     * @param creationTime Time SBOM was created
-     */
-    public void setCreationTime(String creationTime) {
-        this.creationTime = creationTime;
-    }
-
-    /**
-     * @param manufacture Manufacture
-     */
-    public void setManufacture(Organization manufacture) {
-        this.manufacture = manufacture;
-    }
-
-    /**
-     * @param supplier Supplier
-     */
-    public void setSupplier(Organization supplier) {
-        this.supplier = supplier;
-    }
-
-    /**
-     * @param creatorComment Comment
-     */
-    public void setCreatorComment(String creatorComment) {
-        this.creatorComment = creatorComment;
-    }
-
-    ///
-    /// Adders
     ///
 
     /**
@@ -125,7 +89,7 @@ public class CreationData implements Comparable {
     }
 
     ///
-    /// Getters
+    /// Adders
     ///
 
     /**
@@ -133,6 +97,13 @@ public class CreationData implements Comparable {
      */
     public String getCreationTime() {
         return creationTime;
+    }
+
+    /**
+     * @param creationTime Time SBOM was created
+     */
+    public void setCreationTime(String creationTime) {
+        this.creationTime = creationTime;
     }
 
     /**
@@ -149,11 +120,29 @@ public class CreationData implements Comparable {
         return manufacture;
     }
 
+    ///
+    /// Getters
+    ///
+
+    /**
+     * @param manufacture Manufacture
+     */
+    public void setManufacture(Organization manufacture) {
+        this.manufacture = manufacture;
+    }
+
     /**
      * @return supplier
      */
     public Organization getSupplier() {
         return supplier;
+    }
+
+    /**
+     * @param supplier Supplier
+     */
+    public void setSupplier(Organization supplier) {
+        this.supplier = supplier;
     }
 
     /**
@@ -182,6 +171,13 @@ public class CreationData implements Comparable {
      */
     public String getCreatorComment() {
         return creatorComment;
+    }
+
+    /**
+     * @param creatorComment Comment
+     */
+    public void setCreatorComment(String creatorComment) {
+        this.creatorComment = creatorComment;
     }
 
     /// Util

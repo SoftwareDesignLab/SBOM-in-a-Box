@@ -124,6 +124,47 @@ public class SPDX23SBOM implements SPDX23Schema {
     private final String SPDXLicenseListVersion;
 
     /**
+     * Constructor to make a new SPDX 2.3 SBOM
+     *
+     * @param format                 SBOM format
+     * @param name                   SBOM name
+     * @param uid                    SBOM uid
+     * @param version                SBOM version
+     * @param specVersion            SBOM spec version
+     * @param licenses               SBOM licenses
+     * @param creationData           SBOM creation data
+     * @param documentComment        SBOM document comment
+     * @param rootComponent          SBOM root component
+     * @param components             SBOM components
+     * @param relationships          SBOM relationships
+     * @param externalReferences     SBOM external references
+     * @param spdxLicenseListVersion SBOM spdx license list version
+     */
+    //TODO add missing fields when implemented (VEX, Snippet, LicenseInfo, Annotation)
+    public SPDX23SBOM(String format, String name, String uid, String version,
+                      String specVersion, Set<String> licenses,
+                      CreationData creationData, String documentComment,
+                      SPDX23PackageObject rootComponent, Set<Component> components,
+                      HashMap<String, Set<Relationship>> relationships,
+                      Set<ExternalReference> externalReferences,
+                      String spdxLicenseListVersion) {
+        this.format = format;
+        this.name = name;
+        this.uid = uid;
+        this.version = version;
+        this.specVersion = specVersion;
+        this.licenses = licenses;
+        this.creationData = creationData;
+        this.documentComment = documentComment;
+        this.rootComponent = rootComponent;
+        this.components = components;
+        this.relationships = relationships;
+        this.externalReferences = externalReferences;
+        this.SPDXLicenseListVersion = spdxLicenseListVersion;
+
+    }
+
+    /**
      * Get the SBOM's format
      *
      * @return the SBOM's format
@@ -251,47 +292,6 @@ public class SPDX23SBOM implements SPDX23Schema {
     @Override
     public String getSPDXLicenseListVersion() {
         return this.SPDXLicenseListVersion;
-    }
-
-    /**
-     * Constructor to make a new SPDX 2.3 SBOM
-     *
-     * @param format                 SBOM format
-     * @param name                   SBOM name
-     * @param uid                    SBOM uid
-     * @param version                SBOM version
-     * @param specVersion            SBOM spec version
-     * @param licenses               SBOM licenses
-     * @param creationData           SBOM creation data
-     * @param documentComment        SBOM document comment
-     * @param rootComponent          SBOM root component
-     * @param components             SBOM components
-     * @param relationships          SBOM relationships
-     * @param externalReferences     SBOM external references
-     * @param spdxLicenseListVersion SBOM spdx license list version
-     */
-    //TODO add missing fields when implemented (VEX, Snippet, LicenseInfo, Annotation)
-    public SPDX23SBOM(String format, String name, String uid, String version,
-                      String specVersion, Set<String> licenses,
-                      CreationData creationData, String documentComment,
-                      SPDX23PackageObject rootComponent, Set<Component> components,
-                      HashMap<String, Set<Relationship>> relationships,
-                      Set<ExternalReference> externalReferences,
-                      String spdxLicenseListVersion) {
-        this.format = format;
-        this.name = name;
-        this.uid = uid;
-        this.version = version;
-        this.specVersion = specVersion;
-        this.licenses = licenses;
-        this.creationData = creationData;
-        this.documentComment = documentComment;
-        this.rootComponent = rootComponent;
-        this.components = components;
-        this.relationships = relationships;
-        this.externalReferences = externalReferences;
-        this.SPDXLicenseListVersion = spdxLicenseListVersion;
-
     }
 
     /**

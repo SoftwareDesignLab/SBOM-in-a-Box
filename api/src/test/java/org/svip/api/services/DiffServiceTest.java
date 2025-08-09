@@ -55,22 +55,19 @@ import static org.mockito.Mockito.when;
 @DisplayName("Diff Service Test")
 public class DiffServiceTest {
 
+    // Test SBOMs
+    private static final String CDX_JSON_SBOM_FILE = "./src/test/resources/sample_sboms/cdx-gomod-1.4.0-bin.json";
+    private static final String SPDX_JSON_SBOM_FILE = "./src/test/resources/sample_sboms/syft-0.80.0-source-spdx-json.json";
     @Mock
     private SBOMFileRepository sbomFileRepository;      // Mock repo
     @Mock
     private ComparisonFileRepository comparisonFileRepository;
-
     @Mock
     private ConflictFileRepository conflictFileRepository;
-
     @InjectMocks
     private DiffService diffService;    // Instance of service for testing
     @InjectMocks
     private SBOMFileService sbomFileService;
-
-    // Test SBOMs
-    private static final String CDX_JSON_SBOM_FILE = "./src/test/resources/sample_sboms/cdx-gomod-1.4.0-bin.json";
-    private static final String SPDX_JSON_SBOM_FILE = "./src/test/resources/sample_sboms/syft-0.80.0-source-spdx-json.json";
 
     /// Compare
 

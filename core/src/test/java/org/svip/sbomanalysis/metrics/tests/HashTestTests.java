@@ -50,18 +50,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 class HashTestTests {
 
-    private static HashTest hashTest;
-
     private static final String MD5_HASH_ALGORITHM = "MD5";
     private static final String MD5_HASH_VALUE = "743a64546ababa69c8af34e057722cd2";
-
     private static final String SHA1_HASH_ALGORITHM = "SHA1";
     private static final String NOT_SHA1_HASH_VALUE = "2f05477fc24bb4faefd86517156dafdecec45b8ad3cf2522a563582b";
-
     private static final String SPDX_EXCLUSIVE_HASH_ALGORITHM = "SHA224";
-
     private static final String PURL = "pkg:maven/org.junit.platform/junit-platform-engine@1.9.2?type=jar";
-
+    private static HashTest hashTest;
 
     @BeforeAll
     static void setup() {

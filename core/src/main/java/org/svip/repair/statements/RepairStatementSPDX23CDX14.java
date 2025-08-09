@@ -41,6 +41,38 @@ import java.util.Map;
 
 public class RepairStatementSPDX23CDX14 implements RepairStatement {
 
+    /**
+     * Get the fixes class depending on the test result
+     *
+     * @param result failed result to base fix off
+     * @return appropriate fixes class
+     */
+    public static Fixes getFixes(Result result) {
+
+        // Fixes
+        Fixes fixes = null;
+
+        // Depending on the failing test, get the correct "fix" class
+        switch (result.getTest()) {
+
+            case "Matching CPE" -> fixes = new CPEFixes();
+
+            case "EmptyOrNullTest", "Has Creation Info", "HasSPDXID" -> fixes = new EmptyOrNullFixes(null);
+
+            case "HashMap" -> fixes = new HashFixes();
+
+            case "License" -> fixes = new LicenseFixes();
+
+            case "PURLTest", "Matching PURL", "Accurate PURL", "Valid PURL" -> fixes = new PURLFixes();
+
+
+        }
+
+        // Return the fixes
+        return fixes;
+
+    }
+
     @Override
     public QualityReport generateRepairStatement(SBOM sbom) throws Exception {
 
@@ -107,38 +139,6 @@ public class RepairStatementSPDX23CDX14 implements RepairStatement {
 
         // Return the repairs
         return report;
-
-    }
-
-    /**
-     * Get the fixes class depending on the test result
-     *
-     * @param result failed result to base fix off
-     * @return appropriate fixes class
-     */
-    public static Fixes getFixes(Result result) {
-
-        // Fixes
-        Fixes fixes = null;
-
-        // Depending on the failing test, get the correct "fix" class
-        switch (result.getTest()) {
-
-            case "Matching CPE" -> fixes = new CPEFixes();
-
-            case "EmptyOrNullTest", "Has Creation Info", "HasSPDXID" -> fixes = new EmptyOrNullFixes(null);
-
-            case "HashMap" -> fixes = new HashFixes();
-
-            case "License" -> fixes = new LicenseFixes();
-
-            case "PURLTest", "Matching PURL", "Accurate PURL", "Valid PURL" -> fixes = new PURLFixes();
-
-
-        }
-
-        // Return the fixes
-        return fixes;
 
     }
 

@@ -76,18 +76,11 @@ public class OSIControllerTest {
     @Autowired
     private OSIService osiService;
 
-    @TestConfiguration
-    static class TestConfig {
+    private static MockMultipartFile buildMockMultipartFile(String projectName) throws IOException {
+        String sampleProjectDirectory = System.getProperty("user.dir") + "/src/test/resources/sample_projects/";
 
-        @Bean
-        public SBOMFileService sbomFileService() {
-            return Mockito.mock(SBOMFileService.class);
-        }
-
-        @Bean
-        public OSIService osiService() {
-            return Mockito.mock(OSIService.class);
-        }
+        return new MockMultipartFile("zipFile", projectName, "multipart/form-data",
+                Files.readAllBytes(Path.of(sampleProjectDirectory + projectName + ".zip")));
     }
 
     @BeforeEach
@@ -221,10 +214,17 @@ public class OSIControllerTest {
                 .andExpect(status().isNoContent());
     }
 
-    private static MockMultipartFile buildMockMultipartFile(String projectName) throws IOException {
-        String sampleProjectDirectory = System.getProperty("user.dir") + "/src/test/resources/sample_projects/";
+    @TestConfiguration
+    static class TestConfig {
 
-        return new MockMultipartFile("zipFile", projectName, "multipart/form-data",
-                Files.readAllBytes(Path.of(sampleProjectDirectory + projectName + ".zip")));
+        @Bean
+        public SBOMFileService sbomFileService() {
+            return Mockito.mock(SBOMFileService.class);
+        }
+
+        @Bean
+        public OSIService osiService() {
+            return Mockito.mock(OSIService.class);
+        }
     }
 }

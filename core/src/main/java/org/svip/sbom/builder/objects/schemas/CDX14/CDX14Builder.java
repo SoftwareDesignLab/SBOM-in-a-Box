@@ -49,64 +49,53 @@ import java.util.Set;
 public class CDX14Builder implements CDX14SBOMBuilder {
 
     /**
-     * Holds the format of the SBOM
-     */
-    private String format;
-
-    /**
-     * Holds the name of the SBOM
-     */
-    private String name;
-
-    /**
-     * Holds the UID of the SBOM
-     */
-    private String uid;
-
-    /**
-     * Holds the version of the SBOM
-     */
-    private String version;
-
-    /**
-     * Holds the spec version of the SBOM
-     */
-    private String specVersion;
-
-    /**
      * Holds the licenses of the SBOM
      */
     private final Set<String> licenses = new HashSet<>();
-
-    /**
-     * Holds the creation data of the SBOM
-     */
-    private CreationData creationData = new CreationData();
-
-    /**
-     * Holds the document comments of the SBOM
-     */
-    private String documentComment;
-
-    /**
-     * Holds the root component of the SBOM
-     */
-    private Component rootComponent;
-
     /**
      * Holds the components of the SBOM
      */
     private final Set<Component> components = new HashSet<>();
-
     /**
      * Holds the relationships of components in the SBOM
      */
     private final HashMap<String, Set<Relationship>> relationships = new HashMap<>();
-
     /**
      * Holds the external references of the SBOM
      */
     private final Set<ExternalReference> externalReferences = new HashSet<>();
+    /**
+     * Holds the format of the SBOM
+     */
+    private String format;
+    /**
+     * Holds the name of the SBOM
+     */
+    private String name;
+    /**
+     * Holds the UID of the SBOM
+     */
+    private String uid;
+    /**
+     * Holds the version of the SBOM
+     */
+    private String version;
+    /**
+     * Holds the spec version of the SBOM
+     */
+    private String specVersion;
+    /**
+     * Holds the creation data of the SBOM
+     */
+    private CreationData creationData = new CreationData();
+    /**
+     * Holds the document comments of the SBOM
+     */
+    private String documentComment;
+    /**
+     * Holds the root component of the SBOM
+     */
+    private Component rootComponent;
 
     //TODO VEX needs implementation
     /**Holds the vulnerabilities expressed in the SBOM*/

@@ -57,15 +57,6 @@ import static org.svip.utils.Debug.log;
  */
 public class ParserManager {
 
-    //#region Attributes
-    private final String projectName;
-    private final SVIPSBOMBuilder builder;
-
-    /**
-     * Store a list of all SVIP components mapped to their hash as the key (to check for duplicates).
-     */
-    private final Map<String, SVIPComponentBuilder> components;
-    private final Map<VirtualPath, String> files;
     private static final HashMap<String, Parser> EXTENSION_MAP = new HashMap<>() {{
         //
         // New Parsers
@@ -103,6 +94,14 @@ public class ParserManager {
         put("conanfile.txt", new ConanParser());
         // ADD NEW PARSER HERE: put("fileExtn", new Parser);
     }};
+    //#region Attributes
+    private final String projectName;
+    private final SVIPSBOMBuilder builder;
+    /**
+     * Store a list of all SVIP components mapped to their hash as the key (to check for duplicates).
+     */
+    private final Map<String, SVIPComponentBuilder> components;
+    private final Map<VirtualPath, String> files;
 
     //#endregion
 

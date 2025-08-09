@@ -53,15 +53,6 @@ import java.util.Map;
 @Transactional
 public class DiffService {
 
-    // Utility to hold JSON Formatted Diff Report
-    @JsonPropertyOrder({"target", "diffeport"})
-    private record DiffReport(Long target, Map<Long, ComparisonJSON> diffReport) {
-    }
-
-    // Utility to hold JSON Formatted comparison
-    private record ComparisonJSON(Map<String, List<ConflictFile>> componentConflicts, List<String> missingComponents) {
-    }
-
     private final ComparisonFileRepository comparisonFileRepository;
     private final ConflictFileRepository conflictFileRepository;
 
@@ -120,7 +111,6 @@ public class DiffService {
             throw new Exception("Failed to upload to Database: " + e.getMessage());
         }
     }
-
 
     /**
      * Generate a Diff Report for a collection of SBOMs
@@ -188,5 +178,14 @@ public class DiffService {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 
         return mapper.writeValueAsString(new DiffReport(targetID, comparisons));
+    }
+
+    // Utility to hold JSON Formatted Diff Report
+    @JsonPropertyOrder({"target", "diffeport"})
+    private record DiffReport(Long target, Map<Long, ComparisonJSON> diffReport) {
+    }
+
+    // Utility to hold JSON Formatted comparison
+    private record ComparisonJSON(Map<String, List<ConflictFile>> componentConflicts, List<String> missingComponents) {
     }
 }

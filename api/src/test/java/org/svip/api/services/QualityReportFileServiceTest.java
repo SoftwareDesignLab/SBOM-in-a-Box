@@ -56,16 +56,14 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Quality Report Service Test")
 public class QualityReportFileServiceTest {
-    @Mock
-    private QualityReportFileRepository qualityReportFileRepository;      // Mock repo
-
-    @InjectMocks
-    private QualityReportFileService qualityReportFileService;
-
     // Test SBOMs
     private static final String CDX_JSON_SBOM_FILE = "./src/test/resources/sample_sboms/cdx-gomod-1.4.0-bin.json";
     private static final String SPDX_JSON_SBOM_FILE = "./src/test/resources/sample_sboms/syft-0.80.0-source-spdx-json.json";
     private static final String SPDX_TAG_VALUE_SBOM_FILE = "./src/test/resources/sample_sboms/sbom.alpine-compare.2-3.spdx";
+    @Mock
+    private QualityReportFileRepository qualityReportFileRepository;      // Mock repo
+    @InjectMocks
+    private QualityReportFileService qualityReportFileService;
 
     // Generate
 

@@ -38,35 +38,6 @@ import java.util.Arrays;
  * @author Ian Dunn
  */
 public class Debug {
-    /**
-     * Enums for classifying log types
-     * <p>
-     * <b>Info</b> : Informational logs that contain parsing data<br/>
-     * <b>Summary</b> : Summative informational logs that contain broad parsing data<br/>
-     * <b>Debug</b> : Debug logs that contain deeper parsing data<br/>
-     * <b>Warn</b> : Warning logs that indicate possibly unsafe or erroneous operations<br/>
-     * <b>Error</b>  : Error logs that display failures that have occurred during parsing<br/>
-     * <b>Exception</b> : Exception logs that display caught exceptions that have occurred during parsing<br/>
-     */
-    public enum LOG_TYPE {
-        INFO("INFO "),
-        SUMMARY("SUMRY"),
-        DEBUG("DEBUG"),
-        WARN("WARN "),
-        ERROR("ERROR"),
-        EXCEPTION("EXCPT");
-
-        private final String shortName;
-
-        LOG_TYPE(String shortName) {
-            this.shortName = shortName;
-        }
-
-        public String shortName() {
-            return shortName;
-        }
-    }
-
     private static final String blockChar = "="; // Block character to use
     private static final int defaultBlockLength = 50;
     private static boolean debugMode = false; // Boolean toggle to allow debug logs
@@ -200,5 +171,34 @@ public class Debug {
             Debug.summaryMode = false;
         }
         log(LOG_TYPE.DEBUG, "Debug Mode is Enabled");
+    }
+
+    /**
+     * Enums for classifying log types
+     * <p>
+     * <b>Info</b> : Informational logs that contain parsing data<br/>
+     * <b>Summary</b> : Summative informational logs that contain broad parsing data<br/>
+     * <b>Debug</b> : Debug logs that contain deeper parsing data<br/>
+     * <b>Warn</b> : Warning logs that indicate possibly unsafe or erroneous operations<br/>
+     * <b>Error</b>  : Error logs that display failures that have occurred during parsing<br/>
+     * <b>Exception</b> : Exception logs that display caught exceptions that have occurred during parsing<br/>
+     */
+    public enum LOG_TYPE {
+        INFO("INFO "),
+        SUMMARY("SUMRY"),
+        DEBUG("DEBUG"),
+        WARN("WARN "),
+        ERROR("ERROR"),
+        EXCEPTION("EXCPT");
+
+        private final String shortName;
+
+        LOG_TYPE(String shortName) {
+            this.shortName = shortName;
+        }
+
+        public String shortName() {
+            return shortName;
+        }
     }
 }

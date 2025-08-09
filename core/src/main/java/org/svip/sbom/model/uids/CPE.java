@@ -55,55 +55,36 @@ public class CPE {
     private static final String CPE_REGEX = "cpe:2\\.3:([aho]?):(.*?):(.*?):(.*?):(.*?):(.*?):(.*?):(.*?):(.*?):(.*?):(.*?)$";
     private static final String WILDCARD = "*";
     private static final String WILDCARD_REGEX = ".*";
-
-    // Supported types for CPE
-    public enum Type {
-        APPLICATION,
-        HARDWARE,
-        OPERATING_SYSTEMS
-    }
-
     // todo required fields?
     private final String cpeVersion = "2.3";    // todo fix to support more versions
     private final Type part;
-
     // "Values for this attribute SHOULD describe or identify the person or organization that manufactured or created the product."
     private final String vendor;
-
     // "Values for this attribute SHOULD describe or identify the most common and recognizable title or name of the product."
     private final String product;
-
     // "Values for this attribute SHOULD be vendor-specific alphanumeric strings characterizing the particular release
     // version of the product."
     private String version;
-
     // "Values for this attribute SHOULD be vendor-specific alphanumeric strings characterizing the particular update,
     // service pack, or point release of the product."
     private String update;
-
     // "The edition attribute is considered deprecated in [the 2.3] specification, and it SHOULD be assigned the logical
     // value ANY except where required for backward compatibility with version 2.2 of the CPE specification. "
     private String edition;
-
     // "Values for this attribute SHALL be valid language tags as defined by [RFC5646], and SHOULD be used to define the
     // language supported in the user interface of the product being described"
     private String language;
-
     // "Values for this attribute SHOULD characterize how the product is tailored to a particular market or class
     //of end users."
     private String sw_edition;
-
     // "Values for this attribute SHOULD characterize the software computing environment within which the product operates"
     private String target_sw;
-
     // "Values for this attribute SHOULD characterize the instruction set architecture (e.g., x86) on which the
     // product being described or identified by the WFN operates"
     private String target_hw;
-
     // "Values for this attribute SHOULD capture any other general descriptive or identifying information which
     // is vendor- or product-specific and which does not logically fit in any other attribute value."
     private String other;
-
 
     /**
      * Create new cpe object from a given cpe identifier string
@@ -159,6 +140,7 @@ public class CPE {
         this.target_hw = matcher.group(10);
         this.other = matcher.group(11);
     }
+
 
     /**
      * Create a new CPE object from a given vendor and product.
@@ -366,5 +348,12 @@ public class CPE {
         }
 
         return processed.toString();
+    }
+
+    // Supported types for CPE
+    public enum Type {
+        APPLICATION,
+        HARDWARE,
+        OPERATING_SYSTEMS
     }
 }

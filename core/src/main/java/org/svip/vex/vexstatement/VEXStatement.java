@@ -72,6 +72,21 @@ public class VEXStatement {
     private final Vulnerability vulnerability;
 
     /**
+     * Constructor to build a new VEX Statement
+     *
+     * @param builder the Builder static class object for VEX Statement
+     */
+    private VEXStatement(Builder builder) {
+        this.statementID = builder.statementID;
+        this.statementVersion = builder.statementVersion;
+        this.statementFirstIssued = builder.statementFirstIssued;
+        this.statementLastUpdated = builder.statementLastUpdated;
+        this.status = builder.status;
+        this.products = builder.products;
+        this.vulnerability = builder.vulnerability;
+    }
+
+    /**
      * Get the VEX Statement ID
      *
      * @return the statementID
@@ -134,39 +149,32 @@ public class VEXStatement {
         return this.vulnerability;
     }
 
-
     public static class Builder {
         // Required fields
-        /**
-         * The statement ID
-         */
-        private String statementID;
-
-        /**
-         * The statement version
-         */
-        private String statementVersion;
-
-        /**
-         * The statement's first issued date
-         */
-        private String statementFirstIssued;
-
-        /**
-         * The statement's last updated date
-         */
-        private String statementLastUpdated;
-
-        /**
-         * The statement's status
-         */
-        private Status status;
-
         /**
          * The statement's set of products
          */
         private final Set<Product> products = new HashSet<>();
-
+        /**
+         * The statement ID
+         */
+        private String statementID;
+        /**
+         * The statement version
+         */
+        private String statementVersion;
+        /**
+         * The statement's first issued date
+         */
+        private String statementFirstIssued;
+        /**
+         * The statement's last updated date
+         */
+        private String statementLastUpdated;
+        /**
+         * The statement's status
+         */
+        private Status status;
         /**
          * The statement's vulnerability statement
          */
@@ -257,21 +265,6 @@ public class VEXStatement {
         public VEXStatement build() {
             return new VEXStatement(this);
         }
-    }
-
-    /**
-     * Constructor to build a new VEX Statement
-     *
-     * @param builder the Builder static class object for VEX Statement
-     */
-    private VEXStatement(Builder builder) {
-        this.statementID = builder.statementID;
-        this.statementVersion = builder.statementVersion;
-        this.statementFirstIssued = builder.statementFirstIssued;
-        this.statementLastUpdated = builder.statementLastUpdated;
-        this.status = builder.status;
-        this.products = builder.products;
-        this.vulnerability = builder.vulnerability;
     }
 
 }

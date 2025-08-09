@@ -77,17 +77,6 @@ public class ConflictFile {
     ///
 
     /**
-     * Set name that the conflict occurred in
-     *
-     * @param name name
-     * @return ConflictFile
-     */
-    public ConflictFile setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    /**
      * Set the sbom / component conflict message
      *
      * @param message message
@@ -95,17 +84,6 @@ public class ConflictFile {
      */
     public ConflictFile setMessage(String message) {
         this.message = message;
-        return this;
-    }
-
-    /**
-     * Set mismatchType
-     *
-     * @param mismatchType type of mismatch
-     * @return Conflict File
-     */
-    public ConflictFile setMismatchType(MismatchType mismatchType) {
-        this.mismatchType = mismatchType;
         return this;
     }
 
@@ -119,7 +97,6 @@ public class ConflictFile {
         this.targetValue = targetValue;
         return this;
     }
-
 
     /**
      * Set the value stored in the other
@@ -143,10 +120,6 @@ public class ConflictFile {
         return this;
     }
 
-    ///
-    /// Getters
-    ///
-
     /**
      * @return Name
      */
@@ -155,9 +128,35 @@ public class ConflictFile {
     }
 
     /**
+     * Set name that the conflict occurred in
+     *
+     * @param name name
+     * @return ConflictFile
+     */
+    public ConflictFile setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    ///
+    /// Getters
+    ///
+
+    /**
      * @return Mismatch type
      */
     public MismatchType getMismatchType() {
         return this.mismatchType;
+    }
+
+    /**
+     * Set mismatchType
+     *
+     * @param mismatchType type of mismatch
+     * @return Conflict File
+     */
+    public ConflictFile setMismatchType(MismatchType mismatchType) {
+        this.mismatchType = mismatchType;
+        return this;
     }
 }

@@ -43,10 +43,10 @@ import static org.svip.compare.conflicts.MismatchType.MISC_MISMATCH;
 public class ExternalReference implements Comparable {
 
     private final String url;
-    private String comment;
     private final String type;
-    private String category;
     private final Map<String, String> hashes = new HashMap<>();
+    private String comment;
+    private String category;
 
     /**
      * CDX Style External Reference constructor
@@ -82,22 +82,15 @@ public class ExternalReference implements Comparable {
     }
 
     /**
-     * @param comment Reference comment
-     */
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    ///
-    /// getters
-    ///
-
-    /**
      * @return url
      */
     public String getUrl() {
         return url;
     }
+
+    ///
+    /// getters
+    ///
 
     /**
      * @return type
@@ -118,6 +111,13 @@ public class ExternalReference implements Comparable {
      */
     public String getComment() {
         return this.comment;
+    }
+
+    /**
+     * @param comment Reference comment
+     */
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     /**

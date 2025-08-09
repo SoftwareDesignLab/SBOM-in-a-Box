@@ -51,6 +51,24 @@ public class MavenExtraction extends Extraction {
         super(purl);
     }
 
+    public static boolean isExtractable(Algorithm algorithm, Component component) {
+        if (!(component instanceof SBOMPackage sbomPackage && HASH_ALGORITHMS.contains(algorithm)))
+            return false;
+
+        Optional<String> purlString = sbomPackage.getPURLs().stream().findFirst();
+        if (purlString.isEmpty())
+            return false;
+
+        PURL purl;
+        try {
+            purl = new PURL(purlString.get());
+        } catch (Exception e) {
+            return false;
+        }
+
+        return purl.getType().equals("maven");
+    }
+
     @Override
     public void extract() {
         if (!purl.getType().equals("maven") || purl.getName().equals("") || purl.getVersion().equals("")) {
@@ -86,23 +104,5 @@ public class MavenExtraction extends Extraction {
             log(Debug.LOG_TYPE.ERROR, "Thread interrupted while waiting for queryWorker.");
         }
 
-    }
-
-    public static boolean isExtractable(Algorithm algorithm, Component component) {
-        if (!(component instanceof SBOMPackage sbomPackage && HASH_ALGORITHMS.contains(algorithm)))
-            return false;
-
-        Optional<String> purlString = sbomPackage.getPURLs().stream().findFirst();
-        if (purlString.isEmpty())
-            return false;
-
-        PURL purl;
-        try {
-            purl = new PURL(purlString.get());
-        } catch (Exception e) {
-            return false;
-        }
-
-        return purl.getType().equals("maven");
     }
 }

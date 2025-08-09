@@ -53,12 +53,10 @@ public class Description implements Comparable {
     }
 
     /**
-     * Set a more detailed description
-     *
-     * @param description detailed description
+     * @return Summary
      */
-    public void setDescription(String description) {
-        this.description = description;
+    public String getSummary() {
+        return summary;
     }
 
     ///
@@ -66,17 +64,19 @@ public class Description implements Comparable {
     ///
 
     /**
-     * @return Summary
-     */
-    public String getSummary() {
-        return summary;
-    }
-
-    /**
      * @return Detailed description
      */
     public String getDescription() {
         return description;
+    }
+
+    /**
+     * Set a more detailed description
+     *
+     * @param description detailed description
+     */
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

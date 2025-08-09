@@ -137,6 +137,47 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema {
     private final String SPDXLicenseListVersion;
 
     /**
+     * Constructor to make a new SVIP SBOM
+     *
+     * @param format                 SBOM format
+     * @param name                   SBOM name
+     * @param uid                    SBOM uid
+     * @param version                SBOM version
+     * @param specVersion            SBOM spec version
+     * @param licenses               SBOM licenses
+     * @param creationData           SBOM creation data
+     * @param documentComment        SBOM document comment
+     * @param rootComponent          SBOM root component
+     * @param components             SBOM components
+     * @param relationships          SBOM relationships
+     * @param externalReferences     SBOM external references
+     * @param spdxLicenseListVersion SBOM spdx license list version
+     */
+    //TODO add missing fields when implemented (VEX, Service, Composition, Signature, Snippet, LicenseInfo, Annotation)
+    public SVIPSBOM(String format, String name, String uid, String version,
+                    String specVersion, Set<String> licenses,
+                    CreationData creationData, String documentComment,
+                    SVIPComponentObject rootComponent, Set<Component> components,
+                    HashMap<String, Set<Relationship>> relationships,
+                    Set<ExternalReference> externalReferences,
+                    String spdxLicenseListVersion) {
+        this.format = format;
+        this.name = name;
+        this.uid = uid;
+        this.version = version;
+        this.specVersion = specVersion;
+        this.licenses = licenses;
+        this.creationData = creationData;
+        this.documentComment = documentComment;
+        this.rootComponent = rootComponent;
+        this.components = components;
+        this.relationships = relationships;
+        this.externalReferences = externalReferences;
+        this.SPDXLicenseListVersion = spdxLicenseListVersion;
+
+    }
+
+    /**
      * Get the SBOM's format
      *
      * @return the SBOM's format
@@ -226,6 +267,13 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema {
         return this.rootComponent;
     }
 
+    /** TODO This breaks Jackson Serialization for some reason...
+     * Get the SBOM's component as a Set of SVIPComponentObject
+     */
+//    public Set<SVIPComponentObject> getSVIPComponents() {
+//        return Collections.singleton((SVIPComponentObject) this.components);
+//    }
+
     /**
      * Get the SBOM's components
      *
@@ -235,13 +283,6 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema {
     public Set<Component> getComponents() {
         return this.components;
     }
-
-    /** TODO This breaks Jackson Serialization for some reason...
-     * Get the SBOM's component as a Set of SVIPComponentObject
-     */
-//    public Set<SVIPComponentObject> getSVIPComponents() {
-//        return Collections.singleton((SVIPComponentObject) this.components);
-//    }
 
     /**
      * Get the SBOM's relationships
@@ -271,47 +312,6 @@ public class SVIPSBOM implements CDX14Schema, SPDX23Schema {
     @Override
     public String getSPDXLicenseListVersion() {
         return this.SPDXLicenseListVersion;
-    }
-
-    /**
-     * Constructor to make a new SVIP SBOM
-     *
-     * @param format                 SBOM format
-     * @param name                   SBOM name
-     * @param uid                    SBOM uid
-     * @param version                SBOM version
-     * @param specVersion            SBOM spec version
-     * @param licenses               SBOM licenses
-     * @param creationData           SBOM creation data
-     * @param documentComment        SBOM document comment
-     * @param rootComponent          SBOM root component
-     * @param components             SBOM components
-     * @param relationships          SBOM relationships
-     * @param externalReferences     SBOM external references
-     * @param spdxLicenseListVersion SBOM spdx license list version
-     */
-    //TODO add missing fields when implemented (VEX, Service, Composition, Signature, Snippet, LicenseInfo, Annotation)
-    public SVIPSBOM(String format, String name, String uid, String version,
-                    String specVersion, Set<String> licenses,
-                    CreationData creationData, String documentComment,
-                    SVIPComponentObject rootComponent, Set<Component> components,
-                    HashMap<String, Set<Relationship>> relationships,
-                    Set<ExternalReference> externalReferences,
-                    String spdxLicenseListVersion) {
-        this.format = format;
-        this.name = name;
-        this.uid = uid;
-        this.version = version;
-        this.specVersion = specVersion;
-        this.licenses = licenses;
-        this.creationData = creationData;
-        this.documentComment = documentComment;
-        this.rootComponent = rootComponent;
-        this.components = components;
-        this.relationships = relationships;
-        this.externalReferences = externalReferences;
-        this.SPDXLicenseListVersion = spdxLicenseListVersion;
-
     }
 
     /**

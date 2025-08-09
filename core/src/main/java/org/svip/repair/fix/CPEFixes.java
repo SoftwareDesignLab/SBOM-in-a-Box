@@ -43,6 +43,56 @@ import java.util.Optional;
 public class CPEFixes implements Fixes {
 
     /**
+     * Return a list of fixes for a CPE
+     *
+     * @param result   failed test result
+     * @param cpe      The CPE of that component being tested against
+     * @param actual   incorrect part of original CPE
+     * @param expected what to replace `actual` with in the new CPE
+     * @param oldCPE   the old cpe of the component being fixed
+     * @return list of potential fixes for this CPE
+     */
+    private static List<Fix<?>> performCPEFix(Result result, String cpe, String actual, String expected, String oldCPE) {
+
+        try {
+            // Create a new CPE Object
+            CPE cpeObject = new CPE(cpe);
+            CPE newCPE = null;
+            CPE oldCPEObject = new CPE(oldCPE);
+
+            // Find which information is invalid
+            switch (result.getMessage().split(" ")[1]) {
+
+                // If value is invalid, add a CPE fix
+                case "Value" -> {
+                    if (actual.contains(cpeObject.getProduct()) || (expected.contains(cpeObject.getProduct()) && !expected.equals(cpeObject.getProduct())) || cpeObject.getProduct().isEmpty() && actual.contains("null"))
+                        newCPE = new CPE(oldCPEObject.getVendor(), cpeObject.getProduct(), oldCPEObject.getVersion());
+                }
+
+                // If version is invalid, add a CPE fix
+                case "Version" -> {
+                    if (actual.contains(cpeObject.getVersion()) || (expected.contains(cpeObject.getVersion()) && !expected.equals(cpeObject.getVersion())) || cpeObject.getVersion().isEmpty() && actual.contains("null"))
+                        newCPE = new CPE(oldCPEObject.getVendor(), oldCPEObject.getProduct(), expected);
+                }
+
+                // If vendor is invalid, add a CPE fix
+                case "Vendor" -> {
+                    if (actual.contains(cpeObject.getVendor()) || (expected.contains(cpeObject.getVendor()) && !expected.equals(cpeObject.getVendor())) || cpeObject.getVendor().isEmpty() && actual.contains("null"))
+                        newCPE = new CPE(cpeObject.getVendor(), oldCPEObject.getVendor(), oldCPEObject.getVersion());
+                }
+            }
+
+            if (newCPE != null && !cpeObject.toString().equals(newCPE.toString()) && !oldCPEObject.toString().equals(newCPE.toString()))
+                return List.of(new Fix<>(FixType.COMPONENT_CPE, oldCPEObject.toString(), newCPE.toString()));
+
+        } catch (Exception e) {
+            // If all goes wrong, return null
+            return null;
+        }
+        return null;
+    }
+
+    /**
      * Iterates through the CPEs is each component and add fixes for them.
      *
      * @param result        object from quality report
@@ -108,56 +158,6 @@ public class CPEFixes implements Fixes {
 
         }
 
-        return null;
-    }
-
-    /**
-     * Return a list of fixes for a CPE
-     *
-     * @param result   failed test result
-     * @param cpe      The CPE of that component being tested against
-     * @param actual   incorrect part of original CPE
-     * @param expected what to replace `actual` with in the new CPE
-     * @param oldCPE   the old cpe of the component being fixed
-     * @return list of potential fixes for this CPE
-     */
-    private static List<Fix<?>> performCPEFix(Result result, String cpe, String actual, String expected, String oldCPE) {
-
-        try {
-            // Create a new CPE Object
-            CPE cpeObject = new CPE(cpe);
-            CPE newCPE = null;
-            CPE oldCPEObject = new CPE(oldCPE);
-
-            // Find which information is invalid
-            switch (result.getMessage().split(" ")[1]) {
-
-                // If value is invalid, add a CPE fix
-                case "Value" -> {
-                    if (actual.contains(cpeObject.getProduct()) || (expected.contains(cpeObject.getProduct()) && !expected.equals(cpeObject.getProduct())) || cpeObject.getProduct().isEmpty() && actual.contains("null"))
-                        newCPE = new CPE(oldCPEObject.getVendor(), cpeObject.getProduct(), oldCPEObject.getVersion());
-                }
-
-                // If version is invalid, add a CPE fix
-                case "Version" -> {
-                    if (actual.contains(cpeObject.getVersion()) || (expected.contains(cpeObject.getVersion()) && !expected.equals(cpeObject.getVersion())) || cpeObject.getVersion().isEmpty() && actual.contains("null"))
-                        newCPE = new CPE(oldCPEObject.getVendor(), oldCPEObject.getProduct(), expected);
-                }
-
-                // If vendor is invalid, add a CPE fix
-                case "Vendor" -> {
-                    if (actual.contains(cpeObject.getVendor()) || (expected.contains(cpeObject.getVendor()) && !expected.equals(cpeObject.getVendor())) || cpeObject.getVendor().isEmpty() && actual.contains("null"))
-                        newCPE = new CPE(cpeObject.getVendor(), oldCPEObject.getVendor(), oldCPEObject.getVersion());
-                }
-            }
-
-            if (newCPE != null && !cpeObject.toString().equals(newCPE.toString()) && !oldCPEObject.toString().equals(newCPE.toString()))
-                return List.of(new Fix<>(FixType.COMPONENT_CPE, oldCPEObject.toString(), newCPE.toString()));
-
-        } catch (Exception e) {
-            // If all goes wrong, return null
-            return null;
-        }
         return null;
     }
 

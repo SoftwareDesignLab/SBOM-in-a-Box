@@ -77,6 +77,58 @@ public class SBOMFileService {
     }
 
     /**
+     * Unzip a MultipartFile of project files
+     *
+     * @param multipartFile the MultipartFile to unzip
+     * @return Map of a filename to its contents
+     */
+    public static Map<String, String> unZip(MultipartFile multipartFile) throws IOException {
+        Map<String, String> fileMap = new HashMap<>(); // Map of name to contents to return
+
+        // Convert multipart file to zip file
+        File zip = File.createTempFile(UUID.randomUUID().toString(), "temp");
+        FileOutputStream o = new FileOutputStream(zip);
+        IOUtils.copy(multipartFile.getInputStream(), o);
+        o.close();
+
+        ZipFile zipFile = new ZipFile(zip);
+
+        // Create stream for each entry in the zip file
+        byte[] buffer = new byte[1024];
+        Stream<? extends ZipEntry> entryStream = zipFile.stream();
+
+        // Read each zip file entry
+        entryStream.forEach(entry -> {
+            try {
+                // Get the input stream for the current zip entry
+                InputStream is = zipFile.getInputStream(entry);
+
+                if (!entry.isDirectory()) {
+                    StringBuilder contentsBuilder = new StringBuilder();
+                    int len;
+                    try {
+                        while ((len = is.read(buffer)) > 0) {
+                            contentsBuilder.append(new String(buffer));
+                        }
+                    } catch (EOFException e) {
+                        is.close();
+                        LOGGER.error(e.getMessage());
+                    }
+
+                    // If valid name and contents then add to map
+                    if (!entry.getName().isEmpty() && !contentsBuilder.toString().isEmpty())
+                        fileMap.put(entry.getName(), contentsBuilder.toString());
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        return fileMap;
+    }
+
+    /**
      * Create a new sbom entry in the database
      *
      * @param sbomFile sbom file to upload
@@ -282,6 +334,10 @@ public class SBOMFileService {
         return sbomFile.getId();
     }
 
+    //
+    // ZIP FILE UTILITIES
+    //
+
     /**
      * Update an entry in the database
      *
@@ -303,62 +359,6 @@ public class SBOMFileService {
         this.sbomFileRepository.save(sbomFile);
 
         return sbomFile.getId();
-    }
-
-    //
-    // ZIP FILE UTILITIES
-    //
-
-    /**
-     * Unzip a MultipartFile of project files
-     *
-     * @param multipartFile the MultipartFile to unzip
-     * @return Map of a filename to its contents
-     */
-    public static Map<String, String> unZip(MultipartFile multipartFile) throws IOException {
-        Map<String, String> fileMap = new HashMap<>(); // Map of name to contents to return
-
-        // Convert multipart file to zip file
-        File zip = File.createTempFile(UUID.randomUUID().toString(), "temp");
-        FileOutputStream o = new FileOutputStream(zip);
-        IOUtils.copy(multipartFile.getInputStream(), o);
-        o.close();
-
-        ZipFile zipFile = new ZipFile(zip);
-
-        // Create stream for each entry in the zip file
-        byte[] buffer = new byte[1024];
-        Stream<? extends ZipEntry> entryStream = zipFile.stream();
-
-        // Read each zip file entry
-        entryStream.forEach(entry -> {
-            try {
-                // Get the input stream for the current zip entry
-                InputStream is = zipFile.getInputStream(entry);
-
-                if (!entry.isDirectory()) {
-                    StringBuilder contentsBuilder = new StringBuilder();
-                    int len;
-                    try {
-                        while ((len = is.read(buffer)) > 0) {
-                            contentsBuilder.append(new String(buffer));
-                        }
-                    } catch (EOFException e) {
-                        is.close();
-                        LOGGER.error(e.getMessage());
-                    }
-
-                    // If valid name and contents then add to map
-                    if (!entry.getName().isEmpty() && !contentsBuilder.toString().isEmpty())
-                        fileMap.put(entry.getName(), contentsBuilder.toString());
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-
-        return fileMap;
     }
 
     /**

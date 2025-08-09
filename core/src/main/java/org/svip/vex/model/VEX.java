@@ -73,6 +73,22 @@ public class VEX {
     private final Set<VEXStatement> vexStatements;
 
     /**
+     * Constructor to build the VEX Document
+     *
+     * @param builder the Builder
+     */
+    //TODO add vexStatement when VEXStatement is implemented
+    public VEX(Builder builder) {
+        this.vexIdentifier = builder.vexIdentifier;
+        this.originType = builder.originType;
+        this.specVersion = builder.specVersion;
+        this.docVersion = builder.docVersion;
+        this.timeFirstIssued = builder.timeFirstIssued;
+        this.timeLastUpdated = builder.timeLastUpdated;
+        this.vexStatements = builder.vexStatements;
+    }
+
+    /**
      * Get the document's VEX Identifier
      *
      * @return the vexIdentifier
@@ -139,37 +155,31 @@ public class VEX {
 
         // required fields
 
+        private final Set<VEXStatement> vexStatements = new HashSet<>();
         /**
          * The document's VEX Identifier
          */
         private String vexIdentifier;
-
         /**
          * The document's origin type
          */
         private VEXType originType;
-
         /**
          * The document's spec version
          */
         private String specVersion;
-
         /**
          * The document's version
          */
         private String docVersion;
-
         /**
          * The document's first issued time
          */
         private String timeFirstIssued;
-
         /**
          * The document's last updated time
          */
         private String timeLastUpdated;
-
-        private final Set<VEXStatement> vexStatements = new HashSet<>();
 
         /**
          * Set the document's VEX Identifier
@@ -256,21 +266,5 @@ public class VEX {
         public VEX build() {
             return new VEX(this);
         }
-    }
-
-    /**
-     * Constructor to build the VEX Document
-     *
-     * @param builder the Builder
-     */
-    //TODO add vexStatement when VEXStatement is implemented
-    public VEX(Builder builder) {
-        this.vexIdentifier = builder.vexIdentifier;
-        this.originType = builder.originType;
-        this.specVersion = builder.specVersion;
-        this.docVersion = builder.docVersion;
-        this.timeFirstIssued = builder.timeFirstIssued;
-        this.timeLastUpdated = builder.timeLastUpdated;
-        this.vexStatements = builder.vexStatements;
     }
 }

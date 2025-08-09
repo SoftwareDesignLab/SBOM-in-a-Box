@@ -60,15 +60,6 @@ public abstract class QueryWorker implements Runnable {
     }
 
     /**
-     * Gets the URL that this QueryWorker instance is parsing from.
-     *
-     * @return A string web URL
-     */
-    public String getUrl() {
-        return url;
-    }
-
-    /**
      * Queries a given URL and returns the HttpURLConnection
      * object containing response data.
      *
@@ -143,6 +134,15 @@ public abstract class QueryWorker implements Runnable {
 
         // Return built content string
         return content.toString();
+    }
+
+    /**
+     * Gets the URL that this QueryWorker instance is parsing from.
+     *
+     * @return A string web URL
+     */
+    public String getUrl() {
+        return url;
     }
 
     /**

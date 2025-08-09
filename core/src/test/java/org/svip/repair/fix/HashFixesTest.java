@@ -56,17 +56,15 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class HashFixesTest {
 
-    private static HashFixes hashFixes;
-    private static ResultFactory resultFactory;
-
-    private static SBOM CDX14_SBOM;
     private static final String CDX14_SBOM_LOCATION = System.getProperty("user.dir") +
             "/src/test/resources/serializers/cdx_json/CDXMavenPlugin_build_cdx.json";
-    private final String CDX14_SBOM_COMPONENT_NAME = "junit-platform-engine";
-
-    private static SBOM SPDX23_SBOM;
     private static final String SPDX23_SBOM_LOCATION = System.getProperty("user.dir") +
             "/src/test/resources/serializers/spdx_json/syft-0.80.0-source-spdx-json.json";
+    private static HashFixes hashFixes;
+    private static ResultFactory resultFactory;
+    private static SBOM CDX14_SBOM;
+    private static SBOM SPDX23_SBOM;
+    private final String CDX14_SBOM_COMPONENT_NAME = "junit-platform-engine";
     private final String SPDX23_SBOM_COMPONENT_NAME = "rsc.io/sampler";
 
     private final String SHA1_HASH_VALUE = "40aeef2be7b04f96bb91e8b054affc28b7c7c935";

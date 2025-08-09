@@ -47,24 +47,15 @@ public class Relationship {
     }
 
     /**
-     * Set an optional comment
-     *
-     * @param comment Comment
-     */
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    ///
-    /// Getters
-    ///
-
-    /**
      * @return ottherUID
      */
     public String getOtherUID() {
         return otherUID;
     }
+
+    ///
+    /// Getters
+    ///
 
     /**
      * @return relationshipType
@@ -78,5 +69,14 @@ public class Relationship {
      */
     public String getComment() {
         return comment;
+    }
+
+    /**
+     * Set an optional comment
+     *
+     * @param comment Comment
+     */
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

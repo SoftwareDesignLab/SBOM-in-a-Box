@@ -50,84 +50,6 @@ import java.util.Map;
 public class SPDX23 implements ToSVIP {
 
     /**
-     * Builds an SVIP SBOM referencing an SPDX 2.3 SBOM. This SVIP
-     * SBOM will retain all the original values from the SPDX 2.3 sbom,
-     * so only the internal Object will be converted, not the fields itself.
-     *
-     * @param spdx_sbom SPDX 2.3 SBOM Object
-     * @return An SVIP SBOM containing all original SPDX 2.3 Values
-     */
-    @Override
-    public SVIPSBOM convertToSVIP(SBOM spdx_sbom) {
-
-        //
-        SPDX23SBOM sbom = (SPDX23SBOM) spdx_sbom;
-
-
-        // Create new builder
-        SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
-
-        // Format
-        builder.setFormat(sbom.getFormat());
-
-        // Name
-        builder.setName(sbom.getName());
-
-        // UID
-        builder.setUID(sbom.getUID());
-
-        // Version
-        builder.setVersion(sbom.getVersion());
-
-        // Spec Version
-        builder.setSpecVersion(sbom.getSpecVersion());
-
-        // Stream licenses into new SBOM
-        sbom.getLicenses().stream().forEach(x -> builder.addLicense(x));
-
-        // Creation Data
-        builder.setCreationData(sbom.getCreationData());
-
-        // Document Comment
-        builder.setDocumentComment(sbom.getDocumentComment());
-
-        // Document Comment
-        builder.setDocumentComment(sbom.getDocumentComment());
-
-        // Root Component
-        if (sbom.getRootComponent() != null)
-            builder.setRootComponent(convertPackage(sbom.getRootComponent()));
-        else
-            builder.setRootComponent(null);
-
-        // Stream components from SVIP SBOM, convert them, then put into CDX SBOM
-        sbom.getComponents().stream().filter(x -> x != null).forEach(
-                x -> {
-                    if (x instanceof SPDX23Package) builder.addComponent(convertPackage(x));
-                    else if (x instanceof SPDX23File) builder.addComponent(convertFile(x));
-                }
-        );
-
-        // Stream Relationship data into new SBOM
-        sbom.getRelationships().keySet().forEach(
-                x -> sbom.getRelationships().get(x).stream().forEach(
-                        y -> builder.addRelationship(x, y)
-                )
-        );
-
-        // Stream External References into new SBOM
-        sbom.getExternalReferences().stream().forEach(
-                x -> builder.addExternalReference(x)
-        );
-
-        // Set SPDX License List Version
-        builder.setSPDXLicenseListVersion(sbom.getSPDXLicenseListVersion());
-
-
-        return builder.Build();
-    }
-
-    /**
      * Builds an SVIP Component referencing an SPDX 2.3 Component. This SVIP
      * Component will retain all the original values from the SPDX Component,
      * so only the internal Object will be converted, not the fields itself.
@@ -350,6 +272,84 @@ public class SPDX23 implements ToSVIP {
         // Build and Return Component
         return builder.buildAndFlush();
 
+    }
+
+    /**
+     * Builds an SVIP SBOM referencing an SPDX 2.3 SBOM. This SVIP
+     * SBOM will retain all the original values from the SPDX 2.3 sbom,
+     * so only the internal Object will be converted, not the fields itself.
+     *
+     * @param spdx_sbom SPDX 2.3 SBOM Object
+     * @return An SVIP SBOM containing all original SPDX 2.3 Values
+     */
+    @Override
+    public SVIPSBOM convertToSVIP(SBOM spdx_sbom) {
+
+        //
+        SPDX23SBOM sbom = (SPDX23SBOM) spdx_sbom;
+
+
+        // Create new builder
+        SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
+
+        // Format
+        builder.setFormat(sbom.getFormat());
+
+        // Name
+        builder.setName(sbom.getName());
+
+        // UID
+        builder.setUID(sbom.getUID());
+
+        // Version
+        builder.setVersion(sbom.getVersion());
+
+        // Spec Version
+        builder.setSpecVersion(sbom.getSpecVersion());
+
+        // Stream licenses into new SBOM
+        sbom.getLicenses().stream().forEach(x -> builder.addLicense(x));
+
+        // Creation Data
+        builder.setCreationData(sbom.getCreationData());
+
+        // Document Comment
+        builder.setDocumentComment(sbom.getDocumentComment());
+
+        // Document Comment
+        builder.setDocumentComment(sbom.getDocumentComment());
+
+        // Root Component
+        if (sbom.getRootComponent() != null)
+            builder.setRootComponent(convertPackage(sbom.getRootComponent()));
+        else
+            builder.setRootComponent(null);
+
+        // Stream components from SVIP SBOM, convert them, then put into CDX SBOM
+        sbom.getComponents().stream().filter(x -> x != null).forEach(
+                x -> {
+                    if (x instanceof SPDX23Package) builder.addComponent(convertPackage(x));
+                    else if (x instanceof SPDX23File) builder.addComponent(convertFile(x));
+                }
+        );
+
+        // Stream Relationship data into new SBOM
+        sbom.getRelationships().keySet().forEach(
+                x -> sbom.getRelationships().get(x).stream().forEach(
+                        y -> builder.addRelationship(x, y)
+                )
+        );
+
+        // Stream External References into new SBOM
+        sbom.getExternalReferences().stream().forEach(
+                x -> builder.addExternalReference(x)
+        );
+
+        // Set SPDX License List Version
+        builder.setSPDXLicenseListVersion(sbom.getSPDXLicenseListVersion());
+
+
+        return builder.Build();
     }
 
 }

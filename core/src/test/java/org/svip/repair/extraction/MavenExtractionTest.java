@@ -43,11 +43,10 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class MavenExtractionTest {
 
-    private static MavenExtraction ext;
-
     private static final String PURL = "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.13.3?type=jar";
     private static final String MD5_HASH = "9a6679e6a2f7d601a9f212576fda550c";
     private static final String SHA1_HASH = "a27014716e4421684416e5fa83d896ddb87002da";
+    private static MavenExtraction ext;
 
     @BeforeAll
     static void setup() throws Exception {

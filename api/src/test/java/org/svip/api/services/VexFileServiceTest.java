@@ -52,16 +52,14 @@ import static org.junit.jupiter.api.Assertions.fail;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("SBOM Service Test")
 public class VexFileServiceTest {
-    @Mock
-    private VEXFileRepository vexFileRepository;      // Mock repo
-
-    @InjectMocks
-    private VEXFileService vexFileService;
-
     // Test SBOMs
     private static final String CDX_JSON_SBOM_FILE = "./src/test/resources/sample_sboms/cdx-gomod-1.4.0-bin.json";
     private static final String SPDX_JSON_SBOM_FILE = "./src/test/resources/sample_sboms/syft-0.80.0-source-spdx-json.json";
     private static final String SPDX_TAG_VALUE_SBOM_FILE = "./src/test/resources/sample_sboms/sbom.alpine-compare.2-3.spdx";
+    @Mock
+    private VEXFileRepository vexFileRepository;      // Mock repo
+    @InjectMocks
+    private VEXFileService vexFileService;
 
     // Generate
     @Test

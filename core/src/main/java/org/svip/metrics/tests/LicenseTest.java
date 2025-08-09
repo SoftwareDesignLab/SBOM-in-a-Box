@@ -50,16 +50,14 @@ import java.util.Set;
  */
 public class LicenseTest extends MetricTest {
 
-    private final ResultFactory resultFactory;
-
     /**
      * For isValidSPDXLicense
      */
     private static final String SPDX_LICENSE_LIST_URL = "https://spdx.org/licenses/";
-
     // Regexes
     private static final String SPDX_TABLE_REGEX = "<tbody>([\\s\\S]*?)<\\/tbody>";
     private static final String SPDX_ROW_REGEX = "<a.*?>(.*?)<\\/a>[\\s\\S]*?<code.*?>(.*?)<\\/code>";
+    private final ResultFactory resultFactory;
     private final Set<String> SPDX_LICENSE_IDENTIFIERS = new HashSet<>();
     private final HashSet<String> SPDX_LICENSE_NAMES = new HashSet<>();
 

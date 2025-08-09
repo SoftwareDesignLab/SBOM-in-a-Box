@@ -71,84 +71,40 @@ public class MergerTest {
     private static final CreationData SVIP_CREATION_DATA_ONE = new CreationData();
 
     private static final String SVIP_DOCUMENT_COMMENT_ONE = "test_document_comment";
-
-    private static SVIPComponentObject SVIP_ROOT_ONE;
-
-    private static Set<Component> SVIP_COMPONENTS_ONE;
-
-    private static HashMap<String, Set<Relationship>> SVIP_RELATIONSHIPS_ONE;
-
-    private static Set<ExternalReference> SVIP_EXTRENAL_REFERENCES_ONE;
-
     private static final String SVIP_LICENSE_LIST_VERSION_ONE = "None.";
-
     /**
      * SVIP SBOM Test Constants Set 2
      */
 
     private static final String SVIP_TEST_FORMAT_TWO = "svip";
-
     private static final String SVIP_TEST_NAME_TWO = "test_SVIP_SBOM_two";
-
     private static final String SVIP_TEST_UID_TWO = "2.0";
-
     private static final String SVIP_TEST_VERSION_TWO = "1.0";
-
     private static final String SVIP_TEST_SPEC_VERSION_TWO = "1.4";
-
     private static final Set<String> SVIP_TEST_LICENSES_TWO = Set.of("svip_license");
-
     private static final CreationData SVIP_CREATION_DATA_TWO = new CreationData();
-
     private static final String SVIP_DOCUMENT_COMMENT_TWO = "test_document_comment";
-
-    private static SVIPComponentObject SVIP_ROOT_TWO;
-
-    private static Set<Component> SVIP_COMPONENTS_TWO;
-
-    private static HashMap<String, Set<Relationship>> SVIP_RELATIONSHIPS_TWO;
-
-    private static Set<ExternalReference> SVIP_EXTRENAL_REFERENCES_TWO;
-
     private static final String SVIP_LICENSE_LIST_VERSION_TWO = "None.";
-
-    /**
-     * Test Component Information
-     */
-
-    private final LicenseCollection comp_svip_a_li = new LicenseCollection();
-
     private static final HashMap<String, String> comp_svip_a_hash = new HashMap();
-
     private static final Set<String> comp_svip_a_cpe = new HashSet<>(
             Arrays.asList(
                     "cpe:2.3:a:package-M:1.3.0:*:*:*:*:*:*:*",
                     "cpe:2.3:a:package-M:package-M:1.3.0:*:*:*:*:*:*:*"
             )
     );
-
-
     private static final Set<String> comp_svip_a_purl = new HashSet<>(
             List.of(
                     "pkg:test/package-M@1.3.0?arch=x86_64&upstream=package-M&distro=test-1.3.0"
             )
     );
-
     private static final Set<ExternalReference> comp_svip_a_ext = new HashSet<>(
             List.of(
                     new ExternalReference("www.test.test", "property")
             )
     );
-
     private static final HashMap<String, Set<String>> comp_svip_a_properties = new HashMap<>(
             Collections.singletonMap("test_values", Set.of("blue_property", "another_blue_property"))
     );
-
-
-    /**
-     * Test Components
-     */
-
     /**
      * CDX Test Components
      **/
@@ -157,90 +113,52 @@ public class MergerTest {
     private static final HashMap<String, String> blue_cdx_hashes = new HashMap<>() {{
         put("SHA256", "somerandomtestbluecdxhash");
     }};
-
     private static final Organization blue_cdx_org = new Organization("blue_cdx_test_org", "www.blue_cdx.test");
-
     private static final Description blue_cdx_description = new Description("a_summary_about_the_blue_cdx_component");
-
     private static final LicenseCollection blue_cdx_licenses = new LicenseCollection();
-
     private static final Set<ExternalReference> blue_externalReference = new HashSet<>(
             List.of(
                     new ExternalReference("www.bluecdxref.test", "blue_cdx")
             )
     );
-
     private static final HashMap<String, Set<String>> blue_cdx_properties = new HashMap<>() {{
         put("blue_properties", Set.of("this_is_blue", "it's also cool", "but kind of outdated"));
     }};
-
-    CDX14ComponentObject comp_cdx_blue = new CDX14ComponentObject(
-            "library", "1234567890-blue-id-cdx", "blue_cdx_author", "test_component_blue_cdx",
-            blue_cdx_licenses, "blue_copyright_cdx", blue_cdx_hashes, blue_cdx_org, "1.0.2",
-            blue_cdx_description, Set.of("cpe2.3::test_blue_cdx_cpe"), Set.of("pkg:bluecdxpackage/blue@1.1.0"),
-            "blueMimeType", "blue_cdx_publisher", "blue_cdx_scope", "blue_cdx_group",
-            blue_externalReference, blue_cdx_properties
-    );
-
     // Yellow
     private static final HashMap<String, String> yellow_cdx_hashes = new HashMap<>() {{
         put("SHA256", "somerandomtestyellowcdxhash");
     }};
-
     private static final Organization yellow_cdx_org = new Organization("yellow_cdx_test_org", "www.yellow_cdx.test");
-
     private static final Description yellow_cdx_description = new Description("a_summary_about_the_yellow_cdx_component");
 
-    private static final LicenseCollection yellow_cdx_licenses = new LicenseCollection();
 
+    /**
+     * Test Components
+     */
+    private static final LicenseCollection yellow_cdx_licenses = new LicenseCollection();
     private static final Set<ExternalReference> yellow_externalReference = new HashSet<>(
             List.of(
                     new ExternalReference("www.yellowcdxref.test", "yellow_cdx")
             )
     );
-
     private static final HashMap<String, Set<String>> yellow_cdx_properties = new HashMap<>() {{
         put("yellow_properties", Set.of("this_is_yellow", "it's also really cool", "but has a large size"));
     }};
-
-    CDX14ComponentObject comp_cdx_yellow = new CDX14ComponentObject(
-            "library", "1234567890-yellow-id-cdx", "yellow_cdx_author", "test_component_yellow_cdx",
-            yellow_cdx_licenses, "yellow_copyright_cdx", yellow_cdx_hashes, yellow_cdx_org, "1.0.2",
-            yellow_cdx_description, Set.of("cpe2.3::test_yellow_cdx_cpe"), Set.of("pkg:yellowcdxpackage/yellow@1.1.0"),
-            "yellowMimeType", "yellow_cdx_publisher", "yellow_cdx_scope", "yellow_cdx_group",
-            yellow_externalReference, yellow_cdx_properties
-    );
-
-
     private static final HashMap<String, String> green_cdx_hashes = new HashMap<>() {{
         put("SHA256", "somerandomtestbluecdxhash");
     }};
-
     // Green
     private static final Organization green_cdx_org = new Organization("green_cdx_test_org", "www.green_cdx.test");
-
     private static final Description green_cdx_description = new Description("a_summary_about_the_green_cdx_component");
-
     private static final LicenseCollection green_cdx_licenses = new LicenseCollection();
-
     private static final Set<ExternalReference> green_externalReference = new HashSet<>(
             List.of(
                     new ExternalReference("www.greencdxref.test", "green_cdx")
             )
     );
-
     private static final HashMap<String, Set<String>> green_cdx_properties = new HashMap<>() {{
         put("green_properties", Set.of("this_is_green", "it's also cool", "but kind of slow"));
     }};
-
-    CDX14ComponentObject comp_cdx_green = new CDX14ComponentObject(
-            "library", "1234567890-green-id-cdx", "green_cdx_author", "test_component_green_cdx",
-            green_cdx_licenses, "green_copyright_cdx", green_cdx_hashes, green_cdx_org, "1.0.2",
-            green_cdx_description, Set.of("cpe2.3::test_green_cdx_cpe"), Set.of("pkg:greencdxpackage/green@1.1.0"),
-            "greenMimeType", "green_cdx_publisher", "green_cdx_scope", "green_cdx_group",
-            green_externalReference, green_cdx_properties
-    );
-
     /**
      * SPDX Test Components
      **/
@@ -248,21 +166,76 @@ public class MergerTest {
     // Blue SPDX
 
     private static final LicenseCollection blue_spdx_licenses = new LicenseCollection();
-
     private static final HashMap<String, String> blue_spdx_hashes = new HashMap<>() {{
         put("SHA256", "somerandomtestbluespdxhash");
     }};
-
     private static final Organization blue_spdx_supplier = new Organization("blue_spdx_supplier", "www.testbluespdx.com");
-
     private static final Description blue_spdx_description = new Description("a_summary_about_the_blue_spdx_component");
-
     private static final Set<ExternalReference> blue_spdx_externalReference = new HashSet<>(
             List.of(
                     new ExternalReference("www.bluespdxref.test", "blue_spdx")
             )
     );
+    private static final LicenseCollection yellow_spdx_licenses = new LicenseCollection();
+    private static final HashMap<String, String> yellow_spdx_hashes = new HashMap<>() {{
+        put("SHA256", "somerandomtestyellowspdxhash");
+    }};
+    private static final Organization yellow_spdx_supplier = new Organization("yellow_spdx_supplier", "www.testyellowspdx.com");
+    private static final Description yellow_spdx_description = new Description("a_summary_about_the_yellow_spdx_component");
+    private static final Set<ExternalReference> yellow_spdx_externalReference = new HashSet<>(
+            List.of(
+                    new ExternalReference("www.yellowspdxref.test", "yellow_spdx")
+            )
+    );
+    private static final LicenseCollection green_spdx_licenses = new LicenseCollection();
+    private static final HashMap<String, String> green_spdx_hashes = new HashMap<>() {{
+        put("SHA256", "somerandomtestgreenspdxhash");
+    }};
+    private static final Organization green_spdx_supplier = new Organization("green_spdx_supplier", "www.testgreenspdx.com");
+    private static final Description green_spdx_description = new Description("a_summary_about_the_green_spdx_component");
+    private static final Set<ExternalReference> green_spdx_externalReference = new HashSet<>(
+            List.of(
+                    new ExternalReference("www.greenspdxref.test", "green_spdx")
+            )
+    );
+    private static SVIPComponentObject SVIP_ROOT_ONE;
+    private static Set<Component> SVIP_COMPONENTS_ONE;
+    private static HashMap<String, Set<Relationship>> SVIP_RELATIONSHIPS_ONE;
 
+    // Yellow SPDX
+    private static Set<ExternalReference> SVIP_EXTRENAL_REFERENCES_ONE;
+    private static SVIPComponentObject SVIP_ROOT_TWO;
+    private static Set<Component> SVIP_COMPONENTS_TWO;
+    private static HashMap<String, Set<Relationship>> SVIP_RELATIONSHIPS_TWO;
+    private static Set<ExternalReference> SVIP_EXTRENAL_REFERENCES_TWO;
+    /**
+     * Test Component Information
+     */
+
+    private final LicenseCollection comp_svip_a_li = new LicenseCollection();
+
+    // Green SPDX
+    CDX14ComponentObject comp_cdx_blue = new CDX14ComponentObject(
+            "library", "1234567890-blue-id-cdx", "blue_cdx_author", "test_component_blue_cdx",
+            blue_cdx_licenses, "blue_copyright_cdx", blue_cdx_hashes, blue_cdx_org, "1.0.2",
+            blue_cdx_description, Set.of("cpe2.3::test_blue_cdx_cpe"), Set.of("pkg:bluecdxpackage/blue@1.1.0"),
+            "blueMimeType", "blue_cdx_publisher", "blue_cdx_scope", "blue_cdx_group",
+            blue_externalReference, blue_cdx_properties
+    );
+    CDX14ComponentObject comp_cdx_yellow = new CDX14ComponentObject(
+            "library", "1234567890-yellow-id-cdx", "yellow_cdx_author", "test_component_yellow_cdx",
+            yellow_cdx_licenses, "yellow_copyright_cdx", yellow_cdx_hashes, yellow_cdx_org, "1.0.2",
+            yellow_cdx_description, Set.of("cpe2.3::test_yellow_cdx_cpe"), Set.of("pkg:yellowcdxpackage/yellow@1.1.0"),
+            "yellowMimeType", "yellow_cdx_publisher", "yellow_cdx_scope", "yellow_cdx_group",
+            yellow_externalReference, yellow_cdx_properties
+    );
+    CDX14ComponentObject comp_cdx_green = new CDX14ComponentObject(
+            "library", "1234567890-green-id-cdx", "green_cdx_author", "test_component_green_cdx",
+            green_cdx_licenses, "green_copyright_cdx", green_cdx_hashes, green_cdx_org, "1.0.2",
+            green_cdx_description, Set.of("cpe2.3::test_green_cdx_cpe"), Set.of("pkg:greencdxpackage/green@1.1.0"),
+            "greenMimeType", "green_cdx_publisher", "green_cdx_scope", "green_cdx_group",
+            green_externalReference, green_cdx_properties
+    );
     SPDX23PackageObject comp_spdx_blue = new SPDX23PackageObject(
             "library", "1234567890-blue-id-spdx", "blue_spdx_author", "test_component_blue_spdx",
             blue_spdx_licenses, "blue_copyright_spdx", blue_spdx_hashes, blue_spdx_supplier, "4.1",
@@ -272,25 +245,6 @@ public class MergerTest {
             "01/01/2000", "01/01/2000", "01/01/3000", "blue_spdx_comment",
             "blue_spdx_attribution_test"
     );
-
-    // Yellow SPDX
-
-    private static final LicenseCollection yellow_spdx_licenses = new LicenseCollection();
-
-    private static final HashMap<String, String> yellow_spdx_hashes = new HashMap<>() {{
-        put("SHA256", "somerandomtestyellowspdxhash");
-    }};
-
-    private static final Organization yellow_spdx_supplier = new Organization("yellow_spdx_supplier", "www.testyellowspdx.com");
-
-    private static final Description yellow_spdx_description = new Description("a_summary_about_the_yellow_spdx_component");
-
-    private static final Set<ExternalReference> yellow_spdx_externalReference = new HashSet<>(
-            List.of(
-                    new ExternalReference("www.yellowspdxref.test", "yellow_spdx")
-            )
-    );
-
     SPDX23PackageObject comp_spdx_yellow = new SPDX23PackageObject(
             "library", "1234567890-yellow-id-spdx", "yellow_spdx_author", "test_component_yellow_spdx",
             yellow_spdx_licenses, "yellow_copyright_spdx", yellow_spdx_hashes, yellow_spdx_supplier, "2.7.3",
@@ -300,25 +254,6 @@ public class MergerTest {
             "01/01/2000", "01/01/2000", "01/01/2500", "yellow_spdx_comment",
             "yellow_spdx_attribution_test"
     );
-
-    // Green SPDX
-
-    private static final LicenseCollection green_spdx_licenses = new LicenseCollection();
-
-    private static final HashMap<String, String> green_spdx_hashes = new HashMap<>() {{
-        put("SHA256", "somerandomtestgreenspdxhash");
-    }};
-
-    private static final Organization green_spdx_supplier = new Organization("green_spdx_supplier", "www.testgreenspdx.com");
-
-    private static final Description green_spdx_description = new Description("a_summary_about_the_green_spdx_component");
-
-    private static final Set<ExternalReference> green_spdx_externalReference = new HashSet<>(
-            List.of(
-                    new ExternalReference("www.greenspdxref.test", "green_spdx")
-            )
-    );
-
     SPDX23PackageObject comp_spdx_green = new SPDX23PackageObject(
             "library", "1234567890-green-id-spdx", "green_spdx_author", "test_component_green_spdx",
             green_spdx_licenses, "green_copyright_spdx", green_spdx_hashes, green_spdx_supplier, "2.3",

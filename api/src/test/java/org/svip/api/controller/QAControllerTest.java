@@ -62,17 +62,14 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("QA Controller Test")
 public class QAControllerTest {
-    @Mock
-    private QualityReportFileService qualityReportFileService;
-
-    @Mock
-    private SBOMFileService sbomFileService;
-
-    @InjectMocks
-    private QAController qaController;
-
     // Test SBOMs
     private static final String CDX_JSON_SBOM_FILE = "./src/test/resources/sample_sboms/cdx-gomod-1.4.0-bin.json";
+    @Mock
+    private QualityReportFileService qualityReportFileService;
+    @Mock
+    private SBOMFileService sbomFileService;
+    @InjectMocks
+    private QAController qaController;
 
     /// Generate
     @Test

@@ -56,11 +56,11 @@ public class PURL {
 
     private final String scheme;  // required
     private final String type;    // required
-    private List<String> namespace;   // Optional and type-specific
     private final String name;    // required
     private final String version; // Optional
-    private LinkedHashMap<String, String> qualifiers = null;    // Optional
     private final String subpath; // Optional
+    private List<String> namespace;   // Optional and type-specific
+    private LinkedHashMap<String, String> qualifiers = null;    // Optional
 
     /**
      * Create new purl object from a given purl identifier string

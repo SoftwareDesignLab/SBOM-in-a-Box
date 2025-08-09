@@ -51,18 +51,18 @@ import java.util.Set;
  */
 public class SVIPSBOMBuilder implements CDX14SBOMBuilder, SPDX23SBOMBuilder {
 
+    private final Set<String> licenses = new HashSet<>();
+    private final Set<Component> components = new HashSet<>();
+    private final HashMap<String, Set<Relationship>> relationships = new HashMap<>();
+    private final Set<ExternalReference> externalReferences = new HashSet<>();
     private String format;
     private String name;
     private String uid;
     private String version;
     private String specVersion;
-    private final Set<String> licenses = new HashSet<>();
     private CreationData creationData;
     private String documentComment;
     private Component rootComponent;
-    private final Set<Component> components = new HashSet<>();
-    private final HashMap<String, Set<Relationship>> relationships = new HashMap<>();
-    private final Set<ExternalReference> externalReferences = new HashSet<>();
     /**
      * Set<VEX> vulnerabilities;
      * Set<Service> services;

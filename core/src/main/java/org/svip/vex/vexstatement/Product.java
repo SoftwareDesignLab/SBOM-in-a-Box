@@ -34,6 +34,11 @@ package org.svip.vex.vexstatement;
  */
 public record Product(String productID, String supplier) {
 
+    public Product(String productID, String supplier) {
+        this.productID = productID;
+        this.supplier = supplier;
+    }
+
     /**
      * Get the product's ID
      *
@@ -50,10 +55,5 @@ public record Product(String productID, String supplier) {
      */
     public String getSupplier() {
         return this.supplier;
-    }
-
-    public Product(String productID, String supplier) {
-        this.productID = productID;
-        this.supplier = supplier;
     }
 }

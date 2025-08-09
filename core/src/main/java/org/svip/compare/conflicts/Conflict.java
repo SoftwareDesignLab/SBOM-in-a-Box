@@ -81,26 +81,6 @@ public class Conflict {
     ///
 
     /**
-     * Get the present Missing message
-     *
-     * @param field Name of the field that is missing
-     * @return Missing message
-     */
-    private String getMissingMessage(String field) {
-        return field + " is missing";
-    }
-
-    /**
-     * Get the preset Mismatch message
-     *
-     * @param field Name of the field that is mismatched
-     * @return Mismatch message
-     */
-    private String getMismatchMessage(String field) {
-        return field + " doesn't match";
-    }
-
-    /**
      * Creates a new conflict if one exists, otherwise returns null
      *
      * @param field        Name of the conflict field
@@ -129,6 +109,26 @@ public class Conflict {
 
         // Default to no conflict
         return null;
+    }
+
+    /**
+     * Get the present Missing message
+     *
+     * @param field Name of the field that is missing
+     * @return Missing message
+     */
+    private String getMissingMessage(String field) {
+        return field + " is missing";
+    }
+
+    /**
+     * Get the preset Mismatch message
+     *
+     * @param field Name of the field that is mismatched
+     * @return Mismatch message
+     */
+    private String getMismatchMessage(String field) {
+        return field + " doesn't match";
     }
 
     /// Getters

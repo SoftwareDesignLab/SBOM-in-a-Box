@@ -59,29 +59,13 @@ public class SBOMGeneratorCLI {
 
     //#region Exceptions
 
-    /**
-     * Custom Internal Error for handling arguments
-     */
-    private static class InvalidArgumentException extends Exception {
-
-        /**
-         * Create new Invalid Argument Exception
-         *
-         * @param msg Error message
-         */
-        public InvalidArgumentException(String msg) {
-            super(msg);
-        }
-    }
+    private static final int MAX_ALLOWED_ATTEMPTS = 5;                  // Max attempts for getting information
 
     //#endregion
 
     //#region Attributes
-
-    private static final int MAX_ALLOWED_ATTEMPTS = 5;                  // Max attempts for getting information
     private static final String PWD = System.getProperty("user.dir");   // System property for pwd
     private static final String OUT_DIRECTORY = "SBOMOut";               // Default Output directory
-
     /**
      * This is the usage text.
      */
@@ -118,14 +102,10 @@ public class SBOMGeneratorCLI {
                        - SPDX JSON:                 java -jar parser.jar MyProject/src -d -o=SPDX23
                        - SPDX Tag-Value (no debug):      java -jar parser.jar MyProject/src -o=SPDX23 -f=TAG_VALUE
             """;
-
     /**
      * This flag is set to true when -h option is present from the command line, otherwise false.
      */
     private static boolean showUsages = false;
-    //#endregion
-
-    //#region Core Methods
 
     /**
      * Attempts to validate all found arguments. It checks both
@@ -191,7 +171,9 @@ public class SBOMGeneratorCLI {
         if (!fileExists || targetPath.equals(""))
             throw new FileNotFoundException("File '" + targetPath + "' does not exist");
     }
+    //#endregion
 
+    //#region Core Methods
 
     /**
      * If required command line arguments fail, get user input. Program will
@@ -329,8 +311,6 @@ public class SBOMGeneratorCLI {
         System.out.println(msg + "\n" + USAGES);
     }
 
-    //#endregion
-
     /**
      * Main Driver for CodeParser and expects 1 required argument
      * and accepts any number of valid optional arguments.
@@ -443,6 +423,8 @@ public class SBOMGeneratorCLI {
         }
     }
 
+    //#endregion
+
     /**
      * Builds a VirtualTree from an existing file tree located in the user's filesystem given a source path. This loops
      * through all files and directories using Files.walk() over the source path, and adds each file with its contents
@@ -482,5 +464,20 @@ public class SBOMGeneratorCLI {
                 (float) (System.currentTimeMillis() - buildStart) / 1000));
 
         return fileMap;
+    }
+
+    /**
+     * Custom Internal Error for handling arguments
+     */
+    private static class InvalidArgumentException extends Exception {
+
+        /**
+         * Create new Invalid Argument Exception
+         *
+         * @param msg Error message
+         */
+        public InvalidArgumentException(String msg) {
+            super(msg);
+        }
     }
 }

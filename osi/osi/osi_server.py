@@ -29,7 +29,7 @@ FILE_NAME_SED_PATTERN = r's|.*\/||'
 
 
 class OSIAPIServer:
-    VERSION = "4.0"
+    VERSION = "4.1"
     DEFAULT_FLASK_HOST = "localhost"
     DEFAULT_FLASK_PORT = 5000
 

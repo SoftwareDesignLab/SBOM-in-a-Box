@@ -138,6 +138,56 @@ public class CDX14ComponentObject implements CDX14Package {
     private final HashMap<String, Set<String>> properties;
 
     /**
+     * Constructor to build a new CDX 1.4 Component Object
+     *
+     * @param type               component type
+     * @param uid                component uid
+     * @param author             component author
+     * @param name               component name
+     * @param licenses           component licenses
+     * @param copyright          component copyright
+     * @param hashes             component hashes
+     * @param supplier           component supplier
+     * @param version            component version
+     * @param description        component description
+     * @param cpes               component CPEs
+     * @param purls              component PURLs
+     * @param mimeType           component mime type
+     * @param publisher          component publisher
+     * @param scope              component scope
+     * @param group              component group
+     * @param externalReferences component external references
+     * @param properties         component properties
+     */
+    public CDX14ComponentObject(String type, String uid, String author, String name,
+                                LicenseCollection licenses, String copyright,
+                                HashMap<String, String> hashes, Organization supplier,
+                                String version, Description description, Set<String> cpes,
+                                Set<String> purls, String mimeType, String publisher,
+                                String scope, String group, Set<ExternalReference> externalReferences,
+                                HashMap<String, Set<String>> properties) {
+        this.type = type;
+        this.uid = uid;
+        this.author = author;
+        this.name = name;
+        this.licenses = licenses;
+        this.copyright = copyright;
+        this.hashes = hashes;
+        this.supplier = supplier;
+        this.version = version;
+        this.description = description;
+        this.cpes = cpes;
+        this.purls = purls;
+        this.mimeType = mimeType;
+        this.publisher = publisher;
+        this.scope = scope;
+        this.group = group;
+        this.externalReferences = externalReferences;
+        this.properties = properties;
+
+    }
+
+    /**
      * Get the component's type
      *
      * @return the component's type
@@ -315,56 +365,6 @@ public class CDX14ComponentObject implements CDX14Package {
     @Override
     public HashMap<String, Set<String>> getProperties() {
         return this.properties;
-    }
-
-    /**
-     * Constructor to build a new CDX 1.4 Component Object
-     *
-     * @param type               component type
-     * @param uid                component uid
-     * @param author             component author
-     * @param name               component name
-     * @param licenses           component licenses
-     * @param copyright          component copyright
-     * @param hashes             component hashes
-     * @param supplier           component supplier
-     * @param version            component version
-     * @param description        component description
-     * @param cpes               component CPEs
-     * @param purls              component PURLs
-     * @param mimeType           component mime type
-     * @param publisher          component publisher
-     * @param scope              component scope
-     * @param group              component group
-     * @param externalReferences component external references
-     * @param properties         component properties
-     */
-    public CDX14ComponentObject(String type, String uid, String author, String name,
-                                LicenseCollection licenses, String copyright,
-                                HashMap<String, String> hashes, Organization supplier,
-                                String version, Description description, Set<String> cpes,
-                                Set<String> purls, String mimeType, String publisher,
-                                String scope, String group, Set<ExternalReference> externalReferences,
-                                HashMap<String, Set<String>> properties) {
-        this.type = type;
-        this.uid = uid;
-        this.author = author;
-        this.name = name;
-        this.licenses = licenses;
-        this.copyright = copyright;
-        this.hashes = hashes;
-        this.supplier = supplier;
-        this.version = version;
-        this.description = description;
-        this.cpes = cpes;
-        this.purls = purls;
-        this.mimeType = mimeType;
-        this.publisher = publisher;
-        this.scope = scope;
-        this.group = group;
-        this.externalReferences = externalReferences;
-        this.properties = properties;
-
     }
 
     /**

@@ -169,6 +169,67 @@ public class SPDX23PackageObject implements SPDX23Package {
     private final String validUntilDate;
 
     /**
+     * Constructor to build new SPDX 2.3 Package Object
+     *
+     * @param type               package type
+     * @param uid                package uid
+     * @param author             package author
+     * @param name               package name
+     * @param licenses           package licenses
+     * @param copyright          package copyright
+     * @param hashes             package hashes
+     * @param supplier           package supplier
+     * @param version            package version
+     * @param description        package description
+     * @param cpes               package CPEs
+     * @param purls              package PURLs
+     * @param externalReferences package external references
+     * @param downloadLocation   package download location
+     * @param fileName           package file name
+     * @param filesAnalyzed      if package's files were analyzed
+     * @param verificationCode   package verification code
+     * @param homePage           package home page
+     * @param sourceInfo         package source info
+     * @param releaseDate        package release date
+     * @param builtDate          package build date
+     * @param validUntilDate     package valid until date
+     */
+    public SPDX23PackageObject(String type, String uid, String author, String name,
+                               LicenseCollection licenses, String copyright,
+                               HashMap<String, String> hashes, Organization supplier,
+                               String version, Description description, Set<String> cpes,
+                               Set<String> purls, Set<ExternalReference> externalReferences,
+                               String downloadLocation, String fileName, Boolean filesAnalyzed,
+                               String verificationCode, String homePage, String sourceInfo,
+                               String releaseDate, String builtDate, String validUntilDate,
+                               String comment, String attributionText) {
+        this.type = type;
+        this.uid = uid;
+        this.author = author;
+        this.name = name;
+        this.licenses = licenses;
+        this.copyright = copyright;
+        this.hashes = hashes;
+        this.supplier = supplier;
+        this.version = version;
+        this.description = description;
+        this.cpes = cpes;
+        this.purls = purls;
+        this.externalReferences = externalReferences;
+        this.downloadLocation = downloadLocation;
+        this.fileName = fileName;
+        this.filesAnalyzed = filesAnalyzed;
+        this.verificationCode = verificationCode;
+        this.homePage = homePage;
+        this.sourceInfo = sourceInfo;
+        this.releaseDate = releaseDate;
+        this.builtDate = builtDate;
+        this.validUntilDate = validUntilDate;
+        this.comment = comment;
+        this.attributionText = attributionText;
+    }
+
+    /**
      * Get the package's type
      *
      * @return the package's type
@@ -406,67 +467,6 @@ public class SPDX23PackageObject implements SPDX23Package {
     @Override
     public String getAttributionText() {
         return this.attributionText;
-    }
-
-    /**
-     * Constructor to build new SPDX 2.3 Package Object
-     *
-     * @param type               package type
-     * @param uid                package uid
-     * @param author             package author
-     * @param name               package name
-     * @param licenses           package licenses
-     * @param copyright          package copyright
-     * @param hashes             package hashes
-     * @param supplier           package supplier
-     * @param version            package version
-     * @param description        package description
-     * @param cpes               package CPEs
-     * @param purls              package PURLs
-     * @param externalReferences package external references
-     * @param downloadLocation   package download location
-     * @param fileName           package file name
-     * @param filesAnalyzed      if package's files were analyzed
-     * @param verificationCode   package verification code
-     * @param homePage           package home page
-     * @param sourceInfo         package source info
-     * @param releaseDate        package release date
-     * @param builtDate          package build date
-     * @param validUntilDate     package valid until date
-     */
-    public SPDX23PackageObject(String type, String uid, String author, String name,
-                               LicenseCollection licenses, String copyright,
-                               HashMap<String, String> hashes, Organization supplier,
-                               String version, Description description, Set<String> cpes,
-                               Set<String> purls, Set<ExternalReference> externalReferences,
-                               String downloadLocation, String fileName, Boolean filesAnalyzed,
-                               String verificationCode, String homePage, String sourceInfo,
-                               String releaseDate, String builtDate, String validUntilDate,
-                               String comment, String attributionText) {
-        this.type = type;
-        this.uid = uid;
-        this.author = author;
-        this.name = name;
-        this.licenses = licenses;
-        this.copyright = copyright;
-        this.hashes = hashes;
-        this.supplier = supplier;
-        this.version = version;
-        this.description = description;
-        this.cpes = cpes;
-        this.purls = purls;
-        this.externalReferences = externalReferences;
-        this.downloadLocation = downloadLocation;
-        this.fileName = fileName;
-        this.filesAnalyzed = filesAnalyzed;
-        this.verificationCode = verificationCode;
-        this.homePage = homePage;
-        this.sourceInfo = sourceInfo;
-        this.releaseDate = releaseDate;
-        this.builtDate = builtDate;
-        this.validUntilDate = validUntilDate;
-        this.comment = comment;
-        this.attributionText = attributionText;
     }
 
     /**

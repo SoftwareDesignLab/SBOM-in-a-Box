@@ -36,39 +36,23 @@ import org.svip.vex.model.VEXType;
 @Table(name = "vex")
 public class VEXFile {
 
-    // Database used for generation
-    public enum Database {
-        NVD,
-        OSV
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private Long id;
-
     @Column(nullable = false)
     private String name;
-
     @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String content;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "schema_type")
     private VEXType schema;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "datasource")
     private Database datasource;
-
     /// Relationships
     @OneToOne(mappedBy = "vexFile")   // name of field in SBOMFile NOT DB
     private SBOMFile sbomFile;
-
-
-    ///
-    /// Setters
-    ///
 
     /**
      * Set Vex File Name
@@ -81,16 +65,10 @@ public class VEXFile {
         return this;
     }
 
-    /**
-     * Set Vex File Content
-     *
-     * @param content vex json contents
-     * @return VEXFile
-     */
-    public VEXFile setContent(String content) {
-        this.content = content;
-        return this;
-    }
+
+    ///
+    /// Setters
+    ///
 
     /**
      * Set VEX Schema
@@ -115,21 +93,6 @@ public class VEXFile {
     }
 
     /**
-     * Set the parent SBOM file
-     *
-     * @param sbomFile sbom file vex was generated for
-     * @return VEXFile
-     */
-    public VEXFile setSBOMFile(SBOMFile sbomFile) {
-        this.sbomFile = sbomFile;
-        return this;
-    }
-
-    ///
-    /// Getters
-    ///
-
-    /**
      * @return VEXFile ID
      */
     public Long getID() {
@@ -144,9 +107,41 @@ public class VEXFile {
     }
 
     /**
+     * Set Vex File Content
+     *
+     * @param content vex json contents
+     * @return VEXFile
+     */
+    public VEXFile setContent(String content) {
+        this.content = content;
+        return this;
+    }
+
+    ///
+    /// Getters
+    ///
+
+    /**
      * @return SBOMFile of VEX
      */
     public SBOMFile getSBOMFile() {
         return this.sbomFile;
+    }
+
+    /**
+     * Set the parent SBOM file
+     *
+     * @param sbomFile sbom file vex was generated for
+     * @return VEXFile
+     */
+    public VEXFile setSBOMFile(SBOMFile sbomFile) {
+        this.sbomFile = sbomFile;
+        return this;
+    }
+
+    // Database used for generation
+    public enum Database {
+        NVD,
+        OSV
     }
 }

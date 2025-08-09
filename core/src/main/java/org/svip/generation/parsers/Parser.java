@@ -57,23 +57,20 @@ public abstract class Parser {
      * The maximum connection timeout of each URL query (in milliseconds).
      */
     private static final int MAX_CONNECTION_TIMEOUT = 1000;
-
+    /**
+     * The standard library URL of the parser.
+     */
+    protected final String STD_LIB_URL;
     /**
      * The VirtualPath to the target directory of the Parser.
      */
     protected VirtualPath PWD;
-
     /**
      * A list of file paths from the set VirtualTree. Setting a VirtualTree enables the parser to check for internal
      * components.
      */
 
     protected Set<VirtualPath> sourceFiles;
-
-    /**
-     * The standard library URL of the parser.
-     */
-    protected final String STD_LIB_URL;
 
     //#endregion
 
@@ -94,29 +91,6 @@ public abstract class Parser {
     //#endregion
 
     //#region Setters
-
-    /**
-     * Sets the current working directory of the parser.
-     *
-     * @param PWD The current working directory of the parser.
-     */
-    public void setPWD(VirtualPath PWD) {
-        this.PWD = PWD;
-    }
-
-    /**
-     * Sets the current internal files list of the parser, enabling the parser to check for internal components. The
-     * list of VirtualNodes is converted to a list of all full file paths.
-     *
-     * @param internalFiles The current internal VirtualTree of the parser.
-     */
-    public void setSourceFiles(Set<VirtualPath> internalFiles) {
-        this.sourceFiles = internalFiles;
-    }
-
-    //#endregion
-
-    //#region Static Methods
 
     /**
      * Queries a given URL and returns the HttpURLConnection
@@ -173,6 +147,10 @@ public abstract class Parser {
         return builder.build().getName();
     }
 
+    //#endregion
+
+    //#region Static Methods
+
     /**
      * Utility method to get the type field from a builder object.
      *
@@ -221,6 +199,25 @@ public abstract class Parser {
     protected static void generateHash(SVIPComponentBuilder component) {
         int code = component.hashCode();
         component.addHash("SHA256", DigestUtils.sha256Hex(String.valueOf(code)));
+    }
+
+    /**
+     * Sets the current working directory of the parser.
+     *
+     * @param PWD The current working directory of the parser.
+     */
+    public void setPWD(VirtualPath PWD) {
+        this.PWD = PWD;
+    }
+
+    /**
+     * Sets the current internal files list of the parser, enabling the parser to check for internal components. The
+     * list of VirtualNodes is converted to a list of all full file paths.
+     *
+     * @param internalFiles The current internal VirtualTree of the parser.
+     */
+    public void setSourceFiles(Set<VirtualPath> internalFiles) {
+        this.sourceFiles = internalFiles;
     }
 
     //#endregion

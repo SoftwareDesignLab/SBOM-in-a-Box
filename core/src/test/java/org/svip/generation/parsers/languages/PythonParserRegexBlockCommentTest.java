@@ -41,6 +41,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Derek Garcia
  */
 class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
+    final String openBlockComment = "\"\"\"\n";
+    final String closeBlockComment = "\n\"\"\"";
     /**
      * Constructor initializes a given parser and assigns both the
      * regex to test it against and the source directory to test on.
@@ -50,9 +52,6 @@ class PythonParserRegexBlockCommentTest extends ParseRegexTestCore {
                 "(?:(?=\"\"\")\"\"\"[\\S\\s]*?\"\"\"|^import (.*)$|^from (.*) import (?:(?=.*\\($)([\\S\\s]*?\\))|(.*)))",
                 "Python/Absolute/ifoo");
     }
-
-    final String openBlockComment = "\"\"\"\n";
-    final String closeBlockComment = "\n\"\"\"";
 
     //
     // Regex Tests

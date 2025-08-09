@@ -49,30 +49,21 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  */
 public class ToSchemaTest {
 
+    protected static final SBOM[] sboms = new SBOM[6];
     /**
      * Test Constants
      */
 
     private static final String TEST_DIR = System.getProperty("user.dir") +
             "/src/test/resources/serializers/Benchmark_SBOM_Megacollection/";
-
     protected static final String SBOM_1 = TEST_DIR + "cdxgen.json";
-
     protected static final String SBOM_2 = TEST_DIR + "cyclonedxMavenPlugin.json";
-
     protected static final String SBOM_3 = TEST_DIR + "jbom-18172.json";
-
     protected static final String SBOM_4 = TEST_DIR + "jbom-Case1-1.0-SNAPSHOT-jar-with-dependencies.json";
-
     protected static final String SBOM_5 = TEST_DIR + "spdx-sbom-generator.spdx";
-
     protected static final String SBOM_6 = TEST_DIR + "syft.json";
-
-
     protected final SerializerFactory.Schema[] schemas = {SerializerFactory.Schema.SVIP,
             SerializerFactory.Schema.SPDX23, SerializerFactory.Schema.CDX14};
-
-    protected static final SBOM[] sboms = new SBOM[6];
 
     /**
      * Helper Functions

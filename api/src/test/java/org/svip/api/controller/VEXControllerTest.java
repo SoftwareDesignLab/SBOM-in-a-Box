@@ -65,15 +65,14 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("VEX Controller Test")
 public class VEXControllerTest {
+    // Test SBOMs
+    private static final String CDX_JSON_SBOM_FILE = "./src/test/resources/sample_sboms/cdx-gomod-1.4.0-bin.json";
+    @InjectMocks
+    VEXController vexController;    // Instance of controller for testing
     @Mock
     private SBOMFileService sbomFileService;      // Mock service
     @Mock
     private VEXFileService vexFileService;      // Mock service
-    @InjectMocks
-    VEXController vexController;    // Instance of controller for testing
-
-    // Test SBOMs
-    private static final String CDX_JSON_SBOM_FILE = "./src/test/resources/sample_sboms/cdx-gomod-1.4.0-bin.json";
 
     @Test
     @DisplayName("Generate Vex")

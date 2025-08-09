@@ -47,6 +47,29 @@ public class MergerController {
             "Cross format merging not supported for " + formats + ".";
 
     /**
+     * Gets the necessary merger for the two SBOMs
+     *
+     * @param formatOne format of SBOM one
+     * @param formatTwo format of SBOM two
+     */
+    private static Merger getMerger(String formatOne, String formatTwo) throws MergerException {
+        switch (formatOne.toLowerCase() + ":" + formatTwo.toLowerCase()) {
+            case "cyclonedx:cyclonedx" -> {
+                return new MergerCDX();
+            }
+            case "spdx:spdx" -> {
+                return new MergerSPDX();
+            }
+            case "svip:svip" -> {
+                return new MergerSVIP();
+            }
+            default -> {
+                return new MergerCrossSchema();
+            }
+        }
+    }
+
+    /**
      * Merge a collection of SBOMs into one main SBOM
      *
      * @param SBOMs Collection of SBOM objects to merge together
@@ -124,28 +147,5 @@ public class MergerController {
         }
 
         return mainBom;
-    }
-
-    /**
-     * Gets the necessary merger for the two SBOMs
-     *
-     * @param formatOne format of SBOM one
-     * @param formatTwo format of SBOM two
-     */
-    private static Merger getMerger(String formatOne, String formatTwo) throws MergerException {
-        switch (formatOne.toLowerCase() + ":" + formatTwo.toLowerCase()) {
-            case "cyclonedx:cyclonedx" -> {
-                return new MergerCDX();
-            }
-            case "spdx:spdx" -> {
-                return new MergerSPDX();
-            }
-            case "svip:svip" -> {
-                return new MergerSVIP();
-            }
-            default -> {
-                return new MergerCrossSchema();
-            }
-        }
     }
 }

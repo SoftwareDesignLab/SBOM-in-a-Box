@@ -41,40 +41,14 @@ import static org.svip.compare.conflicts.MismatchType.MISC_MISMATCH;
  * @author Thomas Roman
  */
 public class CreationTool implements Comparable {
+    private final Map<String, String> hashes = new HashMap<>();
+    private final Set<ExternalReference> externalReferences = new HashSet<>();
     private String vendor;
     private String name;
     private String version;
-    private final Map<String, String> hashes = new HashMap<>();
-    private final Set<ExternalReference> externalReferences = new HashSet<>();
 
     //
     // Setters
-    //
-
-    /**
-     * @param vendor vendor name
-     */
-    public void setVendor(String vendor) {
-        this.vendor = vendor;
-    }
-
-
-    /**
-     * @param name tool name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * @param version tool version
-     */
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    //
-    // Adders
     //
 
     /**
@@ -92,15 +66,22 @@ public class CreationTool implements Comparable {
         this.externalReferences.add(externalReference);
     }
 
-    ///
-    /// Getters
-    ///
-
     /**
      * @return Vendor name
      */
     public String getVendor() {
         return vendor;
+    }
+
+    //
+    // Adders
+    //
+
+    /**
+     * @param vendor vendor name
+     */
+    public void setVendor(String vendor) {
+        this.vendor = vendor;
     }
 
     /**
@@ -110,11 +91,29 @@ public class CreationTool implements Comparable {
         return name;
     }
 
+    ///
+    /// Getters
+    ///
+
+    /**
+     * @param name tool name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
     /**
      * @return Tool Version
      */
     public String getVersion() {
         return version;
+    }
+
+    /**
+     * @param version tool version
+     */
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     /**

@@ -73,37 +73,36 @@ public class License {
         return this.id;
     }
 
-    public String getName() {
-        return this.name;
-    }
-
-    public String getUrl() {
-        return this.url;
-    }
-
-    public String getIdentifier() {
-        return this.id != null ? this.id : this.name;
-    }
-
-    //
-    // Setters
-    //
-
     @JsonProperty("licenseId")
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return this.name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
+    //
+    // Setters
+    //
+
+    public String getUrl() {
+        return this.url;
+    }
 
     @JsonProperty("seeAlso")
     public void setUrl(List<String> url) {
         if (url.size() > 0) {
             this.url = url.get(0);
         }
+    }
+
+    public String getIdentifier() {
+        return this.id != null ? this.id : this.name;
     }
 
     //

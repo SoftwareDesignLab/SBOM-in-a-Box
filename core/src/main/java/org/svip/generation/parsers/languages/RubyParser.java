@@ -51,11 +51,11 @@ import static org.svip.utils.Debug.log;
  * @author Ian Dunn
  */
 public class RubyParser extends LanguageParser {
+    private final Map<String, String> RUBY_STD_PACKAGES_AND_CLASSES = fetchRubyPackagesClasses();
+
     public RubyParser() {
         super("https://docs.ruby-lang.org/en/2.1.0/");
     }
-
-    private final Map<String, String> RUBY_STD_PACKAGES_AND_CLASSES = fetchRubyPackagesClasses();
 
     /**
      * Performs a GET request on RUBY_URL and scrapes

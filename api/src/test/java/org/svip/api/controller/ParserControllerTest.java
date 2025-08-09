@@ -67,12 +67,11 @@ public class ParserControllerTest {
     @Autowired
     private SBOMFileService sbomFileService;
 
-    @TestConfiguration
-    static class TestConfig {
-        @Bean
-        public SBOMFileService sbomFileService() {
-            return Mockito.mock(SBOMFileService.class);
-        }
+    private static MockMultipartFile buildMockMultipartFile(String projectName) throws IOException {
+        String sampleProjectDirectory = System.getProperty("user.dir") + "/src/test/resources/sample_projects/";
+
+        return new MockMultipartFile("zipFile", projectName, "multipart/form-data",
+                Files.readAllBytes(Path.of(sampleProjectDirectory + projectName + ".zip")));
     }
 
     @ParameterizedTest
@@ -130,10 +129,11 @@ public class ParserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    private static MockMultipartFile buildMockMultipartFile(String projectName) throws IOException {
-        String sampleProjectDirectory = System.getProperty("user.dir") + "/src/test/resources/sample_projects/";
-
-        return new MockMultipartFile("zipFile", projectName, "multipart/form-data",
-                Files.readAllBytes(Path.of(sampleProjectDirectory + projectName + ".zip")));
+    @TestConfiguration
+    static class TestConfig {
+        @Bean
+        public SBOMFileService sbomFileService() {
+            return Mockito.mock(SBOMFileService.class);
+        }
     }
 }

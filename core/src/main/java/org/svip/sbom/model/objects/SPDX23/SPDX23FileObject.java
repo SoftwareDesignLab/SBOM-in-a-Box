@@ -98,6 +98,36 @@ public class SPDX23FileObject implements SPDX23File {
     private final String attributionText;
 
     /**
+     * Constructor to build a new SPDX 2.3 File Object
+     *
+     * @param type       file type
+     * @param uid        file uid
+     * @param author     file author
+     * @param name       file name
+     * @param licenses   file licenses
+     * @param copyright  file copyright
+     * @param hashes     file hashes
+     * @param fileNotice file's file notice
+     * @param comment    file's comment
+     */
+    public SPDX23FileObject(String type, String uid, String author, String name,
+                            LicenseCollection licenses, String copyright,
+                            HashMap<String, String> hashes, String fileNotice,
+                            String comment, String attributionText) {
+        this.type = type;
+        this.uid = uid;
+        this.author = author;
+        this.name = name;
+        this.licenses = licenses;
+        this.copyright = copyright;
+        this.hashes = hashes;
+        this.fileNotice = fileNotice;
+        this.comment = comment;
+        this.attributionText = attributionText;
+
+    }
+
+    /**
      * Get the file's comment
      *
      * @return the file's comment
@@ -195,36 +225,6 @@ public class SPDX23FileObject implements SPDX23File {
     @Override
     public Map<String, String> getHashes() {
         return this.hashes;
-    }
-
-    /**
-     * Constructor to build a new SPDX 2.3 File Object
-     *
-     * @param type       file type
-     * @param uid        file uid
-     * @param author     file author
-     * @param name       file name
-     * @param licenses   file licenses
-     * @param copyright  file copyright
-     * @param hashes     file hashes
-     * @param fileNotice file's file notice
-     * @param comment    file's comment
-     */
-    public SPDX23FileObject(String type, String uid, String author, String name,
-                            LicenseCollection licenses, String copyright,
-                            HashMap<String, String> hashes, String fileNotice,
-                            String comment, String attributionText) {
-        this.type = type;
-        this.uid = uid;
-        this.author = author;
-        this.name = name;
-        this.licenses = licenses;
-        this.copyright = copyright;
-        this.hashes = hashes;
-        this.fileNotice = fileNotice;
-        this.comment = comment;
-        this.attributionText = attributionText;
-
     }
 
     /**

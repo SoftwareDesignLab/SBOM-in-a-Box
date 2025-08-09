@@ -47,19 +47,6 @@ import java.util.Set;
 @Table(name = "sbom_file")
 public class SBOMFile {
 
-    // Schema of SBOM
-    public enum Schema {
-        CYCLONEDX_14,
-        SPDX_23
-    }
-
-    // File Type of SBOM
-    public enum FileType {
-        JSON,
-        XML,
-        TAG_VALUE
-    }
-
     /// Metadata
 
     @Id
@@ -67,39 +54,31 @@ public class SBOMFile {
     @Column(nullable = false)
     @JsonProperty
     private Long id;
-
     @Column(nullable = false)
     @JsonProperty("fileName")
     private String name;
-
     @Column(nullable = false, columnDefinition = "LONGTEXT")
     @JsonProperty("contents")
     private String content;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "schema_type")
     @JsonProperty
     private Schema schema;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "file_type")
     @JsonProperty
     private FileType fileType;
-
     /// Relationships
 
     @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)   // delete all qa on sbom deletion
     @JoinColumn(name = "qa_id", referencedColumnName = "id")
     private QualityReportFile qualityReportFile;
-
     @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)   // delete all vex on sbom deletion
     @JoinColumn(name = "vex_id", referencedColumnName = "id")
     private VEXFile vexFile;
-
     // Collection of comparisons where this was the target
     @OneToMany(mappedBy = "targetSBOMFile", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<ComparisonFile> comparisonsAsTarget = new HashSet<>();
-
     // Collection of comparisons where this was the other
     @OneToMany(mappedBy = "otherSBOMFile", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<ComparisonFile> comparisonsAsOther = new HashSet<>();
@@ -133,9 +112,44 @@ public class SBOMFile {
         return mapper.writeValueAsString(toSBOMObject());
     }
 
+    /**
+     * Set Quality Report File
+     *
+     * @param qaf Quality Report File
+     * @return SBOMFile
+     */
+    public SBOMFile setQualityReport(QualityReportFile qaf) {
+        this.qualityReportFile = qaf;
+        return this;
+    }
+
+    public SBOMFile addComparisonFileAsTarget(ComparisonFile cf) {
+        this.comparisonsAsTarget.add(cf);
+        return this;
+    }
+
     ///
     /// Setters
     ///
+
+    public SBOMFile addComparisonFileAsOther(ComparisonFile cf) {
+        this.comparisonsAsOther.add(cf);
+        return this;
+    }
+
+    /**
+     * @return SBOM ID
+     */
+    public Long getId() {
+        return this.id;
+    }
+
+    /**
+     * @return SBOM name
+     */
+    public String getName() {
+        return this.name;
+    }
 
     /**
      * Set File Name
@@ -149,6 +163,13 @@ public class SBOMFile {
     }
 
     /**
+     * @return SBOM Content
+     */
+    public String getContent() {
+        return this.content;
+    }
+
+    /**
      * Set File Content
      *
      * @param content SBOM string contents
@@ -158,6 +179,42 @@ public class SBOMFile {
         this.content = content;
         return this;
     }
+
+    /**
+     * @return QualityReportFile
+     */
+    public QualityReportFile getQualityReportFile() {
+        return this.qualityReportFile;
+    }
+
+    /**
+     * @return vexFile
+     */
+    public VEXFile getVEXFile() {
+        return this.vexFile;
+    }
+
+    /**
+     * Set VEX File
+     *
+     * @param vf VEX File
+     * @return SBOMFile
+     */
+    public SBOMFile setVEXFile(VEXFile vf) {
+        this.vexFile = vf;
+        return this;
+    }
+
+    /**
+     * @return SBOM Schema
+     */
+    public Schema getSchema() {
+        return this.schema;
+    }
+
+    ///
+    /// Getters
+    ///
 
     /**
      * Set SBOM Schema
@@ -188,6 +245,12 @@ public class SBOMFile {
         return this;
     }
 
+    /**
+     * @return SBOM FileType
+     */
+    public FileType getFileType() {
+        return this.fileType;
+    }
 
     /**
      * Set SBOM File Type
@@ -210,40 +273,6 @@ public class SBOMFile {
         return this;
     }
 
-
-    /**
-     * Set Quality Report File
-     *
-     * @param qaf Quality Report File
-     * @return SBOMFile
-     */
-    public SBOMFile setQualityReport(QualityReportFile qaf) {
-        this.qualityReportFile = qaf;
-        return this;
-    }
-
-
-    /**
-     * Set VEX File
-     *
-     * @param vf VEX File
-     * @return SBOMFile
-     */
-    public SBOMFile setVEXFile(VEXFile vf) {
-        this.vexFile = vf;
-        return this;
-    }
-
-    public SBOMFile addComparisonFileAsTarget(ComparisonFile cf) {
-        this.comparisonsAsTarget.add(cf);
-        return this;
-    }
-
-    public SBOMFile addComparisonFileAsOther(ComparisonFile cf) {
-        this.comparisonsAsOther.add(cf);
-        return this;
-    }
-
     /**
      * Simple set schema
      *
@@ -255,57 +284,17 @@ public class SBOMFile {
         return this;
     }
 
-    ///
-    /// Getters
-    ///
-
-    /**
-     * @return SBOM ID
-     */
-    public Long getId() {
-        return this.id;
+    // Schema of SBOM
+    public enum Schema {
+        CYCLONEDX_14,
+        SPDX_23
     }
 
-    /**
-     * @return SBOM name
-     */
-    public String getName() {
-        return this.name;
-    }
-
-    /**
-     * @return SBOM Content
-     */
-    public String getContent() {
-        return this.content;
-    }
-
-    /**
-     * @return QualityReportFile
-     */
-    public QualityReportFile getQualityReportFile() {
-        return this.qualityReportFile;
-    }
-
-    /**
-     * @return vexFile
-     */
-    public VEXFile getVEXFile() {
-        return this.vexFile;
-    }
-
-    /**
-     * @return SBOM Schema
-     */
-    public Schema getSchema() {
-        return this.schema;
-    }
-
-    /**
-     * @return SBOM FileType
-     */
-    public FileType getFileType() {
-        return this.fileType;
+    // File Type of SBOM
+    public enum FileType {
+        JSON,
+        XML,
+        TAG_VALUE
     }
 
 

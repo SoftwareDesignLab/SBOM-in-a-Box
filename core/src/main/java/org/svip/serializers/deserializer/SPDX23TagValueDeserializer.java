@@ -90,6 +90,52 @@ public class SPDX23TagValueDeserializer implements Deserializer {
     //#endregion
 
     /**
+     * Parse SPDX style creator string into a Contact
+     *
+     * @param creator SPDX style creator string
+     * @return Contact
+     */
+    protected static Contact parseSPDXCreator(String creator) {
+        Matcher creatorMatcher = CREATOR_PATTERN.matcher(creator);
+        if (!creatorMatcher.find()) return null;
+
+        return new Contact(creatorMatcher.group(2), creatorMatcher.group(3), null);
+    }
+
+    /**
+     * Update CreationData with info from SPDX
+     *
+     * @param data        CreationData object
+     * @param creatorInfo Creation info from SPDX
+     */
+    protected static void parseSPDXCreatorInfo(CreationData data, List<String> creatorInfo) {
+        for (String creator : creatorInfo) {
+            Matcher toolMatcher = SPDX23TagValueDeserializer.TOOL_PATTERN.matcher(creator);
+            while (toolMatcher.find()) {
+                CreationTool tool = new CreationTool();
+                tool.setName(toolMatcher.group(1));
+                tool.setVersion(toolMatcher.group(2));
+                data.addCreationTool(tool);
+            }
+
+            Contact contact = SPDX23TagValueDeserializer.parseSPDXCreator(creator);
+            if (contact == null) continue;
+
+            // If we find an organization, set it to the supplier if there isn't already one. Otherwise,
+            // add another author with the contact info
+            if (creator.toLowerCase().startsWith("organization") &&
+                    (data.getSupplier() == null || data.getSupplier().getName().isEmpty())) {
+
+                Organization supplier = new Organization(contact.getName(), null);
+                supplier.addContact(contact);
+                data.setSupplier(supplier);
+            } else {
+                data.addAuthor(contact);
+            }
+        }
+    }
+
+    /**
      * Deserializes an SPDX 2.3 tag-value SBOM from a string.
      *
      * @param fileContents The file contents of the SPDX 2.3 tag-value SBOM to deserialize.
@@ -186,52 +232,6 @@ public class SPDX23TagValueDeserializer implements Deserializer {
     public ObjectMapper getObjectMapper() {
         // We don't need an objectmapper for tag value but removing this breaks tests
         return new ObjectMapper();
-    }
-
-    /**
-     * Parse SPDX style creator string into a Contact
-     *
-     * @param creator SPDX style creator string
-     * @return Contact
-     */
-    protected static Contact parseSPDXCreator(String creator) {
-        Matcher creatorMatcher = CREATOR_PATTERN.matcher(creator);
-        if (!creatorMatcher.find()) return null;
-
-        return new Contact(creatorMatcher.group(2), creatorMatcher.group(3), null);
-    }
-
-    /**
-     * Update CreationData with info from SPDX
-     *
-     * @param data        CreationData object
-     * @param creatorInfo Creation info from SPDX
-     */
-    protected static void parseSPDXCreatorInfo(CreationData data, List<String> creatorInfo) {
-        for (String creator : creatorInfo) {
-            Matcher toolMatcher = SPDX23TagValueDeserializer.TOOL_PATTERN.matcher(creator);
-            while (toolMatcher.find()) {
-                CreationTool tool = new CreationTool();
-                tool.setName(toolMatcher.group(1));
-                tool.setVersion(toolMatcher.group(2));
-                data.addCreationTool(tool);
-            }
-
-            Contact contact = SPDX23TagValueDeserializer.parseSPDXCreator(creator);
-            if (contact == null) continue;
-
-            // If we find an organization, set it to the supplier if there isn't already one. Otherwise,
-            // add another author with the contact info
-            if (creator.toLowerCase().startsWith("organization") &&
-                    (data.getSupplier() == null || data.getSupplier().getName().isEmpty())) {
-
-                Organization supplier = new Organization(contact.getName(), null);
-                supplier.addContact(contact);
-                data.setSupplier(supplier);
-            } else {
-                data.addAuthor(contact);
-            }
-        }
     }
 
     /**

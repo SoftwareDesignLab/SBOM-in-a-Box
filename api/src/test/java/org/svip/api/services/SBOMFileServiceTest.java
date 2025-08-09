@@ -55,16 +55,14 @@ import static org.mockito.Mockito.*;
 @DisplayName("SBOM Service Test")
 public class SBOMFileServiceTest {
 
-    @Mock
-    private SBOMFileRepository sbomFileRepository;      // Mock repo
-
-    @InjectMocks
-    private SBOMFileService sbomFileService;    // Instance of service for testing
-
     // Test SBOMs
     private static final String CDX_JSON_SBOM_FILE = "./src/test/resources/sample_sboms/cdx-gomod-1.4.0-bin.json";
     private static final String SPDX_JSON_SBOM_FILE = "./src/test/resources/sample_sboms/syft-0.80.0-source-spdx-json.json";
     private static final String SPDX_TAG_VALUE_SBOM_FILE = "./src/test/resources/sample_sboms/sbom.alpine-compare.2-3.spdx";
+    @Mock
+    private SBOMFileRepository sbomFileRepository;      // Mock repo
+    @InjectMocks
+    private SBOMFileService sbomFileService;    // Instance of service for testing
 
     /// Upload
     @Test

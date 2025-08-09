@@ -37,11 +37,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class NugetExtractionTest {
 
-    private static NugetExtraction ext;
-    private static PURL PURL;
     private static final String PURL_STRING = "pkg:nuget/System.Text.Json@8.0.0-rc.2.23479.6?packaging=jar";
     private static final String MICROSOFT_COPYRIGHT = "© Microsoft Corporation. All rights reserved.";
     private static final String MICROSOFT_LICENSE = "MIT";
+    private static NugetExtraction ext;
+    private static PURL PURL;
 
     @BeforeAll
     static void setup() throws Exception {
