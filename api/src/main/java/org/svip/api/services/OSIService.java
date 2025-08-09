@@ -27,20 +27,13 @@ package org.svip.api.services;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
-import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -60,7 +53,7 @@ import java.util.Map;
 @Service
 public class OSIService {
 
-    private final OSI osi;
+    private final OSIComponent osi;
     private boolean enabled = false;    // default to no access to OSI
 
     /**
@@ -68,7 +61,7 @@ public class OSIService {
      *
      * @param osi internal interface to make actual requests to osi
      */
-    public OSIService(OSI osi) {
+    public OSIService(OSIComponent osi) {
         this.osi = osi;
     }
 
@@ -162,63 +155,6 @@ public class OSIService {
      */
     public boolean isEnabled() {
         return enabled;
-    }
-
-
-    @Component
-    public static class OSI {
-
-        private final CloseableHttpClient httpClient = HttpClients.createDefault();
-        @Value("${osi.api.url}")
-        private String rootEndpoint;
-
-        /**
-         * Make a healthcheck request to OSI to check if online
-         *
-         * @return True if alive, false otherwise
-         */
-        public boolean healthcheck() {
-            try {
-                // build the endpoint
-                URI uri = initRequest("/healthcheck").build();
-                // check status code
-                try (CloseableHttpResponse response = request(new HttpGet(uri))) {
-                    return response.getStatusLine().getStatusCode() == 200;
-                }
-            } catch (URISyntaxException | IOException e) {
-                return false;
-            }
-        }
-
-        /**
-         * Create a URI builder with the OSI root endpoint as the base
-         * Additional query params then can be added
-         *
-         * @param path Path from root endpoint
-         * @return URI builder
-         * @throws URISyntaxException Bad url
-         */
-        public URIBuilder initRequest(String path) throws URISyntaxException {
-            return new URIBuilder(rootEndpoint + (path.startsWith("/") ? "" : '/') + path);
-        }
-
-        /**
-         * Submit a request to OSI. Will raise for status
-         *
-         * @param request HTTP request make, ie GET, POST, etc
-         * @return OSI response object
-         * @throws IOException Failed to complete the request
-         */
-        public CloseableHttpResponse request(HttpRequestBase request) throws IOException {
-            CloseableHttpResponse response = httpClient.execute(request);
-            StatusLine statusLine = response.getStatusLine();
-            int statusCode = statusLine.getStatusCode();
-            // raise for status
-            if (!(statusCode >= 200 && statusCode < 300))
-                throw new IOException("HTTP error: " + statusCode + " " + statusLine.getReasonPhrase());
-            // request was successful
-            return response;
-        }
     }
 
 }
