@@ -1,4 +1,4 @@
-#!/bin/ash
+#!/bin/bash
 
 # File: runner.sh
 # Launch the Flask API server to host OSI
