@@ -15,3 +15,4 @@ jobs:
         uses: anchore/scan-action@v6.1.0
         with:
           path: "."
+          output-format: table
