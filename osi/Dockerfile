@@ -10,7 +10,7 @@ ARG SPDX_SBOM_GENERATOR_VERSION=0.0.15
 ENV SPDX_SBOM_GENERATOR="https://github.com/opensbom-generator/spdx-sbom-generator/releases/download/v$SPDX_SBOM_GENERATOR_VERSION/spdx-sbom-generator-v$SPDX_SBOM_GENERATOR_VERSION-linux-amd64.tar.gz"
 # JBOM
 ARG JBOM_VERSION=1.2.1
-ENV JBOM=https://github.com/eclipse/jbom/releases/download/$JBOM_VERSION/jbom-$JBOM_VERSION.jar
+ENV JBOM=https://github.com/eclipse-jbom/jbom/releases/download/v$JBOM_VERSION/jbom-$JBOM_VERSION.jar
 # cyclonedx-cli
 ARG CYCLONEDX_CLI_VERSION=0.29.0
 ENV CYCLONEDX_CLI=https://github.com/CycloneDX/cyclonedx-cli/releases/v$CYCLONEDX_CLI_VERSION/download/cyclonedx-linux-x64
@@ -44,7 +44,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN=true
 ENV COMPOSER_ALLOW_SUPERUSER=1
 # set paths
-ENV PATH=$PATH:/opt/gradle/gradle/bin:/osi/.cargo/bin
+ENV PATH=$PATH:/opt/gradle/gradle/bin
 
 # Working directories
 ENV CODE_IN=/tmp/code
@@ -56,20 +56,22 @@ RUN useradd -m osi
 # Setup the OSI enviroment
 #
 WORKDIR /tmp/setup
-# Add Microsoft Package Repository
-RUN apt update && apt install -y curl \
+# update registries
+RUN apt update && apt install -y curl gnupg ca-certificates apt-transport-https software-properties-common \
+    # microsoft for dotnet8 \
     && curl -L https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -o packages-microsoft-prod.deb \
-    && dpkg -i packages-microsoft-prod.deb
+    && dpkg -i packages-microsoft-prod.deb \
+    # node 20 \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 # Install languages and package managers
 RUN apt update && apt install -y \
     # install languages \
     python3 openjdk-17-jre nodejs golang php dotnet-sdk-8.0 \
     # install package managers \
-    python3-pip maven npm \
-    # dotnet utils \
-    apt-transport-https software-properties-common \
+    python3-pip maven \
     # composer utils \
-    php-cli php-mbstring git unzip
+    php-cli php-mbstring git unzip \
+    && apt autoremove -y
 # gradle
 COPY --from=bin_download /tmp/gradle.zip gradle.zip
 RUN mkdir /opt/gradle && unzip -d /opt/gradle /tmp/setup/gradle.zip && mv /opt/gradle/gradle-* /opt/gradle/gradle
@@ -78,21 +80,28 @@ RUN curl -L https://getcomposer.org/installer -o composer-setup.php \
     && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
     && composer self-update
 # Install tools using package managers
+# npm
+RUN npm install -g bower@1.8.14 \
+    # install tools \
+    retire@5.2.8 cdx-bower-bom@0.3.0 @cyclonedx/cdxgen@11.5.0
 # pip
 RUN pip install --break-system-packages --no-cache-dir \
     conan \
     # install tools \
     jake==3.0.14 cyclonedx-conan==0.4.1 scanoss==1.31.1 sbom4python==0.12.4 sbom4rust==0.6.0 sbom4files==0.4.5
-# npm
-RUN npm install -g bower@1.8.14 \
-    # install tools \
-    retire@5.2.8 cdx-bower-bom@0.3.0 @cyclonedx/cdxgen@11.5.0
-# go
-RUN go install github.com/ozonru/cyclonedx-go/cmd/cyclonedx-go@latest
-RUN go install github.com/mattermost/gobom/cmd/gobom@latest
+USER osi
+ENV HOME=/home/osi
+ENV PATH=$PATH:$HOME/.cargo/bin:$HOME/go/bin:$HOME/.dotnet/tools
+
 # dotnet
 RUN dotnet tool install --global covenant --version 0.20.1-preview.2
 RUN dotnet tool install --global Microsoft.Sbom.DotNetTool --version 4.1.0
+# rust and cargo and cargo cdx tool
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+RUN . $HOME/.cargo/env && cargo install -- cargo-cyclonedx@0.5.7
+# go
+RUN go install github.com/ozonru/cyclonedx-go/cmd/cyclonedx-go@latest
+RUN go install github.com/mattermost/gobom/cmd/gobom@latest
 # composer
 RUN composer global config --no-plugins allow-plugins.cyclonedx/cyclonedx-php-composer true
 RUN composer \
@@ -102,14 +111,9 @@ RUN composer \
 # Copy binaries
 COPY --from=bin_download /tmp/spdx-sbom-generator /tmp/jbom.jar /tmp/cyclonedx-cli /usr/local/bin/
 COPY --from=anchore_install /tmp/syft /usr/local/bin/
-
-USER osi
-# rust and cargo and
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-RUN . $HOME/.cargo/env && cargo install -- cargo-cyclonedx@0.5.7
 # Cleanup
 USER root
-RUN apt remove -y curl git unzip
+RUN apt remove -y curl git unzip gnupg apt-transport-https software-properties-common
 RUN rm -rf /var/lib/apt/lists/* /tmp/setup
 
 USER osi
@@ -121,4 +125,4 @@ RUN pip install --break-system-packages --no-cache-dir -r requirements.txt
 COPY osi osi
 
 RUN mkdir $CODE_IN && mkdir $SBOM_OUT
-ENTRYPOINT ["runner.sh"]
+ENTRYPOINT ["entrypoint.sh"]
