@@ -132,8 +132,6 @@ class OSIAPIServer:
 
             Request Body:
                 - archive: zip file containing a project
-
-            Returns: A list of names of valid open-source tools.
             """
 
             # purge previous project

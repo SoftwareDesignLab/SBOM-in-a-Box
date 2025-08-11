@@ -15,7 +15,6 @@
     - [API](#api)
     - [Supported Tools](#supported-tools)
         - [Adding More Tools](#adding-more-tools)
-    - [Building the Image](#building-the-image)
 
 ---
 
@@ -34,7 +33,7 @@ To build from scratch, use:
 # Build core jar
 $ ./gradlew build
 # Rename jar file
-$ move core/build/libs/core-1.0.0-alpha.jar SBOMGeneratorCLI.jar
+$ mv core/build/libs/core-1.0.0-alpha.jar SBOMGeneratorCLI.jar
 # Run jar file or in IDE
 $ java -jar SBOMGeneratorCLI.jar <targetPath>
 ```
@@ -113,62 +112,40 @@ SPDX:
 
 ## Quick Start
 
-> Make sure the Docker Daemon / Docker Desktop is running and the current working directory is the root of the
-> repository.
+1. Build the image
 
-Place the source files of the project into `core/src/main/java/org/svip/generation/osi/bound_dir/code`.
-
-Then run the following command to build the image and send an API request to the container to generate SBOMs:
-
-```shell
-# Deploy the container
-$ docker compose up osi
-# Send API request to container to generate SBOMs with ALL tools. To specify tools, add a request body of tool names.
-$ curl -X POST -G http://localhost:50001/generate
+```bash
+docker build -t osi osi
 ```
 
-### Result
+The first build will take several minutes to complete.
 
-The `/sboms` directory (also in `/bound_dir` will now contain generated SBOMs from the source project in `/code`.
+2. Start the container
+
+```bash
+docker run --rm -p 5000:5000 osi
+```
+
+MacOS has known issues with using port 5000, port flag can be set accordingly like so: `-p XXXX:5000`.
+Using the `-d` flag will launch the service in the background
 
 ## API
 
-> After deploying the OSI container using `docker compose up osi`, an API will be started at `http://localhost:50001`.
+> The OSI API will be started at `http://localhost:5000` using the default port
 > Sending requests to the API will allow users to get a list of valid tool names to be used or generate SBOMs with
 > specified tools.
 
-### Generate SBOMs
-
-**Endpoint:** `http://localhost:50001/generate`
-
-**Request Method:** `POST`
-
-**Request Body**
-
-| Body  |   Type   |                                                                                                   Description                                                                                                    | Is Required? |
-|:-----:|:--------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:------------:|
-| tools | String[] | A JSON string array of tool names. If no tools are provided, the container will generate SBOMs using all tools that are applicable to project in the bound `/code` directory. Invalid tools will return an error |      NO      |
-
-**Responses**
-
-| Response Code |  Type  |                            Description                            |
-|:-------------:|:------:|:-----------------------------------------------------------------:|
-|      200      | String |                     Number of SBOMs generated                     |
-|      204      | String |                No SBOMs were generated, returns 0                 |
-|      400      | String |                 Error message about invalid tools                 |
-|      422      | String | "No tools selected" - No tools are applicable or queded to be run |
-
 ### Get Tools
 
-**Endpoint:** `http://localhost:50001/tools`
+**Endpoint:** `http://localhost:5000/tools`
 
 **Request Method:** `GET`
 
 **Parameters**
 
-| Parameter |           Type           |                                                                Description                                                                 | Is Required? |
-|:---------:|:------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------:|:------------:|
-|   list    | String (`all`,`project`) | `all`: (Default) Get all tools availble in the OSI instance</br>`project`: Get all tools appicable to the project in the `/code` directory |      NO      |
+| Parameter |           Type           |                                                                 Description                                                                  | Is Required? |
+|:---------:|:------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------:|:------------:|
+|   list    | String (`all`,`project`) | `all`: (Default) Get all tools available in the OSI instance</br>`project`: Get all tools applicable to the project in the `/code` directory |      NO      |
 
 **Responses**
 
@@ -176,6 +153,47 @@ The `/sboms` directory (also in `/bound_dir` will now contain generated SBOMs fr
 |:-------------:|:--------:|:---------------------------------:|
 |      200      | String[] | A JSON string array of tool names |
 |      400      |  String  |      Unknown list parameter       |
+
+### Upload Project
+
+**Endpoint:** `http://localhost:5000/upload`
+
+**Request Method:** `POST`
+
+**Request Body**
+Header: `'Content-Type: application/octet-stream'`
+
+|  Body   |    Type    |               Description                | Is Required? |
+|:-------:|:----------:|:----------------------------------------:|:------------:|
+| archive | zip binary | binary containing project as zip archive |     YES      |
+
+**Responses**
+
+| Response Code |  Type  |             Description              |
+|:-------------:|:------:|:------------------------------------:|
+|      201      | String |    Project uploaded successfully     |
+|      400      | String | Error message about invalid zip file |
+
+### Generate SBOMs
+
+**Endpoint:** `http://localhost:5000/generate`
+
+**Request Method:** `POST`
+
+**Request Body**
+
+| Body  |   Type   |                                                                       Description                                                                        | Is Required? |
+|:-----:|:--------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------:|:------------:|
+| tools | String[] | A JSON string array of tool names. If no tools are provided, OSI will generate SBOMs for the latest project uploaded. Invalid tools will return an error |      NO      |
+
+**Responses**
+
+| Response Code |      Type      |                            Description                            |
+|:-------------:|:--------------:|:-----------------------------------------------------------------:|
+|      200      | Dict[str, str] |               JSON of file name and base64 encoding               |
+|      204      |     String     |            No SBOMs were generated, returns empty list            |
+|      400      |     String     |                 Error message about invalid tools                 |
+|      422      |     String     | "No tools selected" - No tools are applicable or queued to be run |
 
 ## Supported Tools
 
@@ -206,24 +224,21 @@ The `/sboms` directory (also in `/bound_dir` will now contain generated SBOMs fr
 
 ### Adding More Tools
 
-> After completing these steps, the Docker Flask API and SVIP API will automatically recognize and use the tool.
+> After completing these steps, the Docker OSI and SVIP API will automatically recognize and use the tool.
 
-1. Add the installation commands ( and any additional required software ) to [
-   `setup.sh`](../core/src/main/java/org/svip/generation/osi/docker/scripts/setup.sh)
+1. Add the installation commands ( and any additional required software ) to [`OSI Dockerfile`](../osi/Dockerfile)
     * There are a number of package mangers available to use, see the file as reference
 2. Add validation commands for newly added languages, package managers, or tools to [
-   `validate.sh`](../core/src/main/java/org/svip/generation/osi/docker/scripts/validate.sh)
+   `validate.sh`](../osi/scripts/validate.sh)
     * See file for examples, but main structure is `<COMMAND> &> /dev/null && pass <NAME> <1|2|3> || fail <NAME> `
         * `1`: add `name` to `OSI_LANG` environment variable
         * `2`: add `name` to `OSI_PM` environment variable
         * `3`: add `name` to `OSI_TOOL` environment variable
     * If this is not done, the tool **will not** appear in OSI
-3. Create a new tool configuration file in the [
-   `tool_config`](../core/src/main/java/org/svip/generation/osi/docker/server/tool_configs)
+3. Create a new tool configuration file in the [`tool_config`](../osi/osi/configs/tools)
     * See [Tool Configuration Files](#tool-configuration-files) for structure details
     * The file **MUST** be named using the same name in step 2. Example: name = `foo`, config file = `foo.yml`
-4. DONE! Rebuild the image ( see [Building the Image](#building-the-image) ) to recompile the image with the new tool
-   changes
+4. DONE! Rebuild the image to recompile the image with the new tool changes
 
 ### Tool Configuration Files
 
@@ -259,26 +274,15 @@ profiles:
 | `profile.package_managers`** |    No     | Package Managers that this profile can generate SBOMs for |
 |      `profile.commands`      |    Yes    |           List of cli commands to run the tool            |
 
-*: Must be defined in [`sbom.cfg`](../core/src/main/java/org/svip/generation/osi/docker/server/configs/sbom.cfg)
+*: Must be defined in [`sbom.cfg`](../osi/osi/configs/sbom.cfg)
 
 **: Optional to help with restrictions. Example if tool needs Maven to generate SBOM, can exclude the languages field
 and just have the package managers field
 
 The list of languages and package managers can be found at
-[`language_ext.cfg`](../core/src/main/java/org/svip/generation/osi/docker/server/configs/language_ext.cfg) and
-[`manifest_ext.cfg`](../core/src/main/java/org/svip/generation/osi/docker/server/configs/manifest_ext.cfg) respectively.
+[`language_ext.cfg`](../osi/osi/configs/language_ext.cfg) and
+[`manifest_ext.cfg`](../osi/osi/configs/manifest_ext.cfg) respectively.
 File extensions ware used to determine the language of the project while the manifest files defined in
 `manifest_ext.cfg`
 are explicitly searched for to determine their package manager. Each file can be updated accordingly for new languages
 and package managers.
-
-## Building the Image
-
-To manually build/rebuild the image, execute the following from the root directory of the repository:
-
-```shell
-$ docker compose up osi --build
-```
-
-The first build will take up to 15 minutes to complete, but subsequent builds will be significantly faster. If using
-a saved image, the first build time should be much faster.
