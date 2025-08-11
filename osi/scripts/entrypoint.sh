@@ -5,7 +5,7 @@
 # @author Derek Garcia
 
 # Check before running
-validate.sh
+. validate.sh
 
 # Launch server
 echo "Launching Server"
