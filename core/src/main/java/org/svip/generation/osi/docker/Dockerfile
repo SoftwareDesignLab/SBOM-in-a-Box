@@ -4,23 +4,23 @@
 # @author Derek Garcia
 
 # Install tooling
-FROM alpine/curl AS spdx_sbom_generator
+FROM alpine/curl:8.14.1 AS spdx_sbom_generator
 ENV SPDX_SBOM_GENERATOR=https://github.com/opensbom-generator/spdx-sbom-generator/releases/download/v0.0.15/spdx-sbom-generator-v0.0.15-linux-amd64.tar.gz
 RUN curl -L $SPDX_SBOM_GENERATOR -o /tmp/spdx-sbom-generator.tar.gz && tar -C /tmp -xzf /tmp/spdx-sbom-generator.tar.gz
 
-FROM alpine/curl AS jbom
+FROM alpine/curl:8.14.1 AS jbom
 ENV JBOM=https://github.com/eclipse/jbom/releases/download/v1.2.1/jbom-1.2.1.jar
 RUN curl -L $JBOM -o tmp/jbom.jar
 
-FROM alpine/curl AS cyclone_dx_cli
+FROM alpine/curl:8.14.1 AS cyclone_dx_cli
 ENV CYCLONEDX_CLI=https://github.com/CycloneDX/cyclonedx-cli/releases/latest/download/cyclonedx-linux-x64
 RUN curl -L $CYCLONEDX_CLI -o tmp/cyclonedx-cli
 #  apt install -y libicu-dev
 
-FROM alpine/curl AS syft
+FROM alpine/curl:8.14.1 AS syft
 RUN curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /tmp
 
-FROM alpine/curl AS osi
+FROM alpine:3.22 AS osi
 
 # PHP Setup
 ENV DEBIAN_FRONTEND=noninteractive
@@ -49,7 +49,9 @@ RUN apk update && apk add \
     python3 \
     openjdk21-jdk \
     dotnet8-sdk \
-    nodejs
+    nodejs \
+    curl
+
 # go
 COPY --from=golang:alpine /usr/local/go/ /usr/local/go/
 # rust

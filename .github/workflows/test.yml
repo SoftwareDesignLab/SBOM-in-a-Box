@@ -17,15 +17,15 @@ jobs:
   # only run on open pull request
   build-test:
     if: github.event.pull_request.draft == false
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: checkout
-        uses: actions/checkout@v3.5.2
+        uses: actions/checkout@v4
         
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
 
       - name: Setup Gradle
@@ -35,13 +35,12 @@ jobs:
         run: ./gradlew clean build
         
       - name: Store Report
-        uses: actions/upload-artifact@v3
-
         if: always()
+        uses: actions/upload-artifact@v4
         with:
           name: reports
           path: "**/build/reports/"
-          
+
       - name: Report Failure
         if: failure()
         run: echo "::error::Some Tests Failed, see the artifacts for details"

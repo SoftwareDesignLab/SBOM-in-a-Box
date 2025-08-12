@@ -1,0 +1,21 @@
+name: Security
+
+on: [ push ]
+
+
+jobs:
+  scan:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Scan using grype
+        uses: anchore/scan-action@v6.1.0
+        env:
+          GRYPE_EXCLUDE: "**/resources/**"
+        with:
+          path: "."
+          output-format: table
+          by-cve: true

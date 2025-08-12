@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.api.services;
@@ -41,7 +42,6 @@ import org.svip.repair.repair.Repair;
 import org.svip.repair.statements.RepairStatement;
 import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.sbom.model.interfaces.generics.SBOM;
-import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.exceptions.DeserializerException;
@@ -119,11 +119,11 @@ public class SBOMFileService {
 
         // use core Conversion functionality
         SBOM Converted = Conversion.convert(deserialized,
-                 originalSchema, schema);
+                originalSchema, schema);
 
         // serialize into desired format
         Serializer s = SerializerFactory.createSerializer(schema, format, true); // todo serializers don't adjust the
-                                                                                 // format nor specversion
+        // format nor specversion
         s.setPrettyPrinting(true);
         String contents = s.writeToString((SVIPSBOM) Converted);
         SerializerFactory.Schema resolvedSchema = SerializerFactory.resolveSchema(contents);
@@ -132,7 +132,7 @@ public class SBOMFileService {
         // TODO: Find another way to detect proper schema and format
         if (resolvedSchema != schema) {
             throw new SerializerException(
-                     "Serialized SBOM does not match schema=" + schema + " (" + resolvedSchema + ")");
+                    "Serialized SBOM does not match schema=" + schema + " (" + resolvedSchema + ")");
         }
         if (resolvedFormat != format) {
             throw new SerializerException(
@@ -211,8 +211,8 @@ public class SBOMFileService {
 
         // serialize merged SBOM
         Serializer s = SerializerFactory.createSerializer(schema, SerializerFactory.Format.TAGVALUE, // todo default to
-                                                                                                     // SPDX JSON for
-                                                                                                     // now?
+                // SPDX JSON for
+                // now?
                 true);
         s.setPrettyPrinting(true);
         String contents;
@@ -420,7 +420,7 @@ public class SBOMFileService {
         toRepairSBOM = toRepairSBOMFile.toSBOMObject();
 
         // Checkif SBOM valid
-        if(toRepairSBOM == null)
+        if (toRepairSBOM == null)
             return 0; // bad request
 
         RepairController repairController = new RepairController();
@@ -431,13 +431,13 @@ public class SBOMFileService {
 
 
         // Determine original Schema
-        SerializerFactory.Schema originalSchema = ( toRepairSBOMFile.getSchema() == SBOMFile.Schema.SPDX_23 )
+        SerializerFactory.Schema originalSchema = (toRepairSBOMFile.getSchema() == SBOMFile.Schema.SPDX_23)
                 ? SerializerFactory.Schema.SPDX23
                 : SerializerFactory.Schema.CDX14;
 
 
         // Determine original Format
-        SerializerFactory.Format originalFormat = ( toRepairSBOMFile.getFileType() == SBOMFile.FileType.JSON )
+        SerializerFactory.Format originalFormat = (toRepairSBOMFile.getFileType() == SBOMFile.FileType.JSON)
                 ? SerializerFactory.Format.JSON
                 : SerializerFactory.Format.TAGVALUE;
 

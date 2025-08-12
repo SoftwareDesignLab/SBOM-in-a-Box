@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.api.controller;
@@ -29,9 +30,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.svip.api.services.OSIService;
@@ -58,17 +62,33 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Ian Dunn
  */
 @WebMvcTest(OSIController.class)
+@Import(OSIControllerTest.TestConfig.class)
 @DisplayName("OSI Controller Test")
 public class OSIControllerTest {
 
-    @MockBean
-    private SBOMFileService sbomFileService;
-
-    @MockBean
-    private OSIService osiService;
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private SBOMFileService sbomFileService;
+
+    @Autowired
+    private OSIService osiService;
+
+    @TestConfiguration
+    static class TestConfig {
+
+        @Bean
+        public SBOMFileService sbomFileService() {
+            return Mockito.mock(SBOMFileService.class);
+        }
+
+        @Bean
+        public OSIService osiService() {
+            return Mockito.mock(OSIService.class);
+        }
+    }
 
     @BeforeEach
     void setup() {
@@ -84,7 +104,7 @@ public class OSIControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "Rust_noEmptyFiles" })
+    @ValueSource(strings = {"Rust_noEmptyFiles"})
     @DisplayName("Generate with default tools")
     void generateWithDefaultToolsTest(String projectName) throws Exception {
         mockMvc.perform(multipart("/svip/generators/osi")
@@ -96,7 +116,7 @@ public class OSIControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "Conda_noEmptyFiles" })
+    @ValueSource(strings = {"Conda_noEmptyFiles"})
     @DisplayName("Generate with invalid tool")
     void generateWithInvalidToolTest(String projectName) throws Exception {
         mockMvc.perform(multipart("/svip/generators/osi")
@@ -109,7 +129,7 @@ public class OSIControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "Java" })
+    @ValueSource(strings = {"Java"})
     @DisplayName("Generate with valid tool")
     void generateWithValidToolTest(String projectName) throws Exception {
         mockMvc.perform(multipart("/svip/generators/osi")
@@ -122,7 +142,7 @@ public class OSIControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "sampleProjectEmpty", "sampleProjectNullProperties" })
+    @ValueSource(strings = {"sampleProjectEmpty", "sampleProjectNullProperties"})
     @DisplayName("Empty Projects")
     void generateWithInvalidProjectTest(String projectName) throws Exception {
         mockMvc.perform(multipart("/svip/generators/osi")
@@ -139,7 +159,7 @@ public class OSIControllerTest {
         mockMvc.perform(multipart("/svip/generators/osi")
                         .file(new MockMultipartFile("zipFile",
                                 Files.readAllBytes(Path.of(
-                                System.getProperty("user.dir") + "/src/test/resources/sample_projects/Ruby/lib/bar.rb"
+                                        System.getProperty("user.dir") + "/src/test/resources/sample_projects/Ruby/lib/bar.rb"
                                 ))))
                         .param("projectName", "Ruby")
                         .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
@@ -148,7 +168,7 @@ public class OSIControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "Go" })
+    @ValueSource(strings = {"Go"})
     @DisplayName("Convert to CDX tag value")
     void generateWithCDXTagValueTest(String projectName) throws Exception {
         mockMvc.perform(multipart("/svip/generators/osi")
@@ -160,7 +180,7 @@ public class OSIControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "Rust_noEmptyFiles" })
+    @ValueSource(strings = {"Rust_noEmptyFiles"})
     @DisplayName("Invalid Conversion")
     void generateWithInvalidConversionTest(String projectName) throws Exception {
         when(sbomFileService.convert(any(), any(), any(), any())).thenThrow(JsonProcessingException.class);
@@ -174,7 +194,7 @@ public class OSIControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "Rust_noEmptyFiles" })
+    @ValueSource(strings = {"Rust_noEmptyFiles"})
     @DisplayName("Invalid Upload")
     void generateWithInvalidUploadTest(String projectName) throws Exception {
         when(sbomFileService.upload(any())).thenThrow(JsonProcessingException.class);
@@ -188,7 +208,7 @@ public class OSIControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "Rust_noEmptyFiles" })
+    @ValueSource(strings = {"Rust_noEmptyFiles"})
     @DisplayName("Invalid Merge")
     void generateWithInvalidMergeTest(String projectName) throws Exception {
         when(sbomFileService.merge(any())).thenThrow(Exception.class);

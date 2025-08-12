@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.merge;
@@ -134,24 +135,24 @@ public abstract class MergerUtils extends Merger {
 
         // Components
         Set<Component> mergedComponents = null;
-        if(componentsA != null && componentsB != null) {
+        if (componentsA != null && componentsB != null) {
             mergedComponents = mergeComponentsToSchema(componentsA, componentsB, targetSchema);
-        } else if(componentsA != null && componentsB == null) {
+        } else if (componentsA != null && componentsB == null) {
             mergedComponents = componentsA;
-        } else if(componentsA == null && componentsB != null) {
+        } else if (componentsA == null && componentsB != null) {
             mergedComponents = componentsB;
         }
 
-        if(mergedComponents != null) mergedComponents.forEach(x -> builder.addComponent(x));
+        if (mergedComponents != null) mergedComponents.forEach(x -> builder.addComponent(x));
 
 
         // Relationships
-        if(A.getRelationships() != null) {
+        if (A.getRelationships() != null) {
             Map<String, Set<Relationship>> relationshipsA = A.getRelationships();
             relationshipsA.keySet().forEach(x -> relationshipsA.get(x).forEach(y -> builder.addRelationship(x, y)));
         }
 
-        if(B.getRelationships() != null) {
+        if (B.getRelationships() != null) {
             Map<String, Set<Relationship>> relationshipsB = B.getRelationships();
             relationshipsB.keySet().forEach(x -> relationshipsB.get(x).forEach(y -> builder.addRelationship(x, y)));
         }
@@ -213,7 +214,7 @@ public abstract class MergerUtils extends Merger {
                         if (componentA_SPDX != null && componentB_SPDX != null) // if both packages then merge if appropriate
                             if (Objects.equals(componentA_SPDX.getName(), componentB_SPDX.getName()) &&
                                     Objects.equals(componentA_SPDX.getVersion(), componentB_SPDX.getVersion())
-                            || versionsCanBeMerged(componentA_SPDX.getVersion(), componentB_SPDX.getVersion())) {
+                                    || versionsCanBeMerged(componentA_SPDX.getVersion(), componentB_SPDX.getVersion())) {
 
                                 mergedComponents.add(ComponentMerger.mergeComponentToSchema(componentA, componentB, targetSchema));
                                 removeB.add(componentB);
@@ -238,7 +239,7 @@ public abstract class MergerUtils extends Merger {
                         // If the components are the same by Name and Version, merge then add them to the SBOM
                         if (Objects.equals(componentA_CDX.getName(), componentB_CDX.getName()) &&
                                 Objects.equals(componentA_CDX.getVersion(), componentB_CDX.getVersion())
-                        || versionsCanBeMerged(componentA_CDX.getVersion(), componentB_CDX.getVersion())) {
+                                || versionsCanBeMerged(componentA_CDX.getVersion(), componentB_CDX.getVersion())) {
 
                             mergedComponents.add(ComponentMerger.mergeComponentToSchema(componentA, componentB, targetSchema));
                             removeB.add(componentB);
@@ -255,7 +256,7 @@ public abstract class MergerUtils extends Merger {
                         // If the components are the same by Name and Version, merge then add them to the SBOM
                         if (Objects.equals(componentA_SVIP.getName(), componentB_SVIP.getName()) &&
                                 (Objects.equals(componentA_SVIP.getVersion(), componentB_SVIP.getVersion())
-                                || versionsCanBeMerged(componentA_SVIP.getVersion(), componentB_SVIP.getVersion()))) {
+                                        || versionsCanBeMerged(componentA_SVIP.getVersion(), componentB_SVIP.getVersion()))) {
 
                             mergedComponents.add(mergeComponentToSchema(componentA, componentB, targetSchema));
                             removeB.add(componentB);

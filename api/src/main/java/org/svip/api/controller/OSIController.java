@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.api.controller;
@@ -74,11 +75,11 @@ public class OSIController {
      *
      * @param sbomService Service for handling SBOM queries
      */
-    public OSIController(SBOMFileService sbomService){
+    public OSIController(SBOMFileService sbomService) {
         this.sbomService = sbomService;
         this.osiService = new OSIService();
 
-        if(this.osiService.isEnabled()){
+        if (this.osiService.isEnabled()) {
             LOGGER.info("OSI ENDPOINT ENABLED");
         } else {
             LOGGER.warn("OSI ENDPOINT DISABLED -- Unable to communicate with OSI container; Is the container running?");
@@ -130,8 +131,8 @@ public class OSIController {
      * @param project Zip File of project
      * @return List of applicable tools for the project
      */
-    @PostMapping(value = "/project", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<?> uploadProject(@RequestPart("project") MultipartFile project){
+    @PostMapping(value = "/project", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> uploadProject(@RequestPart("project") MultipartFile project) {
         // Check if OSI is running
         if (!this.osiService.isEnabled())
             return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
@@ -152,10 +153,10 @@ public class OSIController {
      * USAGE. Send POST request to /generators/osi to generate an SBOM from source file(s).
      *
      * @param projectName The name of the project.
-     * @param schema The schema of the desired SBOM.
-     * @param format The file format of the desired SBOM.
-     * @param toolNames An optional list of tool names to use when running OSI. If not provided or empty, all
-     *                  possible tools will be used.
+     * @param schema      The schema of the desired SBOM.
+     * @param format      The file format of the desired SBOM.
+     * @param toolNames   An optional list of tool names to use when running OSI. If not provided or empty, all
+     *                    possible tools will be used.
      * @return The ID of the uploaded SBOM.
      */
     @PostMapping(value = "", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
@@ -196,12 +197,12 @@ public class OSIController {
         }
 
         // No SBOMs generated
-        if(generatedSBOMFilePaths.isEmpty())
+        if (generatedSBOMFilePaths.isEmpty())
             return new ResponseEntity<>("No SBOMs were generated", HttpStatus.NO_CONTENT);
 
         // Upload SBOMs to SB
         List<SBOMFile> uploaded = new ArrayList<>();
-        for (String path: generatedSBOMFilePaths) {
+        for (String path : generatedSBOMFilePaths) {
             // Try to upload new SBOM to DB
             try {
                 UploadSBOMFileInput input =
@@ -213,7 +214,7 @@ public class OSIController {
                 LOGGER.info("POST /svip/generators/osi - Generated SBOM with ID " + sbomFile.getId() + ": " + sbomFile.getName());
             } catch (IllegalArgumentException e) {
                 // Parsing error / unsupported format
-                LOGGER.error("POST /svip/generators/osi - Failed to parse " + path + " : " + e.getMessage() );
+                LOGGER.error("POST /svip/generators/osi - Failed to parse " + path + " : " + e.getMessage());
             } catch (Exception e) {
                 // Problem with uploading/parsing
                 LOGGER.error("POST /svip/generators/osi - " + e.getMessage());
@@ -226,11 +227,11 @@ public class OSIController {
             return new ResponseEntity<>("No SBOMs generated for these files.", HttpStatus.NO_CONTENT);
         }
 
-        LOGGER.info("POST /svip/generators/osi - Parsed " + uploaded.size() + " SBOMs successfully" );
+        LOGGER.info("POST /svip/generators/osi - Parsed " + uploaded.size() + " SBOMs successfully");
 
         // Merge SBOMs
         Long mergedID;
-        if(uploaded.size() >= 2){
+        if (uploaded.size() >= 2) {
             LOGGER.info("POST /svip/generators/osi - Beginning Merging");
             try {
                 // Merge SBOMs into one SBOM
@@ -244,7 +245,7 @@ public class OSIController {
             } finally {
                 // todo param to delete or not?
                 // Delete any temp SBOM from database
-                for(SBOMFile sbomFile : uploaded)
+                for (SBOMFile sbomFile : uploaded)
                     this.sbomService.deleteSBOMFile(sbomFile);
             }
             LOGGER.info("POST /svip/generators/osi - Successfully merged SBOMs to SBOM with id " + mergedID);

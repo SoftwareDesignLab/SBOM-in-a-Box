@@ -1,38 +1,37 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.sbom.model.objects.SPDX23;
 
 import org.junit.jupiter.api.Test;
-import org.svip.metrics.resultfactory.Text;
-import org.svip.metrics.resultfactory.enumerations.INFO;
+import org.svip.compare.conflicts.Conflict;
+import org.svip.compare.conflicts.MismatchType;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23FileBuilder;
 import org.svip.sbom.factory.objects.SPDX23.SPDX23FileBuilderFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23File;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.compare.conflicts.Conflict;
-import org.svip.compare.conflicts.MismatchType;
 
 import java.util.List;
 import java.util.Objects;
@@ -54,8 +53,7 @@ public class SPDX23FileObjectConflictsTest {
     static Component conflictPackage;
 
     @Test
-    public void Type_is_Conflicting_between_testPackage_and_controlPackage_test()
-    {
+    public void Type_is_Conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setType("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setType("Type");
@@ -70,7 +68,7 @@ public class SPDX23FileObjectConflictsTest {
     }
 
     @Test
-    public void UID_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void UID_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setUID("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setUID("123");
@@ -85,7 +83,7 @@ public class SPDX23FileObjectConflictsTest {
     }
 
     @Test
-    public void name_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void name_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setName("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setName("name");
@@ -100,7 +98,7 @@ public class SPDX23FileObjectConflictsTest {
     }
 
     @Test
-    public void author_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void author_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setAuthor("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setAuthor("author");
@@ -115,7 +113,7 @@ public class SPDX23FileObjectConflictsTest {
     }
 
     @Test
-    public void license_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void license_is_conflicting_between_testPackage_and_controlPackage_test() {
         LicenseCollection licenseCollection = new LicenseCollection();
         licenseCollection.addDeclaredLicense("control license");
         packageBuilder.setLicenses(licenseCollection);
@@ -131,12 +129,11 @@ public class SPDX23FileObjectConflictsTest {
 
         assertEquals(2, conflictList.size());
 
-        for(Conflict c : conflictList)
-        {
+        for (Conflict c : conflictList) {
             if (c.getType() == MismatchType.MISSING && Objects.equals(c.getMessage(), "License is missing")) {
-                if(Objects.equals(c.getTarget(), "control license") && c.getOther() == null)
+                if (Objects.equals(c.getTarget(), "control license") && c.getOther() == null)
                     c1 = true;
-                else if(c.getTarget() == null && Objects.equals(c.getOther(), "license"))
+                else if (c.getTarget() == null && Objects.equals(c.getOther(), "license"))
                     c2 = true;
             }
         }
@@ -146,7 +143,7 @@ public class SPDX23FileObjectConflictsTest {
     }
 
     @Test
-    public void copyright_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void copyright_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setCopyright("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setCopyright("copyright");
@@ -161,12 +158,12 @@ public class SPDX23FileObjectConflictsTest {
     }
 
     @Test
-    public void componentHash_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void componentHash_is_conflicting_between_testPackage_and_controlPackage_test() {
 
     }
 
     @Test
-    public void fileNotice_is_conflicting_between_testPackage_and_controlPackage_test(){
+    public void fileNotice_is_conflicting_between_testPackage_and_controlPackage_test() {
         packageBuilder.setFileNotice("control");
         controlPackage = packageBuilder.buildAndFlush();
         packageBuilder.setFileNotice("notice");

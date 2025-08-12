@@ -10,7 +10,6 @@ import configparser
 import os
 import subprocess
 import time
-
 from flask import Flask, request, jsonify
 
 from ToolFactory import ToolFactory, RunConfig, Profile
