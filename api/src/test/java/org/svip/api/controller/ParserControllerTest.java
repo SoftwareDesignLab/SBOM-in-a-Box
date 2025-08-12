@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.api.controller;
@@ -75,10 +76,12 @@ public class ParserControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "Conan", "Java", "Perl_noEmptyFiles", "Rust_noEmptyFiles",
-            "Scala" })
+    @ValueSource(strings = {"Conan", "Java", "Perl_noEmptyFiles", "Rust_noEmptyFiles", "Scala"})
     @DisplayName("Generate SBOMs")
     void generateTest(String projectName) throws Exception {
+        // mock upload
+        when(sbomFileService.upload(any(SBOMFile.class))).thenReturn(new SBOMFile());
+        // then test
         mockMvc.perform(multipart("/svip/generators/parsers")
                         .file(buildMockMultipartFile(projectName))
                         .param("projectName", projectName)
@@ -88,7 +91,7 @@ public class ParserControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "Conan" })
+    @ValueSource(strings = {"Conan"})
     @DisplayName("Invalid Upload Test")
     void generateWithInvalidUploadTest(String projectName) throws Exception {
         when(sbomFileService.upload(any(SBOMFile.class))).thenThrow(Exception.class);
@@ -116,7 +119,7 @@ public class ParserControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "Go" })
+    @ValueSource(strings = {"Go"})
     @DisplayName("Convert to CDX tag value")
     void generateWithCDXTagValueTest(String projectName) throws Exception {
         mockMvc.perform(multipart("/svip/generators/parsers")
