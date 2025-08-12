@@ -49,14 +49,12 @@ dependencies {
     implementation 'net.sourceforge.jregex:jregex:1.2_01'   // Work around for Java regex limitations
     implementation 'org.cyclonedx:cyclonedx-core-java:10.2.1'
     implementation 'org.json:json:20250517'
-    implementation 'org.springframework.boot:spring-boot-starter-web:3.5.4'
     implementation 'org.apache.commons:commons-compress:1.28.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.13.4'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.13.4'
-    testImplementation 'org.mockito:mockito-core:5.18.0'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.5.4'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.13.4'
 
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
 test {
