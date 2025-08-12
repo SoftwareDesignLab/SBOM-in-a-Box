@@ -76,10 +76,12 @@ public class ParserControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"Conan", "Java", "Perl_noEmptyFiles", "Rust_noEmptyFiles",
-            "Scala"})
+    @ValueSource(strings = {"Conan", "Java", "Perl_noEmptyFiles", "Rust_noEmptyFiles", "Scala"})
     @DisplayName("Generate SBOMs")
     void generateTest(String projectName) throws Exception {
+        // mock upload
+        when(sbomFileService.upload(any(SBOMFile.class))).thenReturn(new SBOMFile());
+        // then test
         mockMvc.perform(multipart("/svip/generators/parsers")
                         .file(buildMockMultipartFile(projectName))
                         .param("projectName", projectName)
