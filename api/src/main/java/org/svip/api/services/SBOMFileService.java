@@ -305,6 +305,24 @@ public class SBOMFileService {
         return sbomFile.getId();
     }
 
+    /**
+     * Rename an SBOM entry in the database
+     *
+     * @param id      ID of SBOM to rename
+     * @param newName New file name to set
+     * @return id of the updated SBOM or null if not found
+     */
+    public Long rename(Long id, String newName) {
+        SBOMFile sbomFile = getSBOMFile(id);
+        if (sbomFile == null) {
+            return null;
+        }
+
+        sbomFile.setName(newName);
+        this.sbomFileRepository.save(sbomFile);
+        return sbomFile.getId();
+    }
+
     //
     // ZIP FILE UTILITIES
     //
@@ -341,7 +359,7 @@ public class SBOMFileService {
                     int len;
                     try {
                         while ((len = is.read(buffer)) > 0) {
-                            contentsBuilder.append(new String(buffer));
+                            contentsBuilder.append(new String(buffer, 0, len));
                         }
                     } catch (EOFException e) {
                         is.close();

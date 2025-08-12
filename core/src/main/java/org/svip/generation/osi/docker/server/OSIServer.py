@@ -4,7 +4,7 @@ file: OSIServer.py
 API that exposes endpoints to manage the generations of SBOMs using Open Source Tools inside the svip-osi Docker Container.
 
 @author Ian Dunn
-@auther Derek Garcia
+@author Derek Garcia
 """
 import configparser
 import os

@@ -96,6 +96,11 @@ public class PerlParser extends LanguageParser {
     protected boolean isInternalComponent(SVIPComponentBuilder component) {
         String name = getName(component);
         String group = getGroup(component);
+        
+        // Validate name is not null or empty to prevent VirtualPath constructor failure
+        if (name == null || name.trim().isEmpty()) {
+            return false; // Skip components with invalid names
+        }
 
         VirtualPath internalPath = new VirtualPath((group == null ? "" : group) + "/" + name);
 

@@ -158,25 +158,31 @@ public class OSIController {
      *                  possible tools will be used.
      * @return The ID of the uploaded SBOM.
      */
-    @PostMapping(value = "")
+    @PostMapping(value = "", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<?> generateWithOSI(@RequestParam("projectName") String projectName,
                                              @RequestParam("schema") SerializerFactory.Schema schema,
                                              @RequestParam("format") SerializerFactory.Format format,
-                                             @RequestParam(value = "toolNames", required = false) String[] toolNames) throws IOException {
+                                             @RequestParam(value = "toolNames", required = false) String toolNamesJson) throws IOException {
 
-        //TODO: Maybe change toolNames to string and parse to array
-
-        //Remove [ and ] from first and last index due to array manipulation on request
-        toolNames[0] = toolNames[0].substring(1);
-        toolNames[toolNames.length - 1] = toolNames[toolNames.length - 1].substring(0, toolNames[toolNames.length - 1].length() - 1);
-
+        
 
         List<String> generatedSBOMFilePaths;
         try {
             // Run with requested tools, default to relevant ones
             List<String> tools;
-            if (toolNames != null) {
-                tools = List.of(toolNames);
+            if (toolNamesJson != null && !toolNamesJson.isBlank()) {
+                try {
+                    // Expecting JSON array string (e.g., ["cdxgen","spdxgen"]). Parse to a List<String>.
+                    com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                    tools = mapper.readValue(
+                            toolNamesJson,
+                            mapper.getTypeFactory().constructCollectionType(java.util.List.class, java.lang.String.class)
+                    );
+                } catch (Exception parseException) {
+                    // If parsing fails, fall back to applicable tools for the uploaded project
+                    LOGGER.warn("POST /svip/generators/osi - Invalid toolNames JSON provided; defaulting to project tools. Error: " + parseException.getMessage());
+                    tools = this.osiService.getTools("project");
+                }
             } else {
                 tools = this.osiService.getTools("project");
             }
@@ -261,7 +267,30 @@ public class OSIController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        // todo how to set file name using projectName
+        // Set descriptive filename: ProjectName-OSI-Schema-Format-Timestamp.ext
+        try {
+            String extension;
+            if (schema == SerializerFactory.Schema.SPDX23) {
+                extension = (format == SerializerFactory.Format.TAGVALUE) ? ".spdx" : ".json";
+            } else { // CDX14
+                extension = (format == SerializerFactory.Format.XML) ? ".xml" : ".json";
+            }
+
+            String schemaStr = (schema == SerializerFactory.Schema.SPDX23) ? "SPDX23" : "CDX14";
+            String formatStr = switch (format) {
+                case JSON -> "JSON";
+                case XML -> "XML";
+                case TAGVALUE -> "TAGVALUE";
+            };
+
+            String safeProject = projectName == null ? "SBOM" : projectName.replaceAll("[^A-Za-z0-9._-]+", "-");
+            java.time.format.DateTimeFormatter dtf = java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
+            String ts = java.time.LocalDateTime.now().format(dtf);
+            String finalName = safeProject + "-OSI-" + schemaStr + "-" + formatStr + "-" + ts + extension;
+            this.sbomService.rename(convertedID, finalName);
+        } catch (Exception ignored) {
+            // keep auto name if rename fails
+        }
 
         // Return ID
         return new ResponseEntity<>(convertedID, HttpStatus.OK);

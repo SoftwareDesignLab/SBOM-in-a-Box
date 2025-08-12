@@ -36,6 +36,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -295,7 +296,11 @@ public class OSIService {
 
         if(!toolNames.isEmpty()){
             conn.setRequestProperty("Content-Type", "application/json");
-            String jsonInputString = "{\"tools\": " + Arrays.toString(toolNames.toArray()) + "}";
+            // Create proper JSON array string
+            String toolsJson = toolNames.stream()
+                .map(tool -> "\"" + tool + "\"")
+                .collect(Collectors.joining(", "));
+            String jsonInputString = "{\"tools\": [" + toolsJson + "]}";
 
             // append requested tools to the connection
             try(OutputStream os = conn.getOutputStream()) {

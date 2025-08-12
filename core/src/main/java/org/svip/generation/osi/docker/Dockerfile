@@ -48,7 +48,7 @@ ENV SBOM_OUT=/bound_dir/sboms
 RUN apk update && apk add \
     python3 \
     openjdk21-jdk \
-    dotnet6-sdk \
+    dotnet8-sdk \
     nodejs
 # go
 COPY --from=golang:alpine /usr/local/go/ /usr/local/go/

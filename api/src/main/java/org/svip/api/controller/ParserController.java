@@ -104,8 +104,18 @@ public class ParserController {
 
         // Add each file to a hashmap to then pass into parserManager
         HashMap<VirtualPath, String> virtualPathStringHashMap = new HashMap<>();
-        for (Map.Entry<String, String> file : unZipped.entrySet())
-            virtualPathStringHashMap.put(new VirtualPath(file.getKey()), file.getValue());
+        for (Map.Entry<String, String> file : unZipped.entrySet()) {
+            // Skip empty or invalid file paths
+            if (file.getKey() != null && !file.getKey().trim().isEmpty()) {
+                try {
+                    virtualPathStringHashMap.put(new VirtualPath(file.getKey()), file.getValue());
+                } catch (IllegalArgumentException e) {
+                    LOGGER.warn("Skipping invalid path: '" + file.getKey() + "' - " + e.getMessage());
+                }
+            } else {
+                LOGGER.warn("Skipping null or empty path key");
+            }
+        }
 
         ParserManager parserManager = new ParserManager(projectName, virtualPathStringHashMap);
 
@@ -126,17 +136,36 @@ public class ParserController {
             Serializer s = SerializerFactory.createSerializer(schema, format, true);
             contents = s.writeToString(parsed);
         } catch (IllegalArgumentException | JsonProcessingException e) {
-            String error = "Error serializing parsed SBOM: " + Arrays.toString(e.getStackTrace());
+            String error = "Error serializing parsed SBOM: " + e.getMessage();
             LOGGER.error("POST /svip/generators/parsers - " + error);
-            return null;
+            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         // Convert & save according to overwrite boolean
         SBOMFile converted;
         try {
+            // Build descriptive filename: ProjectName-PARSERS-Schema-Format-Timestamp.ext
+            String extension;
+            if (schema == SerializerFactory.Schema.SPDX23) {
+                extension = (format == SerializerFactory.Format.TAGVALUE) ? ".spdx" : ".json";
+            } else { // CDX14
+                extension = (format == SerializerFactory.Format.XML) ? ".xml" : ".json";
+            }
+
+            String schemaStr = (schema == SerializerFactory.Schema.SPDX23) ? "SPDX23" : "CDX14";
+            String formatStr = switch (format) {
+                case JSON -> "JSON";
+                case XML -> "XML";
+                case TAGVALUE -> "TAGVALUE";
+            };
+
+            String safeProject = projectName == null ? "SBOM" : projectName.replaceAll("[^A-Za-z0-9._-]+", "-");
+            java.time.format.DateTimeFormatter dtf = java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
+            String ts = java.time.LocalDateTime.now().format(dtf);
+            String finalName = safeProject + "-PARSERS-" + schemaStr + "-" + formatStr + "-" + ts + extension;
+
             // convert result sbomfile to sbom
-            UploadSBOMFileInput u = new UploadSBOMFileInput(projectName + ((format == SerializerFactory.Format.JSON)
-                    ? ".json" : ".spdx"), contents);
+            UploadSBOMFileInput u = new UploadSBOMFileInput(finalName, contents);
             converted = u.toSBOMFile();
             sbomService.upload(converted);
         } catch (JsonProcessingException e) {

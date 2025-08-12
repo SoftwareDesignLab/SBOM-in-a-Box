@@ -202,8 +202,11 @@ public class ParserManager {
         String extn = filepath.getFileExtension();
 
         // If extn matches some generic filetypes, use whole filename instead
-        switch (extn) {
-            case "xml", "txt" -> extn = filename;
+        // Check for null to avoid NullPointerException
+        if (extn != null) {
+            switch (extn) {
+                case "xml", "txt" -> extn = filename;
+            }
         }
         // Get correct parser (if and only if extn relates to a valid Parser)
         final Parser parser = EXTENSION_MAP.get(extn);
@@ -272,7 +275,7 @@ public class ParserManager {
             if (parser instanceof PackageManagerParser)
                 c.setFileNotice(null);
             else
-                c.setFileNotice("PARSED AS SOURCE FILE"); // TODO confirm this
+                c.setFileNotice("PARSED AS SOURCE FILE"); // wha
             components.put(hash, c);
             continue;
         }

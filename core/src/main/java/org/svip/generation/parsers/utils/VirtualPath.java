@@ -111,12 +111,19 @@ public class VirtualPath {
                     continue;
                 }
                 case ".." -> {
-                    this.pathParts.remove(i);
-                } // TODO make sure this works
+                    if (!this.pathParts.isEmpty()) {
+                        this.pathParts.remove(this.pathParts.size() - 1);
+                    }
+                } // Fixed: remove last element from pathParts, not at index i
                 default -> {
                     this.pathParts.add(tempPathParts.get(i));
                 }
             }
+        }
+        
+        // Final validation: ensure pathParts is not empty after processing
+        if (this.pathParts.isEmpty()) {
+            throw new IllegalArgumentException("Empty path string provided");
         }
     }
 
@@ -218,7 +225,21 @@ public class VirtualPath {
     public VirtualPath removeFileExtension() {
         if (!this.isFile()) return this;
 
-        return new VirtualPath(this.toString().substring(0, this.toString().lastIndexOf('.')));
+        String pathString = this.toString();
+        int lastDotIndex = pathString.lastIndexOf('.');
+        
+        // If no extension found, return the path as-is
+        if (lastDotIndex == -1) {
+            return this;
+        }
+        
+        // Check if removing extension would result in empty path
+        String withoutExtension = pathString.substring(0, lastDotIndex);
+        if (withoutExtension.isEmpty() || withoutExtension.equals("/")) {
+            return this;
+        }
+        
+        return new VirtualPath(withoutExtension);
     }
 
     /**
