@@ -17,6 +17,7 @@ repositories {
 
 dependencies {
     implementation project(':core')
+    implementation 'org.apache.httpcomponents:httpclient:4.5.14'
     implementation 'com.mikemybytes:junit5-formatted-source:1.0.1'
     implementation 'com.mysql:mysql-connector-j:9.3.0'
     implementation 'org.cyclonedx:cyclonedx-core-java:10.2.1'

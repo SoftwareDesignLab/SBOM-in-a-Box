@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 package org.svip.serializers.deserializer;
 
@@ -50,7 +51,10 @@ import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * File: CDX14XMLDeserializer.java
@@ -188,7 +192,8 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
                 if (tool.get("version") != null) creationTool.setVersion(tool.get("version").asText());
 
                 // TOOL HASHES
-                if (tool.get("hashes") != null && tool.get("hashes").asText() != "") resolveHashes(tool.get("hashes").get("hash")).forEach(creationTool::addHash);
+                if (tool.get("hashes") != null && tool.get("hashes").asText() != "")
+                    resolveHashes(tool.get("hashes").get("hash")).forEach(creationTool::addHash);
 
                 // add the creation tool to the creation data
                 creationData.addCreationTool(creationTool);
@@ -208,7 +213,7 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
 
         if (metadata.get("properties") != null) {
             JsonNode properties = metadata.get("properties").get("property");
-            if(properties instanceof ArrayNode) {
+            if (properties instanceof ArrayNode) {
                 for (JsonNode prop : properties) {
                     String name = prop.get("name").asText();
                     String value = prop.get("").asText();
@@ -276,7 +281,8 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
 
         // COMPONENT HASHES
 
-        if (component.get("hashes") != null && component.get("hashes").asText() != "") resolveHashes(component.get("hashes").get("hash")).forEach(builder::addHash);
+        if (component.get("hashes") != null && component.get("hashes").asText() != "")
+            resolveHashes(component.get("hashes").get("hash")).forEach(builder::addHash);
 
         // COMPONENT Licenses
         JsonNode licenses = component.get("licenses");
@@ -303,10 +309,10 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
         JsonNode externalRefs = component.get("externalReferences");
         if (externalRefs != null && externalRefs.asText() != "") {
             // If more than 1 external reference, iterate through all
-            if (externalRefs.get("reference") instanceof ArrayNode){
+            if (externalRefs.get("reference") instanceof ArrayNode) {
                 for (JsonNode ref : externalRefs.get("reference"))
                     builder.addExternalReference(resolveExternalRef(ref));
-            // Else add single JsonObject external reference
+                // Else add single JsonObject external reference
             } else {
                 builder.addExternalReference(resolveExternalRef(externalRefs.get("reference")));
             }
@@ -315,7 +321,7 @@ public class CDX14XMLDeserializer extends StdDeserializer<CDX14SBOM> implements 
         // COMPONENT PROPERTIES
         if (component.get("properties") != null && component.get("properties").asText() != "") {
             JsonNode properties = component.get("properties").get("property");
-            if(properties instanceof ArrayNode) {
+            if (properties instanceof ArrayNode) {
                 for (JsonNode prop : properties) {
                     builder.addProperty(prop.get("name").asText(), prop.get("").asText());
                 }

@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.api.controller;
@@ -75,18 +76,11 @@ public class OSIControllerTest {
     @Autowired
     private OSIService osiService;
 
-    @TestConfiguration
-    static class TestConfig {
+    private static MockMultipartFile buildMockMultipartFile(String projectName) throws IOException {
+        String sampleProjectDirectory = System.getProperty("user.dir") + "/src/test/resources/sample_projects/";
 
-        @Bean
-        public SBOMFileService sbomFileService() {
-            return Mockito.mock(SBOMFileService.class);
-        }
-
-        @Bean
-        public OSIService osiService() {
-            return Mockito.mock(OSIService.class);
-        }
+        return new MockMultipartFile("zipFile", projectName, "multipart/form-data",
+                Files.readAllBytes(Path.of(sampleProjectDirectory + projectName + ".zip")));
     }
 
     @BeforeEach
@@ -103,7 +97,7 @@ public class OSIControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "Rust_noEmptyFiles" })
+    @ValueSource(strings = {"Rust_noEmptyFiles"})
     @DisplayName("Generate with default tools")
     void generateWithDefaultToolsTest(String projectName) throws Exception {
         mockMvc.perform(multipart("/svip/generators/osi")
@@ -115,7 +109,7 @@ public class OSIControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "Conda_noEmptyFiles" })
+    @ValueSource(strings = {"Conda_noEmptyFiles"})
     @DisplayName("Generate with invalid tool")
     void generateWithInvalidToolTest(String projectName) throws Exception {
         mockMvc.perform(multipart("/svip/generators/osi")
@@ -128,7 +122,7 @@ public class OSIControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "Java" })
+    @ValueSource(strings = {"Java"})
     @DisplayName("Generate with valid tool")
     void generateWithValidToolTest(String projectName) throws Exception {
         mockMvc.perform(multipart("/svip/generators/osi")
@@ -141,7 +135,7 @@ public class OSIControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "sampleProjectEmpty", "sampleProjectNullProperties" })
+    @ValueSource(strings = {"sampleProjectEmpty", "sampleProjectNullProperties"})
     @DisplayName("Empty Projects")
     void generateWithInvalidProjectTest(String projectName) throws Exception {
         mockMvc.perform(multipart("/svip/generators/osi")
@@ -158,7 +152,7 @@ public class OSIControllerTest {
         mockMvc.perform(multipart("/svip/generators/osi")
                         .file(new MockMultipartFile("zipFile",
                                 Files.readAllBytes(Path.of(
-                                System.getProperty("user.dir") + "/src/test/resources/sample_projects/Ruby/lib/bar.rb"
+                                        System.getProperty("user.dir") + "/src/test/resources/sample_projects/Ruby/lib/bar.rb"
                                 ))))
                         .param("projectName", "Ruby")
                         .param("schema", String.valueOf(SerializerFactory.Schema.CDX14))
@@ -167,7 +161,7 @@ public class OSIControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "Go" })
+    @ValueSource(strings = {"Go"})
     @DisplayName("Convert to CDX tag value")
     void generateWithCDXTagValueTest(String projectName) throws Exception {
         mockMvc.perform(multipart("/svip/generators/osi")
@@ -179,7 +173,7 @@ public class OSIControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "Rust_noEmptyFiles" })
+    @ValueSource(strings = {"Rust_noEmptyFiles"})
     @DisplayName("Invalid Conversion")
     void generateWithInvalidConversionTest(String projectName) throws Exception {
         when(sbomFileService.convert(any(), any(), any(), any())).thenThrow(JsonProcessingException.class);
@@ -193,7 +187,7 @@ public class OSIControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "Rust_noEmptyFiles" })
+    @ValueSource(strings = {"Rust_noEmptyFiles"})
     @DisplayName("Invalid Upload")
     void generateWithInvalidUploadTest(String projectName) throws Exception {
         when(sbomFileService.upload(any())).thenThrow(JsonProcessingException.class);
@@ -207,7 +201,7 @@ public class OSIControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "Rust_noEmptyFiles" })
+    @ValueSource(strings = {"Rust_noEmptyFiles"})
     @DisplayName("Invalid Merge")
     void generateWithInvalidMergeTest(String projectName) throws Exception {
         when(sbomFileService.merge(any())).thenThrow(Exception.class);
@@ -220,10 +214,17 @@ public class OSIControllerTest {
                 .andExpect(status().isNoContent());
     }
 
-    private static MockMultipartFile buildMockMultipartFile(String projectName) throws IOException {
-        String sampleProjectDirectory = System.getProperty("user.dir") + "/src/test/resources/sample_projects/";
+    @TestConfiguration
+    static class TestConfig {
 
-        return new MockMultipartFile("zipFile", projectName, "multipart/form-data",
-                Files.readAllBytes(Path.of(sampleProjectDirectory + projectName + ".zip")));
+        @Bean
+        public SBOMFileService sbomFileService() {
+            return Mockito.mock(SBOMFileService.class);
+        }
+
+        @Bean
+        public OSIService osiService() {
+            return Mockito.mock(OSIService.class);
+        }
     }
 }

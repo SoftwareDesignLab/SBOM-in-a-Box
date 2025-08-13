@@ -1,31 +1,30 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.sbom.builder.objects;
 
 import org.junit.jupiter.api.Test;
-import org.svip.sbom.builder.objects.SVIPComponentBuilder;
-import org.svip.sbom.builder.objects.SVIPSBOMBuilder;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14PackageBuilder;
 import org.svip.sbom.factory.objects.SVIPSBOMBuilderFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -82,6 +81,7 @@ public class SVIPSBOMBuilderFactoryTest {
     Set<Component> test_components = new HashSet<Component>();
 
     HashMap<String, Set<Relationship>> test_relationships;
+
     @Test
     void getFormat_is_test_format_when_setFormat_is_used_test() {
         test_SVIPSBOMBuilder.setFormat(test_format);
@@ -91,7 +91,7 @@ public class SVIPSBOMBuilderFactoryTest {
     }
 
     @Test
-    void getName_is_test_name_when_setName_is_used_test(){
+    void getName_is_test_name_when_setName_is_used_test() {
         test_SVIPSBOMBuilder.setName(test_name);
         test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
 
@@ -99,7 +99,7 @@ public class SVIPSBOMBuilderFactoryTest {
     }
 
     @Test
-    void getUID_is_test_uid_when_setUID_is_used_test(){
+    void getUID_is_test_uid_when_setUID_is_used_test() {
         test_SVIPSBOMBuilder.setUID(test_uid);
         test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
 
@@ -107,7 +107,7 @@ public class SVIPSBOMBuilderFactoryTest {
     }
 
     @Test
-    void getVersion_is_test_version_when_setVersion_is_used_test(){
+    void getVersion_is_test_version_when_setVersion_is_used_test() {
         test_SVIPSBOMBuilder.setVersion(test_version);
         test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
 
@@ -115,7 +115,7 @@ public class SVIPSBOMBuilderFactoryTest {
     }
 
     @Test
-    void getSpecVersion_is_test_specVersion_when_setSpecVersion_is_used_test(){
+    void getSpecVersion_is_test_specVersion_when_setSpecVersion_is_used_test() {
         test_SVIPSBOMBuilder.setSpecVersion(test_specVersion);
         test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
 
@@ -123,7 +123,7 @@ public class SVIPSBOMBuilderFactoryTest {
     }
 
     @Test
-    void getLicenses_is_test_set_when_addLicense_is_used_test(){
+    void getLicenses_is_test_set_when_addLicense_is_used_test() {
         test_SVIPSBOMBuilder.addLicense(test_license1);
         test_SVIPSBOMBuilder.addLicense(test_license2);
         test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
@@ -136,7 +136,7 @@ public class SVIPSBOMBuilderFactoryTest {
     }
 
     @Test
-    void getCreationData_is_test_creationData_when_setCreationData_is_used_test(){
+    void getCreationData_is_test_creationData_when_setCreationData_is_used_test() {
         test_creationData.setCreationTime("17:32");
         test_creationData.setCreatorComment("This was created as a test.");
 
@@ -147,7 +147,7 @@ public class SVIPSBOMBuilderFactoryTest {
     }
 
     @Test
-    void getDocumentComment_is_test_documentComment_when_setDocumentComment_is_used_test(){
+    void getDocumentComment_is_test_documentComment_when_setDocumentComment_is_used_test() {
         test_SVIPSBOMBuilder.setDocumentComment(test_documentComment);
         test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
 
@@ -155,8 +155,8 @@ public class SVIPSBOMBuilderFactoryTest {
     }
 
     @Test
-    void getRootComponent_is_test_rootComponent_when_setRootComponent_is_used_test(){
-        test_rootComponent = new SVIPComponentObject("SVIP", null, "Tester", "Test Component",null,null,null,null,null,null,null,null,null, null, null, null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+    void getRootComponent_is_test_rootComponent_when_setRootComponent_is_used_test() {
+        test_rootComponent = new SVIPComponentObject("SVIP", null, "Tester", "Test Component", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
         test_SVIPSBOMBuilder.setRootComponent(test_rootComponent);
         test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
 
@@ -164,9 +164,9 @@ public class SVIPSBOMBuilderFactoryTest {
     }
 
     @Test
-    void getComponents_is_test_components_when_addComponent_is_used_test(){
-        SVIPComponentObject test_componentA = new SVIPComponentObject("SVIP", null, "Tester 1", "Test Component A",null,null,null,null,null,null,null,null,null, null, null, null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
-        SVIPComponentObject test_componentB = new SVIPComponentObject("SVIP", null, "Tester Two", "Test Component B",null,null,null,null,null,null,null,null,null, null, null, null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+    void getComponents_is_test_components_when_addComponent_is_used_test() {
+        SVIPComponentObject test_componentA = new SVIPComponentObject("SVIP", null, "Tester 1", "Test Component A", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        SVIPComponentObject test_componentB = new SVIPComponentObject("SVIP", null, "Tester Two", "Test Component B", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
         test_SVIPSBOMBuilder.addComponent(test_componentA);
         test_SVIPSBOMBuilder.addComponent(test_componentB);
         test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
@@ -176,9 +176,10 @@ public class SVIPSBOMBuilderFactoryTest {
 
         assertEquals(test_components, test_SVIPSBOM.getComponents());
     }
+
     @Test
-    void getComponents_is_test_components_when_addCDX14Package_is_used_test(){
-        SVIPComponentObject test_componentA = new SVIPComponentObject("SVIP", null, "Tester 1", "Test Component A",null,null,null,null,null,null,null,null,null, null, null, null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+    void getComponents_is_test_components_when_addCDX14Package_is_used_test() {
+        SVIPComponentObject test_componentA = new SVIPComponentObject("SVIP", null, "Tester 1", "Test Component A", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
         test_SVIPSBOMBuilder.addComponent(test_componentA);
 
         CDX14PackageBuilder test_CDX14PackageBuilder = new CDX14PackageBuilder();
@@ -193,10 +194,11 @@ public class SVIPSBOMBuilderFactoryTest {
 
         assertEquals(test_components, test_SVIPSBOM.getComponents());
     }
+
     @Test
-    void getComponents_is_test_components_when_addSPDXComponentObject_is_used_test(){
-        SPDX23PackageObject test_componentA = new SPDX23PackageObject("SPDX Package", null, "Tester One", "Test Component A",null,null,null,null,null,null,null,null,null, null, null, null,null,null,null,null,null,null,null,null);
-        SPDX23FileObject test_componentB = new SPDX23FileObject("SPDX File", null, "Tester 2", "Test Component B",null,null,null,null,null,null);
+    void getComponents_is_test_components_when_addSPDXComponentObject_is_used_test() {
+        SPDX23PackageObject test_componentA = new SPDX23PackageObject("SPDX Package", null, "Tester One", "Test Component A", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        SPDX23FileObject test_componentB = new SPDX23FileObject("SPDX File", null, "Tester 2", "Test Component B", null, null, null, null, null, null);
         test_SVIPSBOMBuilder.addComponent(test_componentA);
         test_SVIPSBOMBuilder.addComponent(test_componentB);
         test_SVIPSBOMBuilder.addSPDX23Component(test_componentA);
@@ -210,7 +212,7 @@ public class SVIPSBOMBuilderFactoryTest {
     }
 
     @Test
-    void getRelationships_contains_test_relationships_when_addRelationship_is_used_test(){
+    void getRelationships_contains_test_relationships_when_addRelationship_is_used_test() {
         HashMap<String, Relationship> test_relationships = new HashMap<String, Relationship>();
         Relationship test_relationship = new Relationship("001", "dependant");
         test_SVIPSBOMBuilder.addRelationship("test_component", test_relationship);
@@ -221,7 +223,7 @@ public class SVIPSBOMBuilderFactoryTest {
     }
 
     @Test
-    void getExternalReferences_is_test_externalRefs_when_addExternalReference_is_used_test(){
+    void getExternalReferences_is_test_externalRefs_when_addExternalReference_is_used_test() {
         HashSet<ExternalReference> test_externalRefs = new HashSet<ExternalReference>();
         ExternalReference test_externalRef = new ExternalReference("really cool url", "CPE");
 
@@ -234,7 +236,7 @@ public class SVIPSBOMBuilderFactoryTest {
     }
 
     @Test
-    void getSPDXLicenseListVersion_is_v143_when_setSPDXLicenseListVersion_is_used_test(){
+    void getSPDXLicenseListVersion_is_v143_when_setSPDXLicenseListVersion_is_used_test() {
         test_SVIPSBOMBuilder.setSPDXLicenseListVersion("v142");
         test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
 
@@ -242,9 +244,9 @@ public class SVIPSBOMBuilderFactoryTest {
     }
 
     @Test
-    void getComponents_is_test_components_when_buildSPDXSBOM_is_used_test(){
-        SPDX23PackageObject test_componentA = new SPDX23PackageObject("SPDX Package", null, "Tester One", "Test Component A",null,null,null,null,null,null,null,null,null, null, null, null,null,null,null,null,null,null,null,null);
-        SPDX23FileObject test_componentB = new SPDX23FileObject("SPDX File", null, "Tester 2", "Test Component B",null,null,null,null,null,null);
+    void getComponents_is_test_components_when_buildSPDXSBOM_is_used_test() {
+        SPDX23PackageObject test_componentA = new SPDX23PackageObject("SPDX Package", null, "Tester One", "Test Component A", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        SPDX23FileObject test_componentB = new SPDX23FileObject("SPDX File", null, "Tester 2", "Test Component B", null, null, null, null, null, null);
         test_SVIPSBOMBuilder.addComponent(test_componentA);
         test_SVIPSBOMBuilder.addComponent(test_componentB);
         test_SVIPSBOMBuilder.addSPDX23Component(test_componentA);
@@ -260,8 +262,8 @@ public class SVIPSBOMBuilderFactoryTest {
     }
 
     @Test
-    void getComponents_is_test_components_when_buildCDX14SBOM_is_used_test(){
-        SVIPComponentObject test_componentA = new SVIPComponentObject("SVIP", null, "Tester 1", "Test Component A",null,null,null,null,null,null,null,null,null, null, null, null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+    void getComponents_is_test_components_when_buildCDX14SBOM_is_used_test() {
+        SVIPComponentObject test_componentA = new SVIPComponentObject("SVIP", null, "Tester 1", "Test Component A", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
         test_SVIPSBOMBuilder.addComponent(test_componentA);
 
         CDX14PackageBuilder test_CDX14PackageBuilder = new CDX14PackageBuilder();

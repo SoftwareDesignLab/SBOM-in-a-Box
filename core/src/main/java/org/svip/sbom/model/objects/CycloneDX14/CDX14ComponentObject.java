@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.sbom.model.objects.CycloneDX14;
@@ -135,6 +136,56 @@ public class CDX14ComponentObject implements CDX14Package {
      * Component's properties
      */
     private final HashMap<String, Set<String>> properties;
+
+    /**
+     * Constructor to build a new CDX 1.4 Component Object
+     *
+     * @param type               component type
+     * @param uid                component uid
+     * @param author             component author
+     * @param name               component name
+     * @param licenses           component licenses
+     * @param copyright          component copyright
+     * @param hashes             component hashes
+     * @param supplier           component supplier
+     * @param version            component version
+     * @param description        component description
+     * @param cpes               component CPEs
+     * @param purls              component PURLs
+     * @param mimeType           component mime type
+     * @param publisher          component publisher
+     * @param scope              component scope
+     * @param group              component group
+     * @param externalReferences component external references
+     * @param properties         component properties
+     */
+    public CDX14ComponentObject(String type, String uid, String author, String name,
+                                LicenseCollection licenses, String copyright,
+                                HashMap<String, String> hashes, Organization supplier,
+                                String version, Description description, Set<String> cpes,
+                                Set<String> purls, String mimeType, String publisher,
+                                String scope, String group, Set<ExternalReference> externalReferences,
+                                HashMap<String, Set<String>> properties) {
+        this.type = type;
+        this.uid = uid;
+        this.author = author;
+        this.name = name;
+        this.licenses = licenses;
+        this.copyright = copyright;
+        this.hashes = hashes;
+        this.supplier = supplier;
+        this.version = version;
+        this.description = description;
+        this.cpes = cpes;
+        this.purls = purls;
+        this.mimeType = mimeType;
+        this.publisher = publisher;
+        this.scope = scope;
+        this.group = group;
+        this.externalReferences = externalReferences;
+        this.properties = properties;
+
+    }
 
     /**
      * Get the component's type
@@ -314,56 +365,6 @@ public class CDX14ComponentObject implements CDX14Package {
     @Override
     public HashMap<String, Set<String>> getProperties() {
         return this.properties;
-    }
-
-    /**
-     * Constructor to build a new CDX 1.4 Component Object
-     *
-     * @param type               component type
-     * @param uid                component uid
-     * @param author             component author
-     * @param name               component name
-     * @param licenses           component licenses
-     * @param copyright          component copyright
-     * @param hashes             component hashes
-     * @param supplier           component supplier
-     * @param version            component version
-     * @param description        component description
-     * @param cpes               component CPEs
-     * @param purls              component PURLs
-     * @param mimeType           component mime type
-     * @param publisher          component publisher
-     * @param scope              component scope
-     * @param group              component group
-     * @param externalReferences component external references
-     * @param properties         component properties
-     */
-    public CDX14ComponentObject(String type, String uid, String author, String name,
-                                LicenseCollection licenses, String copyright,
-                                HashMap<String, String> hashes, Organization supplier,
-                                String version, Description description, Set<String> cpes,
-                                Set<String> purls, String mimeType, String publisher,
-                                String scope, String group, Set<ExternalReference> externalReferences,
-                                HashMap<String, Set<String>> properties) {
-        this.type = type;
-        this.uid = uid;
-        this.author = author;
-        this.name = name;
-        this.licenses = licenses;
-        this.copyright = copyright;
-        this.hashes = hashes;
-        this.supplier = supplier;
-        this.version = version;
-        this.description = description;
-        this.cpes = cpes;
-        this.purls = purls;
-        this.mimeType = mimeType;
-        this.publisher = publisher;
-        this.scope = scope;
-        this.group = group;
-        this.externalReferences = externalReferences;
-        this.properties = properties;
-
     }
 
     /**

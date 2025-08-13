@@ -1,4 +1,4 @@
-#!/bin/ash
+#!/bin/bash
 
 # File: validate.sh
 # Validate OSI environment by checking for Languages, Package Managers, and Tools

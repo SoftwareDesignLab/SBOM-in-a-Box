@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.merge;
@@ -121,10 +122,10 @@ public class ComponentMerger {
         Map<String, String> hashesB = B.getHashes();
 
         // If hashes A exists
-        if(hashesA != null && !hashesA.isEmpty()) {
+        if (hashesA != null && !hashesA.isEmpty()) {
 
             // If hashes B exists
-            if(hashesB != null && !hashesB.isEmpty()) {
+            if (hashesB != null && !hashesB.isEmpty()) {
 
                 // Loop through each and add the hashes
                 for (String keyB : hashesB.keySet()) {
@@ -136,7 +137,7 @@ public class ComponentMerger {
         }
 
         // If hashes A exists
-        if(hashesA != null && !hashesA.isEmpty()) {
+        if (hashesA != null && !hashesA.isEmpty()) {
 
             // Add the hashes from A
             for (String keyA : hashesA.keySet()) {
@@ -301,7 +302,7 @@ public class ComponentMerger {
                 compBuilder.setVersion(componentA_CDX.getVersion());
 
                 // Description
-                if(componentA_CDX.getDescription() != null && !componentA_CDX.getDescription().toString().isEmpty())
+                if (componentA_CDX.getDescription() != null && !componentA_CDX.getDescription().toString().isEmpty())
                     compBuilder.setDescription(componentA_CDX.getDescription());
                 else compBuilder.setDescription(componentB_CDX.getDescription());
 
@@ -331,22 +332,22 @@ public class ComponentMerger {
                 ).forEach(compBuilder::addExternalReference);
 
                 // Mime Type
-                if(componentA_CDX.getMimeType() != null && !componentA_CDX.getMimeType().isEmpty())
+                if (componentA_CDX.getMimeType() != null && !componentA_CDX.getMimeType().isEmpty())
                     compBuilder.setMimeType(componentA_CDX.getMimeType());
                 else compBuilder.setMimeType(componentB_CDX.getMimeType());
 
                 // Publisher
-                if(componentA_CDX.getPublisher() != null && ! componentA_CDX.getPublisher().isEmpty())
+                if (componentA_CDX.getPublisher() != null && !componentA_CDX.getPublisher().isEmpty())
                     compBuilder.setPublisher(componentA_CDX.getPublisher());
                 else compBuilder.setPublisher(componentB_CDX.getPublisher());
 
                 // Scope
-                if(componentA_CDX.getScope() != null && !componentA_CDX.getScope().isEmpty())
+                if (componentA_CDX.getScope() != null && !componentA_CDX.getScope().isEmpty())
                     compBuilder.setScope(componentA_CDX.getScope());
                 else compBuilder.setScope(componentB_CDX.getScope());
 
                 // Group
-                if(componentA_CDX.getGroup() != null && !componentA_CDX.getGroup().isEmpty())
+                if (componentA_CDX.getGroup() != null && !componentA_CDX.getGroup().isEmpty())
                     compBuilder.setGroup(componentA_CDX.getGroup());
                 else compBuilder.setGroup(componentB_CDX.getGroup());
 

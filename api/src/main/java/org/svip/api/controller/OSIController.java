@@ -1,29 +1,31 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -42,13 +44,8 @@ import org.svip.serializers.exceptions.DeserializerException;
 import org.svip.serializers.exceptions.SerializerException;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.zip.ZipInputStream;
+import java.net.URISyntaxException;
+import java.util.*;
 
 /**
  * File: OSIController.java
@@ -74,11 +71,11 @@ public class OSIController {
      *
      * @param sbomService Service for handling SBOM queries
      */
-    public OSIController(SBOMFileService sbomService){
+    public OSIController(SBOMFileService sbomService, OSIService osiService) {
         this.sbomService = sbomService;
-        this.osiService = new OSIService();
+        this.osiService = osiService;
 
-        if(this.osiService.isEnabled()){
+        if (this.osiService.isEnabled()) {
             LOGGER.info("OSI ENDPOINT ENABLED");
         } else {
             LOGGER.warn("OSI ENDPOINT DISABLED -- Unable to communicate with OSI container; Is the container running?");
@@ -130,19 +127,19 @@ public class OSIController {
      * @param project Zip File of project
      * @return List of applicable tools for the project
      */
-    @PostMapping(value = "/project", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<?> uploadProject(@RequestPart("project") MultipartFile project){
+    @PostMapping(value = "/project", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> uploadProject(@RequestPart("project") MultipartFile project) {
         // Check if OSI is running
         if (!this.osiService.isEnabled())
             return new ResponseEntity<>("OSI has been disabled for this instance.", HttpStatus.NOT_FOUND);
 
         // Open zip
-        try (ZipInputStream inputStream = new ZipInputStream(project.getInputStream())) {
-            this.osiService.addProject(inputStream);        // Upload Project
+        try {
+            this.osiService.uploadProject(project.getBytes());        // Upload Project
             List<String> tools = this.osiService.getTools("project");   // get applicable tools
             return new ResponseEntity<>(tools, HttpStatus.OK);
-        } catch (IOException e) {
-            LOGGER.error("POST /svip/generators/osi/project - " + e.getMessage());
+        } catch (IOException | URISyntaxException e) {
+            LOGGER.error("POST /svip/generators/osi/project - {}", e.getMessage());
             return new ResponseEntity<>("Make sure attachment is a zip file (.zip): " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -152,67 +149,68 @@ public class OSIController {
      * USAGE. Send POST request to /generators/osi to generate an SBOM from source file(s).
      *
      * @param projectName The name of the project.
-     * @param schema The schema of the desired SBOM.
-     * @param format The file format of the desired SBOM.
-     * @param toolNames An optional list of tool names to use when running OSI. If not provided or empty, all
-     *                  possible tools will be used.
+     * @param schema      The schema of the desired SBOM.
+     * @param format      The file format of the desired SBOM.
+     * @param toolNames   An optional list of tool names to use when running OSI. If not provided or empty, all
+     *                    possible tools will be used.
      * @return The ID of the uploaded SBOM.
      */
     @PostMapping(value = "")
     public ResponseEntity<?> generateWithOSI(@RequestParam("projectName") String projectName,
                                              @RequestParam("schema") SerializerFactory.Schema schema,
                                              @RequestParam("format") SerializerFactory.Format format,
-                                             @RequestParam(value = "toolNames", required = false) String[] toolNames) throws IOException {
+                                             @RequestParam(value = "toolNames", required = false) String toolNames) {
 
-        //TODO: Maybe change toolNames to string and parse to array
-
-        //Remove [ and ] from first and last index due to array manipulation on request
-        toolNames[0] = toolNames[0].substring(1);
-        toolNames[toolNames.length - 1] = toolNames[toolNames.length - 1].substring(0, toolNames[toolNames.length - 1].length() - 1);
-
-
-        List<String> generatedSBOMFilePaths;
+        HashMap<String, String> generatedSBOMs;
         try {
             // Run with requested tools, default to relevant ones
             List<String> tools;
             if (toolNames != null) {
-                tools = List.of(toolNames);
+                /*
+                todo - this is a hotfix
+                tldr when gui sends multipart form "toolNames" is sent as string ( "["foo","bar"]" )
+                and not an actual String[]. This hotfix just converts the string to an array
+                 */
+                ObjectMapper mapper = new ObjectMapper();
+                tools = List.of(mapper.readValue(toolNames, String[].class));
             } else {
                 tools = this.osiService.getTools("project");
             }
 
             // Generate SBOMs in the bound SBOM Directory
             LOGGER.info("POST /svip/generators/osi - Running with tool names: " + tools);
-            generatedSBOMFilePaths = this.osiService.generateSBOMs(tools);
+            generatedSBOMs = this.osiService.generateSBOMs(tools);
         } catch (Exception e) {
             LOGGER.warn("POST /svip/generators/osi - Exception occurred while running OSI container: " + e.getMessage());
             return new ResponseEntity<>("Exception occurred while running OSI container.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         // No SBOMs generated
-        if(generatedSBOMFilePaths.isEmpty())
+        if (generatedSBOMs.isEmpty())
             return new ResponseEntity<>("No SBOMs were generated", HttpStatus.NO_CONTENT);
 
         // Upload SBOMs to SB
         List<SBOMFile> uploaded = new ArrayList<>();
-        for (String path: generatedSBOMFilePaths) {
+        generatedSBOMs.forEach((fileName, base64Content) -> {
             // Try to upload new SBOM to DB
             try {
-                UploadSBOMFileInput input =
-                        new UploadSBOMFileInput(path, Files.readString(Path.of(path), StandardCharsets.UTF_8));
+                UploadSBOMFileInput input = new UploadSBOMFileInput(
+                        fileName,
+                        new String(Base64.getDecoder().decode(base64Content)));
                 SBOMFile sbomFile = input.toSBOMFile();
-                this.sbomService.upload(sbomFile);
+                sbomService.upload(sbomFile);
                 uploaded.add(sbomFile);
 
-                LOGGER.info("POST /svip/generators/osi - Generated SBOM with ID " + sbomFile.getId() + ": " + sbomFile.getName());
+                LOGGER.info("POST /svip/generators/osi - Generated SBOM with ID {}: {}", sbomFile.getId(), sbomFile.getName());
             } catch (IllegalArgumentException e) {
                 // Parsing error / unsupported format
-                LOGGER.error("POST /svip/generators/osi - Failed to parse " + path + " : " + e.getMessage() );
+                LOGGER.error("POST /svip/generators/osi - Failed to parse {} : {}", fileName, e.getMessage());
             } catch (Exception e) {
                 // Problem with uploading/parsing
                 LOGGER.error("POST /svip/generators/osi - " + e.getMessage());
             }
-        }
+        });
+
 
         // All SBOMs failed to parse
         if (uploaded.isEmpty()) {
@@ -220,11 +218,11 @@ public class OSIController {
             return new ResponseEntity<>("No SBOMs generated for these files.", HttpStatus.NO_CONTENT);
         }
 
-        LOGGER.info("POST /svip/generators/osi - Parsed " + uploaded.size() + " SBOMs successfully" );
+        LOGGER.info("POST /svip/generators/osi - Parsed {} SBOMs successfully", uploaded.size());
 
         // Merge SBOMs
         Long mergedID;
-        if(uploaded.size() >= 2){
+        if (uploaded.size() >= 2) {
             LOGGER.info("POST /svip/generators/osi - Beginning Merging");
             try {
                 // Merge SBOMs into one SBOM
@@ -238,22 +236,21 @@ public class OSIController {
             } finally {
                 // todo param to delete or not?
                 // Delete any temp SBOM from database
-                for(SBOMFile sbomFile : uploaded)
-                    this.sbomService.deleteSBOMFile(sbomFile);
+                uploaded.forEach(sbomService::deleteSBOMFile);
             }
-            LOGGER.info("POST /svip/generators/osi - Successfully merged SBOMs to SBOM with id " + mergedID);
+            LOGGER.info("POST /svip/generators/osi - Successfully merged SBOMs to SBOM with id {}", mergedID);
         } else {
             // Only 1 SBOM generated, no need to merge
             LOGGER.info("POST /svip/generators/osi - Only 1 SBOM uploaded, skipping merging");
-            mergedID = uploaded.get(0).getId();
+            mergedID = uploaded.getFirst().getId();
         }
 
         // Convert
         Long convertedID;
         try {
-            LOGGER.info("POST /svip/generators/osi - Converting SBOM to " + schema + " " + format);
-            convertedID = this.sbomService.convert(mergedID, schema, format, true);
-            LOGGER.info("POST /svip/generators/osi - Successfully merged SBOMs to SBOM with id " + convertedID);
+            LOGGER.info("POST /svip/generators/osi - Converting SBOM to {} {}", schema, format);
+            convertedID = sbomService.convert(mergedID, schema, format, true);
+            LOGGER.info("POST /svip/generators/osi - Successfully merged SBOMs to SBOM with id {}", convertedID);
         } catch (DeserializerException | JsonProcessingException | SerializerException | SBOMBuilderException |
                  ConversionException e) {
             // Failed to convert

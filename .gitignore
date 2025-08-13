@@ -77,3 +77,7 @@ gradle-app.setting
 
 # dev enviroment files
 /.dev-env/
+
+# secrets
+.env
+.memo

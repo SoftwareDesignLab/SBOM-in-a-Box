@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.serializers.serializer;
@@ -42,11 +43,13 @@ import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
-
 import org.svip.serializers.Metadata;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Name: CDX14XMLSerializer.java
@@ -78,7 +81,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
      */
     @Override
     public String writeToString(SVIPSBOM sbom) throws JsonProcessingException {
-        if(prettyPrint)
+        if (prettyPrint)
             return getObjectMapper().writer().with(SerializationFeature.INDENT_OUTPUT).writeValueAsString(sbom);
         else return getObjectMapper().writer().writeValueAsString(sbom);
     }
@@ -151,11 +154,11 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         xmlGenerator.writeStartObject();
 
         // Write the metadata
-        if(sbom.getCreationData() != null)
+        if (sbom.getCreationData() != null)
             writeMetadata(xmlGenerator, sbom.getCreationData());
 
         // Write the root component into the metadata
-        if(sbom.getRootComponent() != null) {
+        if (sbom.getRootComponent() != null) {
             writeComponent(xmlGenerator, sbom.getRootComponent());
         }
 
@@ -167,8 +170,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         //
 
 
-
-        if(sbom.getComponents() != null) {
+        if (sbom.getComponents() != null) {
             // Write the components
             xmlGenerator.writeFieldName("components");
             xmlGenerator.writeStartObject();
@@ -177,7 +179,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
             for (Component component : sbom.getComponents()) {
 
                 // If the component isn't null
-                if(component != null) {
+                if (component != null) {
 
                     // Cast the component to an SVIPComponent and write the component
                     SVIPComponentObject svipComponent = (SVIPComponentObject) component;
@@ -229,20 +231,20 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         xmlGenerator.writeEndObject();
 
         // If creation tools exists
-        if(data.getCreationTools() != null) {
+        if (data.getCreationTools() != null) {
 
             // Start tools xml object
             xmlGenerator.writeFieldName("tools");
             xmlGenerator.writeStartObject();
 
             // Go through each tools
-            for(CreationTool tool : data.getCreationTools()) {
+            for (CreationTool tool : data.getCreationTools()) {
 
                 // Start new tool xml object
                 xmlGenerator.writeFieldName("tool");
                 xmlGenerator.writeStartObject();
 
-                if(tool.getVendor() != null){
+                if (tool.getVendor() != null) {
                     // Add vendor xml object
                     xmlGenerator.writeFieldName("vendor");
                     xmlGenerator.writeStartObject();
@@ -250,7 +252,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
                     xmlGenerator.writeEndObject();
                 }
 
-                if(tool.getName() != null){
+                if (tool.getName() != null) {
                     // Add name xml object
                     xmlGenerator.writeFieldName("name");
                     xmlGenerator.writeStartObject();
@@ -259,7 +261,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
                 }
 
 
-                if(tool.getVersion() != null){
+                if (tool.getVersion() != null) {
                     // Add version xml object
                     xmlGenerator.writeFieldName("version");
                     xmlGenerator.writeStartObject();
@@ -268,14 +270,14 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
                 }
 
                 // If the tool has hashes
-                if(tool.getHashes() != null) {
+                if (tool.getHashes() != null) {
 
                     // Start new hashes xml object
                     xmlGenerator.writeFieldName("hashes");
                     xmlGenerator.writeStartObject();
 
                     // Iterate through each hash in the tool
-                    for(Map.Entry<String, String> hash : tool.getHashes().entrySet()) {
+                    for (Map.Entry<String, String> hash : tool.getHashes().entrySet()) {
 
                         // Start a new hash xml object
                         xmlGenerator.writeFieldName("hash");
@@ -312,7 +314,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         }
 
         // If Authors exist for creation data
-        if(data.getAuthors() != null && data.getAuthors().size() > 0) {
+        if (data.getAuthors() != null && data.getAuthors().size() > 0) {
 
             // Start new contacts xml object
             xmlGenerator.writeFieldName("contacts");
@@ -323,7 +325,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
             xmlGenerator.writeStartArray();
 
             // Go through each contact
-            for(Contact author : data.getAuthors()) {
+            for (Contact author : data.getAuthors()) {
 
                 // Write the contact
                 writeContact(xmlGenerator, author);
@@ -339,7 +341,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         }
 
         // Write manufacturer
-        if(data.getManufacture() != null) {
+        if (data.getManufacture() != null) {
             xmlGenerator.writeFieldName("manufacturer");
             xmlGenerator.writeStartObject();
             writeOrganization(xmlGenerator, data.getManufacture());
@@ -347,7 +349,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         }
 
         // Write Supplier
-        if(data.getSupplier() != null) {
+        if (data.getSupplier() != null) {
             xmlGenerator.writeFieldName("supplier");
             xmlGenerator.writeStartObject();
             writeOrganization(xmlGenerator, data.getSupplier());
@@ -433,7 +435,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
             );
 
         // Write the component's hashes
-        if(svipComponentObject.getHashes() != null) writeHashes(xmlGenerator, svipComponentObject.getHashes());
+        if (svipComponentObject.getHashes() != null) writeHashes(xmlGenerator, svipComponentObject.getHashes());
 
         // Write the component's licenses
         if (svipComponentObject.getLicenses() != null) {
@@ -454,11 +456,11 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
             xmlGenerator.writeStringField("purl", String.join(", ", svipComponentObject.getPURLs()));
 
         // Write External References
-        if(svipComponentObject.getExternalReferences() != null)
+        if (svipComponentObject.getExternalReferences() != null)
             writeExternalReferences(xmlGenerator, svipComponentObject.getExternalReferences());
 
         // Write Properties
-        if(svipComponentObject.getProperties() != null)
+        if (svipComponentObject.getProperties() != null)
             writeProperties(xmlGenerator, svipComponentObject.getProperties());
 
         // Write release notes
@@ -476,13 +478,13 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
      * @param relationships The dependencies to be written.
      * @throws IOException
      */
-    public void writeDependencies(ToXmlGenerator xmlGenerator,Map<String, Set<Relationship>> relationships) throws IOException {
+    public void writeDependencies(ToXmlGenerator xmlGenerator, Map<String, Set<Relationship>> relationships) throws IOException {
 
-        if(relationships.containsKey(null) && relationships.size() == 1)
+        if (relationships.containsKey(null) && relationships.size() == 1)
             return;
 
         // Cycle through each dependency set
-        for(Map.Entry<String, Set<Relationship>> parent : relationships.entrySet()) {
+        for (Map.Entry<String, Set<Relationship>> parent : relationships.entrySet()) {
 
             // Start new dependency xml object
             xmlGenerator.writeFieldName("dependency");
@@ -495,7 +497,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
             xmlGenerator.setNextIsAttribute(false);
 
             // Cycle through each dependency of the parent
-            for(Relationship dependency : parent.getValue()) {
+            for (Relationship dependency : parent.getValue()) {
 
                 // Start a new dependency xml object
                 xmlGenerator.writeFieldName("dependency");
@@ -533,7 +535,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
     public void writeOrganization(ToXmlGenerator xmlGenerator, Organization organization) throws IOException {
 
         // Write the name for the organization
-        if(organization.getUrl() != null)
+        if (organization.getUrl() != null)
             xmlGenerator.writeStringField("name", organization.getName());
 
         // Write the url for the organization
@@ -545,13 +547,13 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         xmlGenerator.writeStartArray();
 
         // Add each contact
-        if(organization.getContacts() != null) {
+        if (organization.getContacts() != null) {
 
             // Add each contact
             for (Contact contact : organization.getContacts()) {
 
                 // If a contact exists write the contact
-                if(contact != null) writeContact(xmlGenerator, contact);
+                if (contact != null) writeContact(xmlGenerator, contact);
 
             }
 
@@ -645,7 +647,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         xmlGenerator.writeStartArray();
 
         // Add each license
-        for(String license : licenses) {
+        for (String license : licenses) {
             xmlGenerator.writeStartObject();
             xmlGenerator.writeStringField("name", license);
             xmlGenerator.writeEndObject();
@@ -673,7 +675,7 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         xmlGenerator.writeStartObject();
 
         // Add each external reference
-        for(ExternalReference ref : externalReferences) {
+        for (ExternalReference ref : externalReferences) {
 
             // Start a new xml array of references
             xmlGenerator.writeFieldName("reference");
@@ -712,9 +714,9 @@ public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Seria
         xmlGenerator.writeFieldName("properties");
         xmlGenerator.writeStartObject();
 
-        for(Map.Entry<String, Set<String>> property : properties.entrySet()) {
+        for (Map.Entry<String, Set<String>> property : properties.entrySet()) {
 
-            for(String value : property.getValue()) {
+            for (String value : property.getValue()) {
 
                 // Start new xml object property
                 xmlGenerator.writeFieldName("property");

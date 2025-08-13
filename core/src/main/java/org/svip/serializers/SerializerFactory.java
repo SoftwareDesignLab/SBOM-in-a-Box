@@ -1,31 +1,31 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.serializers;
 
 
 import org.json.JSONObject;
-import org.json.XML;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
@@ -34,17 +34,13 @@ import org.svip.serializers.deserializer.*;
 import org.svip.serializers.serializer.*;
 import org.xml.sax.InputSource;
 
-import javax.xml.crypto.dsig.XMLObject;
-import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static org.svip.serializers.SerializerFactory.Format.JSON;
-import static org.svip.serializers.SerializerFactory.Format.TAGVALUE;
-import static org.svip.serializers.SerializerFactory.Format.XML;
+import static org.svip.serializers.SerializerFactory.Format.*;
 import static org.svip.serializers.SerializerFactory.Schema.*;
 
 /**
@@ -56,6 +52,95 @@ import static org.svip.serializers.SerializerFactory.Schema.*;
  * @author Ian Dunn
  */
 public class SerializerFactory {
+    /**
+     * TODO find an accurate way to determine schema
+     * Resolves the SBOM schema of the contents of a file.
+     *
+     * @param fileContents The file contents to resolve the schema of.
+     * @return The schema, or null if no schema could be resolved.
+     */
+    public static Schema resolveSchema(String fileContents) {
+        if (fileContents.contains("bom-ref")
+                || fileContents.contains("xmlns=\"http://cyclonedx.org/schema/bom/1.4\"")
+                || fileContents.contains("CycloneDX") && fileContents.contains("1.4")) return CDX14;
+        else if (fileContents.contains("SPDXID")) return SPDX23;
+        else if (fileContents.contains("rootComponent")) return SVIP; // Field unique to SVIP SBOM
+        else return null;
+    }
+
+    /**
+     * Resolves the SBOM schema by determining the instance of an SBOM object.
+     *
+     * @param sbom The SBOM Object to resolve the schema of.
+     * @return The schema, or null if no schema could be resolved.
+     */
+    public static Schema resolveSchemaByObject(SBOM sbom) {
+        if (sbom instanceof CDX14SBOM) return CDX14;
+        else if (sbom instanceof SPDX23SBOM) return SPDX23;
+        else if (sbom instanceof SVIPSBOM) return SVIP;
+        else return null;
+    }
+
+    /**
+     * TODO add support for XML
+     * Resolves the file format of the contents of a file.
+     *
+     * @param fileContents The file contents to resolve the format of.
+     * @return The format, or null if no format could be resolved.
+     */
+    public static Format resolveFormat(String fileContents) {
+        if (Format.isValidTagValue(fileContents))
+            return TAGVALUE;
+        else if (Format.isValidJSON(fileContents))
+            return JSON;
+        else if (Format.isValidXML(fileContents))
+            return Format.XML;
+        else return null;
+    }
+
+    /**
+     * Create a Deserializer for an SBOM file by auto-detecting its schema and format using its contents.
+     *
+     * @param fileContents The contents of the SBOM file to deserialize.
+     * @return A Deserializer to deserialize the SBOM file.
+     * @throws IllegalArgumentException If a schema and/or format cannot be determined.
+     */
+    public static Deserializer createDeserializer(String fileContents) throws IllegalArgumentException {
+        // Defaults to CDX14JSONDeserializer
+        Schema schema = resolveSchema(fileContents);
+        Format format = resolveFormat(fileContents);
+
+        String errorMessage;
+        if (schema == null)
+            errorMessage = "Invalid SBOM schema.";
+        else if (format == null)
+            errorMessage = "Invalid file format.";
+        else
+            return schema.getDeserializer(format);
+
+        throw new IllegalArgumentException(errorMessage);
+    }
+
+    /**
+     * Create a Serializer for an SBOM object provided the schema, format, and whether to pretty-print the SBOM file
+     * or not.
+     *
+     * @param schema      The schema of the SBOM file.
+     * @param format      The format of the SBOM file.
+     * @param prettyPrint Whether to pretty-print the SBOM file.
+     * @return A Serializer to serialize the SBOM file.
+     * @throws IllegalArgumentException If the schema/format combination provided is invalid.
+     */
+    public static Serializer createSerializer(Schema schema, Format format, boolean prettyPrint) throws IllegalArgumentException {
+        // Map schema + format to a serializer
+        Serializer serializer = schema.getSerializer(format);
+
+        // Set objectmapper to pretty-print if specified
+        if (prettyPrint) serializer.setPrettyPrinting(true);
+
+        return serializer;
+    }
+
     /**
      * Stores a list of schemas and their valid format/serializer mappings. Each schema has the methods getSerializer
      * () and getDeserializer() based on formats. If an invalid format is found, an IllegalArgumentException is thrown.
@@ -111,7 +196,7 @@ public class SerializerFactory {
          * @param deserializerMap A map of valid formats to deserializers.
          */
         Schema(String name, String version, Map<Format, Serializer> serializerMap,
-                       Map<Format, Deserializer> deserializerMap) {
+               Map<Format, Deserializer> deserializerMap) {
             this.name = name;
             this.version = version;
             this.serializerMap = serializerMap;
@@ -207,94 +292,5 @@ public class SerializerFactory {
                     .map(line -> line.split(": ")[0]) // Get the tag
                     .allMatch(line -> p.matcher(line).matches()); // Match tag to regex
         }
-    }
-
-    /**
-     * TODO find an accurate way to determine schema
-     * Resolves the SBOM schema of the contents of a file.
-     *
-     * @param fileContents The file contents to resolve the schema of.
-     * @return The schema, or null if no schema could be resolved.
-     */
-    public static Schema resolveSchema(String fileContents) {
-        if (fileContents.contains("bom-ref")
-                || fileContents.contains("xmlns=\"http://cyclonedx.org/schema/bom/1.4\"")
-                || fileContents.contains("CycloneDX") && fileContents.contains("1.4")) return CDX14;
-        else if (fileContents.contains("SPDXID")) return SPDX23;
-        else if (fileContents.contains("rootComponent")) return SVIP; // Field unique to SVIP SBOM
-        else return null;
-    }
-
-    /**
-     * Resolves the SBOM schema by determining the instance of an SBOM object.
-     *
-     * @param sbom The SBOM Object to resolve the schema of.
-     * @return The schema, or null if no schema could be resolved.
-     */
-    public static Schema resolveSchemaByObject(SBOM sbom) {
-        if (sbom instanceof CDX14SBOM) return CDX14;
-        else if (sbom instanceof SPDX23SBOM) return SPDX23;
-        else if (sbom instanceof SVIPSBOM) return SVIP;
-        else return null;
-    }
-
-    /**
-     * TODO add support for XML
-     * Resolves the file format of the contents of a file.
-     *
-     * @param fileContents The file contents to resolve the format of.
-     * @return The format, or null if no format could be resolved.
-     */
-    public static Format resolveFormat(String fileContents) {
-        if (Format.isValidTagValue(fileContents))
-            return TAGVALUE;
-        else if (Format.isValidJSON(fileContents))
-            return JSON;
-        else if(Format.isValidXML(fileContents))
-            return Format.XML;
-        else return null;
-    }
-
-    /**
-     * Create a Deserializer for an SBOM file by auto-detecting its schema and format using its contents.
-     *
-     * @param fileContents The contents of the SBOM file to deserialize.
-     * @return A Deserializer to deserialize the SBOM file.
-     * @throws IllegalArgumentException If a schema and/or format cannot be determined.
-     */
-    public static Deserializer createDeserializer(String fileContents) throws IllegalArgumentException {
-        // Defaults to CDX14JSONDeserializer
-        Schema schema = resolveSchema(fileContents);
-        Format format = resolveFormat(fileContents);
-
-        String errorMessage;
-        if (schema == null)
-            errorMessage = "Invalid SBOM schema.";
-        else if (format == null)
-            errorMessage = "Invalid file format.";
-        else
-            return schema.getDeserializer(format);
-
-        throw new IllegalArgumentException(errorMessage);
-    }
-
-    /**
-     * Create a Serializer for an SBOM object provided the schema, format, and whether to pretty-print the SBOM file
-     * or not.
-     *
-     * @param schema      The schema of the SBOM file.
-     * @param format      The format of the SBOM file.
-     * @param prettyPrint Whether to pretty-print the SBOM file.
-     * @return A Serializer to serialize the SBOM file.
-     * @throws IllegalArgumentException If the schema/format combination provided is invalid.
-     */
-    public static Serializer createSerializer(Schema schema, Format format, boolean prettyPrint) throws IllegalArgumentException {
-        // Map schema + format to a serializer
-        Serializer serializer = schema.getSerializer(format);
-
-        // Set objectmapper to pretty-print if specified
-        if (prettyPrint) serializer.setPrettyPrinting(true);
-
-        return serializer;
     }
 }

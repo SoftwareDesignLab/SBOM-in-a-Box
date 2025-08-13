@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.sbom.model.objects.SPDX23;
@@ -166,6 +167,67 @@ public class SPDX23PackageObject implements SPDX23Package {
      * Package's valid until date
      */
     private final String validUntilDate;
+
+    /**
+     * Constructor to build new SPDX 2.3 Package Object
+     *
+     * @param type               package type
+     * @param uid                package uid
+     * @param author             package author
+     * @param name               package name
+     * @param licenses           package licenses
+     * @param copyright          package copyright
+     * @param hashes             package hashes
+     * @param supplier           package supplier
+     * @param version            package version
+     * @param description        package description
+     * @param cpes               package CPEs
+     * @param purls              package PURLs
+     * @param externalReferences package external references
+     * @param downloadLocation   package download location
+     * @param fileName           package file name
+     * @param filesAnalyzed      if package's files were analyzed
+     * @param verificationCode   package verification code
+     * @param homePage           package home page
+     * @param sourceInfo         package source info
+     * @param releaseDate        package release date
+     * @param builtDate          package build date
+     * @param validUntilDate     package valid until date
+     */
+    public SPDX23PackageObject(String type, String uid, String author, String name,
+                               LicenseCollection licenses, String copyright,
+                               HashMap<String, String> hashes, Organization supplier,
+                               String version, Description description, Set<String> cpes,
+                               Set<String> purls, Set<ExternalReference> externalReferences,
+                               String downloadLocation, String fileName, Boolean filesAnalyzed,
+                               String verificationCode, String homePage, String sourceInfo,
+                               String releaseDate, String builtDate, String validUntilDate,
+                               String comment, String attributionText) {
+        this.type = type;
+        this.uid = uid;
+        this.author = author;
+        this.name = name;
+        this.licenses = licenses;
+        this.copyright = copyright;
+        this.hashes = hashes;
+        this.supplier = supplier;
+        this.version = version;
+        this.description = description;
+        this.cpes = cpes;
+        this.purls = purls;
+        this.externalReferences = externalReferences;
+        this.downloadLocation = downloadLocation;
+        this.fileName = fileName;
+        this.filesAnalyzed = filesAnalyzed;
+        this.verificationCode = verificationCode;
+        this.homePage = homePage;
+        this.sourceInfo = sourceInfo;
+        this.releaseDate = releaseDate;
+        this.builtDate = builtDate;
+        this.validUntilDate = validUntilDate;
+        this.comment = comment;
+        this.attributionText = attributionText;
+    }
 
     /**
      * Get the package's type
@@ -405,67 +467,6 @@ public class SPDX23PackageObject implements SPDX23Package {
     @Override
     public String getAttributionText() {
         return this.attributionText;
-    }
-
-    /**
-     * Constructor to build new SPDX 2.3 Package Object
-     *
-     * @param type               package type
-     * @param uid                package uid
-     * @param author             package author
-     * @param name               package name
-     * @param licenses           package licenses
-     * @param copyright          package copyright
-     * @param hashes             package hashes
-     * @param supplier           package supplier
-     * @param version            package version
-     * @param description        package description
-     * @param cpes               package CPEs
-     * @param purls              package PURLs
-     * @param externalReferences package external references
-     * @param downloadLocation   package download location
-     * @param fileName           package file name
-     * @param filesAnalyzed      if package's files were analyzed
-     * @param verificationCode   package verification code
-     * @param homePage           package home page
-     * @param sourceInfo         package source info
-     * @param releaseDate        package release date
-     * @param builtDate          package build date
-     * @param validUntilDate     package valid until date
-     */
-    public SPDX23PackageObject(String type, String uid, String author, String name,
-                               LicenseCollection licenses, String copyright,
-                               HashMap<String, String> hashes, Organization supplier,
-                               String version, Description description, Set<String> cpes,
-                               Set<String> purls, Set<ExternalReference> externalReferences,
-                               String downloadLocation, String fileName, Boolean filesAnalyzed,
-                               String verificationCode, String homePage, String sourceInfo,
-                               String releaseDate, String builtDate, String validUntilDate,
-                               String comment, String attributionText) {
-        this.type = type;
-        this.uid = uid;
-        this.author = author;
-        this.name = name;
-        this.licenses = licenses;
-        this.copyright = copyright;
-        this.hashes = hashes;
-        this.supplier = supplier;
-        this.version = version;
-        this.description = description;
-        this.cpes = cpes;
-        this.purls = purls;
-        this.externalReferences = externalReferences;
-        this.downloadLocation = downloadLocation;
-        this.fileName = fileName;
-        this.filesAnalyzed = filesAnalyzed;
-        this.verificationCode = verificationCode;
-        this.homePage = homePage;
-        this.sourceInfo = sourceInfo;
-        this.releaseDate = releaseDate;
-        this.builtDate = builtDate;
-        this.validUntilDate = validUntilDate;
-        this.comment = comment;
-        this.attributionText = attributionText;
     }
 
     /**

@@ -27,8 +27,8 @@
 
 # System Requirements
 
-- Java 17
-- Gradle
+- Java 17+
+- Gradle 8+
 - Docker (run `docker ps` to determine installation status)
 
 ---
@@ -50,18 +50,22 @@ $ docker compose up
 
 ## Development
 
-To modify and test this project, you will need to run the MySQL server in a Docker container and the API detached as
-either a compiled JAR file or with your IDE of choice.
+To modify and test the api, you will need to run the MySQL server in a Docker container. The `compose.dev.yaml` file
+contains a dev deployment with exposed ports for debugging. To debug the sbox or OSI api, launch the following compose
+scripts respectively
 
-```shell
-# Build detached API jar (skip if running in IDE)
-$ ./gradlew build
-# Build and deploy MySQL server ONLY to allow running API outside of its container. Use -d to run detached.
-$ docker compose up mysql
-# Rename jar file
-$ move api/build/libs/api-1.0.0-alpha.jar SVIP_API.jar
-# Run detached jar file or in IDE
-$ java -jar SVIP_API.jar
+```bash
+# launch db and osi
+docker compose -f compose.dev.yaml up sbox_db osi
+```
+
+```bash
+# launch db and sbox
+docker compose -f compose.dev.yaml up sbox_db sbox_api
+```
+Then the api can be launched. Ensure the `MYSQL_USER` and `MYSQL_PASSWORD` env variables are set, or if using gradle:
+```bash
+MYSQL_USER=<username> MYSQL_PASSWORD=<password> gradle bootRun
 ```
 
 #### Tips
@@ -537,18 +541,12 @@ curl -X GET -G http://localhost:8080/svip/sboms/vex \
 
 ## MySQL Database
 
-Located at `localhost:3306` while the `svip-mysql` Docker container is running.
+Located at `localhost:3306` while the `sbox_db` Docker container is running.
 
 Use the following command to interact with the MySQL server instance:
 
 ```shell
-$ docker exec -it svip-mysql mysql -uroot -psvipMySQL -D svip -e "<YOUR SQL STATEMENT HERE>"
+$ docker exec -it ssbox_db mysql -u root -p <root-pw> -D svip -e "<YOUR SQL STATEMENT HERE>"
 ```
 
-#### Table `files` Schema:
-
-|   Field   |    Type    | Null | Key | Default | Extra |
-|:---------:|:----------:|:----:|:---:|:-------:|:-----:|
-|    id     | bigint(20) |  NO  | PRI |  NULL   |       |
-| contents  |  longtext  | YES  |     |  NULL   |       |
-| file_name |    text    | YES  |     |  NULL   |       |
+Using the credentials set in the `.env` file

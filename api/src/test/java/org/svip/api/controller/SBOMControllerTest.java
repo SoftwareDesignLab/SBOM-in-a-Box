@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.api.controller;
@@ -56,19 +57,15 @@ import static org.mockito.Mockito.when;
 @DisplayName("SBOM Controller Test")
 public class SBOMControllerTest {
 
-    @Mock
-    private SBOMFileService sbomFileService;      // Mock service
-
-    @InjectMocks
-    private SBOMController sbomController;    // Instance of controller for testing
-
     // Test SBOMs
     private static final String CDX_JSON_SBOM_FILE = "./src/test/resources/sample_sboms/cdx-gomod-1.4.0-bin.json";
     private static final String CDX_SMALL = "./src/test/resources/sample_sboms/CDX_Test.json";
+    @Mock
+    private SBOMFileService sbomFileService;      // Mock service
+    @InjectMocks
+    private SBOMController sbomController;    // Instance of controller for testing
 
-    ///
     /// Upload
-    ///
     @Test
     @DisplayName("Upload valid SBOM")
     void upload_valid_sbom() throws Exception {
@@ -77,15 +74,15 @@ public class SBOMControllerTest {
         SBOMFile sbomFile = input.toSBOMFile();
         // When
         when(this.sbomFileService.upload(any(SBOMFile.class))).thenAnswer(i -> i.getArgument(0));   // echo
-        ResponseEntity<Long> response =  this.sbomController.upload(input);
+        ResponseEntity<Long> response = this.sbomController.upload(input);
         // Then
-        assertEquals(HttpStatus.OK, response.getStatusCode() );
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(sbomFile.getId(), response.getBody());
     }
 
     @Test
     @DisplayName("Upload invalid SBOM")
-    void upload_invalid_sbom(){
+    void upload_invalid_sbom() {
         // Given
         UploadSBOMFileInput input = new UploadSBOMFileInput("CDX14_JSON", "SBOM CONTENTS");
         // When
@@ -94,9 +91,7 @@ public class SBOMControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
-    ///
     /// Merge
-    ///
     @Test
     @DisplayName("Merge 2 SBOMs")
     void merge_two_sboms() throws Exception {
@@ -109,7 +104,7 @@ public class SBOMControllerTest {
         // When
         when(this.sbomFileService.merge(ids)).thenReturn(2L);
 
-        ResponseEntity<Long> response =  this.sbomController.merge(ids);
+        ResponseEntity<Long> response = this.sbomController.merge(ids);
         // Then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(2L, response.getBody());
@@ -317,9 +312,7 @@ public class SBOMControllerTest {
         assertNull(response.getBody());
     }
 
-    ///
     /// Helper Methods
-    ///
     private String fileToContents(String filepath) throws IOException {
         return new String(Files.readAllBytes(Paths.get(filepath)));
     }

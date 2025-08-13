@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.api.services;
@@ -52,15 +53,6 @@ import java.util.Map;
 @Transactional
 public class DiffService {
 
-    // Utility to hold JSON Formatted Diff Report
-    @JsonPropertyOrder({"target", "diffeport"})
-    private record DiffReport(Long target, Map<Long, ComparisonJSON> diffReport){
-    }
-
-    // Utility to hold JSON Formatted comparison
-    private record ComparisonJSON(Map<String, List<ConflictFile>> componentConflicts, List<String> missingComponents){
-    }
-
     private final ComparisonFileRepository comparisonFileRepository;
     private final ConflictFileRepository conflictFileRepository;
 
@@ -68,9 +60,9 @@ public class DiffService {
      * Create new Service for a target repository
      *
      * @param comparisonFileRepository comparison repository to access
-     * @param conflictFileRepository conflict reporsitory to access
+     * @param conflictFileRepository   conflict reporsitory to access
      */
-    public DiffService(ComparisonFileRepository comparisonFileRepository, ConflictFileRepository conflictFileRepository){
+    public DiffService(ComparisonFileRepository comparisonFileRepository, ConflictFileRepository conflictFileRepository) {
         this.comparisonFileRepository = comparisonFileRepository;
         this.conflictFileRepository = conflictFileRepository;
     }
@@ -86,7 +78,7 @@ public class DiffService {
         try {
             this.comparisonFileRepository.save(cf);
             // upload conflicts
-            for(ConflictFile c : cf.getConflicts())
+            for (ConflictFile c : cf.getConflicts())
                 uploadConflictFile(c);
 
             return cf;
@@ -110,7 +102,7 @@ public class DiffService {
                 info to build in the deserialization stage. UPLOAD SHOULD FAIL IF NAME IS NULL, this just prevents
                 that from happening
             */
-            if(cf.getName() == null)
+            if (cf.getName() == null)
                 return null;
 
             return this.conflictFileRepository.save(cf);
@@ -120,11 +112,10 @@ public class DiffService {
         }
     }
 
-
     /**
      * Generate a Diff Report for a collection of SBOMs
      *
-     * @param sfs SBOM File Service to access SBOMs
+     * @param sfs      SBOM File Service to access SBOMs
      * @param targetID Target SBOM ID
      * @param otherIDs collection of SBOM IDs to compare to
      * @return JSON String of a diff report
@@ -135,7 +126,7 @@ public class DiffService {
         // Get target SBOM
         SBOMFile targetSBOMFile = sfs.getSBOMFile(targetID);
         // todo throw error
-        if(targetSBOMFile == null)
+        if (targetSBOMFile == null)
             return null;
 
         org.svip.sbom.model.interfaces.generics.SBOM targetSBOM = targetSBOMFile.toSBOMObject();
@@ -157,7 +148,7 @@ public class DiffService {
 
             // Attempt to get comparison, generate and upload if one doesn't exist.
             ComparisonFile cf = this.comparisonFileRepository.findByTargetSBOMFileAndOtherSBOMFile(targetSBOMFile, otherSBOMFile);
-            if(cf == null){
+            if (cf == null) {
                 Comparison comparison = new Comparison(targetSBOM, otherSBOMFile.toSBOMObject());
                 cf = upload(new UploadComparisonFileInput(comparison).toComparisonFile(targetSBOMFile, otherSBOMFile));
             }
@@ -165,9 +156,9 @@ public class DiffService {
             // Sort component conflicts
             Map<String, List<ConflictFile>> componentConflicts = new HashMap<>();
             List<String> missingComponents = new ArrayList<>();
-            for(ConflictFile c : cf.getConflicts()){
+            for (ConflictFile c : cf.getConflicts()) {
                 // Add to missing if missing
-                if(c.getMismatchType() == MismatchType.MISSING_COMPONENT){
+                if (c.getMismatchType() == MismatchType.MISSING_COMPONENT) {
                     missingComponents.add(c.getName());
                     continue;
                 }
@@ -187,5 +178,14 @@ public class DiffService {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 
         return mapper.writeValueAsString(new DiffReport(targetID, comparisons));
+    }
+
+    // Utility to hold JSON Formatted Diff Report
+    @JsonPropertyOrder({"target", "diffeport"})
+    private record DiffReport(Long target, Map<Long, ComparisonJSON> diffReport) {
+    }
+
+    // Utility to hold JSON Formatted comparison
+    private record ComparisonJSON(Map<String, List<ConflictFile>> componentConflicts, List<String> missingComponents) {
     }
 }

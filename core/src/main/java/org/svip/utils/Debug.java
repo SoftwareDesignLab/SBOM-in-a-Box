@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.utils;
@@ -37,35 +38,6 @@ import java.util.Arrays;
  * @author Ian Dunn
  */
 public class Debug {
-    /**
-     * Enums for classifying log types
-     * <p>
-     * <b>Info</b> : Informational logs that contain parsing data<br/>
-     * <b>Summary</b> : Summative informational logs that contain broad parsing data<br/>
-     * <b>Debug</b> : Debug logs that contain deeper parsing data<br/>
-     * <b>Warn</b> : Warning logs that indicate possibly unsafe or erroneous operations<br/>
-     * <b>Error</b>  : Error logs that display failures that have occurred during parsing<br/>
-     * <b>Exception</b> : Exception logs that display caught exceptions that have occurred during parsing<br/>
-     */
-    public enum LOG_TYPE {
-        INFO("INFO "),
-        SUMMARY("SUMRY"),
-        DEBUG("DEBUG"),
-        WARN("WARN "),
-        ERROR("ERROR"),
-        EXCEPTION("EXCPT");
-
-        private final String shortName;
-
-        LOG_TYPE(String shortName) {
-            this.shortName = shortName;
-        }
-
-        public String shortName() {
-            return shortName;
-        }
-    }
-
     private static final String blockChar = "="; // Block character to use
     private static final int defaultBlockLength = 50;
     private static boolean debugMode = false; // Boolean toggle to allow debug logs
@@ -199,5 +171,34 @@ public class Debug {
             Debug.summaryMode = false;
         }
         log(LOG_TYPE.DEBUG, "Debug Mode is Enabled");
+    }
+
+    /**
+     * Enums for classifying log types
+     * <p>
+     * <b>Info</b> : Informational logs that contain parsing data<br/>
+     * <b>Summary</b> : Summative informational logs that contain broad parsing data<br/>
+     * <b>Debug</b> : Debug logs that contain deeper parsing data<br/>
+     * <b>Warn</b> : Warning logs that indicate possibly unsafe or erroneous operations<br/>
+     * <b>Error</b>  : Error logs that display failures that have occurred during parsing<br/>
+     * <b>Exception</b> : Exception logs that display caught exceptions that have occurred during parsing<br/>
+     */
+    public enum LOG_TYPE {
+        INFO("INFO "),
+        SUMMARY("SUMRY"),
+        DEBUG("DEBUG"),
+        WARN("WARN "),
+        ERROR("ERROR"),
+        EXCEPTION("EXCPT");
+
+        private final String shortName;
+
+        LOG_TYPE(String shortName) {
+            this.shortName = shortName;
+        }
+
+        public String shortName() {
+            return shortName;
+        }
     }
 }

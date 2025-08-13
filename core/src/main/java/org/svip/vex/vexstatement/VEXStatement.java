@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.vex.vexstatement;
@@ -69,6 +70,21 @@ public class VEXStatement {
      * The statement's vulnerability statement
      */
     private final Vulnerability vulnerability;
+
+    /**
+     * Constructor to build a new VEX Statement
+     *
+     * @param builder the Builder static class object for VEX Statement
+     */
+    private VEXStatement(Builder builder) {
+        this.statementID = builder.statementID;
+        this.statementVersion = builder.statementVersion;
+        this.statementFirstIssued = builder.statementFirstIssued;
+        this.statementLastUpdated = builder.statementLastUpdated;
+        this.status = builder.status;
+        this.products = builder.products;
+        this.vulnerability = builder.vulnerability;
+    }
 
     /**
      * Get the VEX Statement ID
@@ -133,39 +149,32 @@ public class VEXStatement {
         return this.vulnerability;
     }
 
-
     public static class Builder {
         // Required fields
-        /**
-         * The statement ID
-         */
-        private String statementID;
-
-        /**
-         * The statement version
-         */
-        private String statementVersion;
-
-        /**
-         * The statement's first issued date
-         */
-        private String statementFirstIssued;
-
-        /**
-         * The statement's last updated date
-         */
-        private String statementLastUpdated;
-
-        /**
-         * The statement's status
-         */
-        private Status status;
-
         /**
          * The statement's set of products
          */
         private final Set<Product> products = new HashSet<>();
-
+        /**
+         * The statement ID
+         */
+        private String statementID;
+        /**
+         * The statement version
+         */
+        private String statementVersion;
+        /**
+         * The statement's first issued date
+         */
+        private String statementFirstIssued;
+        /**
+         * The statement's last updated date
+         */
+        private String statementLastUpdated;
+        /**
+         * The statement's status
+         */
+        private Status status;
         /**
          * The statement's vulnerability statement
          */
@@ -256,21 +265,6 @@ public class VEXStatement {
         public VEXStatement build() {
             return new VEXStatement(this);
         }
-    }
-
-    /**
-     * Constructor to build a new VEX Statement
-     *
-     * @param builder the Builder static class object for VEX Statement
-     */
-    private VEXStatement(Builder builder) {
-        this.statementID = builder.statementID;
-        this.statementVersion = builder.statementVersion;
-        this.statementFirstIssued = builder.statementFirstIssued;
-        this.statementLastUpdated = builder.statementLastUpdated;
-        this.status = builder.status;
-        this.products = builder.products;
-        this.vulnerability = builder.vulnerability;
     }
 
 }

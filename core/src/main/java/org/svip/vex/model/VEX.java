@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.vex.model;
@@ -70,6 +71,22 @@ public class VEX {
      * The document's VEX Statements
      */
     private final Set<VEXStatement> vexStatements;
+
+    /**
+     * Constructor to build the VEX Document
+     *
+     * @param builder the Builder
+     */
+    //TODO add vexStatement when VEXStatement is implemented
+    public VEX(Builder builder) {
+        this.vexIdentifier = builder.vexIdentifier;
+        this.originType = builder.originType;
+        this.specVersion = builder.specVersion;
+        this.docVersion = builder.docVersion;
+        this.timeFirstIssued = builder.timeFirstIssued;
+        this.timeLastUpdated = builder.timeLastUpdated;
+        this.vexStatements = builder.vexStatements;
+    }
 
     /**
      * Get the document's VEX Identifier
@@ -138,37 +155,31 @@ public class VEX {
 
         // required fields
 
+        private final Set<VEXStatement> vexStatements = new HashSet<>();
         /**
          * The document's VEX Identifier
          */
         private String vexIdentifier;
-
         /**
          * The document's origin type
          */
         private VEXType originType;
-
         /**
          * The document's spec version
          */
         private String specVersion;
-
         /**
          * The document's version
          */
         private String docVersion;
-
         /**
          * The document's first issued time
          */
         private String timeFirstIssued;
-
         /**
          * The document's last updated time
          */
         private String timeLastUpdated;
-
-        private final Set<VEXStatement> vexStatements = new HashSet<>();
 
         /**
          * Set the document's VEX Identifier
@@ -255,21 +266,5 @@ public class VEX {
         public VEX build() {
             return new VEX(this);
         }
-    }
-
-    /**
-     * Constructor to build the VEX Document
-     *
-     * @param builder the Builder
-     */
-    //TODO add vexStatement when VEXStatement is implemented
-    public VEX(Builder builder) {
-        this.vexIdentifier = builder.vexIdentifier;
-        this.originType = builder.originType;
-        this.specVersion = builder.specVersion;
-        this.docVersion = builder.docVersion;
-        this.timeFirstIssued = builder.timeFirstIssued;
-        this.timeLastUpdated = builder.timeLastUpdated;
-        this.vexStatements = builder.vexStatements;
     }
 }

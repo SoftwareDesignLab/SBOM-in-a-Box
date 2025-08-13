@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.generation;
@@ -58,36 +59,20 @@ public class SBOMGeneratorCLI {
 
     //#region Exceptions
 
-    /**
-     * Custom Internal Error for handling arguments
-     */
-    private static class InvalidArgumentException extends Exception {
-
-        /**
-         * Create new Invalid Argument Exception
-         *
-         * @param msg Error message
-         */
-        public InvalidArgumentException(String msg) {
-            super(msg);
-        }
-    }
+    private static final int MAX_ALLOWED_ATTEMPTS = 5;                  // Max attempts for getting information
 
     //#endregion
 
     //#region Attributes
-
-    private static final int MAX_ALLOWED_ATTEMPTS = 5;                  // Max attempts for getting information
     private static final String PWD = System.getProperty("user.dir");   // System property for pwd
     private static final String OUT_DIRECTORY = "SBOMOut";               // Default Output directory
-
     /**
      * This is the usage text.
      */
     private static final String USAGES = """
             Usages:
                  java -jar jarfile targetPath:[componentName] [options]
-
+            
             targetPath      : Required. Path to a target file or root directory to parse.
             [options]       : All optionals. Forms:  a flag or key=value .
               Flag form:
@@ -98,11 +83,11 @@ public class SBOMGeneratorCLI {
                  -o=specification\s
                       Output specification. Select a supported format (CDX14, SPDX23) to output to,
                       Output specification defaults to CycloneDX if not specified.
-
+            
                  -f=format\s
                       Output format. Select a supported format (JSON, XML, YAML) to output to,
                       Output specification defaults to JSON if not specified.
-
+            
                 Examples:
                    Display usages:  java -jar parser.jar -h\s
                    Basic: java -jar parser.jar MyProject/src
@@ -117,14 +102,10 @@ public class SBOMGeneratorCLI {
                        - SPDX JSON:                 java -jar parser.jar MyProject/src -d -o=SPDX23
                        - SPDX Tag-Value (no debug):      java -jar parser.jar MyProject/src -o=SPDX23 -f=TAG_VALUE
             """;
-
     /**
      * This flag is set to true when -h option is present from the command line, otherwise false.
      */
     private static boolean showUsages = false;
-    //#endregion
-
-    //#region Core Methods
 
     /**
      * Attempts to validate all found arguments. It checks both
@@ -190,7 +171,9 @@ public class SBOMGeneratorCLI {
         if (!fileExists || targetPath.equals(""))
             throw new FileNotFoundException("File '" + targetPath + "' does not exist");
     }
+    //#endregion
 
+    //#region Core Methods
 
     /**
      * If required command line arguments fail, get user input. Program will
@@ -328,8 +311,6 @@ public class SBOMGeneratorCLI {
         System.out.println(msg + "\n" + USAGES);
     }
 
-    //#endregion
-
     /**
      * Main Driver for CodeParser and expects 1 required argument
      * and accepts any number of valid optional arguments.
@@ -442,6 +423,8 @@ public class SBOMGeneratorCLI {
         }
     }
 
+    //#endregion
+
     /**
      * Builds a VirtualTree from an existing file tree located in the user's filesystem given a source path. This loops
      * through all files and directories using Files.walk() over the source path, and adds each file with its contents
@@ -481,5 +464,20 @@ public class SBOMGeneratorCLI {
                 (float) (System.currentTimeMillis() - buildStart) / 1000));
 
         return fileMap;
+    }
+
+    /**
+     * Custom Internal Error for handling arguments
+     */
+    private static class InvalidArgumentException extends Exception {
+
+        /**
+         * Create new Invalid Argument Exception
+         *
+         * @param msg Error message
+         */
+        public InvalidArgumentException(String msg) {
+            super(msg);
+        }
     }
 }

@@ -7,17 +7,17 @@
     {
       "bom-ref": "uid1",
       "name": "COMPONENT 1",
-	  "version" : "1"
+      "version": "1"
     },
     {
       "bom-ref": "uid2",
       "name": "COMPONENT 2",
-	  "version" : "1"
+      "version": "1"
     },
     {
       "bom-ref": "uid3",
       "name": "COMPONENT 3",
-	  "version" : "1"
+      "version": "1"
     }
   ]
 }

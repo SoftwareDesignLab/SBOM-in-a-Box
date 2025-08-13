@@ -1,24 +1,25 @@
-/** Copyright 2021 Rochester Institute of Technology (RIT). Developed with
-* government support under contract 70RCSA22C00000008 awarded by the United
-* States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the “Software”), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+/**
+ * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
+ * government support under contract 70RCSA22C00000008 awarded by the United
+ * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package org.svip.sbom.model.objects;
@@ -198,6 +199,82 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
      * Component's attribution text
      */
     private final String attributionText;
+
+    /**
+     * Constructor to build the SVIP Component Object
+     *
+     * @param type               component type
+     * @param uid                component uid
+     * @param author             component author
+     * @param name               component name
+     * @param licenses           component licenses
+     * @param copyright          component copyright
+     * @param hashes             component hashes
+     * @param supplier           component supplier
+     * @param version            component version
+     * @param description        component description
+     * @param cpes               component CPEs
+     * @param purls              component PURLs
+     * @param externalReferences component external references
+     * @param downloadLocation   component download location
+     * @param fileName           component file name
+     * @param filesAnalyzed      if component's files were analyzed
+     * @param verificationCode   component verification code
+     * @param homePage           component home page
+     * @param sourceInfo         component source info
+     * @param releaseDate        component release date
+     * @param builtDate          component build date
+     * @param validUntilDate     component valid until date
+     * @param mimeType           component mime type
+     * @param publisher          component publisher
+     * @param scope              component scope
+     * @param group              component group
+     * @param properties         component properties
+     * @param fileNotice         component file notice
+     */
+    public SVIPComponentObject(String type, String uid, String author, String name,
+                               LicenseCollection licenses, String copyright,
+                               HashMap<String, String> hashes, Organization supplier,
+                               String version, Description description, Set<String> cpes,
+                               Set<String> purls, Set<ExternalReference> externalReferences,
+                               String downloadLocation, String fileName, Boolean filesAnalyzed,
+                               String verificationCode, String homePage, String sourceInfo,
+                               String releaseDate, String builtDate, String validUntilDate,
+                               String mimeType, String publisher, String scope, String group,
+                               HashMap<String, Set<String>> properties, String fileNotice,
+                               String comment, String attributionText) {
+        this.type = type;
+        this.uid = uid;
+        this.author = author;
+        this.name = name;
+        this.licenses = licenses;
+        this.copyright = copyright;
+        if (hashes == null) this.hashes = new HashMap<>();
+        else this.hashes = hashes;
+        this.supplier = supplier;
+        this.version = version;
+        this.description = description;
+        this.cpes = cpes;
+        this.purls = purls;
+        this.externalReferences = externalReferences;
+        this.downloadLocation = downloadLocation;
+        this.fileName = fileName;
+        this.filesAnalyzed = filesAnalyzed;
+        this.verificationCode = verificationCode;
+        this.homePage = homePage;
+        this.sourceInfo = sourceInfo;
+        this.releaseDate = releaseDate;
+        this.builtDate = builtDate;
+        this.validUntilDate = validUntilDate;
+        this.mimeType = mimeType;
+        this.publisher = publisher;
+        this.scope = scope;
+        this.group = group;
+        this.properties = properties;
+        this.fileNotice = fileNotice;
+        this.comment = comment;
+        this.attributionText = attributionText;
+    }
 
     /**
      * Get the component's type
@@ -497,82 +574,6 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
     @Override
     public String getValidUntilDate() {
         return this.validUntilDate;
-    }
-
-    /**
-     * Constructor to build the SVIP Component Object
-     *
-     * @param type               component type
-     * @param uid                component uid
-     * @param author             component author
-     * @param name               component name
-     * @param licenses           component licenses
-     * @param copyright          component copyright
-     * @param hashes             component hashes
-     * @param supplier           component supplier
-     * @param version            component version
-     * @param description        component description
-     * @param cpes               component CPEs
-     * @param purls              component PURLs
-     * @param externalReferences component external references
-     * @param downloadLocation   component download location
-     * @param fileName           component file name
-     * @param filesAnalyzed      if component's files were analyzed
-     * @param verificationCode   component verification code
-     * @param homePage           component home page
-     * @param sourceInfo         component source info
-     * @param releaseDate        component release date
-     * @param builtDate          component build date
-     * @param validUntilDate     component valid until date
-     * @param mimeType           component mime type
-     * @param publisher          component publisher
-     * @param scope              component scope
-     * @param group              component group
-     * @param properties         component properties
-     * @param fileNotice         component file notice
-     */
-    public SVIPComponentObject(String type, String uid, String author, String name,
-                               LicenseCollection licenses, String copyright,
-                               HashMap<String, String> hashes, Organization supplier,
-                               String version, Description description, Set<String> cpes,
-                               Set<String> purls, Set<ExternalReference> externalReferences,
-                               String downloadLocation, String fileName, Boolean filesAnalyzed,
-                               String verificationCode, String homePage, String sourceInfo,
-                               String releaseDate, String builtDate, String validUntilDate,
-                               String mimeType, String publisher, String scope, String group,
-                               HashMap<String, Set<String>> properties, String fileNotice,
-                               String comment, String attributionText) {
-        this.type = type;
-        this.uid = uid;
-        this.author = author;
-        this.name = name;
-        this.licenses = licenses;
-        this.copyright = copyright;
-        if (hashes == null) this.hashes = new HashMap<>();
-        else this.hashes = hashes;
-        this.supplier = supplier;
-        this.version = version;
-        this.description = description;
-        this.cpes = cpes;
-        this.purls = purls;
-        this.externalReferences = externalReferences;
-        this.downloadLocation = downloadLocation;
-        this.fileName = fileName;
-        this.filesAnalyzed = filesAnalyzed;
-        this.verificationCode = verificationCode;
-        this.homePage = homePage;
-        this.sourceInfo = sourceInfo;
-        this.releaseDate = releaseDate;
-        this.builtDate = builtDate;
-        this.validUntilDate = validUntilDate;
-        this.mimeType = mimeType;
-        this.publisher = publisher;
-        this.scope = scope;
-        this.group = group;
-        this.properties = properties;
-        this.fileNotice = fileNotice;
-        this.comment = comment;
-        this.attributionText = attributionText;
     }
 
     /**
