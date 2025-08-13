@@ -147,7 +147,12 @@ public class OSIService {
      */
     @PostConstruct
     private void setStatus() {
-        this.enabled = osi.healthcheck();
+        try {
+            // will fail if osi container not available
+            this.enabled = osi.healthcheck();
+        } catch (Exception e) {
+            System.err.println("Failed OSI health check: " + e.getMessage());
+        }
     }
 
     /**
