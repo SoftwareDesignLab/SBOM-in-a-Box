@@ -3,6 +3,38 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v9.3.0-alpha] - (8/12/2025)
+
+### Added
+- healthcheck endpoint to OSI
+- new project upload endpoint to OSI
+
+### Changed
+- /generate endpoint now returns file names and base64 encoded content
+- OSI service location set in Spring properties, no longer hardcoded
+- Replace Alpine OSI base image with Debian
+- Move OSI to its own package in root and modernize OSI package
+- Rename OSI files to follow Python naming conventions
+- Harden compose stack security
+- SBOM-in-a-box integrated with new OSI endpoints
+
+### Removed
+- Remove embedded OSI code
+
+### Chore
+- Add a dev compose stack with open ports for debugging
+
+## [v9.2.3-alpha] - (7/30/2025)
+
+### Fixed
+- Fix Gradle project structure (5c932211)
+- Fix deprecated Gradle 7 usages and add deprecation and unchecked linting to compiling (40367de4)
+
+### Changed
+- Bump to Java 21 and Gradle 8 (66e828b5)
+- Bump dependency versions (b47feaeb)
+- Bump GitHub actions to latest (de674109)
+
 ## [v9.2.2-alpha] - (8/27/2024)
 
 ### Fixed
