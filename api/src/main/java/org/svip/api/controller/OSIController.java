@@ -242,7 +242,7 @@ public class OSIController {
         } else {
             // Only 1 SBOM generated, no need to merge
             LOGGER.info("POST /svip/generators/osi - Only 1 SBOM uploaded, skipping merging");
-            mergedID = uploaded.getFirst().getId();
+            mergedID = uploaded.get(0).getId();
         }
 
         // Convert

@@ -31,6 +31,7 @@ dependencies {
     testImplementation 'org.springframework:spring-test:6.2.9'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:3.5.4'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.13.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 test {
