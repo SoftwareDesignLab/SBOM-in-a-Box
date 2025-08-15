@@ -9,7 +9,6 @@ services:
   # OSI container
   osi:
     container_name: osi
-    platform: linux/amd64
     build: osi
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/healthcheck"]
@@ -21,7 +20,6 @@ services:
   # MySQL server
   sbox_db:
     container_name: sbox_db
-    platform: linux/amd64
     image: mysql:8.4.6
     command: --max_allowed_packet=32505856  # Set max_allowed_packet to 256M
     env_file:

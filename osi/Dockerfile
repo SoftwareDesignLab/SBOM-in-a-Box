@@ -113,7 +113,7 @@ COPY --from=bin_download /tmp/spdx-sbom-generator /tmp/jbom.jar /tmp/cyclonedx-c
 COPY --from=anchore_install /tmp/syft /usr/local/bin/
 # Cleanup
 USER root
-RUN apt remove -y curl git unzip gnupg apt-transport-https software-properties-common
+RUN apt remove -y git unzip gnupg apt-transport-https software-properties-common
 RUN rm -rf /var/lib/apt/lists/* /tmp/setup
 
 USER osi
