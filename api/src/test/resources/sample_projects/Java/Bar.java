@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 
-package org.svip.api.sample_projects.Java;
+package sample_projects.Java;
 
 

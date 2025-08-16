@@ -135,9 +135,27 @@ public class ParserController {
         // Convert & save according to overwrite boolean
         SBOMFile converted;
         try {
+            // Build descriptive filename: ProjectName-PARSERS-Schema-Format-Timestamp.ext
+            String extension;
+            if (schema == SerializerFactory.Schema.SPDX23) {
+                extension = (format == SerializerFactory.Format.TAGVALUE) ? ".spdx" : ".json";
+            } else { // CDX14
+                extension = (format == SerializerFactory.Format.XML) ? ".xml" : ".json";
+            }
+
+            String schemaStr = (schema == SerializerFactory.Schema.SPDX23) ? "SPDX23" : "CDX14";
+            String formatStr = switch (format) {
+                case JSON -> "JSON";
+                case XML -> "XML";
+                case TAGVALUE -> "TAGVALUE";
+            };
+
+            String safeProject = (projectName == null ? "SBOM" : projectName).replaceAll("[^A-Za-z0-9._-]+", "-");
+            String ts = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
+            String finalName = safeProject + "-PARSERS-" + schemaStr + "-" + formatStr + "-" + ts + extension;
+
             // convert result sbomfile to sbom
-            UploadSBOMFileInput u = new UploadSBOMFileInput(projectName + ((format == SerializerFactory.Format.JSON)
-                    ? ".json" : ".spdx"), contents);
+            UploadSBOMFileInput u = new UploadSBOMFileInput(finalName, contents);
             converted = u.toSBOMFile();
             sbomService.upload(converted);
         } catch (JsonProcessingException e) {

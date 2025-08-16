@@ -12,18 +12,18 @@ services:
     platform: linux/amd64
     build: osi
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/healthcheck"]
-      start_period: 15s   # small delay to let startup scripts finish
+      test: ["CMD-SHELL", "python3 -c \"import urllib.request,sys; urllib.request.urlopen('http://localhost:5000/tools', timeout=5); sys.exit(0)\""]
+      start_period: 60s   # allow validation to finish before first check
       interval: 20s
-      timeout: 5s
-      retries: 3
+      timeout: 10s
+      retries: 5
 
   # MySQL server
   sbox_db:
     container_name: sbox_db
     platform: linux/amd64
     image: mysql:8.4.6
-    command: --max_allowed_packet=32505856  # Set max_allowed_packet to 256M
+    command: --max_allowed_packet=268435456  # Set max_allowed_packet to 256M
     env_file:
       - path: .env
         required: true

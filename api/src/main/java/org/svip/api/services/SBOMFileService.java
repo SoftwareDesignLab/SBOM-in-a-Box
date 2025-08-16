@@ -362,6 +362,23 @@ public class SBOMFileService {
     }
 
     /**
+     * Rename an SBOM entry in the database
+     *
+     * @param id      ID of SBOM to rename
+     * @param newName New file name to set
+     * @return id of the updated SBOM or null if not found
+     */
+    public Long rename(Long id, String newName) {
+        SBOMFile sbomFile = getSBOMFile(id);
+        if (sbomFile == null) {
+            return null;
+        }
+        sbomFile.setName(newName);
+        this.sbomFileRepository.save(sbomFile);
+        return sbomFile.getId();
+    }
+
+    /**
      * Returns a map of fixes
      *
      * @param id id of SBOM to repair

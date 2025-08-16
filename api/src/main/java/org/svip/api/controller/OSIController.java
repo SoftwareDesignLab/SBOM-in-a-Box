@@ -155,24 +155,24 @@ public class OSIController {
      *                    possible tools will be used.
      * @return The ID of the uploaded SBOM.
      */
-    @PostMapping(value = "")
+    @PostMapping(value = "", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<?> generateWithOSI(@RequestParam("projectName") String projectName,
                                              @RequestParam("schema") SerializerFactory.Schema schema,
                                              @RequestParam("format") SerializerFactory.Format format,
-                                             @RequestParam(value = "toolNames", required = false) String toolNames) {
+                                             @RequestParam(value = "toolNames", required = false) String toolNamesJson) {
 
         HashMap<String, String> generatedSBOMs;
         try {
             // Run with requested tools, default to relevant ones
             List<String> tools;
-            if (toolNames != null) {
-                /*
-                todo - this is a hotfix
-                tldr when gui sends multipart form "toolNames" is sent as string ( "["foo","bar"]" )
-                and not an actual String[]. This hotfix just converts the string to an array
-                 */
-                ObjectMapper mapper = new ObjectMapper();
-                tools = List.of(mapper.readValue(toolNames, String[].class));
+            if (toolNamesJson != null && !toolNamesJson.isBlank()) {
+                try {
+                    ObjectMapper mapper = new ObjectMapper();
+                    tools = mapper.readValue(toolNamesJson, List.class);
+                } catch (Exception parseEx) {
+                    LOGGER.warn("POST /svip/generators/osi - Invalid toolNames JSON; defaulting to project tools. Error: {}", parseEx.getMessage());
+                    tools = this.osiService.getTools("project");
+                }
             } else {
                 tools = this.osiService.getTools("project");
             }
@@ -258,7 +258,29 @@ public class OSIController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        // todo how to set file name using projectName
+        // Set descriptive filename: ProjectName-OSI-Schema-Format-Timestamp.ext
+        try {
+            String extension;
+            if (schema == SerializerFactory.Schema.SPDX23) {
+                extension = (format == SerializerFactory.Format.TAGVALUE) ? ".spdx" : ".json";
+            } else { // CDX14
+                extension = (format == SerializerFactory.Format.XML) ? ".xml" : ".json";
+            }
+
+            String schemaStr = (schema == SerializerFactory.Schema.SPDX23) ? "SPDX23" : "CDX14";
+            String formatStr = switch (format) {
+                case JSON -> "JSON";
+                case XML -> "XML";
+                case TAGVALUE -> "TAGVALUE";
+            };
+
+            String safeProject = (projectName == null ? "SBOM" : projectName).replaceAll("[^A-Za-z0-9._-]+", "-");
+            String ts = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
+            String finalName = safeProject + "-OSI-" + schemaStr + "-" + formatStr + "-" + ts + extension;
+            sbomService.rename(convertedID, finalName);
+        } catch (Exception ignored) {
+            // keep auto name if rename fails
+        }
 
         // Return ID
         return new ResponseEntity<>(convertedID, HttpStatus.OK);

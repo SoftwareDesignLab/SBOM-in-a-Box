@@ -24,6 +24,8 @@
 
 package org.svip.api.services;
 
+import com.fasterxml.jackson.core.StreamReadConstraints;
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
@@ -135,8 +137,13 @@ public class OSIService {
             if (response.getStatusLine().getStatusCode() == 204)
                 return new HashMap<>();
 
-            // Convert osi json string into map
-            ObjectMapper mapper = new ObjectMapper();
+            // Convert osi json string into map. Increase max string length to support large base64 bodies
+            JsonFactory factory = JsonFactory.builder()
+                    .streamReadConstraints(StreamReadConstraints.builder()
+                            .maxStringLength(100_000_000) // 100MB, higher than default 20MB
+                            .build())
+                    .build();
+            ObjectMapper mapper = new ObjectMapper(factory);
             return mapper.readValue(EntityUtils.toString(response.getEntity()), new TypeReference<>() {
             });
         }
