@@ -148,13 +148,13 @@ public class ToCDX14 implements ToSchema {
         builder.setDescription(componentSVIP.getDescription());
 
         // Stream CPEs into new CDX Component
-        componentSVIP.getCPEs().forEach(x -> builder.addCPE(x));
+        componentSVIP.getCPEs().forEach(builder::addCPE);
 
         // Stream PURLs into new PURL Component
-        componentSVIP.getPURLs().forEach(x -> builder.addPURL(x));
+        componentSVIP.getPURLs().forEach(builder::addPURL);
 
         // Stream External References into new Component
-        componentSVIP.getExternalReferences().forEach(x -> builder.addExternalReference(x));
+        componentSVIP.getExternalReferences().forEach(builder::addExternalReference);
 
         // Mime Type
         builder.setMimeType(componentSVIP.getMimeType());
@@ -170,13 +170,13 @@ public class ToCDX14 implements ToSchema {
 
         // Stream Properties into new CDX Component
         componentSVIP.getProperties().keySet().forEach(
-                x -> componentSVIP.getProperties().get(x).stream().forEach(
+                x -> componentSVIP.getProperties().get(x).forEach(
                         y -> builder.addProperty(x, y)
                 )
         );
 
         // Return new CycloneDX 1.4 Component
-        return builder.buildAndFlush();
+        return builder.build();
 
     }
 

@@ -24,6 +24,7 @@
 
 package org.svip.sbom.builder.objects.schemas.CDX14;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.builder.interfaces.schemas.CycloneDX14.CDX14SBOMBuilder;
 import org.svip.sbom.factory.objects.CycloneDX14.CDX14SBOMBuilderFactory;
@@ -44,18 +45,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * file: CDX14SBOMBuilderFactoryTest.java
+ * file: CDX14SBOMBuilderTest.java
  * File to test CDX14SBOMBuilderFactory and CDX14Builder Object
  *
  * @author Kevin Laporte
  */
-public class CDX14SBOMBuilderFactoryTest {
+public class CDX14SBOMBuilderTest {
 
-    CDX14SBOMBuilderFactory test_sbomBuilderFactory = new CDX14SBOMBuilderFactory();
-    CDX14PackageBuilder test_packageBuilder = new CDX14PackageBuilder();
-    CDX14SBOMBuilder test_CDX14SBOMBuilder = test_sbomBuilderFactory.createBuilder();
-
-    CDX14SBOM test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
+    CDX14PackageBuilder test_packageBuilder;
+    CDX14SBOMBuilder test_CDX14SBOMBuilder;
 
     String test_format = "CycloneDX";
 
@@ -77,14 +75,20 @@ public class CDX14SBOMBuilderFactoryTest {
 
     CDX14ComponentObject test_rootComponent;
 
-    Set<CDX14ComponentObject> test_componentsCDX = new HashSet<CDX14ComponentObject>();
-    Set<Component> test_components = new HashSet<Component>();
+    Set<CDX14ComponentObject> test_componentsCDX = new HashSet<>();
+    Set<Component> test_components = new HashSet<>();
 
+
+    @BeforeEach
+    void create_test_packageBuilder() {
+        test_packageBuilder = new CDX14PackageBuilder();
+        test_CDX14SBOMBuilder = new CDX14Builder();
+    }
 
     @Test
     void getFormat_is_test_format_when_setFormat_is_used_test() {
         test_CDX14SBOMBuilder.setFormat(test_format);
-        test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
+        CDX14SBOM test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
         assertEquals(test_format, test_CDX14SBOM.getFormat());
     }
@@ -92,7 +96,7 @@ public class CDX14SBOMBuilderFactoryTest {
     @Test
     void getName_is_test_name_when_setName_is_used_test() {
         test_CDX14SBOMBuilder.setName(test_name);
-        test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
+        CDX14SBOM test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
         assertEquals(test_name, test_CDX14SBOM.getName());
     }
@@ -100,7 +104,7 @@ public class CDX14SBOMBuilderFactoryTest {
     @Test
     void getUID_is_test_uid_when_setUID_is_used_test() {
         test_CDX14SBOMBuilder.setUID(test_uid);
-        test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
+        CDX14SBOM test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
         assertEquals(test_uid, test_CDX14SBOM.getUID());
     }
@@ -108,7 +112,7 @@ public class CDX14SBOMBuilderFactoryTest {
     @Test
     void getVersion_is_test_version_when_setVersion_is_used_test() {
         test_CDX14SBOMBuilder.setVersion(test_version);
-        test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
+        CDX14SBOM test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
         assertEquals(test_version, test_CDX14SBOM.getVersion());
     }
@@ -116,7 +120,7 @@ public class CDX14SBOMBuilderFactoryTest {
     @Test
     void getSpecVersion_is_test_specVersion_when_setSpecVersion_is_used_test() {
         test_CDX14SBOMBuilder.setSpecVersion(test_specVersion);
-        test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
+        CDX14SBOM test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
         assertEquals(test_specVersion, test_CDX14SBOM.getSpecVersion());
     }
@@ -125,7 +129,7 @@ public class CDX14SBOMBuilderFactoryTest {
     void getLicenses_is_test_set_when_addLicense_is_used_test() {
         test_CDX14SBOMBuilder.addLicense(test_license1);
         test_CDX14SBOMBuilder.addLicense(test_license2);
-        test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
+        CDX14SBOM test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
         HashSet<String> test_Set = new HashSet<>();
         test_Set.add(test_license1);
@@ -140,7 +144,7 @@ public class CDX14SBOMBuilderFactoryTest {
         test_creationData.setCreatorComment("This was created as a test.");
 
         test_CDX14SBOMBuilder.setCreationData(test_creationData);
-        test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
+        CDX14SBOM test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
         assertEquals(test_creationData, test_CDX14SBOM.getCreationData());
     }
@@ -148,7 +152,7 @@ public class CDX14SBOMBuilderFactoryTest {
     @Test
     void getDocumentComment_is_test_documentComment_when_setDocumentComment_is_used_test() {
         test_CDX14SBOMBuilder.setDocumentComment(test_documentComment);
-        test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
+        CDX14SBOM test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
         assertEquals(test_documentComment, test_CDX14SBOM.getDocumentComment());
     }
@@ -157,7 +161,7 @@ public class CDX14SBOMBuilderFactoryTest {
     void getRootComponent_is_test_rootComponent_when_setRootCDXComponentObject_is_used_test() {
         test_rootComponent = new CDX14ComponentObject("CycloneDX", null, "Tester", "Test Component", null, null, null, null, null, null, null, null, null, null, null, null, null, null);
         test_CDX14SBOMBuilder.setRootComponent(test_rootComponent);
-        test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
+        CDX14SBOM test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
         assertEquals(test_rootComponent, test_CDX14SBOM.getRootComponent());
     }
@@ -168,7 +172,7 @@ public class CDX14SBOMBuilderFactoryTest {
         CDX14ComponentObject test_componentB = new CDX14ComponentObject("CycloneDX", null, "Tester 2", "Test Component B", null, null, null, null, null, null, null, null, null, null, null, null, null, null);
         test_CDX14SBOMBuilder.addComponent(test_componentA);
         test_CDX14SBOMBuilder.addComponent(test_componentB);
-        test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
+        CDX14SBOM test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
         test_componentsCDX.add(test_componentA);
         test_componentsCDX.add(test_componentB);
@@ -182,21 +186,20 @@ public class CDX14SBOMBuilderFactoryTest {
     @Test
     void getComponents_contains_test_package_when_addCDX14Package_is_used_test() {
         test_packageBuilder.setName("test name");
-        CDX14Package test_package = test_packageBuilder.buildAndFlush();
+        CDX14Package test_package = test_packageBuilder.build();
 
         test_CDX14SBOMBuilder.addCDX14Package(test_package);
-        test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
+        CDX14SBOM test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
         assertTrue(test_CDX14SBOM.getComponents().contains(test_package));
     }
 
     @Test
     void getRelationships_contains_test_relationships_when_addRelationship_is_used_test() {
-        HashMap<String, Relationship> test_relationships = new HashMap<String, Relationship>();
         Relationship test_relationship = new Relationship("001", "dependant");
         test_CDX14SBOMBuilder.addRelationship("test_component", test_relationship);
 
-        test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
+        CDX14SBOM test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
         assertTrue(test_CDX14SBOM.getRelationships().containsKey("test_component"));
     }
@@ -209,7 +212,7 @@ public class CDX14SBOMBuilderFactoryTest {
         test_CDX14SBOMBuilder.addExternalReference(test_externalRef);
         test_externalRefs.add(test_externalRef);
 
-        test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
+        CDX14SBOM test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
         assertEquals(test_externalRefs, test_CDX14SBOM.getExternalReferences());
     }
