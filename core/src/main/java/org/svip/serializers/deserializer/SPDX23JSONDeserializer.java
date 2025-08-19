@@ -61,6 +61,7 @@ import java.util.List;
  * @author Ian Dunn
  * @author Thomas Roman
  */
+@Deprecated
 public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implements Deserializer {
     public SPDX23JSONDeserializer() {
         super(SPDX23SBOM.class);
@@ -76,6 +77,7 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
      * @param fileContents The file contents of the SPDX 2.3 JSON SBOM to deserialize.
      * @return The deserialized SPDX 2.3 SBOM object.
      */
+    @Deprecated
     @Override
     public SPDX23SBOM readFromString(String fileContents) throws JsonProcessingException {
         return getObjectMapper().readValue(fileContents, SPDX23SBOM.class);
@@ -86,6 +88,7 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
      *
      * @return A reference to the ObjectMapper of the serializer.
      */
+    @Deprecated
     @Override
     public ObjectMapper getObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
@@ -95,7 +98,7 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
 
         return mapper;
     }
-
+    @Deprecated
     @Override
     public SPDX23SBOM deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException {
         // get JSON node

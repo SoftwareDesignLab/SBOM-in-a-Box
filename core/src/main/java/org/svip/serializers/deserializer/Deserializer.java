@@ -34,6 +34,7 @@ import org.svip.sbom.model.interfaces.generics.SBOM;
  *
  * @author Ian Dunn
  */
+@Deprecated
 public interface Deserializer {
 
     /**

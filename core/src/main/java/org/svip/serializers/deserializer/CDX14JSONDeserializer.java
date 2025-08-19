@@ -60,6 +60,7 @@ import java.util.Set;
  * @author Ian Dunn
  * @author Thomas Roman
  */
+@Deprecated
 public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements Deserializer {
     public CDX14JSONDeserializer() {
         super(CDX14SBOM.class);
@@ -75,6 +76,7 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
      * @param fileContents The file contents of the CDX 1.4 JSON SBOM to deserialize.
      * @return The deserialized CDX 1.4 SBOM object.
      */
+    @Deprecated
     @Override
     public CDX14SBOM readFromString(String fileContents) throws JsonProcessingException {
         return getObjectMapper().readValue(fileContents, CDX14SBOM.class);
@@ -85,6 +87,7 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
      *
      * @return A reference to the ObjectMapper of the serializer.
      */
+    @Deprecated
     @Override
     public ObjectMapper getObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
@@ -95,6 +98,7 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
         return mapper;
     }
 
+    @Deprecated
     @Override
     public CDX14SBOM deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException {
         // get JSON node
