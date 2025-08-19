@@ -62,26 +62,8 @@ import java.util.regex.Pattern;
  */
 public class SPDX23Deserializer extends Deserializer {
 
-    private static final String TAG = "####";
-    private static final String SEPARATOR = ": ";
-    private static final String SPEC_VERSION_TAG = "SPDXVersion";
-    private static final String TIMESTAMP_TAG = "Created";
-    private static final String DOCUMENT_NAME_TAG = "DocumentName";
-    private static final String DOCUMENT_NAMESPACE_TAG = "DocumentNamespace";
-    private static final String DATA_LICENSE_TAG = "DataLicense";
-    private static final String LICENSE_LIST_VERSION_TAG = "LicenseListVersion";
-    private static final String CREATOR_TAG = "Creator";
-    private static final String EXTERNAL_REFERENCE_TAG = "ExternalRef";
-
     /// Patterns
 
-    private static final Pattern EXTRACTED_LICENSE_PATTERN = Pattern.compile("(^LicenseID:[\\w\\W]*?)\n{2}", Pattern.MULTILINE);
-    private static final Pattern UNPACKAGED_PATTERN = Pattern.compile("(^FileName:[\\w\\W]*?)\\n{2}", Pattern.MULTILINE);
-    private static final Pattern PACKAGE_PATTERN = Pattern.compile("^#{5} Package: .*\n{2}([\\w\\W]*?)\n$", Pattern.MULTILINE);
-    private static final Pattern TAG_VALUE_PATTERN = Pattern.compile("(\\S+)" + SEPARATOR + "(.+)");
-    private static final Pattern EXTERNAL_REF_PATTERN = Pattern.compile(EXTERNAL_REFERENCE_TAG + SEPARATOR +
-            "(\\S*) (\\S*) (\\S*)");
-    private static final Pattern RELATIONSHIP_PATTERN = Pattern.compile("^Relationship: (.*?) (.*?) (.*)\n(?:RelationshipComment: (.*)|)", Pattern.MULTILINE);
     private static final Pattern CREATOR_PATTERN = Pattern.compile(
             "^(?:(Person|Organization): )(.+?)(?:$| (?:\\((.*)\\))?$)");
     private static final Pattern TOOL_PATTERN = Pattern.compile("^Tool: (?:(.*)-)(.*)$", Pattern.CASE_INSENSITIVE);

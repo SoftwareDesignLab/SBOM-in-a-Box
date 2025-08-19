@@ -34,7 +34,7 @@ import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
-import org.svip.serializers.deserializer.Deserializer;
+import org.svip.serializers.deserializer.v2.Deserializer;
 import org.svip.serializers.deserializer.v2.CDX14Deserializer;
 
 import java.io.File;
@@ -56,7 +56,7 @@ public class CDX14JSONDeserializerTest extends DeserializerTest {
 
     @Override
     public Deserializer getDeserializer() {
-        return new CDX14JSONDeserializer();
+        return new CDX14Deserializer(JSON);
     }
 
     @Test

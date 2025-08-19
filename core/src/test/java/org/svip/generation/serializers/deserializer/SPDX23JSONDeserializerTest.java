@@ -35,15 +35,11 @@ import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.ExternalReference;
-import org.svip.serializers.deserializer.Deserializer;
-import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
-import org.svip.serializers.deserializer.v2.CDX14Deserializer;
+import org.svip.serializers.deserializer.v2.Deserializer;
 import org.svip.serializers.deserializer.v2.SPDX23Deserializer;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -54,7 +50,7 @@ public class SPDX23JSONDeserializerTest extends DeserializerTest {
     private final SPDX23SBOM spdx23json;
 
     public SPDX23JSONDeserializerTest() throws IOException {
-        spdx23json = new SPDX23Deserializer(JSON).deserialize(new File(getTestFilePath()));
+        spdx23json = (SPDX23SBOM) getDeserializer().deserialize(new File(getTestFilePath()));
     }
 
     public String getTestFilePath() {
@@ -63,7 +59,7 @@ public class SPDX23JSONDeserializerTest extends DeserializerTest {
 
     @Override
     public Deserializer getDeserializer() {
-        return new SPDX23JSONDeserializer();
+        return new SPDX23Deserializer(JSON);
     }
 
     @Test

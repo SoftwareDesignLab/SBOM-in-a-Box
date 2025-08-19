@@ -31,6 +31,7 @@ import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.serializers.deserializer.*;
+import org.svip.serializers.deserializer.v2.SPDX23TagValueDeserializer;
 import org.svip.serializers.serializer.*;
 import org.xml.sax.InputSource;
 
@@ -166,7 +167,7 @@ public class SerializerFactory {
             this.put(TAGVALUE, new SPDX23TagValueSerializer());
         }}, new HashMap<>() {{
             this.put(JSON, new SPDX23JSONDeserializer());
-            this.put(TAGVALUE, new SPDX23TagValueDeserializer());
+//            this.put(TAGVALUE, new SPDX23TagValueDeserializer());
         }}),
 
         SVIP("SVIP", "1.0-a", new HashMap<>() {{

@@ -24,7 +24,7 @@
 
 package org.svip.generation.serializers.deserializer;
 
-import org.svip.serializers.deserializer.Deserializer;
+import org.svip.serializers.deserializer.v2.Deserializer;
 
 public abstract class DeserializerTest {
 

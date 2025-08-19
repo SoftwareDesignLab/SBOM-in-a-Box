@@ -25,10 +25,11 @@
 package org.svip.sbomanalysis.compare;
 
 import org.junit.jupiter.api.Test;
-import org.svip.serializers.deserializer.CDX14JSONDeserializer;
-import org.svip.serializers.deserializer.Deserializer;
-import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
-import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
+import org.svip.serializers.FileFormat;
+import org.svip.serializers.deserializer.v2.CDX14Deserializer;
+import org.svip.serializers.deserializer.v2.Deserializer;
+import org.svip.serializers.deserializer.v2.SPDX23Deserializer;
+import org.svip.serializers.deserializer.v2.SPDX23TagValueDeserializer;
 
 import java.io.IOException;
 
@@ -71,11 +72,11 @@ public class ComparisonTest {
     }
 
     public Deserializer getSPDXJSONDeserializer() {
-        return new SPDX23JSONDeserializer();
+        return new SPDX23Deserializer(FileFormat.JSON);
     }
 
     public Deserializer getCDXJSONDeserializer() {
-        return new CDX14JSONDeserializer();
+        return new CDX14Deserializer(FileFormat.JSON);
     }
 
     public Deserializer getSPDXTagValueDeserializer() {

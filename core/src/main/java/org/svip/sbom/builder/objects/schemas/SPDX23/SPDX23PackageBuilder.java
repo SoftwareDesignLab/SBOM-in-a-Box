@@ -474,6 +474,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
      * @return an SPDX23PackageObject
      */
     @Override
+    @Deprecated
     public SPDX23PackageObject buildAndFlush() {
         // build the component
         SPDX23PackageObject component = build();

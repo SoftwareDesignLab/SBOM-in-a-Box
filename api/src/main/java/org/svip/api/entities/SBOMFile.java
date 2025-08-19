@@ -32,6 +32,7 @@ import jakarta.persistence.*;
 import org.svip.api.entities.diff.ComparisonFile;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.*;
+import org.svip.serializers.deserializer.v2.SPDX23TagValueDeserializer;
 
 import java.util.HashSet;
 import java.util.Set;

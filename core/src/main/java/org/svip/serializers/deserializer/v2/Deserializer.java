@@ -32,7 +32,10 @@ import org.svip.serializers.FileFormat;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <b>File:</b> Serializer.java
@@ -43,9 +46,10 @@ import java.util.HashMap;
  */
 public abstract class Deserializer {
 
-    protected final FileFormat fileFormat;
     private final XmlMapper xmlMapper = new XmlMapper();
     protected final ObjectMapper mapper = new ObjectMapper();
+    protected final FileFormat fileFormat;
+
 
     /**
      * Create new deserializer
@@ -63,11 +67,10 @@ public abstract class Deserializer {
      * @return HashMap of JSON object
      * @throws IOException Failed to map JSON to hashmap
      */
-    private HashMap<String, Object> loadJsonFile(File jsonFile) throws IOException {
+    private Map<String, Object> loadJsonFile(File jsonFile) throws IOException {
         return mapper.readValue(jsonFile, new TypeReference<>() {
         });
     }
-    // todo TagValue mapper
 
     /**
      * Load xml file into a hashmap
@@ -76,7 +79,7 @@ public abstract class Deserializer {
      * @return HashMap of XML object
      * @throws IOException Failed to map XML to hashmap
      */
-    private HashMap<String, Object> loadXmlFile(File xmlFile) throws IOException {
+    private Map<String, Object> loadXmlFile(File xmlFile) throws IOException {
         return xmlMapper.readValue(xmlFile, new TypeReference<>() {
         });
     }
@@ -88,8 +91,7 @@ public abstract class Deserializer {
      * @return HashMap of TagValue object
      * @throws IOException Failed to map TagValue to hashmap
      */
-    private HashMap<String, Object> loadTagValueFile(File tagValueFile) throws IOException {
-        // todo
+    private Map<String, Object> loadTagValueFile(File tagValueFile) throws IOException {
         throw new IOException("Not implemented");
     }
 
@@ -100,12 +102,12 @@ public abstract class Deserializer {
      * @return HashMap representation of the file
      * @throws DeserializerException Failed to load file
      */
-    protected HashMap<String, Object> loadFile(File file) throws DeserializerException {
+    protected Map<String, Object> loadFile(File file) throws DeserializerException {
         try {
             return switch (fileFormat) {
                 case JSON -> loadJsonFile(file);
                 case XML -> loadXmlFile(file);
-                case TAG_VALUE -> loadTagValueFile(file);
+                default -> throw new DeserializerException("Unsupported file format", file, fileFormat);
             };
         } catch (IOException e) {
             throw new DeserializerException("Failed to load " + file.getName(), file, fileFormat, e);

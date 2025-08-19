@@ -1,36 +1,32 @@
-/**
+/*
  * Copyright 2021 Rochester Institute of Technology (RIT). Developed with
- * government support under contract 70RCSA22C00000008 awarded by the United
+ *  government support under contract 70RCSA22C00000008 awarded by the United
  * States Department of Homeland Security for Cybersecurity and Infrastructure Security Agency.
- * <p>
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the “Software”), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * <p>
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * <p>
- * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ *  <p>
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the “Software”), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *  <p>
+ *  The above copyright notice and this permission notice shall be included in
+ *  all copies or substantial portions of the Software.
+ *  <p>
+ *  THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
  */
 
-package org.svip.serializers.deserializer;
+package org.svip.serializers.deserializer.v2;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23FileBuilder;
 import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23PackageBuilder;
-import org.svip.sbom.factory.objects.SPDX23.SPDX23FileBuilderFactory;
-import org.svip.sbom.factory.objects.SPDX23.SPDX23PackageBuilderFactory;
-import org.svip.sbom.factory.objects.SPDX23.SPDX23SBOMBuilderFactory;
 import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
@@ -42,7 +38,11 @@ import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+import org.svip.serializers.FileFormat;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,6 +51,8 @@ import java.util.regex.Pattern;
  * File: SPDX23TagValueDeserializer.java
  * This class implements the Deserializer interface and the Jackson StdDeserializer to provide all functionality to
  * read an SPDX 2.3 SBOM object from an SPDX 2.3 tag-value file string.
+ * <p>
+ * todo - replace with HashMap<String, Object> Pattern?
  *
  * @author Ian Dunn
  * @author Tyler Drake
@@ -59,7 +61,7 @@ import java.util.regex.Pattern;
  * @author Thomas Roman
  * @author Derek Garcia
  */
-public class SPDX23TagValueDeserializer implements Deserializer {
+public class SPDX23TagValueDeserializer extends Deserializer {
 
     //#region Constants
 
@@ -88,6 +90,13 @@ public class SPDX23TagValueDeserializer implements Deserializer {
     private static final Pattern TOOL_PATTERN = Pattern.compile("^Tool: (?:(.*)-)(.*)$", Pattern.CASE_INSENSITIVE);
 
     //#endregion
+
+    /**
+     * Create new Tag-Value deserializer
+     */
+    public SPDX23TagValueDeserializer() {
+        super(FileFormat.TAG_VALUE);
+    }
 
     /**
      * Parse SPDX style creator string into a Contact
@@ -138,24 +147,25 @@ public class SPDX23TagValueDeserializer implements Deserializer {
     /**
      * Deserializes an SPDX 2.3 tag-value SBOM from a string.
      *
-     * @param fileContents The file contents of the SPDX 2.3 tag-value SBOM to deserialize.
+     * @param file The file of the SPDX 2.3 tag-value SBOM to deserialize.
      * @return The deserialized SPDX 2.3 SBOM object.
      */
     @Override
-    public SPDX23SBOM readFromString(String fileContents) {
+    public SPDX23SBOM deserialize(File file) throws DeserializerException {
         // Map of external licenses to mirror Component.externalLicenses attribute
         Map<String, Map<String, String>> externalLicenses = new HashMap<>();
 
         // initialize builders
-        SPDX23SBOMBuilderFactory sbomFactory = new SPDX23SBOMBuilderFactory();
-        SPDX23Builder sbomBuilder = sbomFactory.createBuilder();
-        SPDX23PackageBuilderFactory packageFactory = new SPDX23PackageBuilderFactory();
-        SPDX23PackageBuilder packageBuilder = packageFactory.createBuilder();
-        SPDX23FileBuilderFactory fileFactory = new SPDX23FileBuilderFactory();
-        SPDX23FileBuilder fileBuilder = fileFactory.createBuilder();
+        SPDX23Builder sbomBuilder = new SPDX23Builder();
 
         // Metadata
-        fileContents = fileContents.replaceAll("\r", ""); // Remove carriage return characters if windows
+        String fileContents;
+        try {
+            fileContents = String.join("\n", Files.readAllLines(file.toPath()));
+        } catch (IOException e) {
+            throw new DeserializerException("Failed to read " + file.getName(), file, fileFormat, e);
+        }
+
         int firstIndex = fileContents.indexOf(TAG); // Find first index of next "section"
         String header;
 
@@ -203,12 +213,12 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         // Parse and Add Packages
         Matcher packageMatcher = PACKAGE_PATTERN.matcher(fileContents);
         while (packageMatcher.find())
-            sbomBuilder.addSPDX23Component(buildPackage(packageBuilder, packageMatcher.group(1)));
+            sbomBuilder.addSPDX23Component(buildPackage(packageMatcher.group(1)));
 
         // Parse and Add unpackaged files
         Matcher fileMatcher = UNPACKAGED_PATTERN.matcher(fileContents);
         while (fileMatcher.find())
-            sbomBuilder.addSPDX23Component(buildFile(fileBuilder, fileMatcher.group(1)));
+            sbomBuilder.addSPDX23Component(buildFile(fileMatcher.group(1)));
 
         // Parse and Add external license
         Matcher licenseMatcher = EXTRACTED_LICENSE_PATTERN.matcher(fileContents);
@@ -223,25 +233,15 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         return sbomBuilder.buildSPDX23SBOM();
     }
 
-    /**
-     * Gets the ObjectMapper of the serializer to expose configuration.
-     *
-     * @return A reference to the ObjectMapper of the serializer.
-     */
-    @Override
-    public ObjectMapper getObjectMapper() {
-        // We don't need an objectmapper for tag value but removing this breaks tests
-        return new ObjectMapper();
-    }
 
     /**
      * Build a SPDX23 Package
      *
-     * @param builder  Package Builder
      * @param contents String to extract details from
      * @return SPDX23 Package Object
      */
-    private SPDX23PackageObject buildPackage(SPDX23PackageBuilder builder, String contents) {
+    private SPDX23PackageObject buildPackage(String contents) {
+        SPDX23PackageBuilder builder = new SPDX23PackageBuilder();
         Map<String, String> componentMaterials = new HashMap<>();
         Matcher mPackages = TAG_VALUE_PATTERN.matcher(contents);
 
@@ -335,17 +335,17 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         builder.setFileName(componentMaterials.get("PackageFileName"));
 
         // build package
-        return builder.buildAndFlush();
+        return builder.build();
     }
 
     /**
      * Build a SPDX23 File
      *
-     * @param builder  File Builder
      * @param contents String to extract details from
      * @return SPDX23 File Object
      */
-    private SPDX23FileObject buildFile(SPDX23FileBuilder builder, String contents) {
+    private SPDX23FileObject buildFile(String contents) {
+        SPDX23FileBuilder builder = new SPDX23FileBuilder();
         Matcher mFiles = TAG_VALUE_PATTERN.matcher(contents);
         HashMap<String, String> fileMaterials = new HashMap<>();
         while (mFiles.find()) fileMaterials.put(mFiles.group(1), mFiles.group(2));
@@ -382,7 +382,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         }
 
         // add component
-        return builder.buildAndFlush();
+        return builder.build();
     }
 
     /**

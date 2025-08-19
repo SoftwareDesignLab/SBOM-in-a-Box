@@ -29,7 +29,7 @@ import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.serializers.deserializer.Deserializer;
 import org.svip.serializers.deserializer.SPDX23JSONDeserializer;
-import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
+import org.svip.serializers.deserializer.v2.SPDX23TagValueDeserializer;
 import org.svip.serializers.serializer.*;
 
 import java.io.IOException;

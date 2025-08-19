@@ -30,8 +30,9 @@ import org.svip.metrics.resultfactory.Result;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
-import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
+import org.svip.serializers.deserializer.v2.SPDX23TagValueDeserializer;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -60,8 +61,8 @@ public class RepairNullOrEmptyTest {
 
     @Test
     public void NullCopyrightSPDX23() throws Exception {
-        SPDX23TagValueDeserializer spdx23JSONDeserializer = new SPDX23TagValueDeserializer();
-        SPDX23SBOM sbom = spdx23JSONDeserializer.readFromString(Files.readString(Path.of(NULL_COPYRIGHT_SBOM_SPDX)));
+        SPDX23TagValueDeserializer spdx23TagValueDeserializerDeserializer = new SPDX23TagValueDeserializer();
+        SPDX23SBOM sbom = spdx23TagValueDeserializerDeserializer.deserialize(new File(NULL_COPYRIGHT_SBOM_SPDX));
         QualityReport statement = r.generateStatement(sbom);
         List<Result> results = statement.getResults().get(PACKAGE_HASHCODE);
         assertEquals(MICROSOFT_COPYRIGHT_FIX, results.get(results.size() - 1).getFixes().get(0).getNew());

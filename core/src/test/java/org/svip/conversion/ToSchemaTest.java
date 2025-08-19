@@ -28,11 +28,14 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
+import org.svip.serializers.FileFormat;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
-import org.svip.serializers.deserializer.Deserializer;
-import org.svip.serializers.deserializer.SPDX23TagValueDeserializer;
+import org.svip.serializers.deserializer.v2.CDX14Deserializer;
+import org.svip.serializers.deserializer.v2.Deserializer;
+import org.svip.serializers.deserializer.v2.SPDX23TagValueDeserializer;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -70,7 +73,7 @@ public class ToSchemaTest {
      **/
 
     public static Deserializer getCDXJSONDeserializer() {
-        return new CDX14JSONDeserializer();
+        return new CDX14Deserializer(FileFormat.JSON);
     }
 
     public static Deserializer getSPDXTagValueDeserializer() {
@@ -82,12 +85,12 @@ public class ToSchemaTest {
      **/
     @BeforeAll
     static void setupTestSboms() throws IOException {
-        sboms[0] = getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_1)));
-        sboms[1] = getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_2)));
-        sboms[2] = getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_3)));
-        sboms[3] = getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_4)));
-        sboms[4] = getSPDXTagValueDeserializer().readFromString(Files.readString(Path.of(SBOM_5)));
-        sboms[5] = getCDXJSONDeserializer().readFromString(Files.readString(Path.of(SBOM_6)));
+        sboms[0] = getCDXJSONDeserializer().deserialize(new File(SBOM_1));
+        sboms[1] = getCDXJSONDeserializer().deserialize(new File(SBOM_2));
+        sboms[2] = getCDXJSONDeserializer().deserialize(new File(SBOM_3));
+        sboms[3] = getCDXJSONDeserializer().deserialize(new File(SBOM_4));
+        sboms[4] = getSPDXTagValueDeserializer().deserialize(new File(SBOM_5));
+        sboms[5] = getCDXJSONDeserializer().deserialize(new File(SBOM_6));
     }
 
     /**

@@ -47,6 +47,7 @@ import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+import org.svip.serializers.deserializer.v2.SPDX23TagValueDeserializer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -149,7 +150,7 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
                 for (JsonNode creator : creationInfo.get("creators"))
                     creators.add(creator.asText());
 
-                SPDX23TagValueDeserializer.parseSPDXCreatorInfo(creationData, creators);
+//                SPDX23TagValueDeserializer.parseSPDXCreatorInfo(creationData, creators);
             }
             // add the creation data to the builder
             sbomBuilder.setCreationData(creationData);
@@ -195,10 +196,10 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
 
         // SUPPLIER
         if (pkg.get("supplier") != null) {
-            Contact supplierContact = SPDX23TagValueDeserializer.parseSPDXCreator(pkg.get("supplier").asText());
-            Organization supplier = new Organization(supplierContact.getName(), null);
-            supplier.addContact(supplierContact);
-            builder.setSupplier(supplier);
+//            Contact supplierContact = SPDX23TagValueDeserializer.parseSPDXCreator(pkg.get("supplier").asText());
+//            Organization supplier = new Organization(supplierContact.getName(), null);
+//            supplier.addContact(supplierContact);
+//            builder.setSupplier(supplier);
         }
 
         // NAME

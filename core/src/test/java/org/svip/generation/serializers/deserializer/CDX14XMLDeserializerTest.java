@@ -30,7 +30,7 @@ import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.serializers.deserializer.CDX14XMLDeserializer;
-import org.svip.serializers.deserializer.Deserializer;
+import org.svip.serializers.deserializer.v2.Deserializer;
 import org.svip.serializers.deserializer.v2.CDX14Deserializer;
 
 import java.io.File;
@@ -50,7 +50,7 @@ public class CDX14XMLDeserializerTest extends DeserializerTest {
 
     @Override
     public Deserializer getDeserializer() {
-        return new CDX14XMLDeserializer();
+        return new CDX14Deserializer(XML);
     }
 
     @Disabled
