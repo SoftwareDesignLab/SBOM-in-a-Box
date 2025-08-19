@@ -43,8 +43,18 @@ import java.util.HashMap;
  */
 public abstract class Deserializer {
 
+    protected final FileFormat fileFormat;
     private final ObjectMapper jsonMapper = new ObjectMapper();
     private final XmlMapper xmlMapper = new XmlMapper();
+
+    /**
+     * Create new deserializer
+     *
+     * @param fileFormat Type of deserializer
+     */
+    protected Deserializer(FileFormat fileFormat) {
+        this.fileFormat = fileFormat;
+    }
 
     /**
      * Load JSON file into a hashmap
@@ -86,31 +96,29 @@ public abstract class Deserializer {
     /**
      * Load the file into hashmap using the appropriate mapper
      *
-     * @param file   File to load
-     * @param format Format of file
+     * @param file File to load
      * @return HashMap representation of the file
      * @throws DeserializerException Failed to load file
      */
-    protected HashMap<String, Object> loadFile(File file, FileFormat format) throws DeserializerException {
+    protected HashMap<String, Object> loadFile(File file) throws DeserializerException {
         try {
-            return switch (format) {
+            return switch (fileFormat) {
                 case JSON -> loadJsonFile(file);
                 case XML -> loadXmlFile(file);
                 case TAG_VALUE -> loadTagValueFile(file);
             };
         } catch (IOException e) {
-            throw new DeserializerException("Failed to load " + file.getName(), file, format, e);
+            throw new DeserializerException("Failed to load " + file.getName(), file, fileFormat, e);
         }
     }
 
     /**
      * Deserialize the file into an SBOM object
      *
-     * @param file   File to deserialize
-     * @param format Format of file
+     * @param file File to deserialize
      * @return SBOM object
      */
-    public abstract SBOM deserialize(File file, FileFormat format) throws DeserializerException;
+    public abstract SBOM deserialize(File file) throws DeserializerException;
 
     /**
      * Standardized deserialization error message

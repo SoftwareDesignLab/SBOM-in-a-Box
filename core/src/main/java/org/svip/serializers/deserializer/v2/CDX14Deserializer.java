@@ -40,20 +40,63 @@ import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.serializers.FileFormat;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <b>File:</b> CDX14Serializer.java
  * <p>
  * <b>Description:</b> Serialize CycloneDX 1.4 JSON and XML SBOMs into SBOM Objects
  *
+ * @author Ian Dunn
+ * @author Thomas Roman
  * @author Derek Garcia
  */
 public class CDX14Deserializer extends Deserializer {
-    private final ObjectMapper mapper = new ObjectMapper();
+
+    /**
+     * Create new CycloneDX 1.4 deserializer
+     *
+     * @param fileFormat Type of deserializer
+     */
+    public CDX14Deserializer(FileFormat fileFormat) {
+        super(fileFormat);
+    }
+
+    /**
+     * Normalize a snippet of JSON or XML.
+     * XML use headers which skew file parsing
+     *
+     * @param collection Collection to normalize
+     * @return List of values in a section
+     */
+    private List<Map<String, Object>> normalizeExcerpt(Object collection) {
+        // skip empty data
+        if (collection == null) return null;
+
+        // no extra headers if json
+        if (fileFormat == FileFormat.JSON)
+            return mapper.convertValue(collection, new TypeReference<>() {
+            });
+
+        // else flatten xml object
+        Map<String, Object> tmp = mapper.convertValue(collection, new TypeReference<>() {
+        });
+        if (!tmp.isEmpty()) {
+            // get the first (and only) value
+            Object o = tmp.values().iterator().next();
+            // only 1 object, wrap in list
+            if (o instanceof Map) {
+                Map<String, Object> r = mapper.convertValue(o, new TypeReference<>() {
+                });
+                return List.of(r);
+            }
+            // else return list in its entirety
+            return mapper.convertValue(o, new TypeReference<>() {
+            });
+        }
+        // no data
+        return Collections.emptyList();
+    }
 
     /**
      * Resolve the SBOM creation details
@@ -71,22 +114,19 @@ public class CDX14Deserializer extends Deserializer {
         creationData.setCreationTime((String) metadata.get("timestamp"));
 
         // CREATION TOOLS
-        List<HashMap<String, Object>> tools = mapper.convertValue(metadata.get("tools"), new TypeReference<>() {
-        });
-        for (HashMap<String, Object> tool : tools) {
+        List<Map<String, Object>> tools = normalizeExcerpt(metadata.get("tools"));
+        for (Map<String, Object> tool : tools) {
             CreationTool creationTool = new CreationTool();
             // set details
             creationTool.setName((String) tool.get("name"));
             creationTool.setVendor((String) tool.get("vendor"));
             creationTool.setVersion((String) tool.get("version"));
             // add tool hashes
-            List<HashMap<String, String>> hashes = mapper.convertValue(tool.get("hashes"), new TypeReference<>() {
-            });
+            List<Map<String, Object>> hashes = normalizeExcerpt(tool.get("hashes"));
             if (hashes != null)
-                hashes.forEach(h -> creationTool.addHash(h.get("alg"), h.get("content")));
+                hashes.forEach(h -> creationTool.addHash((String) h.get("alg"), (String) h.get("content")));
             // add tool external references
-            List<HashMap<String, Object>> externalReferences = mapper.convertValue(tool.get("externalReferences"), new TypeReference<>() {
-            });
+            List<Map<String, Object>> externalReferences = normalizeExcerpt(tool.get("externalReferences"));
             if (externalReferences != null)
                 externalReferences.forEach(e -> creationTool.addExternalReference(resolveExternalReference(e)));
             // add the tool
@@ -94,39 +134,37 @@ public class CDX14Deserializer extends Deserializer {
         }
 
         // add authors
-        List<HashMap<String, Object>> authors = mapper.convertValue(metadata.get("authors"), new TypeReference<>() {
-        });
+        List<Map<String, Object>> authors = normalizeExcerpt(metadata.get("authors"));
         if (authors != null)
             authors.forEach(a -> creationData.addAuthor(resolveContact(a)));
 
         // set manufacture
-        HashMap<String, Object> manufacture = mapper.convertValue(metadata.get("manufacture"), new TypeReference<>() {
+        Map<String, Object> manufacture = mapper.convertValue(metadata.get("manufacture"), new TypeReference<>() {
         });
         creationData.setManufacture(resolveOrganization(manufacture));
 
         // set supplier
-        HashMap<String, Object> supplier = mapper.convertValue(metadata.get("supplier"), new TypeReference<>() {
+        Map<String, Object> supplier = mapper.convertValue(metadata.get("supplier"), new TypeReference<>() {
         });
         creationData.setSupplier(resolveOrganization(supplier));
 
         // add properties
-        List<HashMap<String, String>> properties = mapper.convertValue(metadata.get("properties"), new TypeReference<>() {
-        });
+        List<Map<String, Object>> properties = normalizeExcerpt(metadata.get("properties"));
         if (properties != null)
             properties.forEach(p -> {
-                String name = p.get("name");
-                String value = p.get("value");
+                String name = (String) p.get("name");
+                String value = (String) p.get("value");
                 // set creator comment if provided, else just save property
                 if (name.equals("creatorComment")) creationData.setCreatorComment(value);
                 else creationData.addProperty(name, value);
             });
 
         // add licenses
-        List<HashMap<String, String>> licenses = mapper.convertValue(metadata.get("licenses"), new TypeReference<>() {});
+        List<Map<String, Object>> licenses = normalizeExcerpt(metadata.get("licenses"));
         if (licenses != null) {
             licenses.forEach(l -> {
-                String lID = l.get("id");
-                String lName = l.get("name");
+                String lID = (String) l.get("id");
+                String lName = (String) l.get("name");
                 if (lID != null) {
                     creationData.addLicense(lID);
                 } else if (lName != null) {
@@ -170,29 +208,40 @@ public class CDX14Deserializer extends Deserializer {
             packageBuilder.setDescription(new Description(description));
 
         // set supplier
-        HashMap<String, Object> supplier = mapper.convertValue(component.get("supplier"), new TypeReference<>() {
+        Map<String, Object> supplier = mapper.convertValue(component.get("supplier"), new TypeReference<>() {
         });
         packageBuilder.setSupplier(resolveOrganization(supplier));
 
         // add hashes
-        List<HashMap<String, String>> hashes = mapper.convertValue(component.get("hashes"), new TypeReference<>() {
-        });
+        List<Map<String, Object>> hashes = normalizeExcerpt(component.get("hashes"));
         if (hashes != null)
-            hashes.forEach(h -> packageBuilder.addHash(h.get("alg"), h.get("content")));
+            hashes.forEach(h -> packageBuilder.addHash((String) h.get("alg"), (String) h.get("content")));
 
         // add licenses
-        List<HashMap<String, HashMap<String, String>>> licenses = mapper.convertValue(component.get("licenses"), new TypeReference<>() {
-        });
+        List<Map<String, Object>> licenses = normalizeExcerpt(component.get("licenses"));
         if (licenses != null) {
             if (!licenses.isEmpty()) {
                 LicenseCollection componentLicenses = new LicenseCollection();
                 licenses.forEach(l -> {
-                    String lID = l.get("license").get("id");
-                    String lName = l.get("license").get("name");
+                    // todo - cleanup
+                    String lID;
+                    String lName;
+                    if (fileFormat == FileFormat.JSON) {
+                        Map<String, Map<String, String>> licenseObj = mapper.convertValue(l, new TypeReference<>() {
+                        });
+                        lID = licenseObj.get("license").get("id");
+                        lName = licenseObj.get("license").get("name");
+                    } else {
+                        Map<String, String> licenseObj = mapper.convertValue(l, new TypeReference<>() {
+                        });
+                        lID = licenseObj.get("id");
+                        lName = licenseObj.get("name");
+                    }
+                    // set license
                     if (lID != null) {
-                        componentLicenses.addLicenseInfoFromFile(l.get("license").get("id"));
+                        componentLicenses.addLicenseInfoFromFile(lID);
                     } else if (lName != null) {
-                        componentLicenses.addLicenseInfoFromFile(l.get("license").get("name"));
+                        componentLicenses.addLicenseInfoFromFile(lName);
                     }
                 });
                 packageBuilder.setLicenses(componentLicenses);
@@ -200,16 +249,14 @@ public class CDX14Deserializer extends Deserializer {
         }
 
         // add external references
-        List<HashMap<String, Object>> externalReferences = mapper.convertValue(component.get("externalReferences"), new TypeReference<>() {
-        });
+        List<Map<String, Object>> externalReferences = normalizeExcerpt(component.get("externalReferences"));
         if (externalReferences != null)
             externalReferences.forEach(e -> packageBuilder.addExternalReference(resolveExternalReference(e)));
 
         // add properties
-        List<HashMap<String, String>> properties = mapper.convertValue(component.get("properties"), new TypeReference<>() {
-        });
+        List<Map<String, Object>> properties = normalizeExcerpt(component.get("properties"));
         if (properties != null)
-            properties.forEach(p -> packageBuilder.addProperty(p.get("name"), p.get("value")));
+            properties.forEach(p -> packageBuilder.addProperty((String) p.get("name"), (String) p.get("value")));
 
         // done
         return packageBuilder.build();
@@ -231,10 +278,9 @@ public class CDX14Deserializer extends Deserializer {
 
         // TODO do we want to store comments?
         // add hashes
-        List<HashMap<String, String>> hashes = mapper.convertValue(externalReference.get("hashes"), new TypeReference<>() {
-        });
+        List<Map<String, Object>> hashes = normalizeExcerpt(externalReference.get("hashes"));
         if (hashes != null)
-            hashes.forEach(h -> externalReferenceObj.addHash(h.get("alg"), h.get("content")));
+            hashes.forEach(h -> externalReferenceObj.addHash((String) h.get("alg"), (String) h.get("content")));
 
         return externalReferenceObj;
     }
@@ -264,8 +310,7 @@ public class CDX14Deserializer extends Deserializer {
                 (String) organization.get("name"),
                 (String) organization.get("url"));
         // add contacts
-        List<HashMap<String, Object>> contacts = mapper.convertValue(organization.get("contact"), new TypeReference<>() {
-        });
+        List<Map<String, Object>> contacts = normalizeExcerpt(organization.get("contact"));
         if (contacts != null)
             contacts.forEach(c -> organizationObj.addContact(resolveContact(c)));
 
@@ -298,7 +343,7 @@ public class CDX14Deserializer extends Deserializer {
      * @param sbomBuilder Builder used to make SBOM
      * @param content     Map with SBOM details
      */
-    private void setMetadata(CDX14Builder sbomBuilder, HashMap<String, Object> content) {
+    private void setMetadata(CDX14Builder sbomBuilder, Map<String, Object> content) {
         // set basic details
         sbomBuilder.setFormat((String) content.get("bomFormat"))
                 .setUID((String) content.get("serialNumber"))
@@ -320,7 +365,7 @@ public class CDX14Deserializer extends Deserializer {
         );
 
         // set root component
-        HashMap<String, Object> rootComponent = mapper.convertValue(metadata.get("component"), new TypeReference<>() {
+        Map<String, Object> rootComponent = mapper.convertValue(metadata.get("component"), new TypeReference<>() {
         });
 
         sbomBuilder.setRootComponent(resolvePackage(rootComponent));
@@ -332,18 +377,17 @@ public class CDX14Deserializer extends Deserializer {
     /**
      * Load CycloneDX SBOM file into memory
      *
-     * @param file   File to deserialize
-     * @param format Format of file
+     * @param file File to deserialize
      * @return CycloneDX 1.4 SBOM
      * @throws DeserializerException Failed to load file
      */
     @Override
-    public CDX14SBOM deserialize(File file, FileFormat format) throws DeserializerException {
+    public CDX14SBOM deserialize(File file) throws DeserializerException {
         // cdx doesn't support tag-value
-        if (format == FileFormat.TAG_VALUE)
-            throw new DeserializerException("CycloneDX 1.4 does not support Tag-Value", file, format);
+        if (fileFormat == FileFormat.TAG_VALUE)
+            throw new DeserializerException("CycloneDX 1.4 does not support Tag-Value", file, fileFormat);
         // load into map
-        HashMap<String, Object> content = super.loadFile(file, format);
+        Map<String, Object> content = super.loadFile(file);
 
         // initialize builders
         CDX14Builder sbomBuilder = new CDX14Builder();
@@ -352,20 +396,17 @@ public class CDX14Deserializer extends Deserializer {
         setMetadata(sbomBuilder, content);
 
         // components
-        List<HashMap<String, Object>> packages = mapper.convertValue(content.get("components"), new TypeReference<>() {
-        });
+        List<Map<String, Object>> packages = normalizeExcerpt(content.get("components"));
         if (packages != null)
             packages.forEach(p -> sbomBuilder.addCDX14Package(resolvePackage(p)));
 
         // external references
-        List<HashMap<String, Object>> externalReferences = mapper.convertValue(content.get("externalReferences"), new TypeReference<>() {
-        });
+        List<Map<String, Object>> externalReferences = normalizeExcerpt(content.get("externalReferences"));
         if (externalReferences != null)
             externalReferences.forEach(er -> sbomBuilder.addExternalReference(resolveExternalReference(er)));
 
         // Dependencies
-        List<HashMap<String, Object>> dependencies = mapper.convertValue(content.get("dependencies"), new TypeReference<>() {
-        });
+        List<Map<String, Object>> dependencies = normalizeExcerpt(content.get("dependencies"));
         if (dependencies != null) {
             dependencies.forEach(d -> {
                 // add to sbom

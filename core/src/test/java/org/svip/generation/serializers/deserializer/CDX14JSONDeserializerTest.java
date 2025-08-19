@@ -51,7 +51,7 @@ public class CDX14JSONDeserializerTest extends DeserializerTest {
     private final CDX14SBOM cdx14json;
 
     public CDX14JSONDeserializerTest() throws IOException {
-        cdx14json = new CDX14Deserializer().deserialize(new File(CDX_14_JSON_SBOM), JSON);
+        cdx14json = new CDX14Deserializer(JSON).deserialize(new File(CDX_14_JSON_SBOM));
     }
 
     @Override
