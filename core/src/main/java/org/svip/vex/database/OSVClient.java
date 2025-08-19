@@ -220,7 +220,10 @@ public class OSVClient implements VulnerabilityDBClient {
                 .getString("details"), "N/A"));
 
         //Get all products and add all to the VEX Statement
-        String supplier = c.getSupplier().getName();
+        // todo - hotfix for when supplier is null
+        String supplier = c.getSupplier() == null
+                ? c.getName()
+                : c.getSupplier().getName();
         JSONArray packages = vulnerabilityBody.getJSONArray("affected");
         // for every package in the JSONArray
         for (int i = 0; i < packages.length(); i++) {
