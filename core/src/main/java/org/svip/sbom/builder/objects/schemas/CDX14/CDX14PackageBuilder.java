@@ -68,7 +68,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Component licenses
      */
-    private LicenseCollection licenses = new LicenseCollection();
+    private LicenseCollection licenses;
 
     /**
      * Component copyright

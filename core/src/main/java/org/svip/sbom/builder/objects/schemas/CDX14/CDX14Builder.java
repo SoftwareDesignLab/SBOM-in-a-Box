@@ -87,7 +87,7 @@ public class CDX14Builder implements CDX14SBOMBuilder {
     /**
      * Holds the creation data of the SBOM
      */
-    private CreationData creationData = new CreationData();
+    private CreationData creationData;
     /**
      * Holds the document comments of the SBOM
      */
@@ -218,6 +218,11 @@ public class CDX14Builder implements CDX14SBOMBuilder {
      */
     @Override
     public CDX14Builder setRootComponent(Component rootComponent) {
+        if (rootComponent instanceof CDX14ComponentObject) {
+            this.rootComponent = (CDX14ComponentObject) rootComponent;
+        } else {
+            // todo - throw error
+        }
         return this;
     }
 
@@ -230,7 +235,7 @@ public class CDX14Builder implements CDX14SBOMBuilder {
     @Override
     public CDX14Builder addComponent(Component component) {
         if (component instanceof CDX14ComponentObject) {
-            this.rootComponent = (CDX14ComponentObject) component;
+            addCDX14Package((CDX14ComponentObject) component);
         } else {
             // todo - throw error
         }
