@@ -28,6 +28,7 @@ import org.svip.sbom.builder.interfaces.schemas.SPDX23.SPDX23SBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
+import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.Relationship;
@@ -121,18 +122,24 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
 
     @Override
     public SPDX23Builder addComponent(Component component) {
-        this.components.add(component);
+        if (component != null)
+            this.components.add(component);
         return this;
     }
 
     @Override
     public SPDX23Builder addSPDX23Component(SPDX23Component component) {
-        this.components.add(component);
+        if  (component != null)
+            this.components.add(component);
         return this;
     }
 
     @Override
     public SPDX23Builder addRelationship(String componentName, Relationship relationship) {
+        // don't add null relationships
+        if (componentName == null || relationship == null)
+            return this;
+
         if (!relationships.containsKey(componentName))
             this.relationships.put(componentName, new HashSet<>());
 
@@ -142,7 +149,8 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
 
     @Override
     public SPDX23Builder addExternalReference(ExternalReference externalReference) {
-        this.externalReferences.add(externalReference);
+        if (externalReference != null)
+            this.externalReferences.add(externalReference);
         return this;
     }
 

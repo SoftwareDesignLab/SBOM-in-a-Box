@@ -583,7 +583,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
      * @return an SVIPComponentBuilder
      */
     @Override
-    public SVIPComponentBuilder setBuildDate(String buildDate) {
+    public SVIPComponentBuilder setBuiltDate(String buildDate) {
         this.builtDate = buildDate;
         return this;
     }

@@ -242,8 +242,8 @@ public class ComponentMerger {
 
                 // Built Date
                 if (spdx23PackageObjectA.getBuiltDate() != null && !spdx23PackageObjectA.getBuiltDate().isEmpty())
-                    compBuilder.setBuildDate(spdx23PackageObjectA.getBuiltDate());
-                else compBuilder.setBuildDate(spdx23PackageObjectB.getBuiltDate());
+                    compBuilder.setBuiltDate(spdx23PackageObjectA.getBuiltDate());
+                else compBuilder.setBuiltDate(spdx23PackageObjectB.getBuiltDate());
 
                 // Valid Until Date
                 if (spdx23PackageObjectA.getValidUntilDate() != null && !spdx23PackageObjectA.getValidUntilDate().isEmpty())
@@ -410,9 +410,9 @@ public class ComponentMerger {
 
                     // Built Date
                     if (componentA_SVIP.getBuiltDate() != null && !componentA_SVIP.getBuiltDate().isEmpty())
-                        compBuilder.setBuildDate(componentA_SVIP.getBuiltDate());
+                        compBuilder.setBuiltDate(componentA_SVIP.getBuiltDate());
                     else if (componentB_SVIP.getBuiltDate() != null && !componentB_SVIP.getBuiltDate().isEmpty())
-                        compBuilder.setBuildDate(componentB_SVIP.getBuiltDate());
+                        compBuilder.setBuiltDate(componentB_SVIP.getBuiltDate());
 
                     // Valid Until Date
                     if (componentA_SVIP.getValidUntilDate() != null && !componentA_SVIP.getValidUntilDate().isEmpty())
@@ -563,7 +563,7 @@ public class ComponentMerger {
 
                         // Built Date
                         if (spdx23PackageObjectA.getBuiltDate() != null && !spdx23PackageObjectA.getBuiltDate().isEmpty())
-                            compBuilder.setBuildDate(spdx23PackageObjectA.getBuiltDate());
+                            compBuilder.setBuiltDate(spdx23PackageObjectA.getBuiltDate());
 
                         // Valid Until Date
                         if (spdx23PackageObjectA.getValidUntilDate() != null && !spdx23PackageObjectA.getValidUntilDate().isEmpty())

@@ -170,7 +170,7 @@ public class ToSPDX23 implements ToSchema {
         builder.setReleaseDate(componentSVIP.getReleaseDate());
 
         // Build Date
-        builder.setBuildDate(componentSVIP.getBuiltDate());
+        builder.setBuiltDate(componentSVIP.getBuiltDate());
 
         // Valid Until Date
         builder.setValidUntilDate(componentSVIP.getValidUntilDate());

@@ -236,8 +236,8 @@ public class SPDX23PackageBuilderTest {
     }
 
     @Test
-    void setBuildDate_is_test_built_date_value_test() {
-        test_packageBuilder.setBuildDate(test_builtDate);
+    void setBuiltDate_is_test_built_date_value_test() {
+        test_packageBuilder.setBuiltDate(test_builtDate);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_builtDate, test_file.getBuiltDate());
     }

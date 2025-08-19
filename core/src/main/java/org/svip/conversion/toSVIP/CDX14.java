@@ -116,7 +116,7 @@ public class CDX14 implements ToSVIP {
         builder.setReleaseDate(null);
 
         // Built Date - NOT AVAILABLE IN CDX 1.4
-        builder.setBuildDate(null);
+        builder.setBuiltDate(null);
 
         // Valid Until Date - NOT AVAILABLE IN CDX 1.4
         builder.setValidUntilDate(null);

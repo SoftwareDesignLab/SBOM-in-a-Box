@@ -309,7 +309,7 @@ public class RepairSPDX23CDX14 implements Repair {
                 spdxBuilder.setDescription(desc);
                 spdxBuilder.setSupplier(supplier);
                 spdxBuilder.setVersion(compVersion);
-                spdxBuilder.setBuildDate(builtDate);
+                spdxBuilder.setBuiltDate(builtDate);
                 spdxBuilder.setDownloadLocation(downloadLocation);
                 spdxBuilder.setFileName(fileName);
                 spdxBuilder.setFilesAnalyzed(filesAnalyzed);

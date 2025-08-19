@@ -275,7 +275,7 @@ public class SPDX23JSONDeserializer extends StdDeserializer<SPDX23SBOM> implemen
                     builder.addExternalReference(new ExternalReference(category, url, type));
             }
 
-        if (pkg.get("builtDate") != null) builder.setBuildDate(pkg.get("builtDate").asText());
+        if (pkg.get("builtDate") != null) builder.setBuiltDate(pkg.get("builtDate").asText());
         if (pkg.get("releaseDate") != null) builder.setReleaseDate(pkg.get("releaseDate").asText());
         if (pkg.get("validUntilDate") != null) builder.setValidUntilDate(pkg.get("validUntilDate").asText());
         if (pkg.get("packageVerificationCode") != null)

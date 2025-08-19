@@ -369,8 +369,8 @@ public class SVIPComponentBuilderTest {
     }
 
     @Test
-    void getBuiltDate_is_test_builtDate_when_setBuildDate_is_used_test() {
-        test_packageBuilder.setBuildDate(test_builtDate);
+    void getBuiltDate_is_test_builtDate_when_setBuiltDate_is_used_test() {
+        test_packageBuilder.setBuiltDate(test_builtDate);
         test_file = test_packageBuilder.buildAndFlush();
         assertEquals(test_builtDate, test_file.getBuiltDate());
     }

@@ -45,7 +45,7 @@ import java.util.*;
 /**
  * <b>File:</b> CDX14Serializer.java
  * <p>
- * <b>Description:</b> Serialize CycloneDX 1.4 JSON and XML SBOMs into SBOM Objects
+ * <b>Description:</b> Deserialize CycloneDX 1.4 JSON and XML SBOMs into SBOM Objects
  *
  * @author Ian Dunn
  * @author Thomas Roman

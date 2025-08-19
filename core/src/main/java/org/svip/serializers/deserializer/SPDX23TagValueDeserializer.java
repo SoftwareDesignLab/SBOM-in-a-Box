@@ -328,7 +328,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
         // RELEASE DATE
         builder.setReleaseDate(componentMaterials.get("ReleaseDate"));
         // BUILT DATE
-        builder.setBuildDate(componentMaterials.get("BuiltDate"));
+        builder.setBuiltDate(componentMaterials.get("BuiltDate"));
         // VALID UNTIL DATE
         builder.setValidUntilDate(componentMaterials.get("ValidUntilDate"));
         // FILE NAME

@@ -364,7 +364,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
      * @return an SPDX23PackageBuilder
      */
     @Override
-    public SPDX23PackageBuilder setBuildDate(String buildDate) {
+    public SPDX23PackageBuilder setBuiltDate(String buildDate) {
         this.builtDate = buildDate;
         return this;
     }

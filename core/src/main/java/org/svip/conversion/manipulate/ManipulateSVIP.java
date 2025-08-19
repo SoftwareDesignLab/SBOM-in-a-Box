@@ -203,7 +203,7 @@ public class ManipulateSVIP {
         builder.setReleaseDate(component.getReleaseDate());
 
         // Built Date
-        builder.setBuildDate(component.getBuiltDate());
+        builder.setBuiltDate(component.getBuiltDate());
 
         // Valid Until Date
         builder.setValidUntilDate(component.getValidUntilDate());

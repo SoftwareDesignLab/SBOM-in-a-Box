@@ -118,7 +118,7 @@ public class SPDX23 implements ToSVIP {
         builder.setReleaseDate(component.getReleaseDate());
 
         // Built Date
-        builder.setBuildDate(component.getBuiltDate());
+        builder.setBuiltDate(component.getBuiltDate());
 
         // Valid Until Date
         builder.setValidUntilDate(component.getValidUntilDate());
@@ -231,7 +231,7 @@ public class SPDX23 implements ToSVIP {
         builder.setReleaseDate(null);
 
         // Built Date - NOT AVAILABLE IN SPDX 2.3 FILE
-        builder.setBuildDate(null);
+        builder.setBuiltDate(null);
 
         // Valid Until Date - NOT AVAILABLE IN SPDX 2.3 FILE
         builder.setValidUntilDate(null);

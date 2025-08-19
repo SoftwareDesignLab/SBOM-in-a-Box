@@ -44,8 +44,8 @@ import java.util.HashMap;
 public abstract class Deserializer {
 
     protected final FileFormat fileFormat;
-    private final ObjectMapper jsonMapper = new ObjectMapper();
     private final XmlMapper xmlMapper = new XmlMapper();
+    protected final ObjectMapper mapper = new ObjectMapper();
 
     /**
      * Create new deserializer
@@ -64,7 +64,7 @@ public abstract class Deserializer {
      * @throws IOException Failed to map JSON to hashmap
      */
     private HashMap<String, Object> loadJsonFile(File jsonFile) throws IOException {
-        return jsonMapper.readValue(jsonFile, new TypeReference<>() {
+        return mapper.readValue(jsonFile, new TypeReference<>() {
         });
     }
     // todo TagValue mapper

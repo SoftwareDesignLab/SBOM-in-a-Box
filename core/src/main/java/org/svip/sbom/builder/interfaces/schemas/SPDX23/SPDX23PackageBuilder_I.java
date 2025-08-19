@@ -97,7 +97,7 @@ public interface SPDX23PackageBuilder_I extends SPDX23ComponentBuilder, PackageB
      * @param buildDate the package's build date
      * @return an SPDX23PackageBuilder_I
      */
-    SPDX23PackageBuilder_I setBuildDate(String buildDate);
+    SPDX23PackageBuilder_I setBuiltDate(String buildDate);
 
     /**
      * Set the valid until date for the package

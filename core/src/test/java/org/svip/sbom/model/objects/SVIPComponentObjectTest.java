@@ -85,7 +85,7 @@ public class SVIPComponentObjectTest {
         packageBuilder.setHomePage("Control HomePage");
         packageBuilder.setSourceInfo("Control Info");
         packageBuilder.setReleaseDate("Control Release Date");
-        packageBuilder.setBuildDate("Control Build Date");
+        packageBuilder.setBuiltDate("Control Build Date");
         packageBuilder.setValidUntilDate("Control Valid Until");
         packageBuilder.setMimeType("Control Mime");
         packageBuilder.setPublisher("Control Publisher");
@@ -130,7 +130,7 @@ public class SVIPComponentObjectTest {
         packageBuilder.setHomePage("Control HomePage");
         packageBuilder.setSourceInfo("Control Info");
         packageBuilder.setReleaseDate("Control Release Date");
-        packageBuilder.setBuildDate("Control Build Date");
+        packageBuilder.setBuiltDate("Control Build Date");
         packageBuilder.setValidUntilDate("Control Valid Until");
         packageBuilder.setMimeType("Control Mime");
         packageBuilder.setPublisher("Control Publisher");
@@ -181,7 +181,7 @@ public class SVIPComponentObjectTest {
         packageBuilder.setHomePage("HomePage");
         packageBuilder.setSourceInfo("Info");
         packageBuilder.setReleaseDate("Release Date");
-        packageBuilder.setBuildDate("Build Date");
+        packageBuilder.setBuiltDate("Build Date");
         packageBuilder.setValidUntilDate("Valid Until");
         packageBuilder.setMimeType("Mime");
         packageBuilder.setPublisher("Publisher");

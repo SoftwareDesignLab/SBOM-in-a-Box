@@ -463,9 +463,9 @@ public class SVIPComponentObjectConflictsTest {
 
     @Test
     public void buildDate_is_conflicting_between_testPackage_and_controlPackage_test() {
-        packageBuilder.setBuildDate("control");
+        packageBuilder.setBuiltDate("control");
         controlPackage = packageBuilder.buildAndFlush();
-        packageBuilder.setBuildDate("build date");
+        packageBuilder.setBuiltDate("build date");
         conflictPackage = packageBuilder.buildAndFlush();
 
         List<Conflict> conflictList = controlPackage.compare(conflictPackage);

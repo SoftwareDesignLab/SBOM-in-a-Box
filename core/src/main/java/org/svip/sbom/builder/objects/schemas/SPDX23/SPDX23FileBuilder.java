@@ -228,6 +228,7 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
      * @return a Component
      */
     @Override
+    @Deprecated
     public SPDX23FileObject buildAndFlush() {
         // build the component
         SPDX23FileObject fileObject = build();

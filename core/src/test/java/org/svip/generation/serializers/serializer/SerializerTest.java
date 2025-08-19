@@ -149,7 +149,7 @@ public class SerializerTest {
         componentBuilder.setHomePage(nameAttribute.apply("homePage"));
         componentBuilder.setSourceInfo(nameAttribute.apply("sourceInfo"));
         componentBuilder.setReleaseDate(nameAttribute.apply("releaseDate"));
-        componentBuilder.setBuildDate(nameAttribute.apply("buildDate"));
+        componentBuilder.setBuiltDate(nameAttribute.apply("buildDate"));
         componentBuilder.setValidUntilDate(nameAttribute.apply("validUntilDate"));
         componentBuilder.setComment(nameAttribute.apply("comment"));
 
