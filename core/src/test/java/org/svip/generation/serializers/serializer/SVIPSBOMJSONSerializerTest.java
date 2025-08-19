@@ -26,17 +26,19 @@ package org.svip.generation.serializers.serializer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.svip.serializers.serializer.SVIPSBOMJSONSerializer;
+import org.svip.serializers.serializer.v2.Serializer;
 import org.svip.utils.Debug;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class SVIPSBOMJSONSerializerTest extends SerializerTest {
     public SVIPSBOMJSONSerializerTest() {
-        super(new SVIPSBOMJSONSerializer());
+//        super(new SVIPSBOMJSONSerializer());
+        super(null);
     }
 
     @Test
-    public void writeToStringTest() throws JsonProcessingException {
+    public void writeToStringTest() throws Serializer.SerializerException {
         // TODO is this testable since it just serializes the class itself?
         String svipSBOM = getSerializer().writeToString(getTestSBOM());
         assertNotNull(svipSBOM);

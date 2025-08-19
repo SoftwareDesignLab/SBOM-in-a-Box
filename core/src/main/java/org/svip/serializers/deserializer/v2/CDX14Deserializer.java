@@ -26,6 +26,7 @@ package org.svip.serializers.deserializer.v2;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14PackageBuilder;
+import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.shared.Relationship;

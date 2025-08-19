@@ -29,17 +29,19 @@ import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.serializer.SPDX23TagValueSerializer;
+import org.svip.serializers.serializer.v2.Serializer;
 import org.svip.utils.Debug;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SPDX23TagValueSerializerTest extends SerializerTest {
     public SPDX23TagValueSerializerTest() {
-        super(new SPDX23TagValueSerializer());
+//        super(new SPDX23TagValueSerializer());
+        super(null);
     }
 
     @Test
-    public void writeToStringTest() throws JsonProcessingException {
+    public void writeToStringTest() throws JsonProcessingException, Serializer.SerializerException {
         Debug.logBlockTitle("SPDX 2.3 Tag-Value");
         String serialized = getSerializer().writeToString(getTestSBOM());
         Debug.log(Debug.LOG_TYPE.DEBUG, "\n" + serialized);

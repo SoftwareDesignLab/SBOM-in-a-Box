@@ -24,6 +24,10 @@
 
 package org.svip.sbom.model.objects.CycloneDX14;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.svip.compare.conflicts.Conflict;
 import org.svip.compare.conflicts.ConflictFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -32,6 +36,7 @@ import org.svip.sbom.model.interfaces.schemas.CycloneDX14.CDX14Schema;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
+import org.svip.serializers.serializer.v2.CycloneDX14.custom.CDX14RelationshipsSerializer;
 
 import java.util.*;
 
@@ -44,12 +49,13 @@ import static org.svip.compare.conflicts.MismatchType.*;
  * @author Derek Garcia
  * @author Matthew Morrison
  */
+@JsonPropertyOrder({"bomFormat", "specVersion", "serialNumber", "version", "metadata", "components", "externalReferences", "dependencies"})
 public class CDX14SBOM implements CDX14Schema {
 
     /**
      * SBOM's format
      */
-    private final String format;
+    private final String bomFormat;
 
     /**
      * SBOM's name
@@ -121,7 +127,7 @@ public class CDX14SBOM implements CDX14Schema {
     /**
      * Constructor to make a new CycloneDX 1.4 SBOM
      *
-     * @param format             SBOM format
+     * @param bomFormat          SBOM format
      * @param name               SBOM name
      * @param uid                SBOM uid
      * @param version            SBOM version
@@ -135,13 +141,13 @@ public class CDX14SBOM implements CDX14Schema {
      * @param externalReferences SBOM external references
      */
     //TODO add missing fields when implemented (VEX, Service, Composition, Signature)
-    public CDX14SBOM(String format, String name, String uid, String version,
+    public CDX14SBOM(String bomFormat, String name, String uid, String version,
                      String specVersion, Set<String> licenses,
                      CreationData creationData, String documentComment,
                      CDX14ComponentObject rootComponent, Set<Component> components,
                      HashMap<String, Set<Relationship>> relationships,
                      Set<ExternalReference> externalReferences) {
-        this.format = format;
+        this.bomFormat = bomFormat;
         this.name = name;
         this.uid = uid;
         this.version = version;
@@ -161,8 +167,9 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's format
      */
     @Override
-    public String getFormat() {
-        return this.format;
+    @JsonProperty("bomFormat")
+    public String getBomFormat() {
+        return this.bomFormat;
     }
 
     /**
@@ -171,6 +178,7 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's name
      */
     @Override
+    @JsonIgnore
     public String getName() {
         return this.name;
     }
@@ -181,6 +189,7 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's UID
      */
     @Override
+    @JsonProperty("serialNumber")
     public String getUID() {
         return this.uid;
     }
@@ -191,6 +200,7 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's version
      */
     @Override
+    @JsonProperty("version")
     public String getVersion() {
         return this.version;
     }
@@ -201,6 +211,7 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's spec version
      */
     @Override
+    @JsonProperty("specVersion")
     public String getSpecVersion() {
         return this.specVersion;
     }
@@ -211,6 +222,7 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's licenses
      */
     @Override
+    @JsonIgnore
     public Set<String> getLicenses() {
         return this.licenses;
     }
@@ -221,6 +233,7 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's creation data
      */
     @Override
+    @JsonProperty("metadata")
     public CreationData getCreationData() {
         return this.creationData;
     }
@@ -231,6 +244,7 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's document comment
      */
     @Override
+    @JsonIgnore
     public String getDocumentComment() {
         return this.documentComment;
     }
@@ -241,6 +255,7 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's root component
      */
     @Override
+    @JsonIgnore
     public CDX14ComponentObject getRootComponent() {
         return this.rootComponent;
     }
@@ -251,6 +266,7 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's components
      */
     @Override
+    @JsonProperty("components")
     public Set<Component> getComponents() {
         return this.components;
     }
@@ -261,6 +277,8 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's relationships
      */
     @Override
+    @JsonProperty("dependencies")
+    @JsonSerialize(using = CDX14RelationshipsSerializer.class)
     public Map<String, Set<Relationship>> getRelationships() {
         return this.relationships;
     }
@@ -271,6 +289,7 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's external references
      */
     @Override
+    @JsonProperty("externalReferences")
     public Set<ExternalReference> getExternalReferences() {
         return this.externalReferences;
     }
@@ -287,7 +306,7 @@ public class CDX14SBOM implements CDX14Schema {
         ConflictFactory cf = new ConflictFactory();
 
         // Compare single String fields
-        cf.addConflict("Format", ORIGIN_FORMAT_MISMATCH, this.format, other.getFormat());
+        cf.addConflict("Format", ORIGIN_FORMAT_MISMATCH, this.bomFormat, other.getBomFormat());
         cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
         cf.addConflict("UID", MISC_MISMATCH, this.uid, other.getUID());
         cf.addConflict("Version", VERSION_MISMATCH, this.version, other.getVersion());

@@ -27,6 +27,7 @@ package org.svip.sbom.model.shared.metadata;
 import org.svip.compare.conflicts.Comparable;
 import org.svip.compare.conflicts.Conflict;
 import org.svip.compare.conflicts.ConflictFactory;
+import org.svip.sbom.model.interfaces.generics.Component;
 
 import java.util.*;
 
@@ -53,6 +54,7 @@ public class CreationData implements Comparable {
     // Supplier of the component the SBOM describes
     private Organization supplier;
     private String creatorComment;
+    private Component rootComponent;
 
     ///
     /// Setters
@@ -88,6 +90,13 @@ public class CreationData implements Comparable {
         creationTools.add(tool);
     }
 
+    public void setRootComponent(Component rootComponent) {
+        this.rootComponent = rootComponent;
+    }
+
+    public Component getRootComponent() {
+        return rootComponent;
+    }
     ///
     /// Adders
     ///

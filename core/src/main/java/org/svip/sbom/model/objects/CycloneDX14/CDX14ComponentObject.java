@@ -24,6 +24,13 @@
 
 package org.svip.sbom.model.objects.CycloneDX14;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.svip.compare.conflicts.Conflict;
 import org.svip.compare.conflicts.ConflictFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -33,10 +40,17 @@ import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
+import org.svip.serializers.serializer.v2.CycloneDX14.custom.CDX14HashesSerializer;
+import org.svip.serializers.serializer.v2.CycloneDX14.custom.CDX14LicensesSerializer;
+import org.svip.serializers.serializer.v2.CycloneDX14.custom.CDX14PropertiesSerializer;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.svip.compare.conflicts.MismatchType.*;
+import static org.svip.utils.NullOrEmpty.isNullOrEmpty;
 
 /**
  * file: CDX14ComponentObject.java
@@ -45,6 +59,8 @@ import static org.svip.compare.conflicts.MismatchType.*;
  * @author Derek Garcia
  * @author Matthew Morrison
  */
+// todo - release notes
+@JsonPropertyOrder({"bom-ref", "name", "type", "mime-type", "group", "version", "scope", "copyright", "cpe", "purl", "supplier", "author", "publisher", "description", "licenses"})
 public class CDX14ComponentObject implements CDX14Package {
 
     /**
@@ -193,6 +209,7 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's type
      */
     @Override
+    @JsonProperty("type")
     public String getType() {
         return this.type;
     }
@@ -203,6 +220,7 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's uid
      */
     @Override
+    @JsonProperty("bom-ref")
     public String getUID() {
         return this.uid;
     }
@@ -213,6 +231,7 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's author
      */
     @Override
+    @JsonProperty("author")
     public String getAuthor() {
         return this.author;
     }
@@ -223,6 +242,7 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's name
      */
     @Override
+    @JsonProperty("name")
     public String getName() {
         return this.name;
     }
@@ -233,6 +253,8 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's licenses
      */
     @Override
+    @JsonProperty("licences")
+    @JsonSerialize(using = CDX14LicenseCollectionSerializer.class)
     public LicenseCollection getLicenses() {
         return this.licenses;
     }
@@ -243,6 +265,7 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's copyright info
      */
     @Override
+    @JsonProperty("copyright")
     public String getCopyright() {
         return this.copyright;
     }
@@ -253,6 +276,8 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's hashes
      */
     @Override
+    @JsonProperty("hashes")
+    @JsonSerialize(using = CDX14HashesSerializer.class)
     public Map<String, String> getHashes() {
         return this.hashes;
     }
@@ -263,6 +288,7 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return The component's supplier
      */
     @Override
+    @JsonProperty("supplier")
     public Organization getSupplier() {
         return this.supplier;
     }
@@ -273,6 +299,7 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's version
      */
     @Override
+    @JsonProperty("version")
     public String getVersion() {
         return this.version;
     }
@@ -283,6 +310,8 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's description
      */
     @Override
+    @JsonProperty("description")
+    @JsonSerialize(using = CDX14DescriptionSerializer.class)
     public Description getDescription() {
         return this.description;
     }
@@ -293,6 +322,7 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's CPEs
      */
     @Override
+    @JsonIgnore
     public Set<String> getCPEs() {
         return this.cpes;
     }
@@ -303,6 +333,7 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's PURLs
      */
     @Override
+    @JsonIgnore
     public Set<String> getPURLs() {
         return this.purls;
     }
@@ -313,6 +344,7 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's external references
      */
     @Override
+    @JsonProperty("externalReferences")
     public Set<ExternalReference> getExternalReferences() {
         return this.externalReferences;
     }
@@ -323,6 +355,7 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's mime type
      */
     @Override
+    @JsonProperty("mime-type")
     public String getMimeType() {
         return this.mimeType;
     }
@@ -333,6 +366,7 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's publisher
      */
     @Override
+    @JsonProperty("publisher")
     public String getPublisher() {
         return this.publisher;
     }
@@ -343,6 +377,7 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's scope
      */
     @Override
+    @JsonProperty("scope")
     public String getScope() {
         return this.scope;
     }
@@ -353,6 +388,7 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's group
      */
     @Override
+    @JsonProperty("group")
     public String getGroup() {
         return this.group;
     }
@@ -363,6 +399,8 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's properties
      */
     @Override
+    @JsonProperty("properties")
+    @JsonSerialize(using = CDX14PropertiesSerializer.class)
     public HashMap<String, Set<String>> getProperties() {
         return this.properties;
     }
@@ -485,5 +523,72 @@ public class CDX14ComponentObject implements CDX14Package {
     public int hashCode() {
         return this.name.hashCode() + (this.version != null ? this.version.hashCode() : 0);
     }
+
+    /**
+     * Internal serializer to join uids
+     * TODO is this the right way to represent multiple CPEs/PURLs?
+     * TODO - add extras as external refs
+     */
+    @JsonProperty("cpe")
+    public String getCPEsAsString() {
+        if (isNullOrEmpty(cpes)) return null;
+        return String.join(", ", cpes);
+    }
+
+    /**
+     * Internal serializer to join uids
+     * TODO is this the right way to represent multiple CPEs/PURLs?
+     * TODO - add extras as external refs
+     */
+    @JsonProperty("purl")
+    public String getPURLsAsString() {
+        if (isNullOrEmpty(purls)) return null;
+        return String.join(", ", purls);
+    }
+
+
+    /**
+     * Internal serializer to just get summary of a description
+     */
+    static class CDX14DescriptionSerializer extends JsonSerializer<Description> {
+        @Override
+        public void serialize(Description description, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+            // skip if no data
+            if (isNullOrEmpty(description)) return;
+
+            String summary = description.getSummary();
+            String details = description.getDescription();
+
+            String value = "Summary: " + (summary != null ? summary : "") +
+                    " | Details: " + (details != null ? details : "");
+
+            jsonGenerator.writeString(value);
+        }
+    }
+
+    /**
+     * Internal serializer to join license types
+     */
+    static class CDX14LicenseCollectionSerializer extends JsonSerializer<LicenseCollection> {
+
+        @Override
+        public void serialize(LicenseCollection licenseCollection, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+            // skip if no data
+            if (isNullOrEmpty(licenseCollection)) return;
+
+            // get all licenses, remove null, and convert to set
+            Set<String> allLicenses = Stream.of(
+                            licenseCollection.getConcluded(),
+                            licenseCollection.getDeclared(),
+                            licenseCollection.getInfoFromFiles()
+                    )
+                    .filter(Objects::nonNull)
+                    .flatMap(Set::stream)
+                    .collect(Collectors.toSet());
+            // use existing serializer to write license
+            new CDX14LicensesSerializer().serialize(allLicenses, jsonGenerator, serializerProvider);
+        }
+    }
+
 }
 

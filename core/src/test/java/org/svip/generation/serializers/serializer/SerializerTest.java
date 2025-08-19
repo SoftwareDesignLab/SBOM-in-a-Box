@@ -40,7 +40,7 @@ import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.serializers.Metadata;
-import org.svip.serializers.serializer.Serializer;
+import org.svip.serializers.serializer.v2.Serializer;
 import org.svip.utils.Debug;
 
 import java.util.function.Function;
@@ -181,11 +181,6 @@ public class SerializerTest {
         componentBuilder.addExternalReference(ref);
 
         return componentBuilder.build();
-    }
-
-    @BeforeEach
-    public void setup() {
-        serializer.setPrettyPrinting(true);
     }
 
     public Serializer getSerializer() {

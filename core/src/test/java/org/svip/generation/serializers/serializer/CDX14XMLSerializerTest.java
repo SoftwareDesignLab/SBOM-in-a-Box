@@ -26,7 +26,10 @@ package org.svip.generation.serializers.serializer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
+import org.svip.serializers.FileFormat;
 import org.svip.serializers.serializer.CDX14XMLSerializer;
+import org.svip.serializers.serializer.v2.CycloneDX14.CDX14Serializer;
+import org.svip.serializers.serializer.v2.Serializer;
 import org.svip.utils.Debug;
 import org.xml.sax.InputSource;
 
@@ -44,11 +47,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class CDX14XMLSerializerTest extends SerializerTest {
 
     public CDX14XMLSerializerTest() {
-        super(new CDX14XMLSerializer());
+        super(new CDX14Serializer(FileFormat.XML, true));
     }
 
     @Test
-    public void writeToStringTest() throws JsonProcessingException {
+    public void writeToStringTest() throws Serializer.SerializerException {
         Debug.logBlockTitle("CDX 1.4 XML");
         String serialized = getSerializer().writeToString(getTestSBOM());
         Debug.log(Debug.LOG_TYPE.DEBUG, "\n" + serialized);
