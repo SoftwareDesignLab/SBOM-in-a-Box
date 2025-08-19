@@ -82,7 +82,7 @@ public class SPDX23SBOMBuilderFactoryTest {
         test_SPDX23SBOMBuilder.setFormat(test_format);
         test_SPDX23SBOM = test_SPDX23SBOMBuilder.buildSPDX23SBOM();
 
-        assertEquals(test_format, test_SPDX23SBOM.getFormat());
+        assertEquals(test_format, test_SPDX23SBOM.getBomFormat());
     }
 
     @Test

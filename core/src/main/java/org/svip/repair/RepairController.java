@@ -80,7 +80,7 @@ public class RepairController {
     public RepairStatement getStatement(SBOM sbom) {
 
         // Get the correct RepairStatement model based on the SBOM's format
-        switch (sbom.getFormat()) {
+        switch (sbom.getBomFormat()) {
 
             // For SPDX 2.3 and CycloneDX 1.4
             case "SPDX", "CycloneDX" -> {
@@ -103,7 +103,7 @@ public class RepairController {
     public Repair getRepair(SBOM sbom) {
 
         // Get the correct Repair class based on the format
-        switch (sbom.getFormat()) {
+        switch (sbom.getBomFormat()) {
             // For SPDX 2.3 and CycloneDX 1.4
             case "SPDX", "CycloneDX" -> {
                 return new RepairSPDX23CDX14();

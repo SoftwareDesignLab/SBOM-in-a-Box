@@ -87,7 +87,7 @@ public class SVIPSBOMBuilderFactoryTest {
         test_SVIPSBOMBuilder.setFormat(test_format);
         test_SVIPSBOM = test_SVIPSBOMBuilder.build();
 
-        assertEquals(test_format, test_SVIPSBOM.getFormat());
+        assertEquals(test_format, test_SVIPSBOM.getBomFormat());
     }
 
     @Test

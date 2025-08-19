@@ -111,7 +111,7 @@ public class ToSchemaTest {
 
         // Check if result shows proper data
         assertNotNull(result);
-        assertEquals("SVIP", result.getFormat());
+        assertEquals("SVIP", result.getBomFormat());
         assertEquals(original.getName(), result.getName());
         assertEquals("1.0-a", result.getSpecVersion());
         assertEquals(original.getComponents().size(), result.getComponents().size());
@@ -131,7 +131,7 @@ public class ToSchemaTest {
         SBOM result = Conversion.convertFull(original, SerializerFactory.Schema.SPDX23, SerializerFactory.Schema.SVIP);
 
         // Check it result shows proper data
-        assertEquals("SVIP", result.getFormat());
+        assertEquals("SVIP", result.getBomFormat());
         assertEquals(original.getName(), result.getName());
         assertEquals("1.0-a", result.getSpecVersion());
         assertEquals(original.getComponents().size(), result.getComponents().size());
@@ -152,7 +152,7 @@ public class ToSchemaTest {
 
         // Check if result shows proper data
         assertNotNull(result);
-        assertEquals("SPDX", result.getFormat());
+        assertEquals("SPDX", result.getBomFormat());
         assertEquals(original.getName(), result.getName());
         assertEquals("2.3", result.getSpecVersion());
         assertEquals(original.getComponents().size(), result.getComponents().size());
@@ -173,7 +173,7 @@ public class ToSchemaTest {
 
         // Check if result shows proper data
         assertNotNull(result);
-        assertEquals("CycloneDX", result.getFormat());
+        assertEquals("CycloneDX", result.getBomFormat());
         assertEquals(original.getName(), result.getName());
         assertEquals(original.getComponents().size(), result.getComponents().size());
 

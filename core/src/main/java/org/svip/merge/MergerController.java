@@ -96,7 +96,7 @@ public class MergerController {
 
         // Merge it into a main SBOM
         try {
-            Merger merger = getMerger(a.getFormat(), b.getFormat());
+            Merger merger = getMerger(a.getBomFormat(), b.getBomFormat());
             mainBom = merger.mergeSBOM(a, b);
         } catch (MergerException e) {
             mainBom = null;
@@ -110,7 +110,7 @@ public class MergerController {
             SBOM nextBom = it.next();
             // Merge it into a main SBOM
             try {
-                Merger merger = getMerger(mainBom.getFormat(), nextBom.getFormat());
+                Merger merger = getMerger(mainBom.getBomFormat(), nextBom.getBomFormat());
                 mainBom = merger.mergeSBOM(mainBom, nextBom);
             } catch (MergerException e) {
                 mainBom = null;
@@ -137,7 +137,7 @@ public class MergerController {
 
         // Merge it into a main SBOM
         try {
-            Merger merger = getMerger(a.getFormat(), b.getFormat());
+            Merger merger = getMerger(a.getBomFormat(), b.getBomFormat());
             mainBom = merger.mergeSBOM(a, b);
         } catch (MergerException e) {
             mainBom = null;

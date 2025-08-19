@@ -33,14 +33,11 @@ import org.svip.sbom.model.shared.metadata.Contact;
 import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.ExternalReference;
-import org.svip.serializers.deserializer.CDX14JSONDeserializer;
-import org.svip.serializers.deserializer.v2.Deserializer;
 import org.svip.serializers.deserializer.v2.CDX14Deserializer;
+import org.svip.serializers.deserializer.v2.Deserializer;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -61,7 +58,7 @@ public class CDX14JSONDeserializerTest extends DeserializerTest {
 
     @Test
     public void formatTest() {
-        assertEquals("CycloneDX", cdx14json.getFormat());
+        assertEquals("CycloneDX", cdx14json.getBomFormat());
     }
 
     @Test

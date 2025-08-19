@@ -65,7 +65,7 @@ public class SPDX23JSONDeserializerTest extends DeserializerTest {
     @Test
     @Disabled
     public void formatTest() {
-        assertEquals("SPDX", spdx23json.getFormat());
+        assertEquals("SPDX", spdx23json.getBomFormat());
     }
 
     @Test

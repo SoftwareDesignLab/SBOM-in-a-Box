@@ -31,9 +31,7 @@ import org.svip.sbom.model.objects.SVIPComponentObject;
 import org.svip.sbom.model.objects.SVIPSBOM;
 import org.svip.sbom.model.shared.Relationship;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Name: ManipulateSVIP.java
@@ -94,30 +92,38 @@ public class ManipulateSVIP {
 
         // Stream components from SVIP SBOM, convert them, then put into CDX SBOM
         if (sbom.getComponents() != null)
-            sbom.getComponents().stream().filter(x -> x != null).forEach(
+            sbom.getComponents().stream().filter(Objects::nonNull).forEach(
                     x -> builder.addComponent(modifyComponent(x, manipulationMap, relationshipMap))
             );
 
         // Stream Relationship data into new SBOM
         if (sbom.getRelationships() != null) {
-            sbom.getRelationships().keySet().stream().filter(x -> x != null).forEach(
-                    x -> sbom.getRelationships().get(x).stream().forEach(
-                            y -> builder.addRelationship(
-                                    relationshipMap.get(x),
-                                    new Relationship(
-                                            relationshipMap.get(y.getOtherUID()),
-                                            y.getRelationshipType()
-                                    )
-                            )
-                    )
+            sbom.getRelationships().entrySet().stream()
+                    // exclude any pairs where key or value are null
+                    // todo - will this cause problems?
+                    .filter(e -> e.getKey() != null && e.getValue() != null)
+                    .forEach(entry  -> {
+                        String fromUid = entry.getKey();              // UID of the source component
+                        Set<Relationship> rels = entry.getValue();   // List of relationships from this component
+
+                        String from = relationshipMap.get(fromUid);   // Get source component object
+                        if (from == null) return;                     // Skip if the source is not mapped
+
+                        for (Relationship y : rels) {
+                            String to = relationshipMap.get(y.getOtherUID());  // Get target component object
+
+                            // Add the relationship only if the target exists and the type is known
+                            if (to != null && y.getRelationshipType() != null) {
+                                builder.addRelationship(from, new Relationship(to, y.getRelationshipType()));
+                            }
+                        }
+                    }
             );
         }
 
         // Stream External References into new SBOM
         if (sbom.getExternalReferences() != null) {
-            sbom.getExternalReferences().stream().forEach(
-                    x -> builder.addExternalReference(x)
-            );
+            sbom.getExternalReferences().forEach(builder::addExternalReference);
         }
 
         // Set SPDX License List Version

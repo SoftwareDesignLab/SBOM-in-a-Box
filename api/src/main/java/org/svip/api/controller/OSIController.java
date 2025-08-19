@@ -236,7 +236,7 @@ public class OSIController {
             } finally {
                 // todo param to delete or not?
                 // Delete any temp SBOM from database
-                uploaded.forEach(sbomService::deleteSBOMFile);
+//                uploaded.forEach(sbomService::deleteSBOMFile);
             }
             LOGGER.info("POST /svip/generators/osi - Successfully merged SBOMs to SBOM with id {}", mergedID);
         } else {

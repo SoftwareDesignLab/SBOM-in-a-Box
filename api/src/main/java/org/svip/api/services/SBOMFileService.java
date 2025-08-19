@@ -170,8 +170,7 @@ public class SBOMFileService {
         SerializerFactory.Schema originalSchema = resolveSchemaByObject(deserialized);
 
         // use core Conversion functionality
-        SBOM Converted = Conversion.convert(deserialized,
-                originalSchema, schema);
+        SBOM Converted = Conversion.convert(deserialized, originalSchema, schema);
 
         // serialize into desired format
         Serializer s = SerializerFactory.createSerializer(schema, format, true); // todo serializers don't adjust the

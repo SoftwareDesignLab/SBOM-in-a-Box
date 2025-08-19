@@ -33,6 +33,11 @@ public class Metadata {
     public static final String SERIALIZED_COMMENT = "This SBOM was generated using the SBOM-in-a-Box serializer tooling.";
     public static final String DESERIALIZED_COMMENT = "This SBOM was generated using the SBOM-in-a-Box deserializer tooling.";
 
+    /**
+     * Create the 'SVIP' creation tool details
+     *
+     * @return SVIP tool details
+     */
     public static CreationTool getCreationTool() {
         CreationTool tool = new CreationTool();
         tool.setVendor(VENDOR);

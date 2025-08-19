@@ -29,9 +29,8 @@ import org.junit.jupiter.api.Test;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14SBOM;
 import org.svip.sbom.model.shared.metadata.CreationTool;
-import org.svip.serializers.deserializer.CDX14XMLDeserializer;
-import org.svip.serializers.deserializer.v2.Deserializer;
 import org.svip.serializers.deserializer.v2.CDX14Deserializer;
+import org.svip.serializers.deserializer.v2.Deserializer;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,7 +55,7 @@ public class CDX14XMLDeserializerTest extends DeserializerTest {
     @Disabled
     @Test
     public void formatTest() {
-        assertEquals("CycloneDX", cdx14xml.getFormat());
+        assertEquals("CycloneDX", cdx14xml.getBomFormat());
     }
 
 

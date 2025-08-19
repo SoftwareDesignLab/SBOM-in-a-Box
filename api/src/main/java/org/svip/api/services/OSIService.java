@@ -137,8 +137,7 @@ public class OSIService {
 
             // Convert osi json string into map
             ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(EntityUtils.toString(response.getEntity()), new TypeReference<>() {
-            });
+            return mapper.readValue(EntityUtils.toString(response.getEntity()), new TypeReference<>() {});
         }
     }
 

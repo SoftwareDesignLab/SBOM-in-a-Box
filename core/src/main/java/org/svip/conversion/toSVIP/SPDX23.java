@@ -293,7 +293,7 @@ public class SPDX23 implements ToSVIP {
         SVIPSBOMBuilder builder = new SVIPSBOMBuilder();
 
         // Format
-        builder.setFormat(sbom.getFormat());
+        builder.setFormat(sbom.getBomFormat());
 
         // Name
         builder.setName(sbom.getName());

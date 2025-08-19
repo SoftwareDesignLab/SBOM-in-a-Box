@@ -45,7 +45,7 @@ public interface SBOM {
     /**
      * @return Origin format of the SBOM
      */
-    String getFormat();
+    String getBomFormat();
 
     /**
      * @return Name of the SBOM

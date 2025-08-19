@@ -90,7 +90,7 @@ public class CDX14SBOMBuilderTest {
         test_CDX14SBOMBuilder.setFormat(test_format);
         CDX14SBOM test_CDX14SBOM = test_CDX14SBOMBuilder.buildCDX14SBOM();
 
-        assertEquals(test_format, test_CDX14SBOM.getFormat());
+        assertEquals(test_format, test_CDX14SBOM.getBomFormat());
     }
 
     @Test

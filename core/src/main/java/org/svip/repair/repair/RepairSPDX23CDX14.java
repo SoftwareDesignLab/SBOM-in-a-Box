@@ -68,7 +68,7 @@ public class RepairSPDX23CDX14 implements Repair {
         if (repairs == null)
             return sbom;
 
-        String format = sbom.getFormat();
+        String format = sbom.getBomFormat();
         String name = sbom.getName();
         String uid = sbom.getUID();
         String version = sbom.getVersion();

@@ -114,7 +114,7 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         // Top-level info
         //
 
-        jsonGenerator.writeStringField("bomFormat", sbom.getFormat());
+        jsonGenerator.writeStringField("bomFormat", sbom.getBomFormat());
         jsonGenerator.writeStringField("specVersion", sbom.getSpecVersion());
         jsonGenerator.writeStringField("version", sbom.getVersion());
         jsonGenerator.writeStringField("serialNumber", sbom.getUID());

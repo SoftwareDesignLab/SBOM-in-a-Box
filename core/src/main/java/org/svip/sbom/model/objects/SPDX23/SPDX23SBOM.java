@@ -170,7 +170,7 @@ public class SPDX23SBOM implements SPDX23Schema {
      * @return the SBOM's format
      */
     @Override
-    public String getFormat() {
+    public String getBomFormat() {
         return this.format;
     }
 
@@ -306,7 +306,7 @@ public class SPDX23SBOM implements SPDX23Schema {
         ConflictFactory cf = new ConflictFactory();
 
         // Compare single String fields
-        cf.addConflict("Format", ORIGIN_FORMAT_MISMATCH, this.format, other.getFormat());
+        cf.addConflict("Format", ORIGIN_FORMAT_MISMATCH, this.format, other.getBomFormat());
         cf.addConflict("Name", NAME_MISMATCH, this.name, other.getName());
         cf.addConflict("UID", MISC_MISMATCH, this.uid, other.getUID());
         cf.addConflict("Version", VERSION_MISMATCH, this.version, other.getVersion());
