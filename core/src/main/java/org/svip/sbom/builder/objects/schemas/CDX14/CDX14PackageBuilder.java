@@ -191,7 +191,8 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14PackageBuilder addExternalReferences(ExternalReference externalReference) {
-        this.externalReferences.add(externalReference);
+        if (externalReference != null)
+            this.externalReferences.add(externalReference);
         return this;
     }
 
@@ -204,6 +205,10 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14PackageBuilder addProperty(String name, String value) {
+        // don't add null properties
+        if (name == null || value == null)
+            return this;
+
         if (!this.properties.containsKey(name))
             this.properties.put(name, new HashSet<>());
 
@@ -293,7 +298,9 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14PackageBuilder addHash(String algorithm, String hash) {
-        this.hashes.put(algorithm, hash);
+        // don't add null hashes
+        if (!(hash == null || algorithm == null))
+            this.hashes.put(algorithm, hash);
         return this;
     }
 
@@ -305,7 +312,8 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14PackageBuilder setSupplier(Organization supplier) {
-        this.supplier = supplier;
+        if (supplier != null)
+            this.supplier = supplier;
         return this;
     }
 
@@ -317,7 +325,8 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14PackageBuilder setVersion(String version) {
-        this.version = version;
+        if (version != null)
+            this.version = version;
         return this;
     }
 
@@ -329,7 +338,8 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14PackageBuilder setDescription(Description description) {
-        this.description = description;
+        if (description != null)
+            this.description = description;
         return this;
     }
 
@@ -341,7 +351,9 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14PackageBuilder addCPE(String cpe) {
-        this.cpes.add(cpe);
+        // don't add null CPEs
+        if (cpe != null)
+            this.cpes.add(cpe);
         return this;
     }
 
@@ -353,7 +365,9 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14PackageBuilder addPURL(String purl) {
-        this.purls.add(purl);
+        // don't add null purls
+        if (purl != null)
+            this.purls.add(purl);
         return this;
     }
 
@@ -365,7 +379,9 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
      */
     @Override
     public CDX14PackageBuilder addExternalReference(ExternalReference externalReference) {
-        this.externalReferences.add(externalReference);
+        // don't add null external references
+        if (externalReference != null)
+            this.externalReferences.add(externalReference);
         return this;
     }
 
@@ -382,13 +398,12 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
                 externalReferences, properties);
     }
 
-    //TODO implement after SBOM refactor
-
     /**
      * Build and flush a CDX14ComponentObject
-     *
+     * todo - remove, create a new builder instead
      * @return a Component
      */
+    @Deprecated
     @Override
     public CDX14ComponentObject buildAndFlush() {
         // build the component

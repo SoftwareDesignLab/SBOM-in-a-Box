@@ -56,7 +56,7 @@ public class SVIPSBOMBuilderFactoryTest {
     SVIPSBOMBuilderFactory test_sbomBuilderFactory = new SVIPSBOMBuilderFactory();
     SVIPComponentBuilder test_componentBuilder = new SVIPComponentBuilder();
     SVIPSBOMBuilder test_SVIPSBOMBuilder = test_sbomBuilderFactory.createBuilder();
-    SVIPSBOM test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
+    SVIPSBOM test_SVIPSBOM = test_SVIPSBOMBuilder.build();
 
     String test_format = "SVIP";
 
@@ -85,7 +85,7 @@ public class SVIPSBOMBuilderFactoryTest {
     @Test
     void getFormat_is_test_format_when_setFormat_is_used_test() {
         test_SVIPSBOMBuilder.setFormat(test_format);
-        test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
+        test_SVIPSBOM = test_SVIPSBOMBuilder.build();
 
         assertEquals(test_format, test_SVIPSBOM.getFormat());
     }
@@ -93,7 +93,7 @@ public class SVIPSBOMBuilderFactoryTest {
     @Test
     void getName_is_test_name_when_setName_is_used_test() {
         test_SVIPSBOMBuilder.setName(test_name);
-        test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
+        test_SVIPSBOM = test_SVIPSBOMBuilder.build();
 
         assertEquals(test_name, test_SVIPSBOM.getName());
     }
@@ -101,7 +101,7 @@ public class SVIPSBOMBuilderFactoryTest {
     @Test
     void getUID_is_test_uid_when_setUID_is_used_test() {
         test_SVIPSBOMBuilder.setUID(test_uid);
-        test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
+        test_SVIPSBOM = test_SVIPSBOMBuilder.build();
 
         assertEquals(test_uid, test_SVIPSBOM.getUID());
     }
@@ -109,7 +109,7 @@ public class SVIPSBOMBuilderFactoryTest {
     @Test
     void getVersion_is_test_version_when_setVersion_is_used_test() {
         test_SVIPSBOMBuilder.setVersion(test_version);
-        test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
+        test_SVIPSBOM = test_SVIPSBOMBuilder.build();
 
         assertEquals(test_version, test_SVIPSBOM.getVersion());
     }
@@ -117,7 +117,7 @@ public class SVIPSBOMBuilderFactoryTest {
     @Test
     void getSpecVersion_is_test_specVersion_when_setSpecVersion_is_used_test() {
         test_SVIPSBOMBuilder.setSpecVersion(test_specVersion);
-        test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
+        test_SVIPSBOM = test_SVIPSBOMBuilder.build();
 
         assertEquals(test_specVersion, test_SVIPSBOM.getSpecVersion());
     }
@@ -126,7 +126,7 @@ public class SVIPSBOMBuilderFactoryTest {
     void getLicenses_is_test_set_when_addLicense_is_used_test() {
         test_SVIPSBOMBuilder.addLicense(test_license1);
         test_SVIPSBOMBuilder.addLicense(test_license2);
-        test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
+        test_SVIPSBOM = test_SVIPSBOMBuilder.build();
 
         HashSet<String> test_Set = new HashSet<>();
         test_Set.add(test_license1);
@@ -141,7 +141,7 @@ public class SVIPSBOMBuilderFactoryTest {
         test_creationData.setCreatorComment("This was created as a test.");
 
         test_SVIPSBOMBuilder.setCreationData(test_creationData);
-        test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
+        test_SVIPSBOM = test_SVIPSBOMBuilder.build();
 
         assertEquals(test_creationData, test_SVIPSBOM.getCreationData());
     }
@@ -149,7 +149,7 @@ public class SVIPSBOMBuilderFactoryTest {
     @Test
     void getDocumentComment_is_test_documentComment_when_setDocumentComment_is_used_test() {
         test_SVIPSBOMBuilder.setDocumentComment(test_documentComment);
-        test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
+        test_SVIPSBOM = test_SVIPSBOMBuilder.build();
 
         assertEquals(test_documentComment, test_SVIPSBOM.getDocumentComment());
     }
@@ -158,7 +158,7 @@ public class SVIPSBOMBuilderFactoryTest {
     void getRootComponent_is_test_rootComponent_when_setRootComponent_is_used_test() {
         test_rootComponent = new SVIPComponentObject("SVIP", null, "Tester", "Test Component", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
         test_SVIPSBOMBuilder.setRootComponent(test_rootComponent);
-        test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
+        test_SVIPSBOM = test_SVIPSBOMBuilder.build();
 
         assertEquals(test_rootComponent, test_SVIPSBOM.getRootComponent());
     }
@@ -169,7 +169,7 @@ public class SVIPSBOMBuilderFactoryTest {
         SVIPComponentObject test_componentB = new SVIPComponentObject("SVIP", null, "Tester Two", "Test Component B", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
         test_SVIPSBOMBuilder.addComponent(test_componentA);
         test_SVIPSBOMBuilder.addComponent(test_componentB);
-        test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
+        test_SVIPSBOM = test_SVIPSBOMBuilder.build();
 
         test_components.add(test_componentA);
         test_components.add(test_componentB);
@@ -187,7 +187,7 @@ public class SVIPSBOMBuilderFactoryTest {
         CDX14Package test_componentB = test_CDX14PackageBuilder.buildAndFlush();
         test_SVIPSBOMBuilder.addCDX14Package(test_componentB);
 
-        test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
+        test_SVIPSBOM = test_SVIPSBOMBuilder.build();
 
         test_components.add(test_componentA);
         test_components.add(test_componentB);
@@ -202,7 +202,7 @@ public class SVIPSBOMBuilderFactoryTest {
         test_SVIPSBOMBuilder.addComponent(test_componentA);
         test_SVIPSBOMBuilder.addComponent(test_componentB);
         test_SVIPSBOMBuilder.addSPDX23Component(test_componentA);
-        test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
+        test_SVIPSBOM = test_SVIPSBOMBuilder.build();
 
         test_components.add(test_componentA);
         test_components.add(test_componentA);
@@ -217,7 +217,7 @@ public class SVIPSBOMBuilderFactoryTest {
         Relationship test_relationship = new Relationship("001", "dependant");
         test_SVIPSBOMBuilder.addRelationship("test_component", test_relationship);
 
-        test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
+        test_SVIPSBOM = test_SVIPSBOMBuilder.build();
 
         assertTrue(test_SVIPSBOM.getRelationships().containsKey("test_component"));
     }
@@ -230,7 +230,7 @@ public class SVIPSBOMBuilderFactoryTest {
         test_SVIPSBOMBuilder.addExternalReference(test_externalRef);
         test_externalRefs.add(test_externalRef);
 
-        test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
+        test_SVIPSBOM = test_SVIPSBOMBuilder.build();
 
         assertEquals(test_externalRefs, test_SVIPSBOM.getExternalReferences());
     }
@@ -238,7 +238,7 @@ public class SVIPSBOMBuilderFactoryTest {
     @Test
     void getSPDXLicenseListVersion_is_v143_when_setSPDXLicenseListVersion_is_used_test() {
         test_SVIPSBOMBuilder.setSPDXLicenseListVersion("v142");
-        test_SVIPSBOM = test_SVIPSBOMBuilder.Build();
+        test_SVIPSBOM = test_SVIPSBOMBuilder.build();
 
         assertEquals("v142", test_SVIPSBOM.getSPDXLicenseListVersion());
     }

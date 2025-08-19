@@ -241,7 +241,7 @@ public class CDX14 implements ToSVIP {
         builder.setSPDXLicenseListVersion(null);
 
 
-        return builder.Build();
+        return builder.build();
 
     }
 

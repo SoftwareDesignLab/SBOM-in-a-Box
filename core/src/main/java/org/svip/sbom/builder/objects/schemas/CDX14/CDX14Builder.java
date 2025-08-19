@@ -95,22 +95,22 @@ public class CDX14Builder implements CDX14SBOMBuilder {
     /**
      * Holds the root component of the SBOM
      */
-    private Component rootComponent;
+    private CDX14ComponentObject rootComponent;
 
     //TODO VEX needs implementation
-    /**Holds the vulnerabilities expressed in the SBOM*/
+    /*Holds the vulnerabilities expressed in the SBOM*/
     // private Set<VEX> vulnerabilities
 
     //TODO Service needs implementation
-    /**Holds the services of the SBOM*/
+    /*Holds the services of the SBOM*/
     // private Set<Service> services;
 
     //TODO Composition needs implementation
-    /**Holds the compositions of the SBOM*/
+    /*Holds the compositions of the SBOM*/
     // private Set<Composition> compositions;
 
     //TODO Signature needs implementation
-    /**Holds the Signature of the SBOM*/
+    /*Holds the Signature of the SBOM*/
     // private Signature signature;
 
     /**
@@ -181,7 +181,8 @@ public class CDX14Builder implements CDX14SBOMBuilder {
      */
     @Override
     public CDX14Builder addLicense(String license) {
-        this.licenses.add(license);
+        if (license != null)
+            this.licenses.add(license);
         return this;
     }
 
@@ -217,7 +218,6 @@ public class CDX14Builder implements CDX14SBOMBuilder {
      */
     @Override
     public CDX14Builder setRootComponent(Component rootComponent) {
-        this.rootComponent = rootComponent;
         return this;
     }
 
@@ -229,13 +229,24 @@ public class CDX14Builder implements CDX14SBOMBuilder {
      */
     @Override
     public CDX14Builder addComponent(Component component) {
-        this.components.add(component);
+        if (component instanceof CDX14ComponentObject) {
+            this.rootComponent = (CDX14ComponentObject) component;
+        } else {
+            // todo - throw error
+        }
         return this;
     }
 
+    /**
+     * Add Package
+     *
+     * @param cdx14Package the CDX 1.4 package
+     * @return this CDX14Builder
+     */
     @Override
     public CDX14Builder addCDX14Package(CDX14Package cdx14Package) {
-        this.components.add(cdx14Package);
+        if (cdx14Package != null)
+            this.components.add(cdx14Package);
         return this;
     }
 
@@ -248,6 +259,9 @@ public class CDX14Builder implements CDX14SBOMBuilder {
      */
     @Override
     public CDX14Builder addRelationship(String componentName, Relationship relationship) {
+        // don't add null relationships
+        if (componentName == null || relationship == null)
+            return this;
 
         if (!relationships.containsKey(componentName))
             this.relationships.put(componentName, new HashSet<>());
@@ -264,24 +278,21 @@ public class CDX14Builder implements CDX14SBOMBuilder {
      */
     @Override
     public CDX14Builder addExternalReference(ExternalReference externalReference) {
-        this.externalReferences.add(externalReference);
+        if (externalReference != null)
+            this.externalReferences.add(externalReference);
         return this;
     }
 
     //TODO add addService, addVulnerability, addComposition, addSignature when implemented
 
     /**
-     * Build a new SBOM
+     * Build a a generic SBOM
      *
      * @return an SBOM Object
      */
     @Override
-    public SBOM Build() {
-        return new CDX14SBOM(format, name, uid, version,
-                specVersion, licenses,
-                creationData, documentComment,
-                (CDX14ComponentObject) rootComponent, components,
-                relationships, externalReferences);
+    public SBOM build() {
+        return buildCDX14SBOM();
     }
 
 
@@ -295,7 +306,7 @@ public class CDX14Builder implements CDX14SBOMBuilder {
         return new CDX14SBOM(format, name, uid, version,
                 specVersion, licenses,
                 creationData, documentComment,
-                (CDX14ComponentObject) rootComponent, components,
+                rootComponent, components,
                 relationships, externalReferences);
     }
 }

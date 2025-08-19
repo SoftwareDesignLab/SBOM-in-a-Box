@@ -163,7 +163,7 @@ public abstract class MergerUtils extends Merger {
         ).forEach(x -> builder.addExternalReference(x));
 
         // Return the newly built merged SBOM
-        return builder.Build();
+        return builder.build();
     }
 
     /**

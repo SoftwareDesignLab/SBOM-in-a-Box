@@ -349,7 +349,7 @@ public class SPDX23 implements ToSVIP {
         builder.setSPDXLicenseListVersion(sbom.getSPDXLicenseListVersion());
 
 
-        return builder.Build();
+        return builder.build();
     }
 
 }

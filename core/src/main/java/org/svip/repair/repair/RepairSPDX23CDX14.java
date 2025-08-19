@@ -371,7 +371,7 @@ public class RepairSPDX23CDX14 implements Repair {
             spdx23Builder.setSPDXLicenseListVersion(spdx23SBOM.getSPDXLicenseListVersion());
         }
 
-        return builder.Build();
+        return builder.build();
     }
 
 }

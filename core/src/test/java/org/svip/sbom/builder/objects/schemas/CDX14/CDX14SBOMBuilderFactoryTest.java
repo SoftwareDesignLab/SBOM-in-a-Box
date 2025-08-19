@@ -215,9 +215,9 @@ public class CDX14SBOMBuilderFactoryTest {
     }
 
     @Test
-    void getName_is_test_name_when_SBOM_is_built_with_Build_method_test() {
+    void getName_is_test_name_when_SBOM_is_built_with_build_method_test() {
         test_CDX14SBOMBuilder.setName(test_name);
-        SBOM test_SBOM = test_CDX14SBOMBuilder.Build();
+        SBOM test_SBOM = test_CDX14SBOMBuilder.build();
 
         assertEquals(test_name, test_SBOM.getName());
     }

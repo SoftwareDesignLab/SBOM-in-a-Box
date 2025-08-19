@@ -117,7 +117,7 @@ public class SerializerTest {
         relationship.setComment("Test Relationship Comment");
         sbomBuilder.addRelationship("uid1", relationship);
 
-        return sbomBuilder.Build();
+        return sbomBuilder.build();
     }
 
     private SVIPComponentObject buildTestComponent(int id, boolean file) {

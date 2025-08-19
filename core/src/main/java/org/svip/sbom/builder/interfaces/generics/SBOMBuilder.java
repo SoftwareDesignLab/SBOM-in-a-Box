@@ -139,5 +139,5 @@ public interface SBOMBuilder {
      *
      * @return SBOM
      */
-    SBOM Build();
+    SBOM build();
 }

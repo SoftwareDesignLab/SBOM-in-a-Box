@@ -141,7 +141,7 @@ class HashFixesTest {
 
         SVIPSBOMBuilder svipSbomBuilder = new SVIPSBOMBuilder();
         svipSbomBuilder.addComponent(component);
-        return svipSbomBuilder.Build();
+        return svipSbomBuilder.build();
     }
 
     private void testValidAlgorithms(Hash hash, List<Fix<Hash>> hashFixes, Algorithm... algorithm) {

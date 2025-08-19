@@ -125,7 +125,7 @@ public class ManipulateSVIP {
 
 
         // Build the SBOM and return it
-        return builder.Build();
+        return builder.build();
 
     }
 

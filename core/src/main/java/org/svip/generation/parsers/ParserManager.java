@@ -152,7 +152,7 @@ public class ParserManager {
         builder.setCreationData(data);
 
         Debug.log(LOG_TYPE.SUMMARY, "Building " + schema + " SBOM");
-        return builder.Build();
+        return builder.build();
     }
 
     public void addFile(VirtualPath path, String contents) {

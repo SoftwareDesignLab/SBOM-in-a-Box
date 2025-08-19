@@ -153,7 +153,7 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
     }
 
     @Override
-    public SBOM Build() {
+    public SBOM build() {
         return new SPDX23SBOM(format, name, uid, version, specVersion, licenses, creationData, documentComment,
                 (SPDX23PackageObject) rootComponent, components, relationships, externalReferences, SPDXLicenseListVersion);
     }

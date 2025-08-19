@@ -206,9 +206,9 @@ public class SPDX23SBOMBuilderFactoryTest {
     }
 
     @Test
-    void getName_is_test_name_when_SBOM_is_built_with_Build_method_test() {
+    void getName_is_test_name_when_SBOM_is_built_with_build_method_test() {
         test_SPDX23SBOMBuilder.setName(test_name);
-        SBOM test_SBOM = test_SPDX23SBOMBuilder.Build();
+        SBOM test_SBOM = test_SPDX23SBOMBuilder.build();
 
         assertEquals(test_name, test_SBOM.getName());
     }
