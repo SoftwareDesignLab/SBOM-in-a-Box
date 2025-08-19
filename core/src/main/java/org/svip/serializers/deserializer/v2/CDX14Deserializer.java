@@ -94,15 +94,15 @@ public class CDX14Deserializer extends Deserializer {
         }
 
         // add authors
-        List<HashMap<String, Object>> authors = mapper.convertValue(metadata.get("hashes"), new TypeReference<>() {
+        List<HashMap<String, Object>> authors = mapper.convertValue(metadata.get("authors"), new TypeReference<>() {
         });
         if (authors != null)
             authors.forEach(a -> creationData.addAuthor(resolveContact(a)));
 
         // set manufacture
-        HashMap<String, Object> manufacturer = mapper.convertValue(metadata.get("manufacturer"), new TypeReference<>() {
+        HashMap<String, Object> manufacture = mapper.convertValue(metadata.get("manufacture"), new TypeReference<>() {
         });
-        creationData.setManufacture(resolveOrganization(manufacturer));
+        creationData.setManufacture(resolveOrganization(manufacture));
 
         // set supplier
         HashMap<String, Object> supplier = mapper.convertValue(metadata.get("supplier"), new TypeReference<>() {
@@ -122,10 +122,19 @@ public class CDX14Deserializer extends Deserializer {
             });
 
         // add licenses
-        List<HashMap<String, String>> licenses = mapper.convertValue(metadata.get("licenses"), new TypeReference<>() {
-        });
-        if (licenses != null)
-            licenses.forEach(l -> creationData.addLicense(l.get("name")));
+        List<HashMap<String, String>> licenses = mapper.convertValue(metadata.get("licenses"), new TypeReference<>() {});
+        if (licenses != null) {
+            licenses.forEach(l -> {
+                String lID = l.get("id");
+                String lName = l.get("name");
+                if (lID != null) {
+                    creationData.addLicense(lID);
+                } else if (lName != null) {
+                    creationData.addLicense(lName);
+                }
+            });
+
+        }
 
         // done
         return creationData;
@@ -142,8 +151,8 @@ public class CDX14Deserializer extends Deserializer {
         if (component == null) return null;
         CDX14PackageBuilder packageBuilder = new CDX14PackageBuilder();
         // set simple fields
-        packageBuilder.setName((String) component.get("name"))
-                .setMimeType((String) component.get("mimeType"))
+        packageBuilder.setType((String) component.get("type"))
+                .setMimeType((String) component.get("mime-type"))
                 .setUID((String) component.get("bom-ref"))
                 .setAuthor((String) component.get("author"))
                 .setPublisher((String) component.get("publisher"))
@@ -172,18 +181,18 @@ public class CDX14Deserializer extends Deserializer {
             hashes.forEach(h -> packageBuilder.addHash(h.get("alg"), h.get("content")));
 
         // add licenses
-        List<HashMap<String, String>> licenses = mapper.convertValue(component.get("licenses"), new TypeReference<>() {
+        List<HashMap<String, HashMap<String, String>>> licenses = mapper.convertValue(component.get("licenses"), new TypeReference<>() {
         });
         if (licenses != null) {
             if (!licenses.isEmpty()) {
                 LicenseCollection componentLicenses = new LicenseCollection();
                 licenses.forEach(l -> {
-                    String lID = l.get("id");
-                    String lName = l.get("name");
+                    String lID = l.get("license").get("id");
+                    String lName = l.get("license").get("name");
                     if (lID != null) {
-                        componentLicenses.addLicenseInfoFromFile(l.get("id"));
+                        componentLicenses.addLicenseInfoFromFile(l.get("license").get("id"));
                     } else if (lName != null) {
-                        componentLicenses.addLicenseInfoFromFile(l.get("name"));
+                        componentLicenses.addLicenseInfoFromFile(l.get("license").get("name"));
                     }
                 });
                 packageBuilder.setLicenses(componentLicenses);
@@ -273,12 +282,11 @@ public class CDX14Deserializer extends Deserializer {
         // skip if no data
         if (dependency == null) return null;
         List<Relationship> relationships = new ArrayList<>();
-        String depBomRef = (String) dependency.get("ref");
         // add all deps
         List<String> bomRefs = mapper.convertValue(dependency.get("dependsOn"), new TypeReference<>() {
         });
         if (bomRefs != null)
-            bomRefs.forEach(br -> relationships.add(new Relationship(depBomRef, "DEPENDS_ON")));    //todo replace with SPDX enums
+            bomRefs.forEach(br -> relationships.add(new Relationship(br, "DEPENDS_ON")));    //todo replace with SPDX enums
 
         return relationships;
     }
@@ -294,8 +302,15 @@ public class CDX14Deserializer extends Deserializer {
         // set basic details
         sbomBuilder.setFormat((String) content.get("bomFormat"))
                 .setUID((String) content.get("serialNumber"))
-                .setVersion(Integer.toString((Integer) content.get("version")))
                 .setSpecVersion((String) content.get("specVersion"));
+
+        // handle converting version to string
+        if (content.get("version") instanceof Integer) {
+            sbomBuilder.setVersion(Integer.toString((Integer) content.get("version")));
+        } else {
+            sbomBuilder.setVersion((String) content.get("version"));
+        }
+
 
         // get the metadata object
         Map<String, Object> metadata = mapper.convertValue(
@@ -303,12 +318,6 @@ public class CDX14Deserializer extends Deserializer {
                 new TypeReference<>() {
                 }
         );
-
-        // add licenses
-        List<String> licenses = mapper.convertValue(metadata.get("licenses"), new TypeReference<>() {
-        });
-        if (licenses != null)
-            licenses.forEach(sbomBuilder::addLicense);
 
         // set root component
         HashMap<String, Object> rootComponent = mapper.convertValue(metadata.get("component"), new TypeReference<>() {

@@ -1,7 +1,7 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.4",
-  "version": "1.0.0",
+  "version": 1,
   "serialNumber": "12345678",
   "metadata": {
     "timestamp": "TEST TIMESTAMP",

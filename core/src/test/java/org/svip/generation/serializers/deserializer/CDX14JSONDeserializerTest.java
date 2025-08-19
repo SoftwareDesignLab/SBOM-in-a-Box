@@ -35,7 +35,9 @@ import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.serializers.deserializer.CDX14JSONDeserializer;
 import org.svip.serializers.deserializer.Deserializer;
+import org.svip.serializers.deserializer.v2.CDX14Deserializer;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,12 +45,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.svip.serializers.FileFormat.JSON;
 
 public class CDX14JSONDeserializerTest extends DeserializerTest {
     private final CDX14SBOM cdx14json;
 
     public CDX14JSONDeserializerTest() throws IOException {
-        cdx14json = (CDX14SBOM) getDeserializer().readFromString(Files.readString(Path.of(CDX_14_JSON_SBOM)));
+        cdx14json = new CDX14Deserializer().deserialize(new File(CDX_14_JSON_SBOM), JSON);
     }
 
     @Override
@@ -73,7 +76,7 @@ public class CDX14JSONDeserializerTest extends DeserializerTest {
 
     @Test
     public void versionTest() {
-        assertEquals("1.0.0", cdx14json.getVersion());
+        assertEquals("1", cdx14json.getVersion());
     }
 
     @Test
@@ -84,7 +87,7 @@ public class CDX14JSONDeserializerTest extends DeserializerTest {
                 cdx14json.getCreationData().getCreatorComment());
         assertTrue(cdx14json.getCreationData().getProperties().get("testProperty").contains("testValue"));
 
-        assertTrue(cdx14json.getLicenses().contains("MIT"));
+        assertTrue(cdx14json.getCreationData().getLicenses().contains("MIT"));
     }
 
     @Test
