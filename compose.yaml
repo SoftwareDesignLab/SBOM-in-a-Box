@@ -23,7 +23,7 @@ services:
     container_name: sbox_db
     platform: linux/amd64
     image: mysql:8.4.6
-    command: --max_allowed_packet=268435456  # Set max_allowed_packet to 256M
+    command: --max_allowed_packet=1073741824 --innodb_redo_log_capacity=1073741824  # Set max_allowed_packet to 256M
     env_file:
       - path: .env
         required: true
@@ -57,6 +57,7 @@ services:
       # create mysql user defined in the db
       MYSQL_USER: ${MYSQL_USER:?'MYSQL_USER' must be set in the .env file}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:?'MYSQL_PASSWORD' must be set in the .env file}
+      JAVA_TOOL_OPTIONS: "-Xms2g -Xmx8g -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
     depends_on:
       sbox_db:
         condition: service_healthy
