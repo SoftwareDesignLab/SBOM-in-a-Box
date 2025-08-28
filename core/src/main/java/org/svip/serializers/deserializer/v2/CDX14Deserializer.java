@@ -24,7 +24,6 @@
 package org.svip.serializers.deserializer.v2;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14Builder;
 import org.svip.sbom.builder.objects.schemas.CDX14.CDX14PackageBuilder;
 import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
@@ -38,9 +37,15 @@ import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.serializers.FileFormat;
+import org.svip.serializers.Schema;
+import org.svip.serializers.exceptions.DeserializerException;
+import org.svip.serializers.exceptions.UnsupportedFileFormatException;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <b>File:</b> CDX14Serializer.java
@@ -57,9 +62,13 @@ public class CDX14Deserializer extends Deserializer {
      * Create new CycloneDX 1.4 deserializer
      *
      * @param fileFormat Type of deserializer
+     * @throws UnsupportedFileFormatException if attempt to deserialize from an unsupported format
      */
     public CDX14Deserializer(FileFormat fileFormat) {
         super(fileFormat);
+        if (fileFormat != FileFormat.JSON && fileFormat != FileFormat.XML) {
+            throw new UnsupportedFileFormatException(Schema.CycloneDX_14, fileFormat);
+        }
     }
 
     /**
@@ -181,44 +190,44 @@ public class CDX14Deserializer extends Deserializer {
     /**
      * Resolve Package details
      *
-     * @param component Map with package details
+     * @param cdxObject Map with package details
      * @return Object with package details
      */
-    private CDX14ComponentObject resolvePackage(Map<String, Object> component) {
+    private CDX14ComponentObject resolvePackage(Map<String, Object> cdxObject) {
         // skip if no data
-        if (component == null) return null;
+        if (cdxObject == null) return null;
         CDX14PackageBuilder packageBuilder = new CDX14PackageBuilder();
         // set simple fields
-        packageBuilder.setType((String) component.get("type"))
-                .setMimeType((String) component.get("mime-type"))
-                .setUID((String) component.get("bom-ref"))
-                .setAuthor((String) component.get("author"))
-                .setPublisher((String) component.get("publisher"))
-                .setGroup((String) component.get("group"))
-                .setName((String) component.get("name"))
-                .setVersion((String) component.get("version"))
-                .setScope((String) component.get("scope"))
-                .setCopyright((String) component.get("copyright"))
-                .addCPE((String) component.get("cpe"))
-                .addPURL((String) component.get("purl"));
+        packageBuilder.setType((String) cdxObject.get("type"))
+                .setMimeType((String) cdxObject.get("mime-type"))
+                .setUID((String) cdxObject.get("bom-ref"))
+                .setAuthor((String) cdxObject.get("author"))
+                .setPublisher((String) cdxObject.get("publisher"))
+                .setGroup((String) cdxObject.get("group"))
+                .setName((String) cdxObject.get("name"))
+                .setVersion((String) cdxObject.get("version"))
+                .setScope((String) cdxObject.get("scope"))
+                .setCopyright((String) cdxObject.get("copyright"))
+                .addCPE((String) cdxObject.get("cpe"))
+                .addPURL((String) cdxObject.get("purl"));
 
         // set description
-        String description = (String) component.get("description");
+        String description = (String) cdxObject.get("description");
         if (description != null)
             packageBuilder.setDescription(new Description(description));
 
         // set supplier
-        Map<String, Object> supplier = mapper.convertValue(component.get("supplier"), new TypeReference<>() {
+        Map<String, Object> supplier = mapper.convertValue(cdxObject.get("supplier"), new TypeReference<>() {
         });
         packageBuilder.setSupplier(resolveOrganization(supplier));
 
         // add hashes
-        List<Map<String, Object>> hashes = normalizeExcerpt(component.get("hashes"));
+        List<Map<String, Object>> hashes = normalizeExcerpt(cdxObject.get("hashes"));
         if (hashes != null)
             hashes.forEach(h -> packageBuilder.addHash((String) h.get("alg"), (String) h.get("content")));
 
         // add licenses
-        List<Map<String, Object>> licenses = normalizeExcerpt(component.get("licenses"));
+        List<Map<String, Object>> licenses = normalizeExcerpt(cdxObject.get("licenses"));
         if (licenses != null) {
             if (!licenses.isEmpty()) {
                 LicenseCollection componentLicenses = new LicenseCollection();
@@ -249,12 +258,12 @@ public class CDX14Deserializer extends Deserializer {
         }
 
         // add external references
-        List<Map<String, Object>> externalReferences = normalizeExcerpt(component.get("externalReferences"));
+        List<Map<String, Object>> externalReferences = normalizeExcerpt(cdxObject.get("externalReferences"));
         if (externalReferences != null)
             externalReferences.forEach(e -> packageBuilder.addExternalReference(resolveExternalReference(e)));
 
         // add properties
-        List<Map<String, Object>> properties = normalizeExcerpt(component.get("properties"));
+        List<Map<String, Object>> properties = normalizeExcerpt(cdxObject.get("properties"));
         if (properties != null)
             properties.forEach(p -> packageBuilder.addProperty((String) p.get("name"), (String) p.get("value")));
 
@@ -265,20 +274,20 @@ public class CDX14Deserializer extends Deserializer {
     /**
      * Resolve External Reference details
      *
-     * @param externalReference map with details
+     * @param cdxObject map with details
      * @return External Reference
      */
-    private ExternalReference resolveExternalReference(Map<String, Object> externalReference) {
+    private ExternalReference resolveExternalReference(Map<String, Object> cdxObject) {
         // skip if no data
-        if (externalReference == null) return null;
+        if (cdxObject == null) return null;
         ExternalReference externalReferenceObj = new ExternalReference(
-                (String) externalReference.get("url"),
-                (String) externalReference.get("type")
+                (String) cdxObject.get("url"),
+                (String) cdxObject.get("type")
         );
 
         // TODO do we want to store comments?
         // add hashes
-        List<Map<String, Object>> hashes = normalizeExcerpt(externalReference.get("hashes"));
+        List<Map<String, Object>> hashes = normalizeExcerpt(cdxObject.get("hashes"));
         if (hashes != null)
             hashes.forEach(h -> externalReferenceObj.addHash((String) h.get("alg"), (String) h.get("content")));
 
@@ -288,29 +297,29 @@ public class CDX14Deserializer extends Deserializer {
     /**
      * Resolve Contact details
      *
-     * @param contact map with details
+     * @param cdxObject map with details
      * @return Contact
      */
-    private Contact resolveContact(Map<String, Object> contact) {
+    private Contact resolveContact(Map<String, Object> cdxObject) {
         // skip if no data
-        if (contact == null) return null;
-        return new Contact((String) contact.get("name"), (String) contact.get("email"), (String) contact.get("phone"));
+        if (cdxObject == null) return null;
+        return new Contact((String) cdxObject.get("name"), (String) cdxObject.get("email"), (String) cdxObject.get("phone"));
     }
 
     /**
      * Resolve Organization details
      *
-     * @param organization map with details
+     * @param cdxObject map with details
      * @return Organization
      */
-    private Organization resolveOrganization(Map<String, Object> organization) {
+    private Organization resolveOrganization(Map<String, Object> cdxObject) {
         // skip if no data
-        if (organization == null) return null;
+        if (cdxObject == null) return null;
         Organization organizationObj = new Organization(
-                (String) organization.get("name"),
-                (String) organization.get("url"));
+                (String) cdxObject.get("name"),
+                (String) cdxObject.get("url"));
         // add contacts
-        List<Map<String, Object>> contacts = normalizeExcerpt(organization.get("contact"));
+        List<Map<String, Object>> contacts = normalizeExcerpt(cdxObject.get("contact"));
         if (contacts != null)
             contacts.forEach(c -> organizationObj.addContact(resolveContact(c)));
 
@@ -320,15 +329,15 @@ public class CDX14Deserializer extends Deserializer {
     /**
      * Resolve dependency details
      *
-     * @param dependency map with details
+     * @param cdxObject map with details
      * @return List of relationships of this object
      */
-    private List<Relationship> resolveDependency(Map<String, Object> dependency) {
+    private List<Relationship> resolveDependency(Map<String, Object> cdxObject) {
         // skip if no data
-        if (dependency == null) return null;
+        if (cdxObject == null) return null;
         List<Relationship> relationships = new ArrayList<>();
         // add all deps
-        List<String> bomRefs = mapper.convertValue(dependency.get("dependsOn"), new TypeReference<>() {
+        List<String> bomRefs = mapper.convertValue(cdxObject.get("dependsOn"), new TypeReference<>() {
         });
         if (bomRefs != null)
             bomRefs.forEach(br -> relationships.add(new Relationship(br, "DEPENDS_ON")));    //todo replace with SPDX enums
@@ -383,9 +392,6 @@ public class CDX14Deserializer extends Deserializer {
      */
     @Override
     public CDX14SBOM deserialize(File file) throws DeserializerException {
-        // cdx doesn't support tag-value
-        if (fileFormat == FileFormat.TAG_VALUE)
-            throw new DeserializerException("CycloneDX 1.4 does not support Tag-Value", file, fileFormat);
         // load into map
         Map<String, Object> content = super.loadFile(file);
 

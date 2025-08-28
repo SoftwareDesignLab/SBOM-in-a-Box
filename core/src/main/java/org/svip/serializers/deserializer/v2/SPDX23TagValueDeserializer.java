@@ -24,22 +24,6 @@
 
 package org.svip.serializers.deserializer.v2;
 
-import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23Builder;
-import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23FileBuilder;
-import org.svip.sbom.builder.objects.schemas.SPDX23.SPDX23PackageBuilder;
-import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
-import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
-import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
-import org.svip.sbom.model.shared.Relationship;
-import org.svip.sbom.model.shared.metadata.Contact;
-import org.svip.sbom.model.shared.metadata.CreationData;
-import org.svip.sbom.model.shared.metadata.CreationTool;
-import org.svip.sbom.model.shared.metadata.Organization;
-import org.svip.sbom.model.shared.util.Description;
-import org.svip.sbom.model.shared.util.ExternalReference;
-import org.svip.sbom.model.shared.util.LicenseCollection;
-import org.svip.serializers.FileFormat;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -49,10 +33,11 @@ import java.util.regex.Pattern;
 
 /**
  * File: SPDX23TagValueDeserializer.java
+ * <p>
  * This class implements the Deserializer interface and the Jackson StdDeserializer to provide all functionality to
  * read an SPDX 2.3 SBOM object from an SPDX 2.3 tag-value file string.
  * <p>
- * todo - replace with HashMap<String, Object> Pattern?
+ * Private, only to be used by SPDX23Deserializer
  *
  * @author Ian Dunn
  * @author Tyler Drake
@@ -61,363 +46,238 @@ import java.util.regex.Pattern;
  * @author Thomas Roman
  * @author Derek Garcia
  */
-public class SPDX23TagValueDeserializer extends Deserializer {
+class SPDX23TagValueDeserializer {
 
     //#region Constants
 
-    public static final String TAG = "####";
-    public static final String SEPARATOR = ": ";
-    public static final String SPEC_VERSION_TAG = "SPDXVersion";
-    public static final String TIMESTAMP_TAG = "Created";
-    public static final String DOCUMENT_NAME_TAG = "DocumentName";
-    public static final String DOCUMENT_NAMESPACE_TAG = "DocumentNamespace";
-    public static final String DATA_LICENSE_TAG = "DataLicense";
-    public static final String LICENSE_LIST_VERSION_TAG = "LicenseListVersion";
-    public static final String CREATOR_TAG = "Creator";
-    public static final String EXTERNAL_REFERENCE_TAG = "ExternalRef";
+    private static final String TAG = "#####";
+    private static final String SEPARATOR = ": ";
 
-    /// Patterns
+    private static final String UNPACKAGED_FILES_HEADER = TAG + " Unpackaged files";
+    private static final String PACKAGE_HEADER = TAG + " Package";
+    private static final String RELATIONSHIPS_HEADER = TAG + " Relationships";
 
-    public static final Pattern EXTRACTED_LICENSE_PATTERN = Pattern.compile("(^LicenseID:[\\w\\W]*?)\n{2}", Pattern.MULTILINE);
-    public static final Pattern UNPACKAGED_PATTERN = Pattern.compile("(^FileName:[\\w\\W]*?)\\n{2}", Pattern.MULTILINE);
-    public static final Pattern PACKAGE_PATTERN = Pattern.compile("^#{5} Package: .*\n{2}([\\w\\W]*?)\n$", Pattern.MULTILINE);
-    private static final Pattern TAG_VALUE_PATTERN = Pattern.compile("(\\S+)" + SEPARATOR + "(.+)");
-    private static final Pattern EXTERNAL_REF_PATTERN = Pattern.compile(EXTERNAL_REFERENCE_TAG + SEPARATOR +
-            "(\\S*) (\\S*) (\\S*)");
-    private static final Pattern RELATIONSHIP_PATTERN = Pattern.compile("^Relationship: (.*?) (.*?) (.*)\n(?:RelationshipComment: (.*)|)", Pattern.MULTILINE);
-    private static final Pattern CREATOR_PATTERN = Pattern.compile(
-            "^(?:(Person|Organization): )(.+?)(?:$| (?:\\((.*)\\))?$)");
-    private static final Pattern TOOL_PATTERN = Pattern.compile("^Tool: (?:(.*)-)(.*)$", Pattern.CASE_INSENSITIVE);
+    private static final String EXTERNAL_REFERENCE_TAG = "ExternalRef";
+
+    private static final String CREATION_INFO_TAG_RE = "^(LicenseListVersion|Creator|Created): (.*)";
+    private static final String NORMALIZED_CHECKSUM_TAG_VALUE_RE = "^(?:File|Package)Checksum: (.*)";
+    private static final String NORMALIZED_TAG_VALUE_RE = "^(?:File(?!Name)|Package|Document)(Name|License.*?|CopyrightText|SourceInfo|DownloadLocation|Version|Supplier): (.*)";
+    // todo - probably more shared
+    private static final String STRING_ARRAY_TAG_RE = "^(?:FileType|LicenseInfoInFile): .*";
+    private static final Pattern NORMALIZED_TAG_VALUE = Pattern.compile(NORMALIZED_TAG_VALUE_RE);
 
     //#endregion
 
     /**
-     * Create new Tag-Value deserializer
+     * Get the head / left-hand side of seperator
+     *
+     * @param line Line to split
+     * @return head / left-hand side of seperator
      */
-    public SPDX23TagValueDeserializer() {
-        super(FileFormat.TAG_VALUE);
+    private String getTag(String line) {
+        return line.split(SEPARATOR, 2)[0];
     }
 
     /**
-     * Parse SPDX style creator string into a Contact
+     * Get the tail / right-hand side of seperator
      *
-     * @param creator SPDX style creator string
-     * @return Contact
+     * @param line Line to split
+     * @return tail / right-hand side of seperator
      */
-    protected static Contact parseSPDXCreator(String creator) {
-        Matcher creatorMatcher = CREATOR_PATTERN.matcher(creator);
-        if (!creatorMatcher.find()) return null;
-
-        return new Contact(creatorMatcher.group(2), creatorMatcher.group(3), null);
+    private String getValue(String line) {
+        return line.split(SEPARATOR, 2)[1];
     }
 
     /**
-     * Update CreationData with info from SPDX
+     * Lowercase the first letter of the given string
      *
-     * @param data        CreationData object
-     * @param creatorInfo Creation info from SPDX
+     * @param input String to lower
+     * @return String with first letter lowercased
      */
-    protected static void parseSPDXCreatorInfo(CreationData data, List<String> creatorInfo) {
-        for (String creator : creatorInfo) {
-            Matcher toolMatcher = SPDX23TagValueDeserializer.TOOL_PATTERN.matcher(creator);
-            while (toolMatcher.find()) {
-                CreationTool tool = new CreationTool();
-                tool.setName(toolMatcher.group(1));
-                tool.setVersion(toolMatcher.group(2));
-                data.addCreationTool(tool);
-            }
-
-            Contact contact = SPDX23TagValueDeserializer.parseSPDXCreator(creator);
-            if (contact == null) continue;
-
-            // If we find an organization, set it to the supplier if there isn't already one. Otherwise,
-            // add another author with the contact info
-            if (creator.toLowerCase().startsWith("organization") &&
-                    (data.getSupplier() == null || data.getSupplier().getName().isEmpty())) {
-
-                Organization supplier = new Organization(contact.getName(), null);
-                supplier.addContact(contact);
-                data.setSupplier(supplier);
-            } else {
-                data.addAuthor(contact);
-            }
-        }
-    }
-
-    /**
-     * Deserializes an SPDX 2.3 tag-value SBOM from a string.
-     *
-     * @param file The file of the SPDX 2.3 tag-value SBOM to deserialize.
-     * @return The deserialized SPDX 2.3 SBOM object.
-     */
-    @Override
-    public SPDX23SBOM deserialize(File file) throws DeserializerException {
-        // Map of external licenses to mirror Component.externalLicenses attribute
-        Map<String, Map<String, String>> externalLicenses = new HashMap<>();
-
-        // initialize builders
-        SPDX23Builder sbomBuilder = new SPDX23Builder();
-
-        // Metadata
-        String fileContents;
-        try {
-            fileContents = String.join("\n", Files.readAllLines(file.toPath()));
-        } catch (IOException e) {
-            throw new DeserializerException("Failed to read " + file.getName(), file, fileFormat, e);
-        }
-
-        int firstIndex = fileContents.indexOf(TAG); // Find first index of next "section"
-        String header;
-
-        // If no tags found, assume the header is the only part of the file
-        if (firstIndex == -1) header = fileContents;
-        else {
-            header = fileContents.substring(0, firstIndex - 2); // Remove newlines as well
-            fileContents = fileContents.substring(firstIndex); // Remove all header info from fileContents
-        }
-
-        sbomBuilder.setFormat("SPDX");
-
-        // Process header TODO throw error if required fields are not found. Create enum with all tags?
-        Matcher mHeader = TAG_VALUE_PATTERN.matcher(header);
-        CreationData creationData = new CreationData();
-        List<String> creators = new ArrayList<>();
-        while (mHeader.find()) {
-            switch (mHeader.group(1)) {
-                // NAME
-                case DOCUMENT_NAME_TAG -> sbomBuilder.setName(mHeader.group(2));
-                // UID
-                case DOCUMENT_NAMESPACE_TAG -> sbomBuilder.setUID(mHeader.group(2));
-                // SPEC VERSION
-                case SPEC_VERSION_TAG ->
-                        sbomBuilder.setSpecVersion(mHeader.group(2).substring(mHeader.group(2).lastIndexOf('-') + 1)); // Get text after "SPDX-"
-                // LICENSE
-                case DATA_LICENSE_TAG -> sbomBuilder.addLicense(mHeader.group(2));
-                // LICENSE LIST VERSION
-                case LICENSE_LIST_VERSION_TAG -> sbomBuilder.setSPDXLicenseListVersion(mHeader.group(2));
-                // AUTHORS
-                case CREATOR_TAG -> creators.add(mHeader.group(2));
-                // TIMESTAMP
-                case TIMESTAMP_TAG -> creationData.setCreationTime(mHeader.group(2));
-                // CREATOR COMMENT
-                case "CreatorComment" -> creationData.setCreatorComment(mHeader.group(2));
-                // DOCUMENT COMMENT
-                case "DocumentComment" -> sbomBuilder.setDocumentComment(mHeader.group(2));
-            }
-        }
-        parseSPDXCreatorInfo(creationData, creators);
-
-        // CREATION DATA
-        sbomBuilder.setCreationData(creationData);
-
-        // Parse and Add Packages
-        Matcher packageMatcher = PACKAGE_PATTERN.matcher(fileContents);
-        while (packageMatcher.find())
-            sbomBuilder.addSPDX23Component(buildPackage(packageMatcher.group(1)));
-
-        // Parse and Add unpackaged files
-        Matcher fileMatcher = UNPACKAGED_PATTERN.matcher(fileContents);
-        while (fileMatcher.find())
-            sbomBuilder.addSPDX23Component(buildFile(fileMatcher.group(1)));
-
-        // Parse and Add external license
-        Matcher licenseMatcher = EXTRACTED_LICENSE_PATTERN.matcher(fileContents);
-        while (licenseMatcher.find())
-            sbomBuilder.addLicense(buildExternalLicense(licenseMatcher.group(1)));
-
-        // Parse and Add relationships
-        Matcher relationshipMatcher = RELATIONSHIP_PATTERN.matcher(fileContents);
-        while (relationshipMatcher.find())
-            sbomBuilder.addRelationship(relationshipMatcher.group(1), buildRelationship(relationshipMatcher));
-
-        return sbomBuilder.buildSPDX23SBOM();
+    private String lowercaseFirstLetter(String input) {
+        if (input == null || input.isEmpty())
+            return input;
+        return input.substring(0, 1).toLowerCase() + input.substring(1);
     }
 
 
     /**
-     * Build a SPDX23 Package
+     * Parse the list of SPDX files in the doc
      *
-     * @param contents String to extract details from
-     * @return SPDX23 Package Object
+     * @param lines Lines to process
+     * @return List of SPDX File Objects
      */
-    private SPDX23PackageObject buildPackage(String contents) {
-        SPDX23PackageBuilder builder = new SPDX23PackageBuilder();
-        Map<String, String> componentMaterials = new HashMap<>();
-        Matcher mPackages = TAG_VALUE_PATTERN.matcher(contents);
+    private List<Map<String, Object>> parseSPDXFiles(List<String> lines) {
+        List<Map<String, Object>> spdxFiles = new ArrayList<>();
+        // parse all file objects (until eof or reach next tag)
+        while (!(lines.isEmpty() || lines.get(0).startsWith(TAG)))
+            spdxFiles.add(parseSPDXTagValueObject(lines));
 
-        while (mPackages.find()) {
-            if (mPackages.group(1).equals(EXTERNAL_REFERENCE_TAG)) {
-                Matcher externalRefMatcher = EXTERNAL_REF_PATTERN.matcher(mPackages.group());
-                if (!externalRefMatcher.find()) continue;
+        return spdxFiles;
 
-                switch (externalRefMatcher.group(2).toLowerCase()) {
-                    case "cpe23type" -> builder.addCPE(externalRefMatcher.group(3));
-                    case "purl" -> builder.addPURL(externalRefMatcher.group(3));
-                    default ->
-                            builder.addExternalReference(new ExternalReference(externalRefMatcher.group(1), externalRefMatcher.group(3), externalRefMatcher.group(2)));
+    }
+
+    /**
+     * Parse the list of relationships in the doc
+     *
+     * @param lines Lines to process
+     * @return List of SPDX relationship objects
+     */
+    private List<Map<String, String>> parseSPDXRelationships(List<String> lines) {
+        List<Map<String, String>> spdxRelationships = new ArrayList<>();
+        // todo - relationships always eof?
+        while (!lines.isEmpty()) {
+            String line = lines.remove(0);
+            // base case
+            if (line.isEmpty())
+                break;
+            String[] components = getValue(line).split(" ");
+            Map<String, String> relObj = new HashMap<>(Map.of(
+                    "spdxElementId", components[0],
+                    "relatedSpdxElement", components[2],
+                    "relationshipType", components[1]
+            ));
+            // add comment if one
+            if (!lines.isEmpty() && lines.get(0).startsWith("RelationshipComment"))
+                relObj.put("comment", getValue(lines.remove(0)));
+            // add relationship
+            spdxRelationships.add(relObj);
+        }
+        return spdxRelationships;
+    }
+
+
+    /**
+     * Recursively parse an SPDX Tag-Value Object into a Map
+     *
+     * @param lines List of lines remaining in the file
+     * @return Map of SPDX Tag-Value objects
+     */
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> parseSPDXTagValueObject(List<String> lines) {
+        // init object
+        Map<String, Object> objectDetails = new LinkedHashMap<>();  // linked to keep order for convince
+
+        while (!lines.isEmpty()) {
+            // pop line
+            String line = lines.remove(0).trim();
+            // base case -- return if empty
+            if (line.isEmpty())
+                return objectDetails;
+
+            // Metadata
+            if (line.matches(CREATION_INFO_TAG_RE)) {
+                // init if dne
+                objectDetails.putIfAbsent("creationInfo", new HashMap<String, Object>());
+                Map<String, Object> creationInfo = (Map<String, Object>) objectDetails.get("creationInfo");
+                String value = getValue(line);
+                switch (getTag(line)) {
+                    case "LicenseListVersion" -> creationInfo.put("licenseListVersion", value);
+                    case "Creator" -> {
+                        creationInfo.putIfAbsent("creators", new ArrayList<>());
+                        ((List<String>) creationInfo.get("creators")).add(value);
+                    }
+                    case "Created" -> creationInfo.put("created", value);
                 }
-            } else componentMaterials.put(mPackages.group(1), mPackages.group(2));
-        }
-
-        builder.setName(componentMaterials.get("PackageName"));
-        builder.setVersion(componentMaterials.get("PackageVersion"));
-        builder.setUID(componentMaterials.get("SPDXID"));
-
-        // SUPPLIER
-        if (componentMaterials.get("PackageSupplier") != null) {
-            Contact supplier = parseSPDXCreator(componentMaterials.get("PackageSupplier"));
-            if (supplier != null) {
-                Organization org = new Organization(supplier.getName(), null);
-                org.addContact(supplier);
-                builder.setSupplier(org);
+                continue;
             }
+
+            // Parse SPDX files
+            if (line.startsWith(UNPACKAGED_FILES_HEADER)) {
+                // pop whitespace
+                lines.remove(0);
+                // add to main obj
+                objectDetails.put("files", parseSPDXFiles(lines));
+                continue;
+            }
+
+            // Parse SPDX Relationships
+            if (line.startsWith(RELATIONSHIPS_HEADER)) {
+                // pop whitespace
+                lines.remove(0);
+                // add to main obj
+                objectDetails.put("relationships", parseSPDXRelationships(lines));
+                continue;
+            }
+
+
+            // Parse SPDX Package object
+            if (line.startsWith(PACKAGE_HEADER)) {
+                // pop whitespace
+                lines.remove(0);
+                // init if dne
+                objectDetails.putIfAbsent("packages", new ArrayList<Map<String, Object>>());
+                ((List<Object>) objectDetails.get("packages")).add(parseSPDXTagValueObject(lines));
+                continue;
+            }
+
+            // Parse External Reference
+            if (line.startsWith(EXTERNAL_REFERENCE_TAG)) {
+                String[] components = getValue(line).split(" ");
+                objectDetails.putIfAbsent("externalRefs", new ArrayList<Map<String, Object>>());
+                ((List<Object>) objectDetails.get("externalRefs")).add(Map.of(
+                                "referenceCategory", components[0],
+                                "referenceType", components[1],
+                                "referenceLocator", components[2]
+                        )
+                );
+                continue;
+            }
+
+            // Parse Checksum
+            if (line.matches(NORMALIZED_CHECKSUM_TAG_VALUE_RE)) {
+                String[] components = getValue(line).split(SEPARATOR);
+                objectDetails.putIfAbsent("checksums", new ArrayList<Map<String, Object>>());
+                ((List<Object>) objectDetails.get("checksums")).add(Map.of(
+                                "algorithm", components[0],
+                                "checksumValue", components[1]
+                        )
+                );
+                continue;
+            }
+
+            // Can hav 0..* string values
+            if (line.matches(STRING_ARRAY_TAG_RE)) {
+                String tag = lowercaseFirstLetter(getTag(line)) + "s";
+                objectDetails.putIfAbsent(tag, new ArrayList<String>());
+                ((List<String>) objectDetails.get(tag)).add(getValue(line));
+                continue;
+            }
+
+            // add basic tag-value
+            if (line.matches(NORMALIZED_TAG_VALUE_RE)) {
+                // normalize tag (excluding checksum)
+                Matcher m = NORMALIZED_TAG_VALUE.matcher(line);
+                m.find();
+                objectDetails.put(lowercaseFirstLetter(m.group(1)), m.group(2));
+            } else {
+                // else don't need to normalize, just add
+                // edge cases
+                String tag = line.startsWith("SPDX") ? getTag(line) : lowercaseFirstLetter(getTag(line));
+                if (line.equals("SPDXVersion"))
+                    tag = "spdxVersion";
+                objectDetails.put(tag, getValue(line));
+            }
+
         }
 
-        // AUTHOR
-        if (componentMaterials.get("PackageOriginator") != null)
-            builder.setAuthor(componentMaterials.get("PackageOriginator"));
-
-        // LICENSE EXPRESSION
-        LicenseCollection licenseCollection = new LicenseCollection();
-        if (componentMaterials.get("PackageLicenseConcluded") != null)
-            licenseCollection.addConcludedLicenseString(componentMaterials.get("PackageLicenseConcluded"));
-        if (componentMaterials.get("PackageLicenseDeclared") != null)
-            licenseCollection.addDeclaredLicense(componentMaterials.get("PackageLicenseDeclared"));
-        if (componentMaterials.get("PackageLicenseInfoFromFiles") != null)
-            licenseCollection.addLicenseInfoFromFile(componentMaterials.get("PackageLicenseInfoFromFiles"));
-        if (componentMaterials.get("PackageLicenseComments") != null)
-            licenseCollection.setComment(componentMaterials.get("PackageLicenseComments"));
-
-        builder.setLicenses(licenseCollection);
-
-        // HASHES
-        // Packages hashing info
-        if (componentMaterials.get("PackageChecksum") != null) {
-            Matcher mChecksum = TAG_VALUE_PATTERN.matcher(componentMaterials.get("PackageChecksum"));
-            if (mChecksum.find())
-                builder.addHash(mChecksum.group(1), mChecksum.group(2));
-        }
-
-        if (componentMaterials.get("PackageSummary") != null) {
-            Description description = new Description(componentMaterials.get("PackageSummary"));
-            if (componentMaterials.get("PackageDescription") != null)
-                description.setDescription(componentMaterials.get("PackageDescription"));
-
-            builder.setDescription(description);
-        }
-
-        // Other package info
-        // DOWNLOAD LOCATION
-        builder.setDownloadLocation(componentMaterials.get("PackageDownloadLocation"));
-        // FILES ANALYZED
-        builder.setFilesAnalyzed(Objects.equals(componentMaterials.get("FilesAnalyzed"), "true"));
-        // PACKAGE VERIFICATION CODE
-        builder.setVerificationCode(componentMaterials.get("PackageVerificationCode"));
-        // HOMEPAGE
-        builder.setHomePage(componentMaterials.get("PackageHomePage"));
-        // SOURCE INFO
-        builder.setSourceInfo(componentMaterials.get("PackageSourceInfo"));
-        // COMMENT
-        builder.setComment(componentMaterials.get("PackageComment"));
-        // COPYRIGHT
-        builder.setCopyright(componentMaterials.get("PackageCopyrightText"));
-        // ATTRIBUTION TEXT
-        builder.setAttributionText(componentMaterials.get("PackageAttributionText"));
-        // TYPE
-        builder.setType(componentMaterials.get("PrimaryPackagePurpose"));
-        // RELEASE DATE
-        builder.setReleaseDate(componentMaterials.get("ReleaseDate"));
-        // BUILT DATE
-        builder.setBuiltDate(componentMaterials.get("BuiltDate"));
-        // VALID UNTIL DATE
-        builder.setValidUntilDate(componentMaterials.get("ValidUntilDate"));
-        // FILE NAME
-        builder.setFileName(componentMaterials.get("PackageFileName"));
-
-        // build package
-        return builder.build();
+        return objectDetails;
     }
+
 
     /**
-     * Build a SPDX23 File
+     * Deserialize the file into a map to be used by SPDX Deserializer
      *
-     * @param contents String to extract details from
-     * @return SPDX23 File Object
+     * @param file File to deserialize
+     * @return SBOM object
      */
-    private SPDX23FileObject buildFile(String contents) {
-        SPDX23FileBuilder builder = new SPDX23FileBuilder();
-        Matcher mFiles = TAG_VALUE_PATTERN.matcher(contents);
-        HashMap<String, String> fileMaterials = new HashMap<>();
-        while (mFiles.find()) fileMaterials.put(mFiles.group(1), mFiles.group(2));
+    public Map<String, Object> readValue(File file) throws IOException {
+        List<String> lines = Files.readAllLines(file.toPath());
+        // build root object
+        Map<String, Object> objectDetails = new LinkedHashMap<>();
+        while (!lines.isEmpty())
+            objectDetails.putAll(parseSPDXTagValueObject(lines));
 
-        // Create new component from materials
-        // FILE NAME
-        builder.setName(fileMaterials.get("FileName"));
-        // FILE UID
-        builder.setUID(fileMaterials.get("SPDXID"));
-        builder.setType(fileMaterials.get("FileType"));
-        builder.setFileNotice(fileMaterials.get("FileNotice"));
-        builder.setComment(fileMaterials.get("FileComment"));
-        builder.setAuthor(fileMaterials.get("FileContributor"));
-        builder.setCopyright(fileMaterials.get("FileCopyrightText"));
-        builder.setAttributionText(fileMaterials.get("FileAttributionText"));
-
-        // LICENSE EXPRESSION
-        LicenseCollection licenseCollection = new LicenseCollection();
-        if (fileMaterials.get("LicenseConcluded") != null)
-            licenseCollection.addConcludedLicenseString(fileMaterials.get("LicenseConcluded"));
-        if (fileMaterials.get("LicenseDeclared") != null)
-            licenseCollection.addDeclaredLicense(fileMaterials.get("LicenseDeclared"));
-        if (fileMaterials.get("LicenseInfoInFile") != null)
-            licenseCollection.addLicenseInfoFromFile(fileMaterials.get("LicenseInfoInFile"));
-        if (fileMaterials.get("LicenseComments") != null)
-            licenseCollection.setComment(fileMaterials.get("LicenseComments"));
-
-        builder.setLicenses(licenseCollection);
-
-        if (fileMaterials.get("PackageChecksum") != null) {
-            Matcher mChecksum = TAG_VALUE_PATTERN.matcher(fileMaterials.get("PackageChecksum"));
-            if (mChecksum.find())
-                builder.addHash(mChecksum.group(1), mChecksum.group(2));
-        }
-
-        // add component
-        return builder.build();
+        return objectDetails;
     }
-
-    /**
-     * Parse External License and build a license
-     * TODO currently only parses License ID, looses all other info. Keeping ID since this is what is used when
-     * referenced by other elements
-     *
-     * @param licenseBlock String of license details
-     * @return extracted license ID
-     */
-    private String buildExternalLicense(String licenseBlock) {
-        Pattern licenseNamePattern = Pattern.compile("^LicenseID: (.*)");
-        Matcher licenseIDMatcher = licenseNamePattern.matcher(licenseBlock);
-
-        // return just ID because this will be referenced by other
-        // TODO more complex license so we don't loose the extra details
-        return licenseIDMatcher.find()
-                ? licenseIDMatcher.group(1)
-                : "";
-    }
-
-    /**
-     * Extract data from match to build a Relationship
-     *
-     * @param match Regex match of relationship details
-     * @return Relationships
-     */
-    private Relationship buildRelationship(Matcher match) {
-        Relationship r = new Relationship(match.group(3), match.group(2));
-        // add comment if present
-        if (match.group(4) != null)
-            r.setComment(match.group(4));
-
-        return r;
-    }
-
-
 }

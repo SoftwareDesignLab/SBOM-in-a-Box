@@ -40,9 +40,11 @@ import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 import org.svip.serializers.FileFormat;
+import org.svip.serializers.Schema;
+import org.svip.serializers.exceptions.DeserializerException;
+import org.svip.serializers.exceptions.UnsupportedFileFormatException;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -64,171 +66,55 @@ public class SPDX23Deserializer extends Deserializer {
 
     /// Patterns
 
-    private static final Pattern CREATOR_PATTERN = Pattern.compile(
-            "^(?:(Person|Organization): )(.+?)(?:$| (?:\\((.*)\\))?$)");
-    private static final Pattern TOOL_PATTERN = Pattern.compile("^Tool: (?:(.*)-)(.*)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern CREATOR_PATTERN = Pattern.compile("^(Person|Organization): (.+?)(?:$| (?:\\((.*)\\))?$)");
+    private static final Pattern TOOL_PATTERN = Pattern.compile("^Tool: (.*)-(.*)$", Pattern.CASE_INSENSITIVE);
 
 
     /**
      * Create new deserializer
      *
      * @param fileFormat Type of deserializer
+     * @throws UnsupportedFileFormatException if attempt to deserialize from an unsupported format
      */
     public SPDX23Deserializer(FileFormat fileFormat) {
         super(fileFormat);
+        // check for unsupported file formats
+        if (fileFormat != FileFormat.JSON && fileFormat != FileFormat.TAG_VALUE) {
+            throw new UnsupportedFileFormatException(Schema.SPDX_23, fileFormat);
+        }
     }
 
-
     /**
-     * Resolve Package details
+     * Resolve licenses in an SPDX Object
      *
-     * @param component Map with package details
-     * @return Object with package details
+     * @param spdxObject Tag-Value SPDX Object to parse licenses from
+     * @return Collection of Licenses, null if no licenses found
      */
-    private SPDX23PackageObject resolvePackage(Map<String, Object> component) {
-        SPDX23PackageBuilder packageBuilder = new SPDX23PackageBuilder();
-        // set basic fields
-        packageBuilder.setType((String) component.get("primaryPackagePurpose"))
-                .setUID((String) component.get("SPDXID"))
-                .setAuthor((String) component.get("originator"))
-                .setName((String) component.get("name"))
-                .setVersion((String) component.get("versionInfo"))
-                .setDownloadLocation((String) component.get("downloadLocation"))
-                .setComment((String) component.get("comment"))
-                .setFileName((String) component.get("packageFileName"))
-                .setFilesAnalyzed((Boolean) component.get("filesAnalyzed"))
-                .setHomePage((String) component.get("homepage"))
-                .setSourceInfo((String) component.get("sourceInfo"))
-                .setAttributionText((String) component.get("attributionText"))
-                .setCopyright((String) component.get("copyright"))
-                .setBuiltDate((String) component.get("builtDate"))
-                .setReleaseDate((String) component.get("releaseDate"))
-                .setValidUntilDate((String) component.get("validUntilDate"))
-                .setVerificationCode((String) component.get("packageVerificationCode"));
+    private LicenseCollection resolveLicenses(Map<String, Object> spdxObject) {
+        LicenseCollection objectLicenses = new LicenseCollection();
 
-        // set supplier
-        Contact supplierContact = resolveContact((String) component.get("supplier"));
-        if (supplierContact != null) {
-            Organization supplier = new Organization(supplierContact.getName(), null);
-            supplier.addContact(supplierContact);
-            packageBuilder.setSupplier(supplier);
-        }
-
-        // set description
-        String summary = (String) component.get("summary");
-        if (summary != null) {
-            Description description = new Description(summary);
-            description.setDescription((String) component.get("description"));
-            packageBuilder.setDescription(description);
-        }
-
-        // set hashes
-        List<Map<String, Object>> hashes = mapper.convertValue(component.get("checksums"), new TypeReference<>() {
-        });
-        if (hashes != null)
-            hashes.forEach(h -> packageBuilder.addHash((String) h.get("algorithm"), (String) h.get("checksumValue")));
-
-
-        // set licenses
-        LicenseCollection componentLicenses = new LicenseCollection();
-        List<String> licenseConcluded = mapper.convertValue(component.get("licenseConcluded"), new TypeReference<>() {
+        String licenseConcluded = mapper.convertValue(spdxObject.get("licenseConcluded"), new TypeReference<>() {
         });
         if (licenseConcluded != null)
-            licenseConcluded.forEach(componentLicenses::addConcludedLicenseString);
-        List<String> licenseDeclared = mapper.convertValue(component.get("licenseDeclared"), new TypeReference<>() {
+            objectLicenses.addConcludedLicenseString(licenseConcluded);
+        String licenseDeclared = mapper.convertValue(spdxObject.get("licenseDeclared"), new TypeReference<>() {
         });
+
         if (licenseDeclared != null)
-            licenseDeclared.forEach(componentLicenses::addDeclaredLicense);
-        List<String> licenseInfoFromFiles = mapper.convertValue(component.get("licenseInfoFromFiles"), new TypeReference<>() {
+            objectLicenses.addDeclaredLicense(licenseDeclared);
+        List<String> licenseInfoFromFiles = mapper.convertValue(spdxObject.get("licenseInfoFromFiles"), new TypeReference<>() {
         });
+
         if (licenseInfoFromFiles != null)
-            licenseInfoFromFiles.forEach(componentLicenses::addLicenseInfoFromFile);
-        componentLicenses.setComment((String) component.get("licenseComments"));
-        // only set if licenses
-        if (!(componentLicenses.getConcluded().isEmpty() || componentLicenses.getDeclared().isEmpty() || componentLicenses.getInfoFromFiles().isEmpty()))
-            packageBuilder.setLicenses(componentLicenses);
+            licenseInfoFromFiles.forEach(objectLicenses::addLicenseInfoFromFile);
+        objectLicenses.setComment((String) spdxObject.get("licenseComments"));
 
-        // set external references and cpes / purls
-        List<Map<String, Object>> externalReferences = mapper.convertValue(component.get("externalRefs"), new TypeReference<>() {
-        });
-        if (externalReferences != null)
-            externalReferences.stream()
-                    // skip if missing data
-                    .filter(ref -> ref.get("referenceCategory") != null && ref.get("referenceLocator") != null && ref.get("referenceType") != null)
-                    // else add data if all values present
-                    .forEach(ref -> {
-                        String category = (String) ref.get("referenceCategory");
-                        String url = (String) ref.get("referenceLocator");
-                        String type = (String) ref.get("referenceType");
-                        // set ref accordingly
-                        if (category.equalsIgnoreCase("security") && type.equalsIgnoreCase("cpe23type"))
-                            packageBuilder.addCPE(url);
-                        else if (category.equalsIgnoreCase("package-manager") && type.equalsIgnoreCase("purl"))
-                            packageBuilder.addPURL(url);
-                        else
-                            packageBuilder.addExternalReference(new ExternalReference(category, url, type));
-                    });
-
-        return packageBuilder.build();
+        // return null if no license
+        if (!(objectLicenses.getConcluded().isEmpty() || objectLicenses.getDeclared().isEmpty() || objectLicenses.getInfoFromFiles().isEmpty()))
+            return null;
+        // else return licenses
+        return objectLicenses;
     }
-
-    /**
-     * Resolve File details
-     *
-     * @param file Map with file details
-     * @return Object with file details
-     */
-    private SPDX23FileObject resolveFile(Map<String, Object> file) {
-        SPDX23FileBuilder fileBuilder = new SPDX23FileBuilder();
-        // set basic fields
-        fileBuilder.setUID((String) file.get("SPDXID"))
-                .setName((String) file.get("fileName"))
-                .setType((String) file.get("type"))
-                .setCopyright((String) file.get("copyrightText"))
-                .setComment((String) file.get("comment"))
-                .setFileNotice((String) file.get("noticeText"))
-                .setAttributionText((String) file.get("attributionText"));
-
-        // TYPE
-        List<String> fileTypes = mapper.convertValue(file.get("fileTypes"), new TypeReference<>() {
-        });
-        if (fileTypes != null && !fileTypes.isEmpty())
-            // TODO set more filetypes, sbom only supports 1
-            fileBuilder.setType(fileTypes.get(0));
-
-        // AUTHOR
-        List<String> authors = mapper.convertValue(file.get("fileContributors"), new TypeReference<>() {
-        });
-        if (authors != null && !authors.isEmpty())
-            // TODO store more than 1 author
-            fileBuilder.setAuthor(authors.get(0));
-
-
-        // set licenses
-        LicenseCollection fileLicenses = new LicenseCollection();
-        List<String> licenseConcluded = mapper.convertValue(file.get("licenseConcluded"), new TypeReference<>() {
-        });
-        if (licenseConcluded != null)
-            licenseConcluded.forEach(fileLicenses::addConcludedLicenseString);
-        List<String> licenseInfoFromFiles = mapper.convertValue(file.get("licenseInfoInFiles"), new TypeReference<>() {
-        });
-        if (licenseInfoFromFiles != null)
-            licenseInfoFromFiles.forEach(fileLicenses::addLicenseInfoFromFile);
-        fileLicenses.setComment((String) file.get("licenseComments"));
-        // only set if licenses
-        if (!(fileLicenses.getConcluded().isEmpty() || fileLicenses.getInfoFromFiles().isEmpty()))
-            fileBuilder.setLicenses(fileLicenses);
-
-        // set hashes
-        List<Map<String, Object>> hashes = mapper.convertValue(file.get("checksums"), new TypeReference<>() {
-        });
-        if (hashes != null)
-            hashes.forEach(h -> fileBuilder.addHash((String) h.get("algorithm"), (String) h.get("checksumValue")));
-
-
-        return fileBuilder.build();
-    }
-
 
     /**
      * Parse SPDX style creator string into a Contact
@@ -237,6 +123,8 @@ public class SPDX23Deserializer extends Deserializer {
      * @return Contact
      */
     private Contact resolveContact(String creator) {
+        // skip if no data
+        if (creator == null) return null;
         Matcher creatorMatcher = CREATOR_PATTERN.matcher(creator);
         // nothing found
         if (!creatorMatcher.find()) return null;
@@ -297,22 +185,150 @@ public class SPDX23Deserializer extends Deserializer {
         return creationData;
     }
 
+
+    /**
+     * Resolve Package details
+     *
+     * @param spdxObject Map with package details
+     * @return Object with package details
+     */
+    private SPDX23PackageObject resolvePackage(Map<String, Object> spdxObject) {
+        SPDX23PackageBuilder packageBuilder = new SPDX23PackageBuilder();
+        // set basic fields
+        packageBuilder.setType((String) spdxObject.get("primaryPackagePurpose"))
+                .setUID((String) spdxObject.get("SPDXID"))
+                .setAuthor((String) spdxObject.get("originator"))
+                .setName((String) spdxObject.get("name"))
+                .setVersion((String) spdxObject.get("version"))
+                .setDownloadLocation((String) spdxObject.get("downloadLocation"))
+                .setComment((String) spdxObject.get("comment"))
+                .setFilesAnalyzed(Boolean.parseBoolean((String) spdxObject.get("filesAnalyzed")))   // ensure bool
+                .setHomePage((String) spdxObject.get("homepage"))
+                .setSourceInfo((String) spdxObject.get("sourceInfo"))
+                .setAttributionText((String) spdxObject.get("attributionText"))
+                .setCopyright((String) spdxObject.get("copyright"))
+                .setBuiltDate((String) spdxObject.get("builtDate"))
+                .setReleaseDate((String) spdxObject.get("releaseDate"))
+                .setValidUntilDate((String) spdxObject.get("validUntilDate"))
+                .setVerificationCode((String) spdxObject.get("packageVerificationCode"));
+
+        // set supplier
+        Contact supplierContact = resolveContact((String) spdxObject.get("supplier"));
+        if (supplierContact != null) {
+            Organization supplier = new Organization(supplierContact.getName(), null);
+            supplier.addContact(supplierContact);
+            packageBuilder.setSupplier(supplier);
+        }
+
+        // set description
+        String summary = (String) spdxObject.get("summary");
+        if (summary != null) {
+            Description description = new Description(summary);
+            description.setDescription((String) spdxObject.get("description"));
+            packageBuilder.setDescription(description);
+        }
+
+        // set hashes
+        List<Map<String, Object>> hashes = mapper.convertValue(spdxObject.get("checksums"), new TypeReference<>() {
+        });
+        if (hashes != null)
+            hashes.forEach(h -> packageBuilder.addHash((String) h.get("algorithm"), (String) h.get("checksumValue")));
+
+
+        // set licenses
+        LicenseCollection packageLicenses = resolveLicenses(spdxObject);
+        if (packageLicenses != null)
+            packageBuilder.setLicenses(packageLicenses);
+
+
+        // set external references and cpes / purls
+        List<Map<String, Object>> externalReferences = mapper.convertValue(spdxObject.get("externalRefs"), new TypeReference<>() {
+        });
+        if (externalReferences != null)
+            externalReferences.stream()
+                    // skip if missing data
+                    .filter(ref -> ref.get("referenceCategory") != null && ref.get("referenceLocator") != null && ref.get("referenceType") != null)
+                    // else add data if all values present
+                    .forEach(ref -> {
+                        String category = (String) ref.get("referenceCategory");
+                        String url = (String) ref.get("referenceLocator");
+                        String type = (String) ref.get("referenceType");
+                        // set ref accordingly
+                        if (category.equalsIgnoreCase("security") && type.equalsIgnoreCase("cpe23type"))
+                            packageBuilder.addCPE(url);
+                        else if (category.equalsIgnoreCase("package-manager") && type.equalsIgnoreCase("purl"))
+                            packageBuilder.addPURL(url);
+                        else
+                            packageBuilder.addExternalReference(new ExternalReference(category, url, type));
+                    });
+
+        var foo = packageBuilder.build();
+        return foo;
+    }
+
+    /**
+     * Resolve File details
+     *
+     * @param spdxObject Map with file details
+     * @return Object with file details
+     */
+    private SPDX23FileObject resolveFile(Map<String, Object> spdxObject) {
+        SPDX23FileBuilder fileBuilder = new SPDX23FileBuilder();
+        // set basic fields
+        fileBuilder.setUID((String) spdxObject.get("SPDXID"))
+                .setName((String) spdxObject.get("fileName"))
+                .setType((String) spdxObject.get("type"))
+                .setCopyright((String) spdxObject.get("copyrightText"))
+                .setComment((String) spdxObject.get("comment"))
+                .setFileNotice((String) spdxObject.get("noticeText"))
+                .setAttributionText((String) spdxObject.get("attributionText"));
+
+        // TYPE
+        List<String> fileTypes = mapper.convertValue(spdxObject.get("fileTypes"), new TypeReference<>() {
+        });
+        if (fileTypes != null && !fileTypes.isEmpty())
+            // TODO set more filetypes, sbom only supports 1
+            fileBuilder.setType(fileTypes.get(0));
+
+        // AUTHOR
+        List<String> authors = mapper.convertValue(spdxObject.get("fileContributors"), new TypeReference<>() {
+        });
+        if (authors != null && !authors.isEmpty())
+            // TODO store more than 1 author
+            fileBuilder.setAuthor(authors.get(0));
+
+
+        // set licenses
+        LicenseCollection fileLicenses = resolveLicenses(spdxObject);
+        if (fileLicenses != null)
+            fileBuilder.setLicenses(fileLicenses);
+
+        // set hashes
+        List<Map<String, Object>> hashes = mapper.convertValue(spdxObject.get("checksums"), new TypeReference<>() {
+        });
+        if (hashes != null)
+            hashes.forEach(h -> fileBuilder.addHash((String) h.get("algorithm"), (String) h.get("checksumValue")));
+
+
+        return fileBuilder.build();
+    }
+
     /**
      * Set the metadata for this SBOM object
      *
      * @param sbomBuilder Builder used to make SBOM
-     * @param content     Map with SBOM details
+     * @param spdxObject  Map with SBOM details
      */
-    private void setMetadata(SPDX23Builder sbomBuilder, Map<String, Object> content) {
+    private void setMetadata(SPDX23Builder sbomBuilder, Map<String, Object> spdxObject) {
         // set basic details
-        sbomBuilder.setName((String) content.get("name"))
-                .setUID((String) content.get("documentNamespace"))
-                .setSpecVersion((String) content.get("specVersion"))
-                .addLicense((String) content.get("dataLicense"))
-                .setDocumentComment((String) content.get("comment"));
+        sbomBuilder.setName((String) spdxObject.get("name"))
+                .setUID((String) spdxObject.get("documentNamespace"))
+                .setSpecVersion((String) spdxObject.get("spdxVersion"))
+                .addLicense((String) spdxObject.get("dataLicense"))
+                .setDocumentComment((String) spdxObject.get("comment"));
 
         // get the metadata object
-        Map<String, Object> metadata = mapper.convertValue(content.get("creationInfo"), new TypeReference<>() {
+        Map<String, Object> metadata = mapper.convertValue(spdxObject.get("creationInfo"), new TypeReference<>() {
         });
 
         // set creation data

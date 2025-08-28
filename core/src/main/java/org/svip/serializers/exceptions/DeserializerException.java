@@ -24,16 +24,73 @@
 
 package org.svip.serializers.exceptions;
 
+import org.svip.serializers.FileFormat;
 import org.svip.utils.Debug;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Exception thrown when there is an error in deserializing an SBOM
  *
  * @author Juan Francisco Patino
+ * @author Derek Garcia
  */
-public class DeserializerException extends Exception {
+public class DeserializerException extends IOException {
+    private File file;
+    private FileFormat fileFormat;
+    private Exception e;
+
+    @Deprecated
     public DeserializerException(String message) {
         super(message);
         Debug.log(Debug.LOG_TYPE.ERROR, message);
+    }
+
+    /**
+     * Failed to load into hashmap
+     *
+     * @param message    Error message
+     * @param file       File attempting to load
+     * @param fileFormat Format of file
+     */
+    public DeserializerException(String message, File file, FileFormat fileFormat) {
+        super(message);
+        this.file = file;
+        this.fileFormat = fileFormat;
+    }
+
+    /**
+     * Failed to load into hashmap
+     *
+     * @param message    Error message
+     * @param file       File attempting to load
+     * @param fileFormat Format of file
+     * @param e          Exception
+     */
+    public DeserializerException(String message, File file, FileFormat fileFormat, Exception e) {
+        this(message, file, fileFormat);
+        this.e = e;
+    }
+
+    /**
+     * @return Exception
+     */
+    public Exception getException() {
+        return e;
+    }
+
+    /**
+     * @return File
+     */
+    public File getFile() {
+        return file;
+    }
+
+    /**
+     * @return File Format
+     */
+    public FileFormat getFileFormat() {
+        return fileFormat;
     }
 }

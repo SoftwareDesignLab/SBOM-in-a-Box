@@ -106,5 +106,6 @@ public interface ComponentBuilder {
      *
      * @return a new Component
      */
+    @Deprecated
     Component buildAndFlush();
 }

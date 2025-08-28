@@ -62,7 +62,7 @@ public class RepairNullOrEmptyTest {
     @Test
     public void NullCopyrightSPDX23() throws Exception {
         SPDX23TagValueDeserializer spdx23TagValueDeserializerDeserializer = new SPDX23TagValueDeserializer();
-        SPDX23SBOM sbom = spdx23TagValueDeserializerDeserializer.deserialize(new File(NULL_COPYRIGHT_SBOM_SPDX));
+        SPDX23SBOM sbom = spdx23TagValueDeserializerDeserializer.readValue(new File(NULL_COPYRIGHT_SBOM_SPDX));
         QualityReport statement = r.generateStatement(sbom);
         List<Result> results = statement.getResults().get(PACKAGE_HASHCODE);
         assertEquals(MICROSOFT_COPYRIGHT_FIX, results.get(results.size() - 1).getFixes().get(0).getNew());

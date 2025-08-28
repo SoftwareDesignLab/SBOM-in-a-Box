@@ -29,16 +29,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.serializers.FileFormat;
+import org.svip.serializers.exceptions.DeserializerException;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
- * <b>File:</b> Serializer.java
+ * <b>File:</b> Deserializer.java
  * <p>
  * <b>Description:</b> Generic serializer that loads JSON and XML files into hashmaps to be used by schema implementations
  *
@@ -46,10 +44,8 @@ import java.util.Map;
  */
 public abstract class Deserializer {
 
-    private final XmlMapper xmlMapper = new XmlMapper();
-    protected final ObjectMapper mapper = new ObjectMapper();
     protected final FileFormat fileFormat;
-
+    protected final ObjectMapper mapper = new ObjectMapper();
 
     /**
      * Create new deserializer
@@ -68,7 +64,7 @@ public abstract class Deserializer {
      * @throws IOException Failed to map JSON to hashmap
      */
     private Map<String, Object> loadJsonFile(File jsonFile) throws IOException {
-        return mapper.readValue(jsonFile, new TypeReference<>() {
+        return new ObjectMapper().readValue(jsonFile, new TypeReference<>() {
         });
     }
 
@@ -80,7 +76,7 @@ public abstract class Deserializer {
      * @throws IOException Failed to map XML to hashmap
      */
     private Map<String, Object> loadXmlFile(File xmlFile) throws IOException {
-        return xmlMapper.readValue(xmlFile, new TypeReference<>() {
+        return new XmlMapper().readValue(xmlFile, new TypeReference<>() {
         });
     }
 
@@ -92,7 +88,7 @@ public abstract class Deserializer {
      * @throws IOException Failed to map TagValue to hashmap
      */
     private Map<String, Object> loadTagValueFile(File tagValueFile) throws IOException {
-        throw new IOException("Not implemented");
+        return new SPDX23TagValueDeserializer().readValue(tagValueFile);
     }
 
     /**
@@ -107,7 +103,7 @@ public abstract class Deserializer {
             return switch (fileFormat) {
                 case JSON -> loadJsonFile(file);
                 case XML -> loadXmlFile(file);
-                default -> throw new DeserializerException("Unsupported file format", file, fileFormat);
+                case TAG_VALUE -> loadTagValueFile(file);
             };
         } catch (IOException e) {
             throw new DeserializerException("Failed to load " + file.getName(), file, fileFormat, e);
@@ -121,62 +117,5 @@ public abstract class Deserializer {
      * @return SBOM object
      */
     public abstract SBOM deserialize(File file) throws DeserializerException;
-
-    /**
-     * Standardized deserialization error message
-     */
-    public static class DeserializerException extends IOException {
-
-        private final File file;
-        private final FileFormat fileFormat;
-        private Exception e;
-
-        /**
-         * Failed to load into hashmap
-         *
-         * @param message    Error message
-         * @param file       File attempting to load
-         * @param fileFormat Format of file
-         */
-        public DeserializerException(String message, File file, FileFormat fileFormat) {
-            super(message);
-            this.file = file;
-            this.fileFormat = fileFormat;
-        }
-
-        /**
-         * Failed to load into hashmap
-         *
-         * @param message    Error message
-         * @param file       File attempting to load
-         * @param fileFormat Format of file
-         * @param e          Exception
-         */
-        public DeserializerException(String message, File file, FileFormat fileFormat, Exception e) {
-            this(message, file, fileFormat);
-            this.e = e;
-        }
-
-        /**
-         * @return Exception
-         */
-        public Exception getException() {
-            return e;
-        }
-
-        /**
-         * @return File
-         */
-        public File getFile() {
-            return file;
-        }
-
-        /**
-         * @return File Format
-         */
-        public FileFormat getFileFormat() {
-            return fileFormat;
-        }
-    }
 
 }
