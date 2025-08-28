@@ -36,6 +36,7 @@ import org.svip.sbom.model.objects.SVIPSBOM;
  *
  * @author Ian Dunn
  */
+@Deprecated
 public class SVIPSBOMJSONSerializer implements Serializer {
 
     private boolean prettyPrint = false;

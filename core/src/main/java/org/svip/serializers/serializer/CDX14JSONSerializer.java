@@ -56,6 +56,7 @@ import java.util.stream.Collectors;
  *
  * @author Ian Dunn
  */
+@Deprecated
 public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Serializer {
 
     private boolean prettyPrint = false;

@@ -46,6 +46,7 @@ import java.util.Set;
  *
  * @author Ian Dunn
  */
+@Deprecated
 public class SPDX23TagValueSerializer implements Serializer {
 
     /**

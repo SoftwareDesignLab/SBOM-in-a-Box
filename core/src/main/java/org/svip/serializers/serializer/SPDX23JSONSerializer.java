@@ -49,6 +49,7 @@ import java.util.*;
  *
  * @author Ian Dunn
  */
+@Deprecated
 public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Serializer {
 
     private boolean prettyPrint = false;

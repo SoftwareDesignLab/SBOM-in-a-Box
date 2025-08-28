@@ -34,6 +34,7 @@ import org.svip.sbom.model.objects.SVIPSBOM;
  *
  * @author Ian Dunn
  */
+@Deprecated
 public interface Serializer {
 
     /**

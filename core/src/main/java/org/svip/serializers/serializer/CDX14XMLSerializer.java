@@ -59,6 +59,7 @@ import java.util.UUID;
  *
  * @author Tyler Drake
  */
+@Deprecated
 public class CDX14XMLSerializer extends StdSerializer<SVIPSBOM> implements Serializer {
 
     // Pretty Print state
