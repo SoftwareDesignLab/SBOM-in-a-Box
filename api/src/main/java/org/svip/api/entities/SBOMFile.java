@@ -26,6 +26,8 @@ package org.svip.api.entities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
@@ -72,15 +74,19 @@ public class SBOMFile {
 
     @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)   // delete all qa on sbom deletion
     @JoinColumn(name = "qa_id", referencedColumnName = "id")
+    @JsonIgnore
     private QualityReportFile qualityReportFile;
     @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)   // delete all vex on sbom deletion
     @JoinColumn(name = "vex_id", referencedColumnName = "id")
+    @JsonIgnore
     private VEXFile vexFile;
     // Collection of comparisons where this was the target
     @OneToMany(mappedBy = "targetSBOMFile", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonIgnore
     private Set<ComparisonFile> comparisonsAsTarget = new HashSet<>();
     // Collection of comparisons where this was the other
     @OneToMany(mappedBy = "otherSBOMFile", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonIgnore
     private Set<ComparisonFile> comparisonsAsOther = new HashSet<>();
 
     /**

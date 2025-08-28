@@ -28,6 +28,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.svip.api.entities.SBOMFile;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.deserializer.Deserializer;
+import java.nio.file.Paths;
 
 /**
  * File: UploadSBOMFileInput.java
@@ -46,7 +47,16 @@ public record UploadSBOMFileInput(String fileName, String contents) {
     public SBOMFile toSBOMFile() throws JsonProcessingException {
         SBOMFile sbomFile = new SBOMFile();
 
-        sbomFile.setName(fileName)
+        // Extract just the filename from any path (handles Windows, Linux paths)
+        String extractedFileName;
+        try {
+            extractedFileName = Paths.get(fileName).getFileName().toString();
+        } catch (Exception e) {
+            // If path parsing fails, use the original filename
+            extractedFileName = fileName;
+        }
+
+        sbomFile.setName(extractedFileName)
                 .setContent(contents);
 
         // Attempt to deserialize

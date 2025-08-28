@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.svip.api.dto.SBOMFileDTO;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
@@ -202,7 +203,7 @@ public class SBOMController {
      * @return The contents of the SBOM file.
      */
     @GetMapping("/sboms/content")
-    public ResponseEntity<SBOMFile> getContent(@RequestParam("id") Long id) {
+    public ResponseEntity<SBOMFileDTO> getContent(@RequestParam("id") Long id) {
         // todo rename endpoint? Returns more than just content
         // Get SBOM
         SBOMFile sbomFile = this.sbomService.getSBOMFile(id);
@@ -216,7 +217,8 @@ public class SBOMController {
         // Log
         LOGGER.info("GET /svip/sboms/content?id=" + id + " - File: " + sbomFile.getName());
 
-        return new ResponseEntity<>(sbomFile, HttpStatus.OK);
+        // Return DTO to avoid circular references
+        return new ResponseEntity<>(new SBOMFileDTO(sbomFile), HttpStatus.OK);
     }
 
 

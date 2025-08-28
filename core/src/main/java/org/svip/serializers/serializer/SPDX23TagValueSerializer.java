@@ -80,7 +80,7 @@ public class SPDX23TagValueSerializer implements Serializer {
         creators.addAll(sbom.getCreationData().getCreationTools().stream()
                 .map(t -> getCreatorString("Tool", t.getName(), t.getVersion())).toList());
 
-        if (sbom.getCreationData().getSupplier() != null) {
+        if (sbom.getCreationData().getSupplier() != null && sbom.getCreationData().getSupplier().getName() != null) {
             Optional<Contact> supplierContact = sbom.getCreationData().getSupplier().getContacts().stream().findFirst();
             String supplierEmail = "";
             if (supplierContact.isPresent())
@@ -188,7 +188,7 @@ public class SPDX23TagValueSerializer implements Serializer {
         out.append(buildTagValue("PackageComment", pkg.getComment()));
         out.append(buildTagValue("PackageFileName", pkg.getFileName()));
 
-        if (pkg.getSupplier() != null) {
+        if (pkg.getSupplier() != null && pkg.getSupplier().getName() != null) {
             Optional<Contact> supplierContact = pkg.getSupplier().getContacts().stream().findFirst();
             String supplierEmail = "";
             if (supplierContact.isPresent())

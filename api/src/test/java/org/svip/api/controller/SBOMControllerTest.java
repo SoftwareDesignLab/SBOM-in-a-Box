@@ -32,6 +32,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.svip.api.dto.SBOMFileDTO;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
@@ -222,12 +223,12 @@ public class SBOMControllerTest {
 
         // When
         when(sbomFileService.getSBOMFile(id)).thenReturn(sbomFile);
-        ResponseEntity<SBOMFile> response = sbomController.getContent(id);
+        ResponseEntity<SBOMFileDTO> response = sbomController.getContent(id);
 
         // Then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals("./src/test/resources/sample_sboms/cdx-gomod-1.4.0-bin.json", response.getBody().getName());
+        assertEquals("cdx-gomod-1.4.0-bin.json", response.getBody().getName());
         verify(sbomFileService).getSBOMFile(id);
     }
 
@@ -239,7 +240,7 @@ public class SBOMControllerTest {
 
         // When
         when(sbomFileService.getSBOMFile(id)).thenReturn(null);
-        ResponseEntity<SBOMFile> response = sbomController.getContent(id);
+        ResponseEntity<SBOMFileDTO> response = sbomController.getContent(id);
 
         // Then
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());

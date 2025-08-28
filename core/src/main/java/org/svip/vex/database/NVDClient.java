@@ -134,31 +134,38 @@ public class NVDClient implements VulnerabilityDBClient {
 
         // if component has no cpes continue as we can only search if there are cpes
         if (cpes == null || cpes.isEmpty())
-            throw new Exception("Component does not have CPEs " +
-                    "to test with NVD API");
+            return vexStatements;
 
         // use the cpes to search for vulnerabilities
         ArrayList<String> cpesList = new ArrayList<>(cpes);
         String cpeString = cpesList.get(0);
         componentID = cpeString;
-        response = accessNVD(cpeString);
+        try {
+            response = accessNVD(cpeString);
+        } catch (Exception e) {
+            // Log and continue gracefully with empty results
+            System.err.println("NVD API call failed for CPE " + cpeString + ": " + e.getMessage());
+            return vexStatements;
+        }
         TimeUnit.SECONDS.sleep(waitTime);
 
 
         // check that the response was not null to find vulnerabilities
-        if (response != null) {
+        if (response != null && !response.isBlank()) {
             JSONObject jsonResponse = new JSONObject(response);
-            JSONArray vulns = new JSONArray(
-                    jsonResponse.getJSONArray("vulnerabilities"));
-            for (int i = 0; i < vulns.length(); i++) {
-                // get the singular vulnerability and create a
-                // VEXStatement for it
-                JSONObject vulnerability = vulns.getJSONObject(i)
-                        .getJSONObject("cve");
-                VEXStatement statement =
-                        generateVEXStatement(vulnerability,
-                                s, componentID);
-                vexStatements.add(statement);
+            if (jsonResponse.has("vulnerabilities")) {
+                JSONArray vulns = new JSONArray(
+                        jsonResponse.getJSONArray("vulnerabilities"));
+                for (int i = 0; i < vulns.length(); i++) {
+                    // get the singular vulnerability and create a
+                    // VEXStatement for it
+                    JSONObject vulnerability = vulns.getJSONObject(i)
+                            .getJSONObject("cve");
+                    VEXStatement statement =
+                            generateVEXStatement(vulnerability,
+                                    s, componentID);
+                    vexStatements.add(statement);
+                }
             }
         }
         return vexStatements;
@@ -183,31 +190,37 @@ public class NVDClient implements VulnerabilityDBClient {
 
         // if component has no cpes continue as we can only search if there are cpes
         if (cpes == null || cpes.isEmpty())
-            throw new Exception("Component does not have CPEs " +
-                    "to test with NVD API");
+            return vexStatements;
 
         // use the cpes to search for vulnerabilities
         ArrayList<String> cpesList = new ArrayList<>(cpes);
         String cpeString = cpesList.get(0);
         componentID = cpeString;
-        response = accessNVD(cpeString, key);
+        try {
+            response = accessNVD(cpeString, key);
+        } catch (Exception e) {
+            System.err.println("NVD API call failed for CPE " + cpeString + ": " + e.getMessage());
+            return vexStatements;
+        }
         TimeUnit.SECONDS.sleep(waitTime);
 
 
         // check that the response was not null to find vulnerabilities
-        if (response != null) {
+        if (response != null && !response.isBlank()) {
             JSONObject jsonResponse = new JSONObject(response);
-            JSONArray vulns = new JSONArray(
-                    jsonResponse.getJSONArray("vulnerabilities"));
-            for (int i = 0; i < vulns.length(); i++) {
-                // get the singular vulnerability and create a
-                // VEXStatement for it
-                JSONObject vulnerability = vulns.getJSONObject(i)
-                        .getJSONObject("cve");
-                VEXStatement statement =
-                        generateVEXStatement(vulnerability,
-                                s, componentID);
-                vexStatements.add(statement);
+            if (jsonResponse.has("vulnerabilities")) {
+                JSONArray vulns = new JSONArray(
+                        jsonResponse.getJSONArray("vulnerabilities"));
+                for (int i = 0; i < vulns.length(); i++) {
+                    // get the singular vulnerability and create a
+                    // VEXStatement for it
+                    JSONObject vulnerability = vulns.getJSONObject(i)
+                            .getJSONObject("cve");
+                    VEXStatement statement =
+                            generateVEXStatement(vulnerability,
+                                    s, componentID);
+                    vexStatements.add(statement);
+                }
             }
         }
         return vexStatements;
@@ -251,11 +264,9 @@ public class NVDClient implements VulnerabilityDBClient {
 
         // add component as the product of the statement
         String productID = c.getName() + ":" + c.getVersion();
-        String supplier;
-        if (c.getSupplier() != null) {
+        String supplier = "Unknown";
+        if (c.getSupplier() != null && c.getSupplier().getName() != null) {
             supplier = c.getSupplier().getName();
-        } else {
-            supplier = "Unknown";
         }
         Product product = new Product(productID, supplier);
         statement.addProduct(product);
