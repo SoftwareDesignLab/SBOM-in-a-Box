@@ -80,7 +80,7 @@ public class SPDX23FileObject implements SPDX23File {
     /**
      * File's hashes
      */
-    private final HashMap<String, String> hashes;
+    private final Map<String, String> hashes;
 
     /**
      * File's file notice
@@ -112,7 +112,7 @@ public class SPDX23FileObject implements SPDX23File {
      */
     public SPDX23FileObject(String type, String uid, String author, String name,
                             LicenseCollection licenses, String copyright,
-                            HashMap<String, String> hashes, String fileNotice,
+                            Map<String, String> hashes, String fileNotice,
                             String comment, String attributionText) {
         this.type = type;
         this.uid = uid;

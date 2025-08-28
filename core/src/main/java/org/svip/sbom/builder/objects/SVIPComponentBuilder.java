@@ -34,9 +34,7 @@ import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * file: SVIPComponentBuilder.java
@@ -80,7 +78,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
     /**
      * Component hashes
      */
-    private HashMap<String, String> hashes = new HashMap<>();
+    private Map<String, String> hashes = new LinkedHashMap<>();
 
     /**
      * Component comment
@@ -160,17 +158,17 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
     /**
      * Component CPEs
      */
-    private Set<String> cpes = new HashSet<>();
+    private Set<String> cpes = new LinkedHashSet<>();
 
     /**
      * Component PURLs
      */
-    private Set<String> purls = new HashSet<>();
+    private Set<String> purls = new LinkedHashSet<>();
 
     /**
      * Component external references
      */
-    private Set<ExternalReference> externalReferences = new HashSet<>();
+    private Set<ExternalReference> externalReferences = new LinkedHashSet<>();
 
     /**
      * Component mime type
@@ -195,7 +193,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
     /**
      * Component properties
      */
-    private HashMap<String, Set<String>> properties = new HashMap<>();
+    private Map<String, Set<String>> properties = new LinkedHashMap<>();
 
     public SVIPComponentBuilder() {
 
@@ -208,7 +206,7 @@ public class SVIPComponentBuilder implements SPDX23PackageBuilder_I, CDX14Packag
         this.name = component.getName();
         this.licenses = component.getLicenses();
         this.copyright = component.getCopyright();
-        this.hashes = (HashMap<String, String>) component.getHashes();
+        this.hashes = component.getHashes();
         this.comment = component.getComment();
         this.attributionText = component.getAttributionText();
         this.fileNotice = component.getFileNotice();

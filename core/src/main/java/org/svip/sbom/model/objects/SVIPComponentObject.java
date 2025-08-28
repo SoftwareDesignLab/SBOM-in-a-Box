@@ -83,7 +83,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
     /**
      * Component's hashes
      */
-    private final HashMap<String, String> hashes;
+    private final Map<String, String> hashes;
 
     /**
      * Component's file notice
@@ -188,7 +188,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
     /**
      * Component's properties
      */
-    private final HashMap<String, Set<String>> properties;
+    private final Map<String, Set<String>> properties;
 
     /**
      * Component's comment
@@ -234,14 +234,14 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
      */
     public SVIPComponentObject(String type, String uid, String author, String name,
                                LicenseCollection licenses, String copyright,
-                               HashMap<String, String> hashes, Organization supplier,
+                               Map<String, String> hashes, Organization supplier,
                                String version, Description description, Set<String> cpes,
                                Set<String> purls, Set<ExternalReference> externalReferences,
                                String downloadLocation, String fileName, Boolean filesAnalyzed,
                                String verificationCode, String homePage, String sourceInfo,
                                String releaseDate, String builtDate, String validUntilDate,
                                String mimeType, String publisher, String scope, String group,
-                               HashMap<String, Set<String>> properties, String fileNotice,
+                               Map<String, Set<String>> properties, String fileNotice,
                                String comment, String attributionText) {
         this.type = type;
         this.uid = uid;
@@ -452,7 +452,7 @@ public class SVIPComponentObject implements CDX14Package, SPDX23Package, SPDX23F
      * @return the component's properties
      */
     @Override
-    public HashMap<String, Set<String>> getProperties() {
+    public Map<String, Set<String>> getProperties() {
         return this.properties;
     }
 

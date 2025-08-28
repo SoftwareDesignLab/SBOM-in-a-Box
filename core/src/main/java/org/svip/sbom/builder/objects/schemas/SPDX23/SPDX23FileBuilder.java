@@ -30,6 +30,8 @@ import org.svip.sbom.model.objects.SPDX23.SPDX23FileObject;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * file: SPDX23FileBuilder.java
@@ -73,7 +75,7 @@ public class SPDX23FileBuilder implements SPDX23FileBuilder_I {
     /**
      * File hashes
      */
-    private HashMap<String, String> hashes = new HashMap<>();
+    private Map<String, String> hashes = new LinkedHashMap<>();
 
     /**
      * File comment

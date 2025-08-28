@@ -31,9 +31,7 @@ import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * file: CDX14PackageBuilder.java
@@ -78,7 +76,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Component hashes
      */
-    private HashMap<String, String> hashes = new HashMap<>();
+    private HashMap<String, String> hashes = new LinkedHashMap<>();
 
     /**
      * Component supplier
@@ -98,17 +96,17 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Component CPEs
      */
-    private Set<String> cpes = new HashSet<>();
+    private Set<String> cpes = new LinkedHashSet<>();
 
     /**
      * Component PURLs
      */
-    private Set<String> purls = new HashSet<>();
+    private Set<String> purls = new LinkedHashSet<>();
 
     /**
      * Component external references
      */
-    private Set<ExternalReference> externalReferences = new HashSet<>();
+    private Set<ExternalReference> externalReferences = new LinkedHashSet<>();
 
     /**
      * Component mime type
@@ -133,7 +131,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Component properties
      */
-    private HashMap<String, Set<String>> properties = new HashMap<>();
+    private HashMap<String, Set<String>> properties = new LinkedHashMap<>();
 
     /**
      * Set the component's mime type
@@ -401,6 +399,7 @@ public class CDX14PackageBuilder implements CDX14PackageBuilder_I {
     /**
      * Build and flush a CDX14ComponentObject
      * todo - remove, create a new builder instead
+     *
      * @return a Component
      */
     @Deprecated

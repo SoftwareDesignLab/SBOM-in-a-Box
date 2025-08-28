@@ -28,16 +28,13 @@ import org.svip.sbom.builder.interfaces.schemas.SPDX23.SPDX23SBOMBuilder;
 import org.svip.sbom.model.interfaces.generics.Component;
 import org.svip.sbom.model.interfaces.generics.SBOM;
 import org.svip.sbom.model.interfaces.schemas.SPDX23.SPDX23Component;
-import org.svip.sbom.model.objects.CycloneDX14.CDX14ComponentObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23PackageObject;
 import org.svip.sbom.model.objects.SPDX23.SPDX23SBOM;
 import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * file: SPDX23Builder.java
@@ -46,10 +43,10 @@ import java.util.Set;
  * @author Thomas Roman
  */
 public class SPDX23Builder implements SPDX23SBOMBuilder {
-    private final Set<String> licenses = new HashSet<>();
-    private final Set<Component> components = new HashSet<>();
-    private final HashMap<String, Set<Relationship>> relationships = new HashMap<>();
-    private final Set<ExternalReference> externalReferences = new HashSet<>();
+    private final Set<String> licenses = new LinkedHashSet<>();
+    private final Set<Component> components = new LinkedHashSet<>();
+    private final HashMap<String, Set<Relationship>> relationships = new LinkedHashMap<>();
+    private final Set<ExternalReference> externalReferences = new LinkedHashSet<>();
     private String format;
     private String name;
     private String uid;
@@ -129,7 +126,7 @@ public class SPDX23Builder implements SPDX23SBOMBuilder {
 
     @Override
     public SPDX23Builder addSPDX23Component(SPDX23Component component) {
-        if  (component != null)
+        if (component != null)
             this.components.add(component);
         return this;
     }

@@ -30,6 +30,7 @@ import org.svip.sbom.model.interfaces.generics.SBOMPackage;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -65,7 +66,7 @@ public interface CDX14Package extends SBOMPackage, Component {
     /**
      * @return grouping name or identifier
      */
-    HashMap<String, Set<String>> getProperties();
+    Map<String, Set<String>> getProperties();
 
     /*
     todo

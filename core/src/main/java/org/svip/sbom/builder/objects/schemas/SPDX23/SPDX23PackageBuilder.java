@@ -32,9 +32,7 @@ import org.svip.sbom.model.shared.util.Description;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.sbom.model.shared.util.LicenseCollection;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * file: SPDX23PackageBuilder.java
@@ -77,7 +75,7 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * File hashes
      */
-    private HashMap<String, String> hashes = new HashMap<>();
+    private Map<String, String> hashes = new LinkedHashMap<>();
 
     /**
      * File comment
@@ -152,17 +150,17 @@ public class SPDX23PackageBuilder implements SPDX23PackageBuilder_I {
     /**
      * Component CPEs
      */
-    private Set<String> cpes = new HashSet<>();
+    private Set<String> cpes = new LinkedHashSet<>();
 
     /**
      * Component PURLs
      */
-    private Set<String> purls = new HashSet<>();
+    private Set<String> purls = new LinkedHashSet<>();
 
     /**
      * Component external references
      */
-    private Set<ExternalReference> externalReferences = new HashSet<>();
+    private Set<ExternalReference> externalReferences = new LinkedHashSet<>();
 
     /**
      * Set the component's type

@@ -34,9 +34,7 @@ import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * file: CDX14Builder.java
@@ -51,19 +49,19 @@ public class CDX14Builder implements CDX14SBOMBuilder {
     /**
      * Holds the licenses of the SBOM
      */
-    private final Set<String> licenses = new HashSet<>();
+    private final Set<String> licenses = new LinkedHashSet<>();
     /**
      * Holds the components of the SBOM
      */
-    private final Set<Component> components = new HashSet<>();
+    private final Set<Component> components = new LinkedHashSet<>();
     /**
      * Holds the relationships of components in the SBOM
      */
-    private final HashMap<String, Set<Relationship>> relationships = new HashMap<>();
+    private final HashMap<String, Set<Relationship>> relationships = new LinkedHashMap<>();
     /**
      * Holds the external references of the SBOM
      */
-    private final Set<ExternalReference> externalReferences = new HashSet<>();
+    private final Set<ExternalReference> externalReferences = new LinkedHashSet<>();
     /**
      * Holds the format of the SBOM
      */

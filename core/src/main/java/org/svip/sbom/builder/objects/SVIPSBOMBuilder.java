@@ -39,9 +39,7 @@ import org.svip.sbom.model.shared.Relationship;
 import org.svip.sbom.model.shared.metadata.CreationData;
 import org.svip.sbom.model.shared.util.ExternalReference;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * file: SPDX23Builder.java
@@ -51,10 +49,10 @@ import java.util.Set;
  */
 public class SVIPSBOMBuilder implements CDX14SBOMBuilder, SPDX23SBOMBuilder {
 
-    private final Set<String> licenses = new HashSet<>();
-    private final Set<Component> components = new HashSet<>();
-    private final HashMap<String, Set<Relationship>> relationships = new HashMap<>();
-    private final Set<ExternalReference> externalReferences = new HashSet<>();
+    private final Set<String> licenses = new LinkedHashSet<>();
+    private final Set<Component> components = new LinkedHashSet<>();
+    private final HashMap<String, Set<Relationship>> relationships = new LinkedHashMap<>();
+    private final Set<ExternalReference> externalReferences = new LinkedHashSet<>();
     private String format;
     private String name;
     private String uid;

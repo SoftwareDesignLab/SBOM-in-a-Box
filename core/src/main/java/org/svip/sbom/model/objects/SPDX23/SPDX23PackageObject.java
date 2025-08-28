@@ -81,7 +81,7 @@ public class SPDX23PackageObject implements SPDX23Package {
     /**
      * Package's hashes
      */
-    private final HashMap<String, String> hashes;
+    private final Map<String, String> hashes;
 
     /**
      * Package's supplier
@@ -196,7 +196,7 @@ public class SPDX23PackageObject implements SPDX23Package {
      */
     public SPDX23PackageObject(String type, String uid, String author, String name,
                                LicenseCollection licenses, String copyright,
-                               HashMap<String, String> hashes, Organization supplier,
+                               Map<String, String> hashes, Organization supplier,
                                String version, Description description, Set<String> cpes,
                                Set<String> purls, Set<ExternalReference> externalReferences,
                                String downloadLocation, String fileName, Boolean filesAnalyzed,
