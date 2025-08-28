@@ -124,7 +124,7 @@ public class SPDX23TagValueDeserializer implements Deserializer {
             // If we find an organization, set it to the supplier if there isn't already one. Otherwise,
             // add another author with the contact info
             if (creator.toLowerCase().startsWith("organization") &&
-                    (data.getSupplier() == null || data.getSupplier().getName().isEmpty())) {
+                    (data.getSupplier() == null || data.getSupplier().getName() == null || data.getSupplier().getName().isEmpty())) {
 
                 Organization supplier = new Organization(contact.getName(), null);
                 supplier.addContact(contact);

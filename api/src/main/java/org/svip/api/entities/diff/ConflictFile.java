@@ -24,9 +24,12 @@
 
 package org.svip.api.entities.diff;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.svip.compare.conflicts.MismatchType;
 
 /**
@@ -68,7 +71,9 @@ public class ConflictFile {
 
     // source comparison
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "comparison_id", nullable = false)
+    @JsonBackReference("comparison-conflicts")
     private ComparisonFile comparison;
 
 

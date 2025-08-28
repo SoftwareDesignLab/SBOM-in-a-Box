@@ -69,7 +69,7 @@ public class PURLFixes implements Fixes {
                     type = spdx23Package.getType();
 
                 // And if the Supplier is null, set the Supplier
-                if (spdx23Package.getSupplier() != null)
+                if (spdx23Package.getSupplier() != null && spdx23Package.getSupplier().getName() != null)
                     nameSpace = spdx23Package.getSupplier().getName();
 
                 // And if the Version is null, set the Version
@@ -87,7 +87,7 @@ public class PURLFixes implements Fixes {
                     type = cdx14Package.getType();
 
                 // If the Supplier is null, set the Supplier
-                if (cdx14Package.getSupplier() != null)
+                if (cdx14Package.getSupplier() != null && cdx14Package.getSupplier().getName() != null)
                     nameSpace = cdx14Package.getSupplier().getName();
 
                 // If the Version is null, set the Version
