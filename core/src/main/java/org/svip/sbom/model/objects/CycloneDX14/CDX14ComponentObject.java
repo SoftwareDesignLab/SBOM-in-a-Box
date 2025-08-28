@@ -60,7 +60,7 @@ import static org.svip.utils.NullOrEmpty.isNullOrEmpty;
  * @author Matthew Morrison
  */
 // todo - release notes
-@JsonPropertyOrder({"bom-ref", "name", "type", "mime-type", "group", "version", "scope", "copyright", "cpe", "purl", "supplier", "author", "publisher", "description", "licenses"})
+@JsonPropertyOrder({"type", "mime-type", "bom-ref", "supplier", "author", "publisher",  "group", "name", "version", "description", "scope",  "hashes", "licenses", "copyright", "cpe", "purl", "externalReferences", "properties"})
 public class CDX14ComponentObject implements CDX14Package {
 
     /**
@@ -96,7 +96,7 @@ public class CDX14ComponentObject implements CDX14Package {
     /**
      * Component's hashes
      */
-    private final HashMap<String, String> hashes;
+    private final Map<String, String> hashes;
 
     /**
      * Component's supplier
@@ -253,7 +253,7 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's licenses
      */
     @Override
-    @JsonProperty("licences")
+    @JsonProperty("licenses")
     @JsonSerialize(using = CDX14LicenseCollectionSerializer.class)
     public LicenseCollection getLicenses() {
         return this.licenses;
@@ -555,14 +555,7 @@ public class CDX14ComponentObject implements CDX14Package {
         public void serialize(Description description, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
             // skip if no data
             if (isNullOrEmpty(description)) return;
-
-            String summary = description.getSummary();
-            String details = description.getDescription();
-
-            String value = "Summary: " + (summary != null ? summary : "") +
-                    " | Details: " + (details != null ? details : "");
-
-            jsonGenerator.writeString(value);
+            jsonGenerator.writeString(description.toString());
         }
     }
 

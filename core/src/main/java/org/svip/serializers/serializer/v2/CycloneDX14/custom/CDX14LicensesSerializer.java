@@ -46,7 +46,9 @@ public class CDX14LicensesSerializer extends JsonSerializer<Set<String>> {
         jsonGenerator.writeStartArray();
         for (String license : licenses) {
             jsonGenerator.writeStartObject();
-            jsonGenerator.writeStringField("name", license);
+            jsonGenerator.writeObjectFieldStart("license");
+            jsonGenerator.writeStringField("id", license);  // todo - assume SPDX license
+            jsonGenerator.writeEndObject();
             jsonGenerator.writeEndObject();
         }
         jsonGenerator.writeEndArray();

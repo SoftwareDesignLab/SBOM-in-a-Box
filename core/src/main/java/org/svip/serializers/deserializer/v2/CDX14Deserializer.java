@@ -165,8 +165,7 @@ public class CDX14Deserializer extends Deserializer {
                 String name = (String) p.get("name");
                 String value = (String) p.get("value");
                 // set creator comment if provided, else just save property
-                if (name.equals("creatorComment")) creationData.setCreatorComment(value);
-                else creationData.addProperty(name, value);
+                creationData.addProperty(name, value);
             });
 
         // add licenses
@@ -248,6 +247,7 @@ public class CDX14Deserializer extends Deserializer {
                         lName = licenseObj.get("name");
                     }
                     // set license
+                    // todo - remember if ID or name
                     if (lID != null) {
                         componentLicenses.addLicenseInfoFromFile(lID);
                     } else if (lName != null) {

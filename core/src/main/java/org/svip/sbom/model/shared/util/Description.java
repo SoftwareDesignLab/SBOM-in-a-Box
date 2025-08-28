@@ -107,6 +107,8 @@ public class Description implements Comparable {
     }
 
     public String toString() {
-        return "Summary: " + this.summary + ", Description: " + this.description;
+        if (this.description == null)
+            return this.summary;
+        return "Summary: " + this.summary + "\nDescription: " + this.description;
     }
 }
