@@ -24,6 +24,7 @@
 
 package org.svip.sbom.model.objects.SPDX23;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.svip.compare.conflicts.Conflict;
 import org.svip.compare.conflicts.ConflictFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -46,6 +47,7 @@ import static org.svip.compare.conflicts.MismatchType.*;
  * @author Derek Garcia
  * @author Matthew Morrison
  */
+@JsonPropertyOrder({"name", "SPDXID", "versionInfo", "supplier", "downloadLocation", "filesAnalyzed", "sourceInfo", "licenseConcluded", "LicenseDeclared", "copyrightText", "externalRefs"})
 public class SPDX23PackageObject implements SPDX23Package {
 
     /**

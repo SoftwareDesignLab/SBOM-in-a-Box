@@ -47,7 +47,8 @@ public abstract class Serializer {
     /**
      * Create new serializer
      *
-     * @param fileFormat Type of serializer
+     * @param fileFormat File format of serializer
+     * @param prettyPrint Pretty print content
      */
     protected Serializer(FileFormat fileFormat, Boolean prettyPrint) {
         this.fileFormat = fileFormat;

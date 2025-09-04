@@ -28,6 +28,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.svip.compare.conflicts.Conflict;
 import org.svip.compare.conflicts.ConflictFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -55,61 +57,73 @@ public class CDX14SBOM implements CDX14Schema {
     /**
      * SBOM's format
      */
+    @JsonProperty("bomFormat")
     private final String bomFormat;
 
     /**
      * SBOM's name
      */
+    @JsonIgnore
     private final String name;
 
     /**
      * SBOM's uid
      */
+    @JsonProperty("serialNumber")
     private final String uid;
 
     /**
      * SBOM's version
      */
+    @JsonProperty("version")
     private final String version;
 
     /**
      * SBOM's spec version
      */
+    @JsonIgnore
     private final String specVersion;
 
     /**
      * SBOM's licenses
      */
+    @JsonIgnore
     private final Set<String> licenses;
 
     /**
      * SBOM's creation data
      */
+    @JsonProperty("metadata")
     private final CreationData creationData;
 
     /**
      * SBOM's document comment
      */
+    @JsonIgnore
     private final String documentComment;
 
     /**
      * SBOM's root component
      */
+    @JsonIgnore
     private final CDX14ComponentObject rootComponent;
 
     /**
-     * SBOM's component's
+     * SBOM's components
      */
+    @JsonProperty("components")
     private final Set<Component> components;
 
     /**
      * SBOM's relationships
      */
-    private final HashMap<String, Set<Relationship>> relationships;
+    @JsonProperty("dependencies")
+    private final Map<String, Set<Relationship>> relationships;
 
     /**
      * SBOM's external references
      */
+    @JsonProperty("externalReferences")
     private final Set<ExternalReference> externalReferences;
 
     // TODO VEX needs implementation
@@ -167,7 +181,6 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's format
      */
     @Override
-    @JsonProperty("bomFormat")
     public String getBomFormat() {
         return this.bomFormat;
     }
@@ -178,7 +191,6 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's name
      */
     @Override
-    @JsonIgnore
     public String getName() {
         return this.name;
     }
@@ -189,7 +201,6 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's UID
      */
     @Override
-    @JsonProperty("serialNumber")
     public String getUID() {
         return this.uid;
     }
@@ -200,7 +211,6 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's version
      */
     @Override
-    @JsonProperty("version")
     public String getVersion() {
         return this.version;
     }
@@ -211,7 +221,6 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's spec version
      */
     @Override
-    @JsonProperty("specVersion")
     public String getSpecVersion() {
         return this.specVersion;
     }
@@ -222,7 +231,6 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's licenses
      */
     @Override
-    @JsonIgnore
     public Set<String> getLicenses() {
         return this.licenses;
     }
@@ -233,7 +241,6 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's creation data
      */
     @Override
-    @JsonProperty("metadata")
     public CreationData getCreationData() {
         return this.creationData;
     }
@@ -244,7 +251,6 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's document comment
      */
     @Override
-    @JsonIgnore
     public String getDocumentComment() {
         return this.documentComment;
     }
@@ -255,7 +261,6 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's root component
      */
     @Override
-    @JsonIgnore
     public CDX14ComponentObject getRootComponent() {
         return this.rootComponent;
     }
@@ -266,7 +271,6 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's components
      */
     @Override
-    @JsonProperty("components")
     public Set<Component> getComponents() {
         return this.components;
     }
@@ -277,8 +281,6 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's relationships
      */
     @Override
-    @JsonProperty("dependencies")
-    @JsonSerialize(using = CDX14RelationshipsSerializer.class)
     public Map<String, Set<Relationship>> getRelationships() {
         return this.relationships;
     }
@@ -289,7 +291,6 @@ public class CDX14SBOM implements CDX14Schema {
      * @return the SBOM's external references
      */
     @Override
-    @JsonProperty("externalReferences")
     public Set<ExternalReference> getExternalReferences() {
         return this.externalReferences;
     }

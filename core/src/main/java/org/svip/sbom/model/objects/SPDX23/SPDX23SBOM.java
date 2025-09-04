@@ -24,6 +24,10 @@
 
 package org.svip.sbom.model.objects.SPDX23;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.json.JSONPropertyName;
 import org.svip.compare.conflicts.Conflict;
 import org.svip.compare.conflicts.ConflictFactory;
 import org.svip.sbom.model.interfaces.generics.Component;
@@ -44,36 +48,43 @@ import static org.svip.compare.conflicts.MismatchType.*;
  * @author Derek Garcia
  * @author Matthew Morrison
  */
+@JsonPropertyOrder({"spdxVersion", "dataLicense", "SPDXIX", "name", "documentNamespace", "creationInfo", "packages", "files", "relationships"})
 public class SPDX23SBOM implements SPDX23Schema {
 
     /**
      * SBOM's format
      */
+    @JsonIgnore
     private final String format;
 
     /**
      * SBOM's name
      */
+    @JsonProperty("name")
     private final String name;
 
     /**
      * SBOM's uid
      */
+    @JsonProperty("SPDXID")
     private final String uid;
 
     /**
      * SBOM's version
      */
+    @JsonProperty("version")
     private final String version;
 
     /**
      * SBOM's spec version
      */
+    @JsonProperty("spdxVersion")
     private final String specVersion;
 
     /**
      * SBOM's licenses
      */
+    @JsonIgnore
     private final Set<String> licenses;
 
     /**
@@ -84,11 +95,13 @@ public class SPDX23SBOM implements SPDX23Schema {
     /**
      * SBOM's document comment
      */
+    @JsonProperty("documentComment")
     private final String documentComment;
 
     /**
      * SBOM's root component
      */
+    @JsonIgnore
     private final SPDX23PackageObject rootComponent;
 
     /**

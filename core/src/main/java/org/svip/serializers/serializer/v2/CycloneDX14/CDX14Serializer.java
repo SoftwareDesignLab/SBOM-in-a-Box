@@ -36,13 +36,15 @@ import org.svip.sbom.model.shared.metadata.CreationTool;
 import org.svip.sbom.model.shared.metadata.Organization;
 import org.svip.sbom.model.shared.util.ExternalReference;
 import org.svip.serializers.FileFormat;
+import org.svip.serializers.Schema;
+import org.svip.serializers.exceptions.UnsupportedFileFormatException;
 import org.svip.serializers.serializer.v2.CycloneDX14.mixin.*;
 import org.svip.serializers.serializer.v2.Serializer;
 
 /**
  * <b>File:</b> CDX14Serializer.java
  * <p>
- * <b>Description:</b> Generic serializer that coverts SBOMS into JSON and XML files
+ * <b>Description:</b> Generic serializer that coverts CycloneDX SBOMS into files
  *
  * @author Derek Garcia
  */
@@ -50,7 +52,10 @@ public class CDX14Serializer extends Serializer {
 
     public CDX14Serializer(FileFormat fileFormat, Boolean prettyPrint) {
         super(fileFormat, prettyPrint);
-        mapper = fileFormat == FileFormat.JSON ? new ObjectMapper() : new XmlMapper();
+        // todo - only support json for now
+        if (fileFormat != FileFormat.JSON)
+            throw new UnsupportedFileFormatException(Schema.CycloneDX_14, fileFormat);
+        mapper = new ObjectMapper();
         // add mixin classes - handle schema specific naming
         mapper.addMixIn(Contact.class, CDX14ContactMixin.class);
         mapper.addMixIn(CreationData.class, CDX14CreationDataMixin.class);
@@ -59,7 +64,6 @@ public class CDX14Serializer extends Serializer {
         mapper.addMixIn(Organization.class, CDX14OrganizationMixin.class);
         // skip null and empty lists
         mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-
     }
 
     /**

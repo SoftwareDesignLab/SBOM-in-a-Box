@@ -66,92 +66,114 @@ public class CDX14ComponentObject implements CDX14Package {
     /**
      * Component's type
      */
+    @JsonProperty("type")
     private final String type;
 
     /**
      * Component's uid
      */
+    @JsonProperty("bom-ref")
     private final String uid;
 
     /**
      * Component's author
      */
+    @JsonProperty("author")
     private final String author;
 
     /**
      * Component's name
      */
+    @JsonProperty("name")
     private final String name;
 
     /**
      * Component's licenses
      */
+    @JsonProperty("licenses")
+    @JsonSerialize(using = CDX14LicenseCollectionSerializer.class)
     private final LicenseCollection licenses;
 
     /**
      * Component's copyright
      */
+    @JsonProperty("copyright")
     private final String copyright;
 
     /**
      * Component's hashes
      */
+    @JsonProperty("hashes")
+    @JsonSerialize(using = CDX14HashesSerializer.class)
     private final Map<String, String> hashes;
 
     /**
      * Component's supplier
      */
+    @JsonProperty("supplier")
     private final Organization supplier;
 
     /**
      * Component's version
      */
+    @JsonProperty("version")
     private final String version;
 
     /**
      * Component's description
      */
+    @JsonProperty("description")
+    @JsonSerialize(using = CDX14DescriptionSerializer.class)
     private final Description description;
 
     /**
      * Component's CPEs
      */
+    @JsonIgnore
     private final Set<String> cpes;
 
     /**
      * Component's PURLs
      */
+    @JsonIgnore
     private final Set<String> purls;
 
     /**
      * Component's mime type
      */
+    @JsonProperty("mime-type")
     private final String mimeType;
 
     /**
      * Component's publisher
      */
+    @JsonProperty("publisher")
     private final String publisher;
 
     /**
      * Component's scope
      */
+    @JsonProperty("scope")
     private final String scope;
 
     /**
      * Component's group
      */
+    @JsonProperty("group")
     private final String group;
 
     /**
      * Component's external references
      */
+    @JsonProperty("externalReferences")
     private final Set<ExternalReference> externalReferences;
 
     /**
      * Component's properties
      */
-    private final HashMap<String, Set<String>> properties;
+    @JsonProperty("properties")
+    @JsonSerialize(using = CDX14PropertiesSerializer.class)
+    private final Map<String, Set<String>> properties;
 
     /**
      * Constructor to build a new CDX 1.4 Component Object
@@ -209,7 +231,6 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's type
      */
     @Override
-    @JsonProperty("type")
     public String getType() {
         return this.type;
     }
@@ -220,7 +241,6 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's uid
      */
     @Override
-    @JsonProperty("bom-ref")
     public String getUID() {
         return this.uid;
     }
@@ -231,7 +251,7 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's author
      */
     @Override
-    @JsonProperty("author")
+
     public String getAuthor() {
         return this.author;
     }
@@ -242,7 +262,6 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's name
      */
     @Override
-    @JsonProperty("name")
     public String getName() {
         return this.name;
     }
@@ -253,8 +272,6 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's licenses
      */
     @Override
-    @JsonProperty("licenses")
-    @JsonSerialize(using = CDX14LicenseCollectionSerializer.class)
     public LicenseCollection getLicenses() {
         return this.licenses;
     }
@@ -265,7 +282,6 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's copyright info
      */
     @Override
-    @JsonProperty("copyright")
     public String getCopyright() {
         return this.copyright;
     }
@@ -276,8 +292,6 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's hashes
      */
     @Override
-    @JsonProperty("hashes")
-    @JsonSerialize(using = CDX14HashesSerializer.class)
     public Map<String, String> getHashes() {
         return this.hashes;
     }
@@ -288,7 +302,6 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return The component's supplier
      */
     @Override
-    @JsonProperty("supplier")
     public Organization getSupplier() {
         return this.supplier;
     }
@@ -299,7 +312,6 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's version
      */
     @Override
-    @JsonProperty("version")
     public String getVersion() {
         return this.version;
     }
@@ -310,8 +322,6 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's description
      */
     @Override
-    @JsonProperty("description")
-    @JsonSerialize(using = CDX14DescriptionSerializer.class)
     public Description getDescription() {
         return this.description;
     }
@@ -322,7 +332,6 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's CPEs
      */
     @Override
-    @JsonIgnore
     public Set<String> getCPEs() {
         return this.cpes;
     }
@@ -333,7 +342,6 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's PURLs
      */
     @Override
-    @JsonIgnore
     public Set<String> getPURLs() {
         return this.purls;
     }
@@ -344,7 +352,6 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's external references
      */
     @Override
-    @JsonProperty("externalReferences")
     public Set<ExternalReference> getExternalReferences() {
         return this.externalReferences;
     }
@@ -355,7 +362,6 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's mime type
      */
     @Override
-    @JsonProperty("mime-type")
     public String getMimeType() {
         return this.mimeType;
     }
@@ -366,7 +372,6 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's publisher
      */
     @Override
-    @JsonProperty("publisher")
     public String getPublisher() {
         return this.publisher;
     }
@@ -377,7 +382,6 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's scope
      */
     @Override
-    @JsonProperty("scope")
     public String getScope() {
         return this.scope;
     }
@@ -388,7 +392,6 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's group
      */
     @Override
-    @JsonProperty("group")
     public String getGroup() {
         return this.group;
     }
@@ -399,9 +402,7 @@ public class CDX14ComponentObject implements CDX14Package {
      * @return the component's properties
      */
     @Override
-    @JsonProperty("properties")
-    @JsonSerialize(using = CDX14PropertiesSerializer.class)
-    public HashMap<String, Set<String>> getProperties() {
+    public Map<String, Set<String>> getProperties() {
         return this.properties;
     }
 
