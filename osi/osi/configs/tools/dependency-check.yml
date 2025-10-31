@@ -1,0 +1,27 @@
+# OWASP Dependency-Check Vulnerability Scanner Configuration
+# @author Ibrahim Matar
+source: "https://github.com/jeremylong/DependencyCheck"
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.4"
+    format: "json"
+    languages:
+      - "Java"
+      - "JavaScript"
+      - "Python"
+      - ".NET"
+      - "Ruby"
+      - "PHP"
+    package_managers:
+      - "Maven"
+      - "Gradle"
+      - "NPM"
+      - "Yarn"
+      - "Pip"
+      - "Composer"
+      - "NuGet"
+      - "Gem"
+    commands:
+      - "dependency-check --scan $CODE_IN --format JSON --format XML --format HTML --out $SBOM_OUT --enableExperimental"
+      - "mv $SBOM_OUT/dependency-check-report.json $SBOM_OUT/dependency-check-vulns.json"
+

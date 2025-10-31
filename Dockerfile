@@ -14,9 +14,23 @@ COPY --chown=gradle:gradle settings.gradle .
 RUN gradle build --no-daemon -x test
 
 
-FROM eclipse-temurin:21-jre-alpine-3.21 AS runtime
-# create user
-RUN adduser -H -D sbox
+FROM eclipse-temurin:21-jre-jammy AS runtime
+# Install vulnerability scanners
+USER root
+RUN apt-get update && apt-get install -y curl wget ca-certificates
+# Install Grype
+ARG GRYPE_VERSION=0.84.0
+RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin v${GRYPE_VERSION}
+# Install Trivy
+ARG TRIVY_VERSION=0.58.1
+RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v${TRIVY_VERSION}
+# Install OSV Scanner - using install script
+RUN curl -L https://github.com/google/osv-scanner/releases/latest/download/osv-scanner_linux_amd64 -o /usr/local/bin/osv-scanner && chmod +x /usr/local/bin/osv-scanner || echo "OSV Scanner installation failed, continuing without it"
+# Cleanup
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# create user (Debian/Ubuntu syntax)
+RUN useradd -m -s /bin/bash sbox
 USER sbox
 # copy jar
 WORKDIR /app

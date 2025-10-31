@@ -422,7 +422,10 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         // External Refs
         writeExternalRefs(jsonGenerator, component.getExternalReferences());
 
-        jsonGenerator.writeStringField("releaseNotes", "Release Date: " + component.getReleaseDate());
+        // Release Notes - Skip writing as string (CycloneDX expects object, not string)
+        // If needed in future, implement proper ReleaseNotes object serialization
+        // jsonGenerator.writeStringField("releaseNotes", "Release Date: " + component.getReleaseDate());
+        
         writeProperties(jsonGenerator, component.getProperties());
 
 //        jsonGenerator.writeStringField("swid", String.join(", ", component.getSWID()));

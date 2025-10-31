@@ -29,9 +29,28 @@ RUN curl -L $GRADLE -o gradle.zip
 # Install anchore tooling on debian container
 FROM debian:bookworm-slim AS anchore_install
 ARG SYFT_VERSION=1.30.0
+ARG GRYPE_VERSION=0.84.0
 WORKDIR /tmp
 RUN apt update && apt install curl -y
 RUN curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /tmp "v$SYFT_VERSION"
+RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /tmp "v$GRYPE_VERSION"
+
+
+# Install vulnerability scanners
+FROM debian:bookworm-slim AS vuln_scanner_install
+ARG TRIVY_VERSION=0.58.1
+ARG OSV_SCANNER_VERSION=1.9.2
+ARG DEPENDENCY_CHECK_VERSION=11.1.1
+WORKDIR /tmp
+RUN apt update && apt install curl unzip wget -y
+# Trivy
+RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /tmp "v$TRIVY_VERSION"
+# OSV Scanner
+RUN curl -L "https://github.com/google/osv-scanner/releases/download/v$OSV_SCANNER_VERSION/osv-scanner_$OSV_SCANNER_VERSION\_linux_amd64" -o /tmp/osv-scanner && chmod +x /tmp/osv-scanner
+# OWASP Dependency-Check
+RUN wget "https://github.com/jeremylong/DependencyCheck/releases/download/v$DEPENDENCY_CHECK_VERSION/dependency-check-$DEPENDENCY_CHECK_VERSION-release.zip" -O dependency-check.zip \
+    && unzip dependency-check.zip \
+    && chmod +x dependency-check/bin/dependency-check.sh
 
 
 # Main container
@@ -44,7 +63,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN=true
 ENV COMPOSER_ALLOW_SUPERUSER=1
 # set paths
-ENV PATH=$PATH:/opt/gradle/gradle/bin
+ENV PATH=$PATH:/opt/gradle/gradle/bin:/opt/dependency-check/bin
 
 # Working directories
 ENV CODE_IN=/tmp/code
@@ -110,7 +129,10 @@ RUN composer \
     global require cyclonedx/cyclonedx-php-composer:5.2.3
 # Copy binaries
 COPY --from=bin_download /tmp/spdx-sbom-generator /tmp/jbom.jar /tmp/cyclonedx-cli /usr/local/bin/
-COPY --from=anchore_install /tmp/syft /usr/local/bin/
+COPY --from=anchore_install /tmp/syft /tmp/grype /usr/local/bin/
+# Copy vulnerability scanners
+COPY --from=vuln_scanner_install /tmp/trivy /tmp/osv-scanner /usr/local/bin/
+COPY --from=vuln_scanner_install /tmp/dependency-check /opt/dependency-check
 # Cleanup
 USER root
 RUN apt remove -y curl git unzip gnupg apt-transport-https software-properties-common

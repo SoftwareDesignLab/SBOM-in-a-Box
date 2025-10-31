@@ -303,48 +303,70 @@ public class OSVClient implements VulnerabilityDBClient {
      */
     private VEXStatement generateVEXStatement(JSONObject vulnerabilityBody, SBOMPackage c) {
         VEXStatement.Builder statement = new VEXStatement.Builder();
-        // add general fields to the statement
-        statement.setStatementID(vulnerabilityBody.getString("id"));
-        statement.setStatementVersion("1.0");
-        statement.setStatementFirstIssued(vulnerabilityBody
-                .getString("published"));
-        statement.setStatementLastUpdated(vulnerabilityBody
-                .getString("modified"));
 
-        // Set the statement's vulnerability
-        JSONArray aliases = vulnerabilityBody.getJSONArray("aliases");
-        String vulnID = aliases.getString(0);
-        String vulnDesc;
-        // check if summary key is in json object
-        // if not default to using details key
-        if (!vulnerabilityBody.has("summary")) {
-            vulnDesc = vulnerabilityBody.getString("details");
-        } else {
-            vulnDesc = vulnerabilityBody.getString("summary");
+        // General fields with safe fallbacks
+        final String id = vulnerabilityBody.optString("id", "UNKNOWN");
+        final String firstIssued = vulnerabilityBody.optString("published",
+                vulnerabilityBody.optString("modified", String.valueOf(java.time.LocalDateTime.now())));
+        final String lastUpdated = vulnerabilityBody.optString("modified", firstIssued);
+
+        statement.setStatementID(id);
+        statement.setStatementVersion("1.0");
+        statement.setStatementFirstIssued(firstIssued);
+        statement.setStatementLastUpdated(lastUpdated);
+
+        // Vulnerability ID: prefer CVE in aliases; else fall back to id
+        String vulnID = id;
+        JSONArray aliases = vulnerabilityBody.optJSONArray("aliases");
+        if (aliases != null && aliases.length() > 0) {
+            // pick first CVE-like alias if present, otherwise first alias
+            String firstAlias = aliases.optString(0, id);
+            for (int i = 0; i < aliases.length(); i++) {
+                String alias = aliases.optString(i, firstAlias);
+                if (alias != null && alias.toUpperCase().startsWith("CVE-")) {
+                    firstAlias = alias;
+                    break;
+                }
+            }
+            vulnID = firstAlias;
         }
+
+        // Description: prefer summary, fallback to details, then placeholder
+        String vulnDesc = vulnerabilityBody.optString("summary",
+                vulnerabilityBody.optString("details", "No description provided"));
         statement.setVulnerability(new Vulnerability(vulnID, vulnDesc));
 
-        //set the statement's affected status
+        // Status with safe details
+        String details = vulnerabilityBody.optString("details", vulnDesc);
         statement.setStatus(new Status(VulnStatus.AFFECTED,
-                Justification.NOT_APPLICABLE, vulnerabilityBody
-                .getString("details"), "N/A"));
+                Justification.NOT_APPLICABLE, details, "N/A"));
 
-        //Get all products and add all to the VEX Statement
+        // Products (affected packages)
         String supplier = "Unknown";
         if (c.getSupplier() != null && c.getSupplier().getName() != null) {
             supplier = c.getSupplier().getName();
         }
-        JSONArray packages = vulnerabilityBody.getJSONArray("affected");
-        // for every package in the JSONArray
-        for (int i = 0; i < packages.length(); i++) {
-            JSONObject vulnPackage = packages.getJSONObject(i);
-            // extract the package's info and create a new Product
-            JSONObject packageInfo = vulnPackage.getJSONObject("package");
-            String packageID = packageInfo.getString("name")
-                    + ":" + packageInfo.getString("ecosystem")
-                    + ":" + c.getVersion();
-            statement.addProduct(new Product(packageID, supplier));
+
+        JSONArray packages = vulnerabilityBody.optJSONArray("affected");
+        if (packages != null) {
+            for (int i = 0; i < packages.length(); i++) {
+                JSONObject vulnPackage = packages.optJSONObject(i);
+                if (vulnPackage == null) continue;
+                JSONObject packageInfo = vulnPackage.optJSONObject("package");
+                if (packageInfo == null) continue;
+                String name = packageInfo.optString("name", c.getName() != null ? c.getName() : "unknown");
+                String eco = packageInfo.optString("ecosystem", "unknown");
+                String version = (c.getVersion() != null) ? c.getVersion() : "unknown";
+                String packageID = name + ":" + eco + ":" + version;
+                statement.addProduct(new Product(packageID, supplier));
+            }
+        } else {
+            // Fallback: at least include the component itself
+            String version = (c.getVersion() != null) ? c.getVersion() : "unknown";
+            String name = (c.getName() != null) ? c.getName() : "unknown";
+            statement.addProduct(new Product(name + ":unknown:" + version, supplier));
         }
+
         return statement.build();
     }
 }

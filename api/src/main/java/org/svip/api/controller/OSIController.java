@@ -37,6 +37,8 @@ import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.OSIService;
 import org.svip.api.services.SBOMFileService;
+import org.svip.api.services.VulnerabilityScanService;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.svip.conversion.ConversionException;
 import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.serializers.SerializerFactory;
@@ -65,20 +67,35 @@ public class OSIController {
     // Services
     private final SBOMFileService sbomService;
     private final OSIService osiService;
+    private final VulnerabilityScanService vulnerabilityScanService;
+    private final org.svip.api.services.VulnerabilityHistoryService vulnerabilityHistoryService;
 
     /**
      * Create new Controller with services
      *
      * @param sbomService Service for handling SBOM queries
+     * @param osiService Service for handling OSI operations
+     * @param vulnerabilityScanService Service for vulnerability scanning
+     * @param vulnerabilityHistoryService Service for historical tracking
      */
-    public OSIController(SBOMFileService sbomService, OSIService osiService) {
+    public OSIController(SBOMFileService sbomService, OSIService osiService, 
+                        VulnerabilityScanService vulnerabilityScanService,
+                        org.svip.api.services.VulnerabilityHistoryService vulnerabilityHistoryService) {
         this.sbomService = sbomService;
         this.osiService = osiService;
+        this.vulnerabilityScanService = vulnerabilityScanService;
+        this.vulnerabilityHistoryService = vulnerabilityHistoryService;
 
         if (this.osiService.isEnabled()) {
             LOGGER.info("OSI ENDPOINT ENABLED");
         } else {
             LOGGER.warn("OSI ENDPOINT DISABLED -- Unable to communicate with OSI container; Is the container running?");
+        }
+        
+        if (this.vulnerabilityScanService.isEnabled()) {
+            LOGGER.info("VULNERABILITY SCANNING ENABLED");
+        } else {
+            LOGGER.info("VULNERABILITY SCANNING DISABLED");
         }
     }
 
@@ -168,7 +185,9 @@ public class OSIController {
             if (toolNamesJson != null && !toolNamesJson.isBlank()) {
                 try {
                     ObjectMapper mapper = new ObjectMapper();
-                    tools = mapper.readValue(toolNamesJson, List.class);
+                    @SuppressWarnings("unchecked")
+                    List<String> parsedTools = mapper.readValue(toolNamesJson, List.class);
+                    tools = parsedTools;
                 } catch (Exception parseEx) {
                     LOGGER.warn("POST /svip/generators/osi - Invalid toolNames JSON; defaulting to project tools. Error: {}", parseEx.getMessage());
                     tools = this.osiService.getTools("project");
@@ -256,6 +275,61 @@ public class OSIController {
             // Failed to convert
             LOGGER.error("POST /svip/generators/osi - Failed to convert - " + e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // VULNERABILITY SCANNING - Enrich SBOM with vulnerability data
+        if (vulnerabilityScanService.isEnabled()) {
+            try {
+                LOGGER.info("POST /svip/generators/osi - Running vulnerability scans");
+                SBOMFile sbomToScan = sbomService.getSBOMFile(convertedID);
+                if (sbomToScan != null) {
+                    String enrichedContents = vulnerabilityScanService.runVulnerabilityScans(
+                        sbomToScan.getContent(),
+                        sbomToScan.getName()
+                    );
+                    
+                    // Save enriched SBOM
+                    UploadSBOMFileInput enrichedInput = new UploadSBOMFileInput(
+                        sbomToScan.getName().replace(".json", "-with-vulns.json"),
+                        enrichedContents
+                    );
+                    SBOMFile enrichedSbom = enrichedInput.toSBOMFile();
+                    sbomService.upload(enrichedSbom);
+                    
+                    // Delete old SBOM and use enriched one
+                    sbomService.deleteSBOMFile(sbomToScan);
+                    convertedID = enrichedSbom.getId();
+                    
+                    LOGGER.info("POST /svip/generators/osi - Successfully enriched SBOM with vulnerabilities (ID: {})", convertedID);
+                    
+                    // Record vulnerability history for dashboard tracking
+                    try {
+                        JsonNode sbomJson = new ObjectMapper().readTree(enrichedContents);
+                        if (sbomJson.has("vulnerabilities") && sbomJson.get("vulnerabilities").isArray()) {
+                            java.util.List<JsonNode> vulns = new java.util.ArrayList<>();
+                            sbomJson.get("vulnerabilities").forEach(vulns::add);
+                            
+                            vulnerabilityHistoryService.recordVulnerabilities(
+                                convertedID,
+                                projectName,
+                                enrichedSbom.getName(),
+                                vulns,
+                                "grype,trivy,osv-scanner"
+                            );
+                            LOGGER.info("POST /svip/generators/osi - Recorded vulnerability history");
+                        }
+                    } catch (Exception histEx) {
+                        LOGGER.warn("POST /svip/generators/osi - Failed to record vulnerability history: {}", histEx.getMessage());
+                    }
+                } else {
+                    LOGGER.warn("POST /svip/generators/osi - Could not find SBOM for vulnerability scanning");
+                }
+            } catch (Exception e) {
+                // Log warning but don't fail the entire request
+                LOGGER.warn("POST /svip/generators/osi - Vulnerability scanning failed (continuing without vulnerabilities): " + e.getMessage());
+            }
+        } else {
+            LOGGER.info("POST /svip/generators/osi - Vulnerability scanning is disabled, skipping");
         }
 
         // Set descriptive filename: ProjectName-OSI-Schema-Format-Timestamp.ext
