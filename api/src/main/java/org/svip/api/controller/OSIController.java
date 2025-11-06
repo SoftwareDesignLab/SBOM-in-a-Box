@@ -208,9 +208,32 @@ public class OSIController {
         if (generatedSBOMs.isEmpty())
             return new ResponseEntity<>("No SBOMs were generated", HttpStatus.NO_CONTENT);
 
-        // Upload SBOMs to SB
+        // SCAN INDIVIDUAL SBOMs BEFORE MERGING (to preserve metadata)
+        Map<String, String> scannedSBOMs = new HashMap<>();
+        if (vulnerabilityScanService.isEnabled()) {
+            LOGGER.info("POST /svip/generators/osi - Running vulnerability scans on individual SBOMs before merging");
+            for (Map.Entry<String, String> entry : generatedSBOMs.entrySet()) {
+                String fileName = entry.getKey();
+                String sbomContent = new String(Base64.getDecoder().decode(entry.getValue()));
+                
+                try {
+                    String enrichedContent = vulnerabilityScanService.runVulnerabilityScans(sbomContent, fileName);
+                    // Re-encode to base64 for consistency
+                    scannedSBOMs.put(fileName, Base64.getEncoder().encodeToString(enrichedContent.getBytes()));
+                    LOGGER.info("POST /svip/generators/osi - Scanned {}", fileName);
+                } catch (Exception e) {
+                    LOGGER.warn("POST /svip/generators/osi - Failed to scan {}: {}. Using original.", fileName, e.getMessage());
+                    scannedSBOMs.put(fileName, entry.getValue());
+                }
+            }
+        } else {
+            LOGGER.info("POST /svip/generators/osi - Vulnerability scanning disabled, using original SBOMs");
+            scannedSBOMs.putAll(generatedSBOMs);
+        }
+
+        // Upload SBOMs to DB
         List<SBOMFile> uploaded = new ArrayList<>();
-        generatedSBOMs.forEach((fileName, base64Content) -> {
+        scannedSBOMs.forEach((fileName, base64Content) -> {
             // Try to upload new SBOM to DB
             try {
                 UploadSBOMFileInput input = new UploadSBOMFileInput(
@@ -238,6 +261,24 @@ public class OSIController {
         }
 
         LOGGER.info("POST /svip/generators/osi - Parsed {} SBOMs successfully", uploaded.size());
+
+        // Collect vulnerabilities from scanned SBOMs before merging
+        List<JsonNode> allVulnerabilities = new ArrayList<>();
+        if (vulnerabilityScanService.isEnabled()) {
+            for (SBOMFile sbomFile : uploaded) {
+                try {
+                    JsonNode sbomJson = new ObjectMapper().readTree(sbomFile.getContent());
+                    if (sbomJson.has("vulnerabilities") && sbomJson.get("vulnerabilities").isArray()) {
+                        sbomJson.get("vulnerabilities").forEach(allVulnerabilities::add);
+                    }
+                } catch (Exception e) {
+                    LOGGER.warn("POST /svip/generators/osi - Failed to extract vulnerabilities from {}: {}", 
+                               sbomFile.getName(), e.getMessage());
+                }
+            }
+            LOGGER.info("POST /svip/generators/osi - Collected {} total vulnerabilities from individual SBOMs", 
+                       allVulnerabilities.size());
+        }
 
         // Merge SBOMs
         Long mergedID;
@@ -269,7 +310,7 @@ public class OSIController {
         try {
             LOGGER.info("POST /svip/generators/osi - Converting SBOM to {} {}", schema, format);
             convertedID = sbomService.convert(mergedID, schema, format, true);
-            LOGGER.info("POST /svip/generators/osi - Successfully merged SBOMs to SBOM with id {}", convertedID);
+            LOGGER.info("POST /svip/generators/osi - Successfully converted SBOM to id {}", convertedID);
         } catch (DeserializerException | JsonProcessingException | SerializerException | SBOMBuilderException |
                  ConversionException e) {
             // Failed to convert
@@ -277,59 +318,40 @@ public class OSIController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        // VULNERABILITY SCANNING - Enrich SBOM with vulnerability data
-        if (vulnerabilityScanService.isEnabled()) {
+        // RE-ADD VULNERABILITIES AFTER MERGE (merge strips them)
+        if (!allVulnerabilities.isEmpty() && vulnerabilityScanService.isEnabled()) {
             try {
-                LOGGER.info("POST /svip/generators/osi - Running vulnerability scans");
-                SBOMFile sbomToScan = sbomService.getSBOMFile(convertedID);
-                if (sbomToScan != null) {
-                    String enrichedContents = vulnerabilityScanService.runVulnerabilityScans(
-                        sbomToScan.getContent(),
-                        sbomToScan.getName()
+                LOGGER.info("POST /svip/generators/osi - Re-adding {} vulnerabilities to merged SBOM", allVulnerabilities.size());
+                SBOMFile mergedSbom = sbomService.getSBOMFile(convertedID);
+                if (mergedSbom != null) {
+                    JsonNode sbomJson = new ObjectMapper().readTree(mergedSbom.getContent());
+                    
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> sbomMap = new ObjectMapper().convertValue(sbomJson, Map.class);
+                    sbomMap.put("vulnerabilities", allVulnerabilities);
+                    
+                    String enrichedContent = new ObjectMapper().writerWithDefaultPrettyPrinter()
+                                                              .writeValueAsString(sbomMap);
+                    
+                    // Update with enriched content
+                    mergedSbom.setContent(enrichedContent);
+                    sbomService.upload(mergedSbom);
+                    
+                    LOGGER.info("POST /svip/generators/osi - Successfully re-added vulnerabilities to merged SBOM");
+                    
+                    // Record history
+                    vulnerabilityHistoryService.recordVulnerabilities(
+                        convertedID,
+                        projectName,
+                        mergedSbom.getName(),
+                        allVulnerabilities,
+                        "grype,trivy"
                     );
-                    
-                    // Save enriched SBOM
-                    UploadSBOMFileInput enrichedInput = new UploadSBOMFileInput(
-                        sbomToScan.getName().replace(".json", "-with-vulns.json"),
-                        enrichedContents
-                    );
-                    SBOMFile enrichedSbom = enrichedInput.toSBOMFile();
-                    sbomService.upload(enrichedSbom);
-                    
-                    // Delete old SBOM and use enriched one
-                    sbomService.deleteSBOMFile(sbomToScan);
-                    convertedID = enrichedSbom.getId();
-                    
-                    LOGGER.info("POST /svip/generators/osi - Successfully enriched SBOM with vulnerabilities (ID: {})", convertedID);
-                    
-                    // Record vulnerability history for dashboard tracking
-                    try {
-                        JsonNode sbomJson = new ObjectMapper().readTree(enrichedContents);
-                        if (sbomJson.has("vulnerabilities") && sbomJson.get("vulnerabilities").isArray()) {
-                            java.util.List<JsonNode> vulns = new java.util.ArrayList<>();
-                            sbomJson.get("vulnerabilities").forEach(vulns::add);
-                            
-                            vulnerabilityHistoryService.recordVulnerabilities(
-                                convertedID,
-                                projectName,
-                                enrichedSbom.getName(),
-                                vulns,
-                                "grype,trivy,osv-scanner"
-                            );
-                            LOGGER.info("POST /svip/generators/osi - Recorded vulnerability history");
-                        }
-                    } catch (Exception histEx) {
-                        LOGGER.warn("POST /svip/generators/osi - Failed to record vulnerability history: {}", histEx.getMessage());
-                    }
-                } else {
-                    LOGGER.warn("POST /svip/generators/osi - Could not find SBOM for vulnerability scanning");
+                    LOGGER.info("POST /svip/generators/osi - Recorded {} vulnerabilities to history", allVulnerabilities.size());
                 }
             } catch (Exception e) {
-                // Log warning but don't fail the entire request
-                LOGGER.warn("POST /svip/generators/osi - Vulnerability scanning failed (continuing without vulnerabilities): " + e.getMessage());
+                LOGGER.warn("POST /svip/generators/osi - Failed to re-add vulnerabilities: {}", e.getMessage());
             }
-        } else {
-            LOGGER.info("POST /svip/generators/osi - Vulnerability scanning is disabled, skipping");
         }
 
         // Set descriptive filename: ProjectName-OSI-Schema-Format-Timestamp.ext

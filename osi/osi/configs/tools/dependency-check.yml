@@ -22,6 +22,8 @@ profiles:
       - "NuGet"
       - "Gem"
     commands:
-      - "dependency-check --scan $CODE_IN --format JSON --format XML --format HTML --out $SBOM_OUT --enableExperimental"
+      - "mkdir -p /tmp/dependency-check-data"
+      - "if [ ! -f /tmp/dependency-check-data/odc.mv.db ]; then /opt/dependency-check/bin/dependency-check.sh --data /tmp/dependency-check-data --updateonly || true; fi"
+      - "/opt/dependency-check/bin/dependency-check.sh --data /tmp/dependency-check-data --scan $CODE_IN --format JSON --format XML --format HTML --out $SBOM_OUT --enableExperimental"
       - "mv $SBOM_OUT/dependency-check-report.json $SBOM_OUT/dependency-check-vulns.json"
 

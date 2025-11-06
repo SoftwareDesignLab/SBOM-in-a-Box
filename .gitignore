@@ -75,6 +75,9 @@ gradle-app.setting
 # Mac files
 .DS_Store
 
+# Generated Gradle classes
+core/bin/
+
 # dev enviroment files
 /.dev-env/
 

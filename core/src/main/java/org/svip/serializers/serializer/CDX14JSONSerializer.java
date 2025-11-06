@@ -45,6 +45,8 @@ import org.svip.serializers.Metadata;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -149,7 +151,9 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         jsonGenerator.writeFieldName("dependencies");
         jsonGenerator.writeStartArray();
 
-        for (Map.Entry<String, Set<Relationship>> dep : sbom.getRelationships().entrySet()) {
+        Map<String, Set<Relationship>> relationships = getSanitizedRelationships(sbom);
+
+        for (Map.Entry<String, Set<Relationship>> dep : relationships.entrySet()) {
             jsonGenerator.writeStartObject();
 
             jsonGenerator.writeStringField("ref", dep.getKey());
@@ -176,6 +180,82 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
     //#endregion
 
     //#region Helper Methods
+
+    private Map<String, Set<Relationship>> getSanitizedRelationships(SVIPSBOM sbom) {
+        Map<String, Set<Relationship>> original = sbom.getRelationships();
+        Map<String, Set<Relationship>> cleaned = new LinkedHashMap<>();
+
+        if (original != null) {
+            for (Map.Entry<String, Set<Relationship>> entry : original.entrySet()) {
+                String ref = normalizeRef(entry.getKey());
+                if (ref == null) continue;
+
+                Set<Relationship> filtered = new LinkedHashSet<>();
+                if (entry.getValue() != null) {
+                    for (Relationship rel : entry.getValue()) {
+                        if (rel == null) continue;
+                        String other = normalizeRef(rel.getOtherUID());
+                        if (other == null) continue;
+                        filtered.add(new Relationship(other, rel.getRelationshipType()));
+                    }
+                }
+
+                if (!filtered.isEmpty()) {
+                    cleaned.put(ref, filtered);
+                }
+            }
+        }
+
+        if (cleaned.isEmpty()) {
+            String rootUid = resolveRootUid(sbom);
+            if (rootUid != null) {
+                Set<Relationship> fallback = new LinkedHashSet<>();
+                for (Component component : sbom.getComponents()) {
+                    if (component == null) continue;
+                    String uid = normalizeRef(component.getUID());
+                    if (uid == null || uid.equals(rootUid)) continue;
+                    fallback.add(new Relationship(uid, "DEPENDS_ON"));
+                }
+                if (!fallback.isEmpty()) {
+                    cleaned.put(rootUid, fallback);
+                }
+            }
+        }
+
+        return cleaned;
+    }
+
+    private String resolveRootUid(SVIPSBOM sbom) {
+        Component root = sbom.getRootComponent();
+        if (root != null) {
+            String uid = normalizeRef(root.getUID());
+            if (uid != null) return uid;
+        }
+
+        for (Component component : sbom.getComponents()) {
+            if (component == null) continue;
+            String type = component.getType();
+            if (type != null && type.equalsIgnoreCase("application")) {
+                String uid = normalizeRef(component.getUID());
+                if (uid != null) return uid;
+            }
+        }
+
+        for (Component component : sbom.getComponents()) {
+            if (component == null) continue;
+            String uid = normalizeRef(component.getUID());
+            if (uid != null) return uid;
+        }
+
+        return null;
+    }
+
+    private String normalizeRef(String ref) {
+        if (ref == null) return null;
+        String trimmed = ref.trim();
+        if (trimmed.isEmpty() || "null".equalsIgnoreCase(trimmed)) return null;
+        return trimmed;
+    }
 
     private void writeCreationData(JsonGenerator jsonGenerator, CreationData data, SVIPComponentObject rootComponent) throws IOException {
         jsonGenerator.writeFieldName("metadata");
