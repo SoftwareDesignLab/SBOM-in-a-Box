@@ -341,10 +341,12 @@ public class OSVClient implements VulnerabilityDBClient {
         statement.setStatus(new Status(VulnStatus.AFFECTED,
                 Justification.NOT_APPLICABLE, details, "N/A"));
 
-        // Products (affected packages)
+        // Products (affected packages) - safely handle null supplier
         String supplier = "Unknown";
         if (c.getSupplier() != null && c.getSupplier().getName() != null) {
             supplier = c.getSupplier().getName();
+        } else if (c.getName() != null) {
+            supplier = c.getName();
         }
 
         JSONArray packages = vulnerabilityBody.optJSONArray("affected");
