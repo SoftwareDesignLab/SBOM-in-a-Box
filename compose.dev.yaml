@@ -4,13 +4,14 @@
 # Author: Ian Dunn
 # Author: Derek Garcia
 
-name: sbom-in-a-box
+name: sbom-in-a-box_development
 services:
   # OSI container
   osi:
-    container_name: osi
-    platform: linux/amd64
+    container_name: osi_dev
+    image: osi
     build: osi
+    pull_policy: never  # use local build
     ports:
       - "5000:5000"
     healthcheck:
@@ -22,8 +23,7 @@ services:
 
   # MySQL server
   sbox_db:
-    container_name: sbox_db
-    platform: linux/amd64
+    container_name: sbox_db_dev
     image: mysql:8.4.6
     command: --max_allowed_packet=1073741824 --innodb_redo_log_capacity=1073741824  # Set max_allowed_packet to 256M
     env_file:
@@ -47,8 +47,10 @@ services:
 
   # SBOM-in-a-box API spring-boot application
   sbox_api:
-    container_name: sbox_api
+    container_name: sbox_api_dev
+    image: sbox_api
     build: .
+    pull_policy: never  # use local build
     ports:
       - "8080:8080"
     env_file:

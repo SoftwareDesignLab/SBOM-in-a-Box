@@ -135,7 +135,7 @@ COPY --from=vuln_scanner_install /tmp/trivy /tmp/osv-scanner /usr/local/bin/
 COPY --from=vuln_scanner_install /tmp/dependency-check /opt/dependency-check
 # Cleanup
 USER root
-RUN apt remove -y curl git unzip gnupg apt-transport-https software-properties-common
+RUN apt remove -y git unzip gnupg apt-transport-https software-properties-common
 RUN rm -rf /var/lib/apt/lists/* /tmp/setup
 
 USER osi

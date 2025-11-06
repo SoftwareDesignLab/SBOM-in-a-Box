@@ -9,8 +9,9 @@ services:
   # OSI container
   osi:
     container_name: osi
-    platform: linux/amd64
+    image: osi
     build: osi
+    pull_policy: never  # use local build
     healthcheck:
       test: ["CMD-SHELL", "python3 -c \"import urllib.request,sys; urllib.request.urlopen('http://localhost:5000/tools', timeout=5); sys.exit(0)\""]
       start_period: 60s   # allow validation to finish before first check
@@ -21,7 +22,6 @@ services:
   # MySQL server
   sbox_db:
     container_name: sbox_db
-    platform: linux/amd64
     image: mysql:8.4.6
     command: --max_allowed_packet=1073741824 --innodb_redo_log_capacity=1073741824  # Set max_allowed_packet to 256M
     env_file:
@@ -44,7 +44,9 @@ services:
   # SBOM-in-a-box API spring-boot application
   sbox_api:
     container_name: sbox_api
+    image: sbox_api
     build: .
+    pull_policy: never  # use local build
     ports:
       - "8080:8080"
     env_file:
