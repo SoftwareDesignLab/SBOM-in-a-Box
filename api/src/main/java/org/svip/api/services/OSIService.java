@@ -140,7 +140,7 @@ public class OSIService {
             // Convert osi json string into map. Increase max string length to support large base64 bodies
             JsonFactory factory = JsonFactory.builder()
                     .streamReadConstraints(StreamReadConstraints.builder()
-                            .maxStringLength(100_000_000) // 100MB, higher than default 20MB
+                            .maxStringLength(500_000_000) // 500MB, increased from 100MB to handle very large SBOMs
                             .build())
                     .build();
             ObjectMapper mapper = new ObjectMapper(factory);

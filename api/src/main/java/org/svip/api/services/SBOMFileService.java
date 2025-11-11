@@ -259,17 +259,15 @@ public class SBOMFileService {
             throw new Exception("Error merging SBOMs: " + e.getMessage());
         }
 
-        SerializerFactory.Schema schema = SerializerFactory.Schema.SPDX23;
+        SerializerFactory.Schema schema = SerializerFactory.Schema.CDX14;
 
         // serialize merged SBOM
-        Serializer s = SerializerFactory.createSerializer(schema, SerializerFactory.Format.TAGVALUE, // todo default to
-                // SPDX JSON for
-                // now?
-                true);
+        Serializer s = SerializerFactory.createSerializer(schema, SerializerFactory.Format.JSON, true);
         s.setPrettyPrinting(true);
         String contents;
         try {
-            contents = s.writeToString((SVIPSBOM) merged);
+            org.svip.sbom.model.interfaces.generics.SBOM mergedForSchema = Conversion.convert(merged, SerializerFactory.Schema.SVIP, schema);
+            contents = s.writeToString((SVIPSBOM) mergedForSchema);
         } catch (JsonProcessingException | ClassCastException e) {
             throw new Exception("Error deserializing merged SBOM: " + e.getMessage());
         }

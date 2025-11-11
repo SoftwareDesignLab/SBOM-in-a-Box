@@ -207,18 +207,11 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         }
 
         if (cleaned.isEmpty()) {
-            String rootUid = resolveRootUid(sbom);
-            if (rootUid != null) {
-                Set<Relationship> fallback = new LinkedHashSet<>();
-                for (Component component : sbom.getComponents()) {
-                    if (component == null) continue;
-                    String uid = normalizeRef(component.getUID());
-                    if (uid == null || uid.equals(rootUid)) continue;
-                    fallback.add(new Relationship(uid, "DEPENDS_ON"));
-                }
-                if (!fallback.isEmpty()) {
-                    cleaned.put(rootUid, fallback);
-                }
+            for (Component component : sbom.getComponents()) {
+                if (component == null) continue;
+                String uid = normalizeRef(component.getUID());
+                if (uid == null) continue;
+                cleaned.put(uid, new LinkedHashSet<>());
             }
         }
 

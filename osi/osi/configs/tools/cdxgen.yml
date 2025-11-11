@@ -45,4 +45,4 @@ profiles:
       - "Leiningen"
       - "Swift"
     commands:
-      - "cdxgen -r -o $SBOM_OUT/cdxgen-cdx14.json"
+      - "cdxgen -r -o $SBOM_OUT/cdxgen-cdx14.json --spec-version 1.4 --include-formulation"

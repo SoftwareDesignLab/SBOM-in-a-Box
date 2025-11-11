@@ -44,6 +44,9 @@ import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.exceptions.DeserializerException;
 import org.svip.serializers.exceptions.SerializerException;
+import org.svip.serializers.serializer.Serializer;
+import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.objects.SVIPSBOM;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -305,33 +308,57 @@ public class OSIController {
             mergedID = uploaded.get(0).getId();
         }
 
-        // Convert
+        // Re-serialize to requested format (preserves relationships better than conversion)
         Long convertedID;
         try {
-            LOGGER.info("POST /svip/generators/osi - Converting SBOM to {} {}", schema, format);
-            convertedID = sbomService.convert(mergedID, schema, format, true);
-            LOGGER.info("POST /svip/generators/osi - Successfully converted SBOM to id {}", convertedID);
-        } catch (DeserializerException | JsonProcessingException | SerializerException | SBOMBuilderException |
-                 ConversionException e) {
-            // Failed to convert
-            LOGGER.error("POST /svip/generators/osi - Failed to convert - " + e.getMessage());
+            SBOMFile mergedSbom = sbomService.getSBOMFile(mergedID);
+            
+            // Check if already in target schema/format
+            if (matchesRequestedFormat(mergedSbom, schema, format)) {
+                LOGGER.info("POST /svip/generators/osi - Merged SBOM already in {} {}, using as-is", schema, format);
+                convertedID = mergedID;
+            } else {
+                // Re-serialize instead of convert to preserve relationship structure
+                LOGGER.info("POST /svip/generators/osi - Re-serializing merged SBOM to {} {}", schema, format);
+                SBOM sbomObject = mergedSbom.toSBOMObject();
+                Serializer serializer = SerializerFactory.createSerializer(schema, format, true);
+                serializer.setPrettyPrinting(true);
+                String reserializedContent = serializer.writeToString((SVIPSBOM) sbomObject);
+                
+                String newName = (sbomObject.getName() != null ? sbomObject.getName() : "merged-sbom") + "-" + schema + "-" + format;
+                UploadSBOMFileInput input = new UploadSBOMFileInput(newName, reserializedContent);
+                SBOMFile reserialized = input.toSBOMFile();
+                
+                // Delete old merged SBOM and save new one
+                sbomService.deleteSBOMFile(mergedSbom);
+                sbomService.upload(reserialized);
+                convertedID = reserialized.getId();
+                LOGGER.info("POST /svip/generators/osi - Successfully re-serialized to id {}", convertedID);
+            }
+        } catch (Exception e) {
+            // Failed to re-serialize
+            LOGGER.error("POST /svip/generators/osi - Failed to re-serialize - " + e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         // RE-ADD VULNERABILITIES AFTER MERGE (merge strips them)
         if (!allVulnerabilities.isEmpty() && vulnerabilityScanService.isEnabled()) {
             try {
-                LOGGER.info("POST /svip/generators/osi - Re-adding {} vulnerabilities to merged SBOM", allVulnerabilities.size());
                 SBOMFile mergedSbom = sbomService.getSBOMFile(convertedID);
                 if (mergedSbom != null) {
-                    JsonNode sbomJson = new ObjectMapper().readTree(mergedSbom.getContent());
-                    
+                    ObjectMapper mapper = new ObjectMapper();
+                    JsonNode sbomJson = mapper.readTree(mergedSbom.getContent());
+                    List<JsonNode> remappedVulnerabilities = vulnerabilityScanService.remapVulnerabilityReferences(sbomJson, allVulnerabilities);
+                    allVulnerabilities = new ArrayList<>(remappedVulnerabilities);
+
+                    LOGGER.info("POST /svip/generators/osi - Re-adding {} vulnerabilities to merged SBOM", allVulnerabilities.size());
+
                     @SuppressWarnings("unchecked")
-                    Map<String, Object> sbomMap = new ObjectMapper().convertValue(sbomJson, Map.class);
+                    Map<String, Object> sbomMap = mapper.convertValue(sbomJson, Map.class);
                     sbomMap.put("vulnerabilities", allVulnerabilities);
                     
-                    String enrichedContent = new ObjectMapper().writerWithDefaultPrettyPrinter()
-                                                              .writeValueAsString(sbomMap);
+                    String enrichedContent = mapper.writerWithDefaultPrettyPrinter()
+                                                   .writeValueAsString(sbomMap);
                     
                     // Update with enriched content
                     mergedSbom.setContent(enrichedContent);
@@ -380,6 +407,25 @@ public class OSIController {
 
         // Return ID
         return new ResponseEntity<>(convertedID, HttpStatus.OK);
+    }
+
+    private boolean matchesRequestedFormat(SBOMFile file, SerializerFactory.Schema schema, SerializerFactory.Format format) {
+        SBOMFile.Schema expectedSchema = switch (schema) {
+            case CDX14 -> SBOMFile.Schema.CYCLONEDX_14;
+            case SPDX23 -> SBOMFile.Schema.SPDX_23;
+            default -> null;
+        };
+
+        SBOMFile.FileType expectedType = switch (format) {
+            case JSON -> SBOMFile.FileType.JSON;
+            case XML -> SBOMFile.FileType.XML;
+            case TAGVALUE -> SBOMFile.FileType.TAG_VALUE;
+        };
+
+        return expectedSchema != null
+                && expectedType != null
+                && file.getSchema() == expectedSchema
+                && file.getFileType() == expectedType;
     }
 
 }

@@ -24,7 +24,7 @@ profiles:
       - "Cargo"
       - "Swift"
     commands:
-      - "syft . -o cyclonedx-json@1.4=$SBOM_OUT/syft-cdx14.json"
+      - "syft . -o cyclonedx-json@1.4=$SBOM_OUT/syft-cdx14.json --catalogers all"
   - schema: "spdx"
     spec_version: "2.3"
     format: "spdx"
