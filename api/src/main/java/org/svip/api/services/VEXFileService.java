@@ -80,6 +80,15 @@ public class VEXFileService {
     }
 
     /**
+     * Delete a VEX file from the database
+     *
+     * @param vf VEX file to delete
+     */
+    public void delete(VEXFile vf) {
+        this.vexFileRepository.delete(vf);
+    }
+
+    /**
      * Generate VEX for a given SBOM
      *
      * @param sbom   SBOM to generate VEX from

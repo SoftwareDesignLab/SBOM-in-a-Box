@@ -37,11 +37,16 @@ import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.OSIService;
 import org.svip.api.services.SBOMFileService;
+import org.svip.api.services.VulnerabilityScanService;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.svip.conversion.ConversionException;
 import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.exceptions.DeserializerException;
 import org.svip.serializers.exceptions.SerializerException;
+import org.svip.serializers.serializer.Serializer;
+import org.svip.sbom.model.interfaces.generics.SBOM;
+import org.svip.sbom.model.objects.SVIPSBOM;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -65,20 +70,35 @@ public class OSIController {
     // Services
     private final SBOMFileService sbomService;
     private final OSIService osiService;
+    private final VulnerabilityScanService vulnerabilityScanService;
+    private final org.svip.api.services.VulnerabilityHistoryService vulnerabilityHistoryService;
 
     /**
      * Create new Controller with services
      *
      * @param sbomService Service for handling SBOM queries
+     * @param osiService Service for handling OSI operations
+     * @param vulnerabilityScanService Service for vulnerability scanning
+     * @param vulnerabilityHistoryService Service for historical tracking
      */
-    public OSIController(SBOMFileService sbomService, OSIService osiService) {
+    public OSIController(SBOMFileService sbomService, OSIService osiService, 
+                        VulnerabilityScanService vulnerabilityScanService,
+                        org.svip.api.services.VulnerabilityHistoryService vulnerabilityHistoryService) {
         this.sbomService = sbomService;
         this.osiService = osiService;
+        this.vulnerabilityScanService = vulnerabilityScanService;
+        this.vulnerabilityHistoryService = vulnerabilityHistoryService;
 
         if (this.osiService.isEnabled()) {
             LOGGER.info("OSI ENDPOINT ENABLED");
         } else {
             LOGGER.warn("OSI ENDPOINT DISABLED -- Unable to communicate with OSI container; Is the container running?");
+        }
+        
+        if (this.vulnerabilityScanService.isEnabled()) {
+            LOGGER.info("VULNERABILITY SCANNING ENABLED");
+        } else {
+            LOGGER.info("VULNERABILITY SCANNING DISABLED");
         }
     }
 
@@ -155,24 +175,26 @@ public class OSIController {
      *                    possible tools will be used.
      * @return The ID of the uploaded SBOM.
      */
-    @PostMapping(value = "")
+    @PostMapping(value = "", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<?> generateWithOSI(@RequestParam("projectName") String projectName,
                                              @RequestParam("schema") SerializerFactory.Schema schema,
                                              @RequestParam("format") SerializerFactory.Format format,
-                                             @RequestParam(value = "toolNames", required = false) String toolNames) {
+                                             @RequestParam(value = "toolNames", required = false) String toolNamesJson) {
 
         HashMap<String, String> generatedSBOMs;
         try {
             // Run with requested tools, default to relevant ones
             List<String> tools;
-            if (toolNames != null) {
-                /*
-                todo - this is a hotfix
-                tldr when gui sends multipart form "toolNames" is sent as string ( "["foo","bar"]" )
-                and not an actual String[]. This hotfix just converts the string to an array
-                 */
-                ObjectMapper mapper = new ObjectMapper();
-                tools = List.of(mapper.readValue(toolNames, String[].class));
+            if (toolNamesJson != null && !toolNamesJson.isBlank()) {
+                try {
+                    ObjectMapper mapper = new ObjectMapper();
+                    @SuppressWarnings("unchecked")
+                    List<String> parsedTools = mapper.readValue(toolNamesJson, List.class);
+                    tools = parsedTools;
+                } catch (Exception parseEx) {
+                    LOGGER.warn("POST /svip/generators/osi - Invalid toolNames JSON; defaulting to project tools. Error: {}", parseEx.getMessage());
+                    tools = this.osiService.getTools("project");
+                }
             } else {
                 tools = this.osiService.getTools("project");
             }
@@ -189,9 +211,32 @@ public class OSIController {
         if (generatedSBOMs.isEmpty())
             return new ResponseEntity<>("No SBOMs were generated", HttpStatus.NO_CONTENT);
 
-        // Upload SBOMs to SB
+        // SCAN INDIVIDUAL SBOMs BEFORE MERGING (to preserve metadata)
+        Map<String, String> scannedSBOMs = new HashMap<>();
+        if (vulnerabilityScanService.isEnabled()) {
+            LOGGER.info("POST /svip/generators/osi - Running vulnerability scans on individual SBOMs before merging");
+            for (Map.Entry<String, String> entry : generatedSBOMs.entrySet()) {
+                String fileName = entry.getKey();
+                String sbomContent = new String(Base64.getDecoder().decode(entry.getValue()));
+                
+                try {
+                    String enrichedContent = vulnerabilityScanService.runVulnerabilityScans(sbomContent, fileName);
+                    // Re-encode to base64 for consistency
+                    scannedSBOMs.put(fileName, Base64.getEncoder().encodeToString(enrichedContent.getBytes()));
+                    LOGGER.info("POST /svip/generators/osi - Scanned {}", fileName);
+                } catch (Exception e) {
+                    LOGGER.warn("POST /svip/generators/osi - Failed to scan {}: {}. Using original.", fileName, e.getMessage());
+                    scannedSBOMs.put(fileName, entry.getValue());
+                }
+            }
+        } else {
+            LOGGER.info("POST /svip/generators/osi - Vulnerability scanning disabled, using original SBOMs");
+            scannedSBOMs.putAll(generatedSBOMs);
+        }
+
+        // Upload SBOMs to DB
         List<SBOMFile> uploaded = new ArrayList<>();
-        generatedSBOMs.forEach((fileName, base64Content) -> {
+        scannedSBOMs.forEach((fileName, base64Content) -> {
             // Try to upload new SBOM to DB
             try {
                 UploadSBOMFileInput input = new UploadSBOMFileInput(
@@ -220,6 +265,24 @@ public class OSIController {
 
         LOGGER.info("POST /svip/generators/osi - Parsed {} SBOMs successfully", uploaded.size());
 
+        // Collect vulnerabilities from scanned SBOMs before merging
+        List<JsonNode> allVulnerabilities = new ArrayList<>();
+        if (vulnerabilityScanService.isEnabled()) {
+            for (SBOMFile sbomFile : uploaded) {
+                try {
+                    JsonNode sbomJson = new ObjectMapper().readTree(sbomFile.getContent());
+                    if (sbomJson.has("vulnerabilities") && sbomJson.get("vulnerabilities").isArray()) {
+                        sbomJson.get("vulnerabilities").forEach(allVulnerabilities::add);
+                    }
+                } catch (Exception e) {
+                    LOGGER.warn("POST /svip/generators/osi - Failed to extract vulnerabilities from {}: {}", 
+                               sbomFile.getName(), e.getMessage());
+                }
+            }
+            LOGGER.info("POST /svip/generators/osi - Collected {} total vulnerabilities from individual SBOMs", 
+                       allVulnerabilities.size());
+        }
+
         // Merge SBOMs
         Long mergedID;
         if (uploaded.size() >= 2) {
@@ -245,23 +308,124 @@ public class OSIController {
             mergedID = uploaded.get(0).getId();
         }
 
-        // Convert
+        // Re-serialize to requested format (preserves relationships better than conversion)
         Long convertedID;
         try {
-            LOGGER.info("POST /svip/generators/osi - Converting SBOM to {} {}", schema, format);
-            convertedID = sbomService.convert(mergedID, schema, format, true);
-            LOGGER.info("POST /svip/generators/osi - Successfully merged SBOMs to SBOM with id {}", convertedID);
-        } catch (DeserializerException | JsonProcessingException | SerializerException | SBOMBuilderException |
-                 ConversionException e) {
-            // Failed to convert
-            LOGGER.error("POST /svip/generators/osi - Failed to convert - " + e.getMessage());
+            SBOMFile mergedSbom = sbomService.getSBOMFile(mergedID);
+            
+            // Check if already in target schema/format
+            if (matchesRequestedFormat(mergedSbom, schema, format)) {
+                LOGGER.info("POST /svip/generators/osi - Merged SBOM already in {} {}, using as-is", schema, format);
+                convertedID = mergedID;
+            } else {
+                // Re-serialize instead of convert to preserve relationship structure
+                LOGGER.info("POST /svip/generators/osi - Re-serializing merged SBOM to {} {}", schema, format);
+                SBOM sbomObject = mergedSbom.toSBOMObject();
+                Serializer serializer = SerializerFactory.createSerializer(schema, format, true);
+                serializer.setPrettyPrinting(true);
+                String reserializedContent = serializer.writeToString((SVIPSBOM) sbomObject);
+                
+                String newName = (sbomObject.getName() != null ? sbomObject.getName() : "merged-sbom") + "-" + schema + "-" + format;
+                UploadSBOMFileInput input = new UploadSBOMFileInput(newName, reserializedContent);
+                SBOMFile reserialized = input.toSBOMFile();
+                
+                // Delete old merged SBOM and save new one
+                sbomService.deleteSBOMFile(mergedSbom);
+                sbomService.upload(reserialized);
+                convertedID = reserialized.getId();
+                LOGGER.info("POST /svip/generators/osi - Successfully re-serialized to id {}", convertedID);
+            }
+        } catch (Exception e) {
+            // Failed to re-serialize
+            LOGGER.error("POST /svip/generators/osi - Failed to re-serialize - " + e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        // todo how to set file name using projectName
+        // RE-ADD VULNERABILITIES AFTER MERGE (merge strips them)
+        if (!allVulnerabilities.isEmpty() && vulnerabilityScanService.isEnabled()) {
+            try {
+                SBOMFile mergedSbom = sbomService.getSBOMFile(convertedID);
+                if (mergedSbom != null) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    JsonNode sbomJson = mapper.readTree(mergedSbom.getContent());
+                    List<JsonNode> remappedVulnerabilities = vulnerabilityScanService.remapVulnerabilityReferences(sbomJson, allVulnerabilities);
+                    allVulnerabilities = new ArrayList<>(remappedVulnerabilities);
+
+                    LOGGER.info("POST /svip/generators/osi - Re-adding {} vulnerabilities to merged SBOM", allVulnerabilities.size());
+
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> sbomMap = mapper.convertValue(sbomJson, Map.class);
+                    sbomMap.put("vulnerabilities", allVulnerabilities);
+                    
+                    String enrichedContent = mapper.writerWithDefaultPrettyPrinter()
+                                                   .writeValueAsString(sbomMap);
+                    
+                    // Update with enriched content
+                    mergedSbom.setContent(enrichedContent);
+                    sbomService.upload(mergedSbom);
+                    
+                    LOGGER.info("POST /svip/generators/osi - Successfully re-added vulnerabilities to merged SBOM");
+                    
+                    // Record history
+                    vulnerabilityHistoryService.recordVulnerabilities(
+                        convertedID,
+                        projectName,
+                        mergedSbom.getName(),
+                        allVulnerabilities,
+                        "grype,trivy"
+                    );
+                    LOGGER.info("POST /svip/generators/osi - Recorded {} vulnerabilities to history", allVulnerabilities.size());
+                }
+            } catch (Exception e) {
+                LOGGER.warn("POST /svip/generators/osi - Failed to re-add vulnerabilities: {}", e.getMessage());
+            }
+        }
+
+        // Set descriptive filename: ProjectName-OSI-Schema-Format-Timestamp.ext
+        try {
+            String extension;
+            if (schema == SerializerFactory.Schema.SPDX23) {
+                extension = (format == SerializerFactory.Format.TAGVALUE) ? ".spdx" : ".json";
+            } else { // CDX14
+                extension = (format == SerializerFactory.Format.XML) ? ".xml" : ".json";
+            }
+
+            String schemaStr = (schema == SerializerFactory.Schema.SPDX23) ? "SPDX23" : "CDX14";
+            String formatStr = switch (format) {
+                case JSON -> "JSON";
+                case XML -> "XML";
+                case TAGVALUE -> "TAGVALUE";
+            };
+
+            String safeProject = (projectName == null ? "SBOM" : projectName).replaceAll("[^A-Za-z0-9._-]+", "-");
+            String ts = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
+            String finalName = safeProject + "-OSI-" + schemaStr + "-" + formatStr + "-" + ts + extension;
+            sbomService.rename(convertedID, finalName);
+        } catch (Exception ignored) {
+            // keep auto name if rename fails
+        }
 
         // Return ID
         return new ResponseEntity<>(convertedID, HttpStatus.OK);
+    }
+
+    private boolean matchesRequestedFormat(SBOMFile file, SerializerFactory.Schema schema, SerializerFactory.Format format) {
+        SBOMFile.Schema expectedSchema = switch (schema) {
+            case CDX14 -> SBOMFile.Schema.CYCLONEDX_14;
+            case SPDX23 -> SBOMFile.Schema.SPDX_23;
+            default -> null;
+        };
+
+        SBOMFile.FileType expectedType = switch (format) {
+            case JSON -> SBOMFile.FileType.JSON;
+            case XML -> SBOMFile.FileType.XML;
+            case TAGVALUE -> SBOMFile.FileType.TAG_VALUE;
+        };
+
+        return expectedSchema != null
+                && expectedType != null
+                && file.getSchema() == expectedSchema
+                && file.getFileType() == expectedType;
     }
 
 }

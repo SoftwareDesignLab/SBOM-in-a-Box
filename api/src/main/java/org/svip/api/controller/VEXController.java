@@ -94,11 +94,25 @@ public class VEXController {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
 
-            // Get stored content
+            // Get stored content (unless it has errors, then regenerate)
             // todo more than 1 vex stored? Ie 1 from nvd, could run for osv
             // todo POST / arg to force rerun vex??
-            if (sbomFile.getVEXFile() != null)
-                return new ResponseEntity<>(sbomFile.getVEXFile().getContent(), HttpStatus.OK);
+            if (sbomFile.getVEXFile() != null) {
+                String cachedContent = sbomFile.getVEXFile().getContent();
+                // Check if cached VEX has errors; if so, regenerate
+                try {
+                    if (cachedContent != null && !cachedContent.contains("\"error\":{}") && 
+                        !cachedContent.contains("JSONObject")) {
+                        return new ResponseEntity<>(cachedContent, HttpStatus.OK);
+                    }
+                    // Has errors or issues, delete and regenerate
+                    LOGGER.info("VEX /svip/sboms/vex?id=" + id + " - Cached VEX has errors, regenerating");
+                    this.vexFileService.delete(sbomFile.getVEXFile());
+                    sbomFile.setVEXFile(null);
+                } catch (Exception e) {
+                    LOGGER.warn("VEX /svip/sboms/vex?id=" + id + " - Error checking cached VEX: " + e.getMessage());
+                }
+            }
 
             // No VEX stored, generate one
             VEXResult vexResult = this.vexFileService.generateVEX(sbomFile.toSBOMObject(), client, format, apiKey);

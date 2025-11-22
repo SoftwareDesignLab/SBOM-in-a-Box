@@ -8,6 +8,7 @@ API that exposes endpoints to manage the generations of SBOMs using Open Source 
 """
 import base64
 import configparser
+import glob
 import os
 import shutil
 import subprocess
@@ -94,6 +95,192 @@ class OSIAPIServer:
             tools += tool.get_matching_profiles(run_config)
         return tools
 
+    @staticmethod
+    def _command_exists(command: str) -> bool:
+        return shutil.which(command) is not None
+
+    def _run_prepare_command(self, command: List[str], cwd: str, description: str) -> None:
+        self._app.logger.info(f"Prepare | Running {description} in {os.path.relpath(cwd, os.environ.get('CODE_IN', cwd))}")
+        try:
+            result = subprocess.run(
+                command,
+                cwd=cwd,
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+            )
+            output = result.stdout.strip()
+            if output:
+                self._app.logger.info(f"Prepare | {description} output:\n{output}")
+            else:
+                self._app.logger.info(f"Prepare | {description} completed with no output")
+        except FileNotFoundError:
+            self._app.logger.warning(f"Prepare | Command not found for {description}")
+        except subprocess.CalledProcessError as exc:
+            output = exc.stdout.strip() if exc.stdout else "(no output)"
+            self._app.logger.warning(
+                f"Prepare | {description} failed with exit code {exc.returncode}: {output}")
+
+    def _prepare_project(self, project_dir: str) -> None:
+        """
+        Hydrates package manifests with lockfiles and dependency metadata so scanners such as cdxgen,
+        gobom, and other language-specific generators can build accurate graphs. Many tools require
+        node_modules/vendor directories or lockfiles to exist before producing a trustworthy SBOM.
+        """
+        self._app.logger.info("Prepare | Ensuring dependency metadata for uploaded project")
+
+        def _rel(path: str) -> str:
+            try:
+                return os.path.relpath(path, project_dir)
+            except ValueError:
+                return path
+
+        node_manifests = glob.glob(os.path.join(project_dir, "**", "package.json"), recursive=True)
+        for manifest in node_manifests:
+            base_dir = os.path.dirname(manifest)
+            
+            # Full install for dependency tree analysis (production only, no scripts)
+            if self._command_exists("npm"):
+                self._app.logger.info(f"Prepare | Installing dependencies for dependency graph analysis in {_rel(base_dir)}")
+                
+                # First try npm ci for faster, reproducible installs
+                try:
+                    result = subprocess.run(
+                        ["npm", "ci", "--omit=dev", "--ignore-scripts"],
+                        cwd=base_dir,
+                        capture_output=True,
+                        text=True,
+                        timeout=300
+                    )
+                    if result.returncode != 0:
+                        # npm ci failed, try regular npm install as fallback
+                        self._app.logger.warning(f"Prepare | npm ci failed in {_rel(base_dir)}, falling back to npm install")
+                        
+                        # Check if node_modules already exists
+                        node_modules_path = os.path.join(base_dir, "node_modules")
+                        if os.path.exists(node_modules_path):
+                            self._app.logger.info(f"Prepare | Found existing node_modules in {_rel(base_dir)}, will use for scanning")
+                        else:
+                            # Try npm install as fallback
+                            self._run_prepare_command(
+                                ["npm", "install", "--omit=dev", "--ignore-scripts"],
+                                base_dir,
+                                f"npm install --omit=dev ({_rel(base_dir)})",
+                            )
+                    else:
+                        self._app.logger.info(f"Prepare | npm ci succeeded in {_rel(base_dir)}")
+                except subprocess.TimeoutExpired:
+                    self._app.logger.warning(f"Prepare | npm ci timed out in {_rel(base_dir)}")
+                except Exception as e:
+                    self._app.logger.warning(f"Prepare | npm ci failed with error: {e}")
+                    
+            elif self._command_exists("yarn") and os.path.exists(os.path.join(base_dir, "yarn.lock")):
+                self._run_prepare_command(
+                    ["yarn", "install", "--production", "--frozen-lockfile", "--ignore-scripts"],
+                    base_dir,
+                    f"yarn install --production ({_rel(base_dir)})",
+                )
+            elif self._command_exists("pnpm") and os.path.exists(os.path.join(base_dir, "pnpm-lock.yaml")):
+                self._run_prepare_command(
+                    ["pnpm", "install", "--prod", "--frozen-lockfile", "--ignore-scripts"],
+                    base_dir,
+                    f"pnpm install --prod ({_rel(base_dir)})",
+                )
+
+        go_modules = glob.glob(os.path.join(project_dir, "**", "go.mod"), recursive=True)
+        if self._command_exists("go"):
+            for go_mod in go_modules:
+                base_dir = os.path.dirname(go_mod)
+                self._run_prepare_command(["go", "mod", "tidy"], base_dir, f"go mod tidy ({_rel(base_dir)})")
+
+        cargo_manifests = glob.glob(os.path.join(project_dir, "**", "Cargo.toml"), recursive=True)
+        if self._command_exists("cargo"):
+            for cargo_toml in cargo_manifests:
+                base_dir = os.path.dirname(cargo_toml)
+                self._run_prepare_command(
+                    ["cargo", "generate-lockfile"],
+                    base_dir,
+                    f"cargo generate-lockfile ({_rel(base_dir)})",
+                )
+
+        pyprojects = glob.glob(os.path.join(project_dir, "**", "pyproject.toml"), recursive=True)
+        for pyproject in pyprojects:
+            base_dir = os.path.dirname(pyproject)
+            try:
+                with open(pyproject, "r", encoding="utf-8") as handle:
+                    pyproject_contents = handle.read()
+            except OSError as exc:
+                self._app.logger.warning(f"Prepare | Unable to read pyproject.toml at {_rel(pyproject)}: {exc}")
+                pyproject_contents = ""
+
+            if "tool.poetry" in pyproject_contents:
+                if self._command_exists("poetry"):
+                    self._app.logger.info(f"Prepare | Installing Python dependencies via poetry in {_rel(base_dir)}")
+                    self._run_prepare_command(
+                        ["poetry", "install", "--no-dev", "--no-root"],
+                        base_dir,
+                        f"poetry install --no-dev ({_rel(base_dir)})",
+                    )
+                else:
+                    self._app.logger.warning(
+                        f"Prepare | poetry not available; skipping install for {_rel(base_dir)}")
+
+        pipfiles = glob.glob(os.path.join(project_dir, "**", "Pipfile"), recursive=True)
+        for pipfile in pipfiles:
+            base_dir = os.path.dirname(pipfile)
+            if self._command_exists("pipenv"):
+                self._app.logger.info(f"Prepare | Installing Python dependencies via pipenv in {_rel(base_dir)}")
+                self._run_prepare_command(
+                    ["pipenv", "install", "--deploy", "--ignore-pipfile"],
+                    base_dir,
+                    f"pipenv install ({_rel(base_dir)})",
+                )
+            else:
+                self._app.logger.warning(
+                    f"Prepare | pipenv not available; skipping install for {_rel(base_dir)}")
+        
+        # Handle requirements.txt for pip-based projects
+        requirements_files = glob.glob(os.path.join(project_dir, "**", "requirements.txt"), recursive=True)
+        for req_file in requirements_files:
+            base_dir = os.path.dirname(req_file)
+            # Skip if poetry or pipenv already handled it
+            if os.path.exists(os.path.join(base_dir, "pyproject.toml")) or os.path.exists(os.path.join(base_dir, "Pipfile")):
+                continue
+            if self._command_exists("pip3"):
+                self._app.logger.info(f"Prepare | Installing Python dependencies via pip in {_rel(base_dir)}")
+                self._run_prepare_command(
+                    ["pip3", "install", "--target", os.path.join(base_dir, ".pip-packages"), "-r", req_file, "--no-cache-dir"],
+                    base_dir,
+                    f"pip install -r requirements.txt ({_rel(base_dir)})",
+                )
+
+        dotnet_projects = glob.glob(os.path.join(project_dir, "**", "*.sln"), recursive=True) + \
+            glob.glob(os.path.join(project_dir, "**", "*.csproj"), recursive=True)
+        if dotnet_projects and self._command_exists("dotnet"):
+            processed_paths = set()
+            for project in dotnet_projects:
+                base_dir = os.path.dirname(project)
+                if base_dir not in processed_paths:
+                    self._run_prepare_command(["dotnet", "restore"], base_dir, f"dotnet restore ({_rel(base_dir)})")
+                    processed_paths.add(base_dir)
+        elif dotnet_projects:
+            self._app.logger.warning("Prepare | dotnet not available; skipping restore for .NET projects")
+
+        composer_manifests = glob.glob(os.path.join(project_dir, "**", "composer.json"), recursive=True)
+        for composer_json in composer_manifests:
+            base_dir = os.path.dirname(composer_json)
+            if not os.path.exists(os.path.join(base_dir, "composer.lock")):
+                if self._command_exists("composer"):
+                    self._run_prepare_command(
+                        ["composer", "update", "--lock", "--no-interaction"],
+                        base_dir,
+                        f"composer update --lock ({_rel(base_dir)})",
+                    )
+                else:
+                    self._app.logger.warning(
+                        f"Prepare | composer not available; skipping composer.lock generation for {_rel(base_dir)}")
+
     def _setup_routes(self):
         @self._app.route('/healthcheck', methods=['GET'])
         def healthcheck():
@@ -143,6 +330,10 @@ class OSIAPIServer:
                 with zipfile.ZipFile(BytesIO(zip_data)) as zip_ref:
                     zip_ref.extractall(os.environ['CODE_IN'])
                 self._app.logger.info("Extracted project successfully")
+                try:
+                    self._prepare_project(os.environ['CODE_IN'])
+                except Exception as prep_error:
+                    self._app.logger.warning(f"Prepare | Failed to prepare project: {prep_error}")
                 return 'Zip extracted successfully', 201
             except Exception as e:
                 self._app.logger.error(f"Failed to extract project: {e}")

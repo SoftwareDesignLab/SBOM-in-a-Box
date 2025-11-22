@@ -45,6 +45,8 @@ import org.svip.serializers.Metadata;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -106,6 +108,15 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         this.prettyPrint = prettyPrint;
     }
 
+    /**
+     * Writes the CycloneDX document to the provided generator, emitting top-level metadata,
+     * components, dependencies, and attachments in a single pass.
+     *
+     * @param sbom SBOM being serialized
+     * @param jsonGenerator destination generator
+     * @param provider serializer provider passed by Jackson
+     * @throws IOException when the output stream cannot be written
+     */
     @Override
     public void serialize(SVIPSBOM sbom, JsonGenerator jsonGenerator, SerializerProvider provider) throws IOException {
         jsonGenerator.writeStartObject();
@@ -149,7 +160,9 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         jsonGenerator.writeFieldName("dependencies");
         jsonGenerator.writeStartArray();
 
-        for (Map.Entry<String, Set<Relationship>> dep : sbom.getRelationships().entrySet()) {
+        Map<String, Set<Relationship>> relationships = getSanitizedRelationships(sbom);
+
+        for (Map.Entry<String, Set<Relationship>> dep : relationships.entrySet()) {
             jsonGenerator.writeStartObject();
 
             jsonGenerator.writeStringField("ref", dep.getKey());
@@ -176,6 +189,75 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
     //#endregion
 
     //#region Helper Methods
+
+    private Map<String, Set<Relationship>> getSanitizedRelationships(SVIPSBOM sbom) {
+        Map<String, Set<Relationship>> original = sbom.getRelationships();
+        Map<String, Set<Relationship>> cleaned = new LinkedHashMap<>();
+
+        if (original != null) {
+            for (Map.Entry<String, Set<Relationship>> entry : original.entrySet()) {
+                String ref = normalizeRef(entry.getKey());
+                if (ref == null) continue;
+
+                Set<Relationship> filtered = new LinkedHashSet<>();
+                if (entry.getValue() != null) {
+                    for (Relationship rel : entry.getValue()) {
+                        if (rel == null) continue;
+                        String other = normalizeRef(rel.getOtherUID());
+                        if (other == null) continue;
+                        filtered.add(new Relationship(other, rel.getRelationshipType()));
+                    }
+                }
+
+                if (!filtered.isEmpty()) {
+                    cleaned.put(ref, filtered);
+                }
+            }
+        }
+
+        if (cleaned.isEmpty()) {
+            for (Component component : sbom.getComponents()) {
+                if (component == null) continue;
+                String uid = normalizeRef(component.getUID());
+                if (uid == null) continue;
+                cleaned.put(uid, new LinkedHashSet<>());
+            }
+        }
+
+        return cleaned;
+    }
+
+    private String resolveRootUid(SVIPSBOM sbom) {
+        Component root = sbom.getRootComponent();
+        if (root != null) {
+            String uid = normalizeRef(root.getUID());
+            if (uid != null) return uid;
+        }
+
+        for (Component component : sbom.getComponents()) {
+            if (component == null) continue;
+            String type = component.getType();
+            if (type != null && type.equalsIgnoreCase("application")) {
+                String uid = normalizeRef(component.getUID());
+                if (uid != null) return uid;
+            }
+        }
+
+        for (Component component : sbom.getComponents()) {
+            if (component == null) continue;
+            String uid = normalizeRef(component.getUID());
+            if (uid != null) return uid;
+        }
+
+        return null;
+    }
+
+    private String normalizeRef(String ref) {
+        if (ref == null) return null;
+        String trimmed = ref.trim();
+        if (trimmed.isEmpty() || "null".equalsIgnoreCase(trimmed)) return null;
+        return trimmed;
+    }
 
     private void writeCreationData(JsonGenerator jsonGenerator, CreationData data, SVIPComponentObject rootComponent) throws IOException {
         jsonGenerator.writeFieldName("metadata");
@@ -376,6 +458,13 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         jsonGenerator.writeEndArray();
     }
 
+    /**
+     * Writes a single SVIP component into the CycloneDX components section.
+     *
+     * @param jsonGenerator destination generator
+     * @param component component to serialize
+     * @throws IOException if serialization fails
+     */
     private void writeComponent(JsonGenerator jsonGenerator, SVIPComponentObject component) throws IOException {
         jsonGenerator.writeStartObject();
 
@@ -422,7 +511,10 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         // External Refs
         writeExternalRefs(jsonGenerator, component.getExternalReferences());
 
-        jsonGenerator.writeStringField("releaseNotes", "Release Date: " + component.getReleaseDate());
+        // Release Notes - Skip writing as string (CycloneDX expects object, not string)
+        // If needed in future, implement proper ReleaseNotes object serialization
+        // jsonGenerator.writeStringField("releaseNotes", "Release Date: " + component.getReleaseDate());
+        
         writeProperties(jsonGenerator, component.getProperties());
 
 //        jsonGenerator.writeStringField("swid", String.join(", ", component.getSWID()));

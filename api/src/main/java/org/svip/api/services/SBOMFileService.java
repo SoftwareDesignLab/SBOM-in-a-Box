@@ -259,17 +259,15 @@ public class SBOMFileService {
             throw new Exception("Error merging SBOMs: " + e.getMessage());
         }
 
-        SerializerFactory.Schema schema = SerializerFactory.Schema.SPDX23;
+        SerializerFactory.Schema schema = SerializerFactory.Schema.CDX14;
 
         // serialize merged SBOM
-        Serializer s = SerializerFactory.createSerializer(schema, SerializerFactory.Format.TAGVALUE, // todo default to
-                // SPDX JSON for
-                // now?
-                true);
+        Serializer s = SerializerFactory.createSerializer(schema, SerializerFactory.Format.JSON, true);
         s.setPrettyPrinting(true);
         String contents;
         try {
-            contents = s.writeToString((SVIPSBOM) merged);
+            org.svip.sbom.model.interfaces.generics.SBOM mergedForSchema = Conversion.convert(merged, SerializerFactory.Schema.SVIP, schema);
+            contents = s.writeToString((SVIPSBOM) mergedForSchema);
         } catch (JsonProcessingException | ClassCastException e) {
             throw new Exception("Error deserializing merged SBOM: " + e.getMessage());
         }
@@ -358,6 +356,23 @@ public class SBOMFileService {
 
         this.sbomFileRepository.save(sbomFile);
 
+        return sbomFile.getId();
+    }
+
+    /**
+     * Rename an SBOM entry in the database
+     *
+     * @param id      ID of SBOM to rename
+     * @param newName New file name to set
+     * @return id of the updated SBOM or null if not found
+     */
+    public Long rename(Long id, String newName) {
+        SBOMFile sbomFile = getSBOMFile(id);
+        if (sbomFile == null) {
+            return null;
+        }
+        sbomFile.setName(newName);
+        this.sbomFileRepository.save(sbomFile);
         return sbomFile.getId();
     }
 

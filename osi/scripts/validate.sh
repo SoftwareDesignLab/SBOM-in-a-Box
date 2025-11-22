@@ -88,6 +88,12 @@ function verify_tools(){
   sbom-tool --version &> /dev/null && fail "sbom-tool" || pass "sbom-tool" 3  # returns 1 on success
   spdx-sbom-generator -h &> /dev/null && pass "spdx-sbom-generator" 3 || fail "spdx-sbom-generator"
   syft -h &> /dev/null && pass "syft" 3 || fail "syft"
+  
+  # Vulnerability Scanners
+  grype version &> /dev/null && pass "grype" 3 || fail "grype"
+  trivy --version &> /dev/null && pass "trivy" 3 || fail "trivy"
+  osv-scanner --version &> /dev/null && pass "osv-scanner" 3 || fail "osv-scanner"
+  dependency-check.sh --version &> /dev/null && pass "dependency-check" 3 || fail "dependency-check"
 
 }
 

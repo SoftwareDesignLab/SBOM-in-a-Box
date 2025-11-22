@@ -71,20 +71,29 @@ public class OSVClient implements VulnerabilityDBClient {
         // build the post method
         request = HttpRequest.newBuilder()
                 .uri(URI.create(POST_ENDPOINT))
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
 
         // send the response and get the APIs response
         CompletableFuture<HttpResponse<String>> apiResponse = httpClient
                 .sendAsync(request, HttpResponse.BodyHandlers.ofString());
-        String responseBody = apiResponse.get().body();
+        HttpResponse<String> httpResponse = apiResponse.get();
+        String responseBody = httpResponse.body();
 
-        // check if error code appeared with response and throw error if true
+        // check for OSV error format (google rpc style)
         JSONObject jsonObject = new JSONObject(responseBody);
         if (jsonObject.has("code") && jsonObject.getInt("code") == 3) {
-            throw new Exception("Invalid call to OSV API");
+            // Return empty array instead of throwing so caller can continue gracefully
+            return "[]";
         }
-        return responseBody.replace("{\"vulns\":", "");
+
+        // extract vulns array safely
+        if (jsonObject.has("vulns")) {
+            return jsonObject.getJSONArray("vulns").toString();
+        }
+        return "[]";
     }
 
 
@@ -96,11 +105,14 @@ public class OSVClient implements VulnerabilityDBClient {
      * @param componentVersion the component's version
      * @return the response from the OSV API request
      */
-    private String getOSVByNameVersionPost(String componentName, String componentVersion) throws Exception {
+    private String getOSVByNameVersionPost(String componentName, String componentVersion, String ecosystem) throws Exception {
         JSONObject body = new JSONObject();
         body.put("version", componentVersion);
         JSONObject packageJSON = new JSONObject();
         packageJSON.put("name", componentName);
+        if (ecosystem != null && !ecosystem.isBlank()) {
+            packageJSON.put("ecosystem", ecosystem);
+        }
         body.put("package", packageJSON);
         return getOSVResponse(body.toString());
     }
@@ -120,6 +132,70 @@ public class OSVClient implements VulnerabilityDBClient {
         return getOSVResponse(body.toString());
     }
 
+    private String deriveEcosystemFromPurlType(String purlType) {
+        if (purlType == null) return null;
+        return switch (purlType.toLowerCase()) {
+            case "maven" -> "Maven";
+            case "npm" -> "npm";
+            case "pypi" -> "PyPI";
+            case "golang", "go" -> "Go";
+            case "gem", "rubygems" -> "RubyGems";
+            case "cargo" -> "crates.io";
+            case "nuget" -> "NuGet";
+            case "composer" -> "Packagist";
+            default -> null;
+        };
+    }
+
+    /**
+     * Validate if a component is suitable for OSV API analysis
+     * Filters out files that are clearly not packages (config files, git files, etc.)
+     *
+     * @param s the SBOM package to validate
+     * @return true if the component is a valid package for OSV analysis
+     */
+    private boolean isValidPackageForOSV(SBOMPackage s) {
+        if (s == null || s.getName() == null) {
+            return false;
+        }
+        
+        String name = s.getName().toLowerCase();
+        
+        // Skip clearly non-package files
+        if (name.startsWith(".git/") || name.startsWith(".github/") || 
+            name.endsWith(".git") || name.endsWith(".gitignore") ||
+            name.endsWith(".yml") || name.endsWith(".yaml") ||
+            name.endsWith(".json") && !name.contains("package.json") ||
+            name.endsWith(".md") || name.endsWith(".txt") ||
+            name.endsWith(".xml") || name.endsWith(".properties") ||
+            name.endsWith(".config") || name.endsWith(".ini") ||
+            name.endsWith(".log") || name.endsWith(".lock") ||
+            name.contains("node_modules") && name.endsWith(".js") ||
+            name.contains("test") && (name.endsWith(".js") || name.endsWith(".ts")) ||
+            name.equals(".") || name.equals("..") ||
+            name.startsWith("LICENSE") || name.startsWith("README") ||
+            name.endsWith(".pem") || name.endsWith(".crt") ||
+            name.endsWith(".exe") || name.endsWith(".dll") ||
+            name.endsWith(".so") || name.endsWith(".dylib")) {
+            return false;
+        }
+        
+        // Additional checks for known package patterns
+        Set<String> purls = s.getPURLs();
+        if (purls != null && !purls.isEmpty()) {
+            // If it has valid PURLs, it's likely a real package
+            return true;
+        }
+        
+        // If it has both name and version, it might be a valid package
+        if (s.getName() != null && s.getVersion() != null && 
+            !s.getVersion().isEmpty() && !s.getVersion().equals("unknown")) {
+            return true;
+        }
+        
+        return false;
+    }
+
     /**
      * Get all vulnerabilities of a component using the OSV API
      *
@@ -132,6 +208,13 @@ public class OSVClient implements VulnerabilityDBClient {
     public List<VEXStatement> getVEXStatements(SBOMPackage s) throws Exception {
         List<VEXStatement> vexStatements = new ArrayList<>();
         String response;
+        
+        // Skip processing files that are clearly not packages
+        if (!isValidPackageForOSV(s)) {
+            // Not a valid package for OSV analysis — skip silently
+            return vexStatements;
+        }
+        
         // check that component is not an SPDX23File, as it does not
         // have the necessary fields to search for vulnerabilities
         // cast to SBOMPackage to check for purls
@@ -142,23 +225,50 @@ public class OSVClient implements VulnerabilityDBClient {
             // vulnerabilities
             ArrayList<String> purlList = new ArrayList<>(purls);
             String purlString = purlList.get(0);
-            response = getOSVByPURLPost(purlString);
+            try {
+                response = getOSVByPURLPost(purlString);
+            } catch (Exception e) {
+                // If OSV API call fails, log and return empty list instead of throwing
+                System.err.println("OSV API call failed for PURL " + purlString + ": " + e.getMessage());
+                return vexStatements;
+            }
         }
         // if component has no purls, construct API request with
         // name and version
         else if (s.getName() != null && s.getVersion() != null) {
             String name = s.getName();
             String version = s.getVersion();
-            response = getOSVByNameVersionPost(name, version);
-            // some components require its group and name to search
-            // for vulnerabilities
-            if (response.equals("{}")) {
-                name = s.getAuthor() + ":" + s.getName();
-                response = getOSVByNameVersionPost(name, version);
+            // attempt to derive ecosystem from supplier or author hints
+            String ecosystem = null;
+            try {
+                // try to infer from supplier URL or name patterns if available
+                // leave null if unknown (OSV may reject; will be caught below)
+                if (s.getPURLs() != null && !s.getPURLs().isEmpty()) {
+                    String anyPurl = new ArrayList<>(s.getPURLs()).get(0);
+                    int idx = anyPurl.indexOf(":" );
+                    if (idx > -1) {
+                        String purlType = anyPurl.substring(4, idx); // after "pkg:"
+                        ecosystem = deriveEcosystemFromPurlType(purlType);
+                    }
+                }
+            } catch (Exception ignored) {}
+
+            try {
+                response = getOSVByNameVersionPost(name, version, ecosystem);
+                // some components require its group and name to search
+                // for vulnerabilities
+                if (response.equals("{}") && s.getAuthor() != null) {
+                    name = s.getAuthor() + ":" + s.getName();
+                    response = getOSVByNameVersionPost(name, version, ecosystem);
+                }
+            } catch (Exception e) {
+                // If OSV API call fails, log and return empty list instead of throwing
+                System.err.println("OSV API call failed for package " + name + ":" + version + ": " + e.getMessage());
+                return vexStatements;
             }
         } else {
-            throw new Exception("Component does not have necessary fields " +
-                    "to test with OSV API");
+            // Missing fields for OSV analysis — skip gracefully
+            return vexStatements;
         }
         // if jsonResponse did not have an error and is not empty,
         // create a vex statement for every vulnerability in response
@@ -193,48 +303,72 @@ public class OSVClient implements VulnerabilityDBClient {
      */
     private VEXStatement generateVEXStatement(JSONObject vulnerabilityBody, SBOMPackage c) {
         VEXStatement.Builder statement = new VEXStatement.Builder();
-        // add general fields to the statement
-        statement.setStatementID(vulnerabilityBody.getString("id"));
-        statement.setStatementVersion("1.0");
-        statement.setStatementFirstIssued(vulnerabilityBody
-                .getString("published"));
-        statement.setStatementLastUpdated(vulnerabilityBody
-                .getString("modified"));
 
-        // Set the statement's vulnerability
-        JSONArray aliases = vulnerabilityBody.getJSONArray("aliases");
-        String vulnID = aliases.getString(0);
-        String vulnDesc;
-        // check if summary key is in json object
-        // if not default to using details key
-        if (!vulnerabilityBody.has("summary")) {
-            vulnDesc = vulnerabilityBody.getString("details");
-        } else {
-            vulnDesc = vulnerabilityBody.getString("summary");
+        // General fields with safe fallbacks
+        final String id = vulnerabilityBody.optString("id", "UNKNOWN");
+        final String firstIssued = vulnerabilityBody.optString("published",
+                vulnerabilityBody.optString("modified", String.valueOf(java.time.LocalDateTime.now())));
+        final String lastUpdated = vulnerabilityBody.optString("modified", firstIssued);
+
+        statement.setStatementID(id);
+        statement.setStatementVersion("1.0");
+        statement.setStatementFirstIssued(firstIssued);
+        statement.setStatementLastUpdated(lastUpdated);
+
+        // Vulnerability ID: prefer CVE in aliases; else fall back to id
+        String vulnID = id;
+        JSONArray aliases = vulnerabilityBody.optJSONArray("aliases");
+        if (aliases != null && aliases.length() > 0) {
+            // pick first CVE-like alias if present, otherwise first alias
+            String firstAlias = aliases.optString(0, id);
+            for (int i = 0; i < aliases.length(); i++) {
+                String alias = aliases.optString(i, firstAlias);
+                if (alias != null && alias.toUpperCase().startsWith("CVE-")) {
+                    firstAlias = alias;
+                    break;
+                }
+            }
+            vulnID = firstAlias;
         }
+
+        // Description: prefer summary, fallback to details, then placeholder
+        String vulnDesc = vulnerabilityBody.optString("summary",
+                vulnerabilityBody.optString("details", "No description provided"));
         statement.setVulnerability(new Vulnerability(vulnID, vulnDesc));
 
-        //set the statement's affected status
+        // Status with safe details
+        String details = vulnerabilityBody.optString("details", vulnDesc);
         statement.setStatus(new Status(VulnStatus.AFFECTED,
-                Justification.NOT_APPLICABLE, vulnerabilityBody
-                .getString("details"), "N/A"));
+                Justification.NOT_APPLICABLE, details, "N/A"));
 
-        //Get all products and add all to the VEX Statement
-        // todo - hotfix for when supplier is null
-        String supplier = c.getSupplier() == null
-                ? c.getName()
-                : c.getSupplier().getName();
-        JSONArray packages = vulnerabilityBody.getJSONArray("affected");
-        // for every package in the JSONArray
-        for (int i = 0; i < packages.length(); i++) {
-            JSONObject vulnPackage = packages.getJSONObject(i);
-            // extract the package's info and create a new Product
-            JSONObject packageInfo = vulnPackage.getJSONObject("package");
-            String packageID = packageInfo.getString("name")
-                    + ":" + packageInfo.getString("ecosystem")
-                    + ":" + c.getVersion();
-            statement.addProduct(new Product(packageID, supplier));
+        // Products (affected packages) - safely handle null supplier
+        String supplier = "Unknown";
+        if (c.getSupplier() != null && c.getSupplier().getName() != null) {
+            supplier = c.getSupplier().getName();
+        } else if (c.getName() != null) {
+            supplier = c.getName();
         }
+
+        JSONArray packages = vulnerabilityBody.optJSONArray("affected");
+        if (packages != null) {
+            for (int i = 0; i < packages.length(); i++) {
+                JSONObject vulnPackage = packages.optJSONObject(i);
+                if (vulnPackage == null) continue;
+                JSONObject packageInfo = vulnPackage.optJSONObject("package");
+                if (packageInfo == null) continue;
+                String name = packageInfo.optString("name", c.getName() != null ? c.getName() : "unknown");
+                String eco = packageInfo.optString("ecosystem", "unknown");
+                String version = (c.getVersion() != null) ? c.getVersion() : "unknown";
+                String packageID = name + ":" + eco + ":" + version;
+                statement.addProduct(new Product(packageID, supplier));
+            }
+        } else {
+            // Fallback: at least include the component itself
+            String version = (c.getVersion() != null) ? c.getVersion() : "unknown";
+            String name = (c.getName() != null) ? c.getName() : "unknown";
+            statement.addProduct(new Product(name + ":unknown:" + version, supplier));
+        }
+
         return statement.build();
     }
 }

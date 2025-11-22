@@ -1,0 +1,15 @@
+# OSV Scanner Vulnerability Scanner Configuration
+# @author Ibrahim Matar
+source: "https://github.com/google/osv-scanner"
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.4"
+    format: "json"
+    languages:
+      - "All"
+    package_managers:
+      - "All"
+    commands:
+      - "osv-scanner --sbom=$SBOM_OUT/merged-sbom.json --format json --output $SBOM_OUT/osv-scanner-vulns.json"
+      - "osv-scanner --sbom=$SBOM_OUT/merged-sbom.json --format cyclonedx-1-4 --output $SBOM_OUT/osv-scanner-vulns-cdx14.json"
+

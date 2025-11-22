@@ -168,7 +168,7 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
         creators.addAll(data.getCreationTools().stream()
                 .map(t -> getCreatorString("Tool", t.getName(), t.getVersion())).toList());
 
-        if (data.getSupplier() != null) {
+        if (data.getSupplier() != null && data.getSupplier().getName() != null) {
             Optional<Contact> supplierContact = data.getSupplier().getContacts().stream().findFirst();
             String supplierEmail = "";
             if (supplierContact.isPresent()) supplierEmail = supplierContact.get().getEmail();
@@ -214,7 +214,7 @@ public class SPDX23JSONSerializer extends StdSerializer<SVIPSBOM> implements Ser
 
         jsonGenerator.writeStringField("versionInfo", pkg.getVersion());
         jsonGenerator.writeStringField("packageFileName", pkg.getFileName()); // TODO is this correct?
-        if (pkg.getSupplier() != null) {
+        if (pkg.getSupplier() != null && pkg.getSupplier().getName() != null) {
             Optional<Contact> supplierContact = pkg.getSupplier().getContacts().stream().findFirst();
             String supplierEmail = "";
             if (supplierContact.isPresent())

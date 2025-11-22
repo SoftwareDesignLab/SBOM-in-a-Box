@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package projects.sampleProject;
+package osi.sampleProject;
 
 public class SampleJavaClass {
     public static void main(String[] args) {

@@ -69,6 +69,46 @@ public abstract class MergerUtils extends Merger {
     protected static SBOM mergeToSchema(SBOM A, SBOM B, Set<Component> componentsA, Set<Component> componentsB, SBOM mainSBOM,
                                         SBOMBuilder builder, SerializerFactory.Schema targetSchema, String newName) {
 
+        // Track old UID -> new UID mappings for dependency remapping
+        java.util.HashMap<String, String> uidMapping = new java.util.HashMap<>();
+        
+        // Pre-populate with original component UIDs and purls from both SBOMs
+        if (componentsA != null) {
+            for (Component comp : componentsA) {
+                if (comp != null && comp.getUID() != null) {
+                    uidMapping.put(comp.getUID(), comp.getUID());
+                    if (comp instanceof SVIPComponentObject) {
+                        SVIPComponentObject svipComp = (SVIPComponentObject) comp;
+                        if (svipComp.getPURLs() != null) {
+                            for (String purl : svipComp.getPURLs()) {
+                                if (purl != null && !purl.isEmpty()) {
+                                    uidMapping.put(purl, comp.getUID());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (componentsB != null) {
+            for (Component comp : componentsB) {
+                if (comp != null && comp.getUID() != null) {
+                    uidMapping.put(comp.getUID(), comp.getUID());
+                    if (comp instanceof SVIPComponentObject) {
+                        SVIPComponentObject svipComp = (SVIPComponentObject) comp;
+                        if (svipComp.getPURLs() != null) {
+                            for (String purl : svipComp.getPURLs()) {
+                                if (purl != null && !purl.isEmpty()) {
+                                    uidMapping.put(purl, comp.getUID());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         /** Assign all top level data for the new SBOM **/
 
         // Format
@@ -143,18 +183,96 @@ public abstract class MergerUtils extends Merger {
             mergedComponents = componentsB;
         }
 
-        if (mergedComponents != null) mergedComponents.forEach(x -> builder.addComponent(x));
+        if (mergedComponents != null) {
+            for (Component comp : mergedComponents) {
+                builder.addComponent(comp);
+                if (comp != null && comp.getUID() != null) {
+                    // Map the component's own UID
+                    uidMapping.put(comp.getUID(), comp.getUID());
+                    
+                    // Also map purls to UID for dependency remapping (cdxgen uses purls as refs)
+                    if (comp instanceof SVIPComponentObject) {
+                        SVIPComponentObject svipComp = (SVIPComponentObject) comp;
+                        if (svipComp.getPURLs() != null) {
+                            for (String purl : svipComp.getPURLs()) {
+                                if (purl != null && !purl.isEmpty()) {
+                                    uidMapping.put(purl, comp.getUID());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
 
-        // Relationships
+        // Relationships - remap refs to merged component UIDs
+        System.out.println("[MERGE-DEBUG] UID mapping size: " + uidMapping.size());
+        System.out.println("[MERGE-DEBUG] First 10 mappings:");
+        uidMapping.entrySet().stream().limit(10).forEach(e -> 
+            System.out.println("  " + e.getKey() + " -> " + e.getValue())
+        );
+        
         if (A.getRelationships() != null) {
             Map<String, Set<Relationship>> relationshipsA = A.getRelationships();
-            relationshipsA.keySet().forEach(x -> relationshipsA.get(x).forEach(y -> builder.addRelationship(x, y)));
+            int totalA = relationshipsA.size();
+            int remappedA = 0;
+            for (String originalRef : relationshipsA.keySet()) {
+                if (originalRef == null) continue;
+                
+                String mappedRef = uidMapping.getOrDefault(originalRef, null);
+                if (mappedRef == null) {
+                    System.err.println("[MERGE-DEBUG] SBOM A: No mapping found for ref: " + originalRef);
+                    continue;
+                }
+                
+                Set<Relationship> rels = relationshipsA.get(originalRef);
+                if (rels != null) {
+                    for (Relationship rel : rels) {
+                        if (rel == null || rel.getOtherUID() == null) continue;
+                        
+                        String mappedTarget = uidMapping.getOrDefault(rel.getOtherUID(), null);
+                        if (mappedTarget != null) {
+                            builder.addRelationship(mappedRef, new Relationship(mappedTarget, rel.getRelationshipType()));
+                            remappedA++;
+                        } else {
+                            System.err.println("[MERGE-DEBUG] SBOM A: No mapping for dependency target: " + rel.getOtherUID());
+                        }
+                    }
+                }
+            }
+            System.out.println("[MERGE-DEBUG] SBOM A: Remapped " + remappedA + " relationships from " + totalA + " entries");
         }
 
         if (B.getRelationships() != null) {
             Map<String, Set<Relationship>> relationshipsB = B.getRelationships();
-            relationshipsB.keySet().forEach(x -> relationshipsB.get(x).forEach(y -> builder.addRelationship(x, y)));
+            int totalB = relationshipsB.size();
+            int remappedB = 0;
+            for (String originalRef : relationshipsB.keySet()) {
+                if (originalRef == null) continue;
+                
+                String mappedRef = uidMapping.getOrDefault(originalRef, null);
+                if (mappedRef == null) {
+                    System.err.println("[MERGE-DEBUG] SBOM B: No mapping found for ref: " + originalRef);
+                    continue;
+                }
+                
+                Set<Relationship> rels = relationshipsB.get(originalRef);
+                if (rels != null) {
+                    for (Relationship rel : rels) {
+                        if (rel == null || rel.getOtherUID() == null) continue;
+                        
+                        String mappedTarget = uidMapping.getOrDefault(rel.getOtherUID(), null);
+                        if (mappedTarget != null) {
+                            builder.addRelationship(mappedRef, new Relationship(mappedTarget, rel.getRelationshipType()));
+                            remappedB++;
+                        } else {
+                            System.err.println("[MERGE-DEBUG] SBOM B: No mapping for dependency target: " + rel.getOtherUID());
+                        }
+                    }
+                }
+            }
+            System.out.println("[MERGE-DEBUG] SBOM B: Remapped " + remappedB + " relationships from " + totalB + " entries");
         }
 
         // External References

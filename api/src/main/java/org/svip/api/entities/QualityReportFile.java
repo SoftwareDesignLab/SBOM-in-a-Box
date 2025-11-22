@@ -24,6 +24,7 @@
 
 package org.svip.api.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 /**
@@ -47,6 +48,7 @@ public class QualityReportFile {
     private String content;
 
     @OneToOne(mappedBy = "qualityReportFile")   // name of field in SBOMFile NOT DB
+    @JsonBackReference("sbom-quality")
     private SBOMFile sbomFile;
 
 

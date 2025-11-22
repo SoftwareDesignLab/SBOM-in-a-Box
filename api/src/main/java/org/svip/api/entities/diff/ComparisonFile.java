@@ -24,6 +24,8 @@
 
 package org.svip.api.entities.diff;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -53,17 +55,19 @@ public class ComparisonFile {
     @ManyToOne
     @JoinColumn(name = "target_sbom_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonBackReference("sbom-comparison-target")
     private SBOMFile targetSBOMFile;
 
     // Other SBOM
     @ManyToOne
     @JoinColumn(name = "other_sbom_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonBackReference("sbom-comparison-other")
     private SBOMFile otherSBOMFile;
 
     // Conflict collection
-//    @OneToMany(mappedBy = "comparison", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @OneToMany(mappedBy = "comparison")
+    @OneToMany(mappedBy = "comparison", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonManagedReference("comparison-conflicts")
     private Set<ConflictFile> conflicts = new HashSet<>();
 
 

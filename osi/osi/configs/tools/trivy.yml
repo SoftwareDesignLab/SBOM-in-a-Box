@@ -1,0 +1,13 @@
+# Trivy Vulnerability Scanner Configuration
+# @author Ibrahim Matar
+source: "https://github.com/aquasecurity/trivy"
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.4"
+    format: "json"
+    languages:
+      - "All"
+    package_managers:
+      - "All"
+    commands:
+      - "trivy sbom --format cyclonedx --output $SBOM_OUT/trivy-vulns-cdx14.json $SBOM_OUT/merged-sbom.json"

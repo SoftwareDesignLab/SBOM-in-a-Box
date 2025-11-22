@@ -14,16 +14,16 @@ services:
     pull_policy: never  # use local build
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/healthcheck"]
-      start_period: 15s   # small delay to let startup scripts finish
+      start_period: 60s   # allow validation to finish before first check
       interval: 20s
-      timeout: 5s
-      retries: 3
+      timeout: 10s
+      retries: 5
 
   # MySQL server
   sbox_db:
     container_name: sbox_db
     image: mysql:8.4.6
-    command: --max_allowed_packet=32505856  # Set max_allowed_packet to 256M
+    command: --max_allowed_packet=1073741824 --innodb_redo_log_capacity=1073741824  # Set max_allowed_packet to 256M
     env_file:
       - path: .env
         required: true
@@ -59,6 +59,7 @@ services:
       # create mysql user defined in the db
       MYSQL_USER: ${MYSQL_USER:?'MYSQL_USER' must be set in the .env file}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:?'MYSQL_PASSWORD' must be set in the .env file}
+      JAVA_TOOL_OPTIONS: "-Xms2g -Xmx8g -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
     depends_on:
       sbox_db:
         condition: service_healthy

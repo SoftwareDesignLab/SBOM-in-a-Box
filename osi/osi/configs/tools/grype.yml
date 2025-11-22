@@ -1,0 +1,13 @@
+# Grype Vulnerability Scanner Configuration
+# @author Ibrahim Matar
+source: "https://github.com/anchore/grype"
+profiles:
+  - schema: "cyclonedx"
+    spec_version: "1.4"
+    format: "json"
+    languages:
+      - "All"
+    package_managers:
+      - "All"
+    commands:
+      - "grype sbom:$SBOM_OUT/merged-sbom.json -o cyclonedx-json --file $SBOM_OUT/grype-vulns-cdx14.json"

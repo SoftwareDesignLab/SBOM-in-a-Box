@@ -24,6 +24,7 @@
 
 package org.svip.api.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import org.svip.vex.model.VEXType;
 
@@ -52,6 +53,7 @@ public class VEXFile {
     private Database datasource;
     /// Relationships
     @OneToOne(mappedBy = "vexFile")   // name of field in SBOMFile NOT DB
+    @JsonBackReference("sbom-vex")
     private SBOMFile sbomFile;
 
     /**

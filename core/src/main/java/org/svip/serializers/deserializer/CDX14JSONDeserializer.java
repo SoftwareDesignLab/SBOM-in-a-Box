@@ -147,7 +147,16 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
 
         if (node.get("dependencies") != null)
             for (JsonNode depNode : node.get("dependencies")) {
-                String ref = depNode.get("ref").asText();
+                // Skip if ref is null or missing
+                JsonNode refNode = depNode.get("ref");
+                if (refNode == null || refNode.isNull()) {
+                    continue;
+                }
+                String ref = refNode.asText();
+                // Skip empty or "null" string refs
+                if (ref == null || ref.isEmpty() || "null".equalsIgnoreCase(ref)) {
+                    continue;
+                }
                 resolveDependency(depNode).forEach(d -> sbomBuilder.addRelationship(ref, d));
             }
 
@@ -363,8 +372,14 @@ public class CDX14JSONDeserializer extends StdDeserializer<CDX14SBOM> implements
         if (dep.get("dependsOn") == null) return relationships;
 
         for (JsonNode dependency : dep.get("dependsOn")) {
-            if (dependency == null) continue;
-            relationships.add(new Relationship(dependency.asText(), "DEPENDS_ON")); // TODO correct type?
+            // Skip if dependency is null or a JSON null node
+            if (dependency == null || dependency.isNull()) continue;
+            
+            String depText = dependency.asText();
+            // Skip empty or "null" string dependencies
+            if (depText == null || depText.isEmpty() || "null".equalsIgnoreCase(depText)) continue;
+            
+            relationships.add(new Relationship(depText, "DEPENDS_ON"));
         }
 
         return relationships;
