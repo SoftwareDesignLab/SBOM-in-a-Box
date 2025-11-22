@@ -108,6 +108,15 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         this.prettyPrint = prettyPrint;
     }
 
+    /**
+     * Writes the CycloneDX document to the provided generator, emitting top-level metadata,
+     * components, dependencies, and attachments in a single pass.
+     *
+     * @param sbom SBOM being serialized
+     * @param jsonGenerator destination generator
+     * @param provider serializer provider passed by Jackson
+     * @throws IOException when the output stream cannot be written
+     */
     @Override
     public void serialize(SVIPSBOM sbom, JsonGenerator jsonGenerator, SerializerProvider provider) throws IOException {
         jsonGenerator.writeStartObject();
@@ -449,6 +458,13 @@ public class CDX14JSONSerializer extends StdSerializer<SVIPSBOM> implements Seri
         jsonGenerator.writeEndArray();
     }
 
+    /**
+     * Writes a single SVIP component into the CycloneDX components section.
+     *
+     * @param jsonGenerator destination generator
+     * @param component component to serialize
+     * @throws IOException if serialization fails
+     */
     private void writeComponent(JsonGenerator jsonGenerator, SVIPComponentObject component) throws IOException {
         jsonGenerator.writeStartObject();
 

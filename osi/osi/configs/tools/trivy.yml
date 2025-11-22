@@ -11,13 +11,3 @@ profiles:
       - "All"
     commands:
       - "trivy sbom --format cyclonedx --output $SBOM_OUT/trivy-vulns-cdx14.json $SBOM_OUT/merged-sbom.json"
-  - schema: "cyclonedx"
-    spec_version: "1.5"
-    format: "json"
-    languages:
-      - "All"
-    package_managers:
-      - "All"
-    commands:
-      - "trivy sbom --format cyclonedx --scanners vuln --output $SBOM_OUT/trivy-vulns-cdx15.json $SBOM_OUT/merged-sbom.json"
-

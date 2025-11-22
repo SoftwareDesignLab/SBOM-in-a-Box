@@ -25,6 +25,8 @@
 package org.svip.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -34,11 +36,16 @@ import org.svip.api.dto.SBOMFileDTO;
 import org.svip.api.entities.SBOMFile;
 import org.svip.api.requests.UploadSBOMFileInput;
 import org.svip.api.services.SBOMFileService;
+import org.svip.api.services.VulnerabilityHistoryService;
+import org.svip.api.services.VulnerabilityScanService;
 import org.svip.conversion.ConversionException;
 import org.svip.sbom.builder.SBOMBuilderException;
 import org.svip.serializers.SerializerFactory;
 import org.svip.serializers.exceptions.DeserializerException;
 import org.svip.serializers.exceptions.SerializerException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * REST API Controller for managing SBOM and SBOM operations
@@ -55,14 +62,24 @@ public class SBOMController {
     public static final Logger LOGGER = LoggerFactory.getLogger(SBOMController.class);
 
     private final SBOMFileService sbomService;
+    private final VulnerabilityHistoryService vulnerabilityHistoryService;
+    private final VulnerabilityScanService vulnerabilityScanService;
+    private final ObjectMapper objectMapper;
 
     /**
      * Create new Controller with services
      *
      * @param sbomService Service for handling SBOM queries
+     * @param vulnerabilityHistoryService Service for recording vulnerability stats
      */
-    public SBOMController(SBOMFileService sbomService) {
+    public SBOMController(SBOMFileService sbomService,
+                          VulnerabilityHistoryService vulnerabilityHistoryService,
+                          VulnerabilityScanService vulnerabilityScanService,
+                          ObjectMapper objectMapper) {
         this.sbomService = sbomService;
+        this.vulnerabilityHistoryService = vulnerabilityHistoryService;
+        this.vulnerabilityScanService = vulnerabilityScanService;
+        this.objectMapper = objectMapper;
     }
 
 
@@ -87,13 +104,19 @@ public class SBOMController {
             // Attempt to deserialize
             sbomFile.toSBOMObject();
 
-            this.sbomService.upload(sbomFile);
+            SBOMFile savedFile = this.sbomService.upload(sbomFile);
+
+            if (vulnerabilityScanService.isEnabled()) {
+                runScansAndRecord(savedFile);
+            } else {
+                recordInlineVulnerabilities(savedFile);
+            }
 
             // Log
-            LOGGER.info("POST /svip/sboms - Uploaded SBOM with ID " + sbomFile.getId() + ": " + sbomFile.getName());
+            LOGGER.info("POST /svip/sboms - Uploaded SBOM with ID " + savedFile.getId() + ": " + savedFile.getName());
 
             // Return ID
-            return new ResponseEntity<>(sbomFile.getId(), HttpStatus.OK);
+            return new ResponseEntity<>(savedFile.getId(), HttpStatus.OK);
 
         } catch (IllegalArgumentException | JsonProcessingException e) {
             // Problem with parsing
@@ -279,4 +302,91 @@ public class SBOMController {
         return new ResponseEntity<>(id, HttpStatus.OK);
     }
 
+    private void runScansAndRecord(SBOMFile sbomFile) {
+        try {
+            LOGGER.info("POST /svip/sboms - Running vulnerability scans for {}", sbomFile.getName());
+            String enrichedContent = vulnerabilityScanService.runVulnerabilityScans(
+                sbomFile.getContent(),
+                sbomFile.getName()
+            );
+
+            if (enrichedContent != null && !enrichedContent.isBlank()) {
+                sbomFile.setContent(enrichedContent);
+                sbomService.upload(sbomFile);
+            }
+
+            recordVulnerabilities(sbomFile, vulnerabilityScanService.getConfiguredToolsCsv());
+        } catch (Exception e) {
+            LOGGER.warn("POST /svip/sboms - Failed to run scans for {}: {}. Falling back to inline vulnerabilities.",
+                sbomFile.getName(), e.getMessage());
+            recordInlineVulnerabilities(sbomFile);
+        }
+    }
+
+    private void recordInlineVulnerabilities(SBOMFile sbomFile) {
+        recordVulnerabilities(sbomFile, null);
+    }
+
+    private void recordVulnerabilities(SBOMFile sbomFile, String scannersOverride) {
+        try {
+            JsonNode root = objectMapper.readTree(sbomFile.getContent());
+            List<JsonNode> vulnerabilities = extractVulnerabilities(root);
+            if (vulnerabilities.isEmpty()) {
+                LOGGER.info("POST /svip/sboms - No vulnerabilities found in {}", sbomFile.getName());
+                return;
+            }
+
+            String projectName = extractProjectName(root, sbomFile.getName());
+            String scannersUsed = (scannersOverride != null && !scannersOverride.isBlank())
+                ? scannersOverride
+                : determineScanners(root);
+
+            vulnerabilityHistoryService.recordVulnerabilities(
+                sbomFile.getId(),
+                projectName,
+                sbomFile.getName(),
+                vulnerabilities,
+                scannersUsed
+            );
+        } catch (Exception e) {
+            LOGGER.warn("POST /svip/sboms - Unable to record vulnerabilities for {}: {}", sbomFile.getName(), e.getMessage());
+        }
+    }
+
+    private List<JsonNode> extractVulnerabilities(JsonNode root) {
+        List<JsonNode> vulnerabilities = new ArrayList<>();
+        JsonNode vulnerabilitiesNode = root.path("vulnerabilities");
+        if (vulnerabilitiesNode.isArray()) {
+            vulnerabilitiesNode.forEach(vulnerabilities::add);
+        }
+        return vulnerabilities;
+    }
+
+    private String extractProjectName(JsonNode root, String fallback) {
+        JsonNode component = root.path("metadata").path("component");
+        if (component.hasNonNull("name")) {
+            String name = component.get("name").asText("").trim();
+            if (!name.isEmpty()) {
+                return name;
+            }
+        }
+        return fallback;
+    }
+
+    private String determineScanners(JsonNode root) {
+        JsonNode tools = root.path("metadata").path("tools");
+        if (!tools.isArray()) {
+            return "inline";
+        }
+
+        List<String> toolNames = new ArrayList<>();
+        tools.forEach(tool -> {
+            String name = tool.path("name").asText("").trim();
+            if (!name.isEmpty()) {
+                toolNames.add(name);
+            }
+        });
+
+        return toolNames.isEmpty() ? "inline" : String.join(",", toolNames);
+    }
 }

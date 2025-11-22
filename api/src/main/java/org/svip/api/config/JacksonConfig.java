@@ -25,51 +25,28 @@
 package org.svip.api.config;
 
 import com.fasterxml.jackson.core.StreamReadConstraints;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 
 /**
- * Jackson configuration to handle large SBOM files
- * 
- * This configuration increases the maximum allowed string length for JSON parsing
- * to handle very large SBOM files (up to 500MB of JSON text).
+ * Configures Jackson to handle Java 8+ time types and large SBOM payloads.
  */
 @Configuration
 public class JacksonConfig {
-    
-    /**
-     * Configure Jackson to handle larger JSON strings
-     * Increases the max string length from 100MB to 500MB
-     */
+
     @Bean
-    public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
+    public Jackson2ObjectMapperBuilderCustomizer jacksonCustomizer() {
         return builder -> {
-            builder.postConfigurer(objectMapper -> {
-                objectMapper.getFactory().setStreamReadConstraints(
-                    StreamReadConstraints.builder()
-                        .maxStringLength(500_000_000)  // 500MB limit for JSON strings
-                        .build()
-                );
-            });
+            builder.modulesToInstall(new JavaTimeModule());
+            builder.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            builder.postConfigurer(objectMapper -> objectMapper.getFactory().setStreamReadConstraints(
+                StreamReadConstraints.builder()
+                    .maxStringLength(500_000_000) // 500MB limit for JSON strings
+                    .build()
+            ));
         };
-    }
-    
-    /**
-     * Create a primary ObjectMapper bean with increased limits
-     * This will be used by default throughout the application
-     */
-    @Bean
-    @Primary
-    public ObjectMapper objectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.getFactory().setStreamReadConstraints(
-            StreamReadConstraints.builder()
-                .maxStringLength(500_000_000)  // 500MB limit for JSON strings
-                .build()
-        );
-        return mapper;
     }
 }

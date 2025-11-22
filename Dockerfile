@@ -19,10 +19,10 @@ FROM eclipse-temurin:21-jre-jammy AS runtime
 USER root
 RUN apt-get update && apt-get install -y curl wget ca-certificates
 # Install Grype
-ARG GRYPE_VERSION=0.84.0
+ARG GRYPE_VERSION=0.104.0
 RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin v${GRYPE_VERSION}
 # Install Trivy
-ARG TRIVY_VERSION=0.58.1
+ARG TRIVY_VERSION=0.67.2
 RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v${TRIVY_VERSION}
 # Install OSV Scanner - using install script
 RUN curl -L https://github.com/google/osv-scanner/releases/latest/download/osv-scanner_linux_amd64 -o /usr/local/bin/osv-scanner && chmod +x /usr/local/bin/osv-scanner || echo "OSV Scanner installation failed, continuing without it"

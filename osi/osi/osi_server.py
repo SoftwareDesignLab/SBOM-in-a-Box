@@ -123,6 +123,11 @@ class OSIAPIServer:
                 f"Prepare | {description} failed with exit code {exc.returncode}: {output}")
 
     def _prepare_project(self, project_dir: str) -> None:
+        """
+        Hydrates package manifests with lockfiles and dependency metadata so scanners such as cdxgen,
+        gobom, and other language-specific generators can build accurate graphs. Many tools require
+        node_modules/vendor directories or lockfiles to exist before producing a trustworthy SBOM.
+        """
         self._app.logger.info("Prepare | Ensuring dependency metadata for uploaded project")
 
         def _rel(path: str) -> str:

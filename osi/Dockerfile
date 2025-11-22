@@ -28,8 +28,8 @@ RUN curl -L $GRADLE -o gradle.zip
 
 # Install anchore tooling on debian container
 FROM debian:bookworm-slim AS anchore_install
-ARG SYFT_VERSION=1.30.0
-ARG GRYPE_VERSION=0.84.0
+ARG SYFT_VERSION=1.38.0
+ARG GRYPE_VERSION=0.104.0
 WORKDIR /tmp
 RUN apt update && apt install curl -y
 RUN curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /tmp "v$SYFT_VERSION"
@@ -38,9 +38,9 @@ RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh |
 
 # Install vulnerability scanners
 FROM debian:bookworm-slim AS vuln_scanner_install
-ARG TRIVY_VERSION=0.58.1
-ARG OSV_SCANNER_VERSION=1.9.2
-ARG DEPENDENCY_CHECK_VERSION=11.1.1
+ARG TRIVY_VERSION=0.67.2
+ARG OSV_SCANNER_VERSION=2.3.0
+ARG DEPENDENCY_CHECK_VERSION=12.1.0
 WORKDIR /tmp
 RUN apt update && apt install curl unzip wget -y
 # Trivy
